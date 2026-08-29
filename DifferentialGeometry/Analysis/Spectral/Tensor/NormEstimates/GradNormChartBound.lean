@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -52,7 +51,7 @@ theorem exists_chartInvGramMatrix_l1Sum_sup_on_pouTsupport
     ∃ M_Ginv : ℝ, 0 ≤ M_Ginv ∧
       ∀ b : M, b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α b ≤ M_Ginv := by
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ M_Ginv := by
   classical
   set K : Set M := tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hK
@@ -61,16 +60,16 @@ theorem exists_chartInvGramMatrix_l1Sum_sup_on_pouTsupport
   have hK_subset : K ⊆ (chartAt H α).source :=
     tsupport_chartAtlasPOU_subset_chartSource (I := I) (M := M) α
   have h_cont : ContinuousOn
-      (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) K :=
+      (chartInvGramMatrixL1Sum (I := I) (M := M) g α) K :=
     (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hK_subset
   by_cases hK_ne : K.Nonempty
   · obtain ⟨b_max, _hb_max_mem, hb_max_isMax⟩ :=
       hK_compact.exists_isMaxOn hK_ne h_cont
-    refine ⟨max (chartInvGramMatrix_l1Sum (I := I) (M := M) g α b_max) 0,
+    refine ⟨max (chartInvGramMatrixL1Sum (I := I) (M := M) g α b_max) 0,
             le_max_right _ _, ?_⟩
     intro b hb
-    have h_le_max : chartInvGramMatrix_l1Sum (I := I) (M := M) g α b ≤
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α b_max := hb_max_isMax hb
+    have h_le_max : chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α b_max := hb_max_isMax hb
     exact h_le_max.trans (le_max_left _ _)
   · refine ⟨0, le_refl 0, ?_⟩
     intro b hb
@@ -334,8 +333,8 @@ theorem partialDeriv_scalarOnE_tensorChartComponentScalar_leibniz
           scalarOnE (I := I) α raw z • fderiv ℝ (scalarOnE (I := I) α ρ) z :=
     fderiv_fun_mul hρ_diff hraw_diff
   rw [h_fderiv_mul]
-  rw [ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+  rw [add_apply,
+      smul_apply, smul_apply]
   simp only [smul_eq_mul]
   ring
 
@@ -388,7 +387,7 @@ private lemma sum_sq_partialDeriv_scalarOnE_chartAtlasPOU_continuousOn
       (extChartAt I α).target :=
     h_smooth.continuousOn_fderiv_of_isOpen (isOpen_extChartAt_target (I := I) α)
       (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
-  refine continuousOn_finset_sum _ ?_
+  refine continuousOn_finsetSum _ ?_
   intro k _
   unfold partialDeriv
   have h_eval_cont :
@@ -579,7 +578,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
           (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b)
         (gradFun (I := I) g
           (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b) ≤
-      chartInvGramMatrix_l1Sum (I := I) (M := M) g α b *
+      chartInvGramMatrixL1Sum (I := I) (M := M) g α b *
         ∑ k : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)
@@ -590,7 +589,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
       (x := b) hu_mdiff_at hb_chart_src
     rw [hz_def]
     exact this
-  have h_l1Sum_le : chartInvGramMatrix_l1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
+  have h_l1Sum_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
     hM_Ginv_le b hb
   have h_leibniz : ∀ k : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) k (scalarOnE (I := I) α
@@ -777,8 +776,8 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
       have := mul_le_mul_of_nonneg_left h_Sraw_le' (by norm_num : (0 : ℝ) ≤ 2)
       linarith
     linarith
-  have h_l1Sum_nn : 0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α b := by
-    unfold chartInvGramMatrix_l1Sum
+  have h_l1Sum_nn : 0 ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α b := by
+    unfold chartInvGramMatrixL1Sum
     exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
   have h_sum_sq_nn : 0 ≤ ∑ k : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) k (scalarOnE (I := I) α
@@ -794,7 +793,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
       M_Ginv * (2 * raw_z ^ 2 * M_dρ +
         (4 * C_proj ^ 2 * Tcov_sum + 4 * C_proj ^ 2 * Tchr_sum)) := by
     refine h_step_grad3.trans ?_
-    have h1 : chartInvGramMatrix_l1Sum (I := I) (M := M) g α b *
+    have h1 : chartInvGramMatrixL1Sum (I := I) (M := M) g α b *
         ∑ k : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)

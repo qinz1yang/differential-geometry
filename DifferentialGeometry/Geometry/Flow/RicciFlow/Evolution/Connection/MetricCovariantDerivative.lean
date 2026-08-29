@@ -110,17 +110,17 @@ theorem metricCovDerivDeriv_of_solution
     (frame a x) ((S.family.connection (t : Real) (frame b) x) (frame d x))
   have hcomb := (h1.sub h2).sub h3
   have hval :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
             (fun y : M => -2 * ricciCompInFrame (I := I) S frame (t : Real) y a b) x (frame d x) -
           (-2 : Real) * RicciAtFamily.toTensorField (I := I) S.ricciAt (t : Real) x
             ((S.family.connection (t : Real) (frame a) x) (frame d x)) (frame b x) -
           (-2 : Real) * RicciAtFamily.toTensorField (I := I) S.ricciAt (t : Real) x
             (frame a x) ((S.family.connection (t : Real) (frame b) x) (frame d x)) =
         (-2 : Real) * ricciCovDerivCompInFrame (I := I) S frame (t : Real) x d a b := by
-    rw [extDerivFun_const_mul (I := I) (-2 : Real)
+    rw [mvfderiv_const_mul (I := I) (-2 : Real)
       (hFtdiff a b (t : Real) t.2 x hx)]
     simp only [ricciCovDerivCompInFrame, RicciAtFamily.toTensorField_apply,
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     ring
   change HasDerivWithinAt
       (fun s : Real => metricCovDerivCompInFrameAtBase (I := I) S frame (t : Real) s x d a b)

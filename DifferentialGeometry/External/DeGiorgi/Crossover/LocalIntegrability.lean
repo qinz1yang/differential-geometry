@@ -33,19 +33,19 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 /-- The small exponent `c(d)` in the crossover estimate.
 This is chosen small enough for the local John-Nirenberg step fed by the
 regularized-log BMO bound. -/
-noncomputable def c_crossover_bmo_scale (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+noncomputable def cCrossoverBmoScale (d : ℕ) [hNeZero : NeZero d] : ℝ := by
   let _ := hNeZero
   exact
-  ((volume.real (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
+  ((volume.real (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d) *
     (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) *
     (8 * (Mst : ℝ) * (volume.real (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1)) ^ ((1 : ℝ) / 2))
 
-noncomputable def crossover_big_bmo_scale (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+noncomputable def crossoverBigBmoScale (d : ℕ) [hNeZero : NeZero d] : ℝ := by
   let _ := hNeZero
-  exact 12 * (Mst : ℝ) * C_poinc_val d * (4 / 3 : ℝ) ^ ((d : ℝ) / 2)
+  exact 12 * (Mst : ℝ) * CPoincVal d * (4 / 3 : ℝ) ^ ((d : ℝ) / 2)
 
-noncomputable def c_crossover' (d : ℕ) [NeZero d] : ℝ :=
-  1 / (2 * C_JN d * c_crossover_bmo_scale d + 1)
+noncomputable def cCrossover' (d : ℕ) [NeZero d] : ℝ :=
+  1 / (2 * CJN d * cCrossoverBmoScale d + 1)
 
 /-- Local exponential-integrability bound for a positive supersolution on a
 cover ball.
@@ -66,7 +66,7 @@ private theorem local_exp_integrability_bound
     (_hsuper : IsSupersolution A.1 u)
     (x₀ : E)
     (hamb : Metric.closedBall x₀ (1 / 4 : ℝ) ⊆ Metric.ball (0 : E) 1)
-    (c : ℝ) (_hc_eq : c = c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))
+    (c : ℝ) (_hc_eq : c = cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2))
     (a : ℝ) :
     ∃ K : ℝ, 0 < K ∧
       ∫ x in Metric.ball x₀ (1 / 8 : ℝ),
@@ -98,7 +98,7 @@ private theorem local_exp_integrability_inv_bound
     (_hsuper : IsSupersolution A.1 u)
     (x₀ : E)
     (_hamb : Metric.closedBall x₀ (1 / 4 : ℝ) ⊆ Metric.ball (0 : E) 1)
-    (c : ℝ) (_hc_eq : c = c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))
+    (c : ℝ) (_hc_eq : c = cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2))
     (a : ℝ) :
     ∃ K : ℝ, 0 < K ∧
       ∫ x in Metric.ball x₀ (1 / 8 : ℝ),
@@ -122,7 +122,7 @@ private theorem uniform_local_exp_integrability_bound
     {u : E → ℝ}
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u) :
-    let c := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+    let c := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
     let v_avg := ⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ), (-Real.log (u x)) ∂volume
     ∃ K : ℝ, 0 < K ∧
       (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
@@ -270,8 +270,12 @@ private lemma integrableOn_rescaleToUnitBall_iff
         IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) := by
     have hmap_iff :=
       hT_emb.integrableOn_map_iff (μ := volume) (s := Metric.ball x₀ (R * ρ)) (f := f)
-    simpa [T, affine_preimage_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := ρ) hR] using
-      hmap_iff.symm
+    have hmap := hmap_iff.symm
+    rw [show T ⁻¹' Metric.ball x₀ (R * ρ) = Metric.ball (0 : E) ρ from
+      affine_preimage_ball_mul (d := d) (x₀ := x₀) (R := R) (ρ := ρ) hR] at hmap
+    change IntegrableOn (fun z => f (x₀ + R • z)) (Metric.ball (0 : E) ρ) volume ↔
+      IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) at hmap
+    simpa only [T] using hmap
   have hsmul :
       IntegrableOn f (Metric.ball x₀ (R * ρ)) (Measure.map T volume) ↔
         IntegrableOn f (Metric.ball x₀ (R * ρ)) volume := by
@@ -345,7 +349,7 @@ private lemma closedBall_quarter_subset_unitBall_of_mem_halfBall
     _ < 1 := by norm_num
 
 local notation "Cmo" =>
-  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d)
+  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d)
 
 omit [NeZero d] in
 private theorem unitBall_average_abs_le_lpNorm_two
@@ -356,7 +360,7 @@ private theorem unitBall_average_abs_le_lpNorm_two
         MeasureTheory.lpNorm f 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
   let B1 : Set E := Metric.ball (0 : E) 1
   let μ1 : Measure E := volume.restrict B1
-  haveI : IsFiniteMeasure μ1 := by
+  have : IsFiniteMeasure μ1 := by
     simpa [μ1] using
       (show IsFiniteMeasure (volume.restrict B1) from by
         rw [isFiniteMeasure_restrict]
@@ -420,12 +424,12 @@ private theorem unitBall_sub_average_lpNorm_le_grad_lpNorm_two
     MeasureTheory.lpNorm
         (fun z => u z - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
         2 (volume.restrict (Metric.ball (0 : E) 1)) ≤
-      C_poinc_val d *
+      CPoincVal d *
         MeasureTheory.lpNorm
           (fun z => ‖hw.weakGrad z‖) 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
   let B1 : Set E := Metric.ball (0 : E) 1
   let μ1 : Measure E := volume.restrict B1
-  haveI : IsFiniteMeasure μ1 := by
+  have : IsFiniteMeasure μ1 := by
     simpa [μ1] using
       (show IsFiniteMeasure (volume.restrict B1) from by
         rw [isFiniteMeasure_restrict]
@@ -444,17 +448,17 @@ private theorem unitBall_sub_average_lpNorm_le_grad_lpNorm_two
       isWeakGrad := hw.isWeakGrad }
   have hunit_e' :
       eLpNorm (fun z => u z - ⨍ y in B1, u y ∂volume) 2 μ1 ≤
-        ENNReal.ofReal (C_poinc_val d) *
+        ENNReal.ofReal (CPoincVal d) *
           eLpNorm (fun z => ‖hw'.weakGrad z‖) 2 μ1 := by
     simpa using
       (poincare_unitBall_W1p_public (d := d) (p := (2 : ℝ)) (by norm_num) (u := u) hw')
   have hunit_e :
       eLpNorm (fun z => u z - ⨍ y in B1, u y ∂volume) 2 μ1 ≤
-        ENNReal.ofReal (C_poinc_val d) *
+        ENNReal.ofReal (CPoincVal d) *
           eLpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1 := by
     simpa [hw'] using hunit_e'
   have hd_pos : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
-  have hCp_nonneg : 0 ≤ C_poinc_val d :=
+  have hCp_nonneg : 0 ≤ CPoincVal d :=
     le_of_lt (C_poinc_val_pos (d := d) hd_pos)
   have h :=
     ENNReal.toReal_mono
@@ -466,12 +470,12 @@ private theorem unitBall_sub_average_lpNorm_le_grad_lpNorm_two
             symm
             rw [MeasureTheory.toReal_eLpNorm]
             exact hdev_memLp.aestronglyMeasurable
-    _ ≤ (ENNReal.ofReal (C_poinc_val d) *
+    _ ≤ (ENNReal.ofReal (CPoincVal d) *
           eLpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1).toReal := h
-    _ = (ENNReal.ofReal (C_poinc_val d)).toReal *
+    _ = (ENNReal.ofReal (CPoincVal d)).toReal *
           (eLpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1).toReal := by
             rw [ENNReal.toReal_mul]
-    _ = C_poinc_val d * MeasureTheory.lpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1 := by
+    _ = CPoincVal d * MeasureTheory.lpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1 := by
           rw [ENNReal.toReal_ofReal hCp_nonneg,
             MeasureTheory.toReal_eLpNorm hgrad_memLp.aestronglyMeasurable]
 
@@ -483,7 +487,7 @@ private theorem unitBall_average_abs_sub_average_le_grad_lpNorm_two
       Cmo *
         MeasureTheory.lpNorm
           (fun z => ‖hw.weakGrad z‖) 2 (volume.restrict (Metric.ball (0 : E) 1)) := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   calc
@@ -496,7 +500,7 @@ private theorem unitBall_average_abs_sub_average_le_grad_lpNorm_two
               exact unitBall_average_abs_le_lpNorm_two
                 (hf := hw.memLp.sub (MeasureTheory.memLp_const _))
     _ ≤ (volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) *
-          (C_poinc_val d *
+          (CPoincVal d *
             MeasureTheory.lpNorm
               (fun z => ‖hw.weakGrad z‖) 2 (volume.restrict (Metric.ball (0 : E) 1))) := by
             gcongr
@@ -595,7 +599,7 @@ private theorem rescaled_weakGrad_lpNorm_eq
     (hR : 0 < R)
     (hw : MemW1pWitness 2 u (Metric.ball x₀ R)) :
     let hwR : MemW1pWitness 2 (fun z => u (x₀ + R • z)) (Metric.ball (0 : E) 1) :=
-      hw.rescale_to_unitBall (d := d) hR
+      hw.rescaleToUnitBall (d := d) hR
     MeasureTheory.lpNorm
         (fun z => ‖hwR.weakGrad z‖) 2 (volume.restrict (Metric.ball (0 : E) 1)) =
       R ^ (1 - (d : ℝ) / 2) *
@@ -606,7 +610,7 @@ private theorem rescaled_weakGrad_lpNorm_eq
       (fun z => ‖hwR.weakGrad z‖) =
         fun z => R * ‖hw.weakGrad (x₀ + R • z)‖ := by
     ext z
-    simp [hwR, MemW1pWitness.rescale_to_unitBall, norm_smul, Real.norm_of_nonneg hR.le]
+    simp [hwR, MemW1pWitness.rescaleToUnitBall, norm_smul, Real.norm_of_nonneg hR.le]
   rw [hnorm_eq]
   have hBall :
       MemLp (fun x => ‖hw.weakGrad x‖) 2 (volume.restrict (Metric.ball x₀ R)) :=
@@ -618,7 +622,7 @@ private theorem rescaled_weakGrad_lpNorm_eq
         MemLp (fun z => R⁻¹ * ‖hwR.weakGrad z‖) 2
           (volume.restrict (Metric.ball (0 : E) 1)) :=
       hwR.weakGrad_norm_memLp.const_mul R⁻¹
-    simpa [hwR, MemW1pWitness.rescale_to_unitBall, Pi.smul_apply, smul_eq_mul,
+    simpa [hwR, MemW1pWitness.rescaleToUnitBall, Pi.smul_apply, smul_eq_mul,
       norm_smul, Real.norm_of_nonneg hR.le, hR.ne', inv_mul_cancel₀,
       mul_comm, mul_left_comm, mul_assoc] using hUnit'
   calc
@@ -628,10 +632,16 @@ private theorem rescaled_weakGrad_lpNorm_eq
         = R * MeasureTheory.lpNorm
             (fun z => ‖hw.weakGrad (x₀ + R • z)‖) 2
               (volume.restrict (Metric.ball (0 : E) 1)) := by
-                simpa [smul_eq_mul, Real.norm_of_nonneg hR.le] using
-                  (MeasureTheory.lpNorm_const_smul (R : ℝ)
-                    (fun z => ‖hw.weakGrad (x₀ + R • z)‖)
-                    (volume.restrict (Metric.ball (0 : E) 1)) (p := (2 : ℝ≥0∞)))
+                have hnorm := MeasureTheory.lpNorm_const_smul (R : ℝ)
+                  (fun z => ‖hw.weakGrad (x₀ + R • z)‖)
+                  (volume.restrict (Metric.ball (0 : E) 1)) (p := (2 : ℝ≥0∞))
+                have hfun : (R : ℝ) • (fun z => ‖hw.weakGrad (x₀ + R • z)‖) =
+                    (fun z => R * ‖hw.weakGrad (x₀ + R • z)‖) := by
+                  funext z
+                  exact smul_eq_mul R ‖hw.weakGrad (x₀ + R • z)‖
+                rw [hfun] at hnorm
+                rw [show (↑‖R‖₊ : ℝ) = R by simp [Real.norm_of_nonneg hR.le]] at hnorm
+                exact hnorm
     _ = R * (R ^ (-(d : ℝ) / 2) *
           MeasureTheory.lpNorm
             (fun x => ‖hw.weakGrad x‖) 2
@@ -673,7 +683,7 @@ theorem crossover_average_abs_sub_average_ball_le_grad_lpNorm_two
         MeasureTheory.lpNorm
           (fun x => ‖hw.weakGrad x‖) 2 (volume.restrict (Metric.ball x₀ R)) := by
   let hwR : MemW1pWitness 2 (fun z => u (x₀ + R • z)) (Metric.ball (0 : E) 1) :=
-    hw.rescale_to_unitBall (d := d) hR
+    hw.rescaleToUnitBall (d := d) hR
   have havg_rescale :
       ⨍ z in Metric.ball (0 : E) 1, u (x₀ + R • z) ∂volume =
         ⨍ y in Metric.ball x₀ R, u y ∂volume := by

@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -37,7 +36,7 @@ def tensorLeadingSlotEvalCLM (s : ℕ) (x : M) (p : TangentSpace I x) :
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace s I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
-    { toFun := fun G => (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x) G p
+    { toFun := fun G => (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x) G p
       map_add' := fun G G' => by
         rw [map_add]
         rfl
@@ -53,15 +52,17 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 @[simp] lemma slotFeedFib_apply (s : ℕ) (x : M) (p : TangentSpace I x)
     (G : Tensor0SSpace (s + 1) I x) :
     tensorLeadingSlotEvalCLM (I := I) (M := M) s x p G =
-      (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x) G p := rfl
+      (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x) G p := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
 lemma slotFeedFib_toModel (s : ℕ) (x : M) (p : TangentSpace I x)
     (G : Tensor0SSpace (s + 1) I x) (v : Fin s → E) :
     Tensor0SSpace.toModel (tensorLeadingSlotEvalCLM (I := I) (M := M) s x p G) v =
-      Tensor0SSpace.toModel G (Fin.cons (p : E) v) :=
-  TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (T := G) (v0 := p) (vs := v)
+      Tensor0SSpace.toModel G
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p) v) :=
+  TensorMultilinear.tensor0S_curry_toModel_apply_tangent
+    (I := I) (M := M) (T := G) (v0 := p) (vs := v)
 
 def tensorLeadingPairSlotEvalCLM (s : ℕ) (x : M) (p q : TangentSpace I x) :
     Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x :=
@@ -76,7 +77,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma leadingPairFeedFib_toModel (s : ℕ) (x : M) (p q : TangentSpace I x)
     (G : Tensor0SSpace (s + 2) I x) (v : Fin s → E) :
     Tensor0SSpace.toModel (tensorLeadingPairSlotEvalCLM (I := I) (M := M) s x p q G) v =
-      Tensor0SSpace.toModel G (Fin.cons (p : E) (Fin.cons (q : E) v)) := by
+      Tensor0SSpace.toModel G
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
   rw [tensorLeadingPairSlotEvalCLM, ContinuousLinearMap.comp_apply, slotFeedFib_toModel,
     slotFeedFib_toModel]
 
@@ -86,7 +89,7 @@ private lemma ofModel4_add {x : M}
     (f g : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (f + g) : Tensor0SSpace 4 I x) =
       Tensor0SSpace.ofModel f + Tensor0SSpace.ofModel g :=
-  map_add (tensor0SSpace_continuousLinearEquiv 4 x).symm f g
+  map_add (tensor0SSpaceContinuousLinearEquiv 4 x).symm f g
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -94,7 +97,7 @@ private lemma ofModel4_smul {x : M} (c : ℝ)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (c • f) : Tensor0SSpace 4 I x) =
       c • Tensor0SSpace.ofModel f :=
-  map_smul (tensor0SSpace_continuousLinearEquiv 4 x).symm c f
+  map_smul (tensor0SSpaceContinuousLinearEquiv 4 x).symm c f
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 private lemma domDomCongr4_add (σ : Equiv.Perm (Fin 4))
@@ -151,7 +154,7 @@ theorem slotPerm4Fib_apply_section_contMDiff (σ : Equiv.Perm (Fin 4))
         (E := fun z : M => Tensor0SSpace 4 I z) x
         (tensorRank4PermuteCLM (I := I) (M := M) x σ (Y x))) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   have heq : (fun x : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
       (E := fun z : M => Tensor0SSpace 4 I z) x
       (tensorRank4PermuteCLM (I := I) (M := M) x σ (Y x))) =
@@ -183,8 +186,9 @@ theorem slotPerm4Fib_apply_section_contMDiff (σ : Equiv.Perm (Fin 4))
   rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
   change (ContinuousMultilinearMap.domDomCongr σ
       (Tensor0SSpace.toModel (𝕜 := ℝ) (Y x)))
-      (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-        ((Module.finBasis ℝ E) (τ j))) = _
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
+          ((Module.finBasis ℝ E) (τ j)))) = _
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
@@ -208,9 +212,11 @@ lemma curvatureDecompositionMonomialFib_toModel (x : M) (tw : ℝ) (σ : Equiv.P
     (p q : TangentSpace I x) (G : Tensor0SSpace 4 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (curvatureActionMonomialCLM (I := I) (M := M) x tw σ p q G) v =
       tw * Tensor0SSpace.toModel G
-        (fun i => (Fin.cons (p : E) (Fin.cons (q : E) v) : Fin 4 → E) (σ i)) := by
+        (fun i => (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v) : Fin 4 → E)
+            (σ i)) := by
   rw [curvatureDecompositionMonomialFib_apply, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul, leadingPairFeedFib_toModel,
+    smul_apply, smul_eq_mul, leadingPairFeedFib_toModel,
     slotPerm4Fib_toModel, ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -256,7 +262,7 @@ private lemma innerPairBilin_apply (x : M)
     (X Y Y' : TangentSpace I x) :
     innerPairBilin (I := I) x K L X Y Y' = K X Y * L X Y' := by
   rw [innerPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-    ContinuousLinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
 
 private def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
     (K L : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :
@@ -264,27 +270,37 @@ private def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-        (chartInvGramMatrix (I := I) g x x k l * K X (chartModelBasis E k)) •
-          (ContinuousLinearMap.flip L (chartModelBasis E l))
+        (chartInvGramMatrix (I := I) g x x k l *
+          K X (centeredChartTangentBasis (I := I) x k)) •
+          (ContinuousLinearMap.flip L (centeredChartTangentBasis (I := I) x l))
       map_add' := fun X X' => by
         ext Y'
-        simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [add_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_add, smul_eq_mul]
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun l _ => ?_)
+        let A : ℝ := chartInvGramMatrix (I := I) g x x k l
+        let P : ℝ := K X (centeredChartTangentBasis (I := I) x k)
+        let P' : ℝ := K X' (centeredChartTangentBasis (I := I) x k)
+        let Q : ℝ := L Y' (centeredChartTangentBasis (I := I) x l)
+        change A * (P + P') * Q = A * P * Q + A * P' * Q
         ring
       map_smul' := fun c X => by
         ext Y'
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [smul_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul, RingHom.id_apply]
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun l _ => ?_)
+        let A : ℝ := chartInvGramMatrix (I := I) g x x k l
+        let P : ℝ := K X (centeredChartTangentBasis (I := I) x k)
+        let Q : ℝ := L Y' (centeredChartTangentBasis (I := I) x l)
+        change A * (c * P) * Q = c * (A * P * Q)
         ring }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -294,12 +310,16 @@ private lemma outerPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
     outerPairBilin (I := I) g x K L X X' =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          (K X (chartModelBasis E k) * L X' (chartModelBasis E l)) := by
+          (K X (centeredChartTangentBasis (I := I) x k) *
+            L X' (centeredChartTangentBasis (I := I) x l)) := by
   rw [outerPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
-    ContinuousLinearMap.flip_apply]
+  simp only [sum_apply, smul_apply, smul_eq_mul]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
+  let A : ℝ := chartInvGramMatrix (I := I) g x x k l
+  let P : ℝ := K X (centeredChartTangentBasis (I := I) x k)
+  let Q : ℝ := L X' (centeredChartTangentBasis (I := I) x l)
+  change A * P * Q = A * (P * Q)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -312,8 +332,10 @@ private theorem double_frame_bilin_trace_eq_fixed
     ∑ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g x x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g x x k l *
-          (K (chartModelBasis E m) (chartModelBasis E k) *
-            L (chartModelBasis E n) (chartModelBasis E l))) := by
+          (K (centeredChartTangentBasis (I := I) x m)
+              (centeredChartTangentBasis (I := I) x k) *
+            L (centeredChartTangentBasis (I := I) x n)
+              (centeredChartTangentBasis (I := I) x l))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       outerPairBilin (I := I) g x K L (B a) (B a) := by
@@ -350,7 +372,7 @@ private def toModelEvalCLM (s : ℕ) (x : M) (v : Fin s → E) :
   LinearMap.toContinuousLinearMap
     { toFun := fun D => Tensor0SSpace.toModel (𝕜 := ℝ) D v
       map_add' := fun D₁ D₂ => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+        rw [Tensor0SSpace.toModel_add, add_apply]
       map_smul' := fun c D => by
         rw [Tensor0SSpace.toModel_smul]
         rfl }
@@ -366,14 +388,14 @@ private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p => (toModelEvalCLM (I := I) (M := M) s x v).comp
-        (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x
-          ((tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
+        (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x
+          ((tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
       map_add' := fun p p' => by
         rw [map_add, map_add, ContinuousLinearMap.comp_add]
       map_smul' := fun c p => by
         rw [map_smul, map_smul, RingHom.id_apply]
         ext q
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -381,13 +403,17 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma pairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) (p q : TangentSpace I x) :
     pairFeedScalarCLM (I := I) (M := M) s x G v p q =
-      Tensor0SSpace.toModel (𝕜 := ℝ) G (Fin.cons (p : E) (Fin.cons (q : E) v)) := by
+      Tensor0SSpace.toModel (𝕜 := ℝ) G
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
   rw [pairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, toModelEvalCLM_apply,
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := G) (v0 := p) (vs := Fin.cons (q : E) v)]
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+      (T := (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p)
+      (v0 := q) (vs := v),
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+      (T := G) (v0 := p)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)]
 
 def curvatureActionMonomialFrameTrace (W : Π b : M, Tensor0SSpace 2 I b)
     (σ : Equiv.Perm (Fin 4))
@@ -395,7 +421,7 @@ def curvatureActionMonomialFrameTrace (W : Π b : M, Tensor0SSpace 2 I b)
     Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x :=
   ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
     curvatureActionMonomialCLM (I := I) (M := M) x
-      (Tensor0SSpace.toModel (𝕜 := ℝ) (W x) ![(B a x : E), (B b x : E)]) σ (B a x) (B b x)
+      (Tensor0SSpace.eval (W x) ![B a x, B b x]) σ (B a x) (B b x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -406,18 +432,42 @@ theorem curvatureDecompositionMonomialFibFixedFrame_toModel (W : Π b : M, Tenso
     Tensor0SSpace.toModel
         (curvatureActionMonomialFrameTrace (I := I) (M := M) W σ B x G) v =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel (𝕜 := ℝ) (W x) ![(B a x : E), (B b x : E)] *
+        Tensor0SSpace.eval (W x) ![B a x, B b x] *
           Tensor0SSpace.toModel (𝕜 := ℝ) G
-            (fun i => (Fin.cons ((B a x : E)) (Fin.cons ((B b x : E)) v) : Fin 4 → E)
-              (σ i)) := by
+            (fun i => (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x (B a x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (B b x)) v) :
+                Fin 4 → E) (σ i)) := by
   classical
-  rw [curvatureActionMonomialFrameTrace, ContinuousLinearMap.sum_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [curvatureActionMonomialFrameTrace, sum_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, Tensor0SSpace.toModelL_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.toModelL_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, curvatureDecompositionMonomialFib_toModel]
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
+theorem curvatureDecompositionMonomialFibFixedFrame_eval (W : Π b : M, Tensor0SSpace 2 I b)
+    (σ : Equiv.Perm (Fin 4))
+    (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
+    (G : Tensor0SSpace 4 I x) (v : Fin 2 → TangentSpace I x) :
+    Tensor0SSpace.eval
+        (curvatureActionMonomialFrameTrace (I := I) (M := M) W σ B x G) v =
+      ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        Tensor0SSpace.eval (W x) ![B a x, B b x] *
+          Tensor0SSpace.eval G
+            (fun i => (Fin.cons (B a x) (Fin.cons (B b x) v) :
+              Fin 4 → TangentSpace I x) (σ i)) := by
+  rw [← Tensor0SSpace.toModel_apply_tangent]
+  rw [curvatureDecompositionMonomialFibFixedFrame_toModel]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  refine Finset.sum_congr rfl fun b _ => ?_
+  rw [← Tensor0SSpace.toModel_apply_tangent (T := G)
+    (v := fun i => (Fin.cons (B a x) (Fin.cons (B b x) v) :
+      Fin 4 → TangentSpace I x) (σ i))]
+  congr 2
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -435,7 +485,7 @@ theorem curvatureDecompositionMonomialFibFixedFrame_apply_section_contMDiff
         (E := fun z : M => Tensor0SSpace 2 I z) x
         (curvatureActionMonomialFrameTrace (I := I) (M := M) W σ B x (Y x))) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   set Yσ : Cₛ^∞⟮I; Tensor0SModel 4 ℝ E, fun z : M => Tensor0SSpace 4 I z⟯ :=
     { toFun := fun x : M => tensorRank4PermuteCLM (I := I) (M := M) x σ (Y x)
       contMDiff_toFun := slotPerm4Fib_apply_section_contMDiff (I := I) (M := M) σ Y }
@@ -530,9 +580,9 @@ theorem curvatureDecompositionMonomialFibFixedFrame_apply_section_contMDiff
     rw [hcoeOuter, Finset.sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [hcoeInner a, Finset.sum_apply]
-  rw [hsum, ContinuousLinearMap.sum_apply]
+  rw [hsum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   rfl
 
 def curvatureActionMonomialTrace (g₁ : SmoothRiemannianMetric I M)
@@ -560,10 +610,11 @@ theorem curvatureDecompositionMonomialBiContrFib_eq_fixedFrame_on_nbhd
     curvatureDecompositionMonomialFibFixedFrame_toModel]
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel (𝕜 := ℝ) (W y) ![(Bf a : E), (Bf b : E)] *
+        Tensor0SSpace.eval (W y) ![Bf a, Bf b] *
           Tensor0SSpace.toModel (𝕜 := ℝ) G
-            (fun i => (Fin.cons ((Bf a : E)) (Fin.cons ((Bf b : E)) v) : Fin 4 → E)
-              (σ i)) =
+            (fun i => (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf a))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)) v) :
+                Fin 4 → E) (σ i)) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         pairFeedScalarCLM (I := I) (M := M) 0 y (W y) ![] (Bf a) (Bf b) *
           pairFeedScalarCLM (I := I) (M := M) 2 y
@@ -663,9 +714,7 @@ lemma curvatureDecompositionMonomialBiContrFib_zero_weight (g₁ : SmoothRiemann
   rw [curvatureActionMonomialTrace, curvatureActionMonomialFrameTrace]
   refine Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => ?_))
   rw [hx]
-  rw [show Tensor0SSpace.toModel (𝕜 := ℝ) (0 : Tensor0SSpace 2 I x)
-      ![(smoothOrthoFrame (I := I) g₁ x a x : E), (smoothOrthoFrame (I := I) g₁ x b x : E)] =
-      0 from by rw [Tensor0SSpace.toModel_zero]; rfl]
+  rw [Tensor0SSpace.eval_zero]
   exact curvatureDecompositionMonomialFib_zero_weight (I := I) (M := M) x σ _ _
 
 def curvatureActionKernelCoeffField (g₀ g₁ : SmoothRiemannianMetric I M)

@@ -99,7 +99,7 @@ private theorem perModeConv_sq_le_T_mul_int (lam : ℝ) (hlam : 0 ≤ lam) {T : 
     intervalIntegral.integral_nonneg ht0 (fun s _ => sq_nonneg _)
   have hint_le : (∫ s in (0 : ℝ)..t, (c s) ^ 2) ≤ ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by
     rw [← intervalIntegral.integral_add_adjacent_intervals
-        (b := t) (c := T)
+        (f := fun s : ℝ => (c s) ^ 2) (b := t) (c := T)
         ((hc.pow 2).intervalIntegrable 0 t)
         ((hc.pow 2).intervalIntegrable t T)]
     have htail : 0 ≤ ∫ s in t..T, (c s) ^ 2 :=

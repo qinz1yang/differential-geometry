@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxKern
 
 noncomputable section
 
+
 open MeasureTheory Real
 open scoped RealInnerProductSpace
 

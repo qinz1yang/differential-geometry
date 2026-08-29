@@ -215,7 +215,6 @@ theorem metricTensorContLim
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 private theorem metricCLMSection_Ioo
-    [NeZero (Module.finrank Real E)]
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
@@ -261,7 +260,6 @@ private theorem metricCLMSection_Ioo
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 private theorem metricFrameComp_Ioo
-    [NeZero (Module.finrank Real E)]
     (g : ℝ → SmoothRiemannianMetric I M) (a b : ℝ)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
@@ -303,7 +301,6 @@ private theorem metricFrameComp_Ioo
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 private theorem metricCLMSection_reg
-    [NeZero (Module.finrank Real E)]
     (D : RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -334,7 +331,6 @@ private theorem metricCLMSection_reg
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 private theorem metricFrameComp_reg
-    [NeZero (Module.finrank Real E)]
     (D : RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -403,13 +399,13 @@ theorem metric_cont
     tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
       (Set.Icc β ψ)
       (fun t x => Tensor0SBundle.metricTensorField (I := I) (co.gInf t) x) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : LocallyCompactSpace H := I.locallyCompactSpace
-  letI : LocallyCompactSpace P.M := ChartedSpace.locallyCompactSpace H P.M
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : LocallyCompactSpace H := I.locallyCompactSpace
+  let : LocallyCompactSpace P.M := ChartedSpace.locallyCompactSpace H P.M
   apply metricTensorContLim (I := I)
     (gSeq := fun k t =>
       gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t)
@@ -483,18 +479,18 @@ theorem gSeqJet_of_soln
           (chartGramOnE (I := I)
             (gSeqExt (I := I) Φ R bf hsrc htgt k p.1) x₀ i j) p.2)
       (Set.Icc β ψ ×ˢ C) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -514,15 +510,15 @@ theorem gSeqJet_of_soln
   obtain ⟨σj, hσj⟩ := exists_section_eqOn_compact (I := I) x₀
     ((chartModelBasis E) j) isCompact_singleton
     (Set.singleton_subset_iff.mpr (by simpa only [extChartAt_source] using hxchart))
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI sourceSigma : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) :=
+  let sourceSigma : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) :=
+  let sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) :=
     sourceDomT2 (I := I) Φ k
   let Vi := @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection E inferInstance
     inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
@@ -530,13 +526,13 @@ theorem gSeqJet_of_soln
   let Vj := @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection E inferInstance
     inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
     (sourceOpen (I := I) Φ k) σj
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k)
     infer_instance
   let V : Fin 2 → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -568,6 +564,8 @@ theorem gSeqJet_of_soln
     refine ⟨Topology.IsInducing.subtypeVal.continuousAt_iff.mpr
       (by simpa [Function.comp_def] using hcont), ?_⟩
     convert hdiff using 2
+    funext z
+    rfl
   have hmap : ContMDiffAt (𝓘(Real, Real).prod 𝓘(Real, E))
       (𝓘(Real, Real).prod I) (∞ : WithTop ℕ∞)
       (fun p : Real × E => (p.1, core p.2)) q := by
@@ -578,11 +576,16 @@ theorem gSeqJet_of_soln
   let G : Real × E → Real := fun p =>
     (S.family.metric p.1).inner (core p.2)
       (V 0 (core p.2)) (V 1 (core p.2))
+  have hlocalMD' : ContMDiffAt (𝓘(Real, Real).prod 𝓘(Real, E))
+      𝓘(Real, Real) (∞ : WithTop ℕ∞) G q := by
+    apply hlocalMD.congr_of_eventuallyEq
+    filter_upwards [] with p
+    simp only [G, solnMetricField, Tensor0SBundle.metricTensorField_apply,
+      Function.comp_apply]
   have hlocal : ContDiffAt Real (∞ : WithTop ℕ∞) G q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod]
-    simpa only [G, solnMetricField,
-      Tensor0SBundle.metricTensorField_apply] using hlocalMD
+    exact hlocalMD'
   obtain ⟨W, hWopen, hgrowW, hWone⟩ := bf.chi_one k
   have hσi0 : ∀ᶠ z in 𝓝 x,
       σi z = TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I)
@@ -630,7 +633,7 @@ theorem gSeqJet_of_soln
     have hV0 : V 0 (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σi z := by
       simpa only [V, Matrix.cons_val_zero] using hViz
     have hV1 : V 1 (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σj z := by
-      simpa only [V, Matrix.cons_val_one] using hVjz
+      simpa only [V, Matrix.cons_val_one, Matrix.cons_val_zero] using hVjz
     simp only [F, G, chartGramOnE_def, chartGramMatrix_apply]
     rw [hcorez]
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k p.1 z hps
@@ -715,18 +718,18 @@ theorem gramJets_of_stage
           iteratedFDeriv Real r
             (chartGramOnE (I := I) (co.gInf p.1) x₀ i j) p.2)
         (Set.Icc β ψ ×ˢ interior (extChartAt I x₀).target) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -857,18 +860,18 @@ theorem gramJets
           iteratedFDeriv Real r
             (chartGramOnE (I := I) (co.gInf p.1) x₀ i j) p.2)
         (Set.Icc β ψ ×ˢ interior (extChartAt I x₀).target) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1012,18 +1015,18 @@ private theorem gramPiJets
       (fun p : Real × E => iteratedFDeriv Real r
         (chartGramPi (I := I) (co.gInf p.1) x₀) p.2)
       (Set.Icc β ψ ×ˢ interior (extChartAt I x₀).target) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1114,14 +1117,13 @@ private theorem gramPiJet_contOn
       (fun t => iteratedFDeriv Real r
         (chartGramPi (I := I) (co.gInf t) x₀) y)
       (Set.Icc β ψ) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  simpa only [Function.comp_apply] using
-    (gramPiJets (I := I) (Φ := Φ) co hjets r x₀).comp
-      (continuousOn_id.prodMk continuousOn_const)
-      (fun t ht => ⟨ht, hy⟩)
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  exact ((gramPiJets (I := I) (Φ := Φ) co hjets r x₀).comp
+    (continuousOn_id.prodMk continuousOn_const)
+    (fun t ht => ⟨ht, hy⟩)).congr fun t _ => rfl
 
 private theorem uniform_comp_cpt
     {ι X₀ Y Z : Type*} [UniformSpace Y] [UniformSpace Z]
@@ -1136,6 +1138,7 @@ private theorem uniform_comp_cpt
   filter_upwards [h _ hlocal] with i hi x hx
   exact hi x hx ⟨x, hx, rfl⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem gramJet_tendsto
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1157,18 +1160,18 @@ private theorem gramJet_tendsto
           (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t) x₀) y)
       (fun t => Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)
       atTop (Set.Icc β ψ) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1191,14 +1194,14 @@ private theorem gramJet_tendsto
   let jetSemi : SeminormedAddCommGroup
       (Analysis.MatJet E (Module.finrank Real E)) :=
     @NormedAddCommGroup.toSeminormedAddCommGroup _ jetNorm
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (Analysis.MatJet E (Module.finrank Real E)) := jetSemi
-  letI : SeminormedAddGroup
+  let : SeminormedAddGroup
       (Analysis.MatJet E (Module.finrank Real E)) :=
     @SeminormedAddCommGroup.toSeminormedAddGroup _ jetSemi
-  letI : MetricSpace (Analysis.MatJet E (Module.finrank Real E)) :=
+  let : MetricSpace (Analysis.MatJet E (Module.finrank Real E)) :=
     jetNorm.toMetricSpace
-  letI : PseudoMetricSpace (Analysis.MatJet E (Module.finrank Real E)) :=
+  let : PseudoMetricSpace (Analysis.MatJet E (Module.finrank Real E)) :=
     jetSemi.toPseudoMetricSpace
   rw [Metric.tendstoUniformlyOn_iff]
   intro ε hε
@@ -1249,6 +1252,7 @@ private theorem gramJet_tendsto
       rw [mul_comm]
       simpa only [δ] using div_mul_cancel₀ ε hden.ne'
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem gramRHS_tendsto
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1285,18 +1289,18 @@ private theorem gramRHS_tendsto
         (Analysis.jetRicciFlow (chartModelBasis E)
           (Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)) i j)
       atTop (Set.Icc β ψ) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1341,13 +1345,15 @@ private theorem gramRHS_tendsto
       rw [hval]
       exact (chartGramMatrix_det_pos (I := I) (co.gInf t) x₀ hxbase).ne'
     have hΦ := Analysis.contDiffAt_jetRicciFlow (chartModelBasis E) hdet
-    simpa only [op, Function.comp_apply] using
-      (continuousAt_apply j _).comp
-        ((continuousAt_apply i _).comp hΦ.continuousAt)
+    change ContinuousAt
+      (fun p : Analysis.MatJet E (Module.finrank Real E) =>
+        Analysis.jetRicciFlow (chartModelBasis E) p i j) (Jinf t)
+    exact (contDiffAt_pi.mp (contDiffAt_pi.mp hΦ i) j).continuousAt
   have hcomp := uniform_comp_cpt (g := op) hJ
     (isCompact_Icc.image_of_continuousOn hJinf) hop
   simpa only [J, Jinf, op] using hcomp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gramPDE
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1370,18 +1376,18 @@ theorem gramPDE
       ((Analysis.jetRicciFlow (chartModelBasis E)
         (Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)) i j)
       (Set.Icc β ψ) t := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1497,10 +1503,10 @@ private theorem gramModel_to_mfld
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
       (fun p : Real × P.M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Set.Ioo β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
   let S : Set (Real × P.M) :=
     Set.Ioo β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet
   let U : Set (Real × E) :=
@@ -1511,6 +1517,7 @@ private theorem gramModel_to_mfld
     refine (contMDiffOn_extChartAt (I := I) (n := ∞) (x := x₀)).comp
       contMDiffOn_snd ?_
     rintro ⟨t, x⟩ ⟨_, hx⟩
+    apply Set.mem_preimage.mpr
     simpa only [trivializationAt_baseSet_eq_chartAt_source] using hx
   have hmaps : Set.MapsTo f S U := by
     rintro ⟨t, x⟩ ⟨ht, hx⟩
@@ -1553,10 +1560,10 @@ private theorem gramModel_to_mfld_Icc
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
       (fun p : Real × P.M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
   let S : Set (Real × P.M) :=
     Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet
   let U : Set (Real × E) :=
@@ -1567,6 +1574,7 @@ private theorem gramModel_to_mfld_Icc
     refine (contMDiffOn_extChartAt (I := I) (n := ∞) (x := x₀)).comp
       contMDiffOn_snd ?_
     rintro ⟨t, x⟩ ⟨_, hx⟩
+    apply Set.mem_preimage.mpr
     simpa only [trivializationAt_baseSet_eq_chartAt_source] using hx
   have hmaps : Set.MapsTo f S U := by
     rintro ⟨t, x⟩ ⟨ht, hx⟩
@@ -1589,6 +1597,7 @@ private theorem gramModel_to_mfld_Icc
       ((extChartAt I x₀).symm (extChartAt I x₀ x)) i j
   rw [(extChartAt I x₀).left_inv hxsrc]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gramPDE_regular
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1612,11 +1621,11 @@ theorem gramPDE_regular
       ((Analysis.jetRicciFlow (chartModelBasis E)
         (Analysis.jet2 (chartGramPi (I := I) (co.gInf t) x₀) y)) i j)
       t := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨a, b, htLocal, hwin⟩ := X.D.exists_Icc_regular ht
   have hsub : Set.Icc a b ⊆ Set.Icc β ψ :=
     hwin.trans (X.D.regular_subset.trans hcarrier)
@@ -1626,6 +1635,7 @@ theorem gramPDE_regular
   simpa only [ConvOut.restrict] using
     hpde.hasDerivAt (Icc_mem_nhds_iff.mpr htLocal)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricPDE_regular
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1644,18 +1654,18 @@ theorem metricPDE_regular
     ∀ v w : TangentSpace I x,
       HasDerivAt (fun s : Real => (co.gInf s).inner x v w)
         ((-2 : Real) * ricciTensor (I := I) (co.gInf t) x v w) t := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1690,6 +1700,7 @@ theorem metricPDE_regular
     simpa only [gt] using hpde.congr_deriv hjet
   exact metricPDE_of_gram (I := I) co.gInf x hbasis v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gramSmooth
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1706,18 +1717,18 @@ theorem gramSmooth
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Ioo β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1725,18 +1736,18 @@ theorem gramSmooth
   let MatVal := Fin (Module.finrank Real E) → MatRow
   let MatD1 := E →L[Real] MatVal
   let MatD2 := E →L[Real] MatD1
-  letI : NormedAddCommGroup MatRow := Pi.normedAddCommGroup
-  letI : NormedSpace Real MatRow := Pi.normedSpace
-  letI : NormedAddCommGroup MatVal := Pi.normedAddCommGroup
-  letI : NormedSpace Real MatVal := Pi.normedSpace
-  letI : NormedAddCommGroup MatD1 := ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real MatD1 := ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup MatD2 := ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real MatD2 := ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (MatD1 × MatD2) := Prod.normedAddCommGroup
-  letI : NormedSpace Real (MatD1 × MatD2) := Prod.normedSpace
-  letI : NormedAddCommGroup (MatVal × (MatD1 × MatD2)) := Prod.normedAddCommGroup
-  letI : NormedSpace Real (MatVal × (MatD1 × MatD2)) := Prod.normedSpace
+  let : NormedAddCommGroup MatRow := Pi.normedAddCommGroup
+  let : NormedSpace Real MatRow := Pi.normedSpace
+  let : NormedAddCommGroup MatVal := Pi.normedAddCommGroup
+  let : NormedSpace Real MatVal := Pi.normedSpace
+  let : NormedAddCommGroup MatD1 := ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace Real MatD1 := ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup MatD2 := ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace Real MatD2 := ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (MatD1 × MatD2) := Prod.normedAddCommGroup
+  let : NormedSpace Real (MatD1 × MatD2) := Prod.normedSpace
+  let : NormedAddCommGroup (MatVal × (MatD1 × MatD2)) := Prod.normedAddCommGroup
+  let : NormedSpace Real (MatVal × (MatD1 × MatD2)) := Prod.normedSpace
   intro x₀ i j
   let G : Real → E →
       (Fin (Module.finrank Real E) → Fin (Module.finrank Real E) → Real) :=
@@ -1782,7 +1793,7 @@ theorem gramSmooth
       (fun p : Analysis.MatJet E (Module.finrank Real E) => Matrix.of p.1)
       (fun a b => Analysis.contDiff_jetVal a b)).continuous
   have hΩ : IsOpen Ω := by
-    simpa only [Ω, Set.mem_setOf_eq] using
+    simpa only [Ω, Set.mem_ofPred_eq] using
       (isOpen_ne_fun hdet (continuous_const : Continuous
         (fun _ : Analysis.MatJet E (Module.finrank Real E) => (0 : Real))))
   have hΦ : ContDiffOn Real ∞
@@ -1812,8 +1823,7 @@ theorem gramSmooth
     intro t ht
     have hmaps : Set.MapsTo (fun y => Analysis.jet2 (G t) y) V Ω :=
       mapsTo_prod_slice hJetMaps ht
-    simpa only [RHS, Function.comp_apply] using
-      hΦ.comp (hJetSlices t ht) hmaps
+    exact (hΦ.comp (hJetSlices t ht) hmaps).congr fun y _ => rfl
   have hpde : ∀ t ∈ J, ∀ y ∈ V,
       HasDerivAt (fun s => G s y) (RHS t y) t := by
     intro t ht y hy
@@ -1865,7 +1875,7 @@ theorem gramSmooth
           exact (hJetAt.differentiableAt (by norm_num)).hasFDerivAt
         have hstep := Analysis.contDiffOn_succ_of_pde (q := q) hU hpdeR hslice
           (hRhsQ r) (ih.jet_fderiv r)
-        simpa only [Nat.succ_eq_add_one] using hstep
+        simpa only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, U] using hstep
   have hGinf : ContDiffOn Real ∞ (Function.uncurry G) U := by
     rw [contDiffOn_infty]
     intro q
@@ -1890,6 +1900,7 @@ theorem gramSmooth
     rfl
   exact gramModel_to_mfld (I := I) (g := co.gInf) x₀ i j hmodel
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gramSmoothIcc
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1921,18 +1932,18 @@ theorem gramSmoothIcc
           chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Icc β ψ ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
   classical
@@ -1940,19 +1951,19 @@ theorem gramSmoothIcc
   let MatVal := Fin (Module.finrank Real E) → MatRow
   let MatD1 := E →L[Real] MatVal
   let MatD2 := E →L[Real] MatD1
-  letI : NormedAddCommGroup MatRow := Pi.normedAddCommGroup
-  letI : NormedSpace Real MatRow := Pi.normedSpace
-  letI : NormedAddCommGroup MatVal := Pi.normedAddCommGroup
-  letI : NormedSpace Real MatVal := Pi.normedSpace
-  letI : NormedAddCommGroup MatD1 := ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real MatD1 := ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup MatD2 := ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace Real MatD2 := ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (MatD1 × MatD2) := Prod.normedAddCommGroup
-  letI : NormedSpace Real (MatD1 × MatD2) := Prod.normedSpace
-  letI : NormedAddCommGroup (MatVal × (MatD1 × MatD2)) :=
+  let : NormedAddCommGroup MatRow := Pi.normedAddCommGroup
+  let : NormedSpace Real MatRow := Pi.normedSpace
+  let : NormedAddCommGroup MatVal := Pi.normedAddCommGroup
+  let : NormedSpace Real MatVal := Pi.normedSpace
+  let : NormedAddCommGroup MatD1 := ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace Real MatD1 := ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup MatD2 := ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace Real MatD2 := ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (MatD1 × MatD2) := Prod.normedAddCommGroup
+  let : NormedSpace Real (MatD1 × MatD2) := Prod.normedSpace
+  let : NormedAddCommGroup (MatVal × (MatD1 × MatD2)) :=
     Prod.normedAddCommGroup
-  letI : NormedSpace Real (MatVal × (MatD1 × MatD2)) := Prod.normedSpace
+  let : NormedSpace Real (MatVal × (MatD1 × MatD2)) := Prod.normedSpace
   intro x₀ i j
   let G : Real → E → MatVal :=
     fun t => chartGramPi (I := I) (co.gInf t) x₀
@@ -1998,7 +2009,7 @@ theorem gramSmoothIcc
       (fun p : Analysis.MatJet E (Module.finrank Real E) => Matrix.of p.1)
       (fun a b => Analysis.contDiff_jetVal a b)).continuous
   have hΩ : IsOpen Ω := by
-    simpa only [Ω, Set.mem_setOf_eq] using
+    simpa only [Ω, Set.mem_ofPred_eq] using
       (isOpen_ne_fun hdet (continuous_const : Continuous
         (fun _ : Analysis.MatJet E (Module.finrank Real E) => (0 : Real))))
   have hΦ : ContDiffOn Real ∞
@@ -2069,8 +2080,9 @@ theorem gramSmoothIcc
         ((hbase 0).continuousOn.comp
           (continuousOn_id.prodMk continuousOn_const)
           (fun t ht => ⟨ht, hy⟩))
-    simpa only [Function.comp_apply, continuousMultilinearCurryFin0_apply,
-      iteratedFDeriv_zero_apply] using hraw
+    exact hraw.congr fun t _ => by
+      simp only [Function.comp_apply, id_eq,
+        continuousMultilinearCurryFin0_apply, iteratedFDeriv_zero_apply]
   have hRhstime (y : E) (hy : y ∈ V) :
       ContinuousOn (fun t => RHS t y) J := by
     have hraw :=
@@ -2078,8 +2090,9 @@ theorem gramSmoothIcc
         ((hRhs0 0).continuousOn.comp
           (continuousOn_id.prodMk continuousOn_const)
           (fun t ht => ⟨ht, hy⟩))
-    simpa only [Function.comp_apply, continuousMultilinearCurryFin0_apply,
-      iteratedFDeriv_zero_apply] using hraw
+    exact hraw.congr fun t _ => by
+      simp only [Function.comp_apply, id_eq,
+        continuousMultilinearCurryFin0_apply, iteratedFDeriv_zero_apply]
   have hpde : ∀ t ∈ J, ∀ y ∈ V,
       HasDerivWithinAt (fun s => G s y) (RHS t y) J t := by
     intro t ht y hy
@@ -2131,7 +2144,7 @@ theorem gramSmoothIcc
           exact (hJetAt.differentiableAt (by norm_num)).hasFDerivAt
         have hstep := Analysis.contDiffIcc_succ
           (q := q) hβψ hV hpdeR hslice (hRhsQ r) (ih.jet_fderiv r)
-        simpa only [Nat.succ_eq_add_one] using hstep
+        simpa only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, U] using hstep
   have hGinf : ContDiffOn Real ∞ (Function.uncurry G) U := by
     rw [contDiffOn_infty]
     intro q
@@ -2156,6 +2169,7 @@ theorem gramSmoothIcc
     rfl
   exact gramModel_to_mfld_Icc (I := I) (g := co.gInf) x₀ i j hmodel
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gramSmooth_regular
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -2175,11 +2189,11 @@ theorem gramSmooth_regular
           chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (X.D.regular ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   intro x₀ i j p hp
   obtain ⟨a, b, ht, hwin⟩ := X.D.exists_Icc_regular hp.1
   have hsub : Set.Icc a b ⊆ Set.Icc β ψ :=
@@ -2196,6 +2210,7 @@ theorem gramSmooth_regular
       ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hp.2)
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem metricSmooth
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -2213,11 +2228,11 @@ theorem metricSmooth
     MetricFamilySmoothOn (I := I) (M := P.M) X.D
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M) X.D).family.metric := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   have hcar_le : X.D.carrier ⊆ Set.Icc β ψ := by
     simpa only [hcarrier] using
       (Set.Subset.rfl : Set.Icc β ψ ⊆ Set.Icc β ψ)
@@ -2266,7 +2281,7 @@ theorem metricSmooth
     have hbase : ContinuousOn
         (fun s : ℝ => metricTensorField (I := I) (co.gInf s) x (vec2 v w))
         X.D.carrier := by
-      rw [continuousOn_iff_continuous_restrict]
+      rw [continuousOn_iff_continuous_domRestrict]
       exact hcontTensor.eval_continuous
         (P := {s : ℝ // s ∈ X.D.carrier})
         (τ := Subtype.val) (b := fun _ => x) continuous_subtype_val
@@ -2281,6 +2296,7 @@ end ConvOut
 
 namespace OpenConvOut
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMetric
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -2309,11 +2325,11 @@ theorem smoothMetric
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M)
           (RealTimeInterval.openInterval a b t₀ ht₀)).family.metric := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   have hgram : ∀ (x₀ : P.M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
@@ -2367,7 +2383,7 @@ theorem smoothMetric
     have hbase : ContinuousOn
         (fun s : ℝ => metricTensorField (I := I) (co.gInf s) x (vec2 X Y))
         (Set.Ioo a b) := by
-      rw [continuousOn_iff_continuous_restrict]
+      rw [continuousOn_iff_continuous_domRestrict]
       exact hcontTensor.eval_continuous (P := {s : ℝ // s ∈ Set.Ioo a b})
         (τ := Subtype.val) (b := fun _ => x) continuous_subtype_val
         (fun p => p.2) continuous_const
@@ -2379,6 +2395,7 @@ theorem smoothMetric
 
 variable [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gramSmooth
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -2396,11 +2413,11 @@ theorem gramSmooth
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × P.M => chartGramMatrix (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   intro x₀ i j p hp
   obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_nhds ht₀ hp.1
   have htn : p.1 ∈ Set.Ioo (RealTimeInterval.openWindowLeft a t₀ n)
@@ -2410,7 +2427,7 @@ theorem gramSmooth
     have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
     simpa only [hD, RealTimeInterval.openInterval] using htOpen
   have hlocal := ConvOut.gramSmooth (I := I) (Φ := Φ) hwin
-    (OpenConvOut.at_window Φ co n) x₀ i j p ⟨htn, hp.2⟩
+    (OpenConvOut.atWindow Φ co n) x₀ i j p ⟨htn, hp.2⟩
   have hnhds : Set.Ioo (RealTimeInterval.openWindowLeft a t₀ n)
         (RealTimeInterval.openWindowRight b t₀ n) ×ˢ
       (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 p :=
@@ -2418,6 +2435,7 @@ theorem gramSmooth
       ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hp.2)
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMetric_of_conv
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -2439,7 +2457,7 @@ theorem smoothMetric_of_conv
           (RealTimeInterval.openInterval a b t₀ ht₀)).family.metric := by
   apply OpenConvOut.smoothMetric (Φ := Φ) ht₀ co
   intro n
-  apply ConvOut.gramSmooth (Φ := Φ) (co := OpenConvOut.at_window Φ co n)
+  apply ConvOut.gramSmooth (Φ := Φ) (co := OpenConvOut.atWindow Φ co n)
   intro t ht
   have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
   simpa only [hD, RealTimeInterval.openInterval] using htOpen

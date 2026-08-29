@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricFiberData
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 
 
@@ -21,8 +21,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private lemma continuous_g_inner_aux
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -32,9 +32,9 @@ private lemma continuous_g_inner_aux
     (hw : Continuous (fun x : M => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) x (w x))) :
     Continuous (fun b : M => g.inner b (v b) (w b)) := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := Continuous.inner_bundle (F := E) (B := M) (E := (TangentSpace I : M → Type _))
     (b := fun x => x) (v := v) (w := w) hv hw

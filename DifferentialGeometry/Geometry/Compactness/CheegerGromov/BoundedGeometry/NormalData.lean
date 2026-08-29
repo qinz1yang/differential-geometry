@@ -103,8 +103,8 @@ theorem normal_chart_radius_lt_decay_scale {X : PointedRiemannianSeq.{u, uE, uH}
 
 end InjRadiusDecayInput
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure IntrinsicBallChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X)
@@ -146,9 +146,9 @@ structure IntrinsicBallChartData
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     IntrinsicBallChart (I := I) (X.obj k).metric hEnorm x
       (ratio * hd.mu (hd.dist k x (X.obj k).basepoint))
   intr_equiv : ∀ (k : Nat) (x : (X.obj k).M),
@@ -182,9 +182,9 @@ structure IntrinsicBallChartData
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     ∀ z ∈ Metric.ball (0 : E)
         (ratio * hd.mu (hd.dist k x (X.obj k).basepoint)), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
@@ -192,8 +192,8 @@ structure IntrinsicBallChartData
         intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
           2 * ‖v‖ ^ 2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrinsicBallChartData.normalChart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -260,16 +260,16 @@ noncomputable def IntrinsicBallChartData.normalChart
       ‖w‖ₑ =
         ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
     intro y w
-    simpa using
-      (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) (X.obj k).metric y w)
+    with_unfolding_all
+      exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) (X.obj k).metric y w
   exact IntrinsicBallChart.toNormalBallChart
     (I := I) (X.obj k).metric hEnorm x (d.chart k x)
     (mul_pos d.ratio_pos
       (hd.mu_pos (hd.dist k x (X.obj k).basepoint)))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 @[simp] theorem IntrinsicBallChartData.normal_chart_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -310,8 +310,8 @@ omit [CompleteSpace E] in
       d.ratio * hd.mu (hd.dist k x (X.obj k).basepoint) := by
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure NormalChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X) where
@@ -362,17 +362,17 @@ structure NormalChartData
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     EqOn (chart k x).hom
       (intrinsicFramedExp (I := I) (X.obj k).metric hEnorm x)
       (Metric.ball (0 : E) (chart k x).radius)
 
 namespace NormalChartData
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem radius_le_global
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -385,18 +385,18 @@ theorem radius_le_global
     letI : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     (d.chart k x).radius ≤ d.ratio * hd.mu 0 := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
   rw [d.radius_eq k x]
   exact mul_le_mul_of_nonneg_left
     (hd.mu_antitone (hreal.dist_nonneg k x (X.obj k).basepoint))
     d.ratio_pos.le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem metric_eq_intr
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -431,42 +431,42 @@ theorem metric_eq_intr
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     EqOn ((d.chart k x).metric (X.obj k).metric)
       (intrFrameMetric (I := I) (X.obj k).metric hEnorm x)
       (Metric.ball (0 : E) (d.chart k x).radius) := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle
       (fun y : (X.obj k).M => TangentSpace I y) :=
     (X.obj k).riemBundle (I := I)
-  letI : (y : (X.obj k).M) →
+  let : (y : (X.obj k).M) →
       InnerProductSpace Real (TangentSpace I y) :=
     (X.obj k).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : (X.obj k).M => TangentSpace I y) :=
     (X.obj k).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M :=
     (X.obj k).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj k).M :=
+  let : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
   let hEnorm : ∀ (y : (X.obj k).M) (w : TangentSpace I y),
       ‖w‖ₑ =
         ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
     intro y w
-    simpa using
-      (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) (X.obj k).metric y w)
+    with_unfolding_all
+      exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) (X.obj k).metric y w
   change EqOn ((d.chart k x).metric (X.obj k).metric)
     (intrFrameMetric (I := I) (X.obj k).metric hEnorm x)
     (Metric.ball (0 : E) (d.chart k x).radius)
@@ -486,8 +486,8 @@ theorem metric_eq_intr
   rw [NormalBallChart.metric_apply, intrFrameMetric_apply,
     d.hom_eq k x hcomplete hz, hD]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem readout_mem
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -525,37 +525,37 @@ theorem readout_mem
       y ∈ (d.chart k x).hom '' Metric.ball (0 : E) (d.chart k x).radius ∧
         ‖(d.chart k x).inv y‖ =
           (Manifold.riemannianEDist I x y).toReal := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle
       (fun z : (X.obj k).M => TangentSpace I z) :=
     (X.obj k).riemBundle (I := I)
-  letI : (z : (X.obj k).M) →
+  let : (z : (X.obj k).M) →
       InnerProductSpace Real (TangentSpace I z) :=
     (X.obj k).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : (X.obj k).M => TangentSpace I z) :=
     (X.obj k).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M :=
     (X.obj k).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj k).M :=
+  let : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  letI : ConnectedSpace (X.obj k).M := hconn
+  let : ConnectedSpace (X.obj k).M := hconn
   let hEnorm : ∀ (z : (X.obj k).M) (w : TangentSpace I z),
       ‖w‖ₑ =
         ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner z w w)) := by
     intro z w
-    simpa using
-      (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) (X.obj k).metric z w)
+    with_unfolding_all
+      exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) (X.obj k).metric z w
   intro hy
   obtain ⟨v, hvExp, hvLen⟩ :=
     hopf_rinow_expMapIntrinsic_surjective_minimizing
@@ -632,25 +632,27 @@ def subseq
   ratio := d.ratio
   ratio_pos := d.ratio_pos
   ratio_mu0_le := by
-    simpa [InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu] using
-      d.ratio_mu0_le
+    simpa only [InjRadiusDecayInput.mu, InjRadiusDecayInput.subseq,
+      BaseInjBound.subseq] using d.ratio_mu0_le
   chart := fun k x => d.chart (f k) x
   radius_eq := by
     intro k x
-    simpa [InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
-      PointedRiemannianSeq.subseq] using d.radius_eq (f k) x
+    simpa only [InjRadiusDecayInput.mu, InjRadiusDecayInput.subseq,
+      BaseInjBound.subseq, PointedRiemannianSeq.subseq] using d.radius_eq (f k) x
   hom_eq := by
     intro k x hcomplete
-    simpa [PointedRiemannianSeq.subseq] using
-      d.hom_eq (f k) x hcomplete
+    with_unfolding_all
+      exact d.hom_eq (f k) x hcomplete
   metricC := d.metricC
   metricC_nonneg := d.metricC_nonneg
   metric_equiv := by
     intro k x
-    simpa [PointedRiemannianSeq.subseq] using d.metric_equiv (f k) x
+    with_unfolding_all
+      exact d.metric_equiv (f k) x
   metric_deriv := by
     intro k p x
-    simpa [PointedRiemannianSeq.subseq] using d.metric_deriv (f k) p x
+    with_unfolding_all
+      exact d.metric_deriv (f k) p x
 
 def chartMetric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -725,8 +727,8 @@ def chartOverlapOn
 
 end BoundedGeometryNormalData
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrinsicBallChartData.toChartData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -742,44 +744,44 @@ noncomputable def IntrinsicBallChartData.toChartData
   chart := fun k x => d.normalChart k x
   radius_eq := fun k x => d.normal_chart_radius k x
   hom_eq := fun k x hcomplete' => by
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-    letI : T2Space (X.obj k).M := (X.obj k).t2
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+    let : T2Space (X.obj k).M := (X.obj k).t2
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+    let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
       Manifold.metrizableSpace I (X.obj k).M
-    letI : T3Space (X.obj k).M := inferInstance
-    letI : RiemannianBundle
+    let : T3Space (X.obj k).M := inferInstance
+    let : RiemannianBundle
         (fun y : (X.obj k).M => TangentSpace I y) :=
       (X.obj k).riemBundle (I := I)
-    letI : (y : (X.obj k).M) →
+    let : (y : (X.obj k).M) →
         InnerProductSpace Real (TangentSpace I y) :=
       (X.obj k).riemInner (I := I)
-    letI : IsContinuousRiemannianBundle E
+    let : IsContinuousRiemannianBundle E
         (fun y : (X.obj k).M => TangentSpace I y) :=
       (X.obj k).riemBundle_cont (I := I)
-    letI : EMetricSpace (X.obj k).M :=
+    let : EMetricSpace (X.obj k).M :=
       (X.obj k).emetricSpace (I := I)
-    letI : CompleteSpace (X.obj k).M :=
+    let : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete'
     let hEnorm : ∀ (y : (X.obj k).M) (w : TangentSpace I y),
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     change EqOn (d.normalChart k x).hom
       (intrinsicFramedExp (I := I) (X.obj k).metric hEnorm x)
       (Metric.ball (0 : E) (d.normalChart k x).radius)
     intro z hz
     exact (d.chart k x).hom_eq hz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrinsicBallChartData.normal_equiv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -818,32 +820,32 @@ theorem IntrinsicBallChartData.normal_equiv
     letI : ConnectedSpace (X.obj k).M := hconn k
     (d.normalChart k x).MetricEquivOn (X.obj k).metric
       (Metric.ball (0 : E) (d.normalChart k x).radius) := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : IsManifold I 1 (X.obj k).M :=
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : IsManifold I 1 (X.obj k).M :=
     IsManifold.of_le (I := I) (M := (X.obj k).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle
       (fun y : (X.obj k).M => TangentSpace I y) :=
     (X.obj k).riemBundle (I := I)
-  letI : (y : (X.obj k).M) →
+  let : (y : (X.obj k).M) →
       InnerProductSpace Real (TangentSpace I y) :=
     (X.obj k).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : (X.obj k).M => TangentSpace I y) :=
     (X.obj k).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M :=
     (X.obj k).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj k).M :=
+  let : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) (hcomplete.complete k)
-  letI : ConnectedSpace (X.obj k).M := hconn k
+  let : ConnectedSpace (X.obj k).M := hconn k
   change (d.toChartData.chart k x).MetricEquivOn (X.obj k).metric
     (Metric.ball (0 : E) (d.toChartData.chart k x).radius)
   intro z hz v
@@ -852,8 +854,8 @@ theorem IntrinsicBallChartData.normal_equiv
   rw [d.normal_chart_radius k x] at hz
   exact d.intr_equiv k x z hz v
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_intrinsic_ball_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
@@ -908,9 +910,9 @@ theorem exists_intrinsic_ball_chart_data
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     let r : Real := hd.normalChartRadius r₁ k x
     have hr : 0 < r := hd.normal_chart_radius_pos hr₁ k x
     have hr₁' : r < r₁ := hd.normal_chart_radius_lt hreal hr₁ k x
@@ -935,39 +937,39 @@ theorem exists_intrinsic_ball_chart_data
       simpa only [r, InjRadiusDecayInput.normalChartRadius] using
         exists_intrinsic_ball_chart (I := I) (X.obj k).metric hEnorm x hloc hinj
   · intro k x
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : IsManifold I 1 (X.obj k).M :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : IsManifold I 1 (X.obj k).M :=
       IsManifold.of_le (I := I) (M := (X.obj k).M) (n := ∞) (by decide)
-    letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-    letI : T2Space (X.obj k).M := (X.obj k).t2
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+    let : T2Space (X.obj k).M := (X.obj k).t2
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+    let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
       Manifold.metrizableSpace I (X.obj k).M
-    letI : T3Space (X.obj k).M := inferInstance
-    letI : RiemannianBundle
+    let : T3Space (X.obj k).M := inferInstance
+    let : RiemannianBundle
         (fun y : (X.obj k).M => TangentSpace I y) :=
       (X.obj k).riemBundle (I := I)
-    letI : (y : (X.obj k).M) →
+    let : (y : (X.obj k).M) →
         InnerProductSpace Real (TangentSpace I y) :=
       (X.obj k).riemInner (I := I)
-    letI : IsContinuousRiemannianBundle E
+    let : IsContinuousRiemannianBundle E
         (fun y : (X.obj k).M => TangentSpace I y) :=
       (X.obj k).riemBundle_cont (I := I)
-    letI : EMetricSpace (X.obj k).M :=
+    let : EMetricSpace (X.obj k).M :=
       (X.obj k).emetricSpace (I := I)
-    letI : CompleteSpace (X.obj k).M :=
+    let : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) (hcomplete.complete k)
-    letI : ConnectedSpace (X.obj k).M := hconn k
+    let : ConnectedSpace (X.obj k).M := hconn k
     let hEnorm : ∀ (y : (X.obj k).M) (w : TangentSpace I y),
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     change ∀ z ∈ Metric.ball (0 : E) (hd.normalChartRadius r₁ k x), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
           intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
@@ -980,8 +982,8 @@ theorem exists_intrinsic_ball_chart_data
     exact (hcontrol k x).1 z
       (Metric.ball_subset_ball (hr₁'.le.trans hr₁_le_r₀) hz) v
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_normal_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
@@ -997,8 +999,8 @@ theorem exists_normal_chart_data
     exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
   exact ⟨d.toChartData⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_bounded_geometry_normal_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1028,39 +1030,39 @@ theorem exists_bounded_geometry_normal_data
   · intro k x
     exact d.normal_equiv k x
   · intro k n x
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : IsManifold I 1 (X.obj k).M :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : IsManifold I 1 (X.obj k).M :=
       IsManifold.of_le (I := I) (M := (X.obj k).M) (n := ∞) (by decide)
-    letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-    letI : T2Space (X.obj k).M := (X.obj k).t2
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+    let : T2Space (X.obj k).M := (X.obj k).t2
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+    let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
       Manifold.metrizableSpace I (X.obj k).M
-    letI : T3Space (X.obj k).M := inferInstance
-    letI : RiemannianBundle
+    let : T3Space (X.obj k).M := inferInstance
+    let : RiemannianBundle
         (fun y : (X.obj k).M => TangentSpace I y) :=
       (X.obj k).riemBundle (I := I)
-    letI : (y : (X.obj k).M) →
+    let : (y : (X.obj k).M) →
         InnerProductSpace Real (TangentSpace I y) :=
       (X.obj k).riemInner (I := I)
-    letI : IsContinuousRiemannianBundle E
+    let : IsContinuousRiemannianBundle E
         (fun y : (X.obj k).M => TangentSpace I y) :=
       (X.obj k).riemBundle_cont (I := I)
-    letI : EMetricSpace (X.obj k).M :=
+    let : EMetricSpace (X.obj k).M :=
       (X.obj k).emetricSpace (I := I)
-    letI : CompleteSpace (X.obj k).M :=
+    let : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) (hcomplete.complete k)
-    letI : ConnectedSpace (X.obj k).M := hconn k
+    let : ConnectedSpace (X.obj k).M := hconn k
     let hEnorm : ∀ (y : (X.obj k).M) (w : TangentSpace I y),
         ‖w‖ₑ =
           ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
       intro y w
-      simpa using
-        (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) (X.obj k).metric y w)
+      with_unfolding_all
+        exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) (X.obj k).metric y w
     let hPk : BoundedGeometry (I := I) (X.obj k) :=
       { C := hgeom.C
         nonneg := hgeom.nonneg

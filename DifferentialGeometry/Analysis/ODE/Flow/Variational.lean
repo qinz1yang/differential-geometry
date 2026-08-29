@@ -1,4 +1,5 @@
 import Mathlib.Analysis.ODE.PicardLindelof
+import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.ODE.Basic
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
@@ -311,7 +312,9 @@ theorem exists_isVariationalSolutionOn_Ioo_local
       have hτ_eps : τ ∈ Icc (t₀ - ε) (t₀ + ε) := hIcc_sub_eps hτ
       have hA_norm : ‖A τ‖ ≤ M := hMbd τ hτ_eps
       have hy_norm : ‖y‖ ≤ a := by
-        simpa [mem_closedBall_zero_iff] using hy
+        rw [mem_closedBall_zero_iff] at hy
+        change ‖y‖ ≤ a at hy
+        exact hy
       change ‖v τ y‖ ≤ (LN : ℝ)
       calc ‖v τ y‖ = ‖(A τ) y‖ := rfl
         _ ≤ ‖A τ‖ * ‖y‖ := (A τ).le_opNorm y

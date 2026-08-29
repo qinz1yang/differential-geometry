@@ -155,6 +155,7 @@ theorem ccTensorToHs_norm_three_sq_le_norm_two_mul_norm_four
       (I := I) (M := M) g s S ht)
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem covariantJetNormSq_le_sq_sum_norm
     (g : SmoothRiemannianMetric I M) {s : ℕ} (n : ℕ)
     (S : SmoothCcTensor g 0 s) :
@@ -165,6 +166,7 @@ theorem covariantJetNormSq_le_sq_sum_norm
   exact Finset.sum_sq_le_sq_sum_of_nonneg (fun _ _ => norm_nonneg _)
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 theorem sq_sum_norm_le_mul_covariantJetNormSq
     (g : SmoothRiemannianMetric I M) {s : ℕ} (n : ℕ)
     (S : SmoothCcTensor g 0 s) :

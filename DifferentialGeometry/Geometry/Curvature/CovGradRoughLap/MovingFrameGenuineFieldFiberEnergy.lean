@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -53,10 +52,10 @@ private lemma riemannianFiberNormSq_eq_sum_toModel_sq
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr)
               (unitZeroSec (I := I) (M := M) x))
-            (fun k => e (ψ k)) ^ 2 := by
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (ψ k))) ^ 2 := by
   classical
   subst hn
-  haveI : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
+  have : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
@@ -88,27 +87,33 @@ private lemma riemannianFiberNormSq_eq_sum_toModel_sq
     bse hbse_orth _ _]
   have hkey : ∀ ξ : Fin (0 + s) → Fin (Module.finrank ℝ (TangentSpace I x)),
       lowerAllUpperIndices (I := I) (M := M) g 0 s x
-          (TensorRSSpace.toModel Tr) (fun k => bse (ξ k)) =
+          (TensorRSSpace.toModel Tr)
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (ξ k))) =
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr)
               (unitZeroSec (I := I) (M := M) x))
-            (fun j : Fin s => bse (ξ (Fin.natAdd 0 j))) := by
+            (fun j : Fin s => tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (bse (ξ (Fin.natAdd 0 j)))) := by
     intro ξ
     rw [lowerAllUpperIndices_apply (I := I) (M := M) g 0 s x (TensorRSSpace.toModel Tr)
-      (fun k => bse (ξ k))]
+      (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (ξ k)))]
     rw [toModel_tensorRS_apply (I := I) (M := M) 0 s x Tr (unitZeroSec (I := I) (M := M) x)]
     rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel]
     rw [separableFormAt_zero (I := I) (M := M) g x
-      (fun i : Fin 0 => (fun k => bse (ξ k)) (Fin.castAdd s i))]
+      (fun i : Fin 0 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (bse (ξ (Fin.castAdd s i))))]
   have hstep : ∀ ξ : Fin (0 + s) → Fin (Module.finrank ℝ (TangentSpace I x)),
       lowerAllUpperIndices (I := I) (M := M) g 0 s x
-            (TensorRSSpace.toModel Tr) (fun k => bse (ξ k)) *
+            (TensorRSSpace.toModel Tr)
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (ξ k))) *
           lowerAllUpperIndices (I := I) (M := M) g 0 s x
-            (TensorRSSpace.toModel Tr) (fun k => bse (ξ k)) =
+            (TensorRSSpace.toModel Tr)
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (bse (ξ k))) =
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr)
               (unitZeroSec (I := I) (M := M) x))
-            (fun k => e (ξ (Fin.natAdd 0 k))) ^ 2 := by
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (e (ξ (Fin.natAdd 0 k)))) ^ 2 := by
     intro ξ
     rw [hkey ξ, ← pow_two]
     congr 2
@@ -134,7 +139,7 @@ private lemma orthoWeighted_frame_sum_collapse
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
-    (Tr : Fin n → TensorRSSpace 0 s I x) (a₀ : Fin n) (m : Fin s → TangentSpace I x) :
+    (Tr : Fin n → TensorRSSpace 0 s I x) (a₀ : Fin n) (m : Fin s → E) :
     ∑ a : Fin n, g.inner x (e a) (e a₀) •
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr a)
@@ -157,34 +162,41 @@ private lemma frame_field_energy_eq_sum_trace_fiberNormSq
     (hn : n = Module.finrank ℝ (TangentSpace I x))
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
     (Tr : Fin n → TensorRSSpace 0 s I x)
-    (field : TangentSpace I x → (Fin s → TangentSpace I x) → ℝ)
-    (hfield : ∀ (w : TangentSpace I x) (m : Fin s → TangentSpace I x),
+    (field : TangentSpace I x → (Fin s → E) → ℝ)
+    (hfield : ∀ (w : TangentSpace I x) (m : Fin s → E),
       field w m = ∑ a : Fin n, g.inner x (e a) w •
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr a)
             (unitZeroSec (I := I) (M := M) x)) m) :
-    ∑ φ : Fin (s + 1) → Fin n, field (e (φ 0)) (fun k => e (Fin.tail φ k)) ^ 2 =
+    ∑ φ : Fin (s + 1) → Fin n,
+        field (e (φ 0))
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (Fin.tail φ k))) ^ 2 =
       ∑ a : Fin n, riemannianFiberNormSq (I := I) (M := M) g 0 s x (Tr a) := by
   classical
   have hcollapse : ∀ φ : Fin (s + 1) → Fin n,
-      field (e (φ 0)) (fun k => e (Fin.tail φ k)) ^ 2 =
+      field (e (φ 0))
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (Fin.tail φ k))) ^ 2 =
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr (φ 0))
-            (unitZeroSec (I := I) (M := M) x)) (fun k => e (Fin.tail φ k)) ^ 2 := by
+            (unitZeroSec (I := I) (M := M) x))
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (Fin.tail φ k))) ^ 2 := by
     intro φ
-    rw [hfield (e (φ 0)) (fun k => e (Fin.tail φ k))]
+    rw [hfield (e (φ 0))
+      (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (Fin.tail φ k)))]
     rw [orthoWeighted_frame_sum_collapse (I := I) (M := M) g s x e horth Tr (φ 0)
-      (fun k => e (Fin.tail φ k))]
+      (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (Fin.tail φ k)))]
   rw [Finset.sum_congr rfl (fun φ (_ : φ ∈ Finset.univ) => hcollapse φ)]
   rw [← Fintype.sum_equiv (Fin.consEquiv (fun _ : Fin (s + 1) => Fin n))
         (fun (pr : Fin n × (Fin s → Fin n)) =>
           Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr pr.1)
-              (unitZeroSec (I := I) (M := M) x)) (fun k => e (pr.2 k)) ^ 2)
+              (unitZeroSec (I := I) (M := M) x))
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (pr.2 k))) ^ 2)
         (fun φ : Fin (s + 1) → Fin n =>
           Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Tr (φ 0))
-              (unitZeroSec (I := I) (M := M) x)) (fun k => e (Fin.tail φ k)) ^ 2)
+              (unitZeroSec (I := I) (M := M) x))
+            (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (Fin.tail φ k))) ^ 2)
         (fun pr => by
           have hcons : (Fin.consEquiv (fun _ : Fin (s + 1) => Fin n)) pr =
               Fin.cons pr.1 pr.2 := rfl
@@ -194,6 +206,7 @@ private lemma frame_field_energy_eq_sum_trace_fiberNormSq
   refine Finset.sum_congr rfl (fun a₀ _ => ?_)
   rw [riemannianFiberNormSq_eq_sum_toModel_sq (I := I) (M := M) g s x (Tr a₀) e hn horth]
 
+omit [CompactSpace M] in
 theorem genuineTrace_le_of
     (g : SmoothRiemannianMetric I M) (s : ℕ) {C : ℝ} (hC_nonneg : 0 ≤ C)
     (hC_bound : ∀ (x : M) (v w : TangentSpace I x) (T : TensorRSSpace 0 s I x),
@@ -274,6 +287,11 @@ theorem genuineTrace_le_of
         rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel,
           ContinuousMultilinearMap.constOfIsEmpty_apply]
       rw [hL, hR]
+    have hcoframe : coframeS (I := I) (M := M) g x 0 eF K₀ =
+        unitZeroSec (I := I) (M := M) x := by
+      change ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+          (fun k => g.inner x (eF (K₀ k))) : Tensor0SSpace 0 I x) = _
+      exact hweight 0
     have hreprS : ∀ U : TensorRSSpace 0 s I x,
         riemannianFiberNormSq (I := I) (M := M) g 0 s x U =
           ∑ K : Fin 0 → Fin n, ∑ J : Fin s → Fin n,
@@ -317,14 +335,14 @@ theorem genuineTrace_le_of
               slot0Curry (I := I) (M := M) g x s eF K₀
                 ((covGrad (I := I) (M := M) g 0 s S).toSection x) i)
               (unitZeroSec (I := I) (M := M) x) =
-            tensor0S_curry (I := I) (M := M) s x
+            tensor0SCurry (I := I) (M := M) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 (covGrad (I := I) (M := M) g 0 s S).toSection x)
                 (unitZeroSec (I := I) (M := M) x)) (eF i) := by
         rw [slot0Curry_apply (I := I) (M := M) g x s eF K₀
           ((covGrad (I := I) (M := M) g 0 s S).toSection x) i
           (unitZeroSec (I := I) (M := M) x)]
-        rw [hweight s]
+        rw [hcoframe]
         have hscalar : tensor00Scalar (I := I) (M := M) x
             (unitZeroSec (I := I) (M := M) x) = 1 := by
           rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0)]
@@ -485,6 +503,11 @@ theorem exists_uniform_genuineCurvTracePureR_fiberNormSq_bound
         rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel,
           ContinuousMultilinearMap.constOfIsEmpty_apply]
       rw [hL, hR]
+    have hcoframe : coframeS (I := I) (M := M) g x 0 eF K₀ =
+        unitZeroSec (I := I) (M := M) x := by
+      change ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+          (fun k => g.inner x (eF (K₀ k))) : Tensor0SSpace 0 I x) = _
+      exact hweight 0
     have hreprS : ∀ U : TensorRSSpace 0 s I x,
         riemannianFiberNormSq (I := I) (M := M) g 0 s x U =
           ∑ K : Fin 0 → Fin n, ∑ J : Fin s → Fin n,
@@ -522,14 +545,14 @@ theorem exists_uniform_genuineCurvTracePureR_fiberNormSq_bound
               slot0Curry (I := I) (M := M) g x s eF K₀
                 ((covGrad (I := I) (M := M) g 0 s S).toSection x) i)
               (unitZeroSec (I := I) (M := M) x) =
-            tensor0S_curry (I := I) (M := M) s x
+            tensor0SCurry (I := I) (M := M) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 (covGrad (I := I) (M := M) g 0 s S).toSection x)
                 (unitZeroSec (I := I) (M := M) x)) (eF i) := by
         rw [slot0Curry_apply (I := I) (M := M) g x s eF K₀
           ((covGrad (I := I) (M := M) g 0 s S).toSection x) i
           (unitZeroSec (I := I) (M := M) x)]
-        rw [hweight s]
+        rw [hcoframe]
         have hscalar : tensor00Scalar (I := I) (M := M) x (unitZeroSec (I := I) (M := M) x) =
           1 := by
           rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0)]
@@ -590,7 +613,8 @@ theorem genuineThirdCurvFieldFibPureR_fiberNormEnergy_le
         (∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0) →
         ∑ φ : Fin (s + 1) → Fin n,
             genuineThirdCurvFieldFibPureR (I := I) (M := M) g s S x e (e (φ 0))
-              (fun k => e (Fin.tail φ k)) ^ 2 ≤
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (e (Fin.tail φ k))) ^ 2 ≤
           C₁ s ^ 2 *
             riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
               ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
@@ -603,7 +627,7 @@ theorem genuineThirdCurvFieldFibPureR_fiberNormEnergy_le
     genuineCurvTraceFixedFrameCurvatureOnly (I := I) g s
       (smoothExtensionTangent (I := I) x (e a)) (smoothOrthoFrame (I := I) g x)
       (fun y : M => S.toSection y) x with hTr
-  have hfield : ∀ (w : TangentSpace I x) (m : Fin s → TangentSpace I x),
+  have hfield : ∀ (w : TangentSpace I x) (m : Fin s → E),
       genuineThirdCurvFieldFibPureR (I := I) (M := M) g s S x e w m =
         ∑ a : Fin n, g.inner x (e a) w •
           Tensor0SSpace.toModel

@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor03CovariantDerivative
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -209,7 +211,7 @@ theorem tensor03Cov_pairing
     {Y Z W : Π x : M, TangentSpace I x}
     (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) (hW : MDiffAt (T% W) x)
     (v : TangentSpace I x) :
-    extDerivFun (I := I) (fun b => T b (Y b) (Z b) (W b)) x v =
+    mvfderiv (I := I) (fun b => T b (Y b) (Z b) (W b)) x v =
       ((tensor03Cov cov).toFun T x v) (Y x) (Z x) (W x)
         + T x (cov.toFun Y x v) (Z x) (W x)
         + T x (Y x) (cov.toFun Z x v) (W x)

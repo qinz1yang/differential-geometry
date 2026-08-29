@@ -31,7 +31,17 @@ theorem autonomizedFlow_snd_hasMFDerivAt (X : ℝ → ∀ x : M, TangentSpace I 
     HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => (c s).2) t
       ((1 : ℝ →L[ℝ] ℝ).smulRight (X (c t).1 (c t).2)) := by
   have h := (hasMFDerivAt_snd (c t)).comp t hc
-  convert h using 2
+  have hmap : (ContinuousLinearMap.snd ℝ
+      (TangentSpace 𝓘(ℝ, ℝ) (c t).1) (TangentSpace I (c t).2)).comp
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (autonomizedFlowVF X (c t))) =
+      (1 : ℝ →L[ℝ] ℝ).smulRight (X (c t).1 (c t).2) := by
+    apply ContinuousLinearMap.ext
+    intro s
+    change (s • ((1 : ℝ), X (c t).1 (c t).2)).2 = s • X (c t).1 (c t).2
+    rfl
+  change HasMFDerivAt 𝓘(ℝ, ℝ) I (Prod.snd ∘ c) t
+    ((1 : ℝ →L[ℝ] ℝ).smulRight (X (c t).1 (c t).2))
+  exact h.congr_mfderiv hmap
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M]
   [T2Space M] in
@@ -42,9 +52,20 @@ theorem autonomizedFlow_fst_hasDerivAt (X : ℝ → ∀ x : M, TangentSpace I x)
     HasDerivAt (fun s => (c s).1) (1 : ℝ) t := by
   have h := (hasMFDerivAt_fst (c t)).comp t hc
   rw [hasMFDerivAt_iff_hasFDerivAt] at h
-  have h2 := h.hasDerivAt
-  refine h2.congr_deriv ?_
-  exact congrArg Prod.fst (one_smul ℝ (autonomizedFlowVF X (c t)))
+  have hmap : (ContinuousLinearMap.fst ℝ
+      (TangentSpace 𝓘(ℝ, ℝ) (c t).1) (TangentSpace I (c t).2)).comp
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (autonomizedFlowVF X (c t))) =
+      (1 : ℝ →L[ℝ] ℝ) := by
+    apply ContinuousLinearMap.ext
+    intro s
+    change (s • ((1 : ℝ), X (c t).1 (c t).2)).1 = s
+    simp
+  have h' := h.congr_fderiv hmap
+  change HasDerivAt (Prod.fst ∘ c) 1 t
+  have hone : (1 : ℝ →L[ℝ] ℝ) = ContinuousLinearMap.toSpanSingleton ℝ 1 := by
+    ext
+    simp [ContinuousLinearMap.toSpanSingleton_apply]
+  exact hasDerivAt_iff_hasFDerivAt.mpr (h'.congr_fderiv hone)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M]
   [T2Space M] in
@@ -53,7 +74,9 @@ theorem hasDerivAt_one_eq_self_on_Ioo (φ : ℝ → ℝ) {a b : ℝ}
     (hφ : ∀ s ∈ Ioo a b, HasDerivAt φ 1 s) (hval : φ 0 = 0) :
     ∀ s ∈ Ioo a b, φ s = s := by
   have hconst : ∀ s ∈ Ioo a b, HasDerivAt (fun u => φ u - u) (0 : ℝ) s := by
-    intro u hu; simpa using (hφ u hu).sub (hasDerivAt_id u)
+    intro u hu
+    change HasDerivAt (φ - id) 0 u
+    simpa only [sub_self] using (hφ u hu).sub (hasDerivAt_id u)
   intro s hs
   have hkey : (fun u => φ u - u) s = (fun u => φ u - u) 0 := by
     apply Convex.is_const_of_fderivWithin_eq_zero (𝕜 := ℝ) (convex_Ioo a b)

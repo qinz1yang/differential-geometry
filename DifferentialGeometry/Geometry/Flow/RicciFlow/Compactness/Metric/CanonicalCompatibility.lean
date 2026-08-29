@@ -8,7 +8,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -33,12 +32,12 @@ omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
 theorem metric_converges_on_compact_sets
     (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
-    (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
+    (hsrc : SrcSigma (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps))
-    (htgt : TgtSigma (pointedCGHMaps_of_manifold (I := I) X
+    (htgt : TgtSigma (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps)) :
     let mc := D.compactness
-    let Phi := pointedCGHMaps_of_manifold (I := I) X
+    let Phi := pointedCGHMapsOfManifold (I := I) X
       mc.limit mc.subseq mc.maps
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
     letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -66,19 +65,18 @@ theorem metric_converges_on_compact_sets
   refine ⟨k0, fun k hk => ?_⟩
   have hk' := hk0 k hk
   rw [D.domain_eq_canonical k] at hk'
-  simpa only [MetricSourceData.derivNormSupOn, CanonicalMetricCompactness.canonicalSourceData,
-    CanonicalMetricCompactness.canonicalReferenceMetric] using hk'
+  with_unfolding_all exact hk'
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
 theorem metric_uniformly_equivalent
     (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
-    (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
+    (hsrc : SrcSigma (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps))
-    (htgt : TgtSigma (pointedCGHMaps_of_manifold (I := I) X
+    (htgt : TgtSigma (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps)) :
     let mc := D.compactness
-    let Phi := pointedCGHMaps_of_manifold (I := I) X
+    let Phi := pointedCGHMapsOfManifold (I := I) X
       mc.limit mc.subseq mc.maps
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
     letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -101,18 +99,18 @@ theorem metric_uniformly_equivalent
   refine ⟨Crel, hCrel, fun k => ?_⟩
   have hk := hrel k
   rw [D.domain_eq_canonical k] at hk
-  simpa only [CanonicalMetricCompactness.canonicalSourceData, CanonicalMetricCompactness.canonicalReferenceMetric] using hk
+  with_unfolding_all exact hk
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
 theorem metric_covariant_derivatives_bounded
     (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
-    (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
+    (hsrc : SrcSigma (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps))
-    (htgt : TgtSigma (pointedCGHMaps_of_manifold (I := I) X
+    (htgt : TgtSigma (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps)) :
     let mc := D.compactness
-    let Phi := pointedCGHMaps_of_manifold (I := I) X
+    let Phi := pointedCGHMapsOfManifold (I := I) X
       mc.limit mc.subseq mc.maps
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
     letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -139,7 +137,7 @@ theorem metric_covariant_derivatives_bounded
   refine ⟨Cq, hCq, fun k y => ?_⟩
   have hk := hcov k y
   rw [D.domain_eq_canonical k] at hk
-  simpa only [CanonicalMetricCompactness.canonicalSourceData, CanonicalMetricCompactness.canonicalReferenceMetric] using hk
+  with_unfolding_all exact hk
 
 end CanonicalMetricCompactness
 

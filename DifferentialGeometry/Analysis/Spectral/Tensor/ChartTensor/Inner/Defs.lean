@@ -8,7 +8,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -37,8 +36,8 @@ private lemma chartGramMatrix_inv_isHermitian
 private lemma chartTensorInnerPointwise_0s_symm_aux
     (g : SmoothRiemannianMetric I M) (α b : M) (n : ℕ)
     (S T : Tensor0SModel n ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) n g α b S T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) n g α b T S := by
+    chartTensorInnerPointwise0s (I := I) (M := M) n g α b S T =
+      chartTensorInnerPointwise0s (I := I) (M := M) n g α b T S := by
   induction n with
   | zero =>
       change S _ * T _ = T _ * S _
@@ -62,7 +61,7 @@ private lemma chartTensorInnerPointwise_0s_nonneg_aux
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (n : ℕ)
     (T : Tensor0SModel n ℝ E) :
-    0 ≤ chartTensorInnerPointwise_0s (I := I) (M := M) n g α b T T := by
+    0 ≤ chartTensorInnerPointwise0s (I := I) (M := M) n g α b T T := by
   set Tback : Tensor0SModel n ℝ E :=
     T.compContinuousLinearMap (fun _ : Fin n =>
       chartTrivializationLinearMap (I := I) (M := M) α b) with hTback_def
@@ -84,29 +83,29 @@ private lemma chartTensorInnerPointwise_0s_nonneg_aux
   rw [← hbridge]
   exact tensorInnerPointwise_0s_nonneg (I := I) (M := M) g b n Tback
 
-def chartTensorInnerPointwise_rs_model
+def chartTensorInnerPointwiseRsModel
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (T₀ T₁ : TensorRSModel r s ℝ E) : ℝ :=
-  chartTensorInnerPointwise_0s (I := I) (M := M) (r + s) g α b
-    (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₀)
-    (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₁)
+  chartTensorInnerPointwise0s (I := I) (M := M) (r + s) g α b
+    (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₀)
+    (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₁)
 
 lemma chartTensorInnerPointwise_rs_model_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ =
-      chartTensorInnerPointwise_0s (I := I) (M := M) (r + s) g α b
-        (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₀)
-        (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₁) :=
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ =
+      chartTensorInnerPointwise0s (I := I) (M := M) (r + s) g α b
+        (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₀)
+        (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₁) :=
   rfl
 
 lemma chartTensorInnerPointwise_rs_model_add_left
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (T₀ T₀' T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (T₀ + T₀') T₁ =
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ +
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀' T₁ := by
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ +
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀' T₁ := by
   rw [chartTensorInnerPointwise_rs_model_def,
       chartTensorInnerPointwise_rs_model_def,
       chartTensorInnerPointwise_rs_model_def]
@@ -116,9 +115,9 @@ lemma chartTensorInnerPointwise_rs_model_add_left
 lemma chartTensorInnerPointwise_rs_model_smul_left
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (c : ℝ) (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (c • T₀) T₁ =
-      c * chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ := by
+      c * chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ := by
   rw [chartTensorInnerPointwise_rs_model_def,
       chartTensorInnerPointwise_rs_model_def]
   rw [chartLowerAllUpperIndices_model_smul]
@@ -127,8 +126,8 @@ lemma chartTensorInnerPointwise_rs_model_smul_left
 lemma chartTensorInnerPointwise_rs_model_symm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ =
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₁ T₀ := by
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ =
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₁ T₀ := by
   rw [chartTensorInnerPointwise_rs_model_def,
       chartTensorInnerPointwise_rs_model_def]
   exact chartTensorInnerPointwise_0s_symm_aux (I := I) (M := M) g α b (r + s) _ _
@@ -136,10 +135,10 @@ lemma chartTensorInnerPointwise_rs_model_symm
 lemma chartTensorInnerPointwise_rs_model_add_right
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (T₀ T₁ T₁' : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         T₀ (T₁ + T₁') =
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ +
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁' := by
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ +
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁' := by
   rw [chartTensorInnerPointwise_rs_model_symm (I := I) (M := M) g r s α b
         T₀ (T₁ + T₁')]
   rw [chartTensorInnerPointwise_rs_model_add_left]
@@ -149,9 +148,9 @@ lemma chartTensorInnerPointwise_rs_model_add_right
 lemma chartTensorInnerPointwise_rs_model_smul_right
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (c : ℝ) (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         T₀ (c • T₁) =
-      c * chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ := by
+      c * chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ := by
   rw [chartTensorInnerPointwise_rs_model_symm (I := I) (M := M) g r s α b
         T₀ (c • T₁)]
   rw [chartTensorInnerPointwise_rs_model_smul_left]
@@ -161,13 +160,12 @@ lemma chartTensorInnerPointwise_rs_model_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T : TensorRSModel r s ℝ E) :
-    0 ≤ chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T := by
+    0 ≤ chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T := by
   rw [chartTensorInnerPointwise_rs_model_def]
   exact chartTensorInnerPointwise_0s_nonneg_aux (I := I) (M := M) g α hb (r + s) _
 
 section Smoothness
 
-variable [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)]
 
 private noncomputable def localEvalBasisLinear (n : ℕ) :
     Tensor0SModel n ℝ E →ₗ[ℝ]
@@ -175,19 +173,17 @@ private noncomputable def localEvalBasisLinear (n : ℕ) :
   toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
   map_add' Φ₁ Φ₂ := by
     funext φ
-    simp [ContinuousMultilinearMap.add_apply]
+    simp [add_apply]
   map_smul' c Φ := by
     funext φ
-    simp [ContinuousMultilinearMap.smul_apply]
+    simp [smul_apply]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma localEvalBasisLinear_apply (n : ℕ)
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     localEvalBasisLinear (E := E) n Φ φ =
       Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma localEvalBasisLinear_injective (n : ℕ) :
     Function.Injective (localEvalBasisLinear (E := E) n) := by
   intro Φ₁ Φ₂ h
@@ -196,7 +192,6 @@ private lemma localEvalBasisLinear_injective (n : ℕ) :
   intro v
   exact congr_fun h v
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma local_finrank_tensor0SModel (n : ℕ) :
     Module.finrank ℝ (Tensor0SModel n ℝ E) =
       (Module.finrank ℝ E) ^ n := by
@@ -219,14 +214,13 @@ private lemma local_finrank_tensor0SModel (n : ℕ) :
       rw [φ.finrank_eq, Module.finrank_linearMap, ih]
       ring
 
-omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] in
 private lemma local_finrank_basis_pi (n : ℕ) :
     Module.finrank ℝ ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) =
       (Module.finrank ℝ E) ^ n := by
   rw [Module.finrank_pi, Fintype.card_pi]
   simp [Fintype.card_fin]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma localEvalBasisLinear_bijective (n : ℕ) :
     Function.Bijective (localEvalBasisLinear (E := E) n) := by
   have h_inj := localEvalBasisLinear_injective (E := E) n
@@ -242,14 +236,13 @@ private noncomputable def localEvalBasisCLE (n : ℕ) :
   (LinearEquiv.ofBijective (localEvalBasisLinear (E := E) n)
     (localEvalBasisLinear_bijective (E := E) n)).toContinuousLinearEquiv
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma localEvalBasisCLE_apply (n : ℕ)
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     localEvalBasisCLE (E := E) n Φ φ =
       Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
 
-omit [IsManifold I ∞ M] [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [IsManifold I ∞ M] in
 private lemma local_contMDiffOn_into_tensor0SModel_of_eval_basis
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
@@ -271,7 +264,6 @@ private lemma local_contMDiffOn_into_tensor0SModel_of_eval_basis
   intro b _
   exact ((localEvalBasisCLE (E := E) n).symm_apply_apply (Φ b)).symm
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     (g : SmoothRiemannianMetric I M) {r : ℕ} (α : M)
     (φ_first ψ : Fin r → Fin (Module.finrank ℝ E)) :
@@ -294,7 +286,7 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     funext b
     exact chartSeparableFormAt_apply (I := I) (M := M) g α b r _ _
   rw [heq]
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   have hentry :
       (fun b : M =>
           chartGramBilin (I := I) (M := M) g α b
@@ -311,20 +303,19 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     funext b
     rw [chartGramBilin_apply]
   rw [hentry]
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
-  refine contMDiffOn_finset_sum (fun kk _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun kk _ => ?_)
   refine ContMDiffOn.mul ?_ contMDiffOn_const
   refine ContMDiffOn.mul ?_ contMDiffOn_const
   exact chartGramMatrix_entry_contMDiffOn (I := I) g α j kk
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : TensorRSModel r s ℝ E)
     (φ : Fin (r + s) → Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
-          (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T)
+          (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T)
             (fun k : Fin (r + s) => (chartModelBasis E) (φ k)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   set v_last : Fin s → E :=
@@ -333,7 +324,7 @@ private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
     fun k => (chartModelBasis E) (φ (Fin.castAdd s k)) with hv_first
   have hrewrite :
       (fun b : M =>
-          (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T)
+          (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T)
             (fun k : Fin (r + s) => (chartModelBasis E) (φ k)))
         = fun b : M =>
             T (chartSeparableFormAt (I := I) (M := M) g α b r v_first) v_last := by
@@ -374,33 +365,32 @@ private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
   intro b _
   exact hcomposed_apply _
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem chartTensorInnerPointwise_rs_model_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T₀ T₁)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have hunfold :
       (fun b : M =>
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T₀ T₁)
         = fun b : M =>
-            chartTensorInnerPointwise_0s (I := I) (M := M) (r + s) g α b
-              (chartLowerAllUpperIndices_model (I := I) (M := M)
+            chartTensorInnerPointwise0s (I := I) (M := M) (r + s) g α b
+              (chartLowerAllUpperIndicesModel (I := I) (M := M)
                 r s g α b T₀)
-              (chartLowerAllUpperIndices_model (I := I) (M := M)
+              (chartLowerAllUpperIndicesModel (I := I) (M := M)
                 r s g α b T₁) := by
     funext b
     rw [chartTensorInnerPointwise_rs_model_def]
   rw [hunfold]
   exact chartTensorInnerPointwise_0s_contMDiffOn_smooth_args
     (I := I) (M := M) g α (r + s)
-    (fun b : M => chartLowerAllUpperIndices_model
+    (fun b : M => chartLowerAllUpperIndicesModel
       (I := I) (M := M) r s g α b T₀)
-    (fun b : M => chartLowerAllUpperIndices_model
+    (fun b : M => chartLowerAllUpperIndicesModel
       (I := I) (M := M) r s g α b T₁)
     (fun φ =>
       chartLowerAllUpperIndices_model_basis_eval_contMDiffOn

@@ -87,7 +87,7 @@ theorem recentred_link (hT : 0 < T)
           (show a ≤ a + 2 by linarith)
           (recentredHiL2 (I := I) (M := M) hT u₀ gforce t) =
         (recentredCarrier (I := I) (M := M) hT u₀ gforce).toFun t := by
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     MaximalRegularity.countable_tensorEigenIdx (I := I) (M := M)
       (g := g) (r := r) (s := s) h_compact
   have hper : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -157,7 +157,7 @@ theorem recentred_repr_eq_field_sub (hT : 0 < T) (hT1 : T ≤ 1)
         maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t -
           tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
             (show (a + 1) ≤ a + 2 by linarith) u₀ := by
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     MaximalRegularity.countable_tensorEigenIdx (I := I) (M := M)
       (g := g) (r := r) (s := s) h_compact
   set u := maxRegRecentredCrossScaleField (I := I) (M := M)
@@ -403,7 +403,7 @@ theorem recentred_repr_normSq_le (hT : 0 < T)
     rw [intervalIntegral.integral_of_le ht.1]
     refine setIntegral_mono_set (u.integrableOn_energyBound)
       (ae_of_all _ (fun s => by positivity)) ?_
-    exact HasSubset.Subset.eventuallyLE (fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩)
+    exact LE.le.eventuallyLE (fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩)
   refine le_trans hstep1 ?_
   have hyoung : ∀ s, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) ≤
       Real.sqrt T * ‖u.hiL2 s‖ ^ 2 + (Real.sqrt T)⁻¹ * ‖u.lo.deriv s‖ ^ 2 := by
@@ -665,7 +665,7 @@ theorem quasilinear_strong_existence_of_lipschitz_on_closed_ball
               Metric.closedBall
                 (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
                   (show (a + 1) ≤ a + 2 by linarith) u₀) R := by
-  letI : NeZero (Module.finrank ℝ E) :=
+  let : NeZero (Module.finrank ℝ E) :=
     ⟨(Module.finrank_pos (R := ℝ) (M := E)).ne'⟩
   obtain ⟨T₀, hT₀, hsol⟩ :=
     quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_ofCompact

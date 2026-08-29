@@ -10,7 +10,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransit
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -144,13 +143,13 @@ lemma tensorChartComponentRaw_eigenvectorSmoothChart_self
     (chosenComp_hsupp (I := I) (M := M) g r s i α) P hy
 
 noncomputable def eigenvectorSmooth : SmoothCcTensor g r s :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     eigenvectorSmoothChart (I := I) (M := M) g r s i α
 
 omit [CompleteSpace E] in
 lemma eigenvectorSmooth_eq :
     eigenvectorSmooth (I := I) (M := M) g r s i =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         eigenvectorSmoothChart (I := I) (M := M) g r s i α := rfl
 
 omit [CompleteSpace E] in

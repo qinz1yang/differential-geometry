@@ -45,7 +45,7 @@ theorem gammaTraceCovVar
     (metricTrace : M -> Real) (x0 : M)
     (i j : CoordinateIdx (𝕜 := Real) E)
     (htrace_deriv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => ∑ p : CoordinateIdx (𝕜 := Real) E,
             gammaDot y p p j)
           x0 (coordinateFrameAt (I := I) x0 i x0) =
@@ -56,9 +56,9 @@ theorem gammaTraceCovVar
           (1 / 2 : Real) * scalarCoordDerivAt (I := I) metricTrace x0 a)
     (htrace_ext :
       (∑ p : CoordinateIdx (𝕜 := Real) E,
-          extDerivFun (I := I) (fun y : M => gammaDot y p p j) x0
+          mvfderiv (I := I) (fun y : M => gammaDot y p p j) x0
             (coordinateFrameAt (I := I) x0 i x0)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M => ∑ p : CoordinateIdx (𝕜 := Real) E,
             gammaDot y p p j)
           x0 (coordinateFrameAt (I := I) x0 i x0)) :
@@ -72,7 +72,7 @@ theorem gammaTraceCovVar
   let A : Idx -> Idx -> Idx -> Real := fun k a b => gammaDot x0 k a b
   let D : Real :=
     ∑ p : Idx,
-      extDerivFun (I := I) (fun y : M => gammaDot y p p j) x0
+      mvfderiv (I := I) (fun y : M => gammaDot y p p j) x0
         (coordinateFrameAt (I := I) x0 i x0)
   let U : Real := ∑ p : Idx, ∑ a : Idx, Gamma i a p * A a p j
   let L : Real := ∑ p : Idx, ∑ a : Idx, Gamma i p a * A p a j
@@ -271,7 +271,12 @@ theorem lcHessVarCoord
                 scalarCoordDerivAt (I := I) h x0 p))
         timeSet
         base := by
-    simpa [scalarHessCoordAt] using (hsecond i j).sub hprod
+    have hsub := (hsecond i j).sub hprod
+    convert hsub using 1
+    · rfl
+    · rfl
+    · funext s
+      simp [scalarHessCoordAt]
   refine hraw.congr_deriv ?_
   simp [scalarHessCoordAt, Finset.sum_add_distrib, sub_eq_add_neg, add_comm,
     add_left_comm]
@@ -768,7 +773,7 @@ theorem lcTraceShifted
   have htraceCov :
       ∀ y : M, y ∈ u0 -> ∀ d : CoordinateIdx (𝕜 := Real) E,
         metricTraceCovAt gInv metricCovDerivDt y d =
-          extDerivFun (I := I) metricTrace y (frame d y) := by
+          mvfderiv (I := I) metricTrace y (frame d y) := by
     intro y hy d
     exact traceCovEqDeriv (I := I) gInv metricDot metricCovDerivDt
       metricTrace (G.connection base) frame hframe d (hcov y hy d)

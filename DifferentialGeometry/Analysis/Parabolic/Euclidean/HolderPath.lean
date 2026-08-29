@@ -43,7 +43,7 @@ theorem jet_le_eC2Half (u : V → F) {j : ℕ} (hj : j < 3) (x : V) :
   have hterm : eSupNorm (iteratedFDeriv ℝ j u) ≤
       ∑ q ∈ Finset.range 3, eSupNorm (iteratedFDeriv ℝ q u) :=
     Finset.single_le_sum
-      (fun q _ => zero_le (eSupNorm (iteratedFDeriv ℝ q u)))
+      (fun q _ => show (0 : ℝ≥0∞) ≤ eSupNorm (iteratedFDeriv ℝ q u) from bot_le)
       (Finset.mem_range.mpr hj)
   exact (norm_le_eSup (iteratedFDeriv ℝ j u) x).trans
     (hterm.trans (by simp only [eC2Half]; exact le_add_right le_rfl))
@@ -147,7 +147,8 @@ theorem entry_le_eFin (A : Finset ι) (τ : ℝ) (u : ι → ℝ → V → F)
     {a : ι} (ha : a ∈ A) :
     eParC2Half τ (u a) ≤ eFinParC2Half A τ u := by
   unfold eFinParC2Half
-  exact Finset.single_le_sum (fun b _ => zero_le (eParC2Half τ (u b))) ha
+  exact Finset.single_le_sum
+    (fun b _ => show (0 : ℝ≥0∞) ≤ eParC2Half τ (u b) from bot_le) ha
 
 omit [DecidableEq ι] in
 theorem fin_space_holder {A : Finset ι} {τ : ℝ} {u : ι → ℝ → V → F}

@@ -370,7 +370,8 @@ theorem gradientFun_spatialCutoffBetween
     have h := (hasDerivAt_const (rho.toFun x) (1 : ℝ)).add
       (((hasDerivAt_const (rho.toFun x) outer).sub
         (hasDerivAt_id (rho.toFun x))).div_const (outer - inner))
-    simpa only [affine, zero_sub, zero_add] using h
+    exact (h.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (by ring)
   have hvalue : HasDerivAt CutoffProfile.value
       (deriv CutoffProfile.value (affine (rho.toFun x)))
       (affine (rho.toFun x)) :=
@@ -378,9 +379,14 @@ theorem gradientFun_spatialCutoffBetween
   have hprofile : HasDerivAt profile
       (deriv CutoffProfile.value (affine (rho.toFun x)) *
         (-1 / (outer - inner))) (rho.toFun x) := by
-    simpa only [profile] using hvalue.comp (rho.toFun x) haffine
+    exact (hvalue.comp (rho.toFun x) haffine).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hgradient := gradientFun_comp (I := I) g hprofile.differentiableAt
     (rho.smooth.mdifferentiable (by simp) x)
+  have hcutoff : (spatialCutoffBetween rho inner outer).toFun =
+      fun y => profile (rho.toFun y) := by
+    rfl
+  rw [hcutoff]
   simpa only [profile, affine, spatialCutoffBetween_toFun,
     spatialCutoffBetweenArgument, hprofile.deriv] using hgradient
 
@@ -575,7 +581,8 @@ theorem gradientFun_spatialMoserCutoff
     have h := (hasDerivAt_const (rho.toFun x) (1 : ℝ)).add
       (((hasDerivAt_const (rho.toFun x) (moserCutoffLevel (k + 1))).sub
         (hasDerivAt_id (rho.toFun x))).div_const (moserCutoffWidth k))
-    simpa only [affine, zero_sub, zero_add] using h
+    exact (h.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (by ring)
   have hvalue : HasDerivAt CutoffProfile.value
       (deriv CutoffProfile.value (affine (rho.toFun x)))
       (affine (rho.toFun x)) :=
@@ -583,9 +590,14 @@ theorem gradientFun_spatialMoserCutoff
   have hprofile : HasDerivAt profile
       (deriv CutoffProfile.value (affine (rho.toFun x)) *
         (-1 / moserCutoffWidth k)) (rho.toFun x) := by
-    simpa only [profile] using hvalue.comp (rho.toFun x) haffine
+    exact (hvalue.comp (rho.toFun x) haffine).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)
   have hgradient := gradientFun_comp (I := I) g hprofile.differentiableAt
     (rho.smooth.mdifferentiable (by simp) x)
+  have hcutoff : (spatialMoserCutoff rho k).toFun =
+      fun y => profile (rho.toFun y) := by
+    rfl
+  rw [hcutoff]
   simpa only [profile, affine, spatialMoserCutoff_toFun,
     spatialMoserCutoffArgument, hprofile.deriv] using hgradient
 
@@ -679,7 +691,7 @@ theorem exists_spatialMoserCutoff_gradient_bound
       g.inner x
         (gradFun (I := I) g rho.toFun x)
         (gradFun (I := I) g rho.toFun x)) := by
-    simpa only [grad_g_apply] using rho.continuous_inner_grad rho
+    exact (rho.continuous_inner_grad rho).congr (fun _ => rfl)
   obtain ⟨B, hB⟩ := (isCompact_range hcontinuous).bddAbove
   let B₀ := max B 0
   let K := 16 * CutoffProfile.derivBound ^ 2 * B₀

@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -88,7 +87,7 @@ lemma diffArmSection_slice_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
     tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
             (unitZeroSec (I := I) (M := M) x))
@@ -106,7 +105,7 @@ lemma diffArmSection_slice_eq
           (curvatureGradContractionSection (I := I) (M := M) g s
             (covGrad (I := I) (M := M) g 0 s S)).toSection x) := by
     rw [curvatureCommutatorRemainderSection, SmoothCcTensor.toSection_sub]; rfl
-  rw [hsub, ContinuousLinearMap.sub_apply, map_sub, ContinuousLinearMap.sub_apply,
+  rw [hsub, sub_apply, map_sub, sub_apply,
     tensor0SAsRS_sub' (I := I) (M := M) s x]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (curvatureGradContractionSection (I := I) (M := M) g s
@@ -119,20 +118,20 @@ lemma diffArmSection_slice_eq
   rw [gradArmFib_covGrad_slice_eq (I := I) (M := M) g s S x a]
   abel
 
-lemma diffArmSection_slice_toModel_value_local
+lemma diffArmSection_slice_eval_value_local
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (a : Fin (Module.finrank ℝ E)) (m : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensor0SToTensorRS (I := I) (M := M) x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
                 (unitZeroSec (I := I) (M := M) x))
               (smoothOrthoFrame (I := I) g x a x)))
           (unitZeroSec (I := I) (M := M) x)) m =
       - ∑ k : Fin s,
-          Tensor0SSpace.toModel (unitEvalSection (I := I) (M := M) g s S x)
+          Tensor0SSpace.eval (unitEvalSection (I := I) (M := M) g s S x)
             (Function.update m k
               (∑ i : Fin (Module.finrank ℝ E),
                 nablaBaseSlotCurv (I := I) g
@@ -149,7 +148,7 @@ lemma diffArmSection_slice_toModel_value_local
   set A : Π b : M, Tensor0SSpace s I b := unitEvalSection (I := I) (M := M) g s S with hA
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         tensor0SToTensorRS (I := I) (M := M) x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
               (unitZeroSec (I := I) (M := M) x))
@@ -160,17 +159,17 @@ lemma diffArmSection_slice_toModel_value_local
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
             (smoothOrthoFrame (I := I) g x a) (fun y : M => S.toSection y) x) from
     diffArmSection_slice_eq (I := I) (M := M) g s S x a]
-  rw [toModel_unit_finsum (I := I) (M := M) s x Finset.univ
+  rw [eval_unit_finsum (I := I) (M := M) s x Finset.univ
     (fun i => nablaTensorCurvSec (I := I) g (tensorCov (I := I) g 0 s)
       (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
       (smoothOrthoFrame (I := I) g x a) (fun y : M => S.toSection y) x) m]
   have hper : ∀ i : Fin (Module.finrank ℝ E),
-      Tensor0SSpace.toModel ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+      Tensor0SSpace.eval ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         nablaTensorCurvSec (I := I) g (tensorCov (I := I) g 0 s)
           (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
           (smoothOrthoFrame (I := I) g x a) (fun y : M => S.toSection y) x)
         (unitZeroSec (I := I) (M := M) x)) m =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         (nablaTensor0SCurv (I := I) g s
           (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
             (smoothOrthoFrame_smooth (I := I) g x i))
@@ -196,45 +195,50 @@ lemma diffArmSection_value_local
   classical
   apply tensorRSSpace_ext (𝕜 := ℝ) 0 (s + 1) x
   intro D
-  apply Tensor0SSpace.toModel_injective
-  refine ContinuousMultilinearMap.ext (fun v => ?_)
+  apply tensor0SSpace_ext (𝕜 := ℝ) (s + 1) x
+  intro v
   have hredD : ∀ T : TensorRSSpace 0 (s + 1) I x,
-      Tensor0SSpace.toModel
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) D) v =
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) D) v =
         tensor00Scalar (I := I) (M := M) x D *
-          Tensor0SSpace.toModel
-            ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
-              (unitZeroSec (I := I) (M := M) x)) v := by
+          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
+            (unitZeroSec (I := I) (M := M) x)) v := by
     intro T
     conv_lhs => rw [tensor0S_zero_span' (I := I) (M := M) x D]
     rw [ContinuousLinearMap.map_smul]
-    simp only [Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    simp only [smul_apply, smul_eq_mul]
   rw [hredD, hredD]
   apply congrArg (fun z : ℝ => tensor00Scalar (I := I) (M := M) x D * z)
   obtain ⟨w, m, hcons⟩ : ∃ (w : TangentSpace I x) (m : Fin s → TangentSpace I x),
       v = Fin.cons w m := ⟨v 0, Fin.tail v, (Fin.cons_self_tail v).symm⟩
   subst hcons
-  rw [tensor0S_uncurry_cons_eval_orthonormal (I := I) g _
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+        (curvatureCommutatorRemainderSection (I := I) (M := M) g s S₁).toSection x)
+        (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+        (curvatureCommutatorRemainderSection (I := I) (M := M) g s S₂).toSection x)
+        (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m)
+  rw [tensor0S_uncurry_cons_eval_orthonormal_natural (I := I) g _
     (fun a => smoothOrthoFrame (I := I) g x a x)
     (fun u => smoothOrthoFrame_parsevalExpand (I := I) (M := M) g x u) w m,
-    tensor0S_uncurry_cons_eval_orthonormal (I := I) g _
+    tensor0S_uncurry_cons_eval_orthonormal_natural (I := I) g _
     (fun a => smoothOrthoFrame (I := I) g x a x)
     (fun u => smoothOrthoFrame_parsevalExpand (I := I) (M := M) g x u) w m]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   apply congrArg (fun z : ℝ =>
     g.inner x (smoothOrthoFrame (I := I) g x a x) w • z)
   have hbridge : ∀ S : SmoothCcTensor g 0 s,
-      Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) s x
+      Tensor0SSpace.eval
+          (tensor0SCurry (I := I) (M := M) s x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
               (unitZeroSec (I := I) (M := M) x))
             (smoothOrthoFrame (I := I) g x a x)) m =
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
             tensor0SToTensorRS (I := I) (M := M) x
-              (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+              (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
                 ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                   (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
                   (unitZeroSec (I := I) (M := M) x))
@@ -244,8 +248,8 @@ lemma diffArmSection_value_local
     rw [tensor0SAsRS_apply (I := I) (M := M) x _ (unitZeroSec (I := I) (M := M) x),
       tensor00Scalar_unitZeroSec' (I := I) (M := M) x, one_smul]
   rw [hbridge S₁, hbridge S₂]
-  rw [diffArmSection_slice_toModel_value_local (I := I) (M := M) g s S₁ x a m,
-    diffArmSection_slice_toModel_value_local (I := I) (M := M) g s S₂ x a m]
+  rw [diffArmSection_slice_eval_value_local (I := I) (M := M) g s S₁ x a m,
+    diffArmSection_slice_eval_value_local (I := I) (M := M) g s S₂ x a m]
   rw [show unitEvalSection (I := I) (M := M) g s S₁ x =
       unitEvalSection (I := I) (M := M) g s S₂ x from by
     rw [unitEvalSection_apply, unitEvalSection_apply, hx]]
@@ -291,6 +295,7 @@ theorem exists_gradArmSection_appFullSec (g : SmoothRiemannianMetric I M) (s : �
     (fun c W x => gradArmSection_toSection_smul (I := I) (M := M) g s c W x)
     (fun W₁ W₂ x hW => gradArmSection_value_local (I := I) (M := M) g s W₁ W₂ x hW)
 
+omit [CompactSpace M] in
 lemma pointwiseTensorCurv_toSection_add
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S₁ S₂ : SmoothCcTensor g 0 s) (x : M) :
     (pointwiseTensorCurv (I := I) (M := M) g s (S₁ + S₂)).toSection x =
@@ -348,6 +353,7 @@ lemma pointwiseTensorCurv_toSection_add
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
   abel
 
+omit [CompactSpace M] in
 lemma pointwiseTensorCurv_toSection_smul
     (g : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ) (S : SmoothCcTensor g 0 s) (x : M) :
     (pointwiseTensorCurv (I := I) (M := M) g s (c • S)).toSection x =

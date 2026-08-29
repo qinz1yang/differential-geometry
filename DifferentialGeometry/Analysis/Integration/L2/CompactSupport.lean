@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Connection.Realization.Connection
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import Mathlib.Topology.Algebra.Support
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.ContMDiffMap
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import Mathlib.Geometry.Manifold.SmoothApprox
@@ -63,43 +63,57 @@ def compactlySupportedSmoothTangentSections
     Submodule ℝ Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
   carrier :=
     { X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ |
-        HasCompactSupport (fun x : M => (X x : E)) }
+        HasCompactSupport
+          (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)) }
   zero_mem' := by
     change HasCompactSupport
-      (fun x : M => ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x : E))
+      (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     have h : (fun x : M =>
-        ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x : E)) = (fun _ : M => (0 : E)) := by
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
+        (fun _ : M => (0 : E)) := by
       funext x
-      change ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x : E) = (0 : E)
-      rfl
+      rw [show (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 by rfl, map_zero]
     rw [h]
     exact HasCompactSupport.zero
   add_mem' := by
     intro X Y hX hY
     change HasCompactSupport
       (fun x : M =>
-        (((X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x : E))
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     have h : (fun x : M =>
-        (((X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x : E)) =
-        (fun x : M => (X x : E)) + (fun x : M => (Y x : E)) := by
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
+        (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)) +
+          (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) := by
       funext x
-      change ((X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x : E) =
-        ((X x : E) + (Y x : E))
-      simp [ContMDiffSection.coe_add, Pi.add_apply]
+      change tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (X x) +
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)
+      rw [show (X + Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = X x + Y x by
+        rfl, map_add]
     rw [h]
     exact hX.add hY
   smul_mem' := by
     intro c X hX
     change HasCompactSupport
       (fun x : M =>
-        (((c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x : E))
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     have h : (fun x : M =>
-        (((c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x : E)) =
-        (fun _ : M => c) • (fun x : M => (X x : E)) := by
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
+        (fun _ : M => c) •
+          (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)) := by
       funext x
-      change ((c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x : E) =
-        c • (X x : E)
-      simp [ContMDiffSection.coe_smul, Pi.smul_apply]
+      change tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+        c • tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)
+      rw [show (c • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = c • X x by
+        rfl, map_smul]
     rw [h]
     exact hX.smul_left
 
@@ -108,7 +122,8 @@ omit [Module.Finite ℝ E] in
 lemma mem_compactlySupportedSmoothTangentSections
     {X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯} :
     X ∈ compactlySupportedSmoothTangentSections I M ↔
-      HasCompactSupport (fun x : M => (X x : E)) := Iff.rfl
+      HasCompactSupport
+        (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)) := Iff.rfl
 
 omit [Module.Finite ℝ E] in
 omit [IsManifold I ∞ M] in
@@ -168,12 +183,15 @@ theorem compactlySupportedSmoothTangentSections_action_mem
       ((vectorFieldActionSmooth I M X f : C^∞⟮I, M; ℝ⟯) : M → ℝ) =
         vectorFieldAction I M X f := rfl
   rw [hcoe]
-  refine HasCompactSupport.mono (f := fun x : M => (X x : E)) hX ?_
+  refine HasCompactSupport.mono
+    (f := fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)) hX ?_
   intro x hx
   by_contra hXx
   apply hx
   have : X x = 0 := by
-    simpa using hXx
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
+    rw [map_zero]
+    exact not_ne_iff.mp hXx
   exact vectorFieldAction_eq_zero_of_vectorField_eq_zero X f this
 
 omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
@@ -196,11 +214,11 @@ theorem compactlySupportedSmoothFunctions_action_of_smooth_section
     notMem_tsupport_iff_eventuallyEq.mp hxnot
   have hmfd : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x = mfderiv I 𝓘(ℝ, ℝ) (fun _ : M => (0 : ℝ)) x :=
     hfEq.mfderiv_eq
-  have : extDerivFun (I := I) (f : M → ℝ) x (X x) = 0 := by
+  have : mvfderiv (I := I) (f : M → ℝ) x (X x) = 0 := by
     have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x = 0 := by
       rw [hmfd]
       exact mfderiv_const
-    simp [extDerivFun, hmfd_zero]
+    simp [mvfderiv, hmfd_zero]
   simpa [vectorFieldAction] using this
 
 end DirectionalDerivative
@@ -218,16 +236,20 @@ theorem compactlySupportedSmoothTangentSections_conn_mem_of_left
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     concreteConn I M cov X Y ∈ compactlySupportedSmoothTangentSections I M := by
   change HasCompactSupport
-    (fun x : M => ((concreteConn I M cov X Y) x : E))
-  refine HasCompactSupport.mono (f := fun x : M => (X x : E)) hX ?_
+    (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((concreteConn I M cov X Y) x))
+  refine HasCompactSupport.mono
+    (f := fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (X x)) hX ?_
   intro x hx
   by_contra hXx
   apply hx
-  have hXx' : X x = 0 := by simpa using hXx
-  change ((concreteConn I M cov X Y) x : E) = 0
+  have hXx' : X x = 0 := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) x).injective
+    rw [map_zero]
+    exact not_ne_iff.mp hXx
   have : (concreteConn I M cov X Y) x = 0 := by
     simp [concreteConn_apply, hXx']
-  simpa using this
+  simpa using congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) this
 
 omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem compactlySupportedSmoothTangentSections_conn_mem_of_right
@@ -238,18 +260,22 @@ theorem compactlySupportedSmoothTangentSections_conn_mem_of_right
     (hY : Y ∈ compactlySupportedSmoothTangentSections I M) :
     concreteConn I M cov X Y ∈ compactlySupportedSmoothTangentSections I M := by
   change HasCompactSupport
-    (fun x : M => ((concreteConn I M cov X Y) x : E))
-  refine HasCompactSupport.mono' (f := fun x : M => (Y x : E)) hY ?_
+    (fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((concreteConn I M cov X Y) x))
+  refine HasCompactSupport.mono'
+    (f := fun x : M => tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) hY ?_
   intro x hx
   by_contra hxnot
   apply hx
-  have hY_eq_E : (fun x : M => (Y x : E)) =ᶠ[𝓝 x] 0 :=
+  have hY_eq_E :
+      (fun y : M => tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y)) =ᶠ[𝓝 x] 0 :=
     notMem_tsupport_iff_eventuallyEq.mp hxnot
   have hY_eq_dep : (fun x : M => Y x) =ᶠ[𝓝 x]
       (fun x : M => (0 : TangentSpace I x)) := by
     filter_upwards [hY_eq_E] with y hy
-    have : (Y y : E) = (0 : E) := by simpa using hy
-    exact this
+    apply (tangentSpaceModelContinuousLinearEquiv (I := I) y).injective
+    rw [map_zero]
+    exact hy
   have hY_diff : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun x : M => (TotalSpace.mk' E x (Y x) : TangentBundle I M)) x :=
     Y.mdifferentiableAt
@@ -269,13 +295,12 @@ theorem compactlySupportedSmoothTangentSections_conn_mem_of_right
         fun x : M => (0 : TangentSpace I x →L[ℝ] TangentSpace I x) :=
       cov.zero
     exact congrArg (fun φ => φ x) h0
-  change ((concreteConn I M cov X Y) x : E) = 0
   have hcov_Y_zero : (cov.toFun (fun x : M => Y x)) x = 0 := hcov_eq.trans hcov_zero
   have : (concreteConn I M cov X Y) x = 0 := by
     change (cov.toFun (fun x : M => Y x)) x (X x) = 0
     rw [hcov_Y_zero]
     simp
-  simpa using this
+  simpa using congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) this
 
 end CovariantDerivativeClosure
 
@@ -298,7 +323,7 @@ theorem compactlySupportedSmoothFunctions_memLp
     {f : C^∞⟮I, M; ℝ⟯} (hf : f ∈ compactlySupportedSmoothFunctions I M) :
     MeasureTheory.MemLp ((f : M → ℝ)) p
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have hcont : Continuous (f : M → ℝ) := f.contMDiff.continuous
   have hsup : HasCompactSupport ((f : M → ℝ)) := hf
@@ -332,7 +357,7 @@ private lemma eLpNorm_le_of_bound_and_support_le_measure
     eLpNorm h p (riemannianVolumeMeasure (I := I) (M := M) g) ≤
       (riemannianVolumeMeasure (I := I) (M := M) g K) ^ (p.toReal⁻¹) *
         ENNReal.ofReal δ := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   have h_eq : h = K.indicator h := by
@@ -377,7 +402,7 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
         eLpNorm (φ - (f : M → ℝ)) p
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ ε := by
   classical
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   set K : Set M := tsupport φ with hK_def
@@ -396,16 +421,16 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
     by_cases hfactor_zero : factor = 0
     · exact ⟨1, zero_lt_one, by
         rw [hfactor_zero, zero_mul]
-        exact zero_le _⟩
+        exact bot_le⟩
     have hfactor_pos : 0 < factor := by
-      exact lt_of_le_of_ne (zero_le _) (Ne.symm hfactor_zero)
+      exact lt_of_le_of_ne bot_le (Ne.symm hfactor_zero)
     by_cases hε_top : ε = ⊤
     · refine ⟨1, zero_lt_one, ?_⟩
       rw [hε_top]; exact le_top
     · have hε_lt : ε < ⊤ := lt_top_iff_ne_top.mpr hε_top
       have hε_toReal_pos : 0 < ε.toReal := by
         rw [ENNReal.toReal_pos_iff]
-        exact ⟨lt_of_le_of_ne (zero_le _) (Ne.symm hε), hε_lt⟩
+        exact ⟨lt_of_le_of_ne bot_le (Ne.symm hε), hε_lt⟩
       have hfactor_toReal_pos : 0 < factor.toReal := by
         rw [ENNReal.toReal_pos_iff]
         exact ⟨hfactor_pos, lt_top_iff_ne_top.mpr hfactor_ne_top⟩
@@ -479,13 +504,13 @@ theorem compactlySupportedSmoothFunctions_denseRange_in_Lp
         (f : M → ℝ)‖ < ε := by
   intro u ε hε
   classical
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
-  haveI : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isLocallyFiniteMeasure (I := I) (M := M) g
-  haveI : (riemannianVolumeMeasure (I := I) (M := M) g).Regular :=
+  have : (riemannianVolumeMeasure (I := I) (M := M) g).Regular :=
     riemannianVolumeMeasure_regular (I := I) (M := M) g
-  haveI : LocallyCompactSpace M := locallyCompactSpace_of_chartedSpace E H I M
+  have : LocallyCompactSpace M := locallyCompactSpace_of_chartedSpace E H I M
   let μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g
   have hμ_def : μ = riemannianVolumeMeasure (I := I) (M := M) g := rfl
   have hε2_pos : 0 < ε / 2 := by linarith

@@ -186,7 +186,8 @@ theorem inv_coeff_h3_uniform
       T Ch₂ (Ch₃ * N₃) hCh₂ (mul_nonneg hCh₃ hN₃) hjetSq₂ htop
   have hgrid_int : Integrable (invJetGrid3 (I := I) (M := M) g T)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    simpa only [invJetGrid3] using hgrid.1
+    with_unfolding_all
+      exact hgrid.1
   have hinv_pt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 2 5 x
           ((iteratedCovGrad (I := I) g 2 2 3

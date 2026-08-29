@@ -31,7 +31,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless]
   [SigmaCompactSpace M] in
 theorem e0Field_cost_any {Idx : Type*} [Fintype Idx]
@@ -49,14 +48,12 @@ theorem e0Field_cost_any {Idx : Type*} [Fintype Idx]
       (StarSum2Cost.base 0 0 0 0 σD2))
       (StarSum2Cost.base 0 0 0 0 σD3))
       (StarSum2Cost.base 0 0 0 0 σD4) using 1
-  norm_num
-  ring
+  all_goals ring
 
 def rmBaseReact {Idx : Type*} [Fintype Idx]
     (R : (Fin 4 -> Idx) -> Real) (m : Fin 4 -> Idx) : Real :=
   DifferentialGeometry.Geometry.Connection.hamiltonRmReact R m
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless]
   [SigmaCompactSpace M] in
 theorem e0Field_comp_any {Idx : Type*} [Fintype Idx] [DecidableEq Idx]

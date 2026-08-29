@@ -115,7 +115,7 @@ theorem curvZero_apply
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) =
       _
   rw [DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const]
-  letI :
+  let :
       CovariantDerivative.ContMDiffCovariantDerivative
         (DifferentialGeometry.Geometry.Curvature.metricCov
           (I := I) (M := M) g) ∞ :=
@@ -210,11 +210,11 @@ theorem apply_le
       |curvCovDeriv (I := I) (M := X.M) X.metric k x v| <=
         C * ∏ a : Fin (k + 4),
           Real.sqrt (X.metric.inner x (v a) (v a)) := by
-  letI : TopologicalSpace X.M := X.topology
-  letI : ChartedSpace H X.M := X.charted
-  letI : IsManifold I ∞ X.M := X.smooth
-  letI : SigmaCompactSpace X.M := X.sigmaCompact
-  letI : T2Space X.M := X.t2
+  let : TopologicalSpace X.M := X.topology
+  let : ChartedSpace H X.M := X.charted
+  let : IsManifold I ∞ X.M := X.smooth
+  let : SigmaCompactSpace X.M := X.sigmaCompact
+  let : T2Space X.M := X.t2
   intro x v
   calc
     |curvCovDeriv (I := I) (M := X.M) X.metric k x v| <=
@@ -250,11 +250,11 @@ theorem riemannOp_le
         C * Real.sqrt (P.metric.inner x X X) *
           Real.sqrt (P.metric.inner x Y Y) *
           Real.sqrt (P.metric.inner x Z Z) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
   intro x X Y Z
   let R :=
     DifferentialGeometry.Geometry.Curvature.riemannOp
@@ -313,11 +313,11 @@ theorem nablaRiemannOp_le
           Real.sqrt (P.metric.inner x X X) *
           Real.sqrt (P.metric.inner x Y Y) *
           Real.sqrt (P.metric.inner x Z Z) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
   intro x D X Y Z
   let R :=
     DifferentialGeometry.Integral.Connection.nablaRiemannOp
@@ -373,11 +373,11 @@ theorem rm04Bound_of_curv0
     letI : T2Space X.M := X.t2
     Geometry.Riemannian.VolumeComparison.Rm04GlobalBound
       (I := I) (M := X.M) X.metric C := by
-  letI : TopologicalSpace X.M := X.topology
-  letI : ChartedSpace H X.M := X.charted
-  letI : IsManifold I ∞ X.M := X.smooth
-  letI : SigmaCompactSpace X.M := X.sigmaCompact
-  letI : T2Space X.M := X.t2
+  let : TopologicalSpace X.M := X.topology
+  let : ChartedSpace H X.M := X.charted
+  let : IsManifold I ∞ X.M := X.smooth
+  let : SigmaCompactSpace X.M := X.sigmaCompact
+  let : T2Space X.M := X.t2
   intro x
   simpa [Geometry.Riemannian.VolumeComparison.Rm04GlobalBound,
     HasCurvDerivBound, curvDerivNorm, curvDerivNormSq, curvCovDeriv,

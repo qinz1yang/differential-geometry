@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamel
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelSPD
 import Mathlib.Analysis.InnerProductSpace.CanonicalTensor
 
+
 noncomputable section
 
 open MeasureTheory Real Matrix
@@ -143,8 +144,7 @@ theorem linPull_fderiv (L : V ≃L[ℝ] V)
     (hu : ∀ x : V, HasFDerivAt (u : V → F) (du x) x) (x : V) :
     HasFDerivAt (linPullBcf L u : V → F) (pullJet1 L du x) x := by
   have h := (hu (L x)).comp x L.hasFDerivAt
-  simpa only [linPullBcf_apply, pullJet1_apply,
-    ContinuousLinearMap.comp_apply] using h
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 theorem pullJet1_fderiv (L : V ≃L[ℝ] V)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -155,9 +155,7 @@ theorem pullJet1_fderiv (L : V ≃L[ℝ] V)
       (pullJet2 L d2u x) x := by
   have houter := (hdu (L x)).comp x L.hasFDerivAt
   have h := (precompJet (F := F) L).hasFDerivAt.comp x houter
-  simpa only [pullJet1, pullJet2, pushHess, linPullBcf_apply,
-    ContinuousLinearMap.compLeftContinuousBounded_apply,
-    Function.comp_apply] using h
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 end Pullback
 
@@ -173,10 +171,10 @@ theorem lapEval_basis {ι : Type*} [Fintype ι]
   let T : V ⊗[ℝ] V →ₗ[ℝ] F := TensorProduct.lift B.toLinearMap₁₂
   have h := congrArg T
     (InnerProductSpace.canonicalCovariantTensor_eq_sum V e)
-  simpa only [T, InnerProductSpace.canonicalCovariantTensor, map_sum,
-    TensorProduct.lift.tmul, ContinuousLinearMap.toLinearMap₁₂_apply,
-    lapEval, ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.comp_apply] using h
+  simp only [T, InnerProductSpace.canonicalCovariantTensor, map_sum,
+    TensorProduct.lift.tmul, ContinuousLinearMap.toLinearMap₁₂_apply] at h
+  rw [lapEval_apply]
+  exact h
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
@@ -222,8 +220,8 @@ private theorem factorLap_self (L : Euc n ≃L[ℝ] Euc n)
         (congrArg (fun z => B z z) hk).symm
       _ = ∑ i : n, ∑ j : n,
           (⟪e i, L (e k)⟫_ℝ * ⟪e j, L (e k)⟫_ℝ) • B (e i) (e j) := by
-        simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-          ContinuousLinearMap.smul_apply, Finset.smul_sum, smul_smul]
+        simp only [map_sum, map_smul, _root_.sum_apply,
+          _root_.smul_apply, Finset.smul_sum, smul_smul]
         rw [Finset.sum_comm]
         apply Finset.sum_congr rfl
         intro i hi
@@ -241,14 +239,18 @@ private theorem factorLap_self (L : Euc n ≃L[ℝ] Euc n)
         intro k hk
         have hleft :
             ⟪e i, L (e k)⟫_ℝ = ⟪L (e i), e k⟫_ℝ := by
-          simpa only using (hL.isSymmetric (e i) (e k)).symm
+          change ⟪e i, (L : Euc n →L[ℝ] Euc n) (e k)⟫_ℝ =
+            ⟪(L : Euc n →L[ℝ] Euc n) (e i), e k⟫_ℝ
+          exact (hL.isSymmetric (e i) (e k)).symm
         have hright :
             ⟪e j, L (e k)⟫_ℝ = ⟪e k, L (e j)⟫_ℝ := by
           calc
             ⟪e j, L (e k)⟫_ℝ = ⟪L (e k), e j⟫_ℝ :=
               real_inner_comm _ _
             _ = ⟪e k, L (e j)⟫_ℝ := by
-              simpa only using hL.isSymmetric (e k) (e j)
+              change ⟪(L : Euc n →L[ℝ] Euc n) (e k), e j⟫_ℝ =
+                ⟪e k, (L : Euc n →L[ℝ] Euc n) (e j)⟫_ℝ
+              exact hL.isSymmetric (e k) (e j)
         rw [hleft, hright]
       _ = ⟪L (e i), L (e j)⟫_ℝ := e.sum_inner_mul_inner _ _
       _ = ⟪e i, L (L (e j))⟫_ℝ := hL.isSymmetric _ _
@@ -355,7 +357,7 @@ theorem spdDuh_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     fun z => linPull_fderiv L u du hu z
   have h := (frozenDuh_space t a (linPullBcf L u)
     (pullJet1 L du) hpull (L.symm x)).comp x L.symm.hasFDerivAt
-  simpa only [spdDuh, spdDuhD1, L, ContinuousLinearMap.comp_apply] using h
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [CompleteSpace F] in
 theorem spdDuhD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
@@ -377,8 +379,7 @@ theorem spdDuhD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (pullJet2 L d2u) hpull (L.symm x)
   have hdom := hz.comp x L.symm.hasFDerivAt
   have h := (precompJet (F := F) L.symm).hasFDerivAt.comp x hdom
-  simpa only [spdDuhD1, spdDuhD2, L, Function.comp_apply,
-    ContinuousLinearMap.comp_apply] using h
+  exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 theorem spdDuh_lap (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)

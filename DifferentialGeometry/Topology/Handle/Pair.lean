@@ -106,8 +106,8 @@ theorem coreProjection_centerInclusion_fixed (k l : ℕ) (t : I) {p : StandardHa
 theorem coreProjection_centerInclusion_preserves_attachingRegion (k l : ℕ) (t : I)
     {p : StandardHandle k l} (hp : p ∈ attachingRegion k l) :
     (coreProjectionCenterInclusionHomotopy k l) (t, p) ∈ attachingRegion k l := by
-  simpa [coreProjectionCenterInclusionHomotopy] using
-    (coreRetract_preserves_attachingRegion k l t hp)
+  change (coreRetract k l).homotopy (t, p) ∈ attachingRegion k l
+  exact coreRetract_preserves_attachingRegion k l t hp
 
 noncomputable def cocoreProjectionCenterInclusionHomotopy (k l : ℕ) :
     ContinuousMap.HomotopyRel (ContinuousMap.id (StandardHandle k l))
@@ -132,8 +132,8 @@ theorem cocoreProjection_centerInclusion_fixed (k l : ℕ) (t : I) {p : Standard
 theorem cocoreProjection_centerInclusion_preserves_beltRegion (k l : ℕ) (t : I)
     {p : StandardHandle k l} (hp : p ∈ beltRegion k l) :
     (cocoreProjectionCenterInclusionHomotopy k l) (t, p) ∈ beltRegion k l := by
-  simpa [cocoreProjectionCenterInclusionHomotopy] using
-    (cocoreRetract_preserves_beltRegion k l t hp)
+  change (cocoreRetract k l).homotopy (t, p) ∈ beltRegion k l
+  exact cocoreRetract_preserves_beltRegion k l t hp
 
 theorem coreProjection_swap (k l : ℕ) (p : StandardHandle l k) :
     coreProjection k l (swap l k p) = cocoreProjection l k p := by
@@ -148,13 +148,15 @@ theorem cocoreProjection_swap (k l : ℕ) (p : StandardHandle l k) :
 theorem swap_coreProjection_centerInclusion_homotopy (k l : ℕ) (t : I) (p : StandardHandle k l) :
     swap k l ((coreProjectionCenterInclusionHomotopy k l) (t, p)) =
       (cocoreProjectionCenterInclusionHomotopy l k) (t, swap k l p) := by
-  simpa [coreProjectionCenterInclusionHomotopy, cocoreProjectionCenterInclusionHomotopy]
-    using coreRetract_swap k l t p
+  change swap k l ((coreRetract k l).homotopy (t, p)) =
+    (cocoreRetract l k).homotopy (t, swap k l p)
+  exact coreRetract_swap k l t p
 
 theorem swap_cocoreProjection_centerInclusion_homotopy (k l : ℕ) (t : I) (p : StandardHandle k l) :
     swap k l ((cocoreProjectionCenterInclusionHomotopy k l) (t, p)) =
       (coreProjectionCenterInclusionHomotopy l k) (t, swap k l p) := by
-  simpa [coreProjectionCenterInclusionHomotopy, cocoreProjectionCenterInclusionHomotopy]
-    using cocoreRetract_swap k l t p
+  change swap k l ((cocoreRetract k l).homotopy (t, p)) =
+    (coreRetract l k).homotopy (t, swap k l p)
+  exact cocoreRetract_swap k l t p
 
 end DifferentialGeometry.Topology.Handle

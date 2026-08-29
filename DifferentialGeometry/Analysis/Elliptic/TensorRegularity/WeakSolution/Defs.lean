@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -120,10 +119,10 @@ lemma tensorChartComponentRaw_tsupport_subset
   have hzero : T.toFun x = 0 := image_eq_zero_of_notMem_tsupport hx_notsupp
   have hsec : T.toSection x = 0 := by
     have hmod : TensorRSSpace.toModel (T.toSection x) = 0 := hzero
-    have := (tensorRSSpace_continuousLinearEquiv (I := I) r s x).injective
+    have := (tensorRSSpaceContinuousLinearEquiv (I := I) r s x).injective
       (a₁ := T.toSection x) (a₂ := 0)
     apply this
-    rw [show (tensorRSSpace_continuousLinearEquiv (I := I) r s x) (T.toSection x) =
+    rw [show (tensorRSSpaceContinuousLinearEquiv (I := I) r s x) (T.toSection x) =
         TensorRSSpace.toModel (T.toSection x) from rfl, hmod, ContinuousLinearEquiv.map_zero]
   exact hx (tensorChartComponentRaw_eq_zero_of_section_eq_zero
     (I := I) (M := M) g r s T α Idx Jdx hsec)

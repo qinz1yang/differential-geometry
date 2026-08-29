@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -152,12 +153,11 @@ theorem inner_uhlenbeckCurvatureOperatorMatrix_eq_matrix
     inner ℝ ν (uhlenbeckCurvatureOperatorMatrix pulledRm t x) =
       ∑ ij : Fin 3 × Fin 3,
         ν ij * uhlenbeckCurvatureOperatorMatrixAsMatrix pulledRm t x ij.1 ij.2 := by
-  change inner ℝ ν (matrixToEuclidean
-      (fun i j : Fin 3 => uhlenbeckCurvatureOperatorMatrix pulledRm t x (i, j))) =
-    ∑ ij : Fin 3 × Fin 3,
-      ν ij * uhlenbeckCurvatureOperatorMatrixAsMatrix pulledRm t x ij.1 ij.2
-  rw [inner_matrixToEuclidean]
-  simp [uhlenbeckCurvatureOperatorMatrix, uhlenbeckCurvatureOperatorMatrixAsMatrix]
+  have hmatrix : uhlenbeckCurvatureOperatorMatrix pulledRm t x =
+      matrixToEuclidean (uhlenbeckCurvatureOperatorMatrixAsMatrix pulledRm t x) := by
+    ext ij
+    rfl
+  rw [hmatrix, inner_matrixToEuclidean]
 
 end DifferentialGeometry.PDE.RicciFlow
 

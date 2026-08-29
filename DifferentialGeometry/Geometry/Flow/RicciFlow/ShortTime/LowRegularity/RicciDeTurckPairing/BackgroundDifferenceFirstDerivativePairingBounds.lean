@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Firs
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -68,7 +67,7 @@ private theorem domDomCongrSection_sub
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel]
   apply ContinuousMultilinearMap.ext
   intro v
-  simp only [ContinuousMultilinearMap.sub_apply,
+  simp only [sub_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -103,7 +102,7 @@ private theorem cometricRaiseSlot0Field_sub
     rfl]
   exact ContinuousLinearMap.map_sub _ _ _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieArmOneBackgroundLoweredConnectionDifference_eq_neg_lieCorrectionZeroKappa
     (g gT gB : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB =
@@ -116,7 +115,7 @@ private theorem deTurckLieArmOneBackgroundLoweredConnectionDifference_eq_neg_lie
   simp only [neg_neg] at hneg
   exact hneg.symm
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieArmOneBackgroundLoweredConnectionDifference_backgroundDifference
     (g gT gB : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2)
@@ -138,7 +137,7 @@ private noncomputable def deTurckLieArmOneBackgroundRaisedConnectionDifference
     (domDomCongrSection (I := I) g lieArm1RhoSlot0
       (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g gT gB))
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_backgroundDifference
     (g gT gB : SmoothRiemannianMetric I M)
@@ -162,7 +161,7 @@ private noncomputable def deTurckLieArmOneBackgroundCoefficientDifference
     deTurckLieArmOneBackgroundCoefficient (I := I) (M := M) g gT g
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieArmOneBackgroundCoefficientDifference_eq_comp
     (g gT gB : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB =
@@ -173,7 +172,7 @@ private theorem deTurckLieArmOneBackgroundCoefficientDifference_eq_comp
   simp only [deTurckLieArmOneBackgroundCoefficientDifference, deTurckLieArmOneBackgroundRaisedConnectionDifference, deTurckLieArmOneBackgroundCoefficient, lieArm1RhoSlot0]
   rw [operatorFieldComposition_sub_left]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
     (g gT gU gB : SmoothRiemannianMetric I M)
@@ -199,7 +198,7 @@ private theorem deTurckLieArmOneBackgroundRaisedConnectionDifference_difference
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieArmOneBackgroundCoefficientDifference_difference_decomposition
     (g gT gU gB : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundCoefficientDifference (I := I) (M := M) g gT gB -
@@ -240,6 +239,7 @@ private theorem deTurckLieArmOneBackgroundCoefficientDifference_difference_decom
   rw [hR, hL]
   module
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_add_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -276,6 +276,7 @@ private theorem covariantJetNormSq_add_le
           ‖iteratedCovGrad (I := I) g r s q V‖ ^ 2) := by
       simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_smul
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -289,6 +290,7 @@ private theorem covariantJetNormSq_smul
   rw [iteratedCovGrad_smul, norm_smul, Real.norm_eq_abs,
     mul_pow, sq_abs]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_neg
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -764,7 +766,7 @@ private theorem deTurckLieTraceCoeffPiece_add
     operatorFieldComposition_add_right, reindexCoeffGen_add (I := I) (M := M)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieTraceCoeffPiece_sub
     (g gm : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3))
@@ -787,7 +789,7 @@ private theorem deTurckLieArmOneBackgroundConnectionDifference_self
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem deTurckLieArmOneCoefficient_backgroundDifference_decomposition
     (g gm gB : SmoothRiemannianMetric I M) :
     deTurckLieArm1Coeff (I := I) (M := M) g gm gB -
@@ -1052,7 +1054,7 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNorm
         mul_nonneg (hQfix R hR) (hQpsi R hR)]
     _ = (B R) ^ 2 := rfl
 
-noncomputable def lowerScaleFirstOrderCoefficient_backgroundDifference
+noncomputable def lowerScaleFirstOrderCoefficientBackgroundDifference
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδT : gFibreOpBound (I := I) (M := M) g
@@ -1082,9 +1084,38 @@ private noncomputable def lowerScaleFirstOrderCoefficient_backgroundDifferencePa
     (by
       rw [Set.uIcc_of_le zero_le_one]
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)
-    (threeArmJoint_sub (I := I) (M := M) g _ _
-      (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g gBase T 0 hδT hδZ)
-      (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g g T 0 hδT hδZ))
+    (by
+      change linearizedRicciThreeArmHjoint (I := I) (M := M) g 3
+        (fun s =>
+          ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+              g gBase T 0 hδT hδZ s -
+            ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+              g g T 0 hδT hδZ s)
+      exact threeArmJoint_sub (I := I) (M := M) g _ _
+        (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M)
+          g gBase T 0 hδT hδZ)
+        (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M)
+          g g T 0 hδT hδZ))
+
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral_toModel
+    (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδT : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g T) δ)
+    (hδZ : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) (x : M) :
+    TensorRSSpace.toModel
+        ((lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral
+          (I := I) (M := M) g gBase T hδ_lt hδT hδZ).toSection x) =
+      ∫ s in (0 : ℝ)..1, TensorRSSpace.toModel
+        ((ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+            g gBase T 0 hδT hδZ s -
+          ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+            g g T 0 hδT hδZ s).toSection x) := by
+  unfold lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral
+  exact pathIntegralCoeffField_toModel (I := I) (M := M) g 3 2 _ _ _ _ _ x
 
 private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathIntegral
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -1094,7 +1125,7 @@ private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathInte
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
-    lowerScaleFirstOrderCoefficient_backgroundDifference (I := I) (M := M) g gBase T hδ_lt hδT hδZ =
+    lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T hδ_lt hδT hδZ =
       lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral (I := I) (M := M) g gBase T hδ_lt hδT hδZ := by
   classical
   apply SmoothCcTensor.ext
@@ -1131,12 +1162,17 @@ private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathInte
           T 0 hδT hδZ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (hScont.mono hSI).intervalIntegrable
-  simp only [lowerScaleFirstOrderCoefficient_backgroundDifference, lowerScaleActionCoefficients, ricciDeTurckRemainderFirstOrderPathIntegral, lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral,
-    pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
-    ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
+  simp only [lowerScaleFirstOrderCoefficientBackgroundDifference, lowerScaleActionCoefficients,
+    SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
+    TensorRSSpace.toModel_sub]
+  rw [ricciDeTurckRemainderFirstOrderPathIntegral_toModel,
+    ricciDeTurckRemainderFirstOrderPathIntegral_toModel]
+  rw [lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral_toModel]
+  simp only [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
+    TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hBint hSint]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem rhsLow1Coeff_backgroundDifference_eq_deTurckLieArmOneCoefficientDifference
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ}
@@ -1176,7 +1212,7 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
           ∀ R : ℝ, 0 ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           covariantJetNormSq (I := I) (M := M) g 2
-            (lowerScaleFirstOrderCoefficient_backgroundDifference (I := I) (M := M) g gBase T
+            (lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T
               (lt_of_le_of_lt hδ_le hδ₀) hδT hδZ) ≤
             (B R) ^ 2 := by
   obtain ⟨C, hC⟩ := exists_convex_jets (I := I) (M := M) gBase hΛ

@@ -21,15 +21,15 @@ open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [InnerProductSpace Real E] [FiniteDimensional Real E]
+  [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def IntrinsicRm04Bound
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -46,9 +46,8 @@ def IntrinsicRm04Bound
         (I := I) (M := M) g
         (intrinsicGeodesic (I := I) g hEnorm p u t))) ≤ R
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-omit [InnerProductSpace ℝ E] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJacobi_ode
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -85,8 +84,12 @@ theorem intrJacobi_ode
   let J : ∀ t : Real, TangentSpace I (γ t) :=
     intrinsicJacobi (I := I) g hEnorm p u w
   have hJac : IsJacobiAlong (I := I) g γ J := by
-    simpa only [γ, J] using
-      intrinsic_jacobi (I := I) g hEnorm p (u : E) (w : E)
+    have hγeq :
+        γ = fun t ↦ intrinsicGeodesic (I := I) g hEnorm p u t := rfl
+    have hJeq :
+        J = fun t ↦ intrinsicJacobi (I := I) g hEnorm p u w t := rfl
+    rw [hγeq, hJeq]
+    exact intrinsic_jacobi (I := I) g hEnorm p (u : E) (w : E)
   intro t ht
   have hD2 := (isJacobiAlong_iff (I := I) g γ J).mp hJac t
   have htBound : t ∈ Ico (0 : Real) 1 := ht
@@ -99,9 +102,9 @@ theorem intrJacobi_ode
         q Jt V V
     have hfin :
         Module.finrank Real (TangentSpace I q) ≠ 0 := by
-      simpa only [q] using
-        (NeZero.out : Module.finrank Real E ≠ 0)
-    letI : Nonempty
+      rw [show Module.finrank Real (TangentSpace I q) = Module.finrank Real E from rfl]
+      exact NeZero.out
+    let : Nonempty
         (Fin (Module.finrank Real (TangentSpace I q))) :=
       Fin.pos_iff_nonempty.mp (Nat.pos_of_ne_zero hfin)
     obtain ⟨basis, hON⟩ :=
@@ -110,6 +113,11 @@ theorem intrJacobi_ode
     have hOp :=
       DifferentialGeometry.Integral.Connection.riemannOp_sq_le
         (I := I) g q basis (by simp) hON Jt V
+    have hcardq :
+        (Fintype.card (Fin (Module.finrank Real (TangentSpace I q))) : Real) =
+          (Fintype.card (Fin (Module.finrank Real E)) : Real) := by
+      rfl
+    rw [hcardq] at hOp
     have hRmAt :
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
@@ -124,8 +132,8 @@ theorem intrJacobi_ode
       · simp [hzero]
       · exact (g.pos p u hne).le
     have hVeq : g.inner q V V = g.inner p u u := by
-      simpa only [q, V, γ, curveVelocity] using
-        intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p u t
+      convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p u t using 1
+      all_goals rfl
     have hVroot :
         (Real.sqrt (g.inner q V V)) ^ 2 = g.inner p u u := by
       rw [Real.sq_sqrt]
@@ -193,7 +201,7 @@ theorem intrJacobi_ode
       g.inner q Rv Rv ≤
           n * (A * Real.sqrt (g.inner q Jt Jt) *
             (Real.sqrt (g.inner q V V)) ^ 2) ^ 2 := by
-        simpa only [n, A, q, V, Jt, Rv] using hOp
+        simpa only [A, q, V, Jt, Rv] using hOp
       _ ≤ n * (R * Real.sqrt (g.inner q Jt Jt) *
             g.inner p u u) ^ 2 := hscaled
       _ = (Real.sqrt n * R * g.inner p u u) ^ 2 *
@@ -206,9 +214,8 @@ theorem intrJacobi_ode
               (intrinsicJacobi (I := I) g hEnorm p u w t)
               (intrinsicJacobi (I := I) g hEnorm p u w t) := rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-omit [InnerProductSpace ℝ E] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJacobi_bounds
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -276,8 +283,9 @@ theorem intrJacobi_bounds
     rfl
   have hfin :
       Module.finrank Real (TangentSpace I (γ 0)) ≠ 0 := by
-    simpa using (NeZero.out : Module.finrank Real E ≠ 0)
-  letI : Nonempty (Fin (Module.finrank Real (TangentSpace I (γ 0)))) :=
+    rw [show Module.finrank Real (TangentSpace I (γ 0)) = Module.finrank Real E from rfl]
+    exact NeZero.out
+  let : Nonempty (Fin (Module.finrank Real (TangentSpace I (γ 0)))) :=
     Fin.pos_iff_nonempty.mp (Nat.pos_of_ne_zero hfin)
   have hJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real (chartRepAt (I := I) γ J t) t := by
@@ -292,8 +300,12 @@ theorem intrJacobi_bounds
   have hJ0 : J 0 = 0 := by
     simpa only [J] using intrinsicJacobi_zero (I := I) g hEnorm p u w
   have hDJ0 : covDerivAlong (I := I) g γ J 0 = w := by
-    simpa only [γ, J, intrinsicJacobi] using
-      intrinsic_jacobi_d0 (I := I) g hEnorm p (u : E) (w : E)
+    have hγeq :
+        γ = fun t ↦ intrinsicGeodesic (I := I) g hEnorm p u t := rfl
+    have hJeq :
+        J = fun t ↦ intrinsicJacobi (I := I) g hEnorm p u w t := rfl
+    rw [hγeq, hJeq]
+    exact intrinsic_jacobi_d0 (I := I) g hEnorm p (u : E) (w : E)
   have hbounds := covGronwall_bounds_at (I := I) g γ
     (K := K) (b := b) (fun _ _ => hγInf.contMDiffAt.of_le (by norm_num))
     hcard F J hK hb.le hFpar hFON hFdiff hJdiff hDJdiff hODE hJ0 hDJ0
@@ -303,9 +315,8 @@ theorem intrJacobi_bounds
   rw [hγ0] at hbounds
   exact hbounds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-omit [InnerProductSpace ℝ E] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrForce_pair
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -390,8 +401,9 @@ theorem intrForce_pair
     rfl
   have hfin :
       Module.finrank Real (TangentSpace I (γ 0)) ≠ 0 := by
-    simpa using (NeZero.out : Module.finrank Real E ≠ 0)
-  letI : Nonempty (Fin (Module.finrank Real (TangentSpace I (γ 0)))) :=
+    rw [show Module.finrank Real (TangentSpace I (γ 0)) = Module.finrank Real E from rfl]
+    exact NeZero.out
+  let : Nonempty (Fin (Module.finrank Real (TangentSpace I (γ 0)))) :=
     Fin.pos_iff_nonempty.mp (Nat.pos_of_ne_zero hfin)
   have hJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real (chartRepAt (I := I) γ J t) t := by
@@ -414,9 +426,8 @@ theorem intrForce_pair
     (by simpa only [γ] using hDJ0)
   simpa only [γ] using hbounds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-omit [InnerProductSpace ℝ E] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJacobi_pair
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -485,8 +496,9 @@ theorem intrJacobi_pair
     rfl
   have hfin :
       Module.finrank Real (TangentSpace I (γ 0)) ≠ 0 := by
-    simpa using (NeZero.out : Module.finrank Real E ≠ 0)
-  letI : Nonempty (Fin (Module.finrank Real (TangentSpace I (γ 0)))) :=
+    rw [show Module.finrank Real (TangentSpace I (γ 0)) = Module.finrank Real E from rfl]
+    exact NeZero.out
+  let : Nonempty (Fin (Module.finrank Real (TangentSpace I (γ 0)))) :=
     Fin.pos_iff_nonempty.mp (Nat.pos_of_ne_zero hfin)
   have hJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real (chartRepAt (I := I) γ J t) t := by
@@ -501,8 +513,12 @@ theorem intrJacobi_pair
   have hJ0 : J 0 = 0 := by
     simpa only [J] using intrinsicJacobi_zero (I := I) g hEnorm p u w
   have hDJ0 : covDerivAlong (I := I) g γ J 0 = w := by
-    simpa only [γ, J, intrinsicJacobi] using
-      intrinsic_jacobi_d0 (I := I) g hEnorm p (u : E) (w : E)
+    have hγeq :
+        γ = fun t ↦ intrinsicGeodesic (I := I) g hEnorm p u t := rfl
+    have hJeq :
+        J = fun t ↦ intrinsicJacobi (I := I) g hEnorm p u w t := rfl
+    rw [hγeq, hJeq]
+    exact intrinsic_jacobi_d0 (I := I) g hEnorm p (u : E) (w : E)
   have hγ0 : γ 0 = p := by
     simpa only [γ] using intrinsicGeodesic_zero (I := I) g hEnorm p u
   have hJ0norm :

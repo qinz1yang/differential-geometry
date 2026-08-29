@@ -66,7 +66,8 @@ theorem ricci_tendsto_left
   intro ns hns
   let qSeq : Nat -> Real := fun n => tSeq (ns n)
   have hqSeq : Tendsto qSeq atTop (nhdsWithin omega (Set.Iio omega)) := by
-    simpa [qSeq, Function.comp_apply] using htSeq.comp hns
+    exact Filter.Tendsto.congr'
+      (Filter.Eventually.of_forall fun _ => rfl) (htSeq.comp hns)
   have htail : ∀ᶠ n in atTop, qSeq n ∈ Set.Ioo beta omega :=
     hqSeq.eventually (Filter.inter_mem
       (mem_nhdsWithin_of_mem_nhds (Ioi_mem_nhds hBetaOmega))
@@ -76,8 +77,9 @@ theorem ricci_tendsto_left
   have hShiftMem (n : Nat) : qShift n ∈ Set.Ioo beta omega := by
     exact hn0 (n + n0) (by omega)
   have hqShift : Tendsto qShift atTop (nhdsWithin omega (Set.Iio omega)) := by
-    simpa [qShift, qSeq, Function.comp_apply] using
-      hqSeq.comp (tendsto_add_atTop_nat n0)
+    exact Filter.Tendsto.congr'
+      (Filter.Eventually.of_forall fun _ => rfl)
+      (hqSeq.comp (tendsto_add_atTop_nat n0))
   let gRef : SmoothRiemannianMetric I M := S.base.metric alpha
   let gSeq : Nat -> SmoothRiemannianMetric I M :=
     fun n => S.base.metric (qShift n)
@@ -130,9 +132,18 @@ theorem ricci_tendsto_left
       have hEndSeq : Tendsto
           (fun k => (gSeq (phi k)).inner y (b i) (b j)) atTop
           (nhds (gInf.inner y (b i) (b j))) := by
-        simpa [gSeq, qShift, qSeq, b, Integral.Measure.chartBasisFamily_apply,
-          Integral.Measure.chartGramMatrix_apply, Function.comp_apply] using
-          (hleft y y i j).comp (hqShift.comp hPhi.tendsto_atTop)
+        have hend := (hleft y y i j).comp (hqShift.comp hPhi.tendsto_atTop)
+        have hlimit : Integral.Measure.chartGramMatrix (I := I) gInf y y i j =
+            gInf.inner y (b i) (b j) := by
+          simp only [b, Integral.Measure.chartGramMatrix_apply,
+            Integral.Measure.chartBasisFamily_apply]
+        rw [hlimit] at hend
+        refine Filter.Tendsto.congr'
+          (Filter.Eventually.of_forall fun k => ?_)
+          hend
+        simp only [Function.comp_apply, gSeq, qShift, qSeq, b,
+          Integral.Measure.chartGramMatrix_apply,
+          Integral.Measure.chartBasisFamily_apply]
       exact tendsto_nhds_unique hLimSeq hEndSeq
     have hcoe : (gLim.inner y).toLinearMap = (gInf.inner y).toLinearMap := by
       apply Module.Basis.ext b

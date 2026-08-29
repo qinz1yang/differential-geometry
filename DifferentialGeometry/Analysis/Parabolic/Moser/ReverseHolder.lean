@@ -43,7 +43,7 @@ theorem positive_rpow_reverse_holder_step
     (hat₁ : a ≤ t₁) (ht₁b : t₁ < b)
     (hK : 0 ≤ K) (hL : 0 ≤ L)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hcutoff : ∀ x : M, cutoff.toFun x ^ 2 ≤ outer.toFun x ^ 2)
     (hgrad : ∀ x : M,

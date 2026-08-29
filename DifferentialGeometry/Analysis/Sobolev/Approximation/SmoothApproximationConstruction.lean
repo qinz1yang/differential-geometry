@@ -100,8 +100,8 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     intro j
     exact hu_cs.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
   refine ⟨{
-    u_seq := fun _ => u
-    f_seq := fun _ => f
+    uSeq := fun _ => u
+    fSeq := fun _ => f
     u_seq_smooth := fun _ => hu_smooth
     is_smooth_weak_sol := fun _ => ?_
     f_seq_l2_loc := fun _ {S} _hS_cc =>
@@ -111,7 +111,7 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     grad_seq_l2_loc := fun _ {S} _hS_cc j =>
       memLp_two_restrict_of_continuous_compactSupport
         (h_grad_cont j) (hu_grad_cs j) S
-    data_bound := D
+    dataBound := D
     data_bound_nn := hD_nn
     data_integrated_bound := ?_
   }⟩
@@ -123,7 +123,7 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
       lt_of_le_of_lt (measure_mono subset_closure) hΩ'_cc.measure_lt_top
     set V : ℝ := (volume Ω').toReal with hV_def
     have hV_nn : 0 ≤ V := ENNReal.toReal_nonneg
-    haveI : IsFiniteMeasure (volume.restrict Ω') := by
+    have : IsFiniteMeasure (volume.restrict Ω') := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact h_volume_lt_top
@@ -231,7 +231,7 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
           ∑ j : Fin d, ∫ y in Ω',
               ((fderiv ℝ u y) (EuclideanSpace.single j 1)) ^ 2
             ∂(volume : Measure E) := by
-        refine integral_finset_sum (μ := volume.restrict Ω') Finset.univ ?_
+        refine integral_finsetSum (μ := volume.restrict Ω') Finset.univ ?_
         intro j _
         have h_cont_sq : Continuous
             (fun y : E => ((fderiv ℝ u y) (EuclideanSpace.single j 1)) ^ 2) :=

@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
@@ -164,7 +163,7 @@ lemma cov_V_toFun_covApply_pairedSection_apply
       (fun b => τ b) (covApply cov_U (fun b => Z b) (fun b => Y b)))) x :=
     ((ContMDiff.clm_bundle_apply (b := id) hτ hcovZY_glob) x).mdifferentiableAt (by simp)
   rw [cov_V.isCovariantDerivativeOnUniv.add hadd1 hadd2]
-  simp only [ContinuousLinearMap.add_apply]
+  simp only [add_apply]
   rw [cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V hcovZτ hY_at v,
       cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V hτ_at hcovZY v]
   abel
@@ -197,7 +196,7 @@ lemma riemannSec_cov_V_pairedSection_eq
   rw [cov_V_toFun_pairedSection_apply I M E_U U F V cov_U cov_V hτ_at hY_at
         (VectorField.mlieBracket I (fun b => X b) (fun b => W b) x)]
   rw [riemannSec_def, riemannSec_def]
-  simp only [covApply_apply, ContinuousLinearMap.sub_apply, map_sub]
+  simp only [covApply_apply, sub_apply, map_sub]
   abel
 
 omit [BoundarylessManifold I M] in

@@ -141,7 +141,7 @@ theorem klBasisPot_sub {T t : ℝ}
     rw [← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro i _
-    simp only [ContinuousLinearMap.sub_apply]
+    simp only [sub_apply]
     exact klHeat1_sub (V := V) ht htT
       ((stdOrthonormalBasis ℝ V) i)
       (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i))

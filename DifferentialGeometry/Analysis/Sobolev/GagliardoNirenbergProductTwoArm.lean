@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -39,7 +40,7 @@ private theorem real_holder_two_nonneg
       (∫ x, φ x ^ p ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ (1 / p) *
       (∫ x, ψ x ^ q ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ (1 / q) := by
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   have hp_pos : 0 < p := hpq.left_pos
   have hq_pos : 0 < q := hpq.right_pos
@@ -105,7 +106,7 @@ private theorem integrable_riemannianFiberNormSq_mul
       (fun x => riemannianFiberNormSq (I := I) (M := M) g r₁ s₁ x (S.toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g r₂ s₂ x (T.toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   exact ((continuous_riemannianFiberNormSq g r₁ s₁ S).mul
     (continuous_riemannianFiberNormSq g r₂ s₂ T)).integrable_of_hasCompactSupport
@@ -179,7 +180,7 @@ theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_le
                   ‖DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad
                     (I := I) g 0 s₂ l T‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   set CSf : ℕ → ℝ := fun m =>
     if h : 1 ≤ m then
@@ -498,25 +499,25 @@ theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_le
   constructor
   · have hcont : Continuous (fun x => ∑ i ∈ Finset.range (k + 1), Sj i x *
         ∑ l ∈ Finset.range (k + 1 - i), Tj l x) := by
-      refine continuous_finset_sum _ (fun i _ => (hSj_cont i).mul ?_)
-      exact continuous_finset_sum _ (fun l _ => hTj_cont l)
+      refine continuous_finsetSum _ (fun i _ => (hSj_cont i).mul ?_)
+      exact continuous_finsetSum _ (fun l _ => hTj_cont l)
     rw [hμ]
     exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   · have hrw : (∫ x, ∑ i ∈ Finset.range (k + 1), Sj i x *
           ∑ l ∈ Finset.range (k + 1 - i), Tj l x ∂μ)
         = ∑ i ∈ Finset.range (k + 1), ∑ l ∈ Finset.range (k + 1 - i),
             ∫ x, Sj i x * Tj l x ∂μ := by
-      rw [MeasureTheory.integral_finset_sum _
+      rw [MeasureTheory.integral_finsetSum _
         (fun i _ => by
           rw [hμ]
-          exact ((hSj_cont i).mul (continuous_finset_sum _
+          exact ((hSj_cont i).mul (continuous_finsetSum _
             (fun l _ => hTj_cont l))).integrable_of_hasCompactSupport
             (HasCompactSupport.of_compactSpace _))]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [show (∫ x, Sj i x * ∑ l ∈ Finset.range (k + 1 - i), Tj l x ∂μ)
             = ∫ x, ∑ l ∈ Finset.range (k + 1 - i), Sj i x * Tj l x ∂μ from by
           simp only [Finset.mul_sum],
-        MeasureTheory.integral_finset_sum _ (fun l _ => hint_cell i l)]
+        MeasureTheory.integral_finsetSum _ (fun l _ => hint_cell i l)]
     rw [hrw]
     have hsum_le : ∑ i ∈ Finset.range (k + 1), ∑ l ∈ Finset.range (k + 1 - i),
           ∫ x, Sj i x * Tj l x ∂μ ≤
@@ -584,7 +585,7 @@ theorem exists_integrated_diagonalProductGrid_twoArm_pair_le
                   + ‖DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad
                     (I := I) g 0 s₂ l T₂‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ
   obtain ⟨C, hC0, hsym⟩ :=
@@ -619,8 +620,8 @@ theorem exists_integrated_diagonalProductGrid_twoArm_pair_le
     ∑ i ∈ Finset.range (k + 1), Wj i x * ∑ l ∈ Finset.range (k + 1 - i), Tj l x with hgridDef
   have hgrid_cont : ∀ Tj : ℕ → M → ℝ, (∀ b, Continuous (Tj b)) → Continuous (grid Tj) := by
     intro Tj hTj; rw [hgridDef]
-    exact continuous_finset_sum _ (fun i _ => (hWj_cont i).mul
-      (continuous_finset_sum _ (fun l _ => hTj l)))
+    exact continuous_finsetSum _ (fun i _ => (hWj_cont i).mul
+      (continuous_finsetSum _ (fun l _ => hTj l)))
   have hgrid_int : ∀ Tj : ℕ → M → ℝ, (∀ b, Continuous (Tj b)) → Integrable (grid Tj) μ := by
     intro Tj hTj; rw [hμ]
     exact (hgrid_cont Tj hTj).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
@@ -847,7 +848,7 @@ theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topArm_scaled_le
                   ‖DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad
                     (I := I) g 0 s₂ l T‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   set CS : ℝ :=
     if h : 1 ≤ k then
@@ -1063,12 +1064,12 @@ theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topArm_scaled_le
             rw [mul_add, mul_assoc, mul_assoc]
   refine ⟨?_, ?_⟩
   · have hcont : Continuous (fun x => ∑ i ∈ Finset.range k, Sj i x * Tj (k - i) x) := by
-      refine continuous_finset_sum _ (fun i _ => (hSj_cont i).mul (hTj_cont (k - i)))
+      refine continuous_finsetSum _ (fun i _ => (hSj_cont i).mul (hTj_cont (k - i)))
     rw [hμ]
     exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   · have hrw : (∫ x, ∑ i ∈ Finset.range k, Sj i x * Tj (k - i) x ∂μ)
         = ∑ i ∈ Finset.range k, ∫ x, Sj i x * Tj (k - i) x ∂μ :=
-      MeasureTheory.integral_finset_sum _ (fun i _ => hint_cell i (k - i))
+      MeasureTheory.integral_finsetSum _ (fun i _ => hint_cell i (k - i))
     rw [hrw]
     have hsum_le : (∑ i ∈ Finset.range k, ∫ x, Sj i x * Tj (k - i) x ∂μ) ≤
         ∑ _i ∈ Finset.range k,
@@ -1099,8 +1100,11 @@ theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topArm_scaled_le
           (k : ℝ) * Cbig * ((k : ℝ) * Cbig + 1) ^ k ≤
             (k : ℝ) * Cbig * ((k : ℝ) * Cbig + 1) ^ k + 1 :=
         le_add_of_nonneg_right zero_le_one
-      convert mul_le_mul_of_nonneg_right hcoeff h1tk using 1
-      all_goals ring
+      calc
+        (k : ℝ) * (Cbig * (((k : ℝ) * Cbig + 1) ^ k * (1 / t) ^ k)) =
+            ((k : ℝ) * Cbig * ((k : ℝ) * Cbig + 1) ^ k) * (1 / t) ^ k := by ring
+        _ ≤ ((k : ℝ) * Cbig * ((k : ℝ) * Cbig + 1) ^ k + 1) * (1 / t) ^ k :=
+          mul_le_mul_of_nonneg_right hcoeff h1tk
     have hXnn : (0 : ℝ) ≤ ΛT ^ 2 * NS ^ 2 := by positivity
     have hYnn : (0 : ℝ) ≤ ΛS ^ 2 * NT ^ 2 := by positivity
     have hYsum : ΛS ^ 2 * NT ^ 2 ≤ ΛS ^ 2 * ∑ l ∈ Finset.range (k + 1),

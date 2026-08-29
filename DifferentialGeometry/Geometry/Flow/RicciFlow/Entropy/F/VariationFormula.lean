@@ -685,7 +685,7 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
           (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hdivTrace :
       ∀ x : M,
-        DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+        DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
             (I := I) g traceVec x =
           rawTrace x)
     (hactionTrace :
@@ -699,22 +699,22 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
     (hlap :
       ∀ x : M,
         lapPotential x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hpotential⟩ x)
     (hgradSq :
       ∀ x : M,
         gradPotentialNormSq x =
           g.inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
     (hshift :
       ∀ x : M,
         shiftedTrace x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hq⟩ x)
     (hqeq :
       ∀ x : M,
@@ -737,13 +737,13 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
         ∫ x,
           expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
-            (DifferentialGeometry.Geometry.Operator.Δ_g
+            (DifferentialGeometry.Geometry.Operator.ΔG
                 (I := I) g ⟨_, hpotential⟩ x -
               g.inner x
-                ((DifferentialGeometry.Geometry.Operator.grad_g
+                ((DifferentialGeometry.Geometry.Operator.gradG
                   (I := I) g ⟨_, hpotential⟩ :
                   Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-                ((DifferentialGeometry.Geometry.Operator.grad_g
+                ((DifferentialGeometry.Geometry.Operator.gradG
                   (I := I) g ⟨_, hpotential⟩ :
                   Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
         ∂(expNegPotentialWeightedMeasure
@@ -766,13 +766,13 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
         ∫ x,
           expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
-            (DifferentialGeometry.Geometry.Operator.Δ_g
+            (DifferentialGeometry.Geometry.Operator.ΔG
                 (I := I) g ⟨_, hpotential⟩ x -
               g.inner x
-                ((DifferentialGeometry.Geometry.Operator.grad_g
+                ((DifferentialGeometry.Geometry.Operator.gradG
                   (I := I) g ⟨_, hpotential⟩ :
                   Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-                ((DifferentialGeometry.Geometry.Operator.grad_g
+                ((DifferentialGeometry.Geometry.Operator.gradG
                   (I := I) g ⟨_, hpotential⟩ :
                   Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
         ∂(expNegPotentialWeightedMeasure

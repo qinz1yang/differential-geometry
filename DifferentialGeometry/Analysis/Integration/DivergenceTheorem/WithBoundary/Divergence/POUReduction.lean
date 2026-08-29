@@ -13,7 +13,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 
 
 noncomputable section
@@ -26,7 +26,7 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -38,7 +38,7 @@ example (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     (smoothSmul
         (I := I) φ hφ X) x = φ x • X x := rfl
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma scalarOnE_mdifferentiableWithinAt_target
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {y : E} (hy : y ∈ (extChartAt I α).target) :
@@ -52,7 +52,7 @@ private lemma scalarOnE_mdifferentiableWithinAt_target
     hcont.differentiableWithinAt (by simp)
   exact hdiff.mdifferentiableWithinAt
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma extChartAt_mapsTo_target_chart_source (α : M) :
     Set.MapsTo (extChartAt I α : M → E) (chartAt H α).source
       (extChartAt I α).target := by
@@ -61,7 +61,6 @@ private lemma extChartAt_mapsTo_target_chart_source (α : M) :
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx
   exact (extChartAt I α).map_source hx'
 
-omit [InnerProductSpace ℝ E] in
 private lemma mfderiv_extChartAt_chartBasisVecFiber
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
@@ -84,28 +83,25 @@ private lemma mfderiv_extChartAt_chartBasisVecFiber
     exact (TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
       (x₀ := α) (x := x) hx).symm
   rw [hmfderiv_eq]
-  change T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i))
+  change T.continuousLinearMapAt ℝ x (T.symmL ℝ x ((chartModelBasis E) i))
     = (chartModelBasis E) i
-  rw [show T.symm x ((chartModelBasis E) i) =
-        T.symmL ℝ x ((chartModelBasis E) i) from by
-      rw [Trivialization.symmL_apply]]
   exact Trivialization.continuousLinearMapAt_symmL (R := ℝ) T (b := x) hbase
     ((chartModelBasis E) i)
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma mfderivWithin_extChartAt_chart_source
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source) :
     mfderivWithin I 𝓘(ℝ, E) (extChartAt I α : M → E) (chartAt H α).source x =
       mfderiv I 𝓘(ℝ, E) (extChartAt I α : M → E) x :=
   mfderivWithin_of_isOpen (chartAt H α).open_source hx
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma mfderivWithin_chart_source_of_mdiff
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source) (f : M → ℝ) :
     mfderivWithin I 𝓘(ℝ) f (chartAt H α).source x = mfderiv I 𝓘(ℝ) f x :=
   mfderivWithin_of_isOpen (chartAt H α).open_source hx
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma mfderiv_factor_through_extChartAt
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source)
@@ -181,7 +177,6 @@ private lemma mfderiv_factor_through_extChartAt
   rw [hgoal_full, hscalar_mfd_eq_fd]
   rfl
 
-omit [InnerProductSpace ℝ E] in
 private lemma mfderiv_chartBasisVecFiber_within
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source)
@@ -196,7 +191,6 @@ private lemma mfderiv_chartBasisVecFiber_within
   rw [mfderiv_extChartAt_chartBasisVecFiber (I := I) α hx i]
   rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem tangentSectionAction_chartLocal_within
     (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -221,7 +215,6 @@ theorem tangentSectionAction_chartLocal_within
   rw [mfderiv_chartBasisVecFiber_within (I := I) α hf hx i]
   exact smul_eq_mul ..
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartCoeffOnE_mul_chartDensityOnE_differentiableWithinAt
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -238,7 +231,7 @@ private lemma chartCoeffOnE_mul_chartDensityOnE_differentiableWithinAt
     chartCoeffOnE_mul_chartDensityOnE_contDiffOn (I := I) g α X i
   exact (hsmooth y hy).differentiableWithinAt (by simp)
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma scalarOnE_differentiableWithinAt
     (α : M) {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     {y : E} (hy : y ∈ (extChartAt I α).target) :
@@ -248,7 +241,6 @@ private lemma scalarOnE_differentiableWithinAt
     scalarOnE_contDiffOn (I := I) α hφ
   exact (hsmooth y hy).differentiableWithinAt (by simp)
 
-omit [InnerProductSpace ℝ E] in
 private lemma localDivergenceWithin_at_self_smoothSmul
     (g : SmoothRiemannianMetric I M) (x : M)
     (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
@@ -387,29 +379,27 @@ private lemma localDivergenceWithin_at_self_smoothSmul
     intro i _
     rw [hchartCoeff i]
 
-omit [InnerProductSpace ℝ E] in
 theorem divergence_g_with_boundary_smoothSmul
     (g : SmoothRiemannianMetric I M)
     (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M,
-      divergence_g_with_boundary (I := I) g
+      divergenceGWithBoundary (I := I) g
         (smoothSmul
           (I := I) φ hφ X) x =
-        φ x * divergence_g_with_boundary (I := I) g X x +
+        φ x * divergenceGWithBoundary (I := I) g X x +
           tangentSectionAction (I := I) X φ x := by
   intro x
   rw [divergence_g_with_boundary_def, divergence_g_with_boundary_def]
   exact localDivergenceWithin_at_self_smoothSmul (I := I) g x φ hφ X
 
-omit [InnerProductSpace ℝ E] in
 theorem divergence_g_with_boundary_add
     (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M,
-      divergence_g_with_boundary (I := I) g (X + Y) x =
-        divergence_g_with_boundary (I := I) g X x +
-          divergence_g_with_boundary (I := I) g Y x := by
+      divergenceGWithBoundary (I := I) g (X + Y) x =
+        divergenceGWithBoundary (I := I) g X x +
+          divergenceGWithBoundary (I := I) g Y x := by
   intro x
   classical
   rw [divergence_g_with_boundary_def, divergence_g_with_boundary_def,
@@ -503,10 +493,9 @@ theorem divergence_g_with_boundary_add
         Finset.sum_congr rfl (fun i _ => hpartial_split i)]
   rw [Finset.sum_add_distrib, add_div]
 
-omit [InnerProductSpace ℝ E] in
 theorem divergence_g_with_boundary_zero
     (g : SmoothRiemannianMetric I M) :
-    ∀ x : M, divergence_g_with_boundary (I := I) g
+    ∀ x : M, divergenceGWithBoundary (I := I) g
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by
   intro x
   classical
@@ -579,22 +568,21 @@ theorem divergence_g_with_boundary_zero
         Finset.sum_eq_zero (fun i _ => hpartial_zero i)]
   rw [zero_div]
 
-omit [InnerProductSpace ℝ E] in
 theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∀ x : M, divergence_g_with_boundary (I := I) g X x =
-      ∑' α : M, divergence_g_with_boundary (I := I) g
+    ∀ x : M, divergenceGWithBoundary (I := I) g X x =
+      ∑' α : M, divergenceGWithBoundary (I := I) g
         (smoothSmul
           (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
   intro x
   classical
   set S : Finset M := ρ.fintsupport x with hS_def
   have h_tsum_eq_sum :
-      (∑' α : M, divergence_g_with_boundary (I := I) g
+      (∑' α : M, divergenceGWithBoundary (I := I) g
           (smoothSmul
             (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x) =
-        ∑ α ∈ S, divergence_g_with_boundary (I := I) g
+        ∑ α ∈ S, divergenceGWithBoundary (I := I) g
           (smoothSmul
             (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
     refine tsum_eq_sum ?_
@@ -622,10 +610,10 @@ theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
     rw [hραx, htsa_zero, zero_mul, add_zero]
   rw [h_tsum_eq_sum]
   have h_each : ∀ α ∈ S,
-      divergence_g_with_boundary (I := I) g
+      divergenceGWithBoundary (I := I) g
         (smoothSmul
           (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x =
-        (ρ α : M → ℝ) x * divergence_g_with_boundary (I := I) g X x +
+        (ρ α : M → ℝ) x * divergenceGWithBoundary (I := I) g X x +
           tangentSectionAction (I := I) X (ρ α : M → ℝ) x := by
     intro α _
     exact divergence_g_with_boundary_smoothSmul (I := I) g
@@ -633,9 +621,9 @@ theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
   rw [Finset.sum_congr rfl h_each]
   rw [Finset.sum_add_distrib]
   rw [show (∑ α ∈ S, (ρ α : M → ℝ) x *
-              divergence_g_with_boundary (I := I) g X x) =
+              divergenceGWithBoundary (I := I) g X x) =
         (∑ α ∈ S, (ρ α : M → ℝ) x) *
-          divergence_g_with_boundary (I := I) g X x from
+          divergenceGWithBoundary (I := I) g X x from
       (Finset.sum_mul _ _ _).symm]
   rw [ρ.sum_finsupport' x (mem_univ x)
         (ρ.finsupport_subset_fintsupport x)]

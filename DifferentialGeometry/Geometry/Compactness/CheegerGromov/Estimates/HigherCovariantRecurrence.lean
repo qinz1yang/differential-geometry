@@ -28,15 +28,15 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 noncomputable def inverseContractionRecurrenceConstant (C0 KR L : Real) (m : ℕ) : Real :=
-  Nat.strongRecOn' m fun n C =>
+  Nat.strongRec (fun n C =>
     max C0 0 * (max KR 0 * L +
-      ∑ c : Fin n, (n.choose c : Real) * C c c.isLt * L)
+      ∑ c : Fin n, (n.choose c : Real) * C c c.isLt * L)) m
 
 theorem inverse_contraction_recurrence_constant_eq (C0 KR L : Real) (m : ℕ) :
     inverseContractionRecurrenceConstant C0 KR L m =
       max C0 0 * (max KR 0 * L +
         ∑ c ∈ Finset.range m, (m.choose c : Real) * inverseContractionRecurrenceConstant C0 KR L c * L) := by
-  rw [inverseContractionRecurrenceConstant, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
+  rw [inverseContractionRecurrenceConstant, Nat.strongRec_eq, ← Fin.sum_univ_eq_sum_range]
   rfl
 
 theorem inverse_contraction_recurrence_constant_nonneg {C0 KR L : Real} (hL : 0 ≤ L) (m : ℕ) :
@@ -834,9 +834,11 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
     rw [contrTail_apply]
     have hframe_b_md := ((hframe.contMDiffOn (idx 1)).contMDiffAt
       (hu.mem_nhds hy)).mdifferentiableAt (by simp)
-    have hdiff := IsCovariantDerivativeOn.difference_apply
-      (hcov := covG.isCovariantDerivativeOnUniv) (hcov' := covH.isCovariantDerivativeOnUniv)
-      (σ := frame (idx 1)) (x := y) (hx := by trivial) hframe_b_md
+    have hdiff : CovariantDerivative.difference covG covH y (frame (idx 1) y) =
+        covG (frame (idx 1)) y - covH (frame (idx 1)) y :=
+      IsCovariantDerivativeOn.difference_apply
+        (hcov := covG.isCovariantDerivativeOnUniv) (hcov' := covH.isCovariantDerivativeOnUniv)
+        (σ := frame (idx 1)) (x := y) (hx := by trivial) hframe_b_md
     calc (∑ c : Idx,
           chrDiffField
             (fun z => christoffelSymbolInFrame covG frame hframe z)
@@ -1244,7 +1246,7 @@ theorem iterated_covariant_derivative_comparison_bound {r₀ : ℕ} {u : Set M} 
   have h := connection_comparison_component_bound_of_finite_horizon hu frame chrG chrH hframeS hchrG hchrH T hT B hB0
     eps heps0 heps1 p (fun c hc z hz => hBb c hc z hz) hx p 0 ρ hρ0 hρp (by omega)
   rw [zero_add] at h
-  simpa only [B] using h
+  simpa only [B, iterCovComp_zero, zero_add, add_zero] using h
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in

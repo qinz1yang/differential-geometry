@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -361,13 +360,16 @@ theorem exists_nullOrthonormalBasis3At
     (hdim : Module.finrank Real (TangentSpace I x) = 3) (hv : v ≠ 0) :
     Nonempty (NullOrthonormalBasis3At (I := I) g x v) := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let core : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let _ := core
+  let normedAddCommGroup : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
       D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let _ := normedAddCommGroup
+  let innerProductSpace : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  let _ := innerProductSpace
   let e0 : TangentSpace I x := (‖v‖)⁻¹ • v
   let f : Fin 3 -> TangentSpace I x := fun i => if i = 0 then e0 else 0
   let s : Set (Fin 3) := fun i => i = 0
@@ -380,13 +382,13 @@ theorem exists_nullOrthonormalBasis3At
     exact inv_mul_cancel₀ hvnorm
   have he0_inner : Inner.inner Real e0 e0 = 1 := by
     exact inner_self_eq_one_of_norm_eq_one he0_norm
-  have horth : Orthonormal Real (s.restrict f) := by
+  have horth : Orthonormal Real (s.domRestrict f) := by
     rw [orthonormal_iff_ite]
     intro i j
     have hij : i = j := by
       exact Subtype.ext (i.2.trans j.2.symm)
     subst j
-    have hval : s.restrict f i = e0 := by
+    have hval : s.domRestrict f i = e0 := by
       change f i = e0
       dsimp [f]
       have hi0 : (i : Fin 3) = 0 := i.2
@@ -407,7 +409,7 @@ theorem exists_nullOrthonormalBasis3At
         Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g.inner x (basis i) (basis j) = DifferentialGeometry.Geometry.Curvature.delta3 i j
-    rw [← TangentMetricData_gen.inner_eq_gen (tangentMetricData_gen (I := I) g x)
+    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
       (basis i) (basis j)]
     change D.inner (ob i) (ob j) = DifferentialGeometry.Geometry.Curvature.delta3 i j
     rw [← hinner]
@@ -445,7 +447,7 @@ theorem metricTrace_metric3
     (horth : DifferentialGeometry.Geometry.Curvature.OrthonormalBasisAt (I := I) g x basis) :
     metricTracePair0SAt (I := I) g
         (metricTensorField (I := I) g x) = 3 := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   have horth' :
@@ -467,7 +469,7 @@ theorem shiftScalar_add_g
         (A + c • metricTensorField (I := I) g x) =
       shiftScalar3At (I := I) (M := M) δ g A +
         (3 * c) / (1 - 3 * δ) := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   have horth' :
@@ -519,7 +521,7 @@ theorem shiftScalar3At_pinch
           metricTensorField (I := I) g x) =
       metricTracePair0SAt (I := I) g Ric := by
   let R : Real := metricTracePair0SAt (I := I) g Ric
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   have hR :
@@ -573,7 +575,7 @@ theorem shiftScalar3At_of_shiftBlock
     (hreal : Tensor02RealizesRawAt (I := I) (M := M) Araw x A)
     (hblock : ShiftBlockAt (I := I) (M := M) g Araw x basis a b c) :
     shiftScalar3At (I := I) (M := M) δ g A = shiftScal3 δ a b := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis
       hblock.orthonormal
@@ -607,8 +609,7 @@ theorem shiftRic3At_comp_of_shiftBlock
         DifferentialGeometry.Geometry.Curvature.delta3 i j := by
     simp [metricTensorField_apply, hblock.orthonormal i j,
       vec2, DifferentialGeometry.Geometry.Curvature.vec2]
-  simp [Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
-    hreal (basis i) (basis j), hblock.components i j, hmetric, smul_eq_mul]
+  simp [hreal (basis i) (basis j), hblock.components i j, hmetric, smul_eq_mul]
 
 def tensorPairPermutationZeroTwoOneThree : Equiv.Perm (Fin 4) where
   toFun := fun i =>
@@ -687,7 +688,7 @@ def tensor04Pair
     {x : M} (A B : Tensor02At (I := I) (M := M) x)
     (σ : Equiv.Perm (Fin 4)) :
     Tensor04At (I := I) (M := M) x :=
-  (Bundle.continuousMultilinearMap.product_fun
+  (Bundle.continuousMultilinearMap.productFun
     (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 2) (q := 2) A B).domDomCongr σ
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
@@ -697,7 +698,15 @@ theorem tensor04Pair_apply
     tensor04Pair (I := I) (M := M) A B σ slots =
       A (slots ∘ σ ∘ Fin.castAdd 2) *
         B (slots ∘ σ ∘ Fin.natAdd 2) := by
-  rw [tensor04Pair]
+  unfold tensor04Pair
+  change Bundle.continuousMultilinearMap Real 2 E
+    (TangentSpace I : M → Type _) x at A B
+  change
+    (ContinuousMultilinearMap.domDomCongr σ
+      (Bundle.continuousMultilinearMap.productFun
+        (𝕜 := Real) (F := E) (E := TangentSpace I) (s := 2) (q := 2) A B) :
+      ContinuousMultilinearMap Real (fun _ : Fin 4 => TangentSpace I x) Real) slots =
+    A (slots ∘ σ ∘ Fin.castAdd 2) * B (slots ∘ σ ∘ Fin.natAdd 2)
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
   rfl
@@ -775,7 +784,7 @@ theorem rm04OfRic3At_comp_orthonormal
         (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
       stdRmOfRic3 (fun a b : Fin 3 => Ric (vec2 (I := I) (basis a) (basis b)))
         i j k l := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   have htrace :
@@ -789,9 +798,7 @@ theorem rm04OfRic3At_comp_orthonormal
       ∀ a b : Fin 3, g.inner x (basis a) (basis b) =
         DifferentialGeometry.Geometry.Curvature.delta3 a b := horth
   simp [rm04OfRic3At, stdRmOfRic3, htrace, metricTensorField_apply, horth',
-    vec2, DifferentialGeometry.Geometry.Curvature.vec2,
-    Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.sub_apply,
-    Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
+    vec2, DifferentialGeometry.Geometry.Curvature.vec2, smul_eq_mul]
 
 def ricciEndCLMAt
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -832,6 +839,15 @@ theorem ricciQuadAt_apply
       Ric (vec2 (I := I)
         (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric X) Y) := by
   unfold ricciQuadAt
+  let Ric' : ContinuousMultilinearMap Real
+      (fun _ : Fin 2 => TangentSpace I x) Real := Ric
+  change Ric'.compContinuousLinearMap
+      (fun i : Fin 2 =>
+        if i = 0 then ricciEndCLMAt (I := I) (M := M) g Ric
+        else ContinuousLinearMap.id Real (TangentSpace I x))
+      (vec2 (I := I) X Y) =
+    Ric' (vec2 (I := I)
+      (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric X) Y)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   funext i
@@ -841,8 +857,8 @@ def rm04Mid02At
     {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y : TangentSpace I x) :
     Tensor02At (I := I) (M := M) x :=
-  (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x
+  (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x
       (Rm04.domDomCongr tensorPairPermutationZeroTwoOneThree)) X)) Y
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
@@ -856,7 +872,7 @@ theorem rm04Mid02At_apply
   unfold rm04Mid02At
   rw [DifferentialGeometry.Tensor.RSTensor.metricTrace_tensor0S_curry_apply_cons]
   rw [DifferentialGeometry.Tensor.RSTensor.metricTrace_tensor0S_curry_apply_cons]
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  rw [Tensor0SSpace.domDomCongr_apply]
   congr 1
   funext i
   fin_cases i <;> rfl
@@ -867,8 +883,8 @@ def rm04MidCLMAt
     TangentSpace I x →L[Real]
       TangentSpace I x →L[Real]
         Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x :=
-  ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x).toContinuousLinearMap).comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x)
+  ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x).toContinuousLinearMap).comp
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x)
       (Rm04.domDomCongr tensorPairPermutationZeroTwoOneThree))
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
@@ -1021,6 +1037,14 @@ theorem rm04RicciContrAt_apply
       inner0S (I := I) g x 2 Ric
         (rm04Mid02At (I := I) (M := M) Rm04 X Y) := by
   unfold rm04RicciContrAt
+  change
+    (ContinuousLinearMap.uncurryLeft
+      (𝕜 := Real) (n := 1) (Ei := fun _ : Fin 2 => TangentSpace I x) (G := Real)
+      (rm04ContrCurried (I := I) (M := M) g Rm04 Ric) :
+        ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real)
+      (vec2 (I := I) X Y) =
+    inner0S (I := I) g x 2 Ric
+      (rm04Mid02At (I := I) (M := M) Rm04 X Y)
   rw [ContinuousLinearMap.uncurryLeft_apply]
   change
     (rm04ContrCurried (I := I) (M := M) g Rm04 Ric X)
@@ -1116,7 +1140,7 @@ theorem ricciEnd_repr_orthonormal
     (i k : Fin 3) :
     basis.repr (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric (basis i)) k =
       Ric (vec2 (I := I) (basis i) (basis k)) := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   rw [basis_repr_eq_sum_inv_inner (I := I) g x basis DifferentialGeometry.Geometry.Curvature.delta3
@@ -1169,7 +1193,7 @@ theorem ricciQuadAt_comp_orthonormal
           basis k)
       (fun _ : Fin 1 => basis j)]
   change
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric)
         (∑ k : Fin 3,
           basis.repr (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric (basis i))
             k •
@@ -1179,8 +1203,7 @@ theorem ricciQuadAt_comp_orthonormal
         (fun a b : Fin 3 => Ric (vec2 (I := I) (basis a) (basis b))) i j
   rw [map_sum]
   simp [DifferentialGeometry.Tensor.RSTensor.metricTrace_tensor0S_curry_apply_cons,
-    finCons1_eq_vec2, Tensor0SBundle.Tensor0SSpace.sum_apply,
-    Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
+    finCons1_eq_vec2, smul_eq_mul]
   simp [ricciEnd_repr_orthonormal (I := I) (M := M) basis horth Ric,
     ricciSq3]
 
@@ -1193,7 +1216,7 @@ theorem ricciNorm3_comp_orthonormal
     inner0S (I := I) g x 2 Ric Ric =
       ricciNorm3 (fun a b : Fin 3 =>
         Ric (vec2 (I := I) (basis a) (basis b))) := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   rw [inner0S_two_eq_coord (I := I) g x basis DifferentialGeometry.Geometry.Curvature.delta3 hinv]
@@ -1210,7 +1233,7 @@ theorem metricTrace_comp_orthonormal
     metricTracePair0SAt (I := I) g Ric =
       ricciScal3 (fun a b : Fin 3 =>
         Ric (vec2 (I := I) (basis a) (basis b))) := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
@@ -1230,7 +1253,7 @@ theorem rm04Contr_comp_orthonormal
       ∑ k : Fin 3, ∑ l : Fin 3,
         Rm04 (vec4 (I := I) (basis i) (basis k) (basis j) (basis l)) *
           Ric (vec2 (I := I) (basis k) (basis l)) := by
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
   rw [rm04RicciContrAt_apply]
@@ -1298,8 +1321,7 @@ theorem shiftNAt_comp_orthonormal
     ricciReaction3At_comp_orthonormal (I := I) (M := M) basis horth,
     ricciNorm3_comp_orthonormal (I := I) (M := M) basis horth,
     metricTrace_comp_orthonormal (I := I) (M := M) basis horth,
-    hmetric, Tensor0SBundle.Tensor0SSpace.sub_apply,
-    Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
+    hmetric, smul_eq_mul]
 
 omit [IsManifold I 2 M] in
 theorem shiftNAt_add_g_comp
@@ -1441,8 +1463,7 @@ theorem shiftNAt_add_g_quad
                 (vec2 (I := I) (nb.basis 0) (nb.basis 0)) -
             metricTracePair0SAt (I := I) g
               (shiftRic3At (I := I) (M := M) delta g A) := by
-      simp [C, hmetric00, Tensor0SBundle.Tensor0SSpace.sub_apply,
-        Tensor0SBundle.Tensor0SSpace.smul_apply, smul_eq_mul]
+      simp [C, hmetric00, smul_eq_mul]
     rw [hplus, hbase, hC, hC0]
     let P : Real :=
       shiftNAt (I := I) (M := M) delta t g x
@@ -1613,11 +1634,17 @@ theorem tensor02FromBasis_apply
     {x : M}
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (C : Fin 3 -> Fin 3 -> Real) (i j : Fin 3) :
-    tensor02FromBasis (I := I) (M := M) basis C
+      tensor02FromBasis (I := I) (M := M) basis C
         (vec2 (I := I) (basis i) (basis j)) =
       C i j := by
-  simpa [component0S_apply, slots2, vec2, DifferentialGeometry.Geometry.Curvature.vec2] using
-    tensor02FromBasis_component (I := I) (M := M) basis C i j
+  have heq : vec2 (I := I) (basis i) (basis j) =
+      fun q => basis (slots2 i j q) := by
+    funext q
+    fin_cases q <;> rfl
+  rw [heq]
+  change component0S (I := I) basis
+    (tensor02FromBasis (I := I) (M := M) basis C) (slots2 i j) = C i j
+  exact tensor02FromBasis_component (I := I) (M := M) basis C i j
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem tensor02_smul2

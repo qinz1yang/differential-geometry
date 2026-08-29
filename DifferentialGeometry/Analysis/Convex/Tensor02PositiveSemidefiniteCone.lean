@@ -3,7 +3,6 @@ import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.ContinuousEvaluation
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Nullspace
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -20,35 +19,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M]
-
-private local instance coneTensor02NormedAddCommGroup (x : M) :
-    NormedAddCommGroup
-      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 2 x
-
-private local instance coneTensor02NormedSpace (x : M) :
-    NormedSpace Real
-      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 2 x
-
-private local instance coneTensor02AddCommGroup (x : M) :
-    AddCommGroup
-      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
-  @NormedAddCommGroup.toAddCommGroup _ (coneTensor02NormedAddCommGroup (I := I) x)
-
-private local instance coneTensor02Module (x : M) :
-    Module Real
-      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
-  @NormedSpace.toModule _ _ _ _ (coneTensor02NormedSpace (I := I) x)
-
-private local instance coneTensor02TopologicalSpace (x : M) :
-    TopologicalSpace
-      (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
-  @UniformSpace.toTopologicalSpace _
-    (@PseudoMetricSpace.toUniformSpace _
-      (@MetricSpace.toPseudoMetricSpace _
-        (@NormedAddCommGroup.toMetricSpace _
-          (coneTensor02NormedAddCommGroup (I := I) x))))
 
 noncomputable def tensor02SymmetricCone {x : M} :
     ProperCone Real

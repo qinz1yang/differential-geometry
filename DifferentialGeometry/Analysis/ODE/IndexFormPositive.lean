@@ -28,22 +28,25 @@ private theorem hasDerivAt_endWeight
     (hasDerivAt_id t).add_const d
   have harg :
       HasDerivAt (fun s : ℝ => Real.pi / 2 - a * (s + d)) (-a) t := by
-    convert (hasDerivAt_const t (Real.pi / 2)).sub
-      (hshift.const_mul a) using 1
-    ring
+    change HasDerivAt ((fun _ : ℝ => Real.pi / 2) - fun s => a * (s + d)) (-a) t
+    simpa only [zero_sub, mul_one] using
+      (hasDerivAt_const t (Real.pi / 2)).sub (hshift.const_mul a)
   have htan :
       HasDerivAt
         (fun s : ℝ => Real.tan (Real.pi / 2 - a * (s + d)))
         ((1 / Real.cos θ ^ 2) * (-a)) t := by
-    simpa only [θ] using (Real.hasDerivAt_tan hcos).comp t harg
+    change HasDerivAt (Real.tan ∘ fun s : ℝ => Real.pi / 2 - a * (s + d))
+      ((1 / Real.cos θ ^ 2) * (-a)) t
+    exact (Real.hasDerivAt_tan hcos).comp t harg
   have hscaled := htan.const_mul a
-  convert hscaled using 1
-  · rw [endWeight, Real.tan_eq_sin_div_cos]
-    change
-      -a ^ 2 - (a * (Real.sin θ / Real.cos θ)) ^ 2 =
-        a * (1 / Real.cos θ ^ 2 * -a)
-    field_simp [hcos]
-    nlinarith [Real.sin_sq_add_cos_sq θ]
+  change HasDerivAt (fun y => a * Real.tan (Real.pi / 2 - a * (y + d)))
+    (-a ^ 2 - (endWeight a d t) ^ 2) t
+  apply hscaled.congr_deriv
+  rw [endWeight, Real.tan_eq_sin_div_cos]
+  change a * (1 / Real.cos θ ^ 2 * -a) =
+    -a ^ 2 - (a * (Real.sin θ / Real.cos θ)) ^ 2
+  field_simp [hcos]
+  nlinarith [Real.sin_sq_add_cos_sq θ]
 
 theorem left_poincare_lt
     {a : ℝ} (ha : 0 < a) (haπ : a < Real.pi / 2)
@@ -97,7 +100,9 @@ theorem left_poincare_lt
     intro t ht
     have hinner := (hy t ht).inner ℝ (hy t ht)
     have hprod := (hφderiv t ht).hasDerivWithinAt.mul hinner
-    simpa only [Q, dQ, Pi.mul_apply, real_inner_comm (y t) (v t)] using hprod
+    change HasDerivWithinAt (φ * fun t => (⟪y t, y t⟫ : ℝ)) (dQ t)
+      (Set.Icc (0 : ℝ) 1) t
+    simpa only [dQ, real_inner_comm (y t) (v t)] using hprod
   have hQcont : ContinuousOn Q (Set.Icc (0 : ℝ) 1) :=
     hφcont.mul (hycont.inner hycont)
   have hdQcont : ContinuousOn dQ (Set.Icc (0 : ℝ) 1) :=

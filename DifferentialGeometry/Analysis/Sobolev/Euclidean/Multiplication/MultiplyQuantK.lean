@@ -85,7 +85,7 @@ theorem wkpNorm_succ_eq_eLpNorm_add_sum_partial
         eLpNorm u p (volume.restrict Ω) := by
     have hUniq : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) := fun α => by
       funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin d) :=
+    have : Unique (Fin 0 → Fin d) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α => (hUniq α).symm ▸ rfl }
     rw [Fintype.sum_unique
@@ -131,7 +131,7 @@ lemma wkpNorm_chosenWeakPartial_le_wkpNorm_succ
           iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω := by
     refine Finset.single_le_sum (f := fun i' : Fin d =>
         iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω)
-      (fun _ _ => zero_le _) (Finset.mem_univ i)
+      (fun _ _ => bot_le) (Finset.mem_univ i)
   have h_left_le : (∑ i' : Fin d,
       iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω) ≤
       eLpNorm u p (volume.restrict Ω) +
@@ -328,7 +328,7 @@ theorem wkpNorm_smul_smooth_bounded_le
         refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
         · intro j hj
           rw [Finset.mem_range] at hj ⊢; omega
-        · intros _ _ _; exact zero_le _
+        · intros _ _ _; exact bot_le
       have hC_plus_KPS_le_K_final : ENNReal.ofReal C + ENNReal.ofReal K_partial_sum ≤
           ENNReal.ofReal K_final := by
         rw [← ENNReal.ofReal_add hC_nonneg hK_partial_sum_pos.le]
@@ -349,7 +349,7 @@ theorem wkpNorm_smul_smooth_bounded_le
         have h_KPS_u_le :
             ENNReal.ofReal K_partial_sum * iteratedWeakSobolevNorm (d := d) k p u Ω ≤
             ENNReal.ofReal K_partial_sum * (S_lp + S_part) :=
-          mul_le_mul_of_nonneg_left hu_at_k_norm_le_succ (zero_le _)
+          mul_le_mul_of_nonneg_left hu_at_k_norm_le_succ bot_le
         have h_combine_S_lp :
             ENNReal.ofReal C * S_lp + ENNReal.ofReal K_partial_sum * S_lp =
             (ENNReal.ofReal C + ENNReal.ofReal K_partial_sum) * S_lp := by
@@ -379,8 +379,8 @@ theorem wkpNorm_smul_smooth_bounded_le
               rw [h_combine_S_lp, h_combine_S_part]
           _ ≤ ENNReal.ofReal K_final * S_lp + ENNReal.ofReal K_final * S_part := by
               exact add_le_add
-                (mul_le_mul_of_nonneg_right hC_plus_KPS_le_K_final (zero_le _))
-                (mul_le_mul_of_nonneg_right hK_eta_plus_KPS_le_K_final (zero_le _))
+                (mul_le_mul_of_nonneg_right hC_plus_KPS_le_K_final bot_le)
+                (mul_le_mul_of_nonneg_right hK_eta_plus_KPS_le_K_final bot_le)
           _ = ENNReal.ofReal K_final * (S_lp + S_part) := by rw [mul_add]
       exact h_main_calc
 

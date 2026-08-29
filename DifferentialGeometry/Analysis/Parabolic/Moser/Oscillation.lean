@@ -152,7 +152,7 @@ theorem localized_l2_oscillation_eq
         localizedIntegral (I := I) (M := M) cutoff u ^ 2 /
           cutoffMass (I := I) (M := M) cutoff := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -182,7 +182,7 @@ theorem localized_l2_deviation_eq_oscillation_add
         cutoffMass (I := I) (M := M) cutoff *
           (center - localizedAverage (I := I) (M := M) cutoff u) ^ 2 := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -283,7 +283,7 @@ theorem integrated_localized_l2_oscillation_of_log_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {a b : ℝ} (hab : a ≤ b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ∫ t in a..b,
         localizedL2Oscillation (I := I) (M := M) averagingCutoff

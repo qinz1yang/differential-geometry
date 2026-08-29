@@ -153,7 +153,7 @@ private lemma chartPushedU_memW1p_sdiff
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hV_open : IsOpen V := hΩ_open.sdiff hK_closed
-  have hV_subset : V ⊆ chartTargetEuclid (I := I) (M := M) α := Set.diff_subset
+  have hV_subset : V ⊆ chartTargetEuclid (I := I) (M := M) α := Set.sdiff_subset
   have hu : DeGiorgi.MemW1p 2 (chartPushedU (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) :=
     chartPushedU_memW1p (I := I) (M := M) g α hu_h
@@ -219,7 +219,7 @@ private lemma chosenWeakPartial_chartPushedU_restrict_ae_eq
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hV_open : IsOpen V := hΩ_open.sdiff hK_closed
-  have hV_subset : V ⊆ chartTargetEuclid (I := I) (M := M) α := Set.diff_subset
+  have hV_subset : V ⊆ chartTargetEuclid (I := I) (M := M) α := Set.sdiff_subset
   have hu_full := chartPushedU_memW1p (I := I) (M := M) g α hu_h
   have hu_sdiff := chartPushedU_memW1p_sdiff (I := I) (M := M) g α hu_h
   have h_partial_Ω : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
@@ -337,7 +337,7 @@ private lemma chosenInner_sdiff_memW1p
     have hΩ_open : IsOpen Ω :=
       chartTargetEuclid_isOpen (I := I) (M := M) α
     have hV_open : IsOpen V := hΩ_open.sdiff hK_closed
-    have hV_subset : V ⊆ Ω := Set.diff_subset
+    have hV_subset : V ⊆ Ω := Set.sdiff_subset
     refine ⟨chartPushedU_memW1p_sdiff (I := I) (M := M) g α hu_h, ?_⟩
     intro k
     rw [MemWkp.one_iff_memW1p]
@@ -379,7 +379,7 @@ lemma laplacianDomainHessianChart_ae_zero_off_support
   have hΩ_open : IsOpen Ω :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hV_open : IsOpen V := hΩ_open.sdiff hK_closed
-  have hV_subset : V ⊆ Ω := Set.diff_subset
+  have hV_subset : V ⊆ Ω := Set.sdiff_subset
   set inner_Ω := chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
     (chartPushedU (I := I) (M := M) g α u_h) Ω with hinner_Ω_def
   set FΩ := chosenWeakPartial' (d := Module.finrank ℝ E) 2 j inner_Ω Ω
@@ -875,13 +875,13 @@ theorem laplacianDomainHessFrobeniusSqChart_memLp_one
     funext y
     rw [laplacianDomainHessFrobeniusSqChart_def]
   rw [h_eq]
-  refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun i _ => ?_)
-  refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun j _ => ?_)
-  refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun k _ => ?_)
-  refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun l _ => ?_)
   exact summand_memLp_one (I := I) (M := M) g α hu_h i j k l
 

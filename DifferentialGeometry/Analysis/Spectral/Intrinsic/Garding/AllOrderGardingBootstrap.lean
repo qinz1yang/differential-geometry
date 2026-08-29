@@ -76,6 +76,7 @@ theorem order2GardingFamily_of_curvatureCrossTermBound
   exact secondCovGrad_l2NormSq_le_of_cross_bound (I := I) (M := M) g s S Ccross hCcross
     (hcrossS s S)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma iteratedCovGrad_norm_eq_tensorL2Norm
@@ -162,6 +163,7 @@ private lemma sqrt_mul_le_add_of_nonneg {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b
   rw [← Real.sqrt_sq (add_nonneg hb ha)]
   exact Real.sqrt_le_sqrt (by nlinarith only [sq_nonneg (a - b)])
 
+omit [CompactSpace M] in
 private lemma gradOrder_zero_l2Norm_le
     (g : SmoothRiemannianMetric I M) (U : SmoothCcTensor g 0 2) :
     ‖iteratedCovGrad g 0 2 0 U‖ ≤
@@ -170,6 +172,7 @@ private lemma gradOrder_zero_l2Norm_le
   rw [iteratedCovGrad_zero]
   norm_num [rawTensorConnLapIter_zero]
 
+omit [CompactSpace M] in
 private lemma gradOrder_one_l2Norm_le
     (g : SmoothRiemannianMetric I M)
     (hgrad1 : Order1ControlFamily (I := I) (M := M) g)
@@ -195,6 +198,7 @@ private lemma gradOrder_one_l2Norm_le
     exact Real.sqrt_le_sqrt (hgrad1 2 U)
   exact hsqrt.trans (sqrt_mul_le_add_of_nonneg ha hb)
 
+omit [CompactSpace M] in
 private lemma gradOrder_l2Norm_le_lapIter_sum
     (g : SmoothRiemannianMetric I M) (Cg Cc : ℝ)
     (hgard : Order2GardingFamily (I := I) (M := M) g Cg)
@@ -410,6 +414,7 @@ private lemma gradOrder_l2Norm_le_lapIter_sum
         rw [hLHS, hRHS]
         exact hfinal
 
+omit [CompactSpace M] in
 theorem allOrder_covGrad_l2Norm_le_lapIter_sum
     (g : SmoothRiemannianMetric I M) (Cg Cc : ℝ) (k : ℕ)
     (hgard : Order2GardingFamily (I := I) (M := M) g Cg)

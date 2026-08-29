@@ -109,7 +109,6 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   obtain ⟨inp, L0, hseed, psi, hpsi, htail⟩ :=
     b.exists_stage_diag hcomplete hconn
   refine ⟨psi, hpsi, ?_⟩
-  dsimp only
   refine { comparison := ?_ }
   intro r hr ε hε hε1 p
   let gap := (4 + 8 * Real.sqrt 2) * inp.decay.lambda inp.D 0
@@ -151,9 +150,9 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   let Nall := max N (q + Nm)
   refine ⟨Nall, ?_⟩
   intro k l hk hl
-  letI : MetricSpace ((X.subseq psi).obj k).M :=
+  let : MetricSpace ((X.subseq psi).obj k).M :=
     ((properMetricsOfCompleteConnected (I := I) hcomplete hconn) (psi k)).ms
-  letI : MetricSpace ((X.subseq psi).obj l).M :=
+  let : MetricSpace ((X.subseq psi).obj l).M :=
     ((properMetricsOfCompleteConnected (I := I) hcomplete hconn) (psi l)).ms
   let Lq := Lbase.subseq (d.phi_strict.comp hrho)
   have hkGeom : N ≤ k := (Nat.le_max_left _ _).trans hk
@@ -247,8 +246,8 @@ theorem BoundedGeometryNormalData.pairwise_approximate_isometry_input_of_diagona
   let Nall := max N (q + Nm)
   refine ⟨Nall, ?_⟩
   intro k l hk hl
-  letI : MetricSpace ((X.subseq psi).obj k).M := (P (psi k)).ms
-  letI : MetricSpace ((X.subseq psi).obj l).M := (P (psi l)).ms
+  let : MetricSpace ((X.subseq psi).obj k).M := (P (psi k)).ms
+  let : MetricSpace ((X.subseq psi).obj l).M := (P (psi l)).ms
   let Lq := Lbase.subseq (a.phi_strict.comp hrho)
   have hkGeom : N ≤ k := (Nat.le_max_left _ _).trans hk
   have hlGeom : N ≤ l := (Nat.le_max_left _ _).trans hl
@@ -310,7 +309,9 @@ theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bo
   have hc0' :
       (8 * Real.exp inp.decay.C /
           d.stageScale inp.realizes hcomplete hconn) < inp.D := by
-    simpa only [MetricCompactSeed.withDivisor, c0, aMin] using hc0
+    change 8 * Real.exp b.decay.C / aMin < D at hc0
+    change 8 * Real.exp b.decay.C / aMin < D
+    exact hc0
   have hphys :
       8 * Real.exp inp.decay.C <
         d.stageScale inp.realizes hcomplete hconn * inp.D := by

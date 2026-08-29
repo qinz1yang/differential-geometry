@@ -98,7 +98,7 @@ theorem inner_eq_sum_repr3
       ∑ i : Fin 3, basis.repr X i * basis.repr Y i := by
   calc
     g.inner x X Y =
-        tangentFlatLinear_gen (I := I) g x
+        tangentFlatLinearGen (I := I) g x
           (∑ i : Fin 3, basis.repr X i • basis i) Y := by
           rw [basis.sum_repr X]
           rfl
@@ -161,7 +161,7 @@ theorem ricciSym_of_basis
         Ric (vec2 (I := I) (basis j) (basis i))) :
     RicciSymAt (I := I) Ric := by
   classical
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   intro X Y
   let cx : Idx -> Real := fun i => basis.repr X i
   let cy : Idx -> Real := fun i => basis.repr Y i
@@ -182,12 +182,26 @@ theorem ricciSym_of_basis
           ∑ r : Fin 2 -> Idx,
             Ric (fun a : Fin 2 =>
               (if a = 0 then cx (r a) else cy (r a)) • basis (r a)) := by
-      simpa using
-        (ContinuousMultilinearMap.map_sum
-          (f := Ric)
-          (g := fun a j =>
-            (if a = 0 then cx j else cy j) • basis j))
-    simpa [vec2] using hsum
+      change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 => ∑ j : Idx,
+            (if a = 0 then cx j else cy j) • basis j) =
+        ∑ r : Fin 2 → Idx, (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 =>
+            (if a = 0 then cx (r a) else cy (r a)) • basis (r a))
+      exact ContinuousMultilinearMap.map_sum
+        (f := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+        (g := fun a j => (if a = 0 then cx j else cy j) • basis j)
+    change Ric (fun a : Fin 2 =>
+      if a = 0 then ∑ i : Idx, cx i • basis i else ∑ i : Idx, cy i • basis i) = _
+    have hfun :
+        (fun a : Fin 2 => ∑ j : Idx,
+          (if a = 0 then cx j else cy j) • basis j) =
+        (fun a : Fin 2 =>
+          if a = 0 then ∑ i : Idx, cx i • basis i else ∑ i : Idx, cy i • basis i) := by
+      funext a
+      fin_cases a <;> simp
+    rw [← hfun]
+    exact hsum
   have hYX :
       Ric (vec2 (I := I) Y X) =
         ∑ r : Fin 2 -> Idx,
@@ -201,12 +215,26 @@ theorem ricciSym_of_basis
           ∑ r : Fin 2 -> Idx,
             Ric (fun a : Fin 2 =>
               (if a = 0 then cy (r a) else cx (r a)) • basis (r a)) := by
-      simpa using
-        (ContinuousMultilinearMap.map_sum
-          (f := Ric)
-          (g := fun a j =>
-            (if a = 0 then cy j else cx j) • basis j))
-    simpa [vec2] using hsum
+      change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 => ∑ j : Idx,
+            (if a = 0 then cy j else cx j) • basis j) =
+        ∑ r : Fin 2 → Idx, (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+          (fun a : Fin 2 =>
+            (if a = 0 then cy (r a) else cx (r a)) • basis (r a))
+      exact ContinuousMultilinearMap.map_sum
+        (f := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+        (g := fun a j => (if a = 0 then cy j else cx j) • basis j)
+    change Ric (fun a : Fin 2 =>
+      if a = 0 then ∑ i : Idx, cy i • basis i else ∑ i : Idx, cx i • basis i) = _
+    have hfun :
+        (fun a : Fin 2 => ∑ j : Idx,
+          (if a = 0 then cy j else cx j) • basis j) =
+        (fun a : Fin 2 =>
+          if a = 0 then ∑ i : Idx, cy i • basis i else ∑ i : Idx, cx i • basis i) := by
+      funext a
+      fin_cases a <;> simp
+    rw [← hfun]
+    exact hsum
   rw [hXY, hYX]
   rw [sum_fin_two_fun, sum_fin_two_fun]
   rw [Finset.sum_comm]
@@ -368,40 +396,40 @@ def ricciEndAt
     (Ric : Tensor02At (I := I) (M := M) x) :
     TangentSpace I x →ₗ[Real] TangentSpace I x where
   toFun := fun X =>
-    cotangentSharp_gen (I := I) g x
-      (dualToCotangent_gen (I := I) (ricciCovAt (I := I) Ric X))
+    cotangentSharpGen (I := I) g x
+      (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric X))
   map_add' := by
     intro X Y
     change
-      cotangentSharpLinear_gen (I := I) g x
-          (dualToCotangent_gen (I := I) (ricciCovAt (I := I) Ric (X + Y))) =
-        cotangentSharpLinear_gen (I := I) g x
-          (dualToCotangent_gen (I := I) (ricciCovAt (I := I) Ric X)) +
-          cotangentSharpLinear_gen (I := I) g x
-          (dualToCotangent_gen (I := I) (ricciCovAt (I := I) Ric Y))
+      cotangentSharpLinearGen (I := I) g x
+          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric (X + Y))) =
+        cotangentSharpLinearGen (I := I) g x
+          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric X)) +
+          cotangentSharpLinearGen (I := I) g x
+          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric Y))
     rw [ricciCovAt_add (I := I) Ric X Y]
     change
-      cotangentSharpLinear_gen (I := I) g x
+      cotangentSharpLinearGen (I := I) g x
           (dualToCotangentLinear (I := I)
             (ricciCovAt (I := I) Ric X + ricciCovAt (I := I) Ric Y)) =
-        cotangentSharpLinear_gen (I := I) g x
+        cotangentSharpLinearGen (I := I) g x
           (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric X)) +
-          cotangentSharpLinear_gen (I := I) g x
+          cotangentSharpLinearGen (I := I) g x
           (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric Y))
     rw [map_add, map_add]
   map_smul' := by
     intro c X
     change
-      cotangentSharpLinear_gen (I := I) g x
-          (dualToCotangent_gen (I := I) (ricciCovAt (I := I) Ric (c • X))) =
-        c • cotangentSharpLinear_gen (I := I) g x
-          (dualToCotangent_gen (I := I) (ricciCovAt (I := I) Ric X))
+      cotangentSharpLinearGen (I := I) g x
+          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric (c • X))) =
+        c • cotangentSharpLinearGen (I := I) g x
+          (dualToCotangentGen (I := I) (ricciCovAt (I := I) Ric X))
     rw [ricciCovAt_smul (I := I) Ric c X]
     change
-      cotangentSharpLinear_gen (I := I) g x
+      cotangentSharpLinearGen (I := I) g x
           (dualToCotangentLinear (I := I)
             (c • ricciCovAt (I := I) Ric X)) =
-        c • cotangentSharpLinear_gen (I := I) g x
+        c • cotangentSharpLinearGen (I := I) g x
           (dualToCotangentLinear (I := I) (ricciCovAt (I := I) Ric X))
     rw [map_smul, map_smul]
 

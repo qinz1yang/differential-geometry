@@ -23,11 +23,11 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 /-! ## Constants -/
 
 /-- The John-Nirenberg constant. -/
-noncomputable def C_JN (d : ℕ) : ℝ :=
+noncomputable def CJN (d : ℕ) : ℝ :=
   16 * 36 ^ d
 
-theorem C_JN_pos (d : ℕ) : 0 < C_JN d := by
-  unfold C_JN
+theorem C_JN_pos (d : ℕ) : 0 < CJN d := by
+  unfold CJN
   positivity
 
 lemma five_pow_half_factor (d : ℕ) :
@@ -36,11 +36,11 @@ lemma five_pow_half_factor (d : ℕ) :
   field_simp [h5d_ne]
 
 /-- The constant in the simple iteration lemma with exponent ξ = 2.
-  Using δ = 1/4 gives C_iter = 4 · 144 = 576; we round up to 1024 for margin. -/
-noncomputable def C_iter : ℝ := 1024
+  Using δ = 1/4 gives CIter = 4 · 144 = 576; we round up to 1024 for margin. -/
+noncomputable def CIter : ℝ := 1024
 
-theorem C_iter_pos : 0 < C_iter := by
-  unfold C_iter; positivity
+theorem C_iter_pos : 0 < CIter := by
+  unfold CIter; positivity
 
 /-! ## BMO -/
 
@@ -282,14 +282,14 @@ Suppose `ρ : ℝ → ℝ` satisfies:
 2. `sup_{t ∈ [1/2,1)} (1-t)² ρ(t) < ∞` (finiteness of weighted supremum),
 3. For all `1/2 ≤ s < t < 1`: `ρ(s) ≤ (1/2) ρ(t) + A_iter · (t - s)⁻²`
 
-Then `ρ(1/2) ≤ C_iter · A_iter`.
+Then `ρ(1/2) ≤ CIter · A_iter`.
 
 **Proof sketch** (following AKM):
 - Let `M = sup_{t ∈ [1/2,1)} (1-t)² ρ(t)`.
 - Choose `δ = 1 - (2/3)^{1/2}` and set `t = 1 - (1-δ)(1-s)` in hypothesis (3).
 - Multiply by `(1-s)²` to get: `(1-s)² ρ(s) ≤ (3/4) · (1-t)² ρ(t) + δ⁻² · A_iter`.
 - Take supremum: `M ≤ (3/4) M + δ⁻² · A_iter`, hence `M ≤ 4 δ⁻² A_iter`.
-- Evaluate at `s = 1/2`: `ρ(1/2) ≤ 2² · M ≤ 4 · 4 · δ⁻² · A_iter ≤ C_iter · A_iter`.
+- Evaluate at `s = 1/2`: `ρ(1/2) ≤ 2² · M ≤ 4 · 4 · δ⁻² · A_iter ≤ CIter · A_iter`.
 -/
 theorem simple_iteration_lemma
     {ρ : ℝ → ℝ} {A_iter : ℝ}
@@ -298,7 +298,7 @@ theorem simple_iteration_lemma
     (hρ_bdd : ∃ M : ℝ, ∀ t : ℝ, 1 / 2 ≤ t → t < 1 → (1 - t) ^ 2 * ρ t ≤ M)
     (hρ_contract : ∀ s t : ℝ, 1 / 2 ≤ s → s < t → t < 1 →
       ρ s ≤ 1 / 2 * ρ t + A_iter * (t - s) ⁻¹ ^ 2) :
-    ρ (1 / 2) ≤ C_iter * A_iter := by
+    ρ (1 / 2) ≤ CIter * A_iter := by
   /- Proof using δ = 1/4: for s ∈ [1/2,1), set t = s + (1-s)/4 = (3s+1)/4.
      Then t-s = (1-s)/4, 1-t = 3(1-s)/4, (1-s)/(1-t) = 4/3.
      Multiplying the contraction by (1-s)² gives
@@ -306,7 +306,7 @@ theorem simple_iteration_lemma
      Iterating: if M bounds (1-t)² ρ(t), then (8/9)M + 16 A_iter also does.
      After n iterations the bound is (8/9)^n M + 144(1-(8/9)^n) A_iter.
      As n → ∞ this tends to 144 A_iter. So (1/2)² ρ(1/2) ≤ 144 A_iter,
-     hence ρ(1/2) ≤ 576 A_iter ≤ 1024 A_iter = C_iter A_iter. -/
+     hence ρ(1/2) ≤ 576 A_iter ≤ 1024 A_iter = CIter A_iter. -/
   -- Extract M from hρ_bdd and make it nonneg
   obtain ⟨M₀, hM₀⟩ := hρ_bdd
   set M : ℝ := max M₀ 0 with hM_def
@@ -413,7 +413,7 @@ theorem simple_iteration_lemma
   -- Since ε arbitrary, ρ(1/2) ≤ 576 * A_iter
   suffices h576 : ρ (1 / 2) ≤ 576 * A_iter by
     calc ρ (1 / 2) ≤ 576 * A_iter := h576
-      _ ≤ C_iter * A_iter := by unfold C_iter; nlinarith [hA_iter]
+      _ ≤ CIter * A_iter := by unfold CIter; nlinarith [hA_iter]
   -- Prove via le_of_forall_pos_lt_add
   rw [show (576 : ℝ) * A_iter = 4 * (144 * A_iter) from by ring]
   apply le_of_forall_pos_lt_add
@@ -513,7 +513,7 @@ lemma volumeReal_ball_eq (x : E) {r : ℝ} (hr : 0 < r) :
     rw [hballx, hball0]
     simp
   · have hdpos : 0 < d := Nat.pos_of_ne_zero hd
-    haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
+    have : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
       simpa [finrank_euclideanSpace] using hdpos
     rw [← Measure.addHaar_real_closedBall_eq_addHaar_real_ball (μ := volume) x r,
       Measure.addHaar_real_closedBall (μ := volume) x hr.le]

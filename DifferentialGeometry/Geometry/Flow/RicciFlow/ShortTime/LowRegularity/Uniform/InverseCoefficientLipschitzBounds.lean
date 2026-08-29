@@ -196,6 +196,7 @@ private theorem perturbICG
       _ ≤ _ := symmICG (I := I) (M := M) g T i
   exact hslot.trans (mul_le_mul_of_nonneg_left hbase (by norm_num))
 
+omit [SigmaCompactSpace M] in
 private theorem idSlotPt
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -284,6 +285,7 @@ private theorem fullSlotSplit (g gm : SmoothRiemannianMetric I M) :
     slotInsertEndoCc_add,
     inverseMetricDifferenceSlotCoefficient_eq_slotInsertEndoCc (I := I) g gm]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGradNormSq_add_le (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (A B : SmoothCcTensor g r s) :

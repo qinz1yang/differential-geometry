@@ -19,9 +19,9 @@ theorem manifoldFlowFamily_of_regular
     (hReg : ChartCoordPicardRegular X)
     (hRegNeg : ChartCoordPicardRegular (fun t x => -(X t x)))
     (hLocalFwd : ∀ (Φ : ℝ → M → M) (T : ℝ), 0 < T →
-      (∀ x : M, ∃ α : M, x ∈ (chartLocalPicardData_of_regular X hReg α).U ∧
+      (∀ x : M, ∃ α : M, x ∈ (chartLocalPicardDataOfRegular X hReg α).U ∧
         ∀ s : ℝ, Φ s x = (chartAt H α).symm
-          (I.symm ((chartLocalPicardData_of_regular X hReg α).flow
+          (I.symm ((chartLocalPicardDataOfRegular X hReg α).flow
             (I ((chartAt H α) x)) s))) →
       ∀ x : M, ∃ (ρ : ℝ) (_ : 0 < ρ) (flow : E → ℝ → E),
         ContDiffOn ℝ ∞ (Function.uncurry flow)
@@ -32,10 +32,10 @@ theorem manifoldFlowFamily_of_regular
         (∀ t ∈ Set.Ioo (0 : ℝ) T,
           I.symm (flow (I ((chartAt H x) x)) t) ∈ (chartAt H x).target))
     (hLocalRev : ∀ (Ψ : ℝ → M → M) (T : ℝ), 0 < T →
-      (∀ x : M, ∃ α : M, x ∈ (chartLocalPicardData_of_regular
+      (∀ x : M, ∃ α : M, x ∈ (chartLocalPicardDataOfRegular
           (fun t x => -(X t x)) hRegNeg α).U ∧
         ∀ s : ℝ, Ψ s x = (chartAt H α).symm
-          (I.symm ((chartLocalPicardData_of_regular
+          (I.symm ((chartLocalPicardDataOfRegular
             (fun t x => -(X t x)) hRegNeg α).flow (I ((chartAt H α) x)) s))) →
       ∀ x : M, ∃ (ρ : ℝ) (_ : 0 < ρ) (flow : E → ℝ → E),
         ContDiffOn ℝ ∞ (Function.uncurry flow)
@@ -49,16 +49,16 @@ theorem manifoldFlowFamily_of_regular
       (∀ x, Φ 0 x = x) → (∀ x, Ψ 0 x = x) →
       (∀ x : M, ∃ α : M, ∀ s : ℝ,
         Φ s x = (chartAt H α).symm
-          (I.symm ((chartLocalPicardData_of_regular X hReg α).flow
+          (I.symm ((chartLocalPicardDataOfRegular X hReg α).flow
             (I ((chartAt H α) x)) s))) →
       (∀ x : M, ∃ α : M, ∀ s : ℝ,
         Ψ s x = (chartAt H α).symm
-          (I.symm ((chartLocalPicardData_of_regular
+          (I.symm ((chartLocalPicardDataOfRegular
             (fun t x => -(X t x)) hRegNeg α).flow (I ((chartAt H α) x)) s))) →
       ∀ α : M,
         ∃ S_α : ℝ, 0 < S_α ∧
-          ∀ x ∈ (chartLocalPicardData_of_regular X hReg α).U ∩
-              (chartLocalPicardData_of_regular (fun t x => -(X t x)) hRegNeg α).U,
+          ∀ x ∈ (chartLocalPicardDataOfRegular X hReg α).U ∩
+              (chartLocalPicardDataOfRegular (fun t x => -(X t x)) hRegNeg α).U,
             ∀ s ∈ Set.Ico (0 : ℝ) S_α,
               Ψ s (Φ s x) = x ∧ Φ s (Ψ s x) = x) :
     ∃ (T : ℝ) (_ : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (Φ : ℝ → M → M),
@@ -66,8 +66,8 @@ theorem manifoldFlowFamily_of_regular
         (∀ x : M, Φ 0 x = x) ∧
         (∀ t : ℝ, 0 < t → t < T → ∀ x : M, Φ_fam t x = Φ t x) :=
   manifoldFlowFamily_exists X
-    (fun α => chartLocalPicardData_of_regular X hReg α)
-    (fun α => chartLocalPicardData_of_regular (fun t x => -(X t x)) hRegNeg α)
+    (fun α => chartLocalPicardDataOfRegular X hReg α)
+    (fun α => chartLocalPicardDataOfRegular (fun t x => -(X t x)) hRegNeg α)
     hLocalFwd hLocalRev hBijPerChart
 
 end DifferentialGeometry.Analysis.ODE

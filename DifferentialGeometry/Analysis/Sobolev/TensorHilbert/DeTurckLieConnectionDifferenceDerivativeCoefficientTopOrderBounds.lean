@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -93,6 +92,7 @@ private lemma engineRem_le_deTurckLieConnectionDifferenceDerivativeGridWin (b : 
           (mul_nonneg (Combinatorics.antidiagonalTupleGridCount_nonneg _)
             (Combinatorics.antidiagonalTupleGridCount_nonneg _))
 
+omit [SigmaCompactSpace M] in
 private theorem exists_riemannianFiberNormSq_connectionDifferenceSection_topsep_deTurckLieConnectionDifferenceDerivative
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ j, 0 ≤ Kc j) ∧

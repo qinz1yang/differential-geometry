@@ -56,7 +56,7 @@ lemma contMDiff_g_inner_grad_phi_grad_v
       (gradFun (I := I) g (φ : M → ℝ) b)
       (gradFun (I := I) g (v : M → ℝ) b)) := by
   have h := contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-    (grad_g (I := I) g φ) (grad_g (I := I) g v)
+    (gradG (I := I) g φ) (gradG (I := I) g v)
   refine h.congr ?_
   intro b
   simp only [grad_g_apply]
@@ -65,13 +65,13 @@ omit [CompactSpace M] in
 omit [SigmaCompactSpace M] in
 theorem bochner_polarised_pointwise
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
-    Δ_g (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
+    ΔG (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
       g.inner x
           (gradFun (I := I) g (φ : M → ℝ) x)
-          (gradFun (I := I) g (Δ_g (I := I) g v) x) +
+          (gradFun (I := I) g (ΔG (I := I) g v) x) +
         g.inner x
           (gradFun (I := I) g (v : M → ℝ) x)
-          (gradFun (I := I) g (Δ_g (I := I) g φ) x) +
+          (gradFun (I := I) g (ΔG (I := I) g φ) x) +
         2 * hessPairingChart (I := I) g φ v x +
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
@@ -88,16 +88,16 @@ theorem bochner_polarised_pointwise_oneSubLap
     g.inner x
         (gradFun (I := I) g (φ : M → ℝ) x)
         (gradFun (I := I) g (v : M → ℝ) x) -
-      Δ_g (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
+      ΔG (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
       g.inner x
           (gradFun (I := I) g (φ : M → ℝ) x)
           (gradFun (I := I) g (v : M → ℝ) x)
         - g.inner x
             (gradFun (I := I) g (v : M → ℝ) x)
-            (gradFun (I := I) g (Δ_g (I := I) g φ) x)
+            (gradFun (I := I) g (ΔG (I := I) g φ) x)
         - g.inner x
             (gradFun (I := I) g (φ : M → ℝ) x)
-            (gradFun (I := I) g (Δ_g (I := I) g v) x)
+            (gradFun (I := I) g (ΔG (I := I) g v) x)
         - 2 * hessPairingChart (I := I) g φ v x
         - 2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
@@ -121,9 +121,9 @@ omit [T2Space M] [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma Δ_g_gradInnerSmoothBundle_eq_contMDiff_g_inner
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) (x : M) :
-    Δ_g (I := I) g ⟨(gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun,
+    ΔG (I := I) g ⟨(gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun,
       (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth⟩ x =
-      Δ_g (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ ⟨v.toFun,
+      ΔG (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ ⟨v.toFun,
         v.smooth⟩)⟩ x := by
   apply Δ_g_congr_func
 

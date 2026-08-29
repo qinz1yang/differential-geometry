@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldAppl
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -38,20 +37,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 private local instance edgePartnerBiTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance edgePartnerBiTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance edgePartnerBiTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance edgePartnerBiTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -66,6 +65,7 @@ private lemma edge_app_le (g : SmoothRiemannianMetric I M)
   exact riemannianFiberNormSq_compRS_le_mul
     (I := I) (M := M) g 0 r s x (Phi.toSection x) (W.toSection x)
 
+omit [SigmaCompactSpace M] in
 private lemma edge_extend2_one (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 2 5 x
@@ -84,6 +84,7 @@ private lemma edge_extend2_one (g : SmoothRiemannianMetric I M)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma edgeRaise_zero_mul (g gm : SmoothRiemannianMetric I M)
     (W P : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -123,6 +124,7 @@ private lemma edgeRaise_zero_mul (g gm : SmoothRiemannianMetric I M)
         (P.toSection x)) := mul_le_mul_of_nonneg_left hS0' (sq_nonneg _)
     _ = _ := by simp only [F]; ring
 
+omit [SigmaCompactSpace M] in
 private lemma edgeRaise_one_mul (g : SmoothRiemannianMetric I M) :
     ∃ D : Real, 0 ≤ D ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -205,6 +207,7 @@ private lemma edgeRaise_one_mul (g : SmoothRiemannianMetric I M) :
     _ = D * (W1 * P0 + P1) := by simp only [D]; ring
     _ = _ := rfl
 
+omit [SigmaCompactSpace M] in
 theorem topOrderBilinearPairingCoefficient_uniform_norm_bound :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (g gm : SmoothRiemannianMetric I M)
@@ -275,6 +278,126 @@ theorem topOrderBilinearPairingCoefficient_uniform_norm_bound :
         riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (V.toSection x) := by simp only [C]; ring
 
+private lemma quadratic_kernel_bound {A : Type*} [AddCommGroup A] [Module Real A]
+    (N : A → Real) (Pair : Equiv.Perm (Fin 4) → A) (B : Real)
+    (hNadd : ∀ Q R, N (Q + R) ≤ 2 * N Q + 2 * N R)
+    (hNsub : ∀ Q R, N (Q - R) ≤ 2 * N Q + 2 * N R)
+    (hNsmul : ∀ (a : Real) Q, N (a • Q) = a ^ 2 * N Q)
+    (hpair : ∀ sigma, N (Pair sigma) ≤ B)
+    (qq : Fin 4 → Equiv.Perm (Fin 4)) :
+    N ((1 / 2 : Real) •
+        (Pair (qq 0) + Pair (qq 1) - Pair (qq 2) - Pair (qq 3))) ≤ 4 * B := by
+  let Q0 := Pair (qq 0)
+  let Q1 := Pair (qq 1)
+  let Q2 := Pair (qq 2)
+  let Q3 := Pair (qq 3)
+  have h01 : N (Q0 + Q1) ≤ 4 * B := by
+    calc
+      N (Q0 + Q1) ≤ 2 * N Q0 + 2 * N Q1 := hNadd Q0 Q1
+      _ ≤ 2 * B + 2 * B := add_le_add
+        (mul_le_mul_of_nonneg_left (by simpa only [Q0] using hpair (qq 0)) (by norm_num))
+        (mul_le_mul_of_nonneg_left (by simpa only [Q1] using hpair (qq 1)) (by norm_num))
+      _ = 4 * B := by ring
+  have h23 : N (Q2 + Q3) ≤ 4 * B := by
+    calc
+      N (Q2 + Q3) ≤ 2 * N Q2 + 2 * N Q3 := hNadd Q2 Q3
+      _ ≤ 2 * B + 2 * B := add_le_add
+        (mul_le_mul_of_nonneg_left (by simpa only [Q2] using hpair (qq 2)) (by norm_num))
+        (mul_le_mul_of_nonneg_left (by simpa only [Q3] using hpair (qq 3)) (by norm_num))
+      _ = 4 * B := by ring
+  have hdiff : N ((Q0 + Q1) - (Q2 + Q3)) ≤ 16 * B := by
+    calc
+      N ((Q0 + Q1) - (Q2 + Q3)) ≤ 2 * N (Q0 + Q1) + 2 * N (Q2 + Q3) :=
+        hNsub _ _
+      _ ≤ 2 * (4 * B) + 2 * (4 * B) := add_le_add
+        (mul_le_mul_of_nonneg_left h01 (by norm_num))
+        (mul_le_mul_of_nonneg_left h23 (by norm_num))
+      _ = 16 * B := by ring
+  have heq : Q0 + Q1 - Q2 - Q3 = (Q0 + Q1) - (Q2 + Q3) := by abel
+  change N ((1 / 2 : Real) • (Q0 + Q1 - Q2 - Q3)) ≤ _
+  rw [hNsmul, heq]
+  norm_num
+  linarith
+
+private lemma quadratic_riemannian_part_bound {A : Type*} [AddCommGroup A] [Module Real A]
+    (N : A → Real) (Kern : (Fin 4 → Equiv.Perm (Fin 4)) → A) (B s : Real)
+    (hNadd : ∀ Q R, N (Q + R) ≤ 2 * N Q + 2 * N R)
+    (hNsmul : ∀ (a : Real) Q, N (a • Q) = a ^ 2 * N Q)
+    (hkernel : ∀ qq, N (Kern qq) ≤ 4 * B) (hB0 : 0 ≤ B) (hs2 : s ^ 2 ≤ 1)
+    (qA qB : Fin 4 → Equiv.Perm (Fin 4)) :
+    N (s • ((1 / 2 : Real) • (Kern qA + Kern qB))) ≤ 4 * B := by
+  let KA := Kern qA
+  let KB := Kern qB
+  have hab : N (KA + KB) ≤ 16 * B := by
+    calc
+      N (KA + KB) ≤ 2 * N KA + 2 * N KB := hNadd KA KB
+      _ ≤ 2 * (4 * B) + 2 * (4 * B) := add_le_add
+        (mul_le_mul_of_nonneg_left (by simpa only [KA] using hkernel qA) (by norm_num))
+        (mul_le_mul_of_nonneg_left (by simpa only [KB] using hkernel qB) (by norm_num))
+      _ = 16 * B := by ring
+  change N (s • ((1 / 2 : Real) • (KA + KB))) ≤ _
+  rw [hNsmul, hNsmul]
+  norm_num
+  nlinarith [sq_nonneg s]
+
+private lemma quadratic_lie_term_bound {A : Type*} [AddCommGroup A] [Module Real A]
+    (N : A → Real) (Pair : Equiv.Perm (Fin 4) → A) (B : Real)
+    (hNadd : ∀ Q R, N (Q + R) ≤ 2 * N Q + 2 * N R)
+    (hNsmul : ∀ (a : Real) Q, N (a • Q) = a ^ 2 * N Q)
+    (hpair : ∀ sigma, N (Pair sigma) ≤ B)
+    (q : Fin 3 → Equiv.Perm (Fin 4)) (epsilon : Fin 3 → Real)
+    (hepsilon : ∀ i, |epsilon i| ≤ 1) (hB0 : 0 ≤ B) (i : Fin 3) :
+    N (epsilon i • ((1 / 2 : Real) •
+        (Pair (q i) + Pair ((q i).trans (Equiv.swap (0 : Fin 4) 1))))) ≤ B := by
+  let QA := Pair (q i)
+  let QB := Pair ((q i).trans (Equiv.swap (0 : Fin 4) 1))
+  have hab : N (QA + QB) ≤ 4 * B := by
+    calc
+      N (QA + QB) ≤ 2 * N QA + 2 * N QB := hNadd QA QB
+      _ ≤ 2 * B + 2 * B := add_le_add
+        (mul_le_mul_of_nonneg_left (by simpa only [QA] using hpair (q i)) (by norm_num))
+        (mul_le_mul_of_nonneg_left
+          (by simpa only [QB] using hpair ((q i).trans (Equiv.swap (0 : Fin 4) 1)))
+          (by norm_num))
+      _ = 4 * B := by ring
+  have heps2 : (epsilon i) ^ 2 ≤ 1 := by
+    have hi := abs_le.mp (hepsilon i)
+    have hprod : 0 ≤ (1 - epsilon i) * (1 + epsilon i) :=
+      mul_nonneg (sub_nonneg.mpr hi.2) (by linarith [hi.1])
+    nlinarith
+  change N (epsilon i • ((1 / 2 : Real) • (QA + QB))) ≤ B
+  rw [hNsmul, hNsmul]
+  norm_num
+  nlinarith [sq_nonneg (epsilon i)]
+
+private lemma quadratic_lie_part_bound {A : Type*} [AddCommGroup A] [Module Real A]
+    (N : A → Real) (LieTerm : Fin 3 → A) (B s : Real)
+    (hNadd : ∀ Q R, N (Q + R) ≤ 2 * N Q + 2 * N R)
+    (hNsmul : ∀ (a : Real) Q, N (a • Q) = a ^ 2 * N Q)
+    (hlieTerm : ∀ i, N (LieTerm i) ≤ B) (hB0 : 0 ≤ B) (hs2 : s ^ 2 ≤ 1) :
+    N (s • (LieTerm 0 + LieTerm 1 + LieTerm 2)) ≤ 10 * B := by
+  let L0 := LieTerm 0
+  let L1 := LieTerm 1
+  let L2 := LieTerm 2
+  have h01 : N (L0 + L1) ≤ 4 * B := by
+    calc
+      N (L0 + L1) ≤ 2 * N L0 + 2 * N L1 := hNadd L0 L1
+      _ ≤ 2 * B + 2 * B := add_le_add
+        (mul_le_mul_of_nonneg_left (by simpa only [L0] using hlieTerm 0) (by norm_num))
+        (mul_le_mul_of_nonneg_left (by simpa only [L1] using hlieTerm 1) (by norm_num))
+      _ = 4 * B := by ring
+  have h012 : N (L0 + L1 + L2) ≤ 10 * B := by
+    calc
+      N (L0 + L1 + L2) ≤ 2 * N (L0 + L1) + 2 * N L2 := hNadd _ _
+      _ ≤ 2 * (4 * B) + 2 * B := add_le_add
+        (mul_le_mul_of_nonneg_left h01 (by norm_num))
+        (mul_le_mul_of_nonneg_left (by simpa only [L2] using hlieTerm 2) (by norm_num))
+      _ = 10 * B := by ring
+  change N (s • (L0 + L1 + L2)) ≤ _
+  rw [hNsmul]
+  exact (mul_le_mul_of_nonneg_left h012 (sq_nonneg s)).trans (by nlinarith [sq_nonneg s])
+
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderBilinearPairingCoefficient_uniform_norm_bound :
     ∃ K : Real, 0 ≤ K ∧
       ∀ (g : SmoothRiemannianMetric I M)
@@ -386,105 +509,14 @@ theorem ricciDeTurckTopOrderBilinearPairingCoefficient_uniform_norm_bound :
       Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
   have hkernel : ∀ qq : Fin 4 → Equiv.Perm (Fin 4), N (Kern qq) ≤ 4 * B := by
     intro qq
-    let Q0 := Pair (qq 0)
-    let Q1 := Pair (qq 1)
-    let Q2 := Pair (qq 2)
-    let Q3 := Pair (qq 3)
-    have h01 : N (Q0 + Q1) ≤ 4 * B := by
-      calc
-        N (Q0 + Q1) ≤ 2 * N Q0 + 2 * N Q1 := hNadd Q0 Q1
-        _ ≤ 2 * B + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left (by simpa only [Q0] using hpair (qq 0))
-            (by norm_num))
-          (mul_le_mul_of_nonneg_left (by simpa only [Q1] using hpair (qq 1))
-            (by norm_num))
-        _ = 4 * B := by ring
-    have h23 : N (Q2 + Q3) ≤ 4 * B := by
-      calc
-        N (Q2 + Q3) ≤ 2 * N Q2 + 2 * N Q3 := hNadd Q2 Q3
-        _ ≤ 2 * B + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left (by simpa only [Q2] using hpair (qq 2))
-            (by norm_num))
-          (mul_le_mul_of_nonneg_left (by simpa only [Q3] using hpair (qq 3))
-            (by norm_num))
-        _ = 4 * B := by ring
-    have hdiff : N ((Q0 + Q1) - (Q2 + Q3)) ≤ 16 * B := by
-      calc
-        N ((Q0 + Q1) - (Q2 + Q3)) ≤
-            2 * N (Q0 + Q1) + 2 * N (Q2 + Q3) := hNsub _ _
-        _ ≤ 2 * (4 * B) + 2 * (4 * B) := add_le_add
-          (mul_le_mul_of_nonneg_left h01 (by norm_num))
-          (mul_le_mul_of_nonneg_left h23 (by norm_num))
-        _ = 16 * B := by ring
-    have heq : Q0 + Q1 - Q2 - Q3 = (Q0 + Q1) - (Q2 + Q3) := by abel
-    change N ((1 / 2 : Real) • (Q0 + Q1 - Q2 - Q3)) ≤ _
-    rw [hNsmul, heq]
-    norm_num
-    linarith
-  have hriem : N Riem ≤ 4 * B := by
-    let KA := Kern qA
-    let KB := Kern qB
-    have hab : N (KA + KB) ≤ 16 * B := by
-      calc
-        N (KA + KB) ≤ 2 * N KA + 2 * N KB := hNadd KA KB
-        _ ≤ 2 * (4 * B) + 2 * (4 * B) := add_le_add
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [KA] using hkernel qA) (by norm_num))
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [KB] using hkernel qB) (by norm_num))
-        _ = 16 * B := by ring
-    change N (s • ((1 / 2 : Real) • (KA + KB))) ≤ _
-    rw [hNsmul, hNsmul]
-    norm_num
-    nlinarith
+    exact quadratic_kernel_bound N Pair B hNadd hNsub hNsmul hpair qq
+  have hriem : N Riem ≤ 4 * B :=
+    quadratic_riemannian_part_bound N Kern B s hNadd hNsmul hkernel hB0 hs2 qA qB
   have hlieTerm : ∀ i : Fin 3, N (LieTerm i) ≤ B := by
     intro i
-    let QA := Pair (q i)
-    let QB := Pair ((q i).trans (Equiv.swap (0 : Fin 4) 1))
-    have hab : N (QA + QB) ≤ 4 * B := by
-      calc
-        N (QA + QB) ≤ 2 * N QA + 2 * N QB := hNadd QA QB
-        _ ≤ 2 * B + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [QA] using hpair (q i)) (by norm_num))
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [QB] using
-              hpair ((q i).trans (Equiv.swap (0 : Fin 4) 1))) (by norm_num))
-        _ = 4 * B := by ring
-    have heps2 : (epsilon i) ^ 2 ≤ 1 := by
-      have hi := abs_le.mp (hepsilon i)
-      have hprod : 0 ≤ (1 - epsilon i) * (1 + epsilon i) :=
-        mul_nonneg (sub_nonneg.mpr hi.2) (by linarith [hi.1])
-      nlinarith
-    change N (epsilon i • ((1 / 2 : Real) • (QA + QB))) ≤ B
-    rw [hNsmul, hNsmul]
-    norm_num
-    nlinarith
-  have hlie : N Lie ≤ 10 * B := by
-    let L0 := LieTerm 0
-    let L1 := LieTerm 1
-    let L2 := LieTerm 2
-    have h01 : N (L0 + L1) ≤ 4 * B := by
-      calc
-        N (L0 + L1) ≤ 2 * N L0 + 2 * N L1 := hNadd L0 L1
-        _ ≤ 2 * B + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [L0] using hlieTerm 0) (by norm_num))
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [L1] using hlieTerm 1) (by norm_num))
-        _ = 4 * B := by ring
-    have h012 : N (L0 + L1 + L2) ≤ 10 * B := by
-      calc
-        N (L0 + L1 + L2) ≤ 2 * N (L0 + L1) + 2 * N L2 := hNadd _ _
-        _ ≤ 2 * (4 * B) + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left h01 (by norm_num))
-          (mul_le_mul_of_nonneg_left
-            (by simpa only [L2] using hlieTerm 2) (by norm_num))
-        _ = 10 * B := by ring
-    change N (s • (L0 + L1 + L2)) ≤ _
-    rw [hNsmul]
-    exact (mul_le_mul_of_nonneg_left h012 (sq_nonneg s)).trans (by
-      nlinarith)
+    exact quadratic_lie_term_bound N Pair B hNadd hNsmul hpair q epsilon hepsilon hB0 i
+  have hlie : N Lie ≤ 10 * B :=
+    quadratic_lie_part_bound N LieTerm B s hNadd hNsmul hlieTerm hB0 hs2
   have hform :
       ricciDeTurckTopOrderBilinearPairingAdjoint (I := I) (M := M) g T P V hdelta hdeltaZ
           qA qB q epsilon s = (2 : Real) • Riem + Lie := by
@@ -519,6 +551,7 @@ theorem ricciDeTurckTopOrderBilinearPairingCoefficient_uniform_norm_bound :
       (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
       (Real.sqrt_nonneg _))
 
+omit [SigmaCompactSpace M] in
 theorem topOrderBilinearPairingAdjoint_norm_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -539,6 +572,7 @@ theorem topOrderBilinearPairingAdjoint_norm_bound (g : SmoothRiemannianMetric I 
   obtain ⟨C, hC, hbound⟩ := topOrderBilinearPairingCoefficient_uniform_norm_bound (I := I) (M := M)
   exact ⟨C, hC, hbound g⟩
 
+omit [SigmaCompactSpace M] in
 theorem topOrderBilinearPairingAdjoint_covariantDerivative_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M)

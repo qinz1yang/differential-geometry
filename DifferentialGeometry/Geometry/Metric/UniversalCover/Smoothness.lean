@@ -24,7 +24,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-  [LocPathConnectedSpace M]
+  [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M]
 
@@ -303,7 +303,7 @@ theorem uc_hom_bundle_inCoordinates_pullback
       = ((trivializationAt (E →L[ℝ] ℝ) (fun b : M => TangentSpace I b →L[ℝ] ℝ)
               (proj a)).continuousLinearMapAt ℝ (proj x) L : E →L[ℝ] ℝ) v
     rw [hLHS, hRHS]
-    simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+    simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
       Bundle.Trivial.fiberBundle_trivializationAt',
       Bundle.Trivial.continuousLinearMapAt_trivialization,
       ContinuousLinearMap.coe_id', id_eq]

@@ -7,8 +7,8 @@ noncomputable section
 
 namespace DifferentialGeometry.Analysis.Schauder
 
-open BoundedContinuousFunction
-open scoped BoundedContinuousFunction
+open _root_.BoundedContinuousFunction
+open scoped _root_.BoundedContinuousFunction
 
 variable {X A B C : Type*} [TopologicalSpace X]
   [NormedAddCommGroup A] [NormedSpace Real A]
@@ -130,8 +130,14 @@ theorem cutoffValue_hasFDerivAt
     (x : V) :
     HasFDerivAt (cutoffValue chi u : V → F)
       (cutoffJet1 chi dchi u du x) x := by
-  simpa only [cutoffValue_apply, cutoffJet1_apply] using
-    (hchi x).smul (hu x)
+  have hraw := (hchi x).smul (hu x)
+  have hfun : ((chi : V → Real) • (u : V → F)) = (cutoffValue chi u : V → F) := by
+    funext y
+    rfl
+  rw [hfun] at hraw
+  change HasFDerivAt (cutoffValue chi u : V → F)
+    (chi x • du x + (dchi x).smulRight (u x)) x at hraw
+  exact hraw
 
 omit [NormedSpace Real V] in
 theorem cutoffValue_hasDerivAt
@@ -142,7 +148,14 @@ theorem cutoffValue_hasDerivAt
     (hu : HasDerivAt u (du t) t) :
     HasDerivAt (fun s ↦ cutoffValue (chi s) (u s))
       (cutoffTimeJet chi dchi u du t) t := by
-  simpa only [cutoffValue, cutoffTimeJet] using hchi.smul hu
+  have hraw := hchi.smul hu
+  have hfun : (chi • u) = fun s ↦ cutoffValue (chi s) (u s) := by
+    funext s
+    rfl
+  rw [hfun] at hraw
+  change HasDerivAt (fun s ↦ cutoffValue (chi s) (u s))
+    (chi t • du t + dchi t • u t) t at hraw
+  exact hraw
 
 theorem cutoffJet1_hasFDerivAt
     (chi : BoundedContinuousFunction V Real)
@@ -162,10 +175,18 @@ theorem cutoffJet1_hasFDerivAt
   have hright :=
     (ContinuousLinearMap.smulRightL Real V F).hasFDerivAt_of_bilinear
       (hdchi x) (hu x)
+  have hsum := hleft.add hright
+  have hfun :
+      ((chi : V → Real) • (du : V → V →L[Real] F) +
+        fun y ↦ (ContinuousLinearMap.smulRightL Real V F) (dchi y) (u y)) =
+      fun y ↦ chi y • du y + (dchi y).smulRight (u y) := by
+    funext y
+    rfl
+  rw [hfun] at hsum
   change HasFDerivAt
     (fun y ↦ chi y • du y + (dchi y).smulRight (u y))
     (cutoffJet2 chi dchi d2chi u du d2u x) x
-  simpa only [cutoffJet2_apply, add_assoc] using hleft.add hright
+  simpa only [cutoffJet2_apply, add_assoc] using hsum
 
 end Cutoff
 

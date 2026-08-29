@@ -76,7 +76,7 @@ theorem bilin_ddc_swap (g : SmoothRiemannianMetric I M)
     ContinuousMultilinearMap.domDomCongr_apply]
   congr 1
   funext k
-  fin_cases k <;> simp [Equiv.swap_apply_left, Equiv.swap_apply_right]
+  fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem ddc_swap_swap (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) :
@@ -168,6 +168,7 @@ private theorem smoothRem_eq_arm_sub (g₀ g_bg : SmoothRiemannianMetric I M)
         rawTensorConnLapSmooth (I := I) g₀ 0 2 T :=
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem swap_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -182,6 +183,7 @@ theorem swap_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
       (Equiv.swap (0 : Fin 2) 1) T,
     hT]
 
+omit [SigmaCompactSpace M] in
 theorem symmS_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -193,6 +195,7 @@ theorem symmS_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
     (swap_smoothRem (I := I) (M := M) g₀ g_bg T hδ_lt hδ
       (swap_of_symmS (I := I) (M := M) g₀ hT))
 
+omit [SigmaCompactSpace M] in
 theorem symmS_remSymmS (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀
@@ -205,6 +208,7 @@ theorem symmS_remSymmS (g₀ g_bg : SmoothRiemannianMetric I M)
   symmS_smoothRem (I := I) (M := M) g₀ g_bg _ hδ_lt hδ
     (symmS_idem (I := I) (M := M) g₀ T)
 
+omit [SigmaCompactSpace M] in
 theorem bilin_smoothRem_symm (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

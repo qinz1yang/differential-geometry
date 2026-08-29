@@ -23,7 +23,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -50,6 +49,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 lemma bdICG_succ_cometricDT_zero (g₀ : SmoothRiemannianMetric I M) (s m : ℕ) :
     iteratedCovGrad (I := I) g₀ (s + 2) s (m + 1)
       (cometricDoubleTraceField (I := I) g₀ s) = 0 := by
@@ -250,10 +250,11 @@ private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : Smooth
       (domDomCongrSection (I := I) g₀ (finRotate 3)
         (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x)
       (unitTensor (I := I) (M := M) x) with hDdef
-  have hLHS : (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        connectionDifferenceFib (I := I) g₁ g₀ x) om YZ =
+  have hLHS : Tensor0SSpace.eval
+      ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        connectionDifferenceFib (I := I) g₁ g₀ x) om) YZ =
       g₀.inner x u (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1)) := by
-    rw [connectionDifferenceFib_apply_eval]
+    rw [Tensor0SSpace.eval_eq, connectionDifferenceFib_apply_eval]
     rw [show om (fun _ : Fin 1 => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1)) =
         cotangentToDual (I := I) (x := x) om
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1)) from
@@ -264,35 +265,56 @@ private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : Smooth
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1)) from rfl]
     rw [← inverseMetricSharpFib_inner (I := I) g₀ x om
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1)), ← hu]
-  have hRHS : (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        cometricRaiseSlot0Fib (I := I) g₀ 1 x D) om YZ =
-      Tensor0SSpace.toModel D (Fin.cons (show E from u) (fun k => (show E from YZ k))) := by
-    rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+  have hRHS : Tensor0SSpace.eval
+      ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        cometricRaiseSlot0Fib (I := I) g₀ 1 x D) om) YZ =
+      Tensor0SSpace.toModel D
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k))) := by
+    rw [Tensor0SSpace.eval_eq, cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D YZ : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
-            (inverseMetricSharpFib (I := I) g₀ x om) D) YZ from rfl]
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
+            (inverseMetricSharpFib (I := I) g₀ x om) D)
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
+      rw [Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.eval_eq]]
     rw [bdInterior_product_toModel_eval (I := I) (M := M) (1 + 1) x
       (inverseMetricSharpFib (I := I) g₀ x om) D YZ, ← hu]
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        connectionDifferenceFib (I := I) g₁ g₀ x) om) YZ =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+        cometricRaiseSlot0Fib (I := I) g₀ 1 x D) om) YZ
   rw [hLHS, hRHS]
   have hum : unitModel (I := I) (M := M) g₀ 3
       (domDomCongrSection (I := I) g₀ (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) x =
       Tensor0SSpace.toModel D := rfl
-  rw [show Tensor0SSpace.toModel D (Fin.cons (show E from u) (fun k => (show E from YZ k))) =
+  rw [show Tensor0SSpace.toModel D
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
+        (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k))) =
         unitModel (I := I) (M := M) g₀ 3
           (domDomCongrSection (I := I) g₀ (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) x
-          ![u, YZ 0, YZ 1] from by
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 0),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 1)] from by
     rw [hum]; congr 1; funext k; fin_cases k <;> rfl]
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
-  rw [show (fun i => (![u, YZ 0, YZ 1] : Fin 3 → TangentSpace I x) ((finRotate 3) i)) =
-        ![YZ 0, YZ 1, u] from by
-    funext i; fin_cases i <;> simp [finRotate_succ_apply]]
+  rw [show (fun i => (![tangentSpaceModelContinuousLinearEquiv (I := I) x u,
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 0),
+      tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 1)] : Fin 3 → E)
+      ((finRotate 3) i)) =
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 1),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x u] from by
+    funext i; fin_cases i <;> rfl]
   rw [bdConnectionDifferenceLoweredCc_unitModel_apply]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Matrix.cons_val_two, Matrix.tail_cons]
+    Matrix.cons_val_two, Matrix.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
   rw [g₀.symm x u (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1))]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ) (x : M) :
@@ -320,6 +342,7 @@ lemma bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_c
           ((iteratedCovGrad (I := I) g₀ 1 2 n (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) := by
         rw [bdConnectionDifferenceSection_eq_cometricRaise]
 
+omit [SigmaCompactSpace M] in
 private theorem bdCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
@@ -692,7 +715,7 @@ private theorem bdDLb_eq_slotInsert_sum
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                   (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)))
               (Equiv.swap (0 : Fin 2) 1)).toSection x) D from rfl]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  rw [Tensor0SSpace.toModel_add, add_apply]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D
       = deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D from rfl]
@@ -725,7 +748,7 @@ private theorem bdDLb_eq_slotInsert_sum
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x)
       = (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          tensorRS_domDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+          tensorRSDomDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
             ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x)) from by
     rw [rsDomDomCongrSection_toSection]]
@@ -755,24 +778,15 @@ private theorem bdDLb_eq_slotInsert_sum
     (fun i => m ((Equiv.swap (0 : Fin 2) 1) i))]
   rw [Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   have harg : (fun k => Function.update (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
-        (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x
+        (tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
           ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
         ((Equiv.swap (0 : Fin 2) 1) k))
-      = Function.update m 1 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x (m 1)) := by
+      = Function.update m 1
+          (tangentLinearMapToModel
+            (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (m 1)) := by
     funext k
-    have hswap0 : (Equiv.swap (0 : Fin 2) 1) 0 = 1 := Equiv.swap_apply_left 0 1
-    have hswap1 : (Equiv.swap (0 : Fin 2) 1) 1 = 0 := Equiv.swap_apply_right 0 1
-    simp only [Function.update_apply]
-    rw [hswap0, Equiv.swap_apply_self]
-    have hcond : ((Equiv.swap (0 : Fin 2) 1) k = 0) = (k = 1) := by
-      apply propext
-      constructor
-      · intro h
-        have h2 := congrArg (Equiv.swap (0 : Fin 2) 1) h
-        rwa [Equiv.swap_apply_self, hswap0] at h2
-      · intro h
-        rw [h, hswap1]
-    simp only [hcond]
+    fin_cases k <;> rfl
   rw [harg]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
@@ -852,7 +866,7 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           Z).toSection x) =
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          tensorRS_domDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+          tensorRSDomDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
             (Z.toSection x)) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply]
@@ -888,7 +902,7 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
           (reindexCoeffGen (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) Y)
             (Equiv.swap (0 : Fin 2) 1)).toSection x) D) from rfl]
-    rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]]
+    rw [Tensor0SSpace.toModel_sub, sub_apply]]
   rw [hpt X, hpt Y, hpt (X - Y)]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from (X - Y).toSection x)
       (Tensor0SSpace.ofModel
@@ -905,7 +919,7 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
     rw [show ((X - Y).toSection x) = X.toSection x - Y.toSection x from by
       rw [SmoothCcTensor.toSection_sub]; rfl]
     rfl]
-  rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [Tensor0SSpace.toModel_sub, sub_apply]
 
 private def bdWEndoSecDiff (g₁ g_bg g₀' : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] E) ∞
@@ -915,6 +929,7 @@ private def bdWEndoSecDiff (g₁ g_bg g₀' : SmoothRiemannianMetric I M) :
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private theorem bdDLbDiff_eq_slotInsert_sum
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
@@ -1102,7 +1117,7 @@ theorem bdL2_tameEnvelope_of_gridWindow (g₀ : SmoothRiemannianMetric I M) (a :
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum _
+    (MeasureTheory.integrable_finsetSum _
       (fun k hk => (hKg P hPball k).1)).const_mul C
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
     (iteratedCovGrad (I := I) g₀ 2 2 i V)
@@ -1115,7 +1130,7 @@ theorem bdL2_tameEnvelope_of_gridWindow (g₀ : SmoothRiemannianMetric I M) (a :
     hF_int hpt'
   refine le_trans key ?_
   rw [MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum _ (fun k hk => (hKg P hPball k).1)]
+    MeasureTheory.integral_finsetSum _ (fun k hk => (hKg P hPball k).1)]
   have hsum_le : ∑ k ∈ Finset.range (i + 2),
         (∫ x, ∑ n ∈ Finset.range (k + 1),
             ∑ e ∈ Finset.Nat.antidiagonalTuple n k,

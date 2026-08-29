@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -63,7 +62,7 @@ private lemma chartInner_eq_gramMatrix_quadratic
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (X Y : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) X Y =
       ∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
         covChartMetricGramMatrix (I := I) (M := M) g r s α y P Q *
@@ -87,27 +86,27 @@ private lemma chartInner_eq_gramMatrix_quadratic
           tensorChartBasisElement (E := E) r s Q.1 Q.2)]
     exact tensorRSModel_eq_sum_basis (E := E) r s Y
   conv_lhs => rw [hX]
-  rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+  rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (∑ P : CompIdx E r s,
           tensorChartComponentProjection (E := E) r s P.1 P.2 X •
             tensorChartBasisElement (E := E) r s P.1 P.2) Y =
       ∑ P : CompIdx E r s,
         tensorChartComponentProjection (E := E) r s P.1 P.2 X *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             (tensorChartBasisElement (E := E) r s P.1 P.2) Y from ?_]
   · refine Finset.sum_congr rfl (fun P _ => ?_)
-    rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+    rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (tensorChartBasisElement (E := E) r s P.1 P.2) Y =
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (tensorChartBasisElement (E := E) r s P.1 P.2)
           (∑ Q : CompIdx E r s,
             tensorChartComponentProjection (E := E) r s Q.1 Q.2 Y •
               tensorChartBasisElement (E := E) r s Q.1 Q.2) from by rw [← hY]]
-    rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+    rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (tensorChartBasisElement (E := E) r s P.1 P.2)
           (∑ Q : CompIdx E r s,
@@ -115,7 +114,7 @@ private lemma chartInner_eq_gramMatrix_quadratic
               tensorChartBasisElement (E := E) r s Q.1 Q.2) =
         ∑ Q : CompIdx E r s,
           tensorChartComponentProjection (E := E) r s Q.1 Q.2 Y *
-            chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+            chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
               (tensorChartBasisElement (E := E) r s P.1 P.2)
               (tensorChartBasisElement (E := E) r s Q.1 Q.2) from ?_]

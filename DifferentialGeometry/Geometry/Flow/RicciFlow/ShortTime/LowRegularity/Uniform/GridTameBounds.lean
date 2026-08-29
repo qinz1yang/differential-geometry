@@ -124,11 +124,19 @@ theorem h1_grid_uniform
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ Km k := by
     intro k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
     by_cases hk3 : k = 3
     · subst k
-      simpa only [lowJetGrid, Km, if_pos, K3, Nat.reduceAdd] using hgrid3
+      simpa only [Km, if_pos, K3, Nat.reduceAdd] using hgrid3
     · have hk2 : k ≤ 2 := by omega
-      simpa only [lowJetGrid, Km, if_neg hk3, K0] using hgrid0 k hk2
+      simpa only [Km, if_neg hk3, K0] using hgrid0 k hk2
   have hle := grid_h1_le (I := I) (M := M) g P Km C
     hgr hC Φ hΦ
   have hsplit : ∀ i : ℕ,

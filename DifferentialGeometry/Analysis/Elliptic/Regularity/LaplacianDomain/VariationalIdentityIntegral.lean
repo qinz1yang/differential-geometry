@@ -174,7 +174,7 @@ private lemma principalMultiplier_continuousOn
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   unfold principalMultiplier
-  refine continuousOn_finset_sum _ fun j _ => ?_
+  refine continuousOn_finsetSum _ fun j _ => ?_
   have h_inv : ContinuousOn (invGramOnEuclid (I := I) g α i j)
       (chartTargetEuclid (I := I) (M := M) α) :=
     (invGramOnEuclid_contDiffOn (I := I) g α i j).continuousOn
@@ -475,8 +475,12 @@ lemma chartPushedLpFromLp_tendsto
     have h_sub : Tendsto (fun n => u n - u_lim) atTop (𝓝 0) := by
       have := h_tendsto.sub (tendsto_const_nhds (x := u_lim))
       simpa using this
-    simpa using (continuous_norm.tendsto (0 :
-      Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
+    change Tendsto
+      ((fun a : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) => ‖a‖) ∘
+        fun n => u n - u_lim) atTop (nhds 0)
+    simpa only [norm_zero] using
+      (continuous_norm.tendsto (0 :
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))).comp h_sub
   have h_eLpNorm_eq : ∀ n,
       eLpNorm (((u n - u_lim) : Lp ℝ 2 _) : M → ℝ) 2
         (riemannianVolumeMeasure (I := I) (M := M) g) =
@@ -575,7 +579,14 @@ lemma chartPushedLpFromLp_tendsto
           (chartTargetEuclid (I := I) (M := M) α)))) atTop (𝓝 0) := by
     have h_comp := (ENNReal.tendsto_toReal (by norm_num : (0 : ℝ≥0∞) ≠ ⊤)).comp
       h_chartPushed_eLp_tendsto
-    simpa using h_comp
+    change Tendsto (ENNReal.toReal ∘ fun n => eLpNorm (fun y =>
+      DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
+        (chartAtlasPOU I M) α ((u n : Lp ℝ 2 _) : M → ℝ) y -
+      DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
+        (chartAtlasPOU I M) α ((u_lim : Lp ℝ 2 _) : M → ℝ) y) 2
+      ((chartPulledWeightedMeasure (I := I) g α).restrict
+        (chartTargetEuclid (I := I) (M := M) α))) atTop (nhds 0)
+    exact h_comp
   exact h_toReal_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -680,7 +691,7 @@ private lemma chartPushedLpFromLp_smoothToLp_aeEq
           (chartAtlasPOU I M) α v.toFun y) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) = 0 :=
-    le_antisymm h_diff_bound (zero_le _)
+    le_antisymm h_diff_bound (zero_le)
   have h_aestrong : AEStronglyMeasurable (fun y =>
       DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
         (chartAtlasPOU I M) α (((smoothToLp (I := I) (M := M) g v :
@@ -762,7 +773,7 @@ private lemma smooth_lhs_principal_per_i_tendsto
           ∂(volume : Measure EuclN)) atTop
       (𝓝 ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ) := by
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ) := by
   classical
   have h_per_n : ∀ n,
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -779,27 +790,27 @@ private lemma smooth_lhs_principal_per_i_tendsto
       chartPushedPartialLp (I := I) (M := M) g α i (v n)
           (chartPushedPartial_memLp (I := I) (M := M) g α i (v n)) =
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i)
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i)
           (smoothToH1Compl (I := I) (M := M) g (v n)) :=
     fun n => (chartPushedWeakPartialLp_smoothToH1Compl
       (I := I) (M := M) g α i
-      (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) (v n)).symm
+      (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) (v n)).symm
   have h_cwpL_tendsto : Tendsto (fun n => chartPushedWeakPartialLp
         (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i)
         (smoothToH1Compl (I := I) (M := M) g (v n))) atTop
       (𝓝 (chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h)) :=
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h)) :=
     ((chartPushedWeakPartialLp_continuous
       (I := I) (M := M) g α i _).tendsto _).comp h_tendsto
   have h_inner_tendsto : Tendsto (fun n =>
         ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
           chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i)
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i)
             (smoothToH1Compl (I := I) (M := M) g (v n))⟫_ℝ) atTop
       (𝓝 ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ) :=
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ) :=
     Filter.Tendsto.inner tendsto_const_nhds h_cwpL_tendsto
   rw [show (fun n =>
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -811,7 +822,7 @@ private lemma smooth_lhs_principal_per_i_tendsto
     (fun n =>
       ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i)
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i)
           (smoothToH1Compl (I := I) (M := M) g (v n))⟫_ℝ) from by
     funext n
     rw [h_per_n n, h_smooth_case_eq n]]
@@ -888,14 +899,14 @@ private lemma general_lhs_principal_per_i_eq_inner
         (∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN) =
       ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ := by
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ := by
   classical
   have h_meas_chartTarget : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
     (Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet
@@ -903,14 +914,14 @@ private lemma general_lhs_principal_per_i_eq_inner
       (∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) =
         densityOnEuclid (I := I) g α y *
           (principalMultiplier (I := I) (M := M) g α i ψ y *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
     intro y _hy
@@ -918,7 +929,7 @@ private lemma general_lhs_principal_per_i_eq_inner
     have h_each : ∀ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1) =
@@ -926,7 +937,7 @@ private lemma general_lhs_principal_per_i_eq_inner
             (invGramOnEuclid (I := I) g α i j y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y := by
       intro j
@@ -942,7 +953,7 @@ private lemma general_lhs_principal_per_i_eq_inner
     (I := I) (M := M) g α
     (fun y => principalMultiplier (I := I) (M := M) g α i ψ y *
       ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y)]
   rw [L2.inner_def (𝕜 := ℝ)]
@@ -954,11 +965,11 @@ private lemma general_lhs_principal_per_i_eq_inner
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y)
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) =
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) *
       (((principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp :
@@ -1042,7 +1053,7 @@ private lemma general_lhs_principal_full_integrand_pointwise
     (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
           ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
             Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) =
@@ -1050,7 +1061,7 @@ private lemma general_lhs_principal_full_integrand_pointwise
         (∑ i : Fin (Module.finrank ℝ E),
           principalMultiplier (I := I) (M := M) g α i ψ y *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) := by
   classical
@@ -1060,7 +1071,7 @@ private lemma general_lhs_principal_full_integrand_pointwise
   have h_each : ∀ j : Fin (Module.finrank ℝ E),
       weightedInvGramOnEuclid (I := I) g α i j y *
         ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1) =
@@ -1068,7 +1079,7 @@ private lemma general_lhs_principal_full_integrand_pointwise
         (invGramOnEuclid (I := I) g α i j y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) *
         ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y := by
     intro j
@@ -1091,7 +1102,7 @@ private lemma general_lhs_principal_eq_sum_inner
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
             ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
               Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
@@ -1099,7 +1110,7 @@ private lemma general_lhs_principal_eq_sum_inner
       ∑ i : Fin (Module.finrank ℝ E),
         ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
           chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ := by
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ := by
   classical
   set μ := (chartPulledWeightedMeasure (I := I) g α).restrict
     (chartTargetEuclid (I := I) (M := M) α)
@@ -1112,13 +1123,13 @@ private lemma general_lhs_principal_eq_sum_inner
     (fun y => ∑ i : Fin (Module.finrank ℝ E),
       principalMultiplier (I := I) (M := M) g α i ψ y *
         ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 _) : EuclN → ℝ) y)]
   have h_per_i_integrable : ∀ i : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         principalMultiplier (I := I) (M := M) g α i ψ y *
           ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
             Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) μ := by
     intro i
@@ -1129,12 +1140,12 @@ private lemma general_lhs_principal_eq_sum_inner
         (principalMultiplier_hasCompactSupport (I := I) (M := M) g α i hψ_cs)
         (principalMultiplier_tsupport_subset (I := I) (M := M) g α i hψ_supp)
     have h_C : MemLp (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ)) 2 μ :=
       Lp.memLp _
     exact MemLp.integrable_mul h_P h_C
-  rw [MeasureTheory.integral_finset_sum _ (fun i _ => h_per_i_integrable i)]
+  rw [MeasureTheory.integral_finsetSum _ (fun i _ => h_per_i_integrable i)]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [L2.inner_def (𝕜 := ℝ)]
   refine MeasureTheory.integral_congr_ae ?_
@@ -1145,11 +1156,11 @@ private lemma general_lhs_principal_eq_sum_inner
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y)
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) =
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y) *
       (((principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp :
@@ -1358,7 +1369,7 @@ theorem laplacianDomain_variational_identity_general
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
           ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
             Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
@@ -1407,7 +1418,7 @@ theorem laplacianDomain_variational_identity_general
           ∂(volume : Measure EuclN)) atTop
       (𝓝 ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ) :=
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ) :=
     fun i => smooth_lhs_principal_per_i_tendsto (I := I) (M := M) g α i hψ hψ_cs hψ_supp h_v_tendsto
   have h_swap_n : ∀ n,
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -1510,7 +1521,7 @@ theorem laplacianDomain_variational_identity_general
       have h_C := h_per_i_memLp_C i
       exact MemLp.integrable_mul h_P h_C
     rw [h_full_eq]
-    rw [MeasureTheory.integral_finset_sum _ (fun i _ => h_per_i_integrable i)]
+    rw [MeasureTheory.integral_finsetSum _ (fun i _ => h_per_i_integrable i)]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     exact (h_per_i_eq i).symm
   have h_lhs_principal_tendsto : Tendsto (fun n =>
@@ -1523,7 +1534,7 @@ theorem laplacianDomain_variational_identity_general
     (𝓝 (∑ i : Fin (Module.finrank ℝ E),
       ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
         chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ)) := by
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ)) := by
     rw [show (fun n =>
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -1538,7 +1549,7 @@ theorem laplacianDomain_variational_identity_general
               chartPushedPartial (I := I) (M := M) g α i (v n) y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) from funext h_swap_n]
-    exact tendsto_finset_sum _ (fun i _ => h_per_i_tendsto i)
+    exact tendsto_finsetSum _ (fun i _ => h_per_i_tendsto i)
   have h_lhs_mass_tendsto :=
     smooth_lhs_mass_tendsto (I := I) (M := M) g α hψ hψ_cs hψ_supp h_v_tendsto
   have h_rhs_tendsto := rhs_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz_general
@@ -1565,7 +1576,7 @@ theorem laplacianDomain_variational_identity_general
   have h_LHS_eq_RHS_lim : (∑ i : Fin (Module.finrank ℝ E),
         ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
           chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ) +
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ) +
       ⟪massMultiplierLp (I := I) (M := M) g α hψ hψ_cs hψ_supp,
         chartPushedLpFromLp (I := I) (M := M) g α
           (H1ComplToLp (I := I) (M := M) g u_h)⟫_ℝ =
@@ -1607,7 +1618,7 @@ theorem laplacianDomain_variational_identity_general
       (𝓝 ((∑ i : Fin (Module.finrank ℝ E),
           ⟪principalMultiplierLp (I := I) (M := M) g α i hψ hψ_cs hψ_supp,
             chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h⟫_ℝ) +
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h⟫_ℝ) +
         ⟪massMultiplierLp (I := I) (M := M) g α hψ hψ_cs hψ_supp,
           chartPushedLpFromLp (I := I) (M := M) g α
             (H1ComplToLp (I := I) (M := M) g u_h)⟫_ℝ)) := h_lhs_sum_tendsto

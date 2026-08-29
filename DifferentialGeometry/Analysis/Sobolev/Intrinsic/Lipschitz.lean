@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Lipschitz
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
 import DifferentialGeometry.Geometry.Metric.LipschitzGradient
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -55,8 +57,8 @@ private lemma pull_lip_of_raw
   rw [heq]
   exact hφ.comp (toEuclidean (E := E)).lipschitz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [IsManifold I ∞ M] in
 theorem intrinsic_lip_cont
     [IsManifold I ∞ M] [T2Space M]
@@ -64,14 +66,14 @@ theorem intrinsic_lip_cont
     (hu : ∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
       riemannianEDistOf (I := I) g x y) :
     Continuous u := by
-  letI : RiemannianBundle (TangentSpace I : M → Type _) :=
+  let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+  let : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : LocallyCompactSpace M :=
+  let : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  letI : RegularSpace M := inferInstance
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  let : RegularSpace M := inferInstance
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
   apply LipschitzWith.continuous (K := L)
   intro x y
   rw [IsRiemannianManifold.out (I := I) x y]
@@ -89,22 +91,22 @@ private theorem global_lip_ibp
         (riemannianVolumeMeasure (I := I) (M := M) g) ∧
       ∫ x, tangentSectionAction (I := I) X u x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        -∫ x, u x * divergence_g (I := I) g X x
+        -∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   let ρ : SmoothPartitionOfUnity M I M (Set.univ : Set M) :=
     chartAtlasPOU I M
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let φ : M → M → ℝ := fun α x => ρ α x * u x
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) := by
     simpa only [ρ] using chartAtlasPOU_isSubordinate I M
   have hu_cont : Continuous u := intrinsic_lip_cont (I := I) g hu
-  have hdiv_cont : Continuous (divergence_g (I := I) g X) :=
+  have hdiv_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
-  have hudiv_int : Integrable (fun x => u x * divergence_g (I := I) g X x)
+  have hudiv_int : Integrable (fun x => u x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (hu_cont.mul hdiv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
@@ -123,13 +125,13 @@ private theorem global_lip_ibp
     Classical.choose_spec (hφ_lip α)
   have hstep_a :
       ∑ α ∈ S, ∫ x,
-          (u x * divergence_g (I := I) g X x) * ρ α x
+          (u x * divergenceG (I := I) g X x) * ρ α x
             ∂(chartLocalMeasure (I := I) g α) =
-        ∫ x, u x * divergence_g (I := I) g X x
+        ∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     simpa only [S, ρ] using chart_sum_integral (I := I) (M := M) g _ hudiv_int
   have hstep_b : ∀ α ∈ S,
-      ∫ x, (u x * divergence_g (I := I) g X x) * ρ α x
+      ∫ x, (u x * divergenceG (I := I) g X x) * ρ α x
           ∂(chartLocalMeasure (I := I) g α) =
         ∫ x, localDivergence (I := I) g α X x * φ α x
           ∂(chartLocalMeasure (I := I) g α) := by
@@ -164,7 +166,8 @@ private theorem global_lip_ibp
     intro x hx
     have hxt : x ∉ tsupport (φ α) := fun h => hx (hφ_supp α h)
     have hev : (φ α) =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
-      simpa only [Pi.zero_apply] using notMem_tsupport_iff_eventuallyEq.mp hxt
+      change Filter.EventuallyEq (nhds x) (φ α) (0 : M → ℝ)
+      exact notMem_tsupport_iff_eventuallyEq.mp hxt
     have hmfderiv_zero : mfderiv I 𝓘(ℝ) (φ α) x = 0 := by
       rw [Filter.EventuallyEq.mfderiv_eq hev, mfderiv_const]
       rfl
@@ -189,15 +192,19 @@ private theorem global_lip_ibp
     filter_upwards [ae_mdiff_of_lip (I := I) g hu hB] with x hux
     have hφdiff : ∀ α ∈ S, MDifferentiableAt I 𝓘(ℝ, ℝ) (φ α) x := by
       intro α _
-      simpa only [φ] using
-        ((ρ α).contMDiff.mdifferentiableAt (by simp)).mul hux
+      unfold φ
+      have hmul := ((ρ α).contMDiff.mdifferentiableAt (by simp)).mul hux
+      have hfun : ((↑(ρ α) : M → ℝ) * u) = fun y : M => (ρ α) y * u y := by
+        rfl
+      rw [← hfun]
+      exact hmul
     have hcomm := tangentSectionAction_finset_sum (I := I) X S φ x hφdiff
     rw [hsumφ] at hcomm
     exact hcomm.symm
   have hsum_int : Integrable (fun x => ∑ α ∈ S,
       tangentSectionAction (I := I) X (φ α) x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    integrable_finset_sum S heach
+    integrable_finsetSum S heach
   have htu_int : Integrable (tangentSectionAction (I := I) X u)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     hsum_int.congr hact_ae
@@ -209,17 +216,17 @@ private theorem global_lip_ibp
     calc
       _ = ∫ x, ∑ α ∈ S, tangentSectionAction (I := I) X (φ α) x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-        (integral_finset_sum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
+        (integral_finsetSum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
           S heach).symm
       _ = _ := integral_congr_ae hact_ae
   have hdiv_eq :
-      ∫ x, u x * divergence_g (I := I) g X x
+      ∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         -∫ x, tangentSectionAction (I := I) X u x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     calc
       _ = ∑ α ∈ S, ∫ x,
-          (u x * divergence_g (I := I) g X x) * ρ α x
+          (u x * divergenceG (I := I) g X x) * ρ α x
             ∂(chartLocalMeasure (I := I) g α) := hstep_a.symm
       _ = ∑ α ∈ S, ∫ x, localDivergence (I := I) g α X x * φ α x
             ∂(chartLocalMeasure (I := I) g α) :=
@@ -291,7 +298,7 @@ theorem grad_norm_aesm
   let q : M → M → ℝ := fun α x =>
     ∑ i, ∑ j, gram α i j x * part α j x * part α i x
   let ρ : M → M → ℝ := fun α x => (chartAtlasPOU I M α) x
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let qsum : M → ℝ := fun x => ∑ α ∈ S, ρ α x * q α x
   have hsource (α : M) : MeasurableSet (source α) := by
     simpa only [source] using (chartAt H α).open_source.measurableSet
@@ -365,7 +372,7 @@ theorem memW1p_of_lip
       riemannianEDistOf (I := I) g x y)
     (hB : ∀ x, ‖u x‖₊ ≤ B) :
     MemW1pIntrinsicLp (I := I) (M := M) g p u := by
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g

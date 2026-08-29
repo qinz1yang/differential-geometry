@@ -267,7 +267,7 @@ private lemma partialSumFun_wkpNorm_le (g : SmoothRiemannianMetric I M) (r s' : 
         ENNReal.ofReal |spectralCoeff (I := I) (M := M) g r s' u i| := by
       rw [Real.enorm_eq_ofReal_abs]
     rw [h_enorm]
-    refine (mul_le_mul_of_nonneg_left (hC_bd i) (zero_le _)).trans (le_of_eq ?_)
+    refine (mul_le_mul_of_nonneg_left (hC_bd i) (zero_le)).trans (le_of_eq ?_)
     rw [← ENNReal.ofReal_mul (abs_nonneg _)]
     rfl
 
@@ -548,14 +548,18 @@ private lemma gateElement_chartComponent_memWkp_of_tail
         (g := fun _ => (0 : ℝ≥0∞))
         (h := fun n => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
           (fun y => useq n y - F_lim y) Ω)
-        tendsto_const_nhds hF_lim_tendsto (fun _ => zero_le _)
+        tendsto_const_nhds hF_lim_tendsto (fun _ => zero_le)
         (fun n => eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) (2 * k) 2 Ω _)
     have h_toReal : Filter.Tendsto
         (fun n => (eLpNorm (fun y => useq n y - F_lim y) 2
           (chartL2Measure (I := I) (M := M) α)).toReal) Filter.atTop (𝓝 0) := by
       have := (ENNReal.continuousAt_toReal (by simp : (0 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))).tendsto.comp
         h_eLp_Flim
-      simpa using this
+      change Filter.Tendsto
+          (fun n => (eLpNorm (fun y => useq n y - F_lim y) 2
+            (chartL2Measure (I := I) (M := M) α)).toReal)
+          Filter.atTop _ at this
+      exact this
     refine h_toReal.congr ?_
     intro n; exact (h_norm_eq n).symm
   have hT_eq : T = Flim_Lp := tendsto_nhds_unique h_lp_T h_lp_Flim
@@ -574,11 +578,11 @@ theorem spectralChartRegularity_of_eigenvalueTailSummable
     (h_tail : EigenvalueTailSummable (I := I) (M := M) g r s) :
     SpectralChartRegularity (I := I) (M := M) g r s := by
   intro u h_mem k α P₀
-  haveI : Countable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :=
+  have : Countable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :=
     DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.countable_tensorEigenIdx
       (I := I) (M := M) (g := g) (r := r) (s := s)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
-  letI : Encodable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :=
+  let : Encodable (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :=
     Encodable.ofCountable _
   exact gateElement_chartComponent_memWkp_of_tail (I := I) (M := M) g r s u h_mem
     h_tail k α P₀

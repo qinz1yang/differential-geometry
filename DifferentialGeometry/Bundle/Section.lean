@@ -1,7 +1,7 @@
 /-
 Authors: Jack McCarthy
 -/
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.Algebra.SmoothFunctions
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
 import DifferentialGeometry.Bundle.Equiv
@@ -266,7 +266,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯)
     (σ₁ σ₂ : Cₛ^n⟮I; F₁, E₁⟯) (p : M) (hσ : σ₁ p = σ₂ p) :
     (F σ₁) p = (F σ₂) p := by
-  haveI : ContMDiffVectorBundle 1 F₁ E₁ I :=
+  have : ContMDiffVectorBundle 1 F₁ E₁ I :=
     ContMDiffVectorBundle.of_le (show (1 : WithTop ℕ∞) ≤ (n : WithTop ℕ∞) from
       WithTop.coe_le_coe.mpr h1n.out)
   suffices h : ∀ (τ : Cₛ^n⟮I; F₁, E₁⟯), τ p = 0 → (F τ) p = 0 by
@@ -286,11 +286,11 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
       (fun x => χ x • hframe.coeff i x (τ x)) := by
     intro i
     have hsmooth_lfc : ContMDiff I 𝓘(ℝ) (↑n)
-        (fun x => χ x • e.localFrame_coeff I b i x (τ x)) := by
+        (fun x => χ x • e.localFrameCoeff I b i x (τ x)) := by
       intro x
       by_cases hx : x ∈ tsupport (χ : M → ℝ)
       · exact (χ.contMDiff.of_le (WithTop.coe_le_coe.mpr le_top)).contMDiffAt.smul
-          (contMDiffAt_localFrame_coeff b (hχsupp hx) τ.contMDiff.contMDiffAt i)
+          (contMDiffAt_localFrameCoeff b (hχsupp hx) τ.contMDiff.contMDiffAt i)
       · have hχ_zero : ∀ᶠ y in nhds x, (χ : M → ℝ) y = 0 := by
           apply Filter.Eventually.mono
             ((isClosed_tsupport (χ : M → ℝ)).isOpen_compl.mem_nhds hx)
@@ -304,9 +304,9 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
         ext j; simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame,
           Trivialization.basisAt, hx]
       simp only [hframe.coeff_apply_of_mem hx,
-        e.localFrame_coeff_apply_of_mem_baseSet b hx, hbasis]
+        e.localFrameCoeff_apply_of_mem_baseSet b hx, hbasis]
     · simp [hframe.coeff_apply_of_notMem hx,
-        e.localFrame_coeff_apply_of_notMem_baseSet b hx]
+        e.localFrameCoeff_apply_of_notMem_baseSet b hx]
   let u' : Fin (Module.finrank ℝ F₁) → C^n⟮I, M; ℝ⟯ := fun i =>
     ⟨fun x => χ x • hframe.coeff i x (τ x), hcoeff_smooth i⟩
   have hu'_zero : ∀ i, (u' i) p = 0 := by
@@ -391,7 +391,8 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
           simp [ContMDiffSection.coe_smul, Pi.smul_apply, hv]
         let c' : C^n⟮I, M; ℝ⟯ := ⟨fun _ => c, contMDiff_const⟩
         have hc_eq : c • σ_v = c' • σ_v := by
-          ext y; simp [ContMDiffSection.coe_smulContMDiffMap, ContMDiffSection.coe_smul, c']
+          ext y
+          rfl
         calc (F σ_cv) x
             = (F (c • σ_v)) x := acts_pointwise σ_cv (c • σ_v) x
                 ((exists_section x (c • v)).choose_spec ▸ h_smul ▸ rfl)
@@ -445,7 +446,7 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection
       refine ContMDiffAt.congr_of_eventuallyEq ?_ hφ_eq
       apply ContMDiffAt.sum
       intro i _
-      apply ContMDiffAt.smul
+      apply ContMDiffAt.smul (I := 𝓘(ℝ)) (I' := 𝓘(ℝ, F₂))
       · have h_e₁_snd : ContMDiffAt (I.prod 𝓘(ℝ, F₁)) 𝓘(ℝ, F₁) (↑n)
             (fun x => (e₁ x).2) p₀ :=
           (contMDiffAt_totalSpace (f := _root_.id)).mp contMDiffAt_id |>.2
@@ -585,7 +586,7 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt
     refine ContMDiffAt.congr_of_eventuallyEq ?_ hφ_eq
     apply ContMDiffAt.sum
     intro i _
-    apply ContMDiffAt.smul
+    apply ContMDiffAt.smul (I := 𝓘(ℝ)) (I' := 𝓘(ℝ, F₂))
     · have h_e₁_snd : ContMDiffAt (I.prod 𝓘(ℝ, F₁)) 𝓘(ℝ, F₁) (↑n)
           (fun x => (e₁ x).2) p₀ :=
         (contMDiffAt_totalSpace (f := _root_.id)).mp contMDiffAt_id |>.2

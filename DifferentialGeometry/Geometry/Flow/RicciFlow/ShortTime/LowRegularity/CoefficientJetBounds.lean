@@ -45,6 +45,7 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_smul_real
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
@@ -363,8 +364,9 @@ private theorem app_h1h2_j1
       SmoothCcTensorH1 g p c)) hnorm 2
   rw [smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g p c
     (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsquare
-  simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-    iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hsquare
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
+    iteratedCovGrad_zero, iteratedCovGrad_succ]
+  simpa only [Nat.add_zero] using hsquare
 
 private theorem app_h2h1_j1
     (hDim : Module.finrank ℝ E = 3)
@@ -389,8 +391,9 @@ private theorem app_h2h1_j1
       SmoothCcTensorH1 g p c)) hnorm 2
   rw [smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g p c
     (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsquare
-  simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-    iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hsquare
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
+    iteratedCovGrad_zero, iteratedCovGrad_succ]
+  simpa only [Nat.add_zero] using hsquare
 
 theorem convex_h3_jet (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -481,7 +484,7 @@ theorem grid_h1_le
       (fun x => ∑ k ∈ Finset.range (i + 3),
         lowJetGrid (I := I) (M := M) g P k x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro k hk
     exact (hgrid k (by have := Finset.mem_range.mp hk; omega)).1
   have hscaled : MeasureTheory.Integrable
@@ -498,7 +501,7 @@ theorem grid_h1_le
   refine hnorm.trans ?_
   rw [MeasureTheory.integral_const_mul]
   refine mul_le_mul_of_nonneg_left ?_ (hC i)
-  rw [MeasureTheory.integral_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
     (fun k hk => (hgrid k (by have := Finset.mem_range.mp hk; omega)).1)]
   exact Finset.sum_le_sum fun k hk =>
     (hgrid k (by have := Finset.mem_range.mp hk; omega)).2
@@ -538,7 +541,15 @@ theorem h1_of_grid
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K A k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P A hA hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P A hA hP k hk
   have hle := grid_h1_le (I := I) (M := M) g P (K A) C
     hgr hC Φ hΦ
   change _ ≤ (B A) ^ 2
@@ -575,7 +586,7 @@ theorem grid_h2_low
       (fun x => ∑ k ∈ Finset.range (i + 1),
         lowJetGrid (I := I) (M := M) g P k x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro k hk
     exact (hgrid k (by have := Finset.mem_range.mp hk; omega)).1
   have hscaled : MeasureTheory.Integrable
@@ -592,7 +603,7 @@ theorem grid_h2_low
   refine hnorm.trans ?_
   rw [MeasureTheory.integral_const_mul]
   refine mul_le_mul_of_nonneg_left ?_ (hC i)
-  rw [MeasureTheory.integral_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
     (fun k hk => (hgrid k (by have := Finset.mem_range.mp hk; omega)).1)]
   exact Finset.sum_le_sum fun k hk =>
     (hgrid k (by have := Finset.mem_range.mp hk; omega)).2
@@ -632,7 +643,15 @@ theorem h2_of_grid_low
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K A k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P A hA hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P A hA hP k hk
   have hle := grid_h2_low (I := I) (M := M) g P (K A) C
     hgr hC Φ hΦ
   change _ ≤ (B A) ^ 2
@@ -669,7 +688,7 @@ theorem grid_h2_le
       (fun x => ∑ k ∈ Finset.range (i + 2),
         lowJetGrid (I := I) (M := M) g P k x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro k hk
     exact (hgrid k (by have := Finset.mem_range.mp hk; omega)).1
   have hscaled : MeasureTheory.Integrable
@@ -686,7 +705,7 @@ theorem grid_h2_le
   refine hnorm.trans ?_
   rw [MeasureTheory.integral_const_mul]
   refine mul_le_mul_of_nonneg_left ?_ (hC i)
-  rw [MeasureTheory.integral_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
     (fun k hk => (hgrid k (by have := Finset.mem_range.mp hk; omega)).1)]
   exact Finset.sum_le_sum fun k hk =>
     (hgrid k (by have := Finset.mem_range.mp hk; omega)).2
@@ -726,7 +745,15 @@ theorem h2_of_grid
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K A k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P A hA hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P A hA hP k hk
   have hle := grid_h2_le (I := I) (M := M) g P (K A) C
     hgr hC Φ hΦ
   change _ ≤ (B A) ^ 2
@@ -807,12 +834,20 @@ theorem h2_grid_tame
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ Km k := by
     intro k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
     by_cases hk3 : k = 3
     · subst k
-      simpa only [lowJetGrid, Km, if_pos, Nat.reduceAdd] using
+      simpa only [Km, if_pos, Nat.reduceAdd] using
         hgrid3 P R A hR hA hP2 htop
     · have hk2 : k ≤ 2 := by omega
-      simpa only [lowJetGrid, Km, if_neg hk3] using
+      simpa only [Km, if_neg hk3] using
         hgrid0 P R hR hP2 k hk2
   have hle := grid_h2_le (I := I) (M := M) g P Km C
     hgr hC Φ hΦ
@@ -1233,7 +1268,7 @@ private theorem coeffJets_domDomCongr_sub
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel]
   apply ContinuousMultilinearMap.ext
   intro v
-  simp only [ContinuousMultilinearMap.sub_apply,
+  simp only [sub_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -1697,7 +1732,15 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_bound
       (∫ x, lowJetGrid (I := I) (M := M) g₀ P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤ K A k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P A hA hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g₀ P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P A hA hP k hk
   have hle := grid_h1_le (I := I) (M := M) g₀ P (K A) C
     hgr hC
     (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁)
@@ -1747,7 +1790,15 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_covariantJetN
       (∫ x, lowJetGrid (I := I) (M := M) g₀ P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤ K A k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P A hA hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g₀ P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P A hA hP k hk
   have hle := grid_h1_le (I := I) (M := M) g₀ P (K A) C
     hgr hC
     (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg)
@@ -1797,7 +1848,15 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
       (∫ x, lowJetGrid (I := I) (M := M) g₀ P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤ K A k := by
     intro k hk
-    simpa only [lowJetGrid] using hgrid P A hA hP k hk
+    have hlow : lowJetGrid (I := I) (M := M) g₀ P k =
+        fun x => ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
+    exact hgrid P A hA hP k hk
   have hpt' : ∀ (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -2028,9 +2087,42 @@ theorem lieCorrectionZeroVectorBundleField_h1_bound
       ‖iteratedCovGrad (I := I) g₀ 2 2 i Out‖ ^ 2) ≤ (Ob R A) ^ 2 := by
     simpa only [Out, Ob] using hoprod T2 Inn (Bt2 R) (Nb R A)
       (hBt2 R hR) (hNb R hR A hA) hT2 hInn
+  have hVf_field : Vf =
+      lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀ := by
+    dsimp only [Vf, T1, K]
+    rfl
+  have hVs_field : Vs =
+      slotExtendIter (I := I) (M := M) g₀ 0 1 2
+        (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀) := by
+    dsimp only [Vs]
+    rw [hVf_field]
+  have hT1i_field : T1i =
+      reindexCoeffGen (I := I) (M := M) g₀ 3 1
+        (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)
+        lieCorrectionZeroIVPerm := by
+    rfl
+  have hIv_field : Iv =
+      lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀ := by
+    dsimp only [Iv, lieCorrectionZeroIVField]
+    rw [hT1i_field, hVs_field]
+  have hInn_field : Inn =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 4 Ks
+        (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀) := by
+    dsimp only [Inn]
+    rw [hIv_field]
+  have hOut_field : Out =
+      ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 T2
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 2 1 4 Ks
+          (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀)) := by
+    dsimp only [Out]
+    rw [hInn_field]
+  have hfield :
+      lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁ =
+        (2 : ℝ) • Out := by
+    rw [hOut_field]
+    dsimp only [T2, Ks, lieCorrectionZeroVectorBundleField]
   have htwo := jet_two (I := I) (M := M) g₀ 2 2 2 Out
-  rw [show lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁ = (2 : ℝ) • Out by rfl,
-    htwo]
+  rw [hfield, htwo]
   change 4 * (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i Out‖ ^ 2) ≤ (B R A) ^ 2
   calc
@@ -2174,11 +2266,37 @@ theorem lieCorrectionZeroMixedConnectionField_h1_bound
       ‖iteratedCovGrad (I := I) g₀ 2 2 i Ob'‖ ^ 2) ≤ (Ob R A) ^ 2 := by
     simpa only [Ob', Ob] using hoprod T2b Mid (Bt2 R) (Mb R A)
       (hBt2 R hR) (hMb R hR A hA) hT2b hMid
+  have hQ_field : Q =
+      lieCorrectionZeroMixedConnectionInnerField (I := I) (M := M) g₀ g₁ := by
+    rfl
+  have hN_field : N =
+      lieCorrectionZeroMixedConnectionLiftedField (I := I) (M := M) g₀ g₁ gB := by
+    dsimp only [N, KBs, lieCorrectionZeroMixedConnectionLiftedField]
+    rw [hQ_field]
+  have hMid_field : Mid =
+      lieCorrectionZeroMixedConnectionOuterField (I := I) (M := M) g₀ g₁ gB := by
+    dsimp only [Mid, T4, lieCorrectionZeroMixedConnectionOuterField]
+    rw [hN_field]
+  have hOa_field : Oa =
+      lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ gB
+        lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne := by
+    dsimp only [Oa, T2a, lieCorrectionZeroMixedConnectionHalfField]
+    rw [hMid_field]
+  have hOb'_field : Ob' =
+      lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ gB
+        (lieCorrectionZeroSwapOutPerm *
+          lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) := by
+    dsimp only [Ob', T2b, lieCorrectionZeroMixedConnectionHalfField]
+    rw [hMid_field]
+  have hfield :
+      lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ gB =
+        (2 : ℝ) • (Oa + Ob') := by
+    dsimp only [lieCorrectionZeroMixedConnectionField]
+    rw [hOa_field, hOb'_field]
   have hsum := jet_sum2 (I := I) (M := M) g₀ 2 2 2 Oa Ob'
     (Ob R A) (Ob R A) hOa hOb'
   have htwo := jet_two (I := I) (M := M) g₀ 2 2 2 (Oa + Ob')
-  rw [show lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ gB =
-      (2 : ℝ) • (Oa + Ob') by rfl, htwo]
+  rw [hfield, htwo]
   change 4 * (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i (Oa + Ob')‖ ^ 2) ≤ (B R A) ^ 2
   calc

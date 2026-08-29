@@ -7,6 +7,7 @@ import Mathlib.Geometry.Manifold.VectorField.LieBracket
 
 noncomputable section
 
+
 namespace DifferentialGeometry
 namespace Coordinates
 
@@ -52,7 +53,7 @@ theorem coordinateFrameAt_isLocalFrame (x₀ : M) :
   (coordinateTrivializationAt (I := I) x₀).isLocalFrameOn_localFrame_baseSet
     I (∞ : WithTop ℕ∞) (Module.finBasis Real E)
 
-def coordinateFrameAt_basis (x₀ : M) {x : M}
+def coordinateFrameAtBasis (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
     Module.Basis (CoordinateIdx E) Real (TangentSpace I x) :=
   (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt hx
@@ -60,19 +61,19 @@ def coordinateFrameAt_basis (x₀ : M) {x : M}
 @[simp]
 theorem coordinateFrameAt_basis_apply (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) (i : CoordinateIdx E) :
-    coordinateFrameAt_basis (I := I) x₀ hx i =
+    coordinateFrameAtBasis (I := I) x₀ hx i =
       coordinateFrameAt (I := I) x₀ i x := by
-  simp [coordinateFrameAt_basis]
+  simp [coordinateFrameAtBasis]
 
-def coordinateFrameAt_toBasis (x₀ : M) :
+def coordinateFrameAtToBasis (x₀ : M) :
     Module.Basis (CoordinateIdx E) Real (TangentSpace I x₀) :=
-  coordinateFrameAt_basis (I := I) x₀ (coordinateFrameAt_mem (I := I) x₀)
+  coordinateFrameAtBasis (I := I) x₀ (coordinateFrameAt_mem (I := I) x₀)
 
 @[simp]
 theorem coordinateFrameAt_toBasis_apply (x₀ : M) (i : CoordinateIdx E) :
-    coordinateFrameAt_toBasis (I := I) x₀ i =
+    coordinateFrameAtToBasis (I := I) x₀ i =
       coordinateFrameAt (I := I) x₀ i x₀ := by
-  simp [coordinateFrameAt_toBasis]
+  simp [coordinateFrameAtToBasis]
 
 theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) (i : CoordinateIdx E) :
@@ -91,16 +92,19 @@ theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
   rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
     (e := trivializationAt E (TangentSpace I : M -> Type _) x₀)
     (b := Module.finBasis Real E) (i := i) hx_triv]
-  simpa [Bundle.Trivialization.basisAt, Trivialization.symmL_apply, extChartAt] using
-    congrArg (fun L : E →L[Real] TangentSpace I x => L ((Module.finBasis Real E) i))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_src)
+  rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
+    Trivialization.linearEquivAt_symm_apply]
+  rw [← Trivialization.symmL_apply (R := Real)
+    (trivializationAt E (TangentSpace I : M → Type _) x₀) hx_triv]
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_src]
+  rfl
 
 private theorem coordinateFrame_pullback_eq_const (x₀ : M) (i : CoordinateIdx E) :
     VectorField.mpullbackWithin 𝓘(Real, E) I (extChartAt I x₀).symm
         (coordinateFrameAt (I := I) x₀ i) (Set.range I)
       =ᶠ[𝓝[Set.range I] (extChartAt I x₀ x₀)]
         fun _ : E => (Module.finBasis Real E i : E) := by
-  haveI : IsManifold I (1 : WithTop ℕ∞) M :=
+  have : IsManifold I (1 : WithTop ℕ∞) M :=
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   filter_upwards [extChartAt_target_mem_nhdsWithin (I := I) x₀] with y hy
   simp only [VectorField.mpullbackWithin_apply]
@@ -163,27 +167,27 @@ def coordinateFramePackageAt (x₀ : M) : CoordinateFrameAt (I := I) x₀ where
 def coordComponent0SAt {s : ℕ} {x₀ : M}
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x₀)
     (slots : Fin s -> CoordinateIdx E) : Real :=
-  component0S (I := I) (coordinateFrameAt_toBasis (I := I) x₀) A slots
+  component0S (I := I) (coordinateFrameAtToBasis (I := I) x₀) A slots
 
 @[simp]
 theorem coordComponent0SAt_apply {s : ℕ} {x₀ : M}
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x₀)
     (slots : Fin s -> CoordinateIdx E) :
     coordComponent0SAt (I := I) A slots =
-      A (fun a => coordinateFrameAt_toBasis (I := I) x₀ (slots a)) :=
+      A (fun a => coordinateFrameAtToBasis (I := I) x₀ (slots a)) :=
   rfl
 
 def coordComponentRSAt {r s : ℕ} {x₀ : M}
     (T : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) r s x₀)
     (upper : Fin r -> CoordinateIdx E) (lower : Fin s -> CoordinateIdx E) : Real :=
-  componentRS (I := I) (coordinateFrameAt_toBasis (I := I) x₀) T upper lower
+  componentRS (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower
 
 @[simp]
 theorem coordComponentRSAt_apply {r s : ℕ} {x₀ : M}
     (T : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) r s x₀)
     (upper : Fin r -> CoordinateIdx E) (lower : Fin s -> CoordinateIdx E) :
     coordComponentRSAt (I := I) T upper lower =
-      componentRS (I := I) (coordinateFrameAt_toBasis (I := I) x₀) T upper lower :=
+      componentRS (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower :=
   rfl
 
 end Coordinates

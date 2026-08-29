@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldL2J
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -72,7 +71,7 @@ lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Λ - Λ') x) D := rfl
   rw [hLHS, show ((Λ - Λ') x) = Λ x - Λ' x from rfl,
     slotInsertEndoFib_sub_left (I := I) (M := M) (s + 1) 0 x (Λ x) (Λ' x)]
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -308,7 +307,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
       _ = R := by ring
   have hδP0 : 0 ≤ (1 - s) * δ' + s * δ := by
     obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x, v ≠ 0 := by
-      haveI : Nontrivial (TangentSpace I x) := by
+      have : Nontrivial (TangentSpace I x) := by
         have hfr : 0 < Module.finrank ℝ (TangentSpace I x) := by
           have heq : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
           rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -431,7 +430,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsertDiff_metricPerturbationPath_
         _ = R := by ring
     have hδP0 : 0 ≤ (1 - s) * δ' + s * δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -484,7 +483,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsertDiff_metricPerturbationPath_
       exact norm_sub_le _ _
     exact sq_le_two_add _ _ _ (F0 i) (Fbg i) (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
       htri' hB0 hBbg
-  · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
+  · have hem : IsEmpty M := not_nonempty_iff.mp hMne
     have hz : ‖iteratedCovGrad (I := I) g₀ 1 1 i
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀
@@ -510,7 +509,7 @@ private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ)
     rw [Finset.mem_map] at hj
     obtain ⟨i, hi, rfl⟩ := hj
     rw [Finset.mem_range] at hi ⊢
-    simp only [Function.Embedding.coeFn_mk]
+    change i + c < m + c
     omega
   calc ∑ i ∈ Finset.range m, g (i + c)
       = ∑ j ∈ (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩, g j := by
@@ -585,6 +584,7 @@ private lemma engineRem_le_grid (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (j : �
           (mul_nonneg (Combinatorics.antidiagonalTupleGridCount_nonneg _)
             (Combinatorics.antidiagonalTupleGridCount_nonneg _))
 
+omit [SigmaCompactSpace M] in
 private theorem exists_riemannianFiberNormSq_connectionDifference_topsep
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ j, 0 ≤ Kc j) ∧
@@ -695,7 +695,7 @@ private theorem connectionDifference_L2_topsep
     fun n => mul_nonneg (hKc_pt_nn n)
       (Finset.sum_nonneg fun k _ => mul_nonneg (hK_nn k) (by positivity)), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hPball n hn
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   have hAG : ∀ k : ℕ, k ≤ a + 2 →
       MeasureTheory.Integrable (fun x => Combinatorics.antidiagonalTupleGrid
@@ -735,7 +735,7 @@ private theorem connectionDifference_L2_topsep
         ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (n + 2))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    refine MeasureTheory.integrable_finset_sum _ (fun k hk => (hAG k ?_).1)
+    refine MeasureTheory.integrable_finsetSum _ (fun k hk => (hAG k ?_).1)
     have := Finset.mem_range.mp hk; omega
   have hwin_bd : (∫ x, Combinatorics.antidiagonalTupleGridWindow
       (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -743,7 +743,7 @@ private theorem connectionDifference_L2_topsep
       ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
       ∑ k ∈ Finset.range (n + 2), K k * (1 + ((k : ℝ) + 1) * R ^ 2) := by
     simp only [Combinatorics.antidiagonalTupleGridWindow]
-    rw [MeasureTheory.integral_finset_sum _ (fun k hk => (hAG k (by
+    rw [MeasureTheory.integral_finsetSum _ (fun k hk => (hAG k (by
       have := Finset.mem_range.mp hk; omega)).1)]
     refine Finset.sum_le_sum (fun k hk => (hAG k ?_).2)
     have := Finset.mem_range.mp hk; omega
@@ -891,7 +891,7 @@ private theorem wOmega_L2_topsep
         (mul_nonneg (hCT_nn n) (add_nonneg (mul_nonneg (hΛX_nn 0) (hFC_nn n))
           (mul_nonneg (sq_nonneg _) (hFX_nn n))))), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hPball n hn
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨hCsup, hCsum⟩ := hCgen g₁ P hδ_le hδ htie hPball
   obtain ⟨hXlow, hXsum⟩ := hXgen g₁ P htie hδ_le hδ0 hδ hPball

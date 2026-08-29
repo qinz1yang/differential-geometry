@@ -90,11 +90,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance tensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -186,7 +186,6 @@ private lemma unitModel_smul_tame (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     rw [hsec]; rfl]
   rw [Tensor0SSpace.toModel_smul]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma operatorFieldApplication_smul_left_tame (g : SmoothRiemannianMetric I M) (r : ℕ)
@@ -211,7 +210,15 @@ lemma unitModel_operatorFieldApplication_smul_left_apply_tame (g : SmoothRiemann
     (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g 2 (operatorFieldApply (I := I) (M := M) g r 2 (c • Φ) W) x v =
       c * unitModel (I := I) (M := M) g 2 (operatorFieldApply (I := I) (M := M) g r 2 Φ W) x v := by
-  rw [operatorFieldApplication_smul_left_tame, unitModel_smul_tame, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  with_unfolding_all
+    change unitModel (I := I) (M := M) g 2
+        (operatorFieldApply (I := I) (M := M) g r 2 (c • Φ) W) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) =
+      c * unitModel (I := I) (M := M) g 2
+        (operatorFieldApply (I := I) (M := M) g r 2 Φ W) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))
+    rw [operatorFieldApplication_smul_left_tame, unitModel_smul_tame,
+      smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -219,7 +226,14 @@ lemma unitModel_add2_apply_tame (g₀ : SmoothRiemannianMetric I M)
     (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
       unitModel (I := I) (M := M) g₀ 2 S x v + unitModel (I := I) (M := M) g₀ 2 S' x v := by
-  rw [unitModel_add_local, ContinuousMultilinearMap.add_apply]
+  with_unfolding_all
+    change unitModel (I := I) (M := M) g₀ 2 (S + S') x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) =
+      unitModel (I := I) (M := M) g₀ 2 S x
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)) +
+        unitModel (I := I) (M := M) g₀ 2 S' x
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))
+    rw [unitModel_add_local, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -322,7 +336,6 @@ private lemma combine_three_component_bounds
       6 * (cBound₁ + cBound₂) := by
   linarith
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem linearizedRicciArm0CorrField_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -682,6 +695,7 @@ private theorem traceHessianCoeff_metricPerturbationPath_perOrder_riemannianFibe
   DifferentialGeometry.Analysis.Sobolev.traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma normSq_iteratedCovGrad_add_le_tame
@@ -699,6 +713,7 @@ private lemma normSq_iteratedCovGrad_add_le_tame
     norm_nonneg (iteratedCovGrad (I := I) g₀ r s i A + iteratedCovGrad (I := I) g₀ r s i B),
     sq_nonneg (‖iteratedCovGrad (I := I) g₀ r s i A‖ - ‖iteratedCovGrad (I := I) g₀ r s i B‖)]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_smul_tame (g : SmoothRiemannianMetric I M) (r s j : ℕ)
@@ -711,6 +726,7 @@ private theorem iteratedCovGrad_smul_tame (g : SmoothRiemannianMetric I M) (r s 
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma normSq_iteratedCovGrad_sub_smul_le_tame
@@ -1258,7 +1274,7 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
         rw [MeasureTheory.ae_iff]
         have hnull : MeasureTheory.volume ({1} : Set ℝ) = 0 := by simp
         refine MeasureTheory.measure_mono_null (fun s hs => ?_) hnull
-        rw [Set.mem_setOf_eq, Classical.not_imp] at hs
+        rw [Set.mem_ofPred_eq, Classical.not_imp] at hs
         obtain ⟨hsmem, hsneq⟩ := hs
         rw [Set.uIoc_of_le zero_le_one, Set.mem_Ioc] at hsmem
         rw [Set.mem_singleton_iff]

@@ -26,7 +26,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclN (E : Type uE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 theorem exists_chartInvGramOnE_parabolic_schauder_bounds
@@ -43,7 +43,7 @@ theorem exists_chartInvGramOnE_parabolic_schauder_bounds
       (∀ p ∈ parabolicCylinder (Set.Icc a b) K,
         ‖chartInvGramOnE (I := I) (G.metric p.time) chartCenter i j p.space‖ ≤ C₀) ∧
       HolderWith Cα alpha
-        ((parabolicCylinder (Set.Icc a b) K).restrict
+        ((parabolicCylinder (Set.Icc a b) K).domRestrict
           (fun p => chartInvGramOnE (I := I)
             (G.metric p.time) chartCenter i j p.space)) := by
   let f : Real × E → Real := fun p =>
@@ -51,9 +51,17 @@ theorem exists_chartInvGramOnE_parabolic_schauder_bounds
   have hf : ContDiffOn Real 1 f (Set.Icc a b ×ˢ K) :=
     ((chartInvGramOnE_contDiffOn (I := I) hG habreg chartCenter i j).mono
       (Set.prod_mono Subset.rfl hKchart)).of_le (by simp)
-  simpa only [f, Function.comp_apply, parabolicToProduct] using
+  obtain ⟨C₀, Cα, hnorm, hholder⟩ :=
     exists_norm_bound_and_holderWith_restrict_parabolicCylinder_Icc_of_contDiffOn
       a b hK hKconv hf halpha
+  refine ⟨C₀, Cα, ?_, ?_⟩
+  · simpa only [f, Function.comp_apply, parabolicToProduct] using hnorm
+  · have hfun : f ∘ parabolicToProduct = fun p =>
+        chartInvGramOnE (I := I) (G.metric p.time) chartCenter i j p.space := by
+      funext p
+      rfl
+    rw [← hfun]
+    exact hholder
 
 theorem exists_chartInvGramOnE_parabolic_schauder_coefficient_bounds
     {D : RealTimeInterval}
@@ -70,7 +78,7 @@ theorem exists_chartInvGramOnE_parabolic_schauder_coefficient_bounds
         ‖chartInvGramOnE (I := I) (G.metric p.time)
           chartCenter i j p.space‖ ≤ A i j) ∧
       (∀ i j, HolderWith (Ka i j) alpha
-        ((parabolicCylinder (Set.Icc a b) K).restrict
+        ((parabolicCylinder (Set.Icc a b) K).domRestrict
           (fun p => chartInvGramOnE (I := I)
             (G.metric p.time) chartCenter i j p.space))) ∧
       ∀ p, p ∈ parabolicCylinder (Set.Icc a b) K →
@@ -83,7 +91,7 @@ theorem exists_chartInvGramOnE_parabolic_schauder_coefficient_bounds
           ‖chartInvGramOnE (I := I) (G.metric p.time)
             chartCenter i j p.space‖ ≤ C₀) ∧
         HolderWith Cα alpha
-          ((parabolicCylinder (Set.Icc a b) K).restrict
+          ((parabolicCylinder (Set.Icc a b) K).domRestrict
             (fun p => chartInvGramOnE (I := I)
               (G.metric p.time) chartCenter i j p.space)) := by
     intro i j
@@ -114,7 +122,7 @@ theorem exists_chartChristoffelOnE_parabolic_schauder_bounds
         ‖chartChristoffel (I := I) (G.metric p.time)
           chartCenter i j k p.space‖ ≤ C₀) ∧
       HolderWith Cα alpha
-        ((parabolicCylinder (Set.Icc a b) K).restrict
+        ((parabolicCylinder (Set.Icc a b) K).domRestrict
           (fun p => chartChristoffel (I := I) (G.metric p.time)
             chartCenter i j k p.space)) := by
   let f : Real × E → Real := fun p =>
@@ -123,9 +131,18 @@ theorem exists_chartChristoffelOnE_parabolic_schauder_bounds
     ((chartChristoffelOnE_contDiffOn (I := I) hG habreg
       (uniqueDiffOn_Icc hab) chartCenter i j k).mono
       (Set.prod_mono Subset.rfl hKchart)).of_le (by simp)
-  simpa only [f, Function.comp_apply, parabolicToProduct] using
+  obtain ⟨C₀, Cα, hnorm, hholder⟩ :=
     exists_norm_bound_and_holderWith_restrict_parabolicCylinder_Icc_of_contDiffOn
       a b hK hKconv hf halpha
+  refine ⟨C₀, Cα, ?_, ?_⟩
+  · simpa only [f, Function.comp_apply, parabolicToProduct] using hnorm
+  · have hfun : f ∘ parabolicToProduct = fun p =>
+        chartChristoffel (I := I) (G.metric p.time)
+          chartCenter i j k p.space := by
+      funext p
+      rfl
+    rw [← hfun]
+    exact hholder
 
 theorem exists_parabolicChartPrincipalCoefficient_schauder_bounds
     {D : RealTimeInterval}
@@ -146,7 +163,7 @@ theorem exists_parabolicChartPrincipalCoefficient_schauder_bounds
       (∀ i j, HolderWith (Ka i j) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) K)).restrict
+          (parabolicCylinder (Set.Icc a b) K)).domRestrict
             (parabolicChartPrincipalCoefficient (I := I) G.metric
               chartCenter i j))) ∧
       ∀ p, p ∈ parabolicLinearPreimage
@@ -169,6 +186,13 @@ theorem exists_parabolicChartPrincipalCoefficient_schauder_bounds
       chartInvGramOnE_def] using h
   · intro i j
     have h := parabolicHolder_linearMap L (hholder i j)
+    have hfun : parabolicChartPrincipalCoefficient (I := I) G.metric chartCenter i j =
+        fun x => chartInvGramMatrix (I := I) (G.metric x.time) chartCenter
+          ((extChartAt I chartCenter).symm
+            ((toEuclidean (E := E)).symm x.space)) i j := by
+      funext p
+      rfl
+    rw [hfun]
     simpa [L, Ka', parabolicChartPrincipalCoefficient, euclideanChartPoint,
       chartInvGramOnE_def, Function.comp_def] using h
   · intro p hp
@@ -195,7 +219,7 @@ theorem exists_parabolicChartChristoffelCoefficient_schauder_bounds
       ∀ i j k, HolderWith (KGamma i j k) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) K)).restrict
+          (parabolicCylinder (Set.Icc a b) K)).domRestrict
             (parabolicChartChristoffelCoefficient (I := I) G.metric
               chartCenter i j k)) := by
   have hentry : ∀ i j k : Fin (Module.finrank Real E),
@@ -204,7 +228,7 @@ theorem exists_parabolicChartChristoffelCoefficient_schauder_bounds
           ‖chartChristoffel (I := I) (G.metric p.time)
             chartCenter i j k p.space‖ ≤ C₀) ∧
         HolderWith Cα alpha
-          ((parabolicCylinder (Set.Icc a b) K).restrict
+          ((parabolicCylinder (Set.Icc a b) K).domRestrict
             (fun p => chartChristoffel (I := I) (G.metric p.time)
               chartCenter i j k p.space)) := by
     intro i j k
@@ -218,13 +242,21 @@ theorem exists_parabolicChartChristoffelCoefficient_schauder_bounds
   refine ⟨B, KGamma', ?_, ?_⟩
   · intro i j k p hp
     have h := (hbounds i j k).1 (parabolicLinearMap L p) hp
-    simpa only [L, parabolicChartChristoffelCoefficient,
-      parabolicLinearMap_time, parabolicLinearMap_space] using h
+    change ‖chartChristoffel (I := I) (G.metric p.time) chartCenter i j k
+      (L p.space)‖ ≤ B i j k
+    exact h
   · intro i j k
     have h := parabolicHolder_linearMap L (hbounds i j k).2
-    simpa only [L, KGamma', parabolicChartChristoffelCoefficient,
-      Function.comp_apply, parabolicLinearMap_time,
-      parabolicLinearMap_space] using h
+    change HolderWith (KGamma' i j k) alpha
+      ((parabolicLinearPreimage L (parabolicCylinder (Set.Icc a b) K)).domRestrict
+        (parabolicChartChristoffelCoefficient (I := I) G.metric chartCenter i j k))
+    have hfun : parabolicChartChristoffelCoefficient (I := I) G.metric chartCenter i j k =
+        (fun p => chartChristoffel (I := I) (G.metric p.time)
+          chartCenter i j k p.space) ∘ parabolicLinearMap L := by
+      funext p
+      rfl
+    rw [hfun]
+    simpa only [KGamma'] using h
 
 theorem exists_parabolicChartDriftCoefficient_schauder_bounds
     {D : RealTimeInterval}
@@ -244,7 +276,7 @@ theorem exists_parabolicChartDriftCoefficient_schauder_bounds
       ∀ k, HolderWith (Kb k) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) K)).restrict
+          (parabolicCylinder (Set.Icc a b) K)).domRestrict
             (parabolicChartDriftCoefficient (I := I) G.metric
               chartCenter k)) := by
   obtain ⟨A, Ka, hAnorm, ha, _hpos⟩ :=
@@ -304,7 +336,12 @@ theorem exists_parabolicChartDriftCoefficient_schauder_bounds
       have h := holderWith_smul_of_norm_le (ha i j) (hGamma i j k)
         (fun p : Q ↦ hAnorm i j p.1 p.2)
         (fun p : Q ↦ hGammaNorm i j k p.1 p.2)
-      simpa only [Pi.smul_apply, smul_eq_mul, Set.restrict_apply] using h
+      change HolderWith (A i j * KGamma i j k + BGamma i j k * Ka i j) alpha
+        (((Q.domRestrict
+            (parabolicChartPrincipalCoefficient (I := I) G.metric chartCenter i j)) *
+          Q.domRestrict
+            (parabolicChartChristoffelCoefficient (I := I) G.metric chartCenter i j k)))
+      exact h
     have hj : ∀ i, HolderWith
         (∑ j, (A i j * KGamma i j k + BGamma i j k * Ka i j)) alpha
           (fun p : Q ↦ ∑ j,
@@ -326,8 +363,17 @@ theorem exists_parabolicChartDriftCoefficient_schauder_bounds
                 chartCenter i j k p.1)) := by
       intro p q
       simpa only [Pi.neg_apply, edist_neg_neg] using hi p q
-    simpa only [Q, Kb, parabolicChartDriftCoefficient,
-      Set.restrict_apply, Pi.neg_apply] using hneg
+    change HolderWith (Kb k) alpha
+      (Q.domRestrict (parabolicChartDriftCoefficient (I := I) G.metric chartCenter k))
+    have hfun : Q.domRestrict
+          (parabolicChartDriftCoefficient (I := I) G.metric chartCenter k) =
+        -(fun p : Q ↦ ∑ i, ∑ j,
+          parabolicChartPrincipalCoefficient (I := I) G.metric chartCenter i j p.1 *
+            parabolicChartChristoffelCoefficient (I := I) G.metric chartCenter i j k p.1) := by
+      funext p
+      rfl
+    rw [hfun]
+    simpa only [Kb] using hneg
 
 theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_finite
     {D : RealTimeInterval}
@@ -351,7 +397,7 @@ theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_f
       (∀ r i j, HolderWith (Ka i j) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K r))).restrict
+          (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
             (parabolicChartPrincipalCoefficient (I := I) G.metric
               (chartCenter r) i j))) ∧
       (∀ r p, p ∈ parabolicLinearPreimage
@@ -368,11 +414,11 @@ theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_f
       ∀ r k, HolderWith (Kb k) alpha
         ((parabolicLinearPreimage
           ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-          (parabolicCylinder (Set.Icc a b) (K r))).restrict
+          (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
             (parabolicChartDriftCoefficient (I := I) G.metric
               (chartCenter r) k)) := by
   classical
-  letI := Fintype.ofFinite Achart
+  let := Fintype.ofFinite Achart
   have hpkg : ∀ r : Achart,
       ∃ Ar Kar : Fin (Module.finrank Real E) →
             Fin (Module.finrank Real E) → NNReal,
@@ -385,7 +431,7 @@ theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_f
         (∀ i j, HolderWith (Kar i j) alpha
           ((parabolicLinearPreimage
             ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-            (parabolicCylinder (Set.Icc a b) (K r))).restrict
+            (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
               (parabolicChartPrincipalCoefficient (I := I) G.metric
                 (chartCenter r) i j))) ∧
         (∀ p, p ∈ parabolicLinearPreimage
@@ -402,7 +448,7 @@ theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_f
         ∀ k, HolderWith (Kbr k) alpha
           ((parabolicLinearPreimage
             ((toEuclidean (E := E)).symm : EuclN E →L[Real] E)
-            (parabolicCylinder (Set.Icc a b) (K r))).restrict
+            (parabolicCylinder (Set.Icc a b) (K r))).domRestrict
               (parabolicChartDriftCoefficient (I := I) G.metric
                 (chartCenter r) k)) := by
     intro r
@@ -423,18 +469,18 @@ theorem exists_uniform_parabolic_chart_operator_coefficient_schauder_bounds_of_f
   refine ⟨Apr, Ka, Bb, Kb, ?_, ?_, ?_, ?_, ?_⟩
   · intro r i j p hp
     exact (hpkg r).1 i j p hp |>.trans
-      (Finset.single_le_sum (fun s _ ↦ zero_le (Ar s i j)) (Finset.mem_univ r))
+      (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Ar s i j)) (Finset.mem_univ r))
   · intro r i j
     exact (hpkg r).2.1 i j |>.mono
-      (Finset.single_le_sum (fun s _ ↦ zero_le (Kar s i j)) (Finset.mem_univ r))
+      (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Kar s i j)) (Finset.mem_univ r))
   · intro r p hp
     exact (hpkg r).2.2.1 p hp
   · intro r k p hp
     exact (hpkg r).2.2.2.1 k p hp |>.trans
-      (Finset.single_le_sum (fun s _ ↦ zero_le (Bbr s k)) (Finset.mem_univ r))
+      (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Bbr s k)) (Finset.mem_univ r))
   · intro r k
     exact (hpkg r).2.2.2.2 k |>.mono
-      (Finset.single_le_sum (fun s _ ↦ zero_le (Kbr s k)) (Finset.mem_univ r))
+      (Finset.single_le_sum (fun s _ ↦ (zero_le : 0 ≤ Kbr s k)) (Finset.mem_univ r))
 
 theorem exists_uniform_parabolic_chart_principal_coefficient_quadratic_lower_bound_of_finite
     [NeZero (Module.finrank Real E)]
@@ -526,7 +572,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_operator_coeff
               Apr i j) ∧
         (∀ x : ↥s, ∀ i j, HolderWith (Ka i j) alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartPrincipalCoefficient (I := I) G.metric x.1 i j))) ∧
         (∀ x : ↥s, ∀ p,
           p ∈ parabolicCylinder (Set.Icc a b)
@@ -539,7 +585,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_operator_coeff
             ‖parabolicChartDriftCoefficient (I := I) G.metric x.1 k p‖ ≤ Bb k) ∧
         ∀ x : ↥s, ∀ k, HolderWith (Kb k) alpha
           ((parabolicCylinder (Set.Icc a b)
-            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).restrict
+            (Metric.closedBall (toEuclidean (extChartAt I x.1 x.1)) (Rext x.1))).domRestrict
               (parabolicChartDriftCoefficient (I := I) G.metric x.1 k)) := by
   classical
   obtain ⟨s, r, R, Rext, hradii, hchart, hcover⟩ :=

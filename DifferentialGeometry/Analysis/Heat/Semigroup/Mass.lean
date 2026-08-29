@@ -53,7 +53,7 @@ theorem heatMass_eq_integral
         ∂(riemannianVolumeMeasure I M g) := by
   classical
   set μ := riemannianVolumeMeasure I M g with hμ
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     rw [hμ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   unfold heatMass
@@ -104,7 +104,7 @@ theorem heatMass_deriv_zero
     rw [← hdu]
     classical
     set μ := riemannianVolumeMeasure I M g with hμ
-    letI : IsFiniteMeasure μ := by
+    let : IsFiniteMeasure μ := by
       rw [hμ]
       exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
     have hinner :
@@ -125,7 +125,7 @@ theorem heatMass_deriv_zero
       apply MeasureTheory.integral_congr_ae
       exact hae
     rw [hint_congr]
-    have htoFun : du_smooth.toFun = Δ_g (I := I) g u_smooth.toContMDiffMap := by
+    have htoFun : du_smooth.toFun = ΔG (I := I) g u_smooth.toContMDiffMap := by
       rw [← congrArg SmoothScalar.toFun hlap]
       exact SmoothScalar.laplacian_toFun u_smooth
     rw [htoFun]
@@ -141,7 +141,7 @@ theorem heatSemigroup_mass_invariant
         ∂(riemannianVolumeMeasure I M g) := by
   classical
   set μ := riemannianVolumeMeasure I M g with hμ
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     rw [hμ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   let L : heatMassSpace g →L[ℝ] ℝ :=
@@ -195,7 +195,11 @@ theorem heatSemigroup_mass_invariant
       have hL' : Tendsto (fun s : ℝ =>
           L (heatSemigroup (I := I) (M := M) g s u₀)) (𝓝[>] (0 : ℝ)) (𝓝 (L u₀)) :=
         hL.mono_left hmono
-      simpa [heatMass, heatSemigroup_zero] using hL'
+      change Tendsto (fun s : ℝ => heatMass (I := I) (M := M) g u₀ s) _ _ at hL'
+      convert hL' using 1
+      rw [heatMass, heatSemigroup_zero]
+      rw [ContinuousLinearMap.id_apply]
+      simp only [L, innerSL_apply_apply]
     have hconst := tendsto_nhds_unique h_tend h_tend0
     calc
       (∫ x, ((heatSemigroup (I := I) (M := M) g t u₀ : heatMassSpace g) : M → ℝ) x

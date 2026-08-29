@@ -212,7 +212,7 @@ theorem scalarHsInclusion_trans {τ₁ σ τ₂ : ℝ}
       (scalarHsInclusion (I := I) (M := M) (g := g) h₁).comp
         (scalarHsInclusion (I := I) (M := M) (g := g) h₂) := by
   ext T i
-  simp only [scalarHsInclusion_coeff, ContinuousLinearMap.coe_comp',
+  simp only [scalarHsInclusion_coeff, ContinuousLinearMap.coe_comp,
     Function.comp_apply]
 
 omit [SigmaCompactSpace M] in
@@ -512,7 +512,7 @@ theorem scalarHsToL2_comp_scalarHsInclusion
     have h := scalarHs.scalarL2Coeff_scalarHsToL2 (I := I) (M := M) hτ
       (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T) i
     rw [scalarHs.scalarHsInclusion_coeff] at h
-    simpa only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+    simpa only [ContinuousLinearMap.coe_comp, Function.comp_apply,
       scalarL2Coeff] using h
   have hrhs : ((resolventHilbertEigenbasisSigma
         (I := I) (M := M) g).repr

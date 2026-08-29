@@ -97,7 +97,7 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
   have hb_src_b₀ : b ∈ (chartAt H b₀).source := hb₀'
   have hxs : (id (extChartAt I α b)) ∈
       (chartAt (H := E) (id ((extChartAt I α b₀) : E))).source := by
-    simp
+    simp [chartAt_self_eq]
   have hys : (extChartAt I α).symm (extChartAt I α b) ∈
       (chartAt H ((extChartAt I α).symm (extChartAt I α b₀))).source := by
     have hb' : (extChartAt I α).symm (extChartAt I α b) = b :=
@@ -106,7 +106,8 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
       (extChartAt I α).left_inv (by simpa [extChartAt_source] using hα_src)
     rw [hb', hb₀']
     exact hb_src_b₀
-  rw [inTangentCoordinates_eq (I := 𝓘(ℝ, E)) (I' := I) id (extChartAt I α).symm _ hxs hys]
+  erw [inTangentCoordinates_eq (I := 𝓘(ℝ, E)) (I' := I) id
+    (extChartAt I α).symm _ hxs hys]
   have hsrc_id :
       (tangentBundleCore 𝓘(ℝ, E) E).coordChange (achart E (id (extChartAt I α b₀)))
           (achart E (id (extChartAt I α b)))
@@ -150,7 +151,8 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
       exact hmdiff.mfderivWithin_mono_of_mem_nhdsWithin
         (hu_uniq _ hb_target) h_super
     rw [h2, ← h1]
-  rw [hsrc_id, hmfderiv_eq, htarget_eq, ContinuousLinearMap.comp_id]
+  rw [hsrc_id, hmfderiv_eq, htarget_eq]
+  ext v
   rfl
 
 omit [Module.Finite ℝ E] in
@@ -180,8 +182,9 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha
   have hb_src_b₀ : b ∈ (chartAt H b₀).source := hb₀'
   have hxs : (id b) ∈ (chartAt H ((id) b₀)).source := hb_src_b₀
   have hys : (extChartAt I α b) ∈
-      (chartAt (H := E) ((extChartAt I α b₀) : E)).source := by simp
-  rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(ℝ, E)) id (extChartAt I α)
+      (chartAt (H := E) ((extChartAt I α b₀) : E)).source := by
+    simp [chartAt_self_eq]
+  erw [inTangentCoordinates_eq (I := I) (I' := 𝓘(ℝ, E)) id (extChartAt I α)
     _ hxs hys]
   have hsrc_eq :
       (tangentBundleCore I M).coordChange (achart H (id b₀)) (achart H (id b)) (id b) =
@@ -196,7 +199,8 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha
       mfderiv I 𝓘(ℝ, E) (extChartAt I α) b =
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b :=
     (TangentBundle.continuousLinearMapAt_trivializationAt hb_src).symm
-  rw [htarget_id, hmfd_eq, hsrc_eq, ContinuousLinearMap.id_comp]
+  rw [htarget_id, hmfd_eq, hsrc_eq]
+  ext v
   rfl
 
 end Tensor

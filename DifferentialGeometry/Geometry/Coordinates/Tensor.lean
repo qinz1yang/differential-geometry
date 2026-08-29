@@ -112,7 +112,7 @@ noncomputable def tensorRSComponentInFrame {r s : Nat} [Finite Idx]
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 := by
   letI := Fintype.ofFinite Idx
   classical
-  exact Tensor0SBundle.componentRS_gen (I := I) (hframe.toBasisAt hx) (T x) upper lower
+  exact Tensor0SBundle.componentRSGen (I := I) (hframe.toBasisAt hx) (T x) upper lower
 
 @[simp] theorem tensorRSComponentInFrame_eval {r s : Nat} [Fintype Idx]
     (T : FrameTensorRSField (I := I) (M := M) r s)
@@ -121,7 +121,7 @@ noncomputable def tensorRSComponentInFrame {r s : Nat} [Finite Idx]
     (x : M) (hx : x ∈ u)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
     tensorRSComponentInFrame T frame hframe x hx upper lower =
-      Tensor0SBundle.componentRS_gen (I := I) (hframe.toBasisAt hx) (T x) upper lower := by
+      Tensor0SBundle.componentRSGen (I := I) (hframe.toBasisAt hx) (T x) upper lower := by
   rfl
 
 theorem tensorRSComponentInFrame_apply {r s : Nat} [Fintype Idx]

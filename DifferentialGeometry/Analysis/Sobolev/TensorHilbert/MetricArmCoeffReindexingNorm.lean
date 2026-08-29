@@ -36,6 +36,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ' : Equiv.Perm (Fin r)) (σ : Equiv.Perm (Fin s))
@@ -54,7 +55,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (fun y d => by
       rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
@@ -99,7 +99,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
     · simp only [Fin.cons_zero, Equiv.swap_apply_left]
     · simp only [Fin.cons_succ]]
   rw [slotExtendFib_apply_eval]
-  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval, tensor0S_curry_apply_eval,
+  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval, tensor0S_curry_toModel_apply,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   have hswap_succ0 : (Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (0 : Fin (s + 1))) = 0 := by
     rw [show (Fin.succ (0 : Fin (s + 1)) : Fin (s + 1 + 1)) = 1 from rfl, Equiv.swap_apply_right]
@@ -126,6 +126,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
         m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (Fin.succ k₂)))
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞

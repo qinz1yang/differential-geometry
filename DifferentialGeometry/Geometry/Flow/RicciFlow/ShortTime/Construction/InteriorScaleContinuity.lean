@@ -10,6 +10,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -102,8 +104,10 @@ private theorem hom_integral_eq
     have hexp : HasDerivAt (fun τ => Real.exp (-lam * τ))
         (Real.exp (-lam * τ) * (-lam)) τ := hlin.exp
     have := hexp.mul_const c
-    convert this using 1
-    ring
+    have hcoeff : Real.exp (-lam * τ) * (-lam) * c =
+        -lam * (Real.exp (-lam * τ) * c) := by ring
+    rw [← hcoeff]
+    exact this
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun τ _ => hF τ)
     (by apply Continuous.intervalIntegrable; fun_prop)]
   simp only [mul_zero, Real.exp_zero, one_mul]

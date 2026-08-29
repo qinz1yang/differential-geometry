@@ -31,12 +31,10 @@ private theorem spectralDuhamel_integration_by_parts
   have hg : ∀ s, HasDerivAt g (g' s) s := by
     intro s
     have hlin : HasDerivAt (fun q : ℝ => -lam * (t - q)) lam s := by
-      convert ((hasDerivAt_const s t).sub (hasDerivAt_id s)).const_mul (-lam) using 1
-      all_goals ring
+      convert! ((hasDerivAt_const s t).sub (hasDerivAt_id s)).const_mul (-lam) using 1 ;
+        ring
     have hexp := hlin.exp
-    convert hexp.mul (hf s) using 1
-    simp only [g']
-    ring
+    convert! hexp.mul (hf s) using 1 ; ring
   have hexpcont : Continuous (fun s : ℝ => Real.exp (-lam * (t - s))) := by
     fun_prop
   have hleft : Continuous
@@ -46,7 +44,11 @@ private theorem spectralDuhamel_integration_by_parts
       (fun s : ℝ => Real.exp (-lam * (t - s)) * f' s) :=
     hexpcont.mul hf'
   have hg' : Continuous g' := by
-    simpa only [g', Pi.add_apply, mul_assoc] using hleft.add hright
+    unfold g'
+    exact (hleft.add hright).congr fun s => by
+      change lam * (Real.exp (-lam * (t - s)) * f s) +
+          Real.exp (-lam * (t - s)) * f' s = _
+      ring
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun s _ => hg s) (hg'.intervalIntegrable 0 t)
   have hsplit :
@@ -96,8 +98,8 @@ theorem abstractSpectralDuhamelDeriv_repr_apply
   have hip := spectralDuhamel_integration_by_parts (lam i) t hfmode
     (by
       have hlin : Continuous (fun z : X => (b.repr z : ι → ℝ) i) := by
-        simpa only [b.repr_apply_apply] using
-          (innerSL (𝕜 := ℝ) (E := X) (b i)).continuous
+        have h := (innerSL (𝕜 := ℝ) (E := X) (b i)).continuous
+        exact h.congr fun z => (b.repr_apply_apply z i).symm
       exact hlin.comp hF')
   simp only [abstractSpectralDuhamelDeriv]
   rw [map_add, map_add]

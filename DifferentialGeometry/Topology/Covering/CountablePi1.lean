@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.Covering.TruncateHomotopy
 import Mathlib.Topology.Bases
-import Mathlib.Topology.Connected.LocPathConnected
+import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.Topology.Homotopy.Path
 import Mathlib.Topology.Subpath
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
@@ -20,7 +20,7 @@ namespace UniversalCover
 theorem uc_pi1_countable_basis_refinement
     (X : Type*) [TopologicalSpace X] [Nonempty X]
     [SecondCountableTopology X]
-    [LocPathConnectedSpace X]
+    [LocallyPathConnectedSpace X]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X] :
     ∃ B : ℕ → Set X,
       (∀ n, IsOpen (B n)) ∧
@@ -538,7 +538,7 @@ lemma uc_pi1_countable_telescope
 theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     (X : Type*) [TopologicalSpace X]
     [hsecond : SecondCountableTopology X] [hconnected : ConnectedSpace X]
-    [hlocPath : LocPathConnectedSpace X]
+    [hlocPath : LocallyPathConnectedSpace X]
     [hsemilocally :
       DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     (x : X)
@@ -556,8 +556,8 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
   let _ := hconnected
   let _ := hlocPath
   let _ := hsemilocally
-  haveI : Nonempty X := ⟨x⟩
-  haveI : PathConnectedSpace X := PathConnectedSpace.of_locPathConnectedSpace
+  have : Nonempty X := ⟨x⟩
+  have : PathConnectedSpace X := PathConnectedSpace.of_locallyPathConnectedSpace
   have hBcov : (⋃ n, B n) = (Set.univ : Set X) := by
     have hsu : ⋃₀ (Set.range B) = (Set.univ : Set X) := hBbasis.sUnion_eq
     rw [Set.sUnion_range] at hsu; exact hsu
@@ -565,7 +565,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
   have hanchor : ∀ n, anchor n ∈ B n :=
     fun n => (hBpc n).nonempty.choose_spec
   let S : Type := Σ k : ℕ, (Fin k → ℕ) × (Fin k → ℕ)
-  haveI hScount : Countable S := inferInstance
+  have hScount : Countable S := inferInstance
   let polyVertex : ∀ {k : ℕ}, (Fin k → ℕ) → (Fin k → ℕ) →
       Fin (k + 1) → X :=
     fun {k} _idx ref i =>
@@ -723,7 +723,6 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
       have ht_eq : t i.castSucc = t 0 := by
         apply congrArg
         apply Fin.ext
-        change (i.castSucc : ℕ) = (0 : Fin (k + 1)).val
         rw [hcast_val, h0]; rfl
       have hxγ : γ (t i.castSucc) = x := by rw [ht_eq, hγ0]
       rw [← hxγ]
@@ -737,7 +736,6 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
               then anchor (ref ⟨(i.castSucc : ℕ), h.2⟩) else x)
             = anchor (ref i)
         rw [dif_pos ⟨hpos', hlt⟩]
-        congr 2
       rw [hpv]
       exact ((href_sub i hpos) (hanchor (ref i))).2
   have hVertex_succ : ∀ i : Fin k,
@@ -770,7 +768,6 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
               then anchor (ref ⟨(i.succ : ℕ), h.2⟩) else x)
             = anchor (ref i_next)
         rw [dif_pos ⟨by rw [hsucc_val]; omega, by simpa [hsucc_val]⟩]
-        congr 2
       rw [hpv]
       have hprev_eq : (⟨(i_next : ℕ) - 1, by omega⟩ : Fin k) = i := by
         apply Fin.ext

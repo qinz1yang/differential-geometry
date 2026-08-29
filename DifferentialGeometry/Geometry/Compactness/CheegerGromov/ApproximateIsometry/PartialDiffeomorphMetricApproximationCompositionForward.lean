@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackTowerBounds
 
 
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -89,10 +90,10 @@ section PartialDataComp
 
 open TopologicalSpace
 
-set_option backward.isDefEq.respectTransparency false in
-theorem partialData_comp_forward [I.Boundaryless]
+theorem partialData_comp_forward
     {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
-    [T2Space N] [SigmaCompactSpace N] [T2Space P] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space N] [hSigmaCompactN : SigmaCompactSpace N] [T2Space P]
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
     (Φ' : PartialDiffeomorph I I N P (∞ : WithTop ℕ∞))
@@ -136,6 +137,7 @@ theorem partialData_comp_forward [I.Boundaryless]
       ε'' < 1 →
       Nonempty (MapMetricApproximationOn (I := I) K ε'' p
         (PartialDiffeomorph.trans (I := I) Φ Φ' : M → P) g h') := by
+  let _ := hSigmaCompactN
   classical
   set Ψ := PartialDiffeomorph.trans (I := I) Φ Φ' with hΨdef
   have hsrcU : (U₁ : Set M) ⊆ Ψ.source := by
@@ -157,8 +159,10 @@ theorem partialData_comp_forward [I.Boundaryless]
         (by decide : (∞ : WithTop ℕ∞) ≠ 0)
     have h := mfderiv_comp y hΦ'd hΦd
     have happ := DFunLike.congr_fun h v
-    simpa [ContinuousLinearMap.comp_apply] using happ
-  haveI : LocallyCompactSpace M := Manifold.locallyCompact_of_finiteDimensional I
+    rw [hΨdef]
+    change mfderiv I I ((Φ' : N → P) ∘ (Φ : M → N)) y v = _
+    exact happ
+  have : LocallyCompactSpace M := Manifold.locallyCompact_of_finiteDimensional I
   obtain ⟨KG, hKGcpt, hKKG, hKGU⟩ := exists_compact_between hK U₁.2 hKU
   set V : Opens M := ⟨interior KG, isOpen_interior⟩ with hVdef
   have hKV : K ⊆ (V : Set M) := hKKG
@@ -172,8 +176,16 @@ theorem partialData_comp_forward [I.Boundaryless]
   have hc0T : ∀ x ∈ KG, metricTensorErrorNorm (I := I) P₁ g x ≤ ε := by
     intro x hxKG
     have hval : P₁ x = D₁.forward.pullback x := by
-      refine ContinuousMultilinearMap.ext (fun w => ?_)
-      rw [hP₁apply x hxKG w, D₁.forward.pullback_apply x (hKGU hxKG) w]
+      apply (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
+      apply ContinuousMultilinearMap.ext
+      intro w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w =
+        Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w
+      have hleft := hP₁apply x hxKG w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w = _ at hleft
+      have hright := D₁.forward.pullback_apply x (hKGU hxKG) w
+      change Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w = _ at hright
+      rw [hleft, hright]
     unfold metricTensorErrorNorm
     rw [hval]
     exact D₁.forward.c0_small x (hKGU hxKG)
@@ -186,10 +198,10 @@ theorem partialData_comp_forward [I.Boundaryless]
   set δ₀ := D₁.forward.pullback - Tensor0SBundle.metricTensorField (I := I) g with hδ₀def
   set δ₁ := P'' - P₁ with hδ₁def
   set δN₂ := D₂.forward.pullback - Tensor0SBundle.metricTensorField (I := I) h with hδN₂def
-  haveI : SecondCountableTopology H := I.secondCountableTopology
-  haveI := ChartedSpace.secondCountable_of_sigmaCompact H M
-  haveI : LocallyCompactSpace (V : Set M) := V.2.locallyCompactSpace
-  haveI : SigmaCompactSpace (V : Set M) := inferInstance
+  have : SecondCountableTopology H := I.secondCountableTopology
+  have := ChartedSpace.secondCountable_of_sigmaCompact H M
+  have : LocallyCompactSpace (V : Set M) := V.2.locallyCompactSpace
+  have : SigmaCompactSpace (V : Set M) := inferInstance
   have hδ₁pt : ∀ x ∈ (V : Set M), ∀ v : Fin 2 → TangentSpace I x,
       δ₁ x v = δN₂ ((Φ : M → N) x)
         (fun q => mfderiv I I (Φ : M → N) x (v q)) := by
@@ -214,12 +226,12 @@ theorem partialData_comp_forward [I.Boundaryless]
       G₁.inner x v w = h.inner ((Φ : M → N) x)
         (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w) :=
     fun x hx v w => hG₁inner x (hVKG hx) v w
-  haveI : LocallyCompactSpace N := Manifold.locallyCompact_of_finiteDimensional I
-  haveI := ChartedSpace.secondCountable_of_sigmaCompact H N
-  haveI : LocallyCompactSpace ((Φ : M → N) '' (V : Set M) : Set N) :=
+  have : LocallyCompactSpace N := Manifold.locallyCompact_of_finiteDimensional I
+  have := ChartedSpace.secondCountable_of_sigmaCompact H N
+  have : LocallyCompactSpace ((Φ : M → N) '' (V : Set M) : Set N) :=
     (image_opens_isOpen (I := I) Φ
       (fun y hy => hU₁ (hKGU (hVKG hy)))).locallyCompactSpace
-  haveI : SigmaCompactSpace ((Φ : M → N) '' (V : Set M) : Set N) := inferInstance
+  have : SigmaCompactSpace ((Φ : M → N) '' (V : Set M) : Set N) := inferInstance
   have hδ₁tow : ∀ (hNV : Nonempty V) (a : ℕ) (x : M) (hx : x ∈ (V : Set M)),
       tensor02CovDerivNormWith (I := I) a δ₁ G₁ G₁ x
         = tensor02CovDerivNormWith (I := I) a δN₂ h h ((Φ : M → N) x) := by
@@ -253,7 +265,11 @@ theorem partialData_comp_forward [I.Boundaryless]
         mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)
           (mfderiv I I (Φ : M → N) x w) = w := by
       intro w
-      simpa using DFunLike.congr_fun hcomp w
+      have hw := DFunLike.congr_fun hcomp w
+      rw [ContinuousLinearMap.comp_apply] at hw
+      change mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)
+        (mfderiv I I (Φ : M → N) x w) = w at hw
+      exact hw
     rw [D₁.reverse.pullback_apply ((Φ : M → N) x) hΦxImg
         (fun q => mfderiv I I (Φ : M → N) x (v q))]
     rw [Tensor0SBundle.metricTensorField_apply]
@@ -355,21 +371,26 @@ theorem partialData_comp_forward [I.Boundaryless]
       ∀ slots : Fin (a + 2) → TangentSpace I x,
       covDerivOfField (I := I) g (P₁ - D₁.forward.pullback) a x slots = 0 := by
     intro a x hxV slots
-    haveI : Nonempty V := ⟨⟨x, hxV⟩⟩
+    have : Nonempty V := ⟨⟨x, hxV⟩⟩
     have hA0 : ∀ (q : V) (w : Fin 2 → TangentSpace I q),
         (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2) q w
           = (P₁ - D₁.forward.pullback) (q : M) w := by
       intro q w
       have hv : P₁ (q : M) w = D₁.forward.pullback (q : M) w := by
-        rw [hP₁apply _ (hVKG q.2) w, D₁.forward.pullback_apply _ (hKGU (hVKG q.2)) w]
-      simp [ContMDiffSection.coe_sub, Pi.sub_apply, hv]
+        with_unfolding_all
+          rw [hP₁apply _ (hVKG q.2) w,
+            D₁.forward.pullback_apply _ (hKGU (hVKG q.2)) w]
+      simp only [ContMDiffSection.coe_sub, Pi.sub_apply]
+      with_unfolding_all
+        change 0 = P₁ (q : M) w - D₁.forward.pullback (q : M) w
+      rw [hv, sub_self]
     have hres := covDerivOfField_restrictOpen (I := I) g V
       (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2)
       (P₁ - D₁.forward.pullback) hA0 a ⟨x, hxV⟩ slots
     rw [← hres, covDOF_zero]
-    simp
+    with_unfolding_all rfl
   have hcovP'' : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ K,
       tensor02CovDerivNormWith (I := I) a P'' g g x ≤ ε₀ + ε' * C := by
     intro a ha1 hap x hxK
@@ -400,10 +421,23 @@ theorem partialData_comp_forward [I.Boundaryless]
             - (P₁ - D₁.forward.pullback) := by
         rw [hδ₀def, hδ₁def]
         abel
-      refine ContinuousMultilinearMap.ext (fun slots => ?_)
-      rw [hsplit, iterCov_sub, iterCov_sub, iterCov_metric_zero, sub_zero]
-      simp only [ContMDiffSection.coe_sub, Pi.sub_apply]
-      rw [Tensor0SBundle.Tensor0SSpace.sub_apply, hgermzI slots, sub_zero]
+      apply (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+        (I := I) (2 + (a' + 1)) x).injective
+      apply ContinuousMultilinearMap.ext
+      intro slots
+      change Tensor0SBundle.Tensor0SSpace.eval
+          (iterCov (I := I) g 2 P'' (a' + 1) x) slots =
+        Tensor0SBundle.Tensor0SSpace.eval
+          (iterCov (I := I) g 2 (δ₀ + δ₁) (a' + 1) x) slots
+      rw [hsplit, iterCov_sub, iterCov_sub, iterCov_metric_zero]
+      simp only [ContMDiffSection.coe_sub, Pi.sub_apply, ContMDiffSection.coe_zero,
+        Pi.zero_apply]
+      rw [Tensor0SBundle.Tensor0SSpace.eval_sub, Tensor0SBundle.Tensor0SSpace.eval_sub,
+        Tensor0SBundle.Tensor0SSpace.eval_zero, sub_zero]
+      have hz := hgermzI slots
+      change Tensor0SBundle.Tensor0SSpace.eval
+        (iterCov (I := I) g 2 (P₁ - D₁.forward.pullback) (a' + 1) x) slots = 0 at hz
+      rw [hz, sub_zero]
     obtain ⟨basis, hON⟩ :=
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
@@ -416,8 +450,16 @@ theorem partialData_comp_forward [I.Boundaryless]
     have hxV : x ∈ (V : Set M) := hKV hxK
     have hxKG : x ∈ KG := hVKG hxV
     have h3 : P₁ x = D₁.forward.pullback x := by
-      refine ContinuousMultilinearMap.ext (fun w => ?_)
-      rw [hP₁apply x hxKG w, D₁.forward.pullback_apply x (hKGU hxKG) w]
+      apply (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
+      apply ContinuousMultilinearMap.ext
+      intro w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w =
+        Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w
+      have hleft := hP₁apply x hxKG w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w = _ at hleft
+      have hright := D₁.forward.pullback_apply x (hKGU hxKG) w
+      change Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w = _ at hright
+      rw [hleft, hright]
     have hval : P'' x - Tensor0SBundle.metricTensorField (I := I) g x
         = δ₀ x + δ₁ x := by
       simp only [hδ₀def, hδ₁def, ContMDiffSection.coe_sub, Pi.sub_apply]
@@ -445,7 +487,8 @@ theorem partialData_comp_forward [I.Boundaryless]
       have hcompn := sqrt_normSq_two_le (I := I) hMUE hxV (δ₁ x)
       have hG₁δ : Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₁ x 2 (δ₁ x)) ≤ ε' := by
         have h := hδ₁F5 ⟨⟨x, hxV⟩⟩ x hxV 0 (Nat.zero_le p)
-        simpa using h
+        change Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₁ x 2 (δ₁ x)) ≤ ε' at h
+        exact h
       have hsq : Real.sqrt ((1 + ε₀) ^ 2) = 1 + ε₀ := by
         rw [Real.sqrt_sq (by linarith)]
       calc Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 2 (δ₁ x))

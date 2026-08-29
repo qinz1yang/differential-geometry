@@ -38,8 +38,8 @@ theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
     (hswap : ∀ m : Fin r → Idx,
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I) (fun y : M => A s y m) x (frame (n 0) x))
-        (extDerivFun (I := I) (fun y : M => Adt t y m) x (frame (n 0) x))
+          mvfderiv (I := I) (fun y : M => A s y m) x (frame (n 0) x))
+        (mvfderiv (I := I) (fun y : M => Adt t y m) x (frame (n 0) x))
         D t) :
     HasDerivWithinAt
       (fun s : Real =>
@@ -76,7 +76,7 @@ theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
           covDerivStepComp
             (frameExtData (I := I) frame (fun y : M => A s y) x)
             (chr s x) (A s x) n)
-        (extDerivFun (I := I) (fun y : M => Adt t y (Fin.tail n)) x (frame (n 0) x) -
+        (mvfderiv (I := I) (fun y : M => Adt t y (Fin.tail n)) x (frame (n 0) x) -
           ∑ slot : Fin r, ∑ p : Idx,
             (chrDt t x (n 0) (Fin.tail n slot) p *
                 A t x (Function.update (Fin.tail n) slot p) +
@@ -127,9 +127,9 @@ theorem iteratedRmComp_one_hasDerivWithinAt
     (hswap : ∀ m : Fin 4 → CoordinateIdx (𝕜 := Real) E,
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I) (fun y : M => solutionCurvatureComponents (I := I) S x₀ s y m) x
+          mvfderiv (I := I) (fun y : M => solutionCurvatureComponents (I := I) S x₀ s y m) x
             (coordinateFrameAt (I := I) x₀ (n 0) x))
-        (extDerivFun (I := I) (fun y : M => rm04Dt (t : Real) y m) x
+        (mvfderiv (I := I) (fun y : M => rm04Dt (t : Real) y m) x
           (coordinateFrameAt (I := I) x₀ (n 0) x))
         D.carrier (t : Real)) :
     HasDerivWithinAt

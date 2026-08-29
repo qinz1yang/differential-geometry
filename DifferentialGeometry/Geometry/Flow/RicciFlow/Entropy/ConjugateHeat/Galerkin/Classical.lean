@@ -93,7 +93,16 @@ private theorem rev_gram_smooth
   simp only [Function.comp_apply, chartGramMatrix_apply, reverse_metric]
   rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx,
     e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-  rfl
+  have hbasis (k : Fin (Module.finrank Real E)) :
+      e.basisAt (chartModelBasis E) hx k = chartBasisVecFiber (I := I) x₀ k p.2 := by
+    unfold Bundle.Trivialization.basisAt chartBasisVecFiber
+    rw [Module.Basis.map_apply]
+    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
+  rw [hbasis i, hbasis j]
+  have hmetric : (flowG (I := I) S).metric (T - p.1) =
+      S.family.metric (T - p.1) := by
+    rfl
+  rw [hmetric]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -111,12 +120,21 @@ private theorem rev_trace_eq
     -S.ricciAt (T - r) y (vec2 (I := I) X Y)
   let scalar : Real → M → Real := fun r y => -S.scalar (T - r) y
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by
-    simpa using
-      (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have h := (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
+    have hfun : (fun _ : Real => T) - id = fun r : Real => T - r := by
+      funext r
+      rfl
+    rw [hfun] at h
+    simpa only [zero_sub] using h
   have hEq : MetricVariationEquationDerivAt (I := I) G Ric s := by
     intro y X Y
     have hcomp := (metricDerivAt (I := I) S hS ⟨T - s, hs⟩ y X Y).comp s hsub
-    simpa [G, Ric, reverseFamily, flowG] using hcomp
+    have hfun : ((fun r : Real => (S.family.metric r).inner y X Y) ∘
+        fun r : Real => T - r) = fun r : Real => (G.metric r).inner y X Y := by
+      funext r
+      rfl
+    rw [hfun] at hcomp
+    simpa [Ric] using hcomp
   have hScalar : scalarRealizesRicciTraceInFrame (I := I)
       (scalar s) (Ric s)
       (volumeTraceInvMetricComponents (I := I) (M := M) (G.metric s))
@@ -125,7 +143,7 @@ private theorem rev_trace_eq
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
       exact mem_baseSet_trivializationAt E (TangentSpace I) y
     let b := chartBasisFamily (I := I) y hy
-    have hinv : MetricInverseInBasis_gen (I := I) (G.metric s) y b
+    have hinv : MetricInverseInBasisGen (I := I) (G.metric s) y b
         (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j) := by
       simpa only [b] using
         chartInvGram_inverse (I := I) (G.metric s) y hy
@@ -216,15 +234,23 @@ theorem heatpot_mass_deriv
       (f := fun _ : M => (1 : Real)) (h := u s)
       contMDiff_const hu_smooth s
   have hlap :
-      ∫ x, Δ_g (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
+      ∫ x, ΔG (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
         ∂(volumeMeasureFamily (I := I) (M := M) G s) = 0 := by
-    simpa only [one_mul, Δ_g_const, mul_zero, sub_zero] using hgreen
+    have hconst (x : M) :
+        ΔG (I := I) (G.metric s) ⟨fun _ : M => (1 : Real), contMDiff_const⟩ x = 0 := by
+      convert Δ_g_const (I := I) (G.metric s) 1 x
+      rfl
+    simp only [one_mul, hconst, mul_zero, sub_zero] at hgreen
+    change
+      (∫ (x : M), ΔG (I := I) (G.metric s) ⟨u s, hu_smooth⟩ x
+        ∂(riemannianMeasureFamily (I := I) (M := M) (fun r => G.metric r) s)) = 0
+    exact hgreen
   have hmass :
       ∫ x, (deriv (fun r : Real => u r x) s +
             (1 / 2 : Real) * traceTimeDerivMetricAt (I := I) G s x * u s x)
           ∂(volumeMeasureFamily (I := I) (M := M) G s) = 0 := by
     calc
-      _ = ∫ x, Δ_g (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
+      _ = ∫ x, ΔG (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
             ∂(volumeMeasureFamily (I := I) (M := M) G s) := by
           apply integral_congr_ae
           filter_upwards with x
@@ -435,17 +461,17 @@ theorem galLimExt_zero
   rw [galLimExt_coeff hτ hlim m ⟨le_rfl, hτ⟩,
     ccTensorToHs_coeff, hlim.lim_init i]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem covGrad0_apply
     (g : SmoothRiemannianMetric I M) (U : SmoothCcTensor g 0 0)
     (x : M) (X : TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 1 I x from
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
             (I := I) (M := M) g 0 0 U).toSection x)
           (unitZeroSec (I := I) (M := M) x))
         (fun _ : Fin 1 => X) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection) x X := by
   let f := TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection
   let hf := TensorRSField.scalar0_smooth
@@ -453,7 +479,8 @@ private theorem covGrad0_apply
   let A : Tensor0SField ∞ 0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) :=
     Tensor0SField.fromScalarField ∞ f hf
   have hunit (y : M) :
-      tensor0SSpace_evalScalar y (unitZeroSec (I := I) (M := M) y) = 1 := by
+      tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) y
+        (unitZeroSec (I := I) (M := M) y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty Real (fun _ : Fin 0 => E) 1
       Fin.elim0 = 1
@@ -473,7 +500,7 @@ private theorem covGrad0_apply
     rw [Tensor0SNabla.scalarFn_eq_apply_zero]
     change Tensor0SField.toScalarField ∞ A y = f y
     exact congrFun (Tensor0SField.toScalarField_fromScalarField ∞ f hf) y
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_toSection_apply_eval
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_toSection_apply_natural
     (I := I) (M := M) g 0 0 U x
     (unitZeroSec (I := I) (M := M) x) (fun _ : Fin 1 => X)]
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorCovDerivAt_def,
@@ -481,7 +508,7 @@ private theorem covGrad0_apply
     Tensor0SNabla.tensor0SCovariantDerivative_apply_zero, hscalar]
   change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm
-        (extDerivFun (I := I) f x X)) = _
+        (mvfderiv (I := I) f x X)) = _
   rw [ContinuousLinearEquiv.apply_symm_apply]
 
 theorem galLim_jet_mass
@@ -527,8 +554,8 @@ theorem galLim_jet_mass
     have hcomp : ContDiffOn Real ∞
         (fun t => L (galLimExt hτ.le hlim 0 t))
         (Ioo (0 : Real) tau') := by
-      simpa only [Function.comp_apply] using
-        L.contDiff.comp_contDiffOn (hsmooth 0)
+      with_unfolding_all
+        exact L.contDiff.comp_contDiffOn (hsmooth 0)
     have hcoeff_open : ContDiffOn Real ∞
         (fun t => ulim t i) (Ioo (0 : Real) tau') := by
       refine hcomp.congr ?_
@@ -548,8 +575,8 @@ theorem galLim_jet_mass
   let U : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => J (galLimExt hτ.le hlim (m + k) t)
   have hU : ContDiffOn Real ∞ U (Ioo (0 : Real) tau') := by
-    simpa only [U, Function.comp_apply] using
-      J.contDiff.comp_contDiffOn (hsmooth (m + k))
+    with_unfolding_all
+      exact J.contDiff.comp_contDiffOn (hsmooth (m + k))
   let W : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => iteratedDeriv j U t
   have hWopen : ContinuousOn W (Ioo (0 : Real) tau') := by
@@ -643,8 +670,8 @@ theorem galLim_mass0
   let W : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => J (galLimExt hτ.le hlim (m + k) t)
   have hW : Continuous W := by
-    simpa only [W, Function.comp_apply] using
-      J.continuous.comp (galLimExt_cont hτ.le hlim (m + k))
+    with_unfolding_all
+      exact J.continuous.comp (galLimExt_cont hτ.le hlim (m + k))
   have hcoeff : ∀ t ∈ Icc (0 : Real) tau, ∀ i,
       (W t).coeff i = ulim t i := by
     intro t ht i
@@ -812,17 +839,17 @@ theorem galLim_d_zero
     (hlim : IsConjGalSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) (x : M) (X : TangentSpace I x) :
     Tendsto
-      (fun t => extDerivFun (I := I)
+      (fun t => mvfderiv (I := I)
         (scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
           (fun i s => ulim s i) t) x X)
       (𝓝[Set.Icc (0 : Real) tau] 0)
-      (𝓝 (extDerivFun (I := I)
+      (𝓝 (mvfderiv (I := I)
         (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection) x X)) := by
   classical
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   let f : Real → M → Real := fun t =>
     scalarSpecSum (I := I) (M := M) q (fun i s => ulim s i) t
-  let f0 : Real := extDerivFun (I := I)
+  let f0 : Real := mvfderiv (I := I)
     (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection) x X
   let N : Real → Real := fun t =>
     ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖
@@ -832,6 +859,7 @@ theorem galLim_d_zero
     have hc : Continuous (fun t =>
         ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖) :=
       (galLimExt_cont hτ hlim 3).sub continuous_const |>.norm
+    rw [nhdsWithin]
     simpa only [N, sub_self, norm_zero] using
       (hc.tendsto 0).mono_left inf_le_left
   have hupper : Tendsto
@@ -846,7 +874,7 @@ theorem galLim_d_zero
       (hCN.pow 2).const_mul (q.inner x X X)
     convert hQN using 1
     norm_num
-  have hsq : Tendsto (fun t => (extDerivFun (I := I) (f t) x X - f0) ^ 2)
+  have hsq : Tendsto (fun t => (mvfderiv (I := I) (f t) x X - f0) ^ 2)
       (𝓝[Set.Icc (0 : Real) tau] 0) (𝓝 0) := by
     refine squeeze_zero' (Eventually.of_forall fun t => sq_nonneg _) ?_ hupper
     filter_upwards [(@self_mem_nhdsWithin Real inferInstance 0
@@ -854,8 +882,8 @@ theorem galLim_d_zero
     obtain ⟨U, hUall, hUscalar⟩ :=
       galLim_slice_cc (I := I) (M := M) hτ hlim ht
     let DU : SmoothCcTensor q 0 0 := U - u0
-    have hscalar : extDerivFun (I := I) (f t) x X - f0 =
-        extDerivFun (I := I)
+    have hscalar : mvfderiv (I := I) (f t) x X - f0 =
+        mvfderiv (I := I)
           (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) DU.toSection) x X := by
       have hUsmooth := TensorRSField.scalar0_smooth
         (n := (∞ : WithTop ℕ∞)) U.toSection
@@ -863,12 +891,12 @@ theorem galLim_d_zero
         (n := (∞ : WithTop ℕ∞)) u0.toSection
       rw [show f t = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection by
         simpa only [f, q] using hUscalar]
-      rw [show f0 = extDerivFun (I := I)
+      rw [show f0 = mvfderiv (I := I)
           (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection) x X by rfl]
-      rw [← extDerivFun_sub_at (I := I) X
+      rw [← mvfderiv_sub_at (I := I) X
         (hUsmooth.mdifferentiable (by simp)).mdifferentiableAt
         (h0smooth.mdifferentiable (by simp)).mdifferentiableAt]
-      apply congrArg (fun h : M → Real => extDerivFun (I := I) h x X)
+      apply congrArg (fun h : M → Real => mvfderiv (I := I) h x X)
       funext y
       simp only [DU, SmoothCcTensor.toSection_sub, TensorRSField.scalar0_sub,
         Pi.sub_apply]
@@ -876,12 +904,12 @@ theorem galLim_d_zero
       ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
         (I := I) (M := M) q 0 0 DU).toSection x) X
     rw [covGrad0_apply (I := I) (M := M) q DU x X] at hpoint
-    have hDU : ccTensorToHs (I := I) (M := M) q 0 (3 : Real) DU =
+    have hDU : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU =
         galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0 := by
-      have hU3 : ccTensorToHs (I := I) (M := M) q 0 (3 : Real) U =
+      have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) U =
           galLimExt hτ hlim 3 t := by
         simpa only [q] using hUall 3
-      have h03 : ccTensorToHs (I := I) (M := M) q 0 (3 : Real) u0 =
+      have h03 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) u0 =
           galLimExt hτ hlim 3 0 := by
         simpa only [q] using (galLimExt_zero hτ hlim 3).symm
       dsimp only [DU]
@@ -889,23 +917,24 @@ theorem galLim_d_zero
         hU3, h03]
     rw [hscalar]
     calc
-      (extDerivFun (I := I)
+      (mvfderiv (I := I)
           (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) DU.toSection) x X) ^ 2
           ≤ q.inner x X X *
               riemannianFiberNormSq (I := I) (M := M) q 0 1 x
                 ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
                   (I := I) (M := M) q 0 0 DU).toSection x) := hpoint
       _ ≤ q.inner x X X *
-          (C * ‖ccTensorToHs (I := I) (M := M) q 0 (3 : Real) DU‖) ^ 2 :=
+          (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU‖) ^ 2 :=
         mul_le_mul_of_nonneg_left ((hgrad DU).1 x)
           (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
             (I := I) (M := M) q x X)
       _ = q.inner x X X * (C * N t) ^ 2 := by rw [hDU]
-  have habs : Tendsto (fun t => |extDerivFun (I := I) (f t) x X - f0|)
+  have habs : Tendsto (fun t => |mvfderiv (I := I) (f t) x X - f0|)
       (𝓝[Set.Icc (0 : Real) tau] 0) (𝓝 0) := by
-    simpa only [← Real.sqrt_sq_eq_abs, Real.sqrt_zero] using
-      Real.continuous_sqrt.continuousAt.tendsto.comp hsq
-  have hzero : Tendsto (fun t => extDerivFun (I := I) (f t) x X - f0)
+    with_unfolding_all
+      simpa only [Function.comp_def, ← Real.sqrt_sq_eq_abs, Real.sqrt_zero] using
+        Real.continuous_sqrt.continuousAt.tendsto.comp hsq
+  have hzero : Tendsto (fun t => mvfderiv (I := I) (f t) x X - f0)
       (𝓝[Set.Icc (0 : Real) tau] 0) (𝓝 0) :=
     (tendsto_zero_iff_abs_tendsto_zero _).2 habs
   simpa only [f, q, f0, sub_add_cancel, zero_add] using hzero.add_const f0
@@ -925,7 +954,7 @@ theorem galLim_d_joint
       S T tau u0 V phi ulim)
     (a : M) (i : Fin (Module.finrank Real E)) :
     ContinuousWithinAt
-      (fun p : Real × M => extDerivFun (I := I)
+      (fun p : Real × M => mvfderiv (I := I)
         (scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
           (fun k s => ulim s k) p.1) p.2
         (chartBasisVecFiber (I := I) a i p.2))
@@ -941,7 +970,7 @@ theorem galLim_d_joint
     scalarSpecSum (I := I) (M := M) q (fun k s => ulim s k) t
   let f0 : M → Real :=
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection
-  let base : M → Real := fun y => extDerivFun (I := I) f0 y (Xf y)
+  let base : M → Real := fun y => mvfderiv (I := I) f0 y (Xf y)
   let N : Real → Real := fun t =>
     ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖
   let K : Set (Real × M) := Set.Icc (0 : Real) tau ×ˢ e.baseSet
@@ -975,7 +1004,8 @@ theorem galLim_d_joint
       (fun p : Real × M => q.inner p.2 (Xf p.2) (Xf p.2))
       (𝓝[K] ((0 : Real), a))
       (𝓝 (q.inner a (Xf a) (Xf a))) := by
-    simpa only [Function.comp_apply] using hgram0.tendsto.comp hsndW
+    with_unfolding_all
+      exact hgram0.tendsto.comp hsndW
   have hupper : Tendsto
       (fun p : Real × M =>
         q.inner p.2 (Xf p.2) (Xf p.2) * (C * N p.1) ^ 2)
@@ -988,7 +1018,7 @@ theorem galLim_d_joint
     norm_num
   have hsq : Tendsto
       (fun p : Real × M =>
-        (extDerivFun (I := I) (f p.1) p.2 (Xf p.2) - base p.2) ^ 2)
+        (mvfderiv (I := I) (f p.1) p.2 (Xf p.2) - base p.2) ^ 2)
       (𝓝[K] ((0 : Real), a)) (𝓝 0) := by
     refine squeeze_zero' (Eventually.of_forall fun p => sq_nonneg _) ?_ hupper
     filter_upwards [(@self_mem_nhdsWithin (Real × M) inferInstance
@@ -997,8 +1027,8 @@ theorem galLim_d_joint
       galLim_slice_cc (I := I) (M := M) hτ hlim hp.1
     let DU : SmoothCcTensor q 0 0 := U - u0
     have hscalar :
-        extDerivFun (I := I) (f p.1) p.2 (Xf p.2) - base p.2 =
-          extDerivFun (I := I)
+        mvfderiv (I := I) (f p.1) p.2 (Xf p.2) - base p.2 =
+          mvfderiv (I := I)
             (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) DU.toSection)
             p.2 (Xf p.2) := by
       have hUsmooth := TensorRSField.scalar0_smooth
@@ -1008,12 +1038,12 @@ theorem galLim_d_joint
       rw [show f p.1 =
           TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection by
         simpa only [f, q] using hUscalar]
-      rw [show base p.2 = extDerivFun (I := I) f0 p.2 (Xf p.2) by rfl]
-      rw [← extDerivFun_sub_at (I := I) (Xf p.2)
+      rw [show base p.2 = mvfderiv (I := I) f0 p.2 (Xf p.2) by rfl]
+      rw [← mvfderiv_sub_at (I := I) (Xf p.2)
         (hUsmooth.mdifferentiable (by simp)).mdifferentiableAt
         (h0smooth.mdifferentiable (by simp)).mdifferentiableAt]
       apply congrArg (fun h : M → Real =>
-        extDerivFun (I := I) h p.2 (Xf p.2))
+        mvfderiv (I := I) h p.2 (Xf p.2))
       funext y
       simp only [DU, SmoothCcTensor.toSection_sub,
         TensorRSField.scalar0_sub, Pi.sub_apply]
@@ -1021,12 +1051,12 @@ theorem galLim_d_joint
       ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
         (I := I) (M := M) q 0 0 DU).toSection p.2) (Xf p.2)
     rw [covGrad0_apply (I := I) (M := M) q DU p.2 (Xf p.2)] at hpoint
-    have hDU : ccTensorToHs (I := I) (M := M) q 0 (3 : Real) DU =
+    have hDU : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU =
         galLimExt hτ hlim 3 p.1 - galLimExt hτ hlim 3 0 := by
-      have hU3 : ccTensorToHs (I := I) (M := M) q 0 (3 : Real) U =
+      have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) U =
           galLimExt hτ hlim 3 p.1 := by
         simpa only [q] using hUall 3
-      have h03 : ccTensorToHs (I := I) (M := M) q 0 (3 : Real) u0 =
+      have h03 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) u0 =
           galLimExt hτ hlim 3 0 := by
         simpa only [q] using (galLimExt_zero hτ hlim 3).symm
       dsimp only [DU]
@@ -1034,7 +1064,7 @@ theorem galLim_d_joint
         hU3, h03]
     rw [hscalar]
     calc
-      (extDerivFun (I := I)
+      (mvfderiv (I := I)
           (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) DU.toSection)
           p.2 (Xf p.2)) ^ 2
           ≤ q.inner p.2 (Xf p.2) (Xf p.2) *
@@ -1042,7 +1072,7 @@ theorem galLim_d_joint
                 ((DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad
                   (I := I) (M := M) q 0 0 DU).toSection p.2) := hpoint
       _ ≤ q.inner p.2 (Xf p.2) (Xf p.2) *
-          (C * ‖ccTensorToHs (I := I) (M := M) q 0 (3 : Real) DU‖) ^ 2 :=
+          (C * ‖ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU‖) ^ 2 :=
         mul_le_mul_of_nonneg_left ((hgrad DU).1 p.2)
           (DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg
             (I := I) (M := M) q p.2 (Xf p.2))
@@ -1050,14 +1080,15 @@ theorem galLim_d_joint
         rw [hDU]
   have herr : Tendsto
       (fun p : Real × M =>
-        extDerivFun (I := I) (f p.1) p.2 (Xf p.2) - base p.2)
+        mvfderiv (I := I) (f p.1) p.2 (Xf p.2) - base p.2)
       (𝓝[K] ((0 : Real), a)) (𝓝 0) := by
     have habs : Tendsto
         (fun p : Real × M =>
-          |extDerivFun (I := I) (f p.1) p.2 (Xf p.2) - base p.2|)
+          |mvfderiv (I := I) (f p.1) p.2 (Xf p.2) - base p.2|)
         (𝓝[K] ((0 : Real), a)) (𝓝 0) := by
-      simpa only [← Real.sqrt_sq_eq_abs, Real.sqrt_zero] using
-        Real.continuous_sqrt.continuousAt.tendsto.comp hsq
+      with_unfolding_all
+        simpa only [Function.comp_def, ← Real.sqrt_sq_eq_abs, Real.sqrt_zero] using
+          Real.continuous_sqrt.continuousAt.tendsto.comp hsq
     exact (tendsto_zero_iff_abs_tendsto_zero _).2 habs
   have hX : ContMDiffAt I (I.prod 𝓘(Real, E)) ∞
       (fun y : M => (⟨y, Xf y⟩ : TotalSpace E (TangentSpace I : M → Type _))) a := by
@@ -1067,7 +1098,7 @@ theorem galLim_d_joint
     exact (chartBasisVec_contMDiffOn (I := I) a i).contMDiffAt
       hmem
   have hbase0 : ContinuousAt base a := by
-    exact (extDerivFun_apply_contMDiffAt_of_section (I := I)
+    exact (mvfderiv_apply_contMDiffAt_of_section (I := I)
       (TensorRSField.scalar0_smooth
         (n := (∞ : WithTop ℕ∞)) u0.toSection).contMDiffAt hX).continuousAt
   have hbase : Tendsto (fun p : Real × M => base p.2)
@@ -1076,9 +1107,10 @@ theorem galLim_d_joint
         (𝓝[K] ((0 : Real), a)) (𝓝 a) :=
       (show ContinuousAt (fun p : Real × M => p.2) ((0 : Real), a) from
         continuousAt_snd).mono_left inf_le_left
-    simpa only [Function.comp_apply] using hbase0.tendsto.comp hsnd
+    with_unfolding_all
+      exact hbase0.tendsto.comp hsnd
   have hmain : Tendsto
-      (fun p : Real × M => extDerivFun (I := I) (f p.1) p.2 (Xf p.2))
+      (fun p : Real × M => mvfderiv (I := I) (f p.1) p.2 (Xf p.2))
       (𝓝[K] ((0 : Real), a)) (𝓝 (base a)) := by
     simpa only [sub_add_cancel, zero_add] using herr.add hbase
   change Tendsto _ (𝓝[_] ((0 : Real), a)) (𝓝 _)
@@ -1125,7 +1157,7 @@ theorem galLim_grad_zero
       (Fin (Module.finrank Real E)) Real := fun p =>
     chartGramMatrix (I := I) (G.metric p.1) a p.2
   let dF : Real × M → Fin (Module.finrank Real E) → Real := fun p i =>
-    extDerivFun (I := I) (f p.1) p.2
+    mvfderiv (I := I) (f p.1) p.2
       (chartBasisVecFiber (I := I) a i p.2)
   let rhs : Real × M → Real := fun p =>
     ∑ i, ∑ j, (Gm p)⁻¹ i j * dF p i * dF p j
@@ -1169,8 +1201,8 @@ theorem galLim_grad_zero
     simpa only [dF, f, K, e] using hjoint.mono hsub
   have hrhs : ContinuousWithinAt rhs K ((0 : Real), a) := by
     dsimp only [rhs]
-    refine tendsto_finset_sum Finset.univ fun i _ =>
-      tendsto_finset_sum Finset.univ fun j _ => ?_
+    refine tendsto_finsetSum Finset.univ fun i _ =>
+      tendsto_finsetSum Finset.univ fun j _ => ?_
     exact ((hinvEntry i j).mul (hdF i)).mul (hdF j)
   have hnorm (p : Real × M) (hp : p ∈ K) :
       (G.metric p.1).inner p.2
@@ -1227,7 +1259,7 @@ theorem galLim_grad_zero
         dsimp only [rhs]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         simp only [df, dF, cotangentToDual_apply,
-          differential1FormFun_apply_eq_extDerivFun, chartBasisFamily_apply]
+          differential1FormFun_apply_eq_mvfderiv, chartBasisFamily_apply]
   have hlocal : ContinuousWithinAt
       (fun p : Real × M =>
         (G.metric p.1).inner p.2
@@ -1784,7 +1816,7 @@ theorem galLim_pde
     hderiv.congr_deriv (hderivSeries.trans hseriesW)
   have hWscalar :
       TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) W.toSection x =
-        Δ_g (I := I) h ⟨_, hf⟩ x + (zeta : M → Real) x * f x := by
+        ΔG (I := I) h ⟨_, hf⟩ x + (zeta : M → Real) x * f x := by
     simp only [W, SmoothCcTensor.toSection_add, TensorRSField.scalar0_add,
       Pi.add_apply, rawLap_cc_scalar (I := I) (M := M) q U x,
       scalarLapDiff_eq (I := I) (M := M) q h U x,
@@ -1793,10 +1825,11 @@ theorem galLim_pde
     ring
   have hlap :
       laplacianAt (I := I) (flowG (I := I) S) ((T : Real) - t) f x =
-        Δ_g (I := I) h ⟨_, hf⟩ x := by
-    simpa only [h] using
-      (laplacianAt_eq_delta (I := I) (M := M)
-        (flowG (I := I) S) ((T : Real) - t) hf (by rfl) x)
+        ΔG (I := I) h ⟨_, hf⟩ x := by
+    with_unfolding_all
+      simpa only [h, flowG, SolutionOn.family] using
+        (laplacianAt_eq_delta (I := I) (M := M)
+          (flowG (I := I) S) ((T : Real) - t) hf (by rfl) x)
   refine htime.congr_deriv ?_
   rw [hscalar']
   rw [hlap]
@@ -1884,7 +1917,8 @@ theorem heatpot_of_gallim
     change s ∈ Ioo (0 : Real) tau' at hs
     have hsP : s ∈ Ioo (0 : Real) tauP :=
       ⟨hs.1, hs.2.trans htau'P⟩
-    simpa only [reverseFamily] using hpde s hsP x
+    with_unfolding_all
+      simpa only [laplacianAt, reverseFamily, flowG, SolutionOn.family] using hpde s hsP x
 
 omit [SigmaCompactSpace M] in
 theorem heatpot_exists
@@ -1944,6 +1978,7 @@ theorem conj_heat_exists
       TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection
     simpa only [sub_self] using hv0
 
+omit [SigmaCompactSpace M] in
 theorem gallim_nonneg
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -2003,6 +2038,7 @@ theorem gallim_nonneg
       u hu' C hV huinit
   exact ⟨tau', htau', htau'_one, u, hu', hu0, hnonneg⟩
 
+omit [SigmaCompactSpace M] in
 theorem gallim_pos
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -2095,8 +2131,9 @@ theorem gallim_unit_pos
             (reverseFamily (I := I) (M := M)
               (flowG (I := I) S) (T : Real)) 0)) = 1 := by
         rw [hu0]
-        simpa only [volumeMeasureFamily, metricFamilyForMeasure,
-          riemannianMeasureFamily, reverseFamily, flowG, sub_zero] using hunit
+        with_unfolding_all
+          simpa only [volumeMeasureFamily, metricFamilyForMeasure,
+            riemannianMeasureFamily, reverseFamily, flowG, SolutionOn.family, sub_zero] using hunit
       intro s hs
       exact (hmass s hs).trans hmass0
 

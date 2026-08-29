@@ -115,10 +115,10 @@ def hamiltonRescaledScalar
   (hamiltonBlowupScale (I := I) P Q i)⁻¹ *
     hamiltonScalar (I := I) P (hamiltonRescaledTime (I := I) P Q i s) x
 
-def hamilton_reference_radius : Real := (1 : Real) / 10
+def hamiltonReferenceRadius : Real := (1 : Real) / 10
 
-theorem hamilton_reference_radius_pos : 0 < hamilton_reference_radius := by
-  norm_num [hamilton_reference_radius]
+theorem hamilton_reference_radius_pos : 0 < hamiltonReferenceRadius := by
+  norm_num [hamiltonReferenceRadius]
 
 structure HamiltonCGHLimit (I : ModelWithCorners Real E H) (M : Type u)
     [TopologicalSpace M] [ChartedSpace H M] where

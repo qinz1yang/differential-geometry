@@ -196,7 +196,7 @@ theorem exists_eigenvectorIteratedCarrier
         rw [hD_m_fChartEff]
         exact eigenvectorChartRHSDiff_ae_zero_off_chartPouKernel
           (I := I) (M := M) g r s i α P₀ m (Fin.init directions)
-      refine ⟨eigenvectorIteratedTensorChartBilinearData_step
+      refine ⟨eigenvectorIteratedTensorChartBilinearDataStep
         (I := I) (M := M) g r s i α P₀ D_m l
         h_comp_m1 h_comp_m2 h_fChartEff_memW1p h_fChartEff_ae_zero, ?_, ?_⟩
       · change Fin.snoc D_m.directions l = directions

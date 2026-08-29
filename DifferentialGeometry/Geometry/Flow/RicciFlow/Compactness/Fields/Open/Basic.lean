@@ -108,16 +108,26 @@ theorem of_compSubseq
       (SrcSigma.compSubseq (I := I) Φ hsrc ρ hρ)
       (TgtSigma.compSubseq (I := I) Φ htgt ρ hρ) τ gInf β ψ) :
     BumpMetricConv (I := I) Φ R bf hsrc htgt (ρ ∘ τ) gInf β ψ := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
     refine ⟨k₀, fun k hk t ht => ?_⟩
-    simpa only [Function.comp_apply, gSeqExt_compSubseq] using hk₀ k hk t ht
+    change metricDerivNormSupOn (I := I) K p
+      (gSeqExt (I := I) Φ R bf hsrc htgt (ρ (τ k)) t) (gInf t) R < ε
+    rw [← gSeqExt_compSubseq (I := I) (Φ := Φ) R bf hsrc htgt ρ hρ]
+    exact hk₀ k hk t ht
   · intro K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := h.convPt K hK p ε hε
     refine ⟨k₀, fun k hk t ht a ha x hx => ?_⟩
-    simpa only [Function.comp_apply, gSeqExt_compSubseq] using
-      hk₀ k hk t ht a ha x hx
+    change metricDerivNorm (I := I) a
+      (gSeqExt (I := I) Φ R bf hsrc htgt (ρ (τ k)) t) (gInf t) R x < ε
+    rw [← gSeqExt_compSubseq (I := I) (Φ := Φ) R bf hsrc htgt ρ hρ]
+    exact hk₀ k hk t ht a ha x hx
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -218,11 +228,11 @@ theorem unique
     (hB : BumpMetricConv (I := I) Φ R bf hsrc htgt ρ B β₂ ψ₂)
     (htA : t ∈ Set.Icc β₁ ψ₁) (htB : t ∈ Set.Icc β₂ ψ₂) :
     A t = B t := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   refine metricCInf_unique (I := I)
     (fun k => gSeqExt (I := I) Φ R bf hsrc htgt (ρ k) t) (A t) (B t) R R ?_ ?_
   · intro K hK p ε hε
@@ -270,7 +280,7 @@ structure OpenConvOut
 
 namespace OpenConvOut
 
-noncomputable def at_window
+noncomputable def atWindow
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -458,11 +468,11 @@ theorem exists_openConv_raw
                     (refRes (I := I) Φ R k) y <= Ls * |s - t|) :
     Nonempty (OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀) := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   refine exists_openConv (Φ := Φ) ht₀ ?_
   intro n ρ hρ
   let bfρ := BumpFamily.compSubseq (I := I) Φ bf ρ hρ
@@ -490,8 +500,9 @@ theorem exists_openConv_raw
                 sourceDomSmooth (I := I) (Φ.compSubseq ρ hρ) k
           (srcMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k t).inner y v v := by
     intro k t ht y v
-    simpa only [hsrcρ, htgtρ, srcMetric_compSubseq] using
-      hbound n (ρ k) t ht y v
+    have hb := hbound n (ρ k) t ht y v
+    rw [← srcMetric_compSubseq (I := I) (Φ := Φ) hsrc htgt ρ hρ k] at hb
+    exact hb
   have hcovTailρ : ∀ q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real),
       t ∈ RealTimeInterval.openWindow a b t₀ n ->
       ∀ z : P.M, z ∈ bfρ.grow k ->
@@ -500,8 +511,9 @@ theorem exists_openConv_raw
     intro q
     obtain ⟨C, hC⟩ := hcovTail n q
     refine ⟨C, fun k t ht z hz => ?_⟩
-    simpa only [bfρ, hsrcρ, htgtρ, gSeqExt_compSubseq] using
-      hC (ρ k) t ht z hz
+    dsimp only [bfρ, hsrcρ, htgtρ]
+    rw [gSeqExt_compSubseq]
+    exact hC (ρ k) t ht z hz
   have hlipTailρ : ∀ p : Nat, ∃ Lt : Real, 0 <= Lt /\
       ∀ (k : Nat) (s t : Real),
         s ∈ RealTimeInterval.openWindow a b t₀ n ->
@@ -514,8 +526,9 @@ theorem exists_openConv_raw
     intro p
     obtain ⟨Lt, hLt0, hLt⟩ := hlipTail n p
     refine ⟨Lt, hLt0, fun k s t hs ht q hq z hz => ?_⟩
-    simpa only [bfρ, hsrcρ, htgtρ, gSeqExt_compSubseq] using
-      hLt (ρ k) s t hs ht q hq z hz
+    dsimp only [bfρ, hsrcρ, htgtρ]
+    rw [gSeqExt_compSubseq, gSeqExt_compSubseq]
+    exact hLt (ρ k) s t hs ht q hq z hz
   have hlipSrcρ : ∀ k : Nat,
       letI : TopologicalSpace (SourceDomain (I := I) (Φ.compSubseq ρ hρ) k) :=
         sourceDomTop (I := I) (Φ.compSubseq ρ hρ) k
@@ -546,8 +559,9 @@ theorem exists_openConv_raw
     intro k C hC p
     obtain ⟨Ls, hLs0, hLs⟩ := hlipSrc n (ρ k) C hC p
     refine ⟨Ls, hLs0, fun s t hs ht q hq y hy => ?_⟩
-    simpa only [hsrcρ, htgtρ, srcMetric_compSubseq, refRes_compSubseq] using
-      hLs s t hs ht q hq y hy
+    have hst := hLs s t hs ht q hq y hy
+    rw [← refRes_compSubseq (I := I) (Φ := Φ) R ρ hρ k] at hst
+    exact hst
   have hβψ : RealTimeInterval.openWindowLeft a t₀ n <=
       RealTimeInterval.openWindowRight b t₀ n :=
     (RealTimeInterval.initial_mem_window ht₀ n).1.trans

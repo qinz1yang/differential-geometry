@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
@@ -16,9 +16,12 @@ import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Topology.VectorBundle.Riemannian
+
 import Mathlib.Topology.Compactness.Compact
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
 import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -532,8 +535,8 @@ lemma velocityField_chartRep_differentiableAt
     exact hbridge
   exact (heq.differentiableAt_iff).mpr (hsec_cdiff.differentiableAt (by simp))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma g_inner_along_curve_contMDiff
@@ -544,7 +547,7 @@ private lemma g_inner_along_curve_contMDiff
     (hw : ContMDiff (𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) n (fun t : ℝ => (TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) (γ t) (w t) : TangentBundle I M))) :
     ContDiff ℝ n (fun t : ℝ => g.inner (γ t) (v t) (w t)) := by
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   have hinner := ContMDiff.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := γ) (v := v) (w := w) hv hw
@@ -677,10 +680,10 @@ theorem first_variation_of_arcLength_fixed_endpoints
       γ V γ' t hγ_smooth (hVdiff t) (hγ'diff t)
   have hbdL0 : hbd L = 0 := by
     change g.inner (γ L) (V L) (γ' L) = 0
-    rw [hVL, map_zero, ContinuousLinearMap.zero_apply]
+    rw [hVL, map_zero, zero_apply]
   have hbd00 : hbd 0 = 0 := by
     change g.inner (γ 0) (V 0) (γ' 0) = 0
-    rw [hV0, map_zero, ContinuousLinearMap.zero_apply]
+    rw [hV0, map_zero, zero_apply]
   rw [hbdL0, hbd00, sub_zero] at hFTC
   set A : ℝ → ℝ := fun t : ℝ => g.inner (γ t) (covDerivAlong (I := I) g γ V t) (γ' t)
     with hA_def
@@ -1009,15 +1012,14 @@ theorem first_variation_geodesic_fixed_end
       rw [haccel0 t ht, ContinuousLinearMap.map_zero]
     rw [hcongr, intervalIntegral.integral_zero]
   rw [hint0] at hfv
-  rw [hVL, ContinuousLinearMap.map_zero, ContinuousLinearMap.zero_apply] at hfv
+  rw [hVL, ContinuousLinearMap.map_zero, zero_apply] at hfv
   have hcentral0 :
       mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f 0 u) 0 (1 : ℝ) =
         mfderiv (𝓘(ℝ, ℝ)) I γ 0 (1 : ℝ) := by
     rw [hfγ]
     rfl
-  rw [hcentral0] at hfv
-  rw [hfc 0] at hfv
-  simpa using hfv
+  rw [← hcentral0, ← hfc 0]
+  simpa only [zero_sub, sub_zero] using hfv
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

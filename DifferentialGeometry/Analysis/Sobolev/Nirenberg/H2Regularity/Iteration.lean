@@ -140,7 +140,7 @@ private lemma fderiv_triple_mul_apply_diff
       a x • fderiv ℝ b x + b x • fderiv ℝ a x :=
     fderiv_fun_mul ha hb
   rw [h_prod_rule_outer, h_prod_rule_inner]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     smul_eq_mul]
   ring
 
@@ -167,7 +167,7 @@ private lemma fderiv_binary_mul_apply_diff
       a x • fderiv ℝ b x + b x • fderiv ℝ a x :=
     fderiv_fun_mul ha hb
   rw [h_prod_rule]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     smul_eq_mul]
   ring
 
@@ -705,14 +705,14 @@ private lemma bilin_decomp
   rw [integral_add h_princ_int h_zero_int]
   congr 1
   unfold SmoothEllipticBilinearForm.principalIntegrand
-  rw [integral_finset_sum (s := Finset.univ) (f := fun (i : Fin d) (x : E) =>
+  rw [integral_finsetSum (s := Finset.univ) (f := fun (i : Fin d) (x : E) =>
       ∑ j : Fin d, B.a x i j *
         (fderiv ℝ u x) (EuclideanSpace.single i 1) *
         (fderiv ℝ v x) (EuclideanSpace.single j 1))
-    (fun i _ => integrable_finset_sum _ (fun j _ => h_summand_int i j))]
+    (fun i _ => integrable_finsetSum _ (fun j _ => h_summand_int i j))]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [integral_finset_sum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
+  rw [integral_finsetSum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
       B.a x i j *
         (fderiv ℝ u x) (EuclideanSpace.single i 1) *
         (fderiv ℝ v x) (EuclideanSpace.single j 1))
@@ -1079,8 +1079,8 @@ private theorem bilin_partial_eq_integral_perturbed
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [Finset.sum_mul]
       rw [heq]
-      exact integrable_finset_sum _
-        (fun i _ => integrable_finset_sum _ (fun j _ => h_corr_int i j))
+      exact integrable_finsetSum _
+        (fun i _ => integrable_finsetSum _ (fun j _ => h_corr_int i j))
     have h_form_eq : (fun x : E =>
           (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x -
           (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x +
@@ -1129,8 +1129,8 @@ private theorem bilin_partial_eq_integral_perturbed
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
           (EuclideanSpace.single j 1) * ψ x) (volume.restrict Ω) :=
-      integrable_finset_sum _
-        (fun i _ => integrable_finset_sum _ (fun j _ => h_corr_int i j))
+      integrable_finsetSum _
+        (fun i _ => integrable_finsetSum _ (fun j _ => h_corr_int i j))
     have hLHS : ∫ x in Ω,
           (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x -
           (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x +
@@ -1150,7 +1150,7 @@ private theorem bilin_partial_eq_integral_perturbed
       integral_add (h_T1_int.sub h_T2_int) h_corr_sum_int
     rw [hLHS]
     rw [integral_sub h_T1_int h_T2_int]
-    rw [integral_finset_sum _ (fun i _ => integrable_finset_sum _
+    rw [integral_finsetSum _ (fun i _ => integrable_finsetSum _
         (fun j _ => h_corr_int i j))]
     refine congrArg (fun e =>
         ((∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x) -
@@ -1158,7 +1158,7 @@ private theorem bilin_partial_eq_integral_perturbed
       ?_
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => h_corr_int i j)]
+    rw [integral_finsetSum _ (fun j _ => h_corr_int i j)]
   rw [h_pert_decomp]
   change -(-(∑ i : Fin d, ∑ j : Fin d, ∫ x in Ω,
         (fderiv ℝ (fun y : E =>
@@ -1227,7 +1227,7 @@ theorem partial_u_in_h2_loc
     have h_cont : Continuous (perturbedSource B u f l) := h_smooth.continuous
     have h_volume_lt_top : volume Ω' < ⊤ :=
       lt_of_le_of_lt (measure_mono subset_closure) hΩ'_cc.measure_lt_top
-    haveI : IsFiniteMeasure (volume.restrict Ω') := by
+    have : IsFiniteMeasure (volume.restrict Ω') := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact h_volume_lt_top

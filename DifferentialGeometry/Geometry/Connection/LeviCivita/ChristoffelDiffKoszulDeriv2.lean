@@ -13,7 +13,7 @@ open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -21,7 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricField_totalReg2
     (g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -36,14 +36,14 @@ theorem metricField_totalReg2
       (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
       (metricField_totalReg (I := I) g₁ g₂))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem nablaMetric_combo_extDeriv2
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun p : M => Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
           (LeviCivita (I := I) g₂) (V 0)
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -92,7 +92,7 @@ theorem nablaMetric_combo_extDeriv2
     (LeviCivita (I := I) g₂) W V α x, hbridge]
   abel
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem connectionDifference_koszul_deriv2
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -100,7 +100,7 @@ theorem connectionDifference_koszul_deriv2
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V W X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun p : M => 2 * g₁.inner p (covDerivConnectionDifference (I := I) g₂ g₁ W X Y p) (Z p)) x (V x) =
       (Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
           (LeviCivita (I := I) g₂) V
@@ -228,7 +228,7 @@ theorem connectionDifference_koszul_deriv2
   have hup2 : ∀ (v a b c : TangentSpace I x),
       Function.update (![a, b, c] : Fin 3 → TangentSpace I x) 2 v = ![a, b, v] := by
     intro v a b c; funext i; fin_cases i <;> simp
-  have hmaster := congrArg (fun f : M → ℝ => extDerivFun (I := I) f x (V x))
+  have hmaster := congrArg (fun f : M → ℝ => mvfderiv (I := I) f x (V x))
     (funext (fun p => connectionDifference_koszul_deriv (I := I) g₁ g₂ W X Y Z p))
   simp only [hDA] at hmaster
   have hMDgen4 : ∀ (Vt : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -335,9 +335,9 @@ theorem connectionDifference_koszul_deriv2
   rw [hV3 W Adiff Z, e3x W Adiff Z] at hR4
   have hsub' : ∀ {f g : M → ℝ}, MDifferentiableAt I 𝓘(ℝ, ℝ) f x →
       MDifferentiableAt I 𝓘(ℝ, ℝ) g x →
-      extDerivFun (I := I) (f - g) x = extDerivFun (I := I) f x - extDerivFun (I := I) g x := by
+      mvfderiv (I := I) (f - g) x = mvfderiv (I := I) f x - mvfderiv (I := I) g x := by
     intro f g hf hg
-    have h := extDerivFun_add (I := I) (g := f - g) (g' := g) (hf.sub hg) hg
+    have h := mvfderiv_add (I := I) (g := f - g) (g' := g) (hf.sub hg) hg
     rw [sub_add_cancel] at h
     exact eq_sub_of_add_eq h.symm
   have hMD4' : MDifferentiableAt I 𝓘(ℝ, ℝ)
@@ -383,10 +383,10 @@ theorem connectionDifference_koszul_deriv2
               (LeviCivita (I := I) g₂) W (Tensor0SBundle.metricTensorField (I := I) g₁) p
               ![Adiff p, Z p]) from rfl,
     hsub' ((hMD1.add hMD2).sub hMD3) hMD4',
-    hsub' (hMD1.add hMD2) hMD3, extDerivFun_add hMD1 hMD2,
-    extDerivFun_const_mul I (2 : ℝ) hMD4] at hmaster
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul] at hmaster
+    hsub' (hMD1.add hMD2) hMD3, mvfderiv_add hMD1 hMD2,
+    mvfderiv_const_mul I (2 : ℝ) hMD4] at hmaster
+  simp only [sub_apply, add_apply,
+    smul_apply, smul_eq_mul] at hmaster
   rw [hR1, hR2, hR3, hR4] at hmaster
   rw [hmaster]
   simp only [e4x, Fin.sum_univ_three, Matrix.cons_val_zero, Matrix.cons_val_one,

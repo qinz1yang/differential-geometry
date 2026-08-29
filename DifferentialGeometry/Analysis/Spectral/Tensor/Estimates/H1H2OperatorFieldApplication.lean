@@ -24,7 +24,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [T2Space M] [SigmaCompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem h1_norm_sq_jet
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -73,8 +73,10 @@ theorem operator_field_application_h1_h2_to_h1_bound
   have hN : 0 ≤ N := norm_nonneg _
   have hΦsq :
       ‖Φ‖ ^ 2 + ‖covGrad (I := I) (M := M) g r c Φ‖ ^ 2 ≤ A ^ 2 := by
+    have hcov : iteratedCovGrad (I := I) g r c 1 Φ =
+        covGrad (I := I) (M := M) g r c Φ := by rfl
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hΦjet
+      iteratedCovGrad_zero, hcov] using hΦjet
   have hΦ0 : ‖Φ‖ ≤ A := by
     nlinarith [sq_nonneg ‖covGrad (I := I) (M := M) g r c Φ‖,
       norm_nonneg Φ]
@@ -89,7 +91,10 @@ theorem operator_field_application_h1_h2_to_h1_bound
   have hJ :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 r j U‖ ≤ Cin * N := by
-    simpa only [N] using hin U
+    have h := hin U
+    change ∑ j ∈ Finset.range 3,
+        ‖iteratedCovGrad (I := I) g 0 r j U‖ ≤ Cin * N at h
+    exact h
   have hUsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 r x
           (U.toSection x) ≤ (Cpt * N) ^ 2 := by
@@ -125,7 +130,11 @@ theorem operator_field_application_h1_h2_to_h1_bound
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CΦ * A := by
     calc
       _ ≤ CΦ * ‖(⟨Φ⟩ : SmoothCcTensorH1 g r c)‖ := by
-        simpa only [fiberLpFun] using hΦ6 (⟨Φ⟩ : SmoothCcTensorH1 g r c)
+        have h := hΦ6 (⟨Φ⟩ : SmoothCcTensorH1 g r c)
+        change lpNorm (fiberLpFun g r c Φ) 6
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤
+          CΦ * ‖(⟨Φ⟩ : SmoothCcTensorH1 g r c)‖ at h
+        exact h
       _ ≤ CΦ * A := mul_le_mul_of_nonneg_left hΦH1 hCΦ
   have hG6' :
       lpNorm (fiberLpFun g 0 (r + 1) G) 6
@@ -133,8 +142,11 @@ theorem operator_field_application_h1_h2_to_h1_bound
         CG * (Cin * N) := by
     calc
       _ ≤ CG * ‖(⟨G⟩ : SmoothCcTensorH1 g 0 (r + 1))‖ := by
-        simpa only [fiberLpFun] using
-          hG6 (⟨G⟩ : SmoothCcTensorH1 g 0 (r + 1))
+        have h := hG6 (⟨G⟩ : SmoothCcTensorH1 g 0 (r + 1))
+        change lpNorm (fiberLpFun g 0 (r + 1) G) 6
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤
+          CG * ‖(⟨G⟩ : SmoothCcTensorH1 g 0 (r + 1))‖ at h
+        exact h
       _ ≤ CG * (Cin * N) := mul_le_mul_of_nonneg_left hGH1 hCG
   have hG3' :
       lpNorm (fiberLpFun g 0 (r + 1) G) 3
@@ -211,8 +223,12 @@ theorem operator_field_application_h1_h2_to_h1_bound
       ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) Y‖ ≤
         Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := by
     rw [← show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num]
-    simpa only [Finset.sum_range_succ, Finset.sum_range_zero,
-      zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ] using hsp Y
+    have h := hsp Y
+    have hzero : iteratedCovGrad (I := I) g 0 c 0 Y = Y := by rfl
+    have hcov : iteratedCovGrad (I := I) g 0 c 1 Y =
+        covGrad (I := I) (M := M) g 0 c Y := by rfl
+    simpa only [Nat.cast_one, Finset.sum_range_succ, Finset.sum_range_zero,
+      zero_add, hzero, hcov] using h
   change ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) Y‖ ≤ _
   calc
     _ ≤ Csp * (‖Y‖ + ‖covGrad (I := I) (M := M) g 0 c Y‖) := hspec

@@ -59,10 +59,10 @@ def subseq
     exact h.le_radius (f k) x
   le_exp_radius := by
     intro k x
-    letI : TopologicalSpace (X.obj (f k)).M := (X.obj (f k)).topology
-    letI : ChartedSpace H (X.obj (f k)).M := (X.obj (f k)).charted
-    letI : IsManifold I ∞ (X.obj (f k)).M := (X.obj (f k)).smooth
-    letI : T2Space (TangentBundle I (X.obj (f k)).M) :=
+    let : TopologicalSpace (X.obj (f k)).M := (X.obj (f k)).topology
+    let : ChartedSpace H (X.obj (f k)).M := (X.obj (f k)).charted
+    let : IsManifold I ∞ (X.obj (f k)).M := (X.obj (f k)).smooth
+    let : T2Space (TangentBundle I (X.obj (f k)).M) :=
       (X.obj (f k)).t2TangentBundle
     change h.ratio * hd.mu (hd.dist (f k) x (X.obj (f k)).basepoint) ≤
       Geometry.Riemannian.expMapC2Radius (I := I) (X.obj (f k)).metric x
@@ -127,10 +127,10 @@ theorem floor_le_exp
     letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
     h.ratio * hd.mu R ≤
       Geometry.Riemannian.expMapC2Radius (I := I) (X.obj k).metric x := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   calc
     h.ratio * hd.mu R ≤
         h.ratio * hd.mu (hd.dist k x (X.obj k).basepoint) :=
@@ -150,10 +150,10 @@ theorem floor_le_expGp
     letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
     h.gpRatio * hd.mu R ≤
       Geometry.Riemannian.expRadiusGp (I := I) (X.obj k).metric x := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   rw [gpRatio, Geometry.Riemannian.expRadiusGp]
   calc
     Real.sqrt (1 / 2 : Real) * h.ratio * hd.mu R =
@@ -205,10 +205,10 @@ theorem mul_lambda_lt_exp
     letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
     c * hd.lambda D R <
       Geometry.Riemannian.expMapC2Radius (I := I) (X.obj k).metric x := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   exact (h.mul_lambda_lt_floor hD hc).trans_le (h.floor_le_exp hx)
 
 theorem mul_lambda_lt_expGp
@@ -225,10 +225,10 @@ theorem mul_lambda_lt_expGp
     letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
     c * hd.lambda D R <
       Geometry.Riemannian.expRadiusGp (I := I) (X.obj k).metric x := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   have hfloor : c * hd.lambda D R < h.gpRatio * hd.mu R := by
     rw [InjRadiusDecayInput.lambda]
     calc
@@ -254,8 +254,8 @@ theorem gpScaleTail
         simpa only [NetLimitData.lamInf] using hγ.1
   filter_upwards [hwin] with n hn
   intro γ c hc
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
-  haveI : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  have : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
   have hr : seqRadius hd D P (L.φ n) (γ : Nat) =
       dist c (X.obj (L.φ n)).basepoint := by
     unfold seqRadius
@@ -263,11 +263,11 @@ theorem gpScaleTail
   have hx : hd.dist (L.φ n) c (X.obj (L.φ n)).basepoint ≤
       seqRadius hd D P (L.φ n) (γ : Nat) := by
     rw [← ProperMetricOn.dist_eq hd hre P (L.φ n), ← hr]
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
   calc
     4 * L.lamInf (γ : Nat) = 8 * (L.lamInf (γ : Nat) / 2) := by ring
@@ -317,8 +317,8 @@ theorem halfGpScaleTail
         simpa only [NetLimitData.lamInf] using hγ.1
   filter_upwards [hwin] with n hn
   intro γ c hc
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
-  haveI : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  have : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
   have hr : seqRadius hd D P (L.φ n) (γ : Nat) =
       dist c (X.obj (L.φ n)).basepoint := by
     unfold seqRadius
@@ -326,11 +326,11 @@ theorem halfGpScaleTail
   have hx : hd.dist (L.φ n) c (X.obj (L.φ n)).basepoint ≤
       seqRadius hd D P (L.φ n) (γ : Nat) := by
     rw [← ProperMetricOn.dist_eq hd hre P (L.φ n), ← hr]
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
   calc
     (a / 2) * L.lamInf (γ : Nat) =
@@ -362,8 +362,8 @@ theorem metricScaleTail
         simpa only [NetLimitData.lamInf] using hγ.1
   filter_upwards [hwin] with n hn
   intro γ c hc
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
-  haveI : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  have : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
   have hr : seqRadius hd D P (L.φ n) (γ : Nat) =
       dist c (X.obj (L.φ n)).basepoint := by
     unfold seqRadius
@@ -403,8 +403,8 @@ theorem radiusScaleTail
         simpa only [NetLimitData.lamInf] using hγ.1
   filter_upwards [hwin] with n hn
   intro γ c hc
-  letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
-  haveI : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
+  let : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
+  have : ProperSpace (X.obj (L.φ n)).M := (P (L.φ n)).proper
   have hr : seqRadius hd D P (L.φ n) (γ : Nat) =
       dist c (X.obj (L.φ n)).basepoint := by
     unfold seqRadius
@@ -412,12 +412,12 @@ theorem radiusScaleTail
   have hx : hd.dist (L.φ n) c (X.obj (L.φ n)).basepoint ≤
       seqRadius hd D P (L.φ n) (γ : Nat) := by
     rw [← ProperMetricOn.dist_eq hd hre P (L.φ n), ← hr]
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
   have hrad_pos : 0 < a * L.lamInf (γ : Nat) :=
     mul_pos ha (hd.lambda_pos hD (L.rInf (γ : Nat)))
@@ -937,8 +937,9 @@ def subseq
     change inp.volume.dist (f k) x y = inp.decay.dist (f k) x y
     rw [inp.dist_eq]
   covering_scale_le_volume_radius := by
-    simpa [InjRadiusDecayInput.subseq, InjRadiusDecayInput.lambda, InjRadiusDecayInput.mu]
-      using inp.covering_scale_le_volume_radius
+    change max 4 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0))) *
+      inp.decay.lambda inp.D 0 ≤ inp.volume.r0
+    exact inp.covering_scale_le_volume_radius
   realizes := inp.realizes.subseq f
   normalBounds := inp.normalBounds.subseq f
   normalRadius := inp.normalRadius.subseq f
@@ -1085,35 +1086,30 @@ theorem exists_stable_net_with_intersection_bound_subsequence
     (f : Nat -> Nat) :
     ∃ L : NetLimitData (inp.subseq f).decay (inp.subseq f).D
         (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
-          (fun k => by
-            simpa [PointedRiemannianSeq.subseq] using hconn (f k))),
+          (X.connected_subseq hconn f)),
       (∀ α β : Nat,
         (∀ᶠ k in atTop,
           BInter (inp.subseq f).decay (inp.subseq f).D
             (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
-              (fun k => by
-                simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
+              (X.connected_subseq hconn f))
             L.lamInf α β (L.φ k)) ∨
         (∀ᶠ k in atTop,
           ¬ BInter (inp.subseq f).decay (inp.subseq f).D
             (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
-              (fun k => by
-                simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
+              (X.connected_subseq hconn f))
             L.lamInf α β (L.φ k))) ∧
       (∀ α : Nat,
         ∀ᶠ k in atTop,
           ∀ xα : ((X.subseq f).obj (L.φ k)).M,
             seqCenter (inp.subseq f).decay (inp.subseq f).D
               (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
-                (fun k => by
-                  simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
+                (X.connected_subseq hconn f))
               (L.φ k) α = some xα →
           ∀ J : Finset Nat,
             (∀ β ∈ J,
               BInter (inp.subseq f).decay (inp.subseq f).D
                 (properMetricsOfCompleteConnected (I := I) (hcomplete.subseq f)
-                  (fun k => by
-                    simpa [PointedRiemannianSeq.subseq] using hconn (f k)))
+                  (X.connected_subseq hconn f))
                 L.lamInf α β (L.φ k)) →
             J.card <=
               (inp.subseq f).volume.Imult
@@ -1121,8 +1117,7 @@ theorem exists_stable_net_with_intersection_bound_subsequence
                   ((inp.subseq f).decay.C *
                     (20 * (inp.subseq f).decay.lambda (inp.subseq f).D 0)))) := by
   exact (inp.subseq f).exists_stable_net_with_intersection_bound_of_complete_connected (hcomplete.subseq f)
-    (fun k => by
-      simpa [PointedRiemannianSeq.subseq] using hconn (f k))
+    (X.connected_subseq hconn f)
 
 end MetricCompactnessInputs
 

@@ -137,7 +137,7 @@ theorem riemann_covariant_variation_of_solution
         filter_upwards [hu.mem_nhds hx] with y hy
         exact hRhs s hy i j k
     exact (hmix i j k s hs x hx V).congr_deriv
-      (extDerivFun_eventuallyEq_congr (I := I) V hEq)
+      (mvfderiv_eventuallyEq_congr (I := I) V hEq)
   have hmetricFrame :
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S (coordInv (I := I) S x₀) gInvDt frame u :=
@@ -234,7 +234,7 @@ theorem riemann_covariant_variation_of_solution
               by
                 filter_upwards [hu.mem_nhds hx₀] with y hy
                 exact (hRhs (t : Real) hy i j k).symm
-            rw [extDerivFun_eventuallyEq_congr
+            rw [mvfderiv_eventuallyEq_congr
               (I := I) (coordinateFrameAt (I := I) x₀ d x₀) hEq]
             simp_rw [← hRhs (t : Real) hx₀]
       _ = _ := hgamma d k i j

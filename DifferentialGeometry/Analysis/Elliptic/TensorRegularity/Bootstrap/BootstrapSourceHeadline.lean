@@ -97,7 +97,7 @@ private lemma exists_densityMul_sourcePairingCoeff_wkpNorm_le
     exact Finset.single_le_sum
       (f := fun P => iteratedWeakSobolevNorm (d := dimE) m 2
         (tensorComponentEuclid (I := I) (M := M) g r s F α P) Ω'')
-      (fun P _ => zero_le _) (Finset.mem_univ a.2)
+      (fun P _ => zero_le) (Finset.mem_univ a.2)
   obtain ⟨h_sum_mem, h_sum_le⟩ :=
     hKc hvF_cd hvF_cpt hvF_K hΩ''_open hΩ''_target hvF_bd
   have h_eqOn : Set.EqOn
@@ -200,7 +200,7 @@ private lemma exists_densityMul_covPrincipalRotationCoeff_wkpNorm_le
     exact Finset.single_le_sum
       (f := fun P => iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
-      (fun P _ => zero_le _) (Finset.mem_univ a.1)
+      (fun P _ => zero_le) (Finset.mem_univ a.1)
   obtain ⟨h_sum_mem, h_sum_le⟩ :=
     hKc hvT_cd hvT_cpt hvT_K hΩ''_open hΩ''_target hvT_bd
   have h_eqOn : Set.EqOn
@@ -335,7 +335,7 @@ private lemma exists_densityMul_covLowerOrderRotationValueCoeff_wkpNorm_le
     exact Finset.single_le_sum
       (f := fun P => iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
-      (fun P _ => zero_le _) (Finset.mem_univ a.1)
+      (fun P _ => zero_le) (Finset.mem_univ a.1)
   set vBC : IdxBC → EuclN → ℝ :=
     fun a => tensorComponentEuclid (I := I) (M := M) g r s T α a.2.2.2.2
       with hvBC_def
@@ -356,7 +356,7 @@ private lemma exists_densityMul_covLowerOrderRotationValueCoeff_wkpNorm_le
     exact Finset.single_le_sum
       (f := fun P => iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
-      (fun P _ => zero_le _) (Finset.mem_univ a.2.2.2.2)
+      (fun P _ => zero_le) (Finset.mem_univ a.2.2.2.2)
   obtain ⟨hA_mem, hA_le⟩ :=
     hKcA hvA_cd hvA_cpt hvA_K hΩ''_open hΩ''_target hvA_bd
   obtain ⟨hBC_mem, hBC_le⟩ :=
@@ -616,7 +616,7 @@ private lemma exists_gradientGroup_wkpNorm_le
     fun l a _ => Finset.single_le_sum
       (f := fun P => iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
-      (fun P _ => zero_le _) (Finset.mem_univ a.2.2.2)
+      (fun P _ => zero_le) (Finset.mem_univ a.2.2.2)
   have hWext_bd : ∀ l : Fin dimE,
       iteratedWeakSobolevNorm (d := dimE) (m + 1) 2 (Wext l) Ω'' ≤
         ENNReal.ofReal (Kl l) *
@@ -788,7 +788,7 @@ theorem tensorComponentWeakRHS_wkpNorm_le
   have hsum : Kc1 + Kc2 + Kc3 + Kc4 ≥ 0 := by positivity
   have hG1_final : iteratedWeakSobolevNorm (d := dimE) m 2 G1 Ω'' ≤
       ENNReal.ofReal (Kc1 + Kc2 + Kc3 + Kc4) * SF := by
-    refine hG1_le.trans (mul_le_mul_of_nonneg_right ?_ (zero_le _))
+    refine hG1_le.trans (mul_le_mul_of_nonneg_right ?_ (zero_le))
     exact ENNReal.ofReal_le_ofReal (by linarith)
   have hG234_final :
       iteratedWeakSobolevNorm (d := dimE) m 2 G2 Ω'' + iteratedWeakSobolevNorm (d := dimE) m 2 G3
@@ -799,7 +799,7 @@ theorem tensorComponentWeakRHS_wkpNorm_le
     rw [← add_mul, ← add_mul, ← ENNReal.ofReal_add hKc2_nn hKc3_nn,
       ← ENNReal.ofReal_add (by positivity) hKc4_nn]
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (by linarith)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (by linarith)) (zero_le)
   calc iteratedWeakSobolevNorm (d := dimE) m 2 G1 Ω'' + iteratedWeakSobolevNorm (d := dimE) m 2 G2
          Ω'' +
         iteratedWeakSobolevNorm (d := dimE) m 2 G3 Ω'' + iteratedWeakSobolevNorm (d := dimE) m 2 G4

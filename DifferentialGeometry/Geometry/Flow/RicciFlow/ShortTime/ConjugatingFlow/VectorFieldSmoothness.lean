@@ -8,6 +8,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -43,7 +45,7 @@ namespace DeTurckVFSmoothnessKeystone
 open Set Function
 
 private abbrev Idx (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] := Fin (Module.finrank ℝ E)
+    := Fin (Module.finrank ℝ E)
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
@@ -402,7 +404,6 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma deTurckVF_trivSnd_eq_chartModelBasis_sum
-    [I.Boundaryless]
     (g g_bg : SmoothRiemannianMetric I M) (α : M)
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     (trivializationAt E (TangentSpace I) α
@@ -439,9 +440,9 @@ private lemma continuousOn_jointDet {s : Set (ℝ × E)}
         ∑ σ : Equiv.Perm n, (Equiv.Perm.sign σ : ℝ) * ∏ i, A p (σ i) i := by
     funext p; rw [Matrix.det_apply']
   rw [heq]
-  refine continuousOn_finset_sum _ (fun σ _ => ?_)
+  refine continuousOn_finsetSum _ (fun σ _ => ?_)
   refine (continuousOn_const).mul ?_
-  exact continuousOn_finset_prod _ (fun i _ => hA (σ i) i)
+  exact continuousOn_finsetProd _ (fun i _ => hA (σ i) i)
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma continuousOn_jointAdjugate {s : Set (ℝ × E)}
@@ -541,7 +542,7 @@ private lemma chartChristoffel_joint_continuousOn
     rfl
   rw [hrewrite]
   refine (continuousOn_const).mul ?_
-  refine continuousOn_finset_sum _ (fun l _ => ?_)
+  refine continuousOn_finsetSum _ (fun l _ => ?_)
   refine ContinuousOn.mul (chartInvGramOnE_joint_continuousOn (I := I) g_DT α T h_gram0 k l) ?_
   exact ((h_partial i l j).add (h_partial j l i)).sub (h_partial l i j)
 
@@ -571,8 +572,8 @@ private lemma chartDeTurckVFComp_joint_continuousOn_E
               chartChristoffel (I := I) g₀ α a b k p.2) := by
     funext p; rw [chartDeTurckVFComp_def]
   rw [hrewrite]
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   refine ContinuousOn.mul (chartInvGramOnE_joint_continuousOn (I := I) g_DT α T h_gram0 a b) ?_
   refine ContinuousOn.sub
     (chartChristoffel_joint_continuousOn (I := I) g_DT α T h_gram0 h_partial a b k) ?_
@@ -666,8 +667,8 @@ private lemma partialDeriv_chartInvGramOnE_joint_continuousOn
     exact partialDeriv_chartInvGramOnE_eq (I := I) (g_DT q.1) α q.2 l j' p' hq.2
   refine ContinuousOn.congr ?_ hrw
   refine ContinuousOn.neg ?_
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) ?_
   · exact chartInvGramOnE_joint_continuousOn (I := I) g_DT α T h_gram0 j' a
   · exact chartInvGramOnE_joint_continuousOn (I := I) g_DT α T h_gram0 b p'
@@ -807,7 +808,7 @@ private lemma partialDeriv_chartChristoffel_joint_continuousOn
     rw [partialDeriv_add_eq m (hParG i l j) (hParG j l i)]
   refine ContinuousOn.congr ?_ hrw
   refine (continuousOn_const).mul ?_
-  refine continuousOn_finset_sum _ (fun l _ => ?_)
+  refine continuousOn_finsetSum _ (fun l _ => ?_)
   refine ContinuousOn.add ?_ ?_
   · refine ContinuousOn.mul
       (partialDeriv_chartInvGramOnE_joint_continuousOn (I := I) g_DT α T h_gram0 h_partial m k l)
@@ -897,8 +898,8 @@ private lemma partialDeriv_chartDeTurckVFComp_joint_continuousOn
     rw [partialDeriv_mul_eq m (hInv a b) ((hΓ a b).fun_sub (hΓbg a b))]
     rw [partialDeriv_sub_eq m (hΓ a b) (hΓbg a b)]
   refine ContinuousOn.congr ?_ hrw
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   refine ContinuousOn.add ?_ ?_
   · refine ContinuousOn.mul
       (partialDeriv_chartInvGramOnE_joint_continuousOn (I := I) g_DT α T h_gram0 h_partial m a b)
@@ -931,7 +932,7 @@ private lemma fderiv_eq_partialDeriv_sum (F : E → ℝ) (y : E) :
   classical
   apply ContinuousLinearMap.ext
   intro v
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
+  simp only [sum_apply, smul_apply,
     LinearMap.coe_toContinuousLinearMap', smul_eq_mul]
   conv_lhs => rw [← (chartModelBasis E).sum_repr v]
   rw [map_sum]
@@ -976,10 +977,17 @@ private lemma fderiv_chartDeTurckVFComp_joint_continuousOn
     exact fderiv_eq_partialDeriv_sum
       (fun y : E => chartDeTurckVFComp (I := I) (g_DT q.1) g₀ α k y) q.2
   refine ContinuousOn.congr ?_ hrw
-  refine continuousOn_finset_sum _ (fun m _ => ?_)
-  refine ContinuousOn.smul ?_ continuousOn_const
-  exact partialDeriv_chartDeTurckVFComp_joint_continuousOn
-    (I := I) g_DT g₀ α T h_gram0 h_partial h_partial2 m k
+  refine continuousOn_finsetSum _ (fun m _ => ?_)
+  have hs : ContinuousOn
+      (fun q : ℝ × E => partialDeriv (E := E) m
+        (chartDeTurckVFComp (I := I) (g_DT q.1) g₀ α k) q.2)
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
+    partialDeriv_chartDeTurckVFComp_joint_continuousOn
+      (I := I) g_DT g₀ α T h_gram0 h_partial h_partial2 m k
+  exact hs.smul
+    (continuousOn_const : ContinuousOn
+      (fun _ : ℝ × E => ((chartModelBasis E).coord m).toContinuousLinearMap)
+      (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -1188,6 +1196,7 @@ end DeTurckVFSmoothnessKeystone
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deturck_vf_joint_smoothness
     (g_bg : SmoothRiemannianMetric I M)
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
@@ -1220,11 +1229,14 @@ theorem deturck_vf_joint_smoothness
           chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α p (extChartAt I α q.2) •
             ((chartModelBasis E) p : E))
       (Set.Ioo (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α) q₀ := by
-    refine contMDiffWithinAt_finset_sum (fun p _ => ?_)
-    refine ContMDiffWithinAt.smul ?_ contMDiffWithinAt_const
+    refine contMDiffWithinAt_finsetSum (fun p _ => ?_)
     have hq₀_mem : q₀ ∈ Set.Ioo (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α :=
       ⟨hq₀.1, hα ▸ hα_mem⟩
-    exact (hcoeff p) q₀ hq₀_mem
+    have hconst : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, E) ∞
+        (fun _ : ℝ × M => ((chartModelBasis E) p : E))
+        (Set.Ioo (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α) q₀ :=
+      contMDiffWithinAt_const
+    exact ((hcoeff p) q₀ hq₀_mem).smul hconst
   have hnhds : Set.Ioo (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α
       ∈ nhdsWithin q₀ (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) := by
     have hsub : Set.Ioo (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α
@@ -1336,7 +1348,7 @@ theorem deturck_vf_continuous_up_to_zero
             chartDeTurckVFComp (I := I) (g_DT q.1) g₀ α p (extChartAt I α q.2) •
               (Integral.Measure.chartBasisVecFiber (I := I) α p q.2 : E))
         (Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
-      refine continuousOn_finset_sum _ (fun p _ => ?_)
+      refine continuousOn_finsetSum _ (fun p _ => ?_)
       exact (hscalar p).smul (hframe_joint p)
     have heqOn : Set.EqOn
         (fun q : ℝ × M => (deTurckVF (I := I) (g_DT q.1) g₀ q.2 : TangentSpace I q.2))
@@ -1371,6 +1383,7 @@ theorem deturck_vf_continuous_up_to_zero
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem deturck_solution_joint_smooth
     (g_DT : ℝ → SmoothRiemannianMetric I M) (T : ℝ)
     (h_smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),

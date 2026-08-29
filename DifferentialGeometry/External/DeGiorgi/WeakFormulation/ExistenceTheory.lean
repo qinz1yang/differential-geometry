@@ -37,8 +37,10 @@ private theorem smoothFunToLp_norm_le
     ‖smoothFunToLp hΩ hu‖ ≤ Cp.toReal * ‖smoothGradToLp hΩ hu‖ := by
   let μ : Measure E := volume.restrict Ω
   have hgradNorm_memLp : MemLp (smoothGradNorm u) 2 μ := by
-    simpa [μ, norm_smoothGradField_eq_smoothGradNorm] using
-      (smoothTestWitness hΩ hu).weakGrad_memLp.norm
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+      change ‖smoothGradField u x‖ = smoothGradNorm u x
+      exact norm_smoothGradField_eq_smoothGradNorm) <|
+        (smoothTestWitness hΩ hu).weakGrad_memLp.norm
   have hP :
       eLpNorm u 2 μ ≤ Cp * eLpNorm (smoothGradNorm u) 2 μ := by
     simpa [μ] using hPoinc hu.1 hu.2.1 hu.2.2
@@ -256,12 +258,14 @@ private theorem exists_h01Representative_of_smoothGradLimit
     change hu_memLp.toLp (uLp : E → ℝ) = uLp
     exact Lp.toLp_coeFn uLp hu_memLp
   have hU_tendsto : Tendsto (fun n => U (Gbar n)) atTop (nhds uLp) := by
-    simpa [uLp] using ((U.continuous.continuousAt).tendsto.comp hGbar_tendsto)
+    unfold uLp
+    exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl)
+      ((U.continuous.continuousAt).tendsto.comp hGbar_tendsto)
   have hψLp_tendsto : Tendsto (fun n => smoothFunToLp hΩ (hψ n)) atTop (nhds uLp) := by
     refine Tendsto.congr' (Filter.Eventually.of_forall ?_) hU_tendsto
     intro n
     exact hU_eq ⟨Gseq n, hGseq_mem n⟩
-  letI : Fact (1 ≤ (2 : ENNReal)) := ⟨by norm_num⟩
+  let this : Fact (1 ≤ (2 : ENNReal)) := ⟨by norm_num⟩
   have hψ_fun_tendsto :
       Tendsto (fun n => eLpNorm (fun x => ψ n x - u x) 2 μ) atTop (nhds 0) := by
     have hψLp_tendsto' :
@@ -301,8 +305,12 @@ private theorem exists_h01Representative_of_smoothGradLimit
           (fun x => ((smoothTestWitness hΩ (hψ n)).weakGrad x).ofLp i - Gsol x i)
           2 μ := by
     intro n i
-    simpa [PiLp.toLp_apply] using
-      ((smoothTestWitness hΩ (hψ n)).weakGrad_component_memLp i).sub (hgsol_comp_memLp i)
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+      change ((smoothTestWitness hΩ (hψ n)).weakGrad x).ofLp i - Gsol x i =
+        ((smoothTestWitness hΩ (hψ n)).weakGrad x).ofLp i - Gsol x i
+      rfl) <|
+        ((smoothTestWitness hΩ (hψ n)).weakGrad_component_memLp i).sub
+          (hgsol_comp_memLp i)
   have hgrad_comp_tendsto :
       ∀ i : Fin d,
         Tendsto
@@ -325,28 +333,36 @@ private theorem exists_h01Representative_of_smoothGradLimit
             (PiLp.norm_apply_le ((smoothTestWitness hΩ (hψ n)).weakGrad x - Gsol x) i)
     exact
       tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hgrad_vec_tendsto
-        (fun n => zero_le _) hupper
+        (fun n => bot_le) hupper
+  have hp : ENNReal.ofReal (2 : ℝ) = (2 : ENNReal) := by norm_num
   have hu_memLp' : MemLp u (ENNReal.ofReal 2) (volume.restrict Ω) := by
-    simpa using hu_memLp
+    rw [hp]
+    exact hu_memLp
   have hgsol_comp_memLp' :
       ∀ i : Fin d, MemLp (fun x => Gsol x i) (ENNReal.ofReal 2) (volume.restrict Ω) := by
     intro i
-    simpa using hgsol_comp_memLp i
+    rw [hp]
+    exact hgsol_comp_memLp i
   have hψ_fun_memLp' :
       ∀ n, MemLp (fun x => ψ n x - u x) (ENNReal.ofReal 2) (volume.restrict Ω) := by
     intro n
-    simpa using ((smoothTestWitness hΩ (hψ n)).memLp).sub hu_memLp
+    rw [hp]
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+      change ψ n x - u x = ψ n x - u x
+      rfl) (((smoothTestWitness hΩ (hψ n)).memLp).sub hu_memLp)
   have hψ_fun_tendsto' :
       Tendsto (fun n => eLpNorm (fun x => ψ n x - u x) (ENNReal.ofReal 2) (volume.restrict Ω))
         atTop (nhds 0) := by
-    simpa using hψ_fun_tendsto
+    rw [hp]
+    exact hψ_fun_tendsto
   have hψ_grad_comp_memLp' :
       ∀ n : ℕ, ∀ i : Fin d,
         MemLp
           (fun x => ((smoothTestWitness hΩ (hψ n)).weakGrad x).ofLp i - Gsol x i)
           (ENNReal.ofReal 2) (volume.restrict Ω) := by
     intro n i
-    simpa using hψ_grad_comp_memLp n i
+    rw [hp]
+    exact hψ_grad_comp_memLp n i
   have hgrad_comp_tendsto' :
       ∀ i : Fin d,
         Tendsto
@@ -356,7 +372,8 @@ private theorem exists_h01Representative_of_smoothGradLimit
               (ENNReal.ofReal 2) (volume.restrict Ω))
           atTop (nhds 0) := by
     intro i
-    simpa using hgrad_comp_tendsto i
+    rw [hp]
+    exact hgrad_comp_tendsto i
   have hu_isWeakGrad : ∀ i : Fin d, HasWeakPartialDeriv i (fun x => Gsol x i) u Ω := by
     exact weakPartialDerivs_of_smoothApprox hΩ hu_memLp' hgsol_comp_memLp'
       ψ hψ hψ_fun_memLp' hψ_fun_tendsto' hψ_grad_comp_memLp'
@@ -383,7 +400,11 @@ private theorem exists_h01Representative_of_smoothGradLimit
       exact (hψ n).2.2
     · simpa [μ] using hψ_fun_tendsto
     · intro i
-      simpa [μ] using hgrad_comp_tendsto i
+      refine Tendsto.congr' (Filter.Eventually.of_forall fun n => ?_)
+        (hgrad_comp_tendsto i)
+      apply eLpNorm_congr_ae
+      exact Filter.Eventually.of_forall fun x => by
+        simp only [smoothTestWitness, smoothGradField, hwu, PiLp.toLp_apply]
   exact ⟨u, hwu, hu0, hwu_gradEq⟩
 
 private theorem weakIdentity_on_smoothTests
@@ -494,10 +515,16 @@ private theorem weakIdentity_of_smoothTests
         atTop (nhds 0) := by
     exact tendsto_eLpNorm_vector_of_componentwise
       (fun n i => by
-        simpa [smoothTestWitness, smoothGradField, PiLp.toLp_apply] using
-          ((hφw n).weakGrad_component_memLp i).sub (hvw.weakGrad_component_memLp i))
+        exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+          change ((hφw n).weakGrad x).ofLp i - (hvw.weakGrad x).ofLp i =
+            (smoothGradField (φ n) x).ofLp i - (hvw.weakGrad x).ofLp i
+          rfl) (((hφw n).weakGrad_component_memLp i).sub
+            (hvw.weakGrad_component_memLp i)))
       (fun i => by
-        simpa [μ] using hφ_grad i)
+        refine Tendsto.congr' (Filter.Eventually.of_forall fun n => ?_) (hφ_grad i)
+        apply eLpNorm_congr_ae
+        exact Filter.Eventually.of_forall fun x => by
+          simp only [smoothGradField, PiLp.toLp_apply])
   have hdiff_grad_tendsto :
       Tendsto (fun n => gradLpOfWitness (hdiff n)) atTop (nhds 0) := by
     let h0_mem : MemLp (fun _ : E => (0 : E)) 2 μ := MeasureTheory.MemLp.zero'
@@ -526,14 +553,20 @@ private theorem weakIdentity_of_smoothTests
           (f_ℒp := fun n => (haddiff n).weakGrad_memLp)
           (f_lim := fun _ : E => (0 : E)) (f_lim_ℒp := h0_mem)).2 <| by
             exact hgradDiffVec_tendsto_add'
-    simpa [hdiff, gradLpOfWitness] using hLp_tendsto_add
+    have hzero : h0_mem.toLp (fun _ : E => (0 : E)) = 0 :=
+      MemLp.toLp_zero h0_mem
+    rw [hzero] at hLp_tendsto_add
+    exact Tendsto.congr' (Filter.Eventually.of_forall fun n => by rfl) hLp_tendsto_add
   have hdiff_seminorm_tendsto :
       Tendsto
         (fun n => (∫ x, ‖(hdiff n).weakGrad x‖ ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)))
         atTop (nhds 0) := by
     have hnorm_tendsto :
         Tendsto (fun n => ‖gradLpOfWitness (hdiff n)‖) atTop (nhds 0) := by
-      simpa using ((continuous_norm.tendsto (0 : MeasureTheory.Lp E 2 μ)).comp hdiff_grad_tendsto)
+      have h :=
+        (continuous_norm.tendsto (0 : MeasureTheory.Lp E 2 μ)).comp hdiff_grad_tendsto
+      rw [norm_zero] at h
+      exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) h
     refine Tendsto.congr' (Filter.Eventually.of_forall ?_) hnorm_tendsto
     intro n
     exact norm_gradLpOfWitness_eq (hdiff n)
@@ -740,17 +773,18 @@ theorem weakProblem_exists
       _ = C_rhs * ‖g‖ := by rfl
       _ = C_rhs * ‖e g‖ := by simp [e]
   have hDense : DenseRange e := by
+    have hSH : (S : Set (MeasureTheory.Lp E 2 μ)) ⊆
+        (H : Set (MeasureTheory.Lp E 2 μ)) := fun x hx =>
+      Submodule.le_topologicalClosure S hx
     have hDenseInclusion :
         DenseRange
-          (Set.inclusion
-            (Submodule.le_topologicalClosure S :
-              (S : Set (MeasureTheory.Lp E 2 μ)) ⊆ (H : Set (MeasureTheory.Lp E 2 μ)))) := by
+          (Set.inclusion hSH) := by
       rw [denseRange_inclusion_iff]
-      change (H : Set (MeasureTheory.Lp E 2 μ)) ⊆ closure (S : Set (MeasureTheory.Lp E 2 μ))
       intro x hx
       change x ∈ S.topologicalClosure at hx
       exact hx
-    simpa [e] using hDenseInclusion
+    change DenseRange (Set.inclusion hSH)
+    exact hDenseInclusion
   let U0 : S →ₗ[ℝ] MeasureTheory.Lp ℝ 2 μ := {
     toFun := fun g => smoothFunToLp hΩ (repSmooth g)
     map_add' := by
@@ -1087,15 +1121,26 @@ theorem ae_eq_zero_of_memH01_of_gradLpOfWitness_eq_zero
       (Lp.tendsto_Lp_iff_tendsto_eLpNorm'' (f := φ)
         (f_ℒp := fun n => (hφw n).memLp)
         (f_lim := u) (f_lim_ℒp := hu_mem.1)).2 <| by
-          simpa [μ] using hφ_fun
+          exact Tendsto.congr' (Filter.Eventually.of_forall fun n =>
+            eLpNorm_congr_ae (Filter.Eventually.of_forall fun x => by
+              change φ n x - u x = φ n x - u x
+              rfl)) hφ_fun
   have hgrad_vec_tendsto :
       Tendsto
         (fun n => eLpNorm (fun x => (hφw n).weakGrad x - hw0.weakGrad x) 2 μ)
         atTop (nhds 0) := by
     exact tendsto_eLpNorm_vector_of_componentwise
       (fun n i => by
-        simpa [hφw] using ((hφw n).weakGrad_component_memLp i).sub (hw0.weakGrad_component_memLp i))
-      (fun i => by simpa [μ] using hφ_grad i)
+        exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+          change ((hφw n).weakGrad x).ofLp i - (hw0.weakGrad x).ofLp i =
+            ((hφw n).weakGrad x).ofLp i - (hw0.weakGrad x).ofLp i
+          rfl) <|
+          ((hφw n).weakGrad_component_memLp i).sub (hw0.weakGrad_component_memLp i))
+      (fun i => by
+        refine Tendsto.congr' (Filter.Eventually.of_forall fun n => ?_) (hφ_grad i)
+        apply eLpNorm_congr_ae
+        exact Filter.Eventually.of_forall fun x => by
+          simp only [hφw, smoothTestWitness, smoothGradField, PiLp.toLp_apply])
   have hgradLp_tendsto :
       Tendsto (fun n => gradLpOfWitness (hφw n))
         atTop (nhds (gradLpOfWitness hw0)) := by
@@ -1112,7 +1157,9 @@ theorem ae_eq_zero_of_memH01_of_gradLpOfWitness_eq_zero
       ∀ n, ‖smoothFunToLp hΩ (hφtest n)‖ ≤ Cp.toReal * ‖smoothGradToLp hΩ (hφtest n)‖ := by
     intro n
     have hgradNorm_memLp : MemLp (smoothGradNorm (φ n)) 2 μ := by
-      simpa [μ, norm_smoothGradField_eq_smoothGradNorm] using (hφw n).weakGrad_memLp.norm
+      exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by
+        change ‖smoothGradField (φ n) x‖ = smoothGradNorm (φ n) x
+        exact norm_smoothGradField_eq_smoothGradNorm) <| (hφw n).weakGrad_memLp.norm
     have hP :
         eLpNorm (φ n) 2 μ ≤ Cp * eLpNorm (smoothGradNorm (φ n)) 2 μ := by
       simpa [μ] using hPoinc (hφ_smooth n) (hφ_cpt n) (hφ_sub n)
@@ -1154,7 +1201,10 @@ theorem ae_eq_zero_of_memH01_of_gradLpOfWitness_eq_zero
       Tendsto (fun n => ‖smoothGradToLp hΩ (hφtest n)‖) atTop (nhds 0) := by
     have hnorm_tendsto :
         Tendsto (fun n => ‖gradLpOfWitness (hφw n)‖) atTop (nhds 0) := by
-      simpa using ((continuous_norm.tendsto (0 : MeasureTheory.Lp E 2 μ)).comp hgradLp_zero_tendsto)
+      have h :=
+        (continuous_norm.tendsto (0 : MeasureTheory.Lp E 2 μ)).comp hgradLp_zero_tendsto
+      rw [norm_zero] at h
+      exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) h
     simpa [smoothGradToLp, hφw] using hnorm_tendsto
   have hfun_norm_tendsto :
       Tendsto (fun n => ‖smoothFunToLp hΩ (hφtest n)‖) atTop (nhds 0) := by

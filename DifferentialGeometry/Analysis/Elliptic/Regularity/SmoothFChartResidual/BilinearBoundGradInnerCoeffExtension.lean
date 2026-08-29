@@ -43,7 +43,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-noncomputable def gradInnerCoefI_M
+noncomputable def gradInnerCoefIM
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) : M → ℝ :=
   fun x : M =>
@@ -55,7 +55,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma gradInnerCoefI_M_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
-    gradInnerCoefI_M (I := I) (M := M) g α i x =
+    gradInnerCoefIM (I := I) (M := M) g α i x =
       chartStrictCutoff (I := I) (M := M) α x *
         gradChartCoeff (I := I) g α
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x := rfl
@@ -65,15 +65,15 @@ private lemma gradInnerCoefI_M_eq_zero_of_cutoff_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) {x : M}
     (hx : chartStrictCutoff (I := I) (M := M) α x = 0) :
-    gradInnerCoefI_M (I := I) (M := M) g α i x = 0 := by
-  unfold gradInnerCoefI_M
+    gradInnerCoefIM (I := I) (M := M) g α i x = 0 := by
+  unfold gradInnerCoefIM
   rw [hx]; ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradInnerCoefI_M_smooth
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
-    ContMDiff I 𝓘(ℝ, ℝ) ∞ (gradInnerCoefI_M (I := I) (M := M) g α i) := by
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (gradInnerCoefIM (I := I) (M := M) g α i) := by
   classical
   intro x₀
   by_cases hx_src : x₀ ∈ (chartAt H α).source
@@ -94,7 +94,7 @@ lemma gradInnerCoefI_M_smooth
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i)
         (trivializationAt E (TangentSpace I) α).baseSet := by
       unfold gradChartCoeff
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · exact chartInvGramMatrix_entry_contMDiffOn (I := I) g α i j
       · have h_extChartOn_M : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α)
@@ -154,7 +154,7 @@ lemma gradInnerCoefI_M_smooth
         chartStrictCutoff_eventually_zero_nhdsSet_compl_source (I := I) (M := M) α
       exact h_ev_nhdsSet.filter_mono (nhds_le_nhdsSet hx_compl)
     have h_ev_zero_coef : ∀ᶠ x in 𝓝 x₀,
-        gradInnerCoefI_M (I := I) (M := M) g α i x = 0 := by
+        gradInnerCoefIM (I := I) (M := M) g α i x = 0 := by
       filter_upwards [h_ev_zero] with x hx
       exact gradInnerCoefI_M_eq_zero_of_cutoff_zero (I := I) (M := M) g α i hx
     have h_const : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (0 : ℝ)) x₀ :=
@@ -165,9 +165,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tsupport_gradInnerCoefI_M_subset
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
-    tsupport (gradInnerCoefI_M (I := I) (M := M) g α i) ⊆ (chartAt H α).source := by
+    tsupport (gradInnerCoefIM (I := I) (M := M) g α i) ⊆ (chartAt H α).source := by
   classical
-  have h_supp_subset : Function.support (gradInnerCoefI_M (I := I) (M := M) g α i) ⊆
+  have h_supp_subset : Function.support (gradInnerCoefIM (I := I) (M := M) g α i) ⊆
       Function.support (chartStrictCutoff (I := I) (M := M) α) := by
     intro x hx
     by_contra hxoff
@@ -175,7 +175,7 @@ lemma tsupport_gradInnerCoefI_M_subset
     have h0 : chartStrictCutoff (I := I) (M := M) α x = 0 := by
       simpa [Function.mem_support, not_not] using hxoff
     exact gradInnerCoefI_M_eq_zero_of_cutoff_zero (I := I) (M := M) g α i h0
-  have h_tsupp_subset : tsupport (gradInnerCoefI_M (I := I) (M := M) g α i) ⊆
+  have h_tsupp_subset : tsupport (gradInnerCoefIM (I := I) (M := M) g α i) ⊆
       tsupport (chartStrictCutoff (I := I) (M := M) α) :=
     closure_minimal (h_supp_subset.trans (subset_tsupport _))
       (isClosed_tsupport _)
@@ -185,7 +185,7 @@ noncomputable def Λgrad
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   smoothExtensionScalar (I := I) (M := M) α
-    (gradInnerCoefI_M (I := I) (M := M) g α i)
+    (gradInnerCoefIM (I := I) (M := M) g α i)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma Λgrad_contDiff

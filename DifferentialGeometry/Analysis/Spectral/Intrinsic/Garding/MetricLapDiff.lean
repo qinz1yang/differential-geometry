@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -45,8 +44,8 @@ theorem lapDiff_energy_le
         (Module.finrank Real E : Real) *
             DifferentialGeometry.HCGCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h g g <= (1 / 2 : Real) ->
-        ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
-            Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
+        ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
+            ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) <=
           C *
             (DifferentialGeometry.HCGCompactness.metricDerivNormSupOn
@@ -73,7 +72,7 @@ theorem lapDiff_energy_le
     Tensor0SBundle.normSq0S (I := I) g x 1
       (duSec (I := I) f hf x)
   let lhs : M -> Real := fun x =>
-    (Δ_g (I := I) h ⟨_, hf⟩ x - Δ_g (I := I) g ⟨_, hf⟩ x) ^ 2
+    (ΔG (I := I) h ⟨_, hf⟩ x - ΔG (I := I) g ⟨_, hf⟩ x) ^ 2
   let rhs : M -> Real := fun x => A * HessNorm x + B * duNorm x
   have hHessEq : HessNorm = chartHessFrobeniusSq (I := I) g f := by
     funext x
@@ -137,8 +136,8 @@ theorem lapDiff_energy_le
   have hA : 0 <= A := by dsimp only [A, n]; positivity
   have hB : 0 <= B := by dsimp only [B, n]; positivity
   calc
-    ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
-        Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
+    ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
+        ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         ∫ x, lhs x ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       rfl

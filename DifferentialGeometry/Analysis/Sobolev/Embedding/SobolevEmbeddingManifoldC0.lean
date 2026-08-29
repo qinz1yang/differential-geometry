@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -110,7 +109,7 @@ theorem hsBlock_le_hsNorm_sq
     rw [hblk]
     exact Finset.single_le_sum
       (f := fun j => ∑ basisIdx : Fin j → Fin (Module.finrank ℝ E), F α₀ IJ₀ j basisIdx)
-      (fun j _ => zero_le _) hj₀
+      (fun j _ => zero_le) hj₀
   have h_comp :
       (∑ j ∈ Finset.range (2 * k + 1),
         ∑ basisIdx : Fin j → Fin (Module.finrank ℝ E), F α₀ IJ₀ j basisIdx) ≤
@@ -121,7 +120,7 @@ theorem hsBlock_le_hsNorm_sq
     Finset.single_le_sum
       (f := fun IJ => ∑ j ∈ Finset.range (2 * k + 1),
         ∑ basisIdx : Fin j → Fin (Module.finrank ℝ E), F α₀ IJ j basisIdx)
-      (fun IJ _ => zero_le _) (Finset.mem_univ IJ₀)
+      (fun IJ _ => zero_le) (Finset.mem_univ IJ₀)
   have h_tsum :
       (∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E)),
@@ -552,9 +551,9 @@ theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock
   rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
     lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
   rw [ENNReal.ofReal_mul hcardj_nn, mul_assoc]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
-  rw [lintegral_finset_sum']
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
+  rw [lintegral_finsetSum']
   swap
   · intro b _
     refine ContinuousOn.aemeasurable ?_ hball_meas
@@ -576,7 +575,7 @@ theorem smooth_eLpNorm_iteratedFDeriv_ball_ne_top
     continuous_norm.comp h_iter_cont
   obtain ⟨Mb, hMb⟩ := IsCompact.exists_bound_of_continuousOn
     (isCompact_closedBall y₀ R) hcont.continuousOn
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) := by
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply_univ]
     exact measure_ball_lt_top
@@ -674,7 +673,7 @@ private theorem rawPullCenter_le_hsNorm
     have h_X_sq_le :
         X ^ 2 ≤ ENNReal.ofReal (((Module.finrank ℝ E) ^ j : ℕ) * c⁻¹) *
           (tensorPouSobolevHsNorm (I := I) (M := M) g (2 * k) T') ^ 2 :=
-      h_key.trans (mul_le_mul_of_nonneg_left h_blk_le (zero_le _))
+      h_key.trans (mul_le_mul_of_nonneg_left h_blk_le (zero_le))
     have h_hsn_ne_top : (tensorPouSobolevHsNorm (I := I) (M := M) g (2 * k) T') ≠ ⊤ :=
       (tensorPouSobolevHsNorm_lt_top (I := I) (M := M) g (2 * k) T').ne
     have h_rhs_ne_top :
@@ -823,21 +822,21 @@ private theorem superlevel_compact_subset_source
     subset_tsupport _ hx_supp
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx_tsupp
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 private theorem chartFiberNorm_le_hsNorm_on_superlevel
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (hk : (Module.finrank ℝ E : ℝ) < 2 * (2 * k))
     (α : M) {c : ℝ} (hc_pos : 0 < c) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ D : ℝ, 0 ≤ D ∧ ∀ (T : SmoothCcTensor g r s),
       ∀ x ∈ {x : M | c ≤ (chartAtlasPOU I M α : M → ℝ) x},
         ‖T.toSection x‖ ≤ D *
           ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   classical
   set Kset : Set M := {x : M | c ≤ (chartAtlasPOU I M α : M → ℝ) x} with hKset_def
   obtain ⟨hK_compact, hK_sub⟩ := superlevel_compact_subset_source (I := I) (M := M) α hc_pos
@@ -982,20 +981,20 @@ private theorem chartFiberNorm_le_hsNorm_on_superlevel
     _ = Real.sqrt (C₁ * npairs) * Dmax * hsn :=
         Real.sqrt_sq (by positivity)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorPouSobolevHilbert_embedding_Ck_gNorm
     (g : SmoothRiemannianMetric I M) (r s k m : ℕ)
     (h_super : 2 * k > Module.finrank ℝ E + 2 * m) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 < C ∧
       ∀ (T : SmoothCcTensor g r s) (x : M),
         ‖T.toSection x‖ ≤
           C * ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   classical
   have hk : (Module.finrank ℝ E : ℝ) < 2 * (2 * k) := by
     have : Module.finrank ℝ E < 2 * (2 * k) := by omega
@@ -1003,7 +1002,7 @@ theorem tensorPouSobolevHilbert_embedding_Ck_gNorm
   rcases isEmpty_or_nonempty M with hMempty | hMne
   · exact ⟨1, one_pos, fun _T x => (hMempty.false x).elim⟩
   obtain ⟨x₀⟩ := hMne
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hS_ne : S.Nonempty := by
     have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x₀
     rw [← hS_def] at hsum

@@ -125,7 +125,7 @@ private lemma bilin_smul
     ccTensorBilin (I := I) g (c • S) x v w =
       c * ccTensorBilin (I := I) g S x v w := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma symmS_eq_self
@@ -166,6 +166,7 @@ private lemma ricciDecomposition2_eq
     hsymm, smul_smul]
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem ricciDecomposition_app
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (v w : TangentSpace I x),
@@ -227,6 +228,7 @@ theorem ricciDecomposition_app
   rw [htwice]
   module
 
+omit [SigmaCompactSpace M] in
 theorem lieDecomposition_app
     (g g₁ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {δ : ℝ}
@@ -246,6 +248,7 @@ theorem lieDecomposition_app
     deTurckLieTopOrderPairing_apply (I := I) (M := M) g T hδ hδZ lieDecompositionQ lieDecompositionEps s]
   abel
 
+omit [SigmaCompactSpace M] in
 theorem rhsLow0_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (v w : TangentSpace I x),

@@ -46,7 +46,7 @@ private theorem normSq0S_nonneg'
     0 ≤ Tensor0SBundle.normSq0S (I := I) g x s A := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -68,7 +68,7 @@ private theorem mcdNorm_eq_at
           (Tensor0SBundle.metricTensorField (I := I) h) N x)) := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
@@ -187,7 +187,6 @@ theorem ricCoeffs_nonneg
   exact ⟨mul_nonneg (mul_nonneg (pow_nonneg hFrame _) hComp1) (by positivity),
     mul_nonneg (pow_nonneg hFrame _) hComp2⟩
 
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem perDomain_bound
     [Module.Finite ℝ E]
@@ -612,6 +611,10 @@ theorem ric_tower_on
     nlinarith
   have hCuP0 : (0 : Real) ≤ ricFrameC (Module.finrank Real E) ^ (2 + N) := by
     positivity
+  have hframeBase :=
+    (trivializationAt E (TangentSpace I : M → Type _) x)
+      |>.isLocalFrameOn_localFrame_baseSet I 1 basisE
+  have hframeW := hframeBase.mono hwsub
   have hLHS := sqrt_tower_le_compL2 (I := I) gRef
     (CovariantDerivative.ricciSection (I := I) (M := M)
       (leviCivitaConnectionOfMetric (I := I) g)
@@ -619,11 +622,19 @@ theorem ric_tower_on
         (I := I) (M := M) g))
     (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x).localFrame
       basisE a y')
-    (((trivializationAt E (TangentSpace I : M → Type _) x).isLocalFrameOn_localFrame_baseSet
-      I 1 basisE).mono hwsub)
+    hframeW
     hwopen hxw (ricFrameC (Module.finrank Real E)) hCu1
     (fun s A => by
-      simpa only [ricFrameC, Fintype.card_fin] using hRev x hxbase hxu s A) N
+      have hsum :
+          (∑ I0, Tensor0SBundle.component0S (I := I)
+            (hframeW.toBasisAt hxw) A I0 ^ 2) =
+            ∑ I0, Tensor0SBundle.component0S (I := I)
+              (hframeBase.toBasisAt hxbase) A I0 ^ 2 := by
+        apply Finset.sum_congr rfl
+        intro I0 _
+        congr 1
+      rw [ricFrameC, hsum]
+      simpa only [Fintype.card_fin] using hRev x hxbase hxu s A) N
   have hRHS := compL2_tower_le (I := I) gRef gRef
     (Tensor0SBundle.metricTensorField (I := I) g)
     (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x).localFrame
@@ -993,7 +1004,7 @@ theorem nablaRicReal_normSq
         (ricCovTower (I := I) (gSeq i s) gRef p x) := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
@@ -1114,7 +1125,7 @@ theorem normsq_evol_of_comp
   intro i x hx s hs
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
@@ -1157,7 +1168,8 @@ theorem normsq_evol_of_comp
            Tensor0SBundle.component0S (I := I) basis
             ((-2 : Real) • nablaRic i s x) I0) s := by
       intro I0 _
-      simpa [pow_one] using (hcomp I0).pow 2
+      apply ((hcomp I0).pow 2).congr_deriv
+      norm_num
     have hsum := HasDerivAt.sum hterms
     have hfn : (∑ I0 : Fin (p + 2) → Fin (Module.finrank Real (TangentSpace I x)),
         fun r : Real => Tensor0SBundle.component0S (I := I) basis
@@ -1260,7 +1272,6 @@ theorem normsq_evol_of_comp
     rw [hUs, hnablaSq] at habs
     exact habs
 
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] [I.Boundaryless]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [SigmaCompactSpace M] in
@@ -1315,7 +1326,10 @@ theorem hevComp_of_solutions
     change ContinuousMultilinearMap.domDomCongr (acEquiv N)
         (ricCovTower (I := I) (gSeq i s) gRef N x)
       = nablaRicReal (I := I) gSeq gRef N i s x
-    simp only [nablaRicReal]
+    change
+      (ricCovTower (I := I) (gSeq i s) gRef N x).domDomCongr (acEquiv N) =
+        (ricCovTower (I := I) (gSeq i s) gRef N x).domDomCongr (acEquiv N)
+    rfl
   have hval : (covDerivOfField (I := I) gRef (solnEvolField (I := I) (S i) s) N) x v
       = ((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v := by
     simp only [solnEvolField]
@@ -1449,8 +1463,8 @@ theorem covOrderBound_tower
     ∀ r : Nat, 1 ≤ r → r ≤ N →
       exists Cw : Real,
         MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef r Cw := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   suffices hmain : ∀ r : Nat, 1 ≤ r → r ≤ N →
       ∀ K' : Set M, IsCompact K' → ∀ U' : Set M, IsOpen U' → K' ⊆ U' → U' ⊆ U →
         exists Cw : Real,
@@ -1486,7 +1500,6 @@ theorem covOrderBound_tower
       (fun i x hx => hinit r h1 hrN i x (hU'U (hK'U' hx)))
       timeRadius htime
 
-set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] [SigmaCompactSpace M] in
 theorem covOrderBound_of_soln
     [Module.Finite ℝ E]

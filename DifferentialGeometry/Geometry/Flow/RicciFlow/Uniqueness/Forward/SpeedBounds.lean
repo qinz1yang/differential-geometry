@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Drift
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -79,13 +78,13 @@ theorem uhlSpeed04_low {Idx : Type*} [Fintype Idx]
     (x : M) (basis : Module.Basis Idx Real (TangentSpace I x)) :
     lowOfComp (I := I) g basis
         (fun i j k l =>
-          (roughLap0SField (I := I) g R x)
+          Tensor0SSpace.eval (roughLap0SField (I := I) g R x)
               (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) -
-            2 * (curvatureQuadraticCombination (I := I) g R x)
+            2 * Tensor0SSpace.eval (curvatureQuadraticCombination (I := I) g R x)
               (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) -
-            ricciDrift04 (I := I) g x
+            Tensor0SSpace.eval (ricciDrift04 (I := I) g x)
               (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) +
-            2 * metricRicciAt (I := I) g x
+            2 * Tensor0SSpace.eval (metricRicciAt (I := I) g x)
               (fun q : Fin 2 =>
                 if q = 0 then
                   riemannOp (metricCov (I := I) g) x
@@ -94,11 +93,8 @@ theorem uhlSpeed04_low {Idx : Type*} [Fintype Idx]
       uhlSpeed04 (I := I) g R x := by
   apply lowOfComp_ext (I := I)
   intro i j k l
-  rw [uhlSpeed04, Tensor0SSpace.add_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x,
-    Tensor0SSpace.smul_apply (I := I) 4 x,
-    Tensor0SSpace.smul_apply (I := I) 4 x,
+  rw [uhlSpeed04, Tensor0SSpace.eval_add, Tensor0SSpace.eval_sub,
+    Tensor0SSpace.eval_sub, Tensor0SSpace.eval_smul, Tensor0SSpace.eval_smul,
     lowerTri_apply]
   rfl
 

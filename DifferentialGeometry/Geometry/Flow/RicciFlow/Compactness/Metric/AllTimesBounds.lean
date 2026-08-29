@@ -194,7 +194,7 @@ theorem metricCovOrderOneWindow_of_christoffel
         (Real.sqrt_nonneg _)
   exact le_trans hraw hconst
 
-def metricAllTimes_firstOrder
+def metricAllTimesFirstOrder
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {K u : Set M} {β ψ t0 : Real} {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {SSeq : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D}
@@ -489,7 +489,8 @@ theorem metricCovOrderWindow_of_evolution
     refine
       (sq_le_sq₀ (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)).1 ?_
     rw [Real.sq_sqrt htarget_nonneg]
-    simpa [U] using hfinal_sq
+    change U t ≤ _
+    exact hfinal_sq
   exact hnorm_le
 
 omit [SigmaCompactSpace M] in

@@ -467,7 +467,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
             (chartTargetEuclid (I := I) (M := M) β)) := by
     refine h_cutoff_le.trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (hCu_le_max P K')) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (hCu_le_max P K')) (zero_le)
   have h_cutoff_le_final : iteratedWeakSobolevNorm (d := d) K' 2
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -476,7 +476,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal (Cu_max K') * ((CT : ℝ≥0∞) * RHS_each) := by
     refine h_cutoff_max_le.trans ?_
-    exact mul_le_mul_of_nonneg_left h_double_sum_le (zero_le _)
+    exact mul_le_mul_of_nonneg_left h_double_sum_le (zero_le)
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
     rw [Real.enorm_eq_ofReal hμ_pos.le]
@@ -491,7 +491,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal i.fst.val *
           (ENNReal.ofReal (Cu_max K') * ((CT : ℝ≥0∞) * RHS_each)) :=
-    mul_le_mul_of_nonneg_left h_cutoff_le_final (zero_le _)
+    mul_le_mul_of_nonneg_left h_cutoff_le_final (zero_le)
   have hCu_max_nn_K' : 0 ≤ Cu_max K' := hCu_max_nn _
   have h_packCT : (CT : ℝ≥0∞) = ENNReal.ofReal (CT : ℝ) := by
     simp [hCT_def, ENNReal.ofReal_natCast]
@@ -612,7 +612,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     exact ENNReal.ofReal_le_ofReal h_scalar_le
   calc
     ENNReal.ofReal i.fst.val *

@@ -189,32 +189,36 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
       0 ≤ weightInf z gamma := by
     apply ge_of_tendsto (hconv z hz gamma)
     filter_upwards [hcoverU, hstage] with k hmap hdata
-    letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-    letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-    letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-    letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+    let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+    let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+    let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+    let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
       (X.obj (L.φ k)).t2TangentBundle
-    simpa only [weight, seqAtomChart] using
-      hdata.nonneg
-        (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
-        (hmap hz) gamma
+    change 0 ≤ rawWeights
+      (cutRaw (seqAtom hd hD P L pb r k i0) (seqAtom hd hD P L pb r k) i0)
+        (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z) gamma
+    exact hdata.nonneg
+      (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
+      (hmap hz) gamma
   have hsum (z : E) (hz : z ∈ U) : ∑ gamma, weightInf z gamma = 1 := by
     have hsumConv : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (∑ gamma, weightInf z gamma)) :=
-      tendsto_finset_sum Finset.univ fun gamma _ => hconv z hz gamma
+      tendsto_finsetSum Finset.univ fun gamma _ => hconv z hz gamma
     have hsumStage : ∀ᶠ k in Filter.atTop, ∑ gamma, weight k z gamma = 1 := by
       filter_upwards [hcoverU, hstage] with k hmap hdata
-      letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-      letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-      letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-      letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-      letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+      let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+      let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+      let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+      let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+      let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      simpa only [weight, seqAtomChart] using
-        hdata.sum_one
-          (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
-          (hmap hz)
+      change (∑ gamma, rawWeights
+        (cutRaw (seqAtom hd hD P L pb r k i0) (seqAtom hd hD P L pb r k) i0)
+          (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z) gamma) = 1
+      exact hdata.sum_one
+        (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
+        (hmap hz)
     have hsumOne : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (1 : Real)) :=
       tendsto_const_nhds.congr' (hsumStage.mono fun _ hk => hk.symm)
@@ -270,13 +274,13 @@ theorem HasAtomWeightLim.weight_data
         (fun z => expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
         U (⋃ gamma : Fin (pb.A r), L.innerBall hd D P pb r k gamma) := by
     filter_upwards [hsource, hinner] with k hmap hcover
-    letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-    letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-    letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-    letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+    let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+    let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+    let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+    let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
       (X.obj (L.φ k)).t2TangentBundle
-    letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+    let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     intro z hz
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz
@@ -487,13 +491,13 @@ theorem exists_atom_fin
       have hovl₀ (gamma : LiveSlot L₀ pb r) : ∀ᶠ k in Filter.atTop,
           NormalOverlapOn (I := I) (X.obj (L₀.φ k)) (beta a (ψ₀ k))
             (seqCenterD hd P L₀ k (gamma.1 : Nat)) (U a) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq] using
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq] using
           hψ₀.tendsto_atTop.eventually
             (hovlJ a (Finset.mem_insert_self a s) gamma)
       have hUmetric₀ : ∀ᶠ k in Filter.atTop,
           U a ⊆ Metric.ball (0 : E)
             (metricInput.radius (L₀.φ k) (beta a (ψ₀ k))) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply] using
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply] using
           hψ₀.tendsto_atTop.eventually
             (hUmetric a (Finset.mem_insert_self a s))
       have hUexp₀ : ∀ᶠ k in Filter.atTop,
@@ -505,7 +509,7 @@ theorem exists_atom_fin
           U a ⊆ Metric.ball (0 : E)
             (expMapC2Radius (I := I) (X.obj (L₀.φ k)).metric
               (beta a (ψ₀ k))) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply] using
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply] using
           hψ₀.tendsto_atTop.eventually (hUexp a (Finset.mem_insert_self a s))
       have hmaps₀ (gamma : LiveSlot L₀ pb r) : ∀ᶠ k in Filter.atTop,
           letI : TopologicalSpace (X.obj (L₀.φ k)).M := (X.obj (L₀.φ k)).topology
@@ -522,14 +526,14 @@ theorem exists_atom_fin
                 (show TangentSpace I (seqCenterD hd P L₀ k (gamma.1 : Nat)) from v) :
                   (X.obj (L₀.φ k)).M)) ''
               Metric.ball (0 : E) rho) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq] using
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq] using
           hψ₀.tendsto_atTop.eventually
             (hmapsJ a (Finset.mem_insert_self a s) gamma)
       have hVmetric₀ (gamma : LiveSlot L₀ pb r) : ∀ᶠ k in Filter.atTop,
           Metric.ball (0 : E) rho ⊆ Metric.ball (0 : E)
             (metricInput.radius (L₀.φ k)
               (seqCenterD hd P L₀ k (gamma.1 : Nat))) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq] using
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq] using
           hψ₀.tendsto_atTop.eventually (hVmetric gamma)
       have hVexp₀ (gamma : LiveSlot L₀ pb r) : ∀ᶠ k in Filter.atTop,
           letI : TopologicalSpace (X.obj (L₀.φ k)).M := (X.obj (L₀.φ k)).topology
@@ -540,7 +544,7 @@ theorem exists_atom_fin
           Metric.ball (0 : E) rho ⊆ Metric.ball (0 : E)
             (expMapC2Radius (I := I) (X.obj (L₀.φ k)).metric
               (seqCenterD hd P L₀ k (gamma.1 : Nat))) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq] using
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply, seqCenterD_subseq] using
           hψ₀.tendsto_atTop.eventually (hVexp gamma)
       have hbeta₀ : ∀ᶠ k in Filter.atTop,
           letI : TopologicalSpace (X.obj (L₀.φ k)).M := (X.obj (L₀.φ k)).topology
@@ -552,7 +556,7 @@ theorem exists_atom_fin
             (fun z => expMapDiffeo (I := I) (X.obj (L₀.φ k)).metric
               (beta a (ψ₀ k)) z)
             (U a) (L₀.hatSourceBall hd P r k) := by
-        simpa only [L₀, NetLimitData.subseq, Function.comp_apply,
+        simpa only [L₀, NetLimitData.subseq_phi, Function.comp_apply,
           NetLimitData.hatSourceBall_subseq] using
           hψ₀.tendsto_atTop.eventually (hbetaU a (Finset.mem_insert_self a s))
       obtain ⟨ψ₁, hψ₁, aInf, haInf⟩ :=
@@ -564,11 +568,15 @@ theorem exists_atom_fin
       refine ⟨ψ, hψ, fun i hi => ?_⟩
       rcases Finset.mem_insert.mp hi with rfl | his
       · refine ⟨aInf, ?_⟩
-        simpa only [ψ, Function.comp_apply, L₀, NetLimitData.subseq] using haInf
+        change HasAtomWeightLim (I := I) hd hD P (L₀.subseq hψ₁) hre pb r hr
+          (fun k => beta i (ψ₀ (ψ₁ k))) (U i) aInf
+        exact haInf
       · obtain ⟨prevInf, hprevInf⟩ := hprev i his
         refine ⟨prevInf, ?_⟩
         have hsub := hprevInf.subseq hψ₁
-        simpa only [ψ, Function.comp_apply, L₀, NetLimitData.subseq] using hsub
+        change HasAtomWeightLim (I := I) hd hD P (L₀.subseq hψ₁) hre pb r hr
+          (fun k => beta i (ψ₀ (ψ₁ k))) (U i) prevInf
+        exact hsub
 
 def HasAtomWeightLimOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -778,32 +786,32 @@ theorem HasAtomWeightLimOn.weight_data_raw
       0 ≤ weightInf z gamma := by
     apply ge_of_tendsto (hconv z hz gamma)
     filter_upwards [hcoverU, hstage] with k hmap hdata
-    letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-    letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-    letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-    letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+    let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+    let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+    let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+    let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
       (X.obj (L.φ k)).t2TangentBundle
-    simpa only [weight, seqAtomOn] using
-      hdata.nonneg
-        ((chart (L.φ k) (beta k)).hom z)
-        (hmap hz) gamma
+    change 0 ≤ rawWeights
+      (cutRaw (seqAtom hd hD P L pb r k i0) (seqAtom hd hD P L pb r k) i0)
+        ((chart (L.φ k) (beta k)).hom z) gamma
+    exact hdata.nonneg ((chart (L.φ k) (beta k)).hom z) (hmap hz) gamma
   have hsum (z : E) (hz : z ∈ U) : ∑ gamma, weightInf z gamma = 1 := by
     have hsumConv : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (∑ gamma, weightInf z gamma)) :=
-      tendsto_finset_sum Finset.univ fun gamma _ => hconv z hz gamma
+      tendsto_finsetSum Finset.univ fun gamma _ => hconv z hz gamma
     have hsumStage : ∀ᶠ k in Filter.atTop, ∑ gamma, weight k z gamma = 1 := by
       filter_upwards [hcoverU, hstage] with k hmap hdata
-      letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-      letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-      letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-      letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-      letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+      let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+      let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+      let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+      let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+      let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      simpa only [weight, seqAtomOn] using
-        hdata.sum_one
-          ((chart (L.φ k) (beta k)).hom z)
-          (hmap hz)
+      change (∑ gamma, rawWeights
+        (cutRaw (seqAtom hd hD P L pb r k i0) (seqAtom hd hD P L pb r k) i0)
+          ((chart (L.φ k) (beta k)).hom z) gamma) = 1
+      exact hdata.sum_one ((chart (L.φ k) (beta k)).hom z) (hmap hz)
     have hsumOne : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (1 : Real)) :=
       tendsto_const_nhds.congr' (hsumStage.mono fun _ hk => hk.symm)
@@ -887,13 +895,13 @@ theorem HasAtomWeightLimOn.weight_data
         (fun z => (chart (L.φ k) (beta k)).hom z)
         U (⋃ gamma : Fin (pb.A r), L.innerBall hd D P pb r k gamma) := by
     filter_upwards [hsource, hinner] with k hmap hcover
-    letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-    letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-    letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-    letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+    let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+    let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+    let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+    let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
       (X.obj (L.φ k)).t2TangentBundle
-    letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+    let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     intro z hz
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz

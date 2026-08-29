@@ -142,9 +142,9 @@ private def buildLevelZero
     fChartEff_memWkp := by
       change DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) (m - 0) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)
       rw [Nat.sub_zero]
       exact base_f_chart_memWkp_m
@@ -153,9 +153,9 @@ private def buildLevelZero
           (I := I) (M := M) g 1 hu_h)
         h_chart_H_m_plus_1_u h_chart_H_m_RHS
     fChartEff_ae_zero_off_K := by
-      change (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+      change (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
         g α (laplacianDomainPow_succ_subset_laplacianDomain
-          (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[
+          (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
@@ -208,7 +208,7 @@ private def buildLevelStep
       at h_w1p_eq
     exact h_w1p_eq
   let D_next : IteratedDiffChartBilinearData (I := I) (M := M) g α u_h (j + 1) :=
-    iteratedDiffChartBilinearData_step (I := I) (M := M) g α
+    iteratedDiffChartBilinearDataStep (I := I) (M := M) g α
       (u_h := u_h) j B_j.data (padDirs dirs j)
       h_chart_H_j_plus_1 h_chart_H_j_plus_2
       h_D_j_W1p B_j.fChartEff_ae_zero_off_K

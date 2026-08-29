@@ -30,8 +30,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -77,19 +77,28 @@ theorem curveDensity_pole
         t ^ (Module.finrank Real E - 1))
       (𝓝[>] (0 : Real)) (𝓝 1) := by
   classical
+  let ιp : TangentSpace I p ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
+  let uE : E := ιp u
+  let vE : Fin (Module.finrank Real E - 1) → E := fun i => ιp (v i)
   let C : Matrix (Fin (Module.finrank Real E))
       (Fin (Module.finrank Real E - 1)) Real :=
-    fun k i => (chartModelBasis E).repr (v i) k
+    fun k i => (chartModelBasis E).repr (vE i) k
   let A : Real → Matrix (Fin (Module.finrank Real E - 1))
       (Fin (Module.finrank Real E - 1)) Real :=
-    fun t => Cᵀ * normalGramMatrix (I := I) g p (t • (u : E)) * C
+    fun t => Cᵀ * normalGramMatrix (I := I) g p (t • uE) * C
+  have hvE (i : Fin (Module.finrank Real E - 1)) :
+      vE i = ∑ k, C k i • (chartModelBasis E) k := by
+    dsimp only [C, vE]
+    exact ((chartModelBasis E).sum_repr (ιp (v i))).symm
   have hv (i : Fin (Module.finrank Real E - 1)) :
-      (v i : E) = ∑ k, C k i • (chartModelBasis E) k := by
-    dsimp only [C]
-    exact ((chartModelBasis E).sum_repr (v i)).symm
+      v i = ∑ k, C k i • ιp.symm ((chartModelBasis E) k) := by
+    apply ιp.injective
+    simpa only [map_sum, map_smul, ContinuousLinearEquiv.apply_symm_apply] using hvE i
   have hG0 (k l : Fin (Module.finrank Real E)) :
       normalGramMatrix (I := I) g p (0 : E) k l =
-        g.inner p ((chartModelBasis E) k) ((chartModelBasis E) l) := by
+        g.inner p (ιp.symm ((chartModelBasis E) k))
+          (ιp.symm ((chartModelBasis E) l)) := by
     rw [normalGram_apply, expMapDiffeo_zero]
     change
       g.inner p
@@ -97,22 +106,24 @@ theorem curveDensity_pole
             ((chartModelBasis E) k))
           (mfderiv 𝓘(Real, E) I (normalChartAt (I := I) g p).symm (0 : E)
             ((chartModelBasis E) l)) =
-        g.inner p ((chartModelBasis E) k) ((chartModelBasis E) l)
-    exact normalChartAt_metric_pullback_at_origin (I := I) g p
-      ((chartModelBasis E) k) ((chartModelBasis E) l)
+        g.inner p (ιp.symm ((chartModelBasis E) k))
+          (ιp.symm ((chartModelBasis E) l))
+    simpa only [ιp, tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+      normalChartAt_metric_pullback_at_origin (I := I) g p
+        ((chartModelBasis E) k) ((chartModelBasis E) l)
   have hC0 :
       Cᵀ * normalGramMatrix (I := I) g p (0 : E) * C =
         (1 : Matrix (Fin (Module.finrank Real E - 1))
           (Fin (Module.finrank Real E - 1)) Real) := by
     have hbase0 :
         curveGram (I := I) g (fun _ : Real => p)
-            (fun k (_ : Real) => (show TangentSpace I p from (chartModelBasis E) k)) 0 =
+            (fun k (_ : Real) => ιp.symm ((chartModelBasis E) k)) 0 =
           normalGramMatrix (I := I) g p (0 : E) := by
       ext k l
       simpa only [curveGram, Matrix.of_apply] using (hG0 k l).symm
     have hrect0 :=
       curveGram_rect (I := I) g (fun _ : Real => p)
-        (fun k (_ : Real) => (show TangentSpace I p from (chartModelBasis E) k))
+        (fun k (_ : Real) => ιp.symm ((chartModelBasis E) k))
         (fun i (_ : Real) => v i) 0 C hv
     rw [← hbase0, ← hrect0]
     ext i j
@@ -121,18 +132,19 @@ theorem curveDensity_pole
       A 0 =
         (1 : Matrix (Fin (Module.finrank Real E - 1))
           (Fin (Module.finrank Real E - 1)) Real) := by
-    simpa only [A, zero_smul] using hC0
+    with_unfolding_all
+      simpa only [A, zero_smul] using hC0
   have htx :
-      Tendsto (fun t : Real => t • (u : E)) (𝓝[>] (0 : Real)) (𝓝 (0 : E)) := by
-    have hcont : Continuous fun t : Real => t • (u : E) :=
+      Tendsto (fun t : Real => t • uE) (𝓝[>] (0 : Real)) (𝓝 (0 : E)) := by
+    have hcont : Continuous fun t : Real => t • uE :=
       continuous_id.smul continuous_const
     have hzero :
-        Tendsto (fun t : Real => t • (u : E)) (𝓝 (0 : Real)) (𝓝 (0 : E)) := by
+        Tendsto (fun t : Real => t • uE) (𝓝 (0 : Real)) (𝓝 (0 : E)) := by
       simpa using (hcont.continuousAt (x := (0 : Real))).tendsto
     exact hzero.mono_left inf_le_left
   have hnormal :
       Tendsto
-        (fun t : Real => normalGramMatrix (I := I) g p (t • (u : E)))
+        (fun t : Real => normalGramMatrix (I := I) g p (t • uE))
         (𝓝[>] (0 : Real))
         (𝓝 (normalGramMatrix (I := I) g p (0 : E))) :=
     (normalGram_contAt (I := I) g p).tendsto.comp htx
@@ -154,26 +166,28 @@ theorem curveDensity_pole
               (Fin (Module.finrank Real E)) Real => C) :=
         continuous_const
       exact (hleft.matrix_mul hright).continuousAt
-    simpa only [A, Function.comp_apply, zero_smul] using hmul.tendsto.comp hnormal
+    dsimp only [A]
+    convert hmul.tendsto.comp hnormal using 1
+    all_goals first | rfl | simp only [zero_smul]
   have hsrc : ∀ᶠ t in 𝓝[>] (0 : Real),
-      t • (u : E) ∈ (expMapDiffeo (I := I) g p).source :=
+      t • uE ∈ (expMapDiffeo (I := I) g p).source :=
     htx.eventually ((expMapDiffeo (I := I) g p).open_source.mem_nhds
       (zero_mem_expMapDiffeo_source (I := I) g p))
   have hrad : ∀ᶠ t in 𝓝[>] (0 : Real),
-      ‖(t • (u : E) : E)‖ < expMapC2Radius (I := I) g p := by
+      ‖t • uE‖ < expMapC2Radius (I := I) g p := by
     have hball := htx.eventually
       (Metric.ball_mem_nhds (0 : E) (expMapC2Radius_pos (I := I) g p))
     filter_upwards [hball] with t ht
     simpa only [Metric.mem_ball, dist_zero_right] using ht
   have hraw0 :=
-    intrJacobi_raw (I := I) g hEnorm p (u : E) (0 : E)
+    intrJacobi_raw (I := I) g hEnorm p uE (0 : E)
   have hraw : ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,
       intrinsicGeodesic (I := I) g hEnorm p u t =
-          radialCurve (I := I) g p (u : E) t ∧
+          radialCurve (I := I) g p uE t ∧
         (intrinsicJacobi (I := I) g hEnorm p u (v i) t : E) =
-          (radialJacobiField (I := I) g p (u : E) (v i : E) t : E) :=
+          (radialJacobiField (I := I) g p uE (vE i) t : E) :=
     Filter.eventually_all.mpr fun i =>
-      intrJacobi_raw (I := I) g hEnorm p (u : E) (v i : E)
+      intrJacobi_raw (I := I) g hEnorm p uE (vE i)
   have hgram : ∀ᶠ t in 𝓝[>] (0 : Real),
       curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t =
@@ -181,81 +195,76 @@ theorem curveDensity_pole
     filter_upwards [hraw0, hraw, hsrc, hrad] with t hraw0t hrawt hsrct hradt
     have hγ :
         intrinsicGeodesic (I := I) g hEnorm p u t =
-          radialCurve (I := I) g p (u : E) t :=
+          radialCurve (I := I) g p uE t :=
       hraw0t.1
     have hrecomb (i : Fin (Module.finrank Real E - 1)) :
-        radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1 =
-          ∑ k, C k i • radialJacobiField (I := I) g p (t • (u : E))
+        radialJacobiField (I := I) g p (t • uE) (vE i) 1 =
+          ∑ k, C k i • radialJacobiField (I := I) g p (t • uE)
             ((chartModelBasis E) k) 1 := by
       calc
-        radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1 =
-            radialJacobiField (I := I) g p (t • (u : E))
-              (∑ k, C k i • (chartModelBasis E) k) 1 := by rw [hv i]
-        _ = _ := radialJacobi_sum (I := I) g p (t • (u : E))
+        radialJacobiField (I := I) g p (t • uE) (vE i) 1 =
+            radialJacobiField (I := I) g p (t • uE)
+              (∑ k, C k i • (chartModelBasis E) k) 1 := by rw [hvE i]
+        _ = _ := radialJacobi_sum (I := I) g p (t • uE)
           (chartModelBasis E) (fun k => C k i) hradt
     have hbase :
-        curveGram (I := I) g (radialCurve (I := I) g p (u : E))
-            (fun k t => radialJacobiField (I := I) g p (t • (u : E))
+        curveGram (I := I) g (radialCurve (I := I) g p uE)
+            (fun k t => radialJacobiField (I := I) g p (t • uE)
               ((chartModelBasis E) k) 1) t =
-          normalGramMatrix (I := I) g p (t • (u : E)) := by
+          normalGramMatrix (I := I) g p (t • uE) := by
       rw [normalGram_radialMat (I := I) g p hsrct hradt]
       rfl
     have hrect :
-        curveGram (I := I) g (radialCurve (I := I) g p (u : E))
-            (fun i t => radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1) t =
+        curveGram (I := I) g (radialCurve (I := I) g p uE)
+            (fun i t => radialJacobiField (I := I) g p (t • uE) (vE i) 1) t =
           A t := by
-      rw [curveGram_rect (I := I) g (radialCurve (I := I) g p (u : E))
-        (fun k t => radialJacobiField (I := I) g p (t • (u : E))
+      rw [curveGram_rect (I := I) g (radialCurve (I := I) g p uE)
+        (fun k t => radialJacobiField (I := I) g p (t • uE)
           ((chartModelBasis E) k) 1)
-        (fun i t => radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1)
+        (fun i t => radialJacobiField (I := I) g p (t • uE) (vE i) 1)
         t C hrecomb, hbase]
     calc
       curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t =
           (t ^ 2) •
-            curveGram (I := I) g (radialCurve (I := I) g p (u : E))
-              (fun i t => radialJacobiField (I := I) g p (t • (u : E))
-                (v i : E) 1) t := by
+            curveGram (I := I) g (radialCurve (I := I) g p uE)
+              (fun i t => radialJacobiField (I := I) g p (t • uE)
+                (vE i) 1) t := by
         ext i j
         simp only [curveGram, Matrix.of_apply, Matrix.smul_apply]
         rw [hγ]
         change
-          g.inner (radialCurve (I := I) g p (u : E) t)
+          g.inner (radialCurve (I := I) g p uE t)
               (intrinsicJacobi (I := I) g hEnorm p u (v i) t : E)
               (intrinsicJacobi (I := I) g hEnorm p u (v j) t : E) =
             t ^ 2 *
-              g.inner (radialCurve (I := I) g p (u : E) t)
-                (radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1)
-                (radialJacobiField (I := I) g p (t • (u : E)) (v j : E) 1)
+              g.inner (radialCurve (I := I) g p uE t)
+                (radialJacobiField (I := I) g p (t • uE) (vE i) 1)
+                (radialJacobiField (I := I) g p (t • uE) (vE j) 1)
         have hi :
-            radialJacobiField (I := I) g p (u : E) (v i : E) t =
-              t • radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1 := by
-          calc
-            radialJacobiField (I := I) g p (u : E) (v i : E) t =
-                radialJacobiField (I := I) g p (t • (u : E)) (t • (v i : E)) 1 :=
-              radialJacobi_scale (I := I) g p (u : E) (v i : E) t
-            _ = t • radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1 :=
-              radialJacobi_one_smul (I := I) g p (t • (u : E)) (v i : E) t hradt
+            radialJacobiField (I := I) g p uE (vE i) t =
+              t • radialJacobiField (I := I) g p (t • uE) (vE i) 1 := by
+          rw [radialJacobi_scale (I := I) g p uE (vE i) t]
+          convert radialJacobi_one_smul (I := I) g p (t • uE) (vE i) t hradt using 1
+          all_goals rfl
         have hj :
-            radialJacobiField (I := I) g p (u : E) (v j : E) t =
-              t • radialJacobiField (I := I) g p (t • (u : E)) (v j : E) 1 := by
-          calc
-            radialJacobiField (I := I) g p (u : E) (v j : E) t =
-                radialJacobiField (I := I) g p (t • (u : E)) (t • (v j : E)) 1 :=
-              radialJacobi_scale (I := I) g p (u : E) (v j : E) t
-            _ = t • radialJacobiField (I := I) g p (t • (u : E)) (v j : E) 1 :=
-              radialJacobi_one_smul (I := I) g p (t • (u : E)) (v j : E) t hradt
+            radialJacobiField (I := I) g p uE (vE j) t =
+              t • radialJacobiField (I := I) g p (t • uE) (vE j) 1 := by
+          rw [radialJacobi_scale (I := I) g p uE (vE j) t]
+          convert radialJacobi_one_smul (I := I) g p (t • uE) (vE j) t hradt using 1
+          all_goals rfl
         rw [(hrawt i).2, (hrawt j).2, hi, hj]
         let β : E →L[Real] E →L[Real] Real :=
-          g.inner (radialCurve (I := I) g p (u : E) t)
+          g.inner (radialCurve (I := I) g p uE t)
         let X : E :=
-          (radialJacobiField (I := I) g p (t • (u : E)) (v i : E) 1 : E)
+          (radialJacobiField (I := I) g p (t • uE) (vE i) 1 : E)
         let Y : E :=
-          (radialJacobiField (I := I) g p (t • (u : E)) (v j : E) 1 : E)
+          (radialJacobiField (I := I) g p (t • uE) (vE j) 1 : E)
         change β (t • X) (t • Y) = t ^ 2 * β X Y
         have hleft : β (t • X) (t • Y) = t * β X (t • Y) := by
           have h := congrArg (fun L : _ →L[Real] Real => L (t • Y)) (β.map_smul t X)
-          simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+          with_unfolding_all
+            simpa only [_root_.smul_apply, smul_eq_mul] using h
         have hright : β X (t • Y) = t * β X Y := by
           simpa only [smul_eq_mul] using (β X).map_smul t Y
         rw [hleft, hright, pow_two]
@@ -263,10 +272,17 @@ theorem curveDensity_pole
       _ = (t ^ 2) • A t := congrArg ((t ^ 2) • ·) hrect
   have hdet :
       Tendsto (fun t => (A t).det) (𝓝[>] (0 : Real)) (𝓝 1) := by
-    simpa using (continuous_id.matrix_det.continuousAt.tendsto.comp hA)
+    change Tendsto ((fun G : Matrix (Fin (Module.finrank Real E - 1))
+      (Fin (Module.finrank Real E - 1)) Real => G.det) ∘ A)
+      (𝓝[>] (0 : Real)) (𝓝 1)
+    simpa only [id_eq, Matrix.det_one] using
+      continuous_id.matrix_det.continuousAt.tendsto.comp hA
   have hsqrt :
       Tendsto (fun t => Real.sqrt (A t).det) (𝓝[>] (0 : Real)) (𝓝 1) := by
-    simpa using (Real.continuous_sqrt.continuousAt.tendsto.comp hdet)
+    change Tendsto ((fun x : Real => Real.sqrt x) ∘ fun t => (A t).det)
+      (𝓝[>] (0 : Real)) (𝓝 1)
+    simpa only [Real.sqrt_one] using
+      Real.continuous_sqrt.continuousAt.tendsto.comp hdet
   refine hsqrt.congr' ?_
   filter_upwards [hgram, self_mem_nhdsWithin] with t hgramt ht
   have ht0 : (0 : Real) < t := ht
@@ -417,14 +433,14 @@ private lemma clm_smul_apply
     (B : F →L[Real] F →L[Real] Real) (c : Real) (v w : F) :
     B (c • v) w = c * B v w := by
   have h := congrArg (fun L : F →L[Real] Real => L w) (B.map_smul c v)
-  simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+  simpa only [_root_.smul_apply, smul_eq_mul] using h
 
 private lemma clm_sum_apply
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     {κ : Type*} [Fintype κ]
     (B : F →L[Real] F →L[Real] Real) (v : κ → F) (w : F) :
     B (∑ i, v i) w = ∑ i, B (v i) w := by
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, _root_.sum_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
@@ -433,15 +449,15 @@ omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)] in
 theorem linIndep_of_ortho
     (g : SmoothRiemannianMetric I M) (x : M)
-    (e : Fin (Module.finrank Real E - 1) → E)
+    (e : Fin (Module.finrank Real E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0) :
     LinearIndependent Real e := by
   classical
   rw [Fintype.linearIndependent_iff]
   intro c hc j
-  have hpair := congrArg (fun z : E => g.inner x z (e j)) hc
+  have hpair := congrArg (fun z : TangentSpace I x => g.inner x z (e j)) hc
   change g.inner x (∑ i, c i • e i) (e j) = g.inner x 0 (e j) at hpair
-  rw [clm_sum_apply, map_zero, ContinuousLinearMap.zero_apply] at hpair
+  rw [clm_sum_apply, map_zero, _root_.zero_apply] at hpair
   rw [Finset.sum_eq_single j] at hpair
   · calc
       c j = c j * 1 := by rw [mul_one]

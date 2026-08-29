@@ -9,6 +9,7 @@ open scoped Topology NNReal
 
 namespace DifferentialGeometry.Analysis.ODE
 
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
 
 omit [CompleteSpace E] in
@@ -102,8 +103,11 @@ theorem forward_variational_solution_from_zero
         (ContinuousLinearMap.apply ℝ E y).continuous
       exact happly.comp_continuousOn hAcont
     · intro t ht y hy
+      have hy_norm_aN : ‖y‖ ≤ (aN : Real) := by
+        simpa only [mem_closedBall_zero_iff] using hy
       have hy_norm : ‖y‖ ≤ a₀ := by
-        simpa [mem_closedBall_zero_iff, haN_def] using hy
+        change ‖y‖ ≤ a₀ at hy_norm_aN
+        exact hy_norm_aN
       change ‖v t y‖ ≤ (LN : ℝ)
       have hLN_val : (LN : ℝ) = M * a₀ := rfl
       rw [hLN_val]
@@ -393,7 +397,8 @@ theorem forward_flow_hasFDerivAt_initial
       (differentiableAt_const τ).prodMk differentiableAt_id
     exact hDiff_joint.comp z hg
   have hf_lip_ball : ∀ τ ∈ Icc (0 : ℝ) δ,
-      LipschitzOnWith ⟨K_lip, hK_lip_nn⟩ (f τ) (closedBall (Φ x₀ τ) δ_K_strict) := by
+      LipschitzOnWith (Real.toNNReal K_lip) (f τ)
+        (closedBall (Φ x₀ τ) δ_K_strict) := by
     intro τ hτ
     apply Convex.lipschitzOnWith_of_nnnorm_fderiv_le (fun z _ => hf_diff_pt τ z) ?_
       (convex_closedBall _ _)
@@ -401,8 +406,9 @@ theorem forward_flow_hasFDerivAt_initial
     have h_norm_le : ‖z - Φ x₀ τ‖ ≤ δ_K_strict := by
       have := Metric.mem_closedBall.mp hz
       rw [dist_eq_norm] at this; exact this
-    change (‖fderiv ℝ (f τ) z‖₊ : ℝ≥0) ≤ ⟨K_lip, hK_lip_nn⟩
+    change (‖fderiv ℝ (f τ) z‖₊ : ℝ≥0) ≤ Real.toNNReal K_lip
     rw [← NNReal.coe_le_coe]
+    rw [Real.coe_toNNReal K_lip hK_lip_nn]
     exact hK_bd τ hτ z h_norm_le
   rw [hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_iff]
   intro c hc
@@ -545,7 +551,7 @@ theorem forward_flow_hasFDerivAt_initial
       ‖α_h τ - β_h τ‖ ≤ GfactorR * (ε_target * CE * ‖h‖) := by
     intro τ hτ
     have hv_lip : ∀ τ ∈ Ico (0 : ℝ) δ,
-        LipschitzOnWith ⟨K_lip, hK_lip_nn⟩ (f τ) (s_set τ) := fun τ hτ =>
+        LipschitzOnWith (Real.toNNReal K_lip) (f τ) (s_set τ) := fun τ hτ =>
       hf_lip_ball τ ⟨hτ.1, le_of_lt hτ.2⟩
     have hα_h_deriv_R : ∀ τ ∈ Ico (0 : ℝ) δ,
         HasDerivWithinAt α_h (f τ (α_h τ)) (Ici τ) τ :=
@@ -573,7 +579,7 @@ theorem forward_flow_hasFDerivAt_initial
     have ha_init : dist (α_h 0) (β_h 0) ≤ 0 := by
       rw [hα_h_init, hβ_h_init, dist_self]
     have hG := dist_le_of_approx_trajectories_ODE_of_mem
-      (v := f) (s := s_set) (K := ⟨K_lip, hK_lip_nn⟩)
+      (v := f) (s := s_set) (K := Real.toNNReal K_lip)
       (f := α_h) (g := β_h) (f' := fun τ => f τ (α_h τ))
       (g' := fun τ => f τ (Φ x₀ τ) + A τ (y_h τ))
       (εf := 0) (εg := εg) (δ := 0)
@@ -581,6 +587,7 @@ theorem forward_flow_hasFDerivAt_initial
       hβ_h_cont hβ_h_deriv hg_bound hgs ha_init τ hτ
     rw [dist_eq_norm] at hG
     rw [zero_add] at hG
+    rw [Real.coe_toNNReal K_lip hK_lip_nn] at hG
     have hτ_nn : 0 ≤ τ - 0 := by simp [hτ.1]
     have hτ_le : τ - 0 ≤ δ := by simp [hτ.2]
     have h_GB := gronwallBound_zero_le (K := K_lip) (ε := εg) (x := τ - 0)

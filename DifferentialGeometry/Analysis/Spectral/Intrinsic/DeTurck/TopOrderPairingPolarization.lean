@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDiffer
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Sobolev
@@ -121,7 +120,7 @@ private lemma edge_bitrace_move
                 L (∑ b, c j b • f b))
               (map_sum S (fun a => c i a • f a) Finset.univ)
       _ = ∑ a, S (c i a • f a) (∑ b, c j b • f b) := by
-            rw [ContinuousLinearMap.sum_apply]
+            rw [sum_apply]
       _ = ∑ a, ∑ b, S (c i a • f a) (c j b • f b) := by
             refine Finset.sum_congr rfl fun a _ => ?_
             exact map_sum (S (c i a • f a))
@@ -129,7 +128,7 @@ private lemma edge_bitrace_move
       _ = ∑ a, ∑ b, (c i a * c j b) * S (f a) (f b) := by
             refine Finset.sum_congr rfl fun a _ => ?_
             refine Finset.sum_congr rfl fun b _ => ?_
-            simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+            simp only [map_smul, smul_apply, smul_eq_mul]
             ring
   have hZ : ∀ a b, Z (f a) (f b) =
       ∑ i, ∑ j, (c i a * c j b) * Z (e i) (e j) := by
@@ -143,7 +142,7 @@ private lemma edge_bitrace_move
                 L (∑ j, c j b • e j))
               (map_sum Z (fun i => c i a • e i) Finset.univ)
       _ = ∑ i, Z (c i a • e i) (∑ j, c j b • e j) := by
-            rw [ContinuousLinearMap.sum_apply]
+            rw [sum_apply]
       _ = ∑ i, ∑ j, Z (c i a • e i) (c j b • e j) := by
             refine Finset.sum_congr rfl fun i _ => ?_
             exact map_sum (Z (c i a • e i))
@@ -151,7 +150,7 @@ private lemma edge_bitrace_move
       _ = ∑ i, ∑ j, (c i a * c j b) * Z (e i) (e j) := by
             refine Finset.sum_congr rfl fun i _ => ?_
             refine Finset.sum_congr rfl fun j _ => ?_
-            simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+            simp only [map_smul, smul_apply, smul_eq_mul]
             ring
   calc
     (∑ a, ∑ b, S (f a) (f b) * Z (f a) (f b)) =
@@ -185,7 +184,7 @@ private def edgeEvalCLM (s : Nat) (x : M) (v : Fin s → E) :
   LinearMap.toContinuousLinearMap
     { toFun := fun D => Tensor0SSpace.toModel D v
       map_add' := fun D₁ D₂ => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+        rw [Tensor0SSpace.toModel_add, add_apply]
       map_smul' := fun c D => by
         rw [Tensor0SSpace.toModel_smul]
         rfl }
@@ -202,14 +201,14 @@ private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
     inferInstanceAs (FiniteDimensional Real E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p => (edgeEvalCLM (I := I) (M := M) s x v).comp
-        (tensor0S_curry (𝕜 := Real) (I := I) (M := M) s x
-          ((tensor0S_curry (𝕜 := Real) (I := I) (M := M) (s + 1) x G) p))
+        (tensor0SCurry (𝕜 := Real) (I := I) (M := M) s x
+          ((tensor0SCurry (𝕜 := Real) (I := I) (M := M) (s + 1) x G) p))
       map_add' := fun p p' => by
         rw [map_add, map_add, ContinuousLinearMap.comp_add]
       map_smul' := fun c p => by
         rw [map_smul, map_smul, RingHom.id_apply]
         ext q
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -217,14 +216,17 @@ private lemma edgeFeedCLM_apply (s : Nat) (x : M)
     (G : Tensor0SSpace (s + 2) I x) (v : Fin s → E)
     (p q : TangentSpace I x) :
     edgeFeedCLM (I := I) (M := M) s x G v p q =
-      Tensor0SSpace.toModel G (Fin.cons (p : E) (Fin.cons (q : E) v)) := by
+      Tensor0SSpace.toModel G
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)) := by
   rw [edgeFeedCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk, ContinuousLinearMap.comp_apply, edgeEvalCLM_apply,
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := tensor0S_curry (𝕜 := Real) (I := I) (M := M) (s + 1) x G p)
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+      (T := tensor0SCurry (𝕜 := Real) (I := I) (M := M) (s + 1) x G p)
       (v0 := q) (vs := v),
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := G) (v0 := p) (vs := Fin.cons (q : E) v)]
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+      (T := G) (v0 := p)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)]
 
 private lemma edge_sum_succ {A R : Type*} [Fintype A] [AddCommMonoid R]
     (s : Nat) (F : (Fin (s + 1) → A) → R) :
@@ -272,7 +274,6 @@ private lemma edge_sum4 {A : Type*} [Fintype A] (F : (Fin 4 → A) → Real) :
   · intro h
     exact absurd (Finset.mem_univ _) h
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem topOrderBilinearPairingAdjointCoefficient_apply (g gm : SmoothRiemannianMetric I M)
@@ -293,7 +294,6 @@ theorem topOrderBilinearPairingAdjointCoefficient_apply (g gm : SmoothRiemannian
     funext k
     fin_cases k <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : SmoothCcTensor g 0 s) (x : M)
@@ -338,7 +338,6 @@ private lemma edge_inner0 (g : SmoothRiemannianMetric I M) (s : Nat)
   refine Finset.sum_congr rfl fun J _ => ?_
   rw [hcomp A Fin.elim0 J, hcomp B Fin.elim0 J]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
@@ -353,21 +352,37 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
   classical
   obtain ⟨e, bse, hbse, horth⟩ :=
     exists_orthoFrame_basis_E (I := I) (M := M) g x
+  let eE : Fin (Module.finrank Real E) → E := fun i =>
+    tangentSpaceModelContinuousLinearEquiv (I := I) x (e i)
+  let fE : Fin (Module.finrank Real E) → E := fun i =>
+    tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) gm x i x)
+  let mE : Fin (Module.finrank Real E) → E := fun i =>
+    tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (metricComparisonEndomorphism (I := I) g gm x (e i))
+  have heE : ∀ i : Fin (Module.finrank Real E), (e i : E) = eE i := by
+    intro i
+    with_unfolding_all rfl
   rw [edge_inner0 (I := I) (M := M) g 2 V
       (operatorFieldApply (I := I) (M := M) g 2 2
         (topOrderPairingCoefficient (I := I) (M := M) g gm G σ) P) x e bse hbse horth,
     edge_inner0 (I := I) (M := M) g 4
       (topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g gm P V σ) G x e bse hbse horth,
     edge_sum2]
+  simp_rw [heE]
   have hvec2 : ∀ i j : Fin (Module.finrank Real E),
-      (fun k => (e (![i, j] k) : E)) = ![(e i : E), (e j : E)] := by
+      (fun k => eE (![i, j] k)) = ![eE i, eE j] := by
     intro i j
     funext k
     fin_cases k <;> rfl
+  have hcons2 : ∀ u w : E, (Fin.cons u (Fin.cons w ![]) : Fin 2 → E) = ![u, w] := by
+    intro u w
+    funext k
+    fin_cases k <;> rfl
   have hvec4 : ∀ a b i j : Fin (Module.finrank Real E),
-      (Fin.cons (e a : E)
-          (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E) =
-        fun k => (e (![a, b, i, j] k) : E) := by
+      (Fin.cons (eE a)
+          (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E) =
+        fun k => eE (![a, b, i, j] k) := by
     intro a b i j
     funext k
     fin_cases k <;> rfl
@@ -376,21 +391,19 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
       (∑ a : Fin (Module.finrank Real E),
         ∑ b : Fin (Module.finrank Real E),
           unitModel (I := I) (M := M) g 2 P x
-              ![(smoothOrthoFrame (I := I) gm x a x : E),
-                (smoothOrthoFrame (I := I) gm x b x : E)] *
+              ![fE a, fE b] *
             unitModel (I := I) (M := M) g 4 G x
               (fun k => (Fin.cons
-                (smoothOrthoFrame (I := I) gm x a x : E)
-                (Fin.cons (smoothOrthoFrame (I := I) gm x b x : E)
-                  ![(e i : E), (e j : E)]) : Fin 4 → E) (σ k))) =
+                (fE a)
+                (Fin.cons (fE b)
+                  ![eE i, eE j]) : Fin 4 → E) (σ k))) =
         ∑ a : Fin (Module.finrank Real E),
         ∑ b : Fin (Module.finrank Real E),
           unitModel (I := I) (M := M) g 2 P x
-              ![metricComparisonEndomorphism (I := I) g gm x (e a),
-                metricComparisonEndomorphism (I := I) g gm x (e b)] *
+              ![mE a, mE b] *
             unitModel (I := I) (M := M) g 4 G x
-              (fun k => (Fin.cons (e a : E)
-                (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E)
+              (fun k => (Fin.cons (eE a)
+                (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E)
                 (σ k)) := by
     intro i j
     let Px : Tensor0SSpace 2 I x :=
@@ -402,86 +415,85 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
     have hm := edge_bitrace_move (I := I) (M := M) g gm x
       (edgeFeedCLM (I := I) (M := M) 0 x Px ![])
       (edgeFeedCLM (I := I) (M := M) 2 x
-        (slotPerm4Fib (I := I) (M := M) x σ Gx) ![(e i : E), (e j : E)])
+        (slotPerm4Fib (I := I) (M := M) x σ Gx) ![eE i, eE j])
       e horth
-    simpa only [edgeFeedCLM_apply, slotPerm4Fib_toModel,
-      ContinuousMultilinearMap.domDomCongr_apply, Px, Gx, unitModel] using hm
+    simp only [edgeFeedCLM_apply, slotPerm4Fib_toModel,
+      ContinuousMultilinearMap.domDomCongr_apply] at hm
+    have hPx (v : Fin 2 → E) : Tensor0SSpace.toModel Px v =
+        unitModel (I := I) (M := M) g 2 P x v := by
+      rfl
+    have hGx (v : Fin 4 → E) : Tensor0SSpace.toModel Gx v =
+        unitModel (I := I) (M := M) g 4 G x v := by
+      rfl
+    simpa only [hPx, hGx, eE, fE, mE, hcons2] using hm
+  have hmE : ∀ i : Fin (Module.finrank Real E),
+      metricComparisonEndomorphismField (I := I) (M := M) g gm x (eE i) = mE i := by
+    intro i
+    with_unfolding_all rfl
   calc
     (∑ i, ∑ j,
-        unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)] *
+        unitModel (I := I) (M := M) g 2 V x ![eE i, eE j] *
           unitModel (I := I) (M := M) g 2
             (operatorFieldApply (I := I) (M := M) g 2 2
               (topOrderPairingCoefficient (I := I) (M := M) g gm G σ) P) x
-            ![(e i : E), (e j : E)]) =
+            ![eE i, eE j]) =
       ∑ i, ∑ j,
-        unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)] *
+        unitModel (I := I) (M := M) g 2 V x ![eE i, eE j] *
           (∑ a, ∑ b,
             unitModel (I := I) (M := M) g 2 P x
-                ![(smoothOrthoFrame (I := I) gm x a x : E),
-                  (smoothOrthoFrame (I := I) gm x b x : E)] *
+                ![fE a, fE b] *
               unitModel (I := I) (M := M) g 4 G x
-                (fun k => (Fin.cons
-                  (smoothOrthoFrame (I := I) gm x a x : E)
-                  (Fin.cons (smoothOrthoFrame (I := I) gm x b x : E)
-                    ![(e i : E), (e j : E)]) : Fin 4 → E) (σ k))) := by
+                (fun k => (Fin.cons (fE a)
+                  (Fin.cons (fE b) ![eE i, eE j]) : Fin 4 → E) (σ k))) := by
         refine Finset.sum_congr rfl fun i _ => ?_
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [topOrderPairingCoefficient_apply (I := I) (M := M) g gm P G σ x]
+        simp only [fE, tangentSpaceModelContinuousLinearEquiv_apply]
     _ = ∑ i, ∑ j,
-        unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)] *
+        unitModel (I := I) (M := M) g 2 V x ![eE i, eE j] *
           (∑ a, ∑ b,
             unitModel (I := I) (M := M) g 2 P x
-                ![metricComparisonEndomorphism (I := I) g gm x (e a),
-                  metricComparisonEndomorphism (I := I) g gm x (e b)] *
+                ![mE a, mE b] *
               unitModel (I := I) (M := M) g 4 G x
-                (fun k => (Fin.cons (e a : E)
-                  (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E)
-                  (σ k))) := by
+                (fun k => (Fin.cons (eE a)
+                  (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E) (σ k))) := by
         refine Finset.sum_congr rfl fun i _ => ?_
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [hmove i j]
     _ = ∑ a, ∑ b, ∑ i, ∑ j,
         (unitModel (I := I) (M := M) g 2 P x
-              ![metricComparisonEndomorphism (I := I) g gm x (e a),
-                metricComparisonEndomorphism (I := I) g gm x (e b)] *
-            unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)]) *
+              ![mE a, mE b] *
+            unitModel (I := I) (M := M) g 2 V x ![eE i, eE j]) *
           unitModel (I := I) (M := M) g 4 G x
-            (fun k => (Fin.cons (e a : E)
-              (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E)
-              (σ k)) := by
+            (fun k => (Fin.cons (eE a)
+              (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E) (σ k)) := by
         rw [show (∑ i, ∑ j,
-            unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)] *
+            unitModel (I := I) (M := M) g 2 V x ![eE i, eE j] *
               (∑ a, ∑ b,
                 unitModel (I := I) (M := M) g 2 P x
-                    ![metricComparisonEndomorphism (I := I) g gm x (e a),
-                      metricComparisonEndomorphism (I := I) g gm x (e b)] *
+                    ![mE a, mE b] *
                   unitModel (I := I) (M := M) g 4 G x
-                    (fun k => (Fin.cons (e a : E)
-                      (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E)
-                      (σ k)))) =
+                    (fun k => (Fin.cons (eE a)
+                      (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E) (σ k)))) =
             ∑ i, ∑ j, ∑ a, ∑ b,
-              unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)] *
+              unitModel (I := I) (M := M) g 2 V x ![eE i, eE j] *
                 (unitModel (I := I) (M := M) g 2 P x
-                    ![metricComparisonEndomorphism (I := I) g gm x (e a),
-                      metricComparisonEndomorphism (I := I) g gm x (e b)] *
+                    ![mE a, mE b] *
                   unitModel (I := I) (M := M) g 4 G x
-                    (fun k => (Fin.cons (e a : E)
-                      (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E)
-                      (σ k))) from by
+                    (fun k => (Fin.cons (eE a)
+                      (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E) (σ k))) from by
               refine Finset.sum_congr rfl fun i _ => ?_
               refine Finset.sum_congr rfl fun j _ => ?_
               rw [Finset.mul_sum]
               refine Finset.sum_congr rfl fun a _ => ?_
               rw [Finset.mul_sum]]
         rw [edge_sum4_comm (fun i j a b =>
-          unitModel (I := I) (M := M) g 2 V x ![(e i : E), (e j : E)] *
+          unitModel (I := I) (M := M) g 2 V x ![eE i, eE j] *
             (unitModel (I := I) (M := M) g 2 P x
-                ![metricComparisonEndomorphism (I := I) g gm x (e a),
-                  metricComparisonEndomorphism (I := I) g gm x (e b)] *
+                ![mE a, mE b] *
               unitModel (I := I) (M := M) g 4 G x
-                (fun k => (Fin.cons (e a : E)
-                  (Fin.cons (e b : E) ![(e i : E), (e j : E)]) : Fin 4 → E)
-                  (σ k))))]
+                (fun k => (Fin.cons (eE a)
+                  (Fin.cons (eE b) ![eE i, eE j]) : Fin 4 → E) (σ k))))]
         refine Finset.sum_congr rfl fun a _ => ?_
         refine Finset.sum_congr rfl fun b _ => ?_
         refine Finset.sum_congr rfl fun i _ => ?_
@@ -489,12 +501,9 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
         ring
     _ = ∑ K : Fin 4 → Fin (Module.finrank Real E),
         (unitModel (I := I) (M := M) g 2 P x
-              ![metricComparisonEndomorphism (I := I) g gm x (e (K 0)),
-                metricComparisonEndomorphism (I := I) g gm x (e (K 1))] *
-            unitModel (I := I) (M := M) g 2 V x
-              ![(e (K 2) : E), (e (K 3) : E)]) *
-          unitModel (I := I) (M := M) g 4 G x
-            (fun k => (e (K (σ k)) : E)) := by
+              ![mE (K 0), mE (K 1)] *
+            unitModel (I := I) (M := M) g 2 V x ![eE (K 2), eE (K 3)]) *
+          unitModel (I := I) (M := M) g 4 G x (fun k => eE (K (σ k))) := by
         rw [edge_sum4]
         refine Finset.sum_congr rfl fun a _ => ?_
         refine Finset.sum_congr rfl fun b _ => ?_
@@ -507,26 +516,21 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
     _ = ∑ J : Fin 4 → Fin (Module.finrank Real E),
         unitModel (I := I) (M := M) g 4
             (topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g gm P V σ) x
-            (fun k => (e (J k) : E)) *
-          unitModel (I := I) (M := M) g 4 G x
-            (fun k => (e (J k) : E)) := by
+            (fun k => eE (J k)) *
+          unitModel (I := I) (M := M) g 4 G x (fun k => eE (J k)) := by
         refine Fintype.sum_equiv
           (Equiv.arrowCongr σ.symm
             (Equiv.refl (Fin (Module.finrank Real E))))
           (fun K =>
             (unitModel (I := I) (M := M) g 2 P x
-                  ![metricComparisonEndomorphism (I := I) g gm x (e (K 0)),
-                    metricComparisonEndomorphism (I := I) g gm x (e (K 1))] *
-                unitModel (I := I) (M := M) g 2 V x
-                  ![(e (K 2) : E), (e (K 3) : E)]) *
-              unitModel (I := I) (M := M) g 4 G x
-                (fun k => (e (K (σ k)) : E)))
+                  ![mE (K 0), mE (K 1)] *
+                unitModel (I := I) (M := M) g 2 V x ![eE (K 2), eE (K 3)]) *
+              unitModel (I := I) (M := M) g 4 G x (fun k => eE (K (σ k))))
           (fun J =>
             unitModel (I := I) (M := M) g 4
                 (topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g gm P V σ) x
-                (fun k => (e (J k) : E)) *
-              unitModel (I := I) (M := M) g 4 G x
-                (fun k => (e (J k) : E)))
+                (fun k => eE (J k)) *
+              unitModel (I := I) (M := M) g 4 G x (fun k => eE (J k)))
           (fun K => ?_)
         have heqv :
             (Equiv.arrowCongr σ.symm
@@ -535,8 +539,11 @@ theorem topOrderBilinearPairing_pointwise (g gm : SmoothRiemannianMetric I M)
           funext k
           simp [Equiv.arrowCongr]
         rw [heqv]
-        simp only [topOrderBilinearPairingAdjointCoefficient_apply, metricComparisonEndomorphismField_apply,
-          Equiv.apply_symm_apply]
+        congr 1
+        simpa only [hmE, Equiv.apply_symm_apply] using
+          (topOrderBilinearPairingAdjointCoefficient_apply
+            (I := I) (M := M) g gm P V σ x
+            (fun k => eE (K (σ k)))).symm
 
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -582,7 +589,7 @@ theorem topOrderBilinearPairing_green (g gm : SmoothRiemannianMetric I M)
   let U₁ : SmoothCcTensor g 0 3 := iteratedCovGrad (I := I) g 0 2 1 U
   have hjet : iteratedCovGrad (I := I) g 0 2 2 U =
       covGrad (I := I) (M := M) g 0 3 U₁ := by
-    simpa only [U₁] using (iteratedCovGrad_succ g 0 2 1 U).symm
+    simpa only [U₁] using iteratedCovGrad_succ g 0 2 1 U
   have hgreen :
       Inner.inner Real (covGrad (I := I) (M := M) g 0 3 U₁) Q =
         -Inner.inner Real U₁
@@ -637,7 +644,7 @@ def ricciDeTurckTopOrderBilinearPairingCoefficient (g : SmoothRiemannianMetric I
     (iteratedCovGrad (I := I) g 0 2 2 U) hdelta hdeltaZ qA qB q epsilon s
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_coefficientForJet (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : gFibreOpBound (I := I) (M := M) g
@@ -652,6 +659,7 @@ theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_coefficientForJet (g :
         (iteratedCovGrad (I := I) g 0 2 2 U)
         hdelta hdeltaZ qA qB q epsilon s := rfl
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem ricciDeTurckTopOrderPairingCoefficientForJet_apply
@@ -722,6 +730,7 @@ def ricciDeTurckTopOrderBilinearPairingAdjoint (g : SmoothRiemannianMetric I M)
         topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g gm P V
           ((q i).trans (Equiv.swap (0 : Fin 4) 1))))
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem ricciDeTurckTopOrderBilinearPairing_pointwise
     (g : SmoothRiemannianMetric I M) (T P U V : SmoothCcTensor g 0 2)

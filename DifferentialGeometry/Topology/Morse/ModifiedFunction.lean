@@ -3,10 +3,12 @@ import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
 
+
+open scoped Topology BigOperators ContDiff
+
 namespace DifferentialGeometry.Topology.Morse.CellAttachment
 
 open Filter Set
-open scoped Topology BigOperators ContDiff
 
 noncomputable section
 
@@ -121,7 +123,8 @@ lemma posPart_add_smul_pos {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : �
       posPartCLM hk y + h • posUnit j
   rw [map_add, map_smul]
   have hpos : posPartCLM hk (posBasis hk j) = posUnit j := by
-    simpa using (posPart_posBasis hk j)
+    change posPart hk (posBasis hk j) = posUnit j
+    exact posPart_posBasis hk j
   rw [hpos]
 
 lemma negPart_add_smul_pos {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : ℝ)
@@ -130,7 +133,8 @@ lemma negPart_add_smul_pos {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : �
   change negPartCLM hk (y + h • posBasis hk j) = negPartCLM hk y
   rw [map_add, map_smul]
   have hneg : negPartCLM hk (posBasis hk j) = 0 := by
-    simpa using (negPart_posBasis hk j)
+    change negPart hk (posBasis hk j) = 0
+    exact negPart_posBasis hk j
   rw [hneg, smul_zero, add_zero]
 
 theorem modMu_const {ε t : ℝ} (hε : 0 < ε) (ht : t ≤ 2 * ε) : modMu ε t = 3 / 2 * ε := by
@@ -304,7 +308,9 @@ theorem differentiableAt_modMu {ε : ℝ} (x : ℝ) : DifferentiableAt ℝ (modM
   have hres : DifferentiableAt ℝ (fun t : ℝ =>
       (3 / 2 * ε) * (1 - Real.smoothTransition ((t - 2 * ε) / (2 * ε)))) x :=
     hone.const_mul (3 / 2 * ε)
-  simpa [modMu] using hres
+  change DifferentiableAt ℝ (fun t : ℝ =>
+    (3 / 2 * ε) * (1 - Real.smoothTransition ((t - 2 * ε) / (2 * ε)))) x
+  exact hres
 
 theorem differentiableAt_modGamma {δ : ℝ} (x : ℝ) : DifferentiableAt ℝ (modGamma δ) x := by
   change DifferentiableAt ℝ (fun s : ℝ => 1 - Real.smoothTransition ((2 * s - δ) / δ)) x
@@ -320,6 +326,11 @@ theorem differentiableAt_modGamma {δ : ℝ} (x : ℝ) : DifferentiableAt ℝ (m
   have hc1 : DifferentiableAt ℝ (fun _ : ℝ => (1 : ℝ)) x := differentiableAt_const (1 : ℝ)
   exact hc1.sub hcomp
 
+section
+
+local instance instNormedSpaceRealDifferentialGeometry : NormedSpace ℝ ℝ :=
+  RCLike.toInnerProductSpaceReal.toNormedSpace
+
 private lemma fderiv_apply_eq_deriv_line {n : ℕ} {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {g : MorseModel n → F} {y e : MorseModel n}
     (hgdiff : DifferentiableAt ℝ g y) {D : F}
@@ -327,7 +338,7 @@ private lemma fderiv_apply_eq_deriv_line {n : ℕ} {F : Type} [NormedAddCommGrou
     fderiv ℝ g y e = D := by
   have hTdiff : DifferentiableAt ℝ (fun h : ℝ => y + h • e) 0 := by
     fun_prop
-  have hcomp := fderiv_comp' (g := g) (f := fun h : ℝ => y + h • e) (x := 0)
+  have hcomp := fderiv_fun_comp (g := g) (f := fun h : ℝ => y + h • e) (x := 0)
     (by simpa using hgdiff) hTdiff
   have hT : fderiv ℝ (fun h : ℝ => y + h • e) 0 = (1 : ℝ →L[ℝ] ℝ).smulRight e := by
     apply ContinuousLinearMap.ext
@@ -360,7 +371,7 @@ private lemma fderiv_apply_eq_deriv_line {n : ℕ} {F : Type} [NormedAddCommGrou
   rw [hfuneq2] at hh
   rw [hT] at hh
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply,
-    ContinuousLinearMap.one_apply, one_smul] at hh
+    one_apply_eq_self, one_smul] at hh
   rw [← hline']
   simpa using hh.symm
 
@@ -376,38 +387,18 @@ private lemma hasDerivAt_smul_const {F : Type} [NormedAddCommGroup F] [NormedSpa
 
 private lemma hasDerivAt_const_add_smul {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (x w : F) :
     HasDerivAt (fun h : ℝ => x + h • w) w 0 := by
-  rw [hasDerivAt_iff_hasFDerivAt]
-  have h1 : HasFDerivAt (fun h : ℝ => h • w) ((1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
-    exact ContinuousLinearMap.hasFDerivAt (f := (1 : ℝ →L[ℝ] ℝ).smulRight w) (x := 0)
-  have h2 : HasFDerivAt (fun h : ℝ => x) (0 : ℝ →L[ℝ] F) 0 := hasFDerivAt_const x 0
-  have h3 := h1.add h2
-  have hEq' : ContinuousLinearMap.toSpanSingleton ℝ w = (1 : ℝ →L[ℝ] ℝ).smulRight w := by
-    ext
-    simp [ContinuousLinearMap.toSpanSingleton_apply]
-  convert h3 using 1
-  · funext h
-    simp only [Pi.add_apply]
-    rw [add_comm]
-  · simp [hEq']
+  have hconst : HasDerivAt (fun _ : ℝ => x) 0 0 := hasDerivAt_const 0 x
+  have hsmul : HasDerivAt (fun h : ℝ => h • w) w 0 := hasDerivAt_smul_const w
+  have hfun : (fun h : ℝ => x + h • w) =ᶠ[nhds 0]
+      ((fun _ : ℝ => x) + fun h : ℝ => h • w) :=
+    Filter.Eventually.of_forall fun h => by simp only [Pi.add_apply]
+  exact ((hconst.add hsmul).congr_deriv (zero_add w)).congr_of_eventuallyEq hfun
 
 private lemma hasDerivAt_norm_add_smul {F : Type} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {x w : F} (hx : x ≠ 0) :
     HasDerivAt (fun h : ℝ => ‖x + h • w‖) (inner ℝ x w / ‖x‖) 0 := by
-  have hsmulw : HasDerivAt (fun h : ℝ => h • w) w 0 := hasDerivAt_smul_const w
-  have hlin : HasDerivAt (fun h : ℝ => x + h • w) w 0 := by
-    rw [hasDerivAt_iff_hasFDerivAt]
-    have h1 : HasFDerivAt (fun h : ℝ => h • w) ((1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
-      exact ContinuousLinearMap.hasFDerivAt (f := (1 : ℝ →L[ℝ] ℝ).smulRight w) (x := 0)
-    have h2 : HasFDerivAt (fun h : ℝ => x) (0 : ℝ →L[ℝ] F) 0 := hasFDerivAt_const x 0
-    have h3 := h1.add h2
-    have hEq' : ContinuousLinearMap.toSpanSingleton ℝ w = (1 : ℝ →L[ℝ] ℝ).smulRight w := by
-      ext
-      simp [ContinuousLinearMap.toSpanSingleton_apply]
-    convert h3 using 1
-    · funext h
-      simp only [Pi.add_apply]
-      rw [add_comm]
-    · simp [hEq']
+  have hlin : HasDerivAt (fun h : ℝ => x + h • w) w 0 :=
+    hasDerivAt_const_add_smul x w
   have hsq : HasDerivAt (fun h : ℝ => ‖x + h • w‖ ^ 2) (2 * inner ℝ x w) 0 := by
     simpa using (HasDerivAt.norm_sq hlin)
   have hne : ‖x + (0 : ℝ) • w‖ ^ 2 ≠ 0 := by
@@ -448,7 +439,7 @@ lemma hasDerivAt_modifiedNormalForm_posCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
             rw [real_inner_eq_re_inner]
             rw [RCLike.inner_apply']
             simp
-          simpa [posUnit] using hfiber
+          simp [posUnit]
         · intro i hi hij
           have hzero : inner ℝ (posPart hk y i) (0 : ℝ) = 0 := by
             rw [real_inner_eq_re_inner, RCLike.inner_apply']
@@ -479,9 +470,8 @@ lemma hasDerivAt_modifiedNormalForm_posCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
       hasDerivAt_const (x := (0 : ℝ)) (c := c)
     have hadd := HasDerivAt.add hconst hmul
     have hval : (1 / 2) * (2 * posPart hk y j - 0) = posPart hk y j := by ring
-    convert hadd using 1
-    · rw [hval]
-      simp
+    exact (hadd.congr_deriv (by rw [hval]; simp)).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun h => by simp only [Pi.add_apply])
   have hga : HasDerivAt (fun h : ℝ => modGamma δ ‖posPart hk (y + h • e)‖)
       (deriv (modGamma δ) ‖posPart hk y‖ * (inner ℝ (posPart hk y) (posUnit j) / ‖posPart hk y‖)) 0 := by
     have hnorm : HasDerivAt (fun h : ℝ => ‖posPart hk y + h • posUnit j‖)
@@ -513,7 +503,7 @@ lemma hasDerivAt_modifiedNormalForm_posCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
         rw [real_inner_eq_re_inner]
         rw [RCLike.inner_apply']
         simp
-      simpa [posUnit] using hfiber
+      simp [posUnit]
     · intro i hi hij
       have hzero : inner ℝ (posPart hk y i) (0 : ℝ) = 0 := by
         rw [real_inner_eq_re_inner, RCLike.inner_apply']
@@ -536,18 +526,21 @@ lemma hasDerivAt_modifiedNormalForm_posCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
         rw [hu h]
       rw [hfun]
       exact hasDerivAt_const (c := modMu ε (‖negPart hk y‖ ^ 2)) (x := (0 : ℝ))
-    have hmul := hmu0.mul hga'
-    have hval' : 0 * modGamma δ ‖posPart hk y‖ +
-        modMu ε (‖negPart hk y‖ ^ 2) * ((posPart hk y j) * (deriv (modGamma δ) ‖posPart hk y‖ / ‖posPart hk y‖)) =
-        modMu ε (‖negPart hk y‖ ^ 2) * ((posPart hk y j) * (deriv (modGamma δ) ‖posPart hk y‖ / ‖posPart hk y‖)) := by
-      ring
-    simpa [Pi.mul_apply, hval'] using hmul
+    have hmul := hmu0.smul hga'
+    exact (hmul.congr_deriv (by simp [smul_eq_mul])).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun h => by
+        change modMu ε (‖negPart hk (y + h • e)‖ ^ 2) *
+            modGamma δ ‖posPart hk (y + h • e)‖ =
+          modMu ε (‖negPart hk (y + h • e)‖ ^ 2) •
+            modGamma δ ‖posPart hk (y + h • e)‖
+        rw [smul_eq_mul])
   have hsub := hf.sub hprod
   have hval'' : posPart hk y j - modMu ε (‖negPart hk y‖ ^ 2) * (posPart hk y j *
       (deriv (modGamma δ) ‖posPart hk y‖ / ‖posPart hk y‖)) =
       (posPart hk y j) * (1 - modMu ε (‖negPart hk y‖ ^ 2) * deriv (modGamma δ) ‖posPart hk y‖ / ‖posPart hk y‖) := by
     ring
-  simpa [modifiedNormalForm, hval''] using hsub
+  exact (hsub.congr_deriv hval'').congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun h => by rfl)
 
 lemma negPart_add_smul {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : ℝ)
     (i : Fin k) :
@@ -557,7 +550,8 @@ lemma negPart_add_smul {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : ℝ)
       negPartCLM hk y + h • negUnit i
   rw [map_add, map_smul]
   have hneg : negPartCLM hk (negBasis hk i) = negUnit i := by
-    simpa using (negPart_negBasis hk i)
+    change negPart hk (negBasis hk i) = negUnit i
+    exact negPart_negBasis hk i
   rw [hneg]
 
 lemma posPart_add_smul {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : ℝ)
@@ -600,12 +594,9 @@ lemma hasDerivAt_modifiedNormalForm_negCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
             rw [real_inner_eq_re_inner]
             rw [RCLike.inner_apply']
             simp
-          simpa [negUnit, negPart] using hfiber
+          simp [negUnit, negPart]
         · intro j hj hji
-          have hzero : inner ℝ (negPart hk y j) (0 : ℝ) = 0 := by
-            rw [real_inner_eq_re_inner, RCLike.inner_apply']
-            simp
-          simpa only [hji, negUnit, negPart] using hzero
+          simp [hji, negUnit, negPart]
         · intro hi
           exact False.elim (hi (Finset.mem_univ i))
       rw [hin]
@@ -631,9 +622,8 @@ lemma hasDerivAt_modifiedNormalForm_negCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
       hasDerivAt_const (x := (0 : ℝ)) (c := c)
     have hadd := HasDerivAt.add hconst hmul
     have hval : (1 / 2) * (0 - 2 * negPart hk y i) = -(negPart hk y i) := by ring
-    convert hadd using 1
-    · rw [hval]
-      simp
+    exact (hadd.congr_deriv (by rw [hval]; simp)).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun h => by simp only [Pi.add_apply])
   have hmu : HasDerivAt (fun h : ℝ => modMu ε (‖negPart hk (y + h • e)‖ ^ 2))
       (deriv (modMu ε) (‖negPart hk y‖ ^ 2) * (2 * negPart hk y i)) 0 := by
     have hcv : HasDerivAt (modMu ε) (deriv (modMu ε) (‖negPart hk y‖ ^ 2)) (‖negPart hk y‖ ^ 2) :=
@@ -650,18 +640,23 @@ lemma hasDerivAt_modifiedNormalForm_negCoord {n k : ℕ} (hk : k ≤ n) (c ε δ
     exact hasDerivAt_const (c := modGamma δ ‖posPart hk y‖) (x := (0 : ℝ))
   have hprod : HasDerivAt (fun h : ℝ => modMu ε (‖negPart hk (y + h • e)‖ ^ 2) * modGamma δ ‖posPart hk (y + h • e)‖)
       (deriv (modMu ε) (‖negPart hk y‖ ^ 2) * (2 * negPart hk y i) * modGamma δ ‖posPart hk y‖) 0 := by
-    have hmul := hmu.mul hga
-    have hval : (deriv (modMu ε) (‖negPart hk y‖ ^ 2) * (2 * negPart hk y i)) * modGamma δ ‖posPart hk y‖ +
-        modMu ε (‖negPart hk y‖ ^ 2) * 0 =
-        deriv (modMu ε) (‖negPart hk y‖ ^ 2) * (2 * negPart hk y i) * modGamma δ ‖posPart hk y‖ := by
-      ring
-    simpa [Pi.mul_apply, hval] using hmul
+    have hmul := hmu.smul hga
+    exact (hmul.congr_deriv (by simp [smul_eq_mul])).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun h => by
+        change modMu ε (‖negPart hk (y + h • e)‖ ^ 2) *
+            modGamma δ ‖posPart hk (y + h • e)‖ =
+          modMu ε (‖negPart hk (y + h • e)‖ ^ 2) •
+            modGamma δ ‖posPart hk (y + h • e)‖
+        rw [smul_eq_mul])
   have hsub := hf.sub hprod
   have hval : -(negPart hk y i) - deriv (modMu ε) (‖negPart hk y‖ ^ 2) * (2 * negPart hk y i) *
       modGamma δ ‖posPart hk y‖ =
       -(negPart hk y i) * (1 + 2 * deriv (modMu ε) (‖negPart hk y‖ ^ 2) * modGamma δ ‖posPart hk y‖) := by
     ring
-  simpa [modifiedNormalForm, hval] using hsub
+  exact (hsub.congr_deriv hval).congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun h => by rfl)
+
+end
 
 theorem modMu_le {ε t : ℝ} (hε : 0 ≤ ε) : modMu ε t ≤ 3 / 2 * ε := by
   dsimp [modMu]
@@ -710,7 +705,9 @@ theorem contDiff_modMu {ε : ℝ} : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop �
   have hmul : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun t : ℝ => (3 / 2 * ε) * (1 - Real.smoothTransition ((t - 2 * ε) / (2 * ε)))) := by
     simpa [smul_eq_mul] using (ContDiff.const_smul (3 / 2 * ε) hone)
-  simpa [modMu] using hmul
+  change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun t : ℝ =>
+    (3 / 2 * ε) * (1 - Real.smoothTransition ((t - 2 * ε) / (2 * ε))))
+  exact hmul
 
 theorem contDiff_modGamma {δ : ℝ} : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (modGamma δ) := by
   have hst : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) Real.smoothTransition :=
@@ -723,7 +720,9 @@ theorem contDiff_modGamma {δ : ℝ} : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop
   have hone : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun s : ℝ => 1 - Real.smoothTransition ((2 * s - δ) / δ)) :=
     ContDiff.sub (contDiff_const : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : ℝ => (1 : ℝ))) hcomp
-  simpa [modGamma] using hone
+  change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+    (fun s : ℝ => 1 - Real.smoothTransition ((2 * s - δ) / δ))
+  exact hone
 
 theorem contDiff_morseNormalForm {n k : ℕ} (hk : k ≤ n) (c : ℝ) :
     ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (morseNormalForm hk c) := by
@@ -810,7 +809,9 @@ theorem contDiff_modifiedNormalForm {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ) (
   have hgamma : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun y : MorseModel n => modGamma δ ‖posPart hk y‖) :=
     contDiff_modGamma_norm hk δ hδ
-  simpa [modifiedNormalForm] using (ContDiff.sub h1 (ContDiff.mul hmu hgamma))
+  change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n =>
+    morseNormalForm hk c y - modMu ε (‖negPart hk y‖ ^ 2) * modGamma δ ‖posPart hk y‖)
+  exact ContDiff.sub h1 (ContDiff.mul hmu hgamma)
 
 theorem modifiedNormalForm_split {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ) (y : MorseModel n) :
     modifiedNormalForm hk c ε δ y =
@@ -1548,7 +1549,14 @@ private theorem continuousOn_collarRatioHomotopy {n k : ℕ} (hk : k ≤ n) (c �
           (nhds ((p.1 : ℝ), (0 : EuclideanSpace ℝ (Fin (n - k)))))
           (nhds ((p.1 : ℝ) • (0 : EuclideanSpace ℝ (Fin (n - k))))) :=
         continuous_smul.tendsto ((p.1 : ℝ), (0 : EuclideanSpace ℝ (Fin (n - k))))
-      simpa using (hsmulT.comp hpairs)
+      have hcomp := hsmulT.comp hpairs
+      change Tendsto
+        ((fun tw : ℝ × EuclideanSpace ℝ (Fin (n - k)) => tw.1 • tw.2) ∘
+          fun q : Set.Icc (0 : ℝ) 1 × MorseModel n =>
+            ((q.1 : ℝ), Real.sqrt ((‖negPart hk q.2‖ ^ 2 - 2 * ε) /
+              ‖posPart hk q.2‖ ^ 2) • posPart hk q.2))
+        (nhdsWithin p P) (nhds 0)
+      simpa using hcomp
     have hsum : Tendsto (fun q : Set.Icc (0 : ℝ) 1 × MorseModel n =>
         (1 - (q.1 : ℝ)) • posPart hk q.2 +
           (q.1 : ℝ) • (Real.sqrt ((‖negPart hk q.2‖ ^ 2 - 2 * ε) / ‖posPart hk q.2‖ ^ 2) •
@@ -1680,9 +1688,9 @@ private noncomputable def modifiedCollarRetractionC {n k : ℕ} (hk : k ≤ n) (
     modifiedCollarRetraction_mem_lowerCellUnion hk c ε hε y.1⟩, by
     have hcont : Continuous (fun y : {y : MorseModel n // modifiedNormalForm hk c ε δ y ≤ c - ε} =>
         modifiedCollarRetraction hk c ε y.1) := by
-      change Continuous (({y : MorseModel n | modifiedNormalForm hk c ε δ y ≤ c - ε}).restrict
+      change Continuous (({y : MorseModel n | modifiedNormalForm hk c ε δ y ≤ c - ε}).domRestrict
         (modifiedCollarRetraction hk c ε))
-      exact (continuousOn_iff_continuous_restrict).1 (continuousOn_modifiedCollarRetraction_sublevel hk c ε δ)
+      exact (continuousOn_iff_continuous_domRestrict).1 (continuousOn_modifiedCollarRetraction_sublevel hk c ε δ)
     exact (Topology.IsInducing.subtypeVal.continuous_iff).2 hcont⟩
 
 private noncomputable def modifiedCollarInclusionC {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ)
@@ -1713,8 +1721,8 @@ theorem continuous_modifiedCollarRetractionHomotopyFun {n k : ℕ} (hk : k ≤ n
     Set.univ ×ˢ {y : MorseModel n | modifiedNormalForm hk c ε δ y ≤ c - ε}
   let F : Set.Icc (0 : ℝ) 1 × MorseModel n → MorseModel n := fun p =>
     modifiedCollarHomotopy hk c ε (p.1 : ℝ) p.2
-  have hmainRestr : Continuous (S.restrict F) :=
-    (continuousOn_iff_continuous_restrict).1 (continuousOn_modifiedCollarHomotopy_sublevel hk c ε δ)
+  have hmainRestr : Continuous (S.domRestrict F) :=
+    (continuousOn_iff_continuous_domRestrict).1 (continuousOn_modifiedCollarHomotopy_sublevel hk c ε δ)
   have hembed : Continuous (fun p : Set.Icc (0 : ℝ) 1 ×
       {y : MorseModel n // modifiedNormalForm hk c ε δ y ≤ c - ε} =>
       (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial, p.2.2⟩⟩ : S)) := by
@@ -1729,16 +1737,16 @@ theorem continuous_modifiedCollarRetractionHomotopyFun {n k : ℕ} (hk : k ≤ n
       modifiedCollarHomotopy hk c ε (p.1 : ℝ) p.2.1) := by
     have hc : Continuous (fun p : Set.Icc (0 : ℝ) 1 ×
         {y : MorseModel n // modifiedNormalForm hk c ε δ y ≤ c - ε} =>
-        (S.restrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial, p.2.2⟩⟩ : S)) :=
+        (S.domRestrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial, p.2.2⟩⟩ : S)) :=
       hmainRestr.comp hembed
     have hfun : (fun p : Set.Icc (0 : ℝ) 1 ×
         {y : MorseModel n // modifiedNormalForm hk c ε δ y ≤ c - ε} =>
-        (S.restrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial, p.2.2⟩⟩ : S)) =
+        (S.domRestrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial, p.2.2⟩⟩ : S)) =
         (fun p : Set.Icc (0 : ℝ) 1 ×
         {y : MorseModel n // modifiedNormalForm hk c ε δ y ≤ c - ε} =>
         modifiedCollarHomotopy hk c ε (p.1 : ℝ) p.2.1) := by
       funext p
-      simp [S, F]
+      rfl
     rwa [← hfun]
   let reparam : Set.Icc (0 : ℝ) 1 ×
       {y : MorseModel n // modifiedNormalForm hk c ε δ y ≤ c - ε} →
@@ -1782,8 +1790,8 @@ theorem continuous_modifiedCollarInclusionHomotopyFun {n k : ℕ} (hk : k ≤ n)
     Set.univ ×ˢ {y : MorseModel n | modifiedNormalForm hk c ε δ y ≤ c - ε}
   let F : Set.Icc (0 : ℝ) 1 × MorseModel n → MorseModel n := fun p =>
     modifiedCollarHomotopy hk c ε (p.1 : ℝ) p.2
-  have hmainRestr : Continuous (S.restrict F) :=
-    (continuousOn_iff_continuous_restrict).1 (continuousOn_modifiedCollarHomotopy_sublevel hk c ε δ)
+  have hmainRestr : Continuous (S.domRestrict F) :=
+    (continuousOn_iff_continuous_domRestrict).1 (continuousOn_modifiedCollarHomotopy_sublevel hk c ε δ)
   have hembed : Continuous (fun p : Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε =>
       (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial,
         lowerCellUnion_subset_modifiedSublevel hk c ε δ hε hδ p.2.2⟩⟩ : S)) := by
@@ -1795,16 +1803,16 @@ theorem continuous_modifiedCollarInclusionHomotopyFun {n k : ℕ} (hk : k ≤ n)
   have hstep : Continuous (fun p : Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε =>
       modifiedCollarHomotopy hk c ε (p.1 : ℝ) p.2.1) := by
     have hc : Continuous (fun p : Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε =>
-        (S.restrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial,
+        (S.domRestrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial,
           lowerCellUnion_subset_modifiedSublevel hk c ε δ hε hδ p.2.2⟩⟩ : S)) :=
       hmainRestr.comp hembed
     have hfun : (fun p : Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε =>
-        (S.restrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial,
+        (S.domRestrict F) (⟨(p.1, (p.2.1 : MorseModel n)), ⟨trivial,
           lowerCellUnion_subset_modifiedSublevel hk c ε δ hε hδ p.2.2⟩⟩ : S)) =
         (fun p : Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε =>
         modifiedCollarHomotopy hk c ε (p.1 : ℝ) p.2.1) := by
       funext p
-      simp [S, F]
+      rfl
     rwa [← hfun]
   let reparam : Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε →
       Set.Icc (0 : ℝ) 1 × lowerUnion hk c ε :=

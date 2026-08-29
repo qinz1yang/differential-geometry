@@ -84,9 +84,10 @@ theorem nablaRm_split
       (fun q : M => Xs q) (fun q : M => Ys q) (fun q : M => Zs q) p
   have hcov₀ : CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (I := I) (E := E) (M := M) cov₀ (∞ : WithTop ℕ∞) := by
-    simpa [cov₀] using
-      leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
-        (I := I) (M := M) g₀
+    dsimp only [cov₀]
+    rw [LeviCivita_eq_leviCivitaConnectionOfMetric]
+    exact leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+      (I := I) (M := M) g₀
   have hR : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞) (T% Rsec) :=
     fun p => by
       simpa [Rsec] using
@@ -144,6 +145,13 @@ theorem nablaRm_split
       curvCovDerivOpAt (I := I) cov₀ Ds Xs Ys Zs x -
           mixedCurvDeriv (I := I) gBase g₀ Ds Xs Ys Zs x =
         curvConnAt (I := I) gBase g₀ x D X Y Z := by
+    let : NormedAddCommGroup
+        (TangentSpace I x →L[ℝ] TangentSpace I x) :=
+      ContinuousLinearMap.toNormedAddCommGroup
+    let : NormedAddCommGroup
+        (TangentSpace I x →L[ℝ]
+          TangentSpace I x →L[ℝ] TangentSpace I x) :=
+      ContinuousLinearMap.toNormedAddCommGroup
     have hDX₀ : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
         (T% (covApply cov₀ (fun p => Ds p) (fun p => Xs p))) :=
       covApply_contMDiff (cov := cov₀) Ds.contMDiff Xs.contMDiff
@@ -216,9 +224,8 @@ theorem nablaRm_split
     unfold curvCovDerivOpAt mixedCurvDeriv curvConnAt
     simp only [cov₀]
     rw [houterRaw, hRXYZ, hRDX₀, hRDXB, hRDY₀, hRDYB, hRDZ₀, hRDZB]
-    simp only
     rw [hXRaw, hYRaw, hZRaw]
-    simp only [map_add, ContinuousLinearMap.add_apply]
+    simp only [map_add, add_apply]
     simp only [Ds, Xs, Ys, Zs, cov₀, extSec1_apply]
     abel
   have hpal := mixed_sub_eq_pal (I := I) gBase g₀ Ds Xs Ys Zs x
@@ -227,12 +234,16 @@ theorem nablaRm_split
   have hB' :
       curvCovDerivOpAt (I := I) covB Ds Xs Ys Zs x =
         nablaRiemannOp (I := I) gBase x (Ds x) (Xs x) (Ys x) (Zs x) := by
-    simpa [covB] using hB.symm
+    dsimp only [covB]
+    rw [LeviCivita_eq_leviCivitaConnectionOfMetric]
+    exact hB.symm
   simpa [Ds, Xs, Ys, Zs, covB, cov₀] using
     calc
       nablaRiemannOp (I := I) g₀ x (Ds x) (Xs x) (Ys x) (Zs x) =
           curvCovDerivOpAt (I := I) cov₀ Ds Xs Ys Zs x := by
-            simpa [cov₀] using h₀
+            dsimp only [cov₀]
+            rw [LeviCivita_eq_leviCivitaConnectionOfMetric]
+            exact h₀
       _ = (curvCovDerivOpAt (I := I) cov₀ Ds Xs Ys Zs x -
             mixedCurvDeriv (I := I) gBase g₀ Ds Xs Ys Zs x) +
           (mixedCurvDeriv (I := I) gBase g₀ Ds Xs Ys Zs x -
@@ -450,6 +461,7 @@ private theorem curvConn_le_of
     intro x v w
     have h := connectionDifference_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
     simpa [C₀, DifferentialGeometry.PDE.DeTurck.connectionDifference,
+      LeviCivita_eq_leviCivitaConnectionOfMetric,
       mul_assoc, mul_left_comm, mul_comm] using h
   let F : ℝ := Λ ^ 2 * (riemannDiffC Λ Λ Λ + Real.sqrt Kb)
   have hF0 : 0 ≤ F := by
@@ -658,7 +670,7 @@ private theorem jet1_norm_le
       Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) * K := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
@@ -786,7 +798,8 @@ theorem uniformRmOpOne_of
   have hc : L₀ Vc ≤ Cc * L₀ D * L₀ X * L₀ Y * L₀ Z := by
     simpa [L₀, Vc] using hCc x D X Y Z
   have hpB : LB Vp ≤ Cp * LB D * LB X * LB Y * LB Z := by
-    simpa [LB, Vp, palatiniJet1At, extSec1] using hCp x D X Y Z
+    with_unfolding_all
+      exact hCp x D X Y Z
   have hbB : LB Vb ≤ Cb * LB D * LB X * LB Y * LB Z := by
     simpa [LB, Vb] using hCb x D X Y Z
   have hp : L₀ Vp ≤ S ^ 5 * Cp * L₀ D * L₀ X * L₀ Y * L₀ Z := by
@@ -945,7 +958,7 @@ private theorem sq_le_of_sqrt_le {a K : ℝ}
   nlinarith [Real.sq_sqrt ha, Real.sqrt_nonneg a]
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem uniformRmSecOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)

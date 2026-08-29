@@ -288,10 +288,10 @@ omit [NeZero d] in
 lemma integrable_mul_of_memLp_two
     {f g : E → ℝ} (hf : MemLp f 2 volume) (hg : MemLp g 2 volume) :
     Integrable (fun x => f x * g x) volume := by
-  haveI := holder_two_two
+  have := holder_two_two
   have h := MemLp.integrable_mul (μ := (volume : Measure E))
     (p := (2 : ℝ≥0∞)) (q := (2 : ℝ≥0∞)) hf hg
-  simpa using h
+  exact h.congr (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [NeZero d] in
 theorem integral_diffQuot_mul_eq_neg_integral_mul_diffQuot
@@ -421,7 +421,7 @@ lemma diffQuot_eq_integral_partialDeriv
     have h_comp : HasDerivAt (fun t : ℝ => v (γ t))
         ((fderiv ℝ v (γ s)) (h • e)) s :=
       hv_at.comp_hasDerivAt s (hγ_deriv s)
-    simpa [Function.comp] using h_comp
+    exact h_comp.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
   have hcomp_deriv_factored : ∀ s,
       HasDerivAt (v ∘ γ) (h * (fderiv ℝ v (γ s)) e) s := by
     intro s
@@ -491,7 +491,7 @@ lemma sq_diffQuot_le_integral_sq_partialDeriv
   set e : E := EuclideanSpace.single i (1 : ℝ) with he
   set γ : ℝ → E := fun s => x + (s * h) • e with hγ_def
   set f : ℝ → ℝ := fun s => (fderiv ℝ v (γ s)) e with hf_def
-  haveI hμprob :
+  have hμprob :
       IsProbabilityMeasure ((volume : Measure ℝ).restrict (Set.Ioc (0 : ℝ) 1)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ]

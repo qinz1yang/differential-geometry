@@ -113,14 +113,12 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open Analysis.Parabolic.TensorSpectral
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-set_option backward.isDefEq.respectTransparency false in
 lemma de_turck_arm_fibre_const_eq_one_of_finrank_eq_one (h1 : Module.finrank ℝ E = 1) :
     deTurckArmFibreConst (Module.finrank ℝ E) = 1 := by
   rw [h1]
   rw [deTurckArmFibreConst]
   rw [Nat.cast_one, one_pow, Real.sqrt_one]
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma sqrt_natCast_mul_natCast_eq_deTurckArmFibreConst (n : ℕ) :
     Real.sqrt n * n = deTurckArmFibreConst n := by
   rw [deTurckArmFibreConst]
@@ -128,7 +126,6 @@ private lemma sqrt_natCast_mul_natCast_eq_deTurckArmFibreConst (n : ℕ) :
   rw [Real.sqrt_mul (Nat.cast_nonneg n)]
   rw [Real.sqrt_sq (Nat.cast_nonneg n)]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 2 ≤ n) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) {c : ℝ} (hc0 : 0 ≤ c) (hc : c ≤ 13 / 2) :
     27 * Real.sqrt n * (1 - δ₀) * (c * n * (1 / (1 - δ₀)) ^ 2) ≤
@@ -184,7 +181,6 @@ lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private lemma unitModel_sub (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 s) (x : M) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M) g s
@@ -195,9 +191,8 @@ private lemma unitModel_sub (g : SmoothRiemannianMetric I M) (s : ℕ)
           B x := by
   simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    ContinuousLinearMap.sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
+    sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem operatorFieldApplication_sub_left_ext (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -219,7 +214,6 @@ private theorem operatorFieldApplication_sub_left_ext (g : SmoothRiemannianMetri
     rfl]
   rw [ContinuousLinearMap.sub_comp]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem ccTensor02Symm_eq_self (g₀ : SmoothRiemannianMetric I M)
@@ -254,7 +248,6 @@ private theorem ccTensor02Symm_eq_self (g₀ : SmoothRiemannianMetric I M)
   rw [ccTensor02Symm, hswap, htwo, smul_smul,
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma metricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric I M) (x : M)
@@ -285,7 +278,6 @@ private lemma metricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric I 
   rw [hbase]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -316,7 +308,7 @@ private theorem eq_metricDifferenceCcTensor_of_inner_add (g₀ g₁ : SmoothRiem
         (M := M) g₀ g₁)
       (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.metricCcTensor (I := I)
         (M := M) g₀ g₀) x]
-    rw [ContinuousMultilinearMap.sub_apply]
+    rw [sub_apply]
     rw [metricCcTensor_unitModel_apply (I := I) (M := M) g₀ g₁ x m,
       metricCcTensor_unitModel_apply (I := I) (M := M) g₀ g₀ x m]
     rw [show DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I)
@@ -333,7 +325,6 @@ private theorem eq_metricDifferenceCcTensor_of_inner_add (g₀ g₁ : SmoothRiem
     ring
   rw [hmd, hsymm]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem ccTensor22_ext_of_operatorFieldApplication (g₀ : SmoothRiemannianMetric I M)
@@ -383,7 +374,7 @@ private theorem ccTensor22_ext_of_operatorFieldApplication (g₀ : SmoothRiemann
   rw [hWval] at h2
   exact h2
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem half_ricciArmOrder0RiemannCoeff_difference_eq_residualFieldSum_add_kernelContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -461,7 +452,6 @@ theorem half_ricciArmOrder0RiemannCoeff_difference_eq_residualFieldSum_add_kerne
     (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
     (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 W]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField_boundedFactorGridWindow_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) :

@@ -115,7 +115,7 @@ theorem integral_gronwall_le_affine
       simpa using hBu.const_add A
     have h₂ : HasDerivAt (fun u : ℝ => K * ∫ τ in (0:ℝ)..u, f₀ τ) (K * f₀ t) t :=
       (primitive_hasDerivAt hf₀_cont t).const_mul K
-    simpa [g] using h₁.add h₂
+    simpa [g] using! h₁.add h₂
   have hfg : ∀ t ∈ Set.Icc (0:ℝ) T, f t ≤ g t := by
     intro t ht
     have hbd := hf_int t ht

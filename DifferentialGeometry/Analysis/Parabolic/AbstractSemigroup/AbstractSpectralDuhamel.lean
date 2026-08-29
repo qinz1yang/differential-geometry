@@ -111,7 +111,7 @@ theorem abstractSpectralDuhamel_hasDerivAt_repr_apply
   set f : ℝ → ℝ := fun s => (b.repr (F s) : ι → ℝ) i
   have hf : Continuous f := by
     have hℓ : Continuous (fun v : X => (b.repr v : ι → ℝ) i) := by
-      simpa only [b.repr_apply_apply] using
+      simpa only [b.repr_apply_apply] using!
         (innerSL (𝕜 := ℝ) (E := X) (b i)).continuous
     exact hℓ.comp hF
   set c₁ : ℝ → ℝ := fun s => Real.exp (-eigenvalue * s) * c₀
@@ -135,9 +135,12 @@ theorem abstractSpectralDuhamel_hasDerivAt_repr_apply
   have hc₁ : HasDerivAt c₁ (-eigenvalue * c₁ t) t := by
     have hlin : HasDerivAt (fun s : ℝ => -eigenvalue * s) (-eigenvalue) t := by
       simpa using (hasDerivAt_id (𝕜 := ℝ) t).const_mul (-eigenvalue)
-    convert hlin.exp.mul_const c₀ using 1
-    all_goals simp only [c₁]
-    all_goals ring
+    have hraw := hlin.exp.mul_const c₀
+    have heq : Real.exp (-eigenvalue * t) * -eigenvalue * c₀ =
+        -eigenvalue * (Real.exp (-eigenvalue * t) * c₀) := by
+      ring
+    rw [heq] at hraw
+    simpa only [c₁] using! hraw
   have hG : HasDerivAt G (Real.exp (eigenvalue * t) * f t) t := by
     have hcont : Continuous (fun r : ℝ => Real.exp (eigenvalue * r) * f r) :=
       (Real.continuous_exp.comp
@@ -153,8 +156,6 @@ theorem abstractSpectralDuhamel_hasDerivAt_repr_apply
     all_goals ring
   have hc₂raw := hexp.mul hG
   have hc₂ : HasDerivAt c₂ (-eigenvalue * c₂ t + f t) t := by
-    convert hc₂raw using 1
-    all_goals simp only [c₂]
     have hcancel : Real.exp (-eigenvalue * t) *
         Real.exp (eigenvalue * t) = 1 := by
       calc
@@ -163,16 +164,21 @@ theorem abstractSpectralDuhamel_hasDerivAt_repr_apply
           (Real.exp_add _ _).symm
         _ = Real.exp 0 := by congr 1; ring
         _ = 1 := Real.exp_zero
-    rw [show Real.exp (-eigenvalue * t) *
+    have heq : -eigenvalue * Real.exp (-eigenvalue * t) * G t +
+        Real.exp (-eigenvalue * t) * (Real.exp (eigenvalue * t) * f t) =
+        -eigenvalue * c₂ t + f t := by
+      rw [show Real.exp (-eigenvalue * t) *
         (Real.exp (eigenvalue * t) * f t) =
         (Real.exp (-eigenvalue * t) * Real.exp (eigenvalue * t)) * f t by ring,
       hcancel, one_mul]
-    ring
+      simp only [c₂]
+      ring
+    rw [heq] at hc₂raw
+    simpa only [c₂] using! hc₂raw
   have hsum := hc₁.add hc₂
   have hsum' : HasDerivAt (fun s => c₁ s + c₂ s)
       (-eigenvalue * (c₁ t + c₂ t) + f t) t := by
-    convert hsum using 1
-    all_goals ring
+    simpa only [mul_add, add_assoc] using! hsum
   rw [← h_split t ht.le] at hsum'
   have heq : (fun s : ℝ =>
       (b.repr (abstractSpectralDuhamel b hlam u₀ F s) : ι → ℝ) i) =ᶠ[nhds t]

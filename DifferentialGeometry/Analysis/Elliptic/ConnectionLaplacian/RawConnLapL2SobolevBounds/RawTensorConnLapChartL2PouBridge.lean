@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open MeasureTheory
@@ -44,7 +43,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 noncomputable def chartSobolevRawNormPou
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     ℝ≥0∞ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
       ENNReal.ofReal
           (((chartAtlasPOU I M α : M → ℝ)
@@ -62,7 +61,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartSobolevRawNormPou_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     chartSobolevRawNormPou (I := I) (M := M) g r s T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           ENNReal.ofReal
               (((chartAtlasPOU I M α : M → ℝ)
@@ -125,9 +124,9 @@ lemma chartDensitySupPou_le
 variable (I M) in
 noncomputable def chartSobolevRawNormPouBridgeConstant
     (g : SmoothRiemannianMetric I M) : ℝ :=
-  ((chartAtlasPOU_finset (I := I) (M := M)).card : ℝ) *
+  ((chartAtlasPOUFinset (I := I) (M := M)).card : ℝ) *
     ((euclideanHaarFactor E : ℝ) *
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartDensitySupPou (I := I) (M := M) g α + 1))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
@@ -200,13 +199,13 @@ private lemma normSq_le_card_mul_sum_pou_sq_mul_normSq
     {r s : ℕ} (g : SmoothRiemannianMetric I M)
     (T₀ : Π b : M, TensorRSSpace r s I b) (x : M) :
     (‖rawTensorConnLap (I := I) g r s T₀ x‖ ^ 2 : ℝ) ≤
-      ((chartAtlasPOU_finset (I := I) (M := M)).card : ℝ) *
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ((chartAtlasPOUFinset (I := I) (M := M)).card : ℝ) *
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ((chartAtlasPOU I M α : M → ℝ) x) ^ 2 *
             ‖rawTensorConnLap (I := I) g r s T₀ x‖ ^ 2 := by
   classical
   set v : ℝ := ‖rawTensorConnLap (I := I) g r s T₀ x‖ with hv_def
-  set sset : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hs_def
+  set sset : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hs_def
   have hv_nn : 0 ≤ v := norm_nonneg _
   have hv_sq_nn : 0 ≤ v ^ 2 := sq_nonneg _
   have h_sum :=
@@ -388,7 +387,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
     chartSobolevRawNormPouBridgeConstant_nonneg (I := I) (M := M) g, ?_⟩
   intro T hraw_meas
   set T₀ : Π b : M, TensorRSSpace r s I b := fun z : M => T.toSection z with hT₀_def
-  set Sfin : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hSfin_def
+  set Sfin : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hSfin_def
   set N : ℕ := Sfin.card with hN_def
   set cE : ℝ := (euclideanHaarFactor E : ℝ) with hcE_def
   have hcE_nn : 0 ≤ cE := (euclideanHaarFactor_pos (E := E)).le
@@ -499,7 +498,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNormPou
                   ‖rawTensorConnLap (I := I) g r s T₀ x‖ ^ 2)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
             congr 1
-            exact lintegral_finset_sum _ (fun α _ => by
+            exact lintegral_finsetSum _ (fun α _ => by
               have hρ_cont :
                   Continuous (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) :=
                 ((chartAtlasPOU I M α)).contMDiff.continuous

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -19,21 +20,22 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-private lemma velocity_infty
+private lemma velocity_smoothAt
     (f : ℝ → ℝ → M)
-    (hf : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
-      (fun p : ℝ × ℝ => f p.1 p.2)) :
-    ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I.tangent ∞
+    {p₀ : ℝ × ℝ}
+    (hf : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun p : ℝ × ℝ => f p.1 p.2) p₀) :
+    ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I.tangent ∞
       (fun p : ℝ × ℝ =>
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (f p.1 p.2)
           (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ)) :
-            TangentBundle I M)) := by
+            TangentBundle I M)) p₀ := by
   classical
-  rw [contMDiff_infty]
-  intro n p₀
+  rw [contMDiffAt_infty]
+  intro n
   rw [Bundle.contMDiffAt_totalSpace]
-  refine ⟨hf.contMDiffAt.of_le
+  refine ⟨hf.of_le
     (by exact_mod_cast le_top :
       (n : WithTop ℕ∞) ≤ ∞), ?_⟩
   have hF_smooth : ContMDiffAt
@@ -45,14 +47,14 @@ private lemma velocity_infty
         (Function.uncurry (fun q : ℝ × ℝ => fun u : ℝ => f q.1 u)) =
           fun r : (ℝ × ℝ) × ℝ => f r.1.1 r.2 := rfl
     rw [hfun]
-    have hproj : ContMDiff
+    have hproj : ContMDiffAt
         ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, ℝ))
-        (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
-        (fun r : (ℝ × ℝ) × ℝ => (r.1.1, r.2)) :=
-      contMDiff_fst.fst.prodMk contMDiff_snd
-    exact (hf.comp hproj).contMDiffAt.of_le
+        (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ((n : WithTop ℕ∞) + 1)
+        (fun r : (ℝ × ℝ) × ℝ => (r.1.1, r.2)) (p₀, p₀.2) :=
+      contMDiffAt_fst.fst.prodMk contMDiffAt_snd
+    exact (hf.of_le
       (by exact_mod_cast le_top :
-        (n : WithTop ℕ∞) + 1 ≤ ∞)
+        (n : WithTop ℕ∞) + 1 ≤ ∞)).comp (p₀, p₀.2) hproj
   have hg_smooth : ContMDiffAt
       (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (n : WithTop ℕ∞)
       (fun q : ℝ × ℝ => q.2) p₀ :=
@@ -73,12 +75,6 @@ private lemma velocity_infty
     (x₀ := p₀) (n := (n : WithTop ℕ∞) + 1)
     (m := (n : WithTop ℕ∞))
     hF_smooth hg_smooth hg₁_smooth hg₂_smooth le_rfl
-  have hf_cts : Continuous (fun p : ℝ × ℝ => f p.1 p.2) :=
-    hf.continuous
-  have h_baseSet_open : IsOpen
-      ((fun p : ℝ × ℝ => f p.1 p.2) ⁻¹'
-        (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).baseSet) :=
-    (Trivialization.open_baseSet _).preimage hf_cts
   have hp₀_in : p₀ ∈
       (fun p : ℝ × ℝ => f p.1 p.2) ⁻¹'
         (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).baseSet :=
@@ -86,7 +82,8 @@ private lemma velocity_infty
   have h_nhds : ((fun p : ℝ × ℝ => f p.1 p.2) ⁻¹'
       (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).baseSet) ∈
       nhds p₀ :=
-    h_baseSet_open.mem_nhds hp₀_in
+    hf.continuousAt.preimage_mem_nhds
+      ((Trivialization.open_baseSet _).mem_nhds hp₀_in)
   have h_eq : ∀ᶠ p in nhds p₀,
       (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)
           ⟨f p.1 p.2,
@@ -124,6 +121,47 @@ private lemma velocity_infty
             mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ)⟩).2) p₀
   exact h_smooth_mfd.congr_of_eventuallyEq h_eq
 
+theorem varField_smoothAt
+    (f : ℝ → ℝ → M)
+    {t : ℝ}
+    (hf : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun p : ℝ × ℝ => f p.1 p.2) (0, t)) :
+    ContMDiffAt 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun t : ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (f 0 t)
+          (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ => f s t) 0 (1 : ℝ)) :
+            TangentBundle I M)) t := by
+  let fSwap : ℝ → ℝ → M := fun t s => f s t
+  have hswap : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun p : ℝ × ℝ => fSwap p.1 p.2) (t, 0) := by
+    exact hf.comp (t, 0) (contMDiffAt_snd.prodMk contMDiffAt_fst)
+  have hvel := velocity_smoothAt (I := I) fSwap hswap
+  have hincl : ContMDiffAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
+      (fun t : ℝ => (t, (0 : ℝ))) t :=
+    contMDiffAt_id.prodMk contMDiffAt_const
+  change ContMDiffAt 𝓘(ℝ, ℝ) I.tangent ∞
+    ((fun p : ℝ × ℝ =>
+      (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (fSwap p.1 p.2)
+        (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => fSwap p.1 u) p.2 (1 : ℝ)) :
+          TangentBundle I M)) ∘ fun r : ℝ => (r, 0)) t
+  exact hvel.comp t hincl
+
+theorem varField_smoothOn
+    (f : ℝ → ℝ → M)
+    {s : Set ℝ}
+    (hf : ∀ t ∈ s, ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
+      (fun p : ℝ × ℝ => f p.1 p.2) (0, t)) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun t : ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (f 0 t)
+          (mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => f u t) 0 (1 : ℝ)) :
+            TangentBundle I M)) s := by
+  intro t ht
+  exact (varField_smoothAt (I := I) f (hf t ht)).contMDiffWithinAt
+
 theorem varField_smooth
     (f : ℝ → ℝ → M)
     (hf : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
@@ -138,11 +176,8 @@ theorem varField_smooth
   have hswap : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞
       (fun p : ℝ × ℝ => fSwap p.1 p.2) := by
     exact hf.comp (contMDiff_snd.prodMk contMDiff_fst)
-  have hvel := velocity_infty (I := I) fSwap hswap
-  have hincl : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
-      (fun t : ℝ => (t, (0 : ℝ))) :=
-    contMDiff_id.prodMk contMDiff_const
-  simpa only [fSwap] using hvel.comp hincl
+  intro t
+  exact varField_smoothAt (I := I) f hf.contMDiffAt
 
 end Variation
 end Riemannian

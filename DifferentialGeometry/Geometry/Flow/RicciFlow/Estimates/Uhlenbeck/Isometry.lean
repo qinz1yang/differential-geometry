@@ -125,7 +125,7 @@ private theorem uhlenbeckFrameODE_solution
           _ ≤ C * ((Fintype.card Idx : ℝ) * (‖A - B‖₊ : ℝ)) :=
                 mul_le_mul_of_nonneg_left hsumAbs hC
           _ = ((K : ℝ≥0) : ℝ) * (‖A - B‖₊ : ℝ) := by
-                dsimp [K]
+                rw [show (K : ℝ) = C * (Fintype.card Idx : ℝ) from rfl]
                 ring)
     have hbound : ‖f t (A - B)‖ ≤ (K : ℝ) * ‖A - B‖ := by
       rw [Pi.norm_def]
@@ -139,12 +139,12 @@ private theorem uhlenbeckFrameODE_solution
         dsimp [f]
         exact hmain a k
       exact_mod_cast hsup
-    simpa [K] using hbound
+    exact hbound
   have hf_cont : ∀ A : E₀, ContinuousOn (fun t : ℝ => f t A) (Set.Icc 0 T) := by
     intro A
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hRr : ∀ l k : Idx, Continuous (fun t : Set.Icc 0 T => Rup t.1 l k) :=
-      fun l k => (hR_cont l k).restrict
+      fun l k => (hR_cont l k).domRestrict
     have hcontA : Continuous (fun t : Set.Icc 0 T => f t.1 A) := by
       rw [continuous_iff_continuousAt]
       intro t
@@ -158,9 +158,10 @@ private theorem uhlenbeckFrameODE_solution
             Rup t.1 l k * A a l) := by
           intro l
           exact (hRr l k).mul continuous_const
-        exact (continuous_finset_sum (Finset.univ) (fun l hl => hterm l)).continuousAt
+        exact (continuous_finsetSum (Finset.univ) (fun l hl => hterm l)).continuousAt
       simpa [f] using hsum
-    simpa [Function.comp_def] using hcontA
+    change Continuous (fun t : Set.Icc 0 T => f t.1 A)
+    exact hcontA
   have hf_aff : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ A : E₀,
       ‖f t A‖ ≤ 0 + (K : ℝ) * ‖A‖ := by
     intro t ht A
@@ -258,14 +259,17 @@ theorem uhlenbeckRup_entry_continuousOn
     ContinuousOn (fun t : ℝ => uhlenbeckRupOfSolution (I := I) S gInv frame t x i k)
       (Set.Icc 0 T) := by
   classical
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro a ha
   have hginv : ContinuousOn (fun t : ℝ => gInv t x k a) (Set.Icc 0 T) :=
     hginv_cont x k a
   have hricci : ContinuousOn (fun t : ℝ => ricciCompInFrame (I := I) S frame t x i a)
       (Set.Icc 0 T) := by
     simpa [ricciCompInFrame] using hricci_cont x (frame i x) (frame a x)
-  simpa [uhlenbeckRupOfSolution, ricciOneUpCompInFrame, Finset.mul_sum] using hginv.mul hricci
+  change ContinuousOn
+    (fun t : ℝ => gInv t x k a * ricciCompInFrame (I := I) S frame t x i a)
+    (Set.Icc 0 T)
+  exact hginv.mul hricci
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem uhlenbeckIotaOfSolution
@@ -563,9 +567,9 @@ theorem movingFrameGram_continuousOn_of_metricFamily
       movingFrameGramInFrame (metricCompInFrame (I := I) S frame) frameComp s x a b)
       (Set.Icc 0 T) := by
   classical
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro i hi
-  refine continuousOn_finset_sum Finset.univ ?_
+  refine continuousOn_finsetSum Finset.univ ?_
   intro j hj
   have hproj : ∀ p q : Idx, Continuous (fun F : Idx → Idx → ℝ => F p q) := by
     intro p q
@@ -686,8 +690,8 @@ lemma uhlenbeckEndomorphism_gram_pair
       ∑ l : Idx, ∑ k : Idx,
         iota t x a k * (iota t x b l *
           (S.family.metric t).inner x (basisAt x k) (basisAt x l)) := by
-        simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+        simp only [map_sum, map_smul, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
           Finset.mul_sum, mul_left_comm]
     _ = ∑ i : Idx, ∑ j : Idx,
         iota t x a i * (iota t x b j *

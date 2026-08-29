@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiCoord
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -31,15 +33,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 private lemma real_inner_mul (a b : ℝ) : inner ℝ a b = b * a := by
-  simp [real_inner_eq_re_inner, RCLike.inner_apply]
+  simp [RCLike.inner_apply]
 
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [Fintype ι] [DecidableEq ι]
   [T2Space M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma g_inner_contDiff
     (g : SmoothRiemannianMetric I M)
     {γ : ℝ → M} {v w : ∀ t : ℝ, TangentSpace I (γ t)}
@@ -50,7 +51,7 @@ private lemma g_inner_contDiff
       (fun t : ℝ => TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _)) (γ t) (w t))) :
     ContDiff ℝ ∞ (fun t : ℝ => g.inner (γ t) (v t) (w t)) := by
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   have hinner := ContMDiff.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := γ) (v := v) (w := w) hv hw
@@ -152,9 +153,8 @@ theorem perpCurvOp_apply
         (F i t) * y j := by
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem perpCurv_smooth
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -177,32 +177,35 @@ theorem perpCurv_smooth
       (fun t : ℝ => TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _)) (γ t)
           (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))) := by
-    simpa only [tangentMap] using
-      (hγ.contMDiff_tangentMap (le_refl _)).comp hunit
-  letI : NormedAddCommGroup (E →L[ℝ] E) :=
+    change ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (tangentMap 𝓘(ℝ, ℝ) I γ ∘ fun t : ℝ =>
+        TotalSpace.mk' ℝ
+          (E := (TangentSpace 𝓘(ℝ, ℝ) : ℝ → Type _)) t (1 : ℝ))
+    exact (hγ.contMDiff_tangentMap (le_refl _)).comp hunit
+  let : NormedAddCommGroup (E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace ℝ (E →L[ℝ] E) :=
+  let : NormedSpace ℝ (E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E × (E →L[ℝ] E)) :=
+  let : NormedAddCommGroup (E × (E →L[ℝ] E)) :=
     Prod.normedAddCommGroup
-  letI : NormedSpace ℝ (E × (E →L[ℝ] E)) :=
+  let : NormedSpace ℝ (E × (E →L[ℝ] E)) :=
     Prod.normedSpace
-  letI : NormedAddCommGroup (E × (E →L[ℝ] E →L[ℝ] E)) :=
+  let : NormedAddCommGroup (E × (E →L[ℝ] E →L[ℝ] E)) :=
     Prod.normedAddCommGroup
-  letI : NormedSpace ℝ (E × (E →L[ℝ] E →L[ℝ] E)) :=
+  let : NormedSpace ℝ (E × (E →L[ℝ] E →L[ℝ] E)) :=
     Prod.normedSpace
-  letI : NormedAddCommGroup
+  let : NormedAddCommGroup
       (E × (E →L[ℝ] E →L[ℝ] E →L[ℝ] E)) :=
     Prod.normedAddCommGroup
-  letI : NormedSpace ℝ
+  let : NormedSpace ℝ
       (E × (E →L[ℝ] E →L[ℝ] E →L[ℝ] E)) :=
     Prod.normedSpace
   have hR0 :=
@@ -295,8 +298,10 @@ theorem perpLift_inner
       inner ℝ y z := by
   classical
   rw [PiLp.inner_apply]
-  simp [map_sum, map_smul, hON, mul_ite, real_inner_mul]
+  simp [map_sum, map_smul, hON, mul_ite]
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem perpFrame_expand
@@ -310,8 +315,8 @@ theorem perpFrame_expand
       if i = j then 1 else 0) :
     Z = ∑ i, g.inner x (F i) Z • F i := by
   classical
-  let φ : E →ₗ[ℝ] ℝ := (g.inner x u).toLinearMap
-  let W : Submodule ℝ E := LinearMap.ker φ
+  let φ : TangentSpace I x →ₗ[ℝ] ℝ := (g.inner x u).toLinearMap
+  let W : Submodule ℝ (TangentSpace I x) := LinearMap.ker φ
   have hφu : 0 < φ u := hu
   have hφsurj : Function.Surjective φ := by
     intro c
@@ -325,7 +330,8 @@ theorem perpFrame_expand
   have hfrange : Module.finrank ℝ ↥(LinearMap.range φ) = 1 := by
     rw [hrange]
     simp
-  have hfinrankW : Module.finrank ℝ ↥W = Module.finrank ℝ E - 1 := by
+  have hfinrankW :
+      Module.finrank ℝ ↥W = Module.finrank ℝ (TangentSpace I x) - 1 := by
     have hsum := LinearMap.finrank_range_add_finrank_ker φ
     rw [hfrange] at hsum
     have : Module.finrank ℝ ↥W =
@@ -349,22 +355,24 @@ theorem perpFrame_expand
     have hpair : g.inner x (∑ j, c j • F j) (F i) = 0 := by
       rw [hc]
       simp
-    rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+    rw [map_sum, sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
-    · rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
+    · rw [ContinuousLinearMap.map_smul, smul_apply,
         hON i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
       exact hpair
     · intro j _ hji
-      rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
+      rw [ContinuousLinearMap.map_smul, smul_apply,
         hON j i, if_neg hji, smul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   let vW : ι → W := fun i => ⟨F i, hFmem i⟩
   have hLIW : LinearIndependent ℝ vW := by
     apply LinearIndependent.of_comp W.subtype
-    simpa only [Function.comp_apply, vW] using hLI
-  have hcardW : Fintype.card ι = Module.finrank ℝ W :=
-    hcard.trans hfinrankW.symm
+    change LinearIndependent ℝ F
+    exact hLI
+  have hdim : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
+  have hcardW : Fintype.card ι = Module.finrank ℝ W := by
+    rw [hcard, ← hdim, hfinrankW]
   have hspan : Submodule.span ℝ (Set.range vW) = ⊤ :=
     hLIW.span_eq_top_of_card_eq_finrank' hcardW
   let bW : Module.Basis ι ℝ W := Module.Basis.mk hLIW hspan.ge
@@ -373,7 +381,7 @@ theorem perpFrame_expand
   let zW : W := ⟨Z, hZmem⟩
   let a : ι → ℝ := fun i => bW.repr zW i
   have hsum := bW.sum_repr zW
-  have hco := congrArg (fun z : W => (z : E)) hsum
+  have hco := congrArg (fun z : W => (z : TangentSpace I x)) hsum
   have hZsum : Z = ∑ i, a i • F i := by
     symm at hco
     simpa only [a, zW, vW, hbW, Submodule.coe_sum,
@@ -439,9 +447,8 @@ theorem perpCoeff_ne_zero
     hFperp hYperp hON]
   exact perpLift_zero (I := I) F (perpCoeff (I := I) g F Y) t hcoeff
 
-set_option backward.isDefEq.respectTransparency false in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
 theorem perpCurv_coeff
@@ -466,17 +473,17 @@ theorem perpCurv_coeff
           (curveVelocity (I := I) γ t)) =
       perpCurvOp (I := I) g γ F t (perpCoeff (I := I) g F Y t) i := by
   classical
-  letI : NormedAddCommGroup (E →L[ℝ] E) :=
+  let : NormedAddCommGroup (E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace ℝ (E →L[ℝ] E) :=
+  let : NormedSpace ℝ (E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedSpace
-  letI : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+  let : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
     ContinuousLinearMap.toNormedSpace
   have hYexp := perpFrame_expand (I := I) g (fun j => F j t)
     (curveVelocity (I := I) γ t) (Y t) hcard hvel hFperp hYperp hON
@@ -490,8 +497,8 @@ theorem perpCurv_coeff
   have hpair := congrArg (fun Z : TangentSpace I (γ t) =>
     g.inner (γ t) (F i t) Z) hcurv
   refine hpair.trans ?_
-  simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [map_sum, map_smul, sum_apply,
+    smul_apply, smul_eq_mul]
   rw [perpCurvOp_apply]
   simp only [perpCoeff_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -550,21 +557,35 @@ theorem perpCoeff_ode
         parInner_deriv (I := I) hn g γ (F i) Y t hγ
           (hFdiff i) hYdiff (hFpar i)
     have hL := L.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt t hpi
-    simpa only [perpCoeff, L] using hL
+    change HasDerivAt
+      ((fun z : ι → ℝ => (EuclideanSpace.equiv ι ℝ).symm z) ∘
+        fun s => fun i => g.inner (γ s) (F i s) (Y s))
+      ((EuclideanSpace.equiv ι ℝ).symm
+        (fun i => g.inner (γ t) (F i t)
+          (covDerivAlong (I := I) g γ Y t))) t
+    exact hL
   · have hpi : HasDerivAt
         (fun s => (fun i => g.inner (γ s) (F i s)
           (covDerivAlong (I := I) g γ Y s) : ι → ℝ))
-        (fun i => -(perpCurvOp (I := I) g γ F t
-          (perpCoeff (I := I) g F Y t)) i) t := by
+        ((EuclideanSpace.equiv ι ℝ)
+          (-(perpCurvOp (I := I) g γ F t)
+            (perpCoeff (I := I) g F Y t))) t := by
       rw [hasDerivAt_pi]
       intro i
       have hi := parInner_d2 (I := I) hn g γ (F i) Y t hγ
         (hFdiff i) hDYdiff (hFpar i) hY
       rw [perpCurv_coeff (I := I) g γ F Y t hcard hvel
         hFperp hYperp hON i] at hi
-      exact hi
+      simpa using hi
     have hL := L.toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt t hpi
-    simpa only [perpCoeff, L, map_neg] using hL
+    change HasDerivAt
+      ((fun z : ι → ℝ => (EuclideanSpace.equiv ι ℝ).symm z) ∘
+        fun s => fun i => g.inner (γ s) (F i s)
+          (covDerivAlong (I := I) g γ Y s))
+      (-(perpCurvOp (I := I) g γ F t)
+        (perpCoeff (I := I) g F Y t)) t
+    simpa only [L, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.symm_apply_apply] using hL
 
 omit [Fintype ι] [DecidableEq ι] in
 omit [NeZero (Module.finrank ℝ E)]
@@ -590,8 +611,10 @@ theorem jacobi_perp_of_ends
       (covDerivAlong (I := I) g γ J t)
   have hveldiff (t : ℝ) : DifferentiableAt ℝ
       (chartRepAt (I := I) γ (curveVelocity (I := I) γ) t) t := by
-    simpa only [curveVelocity] using
-      velocity_chartRepAt_differentiableAt (I := I) γ hγ t
+    change DifferentiableAt ℝ
+      (chartRepAt (I := I) γ
+        (fun s => mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ)) t) t
+    exact velocity_chartRepAt_differentiableAt (I := I) γ hγ t
   have hvelpar (t : ℝ) :
       covDerivAlong (I := I) g γ (curveVelocity (I := I) γ) t = 0 := by
     exact (covDerivAlong_velocity_eq_zero_iff_hasGeodesicEquationAt
@@ -658,7 +681,7 @@ theorem jacobi_perp_of_ends
       (curveVelocity (I := I) γ) J t hγ.contMDiffAt
       (hveldiff t) (hJdiff t)
     rw [hvelpar t] at h
-    simpa only [f, q, map_zero, ContinuousLinearMap.zero_apply,
+    simpa only [f, q, map_zero, zero_apply,
       zero_add] using h
   have hqderiv (t : ℝ) : HasDerivAt q 0 t := by
     have h := inner_deriv_at (I := I) (n := ∞) (by simp) g γ
@@ -666,8 +689,8 @@ theorem jacobi_perp_of_ends
       (fun s => covDerivAlong (I := I) g γ J s) t hγ.contMDiffAt
       (hveldiff t) (hDJdiff t)
     rw [hvelpar t, jacobi_d2_eq (I := I) g γ J (hJac t)] at h
-    simpa only [q, map_zero, ContinuousLinearMap.zero_apply, zero_add,
-      map_neg, ContinuousLinearMap.neg_apply, hcurvzero t, neg_zero] using h
+    simpa only [q, map_zero, zero_apply, zero_add,
+      map_neg, neg_apply, hcurvzero t, neg_zero] using h
   have hqconst (t : ℝ) : q t = q 0 :=
     is_const_of_deriv_eq_zero
       (fun s => (hqderiv s).differentiableAt)
@@ -676,7 +699,8 @@ theorem jacobi_perp_of_ends
   have hrderiv (t : ℝ) : HasDerivAt r 0 t := by
     have hf := hfderiv t
     rw [hqconst t] at hf
-    simpa only [r, sub_self] using hf.sub (hasDerivAt_mul_const (q 0))
+    change HasDerivAt (f - fun s => s * q 0) 0 t
+    exact (hf.sub (hasDerivAt_mul_const (q 0))).congr_deriv (sub_self (q 0))
   have hrconst (t : ℝ) : r t = r 0 :=
     is_const_of_deriv_eq_zero
       (fun s => (hrderiv s).differentiableAt)
@@ -721,7 +745,9 @@ theorem perpLift_covDeriv
     intro i
     have hcomp :=
       (EuclideanSpace.proj i).hasFDerivAt.comp_hasDerivAt t hy.hasDerivAt
-    simpa using hcomp.deriv
+    change deriv ((fun x : EuclideanSpace ℝ ι => x.ofLp i) ∘ y) t =
+      (deriv y t).ofLp i
+    exact hcomp.deriv
   change covDerivAlong (I := I) g γ
       (fun s => ∑ i, y s i • F i s) t =
     ∑ i, deriv y t i • F i t
@@ -804,8 +830,8 @@ theorem perpCurv_inner
   classical
   rw [PiLp.inner_apply]
   simp only [perpCurvOp_apply]
-  simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [map_sum, map_smul, sum_apply,
+    smul_apply, smul_eq_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [real_inner_mul]
   congr 1

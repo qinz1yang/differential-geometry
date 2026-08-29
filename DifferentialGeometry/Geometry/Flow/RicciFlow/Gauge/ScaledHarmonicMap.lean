@@ -2,6 +2,8 @@ import DifferentialGeometry.Bundle.VectorField
 import DifferentialGeometry.Geometry.Metric.DeTurck.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.HarmonicMapTension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -54,6 +56,7 @@ theorem trScalar_image
     transportScalar (I := I) r Φ (Φ x) = r x := by
   simp only [trScalar_apply, Diffeomorph.symm_apply_apply]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem ricci_pullback_drift
     (g_RF : ℝ → SmoothRiemannianMetric I M)
@@ -100,7 +103,11 @@ theorem ricci_pullback_drift
         (Set.Ici (0 : ℝ)) s
         ((1 : ℝ →L[ℝ] ℝ).smulRight (Y s ((Φ_fam s : M → M) z))) := by
     intro z s hs
-    simpa only [Y] using hΦode z s hs
+    change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+      (fun u : ℝ => (Φ_fam u : M → M) z) (Set.Ici (0 : ℝ)) s
+      ((1 : ℝ →L[ℝ] ℝ).smulRight
+        (Diffeomorph.pushforward (Φ_fam s) (Z s) ((Φ_fam s : M → M) z)))
+    exact hΦode z s hs
   intro t ht x v w
   have ht_Ico : t ∈ Set.Ico (0 : ℝ) T := ⟨le_of_lt ht.1, ht.2⟩
   have h_metric := hRF_deriv t ht_Ico ((Φ_fam t : M → M) x)
@@ -120,9 +127,15 @@ theorem ricci_pullback_drift
         lieDerivMetric (I := I) (g_RF t) (Y t) ((Φ_fam t : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v)
           (mfderiv I I (Φ_fam t : M → M) x w) := by
-    simpa only [Y] using
-      (lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
-        (I := I) (g_RF t) (Φ_fam t) (Z t) (Z t).contMDiff (hPush t) x v w)
+    have h := lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
+      (I := I) (g_RF t) (Φ_fam t) (Z t) (Z t).contMDiff (hPush t) x v w
+    have hZ :
+        ({ toFun := (Z t : ∀ x : M, TangentSpace I x)
+           contMDiff_toFun := (Z t).contMDiff } :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) = Z t :=
+      ContMDiffSection.coe_inj rfl
+    rw [hZ] at h
+    simpa only [Y] using h
   have h_value :
       ((-2 : ℝ) * ricciTensor (I := I) (g_RF t) ((Φ_fam t : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v)
@@ -156,6 +169,7 @@ theorem ricci_pullback_drift
     exact Diffeomorph.pullbackMetric_inner (I := I) (g_RF s) (Φ_fam s) x v w
   rwa [hcurve]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem fixed_pullback_drift
     (q : SmoothRiemannianMetric I M)
@@ -190,7 +204,11 @@ theorem fixed_pullback_drift
         (Set.Ici (0 : ℝ)) s
         ((1 : ℝ →L[ℝ] ℝ).smulRight (Y s ((Φ_fam s : M → M) z))) := by
     intro z s hs
-    simpa only [Y] using hΦode z s hs
+    change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+      (fun u : ℝ => (Φ_fam u : M → M) z) (Set.Ici (0 : ℝ)) s
+      ((1 : ℝ →L[ℝ] ℝ).smulRight
+        (Diffeomorph.pushforward (Φ_fam s) (Z s) ((Φ_fam s : M → M) z)))
+    exact hΦode z s hs
   intro t ht x v w
   have h_slot := flow_slot_pos (I := I) q Y T Φ_fam hYode hjoint
     t ht x v w
@@ -200,9 +218,15 @@ theorem fixed_pullback_drift
         lieDerivMetric (I := I) q (Y t) ((Φ_fam t : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v)
           (mfderiv I I (Φ_fam t : M → M) x w) := by
-    simpa only [Y] using
-      (lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
-        (I := I) q (Φ_fam t) (Z t) (Z t).contMDiff (hPush t) x v w)
+    have h := lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
+      (I := I) q (Φ_fam t) (Z t) (Z t).contMDiff (hPush t) x v w
+    have hZ :
+        ({ toFun := (Z t : ∀ x : M, TangentSpace I x)
+           contMDiff_toFun := (Z t).contMDiff } :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) = Z t :=
+      ContMDiffSection.coe_inj rfl
+    rw [hZ] at h
+    simpa only [Y] using h
   have h_slot' : HasDerivWithinAt
       (fun s : ℝ => q.inner ((Φ_fam s : M → M) x)
         (mfderiv I I (Φ_fam s : M → M) x v)
@@ -283,11 +307,17 @@ theorem scaled_inv_vel
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(W t ((Ψ_fam t : M → M) y)))) := by
     intro y t ht
-    simpa only [W, a, scaled_hmf_target] using hHMF y t ht
+    have h := hHMF y t ht
+    rw [scaled_hmf_target] at h
+    change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+      (fun s : ℝ => (Ψ_fam s : M → M) y) (Set.Ici (0 : ℝ)) t
+      ((1 : ℝ →L[ℝ] ℝ).smulRight (-(W t ((Ψ_fam t : M → M) y)))) at h
+    exact h
   intro x t ht
   simpa only [W, a] using
     (symm_gauge_vel (I := I) Ψ_fam W T hΨneg hjoint hsymm_joint t ht x)
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
 theorem scaled_hmf_inverse
     (g_RF : ℝ → SmoothRiemannianMetric I M)
@@ -344,8 +374,14 @@ theorem scaled_hmf_inverse
           (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
             (((Ψ_fam t).symm : M → M) x))) := by
     intro x t ht
-    simpa only [W, a] using
-      (scaled_inv_vel (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint hsymm_joint x t ht)
+    have h := scaled_inv_vel (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint
+      hsymm_joint x t ht
+    change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+      (fun s : ℝ => ((Ψ_fam s).symm : M → M) x) (Set.Ici (0 : ℝ)) t
+      ((1 : ℝ →L[ℝ] ℝ).smulRight
+        (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
+          (((Ψ_fam t).symm : M → M) x))) at h
+    exact h
   apply ricci_pullback_drift (I := I) g_RF T (fun s => (Ψ_fam s).symm) W
     hRF_deriv
   · intro x t ht
@@ -353,6 +389,7 @@ theorem scaled_hmf_inverse
   · exact hsymm_joint
   · exact hgram_RF
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
 theorem scaled_bg_inverse
     (g_RF : ℝ → SmoothRiemannianMetric I M)
@@ -397,8 +434,14 @@ theorem scaled_bg_inverse
           (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
             (((Ψ_fam t).symm : M → M) x))) := by
     intro x t ht
-    simpa only [W, a] using
-      (scaled_inv_vel (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint hsymm_joint x t ht)
+    have h := scaled_inv_vel (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint
+      hsymm_joint x t ht
+    change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
+      (fun s : ℝ => ((Ψ_fam s).symm : M → M) x) (Set.Ici (0 : ℝ)) t
+      ((1 : ℝ →L[ℝ] ℝ).smulRight
+        (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
+          (((Ψ_fam t).symm : M → M) x))) at h
+    exact h
   apply fixed_pullback_drift (I := I) g_bg T (fun s => (Ψ_fam s).symm) W
   · intro x t ht
     exact hInvOde x t ht

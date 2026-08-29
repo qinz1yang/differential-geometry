@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -47,18 +46,21 @@ section DeTurckLieConnectionDifferenceDerivativeGridBrick
 private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ) :
     ∑ i ∈ Finset.range m, g (i + c) ≤ ∑ j ∈ Finset.range (m + c), g j := by
   classical
+  let shift : ℕ ↪ ℕ :=
+    ⟨fun i => i + c, fun _ _ h => Nat.add_right_cancel h⟩
   have hsub :
-      (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩ ⊆
+      (Finset.range m).map shift ⊆
         Finset.range (m + c) := by
     intro j hj
     rw [Finset.mem_map] at hj
     obtain ⟨i, hi, rfl⟩ := hj
     rw [Finset.mem_range] at hi ⊢
-    simp only [Function.Embedding.coeFn_mk]
+    change i + c < m + c
     omega
   calc ∑ i ∈ Finset.range m, g (i + c)
-      = ∑ j ∈ (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩, g j := by
-        rw [Finset.sum_map]; rfl
+      = ∑ j ∈ (Finset.range m).map shift, g j := by
+        rw [Finset.sum_map]
+        rfl
     _ ≤ ∑ j ∈ Finset.range (m + c), g j :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun j _ _ => hg j)
 
@@ -255,7 +257,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) Pc).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 3)) hint_k).const_mul _
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 3)) hint_k).const_mul _
   have hnorm := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
     (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I)
       (M := M) g₀ g₁ g_bg))
@@ -285,7 +287,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
         (2 + (i + 2)) (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc)]
   rw [htop_eval]
   rw [MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum (Finset.range (i + 3)) hint_k]
+    MeasureTheory.integral_finsetSum (Finset.range (i + 3)) hint_k]
   have happ_mono : diagonalGridGrowthFactor (E := E) i ≤ diagonalGridGrowthFactor (E := E) a := by
     rw [diagonalGridGrowthFactor, diagonalGridGrowthFactor]
     exact pow_le_pow_right₀ (by

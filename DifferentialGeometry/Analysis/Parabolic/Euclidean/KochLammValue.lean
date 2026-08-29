@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateFull
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammPotential
 
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 open MeasureTheory Set
 open scoped ENNReal NNReal RealInnerProductSpace
 
@@ -69,7 +68,7 @@ theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
     (hk.aestronglyMeasurable.mono_measure Measure.restrict_le_self).smul
       (h.ae.mono_measure Measure.restrict_le_self)
   refine ⟨hmeas, hasFiniteIntegral_iff_enorm.2 ?_⟩
-  simpa only [q] using hfinite
+  simpa only [q, enorm_eq_nnnorm] using hfinite
 
 omit [CompleteSpace F] in
 theorem klLate0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
@@ -151,7 +150,7 @@ theorem klHeat0_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
         ENNReal.ofReal
           (klLateSeries (Module.finrank ℝ V) *
             (klLateTailC V * (A_q : ℝ))) := by
-    simpa only [ofReal_norm_eq_enorm, enorm_eq_nnnorm] using
+    simpa only [ofReal_norm, enorm_eq_nnnorm] using
       ENNReal.ofReal_le_ofReal hlate
   have hearly := kl0_early_norm (V := V) ht htT f x h
   unfold klHeat0

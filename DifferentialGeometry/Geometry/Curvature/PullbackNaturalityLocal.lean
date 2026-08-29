@@ -25,9 +25,9 @@ omit [SigmaCompactSpace N] in
 theorem metricRm04StdAt_pullback_localDiffeo
     (g : SmoothRiemannianMetric I N)
     (V : TopologicalSpace.Opens N) [SigmaCompactSpace V] [T2Space V]
-      [BoundarylessManifold I V] [IsManifold I 1 V] [IsManifold I ((∞ : WithTop ℕ∞) + 1) V]
-    (W : TopologicalSpace.Opens M) [SigmaCompactSpace W] [T2Space W]
-      [BoundarylessManifold I W] [IsManifold I 1 W] [IsManifold I ((∞ : WithTop ℕ∞) + 1) W]
+      [IsManifold I 1 V]
+    (W : TopologicalSpace.Opens M) [T2Space W]
+      [IsManifold I 1 W]
     (Ψ : W ≃ₘ⟮I, I⟯ V) (x : W) (X Y Z W' : TangentSpace I x) :
     metricRm04StdAt (I := I) (M := W)
         (Diffeomorph.pullbackMetric (I := I) (g.restrictOpen (I := I) V) Ψ) x X Y Z W' =
@@ -38,5 +38,6 @@ theorem metricRm04StdAt_pullback_localDiffeo
     metricRm04StdAt_restrictOpen (I := I) g V (Ψ x)
       (mfderiv I I (Ψ : W → V) x X) (mfderiv I I (Ψ : W → V) x Y)
       (mfderiv I I (Ψ : W → V) x Z) (mfderiv I I (Ψ : W → V) x W')]
+  simp only [mfderiv_subtype_val_apply]
 
 end DifferentialGeometry.Geometry.Curvature

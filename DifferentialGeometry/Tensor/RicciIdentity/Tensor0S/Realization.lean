@@ -68,7 +68,7 @@ theorem Nabla0SSectionRealizes.eval_smooth_slots
       (TangentSpace I : M → Type _))
     (x : M) :
     nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V a x)) =
-      extDerivFun (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
         x (X x) -
         ∑ a : Fin s,
           alpha x
@@ -79,7 +79,7 @@ theorem Nabla0SSectionRealizes.eval_smooth_slots
         = nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             s cov X alpha x (fun a : Fin s => V a x) := by
           exact h x X (fun a : Fin s => V a x)
-    _ = extDerivFun (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
+    _ = mvfderiv (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
           x (X x) -
           ∑ a : Fin s,
             alpha x
@@ -101,7 +101,7 @@ theorem Nabla0SSectionRealizes.eval_point_vector_smooth_slots
     (V : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
     nablaAlpha x (Fin.cons W (fun q : Fin s => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M => alpha y (fun q : Fin s => V q y)) x W -
       ∑ q : Fin s,
         alpha x
@@ -127,7 +127,7 @@ theorem Nabla0SSectionRealizes.eval_C1_slots
       ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : WithTop ℕ∞)
         (fun y : M => (⟨y, V a y⟩ : TotalSpace E (TangentSpace I : M → Type _))) x) :
     nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V a x)) =
-      extDerivFun (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
+      mvfderiv (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
         x (X x) -
         ∑ a : Fin s,
           alpha x
@@ -138,7 +138,7 @@ theorem Nabla0SSectionRealizes.eval_C1_slots
         = nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             s cov X alpha x (fun a : Fin s => V a x) := by
           exact h x X (fun a : Fin s => V a x)
-    _ = extDerivFun (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
+    _ = mvfderiv (I := I) (fun p : M => alpha p (fun a : Fin s => V a p))
           x (X x) -
           ∑ a : Fin s,
             alpha x
@@ -161,7 +161,7 @@ theorem Nabla20SRealizesAt.eval_smooth_slots
     (V : Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
     nabla2Alpha (Fin.cons (X x) (fun a : Fin (s + 1) => V a x)) =
-      extDerivFun (I := I) (fun p : M => nablaAlpha p
+      mvfderiv (I := I) (fun p : M => nablaAlpha p
           (fun a : Fin (s + 1) => V a p)) x (X x) -
         ∑ a : Fin (s + 1),
           nablaAlpha x
@@ -173,7 +173,7 @@ theorem Nabla20SRealizesAt.eval_smooth_slots
             (s + 1) cov X nablaAlpha x
             (fun a : Fin (s + 1) => V a x) := by
           exact h.2 X (fun a : Fin (s + 1) => V a x)
-    _ = extDerivFun (I := I) (fun p : M => nablaAlpha p
+    _ = mvfderiv (I := I) (fun p : M => nablaAlpha p
             (fun a : Fin (s + 1) => V a p)) x (X x) -
           ∑ a : Fin (s + 1),
             nablaAlpha x
@@ -192,9 +192,9 @@ theorem mdiffAt_finset_sum
   classical
   induction t using Finset.induction_on with
   | empty =>
-      simpa using
-        (mdifferentiableAt_const (I := I) (I' := 𝓘(Real, Real))
-          (c := (0 : Real)) (x := x))
+      change MDifferentiableAt I 𝓘(Real, Real) (fun _ : M ↦ (0 : Real)) x
+      exact mdifferentiableAt_const (I := I) (I' := 𝓘(Real, Real))
+        (c := (0 : Real)) (x := x)
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x := hf i (by simp [hit])
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x := by
@@ -205,12 +205,12 @@ theorem mdiffAt_finset_sum
       simpa [Finset.sum_insert, hit] using hadd
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_finset_sum_at
+theorem mvfderiv_finset_sum_at
     {ι : Type*} (t : Finset ι) (f : ι → M → Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    extDerivFun (I := I) (t.sum f) x v =
-      t.sum (fun i => extDerivFun (I := I) (f i) x v) := by
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
   classical
   induction t using Finset.induction_on with
   | empty =>
@@ -223,47 +223,42 @@ theorem extDerivFun_finset_sum_at
       have hsum : MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x :=
         mdiffAt_finset_sum (I := I) t f hft
       calc
-        extDerivFun (I := I) ((insert i t).sum f) x v
-            = extDerivFun (I := I) (f i + t.sum f) x v := by
+        mvfderiv (I := I) ((insert i t).sum f) x v
+            = mvfderiv (I := I) (f i + t.sum f) x v := by
               simp [Finset.sum_insert, hit]
-        _ = extDerivFun (I := I) (f i) x v +
-              extDerivFun (I := I) (t.sum f) x v := by
-              have hadd := congr($(extDerivFun_add
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
                 (I := I) (g := f i) (g' := t.sum f)
                 (x := x) hfi hsum) v)
               simpa [Pi.add_apply] using hadd
-        _ = (insert i t).sum (fun j => extDerivFun (I := I) (f j) x v) := by
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_neg_at
+theorem mvfderiv_neg_at
     {f : M → Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
-    extDerivFun (I := I) (fun y : M => -f y) x v =
-      -extDerivFun (I := I) f x v := by
-  have hfun : (fun y : M => -f y) = ((fun _ : M => (-1 : Real)) • f) := by
-    ext y
-    simp
-  rw [hfun]
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := fun _ : M => (-1 : Real)) (g := f)
-    (mdifferentiableAt_const (I := I) (I' := 𝓘(Real, Real)) (c := (-1 : Real)) (x := x))
-    hf v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul] using hprod
+    mvfderiv (I := I) (fun y : M => -f y) x v =
+      -mvfderiv (I := I) f x v := by
+  let _ := hf
+  have hneg := congr($(mvfderiv_neg (I := I) (g := f) (x := x)) v)
+  change mvfderiv (I := I) (-f) x v = -mvfderiv (I := I) f x v
+  simpa only [neg_apply] using hneg
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_sub_at
+theorem mvfderiv_sub_at
     {f g : M → Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
-    extDerivFun (I := I) (fun y : M => f y - g y) x v =
-      extDerivFun (I := I) f x v - extDerivFun (I := I) g x v := by
-  have hneg := extDerivFun_neg_at (I := I) (f := g) (x := x) v hg
-  have hadd := congr($(extDerivFun_add
-    (I := I) (g := f) (g' := fun y : M => -g y)
-    (x := x) hf hg.neg) v)
-  simpa [Pi.add_apply, sub_eq_add_neg, hneg] using hadd
+    mvfderiv (I := I) (fun y : M => f y - g y) x v =
+      mvfderiv (I := I) f x v - mvfderiv (I := I) g x v := by
+  have hsub := congr($(mvfderiv_sub
+    (I := I) (g := f) (g' := g) (x := x) hf hg) v)
+  change mvfderiv (I := I) (f - g) x v =
+    mvfderiv (I := I) f x v - mvfderiv (I := I) g x v
+  simpa only [sub_apply] using hsub
 
 omit [FiniteDimensional ℝ E] in
 lemma tensor0S_update_curvature_diag

@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.TopKernelPairingBounds
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -286,8 +285,8 @@ theorem edge_center_pairing_abs_of_carrier_bound
         e * ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖ ^ 2 +
           Lc := by
     simpa only [Yc, V, A, K0, LT, e] using hcarrier
-  calc
-    2 * |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun
+  have hfirst :
+      2 * |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun
         (J + Cross).toFun| ≤ 2 *
         (|tensorL2Inner (I := I) (M := M) g 0 2 V.toFun Yc.toFun| +
           |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun Yp.toFun| +
@@ -295,17 +294,32 @@ theorem edge_center_pairing_abs_of_carrier_bound
           |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun P20.toFun| +
           |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun P11L.toFun| +
           |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun P11R.toFun|) :=
-      mul_le_mul_of_nonneg_left habs (by norm_num)
-    _ ≤ (e + e + e + e) *
+    mul_le_mul_of_nonneg_left habs (by norm_num)
+  have hsecond :
+      2 *
+        (|tensorL2Inner (I := I) (M := M) g 0 2 V.toFun Yc.toFun| +
+          |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun Yp.toFun| +
+          |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun Yd.toFun| +
+          |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun P20.toFun| +
+          |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun P11L.toFun| +
+          |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun P11R.toFun|) ≤
+        (e + e + e + e) *
           ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖ ^ 2 +
         Lc + Gd *
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ^ 2 := by
-      nlinarith only [hc', hp', hd', hcorners]
-    _ = eta * ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖ ^ 2 +
+    nlinarith only [hc', hp', hd', hcorners]
+  have hthird :
+      (e + e + e + e) *
+          ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖ ^ 2 +
+        Lc + Gd *
+          ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ^ 2 =
+        eta * ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖ ^ 2 +
         Lc + Gd *
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ^ 2 := by
-      dsimp only [e]
-      ring
+    dsimp only [e]
+    ring
+  have hfinal := hfirst.trans (hsecond.trans_eq hthird)
+  simpa only [V, LT, J, R0, K0, PairComm, Z, Q, C, gs, Cross] using hfinal
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

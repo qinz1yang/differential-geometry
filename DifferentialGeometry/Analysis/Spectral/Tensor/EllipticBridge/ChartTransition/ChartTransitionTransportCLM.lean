@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -185,7 +184,10 @@ theorem contMDiff_transportCoeffManifold
     have hprod : ContMDiffAt I (𝓘(ℝ, ℝ)) ∞
         (transportCoeffManifold (I := I) (M := M) r s β α P₀ Q) x := by
       have := (hcutα.mul hcutβ).mul hcoeff_at
-      simpa [transportCoeffManifold] using this
+      unfold transportCoeffManifold
+      convert this using 1
+      funext y
+      rfl
     exact hprod
   · have hsupp_sub := tsupport_transportCoeffManifold_subset
       (I := I) (M := M) r s β α P₀ Q
@@ -456,12 +458,12 @@ private lemma exists_eLpNorm_transportFun_bound
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
     exists_bound_transportCoeffPushed (I := I) (M := M) r s β α P₀ Q
-  set Kchg : ℝ := (1 / D.Φ.jacobian_lower_bound) ^ (1 / (2 : ℝ≥0∞).toReal)
+  set Kchg : ℝ := (1 / D.Φ.jacobianLowerBound) ^ (1 / (2 : ℝ≥0∞).toReal)
     with hKchg_def
-  have hjLB_pos : 0 < D.Φ.jacobian_lower_bound := D.Φ.jacobian_lower_bound_pos
+  have hjLB_pos : 0 < D.Φ.jacobianLowerBound := D.Φ.jacobian_lower_bound_pos
   have hKchg_nn : 0 ≤ Kchg := by
     rw [hKchg_def]
-    have h_inv_nn : (0 : ℝ) ≤ 1 / D.Φ.jacobian_lower_bound := by positivity
+    have h_inv_nn : (0 : ℝ) ≤ 1 / D.Φ.jacobianLowerBound := by positivity
     exact Real.rpow_nonneg h_inv_nn _
   refine ⟨C * Kchg, mul_nonneg hC_nn hKchg_nn, fun f => ?_⟩
   have h_pointwise : ∀ y, ‖transportFun (I := I) (M := M) r s β α P₀ Q f y‖ ≤
@@ -517,11 +519,11 @@ private lemma exists_eLpNorm_transportFun_bound
     _ ≤ ENNReal.ofReal C * (ENNReal.ofReal Kchg *
             eLpNorm (f : EuclN → ℝ) 2
               ((volume : Measure EuclN).restrict D.Ωβα)) :=
-          mul_le_mul_of_nonneg_left h_chg (zero_le _)
+          mul_le_mul_of_nonneg_left h_chg (zero_le)
     _ ≤ ENNReal.ofReal C * (ENNReal.ofReal Kchg *
             eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β)) :=
           mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left h_mono (zero_le _)) (zero_le _)
+            (mul_le_mul_of_nonneg_left h_mono (zero_le)) (zero_le)
     _ = ENNReal.ofReal (C * Kchg) *
             eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β) := by
           rw [ENNReal.ofReal_mul hC_nn, mul_assoc]

@@ -29,6 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (sigma : Equiv.Perm (Fin s))
     (R : SmoothCcTensor g r s) (i : ℕ) (x : M) :
@@ -43,7 +44,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq
     (fun y d => by
       rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2) (k : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (2 + k) x

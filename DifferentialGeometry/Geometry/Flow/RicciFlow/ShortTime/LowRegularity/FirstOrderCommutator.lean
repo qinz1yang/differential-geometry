@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Lowe
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -36,7 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem jetNN
     (g : SmoothRiemannianMetric I M) {r s m : ℕ}
     (S : SmoothCcTensor g r s) :
@@ -171,7 +170,7 @@ theorem firstOrderActionSecondToFirstOrder_apply
   obtain ⟨Q, hQ, hHi, hLo⟩ := firstOrderAction_jet_bound (I := I) (M := M) hDim g A
   exact (hpair A Q hQ hHi hLo).2.2.2.1 W
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem firstOrderAction_add_core
     (g : SmoothRiemannianMetric I M) (A B F : LowerScaleActionCoefficients g)
     (h0 : F.zeroOrderCoefficient = A.zeroOrderCoefficient + B.zeroOrderCoefficient) (h1 : F.firstOrderCoefficient = A.firstOrderCoefficient + B.firstOrderCoefficient)
@@ -197,7 +196,7 @@ theorem firstOrderActionThirdToSecondOrder_add
       (A.firstOrderActionThirdToSecondOrder (I := I) (M := M) +
         B.firstOrderActionThirdToSecondOrder (I := I) (M := M)).continuous) ?_
   intro W
-  rw [ccToHsLin_apply, ContinuousLinearMap.add_apply,
+  rw [ccToHsLin_apply, add_apply,
     firstOrderActionThirdToSecondOrder_apply (I := I) (M := M) hDim g F W,
     firstOrderActionThirdToSecondOrder_apply (I := I) (M := M) hDim g A W,
     firstOrderActionThirdToSecondOrder_apply (I := I) (M := M) hDim g B W,
@@ -220,7 +219,7 @@ theorem firstOrderActionSecondToFirstOrder_add
       (A.firstOrderActionSecondToFirstOrder (I := I) (M := M) +
         B.firstOrderActionSecondToFirstOrder (I := I) (M := M)).continuous) ?_
   intro W
-  rw [ccToHsLin_apply, ContinuousLinearMap.add_apply,
+  rw [ccToHsLin_apply, add_apply,
     firstOrderActionSecondToFirstOrder_apply (I := I) (M := M) hDim g F W,
     firstOrderActionSecondToFirstOrder_apply (I := I) (M := M) hDim g A W,
     firstOrderActionSecondToFirstOrder_apply (I := I) (M := M) hDim g B W,

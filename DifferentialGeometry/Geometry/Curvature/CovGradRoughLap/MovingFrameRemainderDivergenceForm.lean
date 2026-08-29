@@ -39,7 +39,7 @@ theorem tensorL2Inner_movingFrameRemainder_eq_zero_of_pointwise_divergence
               ((pointwiseTensorCurv (I := I) (M := M) g s S - Gcurv - GcurvDeriv).toFun x)
               ((covGrad (I := I) (M := M) g 0 s S).toFun x))
         =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => divergence_g (I := I) g X x)) :
+      (fun x : M => divergenceG (I := I) g X x)) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
         (pointwiseTensorCurv (I := I) (M := M) g s S - Gcurv - GcurvDeriv).toFun
         (covGrad (I := I) (M := M) g 0 s S).toFun = 0 :=
@@ -55,7 +55,7 @@ theorem tensorL2Inner_genuineFields_covGrad_eq_pointwiseTensorCurv_of_pointwise_
               ((pointwiseTensorCurv (I := I) (M := M) g s S - Gcurv - GcurvDeriv).toFun x)
               ((covGrad (I := I) (M := M) g 0 s S).toFun x))
         =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => divergence_g (I := I) g X x)) :
+      (fun x : M => divergenceG (I := I) g X x)) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1) (Gcurv + GcurvDeriv).toFun
         (covGrad (I := I) (M := M) g 0 s S).toFun =
       tensorL2Inner (I := I) (M := M) g 0 (s + 1)

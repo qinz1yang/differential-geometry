@@ -22,9 +22,10 @@ theorem contDiff : ContDiff ℝ ∞ value := by
   have hlin : ContDiff ℝ ∞ (fun s : ℝ => s - 1) :=
     contDiff_id.sub contDiff_const
   have hstem : ContDiff ℝ ∞ stem := by
-    simpa [stem] using
-      (contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin))
-  simpa [value] using hstem.pow 2
+    change ContDiff ℝ ∞ (fun s : ℝ => 1 - Real.smoothTransition (s - 1))
+    exact contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin)
+  change ContDiff ℝ ∞ (fun s : ℝ => stem s ^ 2)
+  exact hstem.pow 2
 
 theorem mem_Icc (s : ℝ) : value s ∈ Icc (0 : ℝ) 1 := by
   have hσ0 : 0 ≤ Real.smoothTransition (s - 1) :=
@@ -109,8 +110,8 @@ private theorem exists_stem_bound :
     (show ContDiff ℝ ∞ stem from by
       have hlin : ContDiff ℝ ∞ (fun s : ℝ => s - 1) :=
         contDiff_id.sub contDiff_const
-      simpa [stem] using
-        (contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin))).of_le
+      change ContDiff ℝ ∞ (fun s : ℝ => 1 - Real.smoothTransition (s - 1))
+      exact contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin)).of_le
       (by simp)
   have hcont : Continuous (deriv stem) := hstem.continuous_deriv_one
   obtain ⟨sMax, -, hsMax⟩ :=
@@ -146,8 +147,8 @@ theorem deriv_eq (s : ℝ) :
     have hsmooth : ContDiff ℝ ∞ stem := by
       have hlin : ContDiff ℝ ∞ (fun y : ℝ => y - 1) :=
         contDiff_id.sub contDiff_const
-      simpa [stem] using
-        (contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin))
+      change ContDiff ℝ ∞ (fun y : ℝ => 1 - Real.smoothTransition (y - 1))
+      exact contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin)
     exact hsmooth.differentiable (by simp) s
   change deriv (stem ^ 2) s = _
   rw [deriv_pow hstem 2]

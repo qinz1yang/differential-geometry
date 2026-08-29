@@ -70,8 +70,6 @@ section Hilbert
 
 variable [InnerProductSpace ℝ X]
 
-example : InnerProductSpace ℝ (timeL2 X T) := inferInstance
-
 omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem inner_def (f g : timeL2 X T) :
     (inner ℝ f g : ℝ) = ∫ t in Set.Icc (0 : ℝ) T, inner ℝ (f t) (g t) := by

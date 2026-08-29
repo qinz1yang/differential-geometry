@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -42,7 +41,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
@@ -71,8 +69,9 @@ private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
   rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
   change (ContinuousMultilinearMap.domDomCongr ρ
       (Tensor0SBundle.Tensor0SSpace.toModel (Z x)))
-      (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-        ((Module.finBasis ℝ E) (τ j))) = _
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
+          ((Module.finBasis ℝ E) (τ j)))) = _
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
@@ -93,7 +92,6 @@ theorem slotPermCLM_field_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) x t)
     (slotPermCLM_apply (I := I) ρ x (Z x))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
@@ -109,10 +107,6 @@ private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (m + k) ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + k) I z) x
         (tensorProdWithCLM (I := I) m k x (P x) (Q x))) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) m
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) k
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
-    (m + k)
   intro x₀
   rw [Bundle.contMDiffAt_section (F := Tensor0SBundle.Tensor0SModel (m + k) ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + k) I z)]
@@ -140,11 +134,10 @@ private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
   change (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) m k
       (Tensor0SBundle.Tensor0SSpace.toModel (P x))
       (Tensor0SBundle.Tensor0SSpace.toModel (Q x)))
-      (fun i => symmL (v i)) = _
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (symmL (v i))) = _
   rw [Bundle.continuousMultilinearMap.modelProduct_apply]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connContrCLM_field_contMDiff (m k : ℕ)
@@ -204,7 +197,6 @@ theorem connContrCLM_field_contMDiff (m k : ℕ)
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (m + 1 + k) ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + 1 + k) I z) x t) rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -220,35 +212,34 @@ theorem linearizedRicciConnectionDifferenceOrder1CLM_field_contMDiff
         (linearizedRicciConnectionDifferenceOrder1CLM (I := I) x
           ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x))) := by
   have hAsm := (connectionDifferenceSection (I := I) g₁ g₀).toSection.contMDiff
-  have hpre102 := slotPermCLM_field_contMDiff (I := I) perm3_102 Z hZ
-  have hpre120 := slotPermCLM_field_contMDiff (I := I) perm3_120 Z hZ
-  have h₁ := slotPermCLM_field_contMDiff (I := I) perm4_0312 _
+  have hpre102 := slotPermCLM_field_contMDiff (I := I) perm3102 Z hZ
+  have hpre120 := slotPermCLM_field_contMDiff (I := I) perm3120 Z hZ
+  have h₁ := slotPermCLM_field_contMDiff (I := I) perm40312 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x (Z x)) hpre102)
-  have h₂ := slotPermCLM_field_contMDiff (I := I) perm4_0213 _
+      (fun x => slotPermCLM (I := I) perm3102 x (Z x)) hpre102)
+  have h₂ := slotPermCLM_field_contMDiff (I := I) perm40213 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x (Z x)) hpre120)
-  have h₃ := slotPermCLM_field_contMDiff (I := I) perm4_2301 _
+      (fun x => slotPermCLM (I := I) perm3120 x (Z x)) hpre120)
+  have h₃ := slotPermCLM_field_contMDiff (I := I) perm42301 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
       (fun x => Z x) hZ)
-  have h₄ := slotPermCLM_field_contMDiff (I := I) perm4_1302 _
+  have h₄ := slotPermCLM_field_contMDiff (I := I) perm41302 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x (Z x)) hpre102)
-  have h₅ := slotPermCLM_field_contMDiff (I := I) perm4_1203 _
+      (fun x => slotPermCLM (I := I) perm3102 x (Z x)) hpre102)
+  have h₅ := slotPermCLM_field_contMDiff (I := I) perm41203 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x (Z x)) hpre120)
+      (fun x => slotPermCLM (I := I) perm3120 x (Z x)) hpre120)
   have hsum := ((((h₁.add_section h₂).add_section h₃).add_section h₄).add_section h₅).neg_section
   refine hsum.congr (fun x => ?_)
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 4 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) x t) rfl
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace 2 I x)
@@ -265,68 +256,69 @@ theorem linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff
   have hAsm := (connectionDifferenceSection (I := I) g₁ g₀).toSection.contMDiff
   have hDAsm := (covGrad (I := I) (M := M) g₀ 1 2
     (connectionDifferenceSection (I := I) g₁ g₀)).toSection.contMDiff
-  have hZswap := slotPermCLM_field_contMDiff (I := I) perm2_10 Z hZ
+  have hZswap := slotPermCLM_field_contMDiff (I := I) perm210 Z hZ
   have hinnJ := connContrCLM_field_contMDiff (I := I) 1 1
     (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
     (fun x => Z x) hZ
   have hinnJ' := connContrCLM_field_contMDiff (I := I) 1 1
     (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-    (fun x => slotPermCLM (I := I) perm2_10 x (Z x)) hZswap
-  have hu₃ := slotPermCLM_field_contMDiff (I := I) perm4_3201 _
+    (fun x => slotPermCLM (I := I) perm210 x (Z x)) hZswap
+  have hu₃ := slotPermCLM_field_contMDiff (I := I) perm43201 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x
+      (fun x => slotPermCLM (I := I) perm3102 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x)))
-      (slotPermCLM_field_contMDiff (I := I) perm3_102 _ hinnJ))
-  have hu₄ := slotPermCLM_field_contMDiff (I := I) perm4_2301 _
+      (slotPermCLM_field_contMDiff (I := I) perm3102 _ hinnJ))
+  have hu₄ := slotPermCLM_field_contMDiff (I := I) perm42301 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x
+      (fun x => slotPermCLM (I := I) perm3102 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          (slotPermCLM (I := I) perm2_10 x (Z x))))
-      (slotPermCLM_field_contMDiff (I := I) perm3_102 _ hinnJ'))
-  have hu₅ := slotPermCLM_field_contMDiff (I := I) perm4_3102 _
+          (slotPermCLM (I := I) perm210 x (Z x))))
+      (slotPermCLM_field_contMDiff (I := I) perm3102 _ hinnJ'))
+  have hu₅ := slotPermCLM_field_contMDiff (I := I) perm43102 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x
+      (fun x => slotPermCLM (I := I) perm3120 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x)))
-      (slotPermCLM_field_contMDiff (I := I) perm3_120 _ hinnJ))
-  have hu₆ := slotPermCLM_field_contMDiff (I := I) perm4_1302 _
+      (slotPermCLM_field_contMDiff (I := I) perm3120 _ hinnJ))
+  have hu₆ := slotPermCLM_field_contMDiff (I := I) perm41302 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
       (fun x => connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-        (slotPermCLM (I := I) perm2_10 x (Z x)))
+        (slotPermCLM (I := I) perm210 x (Z x)))
       hinnJ')
-  have hu₇ := slotPermCLM_field_contMDiff (I := I) perm4_1203 _
+  have hu₇ := slotPermCLM_field_contMDiff (I := I) perm41203 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
       (fun x => connContrCLM (I := I) 1 1 x
         ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x))
       hinnJ)
-  have hu₈ := slotPermCLM_field_contMDiff (I := I) perm4_2103 _
+  have hu₈ := slotPermCLM_field_contMDiff (I := I) perm42103 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x
+      (fun x => slotPermCLM (I := I) perm3120 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          (slotPermCLM (I := I) perm2_10 x (Z x))))
-      (slotPermCLM_field_contMDiff (I := I) perm3_120 _ hinnJ'))
-  have hu₁ := slotPermCLM_field_contMDiff (I := I) perm4_3012 _
+          (slotPermCLM (I := I) perm210 x (Z x))))
+      (slotPermCLM_field_contMDiff (I := I) perm3120 _ hinnJ'))
+  have hu₁ := slotPermCLM_field_contMDiff (I := I) perm43012 _
     (connContrCLM_field_contMDiff (I := I) 1 2
       (fun x => (covGrad (I := I) (M := M) g₀ 1 2
         (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) hDAsm
       (fun x => Z x) hZ)
-  have hu₂ := slotPermCLM_field_contMDiff (I := I) perm4_2013 _
+  have hu₂ := slotPermCLM_field_contMDiff (I := I) perm42013 _
     (connContrCLM_field_contMDiff (I := I) 1 2
       (fun x => (covGrad (I := I) (M := M) g₀ 1 2
         (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) hDAsm
-      (fun x => slotPermCLM (I := I) perm2_10 x (Z x)) hZswap)
+      (fun x => slotPermCLM (I := I) perm210 x (Z x)) hZswap)
   have hsum := (((((((hu₃.add_section hu₄).add_section hu₅).add_section
     hu₆).add_section hu₇).add_section hu₈).sub_section hu₁).sub_section hu₂)
   refine hsum.congr (fun x => ?_)
-  exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 4 ℝ E)
-    (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) x t) rfl
+  apply TotalSpace.mk_inj.mpr
+  rw [linearizedRicciConnectionDifferenceOrder0CLM]
+  simp only [add_apply, sub_apply, ContinuousLinearMap.comp_apply]
+  rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -341,15 +333,15 @@ theorem ricciCometricFourTraceCLM_field_contMDiff (g₁ : SmoothRiemannianMetric
         (ricciCometricFourTraceCLM (I := I) g₁ x (Z x))) := by
   have ha := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2)
-    (slotPermCLM_field_contMDiff (I := I) perm4_0231 Z hZ)
+    (slotPermCLM_field_contMDiff (I := I) perm40231 Z hZ)
   have hb := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2)
-    (slotPermCLM_field_contMDiff (I := I) perm4_0321 Z hZ)
+    (slotPermCLM_field_contMDiff (I := I) perm40321 Z hZ)
   have hc := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2) hZ
   have hd := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2)
-    (slotPermCLM_field_contMDiff (I := I) perm4_2301 Z hZ)
+    (slotPermCLM_field_contMDiff (I := I) perm42301 Z hZ)
   have hcomb := (((ha.add_section hb).sub_section hc).sub_section hd).const_smul_section
     (a := ((1 : ℝ) / 2))
   refine hcomb.congr (fun x => ?_)
@@ -373,7 +365,7 @@ noncomputable def linearizedRicciConnectionDifferenceOrder0CometricTracedCLM
       ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
       ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x))
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0CometricTracedCLM_apply
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (D : Tensor0SBundle.Tensor0SSpace 2 I x) :
     linearizedRicciConnectionDifferenceOrder0CometricTracedCLM (I := I) g₀ g₁ x D =
@@ -384,7 +376,6 @@ omit [NeZero (Module.finrank ℝ E)] in
             (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) D) := by
   rw [linearizedRicciConnectionDifferenceOrder0CometricTracedCLM, ContinuousLinearMap.comp_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -408,11 +399,11 @@ theorem linearizedRicciConnectionDifferenceOrder1CometricTracedCLM_contMDiff
       ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Y x)) hE1
   refine hCK.congr (fun x => ?_)
   apply TotalSpace.mk_inj.mpr
-  rfl
+  rw [linearizedRicciConnectionDifferenceOrder1CometricTracedCLM,
+    ContinuousLinearMap.comp_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0CometricTracedCLM_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞
@@ -467,7 +458,7 @@ omit [I.Boundaryless] in
         linearizedRicciConnectionDifferenceOrder1CometricTracedCLM (I := I) g₀ g₁ x) := rfl
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0CoeffField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁).toSection x =
@@ -492,7 +483,7 @@ def linearizedRicciConnectionDifferenceOrder0Coeff (g₀ : SmoothRiemannianMetri
   linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] theorem linearizedRicciConnectionDifferenceOrder0Coeff_toSection
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -506,6 +497,7 @@ omit [NeZero (Module.finrank ℝ E)] in
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) := rfl
 
 
+omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -520,7 +512,7 @@ theorem linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder1Coeff_eq_base_add_sub
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)

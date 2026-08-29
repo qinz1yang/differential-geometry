@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -31,16 +33,16 @@ private lemma infty_ne_zeroC : (∞ : WithTop ℕ∞) ≠ 0 := by decide
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [FiniteDimensional ℝ F] [CompleteSpace F] [NeZero (Module.finrank ℝ F)] [IsManifold I ∞ M]
   [IsManifold J ∞ N] in
-private theorem extDerivFun_comp_diffeomorphCross
+private theorem mvfderiv_comp_diffeomorphCross
     (f : N → Real) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M)
     (v : TangentSpace I x)
     (hf : MDifferentiableAt J 𝓘(Real, Real) f (Phi x)) :
-    extDerivFun (I := I) (fun y : M => f (Phi y)) x v =
-      extDerivFun (I := J) f (Phi x)
+    mvfderiv (I := I) (fun y : M => f (Phi y)) x v =
+      mvfderiv (I := J) f (Phi x)
         (mfderiv I J (Phi : M → N) x v) := by
   have hPhi : MDifferentiableAt I J (Phi : M → N) x :=
     Phi.mdifferentiable infty_ne_zeroC x
-  rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
+  rw [mvfderiv_real_eq_mfderiv, mvfderiv_real_eq_mfderiv]
   simpa [Function.comp_def] using
     mfderiv_comp_apply (I := I) (I' := J) (I'' := 𝓘(Real, Real)) x hf hPhi v
 
@@ -49,8 +51,7 @@ private theorem metricCovDeriv_succ_eval_smooth_slotsC
     [FiniteDimensional Real E'] [CompleteSpace E']
     {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners Real E' H'}
     {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' ∞ M']
-    [SigmaCompactSpace M'] [T2Space M'] [IsManifold I' 1 M'] [IsManifold I' 2 M']
-    [IsManifold I' ((∞ : WithTop ℕ∞) + 1) M'] [BoundarylessManifold I' M']
+    [T2Space M'] [IsManifold I' 1 M'] [IsManifold I' 2 M']
     (h gRef : SmoothRiemannianMetric I' M') (a : Nat)
     (X : ContMDiffSection I' E' (∞ : WithTop ℕ∞)
       (TangentSpace I' : M' → Type _))
@@ -59,7 +60,7 @@ private theorem metricCovDeriv_succ_eval_smooth_slotsC
     (x : M') :
     metricCovDeriv (I := I') h gRef (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I')
+      mvfderiv (I := I')
           (fun y : M' => metricCovDeriv (I := I') h gRef a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),
@@ -76,8 +77,8 @@ private theorem metricCovDeriv_succ_eval_smooth_slotsC
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem metricCovDeriv_pullbackCross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J 2 N]
@@ -139,10 +140,10 @@ theorem metricCovDeriv_pullbackCross
               pushFwdSectionCross (I := I) (J := J) Phi (V q)) (Phi x)
         rw [hleft, hright]
         have hderiv :
-            extDerivFun (I := I)
+            mvfderiv (I := I)
                 (fun y : M => metricCovDeriv (I := I) hPb refPb a y
                   (fun q : Fin (a + 2) => V q y)) x (X x) =
-              extDerivFun (I := J)
+              mvfderiv (I := J)
                 (fun z : N => metricCovDeriv (I := J) h gRef a z
                   (fun q : Fin (a + 2) =>
                     pushFwdSectionCross (I := I) (J := J) Phi (V q) z)) (Phi x)
@@ -168,7 +169,7 @@ theorem metricCovDeriv_pullbackCross
               (Phi x)).mdifferentiableAt (by simp)
           rw [hscalar]
           simpa [pushFwdSectionCross_apply_at_image] using
-            extDerivFun_comp_diffeomorphCross (I := I) (J := J)
+            mvfderiv_comp_diffeomorphCross (I := I) (J := J)
               (f := fun z : N => metricCovDeriv (I := J) h gRef a z
                 (fun q : Fin (a + 2) =>
                   pushFwdSectionCross (I := I) (J := J) Phi (V q) z))
@@ -252,8 +253,8 @@ theorem metricCovDeriv_pullbackCross
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem metricDiffCovDerivAt_pullbackCross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J 2 N]
@@ -294,10 +295,10 @@ theorem metricDiffCovDerivAt_pullbackCross
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
 theorem ricciTensor_cross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M]
+    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (x : M) (v w : TangentSpace I x) :
     ricciTensor (I := I)
@@ -386,10 +387,10 @@ theorem ricciTensor_cross
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
 theorem metricRicci_cross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M]
+    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (x : M) (slots : Fin 2 → TangentSpace I x) :
     metricRicci (I := I)
@@ -451,7 +452,7 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
       Tensor0SBundle.normSq0S (I := J) g (Phi x) s T := by
   let _ := (inferInstance : (SigmaCompactSpace M))
   classical
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   let dPhi : TangentSpace I x ≃L[Real] TangentSpace J (Phi x) :=
     Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zeroC x
   let basis' : Module.Basis Idx Real (TangentSpace J (Phi x)) :=
@@ -479,17 +480,19 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
     rw [Diffeomorph.pullbackMetricCross_inner] at hsrc
     simpa [hbasis'_apply i, hbasis'_apply j] using hsrc
   have hinv :
-      MetricInverseInBasis_gen (I := I)
+      MetricInverseInBasisGen (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x basis
         (identityInvMetric (Idx := Idx)) := by
     have h := metricInverseInBasis_of_orthonormal
       (I := I) (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) basis hON
-    simpa [identityInvMetric, diagonalInvMetric] using h
+    intro i j
+    simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hinv' :
-      MetricInverseInBasis_gen (I := J) g (Phi x) basis'
+      MetricInverseInBasisGen (I := J) g (Phi x) basis'
         (identityInvMetric (Idx := Idx)) := by
     have h := metricInverseInBasis_of_orthonormal (I := J) g basis' hON'
-    simpa [identityInvMetric, diagonalInvMetric] using h
+    intro i j
+    simpa [identityInvMetric, diagonalInvMetric] using h i j
   rw [normSq0S_identity_eq_sum_sq (I := I)
       (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x s basis hinv Tpb,
     normSq0S_identity_eq_sum_sq (I := J) g (Phi x) s basis' hinv' T]
@@ -502,10 +505,10 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
 theorem metricScalar_cross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M]
+    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M) :
     metricScalarAt (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x =
@@ -536,19 +539,21 @@ theorem metricScalar_cross
     rw [Diffeomorph.pullbackMetricCross_inner] at hsrc
     simpa [hbasis'_apply i, hbasis'_apply j] using hsrc
   have hinv :
-      MetricInverseInBasis_gen (I := I)
+      MetricInverseInBasisGen (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
         x basis identityInvMetric := by
+    intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
       metricInverseInBasis_of_orthonormal
         (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
-        basis hON
+        basis hON i j
   have hinv' :
-      MetricInverseInBasis_gen (I := J) g (Phi x) basis'
+      MetricInverseInBasisGen (I := J) g (Phi x) basis'
         identityInvMetric := by
+    intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := J) g basis' hON'
+      metricInverseInBasis_of_orthonormal (I := J) g basis' hON' i j
   rw [metricScalarAt_def, metricScalarAt_def,
     metricTracePair0SAt_eq_sum_basis
       (I := I) (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
@@ -576,9 +581,9 @@ omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
 theorem ricciNormSq_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space N] [BoundarylessManifold J N]
+    [IsManifold I 1 M]
+    [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M) :
     normSq0S (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
@@ -601,8 +606,8 @@ theorem ricciNormSq_cross
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem metricDerivNorm_pullbackCross
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [SigmaCompactSpace M] [T2Space M]
+    [T2Space N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J 2 N]

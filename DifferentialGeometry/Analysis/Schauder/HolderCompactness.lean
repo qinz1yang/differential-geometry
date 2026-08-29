@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Schauder.Holder
 
 noncomputable section
 
+
 open Filter Set Topology
 open scoped NNReal
 
@@ -33,7 +34,7 @@ theorem uniformEquicontinuousOn_of_holderOnWith
     UniformEquicontinuousOn f s := by
   rw [← uniformEquicontinuous_restrict_iff]
   exact uniformEquicontinuous_of_holderWith
-    (s.restrict ∘ f) hr (fun i => (hf i).holderWith)
+    (s.domRestrict ∘ f) hr (fun i => (hf i).holderWith)
 
 theorem holderOnWith_prodMk
     [PseudoMetricSpace X] [PseudoEMetricSpace Y] [PseudoEMetricSpace F]
@@ -78,7 +79,9 @@ theorem arzela_ascoli_subseq_tendsto_locally_uniformly_of_locally_holderOnWith
     ⟨phi, g, hphi, hconv⟩
   refine ⟨phi, g, hphi, g.continuous, ?_⟩
   intro K hK
-  simpa only [fc] using hconv K hK
+  change TendstoUniformlyOn (fun n => (fc (phi n) : X → F))
+    (g : X → F) atTop K
+  exact hconv K hK
 
 theorem arzela_ascoli_subseq_tendsto_locally_uniformly_of_holderWith
     [PseudoMetricSpace X] [LocallyCompactSpace X] [SigmaCompactSpace X]
@@ -107,7 +110,7 @@ theorem arzela_ascoli_subseq_tendsto_locally_uniformly_on_of_locally_holderOnWit
           TendstoUniformlyOn
             (fun n (x : U) => f (phi n) (x : X)) g atTop K := by
   exact arzela_ascoli_subseq_tendsto_locally_uniformly_of_locally_holderOnWith
-    (fun n => U.restrict (f n)) hr hholder (fun x => hbdd x x.2)
+    (fun n => U.domRestrict (f n)) hr hholder (fun x => hbdd x x.2)
 
 theorem arzela_ascoli_subseq_tendsto_locally_uniformly_on_of_holderOnWith
     [PseudoMetricSpace X] [NormedAddCommGroup F] [ProperSpace F]
@@ -121,7 +124,7 @@ theorem arzela_ascoli_subseq_tendsto_locally_uniformly_on_of_holderOnWith
           TendstoUniformlyOn
             (fun n (x : U) => f (phi n) (x : X)) g atTop K := by
   exact arzela_ascoli_subseq_tendsto_locally_uniformly_of_holderWith
-    (fun n => U.restrict (f n)) hr
+    (fun n => U.domRestrict (f n)) hr
     (fun n => (hholder n).holderWith)
     (fun x => hbdd x x.2)
 

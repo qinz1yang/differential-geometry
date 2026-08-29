@@ -9,7 +9,6 @@ set_option autoImplicit false
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -72,13 +71,9 @@ theorem lowerCc_unit (g : SmoothRiemannianMetric I M) (r s : ℕ)
         (unitZeroSec (I := I) (M := M) x) =
       liftedTensorSection (I := I) (M := M) g r s T.toSection x := by
   rw [lowerCc_apply, Tensor0SSpace.toRS0_apply]
-  have hunit : tensor0SSpace_evalScalar x
-      (unitZeroSec (I := I) (M := M) x) = (1 : ℝ) := by
-    rw [Tensor0SSpace.evalScalar_apply]
-    rw [unitZeroSec_apply]
-    change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1 Fin.elim0 = 1
-    rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
-  rw [hunit, one_smul]
+  rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
+  change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1 Fin.elim0 • _ = _
+  rw [ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -96,7 +91,7 @@ theorem lowerCc_riemannianFiberNormSq (g : SmoothRiemannianMetric I M) (r s : �
 private def lowerGradPerm (r s : ℕ) : Equiv.Perm (Fin ((r + s) + 1)) :=
   Fin.cycleRange ⟨r, by omega⟩
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma lowerCc_grad_rel (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) :
     ∀ y : M,
@@ -164,7 +159,7 @@ private lemma lowerCc_grad_rel (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [toModel_liftedTensorSection]
   rw [lowerAllUpperIndices_apply, lowerAllUpperIndices_apply]
   have hcg (Dm : Tensor0SModel r ℝ E)
-      (u : Fin (s + 1) → TangentSpace I y) :
+      (u : Fin (s + 1) → E) :
       TensorRSSpace.toModel
           ((covGrad (I := I) (M := M) g r s T).toSection y) Dm u =
         TensorRSSpace.toModel
@@ -215,7 +210,7 @@ private lemma lowerCc_grad_rel (g : SmoothRiemannianMetric I M) (r s : ℕ)
   congr 1
   exact hlower.symm
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma lowerCc_grad_riemannianFiberNormSq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 ((r + s) + 1) x
@@ -235,7 +230,7 @@ private lemma lowerCc_grad_riemannianFiberNormSq (g : SmoothRiemannianMetric I M
     (covGrad (I := I) (M := M) g r s T) x
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using hperm.trans hlower
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lowerCc_jet_riemannianFiberNormSq (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (T : SmoothCcTensor g r s) (hj : j ≤ 2) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 ((r + s) + j) x

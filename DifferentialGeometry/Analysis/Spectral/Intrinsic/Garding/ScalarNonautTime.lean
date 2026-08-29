@@ -129,7 +129,7 @@ theorem lapDiffHs_decomp
         map_sub (ccToHsLin (I := I) (M := M) q 0 (m : ℝ)) X Y
     rw [show scalarLapDiffCc (I := I) q h W = X - Y by rfl, hsub])
   simpa only [L, R, D₂, D₁, J, q, h,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply] using congrFun hLR U
+    sub_apply, ContinuousLinearMap.comp_apply] using congrFun hLR U
 
 theorem lapDiffHs_path_cd
     {D : RealTimeInterval}
@@ -168,14 +168,14 @@ theorem lapDiffHs_path_cd
       (fun s => appHs q 2 0 m
         (scalarTraceCoeff (I := I) q (g_fam ((T : ℝ) - s))) V₂)
       (Set.Icc (0 : ℝ) tau) := by
-    simpa only [Function.comp_apply] using
-      h₂.comp hb.contDiffOn (fun s hs => hreg s hs)
+    with_unfolding_all
+      exact h₂.comp hb.contDiffOn (fun s hs => hreg s hs)
   have h₁b : ContDiffOn ℝ ∞
       (fun s => appHs q 1 0 m
         (connTraceCoeff (I := I) q (g_fam ((T : ℝ) - s))) V₁)
       (Set.Icc (0 : ℝ) tau) := by
-    simpa only [Function.comp_apply] using
-      h₁.comp hb.contDiffOn (fun s hs => hreg s hs)
+    with_unfolding_all
+      exact h₁.comp hb.contDiffOn (fun s hs => hreg s hs)
   refine (h₂b.sub h₁b).congr ?_
   intro s hs
   simpa only [q, J, V₂, V₁] using hdec m s hs U
@@ -211,9 +211,11 @@ theorem lapDiffHs_dyn_fin
   let V₁ : ℝ → tensorHs (I := I) (M := M) q 0 1 (m : ℝ) :=
     fun s => D₁ (U s)
   have hV₂ : ContDiffOn ℝ k V₂ (Set.Ioo (0 : ℝ) a) := by
-    simpa only [V₂, Function.comp_apply] using D₂.contDiff.comp_contDiffOn hU
+    with_unfolding_all
+      exact D₂.contDiff.comp_contDiffOn hU
   have hV₁ : ContDiffOn ℝ k V₁ (Set.Ioo (0 : ℝ) a) := by
-    simpa only [V₁, Function.comp_apply] using D₁.contDiff.comp_contDiffOn hU
+    with_unfolding_all
+      exact D₁.contDiff.comp_contDiffOn hU
   have hback : Set.Ioo (0 : ℝ) a ⊆
       {s : ℝ | (T : ℝ) - s ∈ D.regular} := by
     intro s hs

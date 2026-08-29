@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Remainder
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -34,11 +33,8 @@ def curvatureQuadraticPairing (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ F
       (n := (∞ : WithTop ℕ∞)) 4 :=
   metricTraceFirstTwoField (I := I) (M := M) (s := 4) g
     (metricTraceFirstTwoField (I := I) (M := M) (s := 6) g
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-          (s := 4) (q := 4) A B)))
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)))
 
 def curvatureQuadraticPairingPermutationZeroOneTwoThree : Equiv.Perm (Fin 8) :=
   Equiv.ofBijective ![4, 0, 5, 2, 6, 1, 7, 3] (by decide)
@@ -58,7 +54,7 @@ theorem curvatureQuadraticPairing_zero_one_two_three_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -82,14 +78,31 @@ theorem curvatureQuadraticPairing_zero_one_two_three_component {Idx : Type*} [Fi
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroOneTwoThree
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := 4) (q := 4) A B x))
+    Tensor0SSpace.eval
+      ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+        curvatureQuadraticPairingPermutationZeroOneTwoThree)
       (metricTraceInput (I := I) (basis e) (basis q)
         (metricTraceInput (I := I) (basis f) (basis r)
-          (fun p => basis (m p))))) = _
-  rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
+          (fun p => basis (m p))))) =
+      (gInv f r * gInv e q *
+          Tensor0SSpace.eval (A x) (fun p => basis (![m 0, e, m 1, f] p))) *
+        Tensor0SSpace.eval (B x) (fun p => basis (![m 2, q, m 3, r] p))
+  have hroute :
+      Tensor0SSpace.eval
+          ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+            curvatureQuadraticPairingPermutationZeroOneTwoThree)
+          (metricTraceInput (I := I) (basis e) (basis q)
+            (metricTraceInput (I := I) (basis f) (basis r)
+              (fun p => basis (m p)))) =
+        Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x)
+          (fun i =>
+            metricTraceInput (I := I) (basis e) (basis q)
+              (metricTraceInput (I := I) (basis f) (basis r)
+                (fun p => basis (m p)))
+              (curvatureQuadraticPairingPermutationZeroOneTwoThree i)) := by
+    exact Tensor0SSpace.domDomCongr_apply (I := I)
+      curvatureQuadraticPairingPermutationZeroOneTwoThree _ _
+  rw [hroute, tensor0SField_product_eval]
   have hA :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
@@ -117,7 +130,7 @@ theorem curvatureQuadraticPairing_zero_one_three_two_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -141,14 +154,31 @@ theorem curvatureQuadraticPairing_zero_one_three_two_component {Idx : Type*} [Fi
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroOneThreeTwo
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := 4) (q := 4) A B x))
+    Tensor0SSpace.eval
+      ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+        curvatureQuadraticPairingPermutationZeroOneThreeTwo)
       (metricTraceInput (I := I) (basis e) (basis q)
         (metricTraceInput (I := I) (basis f) (basis r)
-          (fun p => basis (m p))))) = _
-  rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
+          (fun p => basis (m p))))) =
+      (gInv f r * gInv e q *
+          Tensor0SSpace.eval (A x) (fun p => basis (![m 0, e, m 1, f] p))) *
+        Tensor0SSpace.eval (B x) (fun p => basis (![m 3, q, m 2, r] p))
+  have hroute :
+      Tensor0SSpace.eval
+          ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+            curvatureQuadraticPairingPermutationZeroOneThreeTwo)
+          (metricTraceInput (I := I) (basis e) (basis q)
+            (metricTraceInput (I := I) (basis f) (basis r)
+              (fun p => basis (m p)))) =
+        Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x)
+          (fun i =>
+            metricTraceInput (I := I) (basis e) (basis q)
+              (metricTraceInput (I := I) (basis f) (basis r)
+                (fun p => basis (m p)))
+              (curvatureQuadraticPairingPermutationZeroOneThreeTwo i)) := by
+    exact Tensor0SSpace.domDomCongr_apply (I := I)
+      curvatureQuadraticPairingPermutationZeroOneThreeTwo _ _
+  rw [hroute, tensor0SField_product_eval]
   have hA :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
@@ -176,7 +206,7 @@ theorem curvatureQuadraticPairing_zero_two_one_three_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -200,14 +230,31 @@ theorem curvatureQuadraticPairing_zero_two_one_three_component {Idx : Type*} [Fi
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroTwoOneThree
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := 4) (q := 4) A B x))
+    Tensor0SSpace.eval
+      ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+        curvatureQuadraticPairingPermutationZeroTwoOneThree)
       (metricTraceInput (I := I) (basis e) (basis q)
         (metricTraceInput (I := I) (basis f) (basis r)
-          (fun p => basis (m p))))) = _
-  rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
+          (fun p => basis (m p))))) =
+      (gInv f r * gInv e q *
+          Tensor0SSpace.eval (A x) (fun p => basis (![m 0, e, m 2, f] p))) *
+        Tensor0SSpace.eval (B x) (fun p => basis (![m 1, q, m 3, r] p))
+  have hroute :
+      Tensor0SSpace.eval
+          ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+            curvatureQuadraticPairingPermutationZeroTwoOneThree)
+          (metricTraceInput (I := I) (basis e) (basis q)
+            (metricTraceInput (I := I) (basis f) (basis r)
+              (fun p => basis (m p)))) =
+        Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x)
+          (fun i =>
+            metricTraceInput (I := I) (basis e) (basis q)
+              (metricTraceInput (I := I) (basis f) (basis r)
+                (fun p => basis (m p)))
+              (curvatureQuadraticPairingPermutationZeroTwoOneThree i)) := by
+    exact Tensor0SSpace.domDomCongr_apply (I := I)
+      curvatureQuadraticPairingPermutationZeroTwoOneThree _ _
+  rw [hroute, tensor0SField_product_eval]
   have hA :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
@@ -235,7 +282,7 @@ theorem curvatureQuadraticPairing_zero_three_one_two_component {Idx : Type*} [Fi
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -259,14 +306,31 @@ theorem curvatureQuadraticPairing_zero_three_one_two_component {Idx : Type*} [Fi
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroThreeOneTwo
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := 4) (q := 4) A B x))
+    Tensor0SSpace.eval
+      ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+        curvatureQuadraticPairingPermutationZeroThreeOneTwo)
       (metricTraceInput (I := I) (basis e) (basis q)
         (metricTraceInput (I := I) (basis f) (basis r)
-          (fun p => basis (m p))))) = _
-  rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
+          (fun p => basis (m p))))) =
+      (gInv f r * gInv e q *
+          Tensor0SSpace.eval (A x) (fun p => basis (![m 0, e, m 3, f] p))) *
+        Tensor0SSpace.eval (B x) (fun p => basis (![m 1, q, m 2, r] p))
+  have hroute :
+      Tensor0SSpace.eval
+          ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr
+            curvatureQuadraticPairingPermutationZeroThreeOneTwo)
+          (metricTraceInput (I := I) (basis e) (basis q)
+            (metricTraceInput (I := I) (basis f) (basis r)
+              (fun p => basis (m p)))) =
+        Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x)
+          (fun i =>
+            metricTraceInput (I := I) (basis e) (basis q)
+              (metricTraceInput (I := I) (basis f) (basis r)
+                (fun p => basis (m p)))
+              (curvatureQuadraticPairingPermutationZeroThreeOneTwo i)) := by
+    exact Tensor0SSpace.domDomCongr_apply (I := I)
+      curvatureQuadraticPairingPermutationZeroThreeOneTwo _ _
+  rw [hroute, tensor0SField_product_eval]
   have hA :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
@@ -302,7 +366,7 @@ theorem curvatureQuadraticCombination_component {Idx : Type*} [Fintype Idx] [Dec
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
@@ -348,11 +412,11 @@ private theorem quad_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -360,8 +424,8 @@ private theorem quad_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -371,14 +435,11 @@ private theorem routeProdSq (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) (x : M) :
     normSq0S (I := I) g x 8
-        (ContinuousMultilinearMap.domDomCongr σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) A B x)) =
+        ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr σ) =
       normSq0S (I := I) g x 4 (A x) * normSq0S (I := I) g x 4 (B x) := by
   classical
   obtain ⟨basis, hON⟩ := quad_onFrame (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   rw [Tensor0SBundle.normSq0S_domDomCongr (I := I) g x basis hinv σ]
@@ -393,11 +454,8 @@ theorem curvatureQuadraticPairing_norm_sq_le (g : SmoothRiemannianMetric I M) (�
         (normSq0S (I := I) g x 4 (A x) * normSq0S (I := I) g x 4 (B x)) := by
   let X : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 8 :=
-    MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := 4) (q := 4) A B)
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)
   let W : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 6 :=
     metricTraceFirstTwoField (I := I) (M := M) (s := 6) g X
@@ -406,8 +464,12 @@ theorem curvatureQuadraticPairing_norm_sq_le (g : SmoothRiemannianMetric I M) (�
   have hX :
       normSq0S (I := I) g x 8 (X x) =
         normSq0S (I := I) g x 4 (A x) * normSq0S (I := I) g x 4 (B x) := by
-    simpa only [X, MultilinearSection.domDomCongr_apply] using
-      routeProdSq (I := I) g σ A B x
+    have hXx :
+        X x = (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr σ := by
+      dsimp only [X]
+      exact Tensor0SField.domDomCongr_apply (∞ : WithTop ℕ∞) σ _ x
+    rw [hXx]
+    exact routeProdSq (I := I) g σ A B x
   have hinner :
       normSq0S (I := I) g x 6 (W x) ≤
         (Module.finrank Real E : Real) ^ 8 *
@@ -511,53 +573,57 @@ theorem curvatureQuadraticPairing_sub (g : SmoothRiemannianMetric I M) (σ : Fin
     curvatureQuadraticPairing (I := I) g σ A A - curvatureQuadraticPairing (I := I) g σ B B =
       curvatureQuadraticPairing (I := I) g σ (A - B) A + curvatureQuadraticPairing (I := I) g σ B (A - B) := by
   have hroute :
-      MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) A A) -
-        MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) B B) =
-      MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) (A - B) A) +
-        MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) B (A - B)) := by
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A A) -
+        Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) B B) =
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) (A - B) A) +
+        Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) B (A - B)) := by
     refine DFunLike.ext _ _ fun y => ?_
-    ext V
-    rw [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply,
-      ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply]
-    change
-      (ContinuousMultilinearMap.domDomCongr σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) A A y)) V -
-        (ContinuousMultilinearMap.domDomCongr σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) B B y)) V =
-      (ContinuousMultilinearMap.domDomCongr σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) (A - B) A y)) V +
-        (ContinuousMultilinearMap.domDomCongr σ
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-            (s := 4) (q := 4) B (A - B) y)) V
-    simp only [Tensor0SSpace.domDomCongr_apply]
-    rw [tensor0SField_product_apply (I := I) A A y,
-      tensor0SField_product_apply (I := I) B B y,
-      tensor0SField_product_apply (I := I) (A - B) A y,
-      tensor0SField_product_apply (I := I) B (A - B) y]
-    simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply]
+    refine tensor0SSpace_ext (𝕜 := Real) 8 y fun V => ?_
+    change Tensor0SSpace.eval
+        ((Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) A A) -
+          Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) B B)) y) V =
+      Tensor0SSpace.eval
+        ((Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) (A - B) A) +
+          Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) B (A - B))) y) V
+    simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.eval_sub,
+      ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.eval_add,
+      Tensor0SField.domDomCongr_apply]
+    have hAA :
+        Tensor0SSpace.eval
+            ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A A y).domDomCongr σ) V =
+          Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A A y)
+            (fun i => V (σ i)) := by
+      exact Tensor0SSpace.domDomCongr_apply (I := I) σ _ V
+    have hBB :
+        Tensor0SSpace.eval
+            ((tensor0SFieldProduct (∞ : WithTop ℕ∞) B B y).domDomCongr σ) V =
+          Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) B B y)
+            (fun i => V (σ i)) := by
+      exact Tensor0SSpace.domDomCongr_apply (I := I) σ _ V
+    have hDA :
+        Tensor0SSpace.eval
+            ((tensor0SFieldProduct (∞ : WithTop ℕ∞) (A - B) A y).domDomCongr σ) V =
+          Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) (A - B) A y)
+            (fun i => V (σ i)) := by
+      exact Tensor0SSpace.domDomCongr_apply (I := I) σ _ V
+    have hBD :
+        Tensor0SSpace.eval
+            ((tensor0SFieldProduct (∞ : WithTop ℕ∞) B (A - B) y).domDomCongr σ) V =
+          Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) B (A - B) y)
+            (fun i => V (σ i)) := by
+      exact Tensor0SSpace.domDomCongr_apply (I := I) σ _ V
+    rw [hAA, hBB, hDA, hBD]
+    rw [tensor0SField_product_eval, tensor0SField_product_eval,
+      tensor0SField_product_eval, tensor0SField_product_eval]
+    simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.eval_sub]
     ring
   unfold curvatureQuadraticPairing
   rw [← traceFirstTwo_sub (I := I) (M := M) (s := 4) g]
@@ -583,11 +649,8 @@ theorem curvatureQuadraticPairing_metric_difference_norm_sq_le (g₁ g₂ : Smoo
             normSq0S (I := I) g₁ x 4 (B x)) := by
   let X : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 8 :=
-    MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-        (s := 4) (q := 4) A B)
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) σ
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)
   let Y1 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 6 :=
     metricTraceFirstTwoField (I := I) (M := M) (s := 6) g₁ X
@@ -617,8 +680,12 @@ theorem curvatureQuadraticPairing_metric_difference_norm_sq_le (g₁ g₂ : Smoo
   have hX :
       normSq0S (I := I) g₁ x 8 (X x) = NA * NB := by
     rw [hNA, hNB]
-    simpa only [X, MultilinearSection.domDomCongr_apply] using
-      routeProdSq (I := I) g₁ σ A B x
+    have hXx :
+        X x = (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x).domDomCongr σ := by
+      dsimp only [X]
+      exact Tensor0SField.domDomCongr_apply (∞ : WithTop ℕ∞) σ _ x
+    rw [hXx]
+    exact routeProdSq (I := I) g₁ σ A B x
   have hYD :
       normSq0S (I := I) g₁ x 6 (Y1 x - Y2 x) ≤
         nR ^ 12 * Λ ^ 2 * H0 * (NA * NB) := by

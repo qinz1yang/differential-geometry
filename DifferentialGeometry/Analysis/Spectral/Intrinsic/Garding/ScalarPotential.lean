@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -98,6 +97,7 @@ theorem scalarPotCore_apply
           (tensorHsSmoothRepr (I := I) (M := M) v.1 v.2)) := by
   rfl
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem scalarSmul_norm_le
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
@@ -200,7 +200,7 @@ theorem scalarPotOp_core
   apply LinearMap.extendOfNorm_eq hdense
   refine ⟨C, ?_⟩
   intro w
-  simpa only [Submodule.coe_subtype] using
+  simpa only [Submodule.coe_subtype, Submodule.norm_coe] using
     scalarPotCore_norm (I := I) (M := M) q ζ hC hζ w
 
 omit [BoundarylessManifold I M] in
@@ -213,7 +213,7 @@ theorem scalarPotOp_norm
       (I := I) (M := M) (g := q) (r := 0) (s := 0) (σ := 1)).denseRange_val
   apply LinearMap.opNorm_extendOfNorm_le hdense hC
   intro w
-  simpa only [Submodule.coe_subtype] using
+  simpa only [Submodule.coe_subtype, Submodule.norm_coe] using
     scalarPotCore_norm (I := I) (M := M) q ζ hC hζ w
 
 private noncomputable def scalarL2ToH0
@@ -372,7 +372,7 @@ theorem scalarPot_pair_norm
         scalarPotOp (I := I) (M := M) q η).continuous.norm
       (continuous_const.mul continuous_norm)
   · intro v
-    rw [ContinuousLinearMap.sub_apply]
+    rw [sub_apply]
     simp only [Submodule.coe_subtype]
     rw [scalarPotOp_core (I := I) (M := M) q ζ v,
       scalarPotOp_core (I := I) (M := M) q η v]
@@ -388,7 +388,7 @@ theorem scalarPotH0_pair
   apply (scalarPotH0 (I := I) (M := M) q ζ -
     scalarPotH0 (I := I) (M := M) q η).opNorm_le_bound hC
   intro u
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   change ‖(scalarL2ToH0 (I := I) (M := M) q)
           (scalarPotOp (I := I) (M := M) q ζ u) -
         (scalarL2ToH0 (I := I) (M := M) q)
@@ -454,7 +454,10 @@ theorem scalarPotHs_core
   apply LinearMap.extendOfNorm_eq hdense
   refine ⟨C, ?_⟩
   intro W
-  simpa only [ccToHsLin_apply, scalarSmulLin, LinearMap.comp_apply] using hbound W
+  change ‖ccTensorToHs (I := I) (M := M) q 0 (m : Real)
+      (scalarSmul (I := I) (M := M) q 0 0 ζ W)‖ ≤
+    C * ‖ccTensorToHs (I := I) (M := M) q 0 (m : Real) W‖
+  exact hbound W
 
 theorem scalarPotHs_app
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ)
@@ -619,8 +622,10 @@ theorem scalarPotHs_unif
   unfold scalarPotHs
   apply LinearMap.opNorm_extendOfNorm_le hdense hC
   intro U
-  simpa only [ccToHsLin_apply, scalarSmulLin, LinearMap.comp_apply] using
-    hbound t ht U
+  change ‖ccTensorToHs (I := I) (M := M) q 0 (m : Real)
+      (scalarSmul (I := I) (M := M) q 0 0 (zeta t) U)‖ ≤
+    C * ‖ccTensorToHs (I := I) (M := M) q 0 (m : Real) U‖
+  exact hbound t ht U
 
 end Spectral
 end Analysis

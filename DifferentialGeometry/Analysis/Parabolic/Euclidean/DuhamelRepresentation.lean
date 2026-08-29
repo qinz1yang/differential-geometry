@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff
 
 noncomputable section
 
+
 open Asymptotics Filter Matrix MeasureTheory Real Set
 open scoped NNReal RealInnerProductSpace Topology
 
@@ -112,8 +113,10 @@ theorem heatScaled_sub_time_hasDerivAt
   let D : Real → F := fun r ↦
     heatScaled (q r) (dtU s) x - heatScaled (q s) (dtU s) x
   have hq : HasDerivAt q (-1) s := by
-    simpa only [q, zero_sub] using
-      (hasDerivAt_const s t).sub (hasDerivAt_id s)
+    have hraw := (hasDerivAt_const s t).sub (hasDerivAt_id s)
+    refine (hraw.congr_of_eventuallyEq (Eventually.of_forall fun r ↦ ?_)).congr_deriv ?_
+    · rfl
+    · ring
   have htime : HasDerivAt
       (fun r ↦ heatScaled (q r) (u s) x)
       (-heatScaled (q s) (coreLap (d2u s)) x) s := by
@@ -130,7 +133,9 @@ theorem heatScaled_sub_time_hasDerivAt
       exact hconverted.congr_deriv
         (heatSup_scaled (sub_pos.mpr hst) (coreLap (d2u s)) x)
     have hraw := hpositive.scomp s hq
-    simpa only [q, neg_one_smul] using hraw
+    refine (hraw.congr_of_eventuallyEq (Eventually.of_forall fun r ↦ ?_)).congr_deriv ?_
+    · rfl
+    · simp only [neg_one_smul]
   have hR : R =o[nhds s] fun r ↦ r - s := by
     simpa only [R] using huTime.isLittleO
   have hscaledR : (fun r ↦ heatScaled (q r) (R r) x) =o[nhds s]
@@ -140,8 +145,9 @@ theorem heatScaled_sub_time_hasDerivAt
   have hDlim : Tendsto D (nhds s) (nhds 0) := by
     have hqTend : Tendsto q (nhds s) (nhds (q s)) := hq.continuousAt
     have hheat := (heatScaled_cont (dtU s) x).tendsto (q s) |>.comp hqTend
-    simpa only [D, sub_self] using
-      hheat.sub_const (heatScaled (q s) (dtU s) x)
+    convert hheat.sub_const (heatScaled (q s) (dtU s) x) using 1
+    · rfl
+    · simp only [sub_self]
   have hDo : D =o[nhds s] fun _ ↦ (1 : Real) :=
     (isLittleO_one_iff Real).mpr hDlim
   have hcross : (fun r ↦ (r - s) • D r) =o[nhds s]
@@ -178,7 +184,7 @@ theorem heatScaled_timeSource_intervalIntegrable_of_parabolic_holder
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ s ∈ Icc (0 : Real) t, ‖f s‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) t) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) t) Set.univ).domRestrict
         (fun p ↦ f p.time p.space)))
     (x : V) :
     IntervalIntegrable
@@ -273,7 +279,7 @@ theorem heatDuh_eq_of_zero_initial_of_parabolic_holder
     (hbound : ∀ s ∈ Icc (0 : Real) t,
       ‖dtU s - coreLap (d2u s)‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) t) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) t) Set.univ).domRestrict
         (fun p ↦ (dtU p.time - coreLap (d2u p.time)) p.space)))
     (x : V) :
     heatDuh t (fun s ↦ dtU s - coreLap (d2u s)) x = u t x := by
@@ -367,8 +373,10 @@ theorem spdHeatDuh_eq_of_zero_initial
   have hupTime : ∀ s ∈ Ioo (0 : Real) t,
       HasDerivAt up (dtp s) s := by
     intro s hs
-    simpa only [up, dtp, linPullBcfCLM_apply] using
-      (linPullBcfCLM L).hasFDerivAt.comp_hasDerivAt s (huTime s hs)
+    have hraw := (linPullBcfCLM L).hasFDerivAt.comp_hasDerivAt s (huTime s hs)
+    refine (hraw.congr_of_eventuallyEq (Eventually.of_forall fun r ↦ ?_)).congr_deriv ?_
+    · rfl
+    · rfl
   have hup : ∀ s ∈ Ioo (0 : Real) t, ∀ z,
       HasFDerivAt (up s : Euc n → F) (dup s z) z := by
     intro s hs z
@@ -425,7 +433,7 @@ theorem spdHeatDuh_eq_of_zero_initial_of_parabolic_holder
     (huCont : Continuous u) (hu0 : u 0 = 0)
     (hbound : ∀ s ∈ Icc (0 : Real) t, ‖f s‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) t) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) t) Set.univ).domRestrict
         (fun p ↦ f p.time p.space)))
     (x : Euc n) :
     spdHeatDuh A hA t f x = u t x := by
@@ -457,7 +465,7 @@ theorem spdHeatDuh_eqOn_of_zero_initial_of_parabolic_holder
     (huCont : Continuous u) (hu0 : u 0 = 0)
     (hbound : ∀ s ∈ Icc (0 : Real) S, ‖f s‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ f p.time p.space))) :
     Set.EqOn
       (fun p ↦ spdHeatDuh A hA p.time f p.space)

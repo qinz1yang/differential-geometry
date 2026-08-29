@@ -7,6 +7,7 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
+
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff Matrix
 
@@ -56,10 +57,10 @@ private lemma clm_bilinear_expand_two_sums_vector
     refine Finset.sum_congr rfl ?_
     intro p _
     rw [map_smul]
-  rw [houter, ContinuousLinearMap.sum_apply]
+  rw [houter, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro p _
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   rw [map_sum, Finset.smul_sum]
   refine Finset.sum_congr rfl ?_
   intro q _
@@ -79,10 +80,10 @@ private lemma clm_bilinear_expand_two_sums_scalar
     refine Finset.sum_congr rfl ?_
     intro p _
     rw [map_smul]
-  rw [houter, ContinuousLinearMap.sum_apply]
+  rw [houter, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro p _
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro q _
@@ -92,7 +93,7 @@ private lemma clm_bilinear_expand_two_sums_scalar
 private def deTurckCobMatrix (α : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i k =>
-    (chartModelBasis E).repr
+    (centeredChartTangentBasis (I := I) x).repr
       ((chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -101,23 +102,23 @@ private lemma chartBasisVecFiber_eq_sum_model (α : M) (x : M)
     (chartBasisVecFiber (I := I) α i x : TangentSpace I x) =
       ∑ k : Fin (Module.finrank ℝ E),
         deTurckCobMatrix (I := I) α x i k •
-          ((chartModelBasis E) k : TangentSpace I x) := by
+          centeredChartTangentBasis (I := I) x k := by
   classical
   unfold deTurckCobMatrix
   simp only [Matrix.of_apply]
-  exact (((chartModelBasis E).sum_repr
-    (chartBasisVecFiber (I := I) α i x : TangentSpace I x))).symm
+  exact ((centeredChartTangentBasis (I := I) x).sum_repr
+    (chartBasisVecFiber (I := I) α i x : TangentSpace I x)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma deTurckCobMatrix_eq_toMatrix_transpose (α : M) (x : M) :
     deTurckCobMatrix (I := I) α x =
-      ((chartModelBasis E).toMatrix
+      ((centeredChartTangentBasis (I := I) x).toMatrix
         (fun i : Fin (Module.finrank ℝ E) =>
           chartBasisVecFiber (I := I) α i x))ᵀ := by
   classical
   unfold deTurckCobMatrix
   ext i k
-  rw [Matrix.transpose_apply, Module.Basis.toMatrix_apply, Matrix.of_apply]
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma deTurckCobMatrix_isUnit (α : M) {x : M}
@@ -134,9 +135,9 @@ private lemma deTurckCobMatrix_isUnit (α : M) {x : M}
     rw [hCB_def]
     exact (chartBasisFamily_apply (I := I) α hx i).symm
   rw [hfam_eq]
-  have hbase_unit : IsUnit ((chartModelBasis E).toMatrix
+  have hbase_unit : IsUnit ((centeredChartTangentBasis (I := I) x).toMatrix
       (chartBasis : Fin (Module.finrank ℝ E) → TangentSpace I x)) :=
-    ⟨⟨_, chartBasis.toMatrix (chartModelBasis E),
+    ⟨⟨_, chartBasis.toMatrix (centeredChartTangentBasis (I := I) x),
         Module.Basis.toMatrix_mul_toMatrix_flip _ _,
         Module.Basis.toMatrix_mul_toMatrix_flip _ _⟩, rfl⟩
   rw [Matrix.isUnit_iff_isUnit_det] at hbase_unit ⊢
@@ -146,8 +147,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 private lemma chartGramMatrix_self_eq_model (g : SmoothRiemannianMetric I M) (x : M)
     (k l : Fin (Module.finrank ℝ E)) :
     chartGramMatrix (I := I) g x x k l =
-      g.inner x ((chartModelBasis E) k : TangentSpace I x)
-        ((chartModelBasis E) l : TangentSpace I x) := by
+      g.inner x (centeredChartTangentBasis (I := I) x k)
+        (centeredChartTangentBasis (I := I) x l) := by
   rw [chartGramMatrix_apply, chartBasisVecFiber_self (I := I) x k,
     chartBasisVecFiber_self (I := I) x l]
 
@@ -167,14 +168,14 @@ private lemma chartGramMatrix_eq_cob_conj (g : SmoothRiemannianMetric I M)
           (chartBasisVecFiber (I := I) α j x)
         = ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             (P i k * P j l) *
-              g.inner x ((chartModelBasis E) k : TangentSpace I x)
-                ((chartModelBasis E) l : TangentSpace I x) := by
+              g.inner x (centeredChartTangentBasis (I := I) x k)
+                (centeredChartTangentBasis (I := I) x l) := by
     rw [chartBasisVecFiber_eq_sum_model (I := I) α x i,
         chartBasisVecFiber_eq_sum_model (I := I) α x j]
     exact clm_bilinear_expand_two_sums_scalar (n := Module.finrank ℝ E) g x
       (fun k => P i k) (fun l => P j l)
-      (fun k => ((chartModelBasis E) k : TangentSpace I x))
-      (fun l => ((chartModelBasis E) l : TangentSpace I x))
+      (fun k => centeredChartTangentBasis (I := I) x k)
+      (fun l => centeredChartTangentBasis (I := I) x l)
   rw [hbilinear]
   rw [Matrix.mul_apply]
   rw [Finset.sum_comm]
@@ -191,8 +192,8 @@ private def deTurckModelTrace (g g' : SmoothRiemannianMetric I M) (x : M) :
   ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
     (chartGramMatrix (I := I) g x x)⁻¹ p q •
       connectionDifference (I := I) g g' x
-        ((chartModelBasis E) p : TangentSpace I x)
-        ((chartModelBasis E) q : TangentSpace I x)
+        (centeredChartTangentBasis (I := I) x p)
+        (centeredChartTangentBasis (I := I) x q)
 
 private lemma transpose_mul_conj_inv_mul
     {n : ℕ} (P Gx : Matrix (Fin n) (Fin n) ℝ)
@@ -222,7 +223,7 @@ private lemma deTurckChartLocal_eq_modelTrace (g g' : SmoothRiemannianMetric I M
   set Gx := chartGramMatrix (I := I) g x x with hGx_def
   set Gα := chartGramMatrix (I := I) g α x with hGα_def
   set A := connectionDifference (I := I) g g' x with hA_def
-  set e := fun k : Fin n => ((chartModelBasis E) k : TangentSpace I x) with he_def
+  set e := fun k : Fin n => centeredChartTangentBasis (I := I) x k with he_def
   have hP_unit : IsUnit P := deTurckCobMatrix_isUnit (I := I) α hx
   have hGα_eq : Gα = P * Gx * Pᵀ := chartGramMatrix_eq_cob_conj (I := I) g α x
   have hframe : ∀ j : Fin n,

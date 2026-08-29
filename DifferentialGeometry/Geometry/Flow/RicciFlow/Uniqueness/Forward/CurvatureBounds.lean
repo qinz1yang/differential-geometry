@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
 import DifferentialGeometry.Tensor.RSTensor.TangentMetric
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -40,11 +39,11 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let _ : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -52,8 +51,8 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -67,7 +66,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
@@ -78,13 +77,14 @@ private theorem metricCS (g : SmoothRiemannianMetric I M) (x : M)
   classical
   obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
   set α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-    dualToCotangent_gen (I := I) (tangentFlatLinear_gen (I := I) g x u) with hα
+    dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x u) with hα
   have hαnorm : normSq0S (I := I) g x 1 α = g.inner x u u := by
     rw [hα, normSq0S_eq_inner, inner0S_one_eq_cotangent]
     exact cotangentInner_dualToCotangent_tangentFlat_gen (I := I) g x u u
-  have hαv : α (fun _ : Fin 1 => v) = g.inner x u v := by
+  have hαv : Tensor0SSpace.eval α (fun _ : Fin 1 => v) = g.inner x u v := by
     rw [hα, dualToCotangent_apply_gen, tangentFlatLinear_apply_gen]
   have h := abs_apply_le_sqrt_normSq0S (I := I) g x 1 basis hON α (fun _ : Fin 1 => v)
+  change |Tensor0SSpace.eval α (fun _ : Fin 1 => v)| ≤ _ at h
   rw [hαv, hαnorm] at h
   simpa using h
 
@@ -114,7 +114,7 @@ private theorem absBasis_le {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) k x)
     (u : Fin k -> TangentSpace I x) (hu : ∀ b, ∃ i, u b = basis i) :
     |T u| ≤ Real.sqrt (normSq0S (I := I) g x k T) := by
-  haveI : Fintype Idx := Fintype.ofFinite Idx
+  have _ : Fintype Idx := Fintype.ofFinite Idx
   have h := abs_apply_le_sqrt_normSq0S (I := I) g x k basis hON T u
   have hprod : (∏ a : Fin k, Real.sqrt (g.inner x (u a) (u a))) = 1 := by
     refine Finset.prod_eq_one fun a _ => ?_
@@ -127,7 +127,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 private theorem normSqAdd_le {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M} {k : ℕ}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) k x) :
     normSq0S (I := I) g x k (A + B) ≤
       2 * normSq0S (I := I) g x k A + 2 * normSq0S (I := I) g x k B := by
@@ -161,10 +161,10 @@ theorem lapDiffFlux_eval (g₁ g₂ : SmoothRiemannianMetric I M)
           (((CovariantDerivative.difference (metricCov (I := I) g₁)
               (metricCov (I := I) g₂) x) (slots a)) v)) := by
   classical
-  haveI : IsManifold I (1 + 1) M :=
+  have _ : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  have _ : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   obtain ⟨Xf, hXsm, hXv⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_contMDiff_vectorField_eq (I := I) x v
@@ -220,8 +220,12 @@ theorem connectionDifferenceVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x :
   have h0 : v 0 = X := by simp [hv]
   have h1 : v 1 = Y := by simp [hv]
   have h2 : v 2 = w := by simp [hv]
-  have hval : connectionDifferenceLowAt (I := I) g₁ g₂ x v = g₁.inner x w w := by
+  have hvalEval :
+      Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) g₁ g₂ x) v =
+        g₁.inner x w w := by
     rw [connectionDifferenceLowAt_apply, h0, h1, h2, ← hw]
+  have hval : connectionDifferenceLowAt (I := I) g₁ g₂ x v = g₁.inner x w w :=
+    (Tensor0SSpace.eval_eq (connectionDifferenceLowAt (I := I) g₁ g₂ x) v).symm.trans hvalEval
   have habs := abs_apply_le_sqrt_normSq0S (I := I) g₁ x 3 basis hON
     (connectionDifferenceLowAt (I := I) g₁ g₂ x) v
   rw [← connectionDifferenceSq_def] at habs
@@ -427,11 +431,11 @@ private theorem invDiag_le (g₁ g₂ : SmoothRiemannianMetric I M) {x : M} {Λ 
       basisInvMetric (I := I) g₂ x basis k k ≤ Λ := by
   classical
   set u : TangentSpace I x :=
-    (tangentFlatEquiv_gen (I := I) g₂ x).symm (basis.coord k) with hu
+    (tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord k) with hu
   have hflat : ∀ w : TangentSpace I x, g₂.inner x u w = basis.coord k w := by
     intro w
-    change (tangentFlatEquiv_gen (I := I) g₂ x u) w = basis.coord k w
-    rw [hu, (tangentFlatEquiv_gen (I := I) g₂ x).apply_symm_apply]
+    change (tangentFlatEquivGen (I := I) g₂ x u) w = basis.coord k w
+    rw [hu, (tangentFlatEquivGen (I := I) g₂ x).apply_symm_apply]
   have hQ : basisInvMetric (I := I) g₂ x basis k k = g₂.inner x u u := by
     simp only [basisInvMetric]
     rw [← hu]
@@ -470,16 +474,16 @@ private theorem invEntry_le (g₁ g₂ : SmoothRiemannianMetric I M) {x : M} {Λ
     |basisInvMetric (I := I) g₂ x basis i j| ≤ Λ := by
   classical
   set ui : TangentSpace I x :=
-    (tangentFlatEquiv_gen (I := I) g₂ x).symm (basis.coord i) with hui
+    (tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord i) with hui
   set uj : TangentSpace I x :=
-    (tangentFlatEquiv_gen (I := I) g₂ x).symm (basis.coord j) with huj
+    (tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord j) with huj
   have hflat : ∀ (m : Idx) (w : TangentSpace I x),
-      g₂.inner x ((tangentFlatEquiv_gen (I := I) g₂ x).symm (basis.coord m)) w
+      g₂.inner x ((tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord m)) w
         = basis.coord m w := by
     intro m w
-    change (tangentFlatEquiv_gen (I := I) g₂ x
-      ((tangentFlatEquiv_gen (I := I) g₂ x).symm (basis.coord m))) w = basis.coord m w
-    rw [(tangentFlatEquiv_gen (I := I) g₂ x).apply_symm_apply]
+    change (tangentFlatEquivGen (I := I) g₂ x
+      ((tangentFlatEquivGen (I := I) g₂ x).symm (basis.coord m))) w = basis.coord m w
+    rw [(tangentFlatEquivGen (I := I) g₂ x).apply_symm_apply]
   have hval : basisInvMetric (I := I) g₂ x basis i j = g₂.inner x uj ui := by
     simp only [basisInvMetric]
     rw [← hui, huj]

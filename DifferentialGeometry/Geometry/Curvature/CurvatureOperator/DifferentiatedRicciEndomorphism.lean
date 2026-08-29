@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -39,10 +38,10 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma extDerivFunApply_contMDiff
+lemma mvfderivApply_contMDiff
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {X : Π b : M, TangentSpace I b} (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)) :
-    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun (I := I) f b (X b)) := by
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (X b)) := by
   classical
   have htan : ContMDiff I.tangent (𝓘(ℝ, ℝ).tangent) ∞ (tangentMap I 𝓘(ℝ, ℝ) f) := by
     have h₁ : ContMDiff I 𝓘(ℝ, ℝ) ((∞ : WithTop ℕ∞) + 1) f := by simpa using hf
@@ -58,7 +57,8 @@ lemma extDerivFunApply_contMDiff
       (fun b => (tangentMap I 𝓘(ℝ, ℝ) f (TotalSpace.mk' E b (X b))).2) :=
     hsnd.comp hcomp
   refine hresult.congr fun b => ?_
-  simp [extDerivFun, tangentMap_snd, NormedSpace.fromTangentSpace]
+  simp only [tangentMap_snd, directionalDeriv_eq]
+  with_unfolding_all rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -150,13 +150,13 @@ private lemma riemannSec_smul_acted_smooth
   have hcYZ_at := covApply_mdifferentiableAt_local (cov := cov) hY_at hZ_le
   have hcXfZ_at := covApply_mdifferentiableAt_local (cov := cov) hX_at hfZ_le
   have hcYfZ_at := covApply_mdifferentiableAt_local (cov := cov) hY_at hfZ_le
-  have hYf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun f b (Y b)) :=
-    extDerivFunApply_contMDiff hf hY
-  have hXf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun f b (X b)) :=
-    extDerivFunApply_contMDiff hf hX
-  have hYf_at : MDiffAt (fun b => extDerivFun f b (Y b)) x :=
+  have hYf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (Y b)) :=
+    mvfderivApply_contMDiff hf hY
+  have hXf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (X b)) :=
+    mvfderivApply_contMDiff hf hX
+  have hYf_at : MDiffAt (fun b => mvfderiv (I := I) f b (Y b)) x :=
     (hYf x).mdifferentiableAt (by simp)
-  have hXf_at : MDiffAt (fun b => extDerivFun f b (X b)) x :=
+  have hXf_at : MDiffAt (fun b => mvfderiv (I := I) f b (X b)) x :=
     (hXf x).mdifferentiableAt (by simp)
   have hcYZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (covApply cov Y Z)) := by
     have hop : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% (covApply cov Y Z)) Set.univ :=
@@ -173,18 +173,18 @@ private lemma riemannSec_smul_acted_smooth
   have hf_smul_cXZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (f • covApply cov X Z)) :=
     hf.smul_section hcXZ
   have hYf_smul_Z : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% ((fun b => extDerivFun f b (Y b)) • Z)) := hYf.smul_section hZ
+      (T% ((fun b => mvfderiv (I := I) f b (Y b)) • Z)) := hYf.smul_section hZ
   have hXf_smul_Z : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% ((fun b => extDerivFun f b (X b)) • Z)) := hXf.smul_section hZ
+      (T% ((fun b => mvfderiv (I := I) f b (X b)) • Z)) := hXf.smul_section hZ
   have hf_smul_cYZ_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% (f • covApply cov Y Z)) x :=
     (hf_smul_cYZ x).mdifferentiableAt (by simp)
   have hf_smul_cXZ_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% (f • covApply cov X Z)) x :=
     (hf_smul_cXZ x).mdifferentiableAt (by simp)
   have hYf_smul_Z_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
-      (T% ((fun b => extDerivFun f b (Y b)) • Z)) x :=
+      (T% ((fun b => mvfderiv (I := I) f b (Y b)) • Z)) x :=
     (hYf_smul_Z x).mdifferentiableAt (by simp)
   have hXf_smul_Z_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
-      (T% ((fun b => extDerivFun f b (X b)) • Z)) x :=
+      (T% ((fun b => mvfderiv (I := I) f b (X b)) • Z)) x :=
     (hXf_smul_Z x).mdifferentiableAt (by simp)
   have hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     (I.isInteriorPoint_iff (x := x)).mp BoundarylessManifold.isInteriorPoint
@@ -293,8 +293,8 @@ private lemma nablaCurvSec_smul_acted
   set cov := LeviCivita (I := I) g with hcov
   have hX := X.contMDiff; have hY := Y.contMDiff; have hZ := Z.contMDiff; have hW := W.contMDiff
   rw [nablaCurvSec_def, nablaCurvSec_def]
-  set Xf : M → ℝ := fun b => extDerivFun (I := I) f b (X b) with hXf_def
-  have hXf : ContMDiff I 𝓘(ℝ, ℝ) ∞ Xf := extDerivFunApply_contMDiff hf hX
+  set Xf : M → ℝ := fun b => mvfderiv (I := I) f b (X b) with hXf_def
+  have hXf : ContMDiff I 𝓘(ℝ, ℝ) ∞ Xf := mvfderivApply_contMDiff hf hX
   have hfW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (f • fun b => W b)) := hf.smul_section hW
   have hsec1 :
       (fun b => riemannSec cov (fun b => Y b) (fun b => Z b) (f • fun b => W b) b) =
@@ -314,7 +314,7 @@ private lemma nablaCurvSec_smul_acted
           + Xf x • riemannSec cov (fun b => Y b) (fun b => Z b) (fun b => W b) x := by
     rw [hsec1, cov.isCovariantDerivativeOnUniv.leibniz (hRWsm.mdifferentiableAt (by simp))
       (hf.mdifferentiableAt (by simp))]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply, hXf_def]
   have hcXY := covApply_contMDiff (cov := cov) hX hY
   have hcXZ := covApply_contMDiff (cov := cov) hX hZ
@@ -336,7 +336,7 @@ private lemma nablaCurvSec_smul_acted
       f b • cov.toFun (fun b => W b) b (X b) + Xf b • W b
     rw [cov.isCovariantDerivativeOnUniv.leibniz ((hW b).mdifferentiableAt (by simp))
       (hf.mdifferentiableAt (by simp))]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply, hXf_def]
   have h4 : riemannSec cov (fun b => Y b) (fun b => Z b)
         (covApply cov (fun b => X b) (f • fun b => W b)) x =
@@ -478,14 +478,14 @@ private lemma nablaCurvSec_vanish_acted
   set sLoc : Module.Basis.ofVectorSpaceIndex ℝ E → Π b : M, TangentSpace I b :=
     fun i => e.localFrame bE i with hsLoc_def
   set cLoc : Module.Basis.ofVectorSpaceIndex ℝ E → M → ℝ :=
-    fun i b => e.localFrame_coeff I bE i b (Δ b) with hcLoc_def
+    fun i b => e.localFrameCoeff I bE i b (Δ b) with hcLoc_def
   have hexpand : ∀ᶠ b in 𝓝 x, Δ b = ∑ i, cLoc i b • sLoc i b :=
     e.eventually_eq_localFrame_sum_coeff_smul bE hx_base
   have hsLoc_on : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% (sLoc i)) e.baseSet :=
     fun i => e.contMDiffOn_localFrame_baseSet (n := ∞) (b := bE) i
   have hcLoc_on : ∀ i, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (cLoc i) e.baseSet := by
     intro i b hb
-    exact (contMDiffAt_localFrame_coeff bE hb (hΔ b) i).contMDiffWithinAt
+    exact (contMDiffAt_localFrameCoeff bE hb (hΔ b) i).contMDiffWithinAt
   obtain ⟨Sglob, hSglob_eq⟩ := exists_contMDiffSection_eqOn_nhd (I := I)
     (V := fun z : M => TangentSpace I z) (n := (⊤ : ℕ∞)) (s := sLoc)
     (fun i => (hsLoc_on i).of_le (by exact_mod_cast le_top)) hbase_open hx_base
@@ -703,7 +703,7 @@ private lemma nablaRicci_add_right_raw
     nablaCurvSec_add_acted (g := g)
       X (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
         (smoothOrthoFrame_smooth (I := I) g x i)) V W W' x
-  rw [hadd, (g.inner x).map_add, ContinuousLinearMap.add_apply]
+  rw [hadd, (g.inner x).map_add, add_apply]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -735,7 +735,7 @@ private lemma nablaRicci_smul_right_raw
       rfl
     rw [hcoe] at h
     simpa only [ContMDiffSection.coeFn_mk] using h
-  rw [hsmul, (g.inner x).map_smul, ContinuousLinearMap.smul_apply]
+  rw [hsmul, (g.inner x).map_smul, smul_apply]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -913,7 +913,7 @@ lemma inner_nablaRicciEndo
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v w : TangentSpace I x) :
     g.inner x (nablaRicciEndo (I := I) g X x v) w = nablaRicciBilin (I := I) g X x v w := by
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   change g.inner x (metricSharp (I := I) g x (nablaRicciBilin (I := I) g X x v)) w = _
   exact inner_metricSharp (I := I) g x (nablaRicciBilin (I := I) g X x v) w
 

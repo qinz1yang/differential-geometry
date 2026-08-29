@@ -90,7 +90,7 @@ private lemma continuous_memLp_of_compactSpace
     (p : ℝ≥0∞)
     {f : M → ℝ} (hf : Continuous f) :
     MemLp f p (riemannianVolumeMeasure I M g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have hmeas : AEStronglyMeasurable f (riemannianVolumeMeasure I M g) :=
@@ -103,7 +103,7 @@ private lemma continuous_integrable_of_compactSpace
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : Continuous f) :
     Integrable f (riemannianVolumeMeasure I M g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have h_one : MemLp f 1 (riemannianVolumeMeasure I M g) :=
@@ -117,7 +117,7 @@ def HasWeakRiemannianGrad
   ∀ X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯,
     HasCompactSupport (fun x : M => (X x : E)) →
       ∫ x, g.inner x (G x) (X x) ∂(riemannianVolumeMeasure I M g) =
-        -∫ x, u x * divergence_g (I := I) g X x
+        -∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure I M g)
 
 lemma HasWeakRiemannianGrad.pairing_eq
@@ -127,7 +127,7 @@ lemma HasWeakRiemannianGrad.pairing_eq
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport (fun x : M => (X x : E))) :
     ∫ x, g.inner x (G x) (X x) ∂(riemannianVolumeMeasure I M g) =
-      -∫ x, u x * divergence_g (I := I) g X x
+      -∫ x, u x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure I M g) := h X hX
 
 def MemW1pIntrinsic
@@ -151,7 +151,7 @@ theorem integral_inner_gradFun_eq_neg_integral_mul_divergence
     (hX : HasCompactSupport (fun x : M => (X x : E))) :
     ∫ x, g.inner x (gradFun (I := I) g u x) (X x)
         ∂(riemannianVolumeMeasure I M g) =
-      -∫ x, u x * divergence_g (I := I) g X x
+      -∫ x, u x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure I M g) := by
   have hpointwise : ∀ x : M,
       g.inner x (gradFun (I := I) g u x) (X x) =
@@ -168,13 +168,13 @@ theorem hasWeakRiemannianGrad_grad_g_of_contMDiff
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    HasWeakRiemannianGrad (I := I) (M := M) g u (grad_g (I := I) g ⟨_, hu⟩) := by
+    HasWeakRiemannianGrad (I := I) (M := M) g u (gradG (I := I) g ⟨_, hu⟩) := by
   intro X hX
   have hcoe : ∀ x : M,
-      ((grad_g (I := I) g ⟨_, hu⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+      ((gradG (I := I) g ⟨_, hu⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         gradFun (I := I) g u x := fun x => grad_g_apply (I := I) g ⟨_, hu⟩ x
   rw [show (fun x : M =>
-        g.inner x ((grad_g (I := I) g ⟨_, hu⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hu⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)) =
         (fun x : M => g.inner x (gradFun (I := I) g u x) (X x)) from by
       funext x; rw [hcoe x]]
@@ -186,10 +186,10 @@ theorem MemW1pIntrinsic_of_contMDiff
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemW1pIntrinsic (I := I) (M := M) g p u := by
-  refine ⟨?_, grad_g (I := I) g ⟨_, hu⟩, ?_, ?_⟩
+  refine ⟨?_, gradG (I := I) g ⟨_, hu⟩, ?_, ?_⟩
   · exact continuous_memLp_of_compactSpace g p hu.continuous
   · exact hasWeakRiemannianGrad_grad_g_of_contMDiff (I := I) (M := M) g hu
-  · have hcont := continuous_g_norm_smooth_section g (grad_g (I := I) g ⟨_, hu⟩)
+  · have hcont := continuous_g_norm_smooth_section g (gradG (I := I) g ⟨_, hu⟩)
     exact continuous_memLp_of_compactSpace g p hcont
 
 theorem HasWeakRiemannianGrad.add
@@ -202,7 +202,7 @@ theorem HasWeakRiemannianGrad.add
     (hu : MemLp u p (riemannianVolumeMeasure I M g))
     (hv : MemLp v p (riemannianVolumeMeasure I M g)) :
     HasWeakRiemannianGrad (I := I) (M := M) g (fun x => u x + v x) (G + G') := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   intro X hX
@@ -212,7 +212,7 @@ theorem HasWeakRiemannianGrad.add
     intro x
     change g.inner x (G x + G' x) (X x) =
       g.inner x (G x) (X x) + g.inner x (G' x) (X x)
-    rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+    rw [map_add (g.inner x), add_apply]
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt_add)]
   have h_int_G : Integrable (fun x : M => g.inner x (G x) (X x))
       (riemannianVolumeMeasure I M g) :=
@@ -224,9 +224,9 @@ theorem HasWeakRiemannianGrad.add
       (continuous_g_inner_smooth_sections g G' X)
   rw [integral_add h_int_G h_int_G']
   rw [h₁.pairing_eq X hX, h₂.pairing_eq X hX]
-  have h_div_cont : Continuous (divergence_g (I := I) g X) :=
+  have h_div_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
-  have h_int_uX : Integrable (fun x : M => u x * divergence_g (I := I) g X x)
+  have h_int_uX : Integrable (fun x : M => u x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure I M g) := by
     have hu_one : MemLp u 1 (riemannianVolumeMeasure I M g) :=
       hu.mono_exponent hp
@@ -238,7 +238,7 @@ theorem HasWeakRiemannianGrad.add
     · filter_upwards with x
       rw [Real.norm_eq_abs]
       exact hC x
-  have h_int_vX : Integrable (fun x : M => v x * divergence_g (I := I) g X x)
+  have h_int_vX : Integrable (fun x : M => v x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure I M g) := by
     have hv_one : MemLp v 1 (riemannianVolumeMeasure I M g) :=
       hv.mono_exponent hp
@@ -250,13 +250,13 @@ theorem HasWeakRiemannianGrad.add
     · filter_upwards with x
       rw [Real.norm_eq_abs]
       exact hC x
-  rw [show (-∫ x, u x * divergence_g (I := I) g X x
+  rw [show (-∫ x, u x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g)) +
-        (-∫ x, v x * divergence_g (I := I) g X x
+        (-∫ x, v x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g)) =
-      -((∫ x, u x * divergence_g (I := I) g X x
+      -((∫ x, u x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g)) +
-        (∫ x, v x * divergence_g (I := I) g X x
+        (∫ x, v x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g))) from by ring]
   rw [← integral_add h_int_uX h_int_vX]
   congr 1
@@ -292,7 +292,7 @@ theorem HasWeakRiemannianGrad.zero
   rw [show (fun x : M =>
       g.inner x ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)) =
       (fun _ : M => (0 : ℝ)) from by funext x; exact h_LHS x]
-  rw [show (fun x : M => (0 : ℝ) * divergence_g (I := I) g X x) =
+  rw [show (fun x : M => (0 : ℝ) * divergenceG (I := I) g X x) =
       (fun _ : M => (0 : ℝ)) from by funext x; simp]
   simp [integral_zero]
 
@@ -322,7 +322,7 @@ theorem HasWeakRiemannianGrad.const_smul
     (h : HasWeakRiemannianGrad (I := I) (M := M) g u G)
     (hu : MemLp u p (riemannianVolumeMeasure I M g)) :
     HasWeakRiemannianGrad (I := I) (M := M) g (fun x => c * u x) (c • G) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   intro X hX
@@ -331,13 +331,13 @@ theorem HasWeakRiemannianGrad.const_smul
         c * g.inner x (G x) (X x) := by
     intro x
     change g.inner x (c • G x) (X x) = c * g.inner x (G x) (X x)
-    rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [map_smul (g.inner x), smul_apply, smul_eq_mul]
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
   rw [integral_const_mul c]
   rw [h.pairing_eq X hX]
-  have h_div_cont : Continuous (divergence_g (I := I) g X) :=
+  have h_div_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
-  have h_int_uX : Integrable (fun x : M => u x * divergence_g (I := I) g X x)
+  have h_int_uX : Integrable (fun x : M => u x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure I M g) := by
     have hu_one : MemLp u 1 (riemannianVolumeMeasure I M g) :=
       hu.mono_exponent hp
@@ -349,8 +349,8 @@ theorem HasWeakRiemannianGrad.const_smul
     · filter_upwards with x
       rw [Real.norm_eq_abs]
       exact hC x
-  have hcong : (fun x : M => (c * u x) * divergence_g (I := I) g X x) =
-      (fun x : M => c * (u x * divergence_g (I := I) g X x)) := by
+  have hcong : (fun x : M => (c * u x) * divergenceG (I := I) g X x) =
+      (fun x : M => c * (u x * divergenceG (I := I) g X x)) := by
     funext x; ring
   rw [hcong, integral_const_mul]
   ring
@@ -389,7 +389,7 @@ theorem HasWeakRiemannianGrad.pairing_inner_diff_eq_zero
     (hX : HasCompactSupport (fun x : M => (X x : E))) :
     ∫ x, (g.inner x (G x) (X x) - g.inner x (G' x) (X x))
         ∂(riemannianVolumeMeasure I M g) = 0 := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have h_int_G : Integrable (fun x : M => g.inner x (G x) (X x))
@@ -413,7 +413,7 @@ def w1pNormIntrinsic
           (riemannianVolumeMeasure I M g)
 
 private def gradInfimum
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) : ℝ≥0∞ :=
   ⨅ (G : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (_ :
     HasWeakRiemannianGrad (I := I) (M := M) g u G),
@@ -421,14 +421,14 @@ private def gradInfimum
         (riemannianVolumeMeasure I M g)
 
 private lemma w1pNormIntrinsic_def
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) :
     w1pNormIntrinsic (I := I) (M := M) g p u =
       eLpNorm u p (riemannianVolumeMeasure I M g) +
         gradInfimum (I := I) (M := M) g p u := rfl
 
 private lemma gradInfimum_le_of_weakGrad
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {p : ℝ≥0∞} {u : M → ℝ}
     {G : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯}
     (hG : HasWeakRiemannianGrad (I := I) (M := M) g u G) :
@@ -439,7 +439,7 @@ private lemma gradInfimum_le_of_weakGrad
   exact iInf_le_of_le G (iInf_le _ hG)
 
 theorem w1pNormIntrinsic_zero
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
     w1pNormIntrinsic (I := I) (M := M) g p (fun _ : M => (0 : ℝ)) = 0 := by
   rw [w1pNormIntrinsic_def]
@@ -470,7 +470,7 @@ theorem w1pNormIntrinsic_zero
       exact eLpNorm_zero
     refine (gradInfimum_le_of_weakGrad g hzero_grad).trans ?_
     exact le_of_eq h_zero_norm
-  · exact zero_le _
+  · exact bot_le
 
 theorem MemW1pIntrinsic.eLpNorm_lt_top
     [T2Space M] [SigmaCompactSpace M]
@@ -480,7 +480,7 @@ theorem MemW1pIntrinsic.eLpNorm_lt_top
   h.memLp_self.2
 
 theorem MemW1pIntrinsic.gradInfimum_lt_top
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemW1pIntrinsic (I := I) (M := M) g p u) :
     gradInfimum (I := I) (M := M) g p u < ⊤ := by
@@ -490,7 +490,7 @@ theorem MemW1pIntrinsic.gradInfimum_lt_top
   exact hG_p.2
 
 theorem MemW1pIntrinsic.w1pNormIntrinsic_lt_top
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemW1pIntrinsic (I := I) (M := M) g p u) :
     w1pNormIntrinsic (I := I) (M := M) g p u < ⊤ := by
@@ -532,7 +532,7 @@ private lemma gradInfimum_add_le_of_weakGrads
       have hbilin1 : g.inner x (G x + G' x) =
           g.inner x (G x) + g.inner x (G' x) :=
         (g.inner x).map_add (G x) (G' x)
-      rw [hbilin1, ContinuousLinearMap.add_apply,
+      rw [hbilin1, add_apply,
         ContinuousLinearMap.map_add, ContinuousLinearMap.map_add]
       have hsymm : g.inner x (G' x) (G x) = g.inner x (G x) (G' x) :=
         g.symm x (G' x) (G x)
@@ -564,8 +564,8 @@ private lemma gradInfimum_add_le_of_weakGrads
               (g.inner x).map_add (t • G x) (G' x)
             have hbi2 : g.inner x (t • G x) = t • g.inner x (G x) :=
               (g.inner x).map_smul t (G x)
-            rw [hbi1, hbi2, ContinuousLinearMap.add_apply,
-              ContinuousLinearMap.smul_apply,
+            rw [hbi1, hbi2, add_apply,
+              smul_apply,
               ContinuousLinearMap.map_add, ContinuousLinearMap.map_smul,
               ContinuousLinearMap.map_add, ContinuousLinearMap.map_smul]
             simp only [smul_eq_mul]

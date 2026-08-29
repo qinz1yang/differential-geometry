@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Schauder.CutoffProduct
 
 noncomputable section
 
+
 open Real
 open scoped BoundedContinuousFunction RealInnerProductSpace
 
@@ -62,8 +63,8 @@ theorem cutoffLaplacian_apply
         2 • cutoffGradientPair dchi du x +
         coreLap d2chi x • u x := by
   simp only [cutoffLaplacian, coreLap_apply, cutoffJet2_apply,
-    cutoffGradientPair_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply]
+    cutoffGradientPair_apply, add_apply,
+    smul_apply, ContinuousLinearMap.smulRight_apply]
   simp only [ContinuousLinearMap.precompR, ContinuousLinearMap.precompL,
     ContinuousLinearMap.compL_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply,
@@ -244,7 +245,7 @@ theorem nnnorm_cutoffLaplacian_le
       cutoffLaplacianSupConst chi dchi d2chi u du d2u := by
   rw [← NNReal.coe_le_coe]
   simpa only [cutoffLaplacianSupConst, NNReal.coe_add, NNReal.coe_mul,
-    NNReal.coe_ofNat, coe_nnnorm] using
+    NNReal.coe_ofNat, NNReal.coe_natCast, coe_nnnorm] using
       norm_cutoffLaplacian_le chi dchi d2chi u du d2u
 
 def cutoffLaplacianHolderConst
@@ -292,8 +293,18 @@ theorem cutoffLaplacian_holderWith
         2 • cutoffGradientPair dchi du x + coreLap d2chi x • u x from
     funext fun x ↦ cutoffLaplacian_apply chi dchi d2chi u du d2u x]
   have hall := (hfirst.add (hcross.add hcross)).add hthird
-  simpa only [cutoffLaplacianHolderConst, Pi.add_apply, two_nsmul,
-    add_assoc, two_mul] using hall
+  intro x y
+  simp only [cutoffLaplacianHolderConst, two_nsmul, add_assoc, two_mul]
+  change edist
+      (((chi : V → Real) • (coreLap d2u : V → F)) x +
+        (cutoffGradientPair dchi du x +
+          (cutoffGradientPair dchi du x +
+            ((coreLap d2chi : V → Real) • (u : V → F)) x)))
+      (((chi : V → Real) • (coreLap d2u : V → F)) y +
+        (cutoffGradientPair dchi du y +
+          (cutoffGradientPair dchi du y +
+            ((coreLap d2chi : V → Real) • (u : V → F)) y))) ≤ _
+  simpa only [Pi.add_apply, add_assoc] using hall x y
 
 end DifferentialGeometry.Analysis.Schauder
 

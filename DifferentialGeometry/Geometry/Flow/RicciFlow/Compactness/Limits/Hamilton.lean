@@ -69,7 +69,8 @@ theorem compactnessSol
         ((X.atZero (I := I)).obj k).topology
       ConnectedSpace ((X.atZero (I := I)).obj k).M := by
     intro k
-    simpa [PointedFlowSeq.atZero] using hconn k
+    change @ConnectedSpace (X.term k).M (X.term k).topology
+    exact hconn k
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
     metricSeedOfBG (I := I) (X.atZero (I := I))
       hcomplete0 hgeom0 hinj hconn0

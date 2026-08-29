@@ -21,13 +21,13 @@ structure SmoothDiffeoBounded (d : ℕ) (Ω Ω' : Set (EuclideanSpace ℝ (Fin d
   invFun_bijOn : Set.BijOn invFun Ω' Ω
   left_inv : Set.LeftInvOn invFun toFun Ω
   right_inv : Set.RightInvOn invFun toFun Ω'
-  deriv_bound : ℝ
-  deriv_bound_pos : 0 < deriv_bound
-  iter_deriv_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k toFun x‖ ≤ deriv_bound
-  iter_deriv_invFun_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k invFun x‖ ≤ deriv_bound
-  jacobian_lower_bound : ℝ
-  jacobian_lower_bound_pos : 0 < jacobian_lower_bound
-  jacobian_lower : ∀ x ∈ Ω, jacobian_lower_bound ≤ |(fderiv ℝ toFun x).det|
+  derivBound : ℝ
+  deriv_bound_pos : 0 < derivBound
+  iter_deriv_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k toFun x‖ ≤ derivBound
+  iter_deriv_invFun_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k invFun x‖ ≤ derivBound
+  jacobianLowerBound : ℝ
+  jacobian_lower_bound_pos : 0 < jacobianLowerBound
+  jacobian_lower : ∀ x ∈ Ω, jacobianLowerBound ≤ |(fderiv ℝ toFun x).det|
 
 namespace SmoothDiffeoBounded
 
@@ -55,27 +55,27 @@ lemma differentiable_invFun : Differentiable ℝ Φ.invFun :=
   Φ.invFun_smooth.differentiable (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)
 
 lemma fderiv_toFun_bound (x : EuclideanSpace ℝ (Fin d)) :
-    ‖fderiv ℝ Φ.toFun x‖ ≤ Φ.deriv_bound := by
+    ‖fderiv ℝ Φ.toFun x‖ ≤ Φ.derivBound := by
   have h := Φ.iter_deriv_bounded 1 x
   rwa [norm_iteratedFDeriv_one] at h
 
 lemma fderiv_invFun_bound (x : EuclideanSpace ℝ (Fin d)) :
-    ‖fderiv ℝ Φ.invFun x‖ ≤ Φ.deriv_bound := by
+    ‖fderiv ℝ Φ.invFun x‖ ≤ Φ.derivBound := by
   have h := Φ.iter_deriv_invFun_bounded 1 x
   rwa [norm_iteratedFDeriv_one] at h
 
 lemma toFun_lipschitz :
-    LipschitzWith ⟨Φ.deriv_bound, le_of_lt Φ.deriv_bound_pos⟩ Φ.toFun := by
+    LipschitzWith ⟨Φ.derivBound, le_of_lt Φ.deriv_bound_pos⟩ Φ.toFun := by
   apply lipschitzWith_of_nnnorm_fderiv_le Φ.differentiable_toFun
   intro x
-  simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
+  change ‖fderiv ℝ Φ.toFun x‖ ≤ Φ.derivBound
   exact Φ.fderiv_toFun_bound x
 
 lemma invFun_lipschitz :
-    LipschitzWith ⟨Φ.deriv_bound, le_of_lt Φ.deriv_bound_pos⟩ Φ.invFun := by
+    LipschitzWith ⟨Φ.derivBound, le_of_lt Φ.deriv_bound_pos⟩ Φ.invFun := by
   apply lipschitzWith_of_nnnorm_fderiv_le Φ.differentiable_invFun
   intro x
-  simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
+  change ‖fderiv ℝ Φ.invFun x‖ ≤ Φ.derivBound
   exact Φ.fderiv_invFun_bound x
 
 lemma toFun_preimage_inter_eq_invFun_image
@@ -154,7 +154,7 @@ theorem MemLp.comp_smoothDiffeoBounded
   · simp [hp_zero]
   rw [eLpNorm_lt_top_iff_lintegral_rpow_enorm_lt_top hp_zero hp_top]
   set q := p.toReal with hq_def
-  set jLB := Φ.jacobian_lower_bound with hjLB_def
+  set jLB := Φ.jacobianLowerBound with hjLB_def
   have hjLB_pos : 0 < jLB := Φ.jacobian_lower_bound_pos
   have hjLB_ennreal_pos : 0 < ENNReal.ofReal jLB := by
     rw [ENNReal.ofReal_pos]; exact hjLB_pos
@@ -165,7 +165,7 @@ theorem MemLp.comp_smoothDiffeoBounded
     intro x hx
     have h_le : ENNReal.ofReal jLB ≤ ENNReal.ofReal |(fderiv ℝ Φ.toFun x).det| :=
       ENNReal.ofReal_le_ofReal (Φ.jacobian_lower x hx)
-    exact mul_le_mul_of_nonneg_right h_le (zero_le _)
+    exact mul_le_mul_of_nonneg_right h_le bot_le
   have hint_le :
       ENNReal.ofReal jLB * ∫⁻ x, ‖u (Φ.toFun x)‖ₑ ^ q ∂(volume.restrict Ω) ≤
         ∫⁻ x,

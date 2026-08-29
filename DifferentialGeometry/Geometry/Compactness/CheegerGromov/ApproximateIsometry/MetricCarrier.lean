@@ -85,7 +85,7 @@ theorem preapprox_pair
     exact hTfΦ x (hKK' hx) v
   have hfwdΦ : MapMetricApproximationOn (I := I) K eps p
       (Φ : M → N) g h :=
-    MapMetricApproximationOn.of_metric (I := I) Gf g h heps heps1
+    MapMetricApproximationOn.ofMetric (I := I) Gf g h heps heps1
       (Φ.contMDiffOn_toFun.mono hKsrc) hTf (hfwd Gf hGfF)
   have hfwdF : MapMetricApproximationOn (I := I) K eps p F g h :=
     hfwdΦ.congr (fun x hx ↦ (hevF x (hKK' hx)).symm)
@@ -99,7 +99,9 @@ theorem preapprox_pair
     rw [htgt]
     exact Set.image_mono hK'U
   have hFK'src : F '' K' ⊆ Φ.symm.source := by
-    simpa only using hFK'tgt
+    with_unfolding_all
+      change F '' K' ⊆ Φ.target
+    exact hFK'tgt
   obtain ⟨Pr, Gr, hPr, hGrΦ, hTrΦ⟩ :=
     exists_pullbackField (I := I) Φ.symm hFK'c hFK'src g h
   have hsymmEq : Set.EqOn (Φ.symm : N → M)
@@ -130,7 +132,9 @@ theorem preapprox_pair
   have hFKtgt : F '' K ⊆ Φ.target :=
     (Set.image_mono hKK').trans hFK'tgt
   have hFKsrc : F '' K ⊆ Φ.symm.source := by
-    simpa only using hFKtgt
+    with_unfolding_all
+      change F '' K ⊆ Φ.target
+    exact hFKtgt
   have hTr : ∀ y ∈ F '' K, ∀ v : Fin 2 → TangentSpace I y,
       Tensor0SBundle.metricTensorField (I := I) Gr y v =
         g.inner ((Φ.symm : N → M) y)
@@ -141,7 +145,7 @@ theorem preapprox_pair
     exact hTrΦ y (Set.image_mono hKK' hy) v
   have hrevΦ : MapMetricApproximationOn (I := I) (F '' K) eps p
       (Φ.symm : N → M) h g :=
-    MapMetricApproximationOn.of_metric (I := I) Gr h g heps heps1
+    MapMetricApproximationOn.ofMetric (I := I) Gr h g heps heps1
       (Φ.symm.contMDiffOn_toFun.mono hFKsrc) hTr (hrev Gr hGrInv)
   have hrevF : MapMetricApproximationOn (I := I) (F '' K) eps p
       (Function.invFunOn F U) h g :=
@@ -245,23 +249,23 @@ theorem HasStageJetData.preapprox_tail
   let Lphi := L.subseq hphi
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : SigmaCompactSpace Yk.M := Yk.sigmaCompact
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-  letI : Nonempty Yk.M := ⟨Yk.basepoint⟩
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : SigmaCompactSpace Yk.M := Yk.sigmaCompact
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : Nonempty Yk.M := ⟨Yk.basepoint⟩
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : SigmaCompactSpace Yl.M := Yl.sigmaCompact
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : MetricSpace Yl.M := (P (Lphi.φ l)).ms
   let F := stageComparisonMap inp P Lphi s hs k l
   let K : Set Yk.M := Metric.closedBall Yk.basepoint R
   let K' : Set Yk.M := Metric.closedBall Yk.basepoint S

@@ -121,7 +121,8 @@ theorem leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
     hσ.contMDiffAt (hu.mem_nhds hx)
   have hσAt :
       ContMDiffAt I (I.prod 𝓘(Real, E)) (2 : WithTop ℕ∞) (T% σ) x := by
-    simpa using hσAtTwo
+    norm_num at hσAtTwo
+    exact hσAtTwo
   have hσdiff : ∀ᶠ y in 𝓝 x, MDiffAt (T% σ) y := by
     filter_upwards [hu.mem_nhds hx] with y hy
     have hyTwo :

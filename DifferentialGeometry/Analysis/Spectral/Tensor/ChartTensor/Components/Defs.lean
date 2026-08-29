@@ -16,7 +16,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -146,7 +145,7 @@ lemma tensorChartComponentProjection_basisElement (r s : ℕ)
         (if Jdx₂ = Jdx₁ then (1 : ℝ) else 0) := by
   classical
   rw [tensorChartComponentProjection_apply, tensorChartBasisElement_apply]
-  rw [ContinuousMultilinearMap.smul_apply,
+  rw [smul_apply,
     dualCovariantCMM_apply_basis_tuple (E := E) s Jdx₂ Jdx₁,
     dualCovariantCMM_apply_basis_tuple (E := E) r Idx₁ Idx₂,
     smul_eq_mul]
@@ -211,19 +210,10 @@ private lemma cmm_eq_sum_basis_coeffs (s : ℕ)
           f (fun k : Fin s => chartModelBasis E (Jdx k)) *
             (∏ k : Fin s, ((chartModelBasis E).coord (Jdx k)) (v k)) := by
     classical
-    rw [show (∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-            f (fun k : Fin s => chartModelBasis E (Jdx k)) •
-              dualCoordinateProductMultilinearMap (E := E) s Jdx) v =
-          ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-            (f (fun k : Fin s => chartModelBasis E (Jdx k)) •
-              dualCoordinateProductMultilinearMap (E := E) s Jdx) v from
-      ContinuousMultilinearMap.sum_apply
-        (fun Jdx : Fin s → Fin (Module.finrank ℝ E) =>
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) •
-            dualCoordinateProductMultilinearMap (E := E) s Jdx) v]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro Jdx _
-    rw [ContinuousMultilinearMap.smul_apply,
+    rw [smul_apply,
       dualCovariantCMM_apply (E := E) s Jdx v]
     rfl
   rw [h_rhs_eq]
@@ -270,10 +260,10 @@ theorem tensorRSModel_eq_sum_basis (r s : ℕ) (T : TensorRSModel r s ℝ E) :
             tensorChartComponentProjection (E := E) r s Idx Jdx T •
               (tensorChartBasisElement (E := E) r s Idx Jdx w) := by
     classical
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro Idx _
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro Jdx _
     rfl

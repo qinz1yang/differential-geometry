@@ -132,7 +132,7 @@ lemma integrable_eta_sq_diffQuot_sum
   have h_inner_cont : Continuous (fun x : E =>
       ∑ i : Fin d, (diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2) :=
-    continuous_finset_sum _ (fun i _ => (h_diffQuot_partial_cont i).pow 2)
+    continuous_finsetSum _ (fun i _ => (h_diffQuot_partial_cont i).pow 2)
   have h_eta_sq_cont : Continuous (fun x : E => η x ^ 2) := hη.continuous.pow 2
   have h_prod_cont : Continuous (fun x : E => (η x)^2 *
         ∑ i : Fin d, (diffQuot k h

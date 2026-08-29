@@ -39,16 +39,16 @@ omit [CompactSpace M] in
 lemma InteriorSmoothScalar.oneSubLap_continuous
     {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
     Continuous (fun x : M =>
-      u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x) :=
+      u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x) :=
   u.smooth.continuous.sub
     (Δ_g_with_boundary_continuous (I := I_half n) g u.smooth u.interior_support)
 
 lemma InteriorSmoothScalar.oneSubLap_memLp
     {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
     MemLp (fun x : M =>
-        u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+        u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
       2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I_half n) (M := M) g
   exact u.oneSubLap_continuous.memLp_of_hasCompactSupport
@@ -63,11 +63,11 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : InteriorSmoothScalar g) :
     interiorSmoothScalarH1Inner u v =
-      ∫ x, (u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+      ∫ x, (u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
         * v.toFun x
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
   unfold interiorSmoothScalarH1Inner
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) g
   have hu_supp : HasCompactSupport u.toFun := HasCompactSupport.of_compactSpace _
   have hv_supp : HasCompactSupport v.toFun := HasCompactSupport.of_compactSpace _
@@ -75,7 +75,7 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
       ∫ x, g.inner x (gradFun (I := I_half n) g v.toFun x)
             (gradFun (I := I_half n) g u.toFun x)
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) =
-        -∫ x, v.toFun x * Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x
+        -∫ x, v.toFun x * ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
       (I := I_half n) g v.smooth u.smooth v.interior_support u.interior_support hu_supp
@@ -90,11 +90,11 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
     intro x
     exact g.symm x _ _
   have hsec_eq : (fun x : M => g.inner x
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g u.smooth u.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g v.smooth v.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)) =
@@ -106,7 +106,7 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
   rw [hsec_eq]
   rw [hsymm, hgreen]
   have hΔu_cont : Continuous
-      (Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support) :=
+      (ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support) :=
     Δ_g_with_boundary_continuous (I := I_half n) g u.smooth u.interior_support
   have hu_cont : Continuous u.toFun := u.smooth.continuous
   have hv_cont : Continuous v.toFun := v.smooth.continuous
@@ -116,22 +116,22 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
       (HasCompactSupport.of_compactSpace _)
   have h_vΔu : Integrable
       (fun x : M => v.toFun x *
-        Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+        ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     (hv_cont.mul hΔu_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hpt : ∀ x : M,
-      (u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+      (u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
         * v.toFun x =
         u.toFun x * v.toFun x -
-          v.toFun x * Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x := by
+          v.toFun x * ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x := by
     intro x; ring
   rw [show (fun x : M =>
-      (u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+      (u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
         * v.toFun x) =
       (fun x : M =>
         u.toFun x * v.toFun x -
-          v.toFun x * Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+          v.toFun x * ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
       from funext hpt]
   rw [integral_sub h_uv h_vΔu]
   ring
@@ -147,7 +147,7 @@ theorem interiorSmoothScalarH1Inner_eq_lpInner_oneSubLap
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) =ᵐ[
       riemannianVolumeMeasure (I := I_half n) (M := M) g]
       (fun x : M =>
-        u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x) := by
+        u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x) := by
     exact MemLp.coeFn_toLp u.oneSubLap_memLp
   have hae_rhs : (smoothToLpInterior g v :
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) =ᵐ[
@@ -157,13 +157,13 @@ theorem interiorSmoothScalarH1Inner_eq_lpInner_oneSubLap
   refine integral_congr_ae ?_
   filter_upwards [hae_lhs, hae_rhs] with x hl hr
   rw [hl, hr]
-  show (u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x) *
+  show (u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x) *
       v.toFun x = _
   rw [show @inner ℝ _ _
-        (u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+        (u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
         (v.toFun x) =
       v.toFun x *
-        (u.toFun x - Δ_g_with_boundary (I := I_half n) g u.smooth u.interior_support x)
+        (u.toFun x - ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x)
       from RCLike.inner_apply _ _]
   ring
 

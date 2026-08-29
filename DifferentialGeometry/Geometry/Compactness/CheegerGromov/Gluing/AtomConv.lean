@@ -38,7 +38,7 @@ theorem mapCInf_comp_fd {Y Z : Type*}
     (hmap : Set.MapsTo Binf U W) (hmapk : forall k, Set.MapsTo (B k) U W) :
     MapCInfConvOnCompacts U (fun k x => A k (B k x))
       (fun x => Ainf (Binf x)) := by
-  letI : ProperSpace Y := FiniteDimensional.proper Real Y
+  let : ProperSpace Y := FiniteDimensional.proper Real Y
   exact MapCInfConvOnCompacts.comp hU hW hB hA hBc hBinfc hAc hAinfc hmap hmapk
 
 theorem mapCInf_constArg {Y F : Type*}
@@ -213,8 +213,9 @@ theorem rawWeights_conv {U : Set X} (hU : IsOpen U)
     (hlowinf : forall z, z ∈ U -> delta < ∑ j, numinf j z) (i : ι) :
     MapCInfConvOnCompacts U
       (fun k z => rawWeights (num k) z i) (fun z => rawWeights numinf z i) := by
-  simpa only [rawWeights, normWeights] using
-    (normWeightsConv hU hdelta hconv hc hcinf hlow hlowinf i)
+  change MapCInfConvOnCompacts U
+    (fun k => normWeights (num k) i) (normWeights numinf i)
+  exact normWeightsConv hU hdelta hconv hc hcinf hlow hlowinf i
 
 omit [NormedAddCommGroup X] [NormedSpace Real X] in
 theorem cutRaw_sum_half {a : ι -> X -> Real} {i0 : ι} {x : X}
@@ -272,7 +273,7 @@ theorem cutWeights_conv {U : Set X} (hU : IsOpen U)
     have hsum : Filter.Tendsto
         (fun k => ∑ j, cutRaw (a k i0) (a k) i0 j z) Filter.atTop
         (nhds (∑ j, cutRaw (ainf i0) ainf i0 j z)) :=
-      tendsto_finset_sum Finset.univ fun j _ => tendsto_of_cInf (hraw j) hz
+      tendsto_finsetSum Finset.univ fun j _ => tendsto_of_cInf (hraw j) hz
     have hhalf : (1 / 2 : Real) <= ∑ j, cutRaw (ainf i0) ainf i0 j z :=
       ge_of_tendsto hsum (Filter.Eventually.of_forall fun k =>
         cutRaw_sum_half (hbase k z hz) (hnn k z hz) (hcover k z hz))
@@ -318,11 +319,11 @@ theorem quadNormal_readout
       f (normalCoordMetric (I := I) Y gamma 0
         (normalTransition (I := I) Y beta gamma z)
         (normalTransition (I := I) Y beta gamma z)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [quadNormal_of_mem Y.metric gamma f hsrc,
     normalMetric_zero (I := I) Y gamma]
   rfl
@@ -392,8 +393,14 @@ noncomputable def seqAtomChart
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     (k : Nat) (z : E) : Real :=
-  seqAtomOn (I := I) (legacyChartFamily (I := I) X)
-    hd hD P L pb r beta gamma k z
+  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    (X.obj (L.φ k)).t2TangentBundle
+  seqAtom hd hD P L pb r k gamma
+    (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
 
 omit [CompleteSpace E] in
 @[simp] theorem seqAtomOn_subseq
@@ -442,16 +449,18 @@ theorem seqAtomOn_smooth
       U ⊆ Metric.ball (0 : E) (chart (L.φ k) (beta k)).radius) :
     ContDiffOn Real (∞ : WithTop ℕ∞)
       (seqAtomOn (I := I) chart hd hD P L pb r beta gamma k) U := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
   rw [← contMDiffOn_iff_contDiffOn]
-  simpa only [seqAtomOn] using
-    (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
-      ((chart (L.φ k) (beta k)).smooth_to.mono hUx)
+  change ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
+      (seqAtom hd hD P L pb r k gamma ∘
+        fun z => (chart (L.φ k) (beta k)).hom z) U
+  exact (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
+    ((chart (L.φ k) (beta k)).smooth_to.mono hUx)
 
 theorem seqAtomChart_smooth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -471,16 +480,18 @@ theorem seqAtomChart_smooth
         (expMapC2Radius (I := I) (X.obj (L.φ k)).metric (beta k))) :
     ContDiffOn Real (∞ : WithTop ℕ∞)
       (seqAtomChart (I := I) hd hD P L pb r beta gamma k) U := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
   rw [← contMDiffOn_iff_contDiffOn]
-  simpa only [seqAtomChart, seqAtomOn, legacyChart_apply] using
-    (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
-      ((expMapDiffeo_contMDiffOn_expBall (I := I) (X.obj (L.φ k)) (beta k)).mono hUx)
+  change ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
+      (seqAtom hd hD P L pb r k gamma ∘
+        fun z => expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z) U
+  exact (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
+    ((expMapDiffeo_contMDiffOn_expBall (I := I) (X.obj (L.φ k)) (beta k)).mono hUx)
 
 theorem seqAtom_live_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -500,13 +511,13 @@ theorem seqAtom_live_conv
   refine hconv.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [seqCenterD_live hd P L (gamma : Nat) hgamma] with k hk
   intro z _hz
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   let q := expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z
   have hR : 4 * L.lamInf (gamma : Nat) <
       expRadiusGp (I := I) (X.obj (L.φ k)).metric
@@ -537,8 +548,7 @@ theorem seqAtom_dead_conv
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [seqCenter_dead hd P L (gamma : Nat) hgamma] with k hk
   intro z _hz
-  simp [seqAtomChart, seqAtomOn,
-    seqAtom_none hd hD P L pb r k gamma hk]
+  simp [seqAtomChart,     seqAtom_none hd hD P L pb r k gamma hk]
 
 theorem atom_disjoint_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -567,11 +577,18 @@ theorem atom_disjoint_conv
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [hsource, hdisjoint] with k hsourceK hdisjointK
   intro z hz
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    (X.obj (L.φ k)).t2TangentBundle
   by_contra hne
   apply hdisjointK
+  change seqAtom hd hD P L pb r k gamma
+      (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z) ≠ 0 at hne
   exact L.binter_of_mem_hat hd hD P pb r k (hsourceK hz)
-    (seqAtom_mem_hat hd hD P L pb r k gamma (by
-      simpa only [seqAtomChart, seqAtomOn, legacyChart_apply] using hne))
+    (seqAtom_mem_hat hd hD P L pb r k gamma hne)
 
 theorem seqAtoms_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -600,6 +617,7 @@ theorem seqAtoms_conv
         seqAtom_live_conv (I := I) hd hD P L pb r hgp beta gamma hU hgamma
           (hlive gamma hgamma)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem gluing_atom_converges {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (center : ι -> forall k : Nat, (X.obj k).M)

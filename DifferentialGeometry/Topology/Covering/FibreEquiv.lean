@@ -20,11 +20,11 @@ theorem isCoveringMap_fibre_finite_of_compact
     [TopologicalSpace E] [CompactSpace E]
     {p : E → X} (hp : IsCoveringMap p) (x : X) :
     Finite (p ⁻¹' {x} : Set E) := by
-  haveI hdisc : DiscreteTopology (p ⁻¹' {x} : Set E) :=
+  have hdisc : DiscreteTopology (p ⁻¹' {x} : Set E) :=
     (hp x).discreteTopology_fiber
   have hclosed : IsClosed (p ⁻¹' {x} : Set E) :=
     isClosed_singleton.preimage hp.continuous
-  haveI hcomp : CompactSpace (p ⁻¹' {x} : Set E) :=
+  have hcomp : CompactSpace (p ⁻¹' {x} : Set E) :=
     isCompact_iff_compactSpace.mp hclosed.isCompact
   exact finite_of_compact_of_discrete
 
@@ -127,11 +127,11 @@ noncomputable def fibreEquivFundamentalGroup
 
 theorem finite_pi1_of_uc
     {X : Type*} [TopologicalSpace X] [T1Space X] [Inhabited X]
-    [LocPathConnectedSpace X]
+    [LocallyPathConnectedSpace X]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     [CompactSpace (UniversalCover X)] :
     Finite (FundamentalGroup X (default : X)) := by
-  letI : Finite
+  let : Finite
       ((proj : UniversalCover X → X) ⁻¹' {(default : X)}) :=
     isCoveringMap_fibre_finite_of_compact
       (UniversalCover.proj_isCoveringMap (X := X)) default

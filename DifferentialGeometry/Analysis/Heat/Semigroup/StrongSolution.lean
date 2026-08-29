@@ -164,6 +164,7 @@ private lemma exp_convolution_derivative_identity
     intro s
     have harg : HasDerivAt (fun r : ℝ => -lam * (t - r)) lam s := by
       convert ((hasDerivAt_const s t).sub (hasDerivAt_id s)).const_mul (-lam) using 1
+      all_goals (try rfl)
       all_goals ring
     have hexp := harg.exp
     simpa [phi, mul_comm] using hexp
@@ -171,6 +172,7 @@ private lemma exp_convolution_derivative_identity
       (lam * (phi s * h s) + phi s * dh s) s := by
     intro s
     convert (hphi_deriv s).mul (hderiv s) using 1
+    all_goals (try rfl)
     all_goals ring
   have hfirst : Continuous (fun s => lam * (phi s * h s)) :=
     continuous_const.mul (hphi.mul hh)

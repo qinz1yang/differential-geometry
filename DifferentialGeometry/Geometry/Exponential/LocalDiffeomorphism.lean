@@ -78,8 +78,17 @@ private lemma chartedExpAt_hasFDerivAt_zero
         (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M)))
       (0 : E) ((ContinuousLinearMap.id ℝ E).comp (ContinuousLinearMap.id ℝ E)) :=
     hext_at_pt.comp (0 : E) hexp_mfd
-  rw [ContinuousLinearMap.id_comp] at hcomp_mfd
-  exact hasMFDerivAt_iff_hasFDerivAt.mp hcomp_mfd
+  have hid : (ContinuousLinearMap.id ℝ E).comp (ContinuousLinearMap.id ℝ E) =
+      ContinuousLinearMap.id ℝ E := by
+    ext v
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply,
+      ContinuousLinearMap.id_apply]
+  have hf := hasMFDerivAt_iff_hasFDerivAt.mp hcomp_mfd
+  change HasFDerivAt
+    ((extChartAt I p) ∘
+      (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M)))
+    (ContinuousLinearMap.id ℝ E) (0 : E)
+  exact hf.congr_fderiv hid
 
 private lemma chartedExpAt_hasFDerivAt_refl
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -161,7 +170,7 @@ private theorem exists_nice_open_nhds
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (0 : E) :=
     expMap_contMDiffAt_zero (I := I) g p
-  haveI : IsManifold I 1 M := by
+  have : IsManifold I 1 M := by
     have : (1 : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast (by decide : (1 : ℕ∞) ≤ ⊤)
     exact IsManifold.of_le this
   have hone_ne_top : (1 : WithTop ℕ∞) ≠ ∞ := by decide

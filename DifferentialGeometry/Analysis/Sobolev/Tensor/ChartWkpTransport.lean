@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -57,17 +56,17 @@ private theorem coordChange_apply
         (rawRSTriv (E := E) (I := I) (M := M) r s α) x) w =
       (rawRSTriv (E := E) (I := I) (M := M) r s α).continuousLinearMapAt ℝ x
         ((rawRSTriv (E := E) (I := I) (M := M) r s γ).symmL ℝ x w) := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedAddCommGroup r s
+  let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedSpace r s
+  let : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
-  letI : FiberBundle (TensorRSModel r s ℝ E)
+    tensorRSBundleTopology r s
+  let : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
-  letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
+    tensorRSBundleFiber r s
+  let : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   have hxγ' : x ∈
@@ -82,6 +81,7 @@ private theorem coordChange_apply
     Bundle.Trivialization.continuousLinearMapAt_apply,
     Bundle.Trivialization.coe_linearMapAt_of_mem _ hxα',
     Bundle.Trivialization.symmL_apply]
+  exact hxγ'
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -92,17 +92,17 @@ theorem secTriv_trans
       ((rawRSTriv (E := E) (I := I) (M := M) r s γ).coordChangeL ℝ
         (rawRSTriv (E := E) (I := I) (M := M) r s α) x)
         (secTriv (I := I) (M := M) r s S γ x) := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedAddCommGroup r s
+  let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedSpace r s
+  let : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
-  letI : FiberBundle (TensorRSModel r s ℝ E)
+    tensorRSBundleTopology r s
+  let : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
-  letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
+    tensorRSBundleFiber r s
+  let : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   have hxγ' : x ∈
@@ -126,10 +126,10 @@ theorem secCompRaw_trans
             r s γ α P₀ Q x *
           secCompRaw (I := I) (M := M) r s S γ Q.1 Q.2 x := by
   classical
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+  let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedAddCommGroup r s
+  let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedSpace r s
   obtain ⟨hxγ, hxα⟩ := hx
   unfold secCompRaw
   rw [secTriv_trans (E := E) (I := I) (M := M)

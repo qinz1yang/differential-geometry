@@ -40,7 +40,7 @@ lemma countable_tensorEigenIdx
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) :
     Countable (TensorEigenIdx (I := I) (M := M) g r s) := by
-  haveI : Countable (TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s) :=
+  have : Countable (TensorNonzeroResolventEigenvalue (I := I) (M := M) g r s) :=
     TensorNonzeroResolventEigenvalue.countable_ofCompact
       (I := I) (M := M) g r s h_compact
   infer_instance
@@ -213,8 +213,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem aemeasurable_planIntegrand
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     AEMeasurable (planIntegrand (I := I) (M := M) f i) (timeMeasure T) := by
-  letI : MeasurableSpace ℝ := borel ℝ
-  haveI : BorelSpace ℝ := ⟨rfl⟩
+  let : MeasurableSpace ℝ := borel ℝ
+  have : BorelSpace ℝ := ⟨rfl⟩
   have hmeas : AEMeasurable (fun t => (f t).coeff i) (timeMeasure T) := by
     refine AEMeasurable.congr
       (Lp.aestronglyMeasurable
@@ -263,7 +263,7 @@ private theorem ennreal_tsum_weight_mul_norm_sq_ne_top
       (I := I) (M := M) g r s)) :
     (∑' i, ENNReal.ofReal (tensorSobolevWeight (I := I) (M := M) i a *
       ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2)) ≠ (⊤ : ℝ≥0∞) := by
-  haveI := countable_tensorEigenIdx
+  have := countable_tensorEigenIdx
     (I := I) (M := M) (g := g) (r := r) (s := s) h_compact
   have hpoint : ∀ t : ℝ,
       ENNReal.ofReal (‖f t‖ ^ 2) =
@@ -323,7 +323,7 @@ theorem norm_sq_eq_tsum_timeModeCoeff
     ‖f‖ ^ 2 =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2 := by
-  haveI := countable_tensorEigenIdx
+  have := countable_tensorEigenIdx
     (I := I) (M := M) (g := g) (r := r) (s := s) h_compact
   have hpoint : ∀ t : ℝ,
       ENNReal.ofReal (‖f t‖ ^ 2) =
@@ -447,7 +447,7 @@ theorem timeModeCoeff_injective {b : ℝ} {T : ℝ}
     (h : ∀ i, timeModeCoeff (I := I) (M := M) f₁ i =
       timeModeCoeff (I := I) (M := M) f₂ i) :
     f₁ = f₂ := by
-  haveI := countable_tensorEigenIdx
+  have := countable_tensorEigenIdx
     (I := I) (M := M) (g := g) (r := r) (s := s) h_compact
   refine MeasureTheory.Lp.ext ?_
   have hcoord : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,

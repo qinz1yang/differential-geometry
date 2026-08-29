@@ -80,7 +80,7 @@ theorem rm04Realizes_metric
     Rm04RealizesSolutionConnectionOn (I := I) S S.base.rm04 := by
   intro t
   simpa [SolutionOn.family, SolutionFamily.rm04, SolutionFamily.connection,
-    metricCov] using
+    metricCov, metricRm04] using
     (DifferentialGeometry.Geometry.Curvature.rm04Section_realizes (I := I) (M := M)
       (S.base.metric (t : Real))
       (metricCov (I := I) (M := M) (S.base.metric (t : Real)))
@@ -206,7 +206,11 @@ theorem extends_of_rmBounded
     have hmapsφ : Set.MapsTo (fun s : ℝ => s - t_star) (Set.Ici t_star) (Set.Ici 0) :=
       fun s hs => by simp only [Set.mem_Ici] at hs ⊢; linarith
     have hchain := hd.comp t hφ hmapsφ
-    simpa using hchain
+    change HasDerivWithinAt
+      ((fun u : ℝ => (rr u).inner x v w) ∘ fun s : ℝ => s - t_star)
+      ((-2 : ℝ) * ricciTensor (I := I) (rr (t - t_star)) x v w)
+      (Set.Ici t_star) t
+    simpa only [mul_one] using hchain
   have h1pde : ∀ t ∈ Set.Ico t_star omega, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
         ((-2 : ℝ) * ricciTensor (I := I) (g_fam t) x v w) (Set.Ici t_star) t :=

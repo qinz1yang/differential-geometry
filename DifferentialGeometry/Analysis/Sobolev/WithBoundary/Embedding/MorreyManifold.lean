@@ -272,7 +272,7 @@ private lemma tsupport_pou_mul_subset_chart_source
   exact h1.trans (hρ α)
 
 private lemma contDiff_chartSmoothExt_pou_mul
-    [CompactSpace M] [T2Space M]
+    [CompactSpace M]
     (α : M) (ρ : SmoothPartitionOfUnity M I_hs M Set.univ)
     (hρ : ρ.IsSubordinate (fun β : M => (chartAt (EuclideanHalfSpace n) β).source))
     {u : M → ℝ} (hu : ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u)
@@ -289,7 +289,7 @@ private lemma contDiff_chartSmoothExt_pou_mul
 
 omit [IsManifold (𝓡∂ n) ∞ M] in
 private lemma hasCompactSupport_chartSmoothExt_pou_mul
-    [CompactSpace M] [T2Space M]
+    [CompactSpace M]
     (α : M) (ρ : SmoothPartitionOfUnity M I_hs M Set.univ)
     (hρ : ρ.IsSubordinate (fun β : M => (chartAt (EuclideanHalfSpace n) β).source))
     (u : M → ℝ) :
@@ -783,7 +783,7 @@ private lemma eLpNorm_chartSmoothExt_ball_le_wkpNormChart
     rw [show Finset.range 2 = {0, 1} from rfl]
     rw [Finset.sum_insert (by simp), Finset.sum_singleton]
     refine le_add_of_nonneg_right ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_succ.trans ?_
   let _ := g
   unfold wkpNormChart
@@ -1027,7 +1027,7 @@ private lemma eLpNorm_norm_fderiv_le_n_mul_wkpNorm
           (d := n) 1 q f Ω := by
     rw [hWkpEq, Finset.sum_range_succ, Finset.sum_range_one, ← h_j1_term]
     refine le_add_of_nonneg_left ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_wkp.trans ?_
   have hd_pos : 0 < n := NeZero.pos _
   have hd_one_le : (1 : ℝ≥0∞) ≤ ((n : ℕ) : ℝ≥0∞) := by
@@ -1383,7 +1383,7 @@ theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary
           (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I_hs) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I_hs) (M := M)
     with hS_def
   refine ⟨∑ α ∈ S, perChartMorreyConst (n := n) (M := M) g hp α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α _ =>
@@ -1640,7 +1640,7 @@ theorem smooth_manifold_morrey_holder_modulus_per_chart_withBoundary
 theorem norm_sub_le_sum_pou_diff_withBoundary
     (u : M → ℝ) (x y : M) :
     ‖u x - u y‖ ≤
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I_hs) (M := M),
         ‖(DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
             : C^∞⟮I_hs, M; ℝ⟯) x * u x -
@@ -1648,7 +1648,7 @@ theorem norm_sub_le_sum_pou_diff_withBoundary
             : C^∞⟮I_hs, M; ℝ⟯) y * u y‖ := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I_hs) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I_hs) (M := M)
     with hS_def
   have hsum_x : ∑ α ∈ S,
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α : M → ℝ) x = 1 :=

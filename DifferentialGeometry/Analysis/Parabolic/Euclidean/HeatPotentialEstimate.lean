@@ -503,7 +503,7 @@ theorem heatDuh_schauder_estimate
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hf : ∀ r ∈ Icc (0 : Real) S, HolderWith K alpha (f r))
     (hsource : HolderWith Csource alpha
-      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (hmeas0 : ∀ t ∈ Ioc (0 : Real) S, ∀ z : V,
       AEStronglyMeasurable
@@ -567,7 +567,7 @@ theorem heatDuh_schauder_estimate_of_parabolic_holder
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
@@ -577,7 +577,7 @@ theorem heatDuh_schauder_estimate_of_parabolic_holder
     fun r hr => holderWith_slice_of_parabolicCylinder
       (f := fun s x => f s x) hsource hr
   have hsource' : HolderWith K alpha
-      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)) := by
     rw [HolderWith.restrict_iff] at hsource ⊢
     exact hsource.mono fun p hp => ⟨⟨hp.1.1.le, hp.1.2⟩, hp.2⟩
@@ -600,7 +600,7 @@ theorem heatDuh_isParabolicC2HolderOn
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ f p.time p.space))) :
     IsParabolicC2HolderOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
@@ -613,7 +613,7 @@ theorem heatDuh_isParabolicC2HolderOn
     fun r hr ↦ holderWith_slice_of_parabolicCylinder
       (f := fun s x ↦ f s x) hsource hr
   have hsource' : HolderWith K alpha
-      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ f p.time p.space)) := by
     rw [HolderWith.restrict_iff] at hsource ⊢
     exact hsource.mono fun p hp ↦ ⟨⟨hp.1.1.le, hp.1.2⟩, hp.2⟩

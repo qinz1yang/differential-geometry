@@ -34,6 +34,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 
+omit [CompactSpace M] in
 theorem riemannianFiberNormSq_three_eq_sum_slot0Curry
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n),
@@ -48,6 +49,7 @@ theorem riemannianFiberNormSq_three_eq_sum_slot0Curry
     ((covGradRoughLapCurv (I := I) (M := M) g T₀).toSection x)
 
 
+omit [CompactSpace M] in
 theorem riemannianFiberNormSq_three_le_of_slot0_bound
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
@@ -85,7 +87,7 @@ private noncomputable def secondCovGradEnergyBudget
         (covGrad (I := I) (M := M) g 0 2 T₀)).toSection x)
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma riemannianFiberNormSqBudget_nonneg
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     0 ≤ secondCovGradEnergyBudget (I := I) (M := M) g T₀ x := by
@@ -98,6 +100,7 @@ private lemma riemannianFiberNormSqBudget_nonneg
   linarith
 
 
+omit [CompactSpace M] in
 theorem covGradRoughLapCurv_hpt_of_slot0_budget
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (D₀ : ℝ)

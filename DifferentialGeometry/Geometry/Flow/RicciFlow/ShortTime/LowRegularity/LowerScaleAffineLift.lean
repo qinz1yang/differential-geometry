@@ -153,10 +153,13 @@ private theorem affState_aemeas
         (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
     Lp.aestronglyMeasurable _
-  simpa only [affState, tensorHsCongrL_apply] using
+  have hraw :=
     (tensorHsCongrL (I := I) (M := M) g 0 2
       (show (1 : ℝ) + 2 = 3 by norm_num)).continuous
       |>.comp_aestronglyMeasurable hfield
+  with_unfolding_all
+    refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+    rfl
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -261,10 +264,13 @@ theorem lowAffineSecondOrderAction_data
       (timeMeasure T) :=
     Lp.aestronglyMeasurable _
   have hu : AEStronglyMeasurable u (timeMeasure T) := by
-    simpa only [u, affState, tensorHsCongrL_apply] using
+    have hraw :=
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (1 : ℝ) + 2 = 3 by norm_num)).continuous
         |>.comp_aestronglyMeasurable hfield
+    with_unfolding_all
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   have hju : AEStronglyMeasurable
       (fun t => incl32 (I := I) (M := M) g (u t)) (timeMeasure T) :=
     (incl32 (I := I) (M := M) g).continuous.comp_aestronglyMeasurable hu
@@ -296,12 +302,22 @@ theorem lowAffineSecondOrderAction_data
   have hmeas : AEStronglyMeasurable
       (lowAffineSecondOrderAction (I := I) (M := M)
         g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) := by
-    simpa only [lowAffineSecondOrderAction, u] using
+    have hraw :=
       (ContinuousLinearMap.compL ℝ
         (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
         (loH3 (I := I) (M := M) g)
         (loH1 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hA2 hR3Q
+    with_unfolding_all
+      change @AEStronglyMeasurable ℝ
+        (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2) →L[ℝ]
+          loH1 (I := I) (M := M) g)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        Real.measurableSpace Real.measurableSpace
+        (lowAffineSecondOrderAction (I := I) (M := M)
+          g hρ hδ0 hδ_le hreal hT f) (timeMeasure T)
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   let C2 : NNReal := ⟨C, hC⟩
   have hbound : ∀ᵐ t ∂timeMeasure T,
       ‖lowAffineSecondOrderAction (I := I) (M := M)
@@ -429,12 +445,22 @@ theorem lowAffineSecondOrderActionHigh_data
   have hmeas : AEStronglyMeasurable
       (lowAffineSecondOrderActionHigh (I := I) (M := M)
         g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) := by
-    simpa only [lowAffineSecondOrderActionHigh] using
+    have hraw :=
       (ContinuousLinearMap.compL ℝ
         (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2))
         (loH4 (I := I) (M := M) g)
         (loH2 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hA2 hR4Q
+    with_unfolding_all
+      change @AEStronglyMeasurable ℝ
+        (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
+          loH2 (I := I) (M := M) g)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        Real.measurableSpace Real.measurableSpace
+        (lowAffineSecondOrderActionHigh (I := I) (M := M)
+          g hρ hδ0 hδ_le hreal hT f) (timeMeasure T)
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   refine ⟨⟨C, hC⟩, rfl, hmeas, Filter.Eventually.of_forall fun t => ?_⟩
   exact (lowAffineSecondOrderActionHigh_norm_le (I := I) (M := M)
     g hρ hδ0 hδ_le hreal hT f t).trans (hbd _)
@@ -580,12 +606,22 @@ theorem lowFirstOrderAffineOperator_aestronglyMeasurable
       (loH2 (I := I) (M := M) g)
       (loH2 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR2 hQ
-  simpa only [lowFirstOrderAffineOperator] using
+  have hraw :=
     (ContinuousLinearMap.compL ℝ
       (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
       (loH2 (I := I) (M := M) g)
       (loH1 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA1 hR2Q
+  with_unfolding_all
+    change @AEStronglyMeasurable ℝ
+      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
+        loH1 (I := I) (M := M) g)
+      PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+      Real.measurableSpace Real.measurableSpace
+      (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f)
+      (timeMeasure T)
+    refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+    rfl
 
 theorem lowFirstOrderAffineOperator_memLp
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)
@@ -694,12 +730,22 @@ theorem highFirstOrderAffineOperator_aestronglyMeasurable
       (loH3 (I := I) (M := M) g)
       (loH3 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR3 hQ
-  simpa only [highFirstOrderAffineOperator] using
+  have hraw :=
     (ContinuousLinearMap.compL ℝ
       (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1))
       (loH3 (I := I) (M := M) g)
       (loH2 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA1 hR3Q
+  with_unfolding_all
+    change @AEStronglyMeasurable ℝ
+      (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
+        loH2 (I := I) (M := M) g)
+      PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+      Real.measurableSpace Real.measurableSpace
+      (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)
+      (timeMeasure T)
+    refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+    rfl
 
 theorem highFirstOrderAffineOperator_memLp
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)

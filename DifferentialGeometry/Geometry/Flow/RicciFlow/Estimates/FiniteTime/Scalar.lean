@@ -16,7 +16,6 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompleteSpace E] [T2Space M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 def scalarBlowupTime (n c0 : Real) : Real :=

@@ -24,18 +24,17 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 private noncomputable def witnessOrderC0 (E : Type*) [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] : ℕ :=
+    [InnerProductSpace ℝ E] : ℕ :=
   Module.finrank ℝ E + 1
 
 private lemma witnessOrderC0_pos {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-    [NeZero (Module.finrank ℝ E)] :
+    [InnerProductSpace ℝ E] :
     1 ≤ witnessOrderC0 E := by
   unfold witnessOrderC0
   omega
 
 private lemma witnessOrderC0_two_gt_dim {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] :
+    [InnerProductSpace ℝ E] :
     (Module.finrank ℝ E : ℝ) < (witnessOrderC0 E : ℝ) * 2 := by
   unfold witnessOrderC0
   push_cast
@@ -506,10 +505,10 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
         (I := I) (M := M) g] u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hn_pos : 0 < Module.finrank ℝ E := NeZero.pos _
   have hn_real_pos : (0 : ℝ) < (Module.finrank ℝ E : ℝ) := by exact_mod_cast hn_pos
   have hn_one : 1 ≤ Module.finrank ℝ E := hn_pos

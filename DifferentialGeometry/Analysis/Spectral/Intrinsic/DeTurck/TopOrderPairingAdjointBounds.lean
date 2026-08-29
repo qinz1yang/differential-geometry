@@ -38,20 +38,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 private local instance edgePartnerTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance edgePartnerTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance edgePartnerTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance edgePartnerTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -104,7 +104,7 @@ private theorem edge_full_split
           rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show metricComparisonDifferenceEndomorphismField (I := I) g gm x =
       metricComparisonDifferenceEndomorphism (I := I) g gm x from rfl]
   rw [metricComparisonEndomorphismField_apply,
@@ -114,7 +114,6 @@ private theorem edge_full_split
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem edge_insert_add
     (g : SmoothRiemannianMetric I M) (s : Nat)
     (A B : ContMDiffSection I (E →L[Real] E) ∞
@@ -133,12 +132,12 @@ private theorem edge_insert_add
         (endoSlotZeroCcTensor (I := I) (M := M) g s B).toSection x from by
           rw [SmoothCcTensor.toSection_add]
           rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -160,8 +159,7 @@ private lemma edge_endo_id_zero (g : SmoothRiemannianMetric I M)
   rw [metricComparisonEndomorphismField_apply, metricComparisonEndomorphism_apply,
     inverseMetricSharpFib_g0FlatCLM, sub_self]
 
-omit [NeZero (Module.finrank Real E)] in
-set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 private lemma edge_cov_insert_id (g : SmoothRiemannianMetric I M) (s : Nat) :
     covGrad (I := I) (M := M) g (s + 1) (s + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g s
@@ -179,15 +177,17 @@ private lemma edge_cov_insert_id (g : SmoothRiemannianMetric I M) (s : Nat) :
   rw [tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g s
     (metricComparisonEndomorphismField (I := I) (M := M) g g) x (m 0)]
   rw [show ((endoCovariantDerivative (I := I) (M := M) g)
-        (metricComparisonEndomorphismField (I := I) (M := M) g g) x (m 0)) =
+        (metricComparisonEndomorphismField (I := I) (M := M) g g) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))) =
       (0 : TangentSpace I x →L[Real] TangentSpace I x) from by
     apply ContinuousLinearMap.ext
     intro w
-    rw [ContinuousLinearMap.zero_apply]
+    rw [zero_apply]
     obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at (I := I)
       (F := E) (V := fun y : M => TangentSpace I y) (n := (⊤ : ℕ∞)) x w
     rw [← hY]
-    exact edge_endo_id_zero (I := I) (M := M) g Y x (m 0)]
+    exact edge_endo_id_zero (I := I) (M := M) g Y x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
   rw [show slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (0 : TangentSpace I x →L[Real] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[Real] TangentSpace I x) =
@@ -196,8 +196,7 @@ private lemma edge_cov_insert_id (g : SmoothRiemannianMetric I M) (s : Nat) :
       slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
-omit [NeZero (Module.finrank Real E)] in
-set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 private theorem edge_cov_full_eq
     (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     covGrad (I := I) (M := M) g (s + 1) (s + 1)
@@ -210,6 +209,7 @@ private theorem edge_cov_full_eq
     edge_insert_add (I := I) (M := M) g s, covGrad_add,
     edge_cov_insert_id (I := I) (M := M) g s, add_zero]
 
+omit [SigmaCompactSpace M] in
 theorem fullMetricComparisonCoefficient_covariantDerivative_bound (g : SmoothRiemannianMetric I M) :
     ∃ A : Real, 0 ≤ A ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -234,7 +234,50 @@ theorem fullMetricComparisonCoefficient_covariantDerivative_bound (g : SmoothRie
   intro gm T htie delta hdelta hdelta0 hbound x
   rw [edge_cov_full_eq (I := I) (M := M) g gm 1]
   have h := hgrid gm T htie hdelta hdelta0 hbound 1 x
-  simpa [Finset.sum_range_succ, Finset.sum_range_one] using h
+  have hcongr {a b : ℕ} (hab : a = b) {Y : SmoothCcTensor g 0 a}
+      {Z : SmoothCcTensor g 0 b} (hYZ : HEq Y Z) :
+      riemannianFiberNormSq (I := I) (M := M) g 0 a x (Y.toSection x) =
+        riemannianFiberNormSq (I := I) (M := M) g 0 b x (Z.toSection x) := by
+    subst hab
+    rw [eq_of_heq hYZ]
+  have hone : (![1] : Fin 1 → ℕ) 0 = 1 := by rfl
+  have hindex {i j : ℕ} (hij : i = j) :
+      HEq (iteratedCovGrad (I := I) g 0 2 i T)
+        (iteratedCovGrad (I := I) g 0 2 j T) := by
+    subst hij
+    exact HEq.rfl
+  have hiter :
+      HEq (iteratedCovGrad (I := I) g 0 2 ((![1] : Fin 1 → ℕ) 0) T)
+        (covGrad (I := I) (M := M) g 0 2 T) := by
+    refine HEq.trans (hindex hone) (heq_of_eq ?_)
+    rw [iteratedCovGrad_succ, iteratedCovGrad_zero]
+  have hnorm :
+      riemannianFiberNormSq (I := I) (M := M) g 0
+          (2 + (![1] : Fin 1 → ℕ) 0) x
+          ((iteratedCovGrad (I := I) g 0 2 ((![1] : Fin 1 → ℕ) 0) T).toSection x) =
+        riemannianFiberNormSq (I := I) (M := M) g 0 3 x
+          ((covGrad (I := I) (M := M) g 0 2 T).toSection x) := by
+    exact hcongr (by omega) hiter
+  have hgridOne :
+      riemannianFiberNormSq (I := I) (M := M) g 0 3 x
+          ((covGrad (I := I) (M := M) g 0 2 T).toSection x) =
+        ∑ n ∈ Finset.range 2,
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n 1,
+            ∏ m : Fin n,
+              riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+                ((iteratedCovGrad (I := I) g 0 2 (e m) T).toSection x) := by
+    rw [Finset.sum_range_succ, Finset.sum_range_one]
+    rw [show Finset.Nat.antidiagonalTuple 0 1 = ∅ from
+      Finset.Nat.antidiagonalTuple_zero_succ 0]
+    rw [show Finset.Nat.antidiagonalTuple 1 1 = {![1]} from
+      Finset.Nat.antidiagonalTuple_one 1]
+    simp only [Finset.sum_empty, Finset.sum_singleton, zero_add]
+    rw [Fin.prod_univ_one, hnorm]
+  convert h using 1
+  · simp only [Nat.reduceAdd]
+    rw [iteratedCovGrad_succ, iteratedCovGrad_zero]
+  · simp only [Nat.reduceAdd, mul_eq_mul_left_iff]
+    exact Or.inl hgridOne
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
@@ -281,7 +324,7 @@ private lemma edge_app_le (g : SmoothRiemannianMetric I M)
   exact riemannianFiberNormSq_compRS_le_mul
     (I := I) (M := M) g 0 r s x (Phi.toSection x) (W.toSection x)
 
-omit [NeZero (Module.finrank Real E)] in
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 theorem slotInsertionCoefficient_norm_bound
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -328,6 +371,7 @@ theorem slotInsertionCoefficient_norm_bound
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 2 x _)
     _ = _ := by rw [hp']
 
+omit [SigmaCompactSpace M] in
 theorem slotInsertionCoefficient_covariantDerivative_bound (g : SmoothRiemannianMetric I M) :
     ∃ K : Real, 0 ≤ K ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -458,6 +502,7 @@ theorem slotInsertionCoefficient_covariantDerivative_bound (g : SmoothRiemannian
         _ = 2 * (A + F) * (X + Y) := by ring
     _ = _ := by rfl
 
+omit [SigmaCompactSpace M] in
 theorem metricComparisonRaiseCoefficient_iteratedCovGrad_bound (g : SmoothRiemannianMetric I M) :
     ∃ Z D : Real, 0 ≤ Z ∧ 0 ≤ D ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -607,6 +652,7 @@ theorem metricComparisonRaiseCoefficient_iteratedCovGrad_bound (g : SmoothRieman
       _ = D * T1 := by simp only [D]; ring
   exact ⟨hR0', by simpa only [T1] using hR1'⟩
 
+omit [SigmaCompactSpace M] in
 theorem metricComparisonRaiseCoefficient_bounds (g : SmoothRiemannianMetric I M) :
     ∃ Z D : Real, 0 ≤ Z ∧ 0 ≤ D ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -634,6 +680,7 @@ theorem metricComparisonRaiseCoefficient_bounds (g : SmoothRiemannianMetric I M)
   exact h gm T T hTsymm htie hdelta hdelta0 hbound hbound
     (fun _ => le_rfl) x
 
+omit [SigmaCompactSpace M] in
 private lemma edge_extend2_one (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 2 5 x
@@ -651,6 +698,7 @@ private lemma edge_extend2_one (g : SmoothRiemannianMetric I M)
   rw [riemannianFiberNormSq_covGrad_slotExtend_scale (I := I) (M := M) g 0 2 T x]
   ring
 
+omit [SigmaCompactSpace M] in
 theorem topOrderPairingAdjoint_iteratedCovGrad_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -783,6 +831,7 @@ theorem topOrderPairingAdjoint_iteratedCovGrad_bound (g : SmoothRiemannianMetric
     _ = C * delta ^ 2 * T1 := by simp only [C]; ring
     _ = _ := by rfl
 
+omit [SigmaCompactSpace M] in
 theorem topOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -857,6 +906,7 @@ theorem topOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetric I M) :
         riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (T.toSection x) := by simp only [C]; ring
 
+omit [SigmaCompactSpace M] in
 theorem topOrderPairingAdjoint_covariantDerivative_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -895,6 +945,7 @@ private lemma edge_bound_mono (g : SmoothRiemannianMetric I M)
     (mul_le_mul_of_nonneg_right hab (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _))
 
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -928,6 +979,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
     Icc_subset_metricPerturbationPathDomain hdelta_lt hdelta_lt hs
   let gm : SmoothRiemannianMetric I M :=
     metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s
+  have hgm : metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s = gm := rfl
   let P : SmoothCcTensor g 0 2 := s • T
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       gm.inner y v w = g.inner y v w +
@@ -1005,6 +1057,10 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
     let Q1 := topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 1)
     let Q2 := topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 2)
     let Q3 := topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 3)
+    have hQ0 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 0) = Q0 := rfl
+    have hQ1 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 1) = Q1 := rfl
+    have hQ2 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 2) = Q2 := rfl
+    have hQ3 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 3) = Q3 := rfl
     have h01 : N (Q0 + Q1) ≤ 4 * B := by
       calc
         N (Q0 + Q1) ≤ 2 * N Q0 + 2 * N Q1 := hNadd Q0 Q1
@@ -1029,14 +1085,15 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
         _ = 16 * B := by ring
     have heq : Q0 + Q1 - Q2 - Q3 = (Q0 + Q1) - (Q2 + Q3) := by abel
     rw [riemannTopOrderPairingAdjoint]
-    change N ((1 / 2 : Real) • (Q0 + Q1 - Q2 - Q3)) ≤ _
-    rw [hNsmul, heq]
+    rw [hQ0, hQ1, hQ2, hQ3, hNsmul, heq]
     norm_num
     linarith
   have hriem : N (riemannTopOrderPairingFamilyAdjoint (I := I) (M := M) g T hdelta hdeltaZ
       qA qB s) ≤ 4 * B := by
     let KA := riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qA
     let KB := riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qB
+    have hKA : riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qA = KA := rfl
+    have hKB : riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qB = KB := rfl
     have hab : N (KA + KB) ≤ 16 * B := by
       calc
         N (KA + KB) ≤ 2 * N KA + 2 * N KB := hNadd KA KB
@@ -1044,9 +1101,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
           (mul_le_mul_of_nonneg_left (hkernel qA) (by norm_num))
           (mul_le_mul_of_nonneg_left (hkernel qB) (by norm_num))
         _ = 16 * B := by ring
-    rw [riemannTopOrderPairingFamilyAdjoint]
-    change N (s • ((1 / 2 : Real) • (KA + KB))) ≤ _
-    rw [hNsmul, hNsmul]
+    rw [riemannTopOrderPairingFamilyAdjoint, hgm, hKA, hKB, hNsmul, hNsmul]
     norm_num
     nlinarith
   have hlieTerm : ∀ i : Fin 3,
@@ -1077,35 +1132,63 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
     nlinarith
   have hlie : N (deTurckLieTopOrderPairingAdjoint (I := I) (M := M) g T hdelta hdeltaZ
       q epsilon s) ≤ 10 * B := by
+    have hlieTermPath := hlieTerm
+    rw [← hgm] at hlieTermPath
     let L0 : SmoothCcTensor g 0 4 := epsilon 0 • ((1 / 2 : Real) •
-      (topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (q 0) +
-        topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T
+      (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 0) +
+        topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
           ((q 0).trans (Equiv.swap (0 : Fin 4) 1))))
     let L1 : SmoothCcTensor g 0 4 := epsilon 1 • ((1 / 2 : Real) •
-      (topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (q 1) +
-        topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T
+      (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 1) +
+        topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
           ((q 1).trans (Equiv.swap (0 : Fin 4) 1))))
     let L2 : SmoothCcTensor g 0 4 := epsilon 2 • ((1 / 2 : Real) •
-      (topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (q 2) +
-        topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T
+      (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 2) +
+        topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
           ((q 2).trans (Equiv.swap (0 : Fin 4) 1))))
+    have hL0 : epsilon 0 • ((1 / 2 : Real) •
+        (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 0) +
+          topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
+              ((q 0).trans (Equiv.swap (0 : Fin 4) 1)))) = L0 := by
+      rfl
+    have hL1 : epsilon 1 • ((1 / 2 : Real) •
+        (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 1) +
+          topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
+              ((q 1).trans (Equiv.swap (0 : Fin 4) 1)))) = L1 := by
+      rfl
+    have hL2 : epsilon 2 • ((1 / 2 : Real) •
+        (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 2) +
+          topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
+              ((q 2).trans (Equiv.swap (0 : Fin 4) 1)))) = L2 := by
+      rfl
     have h01 : N (L0 + L1) ≤ 4 * B := by
       calc
         N (L0 + L1) ≤ 2 * N L0 + 2 * N L1 := hNadd L0 L1
         _ ≤ 2 * B + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left (by simpa only [L0] using hlieTerm 0) (by norm_num))
-          (mul_le_mul_of_nonneg_left (by simpa only [L1] using hlieTerm 1) (by norm_num))
+          (mul_le_mul_of_nonneg_left (by simpa only [L0] using hlieTermPath 0) (by norm_num))
+          (mul_le_mul_of_nonneg_left (by simpa only [L1] using hlieTermPath 1) (by norm_num))
         _ = 4 * B := by ring
     have h012 : N (L0 + L1 + L2) ≤ 10 * B := by
       calc
         N (L0 + L1 + L2) ≤ 2 * N (L0 + L1) + 2 * N L2 := hNadd _ _
         _ ≤ 2 * (4 * B) + 2 * B := add_le_add
           (mul_le_mul_of_nonneg_left h01 (by norm_num))
-          (mul_le_mul_of_nonneg_left (by simpa only [L2] using hlieTerm 2) (by norm_num))
+          (mul_le_mul_of_nonneg_left (by simpa only [L2] using hlieTermPath 2) (by norm_num))
         _ = 10 * B := by ring
     rw [deTurckLieTopOrderPairingAdjoint, Fin.sum_univ_three]
-    change N (s • (L0 + L1 + L2)) ≤ _
-    rw [hNsmul]
+    rw [hL0, hL1, hL2, hNsmul]
     exact (mul_le_mul_of_nonneg_left h012 (sq_nonneg s)).trans (by
       nlinarith)
   have htop : N (ricciDeTurckTopOrderPairingAdjoint (I := I) (M := M) g T hdelta hdeltaZ
@@ -1128,6 +1211,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
       _ = 52 * B := by ring
   simpa only [N, B, C, T0, mul_assoc] using htop
 
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -1162,6 +1246,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
     Icc_subset_metricPerturbationPathDomain hdelta_lt hdelta_lt hs
   let gm : SmoothRiemannianMetric I M :=
     metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s
+  have hgm : metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s = gm := rfl
   let P : SmoothCcTensor g 0 2 := s • T
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       gm.inner y v w = g.inner y v w +
@@ -1241,6 +1326,10 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
     let Q1 := topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 1)
     let Q2 := topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 2)
     let Q3 := topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 3)
+    have hQ0 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 0) = Q0 := rfl
+    have hQ1 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 1) = Q1 := rfl
+    have hQ2 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 2) = Q2 := rfl
+    have hQ3 : topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (qq 3) = Q3 := rfl
     have h01 : N (Q0 + Q1) ≤ 4 * B := by
       calc
         N (Q0 + Q1) ≤ 2 * N Q0 + 2 * N Q1 := hNadd Q0 Q1
@@ -1265,14 +1354,15 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
         _ = 16 * B := by ring
     have heq : Q0 + Q1 - Q2 - Q3 = (Q0 + Q1) - (Q2 + Q3) := by abel
     rw [riemannTopOrderPairingAdjoint]
-    change N ((1 / 2 : Real) • (Q0 + Q1 - Q2 - Q3)) ≤ _
-    rw [hNsmul, heq]
+    rw [hQ0, hQ1, hQ2, hQ3, hNsmul, heq]
     norm_num
     linarith
   have hriem : N (riemannTopOrderPairingFamilyAdjoint (I := I) (M := M) g T hdelta hdeltaZ
       qA qB s) ≤ 4 * B := by
     let KA := riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qA
     let KB := riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qB
+    have hKA : riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qA = KA := rfl
+    have hKB : riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qB = KB := rfl
     have hab : N (KA + KB) ≤ 16 * B := by
       calc
         N (KA + KB) ≤ 2 * N KA + 2 * N KB := hNadd KA KB
@@ -1280,9 +1370,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
           (mul_le_mul_of_nonneg_left (hkernel qA) (by norm_num))
           (mul_le_mul_of_nonneg_left (hkernel qB) (by norm_num))
         _ = 16 * B := by ring
-    rw [riemannTopOrderPairingFamilyAdjoint]
-    change N (s • ((1 / 2 : Real) • (KA + KB))) ≤ _
-    rw [hNsmul, hNsmul]
+    rw [riemannTopOrderPairingFamilyAdjoint, hgm, hKA, hKB, hNsmul, hNsmul]
     norm_num
     nlinarith
   have hlieTerm : ∀ i : Fin 3,
@@ -1313,35 +1401,63 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
     nlinarith
   have hlie : N (deTurckLieTopOrderPairingAdjoint (I := I) (M := M) g T hdelta hdeltaZ
       q epsilon s) ≤ 10 * B := by
+    have hlieTermPath := hlieTerm
+    rw [← hgm] at hlieTermPath
     let L0 : SmoothCcTensor g 0 4 := epsilon 0 • ((1 / 2 : Real) •
-      (topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (q 0) +
-        topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T
+      (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 0) +
+        topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
           ((q 0).trans (Equiv.swap (0 : Fin 4) 1))))
     let L1 : SmoothCcTensor g 0 4 := epsilon 1 • ((1 / 2 : Real) •
-      (topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (q 1) +
-        topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T
+      (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 1) +
+        topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
           ((q 1).trans (Equiv.swap (0 : Fin 4) 1))))
     let L2 : SmoothCcTensor g 0 4 := epsilon 2 • ((1 / 2 : Real) •
-      (topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T (q 2) +
-        topOrderPairingAdjointCoefficient (I := I) (M := M) g gm T
+      (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 2) +
+        topOrderPairingAdjointCoefficient (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
           ((q 2).trans (Equiv.swap (0 : Fin 4) 1))))
+    have hL0 : epsilon 0 • ((1 / 2 : Real) •
+        (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 0) +
+          topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
+              ((q 0).trans (Equiv.swap (0 : Fin 4) 1)))) = L0 := by
+      rfl
+    have hL1 : epsilon 1 • ((1 / 2 : Real) •
+        (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 1) +
+          topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
+              ((q 1).trans (Equiv.swap (0 : Fin 4) 1)))) = L1 := by
+      rfl
+    have hL2 : epsilon 2 • ((1 / 2 : Real) •
+        (topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T (q 2) +
+          topOrderPairingAdjointCoefficient (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) T
+              ((q 2).trans (Equiv.swap (0 : Fin 4) 1)))) = L2 := by
+      rfl
     have h01 : N (L0 + L1) ≤ 4 * B := by
       calc
         N (L0 + L1) ≤ 2 * N L0 + 2 * N L1 := hNadd L0 L1
         _ ≤ 2 * B + 2 * B := add_le_add
-          (mul_le_mul_of_nonneg_left (by simpa only [L0] using hlieTerm 0) (by norm_num))
-          (mul_le_mul_of_nonneg_left (by simpa only [L1] using hlieTerm 1) (by norm_num))
+          (mul_le_mul_of_nonneg_left (by simpa only [L0] using hlieTermPath 0) (by norm_num))
+          (mul_le_mul_of_nonneg_left (by simpa only [L1] using hlieTermPath 1) (by norm_num))
         _ = 4 * B := by ring
     have h012 : N (L0 + L1 + L2) ≤ 10 * B := by
       calc
         N (L0 + L1 + L2) ≤ 2 * N (L0 + L1) + 2 * N L2 := hNadd _ _
         _ ≤ 2 * (4 * B) + 2 * B := add_le_add
           (mul_le_mul_of_nonneg_left h01 (by norm_num))
-          (mul_le_mul_of_nonneg_left (by simpa only [L2] using hlieTerm 2) (by norm_num))
+          (mul_le_mul_of_nonneg_left (by simpa only [L2] using hlieTermPath 2) (by norm_num))
         _ = 10 * B := by ring
     rw [deTurckLieTopOrderPairingAdjoint, Fin.sum_univ_three]
-    change N (s • (L0 + L1 + L2)) ≤ _
-    rw [hNsmul]
+    rw [hL0, hL1, hL2, hNsmul]
     exact (mul_le_mul_of_nonneg_left h012 (sq_nonneg s)).trans (by
       nlinarith)
   have htop : N (ricciDeTurckTopOrderPairingAdjoint (I := I) (M := M) g T hdelta hdeltaZ

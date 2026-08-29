@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -169,7 +168,7 @@ theorem tensorChartComp_eqOn_zero_of_wtwokTwoNorm_zero
       exact (Finset.sum_eq_zero_iff.mp hzero) 0 h0mem
     have hUniq : ∀ a : Fin 0 → Fin (Module.finrank ℝ E),
         a = (fun i : Fin 0 => i.elim0) := fun a => by funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
+    have : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun a => (hUniq a).symm ▸ rfl }
     rw [Fintype.sum_unique

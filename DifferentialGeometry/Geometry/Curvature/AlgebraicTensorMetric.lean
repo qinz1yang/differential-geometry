@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

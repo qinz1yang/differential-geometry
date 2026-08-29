@@ -8,7 +8,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffSlotIde
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -44,7 +43,8 @@ private local instance (x : M) :
     ContinuousAdd (TangentSpace I x →L[ℝ] TangentSpace I x) :=
   ContinuousLinearMap.topologicalAddGroup.toContinuousAdd
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private theorem app_sub_right
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W V : SmoothCcTensor g 0 r) :
@@ -73,7 +73,7 @@ noncomputable def lowerScaleDiff
   (lowerScaleActionCoefficients (I := I) (M := M) g g T hδ_lt hδT hδZ).firstOrderCoefficientDifference
     (lowerScaleActionCoefficients (I := I) (M := M) g g U hδ_lt hδU hδZ)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem rhsLow1_sub
     (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -125,6 +125,28 @@ noncomputable def firstOrderCoefficientDifference
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g g T 0 hδT hδZ)
       (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g g U 0 hδU hδZ))
 
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem firstOrderCoefficientDifference_toModel
+    (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδT : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g T) δ)
+    (hδU : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g U) δ)
+    (hδZ : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) (x : M) :
+    TensorRSSpace.toModel
+        ((firstOrderCoefficientDifference (I := I) (M := M)
+          g T U hδ_lt hδT hδU hδZ).toSection x) =
+      ∫ s in (0 : ℝ)..1, TensorRSSpace.toModel
+        ((ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+            g g T 0 hδT hδZ s -
+          ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+            g g U 0 hδU hδZ s).toSection x) := by
+  unfold firstOrderCoefficientDifference
+  exact pathIntegralCoeffField_toModel (I := I) (M := M) g 3 2 _ _ _ _ _ x
+
 theorem lowerScaleActionCoefficients_firstOrderCoefficient_sub
     (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
@@ -174,9 +196,13 @@ theorem lowerScaleActionCoefficients_firstOrderCoefficient_sub
           U 0 hδU hδZ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (hUcont.mono hSI).intervalIntegrable
-  simp only [lowerScaleActionCoefficients, ricciDeTurckRemainderFirstOrderPathIntegral, firstOrderCoefficientDifference,
-    pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
+  simp only [lowerScaleActionCoefficients, SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
+  rw [ricciDeTurckRemainderFirstOrderPathIntegral_toModel,
+    ricciDeTurckRemainderFirstOrderPathIntegral_toModel,
+    firstOrderCoefficientDifference_toModel]
+  simp only [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
+    TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hTint hUint]
 
 noncomputable def ricciDeTurckLowOrderDifference
@@ -208,6 +234,28 @@ noncomputable def ricciDeTurckLowOrderDifference
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g g U hδU hδZ))
 
+omit [SigmaCompactSpace M] in
+theorem ricciDeTurckLowOrderDifference_toModel
+    (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδT : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g T) δ)
+    (hδU : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g U) δ)
+    (hδZ : gFibreOpBound (I := I) (M := M) g
+      (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) (x : M) :
+    TensorRSSpace.toModel
+        ((ricciDeTurckLowOrderDifference (I := I) (M := M)
+          g T U hδ_lt hδT hδU hδZ).toSection x) =
+      ∫ s in (0 : ℝ)..1, TensorRSSpace.toModel
+        ((RicciDeTurckLowOrder.pathIntegrand (I := I) (M := M)
+            g g T hδT hδZ s -
+          RicciDeTurckLowOrder.pathIntegrand (I := I) (M := M)
+            g g U hδU hδZ s).toSection x) := by
+  unfold ricciDeTurckLowOrderDifference
+  exact pathIntegralCoeffField_toModel (I := I) (M := M) g 2 2 _ _ _ _ _ x
+
+omit [SigmaCompactSpace M] in
 private theorem selfLow_parts
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -333,10 +381,13 @@ theorem lowerScaleActionCoefficients_zeroOrderCoefficient_sub
             (I := I) (M := M) g g U hδU hδZ s).toSection x))
         MeasureTheory.volume 0 1 :=
       ((hUcont x).mono hSI).intervalIntegrable
-    simp only [RicciDeTurckLowOrder.selfLowInt, ricciDeTurckLowOrderDifference,
-      pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
-      ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
-    rw [intervalIntegral.integral_sub hTint hUint]
+    rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
+    refine (TensorRSSpace.toModel_sub _ _).trans ?_
+    rw [RicciDeTurckLowOrder.selfLowInt_toModel,
+      RicciDeTurckLowOrder.selfLowInt_toModel]
+    rw [← intervalIntegral.integral_sub hTint hUint]
+    exact (ricciDeTurckLowOrderDifference_toModel (I := I) (M := M)
+      g T U hδ_lt hδT hδU hδZ x).symm
   rw [RicciDeTurckLowOrder.zeroOrderCoefficient_eq, RicciDeTurckLowOrder.zeroOrderCoefficient_eq]
   calc
     (RicciDeTurckLowOrder.selfLowInt (I := I) (M := M)
@@ -408,6 +459,7 @@ theorem metricCorr_sub_h2
   rw [← metricLoweredConnectionDifferenceCorrection_sub (I := I) (M := M) g g₁ g_bg P Q]
   simpa only [covariantJetNormSq, Nat.reduceAdd] using hmul g₁ g_bg (P - Q)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem metricCorr_tel
@@ -421,7 +473,7 @@ theorem metricCorr_tel
   rw [metricLoweredConnectionDifferenceCorrection_sub (I := I) (M := M) g gT g_bg T U]
   abel
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem metricLoweredConnectionDifference_sub
     (g gT gU g_bg : SmoothRiemannianMetric I M) :
     metricLoweredConnectionDifference (I := I) (M := M) g gT g_bg -
@@ -431,7 +483,7 @@ theorem metricLoweredConnectionDifference_sub
   simp only [metricLoweredConnectionDifference]
   abel
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jet_nonneg_lip
     (g : SmoothRiemannianMetric I M) {r s m : ℕ}
@@ -439,6 +491,7 @@ private theorem jet_nonneg_lip
     0 ≤ covariantJetNormSq (I := I) (M := M) g m S :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_smul_lip
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -452,6 +505,7 @@ private theorem jet_smul_lip
   rw [iteratedCovGrad_smul, norm_smul, Real.norm_eq_abs,
     mul_pow, sq_abs]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_add_lip
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -577,7 +631,7 @@ theorem firstOrderCoefficientDifference_tame
           ccTensorBilin (I := I) g P x v u := by
       intro x u v
       simp only [P, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hT x u v
     have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -585,7 +639,7 @@ theorem firstOrderCoefficientDifference_tame
           ccTensorBilin (I := I) g Q x v u := by
       intro x u v
       simp only [Q, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
       apply congrArg (fun z : ℝ => s * z)
       simpa only [ccTensorBilin_apply] using hU x u v
     have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -1175,7 +1229,7 @@ theorem metricCorr_pair
       simp only [C]
       ring
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jet_mono_lip
     (g : SmoothRiemannianMetric I M) {r s m n : ℕ}
@@ -1187,6 +1241,7 @@ private theorem jet_mono_lip
     (Finset.range_subset_range.mpr (Nat.add_le_add_right hmn 1))
     (fun _ _ _ => sq_nonneg _)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_zero_lip
     (g : SmoothRiemannianMetric I M) (r s m : ℕ) :
@@ -1196,6 +1251,7 @@ private theorem iteratedCovGrad_zero_lip
   | zero => rw [iteratedCovGrad_zero]
   | succ m ih => rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jet_zero_lip
@@ -1215,9 +1271,13 @@ private theorem wXi_zero_lip
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g fun x => ?_
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [metricLoweredConnectionDifference_unitModel_apply]
+  have hm : m = fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) := by
+    funext i
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+  rw [hm, metricLoweredConnectionDifference_unitModel_apply]
   simp only [PDE.DeTurck.connectionDifference_self, Pi.zero_apply,
-    ContinuousLinearMap.zero_apply, map_zero]
+    zero_apply, map_zero]
   rfl
 
 theorem metricCorr_pair_h3
@@ -1778,7 +1838,7 @@ private theorem dom_sub_lip
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel]
   apply ContinuousMultilinearMap.ext
   intro v
-  simp only [ContinuousMultilinearMap.sub_apply,
+  simp only [sub_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
 
 private noncomputable def lipOmega
@@ -1790,7 +1850,7 @@ private noncomputable def lipOmega
       (metricLoweredConnectionDifferenceCoefficient (I := I) g gm))
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem lipOmega_tel
     (g gT gU : SmoothRiemannianMetric I M) :
     lipOmega (I := I) (M := M) g gT -
@@ -1944,7 +2004,7 @@ private theorem app_h21_mul_lip
       (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsq
     simpa only [covariantJetNormSq, Finset.sum_range_succ,
       Finset.sum_range_zero, zero_add, Nat.reduceAdd,
-      iteratedCovGrad_zero, iteratedCovGrad_succ] using hsq
+      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero] using hsq
   calc
     covariantJetNormSq (I := I) (M := M) g 1
         (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
@@ -1998,7 +2058,7 @@ private theorem app_h12_mul_lip
       (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsq
     simpa only [covariantJetNormSq, Finset.sum_range_succ,
       Finset.sum_range_zero, zero_add, Nat.reduceAdd,
-      iteratedCovGrad_zero, iteratedCovGrad_succ] using hsq
+      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero] using hsq
   calc
     covariantJetNormSq (I := I) (M := M) g 1
         (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
@@ -2400,7 +2460,7 @@ private theorem curvF_pair_h1
         covariantJetNormSq (I := I) (M := M) g 2 (T - U) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem quadB_tel
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticPairedTensor (I := I) (M := M) g gT -
@@ -2421,7 +2481,7 @@ private theorem quadB_tel
   module
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem quadA_tel
     (g gT gU : SmoothRiemannianMetric I M) :
     connectionDifferenceQuadraticComposedTensor (I := I) (M := M) g gT -
@@ -2514,6 +2574,7 @@ private theorem affine_pair_sq_le_weight_lip
         (mul_le_mul_of_nonneg_left hAD (by positivity))
     _ = (2 * b0 ^ 2 + 2 * b1 ^ 2) * (pl * u) := by ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_add_bound_step_lip
     (g : SmoothRiemannianMetric I M) (m : ℕ)
@@ -3089,6 +3150,7 @@ private theorem lcvPair_pair_h2
       conv_rhs => rw [mul_pow, hsq]
       ring
 
+omit [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_arm_le_lip
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
@@ -3759,6 +3821,7 @@ private theorem hat_bdd_h2
   rw [hat_eq_lip (I := I) (M := M) g gT]
   exact hbdd gT T hT hTtie hδ_le hδ0 hδT hδZ R A hR hA hT2 hT3
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 private theorem curvF_zero_lip
@@ -4069,7 +4132,7 @@ private theorem r4_bdd_h1
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -4172,7 +4235,7 @@ private theorem r4_bdd_h1
           rw [hBq2]
           ring
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem edgePair_eq_lip
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -4354,7 +4417,7 @@ private theorem covX_pair_h1
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -4362,7 +4425,7 @@ private theorem covX_pair_h1
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -5152,7 +5215,7 @@ private lemma vb_rank0_smul_lip (x : M) (c : Tensor0SSpace 0 I x) :
   apply ContinuousMultilinearMap.ext
   intro v
   beta_reduce
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
+  rw [Tensor0SSpace.toModel_smul, smul_apply,
     smul_eq_mul]
   have h1 : Tensor0SSpace.toModel
       (unitTensor (I := I) (M := M) x) v = (1 : ℝ) := rfl
@@ -5165,7 +5228,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma vbMcd_unit_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3
-        (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀) x m =
+        (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀) x
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (m 0) (m 1)) (m 2) := by
   rw [unitModel]
   rw [show (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x
@@ -5204,21 +5268,23 @@ private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
     B (u 0) (Fin.tail u)]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B (u 0) =
+  have hc : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)) =
       Tensor0SSpace.toModel B (fun _ : Fin 1 => u 0) •
         unitTensor (I := I) (M := M) x := by
     have h2 := vb_rank0_smul_lip (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B (u 0))
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
     rw [h2]
     congr 1
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
       (T := B) (v0 := u 0) (vs := fun i : Fin 0 => i.elim0)]
     congr 1
     funext k
     fin_cases k
     rfl
   rw [hc, ContinuousLinearMap.map_smul, Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
@@ -5226,7 +5292,13 @@ private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
       unitModel (I := I) (M := M) g₀ 3
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀) x
         (fun j => Fin.tail u j) from by rw [unitModel]]
-  rw [vbMcd_unit_lip (I := I) (M := M) g₀ g₁ x (fun j => Fin.tail u j)]
+  have hm : (fun j => Fin.tail u j) =
+      fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (Fin.tail u j)) := by
+    funext j
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+  rw [hm, vbMcd_unit_lip (I := I) (M := M) g₀ g₁ x
+    (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (Fin.tail u j))]
   have hcast : ((Fin.cons (u 0) (Fin.tail u) : Fin 4 → E) ∘
       Fin.castAdd 3) = (fun _ : Fin 1 => u 0) := by
     funext i
@@ -5631,69 +5703,6 @@ private theorem trace_pair_h2_bdd_lip
         (pureTrace (I := I) (M := M) g gQ p) ≤ Bp ^ 2 :=
   ⟨hbdd P gP hPtie hPn, hbdd Q gQ hQtie hQn⟩
 
-private noncomputable def vbPairH1AppOut
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h21_mul_lip (I := I) (M := M) hDim g 2 4 2
-
-private noncomputable def vbPairH1AppInOne
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h21_mul_lip (I := I) (M := M) hDim g 2 1 4
-
-private noncomputable def vbPairH1AppInCross
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h12_mul_lip (I := I) (M := M) hDim g 2 1 4
-
-private noncomputable def vbPairH1AppIpOne
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h21_mul_lip (I := I) (M := M) hDim g 2 3 1
-
-private noncomputable def vbPairH1AppIpTwo
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h2_mul_lip (I := I) (M := M) hDim g 2 3 1
-
-private noncomputable def vbPairH1AppWOne
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h21_mul_lip (I := I) (M := M) hDim g 0 3 1
-
-private noncomputable def vbPairH1AppWTwo
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  app_h2_mul_lip (I := I) (M := M) hDim g 0 3 1
-
-private noncomputable def vbPairH1TraceOnePair
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  RicciDeTurckLowOrder.trace1_pair_h2 (I := I) (M := M) hDim g
-
-private noncomputable def vbPairH1TraceOneBound
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  RicciDeTurckLowOrder.trace_one_sobolev_two_bound (I := I) (M := M) hDim g
-
-private noncomputable def vbPairH1TraceTwoPair
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  RicciDeTurckLowOrder.trace2_pair_h2 (I := I) (M := M) hDim g
-
-private noncomputable def vbPairH1TraceTwoBound
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  RicciDeTurckLowOrder.trace_two_sobolev_two_bound (I := I) (M := M) hDim g
-
-private noncomputable def vbPairH1McdPair
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  RicciDeTurckLowOrder.mcd_pair_h1 (I := I) (M := M) hDim g
-    (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
-
-private noncomputable def vbPairH1McdBound
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  RicciDeTurckLowOrder.metric_connection_difference_coefficient_sobolev_two_bound (I := I) (M := M) hDim g
-    (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
-
-private noncomputable def vbPairH1WxiPair
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  exists_metricLoweredConnectionDifference_covariantJetNormSq_one_sub_bound (I := I) (M := M) hDim g
-    (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
-
-private noncomputable def vbPairH1WxiBound
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  wXi_self_tame (I := I) (M := M) hDim g
-
 private theorem vb_pair_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -5730,26 +5739,31 @@ private theorem vb_pair_h1
             lieCorrectionZeroVectorBundle (I := I) (M := M) g
               (metricPerturbationPath (I := I) g U 0 hδU hδZ s)) ≤
         B R * ((1 + A + A ^ 2) ^ 4 * (D2 ^ 2 + N ^ 2)) := by
-  obtain ⟨Cout, hCout, happOut⟩ := vbPairH1AppOut (I := I) (M := M) hDim g
-  obtain ⟨Cin1, hCin1, happIn1⟩ := vbPairH1AppInOne (I := I) (M := M) hDim g
-  obtain ⟨Cin12, hCin12, happIn12⟩ := vbPairH1AppInCross (I := I) (M := M) hDim g
-  obtain ⟨Cip1, hCip1, happIp1⟩ := vbPairH1AppIpOne (I := I) (M := M) hDim g
-  obtain ⟨Cip2, hCip2, happIp2⟩ := vbPairH1AppIpTwo (I := I) (M := M) hDim g
-  obtain ⟨Cw1, hCw1, happW1⟩ := vbPairH1AppWOne (I := I) (M := M) hDim g
-  obtain ⟨Cw2, hCw2, happW2⟩ := vbPairH1AppWTwo (I := I) (M := M) hDim g
+  obtain ⟨Cout, hCout, happOut⟩ := app_h21_mul_lip (I := I) (M := M) hDim g 2 4 2
+  obtain ⟨Cin1, hCin1, happIn1⟩ := app_h21_mul_lip (I := I) (M := M) hDim g 2 1 4
+  obtain ⟨Cin12, hCin12, happIn12⟩ := app_h12_mul_lip (I := I) (M := M) hDim g 2 1 4
+  obtain ⟨Cip1, hCip1, happIp1⟩ := app_h21_mul_lip (I := I) (M := M) hDim g 2 3 1
+  obtain ⟨Cip2, hCip2, happIp2⟩ := app_h2_mul_lip (I := I) (M := M) hDim g 2 3 1
+  obtain ⟨Cw1, hCw1, happW1⟩ := app_h21_mul_lip (I := I) (M := M) hDim g 0 3 1
+  obtain ⟨Cw2, hCw2, happW2⟩ := app_h2_mul_lip (I := I) (M := M) hDim g 0 3 1
   obtain ⟨ρt1, Ct1, hρt1, hCt1, htp1⟩ :=
-    vbPairH1TraceOnePair (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace1_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb1, Bt1, hρb1, hBt1, htb1⟩ :=
-    vbPairH1TraceOneBound (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_one_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρt2, Ct2, hρt2, hCt2, htp2⟩ :=
-    vbPairH1TraceTwoPair (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace2_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb2, Bt2, hρb2, hBt2, htb2⟩ :=
-    vbPairH1TraceTwoBound (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_two_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨B0m, B1m, hB0m, hB1m, hmcdp⟩ :=
-    vbPairH1McdPair (I := I) (M := M) hDim g
-  obtain ⟨Bm, hBm, hmcdb⟩ := vbPairH1McdBound (I := I) (M := M) hDim g
-  obtain ⟨W0, W1, hW0, hW1, hwxip⟩ := vbPairH1WxiPair (I := I) (M := M) hDim g
-  obtain ⟨Bs, hBs, hwxib⟩ := vbPairH1WxiBound (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.mcd_pair_h1 (I := I) (M := M) hDim g
+      (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
+  obtain ⟨Bm, hBm, hmcdb⟩ :=
+    RicciDeTurckLowOrder.metric_connection_difference_coefficient_sobolev_two_bound
+      (I := I) (M := M) hDim g (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
+  obtain ⟨W0, W1, hW0, hW1, hwxip⟩ :=
+    exists_metricLoweredConnectionDifference_covariantJetNormSq_one_sub_bound
+      (I := I) (M := M) hDim g (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
+  obtain ⟨Bs, hBs, hwxib⟩ := wXi_self_tame (I := I) (M := M) hDim g
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfrdef
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
   set Jp : ℝ := covariantJetNormSq (I := I) (M := M) g 2 (ipLowCoeff (I := I) (M := M) g)
@@ -5831,7 +5845,7 @@ private theorem vb_pair_h1
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -5839,7 +5853,7 @@ private theorem vb_pair_h1
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -6301,7 +6315,7 @@ private theorem amixHalf_pair_h1
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -6309,7 +6323,7 @@ private theorem amixHalf_pair_h1
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -6958,6 +6972,7 @@ private theorem amix_pair_h1
     _ = 16 * Bh R * ((1 + A + A ^ 2) ^ 4 * (D2 ^ 2 + N ^ 2)) := by
       ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_sub_lip
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
@@ -6976,6 +6991,7 @@ private theorem jet_sub_lip
         covariantJetNormSq (I := I) (M := M) g m V) := by
       rw [jet_smul_lip]; ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem grad_l2_sq_lip
     (g : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -6992,6 +7008,7 @@ private theorem grad_l2_sq_lip
   exact riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
     (I := I) (M := M) g r s i S x
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem grad_h1_le_h2_lip
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -7008,6 +7025,7 @@ private theorem grad_h1_le_h2_lip
   nlinarith only [sq_nonneg ‖iteratedCovGrad (I := I) g r s 0 S‖,
     sq_nonneg ‖S‖]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem grad_h2_le_h3_lip
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -7025,7 +7043,8 @@ private theorem grad_h2_le_h3_lip
   nlinarith only [sq_nonneg ‖iteratedCovGrad (I := I) g r s 0 S‖,
     sq_nonneg ‖S‖]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+  [SigmaCompactSpace M] in
 private theorem ccSymm_sub_lip
     (g : SmoothRiemannianMetric I M) (C D : SmoothCcTensor g 2 2) :
     ccInputSlotSymm (I := I) (M := M) g C -
@@ -7495,7 +7514,7 @@ private theorem fourtrace_pair_h2
   linarith [hF]
 
 omit [BoundarylessManifold I M] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem decomposition_sub_lipschitz_bound
     (g : SmoothRiemannianMetric I M)
     (G H : SmoothCcTensor g 0 4) (σ : Equiv.Perm (Fin 4)) :
@@ -7808,10 +7827,9 @@ private noncomputable def aaBlk
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g gm) Z)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem aaKer_eq_lip (g gm : SmoothRiemannianMetric I M) :
-    ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm =
-      aaBlk (I := I) (M := M) g gm aaP3201
+private noncomputable def aaKerBlockSum
+    (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
+  aaBlk (I := I) (M := M) g gm aaP3201
           (aaInn (I := I) (M := M) g gm aaP102) +
         reindexCoeffGen (I := I) (M := M) g 2 4
           (aaBlk (I := I) (M := M) g gm aaP2301
@@ -7826,7 +7844,21 @@ private theorem aaKer_eq_lip (g gm : SmoothRiemannianMetric I M) :
           (connectionDifferenceContrInsertionInnerField (I := I) g gm) +
         reindexCoeffGen (I := I) (M := M) g 2 4
           (aaBlk (I := I) (M := M) g gm aaP2103
-            (aaInn (I := I) (M := M) g gm aaP120)) innerCoreInPerm10 :=
+            (aaInn (I := I) (M := M) g gm aaP120)) innerCoreInPerm10
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem aaKer_eq_lip (g gm : SmoothRiemannianMetric I M) :
+    ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm =
+      aaKerBlockSum (I := I) (M := M) g gm := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  apply Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro m
+  unfold ricciConnectionDifferenceQuadraticKernel aaKerBlockSum
   rfl
 
 private noncomputable def aaPK (g : SmoothRiemannianMetric I M) : ℝ :=
@@ -8255,6 +8287,7 @@ private theorem aaKer_bdd_h2
     intro X
     rw [covariantJetNormSq_reindexCoeffGen]
   rw [aaKer_eq_lip (I := I) (M := M) g gT]
+  unfold aaKerBlockSum
   set y0 := aaBlk (I := I) (M := M) g gT aaP3201
     (aaInn (I := I) (M := M) g gT aaP102) with hy0
   set y1 := reindexCoeffGen (I := I) (M := M) g 2 4
@@ -8598,6 +8631,7 @@ private theorem aaKer_pair_h1
     rw [← reindexCoeffGen_sub, covariantJetNormSq_reindexCoeffGen]
   rw [aaKer_eq_lip (I := I) (M := M) g gT,
     aaKer_eq_lip (I := I) (M := M) g gU]
+  unfold aaKerBlockSum
   set y0 := aaBlk (I := I) (M := M) g gT aaP3201
     (aaInn (I := I) (M := M) g gT aaP102) with hy0
   set y1 := reindexCoeffGen (I := I) (M := M) g 2 4
@@ -9312,7 +9346,7 @@ private theorem good_pair_h1
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -9320,7 +9354,7 @@ private theorem good_pair_h1
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -9465,6 +9499,7 @@ private theorem good_pair_h1
       simp only [B, hZ]
       ring
 
+omit [SigmaCompactSpace M] in
 private theorem selfLow_sub_parts
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -9838,6 +9873,7 @@ theorem zeroOrderCoefficientDifference_tame
     _ = Bs R * ((1 + A + A ^ 2) ^ 4 * (D2 ^ 2 + N ^ 2)) := by
       rw [hBsq, hXdef]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem grad_shift_lip
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2) :
@@ -10503,9 +10539,10 @@ theorem firstOrderAction_difference_sobolev_extensions_commute
   have hBW := congrArg (fun L => L W) hB
   simp only [ContinuousLinearMap.comp_apply] at hAW hBW
   simp only [ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.sub_apply, map_sub]
+    sub_apply, map_sub]
   rw [hAW, hBW]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem firstOrderAction_subtract
     (g : SmoothRiemannianMetric I M)

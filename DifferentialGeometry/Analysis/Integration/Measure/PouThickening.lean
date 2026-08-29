@@ -30,12 +30,11 @@ theorem chartAtlasPOU_exists_thickening_cutoff
   have hs_closed : IsClosed s := isClosed_tsupport _
   have hU_open : IsOpen U := (chartAt H α).open_source
   have hs_sub_U : s ⊆ U := chartAtlasPOU_isSubordinate (I := I) (M := M) α
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
-  haveI : ParacompactSpace M :=
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : ParacompactSpace M :=
     paracompact_of_locallyCompact_sigmaCompact (X := M)
-  haveI : T4Space M := T4Space.of_paracompactSpace_t2Space (X := M)
-  haveI : NormalSpace M := inferInstance
+  have : NormalSpace M := inferInstance
   obtain ⟨V, hV_open, hs_sub_V, hVcl_sub_U⟩ :=
     normal_exists_closure_subset (X := M) hs_closed hU_open hs_sub_U
   have hs_sub_int_V : s ⊆ interior V := by

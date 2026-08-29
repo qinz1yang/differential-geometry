@@ -33,7 +33,7 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -45,7 +45,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma isOpen_interior_M : IsOpen (I.interior M) :=
   I.isOpen_interior (M := M) (n := ∞)
     (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
@@ -58,7 +58,6 @@ noncomputable def chartBoundaryFaceIntegral
   ∫ x, localDivergenceWithin (I := I) g α X x * f x
     ∂(chartLocalMeasure (I := I) g α)
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma chartBoundaryFaceIntegral_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -67,7 +66,6 @@ omit [InnerProductSpace ℝ E] in
       ∫ x, localDivergenceWithin (I := I) g α X x * f x
         ∂(chartLocalMeasure (I := I) g α) := rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem chart_local_stokes_within
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -76,7 +74,6 @@ theorem chart_local_stokes_within
         ∂(chartLocalMeasure (I := I) g α) =
       chartBoundaryFaceIntegral (I := I) g α X f := rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem chartBoundaryFaceIntegral_zero_weight
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -87,7 +84,6 @@ theorem chartBoundaryFaceIntegral_zero_weight
     funext x; rw [mul_zero]
   rw [h, integral_zero]
 
-omit [InnerProductSpace ℝ E] in
 theorem chartBoundaryFaceIntegral_eq_neg_tangentSectionAction_of_interior_support
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -105,7 +101,7 @@ section StokesGlobal
 
 variable [hI : HasSmoothBoundary E H I]
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] hI in
+omit [Module.Finite ℝ E] hI in
 private lemma extChartAt_mem_frontier_range_of_mem_chartSource_inter_boundary
     (α : M) {x : M}
     (hx_chart : x ∈ (chartAt H α).source)
@@ -130,7 +126,7 @@ private lemma extChartAt_mem_frontier_range_of_mem_chartSource_inter_boundary
     exact hsubset hx_target
   have hx_closure : extChartAt I α x ∈ closure (Set.range I) :=
     subset_closure hx_inRange
-  rw [frontier, Set.mem_diff] at hC
+  rw [frontier, Set.mem_sdiff] at hC
   push Not at hC
   have hx_interior : extChartAt I α x ∈ interior (Set.range I) := hC hx_closure
   have hx_chartTarget : chartAt H α x ∈ (chartAt H α).target :=
@@ -143,7 +139,7 @@ private lemma extChartAt_mem_frontier_range_of_mem_chartSource_inter_boundary
         (s := (extChartAt I α).target)).le_bot
       ⟨hx_target_int, hx_frontier⟩
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] hI in
+omit [Module.Finite ℝ E] hI in
 private lemma symm_preimage_chart_boundary_inter_target_subset_frontier
     (α : M) :
     (extChartAt I α).symm ⁻¹' ((chartAt H α).source ∩ I.boundary M)
@@ -162,7 +158,6 @@ private lemma symm_preimage_chart_boundary_inter_target_subset_frontier
   rw [h_right] at h_front
   exact h_front
 
-omit [InnerProductSpace ℝ E] in
 lemma chartLocalMeasure_chart_boundary_zero
     (g : SmoothRiemannianMetric I M) (α : M) :
     chartLocalMeasure (I := I) g α
@@ -204,8 +199,8 @@ lemma chartLocalMeasure_chart_boundary_zero
       frontier (Set.range I) :=
     symm_preimage_chart_boundary_inter_target_subset_frontier (I := I) α
   have h_mh_zero : (modelHaar (E := E)) (frontier (Set.range I)) = 0 := by
-    letI : MeasurableSpace E := borel E
-    haveI : BorelSpace E := ⟨rfl⟩
+    let : MeasurableSpace E := borel E
+    have : BorelSpace E := ⟨rfl⟩
     have h_fb : ((Module.finBasis ℝ E).addHaar : MeasureTheory.Measure E)
         (frontier (Set.range I)) = 0 :=
       HasSmoothBoundary.range_frontier_basisAddHaar_volume_zero (I := I)
@@ -215,13 +210,12 @@ lemma chartLocalMeasure_chart_boundary_zero
     rw [h_eq, MeasureTheory.Measure.smul_apply, h_fb, smul_zero]
   exact MeasureTheory.measure_mono_null hsub h_mh_zero
 
-omit [InnerProductSpace ℝ E] in
 private lemma divergence_g_with_boundary_eq_localDivergenceWithin_ae_chartLocal
     [T2Space M] (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ᵐ x ∂(chartLocalMeasure (I := I) g α),
       x ∈ (chartAt H α).source →
-        divergence_g_with_boundary (I := I) g X x =
+        divergenceGWithBoundary (I := I) g X x =
           localDivergenceWithin (I := I) g α X x := by
   set bad : Set M := (chartAt H α).source ∩ I.boundary M with hbad_def
   have h_bad_measzero :
@@ -241,12 +235,11 @@ private lemma divergence_g_with_boundary_eq_localDivergenceWithin_ae_chartLocal
     rw [← I.compl_interior]
     exact hx_int
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartLocal_integral_divergence_eq_localDivergenceWithin
     [T2Space M] (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {ρ : M → ℝ} (hρ_supp_chart : tsupport ρ ⊆ (chartAt H α).source) :
-    ∫ x, divergence_g_with_boundary (I := I) g X x * ρ x
+    ∫ x, divergenceGWithBoundary (I := I) g X x * ρ x
         ∂(chartLocalMeasure (I := I) g α) =
       ∫ x, localDivergenceWithin (I := I) g α X x * ρ x
         ∂(chartLocalMeasure (I := I) g α) := by
@@ -262,9 +255,8 @@ private lemma chartLocal_integral_divergence_eq_localDivergenceWithin
       exact hx_nots (subset_tsupport _ hne)
     rw [hρ_zero, mul_zero, mul_zero]
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartLocalMeasure_boundary_zero_of_total
-    [T2Space M] (g : SmoothRiemannianMetric I M) (α : M) :
+    (g : SmoothRiemannianMetric I M) (α : M) :
     chartLocalMeasure (I := I) g α (I.boundary M) = 0 := by
   classical
   have hsplit : I.boundary M
@@ -278,7 +270,7 @@ private lemma chartLocalMeasure_boundary_zero_of_total
       · exact Or.inr ⟨hx, hxα⟩
     · rintro (⟨_, hx⟩ | ⟨hx, _⟩) <;> exact hx
   rw [hsplit]
-  refine le_antisymm ?_ (zero_le _)
+  refine le_antisymm ?_ bot_le
   refine (MeasureTheory.measure_union_le _ _).trans ?_
   have hbdy_meas : MeasurableSet (I.boundary M) := by
     rw [← I.compl_interior]
@@ -292,7 +284,7 @@ private lemma chartLocalMeasure_boundary_zero_of_total
       chartLocalMeasure_apply_of_disjoint_source (I := I) g α hdiff_meas hdiff_disj]
   simp
 
-omit [InnerProductSpace ℝ E] hI in
+omit hI in
 private lemma integrable_chartLocalMeasure_of_cs_chartSource
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -333,19 +325,18 @@ private lemma integrable_chartLocalMeasure_of_cs_chartSource
           simp
     _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
 
-omit [InnerProductSpace ℝ E] in
 theorem stokes_compact_via_pou
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∫ x, divergence_g_with_boundary (I := I) g X x
+    ∫ x, divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         chartBoundaryFaceIntegral (I := I) g α X
           ((chartAtlasPOU I M) α) := by
   classical
   set ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) :=
     chartAtlasPOU_isSubordinate I M
   have hsupp_each : ∀ α : M, tsupport ((ρ α : M → ℝ)) ⊆ (chartAt H α).source := by
@@ -405,7 +396,7 @@ theorem stokes_compact_via_pou
         ∫ x, localDivergenceWithin (I := I) g α X x * (ρ α : M → ℝ) x
           ∂(chartLocalMeasure (I := I) g α) := fun α => rfl
   have hae_eq : ∀ α : M,
-      (fun x : M => divergence_g_with_boundary (I := I) g X x * (ρ α : M → ℝ) x)
+      (fun x : M => divergenceGWithBoundary (I := I) g X x * (ρ α : M → ℝ) x)
         =ᵐ[chartLocalMeasure (I := I) g α]
       (fun x : M => localDivergenceWithin (I := I) g α X x * (ρ α : M → ℝ) x) := by
     intro α
@@ -421,11 +412,11 @@ theorem stokes_compact_via_pou
       rw [hρ_zero, mul_zero, mul_zero]
   have hglob_int : ∀ α : M,
       Integrable
-        (fun x : M => divergence_g_with_boundary (I := I) g X x * (ρ α : M → ℝ) x)
+        (fun x : M => divergenceGWithBoundary (I := I) g X x * (ρ α : M → ℝ) x)
         (chartLocalMeasure (I := I) g α) :=
     fun α => (hloc_int α).congr (hae_eq α).symm
   rw [riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g]
-  rw [MeasureTheory.integral_finset_sum_measure (s := S)
+  rw [MeasureTheory.integral_finsetSum_measure (s := S)
         (μ := fun α : M => (chartLocalMeasure (I := I) g α).withDensity
           (fun y : M => ENNReal.ofReal ((ρ α : M → ℝ) y)))
         (fun α _ => ?_)]
@@ -437,18 +428,18 @@ theorem stokes_compact_via_pou
       ((ENNReal.measurable_ofReal.comp
         (ρ α).contMDiff.continuous.measurable).aemeasurable)
       (Filter.Eventually.of_forall (fun _ => by simp))
-      (g := fun x : M => divergence_g_with_boundary (I := I) g X x)]
+      (g := fun x : M => divergenceGWithBoundary (I := I) g X x)]
     have hρα_nonneg : ∀ x : M, 0 ≤ (ρ α : M → ℝ) x :=
       fun x => ρ.nonneg α x
     have hsmul : ∀ x : M,
         (ENNReal.ofReal ((ρ α : M → ℝ) x)).toReal •
-          divergence_g_with_boundary (I := I) g X x =
-        divergence_g_with_boundary (I := I) g X x * (ρ α : M → ℝ) x := by
+          divergenceGWithBoundary (I := I) g X x =
+        divergenceGWithBoundary (I := I) g X x * (ρ α : M → ℝ) x := by
       intro x
       rw [ENNReal.toReal_ofReal (hρα_nonneg x), smul_eq_mul, mul_comm]
     rw [show (fun x : M => (ENNReal.ofReal ((ρ α : M → ℝ) x)).toReal •
-                divergence_g_with_boundary (I := I) g X x)
-          = fun x : M => divergence_g_with_boundary (I := I) g X x *
+                divergenceGWithBoundary (I := I) g X x)
+          = fun x : M => divergenceGWithBoundary (I := I) g X x *
               (ρ α : M → ℝ) x from
           funext hsmul]
     rw [MeasureTheory.integral_congr_ae (hae_eq α)]
@@ -463,14 +454,14 @@ theorem stokes_compact_via_pou
     have hρα_nonneg : ∀ x : M, 0 ≤ (ρ α : M → ℝ) x :=
       fun x => ρ.nonneg α x
     have hsmul_eq : (fun x : M => (ENNReal.ofReal ((ρ α : M → ℝ) x)).toReal •
-                divergence_g_with_boundary (I := I) g X x)
-          = fun x : M => divergence_g_with_boundary (I := I) g X x *
+                divergenceGWithBoundary (I := I) g X x)
+          = fun x : M => divergenceGWithBoundary (I := I) g X x *
               (ρ α : M → ℝ) x := by
       funext x
       rw [ENNReal.toReal_ofReal (hρα_nonneg x), smul_eq_mul, mul_comm]
     refine (integrable_withDensity_iff_integrable_smul₀'
       hρα_aemeas hρα_lt_top
-      (g := fun x : M => divergence_g_with_boundary (I := I) g X x)).mpr ?_
+      (g := fun x : M => divergenceGWithBoundary (I := I) g X x)).mpr ?_
     rw [hsmul_eq]
     exact hglob_int α
 

@@ -47,8 +47,11 @@ theorem IsSmoothTestOn.smul
     IsSmoothTestOn Ω (fun x => c * u x) := by
   refine ⟨?_, ?_, ?_⟩
   · simpa [smul_eq_mul] using (contDiff_const.mul hu.1)
-  · simpa [Pi.smul_apply, smul_eq_mul] using
-      (hu.2.1.smul_left (f := fun _ : E => c))
+  · have hfun : (fun x : E ↦ c * u x) = (fun _ : E ↦ c) * u := by
+      funext x
+      rfl
+    rw [hfun]
+    exact hu.2.1.mul_left
   · simpa [Pi.smul_apply, smul_eq_mul] using
       (tsupport_smul_subset_right (fun _ : E => c) u).trans hu.2.2
 
@@ -86,7 +89,8 @@ theorem smoothGradField_add
     (hu.contDiffAt).differentiableAt (by norm_num)
   have hv_diff : DifferentiableAt ℝ v x :=
     (hv.contDiffAt).differentiableAt (by norm_num)
-  simpa [smoothGradField, PiLp.toLp_apply] using
+  change (fderiv ℝ (u + v) x) (EuclideanSpace.single i 1) = _
+  exact
     congrArg (fun L : E →L[ℝ] ℝ => L (EuclideanSpace.single i 1))
       (fderiv_add hu_diff hv_diff)
 
@@ -97,7 +101,8 @@ theorem smoothGradField_smul
       fun x => c • smoothGradField u x := by
   ext x i
   have hfd : fderiv ℝ (fun y => c * u y) x = c • fderiv ℝ u x := by
-    simpa [smul_eq_mul] using congrFun (fderiv_const_smul_field (𝕜 := ℝ) (f := u) c) x
+    change fderiv ℝ (c • u) x = c • fderiv ℝ u x
+    exact congrFun (fderiv_const_smul_field (𝕜 := ℝ) (f := u) c) x
   simpa [smoothGradField, PiLp.toLp_apply] using
     congrArg (fun L : E →L[ℝ] ℝ => L (EuclideanSpace.single i 1)) hfd
 
@@ -172,7 +177,12 @@ theorem smoothFunToLp_add
   let hvLp := (smoothTestWitness hΩ hv).memLp
   let huvLp := (smoothTestWitness hΩ (hu.add hv)).memLp
   change huvLp.toLp (fun x => u x + v x) = huLp.toLp u + hvLp.toLp v
-  simpa using (MemLp.toLp_add huLp hvLp).symm
+  calc
+    huvLp.toLp (fun x ↦ u x + v x) =
+        (huLp.add hvLp).toLp (u + v) :=
+      MemLp.toLp_congr huvLp (huLp.add hvLp)
+        (Filter.Eventually.of_forall fun _ ↦ rfl)
+    _ = huLp.toLp u + hvLp.toLp v := MemLp.toLp_add huLp hvLp
 
 theorem smoothFunToLp_smul
     {Ω : Set E} (hΩ : IsOpen Ω) (c : ℝ) {u : E → ℝ}
@@ -182,13 +192,28 @@ theorem smoothFunToLp_smul
   let huLp := (smoothTestWitness hΩ hu).memLp
   let hcuLp := (smoothTestWitness hΩ (hu.smul c)).memLp
   change hcuLp.toLp (fun x => c * u x) = c • huLp.toLp u
-  simpa [Pi.smul_apply, smul_eq_mul] using (MemLp.toLp_const_smul c huLp).symm
+  calc
+    hcuLp.toLp (fun x ↦ c * u x) =
+        (huLp.const_smul c).toLp (c • u) :=
+      MemLp.toLp_congr hcuLp (huLp.const_smul c)
+        (Filter.Eventually.of_forall fun _ ↦ rfl)
+    _ = c • huLp.toLp u := MemLp.toLp_const_smul c huLp
 
 theorem smoothFunToLp_sub
     {Ω : Set E} (hΩ : IsOpen Ω) {u v : E → ℝ}
     (hu : IsSmoothTestOn Ω u) (hv : IsSmoothTestOn Ω v) :
     smoothFunToLp hΩ (hu.sub hv) = smoothFunToLp hΩ hu - smoothFunToLp hΩ hv := by
-  simpa [sub_eq_add_neg] using smoothFunToLp_add hΩ hu (hv.smul (-1))
+  let _ := (inferInstance : NeZero d)
+  let huLp := (smoothTestWitness hΩ hu).memLp
+  let hvLp := (smoothTestWitness hΩ hv).memLp
+  let huvLp := (smoothTestWitness hΩ (hu.sub hv)).memLp
+  change huvLp.toLp (fun x ↦ u x - v x) = huLp.toLp u - hvLp.toLp v
+  calc
+    huvLp.toLp (fun x ↦ u x - v x) =
+        (huLp.sub hvLp).toLp (u - v) :=
+      MemLp.toLp_congr huvLp (huLp.sub hvLp)
+        (Filter.Eventually.of_forall fun _ ↦ rfl)
+    _ = huLp.toLp u - hvLp.toLp v := MemLp.toLp_sub huLp hvLp
 
 /-- Norm of the `L²` class carried by a smooth test function. -/
 theorem norm_smoothFunToLp_eq
@@ -240,11 +265,13 @@ theorem smoothGradToLp_add
         (hgu.add hgv).toLp (fun x => smoothGradField u x + smoothGradField v x) :=
     MemLp.toLp_congr hguv (hgu.add hgv) <|
       Filter.Eventually.of_forall fun x => by
-        simpa using congrFun (smoothGradField_add hu.1 hv.1) x
+        change smoothGradField (fun y ↦ u y + v y) x =
+          smoothGradField u x + smoothGradField v x
+        exact congrFun (smoothGradField_add hu.1 hv.1) x
   change hguv.toLp (smoothGradField (fun x => u x + v x)) =
       hgu.toLp (smoothGradField u) + hgv.toLp (smoothGradField v)
   rw [hcongr]
-  simpa using (MemLp.toLp_add hgu hgv)
+  exact MemLp.toLp_add hgu hgv
 
 theorem smoothGradToLp_smul
     {Ω : Set E} (hΩ : IsOpen Ω) (c : ℝ) {u : E → ℝ}
@@ -258,10 +285,11 @@ theorem smoothGradToLp_smul
         (hgu.const_smul c).toLp (c • fun x => smoothGradField u x) :=
     MemLp.toLp_congr hgcu (hgu.const_smul c) <|
       Filter.Eventually.of_forall fun x => by
-        simpa using congrFun (smoothGradField_smul c (u := u)) x
+        change smoothGradField (fun y ↦ c * u y) x = c • smoothGradField u x
+        exact congrFun (smoothGradField_smul c (u := u)) x
   change hgcu.toLp (smoothGradField (fun x => c * u x)) = c • hgu.toLp (smoothGradField u)
   rw [hcongr]
-  simpa using (MemLp.toLp_const_smul c hgu)
+  exact MemLp.toLp_const_smul c hgu
 
 theorem smoothGradToLp_sub
     {Ω : Set E} (hΩ : IsOpen Ω) {u v : E → ℝ}
@@ -281,6 +309,9 @@ theorem norm_smoothGradToLp_eq
     (hu : IsSmoothTestOn Ω u) :
     ‖smoothGradToLp hΩ hu‖ =
       (∫ x, ‖smoothGradField u x‖ ^ (2 : ℝ) ∂(volume.restrict Ω)) ^ (1 / (2 : ℝ)) := by
-  simpa [smoothGradToLp] using norm_gradLpOfWitness_eq (smoothTestWitness hΩ hu)
+  change ‖gradLpOfWitness (smoothTestWitness hΩ hu)‖ =
+    (∫ x, ‖(smoothTestWitness hΩ hu).weakGrad x‖ ^ (2 : ℝ)
+      ∂(volume.restrict Ω)) ^ (1 / (2 : ℝ))
+  exact norm_gradLpOfWitness_eq (smoothTestWitness hΩ hu)
 
 end DeGiorgi

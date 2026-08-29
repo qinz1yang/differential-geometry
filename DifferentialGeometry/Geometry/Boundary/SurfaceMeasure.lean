@@ -88,9 +88,9 @@ theorem surfaceMeasure_eq_zero_of_boundaryless
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     surfaceMeasure (I := I) (M := M) g = 0 := by
-  haveI : IsEmpty hI.boundaryH :=
+  have : IsEmpty hI.boundaryH :=
     HasSmoothBoundary.boundaryH_isEmpty_of_boundaryless I
-  haveI : IsEmpty (BoundaryManifold I M) :=
+  have : IsEmpty (BoundaryManifold I M) :=
     BoundaryManifold.isEmpty_of_isEmpty_boundaryH (I := I)
   exact MeasureTheory.Measure.eq_zero_of_isEmpty _
 

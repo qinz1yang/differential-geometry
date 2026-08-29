@@ -49,7 +49,7 @@ theorem aestronglyMeasurable_unitBallExtension_of_memLp
     have hSph : ∀ᵐ x ∂(volume : Measure E), x ∉ Metric.sphere (0 : E) 1 := by
       have h0 : (volume : Measure E) (Metric.sphere (0 : E) 1) = 0 :=
         MeasureTheory.Measure.addHaar_sphere _ _ _
-      exact ae_iff.mpr (by convert h0 using 1; simp only [not_not, Set.setOf_mem_eq])
+      exact ae_iff.mpr (by convert h0 using 1; simp only [not_not, Set.ofPred_mem_eq])
     -- This follows from inversion being a smooth diffeomorphism (Lipschitz on compact subsets).
     have hAnn : ∀ᵐ x ∂(volume : Measure E),
         1 < ‖x‖ → ‖x‖ < 2 →
@@ -92,7 +92,7 @@ theorem aestronglyMeasurable_unitBallExtension_of_memLp
       have hbadOuter_zero : (volume : Measure E) badOuter = 0 := by
         exact measure_mono_null hbadOuter_subset himage_badInner_zero
       have hbadOuter_ae : ∀ᵐ x ∂(volume : Measure E), x ∉ badOuter := by
-        exact ae_iff.mpr (by simpa [badOuter, Set.setOf_mem_eq] using hbadOuter_zero)
+        exact ae_iff.mpr (by simpa [badOuter, Set.ofPred_mem_eq] using hbadOuter_zero)
       filter_upwards [hbadOuter_ae] with x hxBad
       intro hx1 hx2
       by_contra hneq

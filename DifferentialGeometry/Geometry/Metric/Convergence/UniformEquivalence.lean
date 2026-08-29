@@ -46,7 +46,7 @@ theorem covNorm0_le [IsManifold I 1 M]
   have hcomp := sqrt_normSq0S_le_of_metric_equiv
     (I := I) (g := h) (h := gRef) x 2 hC1 hpair (metricTensor0S (I := I) h x)
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) h x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) h x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) h x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) h basis hON
@@ -58,7 +58,8 @@ theorem covNorm0_le [IsManifold I 1 M]
     have hcard := normSq0S_metricTensor0S_eq_card (I := I) h basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) hinv
-    simpa using hcard
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl] at hcard
+    simpa only [Fintype.card_fin] using hcard
   have hcov :
       metricCovDerivNorm (I := I) 0 h gRef x =
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x 2
@@ -127,9 +128,9 @@ theorem metricQuadFormDiff_le_metricDerivNorm
     |gk.inner x v v - gInf.inner x v v|
       <= (Module.finrank Real (TangentSpace I x) : Real)
           * metricDerivNorm (I := I) 0 gk gInf gRef x * gRef.inner x v v := by
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M; infer_instance
   have heval :
       metricDiffCovDerivAt (I := I) 0 gk gInf gRef x
@@ -185,9 +186,9 @@ theorem metricDiffCovDerivAt_zero_apply
     metricDiffCovDerivAt (I := I) 0 gk gInf gRef x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) a b)
       = gk.inner x a b - gInf.inner x a b := by
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M; infer_instance
   change (metricCovDeriv (I := I) gk gRef 0 x - metricCovDeriv (I := I) gInf gRef 0 x)
       (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) a b) = _
@@ -288,7 +289,7 @@ theorem metricDerivNorm_le_of_equiv
   set nE : ℕ := Module.finrank Real (TangentSpace I y) with hnE
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) gInf y
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gInf y basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gInf y basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I y)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal

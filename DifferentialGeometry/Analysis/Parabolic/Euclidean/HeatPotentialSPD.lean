@@ -117,17 +117,27 @@ theorem spdHeatSource_parabolic_holder
     (A : Matrix n n Real) (hA : A.PosDef)
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space))) :
     HolderWith (spdSourceHolderConst A hA alpha K) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => spdHeatSource A hA f p.time p.space)) := by
   have h := parabolicHolder_linearMap
     (spdSqrtEquiv A hA : Euc n →L[Real] Euc n) hsource
-  simpa only [spdSourceHolderConst,
-    parabolicLinearPreimage_cylinder_univ, spdHeatSource,
-    linPullBcf_apply, Function.comp_apply, parabolicLinearMap_time,
-    parabolicLinearMap_space] using h
+  rw [HolderWith.restrict_iff] at h ⊢
+  intro p hp q hq
+  have hp' : p ∈ parabolicLinearPreimage
+      (spdSqrtEquiv A hA : Euc n →L[Real] Euc n)
+      (parabolicCylinder (Icc (0 : Real) S) Set.univ) := by
+    simpa only [parabolicLinearPreimage_cylinder_univ] using hp
+  have hq' : q ∈ parabolicLinearPreimage
+      (spdSqrtEquiv A hA : Euc n →L[Real] Euc n)
+      (parabolicCylinder (Icc (0 : Real) S) Set.univ) := by
+    simpa only [parabolicLinearPreimage_cylinder_univ] using hq
+  change edist
+      ((f p.time) ((spdSqrtEquiv A hA : Euc n →L[Real] Euc n) p.space))
+      ((f q.time) ((spdSqrtEquiv A hA : Euc n →L[Real] Euc n) q.space)) ≤ _
+  exact h p hp' q hq'
 
 theorem spdHeatDuh_schauder_estimate
     {alpha K B : NNReal}
@@ -137,7 +147,7 @@ theorem spdHeatDuh_schauder_estimate
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space))) :
     eSpdParabolicC2HolderGaugeOn A hA alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
@@ -164,7 +174,7 @@ theorem spdHeatDuh_schauder_estimate_euclidean
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
@@ -186,7 +196,7 @@ theorem spdHeatDuh_matrixLap
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (x : Euc n) :
     matrixLap A (spdHeatDuhHessian A hA t f x) =
@@ -243,7 +253,7 @@ theorem spdHeatDuh_pde
     (f : Real → BoundedContinuousFunction (Euc n) F)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (x : Euc n) :
     HasFDerivAt (spdHeatDuh A hA t f)
@@ -254,6 +264,12 @@ theorem spdHeatDuh_pde
         (matrixLap A (spdHeatDuhHessian A hA t f x) + f t x) t := by
   let L := spdSqrtEquiv A hA
   let fp := spdHeatSource A hA f
+  let LinvLinear : Euc n →ₗ[Real] Euc n :=
+    { toFun := fun y => L.symm y
+      map_add' := fun y z => L.symm.map_add y z
+      map_smul' := fun c y => L.symm.map_smul c y }
+  let Linv : Euc n →L[Real] Euc n :=
+    LinearMap.toContinuousLinearMap LinvLinear
   have ht' : t ∈ Ioc (0 : Real) S := ⟨ht.1, ht.2.le⟩
   have hbound' : ∀ s ∈ Icc (0 : Real) t, ‖fp s‖ ≤ B := by
     intro s hs
@@ -285,14 +301,14 @@ theorem spdHeatDuh_pde
       (volume.restrict (uIoc (0 : Real) t)) := fun z =>
     heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
       halpha0 ht' fp hsource' z
-  have hv := (heatDuh_hasFDerivAt ht.1 fp hbound' hm0 hm1 (L.symm x)).comp
-    x L.symm.hasFDerivAt
+  have hv := (heatDuh_hasFDerivAt ht.1 fp hbound' hm0 hm1 (Linv x)).comp
+    x Linv.hasFDerivAt
   have hg0 := heatDuhGradientMap_hasFDerivAt halpha0 halpha1.le ht.1 fp
-    hbound' hf' hm1 hm2 (L.symm x)
-  have hg1 := hg0.comp x L.symm.hasFDerivAt
+    hbound' hf' hm1 hm2 (Linv x)
+  have hg1 := hg0.comp x Linv.hasFDerivAt
   have hg := (precompJet (F := F) L.symm).hasFDerivAt.comp x hg1
   have hsourceOpen : HolderWith (spdSourceHolderConst A hA alpha K) alpha
-      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Ioc (0 : Real) S) Set.univ).domRestrict
         (fun p => fp p.time p.space)) := by
     rw [HolderWith.restrict_iff] at hsource' ⊢
     exact hsource'.mono fun p hp => ⟨⟨hp.1.1.le, hp.1.2⟩, hp.2⟩
@@ -306,10 +322,22 @@ theorem spdHeatDuh_pde
   have hlap := spdHeatDuh_matrixLap halpha0 halpha1.le ht' A hA f
     hbound hsource x
   refine ⟨?_, ?_, ?_⟩
-  · simpa only [spdHeatDuh, spdHeatDuhGradient, L, Function.comp_apply,
-      ContinuousLinearMap.comp_apply] using hv
-  · simpa only [spdHeatDuhGradient, spdHeatDuhHessian, L,
-      Function.comp_apply, ContinuousLinearMap.comp_apply] using hg
+  · have hv' := hv.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun y => by
+        change spdHeatDuh A hA t f y = heatDuh t fp (Linv y)
+        rfl)
+    refine hv'.congr_fderiv ?_
+    ext v
+    rfl
+  · have hg' := hg.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun y => by
+        change spdHeatDuhGradient A hA t f y =
+          precompJet (F := F) L.symm (heatDuhGradientMap t fp (Linv y))
+        ext v
+        rfl)
+    refine hg'.congr_fderiv ?_
+    ext v w
+    rfl
   · rw [hlap]
     simpa only [spdHeatDuh, fp, spdHeatSource, linPullBcf_apply,
       heatDuhTimeCandidateField, heatDuhTimeCandidate, parabolicPoint_time,

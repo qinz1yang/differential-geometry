@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -85,26 +87,38 @@ theorem metricRm04StdAt_restrictOpen
     (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
     [IsManifold I 1 U] (x : U) (X Y Z W : TangentSpace I x) :
     metricRm04StdAt (I := I) (M := U) (g.restrictOpen (I := I) U) x X Y Z W =
-      metricRm04StdAt (I := I) (M := M) g (x : M) X Y Z W := by
+      metricRm04StdAt (I := I) (M := M) g (x : M)
+        (mfderiv I I (Subtype.val : U → M) x X)
+        (mfderiv I I (Subtype.val : U → M) x Y)
+        (mfderiv I I (Subtype.val : U → M) x Z)
+        (mfderiv I I (Subtype.val : U → M) x W) := by
   obtain ⟨Xs, hXs⟩ :=
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
-      (n := (⊤ : ℕ∞)) (x : M) X
+      (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x X)
   obtain ⟨Ys, hYs⟩ :=
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
-      (n := (⊤ : ℕ∞)) (x : M) Y
+      (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x Y)
   obtain ⟨Zs, hZs⟩ :=
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
-      (n := (⊤ : ℕ∞)) (x : M) Z
+      (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x Z)
   obtain ⟨Ws, hWs⟩ :=
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
-      (n := (⊤ : ℕ∞)) (x : M) W
+      (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x W)
   have hR :
-      metricRm04StdAt (I := I) (M := M) g (x : M) X Y Z W =
-        g.inner (x : M) W
+      metricRm04StdAt (I := I) (M := M) g (x : M)
+          (mfderiv I I (Subtype.val : U → M) x X)
+          (mfderiv I I (Subtype.val : U → M) x Y)
+          (mfderiv I I (Subtype.val : U → M) x Z)
+          (mfderiv I I (Subtype.val : U → M) x W) =
+        g.inner (x : M) (mfderiv I I (Subtype.val : U → M) x W)
           (connectionRiemannCurvatureField (I := I) (metricCov (I := I) (M := M) g)
             (fun p : M => Xs p) (fun p : M => Ys p) (fun p : M => Zs p) (x : M)) := by
     have hvec :
-        (vec4 (I := I) (x := (x : M)) X Y Z W) =
+        (vec4 (I := I) (x := (x : M))
+          (mfderiv I I (Subtype.val : U → M) x X)
+          (mfderiv I I (Subtype.val : U → M) x Y)
+          (mfderiv I I (Subtype.val : U → M) x Z)
+          (mfderiv I I (Subtype.val : U → M) x W)) =
           vec4 (I := I) (x := (x : M)) (Xs (x : M)) (Ys (x : M)) (Zs (x : M)) (Ws (x : M)) := by
       rw [hXs, hYs, hZs, hWs]
     rw [metricRm04StdAt_apply, hvec,
@@ -115,7 +129,7 @@ theorem metricRm04StdAt_restrictOpen
         (metricCov_smooth (I := I) (M := M) g) Xs Ys Zs Ws (x : M), hWs]
   have hL :
       metricRm04StdAt (I := I) (M := U) (g.restrictOpen (I := I) U) x X Y Z W =
-        g.inner (x : M) W
+        g.inner (x : M) (mfderiv I I (Subtype.val : U → M) x W)
           (connectionRiemannCurvatureField (I := I) (metricCov (I := I) (M := M) g)
             (fun p : M => Xs p) (fun p : M => Ys p) (fun p : M => Zs p) (x : M)) := by
     have hvec :
@@ -127,7 +141,9 @@ theorem metricRm04StdAt_restrictOpen
             (restrictOpenTangentSection (I := I) U Ws x) := by
       rw [restrictOpenTangentSection_apply, restrictOpenTangentSection_apply,
         restrictOpenTangentSection_apply, restrictOpenTangentSection_apply,
-        hXs, hYs, hZs, hWs]
+        hXs, hYs, hZs, hWs, mfderiv_subtype_val_apply,
+        mfderiv_subtype_val_apply, mfderiv_subtype_val_apply,
+        mfderiv_subtype_val_apply]
     rw [metricRm04StdAt_apply, hvec,
       show metricRm04At (I := I) (M := U) (g.restrictOpen (I := I) U) x =
           riemannCurvature04At (I := I) (g.restrictOpen (I := I) U)
@@ -142,7 +158,8 @@ theorem metricRm04StdAt_restrictOpen
         (restrictOpenTangentSection (I := I) U Ws) x,
       SmoothRiemannianMetric.restrictOpen_inner,
       restrictOpenTangentSection_apply, hWs]
-    exact congrArg (fun v => g.inner (x : M) W v)
+    exact congrArg
+      (fun v => g.inner (x : M) (mfderiv I I (Subtype.val : U → M) x W) v)
       (connectionRiemannCurvatureField_restrictOpen (I := I) g U Xs Ys Zs x)
   rw [hL, hR]
 

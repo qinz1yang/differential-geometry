@@ -37,7 +37,14 @@ private theorem subtype_norm_lip
     LipschitzWith ⟨C, hC⟩ F := by
   apply LipschitzWith.of_dist_le_mul
   intro x y
-  simpa only [NNReal.coe_mk, dist_eq_norm, Subtype.dist_eq] using hF x y
+  have hcoe : ((⟨C, hC⟩ : NNReal) : ℝ) = C := rfl
+  calc
+    dist (F x) (F y) = ‖F x - F y‖ := dist_eq_norm _ _
+    _ ≤ C * ‖(x : X) - (y : X)‖ := hF x y
+    _ = ((⟨C, hC⟩ : NNReal) : ℝ) * ‖(x : X) - (y : X)‖ :=
+      congrArg (fun a : ℝ => a * ‖(x : X) - (y : X)‖) hcoe.symm
+    _ = ((⟨C, hC⟩ : NNReal) : ℝ) * dist x y := by
+      rw [Subtype.dist_eq, dist_eq_norm]
 
 private theorem secondOrderActionFourthToSecondOrderCore_pairing
     (g : SmoothRiemannianMetric I M)

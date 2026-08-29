@@ -57,7 +57,7 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
     (bdryLap : BoundaryManifold (I_half n) M → ℝ)
     (boundaryNormalDeriv : BoundaryManifold (I_half n) M → ℝ)
     (h_bochner : ∀ x : M,
-      Δ_g_classical (M := M) (n := n) g h_normGradSq_smooth x =
+      ΔGClassical (M := M) (n := n) g h_normGradSq_smooth x =
         2 * frobeniusSqFun (I := I_half n) (M := M)
               (hessFun (I := I_half n) g f) x +
           2 * ricciFun (I := I_half n) g x
@@ -66,9 +66,9 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
           2 * g.inner x
                 (gradFun (I := I_half n) g f x)
                 (gradFun (I := I_half n) g
-                  (Δ_g_classical (M := M) (n := n) g hf) x))
+                  (ΔGClassical (M := M) (n := n) g hf) x))
     (h_div_thm_normGradSq :
-      ∫ x, Δ_g_classical (M := M) (n := n) g h_normGradSq_smooth x
+      ∫ x, ΔGClassical (M := M) (n := n) g h_normGradSq_smooth x
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) =
         ∫ x : BoundaryManifold (I_half n) M,
           g.inner x.val
@@ -78,15 +78,15 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
               (normGradSqFun (I := I_half n) g f) x.val)
           ∂(surfaceMeasure (I := I_half n) (M := M) g))
     (h_green_lap :
-      ∫ x, (Δ_g_classical (M := M) (n := n) g hf x)^2
+      ∫ x, (ΔGClassical (M := M) (n := n) g hf x)^2
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) +
         ∫ x, g.inner x
               (gradFun (I := I_half n) g
-                (Δ_g_classical (M := M) (n := n) g hf) x)
+                (ΔGClassical (M := M) (n := n) g hf) x)
               (gradFun (I := I_half n) g f x)
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) =
         ∫ x : BoundaryManifold (I_half n) M,
-          (Δ_g_classical (M := M) (n := n) g hf) x.val *
+          (ΔGClassical (M := M) (n := n) g hf) x.val *
             g.inner x.val
               (outwardNormal (I := I_half n) (M := M) g x :
                 TangentSpace _ x.val)
@@ -108,7 +108,7 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
             (normGradSqFun (I := I_half n) g f) x.val)
         ∂(surfaceMeasure (I := I_half n) (M := M) g) =
       2 * (∫ x : BoundaryManifold (I_half n) M,
-              (Δ_g_classical (M := M) (n := n) g hf) x.val *
+              (ΔGClassical (M := M) (n := n) g hf) x.val *
                 boundaryNormalDeriv x
               ∂(surfaceMeasure (I := I_half n) (M := M) g)) -
       2 * (∫ x : BoundaryManifold (I_half n) M,
@@ -134,13 +134,13 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
         g.inner x
           (gradFun (I := I_half n) g f x)
           (gradFun (I := I_half n) g
-            (Δ_g_classical (M := M) (n := n) g hf) x))
+            (ΔGClassical (M := M) (n := n) g hf) x))
         (riemannianVolumeMeasure (I := I_half n) (M := M) g))
     (h_int_lap_sq :
       Integrable (fun x : M =>
-        (Δ_g_classical (M := M) (n := n) g hf x)^2)
+        (ΔGClassical (M := M) (n := n) g hf x)^2)
         (riemannianVolumeMeasure (I := I_half n) (M := M) g)) :
-    ∫ x, ((Δ_g_classical (M := M) (n := n) g hf x)^2 -
+    ∫ x, ((ΔGClassical (M := M) (n := n) g hf x)^2 -
             frobeniusSqFun (I := I_half n) (M := M)
               (hessFun (I := I_half n) g f) x)
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) =
@@ -170,11 +170,11 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
     fun x => g.inner x
       (gradFun (I := I_half n) g f x)
       (gradFun (I := I_half n) g
-        (Δ_g_classical (M := M) (n := n) g hf) x) with hGfGdf_def
+        (ΔGClassical (M := M) (n := n) g hf) x) with hGfGdf_def
   set DivNGS : M → ℝ :=
-    Δ_g_classical (M := M) (n := n) g h_normGradSq_smooth with hDivNGS_def
+    ΔGClassical (M := M) (n := n) g h_normGradSq_smooth with hDivNGS_def
   set LapSq : M → ℝ :=
-    fun x => (Δ_g_classical (M := M) (n := n) g hf x)^2 with hLapSq_def
+    fun x => (ΔGClassical (M := M) (n := n) g hf x)^2 with hLapSq_def
   set BdryNGS : BoundaryManifold (I_half n) M → ℝ :=
     fun x =>
       g.inner x.val
@@ -184,11 +184,11 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
           (normGradSqFun (I := I_half n) g f) x.val) with hBdryNGS_def
   set BdryLapNorm : BoundaryManifold (I_half n) M → ℝ :=
     fun x =>
-      (Δ_g_classical (M := M) (n := n) g hf) x.val * boundaryNormalDeriv x
+      (ΔGClassical (M := M) (n := n) g hf) x.val * boundaryNormalDeriv x
       with hBdryLapNorm_def
   set BdryLapNu : BoundaryManifold (I_half n) M → ℝ :=
     fun x =>
-      (Δ_g_classical (M := M) (n := n) g hf) x.val *
+      (ΔGClassical (M := M) (n := n) g hf) x.val *
         g.inner x.val
           (outwardNormal (I := I_half n) (M := M) g x :
             TangentSpace _ x.val)
@@ -251,22 +251,22 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
     have h_swap : ∀ x : M,
         g.inner x
           (gradFun (I := I_half n) g
-            (Δ_g_classical (M := M) (n := n) g hf) x)
+            (ΔGClassical (M := M) (n := n) g hf) x)
           (gradFun (I := I_half n) g f x) =
         g.inner x
           (gradFun (I := I_half n) g f x)
           (gradFun (I := I_half n) g
-            (Δ_g_classical (M := M) (n := n) g hf) x) := by
+            (ΔGClassical (M := M) (n := n) g hf) x) := by
       intro x; exact g.symm x _ _
     have h_swap_int :
         ∫ x, g.inner x
               (gradFun (I := I_half n) g
-                (Δ_g_classical (M := M) (n := n) g hf) x)
+                (ΔGClassical (M := M) (n := n) g hf) x)
               (gradFun (I := I_half n) g f x) ∂μ =
           ∫ x, g.inner x
                 (gradFun (I := I_half n) g f x)
                 (gradFun (I := I_half n) g
-                  (Δ_g_classical (M := M) (n := n) g hf) x) ∂μ :=
+                  (ΔGClassical (M := M) (n := n) g hf) x) ∂μ :=
       integral_congr_ae (Filter.Eventually.of_forall h_swap)
     have h_green_full := h_green_lap
     rw [h_swap_int] at h_green_full
@@ -275,12 +275,12 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
     rw [hJL_def, hJLn_def]
     refine integral_congr_ae (Filter.Eventually.of_forall ?_)
     intro x
-    change (Δ_g_classical (M := M) (n := n) g hf) x.val *
+    change (ΔGClassical (M := M) (n := n) g hf) x.val *
         g.inner x.val
           (outwardNormal (I := I_half n) (M := M) g x :
             TangentSpace _ x.val)
           (gradFun (I := I_half n) g f x.val) =
-      (Δ_g_classical (M := M) (n := n) g hf) x.val * boundaryNormalDeriv x
+      (ΔGClassical (M := M) (n := n) g hf) x.val * boundaryNormalDeriv x
     rw [h_normalDeriv x]
   have h_codazzi_packed : JN = 2 * JLn - 2 * JII + 4 * JM := by
     rw [hJN_def, hJLn_def, hJII_def, hJM_def]
@@ -292,7 +292,7 @@ theorem reilly_identity_of_bochner_green_boundary_decomposition
     have h_JN_eq : JN = 2 * IH + 2 * IR + 2 * (JLn - IL) := by
       rw [← h_divthm]; exact h_combined
     linarith [h_codazzi_packed, h_JN_eq]
-  have h_lhs : ∫ x, ((Δ_g_classical (M := M) (n := n) g hf x)^2 -
+  have h_lhs : ∫ x, ((ΔGClassical (M := M) (n := n) g hf x)^2 -
               frobeniusSqFun (I := I_half n) (M := M)
                 (hessFun (I := I_half n) g f) x) ∂μ = IL - IH := by
     rw [integral_sub h_int_lap_sq h_int_hess]

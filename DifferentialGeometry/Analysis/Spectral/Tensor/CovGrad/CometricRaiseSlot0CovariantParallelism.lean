@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -35,13 +34,15 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma interior_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
-    (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
+    (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
-      Tensor0SSpace.toModel D (Fin.cons (show E from v) (fun k => (show E from w k))) := by
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
+      Tensor0SSpace.toModel D
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s (show E from v)
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
   rfl
@@ -50,14 +51,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma interior_product_eq_tensor0S_curry (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) :
-    Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D =
-      Tensor0SBundle.tensor0S_curry (I := I) (M := M) s x D v := by
+    Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D =
+      Tensor0SBundle.tensor0SCurry (I := I) (M := M) s x D v := by
   apply Tensor0SBundle.Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro w
-  rw [interior_toModel_eval (I := I) (M := M) s x v D (fun k => w k)]
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-    (T := D) (v0 := (show E from v)) (vs := fun k => (show E from w k))]
+  rw [interior_toModel_eval (I := I) (M := M) s x v D w]
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+    (T := D) (v0 := v) (vs := w)]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -154,13 +155,14 @@ theorem tensorCovDerivAt_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetr
   have hWsec_at : TensorSectionMDiffAt (I := I) (s + 2) Wsec x :=
     (contMDiff_unitEvalSection (I := I) (M := M) g₀ (s + 2) S x).mdifferentiableAt (by norm_num)
   have hDderiv : Tensor0SNabla.tensor0SCovariantDerivative I M (s + 2)
-      (LeviCivita (I := I) g₀) Wsec x v =
+      (LeviCivita (I := I) g₀) Wsec x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 2) I x from
           tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 2) S x v)
         (unitTensor (I := I) (M := M) x) := by
     rw [tensorCovDerivAt_def]
     exact (tensorRSCovariantDerivative_zeroS_unit_eval (I := I) (M := M) g₀ (s + 2)
-      S.toSection x v).symm
+      S.toSection x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)).symm
   rw [← hw]
   rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ s x _ (w x)]
   rw [interior_product_eq_tensor0S_curry (I := I) (M := M) (s + 1) x
@@ -168,7 +170,8 @@ theorem tensorCovDerivAt_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetr
   rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 1 (s + 1)
     (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S) x v]
   have hHL := TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) 1 (s + 1)
-    (LeviCivita (I := I) g₀) (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S).toSection w x v
+    (LeviCivita (I := I) g₀) (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S).toSection w x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)
   rw [hHL]
   have hfun : (fun y : M => (show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S).toSection y) (w y)) =
@@ -182,31 +185,36 @@ theorem tensorCovDerivAt_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetr
   have hτD : (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S).toSection x)
         (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
-          (fun y : M => w y) x v) =
+          (fun y : M => w y) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) =
       Tensor0SNabla.curriedSection I M Wsec x
         (inverseMetricSharpFib (I := I) g₀ x
           (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
-            (fun y : M => w y) x v)) := by
+            (fun y : M => w y) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))) := by
     rw [hraiseToSection x]
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ s x (Wsec x)
       (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
-        (fun y : M => w y) x v)]
+        (fun y : M => w y) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))]
     rw [interior_product_eq_tensor0S_curry (I := I) (M := M) (s + 1) x
       (inverseMetricSharpFib (I := I) g₀ x
         (Tensor0SNabla.tensor0SCovariantDerivative I M 1 (LeviCivita (I := I) g₀)
-          (fun y : M => w y) x v)) (Wsec x)]
+          (fun y : M => w y) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))) (Wsec x)]
     rw [Tensor0SNabla.curriedSection_apply]
   rw [hfun]
   rw [tensor0SCovariantDerivative_curriedSection_hom_leibniz (I := I) (M := M) g₀ (s + 1)
-    Wsec hWsec_at Ysharp v]
+    Wsec hWsec_at Ysharp ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)]
   rw [hτD]
   rw [show (fun y : M => Ysharp y) =
       (fun y : M => inverseMetricSharpFib (I := I) g₀ y (w y)) from funext hYsharp_app]
-  rw [covDeriv_sharp_field_eq (I := I) (M := M) g₀ w v
+  rw [covDeriv_sharp_field_eq (I := I) (M := M) g₀ w
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)
     (hYsharp_smooth.contMDiffAt.mdifferentiableAt (by simp))]
   rw [add_sub_cancel_right, hDderiv, hYsharp_app x]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g₀ 0 (s + 2)) :
     covGrad (I := I) (M := M) g₀ 1 (s + 1) (cometricRaiseSlot0Field (I := I) (M := M) g₀ s S) =
@@ -256,12 +264,16 @@ theorem covGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (
             (covGrad (I := I) (M := M) g₀ 0 (s + 2) S).toSection x)
           (unitTensor (I := I) (M := M) x)) from rfl]
   have harg : (fun i : Fin (s + 2 + 1) =>
-        (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x D)
-            (fun k => (show E from m k)) : Fin (s + 2 + 1) → E)
+        (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (inverseMetricSharpFib (I := I) g₀ x D))
+            m : Fin (s + 2 + 1) → E)
           ((Equiv.swap (0 : Fin (s + 2 + 1)) 1) i)) =
-      Fin.cons (show E from m 0)
-        (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x D)
-          (fun k => (show E from (Matrix.vecTail m) k))) := by
+      Fin.cons (m 0)
+        (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (inverseMetricSharpFib (I := I) g₀ x D))
+          (Matrix.vecTail m)) := by
     have h1eq : (1 : Fin (s + 2 + 1)) = Fin.succ (0 : Fin (s + 2)) := by
       apply Fin.ext
       simp
@@ -280,9 +292,11 @@ theorem covGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (
   rw [harg]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g₀ 0 (s + 2) S x
     (unitTensor (I := I) (M := M) x)
-    (Fin.cons (show E from m 0)
-      (Fin.cons (show E from inverseMetricSharpFib (I := I) g₀ x D)
-        (fun k => (show E from (Matrix.vecTail m) k))))]
+    (Fin.cons (m 0)
+      (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) g₀ x D))
+        (Matrix.vecTail m)))]
   rfl
 
 end TensorSpectral

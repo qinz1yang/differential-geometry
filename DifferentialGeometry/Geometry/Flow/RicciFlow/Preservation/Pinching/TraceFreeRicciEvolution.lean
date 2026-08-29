@@ -148,7 +148,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_heat_equation_of_frame_and_eigenbasis_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -220,7 +220,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_heat_equation_of_first_trace_and_eigenbasis_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -292,7 +292,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_and_cubic_trace_with_trace_free_ricci_norm_sq_heat_equation
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -424,7 +424,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_frame_evolution_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -519,7 +519,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_reaction_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -659,7 +659,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_scalar_trace
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -737,7 +737,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_curvature_trace
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -813,7 +813,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_levi_civita_curvature
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
@@ -923,7 +923,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_curvature
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -974,20 +974,20 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
     roughLapRic ricciNormLap nablaRic scalarLap gradScalarNormSq hscalarHeat
     h_inv h_ricci h_lap hheatBasis hheat hdim ?_ ?_ ?_ hInv
   · intro t
-    simpa [SolutionFamily.rm13, metricCov] using
+    with_unfolding_all exact
       (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   · intro t
-    simpa [SolutionFamily.rm04, metricCov] using
+    with_unfolding_all exact
       (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   · intro t x
-    simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+    with_unfolding_all exact
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
 
 omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_norm_heat_equation
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1048,22 +1048,22 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_n
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm13 t) := by
     intro t
-    simpa [SolutionFamily.rm13, metricCov] using
+    with_unfolding_all exact
       (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 : ∀ t,
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     intro t
-    simpa [SolutionFamily.rm04, metricCov] using
+    with_unfolding_all exact
       (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 : ∀ t x,
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     intro t x
-    simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+    with_unfolding_all exact
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hRicSymAt : ∀ (t : Real) (x : M),
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
     intro t x
@@ -1125,7 +1125,7 @@ omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_compatibility
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1167,7 +1167,7 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
       gInv t x i j = DifferentialGeometry.Geometry.Curvature.delta3 i j)
     (hframe : ∀ x i, basis x i = frame i x)
     (hinv : ∀ t x,
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
         (S.base.metric t) x (basis x) (gInv t x))
     (hfields : ∀ x,
       DifferentialGeometry.Geometry.Operator.SmoothBasisFieldsAt (I := I) (basis x) (X x))
@@ -1240,22 +1240,22 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm13 t) := by
     intro t
-    simpa [SolutionFamily.rm13, metricCov] using
+    with_unfolding_all exact
       (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 : ∀ t,
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     intro t
-    simpa [SolutionFamily.rm04, metricCov] using
+    with_unfolding_all exact
       (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 : ∀ t x,
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     intro t x
-    simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+    with_unfolding_all exact
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hRicSymAt : ∀ (t : Real) (x : M),
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
     intro t x

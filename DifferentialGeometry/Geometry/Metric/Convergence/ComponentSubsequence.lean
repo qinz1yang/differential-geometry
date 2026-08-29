@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentCompactness
-
 import DifferentialGeometry.Geometry.Metric.Convergence.PrecompactnessBridge
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -460,8 +461,8 @@ theorem componentConv_covDeriv_of_chartCInf
         (nhds (Tensor0SBundle.component0S (I := I) b
           (metricCovDeriv (I := I) gInf gRef a x) I0)) := by
   classical
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   obtain ⟨K₀, hK₀cpt, hxint, hK₀src⟩ :=
     exists_compact_subset (chartAt H x).open_source (mem_chart_source H x)
   obtain ⟨ψ, χ, U, hψ, hUopen, hImg, hχU, htower⟩ :=
@@ -513,7 +514,10 @@ theorem bz_eq_tangentConst (x : M)
       = tangentConstInChart (𝕜 := Real) (I := I) x (basisE i) z := by
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he
   rw [IsLocalFrameOn.toBasisAt_coe, e.localFrame_apply_of_mem_baseSet basisE hz]
-  simp [Bundle.Trivialization.basisAt, tangentConstInChart_apply, he]
+  simp only [Bundle.Trivialization.basisAt, tangentConstInChart_apply, he,
+    Module.Basis.map_apply, Bundle.Trivialization.linearEquivAt_symm_apply]
+  exact ((trivializationAt E (TangentSpace I : M → Type _) x).symmL_apply hz
+    (basisE i)).symm
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -586,8 +590,8 @@ private theorem exists_patch_core
         ∀ (p : ℕ) (ε : Real), 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p →
           ∀ z ∈ C, metricDerivNorm (I := I) a (gSeq (φ₀ (ρ (ψ k)))) gInf gRef z < ε := by
   classical
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   obtain ⟨K₀, hK₀cpt, hxK₀int, hK₀src⟩ :=
     exists_compact_subset (chartAt H x).open_source (mem_chart_source H x)
   choose frame hframeσ using

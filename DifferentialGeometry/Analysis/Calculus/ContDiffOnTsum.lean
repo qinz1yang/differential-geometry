@@ -117,7 +117,7 @@ theorem hasFDerivWithinAt_tsum {f : α → E → F} {f' : α → E → E →L[�
   have hsplit : g y - g x - G (y - x)
       = (g y - St y - (g x - St x)) + (St y - St x - St' (y - x))
         + (St' - G) (y - x) := by
-    simp only [hGdef, hSt'_def, ContinuousLinearMap.sub_apply]; abel
+    simp only [hGdef, hSt'_def, sub_apply]; abel
   have hT1 : ‖g y - St y - (g x - St x)‖ ≤ δ * ‖y - x‖ := by
     have hsy : (g y - St y) = ∑' i : {i // i ∉ t}, f (i : α) y := by
       rw [hg, hSt_def, eq_comm, eq_sub_iff_add_eq, add_comm]

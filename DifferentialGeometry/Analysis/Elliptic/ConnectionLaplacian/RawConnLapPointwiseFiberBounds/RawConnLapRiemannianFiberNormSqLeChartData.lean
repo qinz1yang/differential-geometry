@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -47,7 +46,8 @@ lemma euclidPartial_sq_le_iteratedFDeriv_two_sq
   classical
   have hf_fderiv_cd1 : ContDiffAt ℝ 1 (fderiv ℝ f) y := by
     have h2 : ContDiffAt ℝ ((1 : ℕ) + 1) f y := by
-      simpa using hf
+      change ContDiffAt ℝ 2 f y
+      exact hf
     exact h2.fderiv_right_succ
   have hf_fderiv_diff : DifferentiableAt ℝ (fderiv ℝ f) y :=
     hf_fderiv_cd1.differentiableAt_one

@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
 import DifferentialGeometry.Geometry.Boundary.DefiningFunctionCurve
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -290,19 +291,19 @@ theorem scalar_hopf_boundary_point_of_defining_function_on_compact_annulus_of_me
   · exact hu_zero
 
 private theorem gradientFun_exp_mul
-    [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) (L T : Real)
     (u : M → Real) (p : M)
     (hu : MDifferentiableAt I (modelWithCornersSelf Real Real) u p) :
     gradientFun (I := I) g (fun x => Real.exp (-L * T) * u x) p =
       Real.exp (-L * T) • gradientFun (I := I) g u p := by
-  simpa only [Pi.smul_apply, smul_eq_mul] using
-    gradientFun_const_smul (I := I) g (Real.exp (-L * T)) hu
+  rw [show (fun x => Real.exp (-L * T) * u x) =
+    Real.exp (-L * T) • u by
+      funext x
+      simp only [Pi.smul_apply, smul_eq_mul]]
+  exact gradientFun_const_smul (I := I) g (Real.exp (-L * T)) hu
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ M] in
 private theorem exp_mul_mdiffAt
-    [I.Boundaryless]
     (L t : Real) (u : M → Real) (x : M)
     (hu : MDifferentiableAt I (modelWithCornersSelf Real Real) u x) :
     MDifferentiableAt I (modelWithCornersSelf Real Real)
@@ -334,7 +335,6 @@ private theorem exp_neg_abs_mul_mul_le
       mul_le_mul_of_nonneg_left ha (Real.exp_pos _).le
 
 private theorem gradientFun_exp_mul_mdiffAt
-    [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) (L t : Real)
     (u : M → Real) (x : M)
@@ -416,7 +416,11 @@ theorem scalar_hopf_boundary_point_with_potential_on_compact_annulus
       (Set.Icc 0 T ×ˢ {x | r ≤ rho x ∧ rho x ≤ R}) := by
     have hscale : Continuous (fun p : Real × M => Real.exp (-L * p.1)) := by
       fun_prop
-    simpa only [z] using hscale.continuousOn.mul hu_cont
+    rw [show (fun p : Real × M => z p.1 p.2) =
+      (fun p => Real.exp (-L * p.1)) * fun p => u p.1 p.2 by
+        funext p
+        rfl]
+    exact hscale.continuousOn.mul hu_cont
   have hz_nonneg : ∀ t ∈ Set.Icc 0 T,
       ∀ x ∈ {x | r ≤ rho x ∧ rho x ≤ R}, 0 ≤ z t x := by
     intro t ht x hx
@@ -527,7 +531,11 @@ theorem scalar_hopf_boundary_point_of_subsolution_on_compact_annulus
   let w : Real → M → Real := fun t x => -u t x
   have hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2)
       (Set.Icc 0 T ×ˢ {x | r ≤ rho x ∧ rho x ≤ R}) := by
-    simpa [w] using hu_cont.neg
+    rw [show (fun p : Real × M => w p.1 p.2) =
+      -(fun p => u p.1 p.2) by
+        funext p
+        rfl]
+    exact hu_cont.neg
   have hw_nonneg : ∀ t ∈ Set.Icc 0 T,
       ∀ x ∈ {x | r ≤ rho x ∧ rho x ≤ R}, 0 ≤ w t x := by
     intro t ht x hx
@@ -541,11 +549,17 @@ theorem scalar_hopf_boundary_point_of_subsolution_on_compact_annulus
   have hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       DifferentiableWithinAt Real (fun s => w s x) (Set.Icc 0 T) t := by
     intro t ht htpos x
-    simpa [w] using (hu_time t ht htpos x).neg
+    rw [show (fun s => w s x) = -(fun s => u s x) by
+      funext s
+      rfl]
+    exact (hu_time t ht htpos x).neg
   have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDifferentiableAt I (modelWithCornersSelf Real Real) (w t) x := by
     intro t ht htpos x
-    simpa [w] using (hu_mdiff t ht htpos x).neg
+    rw [show w t = -u t by
+      funext y
+      rfl]
+    exact (hu_mdiff t ht htpos x).neg
   have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (w t) y) x := by
@@ -653,7 +667,11 @@ theorem scalar_hopf_boundary_comparison_on_compact_annulus
   let d : Real → M → Real := fun t x => u t x - v t x
   have hd_cont : ContinuousOn (fun p : Real × M => d p.1 p.2)
       (Set.Icc 0 T ×ˢ {x | r ≤ rho x ∧ rho x ≤ R}) := by
-    simpa [d] using hu_cont.sub hv_cont
+    rw [show (fun p : Real × M => d p.1 p.2) =
+      (fun p => u p.1 p.2) - fun p => v p.1 p.2 by
+        funext p
+        rfl]
+    exact hu_cont.sub hv_cont
   have hd_nonpos : ∀ t ∈ Set.Icc 0 T,
       ∀ x ∈ {x | r ≤ rho x ∧ rho x ≤ R}, d t x ≤ 0 := by
     intro t ht x hx
@@ -667,11 +685,17 @@ theorem scalar_hopf_boundary_comparison_on_compact_annulus
   have hd_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       DifferentiableWithinAt Real (fun s => d s x) (Set.Icc 0 T) t := by
     intro t ht htpos x
-    simpa [d] using (hu_time t ht htpos x).sub (hv_time t ht htpos x)
+    rw [show (fun s => d s x) = (fun s => u s x) - fun s => v s x by
+      funext s
+      rfl]
+    exact (hu_time t ht htpos x).sub (hv_time t ht htpos x)
   have hd_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDifferentiableAt I (modelWithCornersSelf Real Real) (d t) x := by
     intro t ht htpos x
-    simpa [d] using (hu_mdiff t ht htpos x).sub (hv_mdiff t ht htpos x)
+    rw [show d t = u t - v t by
+      funext y
+      rfl]
+    exact (hu_mdiff t ht htpos x).sub (hv_mdiff t ht htpos x)
   have hd_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (d t) y) x := by

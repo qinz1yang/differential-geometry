@@ -248,8 +248,7 @@ private lemma tensorChartComp_euclidPartial_hasCompactSupport
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma hasCompactSupport_finset_sum
-    {ι : Type*} {β : Type*} [TopologicalSpace β]
-    [AddCommMonoid β] [ContinuousAdd β]
+    {ι : Type*} {β : Type*} [AddCommMonoid β]
     {s : Finset ι}
     {f : ι → EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → β}
     (hf : ∀ i ∈ s, HasCompactSupport (f i)) :

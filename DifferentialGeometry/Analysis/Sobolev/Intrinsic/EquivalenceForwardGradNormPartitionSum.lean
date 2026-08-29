@@ -137,17 +137,17 @@ private lemma gradFun_finset_sum
     rw [Finset.sum_insert hα₀_notMem]
 
 private lemma gradFun_eq_sum_gradFun_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x =
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
           (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) y * u y) x := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   set h : M → M → ℝ := fun α y =>
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) y * u y with hh_def
@@ -180,11 +180,11 @@ private lemma gradFun_eq_sum_gradFun_pou_mul
   exact gradFun_finset_sum (I := I) (M := M) g S h hh_diff x
 
 lemma gNormGrad_le_finset_sum_pou_mul
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     gNormGrad (I := I) (M := M) g u x ≤
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         gNormGrad (I := I) (M := M) g
           (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) y * u y) x := by
@@ -196,7 +196,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
       (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) y * u y) x with hv_def
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hg_ip : ∀ v : TangentSpace I x, 0 ≤ g.inner x v v := by
     intro v
     by_cases hv : v = 0
@@ -233,7 +233,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
             rw [show ((g.inner x) (a + t • b)) =
                 ((g.inner x) a) + ((g.inner x) (t • b)) from
               (g.inner x).map_add a (t • b)]
-            simp [ContinuousLinearMap.add_apply]
+            simp [add_apply]
           have h2 : g.inner x a (a + t • b) =
               g.inner x a a + t * g.inner x a b := by
             have h_dist : (g.inner x a) (a + t • b) =

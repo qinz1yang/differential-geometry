@@ -142,7 +142,7 @@ theorem w_rev_hasDerivAt
     have h := (scalar_joint (I := I) S hS).comp hrev.contMDiffOn
       (fun p (hp : p ∈ U ×ˢ Set.univ) =>
         ⟨hUmap hp.1, Set.mem_univ p.2⟩)
-    simpa only [R, Function.comp_apply] using h
+    simpa only [R, Function.comp_def] using h
   have hq :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M => q p.1 p.2) (U ×ˢ Set.univ) := by
@@ -174,8 +174,8 @@ theorem w_rev_hasDerivAt
         (fun p : Real × M =>
           wEntropyBracket n p.1 (R p.1) (q p.1) (f p.1) p.2)
         (U ×ˢ Set.univ) := by
-    simpa only [wEntropyBracket] using
-      ((htau.mul (hR.add hq)).add hf).sub hn
+    with_unfolding_all
+      exact ((htau.mul (hR.add hq)).add hf).sub hn
   have hintegrand :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
@@ -367,11 +367,11 @@ theorem w_rev_square
   let q0 : M -> Real := fun x =>
     g.inner x (gradientFun (I := I) g (f s) x)
       (gradientFun (I := I) g (f s) x)
-  let L0 : M -> Real := Δ_g (I := I) g ⟨_, hf⟩
+  let L0 : M -> Real := ΔG (I := I) g ⟨_, hf⟩
   let ft0 : M -> Real := fun x =>
     L0 x - q0 x + R0 x - (n : Real) / (2 * s)
   let Rt0 : M -> Real := fun x =>
-    -(Δ_g (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
+    -(ΔG (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
       2 * normSq0S (I := I) g x 2
         (metricRicciAt (I := I) (M := M) g x))
   let qt0 : M -> Real := fun x =>
@@ -398,10 +398,10 @@ theorem w_rev_square
       (metricScalarAt (I := I) (M := M) g)
     exact metricScalar_smooth (I := I) (M := M) g
   have hLf (x : M) :
-      laplacianAt (I := I) G s (f s) x = Δ_g (I := I) g ⟨_, hf⟩ x := by
+      laplacianAt (I := I) G s (f s) x = ΔG (I := I) g ⟨_, hf⟩ x := by
     exact laplacianAt_eq_delta (I := I) G s hf hconn x
   have hLR (x : M) :
-      laplacianAt (I := I) G s (R s) x = Δ_g (I := I) g ⟨_, hR⟩ x := by
+      laplacianAt (I := I) G s (R s) x = ΔG (I := I) g ⟨_, hR⟩ x := by
     exact laplacianAt_eq_delta (I := I) G s hR hconn x
   have hric (x : M) :
       S.ricci (T - s) x = metricRicciAt (I := I) (M := M) g x := by
@@ -454,7 +454,8 @@ theorem w_rev_square
     ring
   have hsquare :
       (∫ x, A0 x ∂μw) = -2 * s * ∫ x, Sq x ∂μw := by
-    simpa only [A0, R0, q0, L0, ft0, Rt0, qt0, Sq, g, μw, μ, n] using
+    simpa only [A0, R0, q0, L0, ft0, Rt0, qt0, Sq, g, μw, μ, n,
+      volumeMeasureFamily, metricFamilyForMeasure, riemannianMeasureFamily] using
       weighted_w_square (I := I) g hf hspos
   refine hraw.congr_deriv ?_
   calc
@@ -655,7 +656,7 @@ theorem gallim_w_cont
     have hRs := (scalar_joint (I := I) S hS).comp hrev.contMDiffOn
       (fun (p : Real × M) (hp : p ∈ K) =>
         ⟨hmap hp.1, Set.mem_univ p.2⟩)
-    simpa only [R, K, Function.comp_apply] using hRs.continuousOn
+    simpa only [R, K, Function.comp_def] using hRs.continuousOn
   have hscale : ContinuousOn (fun p : Real × M => a + p.1) K :=
     continuousOn_const.add continuousOn_fst
   have hscale_pos (p : Real × M) (hp : p ∈ K) : 0 < a + p.1 :=
@@ -926,7 +927,7 @@ theorem gallim_w_le
       ∀ x : M, 0 < uShift r x := by
     intro r hr x
     have hrOld : r - a ∈ Set.Ioo (0 : Real) tauH := by
-      simpa only [Dr, RealTimeInterval.timeShift_regular, Set.mem_setOf_eq,
+      simpa only [Dr, RealTimeInterval.timeShift_regular, Set.mem_ofPred_eq,
         RealTimeInterval.closed, sub_eq_add_neg] using hr.1
     exact hpos (r - a)
       ⟨hrOld.1.le, hrOld.2.le.trans htauH_tau⟩ x

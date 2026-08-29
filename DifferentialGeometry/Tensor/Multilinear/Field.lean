@@ -9,7 +9,6 @@ open DifferentialGeometry.Tensor.Multilinear
 noncomputable section
 namespace DifferentialGeometry
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 
@@ -69,7 +68,7 @@ noncomputable def fromScalarField
     let d := Module.finrank 𝕜 F
     let b : Module.Basis (Fin d) 𝕜 F := Module.finBasis 𝕜 F
     refine (contMDiff_multilinearSection_iff_coord E n b _).mpr fun σ x₀ => ?_
-    have hcoord : ∀ x, (continuousMultilinearMap_basis b 0).repr
+    have hcoord : ∀ x, (continuousMultilinearMapBasis b 0).repr
         (trivializationAt (MLF 0)
           (fun x => Bundle.continuousMultilinearMap 𝕜 0 F E x) x₀
           ⟨x, ContinuousMultilinearMap.constOfIsEmpty 𝕜
@@ -136,7 +135,7 @@ theorem toScalarField_add
   simp only [toScalarField, Pi.add_apply]
   show (α + β).toFun x Fin.elim0 = α.toFun x Fin.elim0 + β.toFun x Fin.elim0
   rw [show (α + β).toFun x = α.toFun x + β.toFun x from rfl]
-  exact ContinuousMultilinearMap.add_apply _ _ _
+  exact add_apply _ _ _
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F] in
 @[simp]
@@ -147,7 +146,7 @@ theorem toScalarField_smulByFun
   ext x
   simp only [toScalarField, Pi.mul_apply]
   change (φ x • α.toFun x) Fin.elim0 = φ x * α.toFun x Fin.elim0
-  rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
 
 end MultilinearSection
 

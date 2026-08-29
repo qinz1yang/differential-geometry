@@ -47,20 +47,20 @@ noncomputable def diffChartForcingNumerator
   densityOnEuclid (I := I) g α y *
       chosenFChartDeriv (I := I) (M := M) g α hu_h l y
     - densityDerivOnEuclid (I := I) g α l y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).u_chart y
+            (I := I) (M := M) g 1 hu_h)).uChart y
     + densityDerivOnEuclid (I := I) g α l y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart y
+            (I := I) (M := M) g 1 hu_h)).fChart y
     + (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
               (EuclideanSpace.single j 1) *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial i y)
+                (I := I) (M := M) g 1 hu_h)).weakPartial i y)
     + (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j l y *
@@ -267,9 +267,9 @@ private lemma density_mul_chosenFChartDeriv_memLp_vol_K
   classical
   by_cases h_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)
   · have h_global :
         MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l) 2
@@ -308,19 +308,19 @@ private lemma densityDerivOnEuclid_mul_u_chart_memLp_vol_K
     (l : Fin (Module.finrank ℝ E))
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     MemLp (fun y => densityDerivOnEuclid (I := I) g α l y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).u_chart y) 2
+            (I := I) (M := M) g 1 hu_h)).uChart y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
   have h_u_chart_K :
-      MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).u_chart) 2
+              (I := I) (M := M) g 1 hu_h)).uChart) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure
       (I := I) (M := M) (g := g) (α := α)
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
           (I := I) (M := M) g 1 hu_h)).u_chart_memLp_weighted
       (Kα_compact (I := I) (M := M) α)
@@ -334,19 +334,19 @@ private lemma densityDerivOnEuclid_mul_f_chart_memLp_vol_K
     (l : Fin (Module.finrank ℝ E))
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     MemLp (fun y => densityDerivOnEuclid (I := I) g α l y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart y) 2
+            (I := I) (M := M) g 1 hu_h)).fChart y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
   have h_f_chart_K :
-      MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).f_chart) 2
+              (I := I) (M := M) g 1 hu_h)).fChart) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure
       (I := I) (M := M) (g := g) (α := α)
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
           (I := I) (M := M) g 1 hu_h)).f_chart_memLp_weighted
       (Kα_compact (I := I) (M := M) α)
@@ -388,17 +388,17 @@ private lemma weightedInvGramDerivOnEuclid_fderiv_mul_weak_partial_memLp_vol_K
     MemLp (fun y =>
         (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
             (EuclideanSpace.single j 1) *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).weak_partial i y) 2
+            (I := I) (M := M) g 1 hu_h)).weakPartial i y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
   have h_wp_K :
-      MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).weak_partial i) 2
+              (I := I) (M := M) g 1 hu_h)).weakPartial i) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
-    (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+    (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h)).weak_partial_locally_memLp i
       (Kα (I := I) (M := M) α)
@@ -441,13 +441,13 @@ private lemma diffChartForcingNumerator_memLp_vol_K
         ∑ j : Fin (Module.finrank ℝ E),
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
               (EuclideanSpace.single j 1) *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial i y)) 2
+                (I := I) (M := M) g 1 hu_h)).weakPartial i y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact weightedInvGramDerivOnEuclid_fderiv_mul_weak_partial_memLp_vol_K (I := I) (M := M) g α l
       hu_h i j
@@ -457,9 +457,9 @@ private lemma diffChartForcingNumerator_memLp_vol_K
             chosenSecondPartialChartPushedU
               (I := I) (M := M) g α u_h i j y)) 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro i _
-    apply memLp_finset_sum
+    apply memLp_finsetSum
     intro j _
     exact weightedInvGramDerivOnEuclid_mul_secondPartialChartPushedU_memLp_vol_K (I := I) (M := M) g
       α l hu_h i j
@@ -468,7 +468,8 @@ private lemma diffChartForcingNumerator_memLp_vol_K
   have h_step3 := h_step2.add h_IV
   have h_step4 := h_step3.add h_V
   unfold diffChartForcingNumerator
-  convert h_step4 using 2 with y
+  exact MemLp.ae_eq (Filter.Eventually.of_forall fun y => by
+    simp only [Pi.add_apply, Pi.sub_apply]) h_step4
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

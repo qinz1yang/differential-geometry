@@ -12,6 +12,7 @@ Holder layers.
 
 noncomputable section
 
+
 open MeasureTheory
 
 namespace DeGiorgi
@@ -47,14 +48,14 @@ theorem le_essInf_real_of_ae_le
       exact hμ (Measure.measure_univ_eq_zero.mp hzero)
     refine ⟨(N : ℝ), ?_⟩
     intro a ha
-    rw [Set.mem_setOf_eq] at ha
+    rw [Set.mem_ofPred_eq] at ha
     by_contra hle
     push Not at hle
     have hsubset : {x | u x ≤ (N : ℝ)} ⊆ {x | u x < a} := by
       intro x hx
       exact lt_of_le_of_lt hx hle
     exact hN_nonzero (measure_mono_null hsubset ha)
-  · rw [Set.mem_setOf_eq]
+  · rw [Set.mem_ofPred_eq]
     rw [ae_iff] at hlow
     simpa [not_le] using hlow
 
@@ -133,8 +134,8 @@ theorem essSup_add_const_of_bdd
     (hu_bdd_below : Filter.IsBoundedUnder (· ≥ ·) (ae μ) u)
     (hu_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) u) :
     essSup (fun x => u x + c) μ = essSup u μ + c := by
-  haveI : NeZero μ := ⟨hμ⟩
-  haveI : (ae μ).NeBot := Measure.ae.neBot
+  have : NeZero μ := ⟨hμ⟩
+  have : (ae μ).NeBot := Measure.ae.neBot
   dsimp [essSup]
   simpa using
     (limsup_add_const (ae μ) u c hu_bdd_above hu_bdd_below.isCoboundedUnder_le)
@@ -145,8 +146,8 @@ theorem essInf_add_const_of_bdd
     (hu_bdd_below : Filter.IsBoundedUnder (· ≥ ·) (ae μ) u)
     (hu_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) u) :
     essInf (fun x => u x + c) μ = essInf u μ + c := by
-  haveI : NeZero μ := ⟨hμ⟩
-  haveI : (ae μ).NeBot := Measure.ae.neBot
+  have : NeZero μ := ⟨hμ⟩
+  have : (ae μ).NeBot := Measure.ae.neBot
   dsimp [essInf]
   simpa using
     (liminf_add_const (ae μ) u c hu_bdd_above.isCoboundedUnder_ge hu_bdd_below)
@@ -159,13 +160,16 @@ theorem essSup_neg_of_bdd
     (hneg_bdd_below : Filter.IsBoundedUnder (· ≥ ·) (ae μ) (fun x => -u x))
     (hneg_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) (fun x => -u x)) :
     essSup (fun x => -u x) μ = - essInf u μ := by
-  haveI : NeZero μ := ⟨hμ⟩
-  haveI : (ae μ).NeBot := Measure.ae.neBot
+  have : NeZero μ := ⟨hμ⟩
+  have : (ae μ).NeBot := Measure.ae.neBot
   dsimp [essSup, essInf]
-  simpa using
+  have hdual :=
     (OrderIso.liminf_apply (β := ℝ) (γ := ℝᵒᵈ) (f := ae μ) (u := u) (g := OrderIso.neg ℝ)
       hu_bdd_below hu_bdd_above.isCoboundedUnder_ge
       hneg_bdd_above hneg_bdd_below.isCoboundedUnder_le).symm
+  have hreal := congrArg (fun z : ℝᵒᵈ => OrderDual.ofDual z) hdual
+  change Filter.limsup (fun x => -u x) (ae μ) = -Filter.liminf u (ae μ) at hreal
+  exact hreal
 
 omit [NeZero d] in
 theorem essInf_neg_of_bdd
@@ -175,13 +179,16 @@ theorem essInf_neg_of_bdd
     (hneg_bdd_below : Filter.IsBoundedUnder (· ≥ ·) (ae μ) (fun x => -u x))
     (hneg_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) (fun x => -u x)) :
     essInf (fun x => -u x) μ = - essSup u μ := by
-  haveI : NeZero μ := ⟨hμ⟩
-  haveI : (ae μ).NeBot := Measure.ae.neBot
+  have : NeZero μ := ⟨hμ⟩
+  have : (ae μ).NeBot := Measure.ae.neBot
   dsimp [essSup, essInf]
-  simpa using
+  have hdual :=
     (OrderIso.limsup_apply (β := ℝ) (γ := ℝᵒᵈ) (f := ae μ) (u := u) (g := OrderIso.neg ℝ)
       hu_bdd_above hu_bdd_below.isCoboundedUnder_le
       hneg_bdd_below hneg_bdd_above.isCoboundedUnder_ge).symm
+  have hreal := congrArg (fun z : ℝᵒᵈ => OrderDual.ofDual z) hdual
+  change Filter.liminf (fun x => -u x) (ae μ) = -Filter.limsup u (ae μ) at hreal
+  exact hreal
 
 omit [NeZero d] in
 theorem essInf_measurable_ennreal_smul_measure

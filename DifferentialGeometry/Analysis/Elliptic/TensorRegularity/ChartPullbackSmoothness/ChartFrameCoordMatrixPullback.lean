@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set MeasureTheory Filter Topology Function NormedSpace
 open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
@@ -77,7 +76,7 @@ theorem chartFrameNormGlobalSmoothCoordMatrix_pullback_contDiffOn_chartTarget
   exact (contMDiffOn_iff_contDiffOn).mp h_comp
 
 private noncomputable def coordMatrixOnEuclid
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E))
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) : ℝ :=
@@ -85,7 +84,7 @@ private noncomputable def coordMatrixOnEuclid
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
 
 private lemma coordMatrixOnEuclid_def
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E))
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -94,7 +93,7 @@ private lemma coordMatrixOnEuclid_def
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := rfl
 
 private lemma coordMatrixOnEuclid_contDiffOn
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (coordMatrixOnEuclid (I := I) (M := M) g α i k)
@@ -103,18 +102,18 @@ private lemma coordMatrixOnEuclid_contDiffOn
     (I := I) (M := M) g α i k
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
-private lemma extDerivFun_apply_scalar
+private lemma mvfderiv_apply_scalar
     (f : M → ℝ) {x : M} (v : TangentSpace I x) :
-    extDerivFun (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply,
+    mvfderiv (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
+  simp only [mvfderiv, ContinuousLinearMap.comp_apply,
     ContinuousLinearEquiv.coe_coe]
   simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-    LinearEquiv.coe_mk]
+    ]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private lemma partialDeriv_scalarOnE_eq_euclidPartial_pulled
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -153,14 +152,14 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial_pulled
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial_of_mdiff
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+private lemma mvfderiv_chartBasisVecFiber_eq_euclidPartial_of_mdiff
+    [I.Boundaryless]
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) :
-    extDerivFun (I := I) f
+    mvfderiv (I := I) f
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (chartBasisVecFiber (I := I) α m
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
@@ -179,20 +178,20 @@ private lemma extDerivFun_chartBasisVecFiber_eq_euclidPartial_of_mdiff
       extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) := by
     rw [hphi_b, (isOpen_extChartAt_target (I := I) α).interior_eq]
     exact hy_pre
-  rw [extDerivFun_apply_scalar (I := I) f (x := b)
+  rw [mvfderiv_apply_scalar (I := I) f (x := b)
     (chartBasisVecFiber (I := I) α m b)]
   rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt
     (I := I) α hf hb_chart hb_int m]
   exact partialDeriv_scalarOnE_eq_euclidPartial_pulled
     (I := I) (M := M) f α m hy
 
-private lemma extDerivFun_pull_eq_euclidPartial_on_target
+private lemma mvfderiv_pull_eq_euclidPartial_on_target
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k l : Fin (Module.finrank ℝ E)) :
     Set.EqOn
       (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
-        extDerivFun
+        mvfderiv I
           (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartBasisVecFiber (I := I) α l
@@ -225,12 +224,12 @@ private lemma extDerivFun_pull_eq_euclidPartial_on_target
       (fun b : M =>
         chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b) b :=
     h_coord_at.mdifferentiableAt (by simp)
-  exact extDerivFun_chartBasisVecFiber_eq_euclidPartial_of_mdiff
+  exact mvfderiv_chartBasisVecFiber_eq_euclidPartial_of_mdiff
     (I := I) (M := M)
     (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k) α l hy hf_mdiff
 
 private lemma coordMatrixOnEuclid_eventuallyEq_chartPushedRaw
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) :
     Set.EqOn
@@ -294,7 +293,7 @@ theorem chartFrameNormGlobalSmoothCoordMatrix_dirDeriv_pullback_contDiffOn_chart
     (i k l : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
       (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
-        extDerivFun
+        mvfderiv I
           (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartBasisVecFiber (I := I) α l
@@ -304,7 +303,7 @@ theorem chartFrameNormGlobalSmoothCoordMatrix_dirDeriv_pullback_contDiffOn_chart
   refine (euclidPartial_chartPushedRaw_coordMatrix_contDiffOn
     (I := I) (M := M) g α i k l).congr ?_
   intro y hy
-  exact extDerivFun_pull_eq_euclidPartial_on_target
+  exact mvfderiv_pull_eq_euclidPartial_on_target
     (I := I) (M := M) g α i k l hy
 
 end TensorRegularity

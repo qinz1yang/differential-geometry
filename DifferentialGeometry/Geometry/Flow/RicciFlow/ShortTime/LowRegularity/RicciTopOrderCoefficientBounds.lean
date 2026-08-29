@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibr
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
@@ -55,6 +54,7 @@ private theorem operatorFieldComposition_permutation_eq_reindexCoefficient
       Φ.toSection x) (slotPermCLM (I := I) ρ x D) = _
   rw [slotPermCLM_apply]
 
+omit [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_permutation_left
     (g : SmoothRiemannianMetric I M) {d : ℕ}
     (ρ : Equiv.Perm (Fin d)) (S : SmoothCcTensor g d d) (x : M) :
@@ -92,6 +92,7 @@ private theorem connectionDifferenceLowOrderOperator_decomposition
               permCoeff (I := I) (M := M) g
                 (Equiv.swap (1 : Fin 3) 2)))) := rfl
 
+omit [SigmaCompactSpace M] in
 theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient_le :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (g gm : SmoothRiemannianMetric I M)
@@ -247,6 +248,7 @@ theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient
     _ ≤ n * (3 * F) := mul_le_mul_of_nonneg_left hconn (by positivity)
     _ = K := by dsimp only [K]; ring
 
+omit [SigmaCompactSpace M] in
 theorem exists_ricciConnectionDifferenceTopOrderCoefficient_path_riemannianFiberNormSq_le :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -312,6 +314,7 @@ theorem exists_ricciConnectionDifferenceTopOrderCoefficient_path_riemannianFiber
       simp only [K]
       ring
 
+omit [SigmaCompactSpace M] in
 theorem exists_topOrderKernel_path_riemannianFiberNormSq_le :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)

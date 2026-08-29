@@ -29,12 +29,12 @@ omit [NeZero (Module.finrank Real E)]
     in
 private theorem chartBasisVec_open
     (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (a x : U)
+    (a x : U)
     (hx : (x : M) ∈ (chartAt H (a : M)).source)
     (i : Fin (Module.finrank Real E)) :
     chartBasisVecFiber (I := I) a i x =
       chartBasisVecFiber (I := I) (a : M) i (x : M) := by
-  letI : Nonempty U := ⟨a⟩
+  let : Nonempty U := ⟨a⟩
   have hxU : x ∈ (chartAt H a).source := by
     rw [TopologicalSpace.Opens.chartAt_eq,
       OpenPartialHomeomorph.subtypeRestr_source]
@@ -53,7 +53,7 @@ omit [NeZero (Module.finrank Real E)]
     in
 theorem chartGram_open
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (a x : U)
+    [T2Space U] (a x : U)
     (hx : (x : M) ∈ (chartAt H (a : M)).source)
     (i j : Fin (Module.finrank Real E)) :
     chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a x i j =
@@ -67,12 +67,12 @@ omit [NeZero (Module.finrank Real E)]
     in
 private theorem chartGramOnE_open [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (a : U)
+    [T2Space U] (a : U)
     (i j : Fin (Module.finrank Real E)) :
     chartGramOnE (I := I) (g.restrictOpen (I := I) U) a i j
         =ᶠ[nhds (extChartAt I a a)]
       chartGramOnE (I := I) g (a : M) i j := by
-  letI : Nonempty U := ⟨a⟩
+  let : Nonempty U := ⟨a⟩
   filter_upwards [extChartAt_target_mem_nhds (I := I) a] with y hy
   change chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a
       ((extChartAt I a).symm y) i j =
@@ -101,14 +101,14 @@ private theorem chartGramOnE_open [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffel_open [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (a : U)
+    [T2Space U] (a : U)
     (i j k : Fin (Module.finrank Real E)) :
     chartChristoffel (I := I) (g.restrictOpen (I := I) U) a i j k
         (extChartAt I a a) =
       chartChristoffel (I := I) g (a : M) i j k
         (extChartAt I (a : M) (a : M)) := by
   classical
-  letI : Nonempty U := ⟨a⟩
+  let : Nonempty U := ⟨a⟩
   set y₀ : E := extChartAt I a a with hy₀
   have hy_eq : extChartAt I a a = extChartAt I (a : M) (a : M) := rfl
   rw [show extChartAt I (a : M) (a : M) = y₀ from hy_eq.symm.trans hy₀]
@@ -171,7 +171,7 @@ theorem christoffel_open [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem contr_open [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (a : U) (v w : E) :
+    [T2Space U] (a : U) (v w : E) :
     chartChristoffelContraction (I := I) (g.restrictOpen (I := I) U) a v w
         (extChartAt I a a) =
       chartChristoffelContraction (I := I) g (a : M) v w
@@ -190,7 +190,7 @@ theorem contr_open [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem geodesicEq_open_iff [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (gamma : Real → U) (t : Real) :
+    [T2Space U] (gamma : Real → U) (t : Real) :
     HasGeodesicEquationAt (I := I) (g.restrictOpen (I := I) U) gamma t ↔
       HasGeodesicEquationAt (I := I) g (fun s => (gamma s : M)) t := by
   have hcurve : (fun s => extChartAt I (gamma t) (gamma s)) =
@@ -223,7 +223,7 @@ private theorem geodesicEq_open_iff [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem geodesicOn_open_iff [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (gamma : Real → U) (s : Set Real) :
+    [T2Space U] (gamma : Real → U) (s : Set Real) :
     IsGeodesicOn (I := I) (g.restrictOpen (I := I) U) gamma s ↔
       IsGeodesicOn (I := I) g (fun t => (gamma t : M)) s := by
   constructor
@@ -235,7 +235,7 @@ theorem geodesicOn_open_iff [I.Boundaryless]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem geodesic_open_iff [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
-    [SigmaCompactSpace U] [T2Space U] (gamma : Real → U) :
+    [T2Space U] (gamma : Real → U) :
     IsGeodesic (I := I) (g.restrictOpen (I := I) U) gamma ↔
       IsGeodesic (I := I) g (fun t => (gamma t : M)) := by
   constructor

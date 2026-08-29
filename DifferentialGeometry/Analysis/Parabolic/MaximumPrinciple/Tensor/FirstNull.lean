@@ -6,7 +6,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Connection
@@ -306,7 +305,7 @@ theorem nablaEval_extDeriv
     (hcovV :
       ∀ q : Fin 2, ((cov (fun p : M => V q p) x) (Y x)) = 0) :
     nablaB x (Fin.cons (Y x) (vec2 (I := I) v v)) =
-      extDerivFun (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
+      mvfderiv (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
         x (Y x) := by
   have hslots : (fun q : Fin 2 => V q x) = vec2 (I := I) v v := by
     funext q
@@ -346,7 +345,7 @@ private theorem nablaEval_ker
     (hkerL : ∀ w : TangentSpace I x, B x (vec2 (I := I) v w) = 0)
     (hkerR : ∀ w : TangentSpace I x, B x (vec2 (I := I) w v) = 0) :
     nablaB x (Fin.cons (Y x) (vec2 (I := I) v v)) =
-      extDerivFun (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
+      mvfderiv (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
         x (Y x) := by
   have hslots : (fun q : Fin 2 => V q x) = vec2 (I := I) v v := by
     funext q
@@ -413,7 +412,7 @@ private theorem nablaEval_ker_tangent
     (hkerR : ∀ w : TangentSpace I x, B x (vec2 (I := I) w v) = 0)
     (A : TangentSpace I x) :
     nablaB x (Fin.cons A (vec2 (I := I) v v)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) x A := by
   obtain ⟨Ysec, hYsec⟩ :=
     ContMDiffSection.exists_eq_at_gen
@@ -443,7 +442,7 @@ private theorem deriv_eval_zero_left
     (hA : A x = 0)
     (hV : V x = v)
     (hkerR : ∀ w : TangentSpace I x, B x (vec2 (I := I) w v) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun p : M => B p (vec2 (I := I) (A p) (V p))) x (X x) = 0 := by
   let U : Fin 2 ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -524,7 +523,7 @@ private theorem deriv_eval_zero_right
     (hV : V x = v)
     (hA : A x = 0)
     (hkerL : ∀ w : TangentSpace I x, B x (vec2 (I := I) v w) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun p : M => B p (vec2 (I := I) (V p) (A p))) x (X x) = 0 := by
   let U : Fin 2 ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -609,7 +608,7 @@ private theorem deriv_eval_zero_left_C1
     (hA : A x = 0)
     (hV : V x = v)
     (hkerR : ∀ w : TangentSpace I x, B x (vec2 (I := I) w v) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun p : M => B p (vec2 (I := I) (A p) (V p))) x (X x) = 0 := by
   let U : Fin 2 -> (p : M) -> TangentSpace I p :=
     Fin.cons A (fun _ : Fin 1 => fun p : M => V p)
@@ -711,7 +710,7 @@ private theorem deriv_eval_zero_right_C1
     (hV : V x = v)
     (hA : A x = 0)
     (hkerL : ∀ w : TangentSpace I x, B x (vec2 (I := I) v w) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun p : M => B p (vec2 (I := I) (V p) (A p))) x (X x) = 0 := by
   let U : Fin 2 -> (p : M) -> TangentSpace I p :=
     Fin.cons (fun p : M => V p) (fun _ : Fin 1 => A)
@@ -813,7 +812,7 @@ theorem nabla2Eval_extDeriv
     (hcovV :
       ∀ q : Fin 2, ((cov (fun p : M => V q p) x) (X x)) = 0) :
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => nablaB p (Fin.cons (Y p) (fun q : Fin 2 => V q p)))
         x (X x) := by
   let W : Fin 3 ->
@@ -882,7 +881,7 @@ private theorem nabla2Eval_extDeriv_oneSec_corr
     (hV : Vsec x = v)
     (hcovV : ((cov (fun p : M => Vsec p) x) (X x)) = 0) :
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => nablaB p (Fin.cons (Y p) (vec2 (I := I) (Vsec p) (Vsec p))))
         x (X x) -
       nablaB x
@@ -937,7 +936,8 @@ private theorem nabla2Eval_extDeriv_oneSec_corr
               (Y x) (vec2 (I := I) v v))
             1 ((cov (fun p : M => W 1 p) x) (X x))) = 0 := by
       have hz : ((cov (fun p : M => W 1 p) x) (X x)) = 0 := by
-        simpa [W, Fin.cons_succ] using hcovV
+        change ((cov (fun p : M => Vsec p) x) (X x)) = 0
+        exact hcovV
       rw [hz]
       exact (nablaB x).map_update_zero
         (Fin.cons (n := 2) (α := fun _ : Fin 3 => TangentSpace I x)
@@ -949,7 +949,8 @@ private theorem nabla2Eval_extDeriv_oneSec_corr
               (Y x) (vec2 (I := I) v v))
             2 ((cov (fun p : M => W 2 p) x) (X x))) = 0 := by
       have hz : ((cov (fun p : M => W 2 p) x) (X x)) = 0 := by
-        simpa [W, Fin.cons_succ] using hcovV
+        change ((cov (fun p : M => Vsec p) x) (X x)) = 0
+        exact hcovV
       rw [hz]
       exact (nablaB x).map_update_zero
         (Fin.cons (n := 2) (α := fun _ : Fin 3 => TangentSpace I x)
@@ -995,22 +996,22 @@ private theorem nabla2Eval_extDeriv_oneSec_corr_phi
     (hkerL : ∀ w : TangentSpace I x, B x (vec2 (I := I) v w) = 0)
     (hkerR : ∀ w : TangentSpace I x, B x (vec2 (I := I) w v) = 0) :
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => nablaB p (Fin.cons (Y p) (vec2 (I := I) (Vsec p) (Vsec p))))
         x (X x) -
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) x
         ((cov (fun p : M => Y p) x) (X x)) := by
   let A : TangentSpace I x := (cov (fun p : M => Y p) x) (X x)
   have hA :
       nablaB x (Fin.cons A (vec2 (I := I) v v)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) x A :=
     nablaEval_ker_tangent (I := I) (M := M) hreal1 Vsec hV hkerL hkerR A
   calc
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v)))
         =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => nablaB p (Fin.cons (Y p) (vec2 (I := I) (Vsec p) (Vsec p))))
         x (X x) -
       nablaB x
@@ -1018,15 +1019,15 @@ private theorem nabla2Eval_extDeriv_oneSec_corr_phi
           exact nabla2Eval_extDeriv_oneSec_corr (I := I) (M := M)
             hreal2 X Y Vsec hV hcovV
     _ =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => nablaB p (Fin.cons (Y p) (vec2 (I := I) (Vsec p) (Vsec p))))
         x (X x) -
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) x
         ((cov (fun p : M => Y p) x) (X x)) := by
           simpa [A] using congrArg
             (fun z : Real =>
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                 (fun p : M =>
                   nablaB p (Fin.cons (Y p) (vec2 (I := I) (Vsec p) (Vsec p))))
                 x (X x) - z)
@@ -1065,20 +1066,20 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
     (hdphi :
       MDifferentiableAt I 𝓘(Real, Real)
         (fun p : M =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun q : M => B q (vec2 (I := I) (V q) (V q))) p (Y p)) x) :
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun q : M => B q (vec2 (I := I) (V q) (V q))) p (Y p))
         x (X x) -
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M => B p (vec2 (I := I) (V p) (V p))) x
         ((cov (fun p : M => Y p) x) (X x)) := by
   let phi : M -> Real := fun p => B p (vec2 (I := I) (V p) (V p))
   let A : (p : M) -> TangentSpace I p := fun p => ((cov (fun q : M => V q) p) (Y p))
-  let dphiY : M -> Real := fun p => extDerivFun (I := I) phi p (Y p)
+  let dphiY : M -> Real := fun p => mvfderiv (I := I) phi p (Y p)
   let corrL : M -> Real := fun p => B p (vec2 (I := I) (A p) (V p))
   let corrR : M -> Real := fun p => B p (vec2 (I := I) (V p) (A p))
   have hV_at :
@@ -1194,25 +1195,25 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
     rw [hprod, hsum]
     ring
   have hleft_deriv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun p : M =>
           nablaB p (Fin.cons (Y p) (vec2 (I := I) (V p) (V p)))) x (X x) =
-      extDerivFun (I := I) dphiY x (X x) := by
+      mvfderiv (I := I) dphiY x (X x) := by
     rw [hleft_fun]
     have hsub1 :
         MDifferentiableAt I 𝓘(Real, Real) (fun p : M => dphiY p - corrL p) x :=
       hdphi.sub hcorrL
-    rw [extDerivFun_sub_at (I := I) (x := x) (v := X x) hsub1 hcorrR]
-    rw [extDerivFun_sub_at (I := I) (x := x) (v := X x) hdphi hcorrL]
+    rw [mvfderiv_sub_at (I := I) (x := x) (v := X x) hsub1 hcorrR]
+    rw [mvfderiv_sub_at (I := I) (x := x) (v := X x) hdphi hcorrL]
     have hA0 : A x = 0 := by
       simp [A, hcovVY]
     have hcorrL_zero :
-        extDerivFun (I := I) corrL x (X x) = 0 := by
+        mvfderiv (I := I) corrL x (X x) = 0 := by
       simpa [corrL] using
         deriv_eval_zero_left_C1 (I := I) (M := M)
           hreal1 X V A hA_at' hA0 hV hkerR
     have hcorrR_zero :
-        extDerivFun (I := I) corrR x (X x) = 0 := by
+        mvfderiv (I := I) corrR x (X x) = 0 := by
       simpa [corrR] using
         deriv_eval_zero_right_C1 (I := I) (M := M)
           hreal1 X V A hA_at' hV hA0 hkerL
@@ -1266,50 +1267,50 @@ private theorem nabla2Eval_hess
     (hdphi :
       MDifferentiableAt I 𝓘(Real, Real)
         (fun p : M =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun q : M => B q (vec2 (I := I) (V q) (V q))) p (Y p)) x) :
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v))) =
       Hess x (vec2 (I := I) (X x) (Y x)) := by
   let phi : M -> Real := fun p => B p (vec2 (I := I) (V p) (V p))
   have hprod :
       nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v))) =
-        extDerivFun (I := I)
-          (fun p : M => extDerivFun (I := I) phi p (Y p)) x (X x) -
-        extDerivFun (I := I) phi x ((cov (fun p : M => Y p) x) (X x)) := by
+        mvfderiv (I := I)
+          (fun p : M => mvfderiv (I := I) phi p (Y p)) x (X x) -
+        mvfderiv (I := I) phi x ((cov (fun p : M => Y p) x) (X x)) := by
     simpa [phi] using
       nabla2Eval_extDeriv_oneSec_hess (I := I) (M := M)
         hreal1 hreal2 X Y V hV hcovVX hcovVY hA_at hkerL hkerR hdphi
   have hnabla_eval :
       nablaDuAt (I := I) cov X du x (fun _ : Fin 1 => Y x) =
-        extDerivFun (I := I) (fun y : M => du y (fun _ : Fin 1 => Y y))
+        mvfderiv (I := I) (fun y : M => du y (fun _ : Fin 1 => Y y))
           x (X x) -
         du x (fun _ : Fin 1 => (cov (fun y : M => Y y) x) (X x)) := by
     simpa [nablaDuAt] using
       DifferentialGeometry.Tensor.Coordinates.nabla0SFun_one_eval_smooth_slots (I := I) cov X Y du x
   have hdu_fun :
       (fun y : M => du y (fun _ : Fin 1 => Y y)) =
-        (fun y : M => extDerivFun (I := I) phi y (Y y)) := by
+        (fun y : M => mvfderiv (I := I) phi y (Y y)) := by
     funext y
     rw [hdu y]
-    exact differential1FormFun_apply_eq_extDerivFun (I := I) phi y (Y y)
+    exact differential1FormFun_apply_eq_mvfderiv (I := I) phi y (Y y)
   have hdu_corr :
       du x (fun _ : Fin 1 => (cov (fun y : M => Y y) x) (X x)) =
-        extDerivFun (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := by
+        mvfderiv (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := by
     rw [hdu x]
-    exact differential1FormFun_apply_eq_extDerivFun
+    exact differential1FormFun_apply_eq_mvfderiv
       (I := I) phi x ((cov (fun y : M => Y y) x) (X x))
   have hnabla_phi :
       nablaDuAt (I := I) cov X du x (fun _ : Fin 1 => Y x) =
-        extDerivFun (I := I) (fun y : M => extDerivFun (I := I) phi y (Y y))
+        mvfderiv (I := I) (fun y : M => mvfderiv (I := I) phi y (Y y))
           x (X x) -
-        extDerivFun (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := by
+        mvfderiv (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := by
     rw [hnabla_eval, hdu_fun, hdu_corr]
   calc
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v)))
         =
-      extDerivFun (I := I) (fun y : M => extDerivFun (I := I) phi y (Y y))
+      mvfderiv (I := I) (fun y : M => mvfderiv (I := I) phi y (Y y))
         x (X x) -
-      extDerivFun (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := hprod
+      mvfderiv (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := hprod
     _ = nablaDuAt (I := I) cov X du x (fun _ : Fin 1 => Y x) := hnabla_phi.symm
     _ = Hess x (vec2 (I := I) (X x) (Y x)) := (hHess X (Y x)).symm
 
@@ -1379,7 +1380,7 @@ theorem nabla2Eval_hess_slots
   have hdphi :
       MDifferentiableAt I 𝓘(Real, Real)
         (fun p : M =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun q : M => B q (vec2 (I := I) (V q) (V q))) p (Ysec p)) x := by
     simpa [phi] using dphi_apply_mdiffAt (I := I) phi hphi Ysec x
   have hcalc :=
@@ -1430,7 +1431,7 @@ theorem nablaEval_zero
     {x : M} {v : TangentSpace I x}
     (hV : ∀ q : Fin 2, V q x = v)
     (hphi :
-      extDerivFun (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
+      mvfderiv (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
         x (X x) = 0)
     (hcovV :
       ∀ q : Fin 2, ((cov (fun p : M => V q p) x) (X x)) = 0) :

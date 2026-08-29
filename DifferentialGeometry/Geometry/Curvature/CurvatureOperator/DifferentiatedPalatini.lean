@@ -133,10 +133,10 @@ private theorem covDConnectionDifference_smooth
     ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (T% (fun p => covDerivConnectionDifference (I := I) gB g₀
         (fun b => D b) (fun b => X b) (fun b => Y b) p)) := by
-  haveI : CovariantDerivative.ContMDiffCovariantDerivative
+  let _ : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) gB) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) gB
-  haveI : CovariantDerivative.ContMDiffCovariantDerivative
+  let _ : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₀) (∞ : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₀
   have hcast : ∀ (S : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -211,7 +211,7 @@ private theorem cov_sub_apply
     simpa using cov.isCovariantDerivativeOnUniv.smul_const (-1 : ℝ) hTx
   rw [hST, cov.isCovariantDerivativeOnUniv.add hSx
     (mdifferentiableAt_neg_section hTx), hneg]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   have hsmul :
       (((-1 : ℝ) • cov.toFun T x) v) =
         (-1 : ℝ) • cov.toFun T x v := rfl
@@ -229,8 +229,11 @@ private theorem cov_add_apply
       cov.toFun S x v + cov.toFun T x v := by
   have hSx := (hS x).mdifferentiableAt (by simp)
   have hTx := (hT x).mdifferentiableAt (by simp)
-  simpa using congrArg (fun L => L v)
-    (cov.isCovariantDerivativeOnUniv.add hSx hTx)
+  have hST : (fun p => S p + T p) = S + T := by
+    funext p
+    rfl
+  rw [hST]
+  exact congrArg (fun L => L v) (cov.isCovariantDerivativeOnUniv.add hSx hTx)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem diffSec_sub
@@ -238,7 +241,7 @@ private theorem diffSec_sub
     {X S T : Π b : M, TangentSpace I b} (x : M) :
     diffSec cov₀ cov₁ X (fun p => S p - T p) x =
       diffSec cov₀ cov₁ X S x - diffSec cov₀ cov₁ X T x := by
-  simp only [diffSec, map_sub, ContinuousLinearMap.sub_apply]
+  simp only [diffSec, map_sub, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem cov_palQuad

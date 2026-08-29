@@ -42,7 +42,14 @@ theorem fderiv_deriv_time_comm {G : ℝ → E → F} (t : ℝ) (x : E)
         (hasFDerivAt_const (t : ℝ) x).prodMk (hasFDerivAt_id x)
       exact (hHdiff1 (t, x)).hasFDerivAt.comp x hpair
     have happly := (ContinuousLinearMap.apply ℝ F ((1, 0) : ℝ × E)).hasFDerivAt.comp x hcomp
-    simpa [ContinuousLinearMap.flip_apply] using happly.fderiv
+    have happlyFDeriv := happly.fderiv
+    change fderiv ℝ (fun y => fderiv ℝ H (t, y) (1, 0)) x =
+      (ContinuousLinearMap.apply ℝ F (1, 0)).comp
+        ((fderiv ℝ (fderiv ℝ H) (t, x)).comp
+          (ContinuousLinearMap.inr ℝ ℝ E)) at happlyFDeriv
+    rw [happlyFDeriv]
+    ext z
+    rfl
   have hRHS : deriv (fun s => (fderiv ℝ H (s, x)).comp (ContinuousLinearMap.inr ℝ ℝ E)) t
       = (fderiv ℝ (fderiv ℝ H) (t, x) (1, 0)).comp (ContinuousLinearMap.inr ℝ ℝ E) := by
     have hcomp : HasDerivAt (fun s : ℝ => fderiv ℝ H (s, x))
@@ -207,7 +214,14 @@ theorem fderiv_derivWithin_time_comm {G : ℝ → E → F} {sₜ : Set ℝ} {V :
     have happly := (ContinuousLinearMap.apply ℝ F
       ((1, 0) : ℝ × E)).hasFDerivAt.comp_hasFDerivWithinAt
       x hcomp
-    simpa [ContinuousLinearMap.flip_apply] using (happly.hasFDerivAt (hV.mem_nhds hx)).fderiv
+    have happlyFDeriv := (happly.hasFDerivAt (hV.mem_nhds hx)).fderiv
+    change fderiv ℝ (fun y => fderivWithin ℝ H S (t, y) (1, 0)) x =
+      (ContinuousLinearMap.apply ℝ F (1, 0)).comp
+        ((fderivWithin ℝ (fderivWithin ℝ H S) S (t, x)).comp
+          (ContinuousLinearMap.inr ℝ ℝ E)) at happlyFDeriv
+    rw [happlyFDeriv]
+    ext z
+    rfl
   have hRHS : derivWithin (fun s => (fderivWithin ℝ H S (s, x)).comp
     (ContinuousLinearMap.inr ℝ ℝ E))
         sₜ t

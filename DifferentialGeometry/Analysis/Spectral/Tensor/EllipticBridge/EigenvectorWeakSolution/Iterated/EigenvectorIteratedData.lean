@@ -53,7 +53,7 @@ private lemma chartTargetEuclid_sdiff_chartPouKernel_subset (α : M) :
     chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  Set.diff_subset
+  Set.sdiff_subset
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 lemma chosenWeakPartial'_ae_zero_off_chartPouKernel_of_ae_zero
@@ -381,15 +381,15 @@ private lemma tensorChartBilinear_uniform_diffQuot_bound_of_data
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
     (h_room : Metric.cthickening R₀ (closure Ω'') ⊆
       chartTargetEuclid (I := I) (M := M) α) :
-    ∃ M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
-      (∀ j k, 0 ≤ M_bound j k) ∧
+    ∃ MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
+      (∀ j k, 0 ≤ MBound j k) ∧
       (∀ (j k : Fin (Module.finrank ℝ E)) (h : ℝ),
         0 < |h| → |h| ≤ R₀ / 16 →
           eLpNorm
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial j)) 2
+              (d := Module.finrank ℝ E) k h (D.weakPartial j)) 2
             ((volume : Measure EuclN).restrict Ω'')
-          ≤ ENNReal.ofReal (M_bound j k)) := by
+          ≤ ENNReal.ofReal (MBound j k)) := by
   classical
   set K_α : Set EuclN := closure Ω'' with hK_α_def
   have hK_α_compact : IsCompact K_α := hΩ''_compact_closure
@@ -459,13 +459,13 @@ private lemma tensorChartBilinear_uniform_diffQuot_bound_of_data
         rw [hΩ'_def]
         exact Metric.cthickening_subset_thickening' (by linarith) h_le K_α
       exact (h1.trans h2).trans h3
-  obtain ⟨M_bound, hM_nn, h_bd⟩ :=
+  obtain ⟨MBound, hM_nn, h_bd⟩ :=
     chartBilinearH1Compl_uniform_diffQuot_bound_of_data
       (I := I) (M := M) (g := g) (α := α) D.toChartData
       hη_smooth hη_supp hη_range hN_nn h_fderiv_eta
       hΩ'_open h_closureΩ'_in_chart hΩ'_compact_closure
       hη_in_Ω' hε_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
-  refine ⟨M_bound, hM_nn, fun j k h hh_pos hh_le => ?_⟩
+  refine ⟨MBound, hM_nn, fun j k h hh_pos hh_le => ?_⟩
   exact h_bd j k h hh_pos (by rw [hε_def] at *; linarith)
 
 omit [CompleteSpace E] in
@@ -478,8 +478,8 @@ lemma tensorChartBilinear_chartComponent_regularity_of_data
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
     (h_room : Metric.cthickening R₀ (closure Ω'') ⊆
       chartTargetEuclid (I := I) (M := M) α) :
-    DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.u_chart Ω'' ∧
-      (∀ j, DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 (D.weak_partial j) Ω'') := by
+    DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.uChart Ω'' ∧
+      (∀ j, DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 (D.weakPartial j) Ω'') := by
   classical
   have h_closureΩ''_in_chart :
       closure Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α :=
@@ -491,7 +491,7 @@ lemma tensorChartBilinear_chartComponent_regularity_of_data
   have h_room_dq : Metric.cthickening R_dq (closure Ω'') ⊆
       chartTargetEuclid (I := I) (M := M) α :=
     (Metric.cthickening_mono (by rw [hR_dq_def]; linarith) (closure Ω'')).trans h_room
-  obtain ⟨M_bound, hM_nn, h_uniform_bd⟩ :=
+  obtain ⟨MBound, hM_nn, h_uniform_bd⟩ :=
     tensorChartBilinear_uniform_diffQuot_bound_of_data
       (g := g) (r := r) (s := s) (α := α) (P₀ := P₀) D
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
@@ -500,24 +500,24 @@ lemma tensorChartBilinear_chartComponent_regularity_of_data
       (g := g) (r := r) (s := s) (α := α) (P₀ := P₀) D
       hΩ''_open hΩ''_compact_closure hR_dq_pos h_room_dq hM_nn h_uniform_bd
   have h_dwp_memLp_Ω'' :
-      ∀ j, MemLp (D.weak_partial j) 2 ((volume : Measure EuclN).restrict Ω'') :=
+      ∀ j, MemLp (D.weakPartial j) 2 ((volume : Measure EuclN).restrict Ω'') :=
     fun j => (D.weak_partial_locally_memLp j hΩ''_compact_closure
       h_closureΩ''_in_chart).mono_measure
         (Measure.restrict_mono subset_closure le_rfl)
   have h_dwp_weak_uChart_Ω'' :
       ∀ j, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
-        (D.weak_partial j) D.u_chart Ω'' :=
+        (D.weakPartial j) D.uChart Ω'' :=
     fun j => DeGiorgi.HasWeakPartialDeriv.restrict hΩ''_open hΩ''_in_chart
       (D.weak_partial_isWeakPartial j)
   have h_uChart_memLp_Ω'' :
-      MemLp D.u_chart 2 ((volume : Measure EuclN).restrict Ω'') :=
+      MemLp D.uChart 2 ((volume : Measure EuclN).restrict Ω'') :=
     (D.memLp_volume_restrict_u_chart hΩ''_compact_closure
       hΩ''_compact_closure.isClosed.measurableSet h_closureΩ''_in_chart).mono_measure
         (Measure.restrict_mono subset_closure le_rfl)
   have h_uChart_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D.u_chart Ω'' :=
+      D.uChart Ω'' :=
     ⟨h_uChart_memLp_Ω'', fun j =>
-      ⟨D.weak_partial j, h_dwp_memLp_Ω'' j, h_dwp_weak_uChart_Ω'' j⟩⟩
+      ⟨D.weakPartial j, h_dwp_memLp_Ω'' j, h_dwp_weak_uChart_Ω'' j⟩⟩
   refine ⟨h_uChart_memW1p, fun j => ⟨h_dwp_memLp_Ω'' j, fun k => ?_⟩⟩
   obtain ⟨g_jk, hg_jk_memLp, hg_jk_partial, _hg_jk_norm⟩ := h_h2 j k
   exact ⟨g_jk, hg_jk_memLp, hg_jk_partial⟩

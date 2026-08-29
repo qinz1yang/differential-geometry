@@ -271,7 +271,7 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β
               ‖tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i‖) :=
-    mul_le_mul_of_nonneg_left h_eig_bd (zero_le _)
+    mul_le_mul_of_nonneg_left h_eig_bd (zero_le)
   have h_mul_assoc :
       ENNReal.ofReal i.fst.val *
         (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -296,7 +296,7 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     refine ENNReal.ofReal_le_ofReal ?_
     have h_reorder : i.fst.val * (CN * (i.fst.val)⁻¹ ^ eN)
         = CN * (i.fst.val * (i.fst.val)⁻¹ ^ eN) := by ring
@@ -369,7 +369,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i‖ := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   intro K' hK' i P k
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
@@ -508,7 +508,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
               ‖tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i‖) :=
-    mul_le_mul_of_nonneg_left (h_chosen_le.trans h_eig_bd) (zero_le _)
+    mul_le_mul_of_nonneg_left (h_chosen_le.trans h_eig_bd) (zero_le)
   have h_mul_assoc :
       ENNReal.ofReal i.fst.val *
         (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -533,7 +533,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     refine ENNReal.ofReal_le_ofReal ?_
     have h_reorder : i.fst.val * (CN * (i.fst.val)⁻¹ ^ eN)
         = CN * (i.fst.val * (i.fst.val)⁻¹ ^ eN) := by ring
@@ -607,7 +607,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i‖ := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   set d : ℕ := Module.finrank ℝ E with hd_def
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
@@ -896,7 +896,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal (Cu (K' + 1)) * ((CT : ℝ≥0∞) * RHS_each) := by
     refine h_cutoff_le.trans ?_
-    exact mul_le_mul_of_nonneg_left h_double_sum_le (zero_le _)
+    exact mul_le_mul_of_nonneg_left h_double_sum_le (zero_le)
   rw [h_norm_eq, h_smul_eq]
   have h_norm_eq_val : ‖i.fst.val‖ₑ = ENNReal.ofReal i.fst.val := by
     rw [Real.enorm_eq_ofReal hμ_pos.le]
@@ -912,7 +912,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
       ≤ ENNReal.ofReal i.fst.val *
           (ENNReal.ofReal (Cu (K' + 1)) * ((CT : ℝ≥0∞) * RHS_each)) :=
-    mul_le_mul_of_nonneg_left (h_chosen_le.trans h_cutoff_le_final) (zero_le _)
+    mul_le_mul_of_nonneg_left (h_chosen_le.trans h_cutoff_le_final) (zero_le)
   have hCu_nn_K1 : 0 ≤ Cu (K' + 1) := hCu_nn _
   have hCT_real_nn : (0 : ℝ) ≤ (CT : ℝ) := Nat.cast_nonneg _
   have hRHS_each_eq :
@@ -1040,7 +1040,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     exact ENNReal.ofReal_le_ofReal h_scalar_le
   calc
     ENNReal.ofReal i.fst.val *

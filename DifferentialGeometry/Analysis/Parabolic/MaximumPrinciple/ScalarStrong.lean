@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
 import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import Mathlib.Topology.Connected.Clopen
 
+
 set_option autoImplicit false
 
 namespace DifferentialGeometry.Analysis.Parabolic
@@ -37,12 +38,17 @@ private theorem strongChartRadiusSq_contMDiffOn
       (fun z : E => ‖(toEuclidean (E := E)) (z - extChartAt I a c)‖ ^ 2) := by
     exact ((toEuclidean (E := E)).contDiff.comp
       (contDiff_id.sub contDiff_const)).norm_sq Real
-  simpa only [Function.comp_apply] using
-    (hq.contMDiff.contMDiffAt.comp x
-      (((contMDiffOn_extChartAt (I := I) (x := a)) x hx).contMDiffAt
-        ((chartAt H a).open_source.mem_nhds hx))).contMDiffWithinAt
+  rw [show (fun x : M =>
+      ‖(toEuclidean (E := E)) (extChartAt I a x - extChartAt I a c)‖ ^ 2) =
+        (fun z : E => ‖(toEuclidean (E := E)) (z - extChartAt I a c)‖ ^ 2) ∘
+          extChartAt I a by
+    funext y
+    rfl]
+  exact (hq.contMDiff.contMDiffAt.comp x
+    (((contMDiffOn_extChartAt (I := I) (x := a)) x hx).contMDiffAt
+      ((chartAt H a).open_source.mem_nhds hx))).contMDiffWithinAt
 
-private def strongPropagationRadius [T2Space M]
+private def strongPropagationRadius
     {a : M} (b : SmoothBumpFunction I a) (c : M) (Q : Real) (x : M) : Real :=
   b x * strongChartRadiusSq (I := I) a c x + Q * (1 - b x)
 
@@ -53,7 +59,7 @@ private def globalStrongStaticMetricFamily
   connection := fun _ => LeviCivita (I := I) g
   metricCompatible := by
     intro t
-    simpa using
+    simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
 
 private def shiftedStrongMetricFamily
@@ -82,7 +88,6 @@ omit [FiniteDimensional Real E] in
 
 private theorem globalStrongStaticMetricFamily_parabolicOperator
     [I.Boundaryless] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) (T : Real)
     (X : Real → (x : M) → TangentSpace I x)
     (f : Real → M → Real) {t : Real}
@@ -90,7 +95,7 @@ private theorem globalStrongStaticMetricFamily_parabolicOperator
     parabolicOperatorWithDrift (I := I) (globalStrongStaticMetricFamily (I := I) g)
         T X f t x =
       derivWithin (fun s => f s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨f t, hf⟩ x +
+        (ΔG (I := I) g ⟨f t, hf⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (f t) x)) := by
   have hlapAt := laplacianAt_eq_delta (I := I)
     (globalStrongStaticMetricFamily (I := I) g) t hf rfl x
@@ -121,7 +126,7 @@ private theorem strongPropagationRadius_contMDiff [T2Space M]
   exact hfirst.add (contMDiff_const.mul (contMDiff_const.sub b.contMDiff))
 
 omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_nonneg [T2Space M]
+private theorem strongPropagationRadius_nonneg
     {a c : M} (b : SmoothBumpFunction I a) {Q : Real} (hQ : 0 ≤ Q) (x : M) :
     0 ≤ strongPropagationRadius (I := I) b c Q x := by
   exact add_nonneg
@@ -129,7 +134,7 @@ private theorem strongPropagationRadius_nonneg [T2Space M]
     (mul_nonneg hQ (sub_nonneg.mpr b.le_one))
 
 omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_pos_of_ne [T2Space M]
+private theorem strongPropagationRadius_pos_of_ne
     {a c : M} (b : SmoothBumpFunction I a)
     (hc : c ∈ (chartAt H a).source) {Q : Real} (hQ : 0 < Q)
     {x : M} (hxc : x ≠ c) :
@@ -196,7 +201,7 @@ private theorem exists_strongPropagationRadius_sublevel_subset
     exact hK ⟨x, by simpa using hxU⟩
 
 omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_lt_imp [T2Space M]
+private theorem strongPropagationRadius_lt_imp
     {a c x : M} (b : SmoothBumpFunction I a) {Q R : Real}
     (hRQ : R < Q) (h : strongPropagationRadius (I := I) b c Q x < R) :
     0 < b x ∧ strongChartRadiusSq (I := I) a c x < Q := by
@@ -214,7 +219,7 @@ private theorem strongPropagationRadius_lt_imp [T2Space M]
   · exact (not_lt_of_ge hb0 hcase.1).elim
 
 omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_eventuallyEq [T2Space M]
+private theorem strongPropagationRadius_eventuallyEq
     {a c x : M} (b : SmoothBumpFunction I a)
     (hx : x ∈ (chartAt H a).source)
     (hd : dist (extChartAt I a x) (extChartAt I a a) < b.rIn)
@@ -235,8 +240,8 @@ private theorem fderiv_chartRadiusSq_apply_self (z z0 : E) :
         fun y => id y - z0) x‖ ^ 2) z (z - z0) = _
   rw [h.fderiv]
   simp only [id_eq, Function.comp_apply, map_sub, ContinuousLinearMap.comp_id,
-    ContinuousLinearMap.sub_comp, ContinuousLinearMap.coe_smul',
-    ContinuousLinearMap.coe_sub', ContinuousLinearMap.coe_comp', coe_innerSL_apply,
+    ContinuousLinearMap.sub_comp, FunLike.coe_smul,
+    FunLike.coe_sub, ContinuousLinearMap.coe_comp, coe_innerSL_apply,
     ContinuousLinearEquiv.coe_coe, Pi.smul_apply, Pi.sub_apply, nsmul_eq_mul,
     Nat.cast_ofNat]
   rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq,
@@ -252,32 +257,35 @@ private theorem strongChartRadiusSq_mfderiv_ne_zero
   let z : E := extChartAt I a x
   let z0 : E := extChartAt I a c
   let q : E → Real := fun w => ‖(toEuclidean (E := E)) (w - z0)‖ ^ 2
+  have hq : MDifferentiableAt 𝓘(Real, E) 𝓘(Real, Real) q z := by
+    have hqcd : ContMDiff 𝓘(Real, E) 𝓘(Real, Real) ∞ q :=
+      (((toEuclidean (E := E)).contDiff.comp
+        (contDiff_id.sub contDiff_const)).norm_sq Real).contMDiff
+    exact hqcd.mdifferentiable (by simp) z
+  have hchart : MDifferentiableAt I 𝓘(Real, E) (extChartAt I a) x :=
+    mdifferentiableAt_extChartAt (I := I) hx
+  have hfun : strongChartRadiusSq (I := I) a c = q ∘ extChartAt I a := by
+    funext y
+    rfl
   have hcomp :
-      mfderiv I 𝓘(Real, Real) (strongChartRadiusSq (I := I) a c) x =
-        (fderiv Real q z).comp (mfderiv I 𝓘(Real, E) (extChartAt I a) x) := by
-    have hq : MDifferentiableAt 𝓘(Real, E) 𝓘(Real, Real) q z := by
-      have hqcd : ContMDiff 𝓘(Real, E) 𝓘(Real, Real) ∞ q :=
-        (((toEuclidean (E := E)).contDiff.comp
-          (contDiff_id.sub contDiff_const)).norm_sq Real).contMDiff
-      exact hqcd.mdifferentiable (by simp) z
-    have hchart : MDifferentiableAt I 𝓘(Real, E) (extChartAt I a) x :=
-      mdifferentiableAt_extChartAt (I := I) hx
-    simpa only [strongChartRadiusSq, q, z, mfderiv_eq_fderiv, Function.comp_apply] using
-      mfderiv_comp x hq hchart
+      mvfderiv I (strongChartRadiusSq (I := I) a c) x =
+        (mvfderiv 𝓘(Real, E) q z).comp
+          (mfderiv I 𝓘(Real, E) (extChartAt I a) x) := by
+    rw [hfun]
+    exact mvfderiv_comp x hq hchart
   intro hzero
-  have hqzero : fderiv Real q z = 0 := by
-    have hinv := isInvertible_mfderiv_extChartAt (I := I)
-      (show x ∈ (extChartAt I a).source by simpa [extChartAt_source] using hx)
-    apply ContinuousLinearMap.ext
-    intro v
-    obtain ⟨w, hw⟩ := hinv.surjective v
-    have happ := congrArg (fun L : TangentSpace I x →L[Real] Real => L w) hzero
-    rw [hcomp] at happ
-    simp only [ContinuousLinearMap.comp_apply] at happ
-    calc
-      fderiv Real q z v = fderiv Real q z
-          ((mfderiv I 𝓘(Real, E) (extChartAt I a) x) w) := by rw [hw]
-      _ = 0 := by simpa using happ
+  have hmvzero : mvfderiv I (strongChartRadiusSq (I := I) a c) x = 0 := by
+    simp [mvfderiv, hzero]
+  let v : TangentSpace 𝓘(Real, E) z :=
+    (NormedSpace.fromTangentSpace (𝕜 := Real) (E := E) z).symm (z - z0)
+  have hinv := isInvertible_mfderiv_extChartAt (I := I)
+    (show x ∈ (extChartAt I a).source by simpa [extChartAt_source] using hx)
+  obtain ⟨w, hw⟩ := hinv.surjective v
+  have happzero := congrArg
+    (fun L : TangentSpace I x →L[Real] Real => L w) hmvzero
+  rw [hcomp] at happzero
+  simp only [ContinuousLinearMap.comp_apply, zero_apply] at happzero
+  rw [hw] at happzero
   have hz_ne : z ≠ z0 := by
     intro hz
     apply hxc
@@ -294,14 +302,19 @@ private theorem strongChartRadiusSq_mfderiv_ne_zero
         (toEuclidean (E := E)) 0 by simpa using hL)
     exact (sub_ne_zero.mpr hz_ne) hsub
   have happ := fderiv_chartRadiusSq_apply_self (E := E) z z0
-  rw [hqzero] at happ
-  simp only [ContinuousLinearMap.zero_apply] at happ
+  have happmv : mvfderiv 𝓘(Real, E) q z v =
+      2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2 := by
+    dsimp [v]
+    simp only [mvfderiv, mfderiv_eq_fderiv]
+    change fderiv Real q z (z - z0) =
+      2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2
+    simpa [q] using happ
+  rw [happmv] at happzero
   have hpos : 0 < 2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2 := by
     positivity
-  linarith
+  exact hpos.ne' happzero
 
 private theorem strongPropagationRadius_gradient_ne_zero
-    [T2Space M] [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) {a c x : M}
     (b : SmoothBumpFunction I a) (hc : c ∈ (chartAt H a).source)
     (hx : x ∈ (chartAt H a).source)
@@ -320,7 +333,9 @@ private theorem strongPropagationRadius_gradient_ne_zero
   have hinner := inner_gradientFun (I := I) g
     (strongPropagationRadius (I := I) b c Q) x v
   rw [hgrad] at hinner
-  simpa using hinner.symm
+  apply (NormedSpace.fromTangentSpace
+    (strongPropagationRadius (I := I) b c Q x)).injective
+  simpa [mvfderiv] using hinner.symm
 
 omit [IsManifold I ∞ M] in
 private theorem strongChartRadiusSq_lt_imp_mem_core
@@ -415,7 +430,7 @@ private theorem exists_positive_terminal_cylinder
   exact le_of_lt hpos
 
 private theorem fixed_metric_spatial_zero_drift
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -431,7 +446,7 @@ private theorem fixed_metric_spatial_zero_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
   let P : Set M := {x | 0 < u T x}
@@ -502,7 +517,8 @@ private theorem fixed_metric_spatial_zero_drift
     have hQ : 0 < Q := sq_pos_of_pos hs
     have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
       apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
-      dsimp [strongChartRadiusSq, Q]
+      change ‖(toEuclidean (E := E))
+        (extChartAt I a a - extChartAt I a c)‖ < s
       simpa only [map_sub, norm_sub_rev] using hc_eucl
     obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
       exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP
@@ -569,9 +585,8 @@ private theorem fixed_metric_spatial_zero_drift
   exact hyP
 
 private theorem fixed_metric_lower_bound_from_positive_time
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T a m : Real} (ha : 0 < a) (haT : a ≤ T)
     (u : Real → M → Real)
@@ -584,7 +599,7 @@ private theorem fixed_metric_lower_bound_from_positive_time
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     (hinit : ∀ x : M, m ≤ u a x) :
     ∀ t ∈ Set.Icc a T, ∀ x : M, m ≤ u t x := by
   let S : Real := T - a
@@ -606,7 +621,12 @@ private theorem fixed_metric_lower_bound_from_positive_time
       exact ⟨⟨by linarith [ha, hp.1.1], by dsimp [S] at hp; linarith [hp.1.2]⟩,
         Set.mem_univ p.2⟩
     have hcomp := hu_cont.comp (by fun_prop) hmap
-    simpa [v] using hcomp.sub continuous_const.continuousOn
+    rw [show (fun p : Real × M => v p.1 p.2) =
+        ((fun p : Real × M => u p.1 p.2) ∘
+          fun p : Real × M => (a + p.1, p.2)) - fun _ => m by
+      funext p
+      rfl]
+    exact hcomp.sub continuous_const.continuousOn
   have hv0 : ∀ x : M, 0 ≤ v 0 x := by
     intro x
     simpa [v] using sub_nonneg.mpr (hinit x)
@@ -709,7 +729,11 @@ private theorem exists_positive_time_of_initial_value
         (spacetimeSlab (M := M) T) := by
       intro t ht
       exact ⟨ht, Set.mem_univ x⟩
-    simpa using hu_cont.comp (by fun_prop) hmap
+    rw [show (fun t : Real => u t x) =
+        (fun p : Real × M => u p.1 p.2) ∘ fun t : Real => (t, x) by
+      funext t
+      rfl]
+    exact hu_cont.comp (by fun_prop) hmap
   have htarget : Set.Ioi eta ∈ nhds (u 0 x) :=
     Ioi_mem_nhds (by dsimp [eta]; linarith)
   have hpre : (fun t : Real => u t x) ⁻¹' Set.Ioi eta ∈
@@ -728,7 +752,7 @@ private theorem exists_positive_time_of_initial_value
   exact ⟨t, ⟨ht, htT⟩, heta.trans hpos⟩
 
 private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -744,7 +768,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
     (hu_super : ∀ (s : Real) (hs : s ∈ Set.Icc 0 T) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 T) s -
-        Δ_g (I := I) g ⟨u s, hu_space s hs hspos⟩ x)
+        ΔG (I := I) g ⟨u s, hu_space s hs hspos⟩ x)
     {c : M} (hc : 0 < u t c) (y : M) :
     0 < u t y := by
   have hsub : Set.Icc (0 : Real) t ⊆ Set.Icc 0 T := by
@@ -761,7 +785,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
   have hu_super' : ∀ (s : Real) (hs : s ∈ Set.Icc 0 t) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 t) s -
-        Δ_g (I := I) g ⟨u s, hu_space' s hs hspos⟩ x := by
+        ΔG (I := I) g ⟨u s, hu_space' s hs hspos⟩ x := by
     intro s hs hspos x
     have hderiv := derivWithin_subset hsub
       ((uniqueDiffOn_Icc ht).uniqueDiffWithinAt hs)
@@ -774,7 +798,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
     hu_super' hc y
 
 private theorem fixed_metric_zero_drift
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -790,7 +814,7 @@ private theorem fixed_metric_zero_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
   intro t ht x
@@ -821,7 +845,7 @@ private theorem fixed_metric_zero_drift
   exact (not_lt_of_ge hlower hm).elim
 
 private theorem fixed_metric_positive_zero_drift
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -837,7 +861,7 @@ private theorem fixed_metric_positive_zero_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {t : Real} (ht : t ∈ Set.Icc 0 T) {x : M} (hx : 0 < u t x)
     (y : M) :
     0 < u T y := by
@@ -849,7 +873,7 @@ private theorem fixed_metric_positive_zero_drift
   linarith
 
 private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -869,7 +893,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
@@ -886,7 +910,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   let K : Set M := {x : M | r ≤ rho x ∧ rho x ≤ R}
   let q : M → Real := fun x => g.inner x
     (gradientFun (I := I) g rho x) (gradientFun (I := I) g rho x)
-  let ell : M → Real := fun x => |Δ_g (I := I) g ⟨rho, hrho⟩ x|
+  let ell : M → Real := fun x => |ΔG (I := I) g ⟨rho, hrho⟩ x|
   have hq_cont : Continuous q := by
     apply continuous_iff_continuousAt.mpr
     intro x
@@ -901,7 +925,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
       ∃ m B : Real, 0 < m ∧ 0 ≤ B ∧
         (∀ x ∈ K, m ≤ q x) ∧
         (∀ t ∈ Set.Icc 0 T, ∀ x ∈ K,
-          Δ_g (I := I) g ⟨rho, hrho⟩ x +
+          ΔG (I := I) g ⟨rho, hrho⟩ x +
             g.inner x (X t x) (gradientFun (I := I) g rho x) ≤ B) := by
     by_cases hKne : K.Nonempty
     · obtain ⟨xm, hxm, hxmin⟩ := hcompact.exists_isMinOn
@@ -928,8 +952,8 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
           sq_nonneg (g.inner x (X t x) (gradientFun (I := I) g rho x) +
             C + q xq)]
       have hlap := hxBmax (by simpa [K] using hx)
-      change |Δ_g (I := I) g ⟨rho, hrho⟩ x| ≤ ell xB at hlap
-      have hself : Δ_g (I := I) g ⟨rho, hrho⟩ x ≤ ell xB :=
+      change |ΔG (I := I) g ⟨rho, hrho⟩ x| ≤ ell xB at hlap
+      have hself : ΔG (I := I) g ⟨rho, hrho⟩ x ≤ ell xB :=
         (le_abs_self _).trans hlap
       linarith
     · refine ⟨1, 0, by positivity, le_rfl, ?_, ?_⟩
@@ -976,7 +1000,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   · exact hy
 
 theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -996,7 +1020,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
@@ -1068,7 +1092,8 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
     have hQ : 0 < Q := sq_pos_of_pos hs
     have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
       apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
-      dsimp [strongChartRadiusSq, Q]
+      change ‖(toEuclidean (E := E))
+        (extChartAt I a a - extChartAt I a c)‖ < s
       simpa only [map_sub, norm_sub_rev] using hc_eucl
     obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
       exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP
@@ -1136,9 +1161,8 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
   exact hyP
 
 private theorem fixed_metric_with_drift_lower_bound_from_positive_time
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T a m : Real} (ha : 0 < a) (haT : a ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -1152,7 +1176,7 @@ private theorem fixed_metric_with_drift_lower_bound_from_positive_time
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     (hinit : ∀ x : M, m ≤ u a x) :
     ∀ t ∈ Set.Icc a T, ∀ x : M, m ≤ u t x := by
@@ -1176,7 +1200,12 @@ private theorem fixed_metric_with_drift_lower_bound_from_positive_time
       exact ⟨⟨by linarith [ha, hp.1.1], by dsimp [S] at hp; linarith [hp.1.2]⟩,
         Set.mem_univ p.2⟩
     have hcomp := hu_cont.comp (by fun_prop) hmap
-    simpa [v] using hcomp.sub continuous_const.continuousOn
+    rw [show (fun p : Real × M => v p.1 p.2) =
+        ((fun p : Real × M => u p.1 p.2) ∘
+          fun p : Real × M => (a + p.1, p.2)) - fun _ => m by
+      funext p
+      rfl]
+    exact hcomp.sub continuous_const.continuousOn
   have hv0 : ∀ x : M, 0 ≤ v 0 x := by
     intro x
     simpa [v] using sub_nonneg.mpr (hinit x)
@@ -1267,7 +1296,7 @@ private theorem fixed_metric_with_drift_lower_bound_from_positive_time
   simpa [v] using hv
 
 private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_at
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -1287,7 +1316,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_
     (hu_super : ∀ (s : Real) (hs : s ∈ Set.Icc 0 T) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 T) s -
-        (Δ_g (I := I) g ⟨u s, hu_space s hs hspos⟩ x +
+        (ΔG (I := I) g ⟨u s, hu_space s hs hspos⟩ x +
           g.inner x (X s x) (gradientFun (I := I) g (u s) x)))
     {c : M} (hc : 0 < u t c) (y : M) :
     0 < u t y := by
@@ -1305,7 +1334,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_
   have hu_super' : ∀ (s : Real) (hs : s ∈ Set.Icc 0 t) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 t) s -
-        (Δ_g (I := I) g ⟨u s, hu_space' s hs hspos⟩ x +
+        (ΔG (I := I) g ⟨u s, hu_space' s hs hspos⟩ x +
           g.inner x (X s x) (gradientFun (I := I) g (u s) x)) := by
     intro s hs hspos x
     have hderiv := derivWithin_subset hsub
@@ -1319,7 +1348,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_
     hu_super' hc y
 
 theorem scalar_strong_maximum_principle_fixed_metric_with_drift
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -1339,7 +1368,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
@@ -1371,7 +1400,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift
   exact (not_lt_of_ge hlower hm).elim
 
 theorem scalar_strong_maximum_principle_fixed_metric_with_drift_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -1391,7 +1420,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_positive
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {t : Real} (ht : t ∈ Set.Icc 0 T) {x : M} (hx : 0 < u t x)
     (y : M) :
@@ -1404,8 +1433,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_positive
   linarith
 
 private theorem time_dependent_metric_with_drift_strong_maximum_principle_of_barrier
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
-    [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -1523,8 +1551,7 @@ private theorem time_dependent_metric_with_drift_strong_maximum_principle_of_bar
   · exact hy
 
 private theorem time_dependent_metric_strong_maximum_principle_of_barrier
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
-    [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -1638,7 +1665,7 @@ private theorem time_dependent_metric_strong_maximum_principle_of_barrier
   · exact hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -1742,7 +1769,8 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
     have hQ : 0 < Q := sq_pos_of_pos hs
     have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
       apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
-      dsimp [strongChartRadiusSq, Q]
+      change ‖(toEuclidean (E := E))
+        (extChartAt I a a - extChartAt I a c)‖ < s
       simpa only [map_sub, norm_sub_rev] using hc_eucl
     obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
       exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP
@@ -1811,7 +1839,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
   exact hyP
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_spatial
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -1863,9 +1891,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_spatial
       hu_time hu_mdiff hu_grad hu_super' hc y
 
 private theorem time_dependent_metric_with_drift_lower_bound_from_positive_time
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
-    [T2Space M] [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [I.Boundaryless] [CompactSpace M]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T a m : Real} (ha : 0 < a) (haT : a ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -1903,7 +1929,12 @@ private theorem time_dependent_metric_with_drift_lower_bound_from_positive_time
       exact ⟨⟨by linarith [ha, hp.1.1], by dsimp [S] at hp; linarith [hp.1.2]⟩,
         Set.mem_univ p.2⟩
     have hcomp := hu_cont.comp (by fun_prop) hmap
-    simpa [v] using hcomp.sub continuous_const.continuousOn
+    rw [show (fun p : Real × M => v p.1 p.2) =
+        ((fun p : Real × M => u p.1 p.2) ∘
+          fun p : Real × M => (a + p.1, p.2)) - fun _ => m by
+      funext p
+      rfl]
+    exact hcomp.sub continuous_const.continuousOn
   have hv0 : ∀ x : M, 0 ≤ v 0 x := by
     intro x
     simpa [v] using sub_nonneg.mpr (hinit x)
@@ -2002,9 +2033,7 @@ private theorem time_dependent_metric_with_drift_lower_bound_from_positive_time
   simpa [v] using hv
 
 private theorem time_dependent_metric_lower_bound_from_positive_time
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
-    [T2Space M] [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [I.Boundaryless] [CompactSpace M]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T a m : Real} (ha : 0 < a) (haT : a ≤ T)
     (u : Real → M → Real)
@@ -2032,7 +2061,7 @@ private theorem time_dependent_metric_lower_bound_from_positive_time
     (I := I) G ha haT X u hu_cont hu_time hu_mdiff hu_grad hu_super' hinit
 
 private theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial_at
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2112,7 +2141,7 @@ private theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift
     hu_grad' hu_super' hc y
 
 private theorem scalar_strong_maximum_principle_time_dependent_metric_spatial_at
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2165,7 +2194,7 @@ private theorem scalar_strong_maximum_principle_time_dependent_metric_spatial_at
         hu_time hu_mdiff hu_grad hu_super' hc y
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2235,7 +2264,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift
   exact (not_lt_of_ge hlower hm).elim
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2279,7 +2308,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_positiv
   linarith
 
 theorem scalar_strong_maximum_principle_time_dependent_metric
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2347,7 +2376,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric
   exact (not_lt_of_ge hlower hm).elim
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2390,7 +2419,6 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_positive
   linarith
 
 private theorem time_dependent_potential_exp_rescale_super
-    [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
@@ -2446,7 +2474,7 @@ private theorem time_dependent_potential_exp_rescale_super
   exact hzP
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2535,7 +2563,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential
   exact (mul_eq_zero.mp hz).resolve_left (Real.exp_ne_zero _)
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2581,7 +2609,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_pos
   linarith
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2672,7 +2700,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
   exact (mul_eq_zero.mp hz).resolve_left (Real.exp_ne_zero _)
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -2719,7 +2747,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
   linarith
 
 theorem scalar_strong_maximum_principle_fixed_metric_spatial
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -2735,7 +2763,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_spatial
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
   apply scalar_strong_maximum_principle_fixed_metric_with_drift_spatial (I := I)
@@ -2746,7 +2774,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_spatial
   · exact hc
 
 theorem scalar_strong_maximum_principle_fixed_metric
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -2762,7 +2790,7 @@ theorem scalar_strong_maximum_principle_fixed_metric
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
   apply scalar_strong_maximum_principle_fixed_metric_with_drift (I := I)
@@ -2773,7 +2801,7 @@ theorem scalar_strong_maximum_principle_fixed_metric
   · exact hy
 
 theorem scalar_strong_maximum_principle_fixed_metric_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -2789,7 +2817,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_positive
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {t : Real} (ht : t ∈ Set.Icc 0 T) {x : M} (hx : 0 < u t x)
     (y : M) :
     0 < u T y := by
@@ -2820,14 +2848,14 @@ private theorem potential_exp_rescale_super
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         V t x * u t x)
     (hV : ∀ t ∈ Set.Icc 0 T, ∀ x : M, L ≤ V t x) :
     ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M),
       0 ≤ derivWithin
           (fun s => Real.exp (-L * s) * u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g
+        (ΔG (I := I) g
             ⟨fun y => Real.exp (-L * t) * u t y, hz_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g
             (fun y => Real.exp (-L * t) * u t y) x)) := by
@@ -2851,7 +2879,7 @@ private theorem potential_exp_rescale_super
     (hu_time t ht htpos x) hscale_time
   have hbase : 0 ≤
       derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         L * u t x := by
     have hVu : 0 ≤ (V t x - L) * u t x :=
@@ -2861,7 +2889,7 @@ private theorem potential_exp_rescale_super
     g T X u (hu_space t ht htpos) x
   have hopEqG : parabolicOperatorWithDrift (I := I) G T X u t x =
       derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) := by
     simpa only [G] using hopEq
   have hoperator : 0 ≤
@@ -2878,7 +2906,7 @@ private theorem potential_exp_rescale_super
   have hopZG : parabolicOperatorWithDrift (I := I) G T X
       (fun s y => Real.exp (-L * s) * u s y) t x =
       derivWithin (fun s => Real.exp (-L * s) * u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g
+        (ΔG (I := I) g
             ⟨fun y => Real.exp (-L * t) * u t y, hz_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g
             (fun y => Real.exp (-L * t) * u t y) x)) := by
@@ -2887,7 +2915,7 @@ private theorem potential_exp_rescale_super
   exact hzP
 
 theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -2908,7 +2936,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         V t x * u t x)
     (hV : ∀ t ∈ Set.Icc 0 T, ∀ x : M, L ≤ V t x)
@@ -2945,7 +2973,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential
   exact (mul_eq_zero.mp hz).resolve_left (Real.exp_ne_zero _)
 
 theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential_positive
-    [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
+    [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
@@ -2966,7 +2994,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential_po
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         V t x * u t x)
     (hV : ∀ t ∈ Set.Icc 0 T, ∀ x : M, L ≤ V t x)

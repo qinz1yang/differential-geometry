@@ -5,6 +5,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 open Filter Set
 open scoped ENNReal Manifold Topology
 
@@ -33,8 +34,8 @@ variable {x y z : M} {p : Path x y} {q : Path y z}
 omit [∀ x : M, ENorm (TangentSpace I x)] in
 theorem refl (x : M) : IsFlatC1Path (I := I) (Path.refl x) where
   c1 := by
-    simpa only [Path.refl_extend] using
-      (contMDiff_const : ContMDiff 𝓘(Real, Real) I 1 (fun _ : Real => x))
+    change ContMDiff 𝓘(Real, Real) I 1 (fun _ : Real => x)
+    exact contMDiff_const
   flat_zero := Filter.Eventually.of_forall fun _ => rfl
   flat_one := Filter.Eventually.of_forall fun _ => rfl
 
@@ -50,18 +51,20 @@ theorem symm (hp : IsFlatC1Path (I := I) p) :
     rw [Path.extend_symm]
     have hsub : Continuous (fun t : Real => 1 - t) :=
       continuous_const.sub continuous_id
-    simpa only [Function.comp_apply, sub_zero] using
-      hp.flat_one.comp_tendsto (by
-        simpa only [sub_zero] using hsub.tendsto (0 : Real) :
-        Tendsto (fun t : Real => 1 - t) (𝓝 0) (𝓝 1))
+    change (p.extend ∘ fun t : Real => 1 - t) =ᶠ[𝓝 0]
+      ((fun _ : Real => y) ∘ fun t => 1 - t)
+    exact hp.flat_one.comp_tendsto (by
+      simpa only [sub_zero] using hsub.tendsto (0 : Real) :
+      Tendsto (fun t : Real => 1 - t) (𝓝 0) (𝓝 1))
   flat_one := by
     rw [Path.extend_symm]
     have hsub : Continuous (fun t : Real => 1 - t) :=
       continuous_const.sub continuous_id
-    simpa only [Function.comp_apply, sub_self] using
-      hp.flat_zero.comp_tendsto (by
-        simpa only [sub_self] using hsub.tendsto (1 : Real) :
-        Tendsto (fun t : Real => 1 - t) (𝓝 1) (𝓝 0))
+    change (p.extend ∘ fun t : Real => 1 - t) =ᶠ[𝓝 1]
+      ((fun _ : Real => x) ∘ fun t => 1 - t)
+    exact hp.flat_zero.comp_tendsto (by
+      simpa only [sub_self] using hsub.tendsto (1 : Real) :
+      Tendsto (fun t : Real => 1 - t) (𝓝 1) (𝓝 0))
 
 omit [∀ x : M, ENorm (TangentSpace I x)] in
 theorem trans
@@ -89,11 +92,13 @@ theorem trans
       Tendsto (fun t : Real => 2 * t - 1) (𝓝 (1 / 2)) (𝓝 0) := by
     convert hsub.tendsto (1 / 2 : Real) using 1; norm_num
   have hpf : f =ᶠ[𝓝 (1 / 2)] (fun _ : Real => y) := by
-    simpa only [f, Function.comp_apply] using
-      hp.flat_one.comp_tendsto h2half
+    change (p.extend ∘ fun t : Real => 2 * t) =ᶠ[𝓝 (1 / 2)]
+      ((fun _ : Real => y) ∘ fun t => 2 * t)
+    exact hp.flat_one.comp_tendsto h2half
   have hqg : g =ᶠ[𝓝 (1 / 2)] (fun _ : Real => y) := by
-    simpa only [g, Function.comp_apply] using
-      hq.flat_zero.comp_tendsto h2half'
+    change (q.extend ∘ fun t : Real => 2 * t - 1) =ᶠ[𝓝 (1 / 2)]
+      ((fun _ : Real => y) ∘ fun t => 2 * t - 1)
+    exact hq.flat_zero.comp_tendsto h2half'
   have hext :
       (p.trans q).extend =
         Set.piecewise (Set.Iic (1 / 2)) f g := by
@@ -114,8 +119,9 @@ theorem trans
         Tendsto (fun t : Real => 2 * t) (𝓝 0) (𝓝 0) := by
       simpa only [mul_zero] using hmul.tendsto (0 : Real)
     have hp0 : f =ᶠ[𝓝 0] (fun _ : Real => x) := by
-      simpa only [f, Function.comp_apply] using
-        hp.flat_zero.comp_tendsto ht0
+      change (p.extend ∘ fun t : Real => 2 * t) =ᶠ[𝓝 0]
+        ((fun _ : Real => x) ∘ fun t => 2 * t)
+      exact hp.flat_zero.comp_tendsto ht0
     filter_upwards
       [hp0, eventually_le_nhds (show (0 : Real) < 1 / 2 by norm_num)]
       with t hpt ht
@@ -125,8 +131,9 @@ theorem trans
         Tendsto (fun t : Real => 2 * t - 1) (𝓝 1) (𝓝 1) := by
       convert hsub.tendsto (1 : Real) using 1; norm_num
     have hq1 : g =ᶠ[𝓝 1] (fun _ : Real => z) := by
-      simpa only [g, Function.comp_apply] using
-        hq.flat_one.comp_tendsto ht1
+      change (q.extend ∘ fun t : Real => 2 * t - 1) =ᶠ[𝓝 1]
+        ((fun _ : Real => z) ∘ fun t => 2 * t - 1)
+      exact hq.flat_one.comp_tendsto ht1
     filter_upwards
       [hq1, eventually_ge_nhds (show (1 / 2 : Real) < 1 by norm_num)]
       with t hqt ht
@@ -150,7 +157,7 @@ theorem pathLen_refl
       _ = ‖(0 : Real) • (0 : TangentSpace I x)‖ₑ := by rw [zero_smul]
       _ = ‖(0 : Real)‖ₑ * ‖(0 : TangentSpace I x)‖ₑ := enorm_smul _ _
       _ = 0 := by simp
-  simp only [mfderiv_const, ContinuousLinearMap.zero_apply, hzero,
+  simp only [mfderiv_const, zero_apply, hzero,
     MeasureTheory.lintegral_zero]
 
 section PathLength
@@ -160,7 +167,8 @@ variable [∀ z : M, ENormSMulClass Real (TangentSpace I z)]
 theorem pathLen_symm {x y : M} {p : Path x y}
     (hp : IsFlatC1Path (I := I) p) :
     pathLen (I := I) p.symm = pathLen (I := I) p := by
-  rw [pathLen, Path.extend_symm]
+  unfold pathLen
+  rw [Path.extend_symm]
   simpa only [Function.comp_def, sub_self, sub_zero] using
     (Manifold.pathELength_comp_of_antitoneOn
       (I := I) (γ := p.extend)
@@ -365,19 +373,33 @@ noncomputable def refl
     ShortHomotopy (I := I) L p p where
   hom := Path.Homotopy.refl p
   flat t := by
-    simpa only [Path.Homotopy.eval, Path.Homotopy.refl_apply] using hpC1
+    have hpath : (Path.Homotopy.refl p).eval t = p := by
+      ext s
+      rfl
+    rw [hpath]
+    exact hpC1
   length_le t := by
-    simpa only [Path.Homotopy.eval, Path.Homotopy.refl_apply] using hp
+    have hpath : (Path.Homotopy.refl p).eval t = p := by
+      ext s
+      rfl
+    rw [hpath]
+    exact hp
 
 noncomputable def symm (F : ShortHomotopy (I := I) L p q) :
     ShortHomotopy (I := I) L q p where
   hom := F.hom.symm
   flat t := by
-    simpa only [Path.Homotopy.eval, Path.Homotopy.symm_apply] using
-      F.flat (unitInterval.symm t)
+    have hpath : F.hom.symm.eval t = F.hom.eval (unitInterval.symm t) := by
+      ext s
+      rfl
+    rw [hpath]
+    exact F.flat (unitInterval.symm t)
   length_le t := by
-    simpa only [Path.Homotopy.eval, Path.Homotopy.symm_apply] using
-      F.length_le (unitInterval.symm t)
+    have hpath : F.hom.symm.eval t = F.hom.eval (unitInterval.symm t) := by
+      ext s
+      rfl
+    rw [hpath]
+    exact F.length_le (unitInterval.symm t)
 
 noncomputable def trans
     (F : ShortHomotopy (I := I) L p q)

@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ricc
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -38,7 +37,7 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covariantJetNormSq_mono
     (g : SmoothRiemannianMetric I M) {r s m n : ℕ}
@@ -50,6 +49,7 @@ private theorem covariantJetNormSq_mono
     (Finset.range_subset_range.mpr (Nat.add_le_add_right hmn 1))
     (fun _ _ _ => sq_nonneg _)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_zero_section
@@ -60,6 +60,7 @@ private theorem iteratedCovGrad_zero_section
   | zero => rw [iteratedCovGrad_zero]
   | succ m ih => rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covariantJetNormSq_zero
@@ -133,7 +134,7 @@ private theorem domDomCongrSection_sub
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel]
   apply ContinuousMultilinearMap.ext
   intro v
-  simp only [ContinuousMultilinearMap.sub_apply,
+  simp only [sub_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
 
 private theorem exists_operatorFieldComposition_covariantJetNormSq_one_le_two_one
@@ -172,8 +173,8 @@ private theorem exists_operatorFieldComposition_covariantJetNormSq_one_le_two_on
         (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
       (C₀ * A * B) ^ 2 := by
         simpa only [covariantJetNormSq, Finset.sum_range_succ,
-          Finset.sum_range_zero, zero_add, Nat.reduceAdd,
-          iteratedCovGrad_zero_section, iteratedCovGrad_succ] using hsq
+          Finset.sum_range_zero, zero_add, Nat.add_zero, Nat.reduceAdd,
+          iteratedCovGrad_zero, iteratedCovGrad_succ] using hsq
     _ = C₀ ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 Φ *
         covariantJetNormSq (I := I) (M := M) g 1 W := by
       rw [mul_pow, mul_pow, hAsq, hBsq]
@@ -214,8 +215,8 @@ private theorem exists_operatorFieldComposition_covariantJetNormSq_one_le_one_tw
         (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
       (C₀ * A * B) ^ 2 := by
         simpa only [covariantJetNormSq, Finset.sum_range_succ,
-          Finset.sum_range_zero, zero_add, Nat.reduceAdd,
-          iteratedCovGrad_zero_section, iteratedCovGrad_succ] using hsq
+          Finset.sum_range_zero, zero_add, Nat.add_zero, Nat.reduceAdd,
+          iteratedCovGrad_zero, iteratedCovGrad_succ] using hsq
     _ = C₀ ^ 2 * covariantJetNormSq (I := I) (M := M) g 1 Φ *
         covariantJetNormSq (I := I) (M := M) g 2 W := by
       rw [mul_pow, mul_pow, hAsq, hBsq]
@@ -676,7 +677,7 @@ private lemma neg_smul_sub {V : Type*} [AddCommGroup V] [Module ℝ V]
   module
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [BoundarylessManifold I M] in
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem operatorFieldComposition_sub_apply_bilinear
     (g : SmoothRiemannianMetric I M)
     (PT PU : SmoothCcTensor g 6 2) (XT XU : SmoothCcTensor g 2 6) :
@@ -1642,6 +1643,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDif
     _ ≤ (B0 R A * D2 + B1 A * N) ^ 2 := by
       exact sq_add_sq_le_sum_sq _ _ hZ0 hZ1
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_covGrad_norm_sq_eq
     (g : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -1658,6 +1660,7 @@ private theorem iteratedCovGrad_covGrad_norm_sq_eq
   exact riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
     (I := I) (M := M) g r s i S x
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_one_covGrad_le_two
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -1788,9 +1791,11 @@ private lemma deTurckInsertionCorrectionEndomorphism_apply
   have hdiff : endoDiffSection (I := I) (M := M) g gm g_bg x =
       lieCorrectionZeroNEndo (I := I) g gm g_bg x -
         lieCorrectionZeroNEndo (I := I) g gm g x := by
-    simpa only [endoDiffSection, connectionDifferenceDeTurckVectorFieldSection,
-      ContMDiffSection.coe_sub, Pi.sub_apply] using
-      (nEndo_diff (I := I) (M := M) g gm g_bg x).symm
+    change PDE.DeTurck.connectionDifference (I := I) gm g x
+          ((PDE.DeTurck.deTurckVF (I := I) gm g : ∀ b : M, TangentSpace I b) x) -
+        PDE.DeTurck.connectionDifference (I := I) gm g x
+          ((PDE.DeTurck.deTurckVF (I := I) gm g_bg : ∀ b : M, TangentSpace I b) x) = _
+    exact (nEndo_diff (I := I) (M := M) g gm g_bg x).symm
   rw [hdiff]
   simp only [deTurckVectorFieldCovariantDerivativeEndomorphismSection_apply]
 
@@ -1835,8 +1840,7 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
     Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (X + Y).toSection x) D) m
-  rw [hsum, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+  rw [hsum, Tensor0SSpace.toModel_add, add_apply]
   rw [show
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         ((deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g gm g_bg -
@@ -1847,9 +1851,9 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
           deTurckLieCovariantDerivativeInsertionFib (I := I) gm g x D) +
         (lieCorrectionZeroInsertionFib (I := I) g gm g_bg x D -
           lieCorrectionZeroInsertionFib (I := I) g gm g x D) from rfl]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply,
-    Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply,
-    Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [Tensor0SSpace.toModel_add, add_apply,
+    Tensor0SSpace.toModel_sub, sub_apply,
+    Tensor0SSpace.toModel_sub, sub_apply]
   rw [deTurckLieCovariantDerivativeInsertionFib_toModel (I := I) gm g_bg x D m,
     deTurckLieCovariantDerivativeInsertionFib_toModel (I := I) gm g x D m,
     lieCorrectionZeroInsertionFib_toModel (I := I) g gm g_bg x D m,
@@ -1893,9 +1897,10 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
   have harg :
       (fun k => Function.update
         (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
-        (Λ x ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
+        (tangentLinearMapToModel (Λ x)
+          ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
         ((Equiv.swap (0 : Fin 2) 1) k)) =
-      Function.update m 1 (Λ x (m 1)) := by
+      Function.update m 1 (tangentLinearMapToModel (Λ x) (m 1)) := by
     funext k
     have hswap0 : (Equiv.swap (0 : Fin 2) 1) 0 = 1 :=
       Equiv.swap_apply_left 0 1
@@ -1916,8 +1921,21 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
   have hΛ := deTurckInsertionCorrectionEndomorphism_apply (I := I) (M := M) g gm g_bg x
   dsimp only [Λ] at hΛ ⊢
   rw [hΛ]
-  simp only [ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.sub_apply,
+  have hmodel_add (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
+      tangentLinearMapToModel (A + B) =
+        tangentLinearMapToModel A + tangentLinearMapToModel B := by
+    apply ContinuousLinearMap.ext
+    intro v
+    simp only [tangentLinearMapToModel_apply, add_apply, map_add]
+  have hmodel_sub (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
+      tangentLinearMapToModel (A - B) =
+        tangentLinearMapToModel A - tangentLinearMapToModel B := by
+    apply ContinuousLinearMap.ext
+    intro v
+    simp only [tangentLinearMapToModel_apply, sub_apply, map_sub]
+  rw [hmodel_add, hmodel_sub, hmodel_sub]
+  simp only [add_apply,
+    sub_apply,
     ContinuousMultilinearMap.map_update_add,
     ContinuousMultilinearMap.map_update_sub]
   simp only [sub_eq_add_neg, neg_add_rev]
@@ -1953,6 +1971,7 @@ private theorem cometricRaiseSlot0Field_zero_add
     cometricRaiseSlot0Field_toSection]
   rfl
 
+omit [SigmaCompactSpace M] in
 private theorem slotInsertEndoCc_zero_deTurckInsertionCorrectionEndomorphism
     (g gm g_bg : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g 0
@@ -1973,6 +1992,7 @@ private theorem slotInsertEndoCc_zero_deTurckInsertionCorrectionEndomorphism
   rw [deTurckVectorFieldCovariantDerivativeLowered, deTurckVectorFieldCovariantDerivativeLowered, cometricRaiseSlot0Field_zero_add, cometricRaiseSlot0Field_zero_add, cometricRaiseSlot0Field_zero_sub]
   module
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 private theorem deTurckVectorFieldCovector_backgroundDifference_sub
@@ -2062,6 +2082,7 @@ private theorem exists_deTurckVectorFieldCovector_backgroundDifference_pairing_s
       dsimp only [K]
       ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_eq
     (g g_bg gm : SmoothRiemannianMetric I M) :
@@ -2074,6 +2095,7 @@ private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDiffe
   unfold deTurckVectorFieldCovariantDerivativeLoweredBase
   rw [← domDomCongrSection_sub, ← covGrad_sub]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_sub
     (g g_bg gT gU : SmoothRiemannianMetric I M) :
@@ -2350,6 +2372,7 @@ private theorem exists_operatorFieldComposition_difference_covariantJetNormSq_on
       simp only [mul_pow, hCsq]
       dsimp only [Q]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem symmSCovGrad3_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
@@ -2359,6 +2382,7 @@ private theorem symmSCovGrad3_sub
   rw [symmSCovGrad3_def, symmSCovGrad3_def, symmSCovGrad3_def,
     symmS_sub, covGrad_sub]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem koszulCovecCc_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
@@ -2369,6 +2393,7 @@ private theorem koszulCovecCc_sub
   rw [domDomCongrSection_sub, domDomCongrSection_sub, domDomCongrSection_sub]
   module
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lieCorrectionZeroKappa_self_sub
     (g gT gU : SmoothRiemannianMetric I M)
@@ -2585,7 +2610,7 @@ private theorem slotExtendIter_sub
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem lieCorrectionZeroMixedConnectionHalfRF_backgroundDifference
     (g gm g_bg : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -3108,7 +3133,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionBackgroundHalf_pairing_fi
   simpa only [N] using hS1D
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
     (g gm g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g gm g_bg -

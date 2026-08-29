@@ -7,7 +7,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 
 
 noncomputable section
@@ -149,8 +149,8 @@ private lemma localDivergence_at_self_smoothSmul [I.Boundaryless]
         u y₀ • fderiv ℝ (v i) y₀ + v i y₀ • fderiv ℝ u y₀ :=
       fderiv_fun_mul hu_diff (hv_diff i)
     rw [hmul]
-    rw [ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+    rw [add_apply,
+        smul_apply, smul_apply]
     simp only [smul_eq_mul]
     ring
   have hLHS_num :
@@ -223,8 +223,8 @@ theorem divergence_g_smoothSmul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∀ x : M, divergence_g (I := I) g (smoothSmul (I := I) φ hφ X) x =
-      φ x * divergence_g (I := I) g X x +
+    ∀ x : M, divergenceG (I := I) g (smoothSmul (I := I) φ hφ X) x =
+      φ x * divergenceG (I := I) g X x +
         tangentSectionAction (I := I) X φ x := by
   intro x
   rw [divergence_g_def, divergence_g_def]
@@ -239,14 +239,14 @@ theorem tangentSectionAction_finset_sum
       ∑ α ∈ s, tangentSectionAction (I := I) X (f α) x := by
   classical
   have heq : ∀ g : M → ℝ, ∀ y : M, ∀ v : TangentSpace I y,
-      (mfderiv I 𝓘(ℝ, ℝ) g y) v = extDerivFun (I := I) g y v := by
+      (mfderiv I 𝓘(ℝ, ℝ) g y) v = mvfderiv (I := I) g y v := by
     intro g y v
     rfl
   simp only [tangentSectionAction_def, heq]
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    change (extDerivFun (I := I) (fun _ : M => (0 : ℝ)) x) (X x) = 0
+    change (mvfderiv (I := I) (fun _ : M => (0 : ℝ)) x) (X x) = 0
     change (((NormedSpace.fromTangentSpace ((fun _ : M => (0 : ℝ)) x)).toContinuousLinearMap ∘L
         (mfderiv I 𝓘(ℝ, ℝ) (fun _ : M => (0 : ℝ)) x)) (X x) : ℝ) = 0
     rw [mfderiv_const]
@@ -274,8 +274,8 @@ theorem tangentSectionAction_finset_sum
           rw [Finset.sum_insert hγ]
           exact (ht γ hmem_γ).add (ih' ht_rest)
       exact aux s hmem_rest
-    rw [extDerivFun_add (hf α hmem_α) hsum_diff]
-    rw [ContinuousLinearMap.add_apply]
+    rw [mvfderiv_add (hf α hmem_α) hsum_diff]
+    rw [add_apply]
     rw [ih_eq]
 
 omit [Module.Finite ℝ E] in
@@ -337,16 +337,16 @@ theorem tangentSectionAction_pou_tsum_eq_zero
 theorem divergence_g_pou_tsum [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∀ x : M, divergence_g (I := I) g X x =
-      ∑' α : M, divergence_g (I := I) g
+    ∀ x : M, divergenceG (I := I) g X x =
+      ∑' α : M, divergenceG (I := I) g
         (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
   intro x
   classical
   set S : Finset M := ρ.fintsupport x with hS_def
   have h_tsum_eq_sum :
-      (∑' α : M, divergence_g (I := I) g
+      (∑' α : M, divergenceG (I := I) g
           (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x) =
-        ∑ α ∈ S, divergence_g (I := I) g
+        ∑ α ∈ S, divergenceG (I := I) g
           (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
     refine tsum_eq_sum ?_
     intro α hα
@@ -372,16 +372,16 @@ theorem divergence_g_pou_tsum [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     rw [hραx, htsa_zero, zero_mul, add_zero]
   rw [h_tsum_eq_sum]
   have h_each : ∀ α ∈ S,
-      divergence_g (I := I) g
+      divergenceG (I := I) g
         (smoothSmul (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x =
-        (ρ α : M → ℝ) x * divergence_g (I := I) g X x +
+        (ρ α : M → ℝ) x * divergenceG (I := I) g X x +
           tangentSectionAction (I := I) X (ρ α : M → ℝ) x := by
     intro α _
     exact divergence_g_smoothSmul (I := I) g (ρ α : M → ℝ) (ρ α).contMDiff X x
   rw [Finset.sum_congr rfl h_each]
   rw [Finset.sum_add_distrib]
-  rw [show (∑ α ∈ S, (ρ α : M → ℝ) x * divergence_g (I := I) g X x) =
-        (∑ α ∈ S, (ρ α : M → ℝ) x) * divergence_g (I := I) g X x from
+  rw [show (∑ α ∈ S, (ρ α : M → ℝ) x * divergenceG (I := I) g X x) =
+        (∑ α ∈ S, (ρ α : M → ℝ) x) * divergenceG (I := I) g X x from
       (Finset.sum_mul _ _ _).symm]
   rw [ρ.sum_finsupport' x (mem_univ x)
         (ρ.finsupport_subset_fintsupport x)]
@@ -411,8 +411,8 @@ theorem divergence_g_pou_tsum [I.Boundaryless] (g : SmoothRiemannianMetric I M)
 theorem divergence_g_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∀ x : M, divergence_g (I := I) g (X + Y) x =
-      divergence_g (I := I) g X x + divergence_g (I := I) g Y x := by
+    ∀ x : M, divergenceG (I := I) g (X + Y) x =
+      divergenceG (I := I) g X x + divergenceG (I := I) g Y x := by
   intro x
   classical
   rw [divergence_g_def, divergence_g_def, divergence_g_def]
@@ -506,7 +506,7 @@ theorem divergence_g_add [I.Boundaryless]
 
 theorem divergence_g_zero [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
-    ∀ x : M, divergence_g (I := I) g
+    ∀ x : M, divergenceG (I := I) g
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by
   intro x
   classical

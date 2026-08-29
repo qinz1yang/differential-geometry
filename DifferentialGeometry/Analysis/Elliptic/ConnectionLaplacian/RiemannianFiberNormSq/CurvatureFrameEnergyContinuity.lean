@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
@@ -56,7 +55,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma finrank_tensorRSSpace_zero_eq (t : ℕ) (x : M) :
     Module.finrank ℝ (TensorRSSpace 0 t I x) = (Module.finrank ℝ E) ^ t := by
-  rw [(tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
+  rw [(tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
     0 t x).toLinearEquiv.finrank_eq]
   change Module.finrank ℝ (Tensor0SModel 0 ℝ E →L[ℝ] Tensor0SModel t ℝ E) = _
   let φ : (Tensor0SModel 0 ℝ E →L[ℝ] Tensor0SModel t ℝ E) ≃ₗ[ℝ]
@@ -88,9 +87,9 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
     fun u v => rfl
@@ -137,7 +136,7 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
       TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) (0 : TensorRSSpace 0 t I x) := by
       rw [hTm0]
-      exact (map_zero (tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
+      exact (map_zero (tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
         0 t x)).symm
     exact TensorRSSpace.toModel_injective (𝕜 := ℝ) (E := E) (I := I) (M := M) hT0model
   have hdt_le_nt : (d : ℕ) ^ t ≤ n ^ t := by
@@ -157,7 +156,7 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
     exact absurd hdt_le_nt (not_le.mpr (Nat.pow_lt_pow_left hlt (by omega)))
   have hcard : Fintype.card (Fin n) = d := by
     rw [Fintype.card_fin]; omega
-  haveI : Nonempty (Fin n) := by
+  have : Nonempty (Fin n) := by
     rw [← Fintype.card_pos_iff, hcard]; exact hd_pos
   refine ⟨basisOfLinearIndependentOfCardEqFinrank hli (by rw [hcard, hd_def]), ?_⟩
   intro i
@@ -200,9 +199,9 @@ theorem exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_const
     have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
         RCLike.re (cd.inner v v) < 1} :=
       g.toRiemannianMetric.isVonNBounded x
-    letI nag : NormedAddCommGroup (TangentSpace I x) :=
+    let nag : NormedAddCommGroup (TangentSpace I x) :=
       cd.toNormedAddCommGroupOfTopology hc hbnd
-    letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+    let ips : InnerProductSpace ℝ (TangentSpace I x) :=
       InnerProductSpace.ofCoreOfTopology cd hc hbnd
     have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
       fun u v => rfl

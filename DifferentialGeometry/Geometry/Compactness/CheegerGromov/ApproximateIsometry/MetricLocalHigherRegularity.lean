@@ -112,12 +112,12 @@ theorem BoundedGeometryNormalData.source_stay
     dsimp only
     let Lphi := L.subseq hphi
     let Yk := X.obj (Lphi.φ (kn n))
-    letI : TopologicalSpace Yk.M := Yk.topology
-    letI : ChartedSpace H Yk.M := Yk.charted
-    letI : IsManifold I ∞ Yk.M := Yk.smooth
-    letI : T2Space Yk.M := Yk.t2
-    letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-    letI : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
+    let : TopologicalSpace Yk.M := Yk.topology
+    let : ChartedSpace H Yk.M := Yk.charted
+    let : IsManifold I ∞ Yk.M := Yk.smooth
+    let : T2Space Yk.M := Yk.t2
+    let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+    let : MetricSpace Yk.M := (P (Lphi.φ (kn n))).ms
     let ck := seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat)
     let chiK := d.chart (Lphi.φ (kn n)) ck
     intro w hw

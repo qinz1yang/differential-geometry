@@ -33,8 +33,8 @@ def baseD3Map (v w x : V) : V →L[ℝ] ℝ :=
 omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 @[simp] theorem baseD3Map_apply (v w x u : V) :
     baseD3Map v w x u = baseD3 u v w x := by
-  simp only [baseD3Map, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, innerSL_apply_apply, smul_eq_mul]
+  simp only [baseD3Map, add_apply,
+    smul_apply, innerSL_apply_apply, smul_eq_mul]
   unfold baseD3
   rw [real_inner_comm v u, real_inner_comm w u]
   ring
@@ -49,15 +49,25 @@ theorem baseD2_hasFDeriv (v w x : V) :
   have hp := ((hv.mul hw).const_mul (4 : ℝ)⁻¹).sub_const
     ((2 : ℝ)⁻¹ * ⟪v, w⟫)
   have h := hp.mul (baseHeat_hasFDeriv x)
-  convert h using 1
-  · funext y
-    simp only [baseD2, Pi.mul_apply]
+  have hfun :
+      (fun y : V =>
+        ((4 : ℝ)⁻¹ * (⟪y, v⟫ * ⟪y, w⟫) - (2 : ℝ)⁻¹ * ⟪v, w⟫) * baseHeat y) =
+        baseD2 v w := by
+    funext y
+    simp only [baseD2]
     ring
-  · ext u
-    simp only [baseD1Map, baseD3Map, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply,
-      innerSL_apply_apply, smul_eq_mul, Pi.mul_apply]
+  have hderiv :
+      ((4 : ℝ)⁻¹ * (⟪x, v⟫ * ⟪x, w⟫) - (2 : ℝ)⁻¹ * ⟪v, w⟫) • baseD1Map x +
+          baseHeat x • (4 : ℝ)⁻¹ •
+            (⟪x, v⟫ • innerSL ℝ w + ⟪x, w⟫ • innerSL ℝ v) =
+        baseD3Map v w x := by
+    ext u
+    simp only [baseD1Map, baseD3Map, add_apply,
+      smul_apply,
+      innerSL_apply_apply, smul_eq_mul]
     ring
+  rw [← hfun]
+  exact h.congr_fderiv hderiv
 
 def baseD3Maj (x : V) : ℝ :=
   ((8 : ℝ)⁻¹ * ‖x‖ ^ 3 + (3 / 4 : ℝ) * ‖x‖) * baseHeat x
@@ -189,14 +199,20 @@ theorem heatD2_hasFDeriv {t : ℝ} (v w x : V) :
     HasFDerivAt (heatD2 t v w) (heatD3Map t v w x) x := by
   let S : V →L[ℝ] V := (heatScale t)⁻¹ • ContinuousLinearMap.id ℝ V
   have hS : HasFDerivAt (fun y : V => (heatScale t)⁻¹ • y) S x := by
-    simpa [S] using S.hasFDerivAt
+    exact S.hasFDerivAt.congr_of_eventuallyEq <|
+      Filter.Eventually.of_forall fun y => by simp [S]
   have h := ((baseD2_hasFDeriv v w ((heatScale t)⁻¹ • x)).comp x hS).const_mul
     (((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
       (heatScale t)⁻¹)
-  convert h using 1
-  ext u
-  simp [heatD3Map, S, baseD3Map]
-  ring
+  have hderiv :
+      (((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
+          (heatScale t)⁻¹) •
+          (baseD3Map v w ((heatScale t)⁻¹ • x) ∘L S) =
+        heatD3Map t v w x := by
+    ext u
+    simp [heatD3Map, S, baseD3Map]
+    ring
+  exact h.congr_fderiv hderiv
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 omit [FiniteDimensional ℝ V] in
@@ -415,7 +431,8 @@ theorem heatD2_time {t : ℝ} (ht : 0 < t) (v w x : V) :
   have hn : 0 < n := by
     simpa only [n] using (Module.finrank_pos : 0 < Module.finrank ℝ V)
   have hscale : HasDerivAt heatScale (1 / (2 * r)) t := by
-    simpa only [heatScale, r] using Real.hasDerivAt_sqrt ht.ne'
+    exact (Real.hasDerivAt_sqrt ht.ne').congr_of_eventuallyEq <|
+      Filter.Eventually.of_forall fun s => by rfl
   have hpow0 := (hscale.fun_pow n).inv (pow_ne_zero n hr.ne')
   change HasDerivAt (fun s : ℝ => ((heatScale s) ^ n)⁻¹)
     (-((n : ℝ) * r ^ (n - 1) * (1 / (2 * r))) / (r ^ n) ^ 2) t at hpow0
@@ -438,7 +455,7 @@ theorem heatD2_time {t : ℝ} (ht : 0 < t) (v w x : V) :
         (fun s : ℝ => ((heatScale s) ^ n)⁻¹ * (heatScale s)⁻¹ *
           (heatScale s)⁻¹)
         (-(((n : ℝ) + 2) / 2) * (r ^ n)⁻¹ * (t ^ 2)⁻¹) t := by
-    convert hcoeff0 using 1
+    refine hcoeff0.congr_deriv ?_
     rw [← hrsq]
     field_simp [hr.ne']
     ring
@@ -465,13 +482,18 @@ theorem heatD2_time {t : ℝ} (ht : 0 < t) (v w x : V) :
     simp only [real_inner_smul_right, real_inner_smul_left]
     ring
   have hprod := hcoeff.mul hbase
-  convert hprod using 1
-  unfold heatD2Dt baseD2Dt
-  simp only [n, z]
-  rw [show heatScale t = r from rfl]
-  rw [← hrsq]
-  field_simp [hr.ne']
-  ring
+  have hderiv :
+      -(((n : ℝ) + 2) / 2) * (r ^ n)⁻¹ * (t ^ 2)⁻¹ * baseD2 v w z +
+          ((r ^ n)⁻¹ * r⁻¹ * r⁻¹) * (-(2 * t)⁻¹ * baseD3 z v w z) =
+        heatD2Dt t v w x := by
+    unfold heatD2Dt baseD2Dt
+    simp only [n, z]
+    rw [show heatScale t = r from rfl]
+    rw [← hrsq]
+    field_simp [hr.ne']
+    ring
+  exact (hprod.congr_deriv hderiv).congr_of_eventuallyEq <|
+    Filter.Eventually.of_forall fun s => by rfl
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 omit [FiniteDimensional ℝ V] in

@@ -41,7 +41,8 @@ theorem sectionCompD2
   have hG : ContDiffAt Real 2 G p := by
     simpa only [G] using (contDiffAt_id.prodMk hv)
   have hH : ContDiffAt Real 2 H p := by
-    simpa only [H, Function.comp_apply] using hF.comp p hG
+    change ContDiffAt Real 2 (F ∘ G) p
+    exact hF.comp p hG
   have hGdiff : DifferentiableAt Real G p :=
     hG.differentiableAt (by norm_num)
   have hvDiff : DifferentiableAt Real v p :=
@@ -49,12 +50,13 @@ theorem sectionCompD2
   have hvDeriv : DifferentiableAt Real (fderiv Real v) p :=
     (hv.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
   have hFDeriv : DifferentiableAt Real (fderiv Real F) (G p) := by
-    simpa only [G] using
-      (hF.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+    change DifferentiableAt Real (fderiv Real F) (p, v p)
+    exact (hF.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
   have hHDeriv : DifferentiableAt Real (fderiv Real H) p :=
     (hH.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
   have hA : DifferentiableAt Real A p := by
-    simpa only [A, Function.comp_apply] using hFDeriv.comp p hGdiff
+    change DifferentiableAt Real ((fderiv Real F) ∘ G) p
+    exact hFDeriv.comp p hGdiff
   have hvApply : DifferentiableAt Real (fun z ↦ fderiv Real v z b) p :=
     hvDeriv.clm_apply (differentiableAt_const b)
   have hU : DifferentiableAt Real U p := by
@@ -78,7 +80,7 @@ theorem sectionCompD2
         fderiv Real (fderiv Real F) (G p)
           (a, fderiv Real v p a) := by
     change fderiv Real (fun z ↦ fderiv Real F (G z)) p a = _
-    rw [fderiv_comp' p hFDeriv hGdiff, ContinuousLinearMap.comp_apply,
+    rw [fderiv_fun_comp p hFDeriv hGdiff, ContinuousLinearMap.comp_apply,
       hG_apply]
   have hvEventually : ∀ᶠ z in nhds p, ContDiffAt Real 2 v z :=
     hv.eventually (by norm_num)
@@ -96,7 +98,7 @@ theorem sectionCompD2
         fderiv Real H z =
           (fderiv Real F (G z)).comp (fderiv Real G z) := by
       simpa only [H] using
-        fderiv_comp' z (hzF.differentiableAt (by norm_num)) hGzDiff
+        fderiv_fun_comp z (hzF.differentiableAt (by norm_num)) hGzDiff
     have hGz_apply :
         fderiv Real G z b = (b, fderiv Real v z b) := by
       dsimp only [G]
@@ -120,7 +122,7 @@ theorem sectionCompD2
           fderiv Real (fderiv Real F) (p, v p)
             (a, fderiv Real v p a) (b, fderiv Real v p b) := by
     rw [fderiv_clm_apply hA hU]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+    simp only [add_apply, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.flip_apply]
     rw [hU_apply, hA_apply]
     simp only [A, U, G, id_eq, partialFDeriv₂, ContinuousLinearMap.comp_apply,

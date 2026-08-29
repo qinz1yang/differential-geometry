@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold
 open scoped Manifold ContDiff

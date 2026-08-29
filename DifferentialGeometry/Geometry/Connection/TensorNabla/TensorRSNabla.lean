@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative

@@ -121,7 +121,7 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le
       (fun y => coef y * factor y) := by
     have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
         (volume : Measure EuclN).restrict Ω :=
-      Measure.restrict_mono Set.diff_subset le_rfl
+      Measure.restrict_mono Set.sdiff_subset le_rfl
     have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
         factor y = 0 := by
       have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
@@ -413,7 +413,7 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
       (fun y => coef y * factor y) := by
     have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
         (volume : Measure EuclN).restrict Ω :=
-      Measure.restrict_mono Set.diff_subset le_rfl
+      Measure.restrict_mono Set.sdiff_subset le_rfl
     have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
         factor y = 0 := by
       have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),

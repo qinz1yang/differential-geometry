@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -74,7 +73,7 @@ private lemma tensorInnerPointwise_chart_eq_component_sum
   rw [tensorInnerPointwise_toModel_eq_component_sum (I := I) (M := M)
     g r s α hb_chart (Sg.toSection b) (T.toSection b)]
   refine Finset.sum_congr rfl (fun P _ => Finset.sum_congr rfl (fun Q _ => ?_))
-  rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+  rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (tensorChartBasisElement (E := E) r s P.1 P.2)
         (tensorChartBasisElement (E := E) r s Q.1 Q.2) =
       covChartMetricGram (I := I) (M := M) g r s α P Q y from by
@@ -159,6 +158,7 @@ theorem tensorL2Inner_chartSupported_chart_pull
   rw [tensorInnerPointwise_chart_eq_component_sum (I := I) (M := M)
     g r s Sg T α hy]
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorComponentEuclid_pouSmul_eq_tensorChartComponent
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -169,6 +169,7 @@ private lemma tensorComponentEuclid_pouSmul_eq_tensorChartComponent
   (tensorChartComponent_eq_tensorComponentEuclid_pouSmul
     (I := I) (M := M) g r s α Sg P).symm
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma componentSum_pouSmul_reassoc
@@ -382,7 +383,7 @@ private lemma chartPullCoeff_continuous
     Continuous (chartPullCoeff (I := I) (M := M) g r s α Sg Q) := by
   classical
   unfold chartPullCoeff
-  exact continuous_finset_sum _ (fun P _ =>
+  exact continuous_finsetSum _ (fun P _ =>
     chartPullCoeff_summand_continuous (I := I) (M := M) g r s α Sg P Q hSg)
 
 omit [CompleteSpace E] in
@@ -425,7 +426,7 @@ private lemma chartPullCoeff_memLp
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
     MemLp (chartPullCoeff (I := I) (M := M) g r s α Sg Q) 2
       (chartL2Measure (I := I) (M := M) α) := by
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure_eq_volume_restrict (I := I) (M := M) α]
     infer_instance
   exact (chartPullCoeff_continuous (I := I) (M := M) g r s α Sg Q
@@ -605,13 +606,14 @@ private lemma chartPull_integral_eq_sum_inner
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
     funext y
     exact chartPull_integrand_eq_coeff_mul (I := I) (M := M) g r s α Sg u y]
-  rw [MeasureTheory.integral_finset_sum (Finset.univ : Finset (CompIdx E r s))
+  rw [MeasureTheory.integral_finsetSum (Finset.univ : Finset (CompIdx E r s))
     (fun Q _ => chartPull_summand_integrable
       (I := I) (M := M) g r s α Sg u Q hSg)]
   refine Finset.sum_congr rfl (fun Q _ => ?_)
   rw [inner_chartPullCoeffLp_eq_integral (I := I) (M := M) g r s α Sg Q hSg]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] in
 private lemma continuous_lhs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg : SmoothCcTensor g r s) :
@@ -630,7 +632,7 @@ private lemma continuous_rhs
       ∑ Q : CompIdx E r s,
         (⟪chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg,
             tensorL2ChartComponent (I := I) (M := M) g r s u α Q⟫_ℝ : ℝ)) :=
-  continuous_finset_sum _ (fun Q _ =>
+  continuous_finsetSum _ (fun Q _ =>
     continuous_chartPullCoeff_pairing (I := I) (M := M) g r s α Sg Q hSg)
 
 omit [CompleteSpace E] in

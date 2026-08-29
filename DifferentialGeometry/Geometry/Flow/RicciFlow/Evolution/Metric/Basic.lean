@@ -109,7 +109,7 @@ theorem coordMetricContOn
         metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) p.1 p.2 i j)
       (D.carrier ×ˢ coordinateFrameSet (I := I) x₀) := by
   classical
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   set s : Set (Real × M) :=
     D.carrier ×ˢ coordinateFrameSet (I := I) x₀ with hs
   have hτ : Continuous (fun q : ↥s => ((q : Real × M)).1) :=
@@ -265,11 +265,11 @@ structure MetricFrameSpacetimeRegularityInFrameOnLocal
       forall d a b : Idx,
         HasDerivWithinAt
           (fun s : Real =>
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => metricCompInFrame (I := I) S frame s y a b)
               x (frame d x))
           ((-2 : Real) *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
               (fun y : M => ricciCompInFrame (I := I) S frame (t : Real) y a b)
               x (frame d x))
           D.carrier

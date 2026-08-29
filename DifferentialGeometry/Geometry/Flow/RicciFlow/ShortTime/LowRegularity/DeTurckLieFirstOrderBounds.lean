@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -49,7 +48,8 @@ private abbrev jet
   ∑ i ∈ Finset.range n,
     ‖iteratedCovGrad (I := I) g r s i W‖ ^ 2
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private theorem low_grid_nonneg
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (k : ℕ) (x : M) :
@@ -60,6 +60,7 @@ private theorem low_grid_nonneg
       riemannianFiberNormSq_nonneg (I := I) (M := M) g
         0 (2 + e m) x _
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_add
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -95,6 +96,7 @@ private theorem jet_add
     _ ≤ (2 * (a + b)) ^ 2 := by
       nlinarith [sq_nonneg a, sq_nonneg b, mul_nonneg ha hb]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_sub
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -130,6 +132,7 @@ private theorem jet_sub
     _ ≤ (2 * (a + b)) ^ 2 := by
       nlinarith [sq_nonneg a, sq_nonneg b, mul_nonneg ha hb]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_add_mul
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -143,6 +146,7 @@ private theorem jet_add_mul
     (a * L) (b * L) (mul_nonneg ha hL) (mul_nonneg hb hL) hA hB
   convert h using 1 ; ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem jet_sub_mul
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -264,11 +268,16 @@ private theorem fix_eq_neg
   intro om
   apply ContinuousMultilinearMap.ext
   intro YZ
+  change Tensor0SSpace.eval
+      ((connectionDifferenceFib (I := I) g₀ gB x) om) YZ =
+    Tensor0SSpace.eval
+      ((-(connectionDifferenceFib (I := I) gB g₀ x) : TensorRSSpace 1 2 I x) om) YZ
+  rw [Tensor0SSpace.eval_eq]
   rw [connectionDifferenceFib_apply_eval]
   rw [show (-(connectionDifferenceFib (I := I) gB g₀ x) : TensorRSSpace 1 2 I x) om =
       -((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         connectionDifferenceFib (I := I) gB g₀ x) om) from rfl,
-    ContinuousMultilinearMap.neg_apply, connectionDifferenceFib_apply_eval,
+    Tensor0SSpace.eval_neg, Tensor0SSpace.eval_eq, connectionDifferenceFib_apply_eval,
     conn_antisymm (I := I) (M := M) g₀ gB x (YZ 0) (YZ 1)]
   rw [← cotangentToDual_apply (I := I) om
       (-PDE.DeTurck.connectionDifference (I := I) gB g₀ x (YZ 0) (YZ 1)),
@@ -560,11 +569,13 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (metricLoweredConnectionDifferenceField) in
 private theorem lie_kappa_unit
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
-    (x : M) (m : Fin 3 → TangentSpace I x) :
+    (x : M) (m : Fin 3 → E) :
     unitModel (I := I) (M := M) g₀ 3
         (deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB) x m =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) gB g₁ x
-        (m 0) (m 1)) (m 2) := by
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1)))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2)) := by
   rw [unitModel]
   change Tensor0SSpace.toModel
       (((deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB).toSection x)
@@ -579,9 +590,11 @@ private theorem lie_kappa_unit
             (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
     ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul]
-  rfl
+  change Tensor0SSpace.toModel
+      (metricConnectionDifferenceLoweredFib (I := I) g₁ gB g₁ x) m = _
+  exact metricConnectionDifferenceLoweredFib_toModel (I := I) g₁ gB g₁ x m
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem lie_kappa_eq
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     deTurckLieArmOneBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ gB =
@@ -595,12 +608,13 @@ private theorem lie_kappa_eq
   apply ContinuousMultilinearMap.ext
   intro m
   rw [unit_sub (I := I) (M := M) g₀ 3, unitModel_add (I := I) (M := M) g₀ 3]
-  rw [ContinuousMultilinearMap.sub_apply,
-    ContinuousMultilinearMap.add_apply]
+  rw [sub_apply, add_apply]
   rw [lie_kappa_unit (I := I) (M := M) g₀ g₁ gB x m,
     lieCorrectionZeroKappa_unitModel_apply (I := I) (M := M) g₀ g₁ gB x m]
-  rw [conn_antisymm (I := I) (M := M) gB g₁ x (m 0) (m 1),
-    map_neg, ContinuousLinearMap.neg_apply]
+  rw [conn_antisymm (I := I) (M := M) gB g₁ x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1)),
+    map_neg, neg_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -689,7 +703,6 @@ private theorem inner_inv_mixed
   rw [g₀.symm x v (inverseMetricSharpFib (I := I) g₁ x om)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 private theorem sharp_eq_insert
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -699,31 +712,38 @@ private theorem sharp_eq_insert
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  apply ContinuousLinearMap.ext
+  apply tensorRSSpace_ext 1 1 x
   intro om
-  apply Tensor0SSpace.toModel_injective
-  apply ContinuousMultilinearMap.ext
-  intro m
-  rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
-        (sharpFlatEndoCc (I := I) g₀ g₁).toSection x) om) =
-      (g0FlatCLM (I := I) g₀ x)
-        (inverseMetricSharpFib (I := I) g₁ x om) from rfl]
-  rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
+  apply cotangentToDualLinear_injective (I := I) (x := x)
+  apply LinearMap.ext
+  intro w
+  rw [cotangentToDualLinear_apply, cotangentToDualLinear_apply]
+  rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
-        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om) =
+        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
-        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) om from rfl]
-  rw [slotInsertEndoFib_apply_eval]
-  rw [toModel_single (I := I) (M := M) x om
-    (Function.update m 0
-      (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x (m 0)))]
-  rw [Function.update_self]
-  rw [toModel_single (I := I) (M := M) x
-    ((g0FlatCLM (I := I) g₀ x)
-      (inverseMetricSharpFib (I := I) g₁ x om)) m]
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x) om from rfl]
+  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+    (metricComparisonEndomorphism (I := I) g₀ g₁ x) om w]
+  rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
+        (sharpFlatEndoCc (I := I) g₀ g₁).toSection x) om =
+      g0FlatCLM (I := I) g₀ x (inverseMetricSharpFib (I := I) g₁ x om) from rfl]
   rw [cotangentToDual_g0FlatCLM]
-  rw [inner_inv_mixed (I := I) (M := M) g₀ g₁ x om (m 0)]
-  rw [metricComparisonEndomorphismField_apply]
+  rw [show cotangentToDual (I := I) om (metricComparisonEndomorphism (I := I) g₀ g₁ x w) =
+      g₁.inner x (inverseMetricSharpFib (I := I) g₁ x om)
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x w) from by
+    rw [← cotangentToDualLinear_apply]
+    exact (inverseMetricSharpFib_inner (I := I) g₁ x om
+      (metricComparisonEndomorphism (I := I) g₀ g₁ x w)).symm]
+  rw [show metricComparisonEndomorphism (I := I) g₀ g₁ x w =
+      inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x w) from by
+    rw [metricComparisonEndomorphism_apply]]
+  rw [g₁.symm x (inverseMetricSharpFib (I := I) g₁ x om)
+    (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x w))]
+  rw [inverseMetricSharpFib_inner (I := I) g₁ x (g0FlatCLM (I := I) g₀ x w)
+    (inverseMetricSharpFib (I := I) g₁ x om)]
+  rw [cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
+  rw [g₀.symm x w (inverseMetricSharpFib (I := I) g₁ x om)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
@@ -743,7 +763,7 @@ private theorem fullRaised_split
           rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x =
       metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x from rfl]
   rw [metricComparisonEndomorphismField_apply,
@@ -753,7 +773,6 @@ private theorem fullRaised_split
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem insert_add
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
@@ -772,12 +791,12 @@ private theorem insert_add
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
           rw [SmoothCcTensor.toSection_add]
           rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in

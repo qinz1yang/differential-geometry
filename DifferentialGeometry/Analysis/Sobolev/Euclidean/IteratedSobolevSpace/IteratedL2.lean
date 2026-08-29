@@ -89,7 +89,7 @@ theorem wkpNormL2Sq_zero
   rw [Finset.sum_range_one]
   have hUniq : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) := fun α => by
     funext i; exact i.elim0
-  haveI : Unique (Fin 0 → Fin d) :=
+  have : Unique (Fin 0 → Fin d) :=
     { default := fun i : Fin 0 => i.elim0
       uniq := fun α => (hUniq α).symm ▸ rfl }
   rw [Fintype.sum_unique

@@ -56,7 +56,12 @@ theorem trace2_deriv
   intro i _
   refine HasDerivWithinAt.fun_sum ?_
   intro j _
-  simpa [mul_add] using (hgInv i j).mul (hT i j)
+  have h := (hgInv i j).mul (hT i j)
+  change HasDerivWithinAt
+    (fun s : Real => gInvPath s i j * TPath s i j)
+    (gInvDot i j * TPath base i j + gInvPath base i j * TDot i j)
+    timeSet base at h
+  exact h
 
 theorem trace2_neg
     {ι : Type*} [Fintype ι]
@@ -168,7 +173,7 @@ def gammaMixedCoordAt
       (fun s : Real =>
         DifferentialGeometry.Geometry.Curvature.christoffelCoordDerivAt (I := I) (G.connection s)
           x0 dir i j k)
-      (extDerivFun (I := I) (fun y : M => gammaDot y k i j) x0
+      (mvfderiv (I := I) (fun y : M => gammaDot y k i j) x0
         (coordinateFrameAt (I := I) x0 dir x0))
       timeSet
       base
@@ -180,7 +185,7 @@ def gammaCovCoordAt
         CoordinateIdx (𝕜 := Real) E -> Real)
     (x0 : M)
     (dir k i j : CoordinateIdx (𝕜 := Real) E) : Real :=
-  extDerivFun (I := I) (fun y : M => gammaDot y k i j) x0
+  mvfderiv (I := I) (fun y : M => gammaDot y k i j) x0
       (coordinateFrameAt (I := I) x0 dir x0) +
     (∑ a : CoordinateIdx (𝕜 := Real) E,
       DifferentialGeometry.Geometry.Curvature.christoffelCoordAt (I := I) cov x0 dir a k *
@@ -313,9 +318,9 @@ private theorem curvVarCoord
         (fun s : Real =>
           DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt (I := I) (G.connection s)
             x0 i k j m)
-        ((extDerivFun (I := I) (fun y : M => gammaDot y m k j) x0
+        ((mvfderiv (I := I) (fun y : M => gammaDot y m k j) x0
             (coordinateFrameAt (I := I) x0 i x0) -
-          extDerivFun (I := I) (fun y : M => gammaDot y m i j) x0
+          mvfderiv (I := I) (fun y : M => gammaDot y m i j) x0
             (coordinateFrameAt (I := I) x0 k x0)) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             (gammaDot x0 a k j *
@@ -333,10 +338,14 @@ private theorem curvVarCoord
               gammaDot x0 m k a)))
         timeSet
         base := by
-    simpa [DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt, sub_eq_add_neg,
-      add_assoc,
-      Finset.sum_add_distrib] using
-      (((hD_i.sub hD_k).add hprod_left).sub hprod_right)
+    have h := (((hD_i.sub hD_k).add hprod_left).sub hprod_right)
+    change HasDerivWithinAt
+      (fun s : Real =>
+        DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt
+          (I := I) (G.connection s) x0 i k j m)
+      _ timeSet base at h
+    simpa [DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt,
+      sub_eq_add_neg, add_assoc, Finset.sum_add_distrib] using h
   refine hraw.congr_deriv ?_
   have hsymm :
       ∀ a b c : CoordinateIdx (𝕜 := Real) E,
@@ -358,7 +367,7 @@ private theorem curvVarCoord
   let dA : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun dir a b c =>
-      extDerivFun (I := I) (fun y : M => gammaDot y c a b) x0
+      mvfderiv (I := I) (fun y : M => gammaDot y c a b) x0
         (coordinateFrameAt (I := I) x0 dir x0)
   have hGammaSymm :
       ∀ a b c : CoordinateIdx (𝕜 := Real) E, Gamma a b c = Gamma b a c := by
@@ -406,29 +415,29 @@ theorem lcRicciVarCoord
 
 def scalarCoordDerivAt
     (f : M -> Real) (x0 : M) (i : CoordinateIdx (𝕜 := Real) E) : Real :=
-  extDerivFun (I := I) f x0 (coordinateFrameAt (I := I) x0 i x0)
+  mvfderiv (I := I) f x0 (coordinateFrameAt (I := I) x0 i x0)
 
 def scalarCoordDerivFun
     (f : M -> Real) (x0 : M) (j : CoordinateIdx (𝕜 := Real) E)
     (x : M) : Real :=
-  extDerivFun (I := I) f x (coordinateFrameAt (I := I) x0 j x)
+  mvfderiv (I := I) f x (coordinateFrameAt (I := I) x0 j x)
 
 
 def scalarCoordSecondAt
     (f : M -> Real) (x0 : M)
     (i j : CoordinateIdx (𝕜 := Real) E) : Real :=
-  extDerivFun (I := I) (scalarCoordDerivFun (I := I) f x0 j) x0
+  mvfderiv (I := I) (scalarCoordDerivFun (I := I) f x0 j) x0
     (coordinateFrameAt (I := I) x0 i x0)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [DecidableEq (CoordinateIdx (𝕜 := Real) E)] in
-private theorem extDerivFun_congr_eventually_real
+private theorem mvfderiv_congr_eventually_real
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (h : f =ᶠ[nhds x] g) :
-    extDerivFun (I := I) f x v = extDerivFun (I := I) g x v := by
+    mvfderiv (I := I) f x v = mvfderiv (I := I) g x v := by
   have hmf := Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real)) h
   have hx : f x = g x := h.eq_of_nhds
-  unfold extDerivFun
+  unfold mvfderiv
   rw [hmf, hx]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -443,9 +452,9 @@ theorem traceExtSum
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => gammaDot y p p j) x0) :
     (∑ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) (fun y : M => gammaDot y p p j) x0
+        mvfderiv (I := I) (fun y : M => gammaDot y p p j) x0
           (coordinateFrameAt (I := I) x0 i x0)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M => ∑ p : CoordinateIdx (𝕜 := Real) E,
           gammaDot y p p j)
         x0 (coordinateFrameAt (I := I) x0 i x0) := by
@@ -453,7 +462,7 @@ theorem traceExtSum
   let t : Finset (CoordinateIdx (𝕜 := Real) E) := Finset.univ
   let F : CoordinateIdx (𝕜 := Real) E -> M -> Real :=
     fun p y => gammaDot y p p j
-  have hsum := DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+  have hsum := DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
     (I := I) (t := t) (f := F)
     (x := x0) (v := coordinateFrameAt (I := I) x0 i x0)
     (by
@@ -597,16 +606,16 @@ theorem traceDerivAt
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y p l) x)
     (hmetricDot_mdiff : ∀ p l : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => metricDot y p l) x) :
-    extDerivFun (I := I) metricTrace x (frame d x) =
+    mvfderiv (I := I) metricTrace x (frame d x) =
       ∑ p : Idx, ∑ l : Idx,
         (gInv x p l *
-          extDerivFun (I := I) (fun y : M => metricDot y p l)
+          mvfderiv (I := I) (fun y : M => metricDot y p l)
             x (frame d x) +
-        extDerivFun (I := I) (fun y : M => gInv y p l)
+        mvfderiv (I := I) (fun y : M => gInv y p l)
             x (frame d x) *
           metricDot x p l) := by
   classical
-  have hcongr := extDerivFun_congr_eventually_real
+  have hcongr := mvfderiv_congr_eventually_real
     (I := I) (x := x) (frame d x) htrace
   rw [hcongr]
   have hmdiffInner : ∀ p : Idx,
@@ -631,15 +640,15 @@ theorem traceDerivAt
     rw [← hfun]
     exact hmd
   have houter :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => ∑ p : Idx, ∑ l : Idx,
             gInv y p l * metricDot y p l)
           x (frame d x) =
         ∑ p : Idx,
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => ∑ l : Idx, gInv y p l * metricDot y p l)
             x (frame d x) := by
-    have hsum := DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+    have hsum := DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
       (I := I) (t := (Finset.univ : Finset Idx))
       (f := fun p y => ∑ l : Idx, gInv y p l * metricDot y p l)
       (x := x) (v := frame d x)
@@ -659,14 +668,14 @@ theorem traceDerivAt
   rw [houter]
   refine Finset.sum_congr rfl fun p _hp => ?_
   have hinner :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => ∑ l : Idx, gInv y p l * metricDot y p l)
           x (frame d x) =
         ∑ l : Idx,
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => gInv y p l * metricDot y p l)
             x (frame d x) := by
-    have hsum := DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real
+    have hsum := DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real
       (I := I) (t := (Finset.univ : Finset Idx))
       (f := fun l y => gInv y p l * metricDot y p l)
       (x := x) (v := frame d x)
@@ -686,7 +695,7 @@ theorem traceDerivAt
   rw [hinner]
   refine Finset.sum_congr rfl fun l _hl => ?_
   simpa [mul_comm, mul_left_comm, mul_assoc] using
-    DifferentialGeometry.Tensor.Coordinates.extDerivFun_mul_real
+    DifferentialGeometry.Tensor.Coordinates.mvfderiv_mul_real
       (I := I) (x := x) (frame d x)
       (hgInv_mdiff p l) (hmetricDot_mdiff p l)
 
@@ -814,7 +823,7 @@ theorem gInvTraceCancel
       DifferentialGeometry.Tensor.Coordinates.inverseMetricCovDerivForMetricCompInFrame
         (I := I) gInv cov frame hframe x d p l = 0) :
     (∑ p : Idx, ∑ l : Idx,
-      extDerivFun (I := I) (fun y : M => gInv y p l) x (frame d x) *
+      mvfderiv (I := I) (fun y : M => gInv y p l) x (frame d x) *
         metricDot x p l) =
       -∑ p : Idx, ∑ l : Idx,
         gInv x p l *
@@ -828,7 +837,7 @@ theorem gInvTraceCancel
               metricDot x p a)) := by
   classical
   let DU : Idx -> Idx -> Real := fun p l =>
-    extDerivFun (I := I) (fun y : M => gInv y p l) x (frame d x)
+    mvfderiv (I := I) (fun y : M => gInv y p l) x (frame d x)
   let G : Idx -> Idx -> Real := fun p l => gInv x p l
   let V : Idx -> Idx -> Real := fun p l => metricDot x p l
   let Γ : Idx -> Idx -> Real := fun a c =>
@@ -872,7 +881,7 @@ theorem traceCovEqDeriv
       DifferentialGeometry.Tensor.Coordinates.inverseMetricCovDerivForMetricCompInFrame
         (I := I) gInv cov frame hframe x d p l = 0) :
     metricTraceCovAt gInv metricCovDerivDt x d =
-      extDerivFun (I := I) metricTrace x (frame d x) := by
+      mvfderiv (I := I) metricTrace x (frame d x) := by
   classical
   have htraceDeriv := traceDerivAt
     (I := I) gInv metricDot metricTrace frame d htrace
@@ -891,10 +900,10 @@ theorem traceCovEqDeriv
     _ =
         (∑ p : Idx, ∑ l : Idx,
           gInv x p l *
-            extDerivFun (I := I) (fun y : M => metricDot y p l)
+            mvfderiv (I := I) (fun y : M => metricDot y p l)
               x (frame d x)) +
         (∑ p : Idx, ∑ l : Idx,
-          extDerivFun (I := I) (fun y : M => gInv y p l)
+          mvfderiv (I := I) (fun y : M => gInv y p l)
               x (frame d x) *
             metricDot x p l) := by
           rw [hcancel]
@@ -905,13 +914,13 @@ theorem traceCovEqDeriv
     _ =
         ∑ p : Idx, ∑ l : Idx,
           (gInv x p l *
-            extDerivFun (I := I) (fun y : M => metricDot y p l)
+            mvfderiv (I := I) (fun y : M => metricDot y p l)
               x (frame d x) +
-          extDerivFun (I := I) (fun y : M => gInv y p l)
+          mvfderiv (I := I) (fun y : M => gInv y p l)
               x (frame d x) *
             metricDot x p l) := by
           simp [Finset.sum_add_distrib]
-    _ = extDerivFun (I := I) metricTrace x (frame d x) := htraceDeriv.symm
+    _ = mvfderiv (I := I) metricTrace x (frame d x) := htraceDeriv.symm
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [DecidableEq (CoordinateIdx (𝕜 := Real) E)] in
@@ -930,21 +939,21 @@ theorem gammaTraceDeriv
     (hscalar_mdiff :
       MDifferentiableAt I 𝓘(Real, Real)
         (scalarCoordDerivFun (I := I) metricTrace x0 j) x0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ p : CoordinateIdx (𝕜 := Real) E,
           gammaDot y p p j)
         x0 (coordinateFrameAt (I := I) x0 i x0) =
       (1 / 2 : Real) *
         scalarCoordSecondAt (I := I) metricTrace x0 i j := by
-  have hcongr := extDerivFun_congr_eventually_real
+  have hcongr := mvfderiv_congr_eventually_real
     (I := I) (x := x0)
     (coordinateFrameAt (I := I) x0 i x0) htrace_eventual
   rw [hcongr]
-  have hconst := extDerivFun_const_mul
+  have hconst := mvfderiv_const_mul
     (I := I) (c := (1 / 2 : Real))
     (f := scalarCoordDerivFun (I := I) metricTrace x0 j)
     (x := x0) hscalar_mdiff
-  change extDerivFun (I := I)
+  change mvfderiv (I := I)
       (fun y : M =>
         (1 / 2 : Real) *
           scalarCoordDerivFun (I := I) metricTrace x0 j y)

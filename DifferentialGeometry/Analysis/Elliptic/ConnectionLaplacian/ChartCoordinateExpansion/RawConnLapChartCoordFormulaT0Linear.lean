@@ -12,7 +12,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -261,7 +260,7 @@ private noncomputable def chartFrameCoordDirDerivPull
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k l : Fin (Module.finrank ℝ E)) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
-  fun y => extDerivFun (I := I)
+  fun y => mvfderiv (I := I)
     (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k)
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     (chartBasisVecFiber (I := I) α l
@@ -324,7 +323,7 @@ private lemma chartFrameCoordDirDerivPull_at_b_eq
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     chartFrameCoordDirDerivPull (I := I) (M := M) g α i k l
         ((toEuclidean (E := E)) ((extChartAt I α) b)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k) b
         (chartBasisVecFiber (I := I) α l b) := by
   have hb_src : b ∈ (extChartAt I α).source :=
@@ -582,7 +581,7 @@ private theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
   have hLeibnizUnfold :
       (∑ i, ∑ l, ∑ k,
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
-            extDerivFun (I := I)
+            mvfderiv (I := I)
                 (fun z : M =>
                   chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z) b
                 (chartBasisVecFiber (I := I) α l b) *
@@ -610,7 +609,7 @@ private theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
     rw [show chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b =
         CF i l from
       (chartFrameCoordPull_at_b_eq (I := I) (M := M) g α i l hb_good).symm]
-    rw [show extDerivFun (I := I)
+    rw [show mvfderiv (I := I)
           (fun z : M =>
             chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z) b
           (chartBasisVecFiber (I := I) α l b) =

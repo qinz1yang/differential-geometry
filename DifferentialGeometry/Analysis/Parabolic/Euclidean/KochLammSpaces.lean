@@ -52,25 +52,25 @@ theorem klQ_ne_top : klQ V ≠ ∞ := by
   exact ENNReal.div_ne_top (klP_ne_top (V := V)) (by norm_num)
 
 def klL2ScaleR (R : ℝ) : ℝ :=
-  Real.rpow R (-klDim V / 2)
+  R ^ (-klDim V / 2)
 
 def klL2Scale (R : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal (klL2ScaleR (V := V) R)
 
 def klLpScaleR (R : ℝ) : ℝ :=
-  Real.rpow R (2 / (klDim V + 4))
+  R ^ (2 / (klDim V + 4))
 
 def klLpScale (R : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal (klLpScaleR (V := V) R)
 
 def klL1ScaleR (R : ℝ) : ℝ :=
-  Real.rpow R (-klDim V)
+  R ^ (-klDim V)
 
 def klL1Scale (R : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal (klL1ScaleR (V := V) R)
 
 def klLqScaleR (R : ℝ) : ℝ :=
-  Real.rpow R (4 / (klDim V + 4))
+  R ^ (4 / (klDim V + 4))
 
 def klLqScale (R : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal (klLqScaleR (V := V) R)

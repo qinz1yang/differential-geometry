@@ -75,14 +75,12 @@ theorem ricciSlabLe (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real)
         (metricRicciAt (I := I) (g₁ t) x - metricRicciAt (I := I) (g₂ t) x) ≤
       (Module.finrank Real E : Real) ^ 4 * forwardUniqueDensity (I := I) g₁ g₂ t x := by
   have hrep : normSq0S (I := I) (g₁ t) x 4
-      (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-        (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x)) ≤
+      ((rmDiffLowAt (I := I) (g₁ t) (g₂ t) x).domDomCongr rm04TraceSlots) ≤
       rmDiffSq (I := I) (g₁ t) (g₂ t) x + (0 : Real) * metricDiffSq (I := I) (g₁ t) (g₂ t) x := by
     rw [normSq_ricciTraceRep (I := I) (g₁ t) (g₂ t) x]
     exact le_of_eq (by ring)
   refine (ricciDiffSq_le (I := I) (g₁ t) (g₂ t) x
-    (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-      (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x))
+    ((rmDiffLowAt (I := I) (g₁ t) (g₂ t) x).domDomCongr rm04TraceSlots)
     (ricciDiff_eq_trace (I := I) (g₁ t) (g₂ t) x) hrep).trans ?_
   have hdens := rmDiffSq_le_dens (I := I) g₁ g₂ t x
   have hpow : (0 : Real) ≤ (Module.finrank Real E : Real) ^ 4 := by positivity
@@ -98,11 +96,11 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -110,8 +108,8 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -121,7 +119,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
@@ -347,9 +345,8 @@ theorem ricciSq_le_rm04 (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
   obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
   have hinv := onFrame_inv (I := I) g₁ basis hON
   have htr := traceNormSq_le (I := I) (s := 2) g₁ x
-    (ContinuousMultilinearMap.domDomCongr rm04TraceSlots
-      (CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
-        (metricCov_smooth (I := I) g₂) x))
+    ((CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
+      (metricCov_smooth (I := I) g₂) x).domDomCongr rm04TraceSlots)
   rw [normSq0S_domDomCongr (I := I) g₁ x basis hinv rm04TraceSlots _] at htr
   rw [metricRicci_eq_trace_cross (I := I) g₁ g₂ x]
   exact htr
@@ -589,9 +586,12 @@ theorem tracePairSq_le (g : SmoothRiemannianMetric I M) (x : M)
       (Module.finrank Real E : Real) * normSq0S (I := I) g x 2 Q := by
   classical
   obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g x
-  simpa using metricTracePair0SAt_sq_le_card_mul_normSq0S (I := I) g basis
+  have h := metricTracePair0SAt_sq_le_card_mul_normSq0S (I := I) g basis
     (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x))))
     (onFrame_inv (I := I) g basis hON) Q
+  rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl] at h
+  simp only [Fintype.card_fin] at h
+  exact h
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 theorem volSlabSup (g₁ : Real → SmoothRiemannianMetric I M) {B : Real}
@@ -659,7 +659,8 @@ private theorem reactOrtho {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     -(∑ p : Idx, ∑ q : Idx, gI t i p * ((-2 : Real) * ric p q) * gI t q j) with hgIDtdef
   have hinvAll : ∀ r : Real, MetricInverseInBasis (I := I) (g r) x basis (gI r) := by
     intro r
-    simpa [gI] using basisInvMetric_real (I := I) (g r) x basis
+    simpa only [gI, MetricInverseInBasis, MetricInverseInBasisGen] using
+      basisInvMetric_real (I := I) (g r) x basis
   have hgI : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gI r i j) (gIDt i j) Set.univ t := by
     intro i j
@@ -858,7 +859,9 @@ theorem movingReactAbs_le {s : Nat} {x : M} {t : Real}
       refine Finset.prod_eq_one fun d _ => ?_
       simp [hON (I0 d) (I0 d)]
     rw [hprod, mul_one] at h
-    simpa [tensor0SComponent] using h
+    change |W (fun a ↦ basis (I0 a))| ≤ NW
+    rw [hNW]
+    exact h
   rw [reactOrtho (I := I) g Q W basis hON hg]
   refine (ricReactAbs_le (Idx := Fin (Module.finrank Real (TangentSpace I x)))
     (s := s) _ _ hNQ0 hNW0 hQc hWc).trans (le_of_eq ?_)

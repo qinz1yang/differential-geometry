@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvat
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.UniformRiemannOperatorNormBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpHigherRankParseval
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -11,7 +12,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -33,7 +33,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace s
+  Tensor0SBundle.tensor0SModelNormedSpace s
 
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
@@ -53,13 +53,13 @@ private lemma exists_smooth_tensor0S_section_eq (t : ℕ) (x : M) (T₀ : Tensor
       ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel t ℝ E)) ∞
         (fun b => TotalSpace.mk' (Tensor0SModel t ℝ E)
           (E := fun z : M => Tensor0SSpace t I z) b (A b)) := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y)) :=
-    tensor0SBundle_topology t
-  letI : FiberBundle (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
-    tensor0SBundle_fiber t
-  letI : VectorBundle ℝ (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
+  let _ : TopologicalSpace (TotalSpace (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y)) :=
+    tensor0SBundleTopology t
+  let _ : FiberBundle (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
+    tensor0SBundleFiber t
+  let _ : VectorBundle ℝ (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
     tensor0SBundle_vector t
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel t ℝ E)
+  let _ : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel t ℝ E)
       (fun y : M => Tensor0SSpace t I y) I := tensor0SBundle_smooth ∞ t
   exact ⟨smoothExtensionFiber (I := I) (F := Tensor0SModel t ℝ E)
       (V := fun b => Tensor0SSpace t I b) x T₀,
@@ -120,13 +120,13 @@ private lemma riemannSec_tensorRSCov_unitEval (g : SmoothRiemannianMetric I M) (
         (fun y : M => (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace t I y from τ y)
           (unitZeroSec (I := I) (M := M) y)) x := by
   classical
-  letI : TopologicalSpace (TotalSpace (TensorRSModel 0 t ℝ E)
-      (fun y : M => TensorRSSpace 0 t I y)) := tensorRSBundle_topology 0 t
-  letI : FiberBundle (TensorRSModel 0 t ℝ E) (fun y : M => TensorRSSpace 0 t I y) :=
-    tensorRSBundle_fiber 0 t
-  letI : VectorBundle ℝ (TensorRSModel 0 t ℝ E) (fun y : M => TensorRSSpace 0 t I y) :=
+  let _ : TopologicalSpace (TotalSpace (TensorRSModel 0 t ℝ E)
+      (fun y : M => TensorRSSpace 0 t I y)) := tensorRSBundleTopology 0 t
+  let _ : FiberBundle (TensorRSModel 0 t ℝ E) (fun y : M => TensorRSSpace 0 t I y) :=
+    tensorRSBundleFiber 0 t
+  let _ : VectorBundle ℝ (TensorRSModel 0 t ℝ E) (fun y : M => TensorRSSpace 0 t I y) :=
     tensorRSBundle_vector 0 t
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel 0 t ℝ E)
+  let _ : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel 0 t ℝ E)
       (fun y : M => TensorRSSpace 0 t I y) I := tensorRSBundle_smooth ∞ 0 t
   set cov := tensorCov (I := I) g 0 t with hcov_def
   set covS := tensor0SCovariantDerivative I M t (LeviCivita (I := I) g) with hcovS_def
@@ -155,7 +155,7 @@ private lemma riemannSec_tensorRSCov_unitEval (g : SmoothRiemannianMetric I M) (
   have hX_at := (hX x).mdifferentiableAt (by simp)
   have hW_at := (hW x).mdifferentiableAt (by simp)
   rw [riemannSec_def, riemannSec_def]
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, sub_apply]
   congr 1
   · congr 1
     · have hWτ_at : MDifferentiableAt I (I.prod 𝓘(ℝ, TensorRSModel 0 t ℝ E))
@@ -191,13 +191,13 @@ theorem riemannOp_tensorCov_unitScalarRSLift_unitEval
         (unitZeroSec (I := I) (M := M) x) =
       riemannOp (tensor0SCovariantDerivative I M t (LeviCivita (I := I) g)) x v w T₀ := by
   classical
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel t ℝ E)
-      (fun y : M => Tensor0SSpace t I y)) := tensor0SBundle_topology t
-  letI : FiberBundle (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
-    tensor0SBundle_fiber t
-  letI : VectorBundle ℝ (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
+  let _ : TopologicalSpace (TotalSpace (Tensor0SModel t ℝ E)
+      (fun y : M => Tensor0SSpace t I y)) := tensor0SBundleTopology t
+  let _ : FiberBundle (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
+    tensor0SBundleFiber t
+  let _ : VectorBundle ℝ (Tensor0SModel t ℝ E) (fun y : M => Tensor0SSpace t I y) :=
     tensor0SBundle_vector t
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel t ℝ E)
+  let _ : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel t ℝ E)
       (fun y : M => Tensor0SSpace t I y) I := tensor0SBundle_smooth ∞ t
   obtain ⟨A, hAx, hA_smooth⟩ := exists_smooth_tensor0S_section_eq (I := I) (M := M) t x T₀
   set Sig : Π y : M, TensorRSSpace 0 t I y :=
@@ -240,7 +240,7 @@ theorem riemannOp_tensor0SCov_coframeS_apply_eval
     (g : SmoothRiemannianMetric I M) (t : ℕ) (x : M) (v w : TangentSpace I x)
     {n : ℕ} (e : Fin n → TangentSpace I x) (J : Fin t → Fin n)
     (u : Fin t → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         (riemannOp (tensor0SCovariantDerivative I M t (LeviCivita (I := I) g)) x v w
           (coframeS (I := I) (M := M) g x t e J)) u =
       - ∑ k : Fin t,
@@ -308,7 +308,7 @@ theorem abs_toModel_riemannOp_tensor0SCov_coframeS_le
     (hvv : g.inner x v v ≤ 1) (hww : g.inner x w w ≤ 1)
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
     (hm : ∀ s : Fin t, g.inner x (m s) (m s) ≤ 1) :
-    |Tensor0SSpace.toModel
+    |Tensor0SSpace.eval
         (riemannOp (tensor0SCovariantDerivative I M t (LeviCivita (I := I) g)) x v w
           (coframeS (I := I) (M := M) g x t e J)) m| ≤
       (t : ℝ) * Real.sqrt Kbase := by
@@ -318,9 +318,9 @@ theorem abs_toModel_riemannOp_tensor0SCov_coframeS_le
     g.toRiemannianMetric.continuousAt x
   have hbnd : Bornology.IsVonNBounded ℝ {z : TangentSpace I x |
       RCLike.re (cd.inner z z) < 1} := g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let _ : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let _ : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   have hinner_eq : ∀ a b : TangentSpace I x, (inner ℝ a b : ℝ) = g.inner x a b := fun _ _ => rfl
   have hnorm_sq : ∀ a : TangentSpace I x, ‖a‖ ^ 2 = g.inner x a a := by
@@ -433,9 +433,9 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_dualTensorFrameS_le
     g.toRiemannianMetric.continuousAt x
   have hbnd : Bornology.IsVonNBounded ℝ {z : TangentSpace I x |
       RCLike.re (cd.inner z z) < 1} := g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let _ : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let _ : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set nb : ℕ := Module.finrank ℝ (TangentSpace I x) with hnb_def
   set eob : OrthonormalBasis (Fin nb) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _ with heob_def
@@ -470,7 +470,7 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_dualTensorFrameS_le
     congr 1
   have hcomp_eval : ∀ Jp : Fin t → Fin nb,
       fiberNormSqComponent (I := I) (M := M) g x 0 t V nb eb K₀ Jp =
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (riemannOp (tensor0SCovariantDerivative I M t (LeviCivita (I := I) g)) x (e i) (e j)
             (coframeS (I := I) (M := M) g x t e J)) (fun s => eb (Jp s)) := by
     intro Jp
@@ -497,10 +497,16 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_dualTensorFrameS_le
           Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
           ContinuousMultilinearMap.constOfIsEmpty_apply]
       rw [hL, hR]
-    rw [hω, hV_def, hdual]
+    have hω_model :
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+            (fun a => g.inner x (eb (K₀ a)))) =
+          tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 0 x
+            (unitZeroSec (I := I) (M := M) x) := by
+      rw [tensor0SSpaceFiberContinuousLinearEquiv_apply]
+      exact hω
+    rw [hω_model, ContinuousLinearEquiv.symm_apply_apply, hV_def, hdual]
     rw [riemannOp_tensorCov_unitScalarRSLift_unitEval (I := I) (M := M) g t x (e i) (e j)
       (coframeS (I := I) (M := M) g x t e J)]
-    rfl
   have hbnd_comp : ∀ Jp : Fin t → Fin nb,
       (fiberNormSqComponent (I := I) (M := M) g x 0 t V nb eb K₀ Jp) ^ 2 ≤
         ((t : ℝ) * Real.sqrt Kbase) ^ 2 := by

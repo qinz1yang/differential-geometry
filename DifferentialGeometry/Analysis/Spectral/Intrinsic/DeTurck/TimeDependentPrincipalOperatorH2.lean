@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocalNemytskii
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperatorH2
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -41,7 +42,7 @@ theorem principalOperatorDomainBall_zero (g : SmoothRiemannianMetric I M)
     {ρ : ℝ} (hρ : 0 ≤ ρ) :
     (0 : metricH2 (I := I) (M := M) g) ∈
       principalOperatorDomainBall (I := I) (M := M) g ρ := by
-  simpa only [principalOperatorDomainBall, Set.mem_setOf_eq, norm_zero] using hρ
+  simpa only [principalOperatorDomainBall, Set.mem_ofPred_eq, norm_zero] using hρ
 
 def principalOperatorOnBall (g : SmoothRiemannianMetric I M) (ρ : ℝ) :
     principalOperatorDomainBall (I := I) (M := M) g ρ →
@@ -192,7 +193,15 @@ theorem principalOperatorOnBall_continuous
       hop.trans hstrict.le
   have hto := hdiff.add_const
     (principalOperatorOnBall (I := I) (M := M) g ρ T)
-  simpa only [sub_add_cancel, zero_add] using hto
+  have hto' : Tendsto
+      (fun U : principalOperatorDomainBall (I := I) (M := M) g ρ =>
+        (principalOperatorOnBall (I := I) (M := M) g ρ U -
+          principalOperatorOnBall (I := I) (M := M) g ρ T) +
+            principalOperatorOnBall (I := I) (M := M) g ρ T)
+      (𝓝 T) (𝓝 (principalOperatorOnBall (I := I) (M := M) g ρ T)) := by
+    simpa only [zero_add] using hto
+  refine hto'.congr' ?_
+  exact Filter.Eventually.of_forall fun U => sub_add_cancel _ _
 
 def timeDependentPrincipalOperatorH2 (g : SmoothRiemannianMetric I M) {ρ : ℝ}
     (hρ : 0 ≤ ρ) {T : ℝ}
@@ -218,7 +227,7 @@ theorem timeDependentPrincipalOperatorH2_aestronglyMeasurable
   have hf' :
       ∀ᵐ t ∂timeMeasure T,
         f t ∈ principalOperatorDomainBall (I := I) (M := M) g ρ := by
-    simpa only [principalOperatorDomainBall, Set.mem_setOf_eq] using hf
+    simpa only [principalOperatorDomainBall, Set.mem_ofPred_eq] using hf
   exact (principalOperatorOnBall_continuous (I := I) (M := M) g hL).comp_aestronglyMeasurable
     (aeSetLift_aesm
       (principalOperatorDomainBall_zero (I := I) (M := M) g hρ) f hf')
@@ -232,7 +241,7 @@ theorem timeDependentPrincipalOperatorH2_ae_eq
   filter_upwards [hf] with t ht
   have hmem :
       f t ∈ principalOperatorDomainBall (I := I) (M := M) g ρ := by
-    simpa only [principalOperatorDomainBall, Set.mem_setOf_eq] using ht
+    simpa only [principalOperatorDomainBall, Set.mem_ofPred_eq] using ht
   simp only [timeDependentPrincipalOperatorH2, principalOperatorOnBall, aeSetLift, dif_pos hmem]
 
 theorem timeDependentPrincipalOperatorH2_ae_norm_bound

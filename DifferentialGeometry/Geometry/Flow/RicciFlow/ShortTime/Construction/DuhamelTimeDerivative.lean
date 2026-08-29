@@ -7,6 +7,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -69,7 +71,7 @@ theorem duhamel_integral_time_deriv
     have hbase : HasDerivAt (fun t : ℝ => -(lam * t)) (-lam) t := by
       have h1 : HasDerivAt (fun t : ℝ => lam * t) lam t := by
         simpa using (hasDerivAt_id t).const_mul lam
-      simpa using h1.neg
+      convert! h1.neg using 1
     have hexp := hbase.exp
     simpa [mul_comm] using hexp
   have hprod : HasDerivAt (fun t => Real.exp (-(lam * t)) * ψ t)

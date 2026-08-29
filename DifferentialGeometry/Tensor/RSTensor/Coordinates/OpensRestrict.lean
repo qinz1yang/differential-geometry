@@ -52,8 +52,11 @@ theorem tangentCoordChange_opens {V : Opens M} (p q x : V)
 omit [CompleteSpace E] in
 theorem tensor0SModelAt_opens (s : ℕ) {V : Opens M} (p x : V)
     (hxp : (x : M) ∈ (chartAt H (p : M)).source)
-    (A : Tensor0SBundle.Tensor0SSpace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s x) :
-    TensorLieDeriv.tensor0SModelAt (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s p x A
+    (A : Tensor0SBundle.Tensor0SSpace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+      s (x : M)) :
+    TensorLieDeriv.tensor0SModelAt (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s p x
+        (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x)
+          (Tensor0SBundle.Tensor0SSpace.toModel A))
       = TensorLieDeriv.tensor0SModelAt (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
           s (p : M) (x : M) A := by
   have hsrc : x ∈ (chartAt H p).source := by
@@ -65,11 +68,16 @@ theorem tensor0SModelAt_opens (s : ℕ) {V : Opens M} (p x : V)
   have hR : (trivializationAt E (TangentSpace I (M := M)) (p : M)).symmL ℝ (x : M)
       = (tangentBundleCore I M).coordChange (achart H (p : M)) (achart H (x : M)) (x : M) :=
     TangentBundle.symmL_trivializationAt_eq_core hxp
-  change A.compContinuousLinearMap
+  change ContinuousMultilinearMap.compContinuousLinearMap
+      (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x
+        (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x)
+          (Tensor0SBundle.Tensor0SSpace.toModel A)))
       (fun _ => (trivializationAt E (TangentSpace I (M := V)) p).symmL ℝ x)
-    = ContinuousMultilinearMap.compContinuousLinearMap A
+    = ContinuousMultilinearMap.compContinuousLinearMap
+      (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv (I := I) s (x : M) A)
       (fun _ => (trivializationAt E (TangentSpace I (M := M)) (p : M)).symmL ℝ (x : M))
   rw [hL, hR, tangentCoordChange_opens (I := I) p x x hxp]
+  congr 1
 
 end DifferentialGeometry
 
@@ -77,7 +85,6 @@ namespace DifferentialGeometry
 
 open Bundle Set Topology TopologicalSpace
 open scoped Manifold ContDiff
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -87,9 +94,11 @@ noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) s :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := V) s
-  { toFun := fun x => δ (x : M)
+  { toFun := fun x =>
+      Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x)
+        (Tensor0SBundle.Tensor0SSpace.toModel (δ (x : M)))
     contMDiff_toFun := by
       intro x₀
       rw [Bundle.contMDiffAt_section]

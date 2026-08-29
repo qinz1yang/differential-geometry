@@ -14,38 +14,46 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
+variable {E : Type*} [NormedAddCommGroup E]
+variable {H : Type*} [TopologicalSpace H]
 
 section OutwardNormalDerivative
 
-variable [FiniteDimensional ℝ E]
+variable [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+variable {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 def outwardNormalDerivative
     (g : Measure.SmoothRiemannianMetric I M) (f : M → ℝ)
     (x : BoundaryManifold I M) : ℝ :=
   g.inner (x : M) (gradientFun (I := I) g f (x : M))
-    (outwardNormal (M := M) g x)
+    (outwardNormal (E := E) (H := H) (I := I) (M := M) g x)
 
 @[simp] theorem outwardNormalDerivative_apply
     (g : Measure.SmoothRiemannianMetric I M) (f : M → ℝ)
     (x : BoundaryManifold I M) :
     outwardNormalDerivative (M := M) g f x =
       g.inner (x : M) (gradientFun (I := I) g f (x : M))
-        (outwardNormal (M := M) g x) := rfl
+        (outwardNormal (E := E) (H := H) (I := I) (M := M) g x) := rfl
 
 theorem outwardNormalDerivative_eq_mfderiv
     (g : Measure.SmoothRiemannianMetric I M) (f : M → ℝ)
     (x : BoundaryManifold I M) :
     outwardNormalDerivative (M := M) g f x =
       mfderiv I (modelWithCornersSelf ℝ ℝ) f (x : M)
-        (outwardNormal (M := M) g x) := by
+        (outwardNormal (E := E) (H := H) (I := I) (M := M) g x) := by
   exact inner_gradientFun (I := I) g f (x : M)
-    (outwardNormal (M := M) g x)
+    (outwardNormal (E := E) (H := H) (I := I) (M := M) g x)
 
 end OutwardNormalDerivative
+
+section BoundaryTangentDerivative
+
+variable [NormedSpace ℝ E]
+variable {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 theorem mfderiv_boundary_tangent_eq_zero_at_local_min
     {f : M → ℝ} {x : BoundaryManifold I M}
@@ -74,11 +82,19 @@ theorem mfderiv_boundary_tangent_eq_zero_at_local_min
         mfderiv I (modelWithCornersSelf ℝ ℝ) f (x : M)
           (boundaryInclusionMfderiv (M := M) x w) at happ
   rw [hzero] at happ
-  simpa [boundaryInclusionMfderiv] using happ.symm
+  calc
+    _ = (0 : TangentSpace hI.boundaryI x →L[Real]
+          TangentSpace (modelWithCornersSelf ℝ ℝ) (f (x : M))) w := happ.symm
+    _ = 0 := rfl
+
+end BoundaryTangentDerivative
 
 section GradientBoundaryTangent
 
-variable [FiniteDimensional ℝ E]
+variable [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 theorem inner_gradient_boundary_tangent_eq_zero_at_local_min
     (g : Measure.SmoothRiemannianMetric I M)
@@ -96,7 +112,10 @@ end GradientBoundaryTangent
 
 section OutwardNormalSign
 
-variable [FiniteDimensional ℝ E]
+variable [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+variable {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 theorem outwardNormalDerivative_neg_of_inner_gradient_inwardCoord_pos_at_local_min
     (g : Measure.SmoothRiemannianMetric I M)

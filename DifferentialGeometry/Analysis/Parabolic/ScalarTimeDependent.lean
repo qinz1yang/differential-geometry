@@ -190,7 +190,7 @@ theorem sub
         (I := I) (G.metric t) husmooth x)
       (DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt
         (I := I) (G.metric t) hvsmooth x)
-    convert (hu.equation t ht x).sub (hv.equation t ht x) using 1
+    refine ((hu.equation t ht x).sub (hv.equation t ht x)).congr_deriv ?_
     rw [hlaplacian]
     ring
 
@@ -263,8 +263,8 @@ theorem sub
         (I := I) (G.metric t) hvsmooth x)
     have hderiv : deriv (fun s => u s x - v s x) t =
         deriv (fun s => u s x) t - deriv (fun s => v s x) t := by
-      simpa only [Pi.sub_apply] using
-        deriv_sub (hu.timeDiff t ht x) (hv.timeDiff t ht x)
+      change deriv ((fun s => u s x) - fun s => v s x) t = _
+      exact deriv_sub (hu.timeDiff t ht x) (hv.timeDiff t ht x)
     rw [hlaplacian, hderiv]
     linarith [hu.equation_ge t ht x, hv.equation_le t ht x]
 
@@ -291,7 +291,8 @@ theorem neg
       simp
     have hderiv : deriv (fun s => -u s x) t =
         -deriv (fun s => u s x) t := by
-      simpa only using (h.timeDiff t ht x).hasDerivAt.neg.deriv
+      change deriv (-(fun s => u s x)) t = _
+      exact (h.timeDiff t ht x).hasDerivAt.neg.deriv
     rw [hfun, hlaplacian, hderiv]
     linarith [h.equation_ge t ht x]
 
@@ -338,7 +339,8 @@ theorem neg
       simp
     have hderiv : deriv (fun s => -u s x) t =
         -deriv (fun s => u s x) t := by
-      simpa only using (h.timeDiff t ht x).hasDerivAt.neg.deriv
+      change deriv (-(fun s => u s x)) t = _
+      exact (h.timeDiff t ht x).hasDerivAt.neg.deriv
     rw [hfun, hlaplacian, hderiv]
     linarith [h.equation_le t ht x]
 

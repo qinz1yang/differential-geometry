@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -45,8 +44,8 @@ private theorem component_eLpNorm_six
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨Cgrad, hCgrad, hgrad⟩ :=
     exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_mul_h1Norm
       (I := I) (M := M) g r s α
@@ -82,7 +81,7 @@ private theorem component_eLpNorm_six
       simpa [riemannianVolumeMeasure_def] using hsix
     _ ≤ ENNReal.ofReal Cs *
           (ENNReal.ofReal Cw * (‖S‖₊ : ℝ≥0∞)) :=
-      mul_le_mul_of_nonneg_left (hw S Idx Jdx) (zero_le _)
+      mul_le_mul_of_nonneg_left (hw S Idx Jdx) (zero_le)
     _ = ENNReal.ofReal (Cs * Cw) * (‖S‖₊ : ℝ≥0∞) := by
       rw [ENNReal.ofReal_mul hCs, mul_assoc]
 
@@ -115,7 +114,7 @@ theorem h1_lp6_fiber_rs
   classical
   let μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
   let K : Finset ((M × MIdxC E r) × MIdxC E s) :=
-    ((chartAtlasPOU_finset (I := I) (M := M)).product Finset.univ).product
+    ((chartAtlasPOUFinset (I := I) (M := M)).product Finset.univ).product
       Finset.univ
   obtain ⟨Cr, hCr, hrec⟩ := fiber_sq_le_comps (E := E) (I := I) (M := M) g r s
   choose Ca hCa hcomp using fun α : M =>
@@ -131,7 +130,7 @@ theorem h1_lp6_fiber_rs
     tensorChartComponentScalar (I := I) (M := M)
       g r s S.toCcTensor q.1.1 q.1.2 q.2
   have hsum_sq (x : M) :
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx x) ^ 2 =
@@ -206,10 +205,10 @@ theorem h1_lp6_fiber_rs
           eLpNorm (fun x => ∑ q ∈ K, |comp q x|) 6 μ := hfiber_eLp
       _ ≤ ENNReal.ofReal (Real.sqrt Cr) *
           (∑ q ∈ K, eLpNorm (fun x => |comp q x|) 6 μ) :=
-        mul_le_mul_of_nonneg_left hsum_eLp (zero_le _)
+        mul_le_mul_of_nonneg_left hsum_eLp (zero_le)
       _ ≤ ENNReal.ofReal (Real.sqrt Cr) *
           (ENNReal.ofReal Csum * (‖S‖₊ : ℝ≥0∞)) :=
-        mul_le_mul_of_nonneg_left hcomponent_sum (zero_le _)
+        mul_le_mul_of_nonneg_left hcomponent_sum (zero_le)
       _ = ENNReal.ofReal (Real.sqrt Cr * Csum) * (‖S‖₊ : ℝ≥0∞) := by
         rw [ENNReal.ofReal_mul (Real.sqrt_nonneg _), mul_assoc]
   have hfiber_cont : Continuous fiber := by

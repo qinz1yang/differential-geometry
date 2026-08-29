@@ -28,23 +28,21 @@ theorem autonomizedFlowVF_section_contMDiff
         (⟨p, autonomizedFlowVF X p⟩ : TangentBundle (𝓘(ℝ, ℝ).prod I) (ℝ × M))) := by
   have hψ : ContMDiff (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
       (fun p : ℝ × M =>
-        (TotalSpace.mk' ℝ p.1 ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) p.1) :
-          TangentBundle 𝓘(ℝ, ℝ) ℝ)) := by
+        (⟨p.1, ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) p.1)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)) := by
     have hone : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
         (fun x : ℝ =>
-          (TotalSpace.mk' ℝ x ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) x) :
-            TangentBundle 𝓘(ℝ, ℝ) ℝ)) := by
+          (⟨x, ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) x)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)) := by
       intro x₀
-      rw [Bundle.contMDiffAt_section]
-      simpa using (contMDiffAt_const (c := (1 : ℝ)))
+      apply (contMDiffAt_vectorSpace_iff_contDiffAt
+        (V := fun x : ℝ => ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) x))).2
+      exact contDiffAt_const
     exact hone.comp contMDiff_fst
   have hχ : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : ℝ × M => (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M)) := hX
   have hpair : ContMDiff (𝓘(ℝ, ℝ).prod I)
       ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod (I.prod 𝓘(ℝ, E))) ∞
       (fun p : ℝ × M =>
-        ((TotalSpace.mk' ℝ p.1 ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) p.1) :
-            TangentBundle 𝓘(ℝ, ℝ) ℝ),
+        ((⟨p.1, ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) p.1)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ),
           (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M))) :=
     hψ.prodMk hχ
   have hsymm :

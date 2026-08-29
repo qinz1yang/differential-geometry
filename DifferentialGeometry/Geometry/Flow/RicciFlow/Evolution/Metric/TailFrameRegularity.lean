@@ -145,13 +145,13 @@ theorem tailFrameSpaceReg
   intro t x hx d a b
   have hderiv := hspace a b (t : Real) t.2 x hx (frame d x)
   have heq :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => (-2 : Real) * ricciCompInFrame (I := I) S' frame (t : Real) y a b)
           x (frame d x) =
-        (-2 : Real) * extDerivFun (I := I)
+        (-2 : Real) * mvfderiv (I := I)
           (fun y : M => ricciCompInFrame (I := I) S' frame (t : Real) y a b)
           x (frame d x) := by
-    rw [extDerivFun_const_mul (I := I) (-2 : Real)
+    rw [mvfderiv_const_mul (I := I) (-2 : Real)
       (hFtdiff a b (t : Real) t.2 x hx)]
     rfl
   exact hderiv.congr_deriv heq

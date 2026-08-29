@@ -33,7 +33,7 @@ namespace Bundle.TensorProduct
         (mem_baseSet_trivializationAt F₁ E₁ x)).toLinearMap
       ((trivializationAt F₂ E₂ x).continuousLinearEquivAt 𝕜 x
         (mem_baseSet_trivializationAt F₂ E₂ x)).toLinearMap)
-    (instNormedAddCommGroup_tensor 𝕜 F₁ F₂).toUniformSpace.toTopologicalSpace
+    (instNormedAddCommGroupTensor 𝕜 F₁ F₂).toUniformSpace.toTopologicalSpace
 
 private noncomputable def trivEquiv (x : B) :
     (E₁ x ⊗[𝕜] E₂ x) ≃ₗ[𝕜] (F₁ ⊗[𝕜] F₂) :=
@@ -56,7 +56,7 @@ instance tensorFiberTopology_continuousSMul (x : B) :
 
 instance tensorFiberTopology_t2Space (x : B) :
     @T2Space (E₁ x ⊗[𝕜] E₂ x) (tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x) := by
-  letI : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) := tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
+  let : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) := tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
   exact T2Space.of_injective_continuous (trivEquiv 𝕜 F₁ F₂ E₁ E₂ x).injective <| by
     change @Continuous _ _ (TopologicalSpace.induced _ _) _ _
     exact continuous_induced_dom

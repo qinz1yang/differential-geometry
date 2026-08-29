@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.Analysis.Matrix.Spectrum
-import Mathlib.Data.Real.Hom
-import Mathlib.Data.Real.StarOrdered
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Star.Real
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Tactic.NormNum.RealSqrt
 
@@ -116,7 +116,7 @@ private theorem matrixQuadraticForm3_eq_inner (A : Matrix (Fin 3) (Fin 3) Real)
   have hdot :
       ∑ i : Fin 3, x i * (∑ j : Fin 3, A i j * x j) =
         inner Real (A.toEuclideanLin x) x := by
-    simpa [WithLp.ofLp_toLp, dotProduct_comm, dotProduct, Matrix.mulVec] using
+    simpa [WithLp.ofLp_toLp, dotProduct_comm, dotProduct, Matrix.mulVec] using!
       (EuclideanSpace.inner_eq_star_dotProduct (𝕜 := Real)
         (x := WithLp.toLp 2 ((Matrix.toEuclideanLin A) x))
         (y := x)).symm
@@ -193,7 +193,7 @@ theorem continuous_minimumRayleighQuotient3 :
   unfold minimumRayleighQuotient3
   refine IsCompact.continuous_sInf (K := Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1)
     (isCompact_sphere _ _) ?_
-  simpa [Function.uncurry] using continuous_matrixQuadraticForm3
+  simpa [Function.uncurry] using! continuous_matrixQuadraticForm3
 
 theorem continuous_minimumRayleighQuotient3_comp
     {α : Type*} [TopologicalSpace α]
@@ -287,7 +287,7 @@ private theorem min_eigenvalue_mul_sum_sq_le_matrixQuadraticForm3
     A.toEuclideanLin
   let hT : T.IsSymmetric := by
     dsimp [T]
-    exact (Matrix.isHermitian_iff_isSymmetric (A := A)).1 hA
+    exact Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
   let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
   let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) :=
     hT.eigenvectorBasis hn
@@ -361,7 +361,7 @@ theorem posSemidef_shift_iff_min_eigenvalue
   constructor
   · intro hP
     let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := A.toEuclideanLin
-    let hT : T.IsSymmetric := (Matrix.isHermitian_iff_isSymmetric (A := A)).1 hA
+    let hT : T.IsSymmetric := Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
     let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
     let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) := hT.eigenvectorBasis hn
     let bvec : EuclideanSpace Real (Fin 3) := b 2
@@ -429,7 +429,7 @@ theorem minimumRayleighQuotient3_eq_min_eigenvalue
     A.toEuclideanLin
   let hT : T.IsSymmetric := by
     dsimp [T]
-    exact (Matrix.isHermitian_iff_isSymmetric (A := A)).1 hA
+    exact Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
   let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
   let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) :=
     hT.eigenvectorBasis hn
@@ -439,7 +439,7 @@ theorem minimumRayleighQuotient3_eq_min_eigenvalue
     dsimp [bvec]
     exact b.orthonormal.1 2
   have hcont : Continuous (fun x : EuclideanSpace Real (Fin 3) => matrixQuadraticForm3 A x) := by
-    simpa using continuous_matrixQuadraticForm3.comp
+    simpa using! continuous_matrixQuadraticForm3.comp
       ((continuous_const (y := A)).prodMk
         (continuous_id (X := EuclideanSpace Real (Fin 3))))
   have hbdd : BddBelow (matrixQuadraticForm3 A ''
@@ -547,7 +547,7 @@ theorem hermitian_orthogonal_diagonalization
   let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := A.toEuclideanLin
   let hT : T.IsSymmetric := by
     dsimp [T]
-    exact (Matrix.isHermitian_iff_isSymmetric (A := A)).1 hA
+    exact Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
   let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
   let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) := hT.eigenvectorBasis hn
   let O : Matrix (Fin 3) (Fin 3) Real :=
@@ -604,37 +604,14 @@ theorem eigenvalues₀_smul_of_nonneg
     hcS.eigenvalues₀ = c • hS.eigenvalues₀ := by
   classical
   rcases hermitian_orthogonal_diagonalization hS with ⟨O, hO, hdiag⟩
-  have hOt : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hO
-  let D₀ : Matrix (Fin 3) (Fin 3) ℝ := Matrix.diagonal hS.eigenvalues₀
-  have hdiag' : O.transpose * S * O = D₀ := by simpa [D₀] using hdiag
-  have hSrep : S = O * D₀ * O.transpose := by
-    have h1 : S = (O * O.transpose) * S * (O * O.transpose) := by
-      rw [hO]
-      simp
-    calc
-      S = (O * O.transpose) * S * (O * O.transpose) := h1
-      _ = O * (O.transpose * S * O) * O.transpose := by
-            simp [Matrix.mul_assoc]
-      _ = O * D₀ * O.transpose := by
-            rw [hdiag']
   have hdiagc : O.transpose * (c • S) * O = Matrix.diagonal (c • hS.eigenvalues₀) := by
-    calc
-      O.transpose * (c • S) * O
-          = O.transpose * (c • (O * D₀ * O.transpose)) * O := by
-              rw [show c • S = c • (O * D₀ * O.transpose) from by rw [hSrep]]
-      _ = O.transpose * (O * (c • D₀) * O.transpose) * O := by
-              rw [← Matrix.smul_mul, ← Matrix.mul_smul]
-      _ = c • D₀ := by
-            calc
-              O.transpose * (O * (c • D₀) * O.transpose) * O
-                  = (O.transpose * O) * (c • D₀) * (O.transpose * O) := by
-                      simp [Matrix.mul_assoc]
-              _ = c • D₀ := by
-                      simp [hOt]
-      _ = Matrix.diagonal (c • hS.eigenvalues₀) := by
-            ext i j
-            simp [D₀, Matrix.diagonal, smul_eq_mul]
-            rfl
+    rw [show O.transpose * (c • S) * O = c • (O.transpose * S * O) by
+      rw [← Matrix.smul_mul, ← Matrix.mul_smul]]
+    rw [hdiag]
+    ext i j
+    change c * (if i = j then hS.eigenvalues₀ i else 0) =
+      if i = j then c * hS.eigenvalues₀ i else 0
+    by_cases hij : i = j <;> simp [hij]
   have hanti : Antitone (c • hS.eigenvalues₀) := by
     intro i j hij
     change c * hS.eigenvalues₀ j ≤ c * hS.eigenvalues₀ i
@@ -644,7 +621,7 @@ theorem eigenvalues₀_smul_of_nonneg
     funext i
     have h := congrFun (diagonal_eigenvalues₀_eq_of_antitone
       (c • hS.eigenvalues₀) hanti) (Fin.cast (Fintype.card_fin 3) i)
-    simpa using h
+    simpa using! h
   have hOcS : (O.transpose * (c • S) * O).IsHermitian := by
     have hconj : (O.conjTranspose * (c • S) * O).IsHermitian :=
       Matrix.isHermitian_conjTranspose_mul_mul O hcS
@@ -714,7 +691,7 @@ theorem minimumRayleighQuotient3_diagonal_le
     norm_num
   have hcont : Continuous (fun x : EuclideanSpace ℝ (Fin 3) =>
       matrixQuadraticForm3 (Matrix.diagonal d) x) := by
-    simpa using continuous_matrixQuadraticForm3.comp
+    simpa using! continuous_matrixQuadraticForm3.comp
       ((continuous_const (y := Matrix.diagonal d)).prodMk continuous_id)
   have hbdd : BddBelow (matrixQuadraticForm3 (Matrix.diagonal d) ''
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
@@ -742,7 +719,7 @@ theorem minimumRayleighQuotient3_diagonal_ge
     m ≤ minimumRayleighQuotient3 (Matrix.diagonal d) := by
   have hcont : Continuous (fun x : EuclideanSpace ℝ (Fin 3) =>
       matrixQuadraticForm3 (Matrix.diagonal d) x) := by
-    simpa using continuous_matrixQuadraticForm3.comp
+    simpa using! continuous_matrixQuadraticForm3.comp
       ((continuous_const (y := Matrix.diagonal d)).prodMk continuous_id)
   have hbdd : BddBelow (matrixQuadraticForm3 (Matrix.diagonal d) ''
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
@@ -862,11 +839,13 @@ theorem inner_diag_le_eigen_bound
     nlinarith
   have htrace : A.trace = ∑ i : Fin 3, a i := by
     rw [Matrix.IsHermitian.trace_eq_sum_eigenvalues hA]
-    simpa [a] using sum_eigenvalues_eq_sum_eigenvalues₀ A hA
+    simpa [a] using! sum_eigenvalues_eq_sum_eigenvalues₀ A hA
   have hsum : inner ℝ (matrixToEuclidean (Matrix.diagonal ν)) (matrixToEuclidean A) ≤
       ν 0 * (∑ i : Fin 3, (a i + X)) - X * (∑ i : Fin 3, ν i) := by
     have hconj := inner_matrixToEuclidean_orthogonal_conj (Matrix.diagonal ν) A O hOorth
-    rw [hconj, hdiag]
+    have hdiag' : O.transpose * A * O = Matrix.diagonal a := by
+      simpa [a] using! hdiag
+    rw [hconj, hdiag']
     rw [inner_matrixToEuclidean]
     have hmain : (∑ ij : Fin 3 × Fin 3, d ij.1 ij.2 * (Matrix.diagonal a) ij.1 ij.2) ≤
         ν 0 * (∑ i : Fin 3, (a i + X)) - X * (∑ i : Fin 3, ν i) := by
@@ -910,7 +889,7 @@ theorem inner_diag_le_eigen_bound
     rw [htrace]
     simp [Finset.sum_add_distrib, Fin.sum_univ_three]
     ring
-  simpa [X, a, hcalc] using hsum
+  simpa [X, a, hcalc] using! hsum
 
 theorem inner_diag_diag (ν l : Fin 3 → ℝ) :
     inner ℝ (matrixToEuclidean (Matrix.diagonal ν)) (matrixToEuclidean (Matrix.diagonal l)) =

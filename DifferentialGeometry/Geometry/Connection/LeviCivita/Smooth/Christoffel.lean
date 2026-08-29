@@ -24,139 +24,49 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_component_center
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) :
-    metricFlatModelInChart_component (I := I) g x₀ i j (extChartAt I x₀ x₀) =
+    metricFlatModelInChartComponent (I := I) g x₀ i j (extChartAt I x₀ x₀) =
       g.inner x₀ (coordinateFrameAt (I := I) x₀ i x₀)
         (coordinateFrameAt (I := I) x₀ j x₀) := by
-  rw [metricFlatModelInChart_component, metricFlatModelInChart_center_eq]
-  change ((metricFlatContinuousEquiv (I := I) g x₀)
-      ((Module.finBasis Real E) i)) ((Module.finBasis Real E) j) =
-    g.inner x₀ (coordinateFrameAt (I := I) x₀ i x₀)
-      (coordinateFrameAt (I := I) x₀ j x₀)
-  have hi : coordinateFrameAt (I := I) x₀ i x₀ = (Module.finBasis Real E) i := by
-    rw [← coordinateFrameAt_toBasis_apply (I := I) x₀ i]
-    rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
+  rw [metricFlatModelInChartComponent, metricFlatModelInChart_center_eq]
+  have hsrc : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+  have hframe (k : CoordinateIdx (𝕜 := Real) E) :
+      coordinateFrameAt (I := I) x₀ k x₀ =
+        (trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real x₀
+          ((Module.finBasis Real E) k) := by
+    rw [coordinateFrameAt_apply_of_mem (I := I) (coordinateFrameAt_mem (I := I) x₀)]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hsrc]
     rfl
-  have hj : coordinateFrameAt (I := I) x₀ j x₀ = (Module.finBasis Real E) j := by
-    rw [← coordinateFrameAt_toBasis_apply (I := I) x₀ j]
-    rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
-    rfl
-  rw [metricFlatContinuousEquiv_apply (I := I) g x₀
-    ((Module.finBasis Real E) i) ((Module.finBasis Real E) j), hi, hj]
+  rw [hframe i, hframe j]
+  exact metricFlatContinuousEquiv_apply (I := I) g x₀ _ _
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem metricFlatModelInChart_component_eq_coord_component_comp_eventually_of_mem
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) {y₀ : E}
     (hy₀ : y₀ ∈ (extChartAt I x₀).target) :
-    metricFlatModelInChart_component (I := I) g x₀ i j
+    metricFlatModelInChartComponent (I := I) g x₀ i j
       =ᶠ[𝓝[Set.range I] y₀]
       fun y : E =>
         g.inner ((extChartAt I x₀).symm y)
           (coordinateFrameAt (I := I) x₀ i ((extChartAt I x₀).symm y))
           (coordinateFrameAt (I := I) x₀ j ((extChartAt I x₀).symm y)) := by
   filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem (I := I) hy₀] with y hy
-  unfold metricFlatModelInChart_component metricFlatModelInChart
-  rw [hom_trivializationAt_apply]
-  change
-    (ContinuousLinearMap.inCoordinates E (TangentSpace I) (E →L[Real] Real)
-        (fun p : M => TangentSpace I p →L[Real] Real) x₀
-        ((extChartAt I x₀).symm y) x₀ ((extChartAt I x₀).symm y)
-        (g.inner ((extChartAt I x₀).symm y))
-        ((Module.finBasis Real E) i)) ((Module.finBasis Real E) j) =
-      g.inner ((extChartAt I x₀).symm y)
-        (coordinateFrameAt (I := I) x₀ i ((extChartAt I x₀).symm y))
-        (coordinateFrameAt (I := I) x₀ j ((extChartAt I x₀).symm y))
   have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x₀).map_target hy
   have hy_base : (extChartAt I x₀).symm y ∈ coordinateFrameSet (I := I) x₀ := by
     simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_src
-  have hyT :
-      (extChartAt I x₀).symm y ∈
-        (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
-    simpa [TangentBundle.trivializationAt_baseSet] using hy_src
-  have hyDual :
-      (extChartAt I x₀).symm y ∈
-        (trivializationAt (E →L[Real] Real)
-          (fun p : M => TangentSpace I p →L[Real] Real) x₀).baseSet := by
-    rw [hom_trivializationAt_baseSet]
-    exact ⟨hyT, by simp⟩
-  rw [ContinuousLinearMap.inCoordinates_eq hyT hyDual]
-  rw [Trivialization.coe_continuousLinearEquivAt_eq'
-    (e := trivializationAt (E →L[Real] Real)
-      (fun p : M => TangentSpace I p →L[Real] Real) x₀) (R := Real) hyDual]
-  rw [Trivialization.symm_continuousLinearEquivAt_eq'
-    (e := trivializationAt E (TangentSpace I : M -> Type _) x₀) (R := Real) hyT]
-  simp only [ContinuousLinearMap.comp_apply]
-  rw [coordinateFrameAt_apply_of_mem (I := I) hy_base i]
-  rw [coordinateFrameAt_apply_of_mem (I := I) hy_base j]
-  rw [(extChartAt I x₀).right_inv hy]
-  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hy_src]
-  rw [(extChartAt I x₀).right_inv hy]
-  have hj_symm :
-      (trivializationAt E (TangentSpace I : M -> Type _) x₀).symm
-          ((extChartAt I x₀).symm y) ((Module.finBasis Real E) j) =
-        (mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-          (Set.range I) y) ((Module.finBasis Real E) j) := by
-    change (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real
-        ((extChartAt I x₀).symm y) ((Module.finBasis Real E) j) =
-      (mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-        (Set.range I) y) ((Module.finBasis Real E) j)
+  have hframe (k : CoordinateIdx (𝕜 := Real) E) :
+      coordinateFrameAt (I := I) x₀ k ((extChartAt I x₀).symm y) =
+        (trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real
+          ((extChartAt I x₀).symm y) ((Module.finBasis Real E) k) := by
+    rw [coordinateFrameAt_apply_of_mem (I := I) hy_base]
     rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hy_src]
     rw [(extChartAt I x₀).right_inv hy]
     rfl
-  change
-      (((Trivialization.continuousLinearMap (RingHom.id Real)
-          (trivializationAt E (TangentSpace I : M -> Type _) x₀)
-          (trivializationAt Real (fun _ : M => Real) x₀)).toPretrivialization.linearMapAt Real
-          ((extChartAt I x₀).symm y)
-          ((g.inner ((extChartAt I x₀).symm y))
-            ((mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-              (Set.range I) y) ((Module.finBasis Real E) i))))
-        ((Module.finBasis Real E) j)) =
-      g.inner ((extChartAt I x₀).symm y)
-        ((mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-          (Set.range I) y) ((Module.finBasis Real E) i))
-        ((mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-          (Set.range I) y) ((Module.finBasis Real E) j))
-  rw [Pretrivialization.linearMapAt_apply]
-  have hyDual' :
-      (extChartAt I x₀).symm y ∈
-        (Trivialization.continuousLinearMap (RingHom.id Real)
-          (trivializationAt E (TangentSpace I : M -> Type _) x₀)
-          (trivializationAt Real (fun _ : M => Real) x₀)).toPretrivialization.baseSet := by
-    change (extChartAt I x₀).symm y ∈
-      (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet ∩
-        (trivializationAt Real (fun _ : M => Real) x₀).baseSet
-    exact ⟨hyT, by simp⟩
-  rw [if_pos hyDual']
-  change
-      ((Trivialization.continuousLinearMap (RingHom.id Real)
-          (trivializationAt E (TangentSpace I : M -> Type _) x₀)
-          (trivializationAt Real (fun _ : M => Real) x₀)
-        (⟨(extChartAt I x₀).symm y,
-          (g.inner ((extChartAt I x₀).symm y))
-            ((mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-              (Set.range I) y) ((Module.finBasis Real E) i))⟩ :
-          TotalSpace (E →L[Real] Real)
-            (fun p : M => TangentSpace I p →L[Real] Real))).2
-        ((Module.finBasis Real E) j)) =
-      g.inner ((extChartAt I x₀).symm y)
-        ((mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-          (Set.range I) y) ((Module.finBasis Real E) i))
-        ((mfderivWithin 𝓘(Real, E) I (extChartAt I x₀).symm
-          (Set.range I) y) ((Module.finBasis Real E) j))
-  rw [Bundle.Trivialization.continuousLinearMap_apply]
-  simp [Trivial.trivialization, ContinuousLinearMap.comp_apply,
-    Trivialization.linearMapAt_apply, Trivialization.symmL_apply]
-  have hj_symm' :
-      (trivializationAt E (TangentSpace I : M -> Type _) x₀).symm
-          ((chartAt H x₀).symm (I.symm y)) ((Module.finBasis Real E) j) =
-        (mfderivWithin 𝓘(Real, E) I ((chartAt H x₀).symm ∘ I.symm)
-          (Set.range I) y) ((Module.finBasis Real E) j) := by
-    simpa [extChartAt] using hj_symm
-  simp only [hj_symm']
-  rfl
+  unfold metricFlatModelInChartComponent
+  rw [metricFlatModelInChart_apply_of_target (I := I) g x₀ hy,
+    ← hframe i, ← hframe j]
 
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -164,7 +74,7 @@ theorem metricFlatModelInChart_component_contDiffWithinAt
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     ContDiffWithinAt Real ∞
-      (metricFlatModelInChart_component (I := I) g x₀ i j)
+      (metricFlatModelInChartComponent (I := I) g x₀ i j)
       (Set.range I) (extChartAt I x₀ x₀) := by
   have h := metricFlatModelInChart_contDiffWithinAt (I := I) g x₀
   have hi :
@@ -173,14 +83,22 @@ theorem metricFlatModelInChart_component_contDiffWithinAt
           metricFlatModelInChart (I := I) g x₀ y ((Module.finBasis Real E) i))
         (Set.range I) (extChartAt I x₀ x₀) := by
     simpa using h.clm_apply contDiffWithinAt_const
-  simpa [metricFlatModelInChart_component] using hi.clm_apply contDiffWithinAt_const
+  have hj : ContDiffWithinAt Real ∞
+      (fun y : E => metricFlatModelInChart (I := I) g x₀ y
+        ((Module.finBasis Real E) i) ((Module.finBasis Real E) j))
+      (Set.range I) (extChartAt I x₀ x₀) :=
+    hi.clm_apply (contDiffWithinAt_const (c := (Module.finBasis Real E) j))
+  change ContDiffWithinAt Real ∞
+    (metricFlatModelInChartComponent (I := I) g x₀ i j)
+    (Set.range I) (extChartAt I x₀ x₀) at hj
+  exact hj
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_component_deriv_center
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (a i j : CoordinateIdx (𝕜 := Real) E) :
     fderivWithin Real
-        (metricFlatModelInChart_component (I := I) g x₀ i j)
+        (metricFlatModelInChartComponent (I := I) g x₀ i j)
         (Set.range I) (extChartAt I x₀ x₀) ((Module.finBasis Real E) a) =
       directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ a)
         (fun y : M =>
@@ -193,15 +111,19 @@ theorem metricFlatModelInChart_component_deriv_center
   have hzRange : z₀ ∈ Set.range I := by
     exact extChartAt_target_subset_range x₀ (mem_extChartAt_target (I := I) x₀)
   have heq :
-      metricFlatModelInChart_component (I := I) g x₀ i j
+      metricFlatModelInChartComponent (I := I) g x₀ i j
         =ᶠ[𝓝[Set.range I] z₀]
         writtenInExtChartAt I 𝓘(Real, Real) x₀ f := by
-    simpa [z₀, f, writtenInExtChartAt] using
+    have h :=
       metricFlatModelInChart_component_eq_coord_component_comp_eventually_of_mem
         (I := I) g x₀ i j (mem_extChartAt_target (I := I) x₀)
+    change metricFlatModelInChartComponent (I := I) g x₀ i j
+      =ᶠ[𝓝[Set.range I] z₀]
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ f at h
+    exact h
   have hfd :
       fderivWithin Real
-          (metricFlatModelInChart_component (I := I) g x₀ i j)
+          (metricFlatModelInChartComponent (I := I) g x₀ i j)
           (Set.range I) z₀ =
         fderivWithin Real
           (writtenInExtChartAt I 𝓘(Real, Real) x₀ f)
@@ -215,10 +137,10 @@ theorem metricFlatModelInChart_component_deriv_center
     rw [← coordinateFrameAt_toBasis_apply (I := I) x₀ a]
     rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
     rfl
-  unfold directionalDerivAlong extDerivFun
+  unfold directionalDerivAlong mvfderiv
   change
     fderivWithin Real
-        (metricFlatModelInChart_component (I := I) g x₀ i j)
+        (metricFlatModelInChartComponent (I := I) g x₀ i j)
         (Set.range I) z₀ ((Module.finBasis Real E) a) =
       (mfderiv I 𝓘(Real, Real) f x₀) (coordinateFrameAt (I := I) x₀ a x₀)
   rw [hframe_center, hf_md.mfderiv, hfd]
@@ -231,7 +153,7 @@ theorem metricFlatModelInChart_component_deriv_contDiffWithinAt
     ContDiffWithinAt Real ∞
       (fun y : E =>
         fderivWithin Real
-          (metricFlatModelInChart_component (I := I) g x₀ i j)
+          (metricFlatModelInChartComponent (I := I) g x₀ i j)
           (Set.range I) y ((Module.finBasis Real E) a))
       (Set.range I) (extChartAt I x₀ x₀) := by
   have hf :=
@@ -256,13 +178,13 @@ noncomputable def leviCivitaChristoffelModelRHS
           (LinearMap.toContinuousLinearMap
             ((Module.finBasis Real E).coord l)))) *
         (fderivWithin Real
-            (metricFlatModelInChart_component (I := I) g x₀ j l)
+            (metricFlatModelInChartComponent (I := I) g x₀ j l)
             (Set.range I) y ((Module.finBasis Real E) i) +
           fderivWithin Real
-            (metricFlatModelInChart_component (I := I) g x₀ i l)
+            (metricFlatModelInChartComponent (I := I) g x₀ i l)
             (Set.range I) y ((Module.finBasis Real E) j) -
           fderivWithin Real
-            (metricFlatModelInChart_component (I := I) g x₀ i j)
+            (metricFlatModelInChartComponent (I := I) g x₀ i j)
             (Set.range I) y ((Module.finBasis Real E) l))
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -301,8 +223,8 @@ theorem leviCivitaChristoffelModelRHS_center_eq_christoffel
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))
-  have hinv : MetricInverseInBasis_gen (I := I) g x₀
-      (coordinateFrameAt_toBasis (I := I) x₀) gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x₀
+      (coordinateFrameAtToBasis (I := I) x₀) gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x₀
   have hformula :=
     leviCivitaConnectionOfMetric_coordinate_christoffel_formula
@@ -314,7 +236,7 @@ theorem leviCivitaChristoffelModelRHS_center_eq_christoffel
   dsimp [gInv]
   congr 1
   · have h₁ :
-        fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ j l)
+        fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ j l)
             (Set.range I) (I ((chartAt H x₀) x₀)) ((Module.finBasis Real E) i) =
           directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ i)
             (fun y : M =>
@@ -323,7 +245,7 @@ theorem leviCivitaChristoffelModelRHS_center_eq_christoffel
         simpa [extChartAt] using
           metricFlatModelInChart_component_deriv_center (I := I) g x₀ i j l
     have h₂ :
-        fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ i l)
+        fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ i l)
             (Set.range I) (I ((chartAt H x₀) x₀)) ((Module.finBasis Real E) j) =
           directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ j)
             (fun y : M =>
@@ -332,7 +254,7 @@ theorem leviCivitaChristoffelModelRHS_center_eq_christoffel
         simpa [extChartAt] using
           metricFlatModelInChart_component_deriv_center (I := I) g x₀ j i l
     have h₃ :
-        fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ i j)
+        fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ i j)
             (Set.range I) (I ((chartAt H x₀) x₀)) ((Module.finBasis Real E) l) =
           directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ l)
             (fun y : M =>
@@ -351,24 +273,7 @@ theorem metricFlatModelInChart_apply_of_mem
       g.inner x
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x v)
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x w) := by
-  have hx_src : x ∈ (extChartAt I x₀).source := by
-    simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hx
-  have hcenter :
-      (extChartAt I x₀).symm (extChartAt I x₀ x) = x :=
-    (extChartAt I x₀).left_inv hx_src
-  simp only [metricFlatModelInChart]
-  rw [hom_trivializationAt_apply]
-  rw [hcenter]
-  have hxT :
-      x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
-    simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
-  have hxDual :
-      x ∈ (trivializationAt (E →L[Real] Real)
-          (fun p : M => TangentSpace I p →L[Real] Real) x₀).baseSet := by
-    rw [hom_trivializationAt_baseSet]
-    exact ⟨hxT, by simp⟩
-  rw [ContinuousLinearMap.inCoordinates_eq hxT hxDual]
-  simp [hom_trivializationAt, Trivialization.continuousLinearMap_apply]
+  exact Tensor.Coordinates.flatChart_apply (I := I) g x₀ hx v w
 
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -376,7 +281,7 @@ theorem metricFlatModelInChart_component_of_mem
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i j : CoordinateIdx (𝕜 := Real) E) :
-    metricFlatModelInChart_component (I := I) g x₀ i j (extChartAt I x₀ x) =
+    metricFlatModelInChartComponent (I := I) g x₀ i j (extChartAt I x₀ x) =
       g.inner x (coordinateFrameAt (I := I) x₀ i x)
         (coordinateFrameAt (I := I) x₀ j x) := by
   have hx_src : x ∈ (extChartAt I x₀).source := by
@@ -392,7 +297,7 @@ theorem metricFlatModelInChart_component_of_mem
       (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real)
         (x₀ := x₀) (x := x) hchart)
     rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
-    simpa using hsymm
+    exact hsymm
   have hj :
       (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x
           ((Module.finBasis Real E) j) =
@@ -402,8 +307,8 @@ theorem metricFlatModelInChart_component_of_mem
       (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real)
         (x₀ := x₀) (x := x) hchart)
     rw [coordinateFrameAt_apply_of_mem (I := I) hx j]
-    simpa using hsymm
-  unfold metricFlatModelInChart_component
+    exact hsymm
+  unfold metricFlatModelInChartComponent
   rw [metricFlatModelInChart_apply_of_mem (I := I) g x₀ hx]
   rw [hi, hj]
 
@@ -412,7 +317,7 @@ omit [CompleteSpace E] in
 private theorem inverseMetricFlatModelInChart_metricInverseInBasis_of_mem
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
-    MetricInverseInBasis_gen (I := I) g x (coordinateFrameAt_basis (I := I) x₀ hx)
+    MetricInverseInBasisGen (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         (Module.finBasis Real E).coord k
           ((ContinuousLinearMap.inverse
@@ -475,12 +380,12 @@ private theorem inverseMetricFlatModelInChart_metricInverseInBasis_of_mem
               (I := I) g x₀ hx w v
   have hcomp (i j : CoordinateIdx (𝕜 := Real) E) :
       A ((Module.finBasis Real E) i) ((Module.finBasis Real E) j) =
-        g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) i)
-          ((coordinateFrameAt_basis (I := I) x₀ hx) j) := by
+        g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) i)
+          ((coordinateFrameAtBasis (I := I) x₀ hx) j) := by
     have hmetric :=
       metricFlatModelInChart_component_of_mem
         (I := I) g x₀ hx i j
-    simpa [A, metricFlatModelInChart_component,
+    simpa [A, metricFlatModelInChartComponent,
       coordinateFrameAt_basis_apply] using hmetric
   have hginv (k l : CoordinateIdx (𝕜 := Real) E) :
       gInv k l =
@@ -501,13 +406,13 @@ private theorem inverseMetricFlatModelInChart_metricInverseInBasis_of_mem
       _ = (Module.finBasis Real E).coord l ((ContinuousLinearMap.inverse A) (ε k)) := rfl
   have hsecond (i j : CoordinateIdx (𝕜 := Real) E) :
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) i)
-            ((coordinateFrameAt_basis (I := I) x₀ hx) k) * gInv k j) =
+          g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) i)
+            ((coordinateFrameAtBasis (I := I) x₀ hx) k) * gInv k j) =
         (if i = j then 1 else 0) := by
     calc
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) i)
-            ((coordinateFrameAt_basis (I := I) x₀ hx) k) * gInv k j)
+          g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) i)
+            ((coordinateFrameAtBasis (I := I) x₀ hx) k) * gInv k j)
           = ∑ k : CoordinateIdx (𝕜 := Real) E,
               A ((Module.finBasis Real E) i) ((Module.finBasis Real E) k) *
                 (Module.finBasis Real E).coord k ((ContinuousLinearMap.inverse A) (ε j)) := by
@@ -546,14 +451,14 @@ private theorem inverseMetricFlatModelInChart_metricInverseInBasis_of_mem
   constructor
   · calc
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          gInv i k * g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) k)
-            ((coordinateFrameAt_basis (I := I) x₀ hx) j))
+          gInv i k * g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) k)
+            ((coordinateFrameAtBasis (I := I) x₀ hx) j))
           = ∑ k : CoordinateIdx (𝕜 := Real) E,
-              g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) j)
-                ((coordinateFrameAt_basis (I := I) x₀ hx) k) * gInv k i := by
+              g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) j)
+                ((coordinateFrameAtBasis (I := I) x₀ hx) k) * gInv k i := by
             refine Finset.sum_congr rfl fun k _ => ?_
-            rw [hsym i k, g.symm x ((coordinateFrameAt_basis (I := I) x₀ hx) k)
-              ((coordinateFrameAt_basis (I := I) x₀ hx) j)]
+            rw [hsym i k, g.symm x ((coordinateFrameAtBasis (I := I) x₀ hx) k)
+              ((coordinateFrameAtBasis (I := I) x₀ hx) j)]
             ring
       _ = (if j = i then 1 else 0) := hsecond j i
       _ = (if i = j then 1 else 0) := by
@@ -574,62 +479,22 @@ private theorem fderivWithin_writtenInExtChartAt_eq_directionalDeriv_of_mem
     fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x₀ f)
         (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) a) =
       directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ a) f x := by
-  let z : E := extChartAt I x₀ x
-  let φ : E -> Real := writtenInExtChartAt I 𝓘(Real, Real) x₀ f
-  let V : TangentSpace I x := coordinateFrameAt (I := I) x₀ a x
-  have hx_src : x ∈ (extChartAt I x₀).source := by
-    simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hx
-  have hz_tgt : z ∈ (extChartAt I x₀).target := by
-    simpa [z] using (extChartAt I x₀).map_source hx_src
-  have hφ_within :
-      MDifferentiableWithinAt 𝓘(Real, E) 𝓘(Real, Real)
-        (f ∘ (extChartAt I x₀).symm) (Set.range I) z := by
-    have hsrc : x ∈ (chartAt H x₀).source := by
-      simpa [extChartAt_source] using hx_src
-    simpa [z, extChartAt, Function.comp_def] using
-      (mdifferentiableAt_iff_source_of_mem_source
-        (I := I) (I' := 𝓘(Real, Real)) (x := x₀) (x' := x) hsrc).mp hf
-  have hφ : MDifferentiableAt 𝓘(Real, E) 𝓘(Real, Real) φ z := by
-    rw [← mdifferentiableWithinAt_univ]
-    simpa [φ, z, writtenInExtChartAt, Function.comp_def,
-      ModelWithCorners.Boundaryless.range_eq_univ (I := I)] using hφ_within
-  have hchart : MDifferentiableAt I 𝓘(Real, E) (extChartAt I x₀) x := by
-    have hsrc : x ∈ (chartAt H x₀).source := by
-      simpa [extChartAt_source] using hx_src
-    exact mdifferentiableAt_extChartAt (I := I) (x := x₀) hsrc
-  have hlocal : f =ᶠ[𝓝 x] φ ∘ (extChartAt I x₀) := by
-    filter_upwards [(isOpen_extChartAt_source (I := I) x₀).mem_nhds hx_src] with y hy
-    have hy_chart : y ∈ (chartAt H x₀).source := by
-      simpa [extChartAt_source] using hy
-    simp [φ, writtenInExtChartAt, extChartAt, Function.comp_def,
-      (chartAt H x₀).left_inv hy_chart]
-  have hmfd :
-      mfderiv I 𝓘(Real, Real) f x =
-        mfderiv I 𝓘(Real, Real) (φ ∘ (extChartAt I x₀)) x :=
-    hlocal.mfderiv_eq
-  have hVchart :
-      (mfderiv I 𝓘(Real, E) (extChartAt I x₀) x) V =
-        (Module.finBasis Real E) a := by
-    have hcomp := congrArg
-      (fun L : E →L[Real] E => L ((Module.finBasis Real E) a))
-      (mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm'
-        (I := I) (x := x₀) hx_src)
-    dsimp [V]
+  have hchart : x ∈ (chartAt H x₀).source := by
+    simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
+  have hbridge := mvfderiv_tangentConstInChart_eq_fderiv
+    (I := I) (f := f) (x := x₀) (p := x) hchart hf
+      ((Module.finBasis Real E) a)
+  have hfield :
+      TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x₀
+          ((Module.finBasis Real E) a) x =
+        coordinateFrameAt (I := I) x₀ a x := by
+    rw [TensorLieDeriv.tangentConstInChart_apply]
     rw [coordinateFrameAt_apply_of_mem (I := I) hx a]
-    simpa [ContinuousLinearMap.comp_apply] using hcomp
-  have hmodel :
-      fderiv Real φ z ((Module.finBasis Real E) a) =
-        (mfderiv I 𝓘(Real, Real) (φ ∘ (extChartAt I x₀)) x) V := by
-    rw [← mfderiv_eq_fderiv (𝕜 := Real) (f := φ) (x := z)]
-    rw [mfderiv_comp_apply (I := I) (I' := 𝓘(Real, E))
-      (I'' := 𝓘(Real, Real)) (g := φ)
-      (f := extChartAt I x₀) (x := x) (v := V) hφ hchart]
-    rw [hVchart]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real)
+      (x₀ := x₀) (x := x) hchart]
     rfl
   rw [fderivWithin_of_mem_nhds]
-  · rw [hmodel]
-    rw [← hmfd]
-    simp [directionalDerivAlong, V, extDerivFun_real_eq_mfderiv]
+  · rw [← hbridge, hfield]
     rfl
   · rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
     exact Filter.univ_mem
@@ -642,7 +507,7 @@ theorem metricFlatModelInChart_component_deriv_of_mem
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (a i j : CoordinateIdx (𝕜 := Real) E) :
     fderivWithin Real
-        (metricFlatModelInChart_component (I := I) g x₀ i j)
+        (metricFlatModelInChartComponent (I := I) g x₀ i j)
         (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) a) =
       directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ a)
         (fun y : M =>
@@ -659,15 +524,19 @@ theorem metricFlatModelInChart_component_deriv_of_mem
   have hzRange : z ∈ Set.range I :=
     extChartAt_target_subset_range x₀ hz_tgt
   have heq :
-      metricFlatModelInChart_component (I := I) g x₀ i j
+      metricFlatModelInChartComponent (I := I) g x₀ i j
         =ᶠ[𝓝[Set.range I] z]
         writtenInExtChartAt I 𝓘(Real, Real) x₀ f := by
-    simpa [z, f, writtenInExtChartAt] using
+    have h :=
       metricFlatModelInChart_component_eq_coord_component_comp_eventually_of_mem
         (I := I) g x₀ i j hz_tgt
+    change metricFlatModelInChartComponent (I := I) g x₀ i j
+      =ᶠ[𝓝[Set.range I] z]
+        writtenInExtChartAt I 𝓘(Real, Real) x₀ f at h
+    exact h
   have hfd :
       fderivWithin Real
-          (metricFlatModelInChart_component (I := I) g x₀ i j)
+          (metricFlatModelInChartComponent (I := I) g x₀ i j)
           (Set.range I) z =
         fderivWithin Real
           (writtenInExtChartAt I 𝓘(Real, Real) x₀ f)
@@ -678,7 +547,7 @@ theorem metricFlatModelInChart_component_deriv_of_mem
       (I := I) g x₀ hx i j).mdifferentiableAt (by simp)
   calc
     fderivWithin Real
-        (metricFlatModelInChart_component (I := I) g x₀ i j)
+        (metricFlatModelInChartComponent (I := I) g x₀ i j)
         (Set.range I) z ((Module.finBasis Real E) a)
         = fderivWithin Real
             (writtenInExtChartAt I 𝓘(Real, Real) x₀ f)
@@ -705,8 +574,8 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
         ((ContinuousLinearMap.inverse
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))
-  have hinv : MetricInverseInBasis_gen (I := I) g x
-      (coordinateFrameAt_basis (I := I) x₀ hx) gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x
+      (coordinateFrameAtBasis (I := I) x₀ hx) gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_of_mem (I := I) g x₀ hx
   have hformula :=
     coordinateFrame_christoffel_formula_point_of_isLeviCivita
@@ -720,7 +589,7 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
   dsimp [gInv]
   congr 1
   · have h₁ :
-        fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ j l)
+        fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ j l)
             (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) i) =
           directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ i)
             (fun y : M =>
@@ -729,7 +598,7 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
         exact metricFlatModelInChart_component_deriv_of_mem
           (I := I) g x₀ hx i j l
     have h₂ :
-        fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ i l)
+        fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ i l)
             (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) j) =
           directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ j)
             (fun y : M =>
@@ -738,7 +607,7 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
         exact metricFlatModelInChart_component_deriv_of_mem
           (I := I) g x₀ hx j i l
     have h₃ :
-        fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ i j)
+        fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ i j)
             (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) l) =
           directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ l)
             (fun y : M =>
@@ -747,11 +616,11 @@ theorem leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
         exact metricFlatModelInChart_component_deriv_of_mem
           (I := I) g x₀ hx l i j
     simpa [extChartAt] using show
-      (fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ j l)
+      (fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ j l)
               (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) i) +
-            fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ i l)
+            fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ i l)
               (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) j) -
-          fderivWithin Real (metricFlatModelInChart_component (I := I) g x₀ i j)
+          fderivWithin Real (metricFlatModelInChartComponent (I := I) g x₀ i j)
             (Set.range I) (extChartAt I x₀ x) ((Module.finBasis Real E) l)) =
         directionalDerivAlong (I := I) (coordinateFrameAt (I := I) x₀ i)
               (fun y : M =>
@@ -773,7 +642,7 @@ theorem metricFlatModelInChart_component_contDiffWithinAt_of_mem
     (hy : y ∈ (extChartAt I x₀).target)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     ContDiffWithinAt Real ∞
-      (metricFlatModelInChart_component (I := I) g x₀ i j)
+      (metricFlatModelInChartComponent (I := I) g x₀ i j)
       (Set.range I) y := by
   have h := metricFlatModelInChart_contDiffWithinAt_of_mem (I := I) g x₀ hy
   have hi :
@@ -782,7 +651,15 @@ theorem metricFlatModelInChart_component_contDiffWithinAt_of_mem
           metricFlatModelInChart (I := I) g x₀ y ((Module.finBasis Real E) i))
         (Set.range I) y := by
     simpa using h.clm_apply contDiffWithinAt_const
-  simpa [metricFlatModelInChart_component] using hi.clm_apply contDiffWithinAt_const
+  have hj : ContDiffWithinAt Real ∞
+      (fun z : E => metricFlatModelInChart (I := I) g x₀ z
+        ((Module.finBasis Real E) i) ((Module.finBasis Real E) j))
+      (Set.range I) y :=
+    hi.clm_apply (contDiffWithinAt_const (c := (Module.finBasis Real E) j))
+  change ContDiffWithinAt Real ∞
+    (metricFlatModelInChartComponent (I := I) g x₀ i j)
+    (Set.range I) y at hj
+  exact hj
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_component_deriv_contDiffWithinAt_of_mem
@@ -792,7 +669,7 @@ theorem metricFlatModelInChart_component_deriv_contDiffWithinAt_of_mem
     ContDiffWithinAt Real ∞
       (fun y : E =>
         fderivWithin Real
-          (metricFlatModelInChart_component (I := I) g x₀ i j)
+          (metricFlatModelInChartComponent (I := I) g x₀ i j)
           (Set.range I) y ((Module.finBasis Real E) a))
       (Set.range I) y := by
   have hf :=

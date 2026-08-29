@@ -79,7 +79,7 @@ theorem fFunctionalFirstVariationFormula_of_connection_trace_field
           (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hdivTrace :
       ∀ x : M,
-        DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+        DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
             (I := I) g (connTraceField (I := I) g A) x =
           rawTrace x)
     (hactionTrace :
@@ -93,22 +93,22 @@ theorem fFunctionalFirstVariationFormula_of_connection_trace_field
     (hlap :
       ∀ x : M,
         lapPotential x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hpotential⟩ x)
     (hgradSq :
       ∀ x : M,
         gradPotentialNormSq x =
           g.inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
     (hshift :
       ∀ x : M,
         shiftedTrace x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hq⟩ x)
     (hqeq :
       ∀ x : M,
@@ -178,22 +178,22 @@ theorem fFunctionalFirstVariationFormula_of_connection_trace_components
     (hlap :
       ∀ x : M,
         lapPotential x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hpotential⟩ x)
     (hgradSq :
       ∀ x : M,
         gradPotentialNormSq x =
           g.inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
     (hshift :
       ∀ x : M,
         shiftedTrace x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hq⟩ x)
     (hqeq :
       ∀ x : M,
@@ -273,19 +273,19 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
     (hA :
       ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
         componentRS (I := I)
-            (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+            (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
             (A x) (fun _ : Fin 1 => p)
             (fun q : Fin 2 => if q = 0 then i else j) =
           christoffelVariation x p i j)
     (hgrad :
       ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+        mvfderiv (I := I) potential x (coordinateFrameAt (I := I) x p x) =
           gradPotential x p)
     (hzero : ∀ x : M, ∀ d i j : CoordinateIdx (𝕜 := Real) E,
       inverseMetricCovDerivForMetricCompInFrame
         (I := I)
         (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-          inverseMetricFlatModelInChart_component (I := I) g x a b
+          inverseMetricFlatModelInChartComponent (I := I) g x a b
             (extChartAt I x y))
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
         (coordinateFrameAt (I := I) x)
@@ -293,7 +293,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
         x d i j = 0)
     (hNabla : ∀ x : M, ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
       nablaChristoffelVariation x d k i j =
-        extDerivFun (I := I) (compFun (I := I) A x k i j) x
+        mvfderiv (I := I) (compFun (I := I) A x k i j) x
             (coordinateFrameAt (I := I) x d x) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             christoffelSymbolInFrame
@@ -301,7 +301,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => a)
                 (fun q : Fin 2 => if q = 0 then i else j)) -
@@ -311,7 +311,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then a else j)) -
@@ -321,7 +321,7 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then i else a)))
@@ -335,22 +335,22 @@ theorem fFunctionalFirstVariationFormula_of_christoffel_variation_components
     (hlap :
       ∀ x : M,
         lapPotential x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hpotential⟩ x)
     (hgradSq :
       ∀ x : M,
         gradPotentialNormSq x =
           g.inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
     (hshift :
       ∀ x : M,
         shiftedTrace x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hq⟩ x)
     (hqeq :
       ∀ x : M,
@@ -515,19 +515,19 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
     (hA :
       ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
         componentRS (I := I)
-            (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+            (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
             (A x) (fun _ : Fin 1 => p)
             (fun q : Fin 2 => if q = 0 then i else j) =
           christoffelVariation x p i j)
     (hgrad :
       ∀ x : M, ∀ p : CoordinateIdx (𝕜 := Real) E,
-        extDerivFun (I := I) potential x (coordinateFrameAt (I := I) x p x) =
+        mvfderiv (I := I) potential x (coordinateFrameAt (I := I) x p x) =
           gradPotential x p)
     (hzero : ∀ x : M, ∀ d i j : CoordinateIdx (𝕜 := Real) E,
       inverseMetricCovDerivForMetricCompInFrame
         (I := I)
         (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-          inverseMetricFlatModelInChart_component (I := I) (G.metric s0) x a b
+          inverseMetricFlatModelInChartComponent (I := I) (G.metric s0) x a b
             (extChartAt I x y))
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) (G.metric s0))
         (coordinateFrameAt (I := I) x)
@@ -535,7 +535,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
         x d i j = 0)
     (hNabla : ∀ x : M, ∀ d k i j : CoordinateIdx (𝕜 := Real) E,
       nablaChristoffelVariation x d k i j =
-        extDerivFun (I := I) (compFun (I := I) A x k i j) x
+        mvfderiv (I := I) (compFun (I := I) A x k i j) x
             (coordinateFrameAt (I := I) x d x) +
           (∑ a : CoordinateIdx (𝕜 := Real) E,
             christoffelSymbolInFrame
@@ -543,7 +543,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => a)
                 (fun q : Fin 2 => if q = 0 then i else j)) -
@@ -553,7 +553,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then a else j)) -
@@ -563,7 +563,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then i else a)))
@@ -579,22 +579,22 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
     (hlap :
       ∀ x : M,
         lapPotential x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) (G.metric s0) ⟨_, hpotential⟩ x)
     (hgradSq :
       ∀ x : M,
         gradPotentialNormSq x =
           (G.metric s0).inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) (G.metric s0) ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) (G.metric s0) ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
     (hshift :
       ∀ x : M,
         shiftedTrace x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) (G.metric s0) ⟨_, hq⟩ x)
     (hqeq :
       ∀ x : M,

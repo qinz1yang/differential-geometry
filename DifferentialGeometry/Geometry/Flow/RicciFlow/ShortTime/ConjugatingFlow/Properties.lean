@@ -220,10 +220,14 @@ private theorem spatial_pushforward_chartCoord_contMDiffAt
     exact (TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
       (b₀ := α) (b := (Φ_fam p.2 : M → M) x) hsrcα).symm
   rw [htarget_eq]
-  simp only [ContinuousLinearMap.comp_apply]
+  change (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
+      ((Φ_fam p.2 : M → M) x)
+        (mfderiv I I (Φ_fam p.2 : M → M) x
+          ((tangentBundleCore I M).coordChange (achart H x) (achart H x) x v)) =
+    (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
+      ((Φ_fam p.2 : M → M) x) (mfderiv I I (Φ_fam p.2 : M → M) x v)
   rw [show ((tangentBundleCore I M).coordChange (achart H x) (achart H x) x) v = v from
     (tangentBundleCore I M).coordChange_self (achart H x) x (mem_chart_source H x) v]
-  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -400,6 +404,7 @@ theorem evalForm_joint
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem flow_slot_deriv
@@ -503,6 +508,7 @@ theorem flow_slot_deriv
 
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 theorem flow_slot_pos
     (g : SmoothRiemannianMetric I M)
     (Y : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -535,6 +541,7 @@ theorem flow_slot_pos
     lieDerivMetric_smul_vectorField]
   ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem conjugating_flow_flat_data
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
@@ -801,7 +808,10 @@ private theorem flow_pushforward_chartBasisVec_section_cmwa
             (fun x => mfderivWithin I I (f x) (Set.univ) ((fun q : ℝ × M => q.2) x))
             (t₀, b₀) q) := by
       funext q
-      rw [inTangentCoordinates, mfderivWithin_univ]
+      unfold inTangentCoordinates
+      have hfq : f q = fun y => (Φ_fam q.1 : M → M) y := congrFun hf_def q
+      dsimp only
+      rw [hfq, mfderivWithin_univ]
     rw [hrw]
     exact hϕ
 

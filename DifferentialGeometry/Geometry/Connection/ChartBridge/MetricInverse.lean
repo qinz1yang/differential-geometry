@@ -23,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 theorem chartInvGram_inverse
     (g : SmoothRiemannianMetric I M) (alpha : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) alpha).baseSet) :
-    MetricInverseInBasis_gen (I := I) g x
+    MetricInverseInBasisGen (I := I) g x
       (chartBasisFamily (I := I) alpha hx)
       (fun i j => chartInvGramMatrix (I := I) g alpha x i j) := by
   classical

@@ -12,7 +12,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -55,9 +54,9 @@ theorem tensorChartComponentScalar_eLpNorm_two_lt_top
   have hcont : Continuous
       (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) :=
     hsmooth.continuous
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact (hcont.memLp_of_hasCompactSupport
       (μ := riemannianVolumeMeasure (I := I) (M := M) g) (p := 2) hcc).eLpNorm_lt_top
@@ -106,7 +105,7 @@ theorem tensorChartComponentScalar_eLpNorm_le_per_section
       _ ≤ ENNReal.ofReal (a + 1) *
             (ENNReal.ofReal
               (tensorL2Norm (I := I) (M := M) g r s S.toFun) + 1) :=
-            mul_le_mul_of_nonneg_left h_one_le (by exact zero_le _)
+            mul_le_mul_of_nonneg_left h_one_le (by exact zero_le)
   exact h1.trans h2
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

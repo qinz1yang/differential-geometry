@@ -90,9 +90,9 @@ theorem integral_fatou_sq_mass {ι : Type*}
                   (fun i => w i * (v N t i) ^ 2)).symm
         rw [hleft]
         refine (integral_mono_ae ?_ ?_ ?_).trans (hbound N)
-        · exact (continuousOn_finset_sum K fun i _ =>
+        · exact (continuousOn_finsetSum K fun i _ =>
             (continuousOn_const.mul ((hcont N i).pow 2))).integrableOn_Icc
-        · exact (continuousOn_finset_sum (S N) fun i _ =>
+        · exact (continuousOn_finsetSum (S N) fun i _ =>
             (continuousOn_const.mul ((hcont N i).pow 2))).integrableOn_Icc
         · exact Filter.Eventually.of_forall fun t =>
             Finset.sum_le_sum_of_subset_of_nonneg hKN
@@ -124,7 +124,7 @@ theorem integral_fatou_sq_mass {ι : Type*}
             rw [integral_const_mul]
       _ = ∫ t, ∑ i ∈ K, w i * (vlim t i) ^ 2
           ∂(volume.restrict (Icc (0 : ℝ) T)) := by
-        rw [integral_finset_sum K]
+        rw [integral_finsetSum K]
         intro i hi
         have hiLp : MemLp (fun t => f t ⟨i, hi⟩) 2
             (volume.restrict (Icc (0 : ℝ) T)) := by

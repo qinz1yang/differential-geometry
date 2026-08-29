@@ -136,7 +136,7 @@ theorem fiber_mul3_l632
         lpNorm (fiberLpFun g r3 s3 B) 3
           (riemannianVolumeMeasure (I := I) (M := M) g) * ‖C‖ := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -157,11 +157,11 @@ theorem fiber_mul3_l632
     hf2c.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hfc : Continuous (fun x => f6 x * f3 x * f2 x) :=
     (hf6c.mul hf3c).mul hf2c
-  haveI : ENNReal.HolderTriple (6 : ENNReal) 3 2 := by
+  have : ENNReal.HolderTriple (6 : ENNReal) 3 2 := by
     exact ENNReal.HolderTriple.of_toReal (by
       rw [Real.holderTriple_iff]
       norm_num)
-  haveI : ENNReal.HolderTriple (2 : ENNReal) 2 1 := by
+  have : ENNReal.HolderTriple (2 : ENNReal) 2 1 := by
     exact ENNReal.HolderTriple.of_toReal (by
       rw [Real.holderTriple_iff]
       norm_num)
@@ -179,14 +179,19 @@ theorem fiber_mul3_l632
   have h221 :
       eLpNorm (fun x => (f6 x * f3 x) * f2 x) 1 μ ≤
         eLpNorm (fun x => f6 x * f3 x) 2 μ * eLpNorm f2 2 μ := by
-    simpa using
-      (eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
+    have h :=
+      eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
         (p := (2 : ENNReal)) (q := 2) (r := 1) (μ := μ)
         (hf6c.mul hf3c).aestronglyMeasurable hf2c.aestronglyMeasurable
         (fun a b : ℝ => a * b) 1
         (Filter.Eventually.of_forall (fun _ => by
           rw [Real.norm_eq_abs, abs_mul]
-          norm_num)))
+          norm_num))
+    have hmul : f6 * f3 = fun x => f6 x * f3 x := by
+      funext x
+      rfl
+    rw [hmul] at h
+    simpa only [ENNReal.coe_one, one_mul] using h
   have hENN :
       eLpNorm (fun x => f6 x * f3 x * f2 x) 1 μ ≤
         (eLpNorm f6 6 μ * eLpNorm f3 3 μ) * eLpNorm f2 2 μ :=
@@ -227,7 +232,7 @@ theorem fiber_mul3_linf22
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
       K * ‖B‖ * ‖C‖ := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -245,7 +250,7 @@ theorem fiber_mul3_linf22
   have hf2bmem : MemLp f2b 2 μ :=
     hf2bc.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hfc : Continuous (fun x => f2a x * f2b x) := hf2ac.mul hf2bc
-  haveI : ENNReal.HolderTriple (2 : ENNReal) 2 1 := by
+  have : ENNReal.HolderTriple (2 : ENNReal) 2 1 := by
     exact ENNReal.HolderTriple.of_toReal (by
       rw [Real.holderTriple_iff]
       norm_num)
@@ -333,7 +338,7 @@ theorem fiberLp3_le_6
           lpNorm (fiberLpFun g r s S) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -365,7 +370,7 @@ theorem fiberLp3_le_lp6
         C * lpNorm (fiberLpFun g r s S) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -452,7 +457,7 @@ theorem operatorFieldApplication_l6_l3_l2
         lpNorm (fiberLpFun g 0 r W) 3
           (riemannianVolumeMeasure (I := I) (M := M) g) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -467,7 +472,7 @@ theorem operatorFieldApplication_l6_l3_l2
     hWc.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hYmem : MemLp (fiberLpFun g 0 s Y) 2 μ :=
     hYc.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  haveI : ENNReal.HolderTriple (6 : ENNReal) 3 2 := by
+  have : ENNReal.HolderTriple (6 : ENNReal) 3 2 := by
     exact ENNReal.HolderTriple.of_toReal (by
       rw [Real.holderTriple_iff]
       norm_num)

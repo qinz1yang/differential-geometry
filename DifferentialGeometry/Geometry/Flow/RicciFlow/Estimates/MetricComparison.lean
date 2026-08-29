@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -35,7 +37,7 @@ private theorem tensor_eval_cont
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun s : Real ↦ A s x (vec2 v w)) K := by
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   exact hA.eval_continuous (P := {s : Real // s ∈ K}) (τ := Subtype.val)
     (b := fun _ ↦ x) continuous_subtype_val (fun p ↦ p.2) continuous_const
     (v := fun i _ ↦ vec2 v w i) (fun _ ↦ continuous_const)
@@ -322,10 +324,12 @@ theorem edistCont_Icc
     (h := fun q : Real × M ↦
       ENNReal.ofReal (Real.sqrt (Real.exp (A q))) * d₀ q)
     ?_ ?_ ?_ ?_
-  · simpa only [A, d₀, sub_self, abs_zero, mul_zero, neg_zero,
+  · change Filter.Tendsto _ (𝓝 p ⊓ Filter.principal (Set.Icc a b ×ˢ Set.univ)) _
+    simpa only [A, d₀, sub_self, abs_zero, mul_zero, neg_zero,
       Real.exp_zero, Real.sqrt_one, ENNReal.ofReal_one, one_mul] using
       (hlo_mul.tendsto p).mono_left inf_le_left
-  · simpa only [A, d₀, sub_self, abs_zero, mul_zero, neg_zero,
+  · change Filter.Tendsto _ (𝓝 p ⊓ Filter.principal (Set.Icc a b ×ˢ Set.univ)) _
+    simpa only [A, d₀, sub_self, abs_zero, mul_zero, neg_zero,
       Real.exp_zero, Real.sqrt_one, ENNReal.ofReal_one, one_mul] using
       (hhi_mul.tendsto p).mono_left inf_le_left
   · filter_upwards [self_mem_nhdsWithin] with q hq

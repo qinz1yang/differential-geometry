@@ -138,22 +138,22 @@ noncomputable def submoduleProjection
   letI : Module Real V := modV
   letI : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
-  exact W.orthogonalProjection.toLinearMap
+  exact W.orthogonalProjectionOnto.toLinearMap
 
 theorem submoduleProjection_inner
     (D : MetricFiberData V) (W : Submodule Real V) (v : V) (w : W) :
     D.inner (submoduleProjection D W v : V) w = D.inner v w := by
   let addV : AddCommGroup V := inferInstance
   let modV : Module Real V := inferInstance
-  letI : InnerProductSpace.Core Real V := D.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := D.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
-  letI : AddCommGroup V := addV
-  letI : Module Real V := modV
-  letI : InnerProductSpace Real V :=
+  let : AddCommGroup V := addV
+  let : Module Real V := modV
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
-  change Inner.inner Real (W.orthogonalProjection v : V) w = Inner.inner Real v w
-  exact W.inner_orthogonalProjection_eq_of_mem_right w v
+  change Inner.inner Real (W.orthogonalProjectionOnto v : V) w = Inner.inner Real v w
+  exact W.inner_orthogonalProjectionOnto_eq_of_mem_right w v
 
 @[simp]
 theorem submoduleProjection_eq_self
@@ -161,15 +161,15 @@ theorem submoduleProjection_eq_self
     submoduleProjection D W v = ⟨v, hv⟩ := by
   let addV : AddCommGroup V := inferInstance
   let modV : Module Real V := inferInstance
-  letI : InnerProductSpace.Core Real V := D.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := D.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
-  letI : AddCommGroup V := addV
-  letI : Module Real V := modV
-  letI : InnerProductSpace Real V :=
+  let : AddCommGroup V := addV
+  let : Module Real V := modV
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
   let w : W := ⟨v, hv⟩
-  simpa [submoduleProjection, w] using W.orthogonalProjection_mem_subspace_eq_self w
+  simpa [submoduleProjection, w] using W.orthogonalProjectionOnto_mem_subspace_eq_self w
 
 theorem submoduleProjection_inner_self_le
     (D : MetricFiberData V) (W : Submodule Real V) (v : V) :
@@ -177,18 +177,18 @@ theorem submoduleProjection_inner_self_le
       D.inner v v := by
   let addV : AddCommGroup V := inferInstance
   let modV : Module Real V := inferInstance
-  letI : InnerProductSpace.Core Real V := D.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := D.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
-  letI : AddCommGroup V := addV
-  letI : Module Real V := modV
-  letI : InnerProductSpace Real V :=
+  let : AddCommGroup V := addV
+  let : Module Real V := modV
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
-  change Inner.inner Real (W.orthogonalProjection v : V) (W.orthogonalProjection v : V) ≤
+  change Inner.inner Real (W.orthogonalProjectionOnto v : V) (W.orthogonalProjectionOnto v : V) ≤
     Inner.inner Real v v
   rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
-  have hnorm : ‖(W.orthogonalProjection v : V)‖ ≤ ‖v‖ := by
-    simpa using W.norm_orthogonalProjection_apply_le v
+  have hnorm : ‖(W.orthogonalProjectionOnto v : V)‖ ≤ ‖v‖ := by
+    simpa using W.norm_orthogonalProjectionOnto_apply_le v
   exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 hnorm
 
 section MetricEquiv

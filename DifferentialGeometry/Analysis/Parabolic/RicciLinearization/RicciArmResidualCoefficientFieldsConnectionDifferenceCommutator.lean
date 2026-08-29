@@ -18,7 +18,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -57,11 +56,11 @@ def connectionDifferenceIteratedCommKernelBilin (g₀ g₁ : SmoothRiemannianMet
           - g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
               (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0) p)
       map_add' := fun v0 v0' => by
-        simp only [map_add, ContinuousLinearMap.add_apply]
+        simp only [map_add, add_apply]
         abel
       map_smul' := fun c v0 => by
         rw [RingHom.id_apply]
-        simp only [map_smul, ContinuousLinearMap.smul_apply]
+        simp only [map_smul, smul_apply]
         rw [smul_sub] }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -75,7 +74,7 @@ omit [T2Space M] [SigmaCompactSpace M] in
         - g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0) p) v1 := by
   rw [connectionDifferenceIteratedCommKernelBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, ContinuousLinearMap.sub_apply]
+    AddHom.coe_mk, sub_apply]
 
 def frameConnectionDifferenceAACommKernel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v0 v1 : TangentSpace I x) :
@@ -90,30 +89,30 @@ def frameConnectionDifferenceAACommKernel (g₀ g₁ : SmoothRiemannianMetric I 
             map_add' := fun q q' => by
               rw [connectionDifferenceAACommKernelBilin_apply, connectionDifferenceAACommKernelBilin_apply,
                 connectionDifferenceAACommKernelBilin_apply]
-              simp only [map_add, ContinuousLinearMap.add_apply]
+              simp only [map_add, add_apply]
               ring
             map_smul' := fun c q => by
               rw [RingHom.id_apply, connectionDifferenceAACommKernelBilin_apply,
                 connectionDifferenceAACommKernelBilin_apply]
-              simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+              simp only [map_smul, smul_apply, smul_eq_mul]
               ring }
       map_add' := fun p p' => by
         apply ContinuousLinearMap.ext
         intro q
-        simp only [ContinuousLinearMap.add_apply, LinearMap.coe_toContinuousLinearMap']
+        simp only [add_apply, LinearMap.coe_toContinuousLinearMap']
         simp only [LinearMap.coe_mk, AddHom.coe_mk]
         rw [connectionDifferenceAACommKernelBilin_apply, connectionDifferenceAACommKernelBilin_apply,
           connectionDifferenceAACommKernelBilin_apply]
-        simp only [map_add, ContinuousLinearMap.add_apply]
+        simp only [map_add, add_apply]
         ring
       map_smul' := fun c p => by
         rw [RingHom.id_apply]
         apply ContinuousLinearMap.ext
         intro q
-        simp only [ContinuousLinearMap.smul_apply, LinearMap.coe_toContinuousLinearMap']
+        simp only [smul_apply, LinearMap.coe_toContinuousLinearMap']
         simp only [LinearMap.coe_mk, AddHom.coe_mk]
         rw [connectionDifferenceAACommKernelBilin_apply, connectionDifferenceAACommKernelBilin_apply]
-        simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        simp only [map_smul, smul_apply, smul_eq_mul]
         ring }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -136,9 +135,9 @@ def connectionDifferenceAACommSummandFib (g₀ g₁ : SmoothRiemannianMetric I M
           Tensor0SSpace.ofModel (I := I) (x := x)
             (bilinFormToModel E (connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x p q))
       map_add' := fun D D' => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, add_smul]
+        rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
-        rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+        rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
           RingHom.id_apply, mul_smul] }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -149,10 +148,11 @@ omit [T2Space M] [SigmaCompactSpace M] in
     Tensor0SSpace.toModel (connectionDifferenceAACommSummandFib (I := I) g₀ g₁ x p q D) v =
       (Tensor0SSpace.toModel D ![(p : E), (q : E)]) *
         connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x p q (v 0) (v 1) := by
-  rw [connectionDifferenceAACommSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply, smul_eq_mul]
-  rfl
+  with_unfolding_all
+    rw [connectionDifferenceAACommSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
+      AddHom.coe_mk, Tensor0SSpace.toModel_smul, smul_apply,
+      Tensor0SSpace.toModel_ofModel, smul_eq_mul]
+    rfl
 
 def connectionDifferenceAACommBiContrFibFixedFrame (g₀ g₁ : SmoothRiemannianMetric I M)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M) :
@@ -172,11 +172,11 @@ lemma connectionDifferenceAACommBiContrFibFixedFrame_toModel (g₀ g₁ : Smooth
         (Tensor0SSpace.toModel D ![(B a x : E), (B b x : E)]) *
           connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x (B a x) (B b x) (v 0) (v 1) := by
   classical
-  rw [connectionDifferenceAACommBiContrFibFixedFrame, ContinuousLinearMap.sum_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [connectionDifferenceAACommBiContrFibFixedFrame, sum_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, Tensor0SSpace.toModelL_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.toModelL_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, connectionDifferenceAACommSummandFib_toModel]
 
@@ -328,12 +328,12 @@ theorem connectionDifferenceAACommBiContrFibFixedFrame_apply_section_contMDiff
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [hcoe2 a, Finset.sum_apply]
     rfl
-  rw [connectionDifferenceAACommBiContrFibFixedFrame, ContinuousLinearMap.sum_apply]
+  rw [connectionDifferenceAACommBiContrFibFixedFrame, sum_apply]
   rw [show ∑ a : Fin (Module.finrank ℝ E), (∑ b : Fin (Module.finrank ℝ E),
       connectionDifferenceAACommSummandFib (I := I) g₀ g₁ x (B a x) (B b x)) (Y x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         connectionDifferenceAACommSummandFib (I := I) g₀ g₁ x (B a x) (B b x) (Y x) from
-    Finset.sum_congr rfl (fun a _ => ContinuousLinearMap.sum_apply _ _ _)]
+    Finset.sum_congr rfl (fun a _ => sum_apply _ _ _)]
   rw [← hval]
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -393,25 +393,59 @@ theorem connectionDifferenceAACommBiContrFib_eq_fixedFrame_on_nbhd
   intro v
   rw [connectionDifferenceAACommBiContrFib, connectionDifferenceAACommBiContrFibFixedFrame_toModel,
     connectionDifferenceAACommBiContrFibFixedFrame_toModel]
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
+  let e := (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap
+  let vt : Fin 2 → TangentSpace I y := fun i =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i)
+  let Dmodel : E →L[ℝ] E →L[ℝ] ℝ :=
+    (bilinFormToModel E).symm (Tensor0SSpace.toModel D)
+  let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
+    (((Dmodel.comp e).flip.comp e).flip)
+  with_unfolding_all
+    change (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ y a y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ y b y)]) *
+          connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ y
+            (smoothOrthoFrame (I := I) g₁ y a y) (smoothOrthoFrame (I := I) g₁ y b y)
+            (vt 0) (vt 1)) =
+      ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ x₀ a y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ x₀ b y)]) *
+          connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ y
+            (smoothOrthoFrame (I := I) g₁ x₀ a y) (smoothOrthoFrame (I := I) g₁ x₀ b y)
+            (vt 0) (vt 1)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        (Tensor0SSpace.toModel D ![(Bf a : E), (Bf b : E)]) *
-          connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ y (Bf a) (Bf b) (v 0) (v 1) =
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf a),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)]) *
+          connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ y
+            (Bf a) (Bf b) (vt 0) (vt 1) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        frameConnectionDifferenceAACommKernel (I := I) g₀ g₁ y (v 0) (v 1) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D) (Bf a) (Bf b) := by
+        frameConnectionDifferenceAACommKernel (I := I) g₀ g₁ y
+            (vt 0) (vt 1) (Bf a) (Bf b) *
+          Dd (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [frameConnectionDifferenceAACommKernel_apply,
-      bilinFormToModel_symm_apply (TangentSpace I y) (Tensor0SSpace.toModel D) (Bf a) (Bf b)]
+    rw [frameConnectionDifferenceAACommKernel_apply]
+    dsimp only [Dd, Dmodel, e]
+    rw [ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      bilinFormToModel_symm_apply]
     rw [mul_comm]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)]
   exact double_frame_bilin_trace_indep (I := I) g₁ y
-    (frameConnectionDifferenceAACommKernel (I := I) g₀ g₁ y (v 0) (v 1))
-    ((bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D))
+    (frameConnectionDifferenceAACommKernel (I := I) g₀ g₁ y (vt 0) (vt 1)) Dd
     (fun a => smoothOrthoFrame (I := I) g₁ y a y)
     (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
@@ -481,11 +515,15 @@ theorem connectionDifferenceAACommBiContrFib_self (g₀ : SmoothRiemannianMetric
           (smoothOrthoFrame (I := I) g₀ x a x) (smoothOrthoFrame (I := I) g₀ x b x)
           (v 0) (v 1)) = 0 from
     Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by
-      rw [connectionDifferenceAACommKernelBilin_apply]
-      simp only [hconn, Pi.zero_apply, ContinuousLinearMap.zero_apply, map_zero,
-        sub_self, mul_zero]))]
-  simp only [ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero,
-    ContinuousMultilinearMap.zero_apply]
+      with_unfolding_all
+        simp only [connectionDifferenceIteratedCommKernelBilin,
+          LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
+          AddHom.coe_mk, hconn, Pi.zero_apply, zero_apply, map_zero,
+          sub_self]
+        change D.toModel
+            ![smoothOrthoFrame g₀ x a x, smoothOrthoFrame g₀ x b x] * 0 = 0
+      rw [mul_zero]))]
+  simp only [zero_apply, Tensor0SSpace.toModel_zero]
 
 
 omit [I.Boundaryless] in

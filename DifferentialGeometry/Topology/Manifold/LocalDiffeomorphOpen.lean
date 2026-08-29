@@ -33,15 +33,17 @@ theorem isLocalDiffeomorph_restrict_open
       contMDiffOn_toFun := by
         intro y hy
         have hyΦ : (y : M) ∈ Φ.source := by
-          simpa only [e, OpenPartialHomeomorph.subtypeRestr_source] using hy
+          change y ∈ (Φ.toOpenPartialHomeomorph.subtypeRestr hU).source at hy
+          rw [OpenPartialHomeomorph.subtypeRestr_source] at hy
+          exact hy
         have hΦ :
             ContMDiffAt I J ∞ (Φ : M → N) (y : M) :=
           Φ.contMDiffOn_toFun.contMDiffAt (Φ.open_source.mem_nhds hyΦ)
         have hrest :
             ContMDiffAt I J ∞ (fun z : U => (Φ : M → N) z) y :=
           contMDiffAt_subtype_iff.mpr hΦ
-        simpa only [e, OpenPartialHomeomorph.subtypeRestr_coe,
-          Set.restrict_apply] using hrest.contMDiffWithinAt
+        change ContMDiffWithinAt I J ∞ (fun z : U => (Φ : M → N) z) e.source y
+        exact hrest.contMDiffWithinAt
       contMDiffOn_invFun := by
         intro y hy
         have hyΦ : y ∈ Φ.target :=
@@ -53,8 +55,9 @@ theorem isLocalDiffeomorph_restrict_open
             (Φ.symm : N → M) =ᶠ[𝓝 y]
               (fun z => ((e.symm : N → U) z : M)) :=
           Filter.eventuallyEq_of_mem (e.open_target.mem_nhds hy) fun z hz => by
-            simpa only [Function.comp_apply] using
-              Φ.toOpenPartialHomeomorph.subtypeRestr_symm_eqOn hU hz
+            have h := Φ.toOpenPartialHomeomorph.subtypeRestr_symm_eqOn hU hz
+            change (Φ.symm z : M) = ((e.symm z : U) : M)
+            exact h
         have hcoe :
             ContMDiffAt J I ∞
               (fun z => ((e.symm : N → U) z : M)) y :=
@@ -65,15 +68,17 @@ theorem isLocalDiffeomorph_restrict_open
             (V := U) (fun z => ((e.symm : N → U) z).property) hcoe
         exact hsub.contMDiffWithinAt }
   refine ⟨Ψ, ?_, ?_⟩
-  · change x ∈ e.source
-    simpa only [e, OpenPartialHomeomorph.subtypeRestr_source] using hxΦ
+  · change x ∈ (Φ.toOpenPartialHomeomorph.subtypeRestr hU).source
+    rw [OpenPartialHomeomorph.subtypeRestr_source]
+    exact hxΦ
   · intro y hy
     have hyΦ : (y : M) ∈ Φ.source := by
-      change y ∈ e.source at hy
-      simpa only [e, OpenPartialHomeomorph.subtypeRestr_source] using hy
+      change y ∈ (Φ.toOpenPartialHomeomorph.subtypeRestr hU).source at hy
+      rw [OpenPartialHomeomorph.subtypeRestr_source] at hy
+      exact hy
     change f y = e y
-    simpa only [e, OpenPartialHomeomorph.subtypeRestr_coe,
-      Set.restrict_apply] using hΦeq hyΦ
+    change f y = Φ y
+    exact hΦeq hyΦ
 
 variable {G : Type*} [NormedAddCommGroup G] [NormedSpace Real G]
 variable {H'' : Type*} [TopologicalSpace H'']

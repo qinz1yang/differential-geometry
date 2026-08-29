@@ -379,14 +379,16 @@ theorem heatSup_zero_of_holder {alpha K : NNReal} (halpha0 : 0 < alpha)
   have hscale : Tendsto heatScale (𝓝[>] (0 : Real)) (𝓝 0) := by
     have hfull : Tendsto (fun t : Real => Real.sqrt t) (𝓝 0) (𝓝 0) := by
       simpa only [Real.sqrt_zero] using Real.continuous_sqrt.tendsto (0 : Real)
-    simpa only [heatScale] using hfull.mono_left nhdsWithin_le_nhds
+    change Tendsto (fun t : Real => Real.sqrt t) (𝓝[>] 0) (𝓝 0)
+    exact hfull.mono_left nhdsWithin_le_nhds
   have halphaReal : 0 < (alpha : Real) := by exact_mod_cast halpha0
   have hrpow : Tendsto (fun t : Real => (heatScale t) ^ (alpha : Real))
       (𝓝[>] (0 : Real)) (𝓝 0) := by
     have hcont := Real.continuousAt_rpow_const 0 (alpha : Real)
       (Or.inr halphaReal.le)
-    simpa [Function.comp_apply, Real.zero_rpow halphaReal.ne'] using
-      hcont.tendsto.comp hscale
+    change Tendsto ((fun x : Real => x ^ (alpha : Real)) ∘ heatScale)
+      (𝓝[>] 0) (𝓝 0)
+    simpa only [Real.zero_rpow halphaReal.ne'] using hcont.tendsto.comp hscale
   have hupper : Tendsto
       (fun t : Real => (K : Real) * (heatScale t) ^ (alpha : Real) *
         heatC0Holder (V := V) alpha)

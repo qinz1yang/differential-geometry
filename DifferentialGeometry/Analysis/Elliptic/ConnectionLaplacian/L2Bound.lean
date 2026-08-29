@@ -67,7 +67,7 @@ private lemma nonneg_le_of_sq_le_sq
 
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (Curv : SmoothCcTensor g 0 3) (C₀ : ℝ) (hC₀ : 0 ≤ C₀)

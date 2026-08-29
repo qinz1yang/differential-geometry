@@ -1,5 +1,5 @@
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Tactic.Linarith

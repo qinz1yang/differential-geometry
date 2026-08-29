@@ -8,7 +8,6 @@ noncomputable section
 namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff BigOperators
 open Bundle
@@ -49,8 +48,7 @@ theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
       (n := (∞ : WithTop ℕ∞)) s)
     (x : M) (slots : Fin s' -> TangentSpace I x) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s' cov X
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) e Z) x) slots
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Z) x) slots
       = (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov X Z x)
           (slots ∘ e) := by
   classical
@@ -65,8 +63,7 @@ theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (slots a)).choose_spec
   have h1 := nabla0SFun_eval_smooth_slots (I := I) cov X V
-    (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) e Z) x
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Z) x
   have h2 := nabla0SFun_eval_smooth_slots (I := I) cov X (fun a : Fin s => V (e a)) Z x
   rw [show slots = (fun a : Fin s' => V a x) from (funext hV).symm, h1,
     show ((fun a : Fin s' => V a x) ∘ e) = (fun a : Fin s => V (e a) x) from rfl, h2]
@@ -74,12 +71,14 @@ theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
   · congr 1
   · refine Fintype.sum_equiv e.symm _ _ ?_
     intro a
-    change (ContinuousMultilinearMap.domDomCongr e (Z x)) _ = _
-    rw [Tensor0SSpace.domDomCongr_apply]
+    change (ContinuousMultilinearMap.domDomCongr e
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (Z x))) _ = _
+    rw [ContinuousMultilinearMap.domDomCongr_apply]
+    simp only [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
     congr 1
     funext i
     simp only [Function.update_apply, Equiv.apply_symm_apply,
-      Equiv.apply_eq_iff_eq_symm_apply]
+      Equiv.eq_symm_apply]
 
 omit [CompleteSpace E] in
 theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
@@ -90,11 +89,15 @@ theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I
       (n := (∞ : WithTop ℕ∞)) s)
     (x : M) :
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s' cov
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) e Z) x
-      = ContinuousMultilinearMap.domDomCongr (frontExtendEquiv e)
-          (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov Z x) := by
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Z) x
+      = (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov Z x).domDomCongr (frontExtendEquiv e) := by
   classical
+  let Z' : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s' :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Z
+  change totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      s' cov Z' x = _
   let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) :=
     Module.finBasis Real (TangentSpace I x)
@@ -116,8 +119,15 @@ theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I
     | zero => rw [Fin.cons_zero]; exact hX.symm
     | succ j => rw [Fin.cons_succ]
   rw [component0S_apply, component0S_apply, hcons,
-    totalNabla0SFun_apply_section, nabla0SFun_domDomCongr,
-    Tensor0SSpace.domDomCongr_apply]
+    totalNabla0SFun_apply_section]
+  have hperm :
+      nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s' cov X Z' x (fun a : Fin s' => basis (idx a.succ)) =
+        nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          s cov X Z x ((fun a : Fin s' => basis (idx a.succ)) ∘ e) := by
+    exact nabla0SFun_domDomCongr (I := I) cov X e Z x
+      (fun a : Fin s' => basis (idx a.succ))
+  rw [hperm, Tensor0SSpace.domDomCongr_apply]
   simp only [cons_apply_frontExtendEquiv]
   rw [totalNabla0SFun_apply_section]
 
@@ -134,14 +144,10 @@ theorem totalNabla0SRealizes_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManif
       s cov Z nablaZ) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s' cov
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) e Z)
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (frontExtendEquiv e) nablaZ) := by
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Z)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (frontExtendEquiv e) nablaZ) := by
   intro X x slots
-  change
-    (ContinuousMultilinearMap.domDomCongr (frontExtendEquiv e) (nablaZ x))
-        (Fin.cons (X x) slots) = _
+  change (nablaZ x).domDomCongr (frontExtendEquiv e) (Fin.cons (X x) slots) = _
   rw [Tensor0SSpace.domDomCongr_apply]
   simp only [cons_apply_frontExtendEquiv]
   exact (hZ X x (slots ∘ e)).trans
@@ -158,7 +164,7 @@ theorem totalNabla0SRealizes_unique [T2Space M] {s : ℕ}
     (h2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov α n2) :
     n1 = n2 := by
   refine DFunLike.ext _ _ (fun x => ?_)
-  refine ContinuousMultilinearMap.ext (fun v => ?_)
+  refine tensor0SSpace_ext (I := I) (s + 1) x (fun v => ?_)
   obtain ⟨X, hX⟩ :
       ∃ X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
         X x = v 0 :=
@@ -171,7 +177,7 @@ theorem totalNabla0SRealizes_unique [T2Space M] {s : ℕ}
   have e1 := h1 X x (Fin.tail v)
   have e2 := h2 X x (Fin.tail v)
   rw [hcons] at e1 e2
-  rw [e1, e2]
+  exact e1.trans e2.symm
 
 end Tensor0SBundle
 end DifferentialGeometry

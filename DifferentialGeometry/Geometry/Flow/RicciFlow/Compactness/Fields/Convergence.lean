@@ -51,7 +51,7 @@ theorem supOn_congr_left
   unfold metricDerivNormSupOn
   congr 1
   ext r
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   constructor
   · rintro ⟨a, ha, x, hx, rfl⟩
     exact ⟨a, ha, x, hx, (h x hx a ha).symm⟩
@@ -149,20 +149,20 @@ theorem supOn_resSrc_eq
     metricDerivNormSupOn (I := I) C p (resSrc (I := I) Φ k g₁)
         (resSrc (I := I) Φ k g₂) (resSrc (I := I) Φ k g₃)
       = metricDerivNormSupOn (I := I) (Subtype.val '' C) p g₁ g₂ g₃ := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) := sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI sourceSigma : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) := sourceDomSigmaOf (I := I) Φ k (hsrc k)
+  let sourceSigma : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) := by
     change SigmaCompactSpace (SourceDomain (I := I) Φ k)
     exact sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) := by
+  let sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) := by
     change T2Space (SourceDomain (I := I) Φ k)
     exact sourceDomT2 (I := I) Φ k
   exact @metricDerivNormSupOn_restrictOpen E _ _ finiteE _ H _ I
@@ -230,7 +230,7 @@ noncomputable def restrict
     exact ⟨k₀, fun k hk t ht a ha x hx =>
       hk₀ k hk t (hsub ht) a ha x hx⟩
 
-noncomputable def comp_subseq
+noncomputable def compSubseq
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
@@ -438,34 +438,34 @@ theorem ofRP_supOn_eq
       = metricDerivNormSupOn (I := I) K p
           (gSeqExt (I := I) Φ R bf hsrc htgt k t) gIt R := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) := sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) := sourceDomSigmaOf (I := I) Φ k (hsrc k)
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) <= ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k); infer_instance
   have hKsrc : K ⊆ Φ.source k := hKgrow.trans (bf.grow_subset k)
   obtain ⟨W, hWopen, hgrowW, hW1⟩ := bf.chi_one k
   let O : TopologicalSpace.Opens (SourceDomain (I := I) Φ k) :=
     ⟨Subtype.val ⁻¹' W, hWopen.preimage continuous_subtype_val⟩
-  letI : ChartedSpace H ↥O :=
+  let : ChartedSpace H ↥O :=
     TopologicalSpace.Opens.instChartedSpace (H := H) (M := SourceDomain (I := I) Φ k) (s := O)
-  letI : IsManifold I ∞ ↥O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
-  letI : SigmaCompactSpace ↥O := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : IsManifold I ∞ ↥O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : SigmaCompactSpace ↥O := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I O.isOpen)
-  letI : IsManifold I 1 ↥O :=
+  let : IsManifold I 1 ↥O :=
     IsManifold.of_le (I := I) (M := ↥O) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) <= ∞)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↥O := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↥O := by
     change IsManifold I ∞ ↥O; infer_instance
   have hmTF : metricTensorField (I := I)
         ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
@@ -477,18 +477,25 @@ theorem ofRP_supOn_eq
     have hyW : ((y : SourceDomain (I := I) Φ k) : P.M) ∈ W := y.2
     have hysrc : ((y : SourceDomain (I := I) Φ k) : P.M) ∈ Φ.source k :=
       (y : SourceDomain (I := I) Φ k).2
-    change
-      ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O).inner y (v 0) (v 1) =
-        ((resSrc (I := I) Φ k
+    let vSource : Fin 2 → TangentSpace I (y : SourceDomain (I := I) Φ k) := fun i => v i
+    calc
+      ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O).inner
+          y (v 0) (v 1) =
+        (srcMetric (I := I) Φ hsrc htgt k t).inner
+          (y : SourceDomain (I := I) Φ k) (vSource 0) (vSource 1) := by
+            rw [SmoothRiemannianMetric.restrictOpen_inner]
+      _ = (resSrc (I := I) Φ k
+          (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+          (y : SourceDomain (I := I) Φ k) (vSource 0) (vSource 1) := by
+            rw [resSrc_inner (I := I) Φ k]
+            rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
+              ((y : SourceDomain (I := I) Φ k) : P.M) hysrc (vSource 0) (vSource 1)]
+            rw [hW1 _ hyW]
+            simp
+      _ = ((resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O).inner
-          y (v 0) (v 1)
-    rw [SmoothRiemannianMetric.restrictOpen_inner,
-      SmoothRiemannianMetric.restrictOpen_inner]
-    rw [resSrc_inner (I := I) Φ k]
-    rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
-      ((y : SourceDomain (I := I) Φ k) : P.M) hysrc (v 0) (v 1)]
-    rw [hW1 _ hyW]
-    simp
+          y (v 0) (v 1) := by
+            rw [SmoothRiemannianMetric.restrictOpen_inner]
   have hpt : forall z, z ∈ sourceCompactSet (I := I) Φ k K -> forall a : Nat, a <= p ->
       metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k t)
         (resSrc (I := I) Φ k gIt) (refRes (I := I) Φ R k) z
@@ -568,11 +575,11 @@ theorem ofRP_supOn_conv
                 (hsrc (co.φ k))
                 (fun _ => refRes (I := I) Φ R (co.φ k)) gInf).derivNormSupOn (I := I) K p t
               < ε := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   intro K hK p ε hε
   obtain ⟨k0c, hk0c⟩ := co.conv K hK p ε hε
   obtain ⟨k0g, hk0g⟩ := bf.grow_cover K hK
@@ -611,11 +618,11 @@ theorem gInf_zero_eq
     letI : IsManifold I ∞ P.M := P.smooth
     co.gInf 0 = g0 := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   refine metric_ext_inner (I := I) (co.gInf 0) g0 (fun x => ?_)
   refine ContinuousLinearMap.ext (fun v => ?_)
   refine ContinuousLinearMap.ext (fun w => ?_)
@@ -675,11 +682,11 @@ theorem gInf_zero_eq
     have hxsrc : x ∈ Φ.source (co.φ k) := bf.grow_subset (co.φ k) hgrow
     obtain ⟨W, hWopen, hgrowW, hW1⟩ := bf.chi_one (co.φ k)
     have hχ : bf.chi (co.φ k) x = 1 := hW1 x (hgrowW hgrow)
-    letI : TopologicalSpace (SourceDomain (I := I) Φ (co.φ k)) :=
+    let : TopologicalSpace (SourceDomain (I := I) Φ (co.φ k)) :=
       sourceDomTop (I := I) Φ (co.φ k)
-    letI : ChartedSpace H (SourceDomain (I := I) Φ (co.φ k)) :=
+    let : ChartedSpace H (SourceDomain (I := I) Φ (co.φ k)) :=
       sourceDomCharted (I := I) Φ (co.φ k)
-    letI : IsManifold I ∞ (SourceDomain (I := I) Φ (co.φ k)) :=
+    let : IsManifold I ∞ (SourceDomain (I := I) Φ (co.φ k)) :=
       sourceDomSmooth (I := I) Φ (co.φ k)
     have heq : (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) 0).inner x v w
         = (srcMetric (I := I) Φ hsrc htgt (co.φ k) 0).inner ⟨x, hxsrc⟩ v w := by

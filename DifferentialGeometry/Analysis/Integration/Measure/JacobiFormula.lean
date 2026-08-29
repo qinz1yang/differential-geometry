@@ -29,7 +29,7 @@ lemma hasDerivAt_prod_of_entries
   have hfactor : ∀ k ∈ (Finset.univ : Finset n),
       HasDerivAt (fun t : ℝ => G t (σ k) k) (G' (σ k) k) t :=
     fun k _ => hG (σ k) k
-  exact HasDerivAt.fun_finset_prod hfactor
+  exact HasDerivAt.fun_finsetProd hfactor
 
 theorem hasDerivAt_det_of_entries
     (G : ℝ → Matrix n n ℝ) (G' : Matrix n n ℝ) (t : ℝ)
@@ -240,7 +240,7 @@ theorem hasDerivAt_sqrt_det_of_entries
   have hsqrt : HasDerivAt Real.sqrt (1 / (2 * Real.sqrt (G t).det)) (G t).det :=
     Real.hasDerivAt_sqrt hne
   have hcomp := hsqrt.comp t hdet
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 theorem hasDerivAt_sqrt_det_eq_half_trace_inv_mul
     (G : ℝ → Matrix n n ℝ) (G' : Matrix n n ℝ) (t : ℝ)
@@ -269,7 +269,7 @@ theorem hasDerivAt_sqrt_det_eq_half_trace_inv_mul
           rw [hdiv]
       _ = (1 / 2) * trace ((G t)⁻¹ * G') * Real.sqrt (G t).det := by ring
   rw [hkey] at hcomp
-  simpa [Function.comp] using hcomp
+  simpa [Function.comp] using! hcomp
 
 end Jacobi
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.TargetCoordinates
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -36,9 +37,12 @@ private theorem connAddTarget_cd
   rw [hrange] at hcd
   have hchart : ContDiffAt ℝ 2 (connAddChart (I := I) g p)
       (localAddZeroCoord (I := I) p) := by
-    simpa only [connAddChart, localAddZeroCoord] using
-      (contDiffWithinAt_univ.mp hcd)
-  simpa only [localAddTarget] using hchart.snd
+    have hraw := (contDiffWithinAt_univ.mp hcd).of_le
+      (show (2 : WithTop ℕ∞) ≤ (↑(↑(2 : ℕ) : ℕ∞) : WithTop ℕ∞) by norm_num)
+    simpa only [connAddChart, localAddZeroCoord] using hraw
+  change ContDiffAt ℝ 2 (fun z => (connAddChart (I := I) g p z).2)
+    (localAddZeroCoord (I := I) p)
+  exact hchart.snd
 
 theorem connAdd_part_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -71,8 +75,16 @@ theorem connAdd_part_cd
       (localAddZeroCoord (I := I) p) :=
     restrictVert.contDiff.contDiffAt.comp
       (localAddZeroCoord (I := I) p) hdf
-  simpa only [partialFDeriv₂, restrictVert,
-    ContinuousLinearMap.compL_apply] using hcomp
+  change ContDiffAt ℝ 1
+    (fun z : E × E => restrictVert
+      (fderiv ℝ (localAddTarget (I := I) g p) (z.1, z.2)))
+    (localAddZeroCoord (I := I) p)
+  rw [show (fun z : E × E => restrictVert
+      (fderiv ℝ (localAddTarget (I := I) g p) (z.1, z.2))) =
+      fun z => restrictVert (fderiv ℝ (localAddTarget (I := I) g p) z) by
+    funext z
+    rw [Prod.eta]]
+  exact hcomp
 
 theorem connAdd_inv_cd
     (g : SmoothRiemannianMetric I M) (p : M) :

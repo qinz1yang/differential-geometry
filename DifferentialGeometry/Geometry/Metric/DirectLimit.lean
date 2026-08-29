@@ -50,7 +50,9 @@ private theorem mfd_comp_id_app
     (v : TangentSpace I x) :
     mfderiv I I g' (f x) (mfderiv I I f x v) = v := by
   have h := DFunLike.congr_fun (mfd_comp_id (I := I) hfg hg hf) v
-  simpa using h
+  change mfderiv I I g' (f x) (mfderiv I I f x v) =
+    ContinuousLinearMap.id ℝ (TangentSpace I x) v
+  exact h
 
 omit [FiniteDimensional ℝ E] in
 private theorem inner_base_eq
@@ -198,14 +200,13 @@ theorem stageInner_bounded (g : ∀ k, SmoothRiemannianMetric I (A k)) (k : ℕ)
           {u : TangentSpace I (Function.invFun (S.toSeqSystem.incl k) z) |
             (g k).inner (Function.invFun (S.toSeqSystem.incl k) z) u u < 1} := by
     ext v
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     constructor
     · intro hv1
       refine ⟨mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z v, ?_, hid1 v⟩
       rw [stageInner_apply] at hv1
       exact hv1
     · rintro ⟨u, hu, rfl⟩
-      rw [stageInner_apply]
       have hDu : mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z
           (mfderiv I I (S.toSeqSystem.incl k) (Function.invFun (S.toSeqSystem.incl k) z) u)
             = u := by
@@ -213,6 +214,11 @@ theorem stageInner_bounded (g : ∀ k, SmoothRiemannianMetric I (A k)) (k : ℕ)
           (mfderiv I I (S.toSeqSystem.incl k) (Function.invFun (S.toSeqSystem.incl k) z) u)
         rw [← hb]
         exact hid2 u
+      change (g k).inner (Function.invFun (S.toSeqSystem.incl k) z)
+        (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z
+          (mfderiv I I (S.toSeqSystem.incl k) (Function.invFun (S.toSeqSystem.incl k) z) u))
+        (mfderiv I I (Function.invFun (S.toSeqSystem.incl k)) z
+          (mfderiv I I (S.toSeqSystem.incl k) (Function.invFun (S.toSeqSystem.incl k) z) u)) < 1
       rw [hDu]
       exact hu
   rw [hset]
@@ -259,7 +265,7 @@ theorem stageInner_mono (g : ∀ k, SmoothRiemannianMetric I (A k)) (hg : S.Metr
       = mfderiv I I (Function.invFun (S.toSeqSystem.incl m)) (S.toSeqSystem.incl k a) u := by
     intro u
     have h := DFunLike.congr_fun hD u
-    simpa using h
+    exact h
   have hFb : S.toSeqSystem.F hkm (Function.invFun (S.toSeqSystem.incl k) (S.toSeqSystem.incl k a))
       = Function.invFun (S.toSeqSystem.incl m) (S.toSeqSystem.incl k a) := by
     rw [hφk, hφm]
@@ -384,7 +390,7 @@ noncomputable def limitMetric (g : ∀ k, SmoothRiemannianMetric I (A k))
             (mfderiv I I (Function.invFun (S.toSeqSystem.incl k₀)) z (Y z))
             (mfderiv I I (Function.invFun (S.toSeqSystem.incl k₀)) z (W z))) z₀ := by
         rw [contMDiffAt_totalSpace] at h_total
-        convert h_total.2 using 1
+        simpa using h_total.2
       refine h_scalar.congr_of_eventuallyEq ?_
       filter_upwards [hs_open.mem_nhds hz₀] with z hz
       rw [show S.stageInner g (S.toSeqSystem.rep z).1 z = S.stageInner g k₀ z from

@@ -28,9 +28,9 @@ private theorem metricTraceFirstTwo0SAt_zero
           (s + 2) x)
         tail = 0 := by
   rw [metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
     (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x))
     (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -84,7 +84,7 @@ def tensorDrift0SAt
     (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1) x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x :=
-  tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaA (X x)
+  tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaA (X x)
 
 omit [FiniteDimensional ℝ E] in
 @[simp]
@@ -96,17 +96,7 @@ theorem tensorDrift0SAt_apply
     (tail : Fin s -> TangentSpace I x) :
     tensorDrift0SAt (I := I) X nablaA tail =
       nablaA (Fin.cons (X x) tail) := by
-  change
-    (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x)
-          nablaA)
-        (X x))
-        tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x)
-          nablaA)
-        (Fin.cons (X x) tail)
-  rw [continuousMultilinearCurryLeftEquiv_apply]
+  exact Tensor0SBundle.tensor0S_curry_apply_cons (I := I) s nablaA (X x) tail
 
 def tensorHeatWithDrift0SMetricAt
     (g : SmoothRiemannianMetric I M)
@@ -255,10 +245,10 @@ theorem tensorHeatWithDrift2QuadMetricAt_zero_drift
           (α := fun _ : Fin 3 => TangentSpace I x)
           (0 : TangentSpace I x) (vec2 (I := I) v v)) = 0 := by
     simpa using
-      nablaA.map_update_zero
+      Tensor0SSpace.map_update_smul nablaA
         (Fin.cons (n := 2) (α := fun _ : Fin 3 => TangentSpace I x)
           (0 : TangentSpace I x) (vec2 (I := I) v v))
-        (0 : Fin 3)
+        (0 : Fin 3) (0 : Real) (0 : TangentSpace I x)
   simpa using hzero
 
 theorem heatQuad_eq_parts

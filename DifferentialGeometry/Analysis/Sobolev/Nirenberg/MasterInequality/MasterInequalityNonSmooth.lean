@@ -230,7 +230,7 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
           funext x; ring
         rw [h_eq]
         exact hint
-      have h_sum_int := integrable_finset_sum (Finset.univ : Finset (Fin d))
+      have h_sum_int := integrable_finsetSum (Finset.univ : Finset (Fin d))
         (fun i _ => h_per_i i)
       have h_eq : (fun x : E =>
           (η x)^2 * ∑ i : Fin d,
@@ -639,7 +639,7 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
         funext x; ring
       rw [h_eq]
       exact hint
-    have h_sum_int := integrable_finset_sum (Finset.univ : Finset (Fin d))
+    have h_sum_int := integrable_finsetSum (Finset.univ : Finset (Fin d))
       (fun i _ => h_per_i i)
     have h_eq : (fun x : E => (η x)^2 * sumSq x) =
         (fun x : E => ∑ i : Fin d,

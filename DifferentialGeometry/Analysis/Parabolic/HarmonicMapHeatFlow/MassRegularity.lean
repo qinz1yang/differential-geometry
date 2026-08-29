@@ -77,9 +77,9 @@ private theorem hmfBilinExpand
   calc
     B v w = (∑ i, b.repr v i • B (b i)) w := by rw [hv]
     _ = ∑ i, b.repr v i • B (b i) w := by
-      rw [ContinuousLinearMap.sum_apply]
+      rw [sum_apply]
       refine Finset.sum_congr rfl (fun i _ ↦ ?_)
-      rw [ContinuousLinearMap.smul_apply]
+      rw [smul_apply]
     _ = ∑ i, b.repr v i • ∑ j, b.repr w j • B (b i) (b j) := by
       refine Finset.sum_congr rfl (fun i _ ↦ ?_)
       rw [hw i]
@@ -97,11 +97,31 @@ private theorem hmfBilin_eq_sum
     B = ∑ i, ∑ j, B (hmfCBasis ι i) (hmfCBasis ι j) • hmfMUnit ι i j := by
   ext v w
   rw [hmfBilinExpand ι B v w]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
+  simp only [sum_apply, smul_apply,
     hmfMUnit_apply, smul_eq_mul]
   refine Finset.sum_congr rfl (fun i _ ↦
     Finset.sum_congr rfl (fun j _ ↦ ?_))
   ring
+
+omit [BoundarylessManifold I M] [ConnectedSpace M] in
+private theorem hmfSpecMassPt_mfderiv_apply
+    (q : SmoothRiemannianMetric I M)
+    (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
+    (u v w : EuclideanSpace ℝ {i // i ∈ S}) (x : M) :
+    hmfSpecMassPt (I := I) (M := M) q S u x v w =
+      q.inner (hmfSpecMap (I := I) (M := M) q S x u)
+        (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
+          (hmfSpecMap (I := I) (M := M) q S x) u
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
+            u).symm.toContinuousLinearMap v))
+        (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
+          (hmfSpecMap (I := I) (M := M) q S x) u
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
+            u).symm.toContinuousLinearMap w)) := by
+  simp only [hmfSpecMassPt_apply, hmfSpecVar_def,
+    ContinuousLinearMap.comp_apply]
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
@@ -117,70 +137,76 @@ theorem hmfSpecMassPt_cd
           hmfSpecMassPt (I := I) (M := M) q S p.1 p.2)
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  let ι := {i // i ∈ S}
-  let V := EuclideanSpace ℝ ι
-  let IV : ModelWithCorners ℝ V V := 𝓘(ℝ, V)
-  let P := IV.prod I
-  let b : ι → V := fun i ↦ hmfCBasis ι i
-  let dir : Option ι → V
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let P := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I
+  let b : {i // i ∈ S} → EuclideanSpace ℝ {i // i ∈ S} :=
+    fun i ↦ hmfCBasis {i // i ∈ S} i
+  let dir : Option {i // i ∈ S} → EuclideanSpace ℝ {i // i ∈ S}
     | none => 0
     | some i => b i
-  have hdir : ∀ a : Option ι, ∃ R : ℝ, 0 < R ∧
+  have hdir : ∀ a : Option {i // i ∈ S}, ∃ R : ℝ, 0 < R ∧
       ContMDiffOn P (I.prod 𝓘(ℝ, E)) (2 : ℕ∞)
-        (fun p : V × M ↦
+        (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
           (TotalSpace.mk' E
             (hmfSpecMap (I := I) (M := M) q S p.2 p.1)
-            (mfderiv IV I
+            (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
               (hmfSpecMap (I := I) (M := M) q S p.2)
-              p.1 (dir a)) : TangentBundle I M))
+              p.1
+              ((tangentSpaceModelContinuousLinearEquiv
+                (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
+                p.1).symm.toContinuousLinearMap (dir a))) : TangentBundle I M))
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
     intro a
-    simpa only [V, IV, P] using
+    simpa only [P] using
       hmfSpecCoeff_cd (I := I) (M := M) q S (dir a)
   choose rad hrad hsec using hdir
-  let R : ℝ := (Finset.univ : Finset (Option ι)).inf'
+  let R : ℝ := (Finset.univ : Finset (Option {i // i ∈ S})).inf'
     Finset.univ_nonempty rad
   have hR : 0 < R := by
     dsimp only [R]
     rw [Finset.lt_inf'_iff]
     intro a _
     exact hrad a
-  have hRle : ∀ a : Option ι, R ≤ rad a := by
+  have hRle : ∀ a : Option {i // i ∈ S}, R ≤ rad a := by
     intro a
     dsimp only [R]
     exact Finset.inf'_le (s := Finset.univ) (f := rad) (by simp)
-  let D : Set (V × M) := Metric.ball 0 R ×ˢ (Set.univ : Set M)
-  have hsecR : ∀ a : Option ι,
+  let D : Set (EuclideanSpace ℝ {i // i ∈ S} × M) :=
+    Metric.ball 0 R ×ˢ (Set.univ : Set M)
+  have hsecR : ∀ a : Option {i // i ∈ S},
       ContMDiffOn P (I.prod 𝓘(ℝ, E)) (2 : ℕ∞)
-        (fun p : V × M ↦
+        (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
           (TotalSpace.mk' E
             (hmfSpecMap (I := I) (M := M) q S p.2 p.1)
-            (mfderiv IV I
+            (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
               (hmfSpecMap (I := I) (M := M) q S p.2)
-              p.1 (dir a)) : TangentBundle I M)) D := by
+              p.1
+              ((tangentSpaceModelContinuousLinearEquiv
+                (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}))
+                p.1).symm.toContinuousLinearMap (dir a))) : TangentBundle I M)) D := by
     intro a
     exact (hsec a).mono (Set.prod_mono
       (Metric.ball_subset_ball (hRle a)) (Set.Subset.rfl))
-  let F : V × M → M := fun p ↦
-    hmfSpecMap (I := I) (M := M) q S p.2 p.1
-  have hmap : ContMDiffOn P I (2 : ℕ∞) F D := by
+  have hmap : ContMDiffOn P I (2 : ℕ∞)
+      (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
+        hmfSpecMap (I := I) (M := M) q S p.2 p.1) D := by
     intro p hp
     have hat := hsecR none p hp
     rw [Bundle.contMDiffWithinAt_totalSpace] at hat
     exact hat.1
   have hmetric : ContMDiffOn P
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) (1 : ℕ∞)
-      (fun p : V × M ↦
+      (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
         TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
           (E := fun y : M ↦
             TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
-          (F p) (q.inner (F p))) D := by
-    simpa only [Function.comp_apply] using
-      (q.contMDiff.of_le (by simp)).comp_contMDiffOn
+          (hmfSpecMap (I := I) (M := M) q S p.2 p.1)
+          (q.inner (hmfSpecMap (I := I) (M := M) q S p.2 p.1))) D := by
+    with_unfolding_all
+      exact (q.contMDiff.of_le (by simp)).comp_contMDiffOn
         (hmap.of_le (by norm_num))
-  have hcoeff : ∀ i j : ι, ContMDiffOn P 𝓘(ℝ) (1 : ℕ∞)
-      (fun p : V × M ↦
+  have hcoeff : ∀ i j : {i // i ∈ S}, ContMDiffOn P 𝓘(ℝ) (1 : ℕ∞)
+      (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
         hmfSpecMassPt (I := I) (M := M) q S p.1 p.2 (b i) (b j)) D := by
     intro i j
     have happ := ContMDiffOn.clm_bundle_apply₂
@@ -188,26 +214,38 @@ theorem hmfSpecMassPt_cd
       (E₁ := fun y : M ↦ TangentSpace I y)
       (E₂ := fun y : M ↦ TangentSpace I y)
       (E₃ := fun _ : M ↦ ℝ)
-      (b := F) hmetric
+      (b := fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
+        hmfSpecMap (I := I) (M := M) q S p.2 p.1) hmetric
       ((hsecR (some i)).of_le (by norm_num))
       ((hsecR (some j)).of_le (by norm_num))
     intro p hp
     have hat := happ p hp
     rw [Bundle.contMDiffWithinAt_totalSpace] at hat
-    simpa only [hmfSpecMassPt_apply, hmfSpecVar_def, F, dir] using hat.2
+    have hraw := hat.2
+    simp only [Bundle.Trivial.fiberBundle_trivializationAt',
+      Bundle.Trivial.trivialization_apply] at hraw
+    apply hraw.congr
+    · intro y hy
+      simpa only [dir] using
+        hmfSpecMassPt_mfderiv_apply (I := I) (M := M)
+          q S y.1 (b i) (b j) y.2
+    · simpa only [dir] using
+        hmfSpecMassPt_mfderiv_apply (I := I) (M := M)
+          q S p.1 (b i) (b j) p.2
   have hsum : ContMDiffOn P
-      𝓘(ℝ, V →L[ℝ] V →L[ℝ] ℝ) (1 : ℕ∞)
-      (fun p : V × M ↦ ∑ i, ∑ j,
+      𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) (1 : ℕ∞)
+      (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦ ∑ i, ∑ j,
         hmfSpecMassPt (I := I) (M := M) q S p.1 p.2 (b i) (b j) •
-          hmfMUnit ι i j) D := by
-    refine contMDiffOn_finset_sum (fun i _ ↦ ?_)
-    refine contMDiffOn_finset_sum (fun j _ ↦ ?_)
+          hmfMUnit {i // i ∈ S} i j) D := by
+    refine contMDiffOn_finsetSum (fun i _ ↦ ?_)
+    refine contMDiffOn_finsetSum (fun j _ ↦ ?_)
     exact (hcoeff i j).smul contMDiffOn_const
   refine ⟨R, hR, ?_⟩
-  simpa only [ι, V, IV, P, D] using hsum.congr (by
+  simpa only [P, D] using hsum.congr (by
     intro p hp
     simpa only [b] using
-      (hmfBilin_eq_sum ι
+      (hmfBilin_eq_sum {i // i ∈ S}
         (hmfSpecMassPt (I := I) (M := M) q S p.1 p.2)))
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -268,7 +306,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem partialFderiv_cont
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     (F : V → M → W) {R r : ℝ} (hrr : r < R)
     (hF : ContMDiffOn (𝓘(ℝ, V).prod I) 𝓘(ℝ, W) (1 : ℕ∞)
@@ -298,8 +335,8 @@ private theorem partialFderiv_cont
     have hpre : ContMDiffAt (P.prod IV) P (1 : ℕ∞)
         (fun z : (V × M) × V ↦ (z.2, z.1.2)) (p, p.1) :=
       contMDiffAt_snd.prodMk (contMDiffAt_fst.snd)
-    simpa only [Function.uncurry_apply_pair, f] using
-      hFAt.comp (p, p.1) hpre
+    with_unfolding_all
+      exact hFAt.comp (p, p.1) hpre
   have hD := ContMDiffAt.mfderiv
     (I := IV) (I' := IW) (n := (1 : ℕ∞)) (m := (0 : ℕ∞))
     (f := f) (g := fun z : V × M ↦ z.1) hf contMDiffAt_fst
@@ -326,6 +363,8 @@ private theorem point_lip_cball
         (Metric.closedBall 0 r)) ∧
       ContinuousOn (fun p : V × M ↦ F p.1 p.2)
         (Metric.closedBall 0 r ×ˢ (Set.univ : Set M)) := by
+  let : SeminormedAddCommGroup (V →L[ℝ] W) :=
+    ContinuousLinearMap.toSeminormedAddCommGroup
   let r : ℝ := R / 2
   have hr : 0 < r := half_pos hR
   have hrR : r < R := by dsimp only [r]; linarith
@@ -364,8 +403,8 @@ private theorem point_lip_cball
     apply Convex.lipschitzOnWith_of_nnnorm_fderiv_le
       (fun u hu ↦ hdiff x u hu)
     · intro u hu
-      rw [← NNReal.coe_le_coe]
-      simpa only [L, NNReal.coe_mk, coe_nnnorm, norm_norm] using
+      change ‖fderiv ℝ (fun z : V ↦ F z x) u‖ ≤ max C 0
+      simpa only [norm_norm] using
         (hC (u, x) ⟨hu, Set.mem_univ _⟩).trans (le_max_left C 0)
     · exact convex_closedBall (0 : V) r
   refine ⟨r, hr, L, hlip, ?_⟩
@@ -396,8 +435,22 @@ theorem hmfSpecMass_lip
       LipschitzOnWith L
         (hmfSpecMassOp (I := I) (M := M) q h S)
         (Metric.closedBall 0 R) := by
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   let μ := riemannianVolumeMeasure (I := I) (M := M) h
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) h
   obtain ⟨R, hR, hmass⟩ := hmfSpecMassPt_cd (I := I) (M := M) q S
@@ -405,6 +458,7 @@ theorem hmfSpecMass_lip
     point_lip_cball (I := I) (M := M)
       (fun u x ↦ hmfSpecMassPt (I := I) (M := M) q S u x) hR hmass
   let vol : ℝ≥0 := ⟨μ.real Set.univ, measureReal_nonneg⟩
+  have hvol_coe : (vol : ℝ) = μ.real Set.univ := rfl
   let L : ℝ≥0 := Lp * vol
   refine ⟨r, hr, L, LipschitzOnWith.of_dist_le_mul ?_⟩
   intro u hu v hv
@@ -442,7 +496,9 @@ theorem hmfSpecMass_lip
         ≤ ((Lp : ℝ) * ‖u - v‖) * μ.real Set.univ :=
       norm_integral_le_of_norm_le_const hbound
     _ = (L : ℝ) * ‖u - v‖ := by
-      simp only [L, vol, NNReal.coe_mul, NNReal.coe_mk]
+      rw [show (L : ℝ) = (Lp : ℝ) * (vol : ℝ) by
+        simpa only [L] using (NNReal.coe_mul Lp vol)]
+      rw [hvol_coe]
       ring
 
 omit [BoundarylessManifold I M]
@@ -464,8 +520,22 @@ theorem hmfMassFam_lip
   let L : ℝ≥0 := Lp * B
   refine ⟨r, hr, L, ?_⟩
   intro t ht
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   let μ := riemannianVolumeMeasure (I := I) (M := M) (g t)
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
   apply LipschitzOnWith.of_dist_le_mul
@@ -528,11 +598,25 @@ theorem hmfSpecMass_zero
     hmfSpecMassOp (I := I) (M := M) q h S 0 =
       hmfFinMass (I := I) (M := M) q h
         (hmfSpecIncl (I := I) (M := M) q S) := by
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   obtain ⟨Rm, hRm, hmass⟩ := hmfSpecMassPt_cd (I := I) (M := M) q S
   obtain ⟨Ra, hRa, hmap⟩ :=
     hmfSpecMap_cd (I := I) (M := M) q S 1
   let μ := riemannianVolumeMeasure (I := I) (M := M) h
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) h
   have hzero_m : (0 : EuclideanSpace ℝ {i // i ∈ S}) ∈ Metric.ball 0 Rm := by

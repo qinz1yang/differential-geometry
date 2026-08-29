@@ -58,16 +58,26 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma lowerAllUpper_zero_unit
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
-    (W : SmoothCcTensor g 0 s) (w : Fin (0 + s) → TangentSpace I x) :
+    (W : SmoothCcTensor g 0 s) (w : Fin (0 + s) → E) :
     lowerAllUpperIndices (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)) w =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
-        (unitZeroSec (I := I) (M := M) x) (fun j : Fin s => w (Fin.natAdd 0 j)) := by
+        (unitZeroSec (I := I) (M := M) x)
+          (fun j : Fin s =>
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (w (Fin.natAdd 0 j))) := by
+  let W0 : TensorRSSpace 0 s I x := W.toSection x
+  change lowerAllUpperIndices (I := I) (M := M) g 0 s x
+      (TensorRSSpace.toModel W0) w =
+    (TensorRSSpace.toCLM W0) (unitZeroSec (I := I) (M := M) x)
+      (fun j : Fin s =>
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          (w (Fin.natAdd 0 j)))
   rw [lowerAllUpperIndices_apply, separableFormAt_zero]
   rw [show (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) =
       Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x) from rfl]
-  rw [← toModel_tensorRS_apply (I := I) (M := M) 0 s x (W.toSection x)
+  rw [← toModel_tensorRS_apply (I := I) (M := M) 0 s x W0
     (unitZeroSec (I := I) (M := M) x)]
   rfl
 
@@ -104,6 +114,7 @@ private lemma riemannianFiberNormSq0_eq_normSq0S
   congr 1 <;>
     (congr 1; funext a;
      simp only [Equiv.arrowCongr_apply, Equiv.coe_refl, Function.comp_apply, id_eq];
+     rw [ContinuousLinearEquiv.symm_apply_apply];
      congr 1;
      apply Fin.ext;
      simp)
@@ -142,7 +153,7 @@ lemma morreyUnifConst_sq {Λ Cb Kjet : ℝ} (hΛ : 0 ≤ Λ) (n s : ℕ) :
   rw [mul_pow, Real.sq_sqrt (pow_nonneg hΛ s)]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 theorem fibreMorrey_unif
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hequiv : ∀ (x : M) (v : TangentSpace I x),

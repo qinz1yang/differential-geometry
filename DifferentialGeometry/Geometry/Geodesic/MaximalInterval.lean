@@ -160,7 +160,7 @@ lemma maximalGeodesic_of_not_mem
     {t : ℝ} (ht : t ∉ maximalGeodesicInterval (I := I) g p v) :
     maximalGeodesic (I := I) g p v t = p := by
   unfold maximalGeodesic
-  letI : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
+  let : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
   exact dif_neg ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
@@ -171,7 +171,7 @@ lemma maximalGeodesic_of_mem
     maximalGeodesic (I := I) g p v t =
       maximalGeodesicChosenCurve (I := I) g p v h t := by
   unfold maximalGeodesic
-  letI : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
+  let : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
   exact dif_pos h
 
 end MaximalGeodesicDefinition
@@ -317,8 +317,8 @@ private lemma continuousOn_velocityWithin_totalSpace_C1
   intro t _ht
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem pathELength_eq_arcLength_riemannianBundle
@@ -404,8 +404,8 @@ theorem pathELength_eq_arcLength_riemannianBundle
     rfl
   rw [h_arcLength, h_intInterval, ← h_Icc_Ioc]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [T2Space M] [SigmaCompactSpace M] in
@@ -423,9 +423,9 @@ private lemma continuousOn_g_speedSq_velocityWithin
           (mfderivWithin 𝓘(ℝ, ℝ) I η (Set.Icc a b) t (1 : ℝ))
           (mfderivWithin 𝓘(ℝ, ℝ) I η (Set.Icc a b) t (1 : ℝ)))
       (Set.Icc a b) := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := ContinuousOn.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _))
@@ -587,8 +587,8 @@ theorem pathELength_eq_arcLength
     rfl
   rw [h_arcLength, h_intInterval, ← h_Icc_Ioc]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianEDist_le_arcLength

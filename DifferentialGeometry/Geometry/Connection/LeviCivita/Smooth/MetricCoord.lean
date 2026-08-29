@@ -83,7 +83,7 @@ theorem metric_coordinateFrame_component_directional_contMDiffAt
     (a i j : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun p : M =>
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun q : M =>
             g.inner q (coordinateFrameAt (I := I) x₀ i q)
               (coordinateFrameAt (I := I) x₀ j q))
@@ -98,7 +98,7 @@ theorem metric_coordinateFrame_component_directional_contMDiffAt
     (coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
       (coordinateFrameSet_open (I := I) x₀)
       (coordinateFrameAt_mem (I := I) x₀) a
-  exact extDerivFun_apply_contMDiffAt_of_section
+  exact mvfderiv_apply_contMDiffAt_of_section
     (I := I) (f := fun q : M =>
       g.inner q (coordinateFrameAt (I := I) x₀ i q)
         (coordinateFrameAt (I := I) x₀ j q))

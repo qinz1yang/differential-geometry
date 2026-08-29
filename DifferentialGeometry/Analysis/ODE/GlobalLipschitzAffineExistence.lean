@@ -46,7 +46,8 @@ theorem forward_solution_of_lipschitzWith_affineBound
   have hg_lip : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith Kret (g t) := by
     intro t ht
     have := (hlip t ht).comp hret_lip
-    simpa [hg_def, Kret] using this
+    change LipschitzWith (K * 2) (f t ∘ ballRetraction (X := E) ρ)
+    exact this
   have hg_norm_all : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : E, ‖g t x‖ ≤ L := by
     intro t ht x
     have h1 : ‖f t (ballRetraction (X := E) ρ x)‖ ≤

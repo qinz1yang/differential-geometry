@@ -192,7 +192,7 @@ lemma riemannianFiberNormSq_sum_eq_double_sum
       (x := x) (∑ i ∈ s, F i) =
       ∑ i ∈ s, TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M) (r := r) (s := s')
         (x := x) (F i) :=
-    map_sum (tensorRSSpace_continuousLinearEquiv (I := I) r s' x) F s
+    map_sum (tensorRSSpaceContinuousLinearEquiv (I := I) r s' x) F s
   rw [hsum_model]
   rw [tensorInnerPointwise_plain_sum_left (I := I) (M := M) g r s' x s _ _]
   refine Finset.sum_congr rfl (fun i _ => ?_)

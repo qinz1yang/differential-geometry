@@ -60,7 +60,7 @@ noncomputable def smoothToH1ComplFullNeumann
 lemma FullSmoothScalar.memLp_two
     {g : SmoothRiemannianMetric (I_half n) M} (f : FullSmoothScalar g) :
     MemLp f.toFun 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I_half n) (M := M) g
   exact f.smooth.continuous.memLp_of_hasCompactSupport

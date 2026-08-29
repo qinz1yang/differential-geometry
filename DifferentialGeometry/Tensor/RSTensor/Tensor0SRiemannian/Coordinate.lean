@@ -1,5 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Basic
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
+import DifferentialGeometry.Tensor.RSTensor.Product
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -60,10 +61,10 @@ theorem sum_fin_one_fun {Idx : Type*} [Fintype Idx]
 omit [FiniteDimensional ℝ E] in
 theorem basis_repr_eq_sum_inv_inner
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Z : TangentSpace I x) (i : Idx) :
     basis.repr Z i =
       ∑ j : Idx, gInv i j * g.inner x Z (basis j) := by
@@ -140,10 +141,10 @@ theorem basis_repr_eq_sum_inv_inner
 omit [FiniteDimensional ℝ E] in
 theorem linearMap_trace_eq_sum_inv_inner_apply
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A : TangentSpace I x →ₗ[Real] TangentSpace I x) :
     LinearMap.trace Real (TangentSpace I x) A =
       ∑ i : Idx, ∑ j : Idx, gInv i j * g.inner x (A (basis i)) (basis j) := by
@@ -157,16 +158,16 @@ theorem linearMap_trace_eq_sum_inv_inner_apply
   exact basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv (A (basis i)) i
 
 theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (A : TangentSpace I x →ₗ[Real] TangentSpace I x)
     (hA : ∀ v : TangentSpace I x, 0 <= g.inner x (A v) v) :
     0 <= LinearMap.trace Real (TangentSpace I x) A := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   rw [LinearMap.trace_eq_sum_inner A
     (stdOrthonormalBasis Real (TangentSpace I x))]
@@ -192,22 +193,22 @@ theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
 theorem hom_normSq_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A : TangentSpace I x →ₗ[Real] W) :
-    MetricFiberData.homFlatLinear (tangentMetricData_gen (I := I) g x).metric D A A =
+    MetricFiberData.homFlatLinear (tangentMetricDataGen (I := I) g x).metric D A A =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (A (basis j)) := by
   change LinearMap.trace Real (TangentSpace I x)
-      ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D A).comp A) =
+      ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A).comp A) =
     ∑ i : Idx, ∑ j : Idx,
       gInv i j * D.inner (A (basis i)) (A (basis j))
   classical
   rw [LinearMap.trace_eq_matrix_trace Real basis
-    ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D A).comp A)]
+    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A).comp A)]
   rw [Matrix.trace]
   simp only [Matrix.diag_apply]
   apply Finset.sum_congr rfl
@@ -219,39 +220,39 @@ theorem hom_normSq_eq_basis
   congr 1
   change
     g.inner x
-        ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D A)
+        ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A)
           (A (basis i)))
         (basis j) =
       D.inner (A (basis i)) (A (basis j))
-  rw [← TangentMetricData_gen.inner_eq_gen (I := I)
-    (tangentMetricData_gen (I := I) g x)
-    ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D A)
+  rw [← TangentMetricDataGen.inner_eq_gen (I := I)
+    (tangentMetricDataGen (I := I) g x)
+    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D A)
       (A (basis i)))
     (basis j)]
   exact MetricFiberData.adjoint_inner
-    (tangentMetricData_gen (I := I) g x).metric D A (A (basis i)) (basis j)
+    (tangentMetricDataGen (I := I) g x).metric D A (A (basis i)) (basis j)
 
 theorem hom_inner_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A B : TangentSpace I x →ₗ[Real] W) :
-    MetricFiberData.homFlatLinear (tangentMetricData_gen (I := I) g x).metric D A B =
+    MetricFiberData.homFlatLinear (tangentMetricDataGen (I := I) g x).metric D A B =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (B (basis j)) := by
   rw [MetricFiberData.homFlatLinear_comm
-    (tangentMetricData_gen (I := I) g x).metric D A B]
+    (tangentMetricDataGen (I := I) g x).metric D A B]
   change LinearMap.trace Real (TangentSpace I x)
-      ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D B).comp A) =
+      ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B).comp A) =
     ∑ i : Idx, ∑ j : Idx,
       gInv i j * D.inner (A (basis i)) (B (basis j))
   classical
   rw [LinearMap.trace_eq_matrix_trace Real basis
-    ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D B).comp A)]
+    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B).comp A)]
   rw [Matrix.trace]
   simp only [Matrix.diag_apply]
   apply Finset.sum_congr rfl
@@ -263,27 +264,27 @@ theorem hom_inner_eq_basis
   congr 1
   change
     g.inner x
-        ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D B)
+        ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B)
           (A (basis i)))
         (basis j) =
       D.inner (A (basis i)) (B (basis j))
-  rw [← TangentMetricData_gen.inner_eq_gen (I := I)
-    (tangentMetricData_gen (I := I) g x)
-    ((MetricFiberData.adjoint (tangentMetricData_gen (I := I) g x).metric D B)
+  rw [← TangentMetricDataGen.inner_eq_gen (I := I)
+    (tangentMetricDataGen (I := I) g x)
+    ((MetricFiberData.adjoint (tangentMetricDataGen (I := I) g x).metric D B)
       (A (basis i)))
     (basis j)]
   exact MetricFiberData.adjoint_inner
-    (tangentMetricData_gen (I := I) g x).metric D B (A (basis i)) (basis j)
+    (tangentMetricDataGen (I := I) g x).metric D B (A (basis i)) (basis j)
 
 theorem homCLM_normSq_eq_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
     (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
     [FiniteDimensional Real W]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A : TangentSpace I x →L[Real] W) :
     (@MetricFiberData.homCLM
@@ -291,7 +292,7 @@ theorem homCLM_normSq_eq_basis
       inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
         inferInstance
       inferInstance inferInstance inferInstance hTopAdd hContSMul inferInstance
-      (tangentMetricData_gen (I := I) g x).metric D).flat A A =
+      (tangentMetricDataGen (I := I) g x).metric D).flat A A =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (A (basis j)) := by
   exact hom_normSq_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap
@@ -301,10 +302,10 @@ theorem homCLM_inner_eq_basis
     {W : Type*} [AddCommGroup W] [Module Real W] [TopologicalSpace W]
     (hTopAdd : IsTopologicalAddGroup W) (hContSMul : ContinuousSMul Real W)
     [FiniteDimensional Real W]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (D : MetricFiberData W)
     (A B : TangentSpace I x →L[Real] W) :
     (@MetricFiberData.homCLM
@@ -312,7 +313,7 @@ theorem homCLM_inner_eq_basis
       inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
         inferInstance
       inferInstance inferInstance inferInstance hTopAdd hContSMul inferInstance
-      (tangentMetricData_gen (I := I) g x).metric D).flat A B =
+      (tangentMetricDataGen (I := I) g x).metric D).flat A B =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j * D.inner (A (basis i)) (B (basis j)) := by
   exact hom_inner_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap B.toLinearMap
@@ -322,16 +323,16 @@ theorem tensor0S_curry_one_apply
     [IsManifold I 1 M]
     {x : M} (A : Tensor0SSpace 2 I x)
     (X Y : TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A X)
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A X)
         (fun _ : Fin 1 => Y) =
       A (fun a : Fin 2 => if a = 0 then X else Y) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (1 + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+        (fun _ : Fin (1 + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
         X)
         (fun _ : Fin 1 => Y)) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (1 + 1) x) A)
         (fun a : Fin 2 => if a = 0 then X else Y)
   rw [continuousMultilinearCurryLeftEquiv_apply]
   congr 1
@@ -342,15 +343,15 @@ omit [FiniteDimensional ℝ E] in
 theorem tensor0S_curry_apply_cons
     {x : M} (s : Nat) (A : Tensor0SSpace (s + 1) I x)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (fun _ : Fin (s + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         X)
         tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         (Fin.cons X tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
 
@@ -376,8 +377,8 @@ theorem coordInner0S_one_eq
     (basis : Module.Basis Idx Real (TangentSpace I x)) :
     coordInner0S (I := I) (x := x) 1 gInv α β basis =
       ∑ i : Idx, ∑ j : Idx,
-        gInv i j * cotangentToDual_gen (I := I) α (basis i) *
-          cotangentToDual_gen (I := I) β (basis j) := by
+        gInv i j * cotangentToDualGen (I := I) α (basis i) *
+          cotangentToDualGen (I := I) β (basis j) := by
   classical
   unfold coordInner0S tensor0SComponent
   rw [sum_fin_one_fun]
@@ -403,9 +404,9 @@ theorem coordInner0S_succ_summand_eq
       B (fun a : Fin (s + 1) =>
         basis (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) =
       (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+          ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
             (fun a : Fin s => basis (tailI a))) *
-        ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+        ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
           (fun a : Fin s => basis (tailJ a)) := by
   rw [Fin.prod_univ_succ]
   rw [tensor0S_curry_apply_cons, tensor0S_curry_apply_cons]
@@ -434,8 +435,8 @@ theorem coordInner0S_succ_eq
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
           coordInner0S (I := I) (x := x) s gInv
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
             basis := by
   classical
   unfold coordInner0S tensor0SComponent
@@ -465,9 +466,9 @@ theorem coordInner0S_succ_eq
     _ =
         ∑ tailI : Fin s -> Idx, ∑ j : Idx, ∑ tailJ : Fin s -> Idx,
           (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-              ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+              ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
                 (fun a : Fin s => basis (tailI a))) *
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
               (fun a : Fin s => basis (tailJ a)) := by
           apply Finset.sum_congr rfl
           intro tailI _
@@ -479,9 +480,9 @@ theorem coordInner0S_succ_eq
     _ =
         ∑ j : Idx, ∑ tailI : Fin s -> Idx, ∑ tailJ : Fin s -> Idx,
           (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-              ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+              ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
                 (fun a : Fin s => basis (tailI a))) *
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
               (fun a : Fin s => basis (tailJ a)) := by
           rw [Finset.sum_comm]
     _ =
@@ -489,9 +490,9 @@ theorem coordInner0S_succ_eq
           gInv i j *
             ∑ tailI : Fin s -> Idx, ∑ tailJ : Fin s -> Idx,
               (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-                ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+                ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
                   (fun a : Fin s => basis (tailI a)) *
-                  ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+                  ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
                     (fun a : Fin s => basis (tailJ a)) := by
           apply Finset.sum_congr rfl
           intro j _
@@ -604,17 +605,18 @@ theorem tensor0S_curry_product_one_two
     {x : M}
     (α : Tensor0SSpace 1 I x) (A : Tensor0SSpace 2 I x)
     (X : TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (F := E) (E := TangentSpace I)
-          (s := 1) (q := 2) α A) X) =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
+        (Tensor0SSpace.product (r := 1) (s := 2) α A) X) =
       α (fun _ : Fin 1 => X) • A := by
   refine ContinuousMultilinearMap.ext fun v => ?_
-  change (Bundle.continuousMultilinearMap.product_fun
-      (𝕜 := Real) (F := E) (E := TangentSpace I) α A) (Fin.cons X v) =
-    α (fun _ : Fin 1 => X) * A v
-  rw [Bundle.continuousMultilinearMap.product_fun_apply
-    (𝕜 := Real) (F := E) (E := TangentSpace I)]
+  change
+    (((continuousMultilinearCurryLeftEquiv Real
+        (fun _ : Fin 3 => TangentSpace I x) Real)
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 3 x
+          (Tensor0SSpace.product (r := 1) (s := 2) α A)) X) v) =
+      α (fun _ : Fin 1 => X) * A v
+  rw [continuousMultilinearCurryLeftEquiv_apply,
+    tensor0SSpaceFiberContinuousLinearEquiv_apply_apply, Tensor0SSpace.product_apply]
   have hhead :
       (Fin.cons X v ∘ Fin.castAdd 2) = fun _ : Fin 1 => X := by
     funext a
@@ -625,7 +627,6 @@ theorem tensor0S_curry_product_one_two
     funext a
     fin_cases a <;> rfl
   rw [hhead, htail]
-  rfl
 
 end
 

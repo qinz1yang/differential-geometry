@@ -26,7 +26,7 @@ theorem exists_holderWith_restrict_of_contDiffOn_isCompact
     {s : Set V} (hs : IsCompact s) (hsconv : Convex Real s)
     {f : V → F} (hf : ContDiffOn Real 1 f s)
     {alpha : NNReal} (halpha : alpha ≤ 1) :
-    ∃ C : NNReal, HolderWith C alpha (s.restrict f) := by
+    ∃ C : NNReal, HolderWith C alpha (s.domRestrict f) := by
   rcases hf.exists_lipschitzOnWith one_ne_zero hsconv hs with ⟨L, hL⟩
   let D : NNReal := (ediam s).toNNReal
   refine ⟨L * D ^ ((1 : Real) - (alpha : Real)), ?_⟩
@@ -41,7 +41,7 @@ theorem exists_norm_bound_and_holderWith_restrict_of_contDiffOn_isCompact
     {f : V → F} (hf : ContDiffOn Real 1 f s)
     {alpha : NNReal} (halpha : alpha ≤ 1) :
     ∃ C₀ Cα : NNReal,
-      (∀ x ∈ s, ‖f x‖ ≤ C₀) ∧ HolderWith Cα alpha (s.restrict f) := by
+      (∀ x ∈ s, ‖f x‖ ≤ C₀) ∧ HolderWith Cα alpha (s.domRestrict f) := by
   rcases exists_norm_bound_of_continuousOn_isCompact hs hf.continuousOn with ⟨C₀, hC₀⟩
   rcases exists_holderWith_restrict_of_contDiffOn_isCompact hs hsconv hf halpha with ⟨Cα, hCα⟩
   exact ⟨C₀, Cα, hC₀, hCα⟩
@@ -62,7 +62,7 @@ theorem exists_holderWith_restrict_parabolicCylinder_Icc_of_contDiffOn
     {f : Real × V → F} (hf : ContDiffOn Real 1 f (Set.Icc a b ×ˢ K))
     {alpha : NNReal} (halpha : alpha ≤ 1) :
     ∃ C : NNReal, HolderWith C alpha
-      ((parabolicCylinder (Set.Icc a b) K).restrict
+      ((parabolicCylinder (Set.Icc a b) K).domRestrict
         (f ∘ parabolicToProduct)) := by
   rcases hf.exists_lipschitzOnWith one_ne_zero
       (convex_Icc a b |>.prod hKconv) (isCompact_Icc.prod hK) with ⟨L, hL⟩
@@ -92,7 +92,7 @@ theorem exists_norm_bound_and_holderWith_restrict_parabolicCylinder_Icc_of_contD
       (∀ p ∈ parabolicCylinder (Set.Icc a b) K,
         ‖f (parabolicToProduct p)‖ ≤ C₀) ∧
       HolderWith Cα alpha
-        ((parabolicCylinder (Set.Icc a b) K).restrict
+        ((parabolicCylinder (Set.Icc a b) K).domRestrict
           (f ∘ parabolicToProduct)) := by
   rcases exists_norm_bound_of_continuousOn_isCompact
       (isCompact_Icc.prod hK) hf.continuousOn with ⟨C₀, hC₀⟩
@@ -112,10 +112,10 @@ theorem exists_c2Pullback_schauder_bounds_on_compact_convex_of_contDiffOn
       1 ≤ L ∧
       LipschitzOnWith L phi s ∧
       HolderWith K1 alpha
-        ((parabolicCylinder J s).restrict
+        ((parabolicCylinder J s).domRestrict
           (fun p => fderiv Real phi p.space)) ∧
       HolderWith K2 alpha
-        ((parabolicCylinder J s).restrict
+        ((parabolicCylinder J s).domRestrict
           (fun p => hessianCurryEquiv V W
             (iteratedFDeriv Real 2 phi p.space))) ∧
       (∀ p ∈ parabolicCylinder J s, ‖fderiv Real phi p.space‖ ≤ M1) ∧
@@ -145,11 +145,12 @@ theorem exists_c2Pullback_schauder_bounds_on_compact_convex_of_contDiffOn
     exists_norm_bound_and_holderWith_restrict_of_contDiffOn_isCompact
       hs hsconv (hD2.mono hsU) halpha
   have hK2 : HolderWith K2 alpha
-      (s.restrict (fun x => hessianCurryEquiv V W
+      (s.domRestrict (fun x => hessianCurryEquiv V W
         (iteratedFDeriv Real 2 phi x))) := by
     have hcomp := (hessianCurryEquiv V W).lipschitz.holderWith.comp hK2raw
+    intro x y
     simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul,
-      Function.comp_apply, Set.restrict_apply] using hcomp
+      Function.comp_apply, Set.domRestrict_apply] using hcomp x y
   refine ⟨L, K1, K2, M1, M2, hL, hLip, ?_, ?_, ?_, ?_⟩
   · exact holderWith_restrict_parabolic_const_time _ hK1 J
   · exact holderWith_restrict_parabolic_const_time _ hK2 J
@@ -168,10 +169,10 @@ theorem exists_c2Pullback_schauder_bounds_on_compact_convex
       1 ≤ L ∧
       LipschitzOnWith L phi s ∧
       HolderWith K1 alpha
-        ((parabolicCylinder J s).restrict
+        ((parabolicCylinder J s).domRestrict
           (fun p => fderiv Real phi p.space)) ∧
       HolderWith K2 alpha
-        ((parabolicCylinder J s).restrict
+        ((parabolicCylinder J s).domRestrict
           (fun p => hessianCurryEquiv V W
             (iteratedFDeriv Real 2 phi p.space))) ∧
       (∀ p ∈ parabolicCylinder J s, ‖fderiv Real phi p.space‖ ≤ M1) ∧

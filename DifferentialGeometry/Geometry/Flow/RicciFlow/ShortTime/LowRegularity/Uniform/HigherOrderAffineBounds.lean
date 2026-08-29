@@ -124,7 +124,7 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
     exact Continuous.Icc_extend'
       (galerkinEnergy_continuousOn (I := I) (M := M)
         (eigenIdxFinset (I := I) (M := M) g N) (U N) 5
-        (by simpa only [U] using hUcont N)).restrict
+        (by simpa only [U] using hUcont N)).domRestrict
   have hEE5nn : ∀ N, ∀ s : ℝ, 0 ≤ EE5 N s := fun N s =>
     galerkinEnergy_nonneg (I := I) (M := M) _ _ _ _
   have hEE5eq : ∀ N, ∀ s ∈ Set.Icc (0 : ℝ) T,
@@ -228,12 +228,14 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
       rw [galForceArmBackground (I := I) (M := M) g gBase K.threshold_lt hsol.hδ0 hsol.hδ3
         K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos hsol.hreal hsol.hcore F (U N t) i,
         if_pos hi]
-      exact add_comm _ _
+      simp only [galerkinActionVectorBackground]
+      module
     have hstatRaw := hseed (5 + k) F
     have hstat : ∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i (5 + (k : ℝ)) *
           (seed.coeff i) ^ 2 ≤ Cseed (5 + k) ^ 2 := by
-      simpa only [seed, Nat.cast_add, Nat.cast_ofNat] using hstatRaw
+      simpa only [seed, boundedDeTurckRemainderOnLowerState, Nat.cast_add,
+        Nat.cast_ofNat] using hstatRaw
     let E5 : ℝ := galerkinEnergy (I := I) (M := M) F (U N) 5 t
     let q : ℝ := Real.sqrt E5
     let β : ℝ := A + B * (1 + q)
@@ -257,8 +259,17 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
           β * Real.sqrt (∑ i ∈ F,
             tensorSobolevWeight (I := I) (M := M) i (5 + (k : ℝ)) *
               (U N t i) ^ 2) := by
+      have haction :
+          galerkinActionVectorBackground (I := I) (M := M) g gBase
+              (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
+                K.outer_pos K.realize_pos).le K.threshold_lt
+              (lowRegularityMetricRealization (I := I) (M := M) g
+                (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
+                K.realize_pos.le hsol.hreal) F (U N t) = arm := by
+        rfl
+      rw [← haction]
       have hm := hmass F (U N t) (hE4cap N t (Set.Ico_subset_Icc_self ht)) m
-      dsimp only [arm, α, β, A, B, E5, q, m, F] at hm ⊢
+      dsimp only [α, β, A, B, E5, q, m, F] at hm ⊢
       rw [show (5 + (k : ℝ)) - 1 = ((4 + k : ℕ) : ℝ) by push_cast; ring,
         show (5 + (k : ℝ)) + 1 = ((4 + k : ℕ) : ℝ) + 2 by push_cast; ring,
         show (5 + (k : ℝ)) = ((4 + k : ℕ) : ℝ) + 1 by push_cast; ring]

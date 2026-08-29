@@ -6,7 +6,6 @@ open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -36,15 +35,15 @@ private local instance offCentreFibreTensorRSRiemannianNormedAddCommGroup
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     {K : Set M} (hK : IsCompact K) (hKsub : K ⊆ (chartAt H α).source) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 < C ∧
       ∀ (T : SmoothCcTensor g r s), ∀ x ∈ K,
         ‖T.toSection x‖ ^ 2 ≤
@@ -53,8 +52,8 @@ theorem tensorFiberNorm_sq_le_chartAlphaComponents_on_compact
               ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
                 (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx x) ^ 2 := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₀, hC₀_pos, hC₀_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s α hK hKsub

@@ -350,7 +350,7 @@ theorem c_term_bound_nonsmooth_quantitative
     have h_sum_int : Integrable (fun x : E =>
         ∑ i : Fin d, (η x) ^ 2 *
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x) ^ 2) volume :=
-      integrable_finset_sum (Finset.univ : Finset (Fin d)) (fun i _ => h_per_i i)
+      integrable_finsetSum (Finset.univ : Finset (Fin d)) (fun i _ => h_per_i i)
     have h_eq : (fun x : E => ∑ i : Fin d, (η x) ^ 2 *
             (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x) ^ 2) =
         (fun x : E => (η x) ^ 2 *

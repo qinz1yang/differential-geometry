@@ -588,7 +588,9 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
       have h0mem : (0 : ℝ) ∈ Set.Ioo (-r) r := ⟨by linarith, hr_pos⟩
       have hconst : ∀ s ∈ Set.Ioo (-r) r,
           HasDerivAt (fun u => (c q u).1 - u) (0 : ℝ) s := by
-        intro u hu; simpa using (hfst u hu).sub (hasDerivAt_id u)
+        intro u hu
+        exact (((hfst u hu).sub (hasDerivAt_id u)).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv (sub_self 1)
       intro s hs
       have hkey : (fun u => (c q u).1 - u) s = (fun u => (c q u).1 - u) 0 := by
         apply Convex.is_const_of_fderivWithin_eq_zero (𝕜 := ℝ) (convex_Ioo (-r) r)
@@ -619,16 +621,19 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
         hXtX q t ht ((c q (t - e)).2)
       rw [hXeq] at hsnd
       have hshift : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => s - e) t (1 : ℝ →L[ℝ] ℝ) := by
-        rw [hasMFDerivAt_iff_hasFDerivAt]
         have h2 := ((hasDerivAt_id t).sub_const e).hasFDerivAt
         have he1 : (ContinuousLinearMap.toSpanSingleton ℝ (1 : ℝ)) = (1 : ℝ →L[ℝ] ℝ) := by
           ext1; simp
-        rwa [he1] at h2
+        rw [← he1]
+        exact h2.hasMFDerivAt
       have hcomp := hsnd.comp t hshift
       have hfun : ((fun s => (c q s).2) ∘ fun s : ℝ => s - e)
           = (fun s => (c q (s - e)).2) := rfl
       rw [hfun] at hcomp
-      simpa using hcomp
+      refine hcomp.congr_mfderiv ?_
+      apply ContinuousLinearMap.ext
+      intro z
+      rfl
   · refine ⟨rcap, hrcap_pos, fun e he => ?_⟩
     have hMempty : IsEmpty M := by
       rw [isEmpty_iff]

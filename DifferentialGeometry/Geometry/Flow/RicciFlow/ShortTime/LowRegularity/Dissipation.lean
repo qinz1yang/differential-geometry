@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderAction
 
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -139,12 +138,10 @@ theorem n_diff_h1_rung
       covariantJetNormSq (I := I) (M := M) g₀ 2 T ≤
         (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖) ^ 2 := by
     have h := hjet2 T
-    norm_num at h
     exact h
   have hjet3T :
       covariantJetNormSq (I := I) (M := M) g₀ 3 T ≤ (Chs3 * R₀) ^ 2 := by
     have h := hjet3 T
-    norm_num at h
     refine h.trans (pow_le_pow_left₀ (mul_nonneg hChs3 hN3) ?_ 2)
     exact mul_le_mul_of_nonneg_left hball3 hChs3
   have hjnn : (0 : ℝ) ≤ covariantJetNormSq (I := I) (M := M) g₀ 3 T := by

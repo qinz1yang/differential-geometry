@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -36,12 +37,12 @@ theorem gOpBound_unitQuad
     gFibreOpBound (I := I) (M := M) q A δ := by
   intro x v w
   let Q : Tensor02At (I := I) (M := M) x :=
-    Tensor0SSpace.ofModel (I := I) (x := x)
-      (bilinFormToModel E (A x))
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
+      (bilinFormToModel (TangentSpace I x) (A x))
   have hQeval (z₁ z₂ : TangentSpace I x) :
       Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂ := by
-    change Tensor0SSpace.toModel Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂
-    rw [Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply]
+    change Tensor0SSpace.eval Q (vec2 (I := I) z₁ z₂) = A x z₁ z₂
+    rw [Tensor0SSpace.eval_fiber_equiv_symm, bilinFormToModel_apply]
     rfl
   have hdiag (z : TangentSpace I x) :
       |A x z z| ≤ δ * q.inner x z z := by
@@ -56,8 +57,8 @@ theorem gOpBound_unitQuad
     have hpolar :
         (4 : ℝ) * A x u z =
           A x (u + z) (u + z) - A x (u - z) (u - z) := by
-      simp only [map_add, map_sub, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.sub_apply]
+      simp only [map_add, map_sub, add_apply,
+        sub_apply]
       rw [hsymm x z u]
       ring
     have habs :
@@ -70,8 +71,8 @@ theorem gOpBound_unitQuad
     have hsum := add_le_add (hdiag (u + z)) (hdiag (u - z))
     have hmetric :
         q.inner x (u + z) (u + z) + q.inner x (u - z) (u - z) = 4 := by
-      simp only [map_add, map_sub, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.sub_apply]
+      simp only [map_add, map_sub, add_apply,
+        sub_apply]
       rw [q.symm x z u, hu, hz]
       ring
     calc

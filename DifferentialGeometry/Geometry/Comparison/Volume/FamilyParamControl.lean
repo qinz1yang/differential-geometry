@@ -87,6 +87,7 @@ private theorem paramDensity_cont
   exact Real.continuous_sqrt.comp
     ((continuous_id.matrix_det).comp hmatrix)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_param_ctrl
     [T2Space M]
     {omega : Real} (h0omega : 0 < omega)
@@ -140,8 +141,8 @@ theorem exists_param_ctrl
     paramDensity (I := I) (g_fam q.1.1) Ψ q.2.1
   have hdens : Continuous dens :=
     paramDensity_cont (I := I) g_fam hG hK Ψ hB
-  letI : CompactSpace T := isCompact_iff_compactSpace.mp isCompact_Icc
-  letI : CompactSpace B :=
+  let : CompactSpace T := isCompact_iff_compactSpace.mp isCompact_Icc
+  let : CompactSpace B :=
     isCompact_iff_compactSpace.mp (by
       simpa [B] using isCompact_closedBall (0 : E) (2 * R))
   have hPne : (Set.univ : Set P).Nonempty := by
@@ -186,7 +187,7 @@ theorem exists_param_ctrl
             (mfderiv 𝓘(Real, E) I Ψ q.1.2.1 q.2.1))) :=
       (continuous_fst.comp continuous_fst).prodMk htangent
     exact Real.continuous_sqrt.comp (hquad.comp hpull)
-  letI : CompactSpace U :=
+  let : CompactSpace U :=
     isCompact_iff_compactSpace.mp (by
       simpa [U] using isCompact_closedBall (0 : E) 1)
   have hQne : (Set.univ : Set Q).Nonempty := by

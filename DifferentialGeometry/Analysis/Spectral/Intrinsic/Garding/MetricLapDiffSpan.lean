@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -69,11 +68,11 @@ theorem lapA20_span
   have hρle : ρ ≤ ρ₀ := min_le_right _ _
   refine ⟨ρ, hρ, hρone, ?_⟩
   intro T hT h hh hhρ hleft
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
         TensorL2 0 0 (g_fam (T : Real))) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
         tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup

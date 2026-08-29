@@ -24,8 +24,8 @@ open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -86,31 +86,31 @@ theorem strict_dist
         (minJoin (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k))) p r := by
   classical
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : IsManifold I 1 (X.obj k).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : IsManifold I 1 (X.obj k).M := IsManifold.of_le
     (I := I) (M := (X.obj k).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : ConnectedSpace (X.obj k).M := hconn
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : ConnectedSpace (X.obj k).M := hconn
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle
       (fun z : (X.obj k).M ↦ TangentSpace I z) :=
     (X.obj k).riemBundle (I := I)
-  letI : (z : (X.obj k).M) → InnerProductSpace Real (TangentSpace I z) :=
+  let : (z : (X.obj k).M) → InnerProductSpace Real (TangentSpace I z) :=
     (X.obj k).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : (X.obj k).M ↦ TangentSpace I z) :=
     (X.obj k).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
+  let : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  letI : MetricSpace (X.obj k).M :=
+  let : MetricSpace (X.obj k).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro hquarter hρ hρq hρmetric hρexp hr hxp hpts hcage
   let hEnorm := normal_enorm (I := I) (X.obj k)
@@ -198,6 +198,10 @@ theorem strict_dist
     let γ : Real → (X.obj k).M := join a b
     let v₀ : TangentSpace I a := minimizingVec
       (I := I) (X.obj k).metric hEnorm a b
+    have hγ : γ = intrinsicGeodesic (I := I) (X.obj k).metric hEnorm a v₀ := by
+      funext t
+      with_unfolding_all
+        rfl
     have hSopen : IsOpen S := by
       dsimp only [S]
       exact isOpen_lt
@@ -209,10 +213,12 @@ theorem strict_dist
         hconn x hq he hf hρ hρq hρmetric hρexp
     have hmap : MapsTo γ unitInterval S := by
       intro t ht
-      simpa only [γ, S] using hpair_cage pt hpt a ha b hbmem ht
+      change max (riemannianEDist I x (join a b t))
+          (riemannianEDist I x pt) < ENNReal.ofReal (ρ / 2)
+      exact hpair_cage pt hpt a ha b hbmem ht
     have hgeo : IsGeodesic (I := I) (X.obj k).metric γ := by
-      simpa only [γ, join, minJoin, v₀] using
-        intrinsicGeodesic_isGeodesic (I := I) (X.obj k).metric hEnorm a v₀
+      rw [hγ]
+      exact intrinsicGeodesic_isGeodesic (I := I) (X.obj k).metric hEnorm a v₀
     have hγcont : Continuous γ := by
       simpa only [γ, join] using
         minJoin_cont (I := I) (X.obj k).metric hEnorm a b
@@ -237,7 +243,8 @@ theorem strict_dist
       have hspeed' : (X.obj k).metric.inner (γ t)
           (mfderiv 𝓘(Real) I γ t 1) (mfderiv 𝓘(Real) I γ t 1) =
           (X.obj k).metric.inner a v₀ v₀ := by
-        simpa only [γ, join, minJoin, v₀] using hspeed
+        rw [hγ]
+        exact hspeed
       have hlaunch : 0 < (X.obj k).metric.inner a v₀ v₀ :=
         (X.obj k).metric.pos a v₀ hv₀
       apply (ne_of_gt hlaunch)
@@ -255,10 +262,15 @@ theorem strict_dist
       intro t ht
       exact HasNormalBrFull.hess_pos (I := I) hb k hcomplete hconn x hfull
         hqAcc hquarter hρ hρq hρmetric hρexp
-          (by simpa only [γ, S] using hmem ht) (hvel t)
-    simpa only [Function.comp_apply, γ] using
-      strictConvex_geo (I := I) (X.obj k).metric hSopen hsmooth hγsmooth hgeo
-        (convex_Icc (0 : Real) 1) hcont hmem hpos
+          (by
+            have hmemt := hmem ht
+            change max (riemannianEDist I x (γ t))
+              (riemannianEDist I x pt) < ENNReal.ofReal (ρ / 2) at hmemt
+            exact hmemt) (hvel t)
+    change StrictConvexOn Real (Set.Icc 0 1)
+      ((CenterOfMass.halfSqDist pt) ∘ γ)
+    exact strictConvex_geo (I := I) (X.obj k).metric hSopen hsmooth hγsmooth hgeo
+      (convex_Icc (0 : Real) 1) hcont hmem hpos
   change StrictDistInput (I := I) (X.obj k).metric pts join p r
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro a ha b hbmem hab

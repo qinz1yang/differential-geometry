@@ -115,7 +115,7 @@ omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
     φ ∈ smoothScalarSubalgebra (I := I) (M := M) g ↔
       ∃ f : SmoothScalar g, f.toContinuousMap = φ := Iff.rfl
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [CompactSpace M] in
 private lemma exists_smooth_separating
     (x y : M) (hxy : x ≠ y) :
     ∃ f : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ f ∧ f x = 1 ∧ f y = 0 := by
@@ -136,7 +136,7 @@ private lemma exists_smooth_separating
     have hy_in_compl : y ∈ ({y}ᶜ : Set M) := hφ_tsupp hy_supp
     exact hy_in_compl rfl
 
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [CompactSpace M] in
 theorem smoothScalarSubalgebra_separatesPoints (g : SmoothRiemannianMetric I M) :
     (smoothScalarSubalgebra (I := I) (M := M) g).SeparatesPoints := by
   intro x y hxy
@@ -168,7 +168,7 @@ private lemma eLpNorm_two_le_of_norm_le [CompactSpace M]
       (riemannianVolumeMeasure (I := I) (M := M) g
           (Set.univ : Set M)) ^ (2 : ℝ≥0∞).toReal⁻¹ *
         ENNReal.ofReal K := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact MeasureTheory.eLpNorm_le_of_ae_bound (μ := riemannianVolumeMeasure (I := I) (M := M) g)
     (f := φ) (C := K) (Filter.Eventually.of_forall hK)
@@ -183,7 +183,7 @@ private lemma eLpNorm_smooth_sub_bc_le
       (riemannianVolumeMeasure (I := I) (M := M) g) Set.univ ^
           ((2 : ℝ≥0∞).toReal⁻¹) * ENNReal.ofReal δ := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have h_diff_cont : Continuous (fun x : M => f.toFun x - ψ x) :=
     f.smooth.continuous.sub ψ.continuous
@@ -281,9 +281,9 @@ private lemma exists_smoothToLp_close_to_memLp
 theorem denseRange_smoothToLp (g : SmoothRiemannianMetric I M) :
     DenseRange (smoothToLp (I := I) (M := M) g) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
-  haveI : (riemannianVolumeMeasure (I := I) (M := M) g).WeaklyRegular :=
+  have : (riemannianVolumeMeasure (I := I) (M := M) g).WeaklyRegular :=
     (riemannianVolumeMeasure_regular (I := I) (M := M) g).weaklyRegular
   intro v
   refine (mem_closure_iff_nhds_basis Metric.nhds_basis_closedEBall).2 fun ε hε ↦ ?_

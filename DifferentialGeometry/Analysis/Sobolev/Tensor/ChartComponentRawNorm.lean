@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -31,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def chartComponentRawSobolevNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (T : SmoothCcTensor g r s) : ℝ≥0∞ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -44,7 +43,7 @@ theorem wkpNormChartRaw_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (T : SmoothCcTensor g r s) :
     chartComponentRawSobolevNorm (I := I) (M := M) g r s k T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -57,7 +56,7 @@ theorem wkpNormChartRaw_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (T : SmoothCcTensor g r s) :
     0 ≤ chartComponentRawSobolevNorm (I := I) (M := M) g r s k T :=
-  zero_le _
+  zero_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChartRaw_zero_section
@@ -162,7 +161,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComp_eq_zero_of_notMem_chartAtlasPOU_finset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s)
-    {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    {α : M} (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     tensorChartComp (I := I) (M := M) g r s T α Idx Jdx =
@@ -190,7 +189,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNorm_tensorChartComp_eq_zero_of_notMem_chartAtlasPOU_finset
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (T : SmoothCcTensor g r s)
-    {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    {α : M} (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -207,7 +206,7 @@ theorem wtwokTwoNorm_eq_finsum_chartAtlasPOU
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ)
     (T : SmoothCcTensor g r s) :
     wtwokTwoNorm (I := I) (M := M) g k T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2

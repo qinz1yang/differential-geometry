@@ -65,8 +65,8 @@ private def ricciSharpCLM
     (Ric : Tensor02At (I := I) (M := M) x) :
     TangentSpace I x →L[Real] TangentSpace I x :=
   LinearMap.toContinuousLinearMap
-    ((cotangentSharpLinear_gen (I := I) g x).comp
-      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric).toLinearMap)
+    ((cotangentSharpLinearGen (I := I) g x).comp
+      (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric).toLinearMap)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
@@ -75,8 +75,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [SigmaCo
     (Ric : Tensor02At (I := I) (M := M) x)
     (X : TangentSpace I x) :
     ricciSharpCLM (I := I) g Ric X =
-      cotangentSharp_gen (I := I) g x
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric X) := by
+      cotangentSharpGen (I := I) g x
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric X) := by
   rfl
 
 private def rawTensor
@@ -131,8 +131,8 @@ private theorem coordNab2_eq
           (coordinateFrameAt (I := I) x₀ a x₀)
           (coordinateFrameAt (I := I) x₀ i x₀)
           (coordinateFrameAt (I := I) x₀ j x₀)) := by
-  simpa only [solNabla2Ric, solNablaRic] using
-    coordNab2Ric_eq_nabla2RicField (I := I) S x₀ t d a i j
+  rw [coordNab2Ric_eq_nabla2RicField (I := I) S x₀ t d a i j]
+  rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I 1 M]
   [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -172,7 +172,7 @@ private theorem invContract
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (d : Idx) (F : Idx → Real) :
     (∑ p : Idx, (∑ l : Idx, gInv p l * F l) *
         g.inner x (basis d) (basis p)) = F d := by
@@ -205,8 +205,8 @@ private theorem rawTensor_eval
     (A B C D : TangentSpace I x) :
     rawTensor (I := I) g Ric Rm04 (vec4 (I := I) A B C D) =
       Rm04 (vec4 (I := I) A B C
-        (cotangentSharp_gen (I := I) g x
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric D))) := by
+        (cotangentSharpGen (I := I) g x
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric D))) := by
   unfold rawTensor
   change Rm04 (fun i : Fin 4 ↦
       (if i = 3 then ricciSharpCLM (I := I) g Ric
@@ -229,7 +229,7 @@ private theorem rawTensor_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (A B C D : TangentSpace I x) :
@@ -239,9 +239,9 @@ private theorem rawTensor_apply
           Rm04 (vec4 (I := I) A B C (basis i)) := by
   classical
   rw [rawTensor_eval]
-  let β := tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric D
+  let β := tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric D
   have hβ (j : Idx) :
-      cotangentToDual_gen (I := I) β (basis j) =
+      cotangentToDualGen (I := I) β (basis j) =
         Ric (vec2 (I := I) D (basis j)) := by
     rw [cotangentToDual_apply_gen, tensor0S_curry_apply_cons]
     congr 1
@@ -314,7 +314,7 @@ private theorem gammaLower_eq
       -coordNab2Ric (I := I) S x₀ t x₀ d i j z -
         coordNab2Ric (I := I) S x₀ t x₀ d j i z +
         coordNab2Ric (I := I) S x₀ t x₀ d z i j := by
-  let basis := coordinateFrameAt_toBasis (I := I) x₀
+  let basis := coordinateFrameAtToBasis (I := I) x₀
   have h := invContract (I := I) (M := M) (S.family.metric t) basis
     (fun p l ↦ coordInv (I := I) S x₀ t x₀ p l)
     (by simpa [basis] using coordInvReal (I := I) S x₀ t)
@@ -344,7 +344,7 @@ private theorem rawCoord_eq
   let B := coordinateFrameAt (I := I) x₀ (m 1) x₀
   let C := coordinateFrameAt (I := I) x₀ (m 2) x₀
   let Dv := coordinateFrameAt (I := I) x₀ (m 3) x₀
-  let β := tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+  let β := tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
     (S.base.ricciAt t x₀) Dv
   have hcov := connSmoothOfSol (I := I) S t
   have hcoord :=
@@ -378,7 +378,7 @@ private theorem rawCoord_eq
       simpa [A, B, C] using hcoord.symm
     _ = S.base.rm04 t x₀
         (vec4 (I := I) A B C
-          (cotangentSharp_gen (I := I) (S.base.metric t) x₀ β)) := hraise
+          (cotangentSharpGen (I := I) (S.base.metric t) x₀ β)) := hraise
     _ = rawTensor (I := I) (S.base.metric t) (S.base.ricciAt t x₀)
         (S.base.rm04 t x₀)
         (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀) := by
@@ -479,6 +479,7 @@ private theorem rm04Var_eq_tensor
       rw [hessVar_apply]
       simp only [coordNab2_eq]
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem varTensor_eq_ham
@@ -487,7 +488,7 @@ private theorem varTensor_eq_ham
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Idx)))
     (m : Fin 4 → Idx) :
     varTensor (I := I) (S.base.metric t) (solNabla2Ric (I := I) S t x)
@@ -555,7 +556,7 @@ theorem rm04Deriv_of_coord
       (fun s : Real ↦ S.base.rm04 s x₀ v)
       (∑ m : Fin 4 → CoordinateIdx (𝕜 := Real) E,
         V m * ∏ q : Fin 4,
-          (coordinateFrameAt_toBasis (I := I) x₀).coord (m q) (v q))
+          (coordinateFrameAtToBasis (I := I) x₀).coord (m q) (v q))
       D.carrier (t : Real) := by
   classical
   have hexp :
@@ -565,10 +566,10 @@ theorem rm04Deriv_of_coord
             S.base.rm04 s x₀
                 (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀) *
               ∏ q : Fin 4,
-                (coordinateFrameAt_toBasis (I := I) x₀).coord (m q) (v q) := by
+                (coordinateFrameAtToBasis (I := I) x₀).coord (m q) (v q) := by
     funext s
     rw [tensor0S_apply_eq_sum
-      (I := I) (coordinateFrameAt_toBasis (I := I) x₀) (S.base.rm04 s x₀) v]
+      (I := I) (coordinateFrameAtToBasis (I := I) x₀) (S.base.rm04 s x₀) v]
     refine Finset.sum_congr rfl fun m _ ↦ ?_
     rw [component0S_apply]
     congr 2
@@ -734,7 +735,7 @@ private theorem rm04Var_of_solution
     hcoord v
   refine htransport.congr_deriv ?_
   have hexp := tensor0S_apply_eq_sum
-    (I := I) (coordinateFrameAt_toBasis (I := I) x₀)
+    (I := I) (coordinateFrameAtToBasis (I := I) x₀)
     (varTensor (I := I) (S.base.metric (t : Real))
       (solNabla2Ric (I := I) S (t : Real) x₀)
       (S.base.ricciAt (t : Real) x₀) (S.base.rm04 (t : Real) x₀)) v
@@ -767,12 +768,11 @@ theorem rm04Base_of_solution_any
       D.carrier (t : Real) := by
   have hvar := rm04Var_of_solution
     (I := I) S hS x t (fun q ↦ basis (m q))
-  have hinv : MetricInverseInBasis_gen
+  have hinv : MetricInverseInBasisGen
       (I := I) (S.base.metric (t : Real)) x basis
       (identityInvMetric (Idx := Idx)) := by
-    simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal
-        (I := I) (S.base.metric (t : Real)) basis horth
+    exact metricInverseInBasis_identity_of_orthonormal
+      (I := I) (S.base.metric (t : Real)) basis horth
   exact hvar.congr_deriv (varTensor_eq_ham (I := I) S (t : Real) x basis hinv m)
 
 end DifferentialGeometry.PDE.RicciFlow

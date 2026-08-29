@@ -22,9 +22,9 @@ variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
 variable [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
-variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
+variable [SigmaCompactSpace M]
 
-def cinftyLimitData_of_allMBounds
+def cinftyLimitDataOfAllMBounds
     {alpha omega : ℝ} {hαω : alpha < omega}
     (S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hαω))
@@ -52,7 +52,7 @@ def cinftyLimitData_of_allMBounds
   intro x v w
   exact ricci_tendsto_left (I := I) S hdim hS hbound hEquiv hex.choose hex.choose_spec x v w
 
-def cinftyLimitData_of_solution
+def cinftyLimitDataOfSolution
     {alpha omega : ℝ} {hαω : alpha < omega}
     (S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hαω))
@@ -70,7 +70,7 @@ def cinftyLimitData_of_solution
       rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by
     intro t ht
-    simpa [SolutionOn.family, SolutionFamily.connection] using
+    simpa [SolutionOn.family, SolutionFamily.connection, metricCov] using
       hRm (⟨t, ht⟩ : RealTimeInterval.FlowTime
         (RealTimeInterval.closedOpen alpha omega hαω))
   have hCan := canonical_curvature_norm_sq_bounded_of_realization
@@ -81,6 +81,6 @@ def cinftyLimitData_of_solution
       0 ≤ (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt hbound.choose := by
     positivity
   have hEquiv := hell_of_soln (I := I) hS hRicConst hRic
-  exact cinftyLimitData_of_allMBounds (I := I) S hS hdim hCan hEquiv
+  exact cinftyLimitDataOfAllMBounds (I := I) S hS hdim hCan hEquiv
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -36,6 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 private theorem kernel_grid_of_conn
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (F : ℕ → ℝ) (hF : ∀ j, 0 ≤ F j) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -214,6 +214,7 @@ private theorem kernel_grid_of_conn
   linarith [t1, t2, t3, t4, t5, t6, t7, hA1, hA2, hQ1, hQ2, hQ3,
     hP1_le, hP2_le, hP3_le, hP4_le]
 
+omit [SigmaCompactSpace M] in
 private theorem lowered_grid_of_conn
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (F : ℕ → ℝ) (hF : ∀ j, 0 ≤ F j) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -252,6 +253,7 @@ private theorem lowered_grid_of_conn
   rw [hbridge]
   exact hC g₀ g_bg hfix g₁ T htie hδ_le hδ_nonneg hbound i hi x
 
+omit [SigmaCompactSpace M] in
 private theorem sym_grid_of_conn
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (F : ℕ → ℝ) (hF : ∀ j, 0 ≤ F j) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -478,6 +480,7 @@ private theorem sym_grid_of_conn
   rw [hperm]
   linarith [hLG1]
 
+omit [SigmaCompactSpace M] in
 private theorem pair_trace_grid_unif
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
@@ -604,6 +607,7 @@ private theorem pair_trace_grid_unif
     _ = _ := by
       rw [← Finset.sum_mul, ← mul_assoc]
 
+omit [SigmaCompactSpace M] in
 theorem exists_deTurckLieConnectionDifferenceDerivativeKernel_gridBound_of_connectionDifference
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (F : ℕ → ℝ) (hF : ∀ j, 0 ≤ F j) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧

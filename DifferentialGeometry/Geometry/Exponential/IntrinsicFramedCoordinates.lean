@@ -56,8 +56,8 @@ omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
 
 section
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 noncomputable def intrinsicFramedExp
     [PseudoEMetricSpace M]
@@ -86,6 +86,36 @@ omit [ConnectedSpace M] in
       expMapIntrinsic (I := I) g hEnorm p
         (normalFrame (I := I) g p z) := by
   rw [intrinsicFramedExp, intrFrameCLM_apply]
+
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+theorem intrFrame_mem_eball
+    [PseudoEMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) {r : Real} {z : E} (hz : ‖z‖ < r) :
+    intrinsicFramedExp (I := I) g hEnorm p z ∈
+      Metric.eball p (ENNReal.ofReal r) := by
+  have hdist :=
+    intrinsicGeodesic_riemannianEDist_le (I := I) g hEnorm p
+      (normalFrame (I := I) g p z)
+      (s := (0 : Real)) (t := (1 : Real)) zero_le_one
+  have hrad :
+      edist p (intrinsicFramedExp (I := I) g hEnorm p z) ≤
+        ENNReal.ofReal ‖z‖ := by
+    change edist p
+      (expMapIntrinsic (I := I) g hEnorm p
+        (normalFrame (I := I) g p z)) ≤ ENNReal.ofReal ‖z‖
+    rw [IsRiemannianManifold.out (I := I) p
+      (expMapIntrinsic (I := I) g hEnorm p (normalFrame (I := I) g p z))]
+    simpa only [intrinsicGeodesic_zero, ← expMapIntrinsic_def,
+      intrFrame_apply, normalFrame_sqrt, sub_zero, mul_one] using hdist
+  rw [Metric.mem_eball']
+  exact hrad.trans_lt
+    ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z)).2 hz)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
@@ -164,7 +194,8 @@ theorem intrFrame_deriv_zero
   have hchain' : mfderiv (modelWithCornersSelf Real E) I
       (F ∘ fun z : E => L z) 0 = L :=
     hchain.trans (ContinuousLinearMap.id_comp L)
-  simpa only [intrinsicFramedExp, F, L, Function.comp_apply] using hchain'
+  rw [show intrinsicFramedExp (I := I) g hEnorm p = F ∘ fun z : E => L z by rfl]
+  exact hchain'
 
 omit [CompleteSpace E]
   [ConnectedSpace M] [T2Space (TangentBundle I M)] in
@@ -205,9 +236,12 @@ theorem intrFrame_mfderiv
   have happ := congrArg (fun D => D v) hchain
   have hjac :=
     intrinsic_jacobi_one (I := I) g hEnorm p (L z) (L v)
-  simpa only [intrinsicFramedExp, F, L, Function.comp_apply,
-    ContinuousLinearMap.comp_apply, intrFrameCLM_apply] using
-      happ.trans hjac.symm
+  rw [show intrinsicFramedExp (I := I) g hEnorm p = F ∘ (L : E → E) by rfl]
+  change mfderiv (modelWithCornersSelf Real E) I (F ∘ (L : E → E)) z v =
+    mfderiv (modelWithCornersSelf Real Real) I
+      (fun s : Real => intrinsicGeodesic (I := I) g hEnorm p
+        (L z + s • L v) 1) 0 1
+  exact happ.trans hjac.symm
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
@@ -381,7 +415,7 @@ omit [ConnectedSpace M] in
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (q : M) :
-    (intrFrameDiffeo (I := I) g hEnorm p).symm q =
+    (intrFrameDiffeo (I := I) g hEnorm p).toPartialEquiv.symm q =
       framedChartAt (I := I) g p q := by
   rfl
 
@@ -435,8 +469,7 @@ theorem intrFrameMetric_apply
           (intrinsicFramedExp (I := I) g hEnorm p) z v)
         (mfderiv (modelWithCornersSelf Real E) I
           (intrinsicFramedExp (I := I) g hEnorm p) z w) := by
-  simp only [intrFrameMetric, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.precomp_apply]
+  simp only [intrFrameMetric, ContinuousLinearMap.comp_apply]
   rfl
 
 omit [ConnectedSpace M] in

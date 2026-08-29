@@ -31,7 +31,8 @@ theorem scalar_pos_of_ricci
     ∀ x : M, 0 < metricScalarAt (I := I) (M := M) g0 x := by
   intro x
   have hdimx : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    change Module.finrank Real E = 3
+    exact hdim
   simpa [metricScalarAt, DifferentialGeometry.Geometry.Curvature.metricScalarAt] using
     (DifferentialGeometry.Geometry.Curvature.metricTrace_pos_of_posDef
       (I := I) (M := M) g0 (metricRicciAt (I := I) (M := M) g0 x)
@@ -63,20 +64,20 @@ private theorem scalar_sq_le_ric
     (t : Real) (x : M) :
     (1 / 3 : Real) * (S.scalar t x) ^ 2 ≤ ricciNorm (I := I) S t x := by
   classical
-  letI : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
+  let : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
     ⟨⟨0, by simp [hdim]⟩⟩
   let basis : Module.Basis
       (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) Real
       (TangentSpace I x) :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (S.family.metric t) x k l (extChartAt I x x)
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis (I := I) (S.family.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (S.family.metric t) x
         basis gInv := by
     simpa [basis, gInv] using
       DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -92,9 +93,11 @@ private theorem scalar_sq_le_ric
     simp [DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hdim]
   have hcoef : ((Module.finrank Real E : Real)⁻¹) = (3⁻¹ : Real) := by
     simp [hdim]
+  rw [SolutionOn.scalar_eq_metricTrace]
   simpa [SolutionOn.scalar, SolutionFamily.scalar, ricciNorm,
     DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hcard, hcoef] using h
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem flow_end_le
     [CompactSpace M] [Nonempty M] [I.Boundaryless]
@@ -130,13 +133,19 @@ theorem flow_end_le
       ContinuousOn (fun p : Real × M => S.scalar p.1 p.2)
         (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) U) := by
     intro U _hU hUT
-    simpa [DifferentialGeometry.Integral.Connection.spacetimeSlab] using
-      SolutionOn.scalar_continuousOn (I := I) (M := M) S hSmooth.scalarSTCont U
-        (fun t ht => ⟨ht.1, lt_of_le_of_lt ht.2 hUT⟩)
+    convert! SolutionOn.scalar_continuousOn (I := I) (M := M) S hSmooth.scalarSTCont U
+      (fun t ht => ⟨ht.1, lt_of_le_of_lt ht.2 hUT⟩) using 1
   have hevol : ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T hT)
       S.scalar scalarLap (ricciNorm (I := I) S) := by
-    simpa [G, scalarLap, ricciNorm] using
+    have hricci : ricciNorm (I := I) S = fun t x =>
+        Tensor0SBundle.inner0S (I := I) (S.base.metric t) x 2
+          (S.base.ricciAt t x) (S.base.ricciAt t x) := by
+      funext t x
+      rw [ricciNorm, Tensor0SBundle.normSq0S_eq_inner]
+      rfl
+    rw [hricci]
+    simpa [G, scalarLap] using
       (scalar_evolution_of_smooth_solution (I := I) (M := M) S hSmooth
         (flowG (I := I) S)
         (by intro t; rfl) (by intro t; rfl))

@@ -61,20 +61,20 @@ theorem chartH2_localBound_of_laplacianDomain
     (h_room :
       Metric.cthickening (1 : ℝ) (closure Ω'') ⊆
         chartTargetEuclid (I := I) (M := M) α) :
-    ∃ (M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ),
-      (∀ i k, 0 ≤ M_bound i k) ∧
+    ∃ (MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ),
+      (∀ i k, 0 ≤ MBound i k) ∧
       (∀ i k : Fin (Module.finrank ℝ E),
         ∃ g_ik : EuclN → ℝ,
           MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
           DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-            ((chartBilinearH1ComplData_of_laplacianDomain
-              (I := I) (M := M) g α hu_h).weak_partial i) Ω'' ∧
+            ((chartBilinearH1ComplDataOfLaplacianDomain
+              (I := I) (M := M) g α hu_h).weakPartial i) Ω'' ∧
           eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
-            ENNReal.ofReal (M_bound i k)) := by
+            ENNReal.ofReal (MBound i k)) := by
   classical
-  set D := chartBilinearH1ComplData_of_laplacianDomain
+  set D := chartBilinearH1ComplDataOfLaplacianDomain
     (I := I) (M := M) g α hu_h with hD_def
-  obtain ⟨M_bound, hM_nn, h_uniform_bd⟩ :=
+  obtain ⟨MBound, hM_nn, h_uniform_bd⟩ :=
     chartBilinearH1Compl_uniform_diffQuot_bound_of_data
       (I := I) (M := M) (g := g) (α := α) D
       hη hη_supp hη_range hN h_fderiv_eta
@@ -86,7 +86,7 @@ theorem chartH2_localBound_of_laplacianDomain
       (I := I) (M := M) (g := g) (α := α) D
       hΩ''_open hΩ''_compact_closure hh₀ h_room
       hM_nn h_uniform_bd
-  exact ⟨M_bound, hM_nn, h_h2⟩
+  exact ⟨MBound, hM_nn, h_h2⟩
 
 end LaplacianDomainH2
 end Laplacian

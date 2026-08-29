@@ -8,7 +8,6 @@ import Mathlib.Topology.Separation.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -114,13 +113,14 @@ private lemma coordChangeL_eq_chartJ_of_locality
     rw [Trivialization.coordChangeL_apply _ _ ⟨hb_b₀', hb_α'⟩]
     rw [Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_α',
-        Bundle.Trivialization.symmL_apply]
+        Bundle.Trivialization.symmL_apply _ hb_b₀']
   rw [h_apply]
   have h_symmL_id := trivb₀_symmL_eq_id_of_chartAt_eq (I := I) (M := M)
     h_chart hb_b₀
   have h_eq : (trivializationAt E (TangentSpace I) b₀).symmL ℝ b v = v := by
     have := congrArg (fun (f : E →L[ℝ] E) => f v) h_symmL_id
-    simpa using this
+    change ((trivializationAt E (TangentSpace I) b₀).symmL ℝ b : E →L[ℝ] E) v = v
+    exact this
   rw [h_eq]
   rfl
 
@@ -152,7 +152,7 @@ private lemma coordChangeL_eq_chartJinv_of_locality
     rw [Trivialization.coordChangeL_apply _ _ ⟨hb_α', hb_b₀'⟩]
     rw [Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hb_b₀',
-        Bundle.Trivialization.symmL_apply]
+        Bundle.Trivialization.symmL_apply _ hb_α']
   rw [h_apply]
   have h_clmAt_id := trivb₀_clmAt_eq_id_of_chartAt_eq (I := I) (M := M)
     h_chart hb_b₀
@@ -163,7 +163,10 @@ private lemma coordChangeL_eq_chartJinv_of_locality
     have := congrArg
       (fun (f : E →L[ℝ] E) =>
         f ((trivializationAt E (TangentSpace I) α).symmL ℝ b v)) h_clmAt_id
-    simpa using this
+    change (trivializationAt E (TangentSpace I) b₀).continuousLinearMapAt ℝ b
+      ((trivializationAt E (TangentSpace I) α).symmL ℝ b v) =
+        (trivializationAt E (TangentSpace I) α).symmL ℝ b v
+    exact this
   rw [h_eq]
   rfl
 

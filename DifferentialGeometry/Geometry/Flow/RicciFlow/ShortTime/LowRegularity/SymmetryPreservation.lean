@@ -251,7 +251,7 @@ theorem symmHs_coeff {σ : ℝ} (hσ : 0 ≤ σ)
   refine hdense.induction_on u (isClosed_eq ?_ ?_) ?_
   · exact (tensorHsCoeffL (I := I) (M := M) (a := σ) i).continuous.comp
       (symmHs (I := I) (M := M) g hσ).continuous
-  · refine continuous_finset_sum _ (fun j _ => ?_)
+  · refine continuous_finsetSum _ (fun j _ => ?_)
     exact (tensorHsCoeffL (I := I) (M := M) (a := σ) j).continuous.const_mul _
   · intro X
     rw [symmHs_core (I := I) (M := M) g hσ X]

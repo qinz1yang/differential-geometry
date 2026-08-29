@@ -23,7 +23,7 @@ theorem fderivD2_blocks
   have hb : (b, v) = (b, 0) + (0, v) := by
     ext <;> simp
   rw [ha, hb]
-  simp only [map_add, ContinuousLinearMap.add_apply]
+  simp only [map_add, add_apply]
   abel
 
 end Analysis

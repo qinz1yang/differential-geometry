@@ -365,7 +365,7 @@ theorem parabolicPreimageAt_inverse_unitBall
         (parabolicInverseDilationAt r p0 (parabolicPoint 0 0))
         (Metric.ball (parabolicPoint 0 0) 1) =
       Metric.ball p0 r := by
-  simpa using parabolicPreimageAt_inverse_ball r hr p0 1
+  simpa using! parabolicPreimageAt_inverse_ball r hr p0 1
 
 def parabolicRescale {V F : Type*} [SMul Real V]
     (r : NNReal) (u : Real → V → F) : Real → V → F :=
@@ -647,7 +647,7 @@ theorem hasDerivAt_parabolicRescaleAt
       ((r : Real) ^ 2 • dtimeU
         (p0.time + (r : Real) ^ 2 * t)) t := by
     simpa only [Function.comp_apply, ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.toSpanSingleton_apply, one_smul] using
+      ContinuousLinearMap.toSpanSingleton_apply, one_smul] using!
       (hu.hasFDerivAt.comp t htime.hasFDerivAt).hasDerivAt
   let L : BoundedContinuousFunction V F →L[Real]
       BoundedContinuousFunction V F :=
@@ -699,11 +699,21 @@ theorem hasFDerivAt_parabolicRescaleAt
     have hlinear : HasFDerivAt (fun y : V ↦ (r : Real) • y)
         ((r : Real) • ContinuousLinearMap.id Real V) x :=
       (hasFDerivAt_id x).const_smul (r : Real)
-    simpa only [Pi.add_apply, zero_add] using hconst.add hlinear
+    simpa only [Pi.add_apply, zero_add] using! hconst.add hlinear
   have hresult := hu.comp x haffine
-  convert hresult using 1
-  ext z
-  simp
+  have hfun : (parabolicRescaleAt r p0 u t : V → F) =
+      (u (p0.time + (r : Real) ^ 2 * t) : V → F) ∘
+        fun y => p0.space + (r : Real) • y := by
+    funext y
+    rfl
+  have hderiv : parabolicSpatialDerivativeRescaleAt r p0 du t x =
+      (du (p0.time + (r : Real) ^ 2 * t)
+        (p0.space + (r : Real) • x)).comp
+          ((r : Real) • ContinuousLinearMap.id Real V) := by
+    ext z
+    simp
+  rw [hfun, hderiv]
+  exact hresult
 
 theorem hasFDerivAt_parabolicSpatialDerivativeRescaleAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -730,16 +740,26 @@ theorem hasFDerivAt_parabolicSpatialDerivativeRescaleAt
     have hlinear : HasFDerivAt (fun y : V ↦ (r : Real) • y)
         ((r : Real) • ContinuousLinearMap.id Real V) x :=
       (hasFDerivAt_id x).const_smul (r : Real)
-    simpa only [Pi.add_apply, zero_add] using hconst.add hlinear
+    simpa only [Pi.add_apply, zero_add] using! hconst.add hlinear
   have hcomp := hdu.comp x haffine
   have hscaled := hcomp.const_smul (r : Real)
-  convert hscaled using 1
-  ext z w
-  simp only [parabolicSpatialSecondDerivativeRescaleAt,
-    boundedContinuousFunctionConstSMul_apply,
-    parabolicRescaleAt_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, map_smul]
-  rw [pow_two, mul_smul]
+  have hfun : (parabolicSpatialDerivativeRescaleAt r p0 du t : V → V →L[Real] F) =
+      (r : Real) • (du (p0.time + (r : Real) ^ 2 * t) : V → V →L[Real] F) ∘
+        fun y => p0.space + (r : Real) • y := by
+    ext y z
+    rfl
+  have hderiv : parabolicSpatialSecondDerivativeRescaleAt r p0 d2u t x =
+      (r : Real) • ((d2u (p0.time + (r : Real) ^ 2 * t)
+        (p0.space + (r : Real) • x)).comp
+          ((r : Real) • ContinuousLinearMap.id Real V)) := by
+    ext z w
+    simp only [parabolicSpatialSecondDerivativeRescaleAt,
+      boundedContinuousFunctionConstSMul_apply,
+      parabolicRescaleAt_apply, ContinuousLinearMap.comp_apply,
+      smul_apply, ContinuousLinearMap.id_apply, map_smul]
+    rw [pow_two, mul_smul]
+  rw [hfun, hderiv]
+  exact hscaled
 
 theorem contDiff_two_parabolicRescaleAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -787,7 +807,7 @@ theorem hasDerivAt_parabolicTimeCenteredRescaleAt
   simpa only [parabolicTimeCenteredRescaleAt,
     parabolicTimeCenteredTimeDerivativeRescaleAt,
     Function.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
-    one_smul] using hcomp
+    one_smul] using! hcomp
 
 theorem continuous_parabolicTimeCenteredRescaleAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -898,7 +918,7 @@ theorem contDiff_parabolicRescaleAt_space
       (fun x : V ↦ p0.space + (r : Real) • x) := by
     simpa only [id_eq] using
       (contDiff_const.add (contDiff_id.const_smul (r : Real)))
-  simpa only [parabolicRescaleAt_apply, Function.comp_apply] using
+  simpa only [parabolicRescaleAt_apply, Function.comp_apply] using!
     hspace.comp haffine
 
 @[simp]
@@ -969,9 +989,9 @@ theorem parabolicHolder_dilation
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
     [MetricSpace F] {alpha C : NNReal} {Q : Set (ParabolicPoint V)}
     {f : ParabolicPoint V → F} (r : NNReal)
-    (hf : HolderWith C alpha (Q.restrict f)) :
+    (hf : HolderWith C alpha (Q.domRestrict f)) :
     HolderWith (C * r ^ (alpha : Real)) alpha
-      ((parabolicPreimage r Q).restrict (f ∘ parabolicDilation r)) := by
+      ((parabolicPreimage r Q).domRestrict (f ∘ parabolicDilation r)) := by
   intro p q
   change edist (f (parabolicDilation r p.1)) (f (parabolicDilation r q.1)) ≤ _
   have hpQ : parabolicDilation r p.1 ∈ Q := p.2
@@ -1003,9 +1023,9 @@ theorem parabolicHolder_dilationAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
     [MetricSpace F] {alpha C : NNReal} {Q : Set (ParabolicPoint V)}
     {f : ParabolicPoint V → F} (r : NNReal) (p0 : ParabolicPoint V)
-    (hf : HolderWith C alpha (Q.restrict f)) :
+    (hf : HolderWith C alpha (Q.domRestrict f)) :
     HolderWith (C * r ^ (alpha : Real)) alpha
-      ((parabolicPreimageAt r p0 Q).restrict
+      ((parabolicPreimageAt r p0 Q).domRestrict
         (f ∘ parabolicDilationAt r p0)) := by
   intro p q
   change edist (f (parabolicDilationAt r p0 p.1))
@@ -1043,16 +1063,16 @@ theorem parabolicHolder_timeCenteredDilationAt
     {f : ParabolicPoint V → F} (tau : Real) (r : NNReal)
     (p0 : ParabolicPoint V)
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau r p0) Q P)
-    (hf : HolderWith K alpha (P.restrict f)) :
+    (hf : HolderWith K alpha (P.domRestrict f)) :
     HolderWith (K * r ^ (alpha : Real)) alpha
-      (Q.restrict (f ∘ parabolicTimeCenteredDilationAt tau r p0)) := by
+      (Q.domRestrict (f ∘ parabolicTimeCenteredDilationAt tau r p0)) := by
   let g : Q → P := fun p ↦
     ⟨parabolicTimeCenteredDilationAt tau r p0 p.1, hmap p.2⟩
   have hg : LipschitzWith r g :=
     ((lipschitzWith_parabolicTimeCenteredDilationAt tau r p0).restrict Q)
       |>.subtype_mk fun p ↦ hmap p.2
   have hcomp := hf.comp hg.holderWith
-  simpa only [g, Function.comp_apply, Set.restrict_apply, mul_one] using hcomp
+  simpa only [g, Function.comp_apply, Set.domRestrict_apply, mul_one] using! hcomp
 
 namespace BoundedContinuousFunction
 
@@ -1064,14 +1084,14 @@ theorem parabolicTimeCenteredRescaleAt_holderWith
     (u : Real → BoundedContinuousFunction V F)
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau r p0) Q P)
     (hu : HolderWith K alpha
-      (P.restrict (fun p ↦ u p.time p.space))) :
+      (P.domRestrict (fun p ↦ u p.time p.space))) :
     HolderWith (K * r ^ (alpha : Real)) alpha
-      (Q.restrict (fun p ↦
+      (Q.domRestrict (fun p ↦
         parabolicTimeCenteredRescaleAt tau r p0 u p.time p.space)) := by
-  simpa only [Function.comp_apply, Set.restrict_apply,
+  simpa only [Function.comp_apply, Set.domRestrict_apply,
     parabolicTimeCenteredRescaleAt_apply,
     parabolicTimeCenteredDilationAt_time,
-    parabolicTimeCenteredDilationAt_space] using
+    parabolicTimeCenteredDilationAt_space] using!
       parabolicHolder_timeCenteredDilationAt tau r p0 hmap hu
 
 theorem parabolicTimeCenteredTimeDerivativeRescaleAt_holderWith
@@ -1082,9 +1102,9 @@ theorem parabolicTimeCenteredTimeDerivativeRescaleAt_holderWith
     (dtimeU : Real → BoundedContinuousFunction V F)
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau r p0) Q P)
     (hu : HolderWith K alpha
-      (P.restrict (fun p ↦ dtimeU p.time p.space))) :
+      (P.domRestrict (fun p ↦ dtimeU p.time p.space))) :
     HolderWith (K * r ^ (alpha : Real) * r ^ 2) alpha
-      (Q.restrict (fun p ↦
+      (Q.domRestrict (fun p ↦
         parabolicTimeCenteredTimeDerivativeRescaleAt
           tau r p0 dtimeU p.time p.space)) := by
   have hpull := parabolicHolder_timeCenteredDilationAt
@@ -1095,10 +1115,10 @@ theorem parabolicTimeCenteredTimeDerivativeRescaleAt_holderWith
     simp only [coe_nnnorm, Real.norm_of_nonneg (sq_nonneg (r : Real)),
       NNReal.coe_pow]
   rw [hrnorm] at hscaled
-  simpa only [Function.comp_apply, Set.restrict_apply, Pi.smul_apply,
+  simpa only [Function.comp_apply, Set.domRestrict_apply, Pi.smul_apply,
     parabolicTimeCenteredTimeDerivativeRescaleAt_apply,
     parabolicTimeCenteredDilationAt_time,
-    parabolicTimeCenteredDilationAt_space] using hscaled
+    parabolicTimeCenteredDilationAt_space] using! hscaled
 
 theorem parabolicTimeCenteredSpatialDerivativeRescaleAt_holderWith
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1108,9 +1128,9 @@ theorem parabolicTimeCenteredSpatialDerivativeRescaleAt_holderWith
     (du : Real → BoundedContinuousFunction V (V →L[Real] F))
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau r p0) Q P)
     (hu : HolderWith K alpha
-      (P.restrict (fun p ↦ du p.time p.space))) :
+      (P.domRestrict (fun p ↦ du p.time p.space))) :
     HolderWith (K * r ^ (alpha : Real) * r) alpha
-      (Q.restrict (fun p ↦
+      (Q.domRestrict (fun p ↦
         parabolicTimeCenteredSpatialDerivativeRescaleAt
           tau r p0 du p.time p.space)) := by
   have hpull := parabolicHolder_timeCenteredDilationAt
@@ -1120,10 +1140,10 @@ theorem parabolicTimeCenteredSpatialDerivativeRescaleAt_holderWith
     ext
     simp only [coe_nnnorm, Real.norm_of_nonneg r.coe_nonneg]
   rw [hrnorm] at hscaled
-  simpa only [Function.comp_apply, Set.restrict_apply, Pi.smul_apply,
+  simpa only [Function.comp_apply, Set.domRestrict_apply, Pi.smul_apply,
     parabolicTimeCenteredSpatialDerivativeRescaleAt_apply,
     parabolicTimeCenteredDilationAt_time,
-    parabolicTimeCenteredDilationAt_space] using hscaled
+    parabolicTimeCenteredDilationAt_space] using! hscaled
 
 theorem parabolicTimeCenteredSpatialSecondDerivativeRescaleAt_holderWith
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1134,9 +1154,9 @@ theorem parabolicTimeCenteredSpatialSecondDerivativeRescaleAt_holderWith
       (V →L[Real] V →L[Real] F))
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau r p0) Q P)
     (hu : HolderWith K alpha
-      (P.restrict (fun p ↦ d2u p.time p.space))) :
+      (P.domRestrict (fun p ↦ d2u p.time p.space))) :
     HolderWith (K * r ^ (alpha : Real) * r ^ 2) alpha
-      (Q.restrict (fun p ↦
+      (Q.domRestrict (fun p ↦
         parabolicTimeCenteredSpatialSecondDerivativeRescaleAt
           tau r p0 d2u p.time p.space)) := by
   have hpull := parabolicHolder_timeCenteredDilationAt
@@ -1147,10 +1167,10 @@ theorem parabolicTimeCenteredSpatialSecondDerivativeRescaleAt_holderWith
     simp only [coe_nnnorm, Real.norm_of_nonneg (sq_nonneg (r : Real)),
       NNReal.coe_pow]
   rw [hrnorm] at hscaled
-  simpa only [Function.comp_apply, Set.restrict_apply, Pi.smul_apply,
+  simpa only [Function.comp_apply, Set.domRestrict_apply, Pi.smul_apply,
     parabolicTimeCenteredSpatialSecondDerivativeRescaleAt_apply,
     parabolicTimeCenteredDilationAt_time,
-    parabolicTimeCenteredDilationAt_space] using hscaled
+    parabolicTimeCenteredDilationAt_space] using! hscaled
 
 theorem norm_parabolicTimeCenteredRescaleAt_le
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1165,7 +1185,7 @@ theorem norm_parabolicTimeCenteredRescaleAt_le
   intro p hp
   simpa only [parabolicTimeCenteredRescaleAt_apply,
     parabolicTimeCenteredDilationAt_time,
-    parabolicTimeCenteredDilationAt_space] using hu _ (hmap hp)
+    parabolicTimeCenteredDilationAt_space] using! hu _ (hmap hp)
 
 theorem norm_parabolicTimeCenteredTimeDerivativeRescaleAt_le
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1317,9 +1337,9 @@ theorem parabolicHolder_dilationAt_ball
     [MetricSpace F] {alpha C : NNReal} (r : NNReal) (hr : 0 < r)
     (R : Real) (p0 : ParabolicPoint V) {f : ParabolicPoint V → F}
     (hf : HolderWith C alpha
-      ((Metric.ball p0 ((r : Real) * R)).restrict f)) :
+      ((Metric.ball p0 ((r : Real) * R)).domRestrict f)) :
     HolderWith (C * r ^ (alpha : Real)) alpha
-      ((Metric.ball (parabolicPoint 0 0) R).restrict
+      ((Metric.ball (parabolicPoint 0 0) R).domRestrict
         (f ∘ parabolicDilationAt r p0)) := by
   have hadapt := parabolicHolder_dilationAt r p0 hf
   exact ((HolderWith.restrict_iff.mp hadapt).mono
@@ -1329,9 +1349,9 @@ theorem parabolicHolder_dilationAt_unitBall
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
     [MetricSpace F] {alpha C : NNReal} (r : NNReal) (hr : 0 < r)
     (p0 : ParabolicPoint V) {f : ParabolicPoint V → F}
-    (hf : HolderWith C alpha ((Metric.ball p0 r).restrict f)) :
+    (hf : HolderWith C alpha ((Metric.ball p0 r).domRestrict f)) :
     HolderWith (C * r ^ (alpha : Real)) alpha
-      ((Metric.ball (parabolicPoint 0 0) 1).restrict
+      ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
         (f ∘ parabolicDilationAt r p0)) := by
   have hadapt := parabolicHolder_dilationAt r p0 hf
   exact ((HolderWith.restrict_iff.mp hadapt).mono
@@ -1344,9 +1364,9 @@ theorem parabolicTimeCenteredSourceRescaleAt_holderWith
     (tau : Real) (r : NNReal) (p0 : ParabolicPoint V)
     (f : ParabolicPoint V → F)
     (hmap : MapsTo (parabolicTimeCenteredDilationAt tau r p0) Q P)
-    (hf : HolderWith K alpha (P.restrict f)) :
+    (hf : HolderWith K alpha (P.domRestrict f)) :
     HolderWith (K * r ^ (alpha : Real) * r ^ 2) alpha
-      (Q.restrict (parabolicTimeCenteredSourceRescaleAt tau r p0 f)) := by
+      (Q.domRestrict (parabolicTimeCenteredSourceRescaleAt tau r p0 f)) := by
   have hpull := parabolicHolder_timeCenteredDilationAt
     tau r p0 hmap hf
   have hscaled := hpull.smul ((r : Real) ^ 2)
@@ -1356,7 +1376,7 @@ theorem parabolicTimeCenteredSourceRescaleAt_holderWith
       NNReal.coe_pow]
   rw [hrnorm] at hscaled
   simpa only [parabolicTimeCenteredSourceRescaleAt,
-    Function.comp_apply, Set.restrict_apply, Pi.smul_apply] using hscaled
+    Function.comp_apply, Set.domRestrict_apply, Pi.smul_apply] using! hscaled
 
 theorem norm_parabolicTimeCenteredSourceRescaleAt_le
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1385,9 +1405,9 @@ theorem parabolicSourceRescaleAt_holderWith_unitBall
     [NormedAddCommGroup F] [NormedSpace Real F]
     {alpha K : NNReal} (r : NNReal) (hr : 0 < r)
     (p0 : ParabolicPoint V) (f : ParabolicPoint V → F)
-    (hf : HolderWith K alpha ((Metric.ball p0 r).restrict f)) :
+    (hf : HolderWith K alpha ((Metric.ball p0 r).domRestrict f)) :
     HolderWith (K * r ^ (alpha : Real) * r ^ 2) alpha
-      ((Metric.ball (parabolicPoint 0 0) 1).restrict
+      ((Metric.ball (parabolicPoint 0 0) 1).domRestrict
         (parabolicSourceRescaleAt r p0 f)) := by
   have hadapt := parabolicHolder_dilationAt_unitBall r hr p0 hf
   have hscaled := hadapt.smul ((r : Real) ^ 2)
@@ -1397,7 +1417,7 @@ theorem parabolicSourceRescaleAt_holderWith_unitBall
       NNReal.coe_pow]
   rw [hrnorm] at hscaled
   simpa only [parabolicSourceRescaleAt, Function.comp_apply,
-    Set.restrict_apply, Pi.smul_apply] using hscaled
+    Set.domRestrict_apply, Pi.smul_apply] using! hscaled
 
 theorem norm_parabolicSourceRescaleAt_le_of_mem_unitBall
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1442,7 +1462,7 @@ theorem parabolicTimeDerivative_rescale
   have h := fderiv_comp_smul
     (f := fun t ↦ u t ((r : Real) • p.space))
     (x := p.time) ((r : Real) ^ 2)
-  simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul, mul_one] using
+  simpa only [smul_apply, smul_eq_mul, mul_one] using!
     congrArg (fun L : Real →L[Real] F ↦ L 1) h
 
 theorem parabolicSpatialJet_rescaleAt
@@ -1460,7 +1480,7 @@ theorem parabolicSpatialJet_rescaleAt
       (fun x ↦ u (p0.time + (r : Real) ^ 2 * p.time) (p0.space + x)) :=
     hspace.comp (contDiff_const.add contDiff_id)
   have h := iteratedFDeriv_comp_const_smul (r : Real) htranslated
-  simpa only [iteratedFDeriv_comp_add_left] using congrFun h p.space
+  simpa only [iteratedFDeriv_comp_add_left] using! congrFun h p.space
 
 theorem parabolicTimeDerivative_rescaleAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1478,13 +1498,13 @@ theorem parabolicTimeDerivative_rescaleAt
       fderiv Real
         (fun t ↦ u t (p0.space + (r : Real) • p.space))
         (p0.time + (r : Real) ^ 2 * p.time) := by
-    simpa only [f] using fderiv_comp_add_left
+    simpa only [f] using! fderiv_comp_add_left
       (f := fun t ↦ u t (p0.space + (r : Real) • p.space))
       (x := (r : Real) ^ 2 * p.time) p0.time
   change fderiv Real (fun t ↦ f ((r : Real) ^ 2 * t)) p.time =
     (r : Real) ^ 2 • fderiv Real f ((r : Real) ^ 2 * p.time) at h
   rw [htranslate] at h
-  simpa only [f, ContinuousLinearMap.smul_apply, smul_eq_mul, mul_one] using
+  simpa only [f, smul_apply, smul_eq_mul, mul_one] using!
     congrArg (fun L : Real →L[Real] F ↦ L 1) h
 
 def parabolicC2HolderRescaleConst
@@ -1538,7 +1558,7 @@ theorem eParabolicC2HolderGaugeOn_rescale_le
         simp only [NNReal.coe_mul, NNReal.coe_pow]
   have hspatialHolder : HolderWith
       (C * r ^ (alpha : Real) * r ^ 2) alpha
-      ((parabolicPreimage r Q).restrict
+      ((parabolicPreimage r Q).domRestrict
         (parabolicSpatialJet 2 (parabolicRescale r u))) := by
     have hadapt := parabolicHolder_dilation r
       (parabolicSpatialJet_holderWith_restrict h)
@@ -1547,15 +1567,19 @@ theorem eParabolicC2HolderGaugeOn_rescale_le
       ext
       simp only [coe_nnnorm, Real.norm_of_nonneg (sq_nonneg (r : Real)),
         NNReal.coe_pow]
-    convert hscaled using 1
-    · rw [hrnorm]
-    · funext p
-      simp only [Pi.smul_apply, Function.comp_apply, Set.restrict_apply]
+    have hfun : (parabolicPreimage r Q).domRestrict
+        (parabolicSpatialJet 2 (parabolicRescale r u)) =
+        (r : Real) ^ 2 • (parabolicPreimage r Q).domRestrict
+          (parabolicSpatialJet 2 u ∘ parabolicDilation r) := by
+      funext p
+      simp only [Pi.smul_apply, Function.comp_apply, Set.domRestrict_apply]
       exact (parabolicSpatialJet_rescale r u 2 p.1
         ((hspace (parabolicDilation r p.1) p.2).of_le le_rfl))
+    rw [hfun]
+    simpa only [hrnorm] using! hscaled
   have htimeHolder : HolderWith
       (C * r ^ (alpha : Real) * r ^ 2) alpha
-      ((parabolicPreimage r Q).restrict
+      ((parabolicPreimage r Q).domRestrict
         (parabolicTimeDerivative (parabolicRescale r u))) := by
     have hadapt := parabolicHolder_dilation r
       (parabolicTimeDerivative_holderWith_restrict h)
@@ -1564,17 +1588,21 @@ theorem eParabolicC2HolderGaugeOn_rescale_le
       ext
       simp only [coe_nnnorm, Real.norm_of_nonneg (sq_nonneg (r : Real)),
         NNReal.coe_pow]
-    convert hscaled using 1
-    · rw [hrnorm]
-    · funext p
-      simp only [Pi.smul_apply, Function.comp_apply, Set.restrict_apply]
+    have hfun : (parabolicPreimage r Q).domRestrict
+        (parabolicTimeDerivative (parabolicRescale r u)) =
+        (r : Real) ^ 2 • (parabolicPreimage r Q).domRestrict
+          (parabolicTimeDerivative u ∘ parabolicDilation r) := by
+      funext p
+      simp only [Pi.smul_apply, Function.comp_apply, Set.domRestrict_apply]
       exact parabolicTimeDerivative_rescale r u p.1
+    rw [hfun]
+    simpa only [hrnorm] using! hscaled
   have hresult := eParabolicC2HolderGaugeOn_le Cspatial (r ^ 2 * C)
     (C * r ^ (alpha : Real) * r ^ 2)
     (C * r ^ (alpha : Real) * r ^ 2)
     hspatial htime hspatialHolder htimeHolder
   unfold parabolicC2HolderRescaleConst
-  simpa only [Cspatial] using hresult
+  simpa only [Cspatial] using! hresult
 
 theorem eParabolicC2HolderGaugeOn_rescaleAt_le
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1625,7 +1653,7 @@ theorem eParabolicC2HolderGaugeOn_rescaleAt_le
         simp only [NNReal.coe_mul, NNReal.coe_pow]
   have hspatialHolder : HolderWith
       (C * r ^ (alpha : Real) * r ^ 2) alpha
-      ((parabolicPreimageAt r p0 Q).restrict
+      ((parabolicPreimageAt r p0 Q).domRestrict
         (parabolicSpatialJet 2 (parabolicRescaleAt r p0 u))) := by
     have hadapt := parabolicHolder_dilationAt r p0
       (parabolicSpatialJet_holderWith_restrict h)
@@ -1634,15 +1662,19 @@ theorem eParabolicC2HolderGaugeOn_rescaleAt_le
       ext
       simp only [coe_nnnorm, Real.norm_of_nonneg (sq_nonneg (r : Real)),
         NNReal.coe_pow]
-    convert hscaled using 1
-    · rw [hrnorm]
-    · funext p
-      simp only [Pi.smul_apply, Function.comp_apply, Set.restrict_apply]
+    have hfun : (parabolicPreimageAt r p0 Q).domRestrict
+        (parabolicSpatialJet 2 (parabolicRescaleAt r p0 u)) =
+        (r : Real) ^ 2 • (parabolicPreimageAt r p0 Q).domRestrict
+          (parabolicSpatialJet 2 u ∘ parabolicDilationAt r p0) := by
+      funext p
+      simp only [Pi.smul_apply, Function.comp_apply, Set.domRestrict_apply]
       exact parabolicSpatialJet_rescaleAt r p0 u 2 p.1
         ((hspace (parabolicDilationAt r p0 p.1) p.2).of_le le_rfl)
+    rw [hfun]
+    simpa only [hrnorm] using! hscaled
   have htimeHolder : HolderWith
       (C * r ^ (alpha : Real) * r ^ 2) alpha
-      ((parabolicPreimageAt r p0 Q).restrict
+      ((parabolicPreimageAt r p0 Q).domRestrict
         (parabolicTimeDerivative (parabolicRescaleAt r p0 u))) := by
     have hadapt := parabolicHolder_dilationAt r p0
       (parabolicTimeDerivative_holderWith_restrict h)
@@ -1651,17 +1683,21 @@ theorem eParabolicC2HolderGaugeOn_rescaleAt_le
       ext
       simp only [coe_nnnorm, Real.norm_of_nonneg (sq_nonneg (r : Real)),
         NNReal.coe_pow]
-    convert hscaled using 1
-    · rw [hrnorm]
-    · funext p
-      simp only [Pi.smul_apply, Function.comp_apply, Set.restrict_apply]
+    have hfun : (parabolicPreimageAt r p0 Q).domRestrict
+        (parabolicTimeDerivative (parabolicRescaleAt r p0 u)) =
+        (r : Real) ^ 2 • (parabolicPreimageAt r p0 Q).domRestrict
+          (parabolicTimeDerivative u ∘ parabolicDilationAt r p0) := by
+      funext p
+      simp only [Pi.smul_apply, Function.comp_apply, Set.domRestrict_apply]
       exact parabolicTimeDerivative_rescaleAt r p0 u p.1
+    rw [hfun]
+    simpa only [hrnorm] using! hscaled
   have hresult := eParabolicC2HolderGaugeOn_le Cspatial (r ^ 2 * C)
     (C * r ^ (alpha : Real) * r ^ 2)
     (C * r ^ (alpha : Real) * r ^ 2)
     hspatial htime hspatialHolder htimeHolder
   unfold parabolicC2HolderRescaleConst
-  simpa only [Cspatial] using hresult
+  simpa only [Cspatial] using! hresult
 
 theorem eParabolicC2HolderGaugeOn_le_of_rescaleAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1707,7 +1743,7 @@ theorem eParabolicC2HolderGaugeOn_parabolicCylinder_Ioo_le_of_timeTranslate
   have hresult := eParabolicC2HolderGaugeOn_le_of_rescaleAt 1 alpha C
     (by norm_num) (parabolicPoint tau 0)
     (parabolicCylinder (Set.Ioo (a + tau) (b + tau)) Omega) u hspace hinput
-  simpa only [inv_one] using hresult
+  simpa only [inv_one] using! hresult
 
 theorem eParabolicC2HolderGaugeOn_scaledBall_le_of_rescaleAt
     {V F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1748,8 +1784,8 @@ theorem eParabolicC2HolderGaugeOn_ball_le_of_rescaleAt
       parabolicC2HolderRescaleConst r⁻¹ alpha C := by
   have hspace' : ∀ p ∈ Metric.ball p0 ((r : Real) * 1),
       ContDiff Real 2 (u p.time) := by
-    simpa only [mul_one] using hspace
-  simpa using eParabolicC2HolderGaugeOn_scaledBall_le_of_rescaleAt
+    simpa only [mul_one] using! hspace
+  simpa using! eParabolicC2HolderGaugeOn_scaledBall_le_of_rescaleAt
     r alpha C hr p0 1 u hspace' h
 
 def parabolicLinearMap {V W : Type*} [NormedAddCommGroup V]
@@ -1829,9 +1865,9 @@ theorem parabolicHolder_linearMap
     [NormedAddCommGroup W] [NormedSpace Real W]
     [MetricSpace F] {alpha C : NNReal} {Q : Set (ParabolicPoint V)}
     {f : ParabolicPoint V → F} (L : W →L[Real] V)
-    (hf : HolderWith C alpha (Q.restrict f)) :
+    (hf : HolderWith C alpha (Q.domRestrict f)) :
     HolderWith (C * (max 1 ‖L‖₊) ^ (alpha : Real)) alpha
-      ((parabolicLinearPreimage L Q).restrict
+      ((parabolicLinearPreimage L Q).domRestrict
         (f ∘ parabolicLinearMap L)) := by
   let g : parabolicLinearPreimage L Q → Q := fun p =>
     ⟨parabolicLinearMap L p.1, p.2⟩
@@ -1839,7 +1875,7 @@ theorem parabolicHolder_linearMap
     ((lipschitzWith_parabolicLinearMap L).restrict
       (parabolicLinearPreimage L Q)).subtype_mk fun p => p.2
   have hcomp := hf.comp hg.holderWith
-  simpa only [g, Function.comp_apply, Set.restrict_apply, mul_one] using hcomp
+  simpa only [g, Function.comp_apply, Set.domRestrict_apply, mul_one] using! hcomp
 
 theorem parabolicSpatialJet_linearEquiv
     {V W F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1856,7 +1892,7 @@ theorem parabolicSpatialJet_linearEquiv
   have h := L.iteratedFDerivWithin_comp_right (u p.time)
     uniqueDiffOn_univ (mem_univ (L p.space)) j
   simpa only [preimage_univ, iteratedFDerivWithin_univ,
-    Function.comp_apply] using h
+    Function.comp_apply] using! h
 
 theorem parabolicTimeDerivative_linearEquiv
     {V W F : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -1919,7 +1955,7 @@ theorem eContDiffHolderGaugeOn_linearEquiv_le
         simp only [v, Function.comp_apply, ContinuousLinearEquiv.apply_symm_apply]
       rw [hfun] at hlin
       simpa only [v, q, preimage_univ, iteratedFDerivWithin_univ,
-        Function.comp_apply, ContinuousLinearEquiv.apply_symm_apply] using hlin
+        Function.comp_apply, ContinuousLinearEquiv.apply_symm_apply] using! hlin
     rw [heq]
     have hnorm := ContinuousMultilinearMap.norm_compContinuousLinearMap_le
       (iteratedFDeriv Real j v q)
@@ -1931,15 +1967,15 @@ theorem eContDiffHolderGaugeOn_linearEquiv_le
             (fun _ ↦ (L.symm : V →L[Real] V))‖ ≤
             ‖iteratedFDeriv Real 0 v q‖ * 1 := by
           simpa only [Finset.prod_fin_eq_prod_range,
-            Finset.prod_range_zero] using hnorm
+            Finset.prod_range_zero] using! hnorm
         _ = ‖iteratedFDeriv Real 0 v q‖ := mul_one _
-        _ ≤ (Cspatial 0 : Real) := by simpa only [Cspatial] using hadapt
+        _ ≤ (Cspatial 0 : Real) := by simpa only [Cspatial] using! hadapt
     · calc
         ‖(iteratedFDeriv Real 1 v q).compContinuousLinearMap
             (fun _ ↦ (L.symm : V →L[Real] V))‖ ≤
             ‖iteratedFDeriv Real 1 v q‖ *
               ‖(L.symm : V →L[Real] V)‖ := by
-          simpa only [Fin.prod_univ_one] using hnorm
+          simpa only [Fin.prod_univ_one] using! hnorm
         _ ≤ C * (R : Real) := by
           exact mul_le_mul hadapt (by exact_mod_cast hR)
             (norm_nonneg _) C.coe_nonneg
@@ -1952,7 +1988,7 @@ theorem eContDiffHolderGaugeOn_linearEquiv_le
             ‖iteratedFDeriv Real 2 v q‖ *
               (‖(L.symm : V →L[Real] V)‖ *
                 ‖(L.symm : V →L[Real] V)‖) := by
-          simpa only [Fin.prod_univ_two] using hnorm
+          simpa only [Fin.prod_univ_two] using! hnorm
         _ ≤ C * ((R : Real) * R) := by
           apply mul_le_mul hadapt
           · exact mul_le_mul (by exact_mod_cast hR) (by exact_mod_cast hR)
@@ -1963,53 +1999,57 @@ theorem eContDiffHolderGaugeOn_linearEquiv_le
           simp only [Cspatial, NNReal.coe_mul, NNReal.coe_pow]
           ring
   have hholder : HolderWith (R ^ 2 * (C * R ^ (alpha : Real))) alpha
-      ((Set.univ : Set V).restrict (iteratedFDeriv Real 2 u)) := by
+      ((Set.univ : Set V).domRestrict (iteratedFDeriv Real 2 u)) := by
     have hadapt := topSpatialJet_holderWith_restrict h'
     have hadaptGlobal : HolderWith C alpha (iteratedFDeriv Real 2 v) :=
       holderOnWith_univ.mp (HolderWith.restrict_iff.mp hadapt)
     have hdomain : HolderWith (C * R ^ (alpha : Real)) alpha
-        ((Set.univ : Set V).restrict
+        ((Set.univ : Set V).domRestrict
           (iteratedFDeriv Real 2 v ∘ L.symm)) := by
       have hraw := hadaptGlobal.comp L.symm.lipschitz.holderWith
       have hraw' : HolderWith
           (C * ‖(L.symm : V →L[Real] V)‖₊ ^ (alpha : Real)) alpha
           (iteratedFDeriv Real 2 v ∘ L.symm) := by
-        simpa only [mul_one] using hraw
+        simpa only [mul_one] using! hraw
       have hweak : HolderWith (C * R ^ (alpha : Real)) alpha
           (iteratedFDeriv Real 2 v ∘ L.symm) :=
         hraw'.mono (by gcongr)
       have hrestrict := (hweak.holderOnWith (Set.univ : Set V)).holderWith
-      simpa only [Function.comp_apply, Set.restrict_apply, mul_one] using hrestrict
+      simpa only [Function.comp_apply, Set.domRestrict_apply, mul_one] using! hrestrict
     let P := ContinuousMultilinearMap.compContinuousLinearMapL
       (F := F) (fun _ : Fin 2 ↦ (L.symm : V →L[Real] V))
     have hP0 := lipschitzWith_compContinuousLinearMapL
       (F := F) 2 (L.symm : V →L[Real] V)
     have hprod : (∏ _ : Fin 2, ‖(L.symm : V →L[Real] V)‖₊) ≤ R ^ 2 := by
-      simpa only [Fin.prod_univ_two, pow_two] using
-        mul_le_mul hR hR (zero_le _) (zero_le _)
+      simpa only [Fin.prod_univ_two, pow_two] using!
+        mul_le_mul hR hR (by positivity) (by positivity)
     have hP : LipschitzWith (R ^ 2) P := hP0.weaken hprod
     have hcomp := hP.holderWith.comp hdomain
     have hcomp' : HolderWith (R ^ 2 * (C * R ^ (alpha : Real))) alpha
-        (P ∘ (Set.univ : Set V).restrict
+        (P ∘ (Set.univ : Set V).domRestrict
           (iteratedFDeriv Real 2 v ∘ L.symm)) := by
-      simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul] using hcomp
-    convert hcomp' using 1
-    funext x
-    have hlin := L.symm.iteratedFDerivWithin_comp_right v
-      uniqueDiffOn_univ (mem_univ (L.symm x.1)) 2
-    have hfun : v ∘ L.symm = u := by
-      funext y
-      simp only [v, Function.comp_apply, ContinuousLinearEquiv.apply_symm_apply]
-    rw [hfun] at hlin
-    simpa only [P, v, Function.comp_apply, Set.restrict_apply,
-      preimage_univ, iteratedFDerivWithin_univ,
-      ContinuousLinearEquiv.apply_symm_apply] using hlin
+      simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul] using! hcomp
+    have hfun : (Set.univ : Set V).domRestrict (iteratedFDeriv Real 2 u) =
+        P ∘ (Set.univ : Set V).domRestrict
+          (iteratedFDeriv Real 2 v ∘ L.symm) := by
+      funext x
+      have hlin := L.symm.iteratedFDerivWithin_comp_right v
+        uniqueDiffOn_univ (mem_univ (L.symm x.1)) 2
+      have hv : v ∘ L.symm = u := by
+        funext y
+        simp only [v, Function.comp_apply, ContinuousLinearEquiv.apply_symm_apply]
+      rw [hv] at hlin
+      simpa only [P, v, Function.comp_apply, Set.domRestrict_apply,
+        preimage_univ, iteratedFDerivWithin_univ,
+        ContinuousLinearEquiv.apply_symm_apply] using! hlin
+    rw [hfun]
+    exact hcomp'
   have hresult := eContDiffHolderGaugeOn_le Cspatial
     (R ^ 2 * (C * R ^ (alpha : Real))) hspatial hholder
   unfold contDiffHolderLinearEquivConst
   simpa only [R, Cspatial, Finset.sum_range_succ, Finset.sum_range_zero,
     zero_add, NNReal.coe_add, NNReal.coe_mul, NNReal.coe_pow,
-    NNReal.coe_rpow] using hresult
+    NNReal.coe_rpow] using! hresult
 
 def parabolicC2HolderLinearEquivConst
     {V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
@@ -2061,12 +2101,12 @@ theorem eParabolicC2HolderGaugeOn_linearEquiv_le
     let q := parabolicLinearMap (L.symm : V →L[Real] V) p
     have hq : q ∈ Q := by
       simpa only [q, Q, parabolicCylinder, parabolicLinearMap_time,
-        parabolicLinearMap_space, mem_setOf_eq, mem_univ, and_true] using hp
+        parabolicLinearMap_space, mem_ofPred_eq, mem_univ, and_true] using! hp
     have heq : parabolicSpatialJet j u p =
         (parabolicSpatialJet j v q).compContinuousLinearMap
           (fun _ => (L.symm : V →L[Real] V)) := by
       have hlin := parabolicSpatialJet_linearEquiv L.symm v j p
-      simpa only [v, q, ContinuousLinearEquiv.apply_symm_apply] using hlin
+      simpa only [v, q, ContinuousLinearEquiv.apply_symm_apply] using! hlin
     rw [heq]
     have hnorm := ContinuousMultilinearMap.norm_compContinuousLinearMap_le
       (parabolicSpatialJet j v q)
@@ -2078,16 +2118,16 @@ theorem eParabolicC2HolderGaugeOn_linearEquiv_le
             (fun _ => (L.symm : V →L[Real] V))‖ ≤
             ‖parabolicSpatialJet 0 v q‖ * 1 := by
           simpa only [Finset.prod_fin_eq_prod_range,
-            Finset.prod_range_zero] using hnorm
+            Finset.prod_range_zero] using! hnorm
         _ = ‖parabolicSpatialJet 0 v q‖ := mul_one _
         _ ≤ (Cspatial 0 : Real) := by
-          simpa only [Cspatial] using hadapt
+          simpa only [Cspatial] using! hadapt
     · calc
         ‖(parabolicSpatialJet 1 v q).compContinuousLinearMap
             (fun _ => (L.symm : V →L[Real] V))‖ ≤
             ‖parabolicSpatialJet 1 v q‖ *
               ‖(L.symm : V →L[Real] V)‖ := by
-          simpa only [Fin.prod_univ_one] using hnorm
+          simpa only [Fin.prod_univ_one] using! hnorm
         _ ≤ C * (R : Real) := by
           exact mul_le_mul hadapt (by exact_mod_cast hR)
             (norm_nonneg _) C.coe_nonneg
@@ -2100,7 +2140,7 @@ theorem eParabolicC2HolderGaugeOn_linearEquiv_le
             ‖parabolicSpatialJet 2 v q‖ *
               (‖(L.symm : V →L[Real] V)‖ *
                 ‖(L.symm : V →L[Real] V)‖) := by
-          simpa only [Fin.prod_univ_two] using hnorm
+          simpa only [Fin.prod_univ_two] using! hnorm
         _ ≤ C * ((R : Real) * R) := by
           apply mul_le_mul hadapt
           · exact mul_le_mul (by exact_mod_cast hR) (by exact_mod_cast hR)
@@ -2115,62 +2155,70 @@ theorem eParabolicC2HolderGaugeOn_linearEquiv_le
     let q := parabolicLinearMap (L.symm : V →L[Real] V) p
     have hq : q ∈ Q := by
       simpa only [q, Q, parabolicCylinder, parabolicLinearMap_time,
-        parabolicLinearMap_space, mem_setOf_eq, mem_univ, and_true] using hp
+        parabolicLinearMap_space, mem_ofPred_eq, mem_univ, and_true] using! hp
     have heq := parabolicTimeDerivative_linearEquiv L.symm v p
     have heq' : parabolicTimeDerivative u p =
         parabolicTimeDerivative v q := by
-      simpa only [v, q, ContinuousLinearEquiv.apply_symm_apply] using heq
+      simpa only [v, q, ContinuousLinearEquiv.apply_symm_apply] using! heq
     rw [heq']
     exact parabolicTimeDerivative_norm_le h' hq
   have hspatialHolder : HolderWith
       (R ^ 2 * (C * R ^ (alpha : Real))) alpha
-      (Q.restrict (parabolicSpatialJet 2 u)) := by
+      (Q.domRestrict (parabolicSpatialJet 2 u)) := by
     have hadapt := parabolicSpatialJet_holderWith_restrict h'
     have hdomain : HolderWith (C * R ^ (alpha : Real)) alpha
-        (Q.restrict (parabolicSpatialJet 2 v ∘
+        (Q.domRestrict (parabolicSpatialJet 2 v ∘
           parabolicLinearMap (L.symm : V →L[Real] V))) := by
       have hraw := parabolicHolder_linearMap
         (L.symm : V →L[Real] V) hadapt
-      simpa only [R, Q, parabolicLinearPreimage_cylinder_univ] using hraw
+      simpa only [R, Q, parabolicLinearPreimage_cylinder_univ] using! hraw
     let P := ContinuousMultilinearMap.compContinuousLinearMapL
       (F := F) (fun _ : Fin 2 => (L.symm : V →L[Real] V))
     have hP0 := lipschitzWith_compContinuousLinearMapL
       (F := F) 2 (L.symm : V →L[Real] V)
     have hprod : (∏ _ : Fin 2, ‖(L.symm : V →L[Real] V)‖₊) ≤ R ^ 2 := by
-      simpa only [Fin.prod_univ_two, pow_two] using
-        mul_le_mul hR hR (zero_le _) (zero_le _)
+      simpa only [Fin.prod_univ_two, pow_two] using!
+        mul_le_mul hR hR (by positivity) (by positivity)
     have hP : LipschitzWith (R ^ 2) P := hP0.weaken hprod
     have hcomp := hP.holderWith.comp hdomain
     have hcomp' : HolderWith
         (R ^ 2 * (C * R ^ (alpha : Real))) alpha
-        (P ∘ Q.restrict (parabolicSpatialJet 2 v ∘
+        (P ∘ Q.domRestrict (parabolicSpatialJet 2 v ∘
           parabolicLinearMap (L.symm : V →L[Real] V))) := by
-      simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul] using hcomp
-    convert hcomp' using 1
-    funext p
-    have hlin := parabolicSpatialJet_linearEquiv L.symm v 2 p.1
-    simpa only [P, v, Function.comp_apply, Set.restrict_apply,
-      ContinuousLinearEquiv.apply_symm_apply] using hlin
+      simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul] using! hcomp
+    have hfun : Q.domRestrict (parabolicSpatialJet 2 u) =
+        P ∘ Q.domRestrict (parabolicSpatialJet 2 v ∘
+          parabolicLinearMap (L.symm : V →L[Real] V)) := by
+      funext p
+      have hlin := parabolicSpatialJet_linearEquiv L.symm v 2 p.1
+      simpa only [P, v, Function.comp_apply, Set.domRestrict_apply,
+        ContinuousLinearEquiv.apply_symm_apply] using! hlin
+    rw [hfun]
+    exact hcomp'
   have htimeHolder : HolderWith (C * R ^ (alpha : Real)) alpha
-      (Q.restrict (parabolicTimeDerivative u)) := by
+      (Q.domRestrict (parabolicTimeDerivative u)) := by
     have hadapt := parabolicTimeDerivative_holderWith_restrict h'
     have hraw := parabolicHolder_linearMap
       (L.symm : V →L[Real] V) hadapt
     have hraw' : HolderWith (C * R ^ (alpha : Real)) alpha
-        (Q.restrict (parabolicTimeDerivative v ∘
+        (Q.domRestrict (parabolicTimeDerivative v ∘
           parabolicLinearMap (L.symm : V →L[Real] V))) := by
-      simpa only [R, Q, parabolicLinearPreimage_cylinder_univ] using hraw
-    convert hraw' using 1
-    funext p
-    have hlin := parabolicTimeDerivative_linearEquiv L.symm v p.1
-    simpa only [v, Function.comp_apply, Set.restrict_apply,
-      ContinuousLinearEquiv.apply_symm_apply] using hlin
+      simpa only [R, Q, parabolicLinearPreimage_cylinder_univ] using! hraw
+    have hfun : Q.domRestrict (parabolicTimeDerivative u) =
+        Q.domRestrict (parabolicTimeDerivative v ∘
+          parabolicLinearMap (L.symm : V →L[Real] V)) := by
+      funext p
+      have hlin := parabolicTimeDerivative_linearEquiv L.symm v p.1
+      simpa only [v, Function.comp_apply, Set.domRestrict_apply,
+        ContinuousLinearEquiv.apply_symm_apply] using! hlin
+    rw [hfun]
+    exact hraw'
   have hresult := eParabolicC2HolderGaugeOn_le Cspatial C
     (R ^ 2 * (C * R ^ (alpha : Real)))
     (C * R ^ (alpha : Real)) hspatial htime hspatialHolder htimeHolder
   unfold parabolicC2HolderLinearEquivConst
   simpa only [Q, R, Cspatial, Finset.sum_range_succ, Finset.sum_range_zero,
     zero_add, NNReal.coe_add, NNReal.coe_mul, NNReal.coe_pow,
-    NNReal.coe_rpow] using hresult
+    NNReal.coe_rpow] using! hresult
 
 end DifferentialGeometry.Analysis.Schauder

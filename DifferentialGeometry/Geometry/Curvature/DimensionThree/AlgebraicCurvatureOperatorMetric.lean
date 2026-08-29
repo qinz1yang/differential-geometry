@@ -3,6 +3,7 @@ import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -262,8 +263,10 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
   classical
   have hinv : MetricInverseInBasis (I := I) g x basis
       (identityInvMetric (Idx := Fin 3)) := by
-    simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g basis horth
+    intro i j
+    constructor <;> simp [identityInvMetric, diagonalInvMetric,
+      show g.inner x (basis i) (basis j) = if i = j then 1 else 0 by
+        simpa [OrthonormalBasisAt, delta3] using horth i j]
   have hcoord := inner0S_eq_coord (I := I) g x 4 basis
     (identityInvMetric (Idx := Fin 3)) hinv
     (A : Tensor04At (I := I) (M := M) x) (B : Tensor04At (I := I) (M := M) x)
@@ -495,12 +498,12 @@ theorem dist_algebraicCurvatureTensor_eq_two_mul_matrixDist_of_orthonormal
       2 * dist
         (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x)))
         (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (B : Tensor04At (I := I) (M := M) x))) := by
-  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
     (tensor0SMetricData (I := I) g x 4).toCore
-  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
-  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
   let FA : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
@@ -516,7 +519,6 @@ theorem dist_algebraicCurvatureTensor_eq_two_mul_matrixDist_of_orthonormal
     rw [← matrixToEuclidean_sub]
     rw [← tensor04CurvatureOperatorMatrixAt_sub (I := I) basis
       (A : Tensor04At (I := I) (M := M) x) (B : Tensor04At (I := I) (M := M) x)]
-    rfl
   have hnorm : ‖(A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x)‖ ^ 2 =
       (2 * ‖FA - FB‖) ^ 2 := by
     calc
@@ -555,12 +557,12 @@ theorem curvatureOperatorMatrixAt_eq_zero_of_orthonormal
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (hA : curvatureOperatorMatrixAt (I := I) x basis A = 0) :
     A = 0 := by
-  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
     (tensor0SMetricData (I := I) g x 4).toCore
-  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+  let : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
-  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+  let : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
   have h0 : matrixToEuclidean
@@ -568,7 +570,6 @@ theorem curvatureOperatorMatrixAt_eq_zero_of_orthonormal
         ((0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) : Tensor04At (I := I) (M := M) x)) = 0 := by
     ext ij
     simp [matrixToEuclidean]
-    rfl
   have hA' : matrixToEuclidean
       (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x)) = 0 := by
     rw [tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt]

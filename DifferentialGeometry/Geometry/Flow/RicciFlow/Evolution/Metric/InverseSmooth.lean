@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -97,7 +99,7 @@ noncomputable def matrixCLM
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem contMDiffOn_finset_sum
+theorem contMDiffOn_finsetSum
     {ι V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
     {n : WithTop ℕ∞}
     {t : Set (Real × M)}
@@ -121,7 +123,12 @@ theorem contMDiffOn_finset_sum
     have hsum : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, V) n
         (fun p => s.sum (fun x => f x p)) t := by
       exact ih (fun x hx => hf x (Finset.mem_insert_of_mem hx))
-    simpa [Finset.sum_insert ha] using hfa.add hsum
+    rw [show (fun p => (insert a s).sum fun x => f x p) =
+        f a + fun p => s.sum fun x => f x p by
+      funext p
+      rw [Finset.sum_insert ha]
+      simp only [Pi.add_apply]]
+    exact hfa.add hsum
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem frameGramCLM_spacetimeSmooth
@@ -141,9 +148,9 @@ theorem frameGramCLM_spacetimeSmooth
       (D.carrier ×ˢ u) := by
   classical
   unfold frameGramCLM
-  apply contMDiffOn_finset_sum
+  apply contMDiffOn_finsetSum
   intro i _hi
-  apply contMDiffOn_finset_sum
+  apply contMDiffOn_finsetSum
   intro j _hj
   exact (hreg.frameMetricSpacetimeSmooth i j).smul contMDiffOn_const
 
@@ -226,7 +233,7 @@ theorem matrixInvDerivEntry
         (Pi.single (M := fun _ : Idx => Real) j (1 : Real))) i
         =
         2 * (∑ a : Idx, ∑ b : Idx, gInv i a * gInv b j * ric a b) := by
-          simp [ContinuousLinearMap.mul_apply, Finset.mul_sum,
+          simp [mul_apply_eq_comp, Finset.mul_sum,
             mul_assoc, mul_left_comm, mul_comm, sum_mul_pi_single]
     _ = 2 * (∑ a : Idx, ∑ b : Idx, gInv i a * gInv j b * ric a b) := by
           congr 1
@@ -497,9 +504,9 @@ theorem coordFrameGramCLM_spacetimeSmooth
       (D.regular ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
   classical
   unfold frameGramCLM
-  apply contMDiffOn_finset_sum
+  apply contMDiffOn_finsetSum
   intro i _hi
-  apply contMDiffOn_finset_sum
+  apply contMDiffOn_finsetSum
   intro j _hj
   exact (coordMetricSmooth (I := I) S hS x0 i j).smul contMDiffOn_const
 
@@ -622,9 +629,9 @@ theorem coordFrameGramCLM_contOn
       (D.carrier ×ˢ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
   classical
   unfold frameGramCLM
-  apply continuousOn_finset_sum
+  apply continuousOn_finsetSum
   intro i _hi
-  apply continuousOn_finset_sum
+  apply continuousOn_finsetSum
   intro j _hj
   exact (coordMetricContOn (I := I) S hS x0 i j).smul continuousOn_const
 

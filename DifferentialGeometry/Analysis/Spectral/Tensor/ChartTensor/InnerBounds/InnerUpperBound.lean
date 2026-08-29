@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Metric
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -44,10 +43,10 @@ private lemma exists_chartTensorInnerPointwise_rs_model_unit_sphere_upper_bound
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r s ℝ E, ‖T‖ = 1 →
-          chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b T T ≤ M_ub := by
   classical
-  haveI : ProperSpace (TensorRSModel r s ℝ E) :=
+  have : ProperSpace (TensorRSModel r s ℝ E) :=
     FiniteDimensional.proper_real (TensorRSModel r s ℝ E)
   set K_M : Set M := tsupport (fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hK_M_def
@@ -63,7 +62,7 @@ private lemma exists_chartTensorInnerPointwise_rs_model_unit_sphere_upper_bound
   set K : Set (M × TensorRSModel r s ℝ E) := K_M ×ˢ S_T with hK_def
   have hK_compact : IsCompact K := hK_M_compact.prod hS_T_compact
   set Q : M × TensorRSModel r s ℝ E → ℝ := fun bT =>
-    chartTensorInnerPointwise_rs_model (I := I) (M := M)
+    chartTensorInnerPointwiseRsModel (I := I) (M := M)
       g r s α bT.1 bT.2 bT.2 with hQ_def
   have hQ_contOn_full :
       ContinuousOn Q
@@ -117,28 +116,28 @@ private lemma chartTensorInnerPointwise_rs_model_le_mul_sq_norm_on_pouTsupport
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
       ∀ T : TensorRSModel r s ℝ E, ‖T‖ = 1 →
-        chartTensorInnerPointwise_rs_model (I := I) (M := M)
+        chartTensorInnerPointwiseRsModel (I := I) (M := M)
           g r s α b T T ≤ M_ub) :
     ∀ b : M, b ∈ tsupport (fun x : M =>
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
       ∀ T : TensorRSModel r s ℝ E,
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T ≤
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T ≤
           M_ub * ‖T‖ ^ 2 := by
   classical
   intro b hb T
   by_cases hT0 : T = 0
   · subst hT0
-    have h_left : chartTensorInnerPointwise_rs_model
+    have h_left : chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b (0 : TensorRSModel r s ℝ E)
           (0 : TensorRSModel r s ℝ E) = 0 := by
       have h_zero_smul :
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b
               ((0 : ℝ) • (0 : TensorRSModel r s ℝ E))
               (0 : TensorRSModel r s ℝ E) =
           (0 : ℝ) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b
                 (0 : TensorRSModel r s ℝ E) (0 : TensorRSModel r s ℝ E) :=
         chartTensorInnerPointwise_rs_model_smul_left
@@ -146,15 +145,15 @@ private lemma chartTensorInnerPointwise_rs_model_le_mul_sq_norm_on_pouTsupport
           (0 : TensorRSModel r s ℝ E)
       have h_eq : (0 : TensorRSModel r s ℝ E) =
           ((0 : ℝ) • (0 : TensorRSModel r s ℝ E)) := by rw [zero_smul]
-      calc chartTensorInnerPointwise_rs_model
+      calc chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b
               (0 : TensorRSModel r s ℝ E) (0 : TensorRSModel r s ℝ E)
-          = chartTensorInnerPointwise_rs_model
+          = chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b
                 ((0 : ℝ) • (0 : TensorRSModel r s ℝ E))
                 (0 : TensorRSModel r s ℝ E) := by rw [← h_eq]
         _ = (0 : ℝ) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b
                 (0 : TensorRSModel r s ℝ E) (0 : TensorRSModel r s ℝ E) :=
               h_zero_smul
@@ -163,19 +162,19 @@ private lemma chartTensorInnerPointwise_rs_model_le_mul_sq_norm_on_pouTsupport
     rw [h_left, h_right]
   · have hT_ne : ‖T‖ ≠ 0 := norm_ne_zero_iff.mpr hT0
     have hT_pos : 0 < ‖T‖ := (norm_pos_iff).mpr hT0
-    letI : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
+    let : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
       NormedSpace.toNormSMulClass
     set T' : TensorRSModel r s ℝ E := ‖T‖⁻¹ • T with hT'_def
     have hT'_norm : ‖T'‖ = 1 := by
       rw [hT'_def, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hT_pos]
       field_simp
-    have h_T' : chartTensorInnerPointwise_rs_model
+    have h_T' : chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T' T' ≤ M_ub :=
       h_ub b hb T' hT'_norm
     have h_bilin :
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T' T' =
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T' T' =
           (‖T‖⁻¹ * ‖T‖⁻¹) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b T T := by
       rw [hT'_def]
       rw [chartTensorInnerPointwise_rs_model_smul_left
@@ -186,15 +185,15 @@ private lemma chartTensorInnerPointwise_rs_model_le_mul_sq_norm_on_pouTsupport
     rw [h_bilin] at h_T'
     have h_sq_nn : 0 ≤ ‖T‖ ^ 2 := by positivity
     have h_mul : ((‖T‖⁻¹ * ‖T‖⁻¹) *
-        chartTensorInnerPointwise_rs_model
+        chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T) * ‖T‖ ^ 2 ≤
         M_ub * ‖T‖ ^ 2 :=
       mul_le_mul_of_nonneg_right h_T' h_sq_nn
     have h_lhs :
         ((‖T‖⁻¹ * ‖T‖⁻¹) *
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T) * ‖T‖ ^ 2 =
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T := by
       have h_sq_eq : ‖T‖ ^ 2 = ‖T‖ * ‖T‖ := by ring
       rw [h_sq_eq]
@@ -211,7 +210,7 @@ theorem exists_chartTensorInnerPointwise_rs_model_upper_bound_on_pouTsupport
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r s ℝ E,
-          chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b T T ≤ C * ‖T‖ ^ 2 := by
   classical
   obtain ⟨M_ub, hM_ub_nn, h_ub⟩ :=

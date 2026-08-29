@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -113,6 +112,7 @@ private theorem lieJetKernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiem
   intro x
   rfl
 
+omit [SigmaCompactSpace M] in
 private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
@@ -136,6 +136,7 @@ private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianM
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection y) d) := rfl
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
+omit [SigmaCompactSpace M] in
 private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x

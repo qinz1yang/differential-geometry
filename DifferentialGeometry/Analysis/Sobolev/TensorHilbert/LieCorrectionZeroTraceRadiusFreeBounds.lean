@@ -32,6 +32,7 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 private theorem trace_grid_of
     (p : ℕ) (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (CD S : ℕ → ℝ) (hCD_nn : ∀ i, 0 ≤ CD i)
@@ -202,6 +203,7 @@ private theorem trace_grid_of
   have hfixed' := mul_le_mul_of_nonneg_left hfixed (by norm_num : (0 : ℝ) ≤ 2)
   linarith
 
+omit [SigmaCompactSpace M] in
 theorem trace_grid_unif
     (p : ℕ) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -251,7 +253,7 @@ theorem trace_grid_unif
     match m with
     | 0 =>
         rw [iteratedCovGrad_zero]
-        simpa only [S, fr, if_pos] using
+        simpa only [S, fr, if_pos, Nat.add_zero] using
           (cometricTrace_riemannianFiberNormSq_p (I := I) (M := M) p g₀ y)
     | (m' + 1) =>
         rw [iteratedCovGrad_eq_zero_of_covGrad_eq_zero (I := I) (M := M) g₀
@@ -268,6 +270,7 @@ theorem trace_grid_unif
     trace_grid_of (I := I) (M := M) p g₀ CD S hCD_nn (hCD g₀) hS_nn hS
       g₁ P htie hδ_le hδ_nonneg hbound σ i x
 
+omit [SigmaCompactSpace M] in
 theorem trace2_grid_unif
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧

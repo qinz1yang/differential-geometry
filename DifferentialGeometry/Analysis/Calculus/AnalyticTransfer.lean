@@ -23,7 +23,8 @@ lemma tendsto_slope_of_hasFDerivAt {f : X → F} {f' : X →L[𝕜] F} {x : X}
       (𝓝[≠] (0 : 𝕜)) (𝓝 (f' v)) := by
     exact hf.lim v (l := 𝓝[≠] (0 : 𝕜)) (c := fun t : 𝕜 => t⁻¹) (by
       convert (tendsto_norm_cobounded_atTop (E := 𝕜)).comp
-        (tendsto_inv₀_nhdsNE_zero (α := 𝕜)) using 1)
+        (tendsto_inv₀_nhdsNE_zero (α := 𝕜)) using 1
+      rfl)
   convert hlim using 1
   ext t
   rw [inv_inv]
@@ -289,7 +290,9 @@ theorem contDiff_of_comp_linearIsometry_omega {E : Type*} [NormedAddCommGroup E]
   intro x hx
   let S : Submodule ℝ F := e.toLinearMap.range
   have heS : IsClosed (S : Set F) := by
-    simpa [S] using he
+    dsimp only [S]
+    rw [LinearMap.coe_range, LinearIsometry.coe_toLinearMap]
+    exact he
   have h₁ : AnalyticOnNhd ℝ (fun x : X => ⟨e (g x),
     LinearMap.mem_range_self (e : E →ₗ[ℝ] F) (g x)⟩ : X → S)
       Set.univ := by

@@ -358,7 +358,7 @@ theorem appHs_add
     ccToHsLin_dense (I := I) (M := M) g b (by positivity)
   have hLR : (L : _ → _) = R := hdense.equalizer L.continuous R.continuous (by
     funext W
-    simp only [Function.comp_apply, L, R, ι, ContinuousLinearMap.add_apply,
+    simp only [Function.comp_apply, L, R, ι, add_apply,
       ccToHsLin_apply]
     rw [appHs_core, appHs_core, appHs_core, operatorFieldApplication_add_left,
       ccTensorToHs_add])
@@ -376,7 +376,7 @@ theorem appHs_smul
     ccToHsLin_dense (I := I) (M := M) g b (by positivity)
   have hLR : (L : _ → _) = R := hdense.equalizer L.continuous R.continuous (by
     funext W
-    simp only [Function.comp_apply, L, R, ι, ContinuousLinearMap.smul_apply,
+    simp only [Function.comp_apply, L, R, ι, smul_apply,
       ccToHsLin_apply]
     rw [appHs_core, appHs_core, operatorFieldApplication_smul_left, ccTensorToHs_smul])
   exact congrFun hLR U

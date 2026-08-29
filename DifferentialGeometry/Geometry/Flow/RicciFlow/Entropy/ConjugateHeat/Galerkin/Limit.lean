@@ -177,7 +177,8 @@ private theorem supp_right_lip
   · intro t ht
     by_cases hi : i ∈ F N
     · simpa only [f', if_pos hi] using hdu N t ht i hi
-    · simpa only [f', if_neg hi, norm_zero] using (L i).property
+    · simp only [f', if_neg hi, norm_zero]
+      positivity
 
 private lemma real_abs_neg_mul_add_le {lam v c A K : ℝ} (hlam : 0 ≤ lam)
     (hv : |v| ≤ A) (hc : |c| ≤ K) : |-lam * v + c| ≤ lam * A + K := by
@@ -309,7 +310,8 @@ theorem gal_subseq_on
     have hsq :
         ‖scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 2‖ ^ 2 ≤ B2 := by
       rw [galVec_norm_sq (I := I) (M := M)]
-      simpa only [galerkinEnergy] using hB2 N t ht
+      convert hB2 N t ht using 1
+      norm_num [galerkinEnergy]
     have hsqrt := Real.sqrt_le_sqrt hsq
     rwa [Real.sqrt_sq (norm_nonneg _)] at hsqrt
   have hpert_apply (t : Real) (ht : t ∈ Icc (0 : Real) tau)
@@ -352,6 +354,11 @@ theorem gal_subseq_on
     have hlam : 0 ≤ TensorEigenIdx.lambda (I := I) (M := M) i :=
       tensor_lambda_nonneg (I := I) (M := M) i
     have h := real_abs_neg_mul_add_le hlam (hcoord N t ht' i) (hforce N t ht' i)
+    have hL : (L i : Real) =
+        TensorEigenIdx.lambda (I := I) (M := M) i * Real.sqrt B0 +
+          Kpert * Real.sqrt B2 := by
+      rfl
+    rw [hL]
     simpa only [Real.norm_eq_abs, rhs] using h
   have hlip := supp_right_lip (tau := tau) Fs V rhs L hcont
     (by
@@ -361,7 +368,7 @@ theorem gal_subseq_on
   have hC : ∀ _ : TensorEigenIdx (I := I) (M := M) q 0 0,
       0 ≤ Real.sqrt B0 := fun _ => Real.sqrt_nonneg B0
   let Kq := tensorResolventL2_isCompactOperator (I := I) (M := M) q 0 0
-  letI : Countable (TensorEigenIdx (I := I) (M := M) q 0 0) :=
+  let : Countable (TensorEigenIdx (I := I) (M := M) q 0 0) :=
     DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.countable_tensorEigenIdx
       (I := I) (M := M) (g := q) (r := 0) (s := 0) Kq
   obtain ⟨phi, hphi, ulim, hulim_cont, hconv⟩ :=
@@ -441,7 +448,15 @@ theorem scalar_gal_subseq
   have hpert : ContinuousOn
       (fun t : Real ↦ scalarGalPert (I := I) (M := M) S T t)
       (Icc (0 : Real) tau) := by
-    simpa only [scalarGalPert, q, Inc] using (hcont2.mono hIcc2).add hPot
+    have hfun :
+        (fun t : Real ↦ scalarGalPert (I := I) (M := M) S T t) =
+          ((fun t : Real ↦ lapDiffA20 (I := I) (M := M) S.family.metric T t) +
+            fun t : Real ↦ (conjA1 (I := I) (M := M) S T t).comp Inc) := by
+      funext t
+      with_unfolding_all
+        rfl
+    rw [hfun]
+    exact (hcont2.mono hIcc2).add hPot
   refine ⟨tau, htau, htau_one, ?_⟩
   apply gal_subseq_on (I := I) (M := M) S T htau
   · dsimp
@@ -519,8 +534,13 @@ theorem galLimPath_cont
     rwa [Real.sqrt_sq (norm_nonneg _)] at hsqrt
   have hcoeff (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       Continuous (fun t => (W t).coeff i) := by
-    simpa only [W, galLimPath, galLimHs, q] using
-      (hlim.lim_cont i).comp continuous_subtype_val
+    have hfun : (fun t => (W t).coeff i) =
+        (fun t : Real => ulim t i) ∘ Subtype.val := by
+      funext t
+      with_unfolding_all
+        rfl
+    rw [hfun]
+    exact (hlim.lim_cont i).comp continuous_subtype_val
   have hcont := cont_of_coeff (I := I) (M := M) hm W
     (Real.sqrt_nonneg B) hW_bound hcoeff
   have heq : (fun t =>

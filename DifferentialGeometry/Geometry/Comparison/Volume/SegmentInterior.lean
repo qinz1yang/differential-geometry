@@ -32,8 +32,8 @@ private local instance instBorelTangent (x : M) :
     BorelSpace (TangentSpace I x) := ⟨rfl⟩
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def SegInt [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
   (g : SmoothRiemannianMetric I M)
@@ -43,8 +43,8 @@ def SegInt [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   {v | ∃ c : ℝ, 1 < c ∧ c • v ∈ SegDom (I := I) g hEnorm x}
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem mem_segInt [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -56,8 +56,8 @@ theorem mem_segInt [PseudoEMetricSpace M] [IsRiemannianManifold I M]
       ∃ c : ℝ, 1 < c ∧ c • v ∈ SegDom (I := I) g hEnorm x :=
   Iff.rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem segInt_subset [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -74,8 +74,8 @@ theorem segInt_subset [ConnectedSpace M] [PseudoEMetricSpace M]
   have h := segDom_smul (I := I) g hEnorm hcv hs0 hs1
   simpa only [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] using h
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem segInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -92,8 +92,8 @@ theorem segInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
   simpa only [smul_smul, mul_comm] using
     (segDom_smul (I := I) g hEnorm hcv hs0 hs1)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -129,8 +129,8 @@ theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
   rw [hEq]
   exact MeasurableSet.biUnion (Set.to_countable Q) fun q _ => hA q
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -266,7 +266,8 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
   have hσ_smooth : ContMDiff 𝓘(ℝ, ℝ) I ∞ σ :=
     isGeodesic_contMDiff (I := I) g hσ_geo hσ_cont
   have ha_unit : g.inner (γv L) a a = 1 := by
-    simpa only [a] using hγv_unit L
+    convert hγv_unit L using 1
+    all_goals rfl
   have hσ_unit (t : ℝ) :
       g.inner (σ t)
           (mfderiv 𝓘(ℝ, ℝ) I σ t 1)
@@ -364,15 +365,24 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
   have huz : (z : E) = (u : E) := by
     have hderiv := congrArg
       (fun γ : ℝ → M => (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) : E)) hcurves
-    simpa only [γw, γv,
-      intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm x] using hderiv
+    have hγw0 :
+        (mfderiv 𝓘(ℝ, ℝ) I γw 0 (1 : ℝ) : E) = (z : E) := by
+      change (mfderiv 𝓘(ℝ, ℝ) I
+        (intrinsicGeodesic (I := I) g hEnorm x z) 0 (1 : ℝ) : E) = (z : E)
+      exact intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm x z
+    have hγv0 :
+        (mfderiv 𝓘(ℝ, ℝ) I γv 0 (1 : ℝ) : E) = (u : E) := by
+      change (mfderiv 𝓘(ℝ, ℝ) I
+        (intrinsicGeodesic (I := I) g hEnorm x u) 0 (1 : ℝ) : E) = (u : E)
+      exact intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm x u
+    exact hγw0.symm.trans (hderiv.trans hγv0)
   calc
     v = L • u := hLu.symm
     _ = L • z := congrArg (fun y : E => L • y) huz.symm
     _ = w := hLz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segInt_no_conj [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -382,7 +392,7 @@ theorem segInt_no_conj [PseudoEMetricSpace M]
     {x : M} {v : TangentSpace I x}
     (hv : v ∈ SegInt (I := I) g hEnorm x) :
     ¬ IsConjVec (I := I) g hEnorm x (v : E) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   by_cases hv0 : v = 0
   · subst v
     simp only [IsConjVec, not_not]
@@ -403,8 +413,8 @@ theorem segInt_no_conj [PseudoEMetricSpace M]
   simpa only [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] using hno
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segEnd_ray_sub [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -434,8 +444,8 @@ theorem segEnd_ray_sub [PseudoEMetricSpace M]
     exact haD
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -447,7 +457,7 @@ theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
         ((normalFrame (I := I) (E := E) g x) ⁻¹'
           (SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x)) = 0 := by
   classical
-  letI : Nontrivial E :=
+  let : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (show 0 < Module.finrank ℝ E from NeZero.pos _)
   let L := normalFrame (I := I) (E := E) g x
@@ -481,9 +491,15 @@ theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
           SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x at hr
         change L (s.1 • u.1) ∈
           SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x at hs
-        exact (segEnd_ray_sub (I := I) g hEnorm x (L u.1))
-          (by simpa only [map_smul] using hr)
-          (by simpa only [map_smul] using hs)
+        have hr' : (r : ℝ) • L (u : E) ∈
+            SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x := by
+          rw [← map_smul]
+          exact hr
+        have hs' : (s : ℝ) • L (u : E) ∈
+            SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x := by
+          rw [← map_smul]
+          exact hs
+        exact (segEnd_ray_sub (I := I) g hEnorm x (L u.1)) hr' hs'
       have hbase :
           (Measure.comap ((↑) : Ioi (0 : ℝ) → ℝ) volume) A = 0 := by
         rw [comap_subtype_coe_apply measurableSet_Ioi]

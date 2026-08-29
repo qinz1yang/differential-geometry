@@ -52,7 +52,7 @@ theorem eq_zero_of_nonnegative_gronwall_derivative_bound {T K : ℝ} (hT : 0 < T
     ⟨hs.1, lt_of_lt_of_le hs.2 ht.2⟩
   have hlim : Tendsto energy (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 0) :=
     hlimT.mono_left (nhdsWithin_mono 0 hsub)
-  haveI : (nhdsWithin (0 : ℝ) (Ioo 0 t)).NeBot := by
+  have : (nhdsWithin (0 : ℝ) (Ioo 0 t)).NeBot := by
     rw [nhdsWithin_Ioo_eq_nhdsGT htpos]
     infer_instance
   have heps : Tendsto (fun ε : ℝ => ε) (nhdsWithin (0 : ℝ) (Ioo 0 t)) (𝓝 0) :=
@@ -179,6 +179,7 @@ noncomputable def strongSpectralSolutionOfSmoothPath
       exact hs ((Set.uIoc_subset_uIcc).trans
         (uIcc_subset_Icc hzeroMem ht) hsI)
     have hDint : IntegrableOn D (Icc (0 : ℝ) T) volume := by
+      change Integrable D (volume.restrict (Icc (0 : ℝ) T))
       simpa only [timeMeasure] using hD.integrable (by norm_num)
     have hint : IntervalIntegrable D volume 0 t :=
       MeasureTheory.IntegrableOn.intervalIntegrable
@@ -214,9 +215,9 @@ noncomputable def strongSpectralSolutionOfSmoothPath
     have hloAE :
         ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo)
             =ᵐ[timeMeasure T] lo.toFun := by
-      simpa only [timeH1.toTimeL2_apply] using
-        DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn
-          lo.continuousOn_toFun
+      rw [timeH1.toTimeL2_apply, timeH1.toFunL2]
+      exact DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn
+        lo.continuousOn_toFun
     filter_upwards [hinclAE, hhiRep, hloAE, hmem] with t hit hhit hlot ht
     rw [hit, hhit, hlot, htoFun t (Set.mem_Icc_of_Ioo ht)]
     exact tensorHsInclusion_smoothCcToTensorHs (I := I) (M := M) g₀

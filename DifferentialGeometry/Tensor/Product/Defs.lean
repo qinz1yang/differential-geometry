@@ -22,35 +22,37 @@ variable {G₁ G₂ : Type*}
   [NormedAddCommGroup G₁] [NormedSpace 𝕜 G₁] [FiniteDimensional 𝕜 G₁]
   [NormedAddCommGroup G₂] [NormedSpace 𝕜 G₂] [FiniteDimensional 𝕜 G₂]
 
-noncomputable def TensorProduct.mapL (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
+noncomputable def TensorProduct.mapLFiniteDimensional (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
     (F₁ ⊗[𝕜] F₂) →L[𝕜] (G₁ ⊗[𝕜] G₂) :=
   (TensorProduct.map L₁.toLinearMap L₂.toLinearMap).toContinuousLinearMap
 
 omit [FiniteDimensional 𝕜 G₂] in
 @[simp]
-theorem TensorProduct.mapL_tmul (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) (v : F₁) (w : F₂) :
-    TensorProduct.mapL L₁ L₂ (v ⊗ₜ w) = L₁ v ⊗ₜ L₂ w := by
-  simp [TensorProduct.mapL, TensorProduct.map_tmul]
+theorem TensorProduct.mapLFiniteDimensional_tmul (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) (v : F₁) (w : F₂) :
+    TensorProduct.mapLFiniteDimensional L₁ L₂ (v ⊗ₜ w) = L₁ v ⊗ₜ L₂ w := by
+  simp [TensorProduct.mapLFiniteDimensional, TensorProduct.map_tmul]
 
 omit [FiniteDimensional 𝕜 G₂] in
-theorem TensorProduct.mapL_add_left (L₁ L₁' : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
-    TensorProduct.mapL (L₁ + L₁') L₂ = TensorProduct.mapL L₁ L₂ + TensorProduct.mapL L₁' L₂ := by
-  ext x; simp [TensorProduct.mapL, TensorProduct.map_add_left]
+theorem TensorProduct.mapLFiniteDimensional_add_left (L₁ L₁' : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
+    TensorProduct.mapLFiniteDimensional (L₁ + L₁') L₂ =
+      TensorProduct.mapLFiniteDimensional L₁ L₂ + TensorProduct.mapLFiniteDimensional L₁' L₂ := by
+  ext x; simp [TensorProduct.mapLFiniteDimensional, TensorProduct.map_add_left]
 
 omit [FiniteDimensional 𝕜 G₂] in
-theorem TensorProduct.mapL_add_right (L₁ : F₁ →L[𝕜] G₁) (L₂ L₂' : F₂ →L[𝕜] G₂) :
-    TensorProduct.mapL L₁ (L₂ + L₂') = TensorProduct.mapL L₁ L₂ + TensorProduct.mapL L₁ L₂' := by
-  ext x; simp [TensorProduct.mapL, TensorProduct.map_add_right]
+theorem TensorProduct.mapLFiniteDimensional_add_right (L₁ : F₁ →L[𝕜] G₁) (L₂ L₂' : F₂ →L[𝕜] G₂) :
+    TensorProduct.mapLFiniteDimensional L₁ (L₂ + L₂') =
+      TensorProduct.mapLFiniteDimensional L₁ L₂ + TensorProduct.mapLFiniteDimensional L₁ L₂' := by
+  ext x; simp [TensorProduct.mapLFiniteDimensional, TensorProduct.map_add_right]
 
 omit [FiniteDimensional 𝕜 G₂] in
-theorem TensorProduct.mapL_smul_left (c : 𝕜) (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
-    TensorProduct.mapL (c • L₁) L₂ = c • TensorProduct.mapL L₁ L₂ := by
-  ext x; simp [TensorProduct.mapL, TensorProduct.map_smul_left]
+theorem TensorProduct.mapLFiniteDimensional_smul_left (c : 𝕜) (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
+    TensorProduct.mapLFiniteDimensional (c • L₁) L₂ = c • TensorProduct.mapLFiniteDimensional L₁ L₂ := by
+  ext x; simp [TensorProduct.mapLFiniteDimensional, TensorProduct.map_smul_left]
 
 omit [FiniteDimensional 𝕜 G₂] in
-theorem TensorProduct.mapL_smul_right (c : 𝕜) (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
-    TensorProduct.mapL L₁ (c • L₂) = c • TensorProduct.mapL L₁ L₂ := by
-  ext x; simp [TensorProduct.mapL, TensorProduct.map_smul_right]
+theorem TensorProduct.mapLFiniteDimensional_smul_right (c : 𝕜) (L₁ : F₁ →L[𝕜] G₁) (L₂ : F₂ →L[𝕜] G₂) :
+    TensorProduct.mapLFiniteDimensional L₁ (c • L₂) = c • TensorProduct.mapLFiniteDimensional L₁ L₂ := by
+  ext x; simp [TensorProduct.mapLFiniteDimensional, TensorProduct.map_smul_right]
 
 noncomputable def TensorProduct.mapLBilinear :
     (F₁ →L[𝕜] G₁) →L[𝕜] (F₂ →L[𝕜] G₂) →L[𝕜]
@@ -62,10 +64,10 @@ noncomputable def TensorProduct.mapLBilinear :
     := ContinuousLinearMap.finiteDimensional
   let innerLM (L₁ : F₁ →L[𝕜] G₁) :
       (F₂ →L[𝕜] G₂) →ₗ[𝕜] ((F₁ ⊗[𝕜] F₂) →L[𝕜] (G₁ ⊗[𝕜] G₂)) :=
-    { toFun := fun L₂ => TensorProduct.mapL (𝕜 := 𝕜) L₁ L₂
-      map_add' := TensorProduct.mapL_add_right (𝕜 := 𝕜) (L₁ := L₁)
+    { toFun := fun L₂ => TensorProduct.mapLFiniteDimensional (𝕜 := 𝕜) L₁ L₂
+      map_add' := TensorProduct.mapLFiniteDimensional_add_right (𝕜 := 𝕜) (L₁ := L₁)
       map_smul' := fun c L₂ =>
-        TensorProduct.mapL_smul_right (𝕜 := 𝕜) (L₁ := L₁) (L₂ := L₂) c }
+        TensorProduct.mapLFiniteDimensional_smul_right (𝕜 := 𝕜) (L₁ := L₁) (L₂ := L₂) c }
   let innerCLM (L₁ : F₁ →L[𝕜] G₁) :
       (F₂ →L[𝕜] G₂) →L[𝕜] ((F₁ ⊗[𝕜] F₂) →L[𝕜] (G₁ ⊗[𝕜] G₂)) :=
     (innerLM (L₁ := L₁)).toContinuousLinearMap
@@ -77,12 +79,12 @@ noncomputable def TensorProduct.mapLBilinear :
         intro L₁ L₁'
         ext L₂ x
         simpa [innerCLM, innerLM] using congrArg (fun f => f x)
-          (TensorProduct.mapL_add_left (𝕜 := 𝕜) (L₂ := L₂) (L₁ := L₁) (L₁' := L₁'))
+          (TensorProduct.mapLFiniteDimensional_add_left (𝕜 := 𝕜) (L₂ := L₂) (L₁ := L₁) (L₁' := L₁'))
       map_smul' := by
         intro c L₁
         ext L₂ x
         simpa [innerCLM, innerLM] using congrArg (fun f => f x)
-          (TensorProduct.mapL_smul_left (𝕜 := 𝕜) (L₂ := L₂) (L₁ := L₁) c) }
+          (TensorProduct.mapLFiniteDimensional_smul_left (𝕜 := 𝕜) (L₂ := L₂) (L₁ := L₁) c) }
   have h : Continuous outerLM := @LinearMap.continuous_of_finiteDimensional
     _ _ (F₁ →L[𝕜] G₁) _ _ _ _ _ ((F₂ →L[𝕜] G₂) →L[𝕜] ((F₁ ⊗[𝕜] F₂) →L[𝕜] (G₁ ⊗[𝕜] G₂)))
     _ _ _ _ _ _ _ _ outerLM

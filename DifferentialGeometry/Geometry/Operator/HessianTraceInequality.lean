@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 
+
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -156,7 +157,7 @@ private theorem hessianTrace_parseval_of_orthonormal
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem hessianTrace_chart_norm_of_boundaryless
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     normSq0S (I := I) g x 2 (hessTensorAt (I := I) g f x) =
@@ -168,7 +169,7 @@ private theorem hessianTrace_chart_norm_of_boundaryless
     chartBasisFamily (I := I) x hbase
   let cgInv : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g x x i j
-  have hcinv : MetricInverseInBasis_gen (I := I) g x cbasis cgInv := by
+  have hcinv : MetricInverseInBasisGen (I := I) g x cbasis cgInv := by
     intro i j
     constructor
     · have hmatrix := congrArg (fun A => A i j)
@@ -179,7 +180,8 @@ private theorem hessianTrace_chart_norm_of_boundaryless
         (chartGramMatrix_mul_chartInvGramMatrix (I := I) g x hbase)
       simpa [Matrix.mul_apply, Matrix.one_apply, cbasis, cgInv,
         chartBasisFamily_apply] using hmatrix
-  have hcb : ∀ i : Fin (Module.finrank ℝ E), cbasis i = (chartModelBasis E) i := by
+  have hcb : ∀ i : Fin (Module.finrank ℝ E),
+      cbasis i = (centeredChartTangentBasis (I := I) x) i := by
     intro i
     rw [show cbasis i = chartBasisVecFiber (I := I) x i x by
       exact chartBasisFamily_apply (I := I) x hbase i]
@@ -195,7 +197,9 @@ private theorem hessianTrace_chart_norm_of_boundaryless
     intro i j
     rw [hessTensorAt_apply]
     rw [hcb i, hcb j]
-    rw [hessFun_eq_cov_grad (I := I) g hf x ((chartModelBasis E) i) ((chartModelBasis E) j)]
+    rw [hessFun_eq_cov_grad (I := I) g hf x
+      (centeredChartTangentBasis (I := I) x i)
+      (centeredChartTangentBasis (I := I) x j)]
     rw [← chartHessianTensor_eq_inner_cov_gradFun_basis_of_matrix_identity
       (I := I) g hf x (chartHessianMatrixIdentity_holds (I := I) g hf x) i j]
   rw [normSq0S_eq_coord (I := I) g x 2 cbasis cgInv hcinv (hessTensorAt (I := I) g f x)]
@@ -246,20 +250,30 @@ private theorem hessianTrace_chart_norm_of_boundaryless
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    (Δ_g (I := I) g ⟨f, hf⟩ x)^2 ≤
+    (ΔG (I := I) g ⟨f, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) * chartHessFrobeniusSq (I := I) g f x := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have htr : Δ_g (I := I) g ⟨f, hf⟩ x =
-      ∑ i : Fin (Module.finrank ℝ E), hessFun (I := I) g f x (basis i) (basis i) := by
+  have hfinrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := by
+    have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact mem_chart_source H x
+    exact ((trivializationAt E (TangentSpace I) x).linearEquivAt ℝ x hx).finrank_eq
+  have hdim : (Module.finrank ℝ (TangentSpace I x) : ℝ) =
+      (Module.finrank ℝ E : ℝ) := by
+    exact_mod_cast hfinrank
+  have htr : ΔG (I := I) g ⟨f, hf⟩ x =
+      ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+        hessFun (I := I) g f x (basis i) (basis i) := by
     have hlap : laplacian (I := I) (LeviCivita (I := I) g) g f x =
         metricTracePair0SAt (I := I) g (hessTensorAt (I := I) g f x) :=
       lap_eq_hess_on (I := I) g isOpen_univ hf.contMDiffOn (Set.mem_univ x)
     have htrace : metricTracePair0SAt (I := I) g (hessTensorAt (I := I) g f x) =
-        ∑ i : Fin (Module.finrank ℝ E), hessFun (I := I) g f x (basis i) (basis i) := by
+        ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+          hessFun (I := I) g f x (basis i) (basis i) := by
       rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
         (fun i j => if i = j then (1 : ℝ) else 0)
         (metricInverseInBasis_of_orthonormal (I := I) g basis hON)
@@ -277,33 +291,37 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
         exact absurd (Finset.mem_univ i) hi
     rw [← laplacian_levi_eq (I := I) g hf x]
     exact hlap.trans htrace
-  have hineq : (∑ i : Fin (Module.finrank ℝ E),
+  have hineq : (∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
         hessFun (I := I) g f x (basis i) (basis i))^2 ≤
-      (Module.finrank ℝ E : ℝ) *
-        ∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
+      (Module.finrank ℝ (TangentSpace I x) : ℝ) *
+        ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+          ∑ j : Fin (Module.finrank ℝ (TangentSpace I x)),
             (hessFun (I := I) g f x (basis i) (basis j))^2 := by
     have hb := bilinForm_trace_sq_le_card_mul_frobenius_sq
       (V := TangentSpace I x) (B := hessFun (I := I) g f x) (v := basis)
-    simpa [Fintype.card_fin] using hb
+    rw [Fintype.card_fin] at hb
+    exact hb
   have hpv : normSq0S (I := I) g x 2 (hessTensorAt (I := I) g f x) =
-      ∑ i : Fin (Module.finrank ℝ E),
-        ∑ j : Fin (Module.finrank ℝ E),
+      ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+        ∑ j : Fin (Module.finrank ℝ (TangentSpace I x)),
           (hessFun (I := I) g f x (basis i) (basis j))^2 :=
     hessianTrace_parseval_of_orthonormal (I := I) g x basis hON f
-  have hfr : (∑ i : Fin (Module.finrank ℝ E),
-        ∑ j : Fin (Module.finrank ℝ E),
+  have hfr : (∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+        ∑ j : Fin (Module.finrank ℝ (TangentSpace I x)),
           (hessFun (I := I) g f x (basis i) (basis j))^2) =
       chartHessFrobeniusSq (I := I) g f x :=
     Eq.trans (Eq.symm hpv)
       (hessianTrace_chart_norm_of_boundaryless (I := I) g hf x)
-  have htr' : (Δ_g (I := I) g ⟨f, hf⟩ x)^2 ≤
+  have htr' : (ΔG (I := I) g ⟨f, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) *
-        ∑ i : Fin (Module.finrank ℝ E),
-          ∑ j : Fin (Module.finrank ℝ E),
+        ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
+          ∑ j : Fin (Module.finrank ℝ (TangentSpace I x)),
             (hessFun (I := I) g f x (basis i) (basis j))^2 := by
     rw [htr]
-    exact hineq
+    calc
+      _ ≤ (Module.finrank ℝ (TangentSpace I x) : ℝ) *
+          ∑ i, ∑ j, (hessFun (I := I) g f x (basis i) (basis j)) ^ 2 := hineq
+      _ = _ := by rw [hdim]
   rw [← hfr]
   exact htr'
 

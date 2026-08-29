@@ -207,7 +207,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     singleModeScaledCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) i gf =
       (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ))⁻¹ •
         singleModeTimeL2 (I := I) (M := M) (σ := σ) i gf := by
-  rw [singleModeScaledCLM, ContinuousLinearMap.smul_apply]
+  rw [singleModeScaledCLM, smul_apply]
 
 def singleModeIsometry {σ : ℝ}
     {T : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s) :

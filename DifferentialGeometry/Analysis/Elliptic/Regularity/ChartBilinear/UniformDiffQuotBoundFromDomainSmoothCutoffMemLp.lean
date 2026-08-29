@@ -95,7 +95,7 @@ theorem cutoff_fChart_memLp_two_univ
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
     (hχ_cs : HasCompactSupport χ)
     (hχ_supp_in : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (fun x => χ x * D.f_chart x) 2 (volume : Measure EuclN) := by
+    MemLp (fun x => χ x * D.fChart x) 2 (volume : Measure EuclN) := by
   classical
   have hχ_cont : Continuous χ := hχ_smooth.continuous
   obtain ⟨M_χ, hM_χ_nn, hM_χ_bd⟩ : ∃ M_χ : ℝ, 0 ≤ M_χ ∧ ∀ x, |χ x| ≤ M_χ := by
@@ -117,29 +117,29 @@ theorem cutoff_fChart_memLp_two_univ
   have h_supp_compact : IsCompact (tsupport χ) := hχ_cs
   have h_supp_meas : MeasurableSet (tsupport χ) :=
     (isClosed_tsupport χ).measurableSet
-  have hf_l2_supp : MemLp D.f_chart 2
+  have hf_l2_supp : MemLp D.fChart 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.f_chart_memLp_weighted h_supp_compact h_supp_meas hχ_supp_in
-  have h_f_aesm_restrict : AEStronglyMeasurable D.f_chart
+  have h_f_aesm_restrict : AEStronglyMeasurable D.fChart
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hf_l2_supp.aestronglyMeasurable
   have h_pt_le : ∀ᵐ x ∂((volume : Measure EuclN).restrict (tsupport χ)),
-      ‖χ x * D.f_chart x‖ ≤ ‖M_χ * D.f_chart x‖ := by
+      ‖χ x * D.fChart x‖ ≤ ‖M_χ * D.fChart x‖ := by
     refine Filter.Eventually.of_forall ?_
     intro x
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul,
       abs_of_nonneg hM_χ_nn]
     exact mul_le_mul_of_nonneg_right (hM_χ_bd x) (abs_nonneg _)
   have h_prod_aesm_restrict :
-      AEStronglyMeasurable (fun x => χ x * D.f_chart x)
+      AEStronglyMeasurable (fun x => χ x * D.fChart x)
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hχ_cont.aestronglyMeasurable.restrict.mul h_f_aesm_restrict
-  have h_restrict_lp : MemLp (fun x => χ x * D.f_chart x) 2
+  have h_restrict_lp : MemLp (fun x => χ x * D.fChart x) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     MemLp.mono (hf_l2_supp.const_mul M_χ) h_prod_aesm_restrict h_pt_le
-  have h_indicator_eq : (tsupport χ).indicator (fun x => χ x * D.f_chart x) =
-      (fun x => χ x * D.f_chart x) := by
+  have h_indicator_eq : (tsupport χ).indicator (fun x => χ x * D.fChart x) =
+      (fun x => χ x * D.fChart x) := by
     funext x
     by_cases hx : x ∈ tsupport χ
     · rw [Set.indicator_of_mem hx]
@@ -147,7 +147,7 @@ theorem cutoff_fChart_memLp_two_univ
       have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
       rw [hχx, zero_mul]
   have h_indicator_lp :
-      MemLp ((tsupport χ).indicator (fun x => χ x * D.f_chart x)) 2
+      MemLp ((tsupport χ).indicator (fun x => χ x * D.fChart x)) 2
         (volume : Measure EuclN) :=
     (MeasureTheory.memLp_indicator_iff_restrict h_supp_meas).mpr h_restrict_lp
   rw [h_indicator_eq] at h_indicator_lp

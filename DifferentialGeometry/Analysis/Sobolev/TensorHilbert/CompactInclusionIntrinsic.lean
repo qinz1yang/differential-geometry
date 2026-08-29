@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -148,7 +147,7 @@ theorem tensorH1ComplToTensorL2_isCompactOperator_intrinsic
     have h := h_uniform_bound (S n) α Idx Jdx
     have h_coe : (‖S n‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖S n‖ := by
       rw [show ((‖S n‖₊ : ℝ≥0∞)) = ‖S n‖ₑ from (enorm_eq_nnnorm (S n)).symm,
-        ← ofReal_norm_eq_enorm (S n)]
+        ← ofReal_norm (S n)]
     rw [h_coe] at h
     have h_mul : ENNReal.ofReal C * ENNReal.ofReal ‖S n‖ =
         ENNReal.ofReal (C * ‖S n‖) :=

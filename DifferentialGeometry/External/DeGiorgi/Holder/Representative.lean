@@ -24,7 +24,7 @@ theorem solution_integrableOn_unitBall
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} (hsol : IsSolution A.1 u) :
     IntegrableOn u (Metric.ball (0 : E) 1) volume := by
-  letI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  let : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     refine ⟨?_⟩
     simpa [Measure.restrict_apply, measurableSet_ball] using
       (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := (1 : ℝ)))
@@ -86,7 +86,7 @@ theorem dyadicBallAverage_mem_moserEssInterval_of_le
     exact Metric.ball_subset_ball (moserDyadicRadius_antitone hnk)
   have hu_bound :
       ∀ᵐ z ∂ ballMeasure x (moserDyadicRadius n),
-        |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+        |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     exact
       ae_abs_le_moserHolderNorm_on_smallBall
         (d := d) hd A hp₀ hsol hInt hx
@@ -95,18 +95,18 @@ theorem dyadicBallAverage_mem_moserEssInterval_of_le
         (moserDyadicRadius_le_quarter (n := n))
   have hu_upper :
       ∀ᵐ z ∂ ballMeasure x (moserDyadicRadius n),
-        u z ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+        u z ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     ae_upper_of_ae_abs_le hu_bound
   have hu_lower :
       ∀ᵐ z ∂ ballMeasure x (moserDyadicRadius n),
-        -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ u z :=
+        -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ u z :=
     ae_lower_of_ae_abs_le hu_bound
   have hu_bdd_below :
       Filter.IsBoundedUnder (· ≥ ·) (ae (ballMeasure x (moserDyadicRadius n))) u :=
-    ⟨-((C_holder_Moser d / 64) * moserHolderNorm A u p₀), hu_lower⟩
+    ⟨-((CHolderMoser d / 64) * moserHolderNorm A u p₀), hu_lower⟩
   have hu_bdd_above :
       Filter.IsBoundedUnder (· ≤ ·) (ae (ballMeasure x (moserDyadicRadius n))) u :=
-    ⟨(C_holder_Moser d / 64) * moserHolderNorm A u p₀, hu_upper⟩
+    ⟨(CHolderMoser d / 64) * moserHolderNorm A u p₀, hu_upper⟩
   have hm_outer :
       ∀ᵐ z ∂ ballMeasure x (moserDyadicRadius n), moserDyadicEssInf u x n ≤ u z := by
     simpa [moserDyadicEssInf] using
@@ -144,7 +144,7 @@ theorem moserDyadicAverage_step_le_geometric
     dist (dyadicBallAverage u x (1 / 4 : ℝ) n)
         (dyadicBallAverage u x (1 / 4 : ℝ) (n + 1))
       ≤ (1 - moserDecayAlpha A) ^ n *
-          ((C_holder_Moser d / 32) * moserHolderNorm A u p₀) := by
+          ((CHolderMoser d / 32) * moserHolderNorm A u p₀) := by
   rcases
       dyadicBallAverage_mem_moserEssInterval_of_le
         (d := d) hd A hp₀ hsol hInt hx (n := n) (k := n) le_rfl with
@@ -171,7 +171,7 @@ theorem moserDyadicAverage_step_le_geometric
   have hosc :
       moserDyadicEssSup u x n - moserDyadicEssInf u x n ≤
         (1 - moserDecayAlpha A) ^ n *
-          ((C_holder_Moser d / 32) * moserHolderNorm A u p₀) := by
+          ((CHolderMoser d / 32) * moserHolderNorm A u p₀) := by
     exact moserDyadic_oscillation_bound (d := d) hd A hp₀ hsol hInt hx n
   simpa [Real.dist_eq] using le_trans hinterval hosc
 
@@ -188,7 +188,7 @@ theorem moserDyadicAverage_cauchy
   exact
     cauchySeq_of_le_geometric
       (r := 1 - moserDecayAlpha A)
-      (C := (C_holder_Moser d / 32) * moserHolderNorm A u p₀)
+      (C := (CHolderMoser d / 32) * moserHolderNorm A u p₀)
       hratio_lt
       (by
         intro n
@@ -258,20 +258,20 @@ theorem moserRepresentative_mem_essInterval_on_smallBall
   let I : Set ℝ := Set.Icc (essInf u (ballMeasure c r)) (essSup u (ballMeasure c r))
   have hclosed : IsClosed I := isClosed_Icc
   have hu_bound :
-      ∀ᵐ z ∂ ballMeasure c r, |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+      ∀ᵐ z ∂ ballMeasure c r, |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     exact
       ae_abs_le_moserHolderNorm_on_smallBall
         (d := d) hd A hp₀ hsol hInt hc (r := r) hr hrq
   have hu_upper :
-      ∀ᵐ z ∂ ballMeasure c r, u z ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+      ∀ᵐ z ∂ ballMeasure c r, u z ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     ae_upper_of_ae_abs_le hu_bound
   have hu_lower :
-      ∀ᵐ z ∂ ballMeasure c r, -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ u z :=
+      ∀ᵐ z ∂ ballMeasure c r, -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ u z :=
     ae_lower_of_ae_abs_le hu_bound
   have hu_bdd_below : Filter.IsBoundedUnder (· ≥ ·) (ae (ballMeasure c r)) u :=
-    ⟨-((C_holder_Moser d / 64) * moserHolderNorm A u p₀), hu_lower⟩
+    ⟨-((CHolderMoser d / 64) * moserHolderNorm A u p₀), hu_lower⟩
   have hu_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae (ballMeasure c r)) u :=
-    ⟨(C_holder_Moser d / 64) * moserHolderNorm A u p₀, hu_upper⟩
+    ⟨(CHolderMoser d / 64) * moserHolderNorm A u p₀, hu_upper⟩
   have hm_outer :
       ∀ᵐ z ∂ ballMeasure c r, essInf u (ballMeasure c r) ≤ u z := by
     exact ae_essInf_le (μ := ballMeasure c r) (f := u) (hf := hu_bdd_below)
@@ -406,7 +406,7 @@ theorem pointwise_abs_le_moserRepresentative_on_halfBall
     (hsol : IsSolution A.1 u)
     (hInt : IntegrableOn (fun z => |u z| ^ p₀) (Metric.ball (0 : E) 1) volume)
     {x : E} (hx : x ∈ Metric.ball (0 : E) (1 / 2 : ℝ)) :
-    |moserRepresentative u x| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+    |moserRepresentative u x| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
   have hx_int :
       moserDyadicEssInf u x 0 ≤ dyadicBallAverageLimit u x (1 / 4 : ℝ) ∧
         dyadicBallAverageLimit u x (1 / 4 : ℝ) ≤ moserDyadicEssSup u x 0 := by
@@ -417,27 +417,27 @@ theorem pointwise_abs_le_moserRepresentative_on_halfBall
         (Metric.mem_ball_self (by norm_num : 0 < (1 / 4 : ℝ))))
   have hae :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-        |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+        |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     ae_abs_le_moserHolderNorm_on_quarterBall
       (d := d) hd A hp₀ hsol hInt hx
   have hupper :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-        u z ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+        u z ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     ae_upper_of_ae_abs_le hae
   have hlower :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-        -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ u z :=
+        -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ u z :=
     ae_lower_of_ae_abs_le hae
   have hsup :
       moserDyadicEssSup u x 0 ≤
-        (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+        (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     simpa [moserDyadicEssSup, ballMeasure, moserDyadicRadius] using
       (essSup_le_of_ae_bdd
         (μ := ballMeasure x (1 / 4 : ℝ))
         (restrict_ball_ne_zero (c := x) (r := (1 / 4 : ℝ)) (by norm_num))
         hlower hupper)
   have hinf :
-      -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ moserDyadicEssInf u x 0 := by
+      -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ moserDyadicEssInf u x 0 := by
     simpa [moserDyadicEssInf, ballMeasure, moserDyadicRadius] using
       (le_essInf_of_ae_bdd
         (μ := ballMeasure x (1 / 4 : ℝ))
@@ -445,14 +445,14 @@ theorem pointwise_abs_le_moserRepresentative_on_halfBall
         hlower hupper)
   rcases hx_int with ⟨hx_lo, hx_hi⟩
   have hle :
-      moserRepresentative u x ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+      moserRepresentative u x ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     have hvx : moserRepresentative u x = dyadicBallAverageLimit u x (1 / 4 : ℝ) := by
       unfold moserRepresentative
       rw [if_pos hx]
     rw [hvx]
     exact le_trans hx_hi hsup
   have hge :
-      -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ moserRepresentative u x := by
+      -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ moserRepresentative u x := by
     have hvx : moserRepresentative u x = dyadicBallAverageLimit u x (1 / 4 : ℝ) := by
       unfold moserRepresentative
       rw [if_pos hx]
@@ -472,7 +472,7 @@ theorem moserRepresentative_large_distance_bound
     (_hxy_ne : x ≠ y)
     (hlarge : (1 / 8 : ℝ) ≤ ‖x - y‖) :
     |moserRepresentative u x - moserRepresentative u y| ≤
-      C_holder_Moser d * moserHolderNorm A u p₀ * ‖x - y‖ ^ moserDecayAlpha A := by
+      CHolderMoser d * moserHolderNorm A u p₀ * ‖x - y‖ ^ moserDecayAlpha A := by
   let _ := _hxy_ne
   let α : ℝ := moserDecayAlpha A
   let N : ℝ := moserHolderNorm A u p₀
@@ -480,15 +480,15 @@ theorem moserRepresentative_large_distance_bound
     simpa [α] using moserDecayAlpha_le_one (d := d) hd A
   have hN_nonneg : 0 ≤ N := by
     simpa [N] using moserHolderNorm_nonneg (d := d) A hp₀
-  have hC_nonneg : 0 ≤ C_holder_Moser d := by
+  have hC_nonneg : 0 ≤ CHolderMoser d := by
     exact le_trans (C_harnack_nonneg (d := d) hd) (C_harnack_le_C_holder_Moser (d := d))
   have hx_abs :
-      |moserRepresentative u x| ≤ (C_holder_Moser d / 64) * N := by
+      |moserRepresentative u x| ≤ (CHolderMoser d / 64) * N := by
     simpa [N] using
       (pointwise_abs_le_moserRepresentative_on_halfBall
         (d := d) hd A hp₀ hsol hInt hx)
   have hy_abs :
-      |moserRepresentative u y| ≤ (C_holder_Moser d / 64) * N := by
+      |moserRepresentative u y| ≤ (CHolderMoser d / 64) * N := by
     simpa [N] using
       (pointwise_abs_le_moserRepresentative_on_halfBall
         (d := d) hd A hp₀ hsol hInt hy)
@@ -514,19 +514,19 @@ theorem moserRepresentative_large_distance_bound
     linarith
   have hsum :
       |moserRepresentative u x| + |moserRepresentative u y| ≤
-        (C_holder_Moser d / 32) * N := by
+        (CHolderMoser d / 32) * N := by
     nlinarith
   have hbig :
-      (C_holder_Moser d / 32) * N ≤
-        C_holder_Moser d * N * ‖x - y‖ ^ α := by
+      (CHolderMoser d / 32) * N ≤
+        CHolderMoser d * N * ‖x - y‖ ^ α := by
     have hone32 : (1 / 32 : ℝ) ≤ ‖x - y‖ ^ α := by
       linarith [hpow_lower]
-    have hCN_nonneg : 0 ≤ C_holder_Moser d * N := mul_nonneg hC_nonneg hN_nonneg
+    have hCN_nonneg : 0 ≤ CHolderMoser d * N := mul_nonneg hC_nonneg hN_nonneg
     have hscaled := mul_le_mul_of_nonneg_left hone32 hCN_nonneg
     simpa [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using hscaled
   have hfinal :
       |moserRepresentative u x - moserRepresentative u y|
-        ≤ C_holder_Moser d * N * ‖x - y‖ ^ α := by
+        ≤ CHolderMoser d * N * ‖x - y‖ ^ α := by
     exact le_trans htri (le_trans hsum hbig)
   simpa [N, α] using hfinal
 
@@ -542,7 +542,7 @@ theorem moserRepresentative_small_distance_bound
     (hxy_ne : x ≠ y)
     (hsmall : ‖x - y‖ < (1 / 8 : ℝ)) :
     |moserRepresentative u x - moserRepresentative u y| ≤
-      C_holder_Moser d * moserHolderNorm A u p₀ * ‖x - y‖ ^ moserDecayAlpha A := by
+      CHolderMoser d * moserHolderNorm A u p₀ * ‖x - y‖ ^ moserDecayAlpha A := by
   let α : ℝ := moserDecayAlpha A
   let N : ℝ := moserHolderNorm A u p₀
   have hα_pos : 0 < α := by
@@ -552,7 +552,7 @@ theorem moserRepresentative_small_distance_bound
     simpa [α] using moserDecayAlpha_le_one (d := d) hd A
   have hN_nonneg : 0 ≤ N := by
     simpa [N] using moserHolderNorm_nonneg (d := d) A hp₀
-  have hC_nonneg : 0 ≤ C_holder_Moser d := by
+  have hC_nonneg : 0 ≤ CHolderMoser d := by
     exact le_trans (C_harnack_nonneg (d := d) hd) (C_harnack_le_C_holder_Moser (d := d))
   have hdist_pos : 0 < ‖x - y‖ := by
     exact norm_pos_iff.mpr (sub_ne_zero.mpr hxy_ne)
@@ -626,7 +626,7 @@ theorem moserRepresentative_small_distance_bound
         exact habs
       have hosc :
           moserDyadicEssSup u x m - moserDyadicEssInf u x m ≤
-            (1 - α) ^ m * ((C_holder_Moser d / 32) * N) := by
+            (1 - α) ^ m * ((CHolderMoser d / 32) * N) := by
         simpa [α, N] using
           (moserDyadic_oscillation_bound
             (d := d) hd A hp₀ hsol hInt hx m)
@@ -682,20 +682,20 @@ theorem moserRepresentative_small_distance_bound
         exact le_trans hfac_le (le_trans hrpow_le h16pow_le)
       have hosc_final :
           moserDyadicEssSup u x m - moserDyadicEssInf u x m ≤
-            C_holder_Moser d * N * ‖x - y‖ ^ α := by
+            CHolderMoser d * N * ‖x - y‖ ^ α := by
         have hmul :
-            (1 - α) ^ m * ((C_holder_Moser d / 32) * N) ≤
-              (16 * ‖x - y‖ ^ α) * ((C_holder_Moser d / 32) * N) := by
+            (1 - α) ^ m * ((CHolderMoser d / 32) * N) ≤
+              (16 * ‖x - y‖ ^ α) * ((CHolderMoser d / 32) * N) := by
           exact mul_le_mul_of_nonneg_right hfactor (by nlinarith [hC_nonneg, hN_nonneg])
         calc
           moserDyadicEssSup u x m - moserDyadicEssInf u x m
-              ≤ (1 - α) ^ m * ((C_holder_Moser d / 32) * N) := hosc
-          _ ≤ (16 * ‖x - y‖ ^ α) * ((C_holder_Moser d / 32) * N) := hmul
-          _ ≤ C_holder_Moser d * N * ‖x - y‖ ^ α := by
+              ≤ (1 - α) ^ m * ((CHolderMoser d / 32) * N) := hosc
+          _ ≤ (16 * ‖x - y‖ ^ α) * ((CHolderMoser d / 32) * N) := hmul
+          _ ≤ CHolderMoser d * N * ‖x - y‖ ^ α := by
                 nlinarith [hC_nonneg, hN_nonneg, Real.rpow_nonneg (norm_nonneg (x - y)) α]
       have hfinal :
           |moserRepresentative u x - moserRepresentative u y|
-            ≤ C_holder_Moser d * N * ‖x - y‖ ^ α := by
+            ≤ CHolderMoser d * N * ‖x - y‖ ^ α := by
         exact le_trans hinterval hosc_final
       simpa [N, α] using hfinal
 

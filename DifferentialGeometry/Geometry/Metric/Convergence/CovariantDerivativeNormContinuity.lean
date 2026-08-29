@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBound
 
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -40,13 +42,13 @@ private noncomputable def orthoFrameBasis
           gRef.inner y (∑ a, c a • smoothOrthoFrame (I := I) gRef z₀ a y)
             (smoothOrthoFrame (I := I) gRef z₀ b y) = 0 := by
         rw [hc]; simp
-      rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+      rw [map_sum, sum_apply] at hpair
       rw [Finset.sum_eq_single b] at hpair
-      · rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, hON b b,
+      · rw [ContinuousLinearMap.map_smul, smul_apply, hON b b,
           if_pos rfl, smul_eq_mul, mul_one] at hpair
         exact hpair
       · intro a _ hab
-        rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, hON a b,
+        rw [ContinuousLinearMap.map_smul, smul_apply, hON a b,
           if_neg (by simpa using hab), smul_zero]
       · intro hb
         exact absurd (Finset.mem_univ b) hb)
@@ -97,14 +99,15 @@ private lemma metricCovDerivNorm_eq_sum_sq_on_nbhd
     rw [orthoFrameBasis_apply, orthoFrameBasis_apply]
     exact smoothOrthoFrame_orthonormal (I := I) (M := M) gRef z₀ hz i j
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) gRef z
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) gRef z
         (orthoFrameBasis (I := I) gRef z₀ hz)
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real E))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef
       (orthoFrameBasis (I := I) gRef z₀ hz) hON
+    intro i j
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric]
-      using h'
+      using h' i j
   rw [metricCovDerivNorm,
     Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) (M := M) gRef z (q + 2)
       (orthoFrameBasis (I := I) gRef z₀ hz) hinv]
@@ -156,7 +159,7 @@ theorem metricCovDerivNorm_continuousAt
         (metricCovDeriv (I := I) h gRef q z
             (fun a : Fin (q + 2) =>
               smoothOrthoFrame (I := I) gRef z₀ (slots a) z)) ^ 2) :=
-    continuous_finset_sum _ (fun slots _ => (hcomp_cont slots).pow 2)
+    continuous_finsetSum _ (fun slots _ => (hcomp_cont slots).pow 2)
   have hg_cont : Continuous g := by
     rw [hg_def]; exact Real.continuous_sqrt.comp hsum_cont
   have heq : (fun z : M => metricCovDerivNorm (I := I) q h gRef z) =ᶠ[nhds z₀] g := by

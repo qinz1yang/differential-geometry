@@ -743,7 +743,7 @@ private lemma fderiv_eta_sq_apply {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ 
       2 * η x * (fderiv ℝ η x) (EuclideanSpace.single j 1) := by
   have hη_diff : Differentiable ℝ η := hη.differentiable (by simp)
   rw [fderiv_fun_pow 2 (hη_diff x)]
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   have h1 : (η x) ^ ((2 : ℕ) - 1) = η x := by norm_num
   rw [h1]
   have h_two : ((2 : ℕ) • η x) = 2 * η x := by

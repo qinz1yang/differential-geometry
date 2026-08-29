@@ -53,7 +53,8 @@ lemma chartCoeff_recompose (α : M)
     trivializationAt E (TangentSpace I) α
   set L : TangentSpace I x ≃L[ℝ] E := T.continuousLinearEquivAt ℝ x hx
   have hL : L (X x) = (T ⟨x, X x⟩).2 := rfl
-  have hLsymm : ∀ v : E, L.symm v = T.symm x v := fun _ => rfl
+  have hLsymm : ∀ v : E, L.symm v = T.symmL ℝ x v := fun v =>
+    congrFun (T.symm_continuousLinearEquivAt_eq hx) v
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
   have hdecomp : (T ⟨x, X x⟩).2 =
       ∑ i, b.repr ((T ⟨x, X x⟩).2) i • b i := by
@@ -65,6 +66,7 @@ lemma chartCoeff_recompose (α : M)
   refine Finset.sum_congr rfl ?_
   intro i _
   rw [map_smul]
+  rw [hLsymm]
   simp only [chartCoeff_def, chartBasisVecFiber]
   rfl
 
@@ -292,7 +294,7 @@ theorem localDivergence_contMDiffOn
                 chartDensityOnE (I := I) g α y)
             (extChartAt I α x))
       (localDivergenceDomain (I := I) α) :=
-    contMDiffOn_finset_sum
+    contMDiffOn_finsetSum
       (fun i _ => localDivergence_summand_contMDiffOn (I := I) g α X i)
   have hden :
       ContMDiffOn I 𝓘(ℝ) ∞ (chartDensity (I := I) g α)
@@ -301,20 +303,20 @@ theorem localDivergence_contMDiffOn
   exact hnum.div₀ hden
     (chartDensity_ne_zero_on_localDivergenceDomain (I := I) g α)
 
-def divergence_g (g : SmoothRiemannianMetric I M)
+def divergenceG (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
   fun x => localDivergence (I := I) g x X x
 
 @[simp] lemma divergence_g_def
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g (I := I) g X x = localDivergence (I := I) g x X x := rfl
+    divergenceG (I := I) g X x = localDivergence (I := I) g x X x := rfl
 
 theorem divergence_g_chart_product
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g (I := I) g X x =
+    divergenceG (I := I) g X x =
       (∑ i : Fin (Module.finrank ℝ E),
         partialDeriv (E := E) i
           (chartCoeffOnE (I := I) x X i) (extChartAt I x x)) +
@@ -383,8 +385,8 @@ theorem divergence_g_chart_product
           fderiv ℝ (chartCoeffOnE (I := I) x X i) y₀ :=
       fderiv_fun_mul (hcoeff_diff i) hρ_diff
     rw [hmul]
-    rw [ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+    rw [add_apply,
+      smul_apply, smul_apply]
     simp only [smul_eq_mul]
     ring
   rw [divergence_g_def, localDivergence_def]

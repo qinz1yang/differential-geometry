@@ -237,7 +237,7 @@ theorem galerkinSolutionMode_hasDerivWithinAt (g₀ : SmoothRiemannianMetric I M
     (eigenIdxFinset (I := I) (M := M) g₀ N)
     (galerkinSolutionMode (I := I) (M := M) g₀ fseq N s) i with hG
   set F : ℝ → ℝ := Set.IccExtend hT.le (fun p : Set.Icc (0 : ℝ) T => G p.1) with hF
-  have hFc : Continuous F := Continuous.Icc_extend' hFcont.restrict
+  have hFc : Continuous F := Continuous.Icc_extend' hFcont.domRestrict
   have hFeq : ∀ s ∈ Set.Icc (0 : ℝ) T, F s = G s := fun s hs =>
     Set.IccExtend_of_mem hT.le _ hs
   have hae : (fun s => (timeModeCoeff (I := I) (M := M) (fseq N) i) s)
@@ -352,7 +352,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound
     intro N
     exact Continuous.Icc_extend'
       (galerkinEnergy_continuousOn (I := I) (M := M)
-        (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 (hUcont N)).restrict
+        (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 (hUcont N)).domRestrict
   have hEEnn : ∀ N, ∀ s : ℝ, 0 ≤ EE N s := fun N s =>
     galerkinEnergy_nonneg (I := I) (M := M) _ _ _ _
   have hEEeq : ∀ N, ∀ s ∈ Set.Icc (0 : ℝ) T,

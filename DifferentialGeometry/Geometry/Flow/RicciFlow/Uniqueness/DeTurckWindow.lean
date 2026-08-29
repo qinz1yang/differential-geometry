@@ -177,6 +177,7 @@ theorem chartRD_local
       HasDerivAt (fun tau => (G₁.metric (c + tau)).inner x v w)
         (deTurckRicciRHS (I := I) g_bg (G₁.metric (c + t)) x v w) t := by
     intro t ht x v w
+    change c + t ∈ Ioo a b at ht
     have hpde := hPDE₁ (t + c) (by simpa only [add_comm] using ht) x v w
     simpa only [G₁, Sol₁, SolutionOn.family, SolutionFamily.connection,
       add_comm] using hpde.comp_add_const t c
@@ -184,6 +185,7 @@ theorem chartRD_local
       HasDerivAt (fun tau => (G₂.metric (c + tau)).inner x v w)
         (deTurckRicciRHS (I := I) g_bg (G₂.metric (c + t)) x v w) t := by
     intro t ht x v w
+    change c + t ∈ Ioo a b at ht
     have hpde := hPDE₂ (t + c) (by simpa only [add_comm] using ht) x v w
     simpa only [G₂, Sol₂, SolutionOn.family, SolutionFamily.connection,
       add_comm] using hpde.comp_add_const t c

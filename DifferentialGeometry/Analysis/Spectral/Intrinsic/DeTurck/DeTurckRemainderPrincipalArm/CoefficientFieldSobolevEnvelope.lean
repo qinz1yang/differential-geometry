@@ -127,6 +127,7 @@ private lemma logConvex_extreme_product_le {f : ℕ → ℝ} (hf_nn : ∀ k, 0 �
   · exact hkey α β hab hαγ hβγ hsum
   · rw [mul_comm]; exact hkey β α hab hβγ hαγ (by omega)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sqrt_norm_covGrad_sum_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ)
@@ -197,6 +198,7 @@ lemma tensorHs_norm_mul_le_ball_mul_tensorHs (g₀ : SmoothRiemannianMetric I M)
     calc f u * f v ≤ R₀ * f v := mul_le_mul_of_nonneg_right h1 (hf_nn v)
       _ ≤ R₀ * f γ := mul_le_mul_of_nonneg_left h2 hR₀
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma iteratedCovGrad_le_of_sq_envelope_bound (g₀ : SmoothRiemannianMetric I M)
@@ -285,14 +287,14 @@ lemma tensorL2NormSq_le_of_pointwise_fiberNormSq_le_two_sum (g : SmoothRiemannia
           c2 i * riemannianFiberNormSq (I := I) (M := M) g (rw2 i) (sw2 i) x
             ((F2 i).toSection x))
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g) :=
-    ((MeasureTheory.integrable_finset_sum _ hint1).add
-      (MeasureTheory.integrable_finset_sum _ hint2))
+    ((MeasureTheory.integrable_finsetSum _ hint1).add
+      (MeasureTheory.integrable_finsetSum _ hint2))
   have h1 := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g rz sz
     Z _ hint hpt
-  rw [MeasureTheory.integral_add (MeasureTheory.integrable_finset_sum _ hint1)
-    (MeasureTheory.integrable_finset_sum _ hint2),
-    MeasureTheory.integral_finset_sum _ hint1,
-    MeasureTheory.integral_finset_sum _ hint2] at h1
+  rw [MeasureTheory.integral_add (MeasureTheory.integrable_finsetSum _ hint1)
+    (MeasureTheory.integrable_finsetSum _ hint2),
+    MeasureTheory.integral_finsetSum _ hint1,
+    MeasureTheory.integral_finsetSum _ hint2] at h1
   refine le_trans h1 (le_of_eq ?_)
   congr 1
   · refine Finset.sum_congr rfl (fun i _ => ?_)

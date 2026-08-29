@@ -96,7 +96,7 @@ private theorem tower_to_supercritical_quant
               ENNReal.ofReal C' *
                 (ENNReal.ofReal (subcriticalConstant (m + 1 + s) d p) *
                   iteratedWeakSobolevNorm (d := d) ((m + 1 + s) + 1) (ENNReal.ofReal p) f Ω) :=
-          le_trans h_norm_q (mul_le_mul_of_nonneg_left h_step_norm (zero_le _))
+          le_trans h_norm_q (mul_le_mul_of_nonneg_left h_step_norm (zero_le))
         have h_rhs_eq :
             ENNReal.ofReal C' *
                 (ENNReal.ofReal (subcriticalConstant (m + 1 + s) d p) *
@@ -185,7 +185,7 @@ private theorem tower_to_supercritical_quant_uniform
               ENNReal.ofReal C' *
                 (ENNReal.ofReal (subcriticalConstant (m + 1 + s) d p) *
                   iteratedWeakSobolevNorm (d := d) ((m + 1 + s) + 1) (ENNReal.ofReal p) f Ω) :=
-          le_trans h_norm_q (mul_le_mul_of_nonneg_left h_step_norm (zero_le _))
+          le_trans h_norm_q (mul_le_mul_of_nonneg_left h_step_norm (zero_le))
         have h_rhs_eq :
             ENNReal.ofReal C' *
                 (ENNReal.ofReal (subcriticalConstant (m + 1 + s) d p) *
@@ -275,7 +275,7 @@ private theorem smooth_iteratedFDeriv_norm_eLpNorm_ball_ne_top
     continuous_norm.comp h_iter_cont
   obtain ⟨M, hM⟩ := IsCompact.exists_bound_of_continuousOn
     (isCompact_closedBall x₀ R) hcont.continuousOn
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply_univ]
     exact measure_ball_lt_top

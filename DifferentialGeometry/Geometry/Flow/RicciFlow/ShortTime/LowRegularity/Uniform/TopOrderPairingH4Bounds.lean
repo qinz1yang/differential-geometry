@@ -244,7 +244,11 @@ theorem rhs_self_bg_corr_action_h2
         (pow_le_pow_left₀
           (Finset.sum_nonneg fun j _ =>
             norm_nonneg (iteratedCovGrad (I := I) g 0 2 j T))
-          (by simpa only [y] using hjet3 T) 2)
+          (by
+            have h := hjet3 T
+            have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+            rw [hthree] at h
+            simpa only [y] using h) 2)
   have hcoeff :
       covariantJetNormSq (I := I) (M := M) g 2
           (RicciDeTurckLowOrder.pathIntegrand (I := I) (M := M)
@@ -382,7 +386,11 @@ theorem ricciDeTurck_low_order_path_action_h2_bound
       _ ≤ (C3 * y) ^ 2 := pow_le_pow_left₀
         (Finset.sum_nonneg fun j _ =>
           norm_nonneg (iteratedCovGrad (I := I) g 0 2 j T))
-        (by simpa only [y] using hjet3 T) 2
+        (by
+          have h := hjet3 T
+          have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+          rw [hthree] at h
+          simpa only [y] using h) 2
   have hshift :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 2 (1 + j) T‖ ^ 2 ≤
@@ -1251,8 +1259,11 @@ theorem ricciDeTurck_remainder_path_pairing_h4_uniform_bound
         (B02 + operatorFieldApply (I := I) (M := M) g 2 2 K0 LT).toFun| =
         2 * |∫ s in (0 : ℝ)..1, f s| := by
       rw [← SmoothCcTensor.inner_def]
-      simpa only [f, B02, P0, P2, K0, LT, HT, HLT, V] using congrArg
-        (fun z : ℝ => 2 * |z|) hpair
+      generalize hleft : Inner.inner ℝ V
+        (B02 + operatorFieldApply (I := I) (M := M) g 2 2 K0 LT) = lhs
+        at hpair ⊢
+      generalize hright : (∫ s in (0 : ℝ)..1, f s) = rhs at hpair ⊢
+      exact congrArg (fun z : ℝ => 2 * |z|) hpair
     _ ≤ 2 * (∫ s in (0 : ℝ)..1, |f s|) :=
       mul_le_mul_of_nonneg_left habs (by norm_num)
     _ = ∫ s in (0 : ℝ)..1, 2 * |f s| := by

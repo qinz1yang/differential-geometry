@@ -35,7 +35,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-noncomputable def gradInnerCLM_imageLap_witness
+noncomputable def gradInnerCLMImageLapWitness
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
@@ -47,9 +47,9 @@ theorem gradInnerCLM_imageLap_witness_mem_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
-    gradInnerCLM_imageLap_witness (I := I) (M := M) g φ hu_h ∈
+    gradInnerCLMImageLapWitness (I := I) (M := M) g φ hu_h ∈
       laplacianDomain (I := I) (M := M) g := by
-  unfold gradInnerCLM_imageLap_witness
+  unfold gradInnerCLMImageLapWitness
   exact (laplacianDomain_mem_iff (I := I) (M := M) g).mpr
     ⟨gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ hu_h, rfl⟩
 
@@ -60,11 +60,11 @@ theorem gradInnerCLM_mem_image_laplacianDomain_of_variational
     (hvar_id :
       gradInnerCLM (I := I) (M := M) g φ u_h =
         H1ComplToLp (I := I) (M := M) g
-          (gradInnerCLM_imageLap_witness (I := I) (M := M) g φ hu_h)) :
+          (gradInnerCLMImageLapWitness (I := I) (M := M) g φ hu_h)) :
     gradInnerCLM (I := I) (M := M) g φ u_h ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
         (laplacianDomain (I := I) (M := M) g : Set (H1Compl g)) :=
-  ⟨gradInnerCLM_imageLap_witness (I := I) (M := M) g φ hu_h,
+  ⟨gradInnerCLMImageLapWitness (I := I) (M := M) g φ hu_h,
     gradInnerCLM_imageLap_witness_mem_laplacianDomain
       (I := I) (M := M) g φ hu_h, hvar_id.symm⟩
 
@@ -72,7 +72,7 @@ theorem gradInnerCLM_imageLap_witness_eq_resolvent_candidate
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
-    gradInnerCLM_imageLap_witness (I := I) (M := M) g φ hu_h =
+    gradInnerCLMImageLapWitness (I := I) (M := M) g φ hu_h =
       resolvent (I := I) (M := M) g
         (gradInnerLaplacianCandidateUnconditional
           (I := I) (M := M) g φ hu_h) := rfl
@@ -95,7 +95,7 @@ theorem variational_identity_implies_mem_image
 
 theorem gradInnerCLM_smoothCase_eq_resolventL2_candidate
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_identify : smoothCandidate_identification_target
+    (h_identify : smoothCandidateIdentificationTarget
       (I := I) (M := M) g φ v) :
     gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) =
@@ -109,7 +109,7 @@ theorem gradInnerCLM_smoothCase_eq_resolventL2_candidate
 
 theorem gradInnerCLM_smoothCase_mem_image_laplacianDomain_via_candidate
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_identify : smoothCandidate_identification_target
+    (h_identify : smoothCandidateIdentificationTarget
       (I := I) (M := M) g φ v) :
     gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) ∈

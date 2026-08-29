@@ -6,6 +6,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 open MeasureTheory Set Bundle Manifold Function
@@ -31,8 +32,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalize_cutoff
     (g : SmoothRiemannianMetric I M) {φ : M → ℝ}
@@ -54,10 +55,10 @@ theorem normalize_cutoff
             (riemannianVolumeMeasure I M g)).toReal ^ 2 /
           (eLpNorm φ 2 (riemannianVolumeMeasure I M g)).toReal ^ 2 := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ :=
+  let : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   let N : ℝ := (eLpNorm φ 2 μ).toReal
@@ -69,7 +70,11 @@ theorem normalize_cutoff
     exact ENNReal.toReal_pos hφpos.ne' hφmem.eLpNorm_ne_top
   have hNne : N ≠ 0 := ne_of_gt hNpos
   have hvsmooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ v := by
-    simpa only [v, Pi.smul_apply] using contMDiff_const.smul hφ
+    rw [show v = (fun _ : M => c) • φ by
+      funext x
+      rfl]
+    exact (contMDiff_const (I := I) (I' := 𝓘(ℝ, ℝ)) (c := c)).smul
+      (I := 𝓘(ℝ, ℝ)) hφ
   refine ⟨v, hvsmooth, ?_, ?_, ?_, ?_⟩
   · intro x hx
     apply Function.mem_support.mpr
@@ -109,7 +114,7 @@ theorem normalize_cutoff
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) =
           c ^ 2 * gp x ^ 2 := by
       intro x
-      rw [hgrad_v x, (g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+      rw [hgrad_v x, (g.inner x).map_smul, smul_apply,
         (g.inner x (gradFun (I := I) g φ x)).map_smul, smul_eq_mul,
         smul_eq_mul, hgp_sq x]
       ring
@@ -138,7 +143,7 @@ theorem normalize_cutoff
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) =
           c ^ 2 * gp x ^ 2 := by
       intro x
-      rw [hgrad_v x, (g.inner x).map_smul, ContinuousLinearMap.smul_apply,
+      rw [hgrad_v x, (g.inner x).map_smul, smul_apply,
         (g.inner x (gradFun (I := I) g φ x)).map_smul, smul_eq_mul,
         smul_eq_mul, hgp_sq x]
       ring
@@ -158,8 +163,8 @@ theorem normalize_cutoff
         rw [div_eq_mul_inv, inv_pow]
         ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_cutoff_wdata
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (a : M)
     {r : ℝ} (hr : 0 < r) :
@@ -180,8 +185,8 @@ theorem exists_cutoff_wdata
               {x | riemannianEDistOf (I := I) g a x <
                 ENNReal.ofReal (r / 2)}) ^ (1 / 2 : ℝ) / 2).toReal)) ^ 2 := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
   let A : Set M :=
     {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal (r / 2)}
@@ -196,12 +201,12 @@ theorem exists_cutoff_wdata
       continuous_const
   have hAne : A.Nonempty := by
     refine ⟨a, ?_⟩
-    simp only [A, mem_setOf_eq, riemannianEDistOf,
+    simp only [A, mem_ofPred_eq, riemannianEDistOf,
       Manifold.riemannianEDist_self]
     exact ENNReal.ofReal_pos.mpr (by positivity)
-  letI : μ.IsOpenPosMeasure :=
+  let : μ.IsOpenPosMeasure :=
     riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ :=
+  let : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   have hμA : 0 < μ A := hAopen.measure_pos μ hAne
@@ -264,8 +269,8 @@ theorem exists_cutoff_wdata
       _ ≤ (gradScale.toReal / massScale.toReal) ^ 2 :=
         pow_le_pow_left₀ (div_nonneg ENNReal.toReal_nonneg hφnorm_pos.le) hratio 2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_cutoff_wform
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (a : M)
     {r : ℝ} (hr : 0 < r) {R : M → ℝ} (hRcont : Continuous R)
@@ -293,8 +298,8 @@ theorem exists_cutoff_wform
           Real.log (riemannianVolumeMeasure I M g
             {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal r}).toReal + C := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
   let U : Set M :=
     {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal r}
@@ -302,7 +307,7 @@ theorem exists_cutoff_wform
     ((ENNReal.ofReal (5 / r) * (μ U) ^ (1 / 2 : ℝ)).toReal /
       (((μ {x | riemannianEDistOf (I := I) g a x <
         ENNReal.ofReal (r / 2)}) ^ (1 / 2 : ℝ) / 2).toReal)) ^ 2
-  letI : IsFiniteMeasure μ :=
+  let : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨v, hv, hvsupp, hvmass, hvgradi, hvenergy⟩ :=

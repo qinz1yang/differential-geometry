@@ -36,8 +36,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -60,8 +60,8 @@ private theorem launch_inner_deriv
           gp u u + s * (gp u w + gp w u) + s ^ 2 * gp w w) := by
     funext s
     change gp (u + s • w) (u + s • w) = _
-    simp only [map_add, map_smul, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [map_add, map_smul, add_apply,
+      smul_apply, smul_eq_mul]
     ring
   rw [hexpand]
   have hd1 : HasDerivAt (fun _ : Real => gp u u) 0 0 :=
@@ -77,7 +77,13 @@ private theorem launch_inner_deriv
         (fun s : Real =>
           gp u u + s * (gp u w + gp w u) + s ^ 2 * gp w w)
         (gp u w + gp w u) 0 := by
-    simpa using (hd1.add hd2).add hd3
+    have hd' : HasDerivAt
+        (fun s : Real =>
+          gp u u + s * (gp u w + gp w u) + s ^ 2 * gp w w)
+        (0 + (gp u w + gp w u) + 0) 0 := by
+      refine ((hd1.add hd2).add hd3).congr_of_eventuallyEq ?_
+      exact Filter.Eventually.of_forall fun _ => rfl
+    simpa only [zero_add, add_zero] using hd'
   have hsymm : gp w u = gp u w := g.symm p w u
   have hval : (2 : Real) * gp u w = gp u w + gp w u := by
     rw [hsymm]
@@ -153,9 +159,15 @@ theorem intrinsic_gauss
         (fun s : Real => speedSq (I := I) g F s t) =
           (fun s : Real => g.inner p (u + s • w) (u + s • w)) := by
       funext s
-      simpa only [speedSq, F] using
-        (intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
-          (show TangentSpace I p from u + s • w) t)
+      have hcurve : (fun r : Real => F s r) =
+          intrinsicGeodesic (I := I) g hEnorm p
+            (show TangentSpace I p from u + s • w) := by
+        funext r
+        rfl
+      simp only [speedSq]
+      rw [hcurve]
+      exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p
+        (show TangentSpace I p from u + s • w) t
     have hS1 := speedSq_hasDerivAt (I := I) g F t hF
     rw [hspeed] at hS1
     have hlaunch := launch_inner_deriv (I := I) g p u w
@@ -252,11 +264,60 @@ theorem intrinsic_gauss
       γ 1 =
         expMapIntrinsic (I := I) g hEnorm p
           (show TangentSpace I p from u) := by
-    simp only [γ, F, zero_smul, add_zero, expMapIntrinsic_def]
+    simp only [γ, F, zero_smul, add_zero]
+    exact (expMapIntrinsic_def (I := I) g hEnorm p
+      (show TangentSpace I p from u)).symm
   have h := hφ1
   simp only [φ] at h
   rw [hW1, hV1, hγ1] at h
   exact h
+
+theorem intrinsic_gauss_modelEquiv
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u w : E) :
+    g.inner
+        (expMapIntrinsic (I := I) g hEnorm p
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u))
+        (intrinsicVelocityLift (I := I) g hEnorm p
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u) 1).snd
+        (mfderiv 𝓘(Real, E) I
+          (fun v : E =>
+            expMapIntrinsic (I := I) g hEnorm p
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm v))
+          u
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) u).symm w))
+      = g.inner p
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u)
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm w) := by
+  let e : TangentSpace I p ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := I) p
+  have hexp :
+      (fun v : E =>
+        expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from v)) =
+        fun v : E =>
+          expMapIntrinsic (I := I) g hEnorm p (e.symm v) := by
+    funext v
+    rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+  have h := intrinsic_gauss (I := I) g hEnorm p u w
+  rw [hexp] at h
+  have hu : (show TangentSpace I p from u) = e.symm u := by
+    apply e.injective
+    rfl
+  have hw : (show TangentSpace I p from w) = e.symm w := by
+    apply e.injective
+    rfl
+  let eModel : TangentSpace 𝓘(Real, E) u ≃L[Real] E :=
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) u
+  have hwModel :
+      (show TangentSpace 𝓘(Real, E) u from w) = eModel.symm w := by
+    apply eModel.injective
+    rfl
+  convert h using 1
+  · rw [← hu, ← hwModel]
+  · rw [← hu, ← hw]
 
 section IntrinsicFramedRadial
 
@@ -421,10 +482,10 @@ theorem intrLift_norm_le
     rw [mfderivWithin_of_mem_nhds (Icc_mem_nhds ht.1 ht.2)]
   have hchain :
       ∀ x ∈ Set.Icc a b,
-        mfderivWithin 𝓘(Real, Real) J γ (Set.Icc a b) x 1 =
-          mfderiv 𝓘(Real, V) J F (η x)
+        mfderivWithin 𝓘(Real, Real) J (F ∘ η) (Set.Icc a b) x 1 =
+          (mfderiv 𝓘(Real, V) J F (η x)).comp
             (mfderivWithin 𝓘(Real, Real) 𝓘(Real, V)
-              η (Set.Icc a b) x 1) := by
+              η (Set.Icc a b) x) 1 := by
     intro x hx
     have hηdiff :
         MDifferentiableWithinAt 𝓘(Real, Real) 𝓘(Real, V)
@@ -439,9 +500,9 @@ theorem intrLift_norm_le
       (f := η) (g := F) (s := Set.Icc a b) (u := Set.univ)
       x hFdiff hηdiff (fun _ _ => Set.mem_univ _) (hUnique x hx)
     have happ := congrArg
-      (fun D : Real →L[Real] TangentSpace J (γ x) => D 1) hc
-    simpa only [γ, F, Function.comp_apply, mfderivWithin_univ,
-      ContinuousLinearMap.comp_apply] using happ
+      (fun D : Real →L[Real] TangentSpace J ((F ∘ η) x) => D 1) hc
+    rw [mfderivWithin_univ] at happ
+    with_unfolding_all exact happ
   have hslope :
       ∀ x ∈ Set.Ico a b, ∀ r, φ x < r →
         ∃ᶠ z in nhdsWithin x (Set.Ioi x), slope ρ x z < r := by
@@ -450,7 +511,10 @@ theorem intrLift_norm_le
     let cv : V :=
       mfderivWithin 𝓘(Real, Real) 𝓘(Real, V)
         η (Set.Icc a b) x 1
-    have hηderiv : HasDerivWithinAt η cv (Set.Ici x) x := by
+    let hContinuousSMul : ContinuousSMul Real V := IsBoundedSMul.continuousSMul
+    have hηderiv :
+        @HasDerivWithinAt Real inferInstance V inferInstance inferInstance inferInstance
+          hContinuousSMul η cv (Set.Ici x) x := by
       have hηdiff :
           MDifferentiableWithinAt 𝓘(Real, Real) 𝓘(Real, V)
             η (Set.Icc a b) x :=
@@ -462,8 +526,11 @@ theorem intrLift_norm_le
               η (Set.Icc a b) x) :=
         hηdiff.hasMFDerivWithinAt
       rw [hasMFDerivWithinAt_iff_hasFDerivWithinAt] at hmf
-      have hderiv : HasDerivWithinAt η cv (Set.Icc a b) x :=
-        hmf.hasDerivWithinAt
+      have hderiv :
+          @HasDerivWithinAt Real inferInstance V inferInstance inferInstance inferInstance
+            hContinuousSMul η cv (Set.Icc a b) x := by
+        exact @HasFDerivWithinAt.hasDerivWithinAt Real inferInstance V inferInstance
+          inferInstance inferInstance η x (Set.Icc a b) hContinuousSMul _ hmf
       refine hderiv.mono_of_mem_nhdsWithin ?_
       rw [mem_nhdsWithin]
       exact ⟨Set.Iio b, isOpen_Iio, hx.2, by
@@ -480,7 +547,7 @@ theorem intrLift_norm_le
           rw [hasDerivWithinAt_iff_tendsto_slope] at h0
           have hset : Set.Ioi x \ {x} = Set.Ioi x := by
             ext z
-            simp only [Set.mem_diff, Set.mem_Ioi,
+            simp only [Set.mem_sdiff, Set.mem_Ioi,
               Set.mem_singleton_iff]
             exact ⟨fun h => h.1, fun h => ⟨h, ne_of_gt h⟩⟩
           rw [hset] at h0
@@ -500,12 +567,16 @@ theorem intrLift_norm_le
         rw [real_inner_self_eq_norm_sq,
           Real.sqrt_sq (norm_nonneg _)]
       have hφx : φ x = ‖cv‖ := by
-        have hγx : γ x = p := by
-          simp only [γ, F, Function.comp_apply, hηx, intrFrame_zero]
+        have hF0 : F 0 = p := by
+          simp only [F, intrFrame_zero]
         simp only [φ]
-        rw [hchain x hxIcc, hηx, intrFrame_deriv_zero, hγx]
-        simpa only [cv, intrFrameCLM_apply] using
-          normalFrame_sqrt (I := J) g p cv
+        with_unfolding_all rw [show γ = F ∘ η from rfl, hchain x hxIcc,
+          ContinuousLinearMap.comp_apply, Function.comp_apply, hηx,
+          intrFrame_deriv_zero, hF0]
+        with_unfolding_all
+          change Real.sqrt
+            (g.inner p (normalFrame (I := J) g p cv) (normalFrame (I := J) g p cv)) = ‖cv‖
+        exact normalFrame_sqrt (I := J) g p cv
       rw [hφx] at hr
       exact (htend.eventually_lt_const hr).frequently
     · have hxIoo : x ∈ Set.Ioo a b := by
@@ -544,7 +615,8 @@ theorem intrLift_norm_le
             Real.sqrt
               (intrFrameMetric (I := J) g hEnorm p (η x) cv cv) := by
         simp only [φ]
-        rw [hchain x hxIcc, intrFrameMetric_apply]
+        rw [show γ = F ∘ η from rfl, hchain x hxIcc,
+          ContinuousLinearMap.comp_apply, intrFrameMetric_apply]
         rfl
       have hρ'_le : ρ' ≤ φ x := by
         rw [hφx]
@@ -560,8 +632,10 @@ theorem intrLift_norm_le
           B (η x) cv ≤ |B (η x) cv| := le_abs_self _
           _ ≤ ‖η x‖ * Real.sqrt
               (intrFrameMetric (I := J) g hEnorm p (η x) cv cv) := by
-                simpa only [B] using
-                  intrFrame_radial_le g hEnorm p (η x) cv
+                change |Inner.inner Real (η x) cv| ≤
+                  ‖η x‖ * Real.sqrt
+                    (intrFrameMetric (I := J) g hEnorm p (η x) cv cv)
+                exact intrFrame_radial_le g hEnorm p (η x) cv
           _ = Real.sqrt
               (intrFrameMetric (I := J) g hEnorm p (η x) cv cv) *
                 ‖η x‖ := mul_comm _ _

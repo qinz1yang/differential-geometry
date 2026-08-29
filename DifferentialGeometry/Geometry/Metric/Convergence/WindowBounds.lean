@@ -258,7 +258,7 @@ structure MetricAllTimesSpatialInput
       MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef a
         (orderC a)
 
-noncomputable def metricAllTimes_spatial
+noncomputable def metricAllTimesSpatial
     {K : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
     {gRef : SmoothRiemannianMetric I M}

@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -80,9 +79,9 @@ private lemma metric_inner_left_sum (g : SmoothRiemannianMetric I M) (x : M)
   have h1 : g.inner x (∑ a, c a • v a) = ∑ a, c a • g.inner x (v a) := by
     rw [map_sum]
     exact Finset.sum_congr rfl (fun a _ => by rw [map_smul])
-  rw [h1, ContinuousLinearMap.sum_apply]
+  rw [h1, sum_apply]
   exact Finset.sum_congr rfl (fun a _ => by
-    rw [ContinuousLinearMap.smul_apply, smul_eq_mul])
+    rw [smul_apply, smul_eq_mul])
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -148,16 +147,16 @@ private lemma weight_row_g0norm_le
     (hB0 : ∀ a, g₀.inner x (B a) (B a) ≤ 1 / (1 - δ))
     (Wx : Tensor0SSpace 2 I x)
     (hWx : ∀ v w : TangentSpace I x,
-      |Tensor0SSpace.toModel (𝕜 := ℝ) Wx ![(v : E), (w : E)]| ≤
+      |Tensor0SSpace.eval Wx ![v, w]| ≤
         δW * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w))
     (a : Fin d) :
     g₀.inner x
-        (∑ b, (Tensor0SSpace.toModel (𝕜 := ℝ) Wx ![(B a : E), (B b : E)]) • B b)
-        (∑ b, (Tensor0SSpace.toModel (𝕜 := ℝ) Wx ![(B a : E), (B b : E)]) • B b) ≤
+        (∑ b, Tensor0SSpace.eval Wx ![B a, B b] • B b)
+        (∑ b, Tensor0SSpace.eval Wx ![B a, B b] • B b) ≤
       δW ^ 2 / (1 - δ) ^ 3 := by
   classical
   set c : Fin d → ℝ :=
-    fun b => Tensor0SSpace.toModel (𝕜 := ℝ) Wx ![(B a : E), (B b : E)] with hc_def
+    fun b => Tensor0SSpace.eval Wx ![B a, B b] with hc_def
   set w : TangentSpace I x := ∑ b, c b • B b with hw_def
   set X : ℝ := g₁.inner x w w with hX_def
   have hX_sum : X = ∑ b, c b * c b := by
@@ -166,30 +165,32 @@ private lemma weight_row_g0norm_le
   have hX0 : 0 ≤ X := by
     rw [hX_sum]
     exact Finset.sum_nonneg (fun b _ => mul_self_nonneg _)
-  have hupd : ∀ z : E, (![(B a : E), z] : Fin 2 → E) =
-      Function.update ![(B a : E), (B a : E)] 1 z := by
+  have hupd : ∀ z : TangentSpace I x, (![B a, z] : Fin 2 → TangentSpace I x) =
+      Function.update ![B a, B a] 1 z := by
     intro z
     funext i
     fin_cases i <;> simp [Function.update]
-  have hWaw : Tensor0SSpace.toModel (𝕜 := ℝ) Wx ![(B a : E), (w : E)] = X := by
-    rw [hupd (w : E)]
-    have hsum_coe : (w : E) = ∑ b, c b • (B b : E) := rfl
-    rw [hsum_coe]
-    have hms : (Tensor0SSpace.toModel (𝕜 := ℝ) Wx)
-        (Function.update ![(B a : E), (B a : E)] 1 (∑ b, c b • (B b : E))) =
-        ∑ b, (Tensor0SSpace.toModel (𝕜 := ℝ) Wx)
-          (Function.update ![(B a : E), (B a : E)] 1 (c b • (B b : E))) :=
-      (Tensor0SSpace.toModel (𝕜 := ℝ) Wx).toMultilinearMap.map_update_sum
-        Finset.univ (1 : Fin 2) (fun b => c b • (B b : E)) ![(B a : E), (B a : E)]
+  have hWaw : Tensor0SSpace.eval Wx ![B a, w] = X := by
+    rw [hupd w, hw_def]
+    have hms : Tensor0SSpace.eval Wx
+        (Function.update ![B a, B a] 1 (∑ b, c b • B b)) =
+        ∑ b, Tensor0SSpace.eval Wx
+          (Function.update ![B a, B a] 1 (c b • B b)) :=
+      Wx.toMultilinearMap.map_update_sum Finset.univ (1 : Fin 2)
+        (fun b => c b • B b) ![B a, B a]
     rw [hms]
     have hterm : ∀ b : Fin d,
-        (Tensor0SSpace.toModel (𝕜 := ℝ) Wx)
-            (Function.update ![(B a : E), (B a : E)] 1 (c b • (B b : E))) =
+      Tensor0SSpace.eval Wx
+            (Function.update ![B a, B a] 1 (c b • B b)) =
           c b * c b := by
       intro b
-      rw [(Tensor0SSpace.toModel (𝕜 := ℝ) Wx).map_update_smul
-        ![(B a : E), (B a : E)] (1 : Fin 2) (c b) ((B b : E)), ← hupd ((B b : E)),
-        smul_eq_mul]
+      have hcb : Wx ![B a, B b] = c b := by
+        change Tensor0SSpace.eval Wx ![B a, B b] = c b
+        exact (congrFun hc_def b).symm
+      change Wx (Function.update ![B a, B a] 1 (c b • B b)) = c b * c b
+      rw [Tensor0SSpace.map_update_smul Wx ![B a, B a]
+        (1 : Fin 2) (c b) (B b), ← hupd (B b),
+        smul_eq_mul, hcb]
     rw [Finset.sum_congr rfl (fun b _ => hterm b), ← hX_sum]
   have hg0w : g₀.inner x w w ≤ X / (1 - δ) := by
     have h1 := hcomp w
@@ -197,7 +198,7 @@ private lemma weight_row_g0norm_le
     rw [le_div_iff₀ h1mδ]
     nlinarith [h1]
   have hkey : X ≤ (δW / (1 - δ)) * Real.sqrt X := by
-    have h1 : |Tensor0SSpace.toModel (𝕜 := ℝ) Wx ![(B a : E), (w : E)]| ≤
+    have h1 : |Tensor0SSpace.eval Wx ![B a, w]| ≤
         δW * Real.sqrt (g₀.inner x (B a) (B a)) * Real.sqrt (g₀.inner x w w) :=
       hWx (B a) w
     rw [hWaw, abs_of_nonneg hX0] at h1
@@ -236,8 +237,8 @@ private lemma weight_row_g0norm_le
     _ ≤ (δW / (1 - δ)) ^ 2 / (1 - δ) := by gcongr
     _ = δW ^ 2 / (1 - δ) ^ 3 := div_pow_div_arith (ne_of_gt h1mδ) δW
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
@@ -248,7 +249,7 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
     (hδP : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ)
     (W : Π b : M, Tensor0SSpace 2 I b) {δW : ℝ} (hδW0 : 0 ≤ δW)
     (hW : ∀ (y : M) (v w : TangentSpace I y),
-      |Tensor0SSpace.toModel (𝕜 := ℝ) (W y) ![(v : E), (w : E)]| ≤
+      |Tensor0SSpace.eval (W y) ![v, w]| ≤
         δW * Real.sqrt (g₀.inner y v v) * Real.sqrt (g₀.inner y w w))
     (σ : Equiv.Perm (Fin 4)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
@@ -293,9 +294,9 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
     rw [le_div_iff₀ h1mδ]
     nlinarith [h1, h2]
   set Wm : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
-    fun a b => Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
-      ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-        (smoothOrthoFrame (I := I) g₁ x b x : E)] with hWm_def
+    fun a b => Tensor0SSpace.eval (W x)
+      ![smoothOrthoFrame (I := I) g₁ x a x,
+        smoothOrthoFrame (I := I) g₁ x b x] with hWm_def
   set A : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun k a => g₀.inner x (e k) (smoothOrthoFrame (I := I) g₁ x a x) with hA_def
   set V : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
@@ -311,44 +312,44 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
           ((if K (σ.symm 2) = J 0 then (1 : ℝ) else 0) *
             (if K (σ.symm 3) = J 1 then (1 : ℝ) else 0)) := by
     intro K J
-    have hcomp_toModel : fiberNormSqComponent (I := I) (M := M) g₀ x 4 2
+    have hcomp_eval : fiberNormSqComponent (I := I) (M := M) g₀ x 4 2
         (show TensorRSSpace 4 2 I x from
           TensorRSSpace.ofCLM
             (curvatureActionMonomialTrace (I := I) (M := M) g₁ W σ x))
         (Module.finrank ℝ E) e K J =
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           ((curvatureActionMonomialTrace (I := I) (M := M) g₁ W σ x)
             (coframeS (I := I) (M := M) g₀ x 4 e K))
-          (fun i => (e (J i) : E)) := by
+          (fun i => e (J i)) := by
       unfold fiberNormSqComponent coframeS
       rfl
-    rw [hcomp_toModel]
+    rw [hcomp_eval]
     rw [show curvatureActionMonomialTrace (I := I) (M := M) g₁ W σ x =
         curvatureActionMonomialFrameTrace (I := I) (M := M) W σ
           (smoothOrthoFrame (I := I) g₁ x) x from rfl]
-    rw [curvatureDecompositionMonomialFibFixedFrame_toModel]
+    rw [curvatureDecompositionMonomialFibFixedFrame_eval]
     have hterm : ∀ a b : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel (𝕜 := ℝ)
+        Tensor0SSpace.eval
             (coframeS (I := I) (M := M) g₀ x 4 e K)
-            (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-              (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E))
-                (fun i => (e (J i) : E))) : Fin 4 → E) (σ i)) =
+            (fun i => (Fin.cons (smoothOrthoFrame (I := I) g₁ x a x)
+              (Fin.cons (smoothOrthoFrame (I := I) g₁ x b x)
+                (fun i => e (J i))) : Fin 4 → TangentSpace I x) (σ i)) =
           (A (K (σ.symm 0)) a * A (K (σ.symm 1)) b) *
             ((if K (σ.symm 2) = J 0 then (1 : ℝ) else 0) *
               (if K (σ.symm 3) = J 1 then (1 : ℝ) else 0)) := by
       intro a b
-      set tup : Fin 4 → E :=
-        (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-          (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E))
-            (fun i => (e (J i) : E))) : Fin 4 → E) with htup_def
-      have step1 : Tensor0SSpace.toModel (𝕜 := ℝ)
+      set tup : Fin 4 → TangentSpace I x :=
+        (Fin.cons (smoothOrthoFrame (I := I) g₁ x a x)
+          (Fin.cons (smoothOrthoFrame (I := I) g₁ x b x)
+            (fun i => e (J i))) : Fin 4 → TangentSpace I x) with htup_def
+      have step1 : Tensor0SSpace.eval
           (coframeS (I := I) (M := M) g₀ x 4 e K) (fun i => tup (σ i)) =
-          ∏ k : Fin 4, g₀.inner x (e (K k)) ((tup (σ k) : TangentSpace I x)) :=
+          ∏ k : Fin 4, g₀.inner x (e (K k)) (tup (σ k)) :=
         coframeS_apply (I := I) (M := M) g₀ x 4 e K
-          (fun i => (tup (σ i) : TangentSpace I x))
+          (fun i => tup (σ i))
       set f : Fin 4 → ℝ :=
-        fun j => g₀.inner x (e (K (σ.symm j))) ((tup j : TangentSpace I x)) with hf_def
-      have step2 : (∏ k : Fin 4, g₀.inner x (e (K k)) ((tup (σ k) : TangentSpace I x))) =
+        fun j => g₀.inner x (e (K (σ.symm j))) (tup j) with hf_def
+      have step2 : (∏ k : Fin 4, g₀.inner x (e (K k)) (tup (σ k))) =
           ∏ i : Fin 4, f (σ i) :=
         Finset.prod_congr rfl (fun k _ => by
           simp only [hf_def, Equiv.symm_apply_apply])
@@ -362,43 +363,43 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
         rfl
       have hf2 : f 2 = if K (σ.symm 2) = J 0 then (1 : ℝ) else 0 := by
         simp only [hf_def]
-        rw [show ((tup 2 : TangentSpace I x)) = e (J 0) from rfl]
+        rw [show tup 2 = e (J 0) from rfl]
         exact horth (K (σ.symm 2)) (J 0)
       have hf3 : f 3 = if K (σ.symm 3) = J 1 then (1 : ℝ) else 0 := by
         simp only [hf_def]
-        rw [show ((tup 3 : TangentSpace I x)) = e (J 1) from rfl]
+        rw [show tup 3 = e (J 1) from rfl]
         exact horth (K (σ.symm 3)) (J 1)
       rw [step1, step2, step3, step4, hf0, hf1, hf2, hf3]
       ring
     have hsum_split : (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
-            ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] *
-          Tensor0SSpace.toModel (𝕜 := ℝ)
+        Tensor0SSpace.eval (W x)
+            ![smoothOrthoFrame (I := I) g₁ x a x,
+              smoothOrthoFrame (I := I) g₁ x b x] *
+          Tensor0SSpace.eval
             (coframeS (I := I) (M := M) g₀ x 4 e K)
-            (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-              (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E))
-                (fun i => (e (J i) : E))) : Fin 4 → E) (σ i))) =
+            (fun i => (Fin.cons (smoothOrthoFrame (I := I) g₁ x a x)
+              (Fin.cons (smoothOrthoFrame (I := I) g₁ x b x)
+                (fun i => e (J i))) : Fin 4 → TangentSpace I x) (σ i))) =
         V (K (σ.symm 0)) (K (σ.symm 1)) *
           ((if K (σ.symm 2) = J 0 then (1 : ℝ) else 0) *
             (if K (σ.symm 3) = J 1 then (1 : ℝ) else 0)) := by
       have hper : ∀ a b : Fin (Module.finrank ℝ E),
-          Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
-              ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-                (smoothOrthoFrame (I := I) g₁ x b x : E)] *
-            Tensor0SSpace.toModel (𝕜 := ℝ)
+          Tensor0SSpace.eval (W x)
+              ![smoothOrthoFrame (I := I) g₁ x a x,
+                smoothOrthoFrame (I := I) g₁ x b x] *
+            Tensor0SSpace.eval
               (coframeS (I := I) (M := M) g₀ x 4 e K)
-              (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-                (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E))
-                  (fun i => (e (J i) : E))) : Fin 4 → E) (σ i)) =
+              (fun i => (Fin.cons (smoothOrthoFrame (I := I) g₁ x a x)
+                (Fin.cons (smoothOrthoFrame (I := I) g₁ x b x)
+                  (fun i => e (J i))) : Fin 4 → TangentSpace I x) (σ i)) =
           (Wm a b * (A (K (σ.symm 0)) a * A (K (σ.symm 1)) b)) *
             ((if K (σ.symm 2) = J 0 then (1 : ℝ) else 0) *
               (if K (σ.symm 3) = J 1 then (1 : ℝ) else 0)) := by
         intro a b
         rw [hterm a b]
-        rw [show Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
-            ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] = Wm a b from rfl]
+        rw [show Tensor0SSpace.eval (W x)
+            ![smoothOrthoFrame (I := I) g₁ x a x,
+              smoothOrthoFrame (I := I) g₁ x b x] = Wm a b from rfl]
         ring
       rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl
         (fun b _ => hper a b))]
@@ -542,8 +543,8 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
         rw [mul_pow, sq_de_turck_arm_fibre_const, div_pow]
         ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le
@@ -555,7 +556,7 @@ theorem riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le
       (ccTensorBilinSymm (I := I) g₀ P) δ)
     (W : Π b : M, Tensor0SSpace 2 I b) {δW : ℝ} (hδW0 : 0 ≤ δW)
     (hW : ∀ (y : M) (v w : TangentSpace I y),
-      |Tensor0SSpace.toModel (𝕜 := ℝ) (W y) ![(v : E), (w : E)]| ≤
+      |Tensor0SSpace.eval (W y) ![v, w]| ≤
         δW * Real.sqrt (g₀.inner y v v) * Real.sqrt (g₀.inner y w w))
     (σ : Equiv.Perm (Fin 4)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x

@@ -213,7 +213,7 @@ private theorem eLpNorm_diff_smoothApproxSeqWkpThree_tendsto_zero
         (hu_meas.sub
           (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h n).smooth.continuous.measurable)
     rw [hC_zero, ENNReal.ofReal_zero, zero_mul] at h_bnd
-    exact h_bnd.trans (zero_le _)
+    exact h_bnd.trans (zero_le)
   have hC_pos : 0 < C := lt_of_le_of_ne hC_nn (Ne.symm hC_zero)
   by_cases hε_top : ε = ⊤
   · refine ⟨0, ?_⟩
@@ -491,7 +491,7 @@ private lemma eLpNorm_tendsto_zero_of_wkpNorm_two_two_tendsto_zero
         (d := Module.finrank ℝ E) 2 2
         (fun y => u n y - F_lim y) Ω)
     tendsto_const_nhds h_tendsto
-    (fun _ => zero_le _)
+    (fun _ => zero_le)
     (fun n => eLpNorm_le_wkpNorm_two_two (fun y => u n y - F_lim y) Ω)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in

@@ -19,7 +19,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set Function MeasureTheory intervalIntegral Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Topology Manifold BigOperators ContDiff Matrix
@@ -72,20 +71,22 @@ theorem ccTensorBilinSymm_add (g : SmoothRiemannianMetric I M)
     ccTensorBilinSymm (I := I) g (T + T') x v w =
       ccTensorBilinSymm (I := I) g T x v w + ccTensorBilinSymm (I := I) g T' x v w := by
   simp only [ccTensorBilinSymm_apply, ccTensorBilin_apply, ccTensorModel_add,
-    ContinuousMultilinearMap.add_apply]
+    add_apply]
   ring
 
 def convexPerturbation (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) (s : ℝ) : SmoothCcTensor g₀ 0 2 :=
   (1 - s) • T' + s • T
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma convexPerturbation_zero (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) :
     convexPerturbation (I := I) g₀ T T' 0 = T' := by
   simp [convexPerturbation]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma convexPerturbation_one (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) :
     convexPerturbation (I := I) g₀ T T' 1 = T := by
@@ -351,7 +352,7 @@ theorem metricPerturbationPath_inner_of_mem (g₀ : SmoothRiemannianMetric I M)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner x v w =
       g₀.inner x v w +
         ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) x v w := by
-  rw [metricPerturbationPath, dif_pos (Set.mem_setOf.mp hs), metricPerturbationPathOnDomain_inner]
+  rw [metricPerturbationPath, dif_pos (Set.mem_ofPred.mp hs), metricPerturbationPathOnDomain_inner]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -644,7 +645,7 @@ theorem metricSharpChartCoeff_jointContMDiffOn
           cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1)) := by
     funext p; rw [metricSharpChartCoeff_def]
   rw [heq]
-  exact contMDiffOn_finset_sum (fun j _ => (hinv i j).mul (hcv j))
+  exact contMDiffOn_finsetSum (fun j _ => (hinv i j).mul (hcv j))
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -691,9 +692,9 @@ theorem metricSharpChartLocal_jointContMDiffOn
       (fun q : M × ℝ => (e ⟨q.1, metricSharpChartLocal (I := I) (gfam q.2) α (cv q.2) q.1⟩).2)
       ((chartAt H α).source ×ˢ S) := by
     refine ContMDiffOn.congr ?_ hcoord_eq
-    refine contMDiffOn_finset_sum (fun i _ => ?_)
+    refine contMDiffOn_finsetSum (fun i _ => ?_)
     exact (hcoeff i).smul contMDiffOn_const
-  haveI : MemTrivializationAtlas e := by rw [he]; infer_instance
+  have : MemTrivializationAtlas e := by rw [he]; infer_instance
   rw [Bundle.Trivialization.contMDiffOn_iff (e := e) ?_]
   · exact ⟨contMDiffOn_fst, hcoordSmooth⟩
   · rintro q ⟨hqx, _⟩
@@ -854,7 +855,8 @@ def realizedRicciChartSum (g₀ : SmoothRiemannianMetric I M)
       δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i, ∑ k,
-    ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+    ((centeredChartTangentBasis (I := I) x).repr v) k *
+      ((centeredChartTangentBasis (I := I) x).repr w) i *
       chartRicciTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k
         (extChartAt I x x)
 
@@ -890,7 +892,8 @@ theorem realizedDeTurckRicciChartSum_contDiffAt (g₀ g_bg : SmoothRiemannianMet
     (hs : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     ContDiffAt ℝ ∞
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
             (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k (extChartAt I x x)) s₀ := by
@@ -898,12 +901,14 @@ theorem realizedDeTurckRicciChartSum_contDiffAt (g₀ g_bg : SmoothRiemannianMet
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have heq : (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
             (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k (extChartAt I x x)) =
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           chartDeTurckRicciRHS (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i k
             (extChartAt I x x)) := by
     funext s
@@ -1163,7 +1168,7 @@ theorem cometricRaiseSlot0Fib_metricPerturbationPath_jointContMDiffOn (s : ℕ)
   refine hraise.congr (fun p hp => ?_)
   change TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) p.1 (sharpβ p) (Y p)) =
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) p.1 (sharpβ p) (Y p)) =
     TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
       ((show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ]
@@ -1172,7 +1177,6 @@ theorem cometricRaiseSlot0Fib_metricPerturbationPath_jointContMDiffOn (s : ℕ)
           (β p.1))
   congr 1
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -1218,7 +1222,6 @@ theorem cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (p : ℕ)
     (cometricRaiseSlot0Fib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) p q.1 (Y q))]
   congr 1
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem ricciDeTurckPrincipalCoefficientFiber_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -1277,8 +1280,8 @@ theorem ricciDeTurckPrincipalCoefficientFiber_metricPerturbationPath_jointContMD
     Tensor0SBundle.Tensor0SSpace.toModel_add, cometricDoubleTraceFib_toModel,
     Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
   rw [ricciPrincipalCoefficientDoubleTraceModel]
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+  rw [smul_apply, sub_apply,
+    add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
@@ -1358,7 +1361,6 @@ theorem metricPerturbationPath_chartRicciTensor_jointContMDiffOn
   exact (hentryM.comp_contMDiffWithinAt p hmoveAt).congr
     (fun q _ => rfl) rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1383,7 +1385,7 @@ theorem ricciTensorSection_chartComponent_metricPerturbationPath_jointContMDiffO
           chartRicciTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α q j
             (extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-    refine contMDiffOn_finset_sum (fun q _ => ?_)
+    refine contMDiffOn_finsetSum (fun q _ => ?_)
     have hcoeff : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => chartCoeff (I := I) α Y q p.1)
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -1401,12 +1403,11 @@ theorem ricciTensorSection_chartComponent_metricPerturbationPath_jointContMDiffO
     exact hx
   set gs := metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2 with hgs
   rw [chartCoeff_recompose (I := I) α Y hxbase]
-  rw [map_sum (ricciTensor (I := I) gs p.1), ContinuousLinearMap.sum_apply]
+  rw [map_sum (ricciTensor (I := I) gs p.1), sum_apply]
   refine Finset.sum_congr rfl (fun q _ => ?_)
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul,
+  rw [map_smul, smul_apply, smul_eq_mul,
     ricciTensor_chartBasisVec_alpha_eq (I := I) gs α q j hxgood]
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -1458,7 +1459,6 @@ theorem ricEndoRaisedFib_metricPerturbationPath_jointContMDiffOn [BoundarylessMa
       (ricEndoRaisedFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1))
   rw [ricEndoRaisedFib_apply, hcvdef]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
@@ -1498,7 +1498,6 @@ theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn 
   refine happ.congr (fun p _ => ?_)
   rw [ricciArmOrder0CurvCoeffFibSlot]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
@@ -1538,7 +1537,6 @@ theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn 
   refine happ.congr (fun p _ => ?_)
   rw [ricciArmOrder0CurvCoeffFibSlot]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem ricciArmOrder0CurvCoeffFib_metricPerturbationPath_jointContMDiffOn [BoundarylessManifold I M]
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -1618,7 +1616,9 @@ theorem genGram_of_family
         e.localFrame (chartModelBasis E) k x = chartBasisVecFiber (I := I) α k x := by
       intro x hx k
       rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-      rfl
+      change (e.linearEquivAt ℝ x hx).symm ((chartModelBasis E) k) =
+        e.symmL ℝ x ((chartModelBasis E) k)
+      rw [e.linearEquivAt_symm_apply, e.symmL_apply hx]
     have hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g_fam p.1) α p.2 i j)
         (D.regular ×ˢ e.baseSet) := by
@@ -1744,7 +1744,12 @@ theorem christ_of_family
     have hm := hmove p ⟨hx, ht⟩
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
     exact hm
-  simpa only [Function.comp_apply] using hentryM.comp_contMDiffWithinAt p hmoveAt
+  have hcomp := hentryM.comp_contMDiffWithinAt p hmoveAt
+  change ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
+    (fun q : M × ℝ =>
+      chartChristoffel (I := I) (g_fam q.2) α i j k (extChartAt I α q.1))
+    ((chartAt H α).source ×ˢ D.regular) p at hcomp
+  exact hcomp
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
@@ -1847,7 +1852,7 @@ theorem comRaise_of_family (s : ℕ)
   refine hraise.congr (fun p _ => ?_)
   change TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) p.1
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) p.1
         (sharpβ p) (Y p)) =
     TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1

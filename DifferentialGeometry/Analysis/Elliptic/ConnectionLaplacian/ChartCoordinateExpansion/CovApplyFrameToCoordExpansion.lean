@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter NormedSpace
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -360,7 +359,7 @@ private lemma cov_RS_finsum_smul_section_leibniz_apply
       ∑ i ∈ s_finset,
         (f i b • (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g)).toFun (σ i) b v +
-          extDerivFun (f i) b v • σ i b) := by
+          mvfderiv I (f i) b v • σ i b) := by
   classical
   induction s_finset using Finset.induction_on with
   | empty =>
@@ -424,10 +423,10 @@ private lemma cov_RS_finsum_smul_section_leibniz_apply
     rw [h_smul_form]
     rw [h_leib_k]
     have h_ih := ih hf_rest hσ_rest
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [h_ih]
     rw [Finset.sum_insert hkt]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
 
 omit [I.Boundaryless] in
@@ -455,7 +454,7 @@ theorem cov_RS_covApply_frameVec_eq_coord_expansion
                   (fun z : M => T₀.toSection z)) b
                 (chartBasisVecFiber (I := I) α l b)) +
         (∑ k : Fin (Module.finrank ℝ E),
-          extDerivFun (fun z : M =>
+          mvfderiv I (fun z : M =>
               chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z)
               b (chartBasisVecFiber (I := I) α l b) •
             covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s

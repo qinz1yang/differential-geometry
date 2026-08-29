@@ -22,7 +22,7 @@ variable [IsManifold I ∞ M]
 variable {ι : Type uι} [Fintype ι]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [Fintype ι] in
-private lemma contMDiff_finset_sum_real
+private lemma contMDiff_finsetSum_real
     {n : WithTop ℕ∞} {s : Finset ι} {f : ι → M → ℝ}
     (hs : ∀ i ∈ s, ContMDiff I 𝓘(Real, Real) n (f i)) :
     ContMDiff I 𝓘(Real, Real) n (fun x : M => ∑ i ∈ s, f i x) := by
@@ -34,7 +34,9 @@ private lemma contMDiff_finset_sum_real
       have hsum : ContMDiff I 𝓘(Real, Real) n (fun x : M => ∑ j ∈ s, f j x) :=
         ih (fun j hj => hs j (Finset.mem_insert_of_mem hj))
       have hi' : ContMDiff I 𝓘(Real, Real) n (f i) := hs i (Finset.mem_insert_self i s)
-      simpa [Finset.sum_insert hi] using hi'.add hsum
+      have hadd := hi'.add hsum
+      change ContMDiff I 𝓘(Real, Real) n (fun x : M => f i x + ∑ j ∈ s, f j x) at hadd
+      simpa only [Finset.sum_insert hi] using hadd
 
 omit [CompleteSpace E] [Fintype ι] in
 private lemma laplacianAt_finset_sum_real
@@ -56,7 +58,7 @@ private lemma laplacianAt_finset_sum_real
       have hsmooth_s : ∀ j ∈ s, ContMDiff I 𝓘(Real, Real) ∞ (f j) :=
         fun j hj => hsmooth j (Finset.mem_insert_of_mem hj)
       have hsum_smooth : ContMDiff I 𝓘(Real, Real) ∞ (fun x : M => ∑ j ∈ s, f j x) :=
-        contMDiff_finset_sum_real hsmooth_s
+        contMDiff_finsetSum_real hsmooth_s
       have hsum_lap := ih hsmooth_s
       funext x
       have hlap_add := laplacianAt_add (I := I) G (t := t)
@@ -101,7 +103,7 @@ theorem innerProductHeatReactionOn_of_componentwise
       rfl
     change ContMDiff I 𝓘(Real, Real) ∞ (fun x : M => inner ℝ (u t x) y)
     rw [hsum]
-    apply contMDiff_finset_sum_real
+    apply contMDiff_finsetSum_real
     intro i hi
     exact (contMDiff_const.mul (hsmooth i t ht))
   · intro y t ht x
@@ -144,7 +146,12 @@ theorem innerProductHeatReactionOn_of_componentwise
             gradientFun_mdiffAt (I := I) (G.metric t) (hsmooth i t (D.regular_subset ht)) x
           have hsmul := laplacianAt_smul (I := I) G (t := t) (a := y i)
             (f := fun x : M => u t x i) (x := x) hmdiff hgrad
-          simpa [Pi.smul_apply, smul_eq_mul] using hsmul
+          have hfun : (y i) • (fun x : M => u t x i) =
+              (fun x : M => y i * u t x i) := by
+            funext z
+            exact smul_eq_mul (y i) (u t z i)
+          rw [hfun] at hsmul
+          exact hsmul
         calc
           laplacianAt (I := I) G t (fun x : M => ∑ i : ι, y i * u t x i) x
               = ∑ i : ι, laplacianAt (I := I) G t (fun x : M => y i * u t x i) x := hlap

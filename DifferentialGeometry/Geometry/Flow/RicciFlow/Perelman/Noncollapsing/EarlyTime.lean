@@ -31,6 +31,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [ConnectedSpace M] [BoundarylessManifold I M] in
 theorem early_vol_low
     [T2Space (TangentBundle I M)]
@@ -50,6 +51,7 @@ theorem early_vol_low
   simpa only [SolutionOn.family_metric] using
     family_vol_low (I := I) (M := M) (rho := rho) h0omega S.family.metric hS.smoothMetric
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [ConnectedSpace M] [BoundarylessManifold I M] in
 theorem early_ball_low
     [T2Space (TangentBundle I M)]

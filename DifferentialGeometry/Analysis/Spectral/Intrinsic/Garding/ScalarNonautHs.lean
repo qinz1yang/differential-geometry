@@ -212,7 +212,7 @@ theorem lapHs_core
             ccTensorToHs (I := I) (M := M) q 0 (m : ℝ) Y := by
       simpa only [ccToHsLin_apply] using
         map_sub (ccToHsLin (I := I) (M := M) q 0 (m : ℝ)) X Y
-    simp only [R, D₂, D₁, J, ContinuousLinearMap.sub_apply,
+    simp only [R, D₂, D₁, J, sub_apply,
       ContinuousLinearMap.comp_apply, hD₂, hJ, hD₁, appHs_core]
     rw [← hsub]
     rfl
@@ -297,7 +297,7 @@ theorem lapHs_eq
           ccTensorToHs (I := I) (M := M) q 0 (m : ℝ) Y := by
     simpa only [ccToHsLin_apply] using
       map_sub (ccToHsLin (I := I) (M := M) q 0 (m : ℝ)) X Y
-  simp only [R, ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply,
+  simp only [R, sub_apply, ContinuousLinearMap.comp_apply,
     D₂, D₁, hD₂, hJ, hD₁, appHs_core]
   rw [← hsub]
   rfl

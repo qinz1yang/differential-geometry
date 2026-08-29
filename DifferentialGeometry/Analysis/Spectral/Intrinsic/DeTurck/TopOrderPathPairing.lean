@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped BigOperators Manifold Topology ContDiff RealInnerProductSpace
@@ -94,8 +93,6 @@ private theorem joint_smul
     (c : Real) (A : Real → SmoothCcTensor g r s)
     (hA : JointRS (I := I) g r s S A) :
     JointRS (I := I) g r s S (fun t => c • A t) := by
-  letI := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) r s
   intro p hp
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -105,7 +102,10 @@ private theorem joint_smul
   have hA' := (Bundle.contMDiffWithinAt_totalSpace
     (F := TensorRSModel r s Real E)
     (E := fun z : M => TensorRSSpace r s I z)).mp (hA p hp)
-  refine ((contMDiffWithinAt_const (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  have hc : ContMDiffWithinAt (I.prod 𝓘(Real, Real)) 𝓘(Real, Real) ∞
+      (fun _ : M × Real => c) ((Set.univ : Set M) ×ˢ S) p :=
+    contMDiffWithinAt_const
+  refine (hc.smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ q : M × Real in nhdsWithin p ((Set.univ : Set M) ×ˢ S),
         q.1 ∈ e.baseSet :=
       (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p))
@@ -126,8 +126,6 @@ private theorem joint_param_smul
     (A : Real → SmoothCcTensor g r s)
     (hA : JointRS (I := I) g r s S A) :
     JointRS (I := I) g r s S (fun t => t • A t) := by
-  letI := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) r s
   intro p hp
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -375,7 +373,7 @@ private theorem edgePartner_joint
   have hPerm := joint_perm (I := I) (M := M) g sigma.symm _ hProd
   simpa only [topOrderBilinearPairingAdjointCoefficient] using hPerm
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderPairingCoefficient_joint_contDiff
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -512,35 +510,10 @@ private theorem edgeTopPartner_joint
     (joint_add (I := I) (M := M) g _ _ (hterm 0) (hterm 1)) (hterm 2)
   have hL := joint_param_smul (I := I) (M := M) g _ hL0
   have hall := joint_add (I := I) (M := M) g _ _ hR hL
-  change JointRS (I := I) g 0 4
-    (metricPerturbationPathDomain (δ := delta) (δ' := delta))
-    (fun t =>
-      (2 : Real) • (t • ((1 / 2 : Real) •
-        ((1 / 2 : Real) •
-            (topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qA 0) +
-              topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qA 1) -
-              topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qA 2) -
-              topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qA 3)) +
-          (1 / 2 : Real) •
-            (topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qB 0) +
-              topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qB 1) -
-              topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qB 2) -
-              topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (qB 3))))) +
-      t • ∑ i : Fin 3, epsilon i • ((1 / 2 : Real) •
-        (topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V (q i) +
-          topOrderBilinearPairingAdjointCoefficient (I := I) (M := M) g
-            (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) P V
-            ((q i).trans (Equiv.swap (0 : Fin 4) 1)))))
-  simpa only [Fin.sum_univ_three] using hall
+  refine hall.congr (fun p _ => ?_)
+  refine congrArg (fun z => TotalSpace.mk' (TensorRSModel 0 4 Real E)
+    (E := fun x : M => TensorRSSpace 0 4 I x) p.1 z) ?_
+  simp only [ricciDeTurckTopOrderBilinearPairingAdjoint, Fin.sum_univ_three]
 
 def ricciDeTurckTopOrderPathIntegralCoefficient
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
@@ -644,7 +617,7 @@ private theorem path_app_zero
       (operatorFieldApply (I := I) (M := M) g b c (A t) W) x v
   simp only [Psi, operatorFieldComposition_zero_eq_operatorFieldApply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderPathIntegralCoefficient_apply
     (g : SmoothRiemannianMetric I M) (T U P : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)

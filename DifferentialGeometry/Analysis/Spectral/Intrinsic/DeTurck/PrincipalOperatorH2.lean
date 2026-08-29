@@ -165,7 +165,7 @@ theorem lowRegularityPrincipalOperatorH2_lipschitz_bound
             inverseMetricPerturbationCorrectionH2 (I := I) (M := M) g U).comp D) := by
     apply ContinuousLinearMap.ext
     intro V
-    simp only [lowRegularityPrincipalOperatorH2, A, D, ContinuousLinearMap.sub_apply,
+    simp only [lowRegularityPrincipalOperatorH2, A, D, sub_apply,
       ContinuousLinearMap.comp_apply]
     rw [map_sub]
   rw [hdiff]

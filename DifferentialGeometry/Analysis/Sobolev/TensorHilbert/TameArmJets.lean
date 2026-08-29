@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SelfLowCapWindows
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -30,6 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 theorem connectionDifferenceMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Kcd : ℕ → ℝ, (∀ j, 0 ≤ Kcd j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -167,7 +167,9 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_markWindow (g₀ : SmoothRi
           (ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 3 (permCoeff (I := I) (M := M) g₀ ρ')
             (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁))) 2 KMA := by
       simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKIns_nn hKIC_nn hIns hinner
-    simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hSP4_nn hKMA_nn (hP4 ρ) hmid
+    simpa only [aaCoreP, hKA_def] using
+      hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
+        hSP4_nn hKMA_nn (hP4 ρ) hmid
   have hShapeB : ∀ ρ : Equiv.Perm (Fin 4),
       HasMarkedGridWindow (I := I) (M := M) g₀ P (aaCore (I := I) (M := M) g₀ g₁ ρ) 2 KB := by
     intro ρ
@@ -176,7 +178,9 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_markWindow (g₀ : SmoothRi
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)
           (connectionDifferenceContrInsertionInnerField (I := I) g₀ g₁)) 2 KMB := by
       simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKIns_nn hKInn_nn hIns hInn
-    simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hSP4_nn hKMB_nn (hP4 ρ) hmid
+    simpa only [aaCore, hKB_def] using
+      hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
+        hSP4_nn hKMB_nn (hP4 ρ) hmid
   have hA' : ∀ (ρ : Equiv.Perm (Fin 4)) (ρ' : Equiv.Perm (Fin 3)),
       HasMarkedGridWindow (I := I) (M := M) g₀ P (aaCoreP (I := I) (M := M) g₀ g₁ ρ ρ') 2 KQ :=
     fun ρ ρ' => hasMarkedGridWindow_mono (I := I) (M := M) g₀ P
@@ -205,7 +209,9 @@ theorem exists_ricciConnectionDifferenceQuadraticArm_markWindow (g₀ : SmoothRi
   have hFT : HasMarkedGridWindow (I := I) (M := M) g₀ P
       (ricciCometricFourTraceCastG0 (I := I) g₀ g₁) 0 Kft :=
     hasMarkedGridWindow_of_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ P _ (fun n y => hft g₁ P htie hδ_le hδ0 hδ n y)
-  simpa using hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _ hKft_nn hK94_nn hFT hKer
+  simpa only [ricciConnectionDifferenceQuadraticArm] using
+    hasMarkedGridWindow_operatorFieldComp (I := I) (M := M) g₀ P _ _
+      hKft_nn hK94_nn hFT hKer
 
 theorem exists_ricciConnectionDifferenceQuadraticArm_covariantJetNormSq_bound (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

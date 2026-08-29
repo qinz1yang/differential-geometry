@@ -29,7 +29,7 @@ theorem orbit_unique_on
     ⟨t₀, ht₀, h₀, ht₀⟩
   · rw [hu, inter_comm, ← Subtype.image_preimage_val, inter_comm,
       ← Subtype.image_preimage_val, image_subset_image_iff Subtype.val_injective,
-      preimage_setOf_eq]
+      preimage_ofPred_eq]
     intro t ht
     rw [mem_preimage, ← closure_subtype] at ht
     revert ht t
@@ -194,7 +194,8 @@ theorem exists_uniform_flow
           ∀ z ∈ U, ∀ t ∈ Ioo (-ε) ε,
             HasDerivAt (fun s ↦ Ψ (z, s)) (v (Ψ (z, t))) t := by
   have hvTime : ContDiff ℝ ∞ (uncurry (fun _ : ℝ ↦ v)) := by
-    simpa only [uncurry_apply_pair] using hv.comp contDiff_snd
+    let h : ContDiff ℝ ∞ (uncurry (fun _ : ℝ ↦ v)) := hv.comp contDiff_snd
+    exact h
   choose r δ hr hδ Ψ hΨ ρ T hρ hT hρr hTδ hΨsm using
     fun y : E ↦
       DifferentialGeometry.Analysis.ODE.exists_isLocalFlow_contDiffOn_top
@@ -651,7 +652,8 @@ theorem contDiffOn_solutionFamily_of_stays
     exact ⟨hI ht, hstay p hp ht⟩
   have haug := flow_joint_right_on (E := ℝ × E) (hJ.prod hV) hw hA haAug
     hγAug hstayAug
-  simpa only [γAug, uncurry_apply_pair] using haug.snd
+  let h : ContDiffOn ℝ ∞ (uncurry γ) (A ×ˢ Icc a b) := haug.snd
+  exact h
 
 theorem ode_slice_right
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]

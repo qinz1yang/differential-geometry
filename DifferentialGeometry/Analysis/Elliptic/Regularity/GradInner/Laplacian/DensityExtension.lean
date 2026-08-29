@@ -52,7 +52,7 @@ theorem gradInnerCLM_eq_H1ComplToLp_resolvent_via_density
       atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g φ
+      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
         (h_smooth_seq n)) :
     gradInnerCLM (I := I) (M := M) g φ u_h =
       H1ComplToLp (I := I) (M := M) g
@@ -124,7 +124,7 @@ theorem gradInnerCLM_mem_image_laplacianDomain_via_density
       atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g φ
+      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
         (h_smooth_seq n)) :
     gradInnerCLM (I := I) (M := M) g φ u_h ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
@@ -154,7 +154,7 @@ theorem smoothMulH1Compl_mem_pow_two_via_density
       atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g φ
+      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
         (h_smooth_seq n)) :
     smoothMulH1Compl (I := I) (M := M) g φ u_h ∈
       laplacianDomainPow (I := I) (M := M) g 2 := by

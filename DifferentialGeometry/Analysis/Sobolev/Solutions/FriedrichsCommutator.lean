@@ -265,7 +265,7 @@ private lemma enorm_commutatorPointwise_le_lintegral
   rw [hen_lhs]
   refine (ENNReal.ofReal_le_ofReal h1).trans ?_
   rw [ENNReal.ofReal_mul hΛε_nn]
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ bot_le
   rw [show ENNReal.ofReal (∫ t, φ (x - t) * |u t| ∂(volume : Measure E))
         = ∫⁻ t, ENNReal.ofReal (φ (x - t) * |u t|) ∂(volume : Measure E) from
       ofReal_integral_eq_lintegral_ofReal h_int_abs' h_int_nn]
@@ -407,7 +407,7 @@ private lemma eLpNorm_commutatorPointwise_sq_le_aux
       ENNReal.rpow_le_rpow h1 (by norm_num : (0 : ℝ) ≤ 2)
     refine h_sq.trans ?_
     rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0 : ℝ) ≤ 2)]
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ bot_le
     exact lintegral_phi_norm_u_sq_le hφ_meas u hu_meas x
   refine (lintegral_mono h_pt).trans ?_
   have hpow_finite : (ENNReal.ofReal (Λ * ε)) ^ (2 : ℝ) ≠ ∞ := by
@@ -575,11 +575,11 @@ theorem friedrichsCommutator_tendsto_zero
   classical
   have ha_cont : Continuous a := ha_smooth.continuous
   have ha_diff : Differentiable ℝ a := ha_smooth.differentiable (by norm_cast)
-  have h_grad_bd_nn : ∀ x : E, ‖fderiv ℝ a x‖₊ ≤ ⟨Λ, hΛ_nn⟩ := by
+  have h_grad_bd_nn : ∀ x : E, ‖fderiv ℝ a x‖₊ ≤ NNReal.mk Λ hΛ_nn := by
     intro x
     have := h_grad_bd x
     rwa [← NNReal.coe_le_coe, coe_nnnorm]
-  have hLip : LipschitzWith ⟨Λ, hΛ_nn⟩ a :=
+  have hLip : LipschitzWith (NNReal.mk Λ hΛ_nn) a :=
     lipschitzWith_of_nnnorm_fderiv_le ha_diff h_grad_bd_nn
   have ha_lip : ∀ x y : E, |a x - a y| ≤ Λ * ‖x - y‖ := by
     intro x y

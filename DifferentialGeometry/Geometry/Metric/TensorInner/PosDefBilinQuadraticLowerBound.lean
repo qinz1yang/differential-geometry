@@ -17,8 +17,8 @@ theorem posDef_bilin_quadratic_lower_bound
     ∃ c : ℝ, 0 < c ∧ ∀ v : F, c * ‖v‖ ^ 2 ≤ B v v := by
   classical
   by_cases hF : Nontrivial F
-  · haveI := hF
-    haveI : ProperSpace F := FiniteDimensional.proper ℝ _
+  · have := hF
+    have : ProperSpace F := FiniteDimensional.proper ℝ _
     set Q : F → ℝ := fun v => B v v with hQ_def
     have hQ_cont : Continuous Q := Continuous.clm_apply B.continuous continuous_id
     have hsc : IsCompact (Metric.sphere (0 : F) 1) := isCompact_sphere _ _

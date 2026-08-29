@@ -22,12 +22,12 @@ namespace Topology
 namespace UniversalCover
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-  [LocPathConnectedSpace M]
+  [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M]
 
@@ -40,7 +40,7 @@ noncomputable def liftedMetric (g : SmoothRiemannianMetric I M) :
   isVonNBounded x' := g.isVonNBounded (proj x')
   contMDiff := uc_liftedMetric_contMDiff (I := I) (M := M) g
 
-@[reducible] noncomputable def uc_pseudoEMetricSpace
+@[reducible] noncomputable def ucPseudoEMetricSpace
     (g : SmoothRiemannianMetric I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))
     [RegularSpace
@@ -57,7 +57,7 @@ noncomputable def liftedMetric (g : SmoothRiemannianMetric I M) :
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
   PseudoEMetricSpace.ofRiemannianMetric I _
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 omit [ConnectedSpace M] in
 theorem isRiemannianManifold
@@ -71,28 +71,28 @@ theorem isRiemannianManifold
       ⟨g.toRiemannianMetric⟩
     letI : PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-      uc_pseudoEMetricSpace (I := I) (M := M) g
+      ucPseudoEMetricSpace (I := I) (M := M) g
     IsRiemannianManifold I
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun (x : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) ↦
         TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : PseudoEMetricSpace
+  let : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) g
+    ucPseudoEMetricSpace (I := I) (M := M) g
   exact ⟨fun _ _ => rfl⟩
 
-omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] [ConnectedSpace M] in
+omit [SigmaCompactSpace M] [ConnectedSpace M] in
 omit [I.Boundaryless] in
 theorem uc_regularSpace (I : ModelWithCorners ℝ E H) :
     RegularSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
   infer_instance
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 omit [ConnectedSpace M] in
 theorem liftedMetric_inner_eq (g : SmoothRiemannianMetric I M)

@@ -272,6 +272,8 @@ theorem resolventEigenbasisVec_orthonormal (g : SmoothRiemannianMetric I M) :
     fun μ => (resolventEigenspaceONB (I := I) (M := M) μ).orthonormal
   have h_sig := h_fam.orthonormal_sigma_orthonormal h_each
   convert h_sig using 1
+  funext a
+  rfl
 
 private lemma span_resolventEigenbasisVec_le_iSup_eigenspace
     (g : SmoothRiemannianMetric I M) :

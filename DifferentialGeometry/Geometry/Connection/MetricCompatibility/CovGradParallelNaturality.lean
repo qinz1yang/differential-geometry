@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityA
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -49,7 +48,7 @@ omit [BoundarylessManifold I M] [T2Space M] in
         (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) := rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma covGrad_apply_unit_eval
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (y : M)
     (v : Fin 3 → TangentSpace I y) :
@@ -65,7 +64,7 @@ lemma covGrad_apply_unit_eval
   exact covGrad_toSection_apply_eval (I := I) (M := M) g 0 2 T₀ y
     (unitZeroSec (I := I) (M := M) y) v
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma covGrad_covDeriv_at_unit_eq
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (v : TangentSpace I x) :

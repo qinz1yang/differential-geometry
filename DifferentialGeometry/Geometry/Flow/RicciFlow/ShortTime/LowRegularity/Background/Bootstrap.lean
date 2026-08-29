@@ -242,7 +242,10 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
             hT 0 gforce t)‖ ≤
         lowRegularityStateRadius K.top K.slope K.outer K.realize := by
     filter_upwards [hsol.field_mem] with t ht
-    simpa only [lowerState, lowerBall] using ht
+    change maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ)
+        hT 0 gforce t ∈ lowerState (I := I) (M := M) g 1
+          (lowRegularityStateRadius K.top K.slope K.outer K.realize)
+    exact ht
   refine ⟨v, hvlo, rfl, ?_, ?_⟩
   · intro t ht
     rw [crossRepr_toFun (I := I) (M := M) v hT ht, hvlo]

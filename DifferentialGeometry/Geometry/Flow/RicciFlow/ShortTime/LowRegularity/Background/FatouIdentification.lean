@@ -117,7 +117,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
     intro N
     exact Continuous.Icc_extend'
       (galerkinEnergy_continuousOn (I := I) (M := M)
-        (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 (hUcont N)).restrict
+        (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 (hUcont N)).domRestrict
   have hEEnn : ∀ N, ∀ s : ℝ, 0 ≤ EE N s := fun N s =>
     galerkinEnergy_nonneg (I := I) (M := M) _ _ _ _
   have hEEeq : ∀ N, ∀ s ∈ Set.Icc (0 : ℝ) T,

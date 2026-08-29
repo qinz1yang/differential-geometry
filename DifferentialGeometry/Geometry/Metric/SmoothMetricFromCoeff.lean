@@ -70,9 +70,9 @@ private lemma bilin_expand (φ : E →L[ℝ] E →L[ℝ] ℝ) (v w : E) :
   calc φ v w
       = (∑ i, b.repr v i • φ (b i)) w := by rw [e1]
     _ = ∑ i, b.repr v i • φ (b i) w := by
-          rw [ContinuousLinearMap.sum_apply]
+          rw [sum_apply]
           refine Finset.sum_congr rfl (fun i _ => ?_)
-          rw [ContinuousLinearMap.smul_apply]
+          rw [smul_apply]
     _ = ∑ i, b.repr v i • ∑ j, b.repr w j • φ (b i) (b j) := by
           refine Finset.sum_congr rfl (fun i _ => ?_)
           rw [e2 i]
@@ -88,7 +88,7 @@ private lemma clm_eq_sum (φ : E →L[ℝ] E →L[ℝ] ℝ) :
     φ = ∑ i, ∑ j, φ (mdlBasis E i) (mdlBasis E j) • munit (E := E) i j := by
   ext v w
   rw [bilin_expand (E := E) φ v w]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, munit_apply,
+  simp only [sum_apply, smul_apply, munit_apply,
     smul_eq_mul]
   refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
   ring
@@ -105,14 +105,14 @@ theorem metricCoeffInModel_apply (x₀ : M) {x : M}
         ⟨x, φ⟩).2 v w
       = φ ((trivializationAt E (TangentSpace I) x₀).symmL ℝ x v)
           ((trivializationAt E (TangentSpace I) x₀).symmL ℝ x w) := by
-  letI : TopologicalSpace
+  let : TopologicalSpace
       (TotalSpace (E →L[ℝ] ℝ) (fun y : M ↦ TangentSpace I y →L[ℝ] ℝ)) :=
     Bundle.ContinuousLinearMap.topologicalSpaceTotalSpace
       (RingHom.id ℝ) E (TangentSpace I) ℝ (fun _ : M ↦ ℝ)
   rw [hom_trivializationAt_apply (RingHom.id ℝ) (F₁ := E) (E₁ := TangentSpace I)
     (F₂ := E →L[ℝ] ℝ) (E₂ := fun y => TangentSpace I y →L[ℝ] ℝ)]
   rw [ContinuousLinearMap.inCoordinates]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   have hone (ψ : TangentSpace I x →L[ℝ] ℝ) :
       (trivializationAt (E →L[ℝ] ℝ) (fun y => TangentSpace I y →L[ℝ] ℝ) x₀).continuousLinearMapAt
           ℝ x ψ = ψ.comp ((trivializationAt E (TangentSpace I) x₀).symmL ℝ x) := by
@@ -161,8 +161,8 @@ private lemma metric_contMDiffOn (gm : Π x : M, TangentSpace I x →L[ℝ] Tang
       (fun x => ∑ i, ∑ j,
         gm x (frameVec (I := I) x₀ i x) (frameVec (I := I) x₀ j x) • munit (E := E) i j)
       (trivializationAt E (TangentSpace I) x₀).baseSet := by
-    refine contMDiffOn_finset_sum (fun i _ => ?_)
-    refine contMDiffOn_finset_sum (fun j _ => ?_)
+    refine contMDiffOn_finsetSum (fun i _ => ?_)
+    refine contMDiffOn_finsetSum (fun j _ => ?_)
     exact (hcoeff i j).smul contMDiffOn_const
   refine hsmooth.congr ?_
   intro x hx

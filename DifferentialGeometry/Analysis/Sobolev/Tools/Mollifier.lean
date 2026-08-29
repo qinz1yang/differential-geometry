@@ -52,13 +52,13 @@ omit [NeZero d] in
 theorem mollifier_support_eq :
     Function.support (mollifier (d := d)) = Metric.ball (0 : E) 1 := by
   unfold mollifier
-  simpa using (mollifierBump (d := d)).support_normed_eq (μ := volume)
+  simpa [mollifierBump] using (mollifierBump (d := d)).support_normed_eq (μ := volume)
 
 omit [NeZero d] in
 theorem mollifier_tsupport_eq :
     tsupport (mollifier (d := d)) = Metric.closedBall (0 : E) 1 := by
   unfold mollifier
-  simpa using (mollifierBump (d := d)).tsupport_normed_eq (μ := volume)
+  simpa [mollifierBump] using (mollifierBump (d := d)).tsupport_normed_eq (μ := volume)
 
 omit [NeZero d] in
 theorem mollifier_support_subset_closedBall_one :

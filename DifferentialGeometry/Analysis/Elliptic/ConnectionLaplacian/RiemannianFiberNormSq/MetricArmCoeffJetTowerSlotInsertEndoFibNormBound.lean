@@ -58,20 +58,16 @@ private lemma fiberComponent_slotInsertEndoFib_eq
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((slotInsertEndoFib (I := I) (M := M) 2 0 x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
         (fun k => e (J k)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, slotInsertEndoFib_apply_eval]
-  rw [show (coframeS (I := I) (M := M) g₀ x 2 e K).toModel
-        (Function.update (fun k => e (J k)) 0 (Λ (e (J 0))))
-      = coframeS (I := I) (M := M) g₀ x 2 e K
-        (Function.update (fun k => e (J k)) 0 (Λ (e (J 0)))) from rfl]
+  rw [hcomp, slotInsertEndoFib_apply_natural]
+  rw [Tensor0SSpace.eval_eq]
   rw [coframeS_apply, Fin.prod_univ_two, Function.update_self,
     Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
   rw [g₀.symm x (e (K 0)) (Λ (e (J 0))), horth (K 1) (J 1)]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
@@ -159,15 +155,12 @@ private lemma fiberComponent_slotInsertEndoFib_eq_general
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x s s
       (show TensorRSSpace s s I x from
         TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) n e K J =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((slotInsertEndoFib (I := I) (M := M) s k x Λ) (coframeS (I := I) (M := M) g₀ x s e K))
         (fun l => e (J l)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, slotInsertEndoFib_apply_eval]
-  rw [show (coframeS (I := I) (M := M) g₀ x s e K).toModel
-        (Function.update (fun l => e (J l)) k (Λ (e (J k))))
-      = coframeS (I := I) (M := M) g₀ x s e K
-        (Function.update (fun l => e (J l)) k (Λ (e (J k)))) from rfl]
+  rw [hcomp, slotInsertEndoFib_apply_natural]
+  rw [Tensor0SSpace.eval_eq]
   rw [coframeS_apply]
   rw [← Finset.prod_erase_mul Finset.univ
     (fun l => g₀.inner x (e (K l))
@@ -259,7 +252,6 @@ private lemma sum_compSq_slotInsertEndoFib_eq_normSq
   rw [Finset.sum_congr rfl (fun m _ => hinner m)]
   exact hpars (Λ (e (J k)))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_general

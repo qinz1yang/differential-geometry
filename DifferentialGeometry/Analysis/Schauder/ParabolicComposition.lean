@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Schauder.CompactRegularity
 
+
 noncomputable section
 
 open Set
@@ -36,8 +37,8 @@ theorem isParabolicC2On_parabolicSpatialPullback
   · intro p hp
     exact (hu.1 (parabolicMap phi p) (hQR hp)).comp p.space (hphi p hp)
   · intro p hp
-    simpa only [parabolicSpatialPullback_apply] using
-      hu.2 (parabolicMap phi p) (hQR hp)
+    change DifferentiableAt Real (fun t => u t (phi p.space)) p.time
+    exact hu.2 (parabolicMap phi p) (hQR hp)
 
 omit [NormedAddCommGroup V] [NormedSpace Real V]
   [NormedAddCommGroup W] [NormedSpace Real W] in
@@ -96,25 +97,27 @@ theorem hessianCurryEquiv_parabolicSpatialJet_two_parabolicSpatialPullback
 theorem holderWith_continuousMultilinearCurryFin1_parabolicSpatialJet_one
     {R : Set (ParabolicPoint W)} {u : Real → W → F}
     {K alpha : NNReal}
-    (h : HolderWith K alpha (R.restrict (parabolicSpatialJet 1 u))) :
+    (h : HolderWith K alpha (R.domRestrict (parabolicSpatialJet 1 u))) :
     HolderWith K alpha
-      (R.restrict (fun p => continuousMultilinearCurryFin1 Real W F
+      (R.domRestrict (fun p => continuousMultilinearCurryFin1 Real W F
         (parabolicSpatialJet 1 u p))) := by
   have hcomp :=
     (continuousMultilinearCurryFin1 Real W F).lipschitz.holderWith.comp h
+  intro p q
   simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul,
-    Function.comp_apply, Set.restrict_apply] using hcomp
+    Function.comp_apply, Set.domRestrict_apply] using hcomp p q
 
 theorem holderWith_hessianCurryEquiv_parabolicSpatialJet_two
     {R : Set (ParabolicPoint W)} {u : Real → W → F}
     {K alpha : NNReal}
-    (h : HolderWith K alpha (R.restrict (parabolicSpatialJet 2 u))) :
+    (h : HolderWith K alpha (R.domRestrict (parabolicSpatialJet 2 u))) :
     HolderWith K alpha
-      (R.restrict (fun p => hessianCurryEquiv W F
+      (R.domRestrict (fun p => hessianCurryEquiv W F
         (parabolicSpatialJet 2 u p))) := by
   have hcomp := (hessianCurryEquiv W F).lipschitz.holderWith.comp h
+  intro p q
   simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul,
-    Function.comp_apply, Set.restrict_apply] using hcomp
+    Function.comp_apply, Set.domRestrict_apply] using hcomp p q
 
 def parabolicSpatialPullbackGaugeConst
     (alpha L C K1 K2 M1 M2 : NNReal) : NNReal :=
@@ -156,9 +159,9 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
       (fun p : Q => (⟨parabolicMap phi p.1, hQR p.2⟩ : R)))
     (hphi : ∀ p ∈ Q, ContDiffAt Real 2 phi p.space)
     (hDphiHolder : HolderWith K1 alpha
-      (Q.restrict (fun p => fderiv Real phi p.space)))
+      (Q.domRestrict (fun p => fderiv Real phi p.space)))
     (hD2phiHolder : HolderWith K2 alpha
-      (Q.restrict (fun p => hessianCurryEquiv V W
+      (Q.domRestrict (fun p => hessianCurryEquiv V W
         (iteratedFDeriv Real 2 phi p.space))))
     (hDphiNorm : ∀ p ∈ Q, ‖fderiv Real phi p.space‖ ≤ M1)
     (hD2phiNorm : ∀ p ∈ Q,
@@ -173,25 +176,27 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
   have hbase : eParabolicC2HolderGaugeOn alpha R u ≤ C :=
     (eParabolicC2HolderGaugeOn_le_with_lower_jets alpha R u).trans hsource
   have hDuR : HolderWith C alpha
-      (R.restrict (fun p => continuousMultilinearCurryFin1 Real W F
+      (R.domRestrict (fun p => continuousMultilinearCurryFin1 Real W F
         (parabolicSpatialJet 1 u p))) :=
     holderWith_continuousMultilinearCurryFin1_parabolicSpatialJet_one
       (parabolicSpatialGradient_holderWith_restrict_of_lower_jets hsource)
   have hD2uR : HolderWith C alpha
-      (R.restrict (fun p => hessianCurryEquiv W F
+      (R.domRestrict (fun p => hessianCurryEquiv W F
         (parabolicSpatialJet 2 u p))) :=
     holderWith_hessianCurryEquiv_parabolicSpatialJet_two
       (parabolicSpatialJet_holderWith_restrict hbase)
   have hDuQ : HolderWith (C * L ^ (alpha : Real)) alpha
       (fun p : Q => continuousMultilinearCurryFin1 Real W F
         (parabolicSpatialJet 1 u (parabolicMap phi p.1))) := by
-    simpa only [Function.comp_apply, Set.restrict_apply, mul_one] using
-      hDuR.comp hmapLip.holderWith
+    intro p q
+    simpa only [Function.comp_apply, Set.domRestrict_apply, mul_one] using
+      (hDuR.comp hmapLip.holderWith) p q
   have hD2uQ : HolderWith (C * L ^ (alpha : Real)) alpha
       (fun p : Q => hessianCurryEquiv W F
         (parabolicSpatialJet 2 u (parabolicMap phi p.1))) := by
-    simpa only [Function.comp_apply, Set.restrict_apply, mul_one] using
-      hD2uR.comp hmapLip.holderWith
+    intro p q
+    simpa only [Function.comp_apply, Set.domRestrict_apply, mul_one] using
+      (hD2uR.comp hmapLip.holderWith) p q
   have hDuNorm : ∀ p : Q,
       ‖continuousMultilinearCurryFin1 Real W F
         (parabolicSpatialJet 1 u (parabolicMap phi p.1))‖ ≤ C := by
@@ -231,7 +236,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
   have hgradient : HolderWith
       (c1PullbackGradientHolderConst K1
         (C * L ^ (alpha : Real)) M1 C) alpha
-      (Q.restrict (parabolicSpatialJet 1 w)) := by
+      (Q.domRestrict (parabolicSpatialJet 1 w)) := by
     have hcomp :=
       (continuousMultilinearCurryFin1 Real V F).symm.lipschitz.holderWith.comp
         hgradientCurry
@@ -247,7 +252,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
     convert hcomp' using 1
     funext p
     apply (continuousMultilinearCurryFin1 Real V F).injective
-    simp only [Function.comp_apply, Set.restrict_apply,
+    simp only [Function.comp_apply, Set.domRestrict_apply,
       LinearIsometryEquiv.apply_symm_apply]
     exact
       continuousMultilinearCurryFin1_parabolicSpatialJet_one_parabolicSpatialPullback
@@ -258,7 +263,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
       (c2PullbackHessianHolderConst K1 K2
         (C * L ^ (alpha : Real)) (C * L ^ (alpha : Real))
         M1 M2 C C) alpha
-      (Q.restrict (parabolicSpatialJet 2 w)) := by
+      (Q.domRestrict (parabolicSpatialJet 2 w)) := by
     have hcomp := (hessianCurryEquiv V F).symm.lipschitz.holderWith.comp
       hhessianCurry
     have hcomp' : HolderWith
@@ -278,22 +283,24 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
     convert hcomp' using 1
     funext p
     apply (hessianCurryEquiv V F).injective
-    simp only [Function.comp_apply, Set.restrict_apply,
+    simp only [Function.comp_apply, Set.domRestrict_apply,
       LinearIsometryEquiv.apply_symm_apply]
     exact hessianCurryEquiv_parabolicSpatialJet_two_parabolicSpatialPullback
       (hu.1 (parabolicMap phi p.1) (hQR p.2)) (hphi p.1 p.2)
   have hvalue : HolderWith (C * L ^ (alpha : Real)) alpha
-      (Q.restrict (fun p => w p.time p.space)) := by
-    simpa only [w, parabolicSpatialPullback_apply, Function.comp_apply,
-      Set.restrict_apply, mul_one] using
-      (parabolicValue_holderWith_restrict_of_lower_jets hsource).comp
-        hmapLip.holderWith
+      (Q.domRestrict (fun p => w p.time p.space)) := by
+    intro p q
+    simpa only [w, parabolicSpatialPullback_apply, parabolicMap, parabolicPoint_time,
+      parabolicPoint_space, Function.comp_apply, Set.domRestrict_apply, mul_one] using
+        ((parabolicValue_holderWith_restrict_of_lower_jets hsource).comp
+          hmapLip.holderWith) p q
   have htimeHolder : HolderWith (C * L ^ (alpha : Real)) alpha
-      (Q.restrict (parabolicTimeDerivative w)) := by
+      (Q.domRestrict (parabolicTimeDerivative w)) := by
+    intro p q
     simpa only [w, parabolicTimeDerivative_parabolicSpatialPullback,
-      Function.comp_apply, Set.restrict_apply, mul_one] using
-      (parabolicTimeDerivative_holderWith_restrict hbase).comp
-        hmapLip.holderWith
+      Function.comp_apply, Set.domRestrict_apply, mul_one] using
+        ((parabolicTimeDerivative_holderWith_restrict hbase).comp
+          hmapLip.holderWith) p q
   let Cspatial : Nat → NNReal := fun j => match j with
     | 0 => C
     | 1 => C * M1
@@ -355,7 +362,10 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le
     (c1PullbackGradientHolderConst K1
       (C * L ^ (alpha : Real)) M1 C)
     hgauge hvalue hgradient
-  simpa only [w, parabolicSpatialPullbackGaugeWithLowerJetsConst] using hlower
+  change eParabolicC2HolderGaugeWithLowerJetsOn alpha Q w ≤
+    (parabolicSpatialPullbackGaugeWithLowerJetsConst alpha L C K1 K2 M1 M2 : NNReal)
+  convert hlower using 1
+  norm_cast
 
 theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le_of_lipschitzWith
     {Q : Set (ParabolicPoint V)} {R : Set (ParabolicPoint W)}
@@ -366,9 +376,9 @@ theorem eParabolicC2HolderGaugeWithLowerJetsOn_parabolicSpatialPullback_le_of_li
     (hQR : MapsTo (parabolicMap phi) Q R)
     (hphi : ∀ p ∈ Q, ContDiffAt Real 2 phi p.space)
     (hDphiHolder : HolderWith K1 alpha
-      (Q.restrict (fun p => fderiv Real phi p.space)))
+      (Q.domRestrict (fun p => fderiv Real phi p.space)))
     (hD2phiHolder : HolderWith K2 alpha
-      (Q.restrict (fun p => hessianCurryEquiv V W
+      (Q.domRestrict (fun p => hessianCurryEquiv V W
         (iteratedFDeriv Real 2 phi p.space))))
     (hDphiNorm : ∀ p ∈ Q, ‖fderiv Real phi p.space‖ ≤ M1)
     (hD2phiNorm : ∀ p ∈ Q,

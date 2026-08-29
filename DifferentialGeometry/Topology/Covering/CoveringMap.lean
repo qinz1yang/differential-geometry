@@ -3,7 +3,7 @@ import Mathlib.Topology.Subpath
 import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Topology.Connected.PathConnected
-import Mathlib.Topology.Connected.LocPathConnected
+import Mathlib.Topology.Connected.LocallyPathConnected
 import DifferentialGeometry.Topology.Covering.Basic
 
 open Set Function Filter
@@ -18,10 +18,10 @@ namespace Topology
 namespace UniversalCover
 
 variable {X : Type*} [TopologicalSpace X] [Inhabited X]
-  [ConnectedSpace X] [LocPathConnectedSpace X]
+  [ConnectedSpace X] [LocallyPathConnectedSpace X]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
 
-omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
+omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_sheet_bijection_on_good_U
     (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
     (U : Set X) (hp : p.1 ∈ U)
@@ -116,7 +116,7 @@ private theorem uc_good_nhd_exists (x : X) :
   exact hUsub (ht ▸ this)
 
 
-omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
+omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 private theorem uc_sheet_disjoint
     {U : Set X}
     {p₁ p₂ :
@@ -140,7 +140,7 @@ private theorem uc_sheet_disjoint
   simp only [heq_eq_eq] at hq₁ hq₂ ⊢
   have hloopU : ∀ t, (η₂.trans η₁.symm) t ∈ U := by
     intro t
-    rw [Path.trans_apply]
+    erw [Path.trans_apply]
     split_ifs with h
     · exact hη₂U _
     · rw [Path.symm_apply]; exact hη₁U _
@@ -182,7 +182,7 @@ private theorem uc_sheet_disjoint
     _ = c₂ := _root_.Path.Homotopic.Quotient.trans_refl c₂
 
 
-omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
+omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 private theorem uc_sheet_exhaust
     (x : X) {U : Set X} (hxU : x ∈ U) (hUpc : IsPathConnected U)
     (q : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
@@ -259,7 +259,9 @@ theorem proj_isCoveringMap :
     intro p q hq
     obtain ⟨η, hη, _⟩ := hq
     have := hη 1
-    simpa [proj] using this
+    change q.1 ∈ U
+    rw [Path.target] at this
+    exact this
   have hself_in_sheet : ∀ p : Fx, p.1 ∈ sheet p := by
     intro p
     refine ⟨_root_.Path.refl p.1.1, fun _ => hp1_mem p, ?_⟩
@@ -288,7 +290,9 @@ theorem proj_isCoveringMap :
       ⁻¹' U, ∃ p : Fx, q ∈ sheet p := by
     intro q hq
     obtain ⟨p, hp_eq, hqsheet⟩ := uc_sheet_exhaust (X := X) x hxU hUpc q hq
-    have hp_mem : p ∈ Fx := by simpa [proj] using hp_eq
+    have hp_mem : p ∈ Fx := by
+      change p.1 = x
+      exact hp_eq
     refine ⟨⟨p, hp_mem⟩, ?_⟩
     exact hqsheet
   have hsheet_bij : ∀ p : Fx, Set.BijOn proj (sheet p) U := by
@@ -301,7 +305,7 @@ theorem proj_isCoveringMap :
     exact hUloops
   have hsheet_inj : ∀ p : Fx, (sheet p).InjOn proj := fun p => (hsheet_bij p).2.1
   have hsheet_surj : ∀ p : Fx, (sheet p).SurjOn proj U := fun p => (hsheet_bij p).2.2
-  haveI hFx_disc : DiscreteTopology Fx := by
+  have hFx_disc : DiscreteTopology Fx := by
     rw [discreteTopology_iff_isOpen_singleton]
     intro p
     have hsingleton_eq :
@@ -371,7 +375,8 @@ theorem proj_isCoveringMap :
       htheSheet_uniq _ p hsheet_mem
     apply Prod.ext
     · apply Subtype.ext
-      simpa [fwd] using hproj
+      change (inv (⟨y, hy⟩, p)).1.1 = y
+      exact hproj
     · simpa [fwd] using h_eq_sheet
   have hfwd_cont : Continuous fwd := by
     apply Continuous.prodMk
@@ -445,7 +450,7 @@ def basePoint :
   ⟨(default : X),
     _root_.Path.Homotopic.Quotient.mk (_root_.Path.refl (default : X))⟩
 
-def uc_subpathLift {x : X} (γ : _root_.Path (default : X) x)
+def ucSubpathLift {x : X} (γ : _root_.Path (default : X) x)
     (s : unitInterval) :
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X :=
   ⟨γ s,
@@ -453,14 +458,16 @@ def uc_subpathLift {x : X} (γ : _root_.Path (default : X) x)
 
 omit [ConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
-    Continuous (uc_subpathLift γ) := by
+    Continuous (ucSubpathLift γ) := by
   refine continuous_iff_continuousAt.mpr fun s₀ => ?_
   rw [ContinuousAt, Filter.tendsto_def]
   intro N hN
   obtain ⟨S, ⟨⟨p, V, hVopen, hpV, rfl⟩, hTs₀S⟩, hSN⟩ :=
     (basis_assemble (X := X)).nhds_hasBasis.mem_iff.mp hN
+  rcases p with ⟨p, hp⟩
   obtain ⟨η₀, hη₀V, hη₀eq⟩ := hTs₀S
-  simp only [uc_subpathLift] at hη₀eq
+  change _root_.Path p (γ s₀) at η₀
+  simp only [ucSubpathLift] at hη₀eq
   have hcont_fam :
       Continuous (fun st : unitInterval × unitInterval =>
         γ.subpath s₀ st.1 st.2) := by
@@ -477,11 +484,10 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
       {st : unitInterval × unitInterval | γ.subpath s₀ st.1 st.2 ∈ V} := by
     rintro ⟨s, t⟩ ⟨hs, -⟩
     simp only [Set.mem_singleton_iff] at hs
-    simp only [Set.mem_setOf_eq, hs, Path.subpath_self, Path.refl_apply]
+    simp only [Set.mem_ofPred_eq, hs, Path.subpath_self, Path.refl_apply]
     have : γ s₀ ∈ V := by
       have h := hη₀V 1
-      rw [Path.target] at h
-      exact h
+      exact η₀.target ▸ h
     exact this
   obtain ⟨J, K, hJopen, _hKopen, hs₀J, _hKuniv, hJK⟩ :=
     generalized_tube_lemma (isCompact_singleton (x := s₀)) (isCompact_univ) hopen hsub
@@ -493,6 +499,7 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
   refine Filter.mem_of_superset (hJopen.mem_nhds hs₀J') ?_
   intro s hsJ
   apply hSN
+  unfold ucSubpathLift
   refine ⟨η₀.trans (γ.subpath s₀ s), ?_, ?_⟩
   · intro t
     rw [Path.trans_apply]
@@ -501,7 +508,7 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
     · rw [Path.subpath]
       exact hsubV s hsJ _
   · change (_root_.Path.Homotopic.Quotient.mk (γ.subpath 0 s)).cast γ.source.symm rfl =
-      p.2.trans (_root_.Path.Homotopic.Quotient.mk (η₀.trans (γ.subpath s₀ s)))
+      hp.trans (_root_.Path.Homotopic.Quotient.mk (η₀.trans (γ.subpath s₀ s)))
     have hadd :
         (_root_.Path.Homotopic.Quotient.mk (γ.subpath 0 s)
             : _root_.Path.Homotopic.Quotient (γ 0) (γ s)) =
@@ -516,13 +523,13 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
             (_root_.Path.Homotopic.Quotient.mk (γ.subpath s₀ s)) := by
       rw [hadd]
       rfl
-    rw [hcast, hη₀eq, _root_.Path.Homotopic.Quotient.mk_trans]
+    erw [hcast, hη₀eq, _root_.Path.Homotopic.Quotient.mk_trans]
     exact _root_.Path.Homotopic.Quotient.trans_assoc _ _ _
 
 
-omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
+omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_zero {x : X} (γ : _root_.Path (default : X) x) :
-    uc_subpathLift γ 0 = basePoint := by
+    ucSubpathLift γ 0 = basePoint := by
   change (⟨γ 0,
       (_root_.Path.Homotopic.Quotient.mk (γ.subpath 0 0)).cast γ.source.symm rfl⟩ :
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) = basePoint
@@ -534,13 +541,13 @@ theorem uc_subpathLift_zero {x : X} (γ : _root_.Path (default : X) x) :
   refine Path.Homotopic.hpath_hext ?_
   intro t
   rw [Path.cast_coe, Path.refl_apply, Path.subpath, Path.coe_mk_mk,
-    Function.comp_apply, Set.Icc.convexCombo_eq]
+    Function.comp_apply, Icc.convexComb_eq]
   exact γ.source
 
 
-omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
+omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_one {x : X} (γ : _root_.Path (default : X) x) :
-    uc_subpathLift γ 1 =
+    ucSubpathLift γ 1 =
       ⟨x, _root_.Path.Homotopic.Quotient.mk γ⟩ := by
   change (⟨γ 1,
       (_root_.Path.Homotopic.Quotient.mk (γ.subpath 0 1)).cast γ.source.symm rfl⟩ :
@@ -552,12 +559,12 @@ theorem uc_subpathLift_one {x : X} (γ : _root_.Path (default : X) x) :
   refine Path.Homotopic.hpath_hext ?_
   intro t
   rw [Path.cast_coe, Path.subpath, Path.coe_mk_mk, Function.comp_apply,
-    Set.Icc.convexCombo_zero_one]
+    Icc.convexComb_zero_one]
 
 
-omit [ConnectedSpace X] [LocPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
+omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_proj {x : X} (γ : _root_.Path (default : X) x)
-    (s : unitInterval) : proj (uc_subpathLift γ s) = γ s := rfl
+    (s : unitInterval) : proj (ucSubpathLift γ s) = γ s := rfl
 
 omit [ConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_joined_basePoint
@@ -566,7 +573,7 @@ theorem uc_joined_basePoint
   obtain ⟨x, c⟩ := q
   obtain ⟨γ, rfl⟩ := _root_.Path.Homotopic.Quotient.mk_surjective c
   exact ⟨{
-    toFun := uc_subpathLift γ
+    toFun := ucSubpathLift γ
     continuous_toFun := uc_subpathLift_continuous γ
     source' := uc_subpathLift_zero γ
     target' := uc_subpathLift_one γ }⟩
@@ -596,16 +603,20 @@ theorem uc_basePoint_loops_nullhomotopic
       target' := by
         change proj (δ 1) = default
         rw [δ.target]; rfl } with hγdef
+  have hγX0 : γX 0 = proj basePoint := by
+    rw [hγXdef]
+    change proj (δ 0) = proj basePoint
+    rw [δ.source]
   have hδlift : (⟨δ, δ.continuous⟩ : C(unitInterval,
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)) =
-      hcov.liftPath γX basePoint (by simp [hγXdef, proj, δ.source]) := by
+      hcov.liftPath γX basePoint hγX0 := by
     rw [hcov.eq_liftPath_iff']
     refine ⟨?_, ?_⟩
     · ext t; rfl
     · exact δ.source
-  have hSlift : (⟨uc_subpathLift γ, uc_subpathLift_continuous γ⟩ : C(unitInterval,
+  have hSlift : (⟨ucSubpathLift γ, uc_subpathLift_continuous γ⟩ : C(unitInterval,
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)) =
-      hcov.liftPath γX basePoint (by simp [hγXdef, proj, δ.source]) := by
+      hcov.liftPath γX basePoint hγX0 := by
     rw [hcov.eq_liftPath_iff']
     refine ⟨?_, ?_⟩
     · ext t
@@ -614,13 +625,13 @@ theorem uc_basePoint_loops_nullhomotopic
     · exact uc_subpathLift_zero γ
   have hδeq : (δ : unitInterval →
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) =
-      uc_subpathLift γ := by
+      ucSubpathLift γ := by
     have := hδlift.trans hSlift.symm
     exact congrArg (fun f : C(unitInterval, _) => (f : unitInterval → _)) this
   have hend : (basePoint (X := X)) =
       (⟨default, _root_.Path.Homotopic.Quotient.mk γ⟩ :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) := by
-    have h1 : δ 1 = uc_subpathLift γ 1 := congrFun hδeq 1
+    have h1 : δ 1 = ucSubpathLift γ 1 := congrFun hδeq 1
     rw [uc_subpathLift_one] at h1
     rw [← h1, δ.target]
   have hclass : (_root_.Path.Homotopic.Quotient.mk (_root_.Path.refl (default : X))) =

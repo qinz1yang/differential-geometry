@@ -342,6 +342,7 @@ private lemma hs_extreme_interp {f : ℕ → ℝ} (hf_nn : ∀ k, 0 ≤ f k)
   · exact hkey α β hab hαγ hβγ hsum
   · rw [mul_comm]; exact hkey β α hab hβγ hαγ (by omega)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma iteratedCovGrad_norm_comp (g₀ : SmoothRiemannianMetric I M) (r s l m : ℕ)
@@ -398,6 +399,7 @@ private lemma iteratedCovGrad_slotExtend_norm_le (g₀ : SmoothRiemannianMetric 
   exact hsq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W₁ W₂ : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) =
@@ -411,6 +413,7 @@ private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M
     abel
   exact eq_sub_of_add_eq h
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma coeffContraction_secondCovGrad_sub (g₀ : SmoothRiemannianMetric I M)
@@ -423,6 +426,7 @@ private lemma coeffContraction_secondCovGrad_sub (g₀ : SmoothRiemannianMetric 
   rw [iteratedCovGrad_sub, operatorFieldApplication_sub_right]
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma rawConnLap_oneMinusConnLap_comm (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     rawTensorConnLapSmooth (I := I) g₀ 0 2 (oneMinusConnLapSmooth (I := I) g₀ 0 2 S) =
@@ -670,15 +674,15 @@ private lemma master_operatorFieldApplication_jet_le_sharp
   have hint1 : MeasureTheory.Integrable (fun x => ∑ i ∈ flt1, supΦsq i *
       ∑ l ∈ Finset.range (q + 1 - i), riemannianFiberNormSq (I := I) (M := M) g₀ 0 (b₀ + l) x
         ((iteratedCovGrad (I := I) g₀ 0 b₀ l W).toSection x)) μ :=
-    MeasureTheory.integrable_finset_sum _ (fun i _ =>
-      (MeasureTheory.integrable_finset_sum _ (fun l _ =>
+    MeasureTheory.integrable_finsetSum _ (fun i _ =>
+      (MeasureTheory.integrable_finsetSum _ (fun l _ =>
         integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (b₀ + l)
           (iteratedCovGrad (I := I) g₀ 0 b₀ l W))).const_mul _)
   have hint2 : MeasureTheory.Integrable (fun x => ∑ i ∈ flt2,
       (∑ l ∈ Finset.range (q + 1 - i), supWsq l) *
       riemannianFiberNormSq (I := I) (M := M) g₀ b₀ (s₀ + i) x
         ((iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ).toSection x)) μ :=
-    MeasureTheory.integrable_finset_sum _ (fun i _ =>
+    MeasureTheory.integrable_finsetSum _ (fun i _ =>
       (integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ b₀ (s₀ + i)
         (iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ)).const_mul _)
   have hFint : MeasureTheory.Integrable FW μ := by
@@ -691,12 +695,12 @@ private lemma master_operatorFieldApplication_jet_le_sharp
           ((iteratedCovGrad (I := I) g₀ 0 b₀ l W).toSection x)) ∂μ) =
       ∑ i ∈ flt1, supΦsq i * ∑ l ∈ Finset.range (q + 1 - i),
         ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2 := by
-    rw [MeasureTheory.integral_finset_sum _ (fun i _ =>
-      (MeasureTheory.integrable_finset_sum _ (fun l _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun i _ =>
+      (MeasureTheory.integrable_finsetSum _ (fun l _ =>
         integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (b₀ + l)
           (iteratedCovGrad (I := I) g₀ 0 b₀ l W))).const_mul _)]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finset_sum _ (fun l _ =>
+    rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum _ (fun l _ =>
       integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (b₀ + l)
         (iteratedCovGrad (I := I) g₀ 0 b₀ l W))]
     exact congrArg _ (Finset.sum_congr rfl (fun l _ => hintW l))
@@ -705,7 +709,7 @@ private lemma master_operatorFieldApplication_jet_le_sharp
           ((iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ).toSection x)) ∂μ) =
       ∑ i ∈ flt2, (∑ l ∈ Finset.range (q + 1 - i), supWsq l) *
         ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2 := by
-    rw [MeasureTheory.integral_finset_sum _ (fun i _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun i _ =>
       (integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ b₀ (s₀ + i)
         (iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ)).const_mul _)]
     refine Finset.sum_congr rfl (fun i _ => ?_)

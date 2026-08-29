@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H3GridIntegral
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 
+
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 open DifferentialGeometry.Analysis.Sobolev
@@ -27,6 +28,7 @@ variable
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem grad_shift_norm
     (g : SmoothRiemannianMetric I M) (s j : Nat) (T : SmoothCcTensor g 0 s) :
@@ -223,7 +225,7 @@ private theorem h3_bfg_four_int
               ((iteratedCovGrad (I := I) g 0 2 l P).toSection x)) 3 4
             ∂(riemannianVolumeMeasure (I := I) (M := M) g)) <= K A := by
   classical
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   obtain ⟨C0, hC0, hpt0⟩ :=
@@ -339,9 +341,10 @@ private theorem h3_bfg_four_int
         b x (m + 1) := by
     intro m x
     dsimp [V, b]
-    simpa only [Nat.add_assoc, Nat.reduceAdd] using
-      riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
-        (I := I) (M := M) g 0 2 m P x
+    have hcomm := riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
+      (I := I) (M := M) g 0 2 m P x
+    rw [iteratedCovGrad_succ] at hcomm
+    simpa only [Nat.add_assoc, Nat.reduceAdd] using hcomm
   have hpair_eq : forall x,
       pair x =
         b x 1 * (b x 1 + b x 2 + b x 3) +
@@ -361,9 +364,6 @@ private theorem h3_bfg_four_int
     have hc := Integral.L2.SmoothCcTensor.continuous_inner_self
       (I := I) (M := M) (iteratedCovGrad (I := I) g 0 2 l P)
     refine hc.congr (fun x => ?_)
-    change tensorInnerPointwise (I := I) (M := M) g 0 (2 + l) x
-        ((iteratedCovGrad (I := I) g 0 2 l P).toFun x)
-        ((iteratedCovGrad (I := I) g 0 2 l P).toFun x) = b x l
     dsimp [b]
     rw [riemannianFiberNormSq_eq_tensorInnerPointwise
         (I := I) (M := M) g 0 (2 + l) x
@@ -373,9 +373,9 @@ private theorem h3_bfg_four_int
   have hfour_cont :
       Continuous (fun x => Combinatorics.boundedFactorGrid (b x) 3 4) := by
     simp only [Combinatorics.boundedFactorGrid]
-    refine continuous_finset_sum _ (fun n _ => ?_)
-    refine continuous_finset_sum _ (fun e _ => ?_)
-    exact continuous_finset_prod _ (fun m _ => hbcont (e m))
+    refine continuous_finsetSum _ (fun n _ => ?_)
+    refine continuous_finsetSum _ (fun e _ => ?_)
+    exact continuous_finsetProd _ (fun m _ => hbcont (e m))
   have hfour_int : MeasureTheory.Integrable
       (fun x => Combinatorics.boundedFactorGrid (b x) 3 4)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
@@ -458,7 +458,7 @@ theorem h3_bfg5_int
         (fun x => ∑ k ∈ Finset.range 4,
           Combinatorics.boundedFactorGrid (b x) 3 k)
         (riemannianVolumeMeasure (I := I) (M := M) g) :=
-      MeasureTheory.integrable_finset_sum (Finset.range 4)
+      MeasureTheory.integrable_finsetSum (Finset.range 4)
         (fun k hk => (hlow k (Finset.mem_range.mp hk)).1)
     have hwindow : forall x,
         Combinatorics.boundedFactorGridWindow (b x) 3 5 =
@@ -471,7 +471,15 @@ theorem h3_bfg5_int
     · change MeasureTheory.Integrable
         (fun x => Combinatorics.boundedFactorGridWindow (b x) 3 5)
         (riemannianVolumeMeasure (I := I) (M := M) g)
-      simpa only [hwindow] using hlow_int.add hfour'.1
+      have hwindow_fun :
+          (fun x => Combinatorics.boundedFactorGridWindow (b x) 3 5) =
+            (fun x => ∑ k ∈ Finset.range 4,
+              Combinatorics.boundedFactorGrid (b x) 3 k) +
+              fun x => Combinatorics.boundedFactorGrid (b x) 3 4 := by
+        funext x
+        exact hwindow x
+      rw [hwindow_fun]
+      exact hlow_int.add hfour'.1
     · calc
         (∫ x, Combinatorics.boundedFactorGridWindow (b x) 3 5
             ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
@@ -492,7 +500,7 @@ theorem h3_bfg5_int
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
             ∫ x, Combinatorics.boundedFactorGrid (b x) 3 4
               ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-          rw [MeasureTheory.integral_finset_sum _
+          rw [MeasureTheory.integral_finsetSum _
             (fun k hk => (hlow k (Finset.mem_range.mp hk)).1)]
         _ <= (∑ k ∈ Finset.range 4, Klo A k) + K4 A := by
           exact add_le_add

@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -293,7 +292,7 @@ theorem tensorPouSobolevNorm_ne_top
               ∂(volume :
                 Measure (EuclideanSpace ℝ
                   (Fin (Module.finrank ℝ E))))) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range (2 * k + 1),
@@ -637,7 +636,7 @@ private lemma tensorPouSobolevHsNorm_ne_top
                 ∂(volume :
                   Measure (EuclideanSpace ℝ
                     (Fin (Module.finrank ℝ E))))) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range (2 * k + 1),
@@ -762,7 +761,7 @@ noncomputable def smoothInclusionHsSuccToHkCompl
     (smoothInclusionHsSucc (I := I) (M := M) g r s k)
 
 
-noncomputable def inclusionHk_succ
+noncomputable def inclusionHkSucc
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
     TensorPouSobolevHilbert g r s (k + 1) →L[ℝ]
       TensorPouSobolevHilbert g r s k :=
@@ -776,7 +775,7 @@ noncomputable def inclusionHk_succ
 omit [NeZero (Module.finrank ℝ E)] in
 theorem inclusionHk_succ_opNorm_le_one
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
-    ‖inclusionHk_succ (I := I) (M := M) g r s k‖ ≤ 1 := by
+    ‖inclusionHkSucc (I := I) (M := M) g r s k‖ ≤ 1 := by
   have h_dense :
       DenseRange
         (UniformSpace.Completion.toComplL :
@@ -813,26 +812,26 @@ theorem inclusionHk_succ_opNorm_le_one
       _ ≤ 1 * 1 := mul_le_mul h_toCompl h_smooth_succ (norm_nonneg _) zero_le_one
       _ = 1 := one_mul 1
   have h_ext_bound' :
-      ‖inclusionHk_succ (I := I) (M := M) g r s k‖ ≤
+      ‖inclusionHkSucc (I := I) (M := M) g r s k‖ ≤
         ‖smoothInclusionHsSuccToHkCompl (I := I) (M := M) g r s k‖ := by
     refine ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _) ?_
     intro x
     refine UniformSpace.Completion.induction_on (p := fun x =>
-        ‖inclusionHk_succ (I := I) (M := M) g r s k x‖ ≤
+        ‖inclusionHkSucc (I := I) (M := M) g r s k x‖ ≤
           ‖smoothInclusionHsSuccToHkCompl (I := I) (M := M) g r s k‖ * ‖x‖) x
       ?_ ?_
     · exact isClosed_le (by fun_prop) (by fun_prop)
     · intro w
       have h_inc_eq :
-          inclusionHk_succ (I := I) (M := M) g r s k
+          inclusionHkSucc (I := I) (M := M) g r s k
               ((w : UniformSpace.Completion (SmoothCcTensorHs g r s (k + 1)))) =
             smoothInclusionHsSuccToHkCompl (I := I) (M := M) g r s k w := by
-        change inclusionHk_succ (I := I) (M := M) g r s k
+        change inclusionHkSucc (I := I) (M := M) g r s k
             ((UniformSpace.Completion.toComplL :
               SmoothCcTensorHs g r s (k + 1) →L[ℝ]
                 TensorPouSobolevHilbert g r s (k + 1)) w) =
           smoothInclusionHsSuccToHkCompl (I := I) (M := M) g r s k w
-        unfold inclusionHk_succ
+        unfold inclusionHkSucc
         exact ContinuousLinearMap.extend_eq _
           (e := UniformSpace.Completion.toComplL)
           h_dense

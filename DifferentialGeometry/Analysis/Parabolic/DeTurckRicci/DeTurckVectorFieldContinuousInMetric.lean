@@ -41,9 +41,9 @@ theorem chartGramOnE_det_continuous_in_metric_at
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hrewrite]
-  refine continuousOn_finset_sum _ (fun σ _ => ?_)
+  refine continuousOn_finsetSum _ (fun σ _ => ?_)
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_prod _ (fun k _ => ?_)
+  refine continuousOn_finsetProd _ (fun k _ => ?_)
   have h := h_entry (σ k) k
   refine h.congr ?_
   intro t _
@@ -74,9 +74,9 @@ theorem chartGramOnE_adjugate_continuous_in_metric_at
     rw [Matrix.adjugate_apply, Matrix.det_apply]
     simp [Units.smul_def]
   rw [hrewrite]
-  refine continuousOn_finset_sum _ (fun σ _ => ?_)
+  refine continuousOn_finsetSum _ (fun σ _ => ?_)
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_prod _ (fun k _ => ?_)
+  refine continuousOn_finsetProd _ (fun k _ => ?_)
   by_cases hσk : σ k = j
   · have heq :
         (fun t : ℝ =>
@@ -183,7 +183,7 @@ theorem chartChristoffel_continuous_in_metric_at
     rw [chartChristoffel_def]
   rw [hrewrite]
   refine ContinuousOn.mul continuousOn_const ?_
-  refine continuousOn_finset_sum _ (fun l _ => ?_)
+  refine continuousOn_finsetSum _ (fun l _ => ?_)
   refine ContinuousOn.mul ?_ ?_
   · have hcongr : (fun t : ℝ => chartInvGramMatrix (I := I) (g_DT t) α
             ((extChartAt I α).symm y) k l)
@@ -225,8 +225,8 @@ theorem chartDeTurckVFComp_continuous_in_metric_at
     funext t
     rw [DeTurckLinearization.chartDeTurckVFComp_def]
   rw [hrewrite]
-  refine continuousOn_finset_sum _ (fun a _ => ?_)
-  refine continuousOn_finset_sum _ (fun b _ => ?_)
+  refine continuousOn_finsetSum _ (fun a _ => ?_)
+  refine continuousOn_finsetSum _ (fun b _ => ?_)
   refine ContinuousOn.mul ?_ ?_
   · exact chartInvGramOnE_continuous_in_metric_at (I := I) g_DT α y s h_entry hx a b
   · refine ContinuousOn.sub ?_ ?_

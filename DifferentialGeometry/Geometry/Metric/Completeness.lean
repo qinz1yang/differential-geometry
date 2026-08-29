@@ -21,8 +21,8 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure RiemannianMetricComplete
     (g : SmoothRiemannianMetric I M) : Prop where
   complete :
@@ -43,8 +43,8 @@ structure RiemannianMetricComplete
 namespace RiemannianMetricComplete
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem of_lower
     {g h : SmoothRiemannianMetric I M}
     (hg : RiemannianMetricComplete (I := I) g)
@@ -52,19 +52,19 @@ theorem of_lower
     (hlower : ∀ x : M, ∀ v : TangentSpace I x,
       c * g.inner x v v ≤ h.inner x v v) :
     RiemannianMetricComplete (I := I) h := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
+  let : T3Space M := inferInstance
   refine ⟨?_⟩
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨h.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : M => TangentSpace I x) :=
     ⟨h.inner, h.contMDiff.continuous, by intro x v w; rfl⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
   let a : ENNReal := ENNReal.ofReal (Real.sqrt c)
   have ha0 : a ≠ 0 := by
     exact ne_of_gt (ENNReal.ofReal_pos.mpr (Real.sqrt_pos.2 hc))
@@ -87,13 +87,13 @@ theorem of_lower
     change edist (s m) (s n) < ε
     exact hN m hm n hn
   change ∃ x, Filter.Tendsto s Filter.atTop (𝓝 x)
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : CompleteSpace M := hg.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := hg.complete
   have hsSource : CauchySeq s := EMetric.cauchySeq_iff.mpr (by
     intro ε hε
     have haε : 0 < a * ε := ENNReal.mul_pos ha0 (ne_of_gt hε)
@@ -106,8 +106,8 @@ theorem of_lower
   exact ⟨x, hx⟩
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem of_uniformEquiv
     {g h : SmoothRiemannianMetric I M}
     (hg : RiemannianMetricComplete (I := I) g)
@@ -116,19 +116,19 @@ theorem of_uniformEquiv
       C⁻¹ * g.inner x v v ≤ h.inner x v v ∧
       h.inner x v v ≤ C * g.inner x v v) :
     RiemannianMetricComplete (I := I) h := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
+  let : T3Space M := inferInstance
   refine ⟨?_⟩
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨h.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : M => TangentSpace I x) :=
     ⟨h.inner, h.contMDiff.continuous, by intro x v w; rfl⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
   have hCpos : 0 < C := zero_lt_one.trans_le hC
   have hCinv : 0 < C⁻¹ := inv_pos.mpr hCpos
   let a : ENNReal := ENNReal.ofReal (Real.sqrt C⁻¹)
@@ -153,13 +153,13 @@ theorem of_uniformEquiv
     change edist (s m) (s n) < ε
     exact hN m hm n hn
   change ∃ x, Filter.Tendsto s Filter.atTop (𝓝 x)
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : CompleteSpace M := hg.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : CompleteSpace M := hg.complete
   have hsSource : CauchySeq s := EMetric.cauchySeq_iff.mpr (by
     intro ε hε
     have haε : 0 < a * ε := ENNReal.mul_pos ha0 (ne_of_gt hε)

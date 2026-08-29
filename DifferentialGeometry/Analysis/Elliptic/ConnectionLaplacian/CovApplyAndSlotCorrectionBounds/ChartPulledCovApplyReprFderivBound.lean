@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -36,7 +35,7 @@ private lemma reprT_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
@@ -64,7 +63,7 @@ private lemma reprT_contDiffOn_goodSet
   rw [hbase] at hrewrite
   have hcm_on_source :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) b)
         ((chartAt H α).source) := by
     refine ContMDiffOn.congr hrewrite ?_
@@ -82,7 +81,7 @@ private lemma reprT_contDiffOn_goodSet
       extChartAt_source_eq_chartAt_source (I := I)]
   have hcm_on_good :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) b)
         (chartLeviCivitaGoodSet (I := I) α) := by
     rw [h_good_eq_source]; exact hcm_on_source
@@ -91,7 +90,7 @@ private lemma reprT_contDiffOn_goodSet
   intro y hy
   rcases hy with ⟨x, hx_good, rfl⟩
   set F : M → TensorRSModel r s ℝ E :=
-    fun b : M => tensorRSChartE_section_repr (I := I) r s α
+    fun b : M => tensorRSChartESectionRepr (I := I) r s α
       (fun y' : M => T.toSection y') b with hF_def
   have hF_at : ContMDiffAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞ F x :=
     hcm_on_good.contMDiffAt (hgood_open.mem_nhds hx_good)
@@ -125,7 +124,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma uB_contDiffOn_goodSet
     (α : M) (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
   have hB_total : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -145,13 +144,13 @@ private lemma intrinsicPiece_differentiableAt
     {b : M} (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (hF2_diff : DifferentiableAt ℝ
       (fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm))
       (extChartAt I α b)) :
     DifferentiableAt ℝ
       (fun y : E =>
         fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y
           (trivToE (I := I) α ((extChartAt I α).symm y)
             (B.toFun ((extChartAt I α).symm y))))
@@ -165,11 +164,11 @@ private lemma intrinsicPiece_differentiableAt
         (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α :=
     ⟨b, hb_good, rfl⟩
   have hu_cd : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     uB_contDiffOn_goodSet (I := I) α B
   have hu_diff : DifferentiableAt ℝ
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
     have hne : (∞ : WithTop ℕ∞) ≠ 0 := by
       intro h; exact absurd h (by simp)
@@ -203,12 +202,12 @@ private lemma inputSlotPiece_differentiableAt
         (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α :=
     ⟨b, hb_good, rfl⟩
   have hR_cd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     reprT_contDiffOn_goodSet (I := I) (M := M) g r s α T
   have hR_diff : DifferentiableAt ℝ
-      (fun y : E => tensorRSChartE_section_repr (I := I) r s α
+      (fun y : E => tensorRSChartESectionRepr (I := I) r s α
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
       (extChartAt I α b) := by
     have hne : (∞ : WithTop ℕ∞) ≠ 0 := by
@@ -227,7 +226,7 @@ private lemma inputSlotPiece_differentiableAt
   have h_clm_diff : DifferentiableAt ℝ
       (fun y : E => inputSlotChartKernel (I := I) g r s α B.toFun k
         ((extChartAt I α).symm y)
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ((extChartAt I α).symm y)))
       (extChartAt I α b) := hK_diff.clm_apply hR_diff
   have h_evt :
@@ -241,7 +240,7 @@ private lemma inputSlotPiece_differentiableAt
       (fun y : E =>
         inputSlotChartKernel (I := I) g r s α B.toFun k
           ((extChartAt I α).symm y)
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ((extChartAt I α).symm y))) := by
     refine Filter.eventually_of_mem (hU_open.mem_nhds hx_mem) ?_
     intro y hy
@@ -287,12 +286,12 @@ private lemma outputSlotPiece_differentiableAt
         (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α :=
     ⟨b, hb_good, rfl⟩
   have hR_cd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     reprT_contDiffOn_goodSet (I := I) (M := M) g r s α T
   have hR_diff : DifferentiableAt ℝ
-      (fun y : E => tensorRSChartE_section_repr (I := I) r s α
+      (fun y : E => tensorRSChartESectionRepr (I := I) r s α
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
       (extChartAt I α b) := by
     have hne : (∞ : WithTop ℕ∞) ≠ 0 := by
@@ -311,7 +310,7 @@ private lemma outputSlotPiece_differentiableAt
   have h_clm_diff : DifferentiableAt ℝ
       (fun y : E => outputSlotChartKernel (I := I) g r s α B.toFun l
         ((extChartAt I α).symm y)
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ((extChartAt I α).symm y)))
       (extChartAt I α b) := hK_diff.clm_apply hR_diff
   have h_evt :
@@ -325,7 +324,7 @@ private lemma outputSlotPiece_differentiableAt
       (fun y : E =>
         outputSlotChartKernel (I := I) g r s α B.toFun l
           ((extChartAt I α).symm y)
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ((extChartAt I α).symm y))) := by
     refine Filter.eventually_of_mem (hU_open.mem_nhds hx_mem) ?_
     intro y hy
@@ -352,14 +351,14 @@ private lemma chart_pulled_covApply_repr_eventuallyEq
     (T : SmoothCcTensor g r s)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {b : M} (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α) :
-    (tensorRSChartE_section_repr (I := I) r s α
+    (tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)) B.toFun
           (fun y : M => T.toSection y)) ∘ (extChartAt I α).symm)
       =ᶠ[𝓝 (extChartAt I α b)]
       (fun y : E =>
         fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y
           (trivToE (I := I) α ((extChartAt I α).symm y)
             (B.toFun ((extChartAt I α).symm y)))

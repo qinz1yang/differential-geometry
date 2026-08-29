@@ -20,7 +20,7 @@ variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 
-noncomputable def nabla0S_smooth (s : ℕ)
+noncomputable def nabla0SSmooth (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
@@ -32,7 +32,7 @@ noncomputable def nabla0S_smooth (s : ℕ)
   nabla0S (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α
     (nabla0S_reg (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α)
 
-noncomputable def nablaRS_smooth (r s : ℕ)
+noncomputable def nablaRSSmooth (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
@@ -52,7 +52,7 @@ noncomputable def nablaRS_smooth (r s : ℕ)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (x : M) :
-    nabla0S_smooth (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    nabla0SSmooth (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s cov hcov X α x =
       nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s cov X α x := rfl
@@ -65,7 +65,7 @@ noncomputable def nablaRS_smooth (r s : ℕ)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r s)
     (x : M) :
-    nablaRS_smooth (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+    nablaRSSmooth (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s cov hcov X T x =
       nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s cov X T x := rfl

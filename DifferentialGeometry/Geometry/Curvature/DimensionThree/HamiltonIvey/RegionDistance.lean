@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Convex.MovingSetDistance
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Reaction
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -40,7 +41,11 @@ theorem hamiltonIveyRegion_seqClosedGraph
       have hc : ContinuousAt
           (fun x : EuclideanSpace ℝ (Fin 3 × Fin 3) => inner ℝ ν x) q :=
         (continuous_const.inner continuous_id).continuousAt
-      simpa using hc.tendsto.comp hqn
+      rw [show (fun n : ℕ => inner ℝ ν (qn n)) =
+          (fun x : EuclideanSpace ℝ (Fin 3 × Fin 3) => inner ℝ ν x) ∘ qn by
+        funext n
+        rfl]
+      exact hc.tendsto.comp hqn
     have hle : ∀ᶠ n in atTop,
         inner ℝ ν (qn n) ≤ hamiltonIveyConvexMatrixRegionSupportEuclidean K (τn n) ν := by
       filter_upwards [hmem] with n hn
@@ -83,7 +88,11 @@ theorem hamiltonIveyRegion_seqClosedGraph
       have hc : ContinuousAt
           (fun x : EuclideanSpace ℝ (Fin 3 × Fin 3) => inner ℝ ν x) q :=
         (continuous_const.inner continuous_id).continuousAt
-      simpa using hc.tendsto.comp hqn
+      rw [show (fun n : ℕ => inner ℝ ν (qn n)) =
+          (fun x : EuclideanSpace ℝ (Fin 3 × Fin 3) => inner ℝ ν x) ∘ qn by
+        funext n
+        rfl]
+      exact hc.tendsto.comp hqn
     have hle : ∀ᶠ n in atTop, inner ℝ ν (qn n) ≤ 0 := by
       filter_upwards [hmem] with n hn
       have hfs : ν ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclidean K (τn n)) := by
@@ -201,11 +210,11 @@ theorem hamiltonIveyRegion_approx
         have htr : A.trace = lam 0 + lam 1 + lam 2 := by
           have htrace : A.trace = ∑ i : Fin 3, hA.eigenvalues i :=
             Matrix.IsHermitian.trace_eq_sum_eigenvalues hA
-          have hperm : (∑ i : Fin 3, hA.eigenvalues i) = ∑ j : Fin 3, hA.eigenvalues₀ j := by
+          have hperm : (∑ i : Fin 3, hA.eigenvalues i) = ∑ j : Fin 3, lam j := by
             let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
             have hstep : (∑ i : Fin 3, hA.eigenvalues i) =
-                ∑ i : Fin 3, hA.eigenvalues₀ (e.symm i) := by
-              simp [Matrix.IsHermitian.eigenvalues, e]
+                ∑ i : Fin 3, lam (e.symm i) := by
+              simp [Matrix.IsHermitian.eigenvalues, e, lam]
               rfl
             rw [hstep]
             refine Finset.sum_bij (fun i _hi => e.symm i) (fun a ha => by simp) ?inj ?surj ?h
@@ -217,7 +226,6 @@ theorem hamiltonIveyRegion_approx
             · intro a ha
               rfl
           rw [htrace, hperm]
-          dsimp [lam]
           rw [Fin.sum_univ_three]
         rw [Matrix.trace_diagonal]
         dsimp [d, s, lam]
@@ -295,7 +303,7 @@ theorem hamiltonIveyRegion_approx
     rw [Matrix.diagonal_sub]
     have hD : d - lam = ![c, c, 0] := by
       funext i
-      fin_cases i <;> dsimp [d, lam] <;> simp
+      fin_cases i <;> simp [d]
     change ‖Matrix.diagonal (d - lam)‖ ≤ 2 * c
     rw [hD]
     have hf := Matrix.frobenius_norm_diagonal (v := (![c, c, 0] : Fin 3 → ℝ))

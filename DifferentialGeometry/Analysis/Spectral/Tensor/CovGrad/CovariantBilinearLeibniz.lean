@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -37,7 +36,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covGrad_heq_congr (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h : a = b)
     {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b} (hYZ : HEq Y Z) :
@@ -46,7 +45,7 @@ private theorem covGrad_heq_congr (g : SmoothRiemannianMetric I M) (r : ℕ) {a 
   rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_covGrad_comm_heq (g : SmoothRiemannianMetric I M) (r s m : ℕ)
     (X : SmoothCcTensor g r s) :
     HEq (iteratedCovGrad g r (s + 1) m (covGrad g r s X))
@@ -69,7 +68,7 @@ private theorem norm_toSection_heq_congr (g : SmoothRiemannianMetric I M) (r : �
   rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem norm_toSection_iteratedCovGrad_covGrad_comm (g : SmoothRiemannianMetric I M)
     (r s m : ℕ) (X : SmoothCcTensor g r s) (x : M) :
     ‖(iteratedCovGrad g r (s + 1) m (covGrad g r s X)).toSection x‖ =
@@ -81,7 +80,7 @@ def castRankCc (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h : a = b
     (Y : SmoothCcTensor g r a) : SmoothCcTensor g r b :=
   h ▸ Y
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_toSection_iteratedCovGrad_castRankCc (g : SmoothRiemannianMetric I M) (r : ℕ)
     {a b : ℕ} (h : a = b) (Y : SmoothCcTensor g r a) (j : ℕ) (x : M) :
@@ -110,21 +109,21 @@ namespace ParallelTensorProduct
 
 variable {g : SmoothRiemannianMetric I M} {r₁ s₁ r₂ s₂ r₀ s₀ : ℕ}
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem eq_zero_of_riemannianFiberNormSq_eq_zero (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (x : M) (z : Tensor0SBundle.TensorRSSpace r s I x)
     (hz : riemannianFiberNormSq (I := I) (M := M) g r s x z = 0) : z = 0 := by
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hnorm_sq : ‖z‖ ^ 2 = 0 :=
     (riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r s x z).symm.trans hz
   have hnorm : ‖z‖ = 0 := by nlinarith [norm_nonneg z, hnorm_sq]
   exact norm_eq_zero.mp hnorm
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem prod_zero_left (Φ : ParallelTensorProduct g r₁ s₁ r₂ s₂ r₀ s₀) {a b : ℕ}
     (T : SmoothCcTensor g r₂ (s₂ + b)) :
@@ -143,7 +142,7 @@ theorem prod_zero_left (Φ : ParallelTensorProduct g r₁ s₁ r₂ s₂ r₀ s�
     rw [SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]; rfl]
   exact hval
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem prod_zero_right (Φ : ParallelTensorProduct g r₁ s₁ r₂ s₂ r₀ s₀) {a b : ℕ}
     (S : SmoothCcTensor g r₁ (s₁ + a)) :

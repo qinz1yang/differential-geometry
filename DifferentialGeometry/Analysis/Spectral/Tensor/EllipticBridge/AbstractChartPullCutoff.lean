@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -363,10 +362,10 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
     (hK_M_sub : K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet) :
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ b : M, b ∈ K_M → ∀ T : TensorRSModel r s ℝ E,
-        ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
+        ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T := by
   classical
-  haveI : ProperSpace (TensorRSModel r s ℝ E) :=
+  have : ProperSpace (TensorRSModel r s ℝ E) :=
     FiniteDimensional.proper_real (TensorRSModel r s ℝ E)
   set S_T : Set (TensorRSModel r s ℝ E) :=
     Metric.sphere (0 : TensorRSModel r s ℝ E) 1 with hS_T_def
@@ -383,7 +382,7 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
   set K : Set (M × TensorRSModel r s ℝ E) := K_M ×ˢ S_T with hK_def
   have hK_compact : IsCompact K := hK_M_compact.prod hS_T_compact
   set Q : M × TensorRSModel r s ℝ E → ℝ := fun bT =>
-    chartTensorInnerPointwise_rs_model (I := I) (M := M)
+    chartTensorInnerPointwiseRsModel (I := I) (M := M)
       g r s α bT.1 bT.2 bT.2 with hQ_def
   have hQ_contOn_full :
       ContinuousOn Q
@@ -397,7 +396,7 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
   obtain ⟨ε, hε_pos, h_lb⟩ :
       ∃ ε : ℝ, 0 < ε ∧
         ∀ b : M, b ∈ K_M → ∀ T : TensorRSModel r s ℝ E, ‖T‖ = 1 →
-          ε ≤ chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          ε ≤ chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b T T := by
     by_cases hK_ne : K.Nonempty
     · obtain ⟨p₀, hp₀_mem, hp₀_min⟩ :=
@@ -422,14 +421,14 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
   intro b hb T
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     hK_M_sub hb
-  have hQ_nn : 0 ≤ chartTensorInnerPointwise_rs_model
+  have hQ_nn : 0 ≤ chartTensorInnerPointwiseRsModel
       (I := I) (M := M) g r s α b T T :=
     chartTensorInnerPointwise_rs_model_nonneg
       (I := I) (M := M) g r s α hb_base T
   by_cases hT0 : T = 0
   · subst hT0
     have h_left : ‖(0 : TensorRSModel r s ℝ E)‖ ^ 2 = 0 := by simp
-    have h_right : chartTensorInnerPointwise_rs_model
+    have h_right : chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b (0 : TensorRSModel r s ℝ E)
           (0 : TensorRSModel r s ℝ E) = 0 := by
       have h := chartTensorInnerPointwise_rs_model_smul_left
@@ -438,17 +437,17 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
       rwa [zero_smul, zero_mul] at h
     rw [h_left, h_right, mul_zero]
   · have hT_pos : 0 < ‖T‖ := norm_pos_iff.mpr hT0
-    letI : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
+    let : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
       NormedSpace.toNormSMulClass
     set T' : TensorRSModel r s ℝ E := ‖T‖⁻¹ • T with hT'_def
     have hT'_norm : ‖T'‖ = 1 := by
       rw [hT'_def, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hT_pos]
       field_simp
-    have h_T' : ε ≤ chartTensorInnerPointwise_rs_model
+    have h_T' : ε ≤ chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T' T' := h_lb b hb T' hT'_norm
     have h_bilin :
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T' T' =
-          (‖T‖⁻¹ * ‖T‖⁻¹) * chartTensorInnerPointwise_rs_model
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T' T' =
+          (‖T‖⁻¹ * ‖T‖⁻¹) * chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T := by
       rw [hT'_def,
         chartTensorInnerPointwise_rs_model_smul_left
@@ -459,19 +458,19 @@ lemma sq_norm_le_const_mul_chartTensorInner_on_compact
     rw [h_bilin] at h_T'
     have h_sq_pos : 0 < ‖T‖ ^ 2 := by positivity
     have h_mul : ε * ‖T‖ ^ 2 ≤
-        ((‖T‖⁻¹ * ‖T‖⁻¹) * chartTensorInnerPointwise_rs_model
+        ((‖T‖⁻¹ * ‖T‖⁻¹) * chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T) * ‖T‖ ^ 2 :=
       mul_le_mul_of_nonneg_right h_T' (le_of_lt h_sq_pos)
     have h_rhs :
-        ((‖T‖⁻¹ * ‖T‖⁻¹) * chartTensorInnerPointwise_rs_model
+        ((‖T‖⁻¹ * ‖T‖⁻¹) * chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T) * ‖T‖ ^ 2 =
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T := by
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T := by
       rw [show ‖T‖ ^ 2 = ‖T‖ * ‖T‖ from by ring]
       field_simp
     rw [h_rhs] at h_mul
-    rw [show ε⁻¹ * chartTensorInnerPointwise_rs_model
+    rw [show ε⁻¹ * chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T T =
-        chartTensorInnerPointwise_rs_model
+        chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T / ε from by rw [div_eq_inv_mul]]
     exact (le_div_iff₀ hε_pos).mpr (by linarith [h_mul])
 
@@ -481,7 +480,7 @@ lemma chartTensorInner_tensorTrivProj_eq_tensorInner
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (tensorTrivProj (I := I) (M := M) g r s S α b)
         (tensorTrivProj (I := I) (M := M) g r s S α b) =
       tensorInnerPointwise (I := I) (M := M) g r s b
@@ -1322,7 +1321,7 @@ private lemma chartPullCoeffCutoff_continuous
     Continuous (chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P) := by
   classical
   unfold chartPullCoeffCutoff
-  exact continuous_finset_sum _ (fun Q _ =>
+  exact continuous_finsetSum _ (fun Q _ =>
     chartPullCoeffCutoff_summand_continuous (I := I) (M := M) g r s α Sg P Q hSg)
 
 omit [CompleteSpace E] in
@@ -1365,7 +1364,7 @@ private lemma chartPullCoeffCutoff_memLp
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
     MemLp (chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P) 2
       (chartL2Measure (I := I) (M := M) α) := by
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure]; infer_instance
   exact (chartPullCoeffCutoff_continuous (I := I) (M := M) g r s α Sg P
       hSg).memLp_of_hasCompactSupport
@@ -1512,7 +1511,7 @@ private lemma cutoff_chartPull_integral_eq_sum_inner
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
     funext y
     exact cutoff_chartPull_integrand_eq_coeff_mul (I := I) (M := M) g r s α Sg u y]
-  rw [MeasureTheory.integral_finset_sum (Finset.univ : Finset (CompIdx E r s))
+  rw [MeasureTheory.integral_finsetSum (Finset.univ : Finset (CompIdx E r s))
     (fun P _ => cutoff_chartPull_summand_integrable
       (I := I) (M := M) g r s α Sg u P hSg)]
   refine Finset.sum_congr rfl (fun P _ => ?_)
@@ -1543,7 +1542,7 @@ private lemma continuous_cutoff_rhs
       ∑ P : CompIdx E r s,
         (⟪chartPullCoeffCutoffLp (I := I) (M := M) g r s α Sg P hSg,
             tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P⟫_ℝ : ℝ)) :=
-  continuous_finset_sum _ (fun P _ =>
+  continuous_finsetSum _ (fun P _ =>
     continuous_chartPullCoeffCutoff_pairing (I := I) (M := M) g r s α Sg P hSg)
 
 omit [CompleteSpace E] in

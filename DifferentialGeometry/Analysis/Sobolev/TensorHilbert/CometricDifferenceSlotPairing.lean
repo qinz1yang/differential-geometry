@@ -628,7 +628,7 @@ private theorem negDiffEndo_adjoint
     (a b : TangentSpace I x) :
     g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) a) b =
       g₀.inner x a ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) b) := by
-  simp only [ContinuousLinearMap.neg_apply, map_neg]
+  simp only [neg_apply, map_neg]
   rw [metricComparisonDifferenceEndomorphism_g0_self_adjoint (I := I) g₀ g₁ x a b]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -642,7 +642,7 @@ private theorem negDiffEndo_le
     (x : M) (v : TangentSpace I x) :
     g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) v) v ≤
       (δ / (1 - δ)) * g₀.inner x v v := by
-  rw [ContinuousLinearMap.neg_apply, map_neg]
+  rw [neg_apply, map_neg]
   have hbnd := abs_inner_metricComparisonDifferenceEndomorphism_le
     (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v v
   have hv_nn : 0 ≤ g₀.inner x v v :=

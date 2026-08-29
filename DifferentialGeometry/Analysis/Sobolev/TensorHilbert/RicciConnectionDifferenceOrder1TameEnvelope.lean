@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -190,7 +189,7 @@ private lemma cometricDoubleTraceCoefficient_sub_doubleTrace_clm
       = (cometricDoubleTraceField (I := I) g₁ 2).toSection x := rfl
   rw [hcast, cometricDoubleTraceField_toSection, cometricDoubleTraceField_toSection]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem cometricDoubleTraceCoefficient_eq_doubleTrace_add_ccOperatorFieldComp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -227,6 +226,7 @@ theorem cometricDoubleTraceCoefficient_eq_doubleTrace_add_ccOperatorFieldComp
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma fourTrace_iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -384,7 +384,7 @@ theorem ricciCometricFourTraceCastG0_order0sup_perOrder_l2_tameEnvelope_generic
   · obtain ⟨x₀⟩ := hMne
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr' : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -517,7 +517,7 @@ theorem ricciCometricFourTraceCastG0_order0sup_perOrder_l2_tameEnvelope_generic
                 ((iteratedCovGrad (I := I) g₀ 4 4 q W).toSection x)))
           (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
         apply MeasureTheory.Integrable.const_mul
-        apply MeasureTheory.integrable_finset_sum
+        apply MeasureTheory.integrable_finsetSum
         intro q _
         exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 4 (4 + q)
           (iteratedCovGrad (I := I) g₀ 4 4 q W)
@@ -526,7 +526,7 @@ theorem ricciCometricFourTraceCastG0_order0sup_perOrder_l2_tameEnvelope_generic
           hint hpt
       refine le_trans hkey ?_
       rw [MeasureTheory.integral_const_mul,
-        MeasureTheory.integral_finset_sum _ (fun q _ =>
+        MeasureTheory.integral_finsetSum _ (fun q _ =>
           integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 4 (4 + q)
             (iteratedCovGrad (I := I) g₀ 4 4 q W))]
       have hconv : ∀ q ∈ Finset.range (l + 1),
@@ -666,7 +666,7 @@ theorem ricciCometricFourTraceCastG0_order0sup_perOrder_l2_tameEnvelope_generic
             linarith
         _ = 4 * (2 * aL q + 2 * KD q) * (1 + ∑ j ∈ Finset.range (q + 2),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by ring
-  · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
+  · have hem : IsEmpty M := not_nonempty_iff.mp hMne
     refine ⟨fun x => (hem.false x).elim, ?_⟩
     intro q
     have hz : ‖iteratedCovGrad (I := I) g₀ 4 2 q
@@ -808,6 +808,7 @@ theorem kernelField_eq_neg_arm_combination (g₀ g₁ : SmoothRiemannianMetric I
   intro x
   rfl
 
+omit [SigmaCompactSpace M] in
 private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
@@ -831,6 +832,7 @@ private theorem armOuter_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianM
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁).toSection y) d) := rfl
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
+omit [SigmaCompactSpace M] in
 private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (q : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + q) x
@@ -846,6 +848,7 @@ private theorem armFull_riemannianFiberNormSq_eq (g₀ g₁ : SmoothRiemannianMe
       (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)) ρ q x]
   exact armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ q x
 
+omit [SigmaCompactSpace M] in
 private theorem armOuter_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
@@ -856,6 +859,7 @@ private theorem armOuter_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannian
   have h := armOuter_riemannianFiberNormSq_eq (I := I) (M := M) g₀ g₁ σ 0 x
   simpa only [iteratedCovGrad_zero] using h
 
+omit [SigmaCompactSpace M] in
 private theorem armFull_riemannianFiberNormSq0_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 4 x
@@ -976,6 +980,7 @@ theorem connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_tw
     set D' : Tensor0SSpace 3 I x := Tensor0SSpace.ofModel (I := I) (x := x)
       (ContinuousMultilinearMap.domDomCongr connectionDifferenceContrInsertionReindexPerm
         (Tensor0SSpace.toModel D)) with hD'_def
+    let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
     have h1 : ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 4 I x from
         (reindexCoeffGen (I := I) (M := M) g₀ 3 4
           (slotExtend (I := I) (M := M) g₀ 2 3
@@ -998,26 +1003,27 @@ theorem connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_tw
     rw [slotExtendFib_apply_eval (I := I) (M := M) 1 2 x
       (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (u 0))
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
       (Matrix.vecTail u 0) (Matrix.vecTail (Matrix.vecTail u))]
     rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (u 0))
-            (Matrix.vecTail u 0)))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+            (e.symm (Matrix.vecTail u 0))))
         (Matrix.vecTail (Matrix.vecTail u)) =
         Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (u 0))
-            (Matrix.vecTail u 0))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+            (e.symm (Matrix.vecTail u 0)))
           (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             ((u 2 : E)) ((u 3 : E)) : TangentSpace I x) : E)) from rfl]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (u 0)) (Matrix.vecTail u 0)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 1)
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+      (Matrix.vecTail u 0)
       (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
         ((u 2 : E)) ((u 3 : E)) : TangentSpace I x) : E))]
-    rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2) D' (u 0)
+    rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 2) D' (u 0)
       (Fin.cons (Matrix.vecTail u 0)
         (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
           ((u 2 : E)) ((u 3 : E)) : TangentSpace I x) : E)))]
@@ -1073,7 +1079,7 @@ theorem connectionDifferenceContravariantInsertionField_order0sup_perOrder_l2_ta
   · obtain ⟨x₀⟩ := hMne
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr' : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -1176,7 +1182,13 @@ theorem connectionDifferenceContravariantInsertionField_order0sup_perOrder_l2_ta
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
               ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) := by
           rw [Finset.sum_range_succ, Finset.sum_range_one]
-          simp
+          simp only [Finset.Nat.antidiagonalTuple_zero_succ, Finset.univ_eq_empty,
+            Finset.prod_empty, Finset.sum_const, Finset.card_empty, zero_nsmul,
+            Finset.Nat.antidiagonalTuple_one, Nat.succ_eq_add_one, Nat.reduceAdd,
+            Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Finset.prod_singleton,
+            Finset.sum_singleton, Matrix.cons_val_zero, iteratedCovGrad_succ, Nat.add_zero,
+            iteratedCovGrad_zero, zero_add]
+          with_unfolding_all rfl
         rw [hS1]
         have hmem : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
             ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) ≤
@@ -1227,13 +1239,13 @@ theorem connectionDifferenceContravariantInsertionField_order0sup_perOrder_l2_ta
               ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)))
           (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-        (MeasureTheory.integrable_finset_sum _ (fun k _ => hint_k k)).const_mul _
+        (MeasureTheory.integrable_finsetSum _ (fun k _ => hint_k k)).const_mul _
       have hkey := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 3 (4 + l)
         (iteratedCovGrad (I := I) g₀ 3 4 l (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁))
         _ hint (fun x => hcore_pt l x)
       refine le_trans hkey ?_
       rw [MeasureTheory.integral_const_mul,
-        MeasureTheory.integral_finset_sum _ (fun k _ => hint_k k)]
+        MeasureTheory.integral_finsetSum _ (fun k _ => hint_k k)]
       have hsum : (∑ k ∈ Finset.range (l + 2),
             ∫ x, ∑ n ∈ Finset.range (k + 1), ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
               ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -1266,7 +1278,7 @@ theorem connectionDifferenceContravariantInsertionField_order0sup_perOrder_l2_ta
         _ = fr ^ 2 * CA l * (∑ k ∈ Finset.range (l + 2), K_t k) *
               (1 + ∑ j ∈ Finset.range (l + 2),
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by ring
-  · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
+  · have hem : IsEmpty M := not_nonempty_iff.mp hMne
     refine ⟨fun x => (hem.false x).elim, ?_⟩
     intro l
     have hz : ‖iteratedCovGrad (I := I) g₀ 3 4 l

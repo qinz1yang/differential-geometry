@@ -149,11 +149,11 @@ theorem ChartLocalPicardData.contDiffOn_top
       ContDiffOn ℝ ∞ (Function.uncurry hper.flow)
         (Metric.ball (I ((chartAt H α) α)) ρ ×ˢ Set.Ioo 0 T₀) := by
   set center : E := I ((chartAt H α) α)
-  set f_chart : ℝ → E → E := fun t y => (X t ((chartAt H α).symm (I.symm y)) : E)
-  have hf_top : ContDiff ℝ ∞ (Function.uncurry f_chart) := hSmoothX_chart
+  set fChart : ℝ → E → E := fun t y => (X t ((chartAt H α).symm (I.symm y)) : E)
+  have hf_top : ContDiff ℝ ∞ (Function.uncurry fChart) := hSmoothX_chart
   obtain ⟨rN, εN, hrN, hεN, Φ_pl, hΦ_pl, ρ_pl, T_pl, hρ_pl_pos, hT_pl_pos,
     hρ_pl_le, hT_pl_le, hΦ_smooth⟩ :=
-    exists_isLocalFlow_contDiffOn_top (f := f_chart) (t₀ := 0) (x₀ := center) hf_top
+    exists_isLocalFlow_contDiffOn_top (f := fChart) (t₀ := 0) (x₀ := center) hf_top
   set ρ₀ : ℝ := min ρ_pl hper.r
   set T₀ : ℝ := min T_pl hper.T
   have hρ₀_pos : 0 < ρ₀ := lt_min hρ_pl_pos hper.r_pos
@@ -165,7 +165,7 @@ theorem ChartLocalPicardData.contDiffOn_top
   have hΦ_init : ∀ x ∈ closedBall center rN, Φ_pl ⟨x, 0⟩ = x := by
     intro x hx; exact hΦ_pl.apply_initial x hx
   have hΦ_deriv : ∀ x ∈ closedBall center rN, ∀ t ∈ Icc (0 - εN) (0 + εN),
-      HasDerivWithinAt (fun s => Φ_pl ⟨x, s⟩) (f_chart t (Φ_pl ⟨x, t⟩))
+      HasDerivWithinAt (fun s => Φ_pl ⟨x, s⟩) (fChart t (Φ_pl ⟨x, t⟩))
         (Icc (0 - εN) (0 + εN)) t :=
     hΦ_pl.hasDerivWithinAt
   have hT₀_le_εN : T₀ ≤ εN := hT₀_le_T_pl.trans hT_pl_le
@@ -219,16 +219,16 @@ theorem ChartLocalPicardData.contDiffOn_top
         _ ≤ max R_Φ R_f := le_max_right _ _
         _ ≤ max (max R_Φ R_f) 0 := le_max_left _ _
         _ ≤ R := by linarith
-    have hfchart_t_diff : ∀ t : ℝ, Differentiable ℝ (f_chart t) := by
+    have hfchart_t_diff : ∀ t : ℝ, Differentiable ℝ (fChart t) := by
       intro t
-      have h1 : ContDiff ℝ ∞ (f_chart t) := by
-        change ContDiff ℝ ∞ (fun y : E => uncurry f_chart (t, y))
+      have h1 : ContDiff ℝ ∞ (fChart t) := by
+        change ContDiff ℝ ∞ (fun y : E => uncurry fChart (t, y))
         exact hf_top.comp (contDiff_const.prodMk contDiff_id)
       exact h1.differentiable (by simp)
-    have hfchart_C1 : ContDiffOn ℝ 1 (uncurry f_chart) univ :=
+    have hfchart_C1 : ContDiffOn ℝ 1 (uncurry fChart) univ :=
       hf_top.contDiffOn.of_le (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
-    have hfderiv_cont : ContinuousOn (fun p : ℝ × E => fderiv ℝ (f_chart p.1) p.2) univ := by
-      have h := continuousOn_partialFDeriv_uncurry (f := f_chart)
+    have hfderiv_cont : ContinuousOn (fun p : ℝ × E => fderiv ℝ (fChart p.1) p.2) univ := by
+      have h := continuousOn_partialFDeriv_uncurry (f := fChart)
         (s := (univ : Set ℝ)) (u := (univ : Set E))
         (by rwa [univ_prod_univ]) isOpen_univ isOpen_univ
       rwa [univ_prod_univ] at h
@@ -237,31 +237,31 @@ theorem ChartLocalPicardData.contDiffOn_top
     have hne_domain : (Icc (0 : ℝ) T₀ ×ˢ closedBall (0 : E) R).Nonempty :=
       ⟨(0, 0), mem_prod.mpr ⟨left_mem_Icc.mpr hT₀_pos.le, mem_closedBall_self hR_pos.le⟩⟩
     have hnorm_fderiv_cont : ContinuousOn
-        (fun p : ℝ × E => ‖fderiv ℝ (f_chart p.1) p.2‖)
+        (fun p : ℝ × E => ‖fderiv ℝ (fChart p.1) p.2‖)
         (Icc (0 : ℝ) T₀ ×ˢ closedBall (0 : E) R) :=
       (continuous_norm.comp_continuousOn
         (hfderiv_cont.mono (subset_univ _)))
     obtain ⟨p₀, _, hp₀_max⟩ :=
       hcompact_domain.exists_isMaxOn hne_domain hnorm_fderiv_cont
-    set Kval : ℝ := ‖fderiv ℝ (f_chart p₀.1) p₀.2‖
+    set Kval : ℝ := ‖fderiv ℝ (fChart p₀.1) p₀.2‖
     have hKval_nn : 0 ≤ Kval := norm_nonneg _
     set K : ℝ≥0 := ⟨Kval, hKval_nn⟩
     have hfchart_lip : ∀ t ∈ Ico (0 : ℝ) T₀,
-        LipschitzOnWith K (f_chart t) (closedBall (0 : E) R) := by
+        LipschitzOnWith K (fChart t) (closedBall (0 : E) R) := by
       intro t ht
       apply Convex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le
         (fun x hx => ((hfchart_t_diff t x).hasFDerivAt).hasFDerivWithinAt)
       · intro x hx
-        change ‖fderiv ℝ (f_chart t) x‖₊ ≤ K
+        change ‖fderiv ℝ (fChart t) x‖₊ ≤ K
         rw [← NNReal.coe_le_coe]
-        change ‖fderiv ℝ (f_chart t) x‖ ≤ Kval
+        change ‖fderiv ℝ (fChart t) x‖ ≤ Kval
         have : (t, x) ∈ Icc (0 : ℝ) T₀ ×ˢ closedBall (0 : E) R :=
           ⟨Ico_subset_Icc_self ht, hx⟩
         exact hp₀_max this
       · exact convex_closedBall 0 R
     have hΦy_deriv : ∀ t ∈ Ico (0 : ℝ) T₀,
         HasDerivWithinAt (fun s => Φ_pl ⟨y, s⟩)
-          (f_chart t (Φ_pl ⟨y, t⟩)) (Ici t) t := by
+          (fChart t (Φ_pl ⟨y, t⟩)) (Ici t) t := by
       intro t ht
       have ht_hartman : t ∈ Icc (0 - εN) (0 + εN) :=
         hIcc_sub_hartman (Ico_subset_Icc_self ht)
@@ -273,7 +273,7 @@ theorem ChartLocalPicardData.contDiffOn_top
       exact hdw.mono_of_mem_nhdsWithin hmem
     have hflow_y_deriv : ∀ t ∈ Ico (0 : ℝ) T₀,
         HasDerivWithinAt (hper.flow y)
-          (f_chart t (hper.flow y t)) (Ici t) t := by
+          (fChart t (hper.flow y t)) (Ici t) t := by
       intro t ht
       have hspec := hper.flow_spec y (closedBall_subset_closedBall hρ₀_le_r hy)
       have ht_Icc : t ∈ Icc (0 : ℝ) hper.T := ⟨ht.1, (Ico_subset_Icc_self ht).2.trans hT₀_le_T⟩
@@ -286,7 +286,7 @@ theorem ChartLocalPicardData.contDiffOn_top
       rw [hΦ_init y (hcb_sub hy)]
       exact (hper.flow_spec y (closedBall_subset_closedBall hρ₀_le_r hy)).1.symm
     exact ODE_solution_unique_of_mem_Icc_right
-      (v := fun t z => f_chart t z) (s := fun _ => closedBall 0 R) (K := K)
+      (v := fun t z => fChart t z) (s := fun _ => closedBall 0 R) (K := K)
       hfchart_lip hΦy_cont hΦy_deriv hΦy_in hflow_y_cont hflow_y_deriv hflow_y_in hinit
   have hΦ_smooth_sub : ContDiffOn ℝ ∞ Φ_pl
       (ball center ρ₀ ×ˢ Ioo 0 T₀) := by

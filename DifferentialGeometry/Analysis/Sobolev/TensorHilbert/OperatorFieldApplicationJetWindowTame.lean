@@ -141,8 +141,8 @@ theorem operatorFieldApply_l2_le_of_pointwise_fiberNormSq_bound_right
   exact operatorFieldCompose_l2_le_of_pointwise_fiberNormSq_bound_right (I := I) (M := M) g 0 r s Φ
     W B hB hW
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_iteratedCovGrad_fiberNormSq_le_smoothCcToTensorHs_sq
     (g₀ : SmoothRiemannianMetric I M) (q m : ℕ)
     (h_super : 2 * (2 * (Module.finrank ℝ E / 2 + 1) + q) ≤ m) :
@@ -164,8 +164,8 @@ theorem exists_iteratedCovGrad_fiberNormSq_le_smoothCcToTensorHs_sq
   obtain ⟨Cspec, hCspec_nn, hCspec⟩ :=
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ N
   refine ⟨Cemb * Cit * Crev * Cspec, by positivity, fun T₀ x => ?_⟩
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
   set Nm : ℝ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T₀‖ with hNm_def
   have hNm_nn : 0 ≤ Nm := norm_nonneg _
   have hbridge : ∀ σ : ℝ, smoothCcToTensorHs (I := I) (M := M) g₀ σ T₀ =
@@ -253,7 +253,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_ballUniform_generic
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 1))
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))).const_mul (C i)
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 4 (2 + i)
@@ -269,7 +269,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_ballUniform_generic
     refine le_trans key (le_of_eq ?_)
     rw [MeasureTheory.integral_const_mul]
     congr 1
-    rw [MeasureTheory.integral_finset_sum (Finset.range (i + 1))
+    rw [MeasureTheory.integral_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))]
     refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -312,14 +312,14 @@ private theorem productGridTerm_integral_le_topOrderJetSq
         (max Λ (max C 1)) ^ (7 * i) *
           ‖iteratedCovGrad (I := I) g₀ 0 2 i P‖ ^ 2 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   set Rtop : ℝ := ‖iteratedCovGrad (I := I) g₀ 0 2 i P‖ with hRtop_def
   have hRtop_nn : 0 ≤ Rtop := norm_nonneg _
   have hi_pos : 0 < i := hi1
@@ -360,7 +360,7 @@ private theorem productGridTerm_integral_le_topOrderJetSq
     have hcp : Continuous (fun x => ∏ m : Fin n,
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) :=
-      continuous_finset_prod Finset.univ (fun m _ => hcont (e m))
+      continuous_finsetProd Finset.univ (fun m _ => hcont (e m))
     exact hcp.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   refine ⟨hint_prod, ?_⟩
   set Mbar : ℝ := max Λ (max C 1) with hMbar
@@ -623,7 +623,7 @@ private theorem productGridTerm_integral_le_topOrderJetSq
           (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) ^ ((i : ℝ) / (e m : ℝ)))
               μ := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro m _
       exact (hint_rpow (e m) ((i : ℝ) / (e m : ℝ)) (by positivity)).const_mul _
     have hint_eq : (∫ x, ∑ m ∈ Sset, ((e m : ℝ) / i) *
@@ -633,7 +633,7 @@ private theorem productGridTerm_integral_le_topOrderJetSq
           (∫ x, (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) ^ ((i : ℝ) / (e m : ℝ))
               ∂μ) := by
-      rw [MeasureTheory.integral_finset_sum]
+      rw [MeasureTheory.integral_finsetSum]
       · apply Finset.sum_congr rfl
         intro m _; rw [MeasureTheory.integral_const_mul]
       · intro m _
@@ -680,7 +680,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
           ‖iteratedCovGrad (I := I) g₀ 2 2 i (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)‖ ^ 2 ≤
             K i * (1 + ‖iteratedCovGrad (I := I) g₀ 0 2 i P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cgrid, hCgrid_nn, hgrid⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_diagonalProductGrid_le (I := I) (M := M)
@@ -727,7 +727,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
     by_cases hM : Nonempty M
     · obtain ⟨x₀⟩ := hM
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -878,9 +878,9 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
             (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
-          apply MeasureTheory.integrable_finset_sum
+          apply MeasureTheory.integrable_finsetSum
           intro n hn
-          apply MeasureTheory.integrable_finset_sum
+          apply MeasureTheory.integrable_finsetSum
           intro e he
           exact (hPT n hn e he).1
         have hF_int : MeasureTheory.Integrable
@@ -903,8 +903,8 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)
               ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
             tupCard i * (max Lam (max (Cgn i) 1)) ^ (7 * i) * Rtop ^ 2 := by
-          rw [MeasureTheory.integral_finset_sum _
-            (fun n hn => MeasureTheory.integrable_finset_sum _ (fun e he => (hPT n hn e he).1))]
+          rw [MeasureTheory.integral_finsetSum _
+            (fun n hn => MeasureTheory.integrable_finsetSum _ (fun e he => (hPT n hn e he).1))]
           have hinner : ∀ n ∈ Finset.range (i + 1),
               (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n i, ∏ m : Fin n,
                   riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -914,7 +914,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
                   riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-            fun n hn => MeasureTheory.integral_finset_sum _ (fun e he => (hPT n hn e he).1)
+            fun n hn => MeasureTheory.integral_finsetSum _ (fun e he => (hPT n hn e he).1)
           rw [Finset.sum_congr rfl hinner]
           have hle1 : ∑ n ∈ Finset.range (i + 1), ∑ e ∈ Finset.Nat.antidiagonalTuple n i,
                 (∫ x, ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -951,7 +951,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
           mul_assoc (Cgrid i) (tupCard i * (max Lam (max (Cgn i) 1)) ^ (7 * i) + vol)
             (1 + Rtop ^ 2)]
         exact mul_le_mul_of_nonneg_left hstep (hCgrid_nn i)
-    · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+    · have hM' : IsEmpty M := not_nonempty_iff.mp hM
       have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)‖ = 0 := by
         rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
@@ -1013,7 +1013,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_tame_generic
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum (Finset.range (i + 1))
+    (MeasureTheory.integrable_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))).const_mul (Cpo i)
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 4 (2 + i)
@@ -1029,7 +1029,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_tame_generic
     refine le_trans key (le_of_eq ?_)
     rw [MeasureTheory.integral_const_mul]
     congr 1
-    rw [MeasureTheory.integral_finset_sum (Finset.range (i + 1))
+    rw [MeasureTheory.integral_finsetSum (Finset.range (i + 1))
       (fun j _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 2 (2 + j)
         (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)))]
     refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -1114,8 +1114,8 @@ theorem operatorFieldApplication_jet_l2Sq_le
           ((iteratedCovGrad (I := I) g 0 b l W).toSection x) with hF_def
   have hF_int : MeasureTheory.Integrable F μ := by
     rw [hF_def]
-    exact (MeasureTheory.integrable_finset_sum (Finset.range (j + 1)) (fun i _ =>
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i)) (fun l _ =>
+    exact (MeasureTheory.integrable_finsetSum (Finset.range (j + 1)) (fun i _ =>
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i)) (fun l _ =>
         integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 (b + l)
           (iteratedCovGrad (I := I) g 0 b l W))).const_mul (K i))).const_mul _
   have hpt : ∀ x : M,
@@ -1139,14 +1139,14 @@ theorem operatorFieldApplication_jet_l2Sq_le
       (operatorFieldApply (I := I) (M := M) g b c Φ W)) F hF_int hpt
   refine le_trans hnorm (le_of_eq ?_)
   rw [hF_def, MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum (Finset.range (j + 1)) (fun i _ =>
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i)) (fun l _ =>
+    MeasureTheory.integral_finsetSum (Finset.range (j + 1)) (fun i _ =>
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i)) (fun l _ =>
         integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 (b + l)
           (iteratedCovGrad (I := I) g 0 b l W))).const_mul (K i))]
   apply congrArg (fun z : ℝ => diagonalGridGrowthFactor (E := E) j * z)
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum (Finset.range (j + 1 - i)) (fun l _ =>
+    MeasureTheory.integral_finsetSum (Finset.range (j + 1 - i)) (fun l _ =>
       integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 (b + l)
         (iteratedCovGrad (I := I) g 0 b l W))]
   apply congrArg (fun z : ℝ => K i * z)

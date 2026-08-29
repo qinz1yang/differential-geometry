@@ -8,6 +8,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 universe u uE uH
 
 namespace DifferentialGeometry
@@ -74,7 +75,8 @@ theorem connected_subseq
         ((X.subseq f).obj k).topology
       ConnectedSpace ((X.subseq f).obj k).M := by
   intro k
-  simpa only [subseq] using hX (f k)
+  change @ConnectedSpace (X.obj (f k)).M (X.obj (f k)).topology
+  exact hX (f k)
 
 end PointedRiemannianSeq
 

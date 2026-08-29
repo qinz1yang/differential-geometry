@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix ENNReal NNReal
@@ -324,7 +323,7 @@ lemma tendsto_toLp_finsetSum
     toLp_finsetSum_congr (I := I) (M := M) α s hflim hFlim hFlim_eq
   rw [show (fun n => (hFn n).toLp (Fn n)) =
       (fun n => ∑ a ∈ s, (hf a n).toLp (f a n)) from funext h_n, h_lim]
-  exact tendsto_finset_sum s (fun a _ => h_tendsto a)
+  exact tendsto_finsetSum s (fun a _ => h_tendsto a)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma memLp_indicatorFactor_mul_lp
@@ -357,15 +356,15 @@ lemma tendsto_sumToLp
       Filter.Tendsto (fun n => (hf a n).toLp (f a n)) atTop
         (𝓝 ((hflim a).toLp (flim a)))) :
     Filter.Tendsto
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
         Finset.univ (fun a _ => hf a n)).toLp (fun y => ∑ a, f a n y))
       atTop
-      (𝓝 ((memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+      (𝓝 ((memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
         Finset.univ (fun a _ => hflim a)).toLp (fun y => ∑ a, flim a y))) :=
   tendsto_toLp_finsetSum (I := I) (M := M) α Finset.univ hf hflim h_tendsto
-    (fun n => memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    (fun n => memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       Finset.univ (fun a _ => hf a n))
-    (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       Finset.univ (fun a _ => hflim a))
     (fun _ => Filter.EventuallyEq.rfl) Filter.EventuallyEq.rfl
 
@@ -377,7 +376,7 @@ lemma euclidPartial_finsetSum
     euclidPartial (E := E) l (fun z => ∑ a ∈ s, f a z) y =
       ∑ a ∈ s, euclidPartial (E := E) l (f a) y := by
   classical
-  rw [euclidPartial_def, fderiv_fun_sum hf, ContinuousLinearMap.sum_apply]
+  rw [euclidPartial_def, fderiv_fun_sum hf, sum_apply]
   exact Finset.sum_congr rfl (fun a _ => by rw [euclidPartial_def])
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
@@ -395,40 +394,40 @@ lemma tendsto_sum4
       Filter.Tendsto (fun n => (hf a b c d n).toLp (f a b c d n)) atTop
         (𝓝 ((hflim a b c d).toLp (flim a b c d)))) :
     Filter.Tendsto
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun a _ => memLp_finset_sum Finset.univ
-            (fun b _ => memLp_finset_sum Finset.univ
-              (fun c _ => memLp_finset_sum Finset.univ
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun a _ => memLp_finsetSum Finset.univ
+            (fun b _ => memLp_finsetSum Finset.univ
+              (fun c _ => memLp_finsetSum Finset.univ
                 (fun d _ => hf a b c d n))))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, ∑ d, f a b c d n y))
       atTop
-      (𝓝 ((memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun a _ => memLp_finset_sum Finset.univ
-            (fun b _ => memLp_finset_sum Finset.univ
-              (fun c _ => memLp_finset_sum Finset.univ
+      (𝓝 ((memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun a _ => memLp_finsetSum Finset.univ
+            (fun b _ => memLp_finsetSum Finset.univ
+              (fun c _ => memLp_finsetSum Finset.univ
                 (fun d _ => hflim a b c d))))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, ∑ d, flim a b c d y))) :=
   tendsto_sumToLp (I := I) (M := M) α
     (f := fun a => fun n y => ∑ b, ∑ c, ∑ d, f a b c d n y)
     (flim := fun a => fun y => ∑ b, ∑ c, ∑ d, flim a b c d y)
-    (fun a n => memLp_finset_sum Finset.univ
-      (fun b _ => memLp_finset_sum Finset.univ
-        (fun c _ => memLp_finset_sum Finset.univ (fun d _ => hf a b c d n))))
-    (fun a => memLp_finset_sum Finset.univ
-      (fun b _ => memLp_finset_sum Finset.univ
-        (fun c _ => memLp_finset_sum Finset.univ (fun d _ => hflim a b c d))))
+    (fun a n => memLp_finsetSum Finset.univ
+      (fun b _ => memLp_finsetSum Finset.univ
+        (fun c _ => memLp_finsetSum Finset.univ (fun d _ => hf a b c d n))))
+    (fun a => memLp_finsetSum Finset.univ
+      (fun b _ => memLp_finsetSum Finset.univ
+        (fun c _ => memLp_finsetSum Finset.univ (fun d _ => hflim a b c d))))
     (fun a => tendsto_sumToLp (I := I) (M := M) α
       (f := fun b => fun n y => ∑ c, ∑ d, f a b c d n y)
       (flim := fun b => fun y => ∑ c, ∑ d, flim a b c d y)
-      (fun b n => memLp_finset_sum Finset.univ
-        (fun c _ => memLp_finset_sum Finset.univ (fun d _ => hf a b c d n)))
-      (fun b => memLp_finset_sum Finset.univ
-        (fun c _ => memLp_finset_sum Finset.univ (fun d _ => hflim a b c d)))
+      (fun b n => memLp_finsetSum Finset.univ
+        (fun c _ => memLp_finsetSum Finset.univ (fun d _ => hf a b c d n)))
+      (fun b => memLp_finsetSum Finset.univ
+        (fun c _ => memLp_finsetSum Finset.univ (fun d _ => hflim a b c d)))
       (fun b => tendsto_sumToLp (I := I) (M := M) α
         (f := fun c => fun n y => ∑ d, f a b c d n y)
         (flim := fun c => fun y => ∑ d, flim a b c d y)
-        (fun c n => memLp_finset_sum Finset.univ (fun d _ => hf a b c d n))
-        (fun c => memLp_finset_sum Finset.univ (fun d _ => hflim a b c d))
+        (fun c n => memLp_finsetSum Finset.univ (fun d _ => hf a b c d n))
+        (fun c => memLp_finsetSum Finset.univ (fun d _ => hflim a b c d))
         (fun c => tendsto_sumToLp (I := I) (M := M) α
           (hf := fun d n => hf a b c d n) (hflim := fun d => hflim a b c d)
           (h_tendsto a b c))))
@@ -448,33 +447,33 @@ lemma tendsto_sum5
       Filter.Tendsto (fun n => (hf a b c d e n).toLp (f a b c d e n)) atTop
         (𝓝 ((hflim a b c d e).toLp (flim a b c d e)))) :
     Filter.Tendsto
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun a _ => memLp_finset_sum Finset.univ
-            (fun b _ => memLp_finset_sum Finset.univ
-              (fun c _ => memLp_finset_sum Finset.univ
-                (fun d _ => memLp_finset_sum Finset.univ
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun a _ => memLp_finsetSum Finset.univ
+            (fun b _ => memLp_finsetSum Finset.univ
+              (fun c _ => memLp_finsetSum Finset.univ
+                (fun d _ => memLp_finsetSum Finset.univ
                   (fun e _ => hf a b c d e n)))))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, ∑ d, ∑ e, f a b c d e n y))
       atTop
-      (𝓝 ((memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun a _ => memLp_finset_sum Finset.univ
-            (fun b _ => memLp_finset_sum Finset.univ
-              (fun c _ => memLp_finset_sum Finset.univ
-                (fun d _ => memLp_finset_sum Finset.univ
+      (𝓝 ((memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun a _ => memLp_finsetSum Finset.univ
+            (fun b _ => memLp_finsetSum Finset.univ
+              (fun c _ => memLp_finsetSum Finset.univ
+                (fun d _ => memLp_finsetSum Finset.univ
                   (fun e _ => hflim a b c d e)))))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, ∑ d, ∑ e, flim a b c d e y))) :=
   tendsto_sumToLp (I := I) (M := M) α
     (f := fun a => fun n y => ∑ b, ∑ c, ∑ d, ∑ e, f a b c d e n y)
     (flim := fun a => fun y => ∑ b, ∑ c, ∑ d, ∑ e, flim a b c d e y)
-    (fun a n => memLp_finset_sum Finset.univ
-      (fun b _ => memLp_finset_sum Finset.univ
-        (fun c _ => memLp_finset_sum Finset.univ
-          (fun d _ => memLp_finset_sum Finset.univ
+    (fun a n => memLp_finsetSum Finset.univ
+      (fun b _ => memLp_finsetSum Finset.univ
+        (fun c _ => memLp_finsetSum Finset.univ
+          (fun d _ => memLp_finsetSum Finset.univ
             (fun e _ => hf a b c d e n)))))
-    (fun a => memLp_finset_sum Finset.univ
-      (fun b _ => memLp_finset_sum Finset.univ
-        (fun c _ => memLp_finset_sum Finset.univ
-          (fun d _ => memLp_finset_sum Finset.univ
+    (fun a => memLp_finsetSum Finset.univ
+      (fun b _ => memLp_finsetSum Finset.univ
+        (fun c _ => memLp_finsetSum Finset.univ
+          (fun d _ => memLp_finsetSum Finset.univ
             (fun e _ => hflim a b c d e)))))
     (fun a => tendsto_sum4 (I := I) (M := M) α
       (f := fun b c d e n => f a b c d e n)

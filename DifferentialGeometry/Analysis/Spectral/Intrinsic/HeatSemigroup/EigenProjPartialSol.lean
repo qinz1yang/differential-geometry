@@ -42,8 +42,10 @@ theorem projN_lip (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (N : �
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun) :
     LipschitzWith L (projNfun (I := I) (M := M) g₀ a N Nfun) := by
-  have h := (spatialProj_lip (I := I) (M := M) g₀ (a : ℝ) N).comp hLip
-  simpa [projNfun, Function.comp_def] using h
+  change LipschitzWith L
+    ((spatialEigenProj (I := I) (M := M) g₀ (a : ℝ) N) ∘ Nfun)
+  simpa only [one_mul] using
+    (spatialProj_lip (I := I) (M := M) g₀ (a : ℝ) N).comp hLip
 
 omit [BoundarylessManifold I M] in
 theorem projN_zero (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R D : ℝ}

@@ -40,18 +40,18 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 /-! ## Constants -/
 
 /-- Intermediate constant for the extension gradient bound. -/
-private noncomputable def C_extensionGrad (d : ℕ) [NeZero d] (p : ℝ) : ℝ≥0∞ :=
-  1 + C_unitBallExtensionGrad d p * (ENNReal.ofReal (C_poinc_val d) + 1)
+private noncomputable def C_extensionGrad (d : ℕ) (p : ℝ) : ℝ≥0∞ :=
+  1 + CUnitBallExtensionGrad d p * (ENNReal.ofReal (CPoincVal d) + 1)
 
 /-- The Sobolev-Poincare constant on the unit ball. -/
-noncomputable def C_sobolevPoincare (d : ℕ) [NeZero d] (p : ℝ) : ℝ≥0∞ :=
-  ENNReal.ofReal (C_gns d p) * C_extensionGrad d p
+noncomputable def CSobolevPoincare (d : ℕ) [NeZero d] (p : ℝ) : ℝ≥0∞ :=
+  ENNReal.ofReal (CGns d p) * C_extensionGrad d p
 
 /-! ## Subtracting constants -/
 
 /-- Subtracting a constant from a `W^{1,p}` witness on the unit ball preserves
 membership and leaves the weak gradient unchanged. -/
-noncomputable def memW1pWitness_sub_const_unitBall
+noncomputable def memW1pWitnessSubConstUnitBall
     {p : ℝ} (hp : 1 < p)
     {u : E → ℝ}
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1))
@@ -105,9 +105,9 @@ gradient. -/
 theorem memW1pWitness_sub_const_unitBall_weakGrad
     {p : ℝ} (hp : 1 < p) {u : E → ℝ}
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1)) (c : ℝ) :
-    (memW1pWitness_sub_const_unitBall hp hw c).weakGrad = hw.weakGrad := by
+    (memW1pWitnessSubConstUnitBall hp hw c).weakGrad = hw.weakGrad := by
   let _ := (inferInstance : NeZero d)
-  simp [memW1pWitness_sub_const_unitBall]
+  simp [memW1pWitnessSubConstUnitBall]
 
 /-! ## Jensen for `eLpNorm` of averages -/
 
@@ -219,20 +219,20 @@ private theorem poincare_unitBall_W1p
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1)) :
     eLpNorm (fun x => u x - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
       (ENNReal.ofReal p) (volume.restrict (Metric.ball (0 : E) 1)) ≤
-    ENNReal.ofReal (C_poinc_val d) *
+    ENNReal.ofReal (CPoincVal d) *
       eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) := by
   -- === Setup ===
   let B := Metric.ball (0 : E) 1
   let μ := volume.restrict B
   let pp := ENNReal.ofReal p
-  let C := ENNReal.ofReal (C_poinc_val d)
+  let C := ENNReal.ofReal (CPoincVal d)
   have hp_pos : (0 : ℝ) < p := by linarith
   have hpp : (1 : ℝ≥0∞) ≤ pp := by
     simp only [pp]; rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal (le_of_lt hp)
   have hpp_top : pp ≠ ⊤ := ENNReal.ofReal_ne_top
-  haveI hμ_fin : IsFiniteMeasure μ :=
+  have hμ_fin : IsFiniteMeasure μ :=
     ⟨by rw [Measure.restrict_apply_univ]; exact measure_ball_lt_top.lt_top⟩
   -- Measurability helpers
   have hu_aesm : AEStronglyMeasurable u μ := hw.memLp.aestronglyMeasurable
@@ -317,7 +317,7 @@ private theorem poincare_unitBall_W1p
         pp μ)
       atTop (nhds 0) := by
     rw [show (0 : ℝ≥0∞) = ∑ _ : Fin d, (0 : ℝ≥0∞) from by simp]
-    exact tendsto_finset_sum _ fun i _ => hψ_grad i
+    exact tendsto_finsetSum _ fun i _ => hψ_grad i
   -- === eLpNorm(‖fderiv ψ_n‖) ≤ eLpNorm(‖G‖) + grad_err ===
   have hG_norm_aesm : AEStronglyMeasurable (fun x => ‖hw.weakGrad x‖) μ := by
     -- Follow the pattern from aestronglyMeasurable_euclidean_of_components_local
@@ -369,7 +369,7 @@ private theorem poincare_unitBall_W1p
       atTop (nhds 0) :=
     tendsto_of_tendsto_of_tendsto_of_le_of_le'
       tendsto_const_nhds hψ_fn
-      (Eventually.of_forall fun _ => zero_le _)
+      (Eventually.of_forall fun _ => zero_le)
       (Eventually.of_forall h_mean_le)
   -- === Triangle inequality for each n ===
   -- u - ⨍u = -(ψ_n-u) + (ψ_n-⨍ψ_n) + ⨍(ψ_n-u)
@@ -477,13 +477,14 @@ theorem poincare_unitBall_W1p_public
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1)) :
     eLpNorm (fun x => u x - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
       (ENNReal.ofReal p) (volume.restrict (Metric.ball (0 : E) 1)) ≤
-    ENNReal.ofReal (C_poinc_val d) *
+    ENNReal.ofReal (CPoincVal d) *
       eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) :=
   poincare_unitBall_W1p (d := d) hp hw
 
 /-! ## Extension gradient `eLpNorm` bound -/
 
+omit [NeZero d] in
 /-- Convert the lintegral-level extension gradient bound into an `eLpNorm`
 bound using Poincare. -/
 private theorem extension_gradient_eLpNorm_bound
@@ -495,14 +496,14 @@ private theorem extension_gradient_eLpNorm_bound
       (∫⁻ x, (ENNReal.ofReal ‖hwExt.weakGrad x‖) ^ p ∂volume)
         ≤ (∫⁻ x in Metric.ball (0 : E) 1,
               (ENNReal.ofReal ‖hwv.weakGrad x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in Metric.ball (0 : E) 1,
                 (ENNReal.ofReal |v x|) ^ p ∂volume +
              ∫⁻ x in Metric.ball (0 : E) 1,
                 (ENNReal.ofReal ‖hwv.weakGrad x‖) ^ p ∂volume))
     (hv_poincare :
       eLpNorm v (ENNReal.ofReal p) (volume.restrict (Metric.ball (0 : E) 1)) ≤
-        ENNReal.ofReal (C_poinc_val d) *
+        ENNReal.ofReal (CPoincVal d) *
           eLpNorm (fun x => ‖hwv.weakGrad x‖) (ENNReal.ofReal p)
             (volume.restrict (Metric.ball (0 : E) 1))) :
     eLpNorm (fun x => ‖hwExt.weakGrad x‖) (ENNReal.ofReal p) volume ≤
@@ -512,8 +513,8 @@ private theorem extension_gradient_eLpNorm_bound
   let B := Metric.ball (0 : E) 1
   let μ := volume.restrict B
   let pp := ENNReal.ofReal p
-  let Cp := ENNReal.ofReal (C_poinc_val d)
-  let Ce := C_unitBallExtensionGrad d p
+  let Cp := ENNReal.ofReal (CPoincVal d)
+  let Ce := CUnitBallExtensionGrad d p
   let Gext := eLpNorm (fun x => ‖hwExt.weakGrad x‖) pp volume
   let Gv := eLpNorm (fun x => ‖hwv.weakGrad x‖) pp μ
   let Fv := eLpNorm v pp μ
@@ -581,14 +582,14 @@ theorem sobolev_poincare_unitBall
     eLpNorm (fun x => u x - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
       (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p)))
       (volume.restrict (Metric.ball (0 : E) 1)) ≤
-    C_sobolevPoincare d p *
+    CSobolevPoincare d p *
       eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) := by
   let B := Metric.ball (0 : E) 1
   let ubar := ⨍ y in B, u y ∂volume
   let v : E → ℝ := fun x => u x - ubar
   let pstar := ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))
-  let hwv := memW1pWitness_sub_const_unitBall (d := d) hp hw ubar
+  let hwv := memW1pWitnessSubConstUnitBall (d := d) hp hw ubar
   have hwv_grad : hwv.weakGrad = hw.weakGrad :=
     memW1pWitness_sub_const_unitBall_weakGrad hp hw ubar
   obtain ⟨hwExt, hcpt, hagree, _hfun_bound, hgrad_bound⟩ :=
@@ -603,13 +604,13 @@ theorem sobolev_poincare_unitBall
     simpa [Measure.restrict_univ] using h
   have hSob' :
       eLpNorm (unitBallExtension (d := d) v) pstar volume ≤
-        ENNReal.ofReal (C_gns d p) *
+        ENNReal.ofReal (CGns d p) *
           eLpNorm (fun x => ‖hwExt.weakGrad x‖) (ENNReal.ofReal p) volume := by
     calc
       eLpNorm (unitBallExtension (d := d) v) pstar volume
-          ≤ ENNReal.ofReal (C_gns d p) *
+          ≤ ENNReal.ofReal (CGns d p) *
               eLpNorm (fun x => ‖hwSob.weakGrad x‖) (ENNReal.ofReal p) volume := hSob
-      _ = ENNReal.ofReal (C_gns d p) *
+      _ = ENNReal.ofReal (CGns d p) *
             eLpNorm (fun x => ‖hwExt.weakGrad x‖) (ENNReal.ofReal p) volume := by
           congr 1
           exact eLpNorm_congr_ae (hae_grad.fun_comp (‖·‖))
@@ -629,13 +630,13 @@ theorem sobolev_poincare_unitBall
   have hv_poinc_raw :
       eLpNorm (fun x => u x - ⨍ y in B, u y ∂volume) (ENNReal.ofReal p)
         (volume.restrict B) ≤
-      ENNReal.ofReal (C_poinc_val d) *
+      ENNReal.ofReal (CPoincVal d) *
         eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p)
           (volume.restrict B) :=
     poincare_unitBall_W1p (d := d) hp hw
   have hv_poinc :
       eLpNorm v (ENNReal.ofReal p) (volume.restrict B) ≤
-        ENNReal.ofReal (C_poinc_val d) *
+        ENNReal.ofReal (CPoincVal d) *
           eLpNorm (fun x => ‖hwv.weakGrad x‖) (ENNReal.ofReal p)
             (volume.restrict B) := by
     rw [hwv_grad]
@@ -652,22 +653,22 @@ theorem sobolev_poincare_unitBall
   calc
     eLpNorm v pstar (volume.restrict B)
         ≤ eLpNorm (unitBallExtension (d := d) v) pstar volume := hrestrict
-    _ ≤ ENNReal.ofReal (C_gns d p) *
+    _ ≤ ENNReal.ofReal (CGns d p) *
           eLpNorm (fun x => ‖hwExt.weakGrad x‖) (ENNReal.ofReal p) volume := hSob'
-    _ ≤ ENNReal.ofReal (C_gns d p) *
+    _ ≤ ENNReal.ofReal (CGns d p) *
           (C_extensionGrad d p *
             eLpNorm (fun x => ‖hwv.weakGrad x‖) (ENNReal.ofReal p)
               (volume.restrict B)) := by
           gcongr
-    _ = ENNReal.ofReal (C_gns d p) * C_extensionGrad d p *
+    _ = ENNReal.ofReal (CGns d p) * C_extensionGrad d p *
           eLpNorm (fun x => ‖hwv.weakGrad x‖) (ENNReal.ofReal p)
             (volume.restrict B) := by
           rw [mul_assoc]
-    _ = C_sobolevPoincare d p *
+    _ = CSobolevPoincare d p *
           eLpNorm (fun x => ‖hwv.weakGrad x‖) (ENNReal.ofReal p)
             (volume.restrict B) := by
           rfl
-    _ = C_sobolevPoincare d p *
+    _ = CSobolevPoincare d p *
           eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p)
             (volume.restrict B) := by
           rw [hwv_grad_eq]
@@ -698,7 +699,7 @@ theorem sobolev_poincare_unitBall'
       isWeakGrad := by
         intro i
         simpa [G, PiLp.toLp_apply] using (hgi i).2 }
-  exact ⟨C_sobolevPoincare d p, G, hw.isWeakGrad,
+  exact ⟨CSobolevPoincare d p, G, hw.isWeakGrad,
     sobolev_poincare_unitBall hp hpd hw⟩
 
 /-! ## Smooth version -/
@@ -755,7 +756,7 @@ theorem sobolev_poincare_smooth_unitBall
     eLpNorm (fun x => u x - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
       (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p)))
       (volume.restrict (Metric.ball (0 : E) 1)) ≤
-    C_sobolevPoincare d p *
+    CSobolevPoincare d p *
       eLpNorm (fun x => ‖fderiv ℝ u x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) := by
   let hw := smooth_memW1pWitness_unitBall (d := d) hp hpd hu

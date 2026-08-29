@@ -55,7 +55,7 @@ theorem exists_stage_metric
     (liveCenters_rInf (I := I) inp.decay P inp.realizes L inp.pack r)
   let shift : Nat → Nat := fun n => n + N
   have hshift : StrictMono shift := by
-    simpa only [shift] using strictMono_id.add_const N
+    simpa only [shift, id_eq] using strictMono_id.add_const N
   let V : LiveSlot L inp.pack r → Set E := fun alpha =>
     Metric.ball 0 (d.phaseRadius (L.rInf (alpha.1 : Nat) + 1))
   let Φ : LiveSlot L inp.pack r → Nat → E →
@@ -94,15 +94,19 @@ theorem exists_stage_metric
               (X'.obj n).basepoint)) := by
       intro n
       have hphase := d.phaseRadius_metric (hcenter n).le
-      simpa only [V, d', BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.metricBounds,
-        BoundedGeometryNormalData.phaseRadius, NormalChartData.radius_eq,
-        InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
-        index, X', c, PointedRiemannianSeq.subseq] using hphase
+      change Metric.ball 0 (d.phaseRadius (L.rInf (alpha.1 : Nat) + 1)) ⊆
+        Metric.ball 0
+          (d'.ratio * (inp.decay.subseq index).mu
+            ((inp.decay.subseq index).dist n (c n)
+              (X'.obj n).basepoint))
+      rw [← d'.radius_eq n (c n)]
+      with_unfolding_all
+        exact hphase
     obtain ⟨σ, g, hσ, hg, hconv, hequiv⟩ :=
       exists_chart_metric_limit_subsequence (I := I) d' c Metric.isOpen_ball hsub
     refine ⟨σ, g, hσ, ?_, ?_⟩
-    · simpa only [Φ, d', BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.chartMetric,
-        index, X', c, PointedRiemannianSeq.subseq] using hconv
+    · with_unfolding_all
+        exact hconv
     · simpa only [Q] using ⟨hg, hequiv⟩
   obtain ⟨psi0, hpsi0, hall⟩ :=
     exists_cInf_finite V Φ Q hstep
@@ -237,34 +241,30 @@ theorem exists_stage_pair
     rw [hV alpha] at hgInf hconv hequiv
     have hgInf' : ContDiffOn Real ∞ (gInf alpha)
         (Metric.ball 0 (dphi.phaseRadius Ralpha)) := by
-      simpa only [dphi, BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.phaseRadius,
-        InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu] using hgInf
+      with_unfolding_all
+        exact hgInf
     have hconv' : MapCInfConvOnCompacts
         (Metric.ball 0 (dphi.phaseRadius Ralpha))
         (fun n ↦ dphi.chartMetric n (c alpha n)) (gInf alpha) := by
-      simpa only [dphi, BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.phaseRadius,
-        BoundedGeometryNormalData.chartMetric, InjRadiusDecayInput.subseq,
-        InjRadiusDecayInput.mu, index, Xphi, c, Lphi,
-        PointedRiemannianSeq.subseq] using hconv
+      with_unfolding_all
+        exact hconv
     have hequiv' : ∀ z ∈ Metric.ball 0 (dphi.phaseRadius Ralpha),
         ∀ v : E,
           (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v := by
       intro z hz v
       have hz' : z ∈ Metric.ball 0 (d.phaseRadius Ralpha) := by
-        simpa only [dphi, BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.phaseRadius,
-          InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu] using hz
+        with_unfolding_all
+          exact hz
       exact (hequiv z hz' v).1
     rcases hqdata alpha with
       ⟨hq, hqWide, hqAcc, herr, hinvErr⟩
     exact dphi.exists_diagPair_at (hcomplete.subseq index)
       (PointedRiemannianSeq.connected_subseq hconn index)
       Ralpha (c alpha) hc (q alpha) hq
-      (by simpa only [dphi, BoundedGeometryNormalData.subseq,
-          BoundedGeometryNormalData.phaseRadius, InjRadiusDecayInput.subseq,
-          InjRadiusDecayInput.mu] using hqWide)
-      (by simpa only [dphi, BoundedGeometryNormalData.subseq] using hqAcc)
-      (by simpa only [dphi, BoundedGeometryNormalData.subseq] using herr)
-      (by simpa only [dphi, BoundedGeometryNormalData.subseq] using hinvErr)
+      (by with_unfolding_all exact hqWide)
+      (by with_unfolding_all exact hqAcc)
+      (by with_unfolding_all exact herr)
+      (by with_unfolding_all exact hinvErr)
       hgInf' hequiv' hconv'
   choose deltaStage deltaInf e eInf hpair hfence using hslot
   exact ⟨deltaStage, deltaInf, e, eInf, hpair, hfence⟩

@@ -112,16 +112,17 @@ private theorem iterF_integral
             continuousMultilinearCurryFin0_apply, iteratedFDeriv_zero_apply])
       let L₀ : F →L[ℝ] E [×0]→L[ℝ] F :=
         (continuousMultilinearCurryFin0 ℝ E F).symm
-      simpa only [iteratedFDeriv_zero_eq_comp, Function.comp_apply] using
-        (L₀.intervalIntegral_comp_comm hR.intervalIntegrable).symm
+      rw [iteratedFDeriv_zero_eq_comp]
+      change L₀ (∫ t in a..b, R t x) = ∫ t in a..b, L₀ (R t x)
+      exact (L₀.intervalIntegral_comp_comm hR.intervalIntegrable).symm
   | succ n ih =>
-      letI : NormedAddCommGroup (E [×n]→L[ℝ] F) :=
+      let : NormedAddCommGroup (E [×n]→L[ℝ] F) :=
         ContinuousMultilinearMap.normedAddCommGroup'
-      letI : CompleteSpace (E [×n]→L[ℝ] F) :=
+      let : CompleteSpace (E [×n]→L[ℝ] F) :=
         ContinuousMultilinearMap.instCompleteSpace
-      letI : NormedAddCommGroup (E →L[ℝ] E [×n]→L[ℝ] F) :=
+      let : NormedAddCommGroup (E →L[ℝ] E [×n]→L[ℝ] F) :=
         ContinuousLinearMap.toNormedAddCommGroup
-      letI : SecondCountableTopologyEither ℝ
+      let : SecondCountableTopologyEither ℝ
           (E →L[ℝ] E [×n]→L[ℝ] F) :=
         secondCountableTopologyEither_of_left ℝ _
       let L : (E →L[ℝ] E [×n]→L[ℝ] F) →L[ℝ] E [×(n + 1)]→L[ℝ] F :=
@@ -163,7 +164,7 @@ private theorem iterF_integral
             ((hRs t (hab (uIoc_subset_uIcc ht))).contDiffAt
               (hV.mem_nhds hy.1)).differentiableAt_iteratedFDeriv (by
                 show (n : WithTop ℕ∞) < ∞
-                exact_mod_cast ENat.coe_lt_top n)
+                exact_mod_cast ENat.natCast_lt_top n)
               |>.hasFDerivAt
       have hEq :
           iteratedFDeriv ℝ n (fun y => ∫ t in a..b, R t y) =ᶠ[nhds x]
@@ -235,16 +236,17 @@ private theorem iterF_integral_Icc
             continuousMultilinearCurryFin0_apply, iteratedFDeriv_zero_apply])
       let L₀ : F →L[ℝ] E [×0]→L[ℝ] F :=
         (continuousMultilinearCurryFin0 ℝ E F).symm
-      simpa only [iteratedFDeriv_zero_eq_comp, Function.comp_apply] using
-        (L₀.intervalIntegral_comp_comm hR.intervalIntegrable).symm
+      rw [iteratedFDeriv_zero_eq_comp]
+      change L₀ (∫ t in a..b, R t x) = ∫ t in a..b, L₀ (R t x)
+      exact (L₀.intervalIntegral_comp_comm hR.intervalIntegrable).symm
   | succ n ih =>
-      letI : NormedAddCommGroup (E [×n]→L[ℝ] F) :=
+      let : NormedAddCommGroup (E [×n]→L[ℝ] F) :=
         ContinuousMultilinearMap.normedAddCommGroup'
-      letI : CompleteSpace (E [×n]→L[ℝ] F) :=
+      let : CompleteSpace (E [×n]→L[ℝ] F) :=
         ContinuousMultilinearMap.instCompleteSpace
-      letI : NormedAddCommGroup (E →L[ℝ] E [×n]→L[ℝ] F) :=
+      let : NormedAddCommGroup (E →L[ℝ] E [×n]→L[ℝ] F) :=
         ContinuousLinearMap.toNormedAddCommGroup
-      letI : SecondCountableTopologyEither ℝ
+      let : SecondCountableTopologyEither ℝ
           (E →L[ℝ] E [×n]→L[ℝ] F) :=
         secondCountableTopologyEither_of_left ℝ _
       let L : (E →L[ℝ] E [×n]→L[ℝ] F) →L[ℝ] E [×(n + 1)]→L[ℝ] F :=
@@ -286,7 +288,7 @@ private theorem iterF_integral_Icc
             ((hRs t (hab (uIoc_subset_uIcc ht))).contDiffAt
               (hV.mem_nhds hy.1)).differentiableAt_iteratedFDeriv (by
                 show (n : WithTop ℕ∞) < ∞
-                exact_mod_cast ENat.coe_lt_top n)
+                exact_mod_cast ENat.natCast_lt_top n)
               |>.hasFDerivAt
       have hEq :
           iteratedFDeriv ℝ n (fun y => ∫ t in a..b, R t y) =ᶠ[nhds x]
@@ -407,7 +409,8 @@ theorem hasDerivAt_iterF
         (by exact_mod_cast le_top)
     have hsubJet : iteratedFDeriv ℝ r (fun y => G s y - G a y) x =
         iteratedFDeriv ℝ r (G s) x - iteratedFDeriv ℝ r (G a) x := by
-      simpa only [Pi.sub_apply] using iteratedFDeriv_sub_apply hGsAt hGaAt
+      change iteratedFDeriv ℝ r (G s - G a) x = _
+      exact iteratedFDeriv_sub_apply hGsAt hGaAt
     have hintJet := iterF_integral hJ hV hRs r hRjet hsub hx
     rw [← hintJet]
     rw [hjet, hsubJet]
@@ -439,7 +442,7 @@ theorem hasDerivIcc_of_int
     dsimp only [g]
     rw [hFTC]
     abel
-  letI : Fact (t ∈ Set.Icc a b) := ⟨ht⟩
+  let : Fact (t ∈ Set.Icc a b) := ⟨ht⟩
   have ha : a ∈ Set.Icc a b := Set.left_mem_Icc.mpr hab.le
   have hintT : IntervalIntegrable f' volume a t :=
     (hf'.mono (Set.uIcc_subset_Icc ha ht)).intervalIntegrable
@@ -532,7 +535,8 @@ theorem hasDerivWithin_iterF
           (by exact_mod_cast le_top)
       have hsubJet : iteratedFDeriv ℝ r (fun y => G s y - G a y) x =
           iteratedFDeriv ℝ r (G s) x - iteratedFDeriv ℝ r (G a) x := by
-        simpa only [Pi.sub_apply] using iteratedFDeriv_sub_apply hGsAt hGaAt
+        change iteratedFDeriv ℝ r (G s - G a) x = _
+        exact iteratedFDeriv_sub_apply hGsAt hGaAt
       have hintJet := iterF_integral_Icc hV hRs r hRjet hsub hx
       rw [← hintJet]
       rw [hjet, hsubJet]

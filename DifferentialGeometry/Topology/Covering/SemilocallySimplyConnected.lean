@@ -1,4 +1,4 @@
-import Mathlib.Topology.Connected.LocPathConnected
+import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.Topology.Connected.PathConnected
 import Mathlib.Topology.Homotopy.Path
 import Mathlib.Topology.Homotopy.Contractible

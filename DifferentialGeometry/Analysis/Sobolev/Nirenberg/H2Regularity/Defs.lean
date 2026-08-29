@@ -243,9 +243,9 @@ theorem continuous_principalIntegrand {Ω : Set E}
     Continuous (B.principalIntegrand u v) := by
   classical
   unfold principalIntegrand
-  refine continuous_finset_sum _ ?_
+  refine continuous_finsetSum _ ?_
   intro i _
-  refine continuous_finset_sum _ ?_
+  refine continuous_finsetSum _ ?_
   intro j _
   refine ((B.continuous_a i j).mul ?_).mul ?_
   · exact (hu.continuous_fderiv (by simp)).clm_apply continuous_const

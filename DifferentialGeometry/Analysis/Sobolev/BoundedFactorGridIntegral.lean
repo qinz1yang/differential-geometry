@@ -21,8 +21,8 @@ private theorem finOnCpt (μ : Measure X) [IsFiniteMeasure μ] :
 theorem bdFactorCell_int (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
     (n : ℕ) (e : Fin n → ℕ) :
     Integrable (fun x => ∏ m : Fin n, b x (e m)) μ := by
-  haveI := finOnCpt (X := X) μ
-  exact (continuous_finset_prod _ (fun m _ => hcont (e m))).integrable_of_hasCompactSupport
+  have := finOnCpt (X := X) μ
+  exact (continuous_finsetProd _ (fun m _ => hcont (e m))).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
 omit [MeasurableSpace X] [OpensMeasurableSpace X] [CompactSpace X] in
@@ -30,14 +30,14 @@ theorem bdFactorGrid_cont (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuo
     (K k : ℕ) :
     Continuous fun x => boundedFactorGrid (b x) K k := by
   simp only [boundedFactorGrid]
-  refine continuous_finset_sum _ (fun n _ => ?_)
-  refine continuous_finset_sum _ (fun e _ => ?_)
-  exact continuous_finset_prod _ (fun m _ => hcont (e m))
+  refine continuous_finsetSum _ (fun n _ => ?_)
+  refine continuous_finsetSum _ (fun e _ => ?_)
+  exact continuous_finsetProd _ (fun m _ => hcont (e m))
 
 theorem bdFactorGrid_int (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
     (K k : ℕ) :
     Integrable (fun x => boundedFactorGrid (b x) K k) μ := by
-  haveI := finOnCpt (X := X) μ
+  have := finOnCpt (X := X) μ
   exact (bdFactorGrid_cont b hcont K k).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
@@ -51,13 +51,13 @@ theorem bdFactorGrid_int_eq (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Contin
       (fun x => ∑ n ∈ Finset.range (k + 1),
         ∑ e ∈ (Finset.Nat.antidiagonalTuple n k).filter (fun e => ∀ m, e m ≤ K),
           ∏ m : Fin n, b x (e m)) := rfl
-  rw [h1, MeasureTheory.integral_finset_sum]
+  rw [h1, MeasureTheory.integral_finsetSum]
   · apply Finset.sum_congr rfl
     intro n _
-    rw [MeasureTheory.integral_finset_sum]
+    rw [MeasureTheory.integral_finsetSum]
     intro e _; exact bdFactorCell_int b hcont n e
   · intro n _
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro e _; exact bdFactorCell_int b hcont n e
 
 end Combinatorics

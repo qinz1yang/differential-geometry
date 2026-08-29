@@ -32,6 +32,7 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_smul_real
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)

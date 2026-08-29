@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -71,6 +70,7 @@ theorem curvatureContraction_toSection_apply
     Z.toSection.contMDiff
 
 
+omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_uniform_riemannianFiberNormSq_riemannOp_bound
     (g : SmoothRiemannianMetric I M) (s : ℕ)

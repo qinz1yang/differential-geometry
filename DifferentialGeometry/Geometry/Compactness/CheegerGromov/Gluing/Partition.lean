@@ -52,7 +52,12 @@ theorem pouOfFinite_sub {s : Set M} {U : ι → Set M} (w : ι → M → Real)
     (hsub : ∀ i, tsupport (w i) ⊆ U i) :
     (pouOfFinite (I := I) w hw hnonneg hsum hle).IsSubordinate U := by
   intro i
-  simpa only [pouOfFinite, ContMDiffMap.coeFn_mk] using hsub i
+  have hfun :
+      ((pouOfFinite (I := I) w hw hnonneg hsum hle) i : M → Real) = w i := by
+    funext x
+    rfl
+  rw [hfun]
+  exact hsub i
 
 noncomputable def cutoffDenom (a : ι → M → Real) (τ : M → Real) (x : M) : Real :=
   τ x * ∑ i, a i x + (1 - τ x)
@@ -87,9 +92,20 @@ theorem cutoffWeights_smooth {a : ι → M → Real} {τ : M → Real}
   have hsum : ContMDiff I 𝓘(Real) ∞ (fun x => ∑ j, a j x) :=
     ContMDiff.sum fun j _ => ha j
   have hden : ContMDiff I 𝓘(Real) ∞ (cutoffDenom a τ) := by
-    simpa only [cutoffDenom] using (hτ.mul hsum).add (contMDiff_const.sub hτ)
-  simpa only [cutoffWeights] using
+    have hfun :
+        cutoffDenom a τ = fun x ↦ τ x * ∑ j, a j x + (1 - τ x) := by
+      funext x
+      rfl
+    rw [hfun]
+    exact (hτ.mul hsum).add ((contMDiff_const (c := (1 : Real))).sub hτ)
+  have hweights :=
     (hτ.mul (ha i)).div₀ hden (fun x => ne_of_gt (cutoffDenom_pos hτrange hpos x))
+  have hfun :
+      cutoffWeights a τ i = fun x ↦ τ x * a i x / cutoffDenom a τ x := by
+    funext x
+    rfl
+  rw [hfun]
+  exact hweights
 
 omit [TopologicalSpace M] in
 theorem cutoffWeights_nonneg {a : ι → M → Real} {τ : M → Real}
@@ -162,8 +178,13 @@ theorem pouOfCutoff_sub {s : Set M} {U : ι → Set M}
     (hsub : ∀ i, tsupport (a i) ⊆ U i) :
     (pouOfCutoff (I := I) a τ ha hanonneg hτ hτrange hτone hpos).IsSubordinate U := by
   intro i
-  simpa only [pouOfCutoff, pouOfFinite, ContMDiffMap.coeFn_mk] using
-    (cutoffWeights_sub a τ i).trans (hsub i)
+  have hfun :
+      ((pouOfCutoff (I := I) a τ ha hanonneg hτ hτrange hτone hpos) i : M → Real) =
+        cutoffWeights a τ i := by
+    funext x
+    rfl
+  rw [hfun]
+  exact (cutoffWeights_sub a τ i).trans (hsub i)
 
 end FinitePOU
 
@@ -196,12 +217,10 @@ noncomputable def innerBall (hd : InjRadiusDecayInput (I := I) X) (D : Real)
       L.innerBall hd D P pb r (ψ k) γ := by
   cases hcenter : seqCenter hd D P (L.φ (ψ k)) (γ : Nat) with
   | none =>
-      simp [innerBall, NetLimitData.subseq, Function.comp_apply, hcenter]
-      rfl
+      simp [innerBall, NetLimitData.subseq, Function.comp_apply, hcenter] ; rfl
   | some c =>
       simp [innerBall, NetLimitData.subseq, NetLimitData.lamInf, Function.comp_apply,
-        hcenter]
-      rfl
+        hcenter] ; rfl
 
 
 theorem innerBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
@@ -209,7 +228,7 @@ theorem innerBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r)) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     IsOpen (L.innerBall hd D P pb r k γ) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   unfold innerBall
   split
   · exact Metric.isOpen_ball
@@ -222,7 +241,7 @@ theorem innerBall_subset_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (γ : Fin (pb.A r)) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     L.innerBall hd D P pb r k γ ⊆ L.hatBall hd D P pb r k γ := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   cases hcenter : seqCenter hd D P (L.φ k) (γ : Nat) with
   | none => simp [innerBall, hatBall, hcenter]
   | some c =>
@@ -240,12 +259,10 @@ theorem innerBall_subset_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       L.hatBall hd D P pb r (ψ k) γ := by
   cases hcenter : seqCenter hd D P (L.φ (ψ k)) (γ : Nat) with
   | none =>
-      simp [hatBall, NetLimitData.subseq, Function.comp_apply, hcenter]
-      rfl
+      simp [hatBall, NetLimitData.subseq, Function.comp_apply, hcenter] ; rfl
   | some c =>
       simp [hatBall, NetLimitData.subseq, NetLimitData.lamInf, Function.comp_apply,
-        hcenter]
-      rfl
+        hcenter] ; rfl
 
 
 theorem hatBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
@@ -253,7 +270,7 @@ theorem hatBall_open (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (γ : Fin (pb.A r)) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     IsOpen (L.hatBall hd D P pb r k γ) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   unfold hatBall
   split
   · exact Metric.isOpen_ball
@@ -268,7 +285,7 @@ theorem hatBall_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       Metric.closedBall (X.obj (L.φ k)).basepoint r ⊆
         ⋃ γ : Fin (pb.A r), L.hatBall hd D P pb r k γ := by
   filter_upwards [L.hat_cover hd hD P hre pb r] with k hk
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   intro p hp
   have hpdist : dist p (X.obj (L.φ k)).basepoint ≤ r := by
     simpa [Metric.mem_closedBall] using hp
@@ -285,7 +302,7 @@ theorem innerBall_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       Metric.closedBall (X.obj (L.φ k)).basepoint r ⊆
         ⋃ γ : Fin (pb.A r), L.innerBall hd D P pb r k γ := by
   filter_upwards [L.inner_cover hd hD P hre pb r] with k hcover
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   intro p hp
   have hpdist : dist p (X.obj (L.φ k)).basepoint ≤ r := by
     simpa [Metric.mem_closedBall] using hp
@@ -309,12 +326,12 @@ theorem hatPOU_of_cover (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     ∃ ρ : SmoothPartitionOfUnity (Fin (pb.A r)) I (X.obj (L.φ k)).M
         (Metric.closedBall (X.obj (L.φ k)).basepoint r),
       ρ.IsSubordinate (fun γ : Fin (pb.A r) => L.hatBall hd D P pb r k γ) := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   have htop := ProperMetricOn.top_eq (X.obj (L.φ k)) (P (L.φ k))
   have hs :
       @IsClosed (X.obj (L.φ k)).M (X.obj (L.φ k)).topology
@@ -392,12 +409,12 @@ theorem hatPOU_nonneg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     0 ≤ ρ γ x := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   exact ρ.nonneg γ x
 
 
@@ -424,12 +441,12 @@ theorem hatPOU_sum_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     ∑ γ : Fin (pb.A r), ρ γ x = 1 := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   have hsum := ρ.sum_eq_one hx
   rw [finsum_eq_sum (fun γ : Fin (pb.A r) => ρ γ x)
     (Finite.subset finite_univ (subset_univ (Function.support fun γ : Fin (pb.A r) => ρ γ x)))]
@@ -459,12 +476,12 @@ theorem hatPOU_pos (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     ∃ γ : Fin (pb.A r), 0 < ρ γ x := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   exact ρ.exists_pos_of_mem hx
 
 
@@ -498,12 +515,12 @@ theorem hatPOU_active_mem (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       ρ γ x ≠ 0) :
     x ∈ L.hatBall hd D P pb r k γ := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   have hx_support : x ∈ Function.support fun y => ρ γ y := by
     simpa [Function.mem_support] using hγx
   exact hρ γ (subset_tsupport (ρ γ) hx_support)
@@ -515,7 +532,7 @@ theorem binter_of_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hα : z ∈ L.hatBall hd D P pb r k α)
     (hβ : z ∈ L.hatBall hd D P pb r k β) :
     BInter hd D P L.lamInf (α : Nat) (β : Nat) (L.φ k) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   cases hcα : seqCenter hd D P (L.φ k) (α : Nat) with
   | none => simp [hatBall, hcα] at hα
   | some x =>
@@ -569,12 +586,12 @@ theorem binter_of_active (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       ρ γ x ≠ 0) :
     BInter hd D P L.lamInf (β : Nat) (γ : Nat) (L.φ k) := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   exact L.binter_of_mem_hat hd hD P pb r k hβx
     (L.hatPOU_active_mem hd P pb r k ρ hρ hγx)
 
@@ -603,12 +620,12 @@ theorem hatPOU_weights (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (∀ γ : Fin (pb.A r), 0 ≤ ρ γ x) ∧
       (∃ γ : Fin (pb.A r), 0 < ρ γ x) ∧
         ∑ γ : Fin (pb.A r), ρ γ x = 1 := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   exact ⟨fun γ => L.hatPOU_nonneg hd P pb r k ρ γ x,
     L.hatPOU_pos hd P pb r k ρ hx,
     L.hatPOU_sum_one hd P pb r k ρ hx⟩
@@ -648,12 +665,12 @@ theorem hatPOU_active_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
         ∑ γ : Fin (pb.A r), ρ γ x = 1) ∧
       ∀ γ : Fin (pb.A r), ρ γ x ≠ 0 →
         x ∈ L.hatBall hd D P pb r k γ := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   exact ⟨L.hatPOU_weights hd P pb r k ρ hx,
     fun γ hγx => L.hatPOU_active_mem hd P pb r k ρ hρ hγx⟩
 

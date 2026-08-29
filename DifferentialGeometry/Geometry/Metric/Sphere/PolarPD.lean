@@ -44,7 +44,7 @@ private noncomputable instance polarDirCharted
 private noncomputable instance polarDirMfld
     (p : sphere (0 : E) 1) :
     IsManifold (𝓡 n) ∞ (PolarDir p) := by
-  letI : Fact (finrank ℝ (ℝ ∙ (p : E))ᗮ = n + 1) :=
+  let : Fact (finrank ℝ (ℝ ∙ (p : E))ᗮ = n + 1) :=
     polarDirFact (n := n) p
   exact EuclideanSpace.instIsManifoldSphere.of_le le_top
 
@@ -159,7 +159,9 @@ private theorem polarMap_target
     exact hmap.2.1 (congrArg Subtype.val h)
   · intro h
     exact hmap.2.2 (by
-      simpa using congrArg Subtype.val h)
+      have hh := congrArg Subtype.val h
+      change spherePolar (p : E) (q.1, (q.2 : E)) = -(p : E) at hh
+      exact hh)
 
 private theorem polarBack_data
     (p : sphere (0 : E) 1) (x : polarTargetO p) :
@@ -283,24 +285,24 @@ private theorem polarBack_smooth
         (inferInstance : NormedAddCommGroup K).toMetricSpace.toUniformSpace.toTopologicalSpace
       letI : ChartedSpace K K := chartedSpaceSelf K
       ContMDiff (𝓡 (n + 1)) 𝓘(ℝ, K) ∞
-        (fun x : V => K.orthogonalProjection
+        (fun x : V => K.orthogonalProjectionOnto
           (spherePolarInv (p : E) (x : E)).2) := by
-    letI : TopologicalSpace K :=
+    let : TopologicalSpace K :=
       (inferInstance : NormedAddCommGroup K).toMetricSpace.toUniformSpace.toTopologicalSpace
-    letI : ChartedSpace K K := chartedSpaceSelf K
+    let : ChartedSpace K K := chartedSpaceSelf K
     let L : (ℝ × E) →L[ℝ] (ℝ ∙ (p : E))ᗮ :=
-      (ℝ ∙ (p : E))ᗮ.orthogonalProjection.comp
+      (ℝ ∙ (p : E))ᗮ.orthogonalProjectionOnto.comp
         (ContinuousLinearMap.snd ℝ ℝ E)
     exact L.contDiff.contMDiff.comp hraw
   have hperp_eq (x : V) :
-      K.orthogonalProjection
+      K.orthogonalProjectionOnto
           (spherePolarInv (p : E) (x : E)).2 =
         ((polarBack p x : ℝ × PolarDir p).2 : K) := by
     have hraw :
         (spherePolarInv (p : E) (x : E)).2 =
           (((polarBack p x : ℝ × PolarDir p).2 : K) : E) :=
       (polarBack_dir p x).symm
-    rw [hraw, K.orthogonalProjection_mem_subspace_eq_self]
+    rw [hraw, K.orthogonalProjectionOnto_mem_subspace_eq_self]
   have hdir :
       ContMDiff (𝓡 (n + 1)) (𝓡 n) ∞
         (fun x : V => (polarBack p x : ℝ × PolarDir p).2) := by

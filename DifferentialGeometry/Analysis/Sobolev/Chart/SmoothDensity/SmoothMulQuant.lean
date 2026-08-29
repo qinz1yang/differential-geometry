@@ -117,7 +117,7 @@ theorem wkpNormChart_smooth_mul_le
         ≤ ENNReal.ofReal C * wkpNormChart (I := I) (M := M) k p u := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have h_per_α : ∀ α : M, ∃ K : ℝ, 0 < K ∧ ∀ {u : M → ℝ},
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p
@@ -251,7 +251,7 @@ theorem wkpNormChart_smooth_mul_le
             (chartPushed (I := I) (M := M)
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
             (chartTargetEuclid (I := I) (M := M) α) := by
-          refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+          refine mul_le_mul_of_nonneg_right ?_ (zero_le)
           exact ENNReal.ofReal_le_ofReal (hKα_le_max α hαS)
   · have h_zero_pou : ∀ x : M,
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α

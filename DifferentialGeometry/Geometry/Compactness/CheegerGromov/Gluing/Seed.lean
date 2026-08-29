@@ -18,8 +18,8 @@ open scoped ContDiff Manifold Topology
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E]
@@ -186,11 +186,13 @@ theorem MetricCompactBase.exists_stage_seed
       let rhoMin := aMin * inp.decay.mu Rgamma
       0 < q gamma ∧ 0 < δ gamma ∧ 0 < rhoMin ∧
         2 * rhoMin < (q gamma : Real) := by
-    simpa only [Lphi, NetLimitData.subseq] using hqdata
+    with_unfolding_all
+      exact hqdata
   have hqWide0 : ∀ gamma : LiveSlot L inp.pack r,
       6 * (q gamma : Real) < inp.normalRadius.phaseRadius
         (L.rInf (gamma.1 : Nat) + 1) := by
-    simpa only [Lphi, NetLimitData.subseq] using hqWide
+    with_unfolding_all
+      exact hqWide
   have hqAcc0 := hqAcc
   have herr0 := herr
   have hinvErr0 := hinvErr
@@ -213,28 +215,28 @@ theorem MetricCompactBase.exists_stage_seed
         hcomplete hconn U aInf q δ := by
     filter_upwards [hptsTail, hreadTail] with n hn hreadN
     let Y := X.obj (Lphi.φ n)
-    letI : TopologicalSpace Y.M := Y.topology
-    letI : ChartedSpace H Y.M := Y.charted
-    letI : IsManifold I ∞ Y.M := Y.smooth
-    letI : IsManifold I 1 Y.M := IsManifold.of_le
+    let : TopologicalSpace Y.M := Y.topology
+    let : ChartedSpace H Y.M := Y.charted
+    let : IsManifold I ∞ Y.M := Y.smooth
+    let : IsManifold I 1 Y.M := IsManifold.of_le
       (I := I) (M := Y.M) (n := ∞) (by decide)
-    letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-    letI : T2Space Y.M := Y.t2
-    letI : ConnectedSpace Y.M := hconn (Lphi.φ n)
-    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    letI : TopologicalSpace.MetrizableSpace Y.M :=
+    let : SigmaCompactSpace Y.M := Y.sigmaCompact
+    let : T2Space Y.M := Y.t2
+    let : ConnectedSpace Y.M := hconn (Lphi.φ n)
+    let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    let : TopologicalSpace.MetrizableSpace Y.M :=
       Manifold.metrizableSpace I Y.M
-    letI : T3Space Y.M := inferInstance
-    letI : RiemannianBundle (fun z : Y.M => TangentSpace I z) :=
+    let : T3Space Y.M := inferInstance
+    let : RiemannianBundle (fun z : Y.M => TangentSpace I z) :=
       Y.riemBundle (I := I)
-    letI : (z : Y.M) → InnerProductSpace Real (TangentSpace I z) :=
+    let : (z : Y.M) → InnerProductSpace Real (TangentSpace I z) :=
       Y.riemInner (I := I)
-    letI : IsContinuousRiemannianBundle E
+    let : IsContinuousRiemannianBundle E
         (fun z : Y.M => TangentSpace I z) := Y.riemBundle_cont (I := I)
-    letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
-    letI : CompleteSpace Y.M :=
+    let : EMetricSpace Y.M := Y.emetricSpace (I := I)
+    let : CompleteSpace Y.M :=
       MetricComplete.complete (I := I) Y (hcomplete.complete (Lphi.φ n))
-    letI : MetricSpace Y.M :=
+    let : MetricSpace Y.M :=
       HopfRinow.riemMetricSpace (I := I) (M := Y.M)
     let beta := fun (k : Nat) (alpha : LiveSlot L inp.pack r) =>
       seqCenterD inp.decay P Lphi k (alpha.1 : Nat)
@@ -274,10 +276,12 @@ theorem MetricCompactBase.exists_stage_seed
     choose radSeq hpos hactive hsmall hcapLocal using hlocal
     refine ⟨radSeq, hcover, hhat, hweight, hpos, hactive, ?_, ?_⟩
     · intro epsilon hepsilon
-      exact finite_cover_two_tail
+      exact @finite_cover_two_tail (LiveSlot Lphi inp.pack r) _
+        (Finite.of_injective Subtype.val Subtype.val_injective) _
         (fun alpha a b x => radSeq alpha a b x < epsilon)
         (fun alpha => hsmall alpha epsilon hepsilon)
-    · exact finite_cover_two_tail _ hcapLocal
+    · exact @finite_cover_two_tail (LiveSlot Lphi inp.pack r) _
+        (Finite.of_injective Subtype.val Subtype.val_injective) _ _ hcapLocal
   have hq : ∀ alpha : LiveSlot L inp.pack r, 0 < q alpha := by
     intro alpha
     have h := hqdata0 alpha
@@ -344,14 +348,14 @@ theorem MetricCompactBase.exists_stage_seed
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v ∧
           gInf alpha z v v ≤ 2 * ‖v‖ ^ 2 := by
     intro alpha
-    simpa only [Lphi, Ltheta, theta, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hmetric0 alpha
+    with_unfolding_all
+      exact hmetric0 alpha
   have hbranchTheta : ∀ n,
       HasLiveBrFull (I := I) P Ltheta inp.pack r n
         hcomplete hconn aMin q δ := by
     intro n
-    simpa only [Lphi, Ltheta, theta, HasLiveBrFull, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hbranchAll n
+    with_unfolding_all
+      exact hbranchAll n
   have hscaleAll : ∀ n (gamma : LiveSlot L inp.pack r),
       let Rgamma := Ltheta.rInf (gamma.1 : Nat) + 1
       let rho := aMin * inp.decay.mu Rgamma
@@ -372,8 +376,8 @@ theorem MetricCompactBase.exists_stage_seed
     intro n gamma
     have hn := hQAll n
     dsimp only [Q] at hn
-    simpa only [ScaleAt, Lphi, Ltheta, theta, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hn.2 gamma
+    with_unfolding_all
+      exact hn.2 gamma
   let index : Nat → Nat := fun n => Ltheta.φ n
   let Xtheta : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
   let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xtheta.obj n).M :=
@@ -386,9 +390,8 @@ theorem MetricCompactBase.exists_stage_seed
         ∀ n, NormalDiagFence (I := I) (Xtheta.obj n)
           (c alpha n) (q alpha) (e alpha n) := by
     intro alpha
-    simpa only [index, Xtheta, c, Lphi, Ltheta, theta,
-      PointedRiemannianSeq.subseq, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hpair0 alpha
+    with_unfolding_all
+      exact hpair0 alpha
   obtain ⟨_W, _PhiInf, _rootRho, _Phi3, _hroot, _hreadRoot, hjet⟩ :=
     hconvTheta.exists_stage_tail inp aMin haMin hphys h8'
       hradRatio' P L hstable hr theta htheta U C0 C1 aInf Jinf Jbarinf

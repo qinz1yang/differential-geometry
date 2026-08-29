@@ -57,9 +57,9 @@ theorem chartGramDet_jointContMDiffOn {J : Set ℝ} (x₀ : M)
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
-  exact contMDiffOn_finset_prod (fun k _ => hgram (σ k) k)
+  exact contMDiffOn_finsetProd (fun k _ => hgram (σ k) k)
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 theorem chartGramAdj_jointContMDiffOn {J : Set ℝ} (x₀ : M)
@@ -81,9 +81,9 @@ theorem chartGramAdj_jointContMDiffOn {J : Set ℝ} (x₀ : M)
     rw [Matrix.adjugate_apply, Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   by_cases hσk : σ k = j
   · have heq : (fun p : ℝ × M => (chartGramMatrix (I := I) (g p.1) x₀ p.2).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
@@ -285,9 +285,9 @@ private theorem inner_sum_left (g : SmoothRiemannianMetric I M) (x : M)
     (u : TangentSpace I x) :
     g.inner x (∑ m, c m • w m) u = ∑ m, c m * g.inner x (w m) u := by
   classical
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, sum_apply]
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 private theorem inner_sum_right (g : SmoothRiemannianMetric I M) (x : M)
@@ -321,15 +321,17 @@ theorem connChartComp (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
           (chartBasisVecFiber (I := I) α (K 0) x) =
         (metricCov (I := I) g₁) (fun b : M => chartBasisVecFiber (I := I) α (K 1) b) x
             (chartBasisVecFiber (I := I) α (K 0) x) -
-          (metricCov (I := I) g₂) (fun b : M => chartBasisVecFiber (I := I) α (K 1) b) x
+            (metricCov (I := I) g₂) (fun b : M => chartBasisVecFiber (I := I) α (K 1) b) x
             (chartBasisVecFiber (I := I) α (K 0) x) := by
-    have h := congrArg
+    unfold CovariantDerivative.difference
+    exact congrArg
       (fun L : TangentSpace I x →L[ℝ] TangentSpace I x =>
         L (chartBasisVecFiber (I := I) α (K 0) x)) hd
-    simpa using h
   have hLC₁ : metricCov (I := I) g₁ = LeviCivita (I := I) g₁ := rfl
   have hLC₂ : metricCov (I := I) g₂ = LeviCivita (I := I) g₂ := rfl
-  simp only [connectionDifferenceLowAt_apply]
+  change Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) g₁ g₂ x)
+      (fun a : Fin 3 => chartBasisVecFiber (I := I) α (K a) x) = _
+  rw [connectionDifferenceLowAt_apply]
   rw [hd', hLC₁, hLC₂,
     LeviCivita_chartBasisVec_alpha_basis_apply (I := I) g₁ α (K 0) (K 1) hx,
     LeviCivita_chartBasisVec_alpha_basis_apply (I := I) g₂ α (K 0) (K 1) hx,
@@ -359,7 +361,7 @@ theorem rm04ChartComp (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
         chartRiemannTensor (I := I) g₂ α i j k l (extChartAt I α x) *
           chartGramMatrix (I := I) g₁ α x n l := by
   classical
-  haveI : CovariantDerivative.ContMDiffCovariantDerivative
+  have : CovariantDerivative.ContMDiffCovariantDerivative
       (metricCov (I := I) g₂) (∞ : WithTop ℕ∞) := LeviCivita_isContMDiff (I := I) g₂
   rw [CovariantDerivative.riemannCurvature04At_apply_const,
     riemannCurvatureAux_tangentConst_eq_riemannOp (metricCov (I := I) g₂)
@@ -762,7 +764,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem integrable_of_continuous (g : ℝ → SmoothRiemannianMetric I M) (t : ℝ)
     {f : M → ℝ} (hf : Continuous f) :
     Integrable f (riemannianMeasureFamily (I := I) (M := M) g t) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) (g t)) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) (g t)
   rw [riemannianMeasureFamily_def]

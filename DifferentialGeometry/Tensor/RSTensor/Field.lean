@@ -18,7 +18,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -39,7 +39,11 @@ import Mathlib.LinearAlgebra.Contraction
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Multilinear.Flip
@@ -74,7 +78,6 @@ namespace DifferentialGeometry
 namespace Tensor0SBundle
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 
@@ -92,7 +95,7 @@ section ApplyInput
 
 variable {r s : ℕ} [CompleteSpace 𝕜]
 
-noncomputable def model_applyInput_bilinear (r s : ℕ) :
+noncomputable def modelApplyInputBilinear (r s : ℕ) :
     Tensor0SModel r 𝕜 E →L[𝕜]
       (TensorRSModel r s 𝕜 E →L[𝕜] Tensor0SModel s 𝕜 E) :=
   ContinuousLinearMap.flip
@@ -102,7 +105,7 @@ omit [CompleteSpace 𝕜] in
 @[simp]
 theorem model_applyInput_bilinear_apply (r s : ℕ)
     (θ : Tensor0SModel r 𝕜 E) (T : TensorRSModel r s 𝕜 E) :
-    model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s θ T = T θ := rfl
+    modelApplyInputBilinear (𝕜 := 𝕜) (E := E) r s θ T = T θ := rfl
 
 omit [CompleteSpace 𝕜] in
 theorem tensor0SModelAt_applyInput_eq
@@ -110,18 +113,18 @@ theorem tensor0SModelAt_applyInput_eq
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x)
     (θ : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x) :
-    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-    letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+    letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+    letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+    letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
     ((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀) ⟨x, T θ⟩).2 =
       (((trivializationAt (TensorRSModel r s 𝕜 E)
           (fun x => TensorRSSpace r s I x) x₀) ⟨x, T⟩).2)
         (((trivializationAt (Tensor0SModel r 𝕜 E)
           (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ⟩).2) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  let := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ext v
   rw [Tensor0SSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
     (x₀ := x₀) (x := x) s]
@@ -146,7 +149,7 @@ theorem tensor0SModelAt_applyInput_eq
         (R := 𝕜) hx θ
   rw [hθ]
 
-noncomputable def tensorRSField_applyInput_fun
+noncomputable def tensorRSFieldApplyInputFun
     (T : (x : M) ->
       TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x)
     (θ : (x : M) ->
@@ -155,14 +158,14 @@ noncomputable def tensorRSField_applyInput_fun
       Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x :=
   fun x => T x (θ x)
 
-noncomputable def tensorRSField_applyInput
+noncomputable def tensorRSFieldApplyInput
     (T : TensorRSField n r s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (θ : Tensor0SField n r (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
-  refine ⟨tensorRSField_applyInput_fun (𝕜 := 𝕜) (E := E) (H := H)
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  refine ⟨tensorRSFieldApplyInputFun (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) (r := r) (s := s) (fun x => T x) (fun x => θ x), ?_⟩
   intro x₀
   rw [contMDiffAt_section]
@@ -173,13 +176,13 @@ noncomputable def tensorRSField_applyInput
   have hcombine :
       ContMDiffAt I 𝓘(𝕜, Tensor0SModel s 𝕜 E) n
         (fun x : M =>
-          model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s
+          modelApplyInputBilinear (𝕜 := 𝕜) (E := E) r s
             (((trivializationAt (Tensor0SModel r 𝕜 E)
                 (fun x => Tensor0SSpace r I x) x₀) ⟨x, θ x⟩).2)
             (((trivializationAt (TensorRSModel r s 𝕜 E)
                 (fun x => TensorRSSpace r s I x) x₀) ⟨x, T x⟩).2)) x₀ := by
     exact ((contMDiffAt_const
-      (c := model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s)).clm_apply hθ).clm_apply hT
+      (c := modelApplyInputBilinear (𝕜 := 𝕜) (E := E) r s)).clm_apply hθ).clm_apply hT
   refine hcombine.congr_of_eventuallyEq ?_
   filter_upwards
     [(trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds
@@ -194,9 +197,11 @@ theorem tensorRSField_applyInput_apply
     (T : TensorRSField n r s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (θ : Tensor0SField n r (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (x : M) :
-    tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H)
+    tensorRSFieldApplyInput (𝕜 := 𝕜) (E := E) (H := H)
       (I := I) (M := M) n T θ x = T x (θ x) := by
-  simp [tensorRSField_applyInput, tensorRSField_applyInput_fun]
+  unfold tensorRSFieldApplyInput
+  change tensorRSFieldApplyInputFun (fun x => T x) (fun x => θ x) x = T x (θ x)
+  rfl
 
 end ApplyInput
 
@@ -213,9 +218,9 @@ noncomputable def Tensor0SField.one0 [CompleteSpace 𝕜] :
 omit [IsManifold I (n + 1) M] in
 @[simp]
 theorem Tensor0SField.one0_apply [CompleteSpace 𝕜]
-    (x : M) (v : Fin 0 → TangentSpace I x) :
-    Tensor0SSpace.toModel (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
-      (I := I) (M := M) n x) v = (1 : 𝕜) := by
+    (x : M) (v : Fin 0 → E) :
+    Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
+      (I := I) (M := M) n x v = (1 : 𝕜) := by
   exact Tensor0SField.fromScalarField_apply n (fun _ : M => (1 : 𝕜))
     contMDiff_const x v
 
@@ -225,7 +230,6 @@ end Tensor0SBundle
 namespace Tensor0SBundle
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 

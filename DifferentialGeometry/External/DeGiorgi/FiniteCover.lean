@@ -44,7 +44,7 @@ private theorem volumeReal_ball_eq
     volume.real (Metric.ball x r) =
       r ^ d * volume.real (Metric.ball (0 : EuclideanSpace ℝ (Fin d)) 1) := by
   have hdpos : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
-  haveI : Nontrivial (EuclideanSpace ℝ (Fin d)) :=
+  have : Nontrivial (EuclideanSpace ℝ (Fin d)) :=
     Module.nontrivial_of_finrank_pos (R := ℝ) (M := EuclideanSpace ℝ (Fin d)) <| by
       simpa [finrank_euclideanSpace] using hdpos
   rw [← Measure.addHaar_real_closedBall_eq_addHaar_real_ball (μ := volume) x r,

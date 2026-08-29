@@ -25,7 +25,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -111,8 +110,8 @@ private lemma lrTcell_bfgw (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {Λ0 : ℝ}
       Combinatorics.antidiagonalTupleGrid_le_boundedFactorGridWindow b hb hnK (by omega)
     nlinarith [le_trans hsingle hgw, hΛ0, hW_nn]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
@@ -137,21 +136,21 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
   have hterms : ∀ k ∈ Finset.range 3, 0 ≤
       (letI : Bundle.RiemannianBundle
           (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 k
           (convexPerturbation (I := I) g₀ T 0 1)).toSection x‖) := by
     intro k _
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
     exact norm_nonneg _
   have h0 := le_trans (Finset.single_le_sum hterms
     (show (0 : ℕ) ∈ Finset.range 3 from Finset.mem_range.mpr (by norm_num))) hsum
   have hcp1 : convexPerturbation (I := I) g₀ T 0 1 = T := by
     rw [convexPerturbation, smul_zero, zero_add, one_smul]
   rw [hcp1, iteratedCovGrad_zero] at h0
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   have h0' : ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ≤ Csob * R := h0
   have hb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (T.toSection x) =
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 :=
@@ -160,8 +159,8 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
     norm_nonneg _
   nlinarith only [h0', hb, hnn, mul_nonneg hCsob_nn hR]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
@@ -187,21 +186,21 @@ theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetri
   have hterms : ∀ k ∈ Finset.range 3, 0 ≤
       (letI : Bundle.RiemannianBundle
           (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 k
           (convexPerturbation (I := I) g₀ T 0 1)).toSection x‖) := by
     intro k _
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
     exact norm_nonneg _
   have h1 := le_trans (Finset.single_le_sum hterms
     (show (1 : ℕ) ∈ Finset.range 3 from Finset.mem_range.mpr (by norm_num))) hsum
   have hcp1 : convexPerturbation (I := I) g₀ T 0 1 = T := by
     rw [convexPerturbation, smul_zero, zero_add, one_smul]
   rw [hcp1] at h1
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   have h1' : ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ ≤ Csob * R := h1
   have hb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x

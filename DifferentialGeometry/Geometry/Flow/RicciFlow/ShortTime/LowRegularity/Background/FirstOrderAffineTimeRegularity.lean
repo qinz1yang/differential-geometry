@@ -91,7 +91,7 @@ theorem lowerScaleFirstOrderActionThirdToSecondOrderBackground_ball_bound
   have hclosed :
       IsClosed {w : metricThirdOrderSobolev (I := I) (M := M) g |
         R + 1 ≤ ‖w‖ ∨ ‖F w‖ ≤ K₀ * ‖w‖ + ‖F 0‖} := by
-    simpa only [Set.setOf_or] using
+    simpa only [Set.ofPred_or] using
       (isClosed_le continuous_const continuous_norm).union
         (isClosed_le hFnorm hright)
   have hall : R + 1 ≤ ‖v‖ ∨ ‖F v‖ ≤ K₀ * ‖v‖ + ‖F 0‖ := by
@@ -179,7 +179,7 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrderBackground_ball_bound
   have hclosed :
       IsClosed {w : metricThirdOrderSobolev (I := I) (M := M) g |
         R + 1 ≤ ‖w‖ ∨ ‖F w‖ ≤ K₀ * ‖w‖ + ‖F 0‖} := by
-    simpa only [Set.setOf_or] using
+    simpa only [Set.ofPred_or] using
       (isClosed_le continuous_const continuous_norm).union
         (isClosed_le hFnorm hright)
   have hall : R + 1 ≤ ‖v‖ ∨ ‖F v‖ ≤ K₀ * ‖v‖ + ‖F 0‖ := by
@@ -341,12 +341,22 @@ theorem highAffineFirstOrderActionBackground_data
   have hmeas : AEStronglyMeasurable
       (highAffineFirstOrderActionBackground (I := I) (M := M)
         g hρ hδ0 hδ_le hreal u) (timeMeasure T) := by
-    simpa only [highAffineFirstOrderActionBackground] using
+    have hraw :=
       (ContinuousLinearMap.compL ℝ
         (metricThirdOrderSobolev (I := I) (M := M) g)
         (metricThirdOrderSobolev (I := I) (M := M) g)
         (metricH2 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hA1 hR3
+    with_unfolding_all
+      change @AEStronglyMeasurable ℝ
+        (metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ]
+          metricH2 (I := I) (M := M) g)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        Real.measurableSpace Real.measurableSpace
+        (highAffineFirstOrderActionBackground (I := I) (M := M)
+          g hρ hδ0 hδ_le hreal u) (timeMeasure T)
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   have hbd : ∀ᵐ t ∂timeMeasure T,
       ‖highAffineFirstOrderActionBackground (I := I) (M := M)
         g hρ hδ0 hδ_le hreal u t‖ ≤ C := by
@@ -489,12 +499,22 @@ theorem lowAffineFirstOrderActionBackground_data
   have hmeas : AEStronglyMeasurable
       (lowAffineFirstOrderActionBackground (I := I) (M := M)
         g hρ hδ0 hδ_le hreal u) (timeMeasure T) := by
-    simpa only [lowAffineFirstOrderActionBackground] using
+    have hraw :=
       (ContinuousLinearMap.compL ℝ
         (metricH2 (I := I) (M := M) g)
         (metricH2 (I := I) (M := M) g)
         (metricH1 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hA1 hR2
+    with_unfolding_all
+      change @AEStronglyMeasurable ℝ
+        (metricH2 (I := I) (M := M) g →L[ℝ]
+          metricH1 (I := I) (M := M) g)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        Real.measurableSpace Real.measurableSpace
+        (lowAffineFirstOrderActionBackground (I := I) (M := M)
+          g hρ hδ0 hδ_le hreal u) (timeMeasure T)
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   have hbd : ∀ᵐ t ∂timeMeasure T,
       ‖lowAffineFirstOrderActionBackground (I := I) (M := M)
         g hρ hδ0 hδ_le hreal u t‖ ≤ C := by

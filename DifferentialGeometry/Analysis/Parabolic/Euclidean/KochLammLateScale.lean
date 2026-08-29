@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateMass
 
 noncomputable section
 
+
 open MeasureTheory Real
 open scoped RealInnerProductSpace
 

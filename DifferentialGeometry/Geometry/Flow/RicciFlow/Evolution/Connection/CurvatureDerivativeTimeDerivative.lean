@@ -99,11 +99,11 @@ theorem nablaKRm_timeDeriv_of_solution
         (m : Fin (4 + k) -> CoordinateIdx (𝕜 := Real) E),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
               (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k s y m) x₀
             (coordinateFrameAt (I := I) x₀ d x₀))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun y : M => iteratedRmCompDt (I := I) (coordinateFrameAt (I := I) x₀)
             (solutionChristoffelComponents (I := I) S x₀)
             (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)

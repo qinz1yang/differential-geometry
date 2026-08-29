@@ -8,15 +8,19 @@ namespace DifferentialGeometry.Analysis.InnerProductSpace
 section
 
 variable {E F : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [TopologicalSpace E] [AddCommGroup E] [ContinuousAdd E] [Module ℝ E]
+  [ContinuousConstSMul ℝ E]
+  [TopologicalSpace F] [AddCommGroup F] [ContinuousAdd F] [Module ℝ F]
+  [ContinuousConstSMul ℝ F]
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 theorem ProperCone.coe_map_continuousLinearEquiv
     (C : ProperCone ℝ E) (e : E ≃L[ℝ] F) :
     (C.map e.toContinuousLinearMap : Set F) = e '' C := by
   change closure (e '' (C : Set E)) = e '' C
   exact (e.toHomeomorph.isClosedMap (C : Set E) C.isClosed).closure_eq
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 theorem ProperCone.mem_map_continuousLinearEquiv_iff
     (C : ProperCone ℝ E) (e : E ≃L[ℝ] F) (y : F) :
     y ∈ C.map e.toContinuousLinearMap ↔ e.symm y ∈ C := by
@@ -51,7 +55,8 @@ theorem LinearIsometryEquiv.mapsTo_innerDual
   intro y hy
   change ∀ ⦃x : F⦄, x ∈ e '' C → 0 ≤ ⟪x, e y⟫
   rintro _ ⟨x, hx, rfl⟩
-  simpa only [e.inner_map_map] using hy hx
+  rw [e.inner_map_map]
+  with_unfolding_all exact hy hx
 
 theorem LinearIsometryEquiv.image_innerDual
     (e : E ≃ₗᵢ[ℝ] F) (C : Set E) :

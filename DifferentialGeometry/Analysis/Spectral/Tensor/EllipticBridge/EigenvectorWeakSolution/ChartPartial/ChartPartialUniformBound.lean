@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -273,8 +272,8 @@ private lemma euclidPartial_tensorChartComponent_eq_leibniz
     rw [h_eqf.fderiv_eq]
     exact fderiv_mul hρ_diff hw_diff
   rw [euclidPartial_def, h_fderiv,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, smul_eq_mul,
+    add_apply, smul_apply,
+    smul_apply, smul_eq_mul, smul_eq_mul,
     euclidPartial_def, euclidPartial_def]
   ring
 
@@ -1014,10 +1013,10 @@ private theorem exists_const_eLpNorm_leibnizCrossTerm_le_uniform
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         ENNReal.ofReal C_cut * (‖S‖₊ : ℝ≥0∞) := by
     have hb := hC_cut S.toCcTensor Idx Jdx
-    refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le _))
+    refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le))
     rw [show ((‖S‖₊ : ℝ≥0∞)) = ENNReal.ofReal ‖S‖ from by
       rw [show ((‖S‖₊ : ℝ≥0∞)) = ‖S‖ₑ from (enorm_eq_nnnorm S).symm,
-        ← ofReal_norm_eq_enorm S]]
+        ← ofReal_norm S]]
     exact ENNReal.ofReal_le_ofReal
       (SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) S)
   calc eLpNorm (leibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α
@@ -1172,7 +1171,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_tensorChartComponent_le_unif
       exact (h_cross_const k).choose_spec.2 S Idx Jdx
     refine (Finset.sum_le_sum (fun k _ => h_each k)).trans ?_
     rw [← Finset.sum_mul]
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     rw [hC_cross_def]
     rw [ENNReal.ofReal_sum_of_nonneg (fun k _ => (h_cross_const k).choose_spec.1)]
   calc (∑ k : Fin n,

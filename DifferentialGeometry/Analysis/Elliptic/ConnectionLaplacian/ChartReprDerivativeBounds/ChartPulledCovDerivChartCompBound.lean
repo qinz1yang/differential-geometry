@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -38,14 +37,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 lemma reprNorm_le_sum_components
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) (b : M) :
-    ‖tensorRSChartE_section_repr (I := I) r s α
+    ‖tensorRSChartESectionRepr (I := I) r s α
         (fun y : M => T.toSection y) b‖ ≤
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
           |tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx b| *
             tensorChartBasisNormConstant (E := E) r s := by
   classical
-  set R : TensorRSModel r s ℝ E := tensorRSChartE_section_repr (I := I)
+  set R : TensorRSModel r s ℝ E := tensorRSChartESectionRepr (I := I)
     r s α (fun y : M => T.toSection y) b with hR_def
   have hR_recover : R =
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -126,7 +125,7 @@ lemma fderiv_repr_opNorm_le_sum_fderiv_components
     (T : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source) :
     ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
         (extChartAt I α b)‖ ≤
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -136,7 +135,7 @@ lemma fderiv_repr_opNorm_le_sum_fderiv_components
             ‖tensorChartBasisElement (E := E) r s Idx Jdx‖ := by
   classical
   have hψ_eq :
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) =
         fun y : E =>
           ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -146,7 +145,7 @@ lemma fderiv_repr_opNorm_le_sum_fderiv_components
                 tensorChartBasisElement (E := E) r s Idx Jdx := by
     funext y
     set bb := (extChartAt I α).symm y
-    set R : TensorRSModel r s ℝ E := tensorRSChartE_section_repr (I := I)
+    set R : TensorRSModel r s ℝ E := tensorRSChartESectionRepr (I := I)
       r s α (fun z : M => T.toSection z) bb
     have hR_recover : R =
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),

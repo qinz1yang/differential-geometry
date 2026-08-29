@@ -69,7 +69,8 @@ lemma exists_uniform_orbit_in_inner_ball
     have := ContinuousAt.comp (f := fun w : E × ℝ => (((x₀, w.1) : E × E), w.2))
       (g := Φ) (x := ((0 : E), (0 : ℝ))) ?_ h1_at_explicit
     · exact this
-    · rw [h1_val]; exact hΦ_cont
+    · change ContinuousAt Φ (((x₀, (0 : E)), (0 : ℝ)))
+      exact hΦ_cont
   have h_inner_nhds : Metric.ball ((x₀, (0 : E)) : E × E) b.rIn ∈
       𝓝 ((x₀, (0 : E)) : E × E) :=
     Metric.ball_mem_nhds _ b.rIn_pos

@@ -50,7 +50,7 @@ private lemma wkpNorm_chosenWeakPartial_le_succ
   refine le_trans ?_ le_add_self
   exact Finset.single_le_sum
     (f := fun j : Fin d => iteratedWeakSobolevNorm (d := d) k 2 (chosenWeakPartial' 2 j u Ω) Ω)
-    (fun j _ => zero_le _) (Finset.mem_univ i)
+    (fun j _ => zero_le) (Finset.mem_univ i)
 
 omit [NeZero d] in
 theorem wkpNorm_smul_globalSmooth_uniform
@@ -73,7 +73,7 @@ theorem wkpNorm_smul_globalSmooth_uniform
       rw [wkpNorm_zero (d := d), wkpNorm_zero (d := d)]
       refine (eLpNorm_eta_mul_le (d := d) hΩ h0 u).trans ?_
       exact mul_le_mul_of_nonneg_right
-        (ENNReal.ofReal_le_ofReal (by linarith)) (zero_le _)
+        (ENNReal.ofReal_le_ofReal (by linarith)) (zero_le)
   | succ k ih =>
       have hbound_k : ∀ j ≤ k, ∀ x : EE, ‖iteratedFDeriv ℝ j η x‖ ≤ C :=
         fun j hj x => hbound j (hj.trans (Nat.le_succ _)) x
@@ -111,7 +111,7 @@ theorem wkpNorm_smul_globalSmooth_uniform
       have hLp_le : eLpNorm (fun x => η x * u x) 2 (volume.restrict Ω) ≤
           ENNReal.ofReal C * D := by
         refine (eLpNorm_eta_mul_le (d := d) hΩ h0 u).trans ?_
-        refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+        refine mul_le_mul_of_nonneg_left ?_ (zero_le)
         rw [hD_def, wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) k 2 Ω u]
         exact le_self_add
       have hpartial_le : ∀ i : Fin d,
@@ -144,12 +144,12 @@ theorem wkpNorm_smul_globalSmooth_uniform
             ENNReal.ofReal Kη * D := by
           refine (hKη hΩ h_du_mem).trans ?_
           exact mul_le_mul_of_nonneg_left
-            (wkpNorm_chosenWeakPartial_le_succ (d := d) k u i) (zero_le _)
+            (wkpNorm_chosenWeakPartial_le_succ (d := d) k u i) (zero_le)
         have hB : iteratedWeakSobolevNorm (d := d) k 2
             (fun x => (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) Ω ≤
             ENNReal.ofReal (Ki i) * D := by
           refine (hKi i hΩ hu_k).trans ?_
-          refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+          refine mul_le_mul_of_nonneg_left ?_ (zero_le)
           rw [hD_def]
           exact wkpNorm_mono_order (d := d) (Nat.le_succ k) u Ω
         refine (add_le_add hA hB).trans ?_
@@ -289,7 +289,9 @@ lemma euclidPartial_contDiff {v : EuclN → ℝ} (hv : ContDiff ℝ ∞ v)
     (l : Fin dimE) :
     ContDiff ℝ ∞ (euclidPartial (E := E) l v) := by
   have h := contDiff_partial_eta (d := dimE) (by simpa using hv) l
-  simpa [euclidPartial] using h
+  change ContDiff ℝ ∞
+    (fun x => fderiv ℝ v x (EuclideanSpace.single l (1 : ℝ)))
+  exact h
 
 omit [FiniteDimensional ℝ E] [NeZero dimE] in
 private lemma euclidPartial_eq_zero_of_notMem_tsupport {v : EuclN → ℝ}
@@ -302,7 +304,7 @@ private lemma euclidPartial_eq_zero_of_notMem_tsupport {v : EuclN → ℝ}
     Filter.eventually_of_mem hy_nhds
       (fun y' hy' => image_eq_zero_of_notMem_tsupport hy')
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hv_zero_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero dimE] in
 lemma euclidPartial_tsupport_subset {v : EuclN → ℝ}
@@ -440,9 +442,9 @@ private lemma exists_wkpNorm_chartCoeffSum_le (α : M) {K : Set EuclN}
     intro a ha
     refine ((hKa a ha (hv_smooth a ha) (hv_cpt a ha) (hv_K a ha)
       hΩ''_open hΩ''_target).2).trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact Finset.single_le_sum
-      (f := fun b => iteratedWeakSobolevNorm (d := dimE) m 2 (v b) Ω'') (fun b _ => zero_le _) ha
+      (f := fun b => iteratedWeakSobolevNorm (d := dimE) m 2 (v b) Ω'') (fun b _ => zero_le) ha
   refine (wkpNorm_finset_sum_le (d := dimE) hΩ''_open S _ h_term_mem
     Ka (fun a ha => hKa_nn a ha) D h_term_le).trans ?_
   rw [hD_def]
@@ -470,7 +472,7 @@ lemma exists_wkpNorm_chartCoeffSum_bddBy (α : M) {K : Set EuclN}
   refine ⟨h_mem, h_le.trans ?_⟩
   have hsum : (∑ a ∈ S, iteratedWeakSobolevNorm (d := dimE) m 2 (v a) Ω'') ≤ S.card • G :=
     Finset.sum_le_card_nsmul S _ G hG
-  refine (mul_le_mul_of_nonneg_left hsum (zero_le _)).trans ?_
+  refine (mul_le_mul_of_nonneg_left hsum (zero_le)).trans ?_
   rw [nsmul_eq_mul, ← mul_assoc, ENNReal.ofReal_mul hKc_nn, ENNReal.ofReal_natCast]
 
 omit [FiniteDimensional ℝ E] [NeZero dimE] in

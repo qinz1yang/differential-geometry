@@ -41,7 +41,9 @@ omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
 noncomputable def framedExpDiffeo (g : SmoothRiemannianMetric I M) (p : M) :
     PartialDiffeomorph (modelWithCornersSelf Real E) I E M 1 := by
   let Φ := expMapDiffeo (I := I) g p
-  let L := normalFrame (I := I) g p
+  let L : E ≃L[Real] E :=
+    (normalFrame (I := I) g p).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p)
   exact
     { toPartialEquiv :=
         { toFun := fun z => Φ (L z)
@@ -82,7 +84,9 @@ noncomputable def framedChartAt (g : SmoothRiemannianMetric I M) (p : M) :
 omit [NeZero (Module.finrank Real E)] in
 @[simp] theorem framedExp_source (g : SmoothRiemannianMetric I M) (p : M) :
     (framedExpDiffeo (I := I) g p).source =
-      normalFrame (I := I) g p ⁻¹' (expMapDiffeo (I := I) g p).source := by
+      (fun z => tangentSpaceModelContinuousLinearEquiv (I := I) p
+        (normalFrame (I := I) g p z)) ⁻¹'
+        (expMapDiffeo (I := I) g p).source := by
   rfl
 
 omit [NeZero (Module.finrank Real E)] in
@@ -95,7 +99,9 @@ omit [NeZero (Module.finrank Real E)] in
 @[simp] theorem framedExp_apply (g : SmoothRiemannianMetric I M) (p : M)
     (z : E) :
     framedExpDiffeo (I := I) g p z =
-      expMapDiffeo (I := I) g p (normalFrame (I := I) g p z) := by
+      expMapDiffeo (I := I) g p
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p z)) := by
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
@@ -112,14 +118,19 @@ omit [NeZero (Module.finrank Real E)] in
 @[simp] theorem framedChart_apply (g : SmoothRiemannianMetric I M) (p : M)
     (q : M) :
     framedChartAt (I := I) g p q =
-      (normalFrame (I := I) g p).symm (normalChartAt (I := I) g p q) := by
+      (normalFrame (I := I) g p).symm
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
+          (normalChartAt (I := I) g p q)) := by
   rfl
 
 omit [NeZero (Module.finrank Real E)] in
 theorem zero_mem_framedExp_source (g : SmoothRiemannianMetric I M) (p : M) :
     (0 : E) ∈ (framedExpDiffeo (I := I) g p).source := by
   rw [framedExp_source]
-  simpa using zero_mem_expMapDiffeo_source (I := I) g p
+  change tangentSpaceModelContinuousLinearEquiv (I := I) p
+      (normalFrame (I := I) g p 0) ∈ (expMapDiffeo (I := I) g p).source
+  rw [map_zero, map_zero]
+  exact zero_mem_expMapDiffeo_source (I := I) g p
 
 omit [NeZero (Module.finrank Real E)] in
 theorem framedExp_zero (g : SmoothRiemannianMetric I M) (p : M) :
@@ -131,7 +142,7 @@ omit [NeZero (Module.finrank Real E)] in
 theorem framedChart_centre (g : SmoothRiemannianMetric I M) (p : M) :
     framedChartAt (I := I) g p p = (0 : E) := by
   rw [framedChart_apply, normalChartAt_centre]
-  exact map_zero (normalFrame (I := I) g p).symm
+  rw [map_zero, map_zero]
 
 noncomputable def framedTransition (g : SmoothRiemannianMetric I M) (p q : M) :
     E -> E :=
@@ -150,8 +161,12 @@ theorem framedExp_eq_expMap (g : SmoothRiemannianMetric I M) (p : M)
     framedExpDiffeo (I := I) g p z =
       framedExpMap (I := I) g p z := by
   rw [framedExpMap_apply, framedExp_apply]
-  exact expMapDiffeo_apply_eq (I := I) g p (by
-    simpa only [framedExp_source] using hz)
+  rw [expMapDiffeo_apply_eq (I := I) g p (by
+    rw [framedExp_source] at hz
+    exact hz)]
+  exact congrArg (expMap (I := I) g p)
+    (tangentSpaceModelContinuousLinearEquiv_apply (I := I) p
+      (normalFrame (I := I) g p z))
 
 omit [NeZero (Module.finrank Real E)] in
 theorem mfderiv_framedExp (g : SmoothRiemannianMetric I M) (p : M)
@@ -160,13 +175,18 @@ theorem mfderiv_framedExp (g : SmoothRiemannianMetric I M) (p : M)
         (fun w : E => framedExpDiffeo (I := I) g p w) z =
       (mfderiv (modelWithCornersSelf Real E) I
         (fun u : E => expMapDiffeo (I := I) g p u)
-        (normalFrame (I := I) g p z)).comp
-          (normalFrame (I := I) g p).toContinuousLinearMap := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p
+          (normalFrame (I := I) g p z))).comp
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).toContinuousLinearMap.comp
+            (normalFrame (I := I) g p).toContinuousLinearMap) := by
   let Φ := expMapDiffeo (I := I) g p
-  let L := normalFrame (I := I) g p
+  let L : E ≃L[Real] E :=
+    (normalFrame (I := I) g p).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p)
   let L0 : E →L[Real] E := L.toContinuousLinearMap
   have hzraw : L0 z ∈ Φ.source := by
-    simpa only [L0, L, Φ, framedExp_source] using hz
+    rw [framedExp_source] at hz
+    exact hz
   have hΦ : MDifferentiableAt (modelWithCornersSelf Real E) I
       (fun u : E => Φ u) (L0 z) :=
     Φ.mdifferentiableAt one_ne_zero hzraw
@@ -179,7 +199,17 @@ theorem mfderiv_framedExp (g : SmoothRiemannianMetric I M) (p : M)
       (modelWithCornersSelf Real E) (fun w : E => L0 w) z = L0 := by
     rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
   rw [hLderiv] at hchain
-  simpa only [Function.comp_apply, framedExp_apply, Φ, L0, L] using hchain
+  have hfun : (fun w : E => framedExpDiffeo (I := I) g p w) =
+      fun w : E => Φ (L0 w) := by
+    funext w
+    exact framedExp_apply (I := I) g p w
+  rw [hfun]
+  change @Eq (E →L[Real] E) _ _ at hchain ⊢
+  change @Eq (E →L[Real] E)
+    (mfderiv (modelWithCornersSelf Real E) I (fun w : E => Φ (L0 w)) z)
+    ((mfderiv (modelWithCornersSelf Real E) I (fun u : E => Φ u) (L0 z)).comp L0)
+      at hchain ⊢
+  exact hchain
 
 noncomputable def framedMetric (g : SmoothRiemannianMetric I M) (p : M) :
     E -> E →L[Real] E →L[Real] Real :=
@@ -199,8 +229,7 @@ theorem framedMetric_apply (g : SmoothRiemannianMetric I M) (p : M)
           (fun q : E => framedExpDiffeo (I := I) g p q) z v)
         (mfderiv (modelWithCornersSelf Real E) I
           (fun q : E => framedExpDiffeo (I := I) g p q) z w) := by
-  simp only [framedMetric, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.precomp_apply]
+  simp only [framedMetric, ContinuousLinearMap.comp_apply]
   rfl
 
 omit [NeZero (Module.finrank Real E)] in
@@ -215,14 +244,30 @@ omit [NeZero (Module.finrank Real E)] in
     g.inner p
         (mfderiv (modelWithCornersSelf Real E) I
           (fun u : E => expMapDiffeo (I := I) g p u) 0
-          (normalFrame (I := I) g p v))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p v)))
         (mfderiv (modelWithCornersSelf Real E) I
           (fun u : E => expMapDiffeo (I := I) g p u) 0
-          (normalFrame (I := I) g p w)) =
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p
+            (normalFrame (I := I) g p w))) =
       g.inner p (normalFrame (I := I) g p v)
         (normalFrame (I := I) g p w) :=
-      normalChartAt_metric_pullback_at_origin (I := I) g p
-        (normalFrame (I := I) g p v) (normalFrame (I := I) g p w)
+      by
+        change g.inner p
+            (mfderiv (modelWithCornersSelf Real E) I
+              (normalChartAt (I := I) g p).symm 0
+              (tangentSpaceModelContinuousLinearEquiv (I := I) p
+                (normalFrame (I := I) g p v)))
+            (mfderiv (modelWithCornersSelf Real E) I
+              (normalChartAt (I := I) g p).symm 0
+              (tangentSpaceModelContinuousLinearEquiv (I := I) p
+                (normalFrame (I := I) g p w))) = _
+        simpa only [tangentSpaceModelContinuousLinearEquiv_apply] using
+          normalChartAt_metric_pullback_at_origin (I := I) g p
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p v))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p
+              (normalFrame (I := I) g p w))
     _ = Inner.inner Real v w := normalFrame_inner (I := I) g p v w
     _ = (innerSL Real : E →L[Real] E →L[Real] Real) v w := rfl
 

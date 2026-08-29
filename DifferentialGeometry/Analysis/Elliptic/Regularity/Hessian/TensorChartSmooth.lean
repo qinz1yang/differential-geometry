@@ -104,7 +104,7 @@ theorem chartPushedChristoffelCorrection_continuousOn
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   unfold chartPushedChristoffelCorrection
-  refine continuousOn_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuousOn_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun m _ => ?_)
   have h_toE_cont : Continuous (fun y : EuclN => (toEuclidean (E := E)).symm y) :=
     (toEuclidean (E := E)).symm.continuous
@@ -258,13 +258,13 @@ theorem smoothTensorPairingChart_continuousOn
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   unfold smoothTensorPairingChart
-  refine continuousOn_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuousOn_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun i _ => ?_)
-  refine continuousOn_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuousOn_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun j _ => ?_)
-  refine continuousOn_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuousOn_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun k _ => ?_)
-  refine continuousOn_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuousOn_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun l _ => ?_)
   have h_G_ik : ContinuousOn (invGramOnEuclid (I := I) g α i k)
       (chartTargetEuclid (I := I) (M := M) α) :=
@@ -500,13 +500,13 @@ theorem cutoffSmoothTensorPairingChart_continuous
     Continuous (cutoffSmoothTensorPairingChart (I := I) (M := M) g α φ v) := by
   classical
   unfold cutoffSmoothTensorPairingChart
-  refine continuous_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuous_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun i _ => ?_)
-  refine continuous_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuous_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun j _ => ?_)
-  refine continuous_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuous_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun k _ => ?_)
-  refine continuous_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  refine continuous_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun l _ => ?_)
   have h_G_ik : Continuous (cutoffInvGram (I := I) (M := M) g α i k) :=
     cutoffInvGram_continuous (I := I) (M := M) g α i k

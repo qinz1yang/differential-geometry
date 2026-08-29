@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.LocalFrameInverse
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -96,12 +97,12 @@ theorem isSoln_timeRestrict
         (I := I) (M := M) hS.rm04Cont hcar
   ricciNormSpace := by
     intro t ht x
-    simpa [ricciNorm, SolutionOn.timeRestrict, SolutionOn.family, SolutionOn.ricci] using
-      hS.ricciNormSpace t (hcar ht) x
+    change MDiffAt (ricciNorm (I := I) S t) x
+    exact hS.ricciNormSpace t (hcar ht) x
   ricciNormGrad := by
     intro t ht x
-    simpa [ricciNorm, SolutionOn.timeRestrict, SolutionOn.family, SolutionOn.ricci] using
-      hS.ricciNormGrad t (hcar ht) x
+    have h := hS.ricciNormGrad t (hcar ht) x
+    exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [SigmaCompactSpace M] in
 theorem isSoln_tailRestrict

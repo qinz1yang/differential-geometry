@@ -51,7 +51,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   MixedSection.toMultilinearSection_fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
     (E := (TangentSpace I : M → Type _)) ∞ A
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_ccOfField_eq (g : SmoothRiemannianMetric I M) (s j : ℕ)
     (A : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ s)
     (x : M) :
@@ -82,7 +82,6 @@ private theorem rs0_apply_eq_smul {s : ℕ} (x : M)
   rw [map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem cc_ext_unit (g : SmoothRiemannianMetric I M) {s : ℕ}
     (W₁ W₂ : SmoothCcTensor g 0 s)
@@ -99,7 +98,7 @@ theorem cc_ext_unit (g : SmoothRiemannianMetric I M) {s : ℕ}
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W₂.toSection x) D]
   exact congrArg _ (h x)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem iterCovGrad_ccOfField (g : SmoothRiemannianMetric I M) (s j : ℕ)
     (A : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ s) :
     iteratedCovGrad (I := I) g 0 s j (ccOfField (I := I) g s A) =
@@ -126,7 +125,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
       metricRm04 (I := I) (M := M) g :=
   ccOfField_unit (I := I) g 4 (metricRm04 (I := I) (M := M) g)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_rmSection_eq (g : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
         ((iteratedCovGrad (I := I) g 0 4 j (rmSection (I := I) (M := M) g)).toSection x) =
@@ -134,7 +133,7 @@ theorem riemannianFiberNormSq_rmSection_eq (g : SmoothRiemannianMetric I M) (j :
         (iterCov (I := I) g 4 (metricRm04 (I := I) (M := M) g) j x) :=
   riemannianFiberNormSq_ccOfField_eq (I := I) g 4 j (metricRm04 (I := I) (M := M) g) x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem iterCovGrad_rmSection (g : SmoothRiemannianMetric I M) (a : ℕ) :
     iteratedCovGrad (I := I) g 0 4 a (rmSection (I := I) (M := M) g) =
       ccOfField (I := I) g (4 + a)
@@ -145,7 +144,7 @@ private theorem sqLeOfSqrtLe {a K : ℝ} (ha : 0 ≤ a) (h : Real.sqrt a ≤ K) 
     a ≤ K ^ 2 := by
   nlinarith [Real.sq_sqrt ha, Real.sqrt_nonneg a]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_rmJetSup (g : SmoothRiemannianMetric I M) (a : ℕ) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 (4 + a) x
@@ -157,7 +156,7 @@ theorem exists_rmJetSup (g : SmoothRiemannianMetric I M) (a : ℕ) :
   rw [riemannianFiberNormSq_rmSection_eq (I := I) g a x]
   exact hK x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_rmJetSups (g : SmoothRiemannianMetric I M) (a : ℕ) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ j ≤ a, ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
@@ -180,6 +179,7 @@ theorem exists_rmJetSups (g : SmoothRiemannianMetric I M) (a : ℕ) :
         exact le_trans (hK j (Nat.lt_succ_iff.mp hlt) x) hmono
 
 
+omit [SigmaCompactSpace M] in
 theorem uniformRmSecSup
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),

@@ -50,7 +50,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpHalfSpace
         (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p)))
         (volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace Ω)) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p) f Ω := by
   have hΩ_int_open :
@@ -74,7 +74,7 @@ theorem eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
         (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p)))
         (volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace Ω)) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p) f Ω := by
   have hΩ_int_open :
@@ -127,7 +127,7 @@ theorem chartTargetEuclid_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
         (volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) α))) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p) f
           (chartTargetEuclid (n := n) (M := M) α) :=
@@ -152,7 +152,7 @@ theorem chartTargetEuclid_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkp
         (volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) α))) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p) f
           (chartTargetEuclid (n := n) (M := M) α) :=
@@ -187,7 +187,7 @@ theorem chartPushed_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
         (volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) α))) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p)
           (chartPushed (n := n) (M := M)
@@ -220,7 +220,7 @@ theorem chartPushed_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpChart
         (volume.restrict
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
             (chartTargetEuclid (n := n) (M := M) α))) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) 1 (ENNReal.ofReal p)
           (chartPushed (n := n) (M := M)
@@ -260,10 +260,10 @@ theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
           (volume.restrict
             (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
               (chartTargetEuclid (n := n) (M := M) α))) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) *
         wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u := by
   classical
-  set C : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.C_gns n p) * (n : ℝ≥0∞) with hC_def
+  set C : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.CGns n p) * (n : ℝ≥0∞) with hC_def
   have h_per : ∀ α : M,
       eLpNorm
           (chartPushed (n := n) (M := M)

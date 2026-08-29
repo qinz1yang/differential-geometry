@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.FrozenFramePureRC
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldContractionBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
+
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
@@ -83,7 +84,6 @@ lemma inner_ricEndoRaisedFib (g : SmoothRiemannianMetric I M) (x : M)
   rw [ricEndoRaisedFib_apply]
   exact inner_metricSharp (I := I) g x (ricciTensor (I := I) g x v).toLinearMap w
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
@@ -134,59 +134,56 @@ theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
     TotalSpace.mk' E x (ricEndoRaisedFib (I := I) g x (Y x))
   rw [ricEndoRaisedFib_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 def ricSlotOpFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
     { toFun := fun D =>
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
-          (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) D).comp
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+          (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) D).comp
             (ricEndoRaisedFib (I := I) g x))
       map_add' := fun D₁ D₂ => by
-        rw [map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x),
+        rw [map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x),
           ContinuousLinearMap.add_comp,
-          map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
+          map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
       map_smul' := fun c D => by
-        rw [map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x),
+        rw [map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x),
           ContinuousLinearMap.smul_comp,
-          map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
+          map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
         rfl }
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 @[simp] lemma ricSlotOpFib_apply (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) :
     ricSlotOpFib (I := I) (M := M) g s x D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
-        (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) D).comp
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+        (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) D).comp
           (ricEndoRaisedFib (I := I) g x)) := by
   rw [ricSlotOpFib, LinearMap.coe_toContinuousLinearMap']
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 lemma ricSlotOpFib_apply_eval (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
-    (D : Tensor0SSpace (s + 1) I x) (v0 : E) (vs : Fin s → E) :
-    Tensor0SSpace.toModel (ricSlotOpFib (I := I) (M := M) g s x D) (Fin.cons v0 vs) =
-      Tensor0SSpace.toModel
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) D
+    (D : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x)
+    (vs : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval (ricSlotOpFib (I := I) (M := M) g s x D) (Fin.cons v0 vs) =
+      Tensor0SSpace.eval
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) D
           (ricEndoRaisedFib (I := I) g x v0)) vs := by
   rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s)
     (ricSlotOpFib (I := I) (M := M) g s x D) v0 vs]
-  have hcurry : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+  have hcurry : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
       (ricSlotOpFib (I := I) (M := M) g s x D) =
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) D).comp
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) D).comp
         (ricEndoRaisedFib (I := I) g x) := by
     rw [ricSlotOpFib_apply, ContinuousLinearEquiv.apply_symm_apply]
   rw [hcurry]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -205,8 +202,8 @@ theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
       (ricSlotOpFib (I := I) (M := M) g s x (Y x))) =
       (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SSpace (s + 1) I z) x
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
-        (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+        (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
           (ricEndoRaisedFib (I := I) g x)))) := by
     funext x
     rw [ricSlotOpFib_apply]
@@ -214,27 +211,27 @@ theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
   have hcurriedY : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SSpace s I z) x
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x))) :=
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x))) :=
     fun x => contMDiffAt_curriedSection_of_contMDiffAt_section (I := I) (M := M)
       (fun y : M => Y y) x (Y.contMDiff x)
   have hG : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SSpace s I z) x
-        (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
+        (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
           (ricEndoRaisedFib (I := I) g x))) := by
     apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SModel s ℝ E) (V₂ := fun x : M => Tensor0SSpace s I x)
-      (φ := fun x => ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
+      (φ := fun x => ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
         (ricEndoRaisedFib (I := I) g x))
     intro Z
     have heqZ : (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SSpace s I z) x
-        ((((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
+        ((((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
           (ricEndoRaisedFib (I := I) g x)) (Z x))) =
         (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SSpace s I z) x
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)
           (ricEndoRaisedFib (I := I) g x (Z x)))) := by
       funext x; rfl
     rw [heqZ]
@@ -244,10 +241,9 @@ theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
       ContMDiff.clm_bundle_apply (b := id) (ricEndoRaisedFib_contMDiff (I := I) g) Z.contMDiff
     exact ContMDiff.clm_bundle_apply (b := id) hcurriedY hinner
   exact contMDiff_uncurriedSection_of_contMDiff_homSection (I := I) (M := M)
-    (fun x : M => ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
+    (fun x : M => ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp
       (ricEndoRaisedFib (I := I) g x)) hG
 
-set_option backward.isDefEq.respectTransparency false in
 def ricSlotOpField (g : SmoothRiemannianMetric I M) (s : ℕ) :
     SmoothCcTensor g (s + 1) (s + 1) where
   toSection :=
@@ -256,7 +252,6 @@ def ricSlotOpField (g : SmoothRiemannianMetric I M) (s : ℕ) :
       contMDiff_toFun := ricSlotOpFib_contMDiff (I := I) (M := M) g s }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma ricSlotOpField_toSection (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
@@ -269,7 +264,7 @@ def ricTraceSection (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTens
     (ricSlotOpField (I := I) (M := M) g s) (covGrad (I := I) (M := M) g 0 s S)
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] lemma ricTraceSection_toSection (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g 0 s) (x : M) :
     (ricTraceSection (I := I) (M := M) g s S).toSection x =
@@ -319,14 +314,14 @@ theorem exists_ricTraceSection_fiberNormSq_bound
   nlinarith [h, hfgS_nn, hfS_nn, hC_nn s, mul_nonneg (hC_nn s) hfgS_nn]
 
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricTraceSection_zero_apply (g : SmoothRiemannianMetric I M) (f : SmoothCcTensor g 0 0)
-    (x : M) (v : E) :
-    Tensor0SSpace.toModel
+    (x : M) (v : TangentSpace I x) :
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 1) I x from
           (ricTraceSection (I := I) (M := M) g 0 f).toSection x)
           (unitZeroSec (I := I) (M := M) x)) (Fin.cons v (fun i : Fin 0 => i.elim0)) =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 1) I x from
           (covGrad (I := I) (M := M) g 0 0 f).toSection x)
           (unitZeroSec (I := I) (M := M) x))

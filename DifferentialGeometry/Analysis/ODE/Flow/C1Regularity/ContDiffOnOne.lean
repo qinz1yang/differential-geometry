@@ -109,7 +109,7 @@ theorem variationalSolution_compare_norm
     intro τ hτ
     have hsplit : A₁ τ (y₁ τ) - A₂ τ (y₂ τ)
         = A₂ τ (y₁ τ - y₂ τ) + (A₁ τ - A₂ τ) (y₁ τ) := by
-      rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.map_sub]
+      rw [sub_apply, ContinuousLinearMap.map_sub]
       abel
     rw [hsplit]
     have h_nrm := norm_add_le (A₂ τ (y₁ τ - y₂ τ)) ((A₁ τ - A₂ τ) (y₁ τ))
@@ -225,7 +225,8 @@ theorem variationalSolution_compare_norm
       have hφ_d : HasDerivWithinAt φ (-1 : ℝ) (Ici τ) τ := by
         have h1 : HasDerivAt φ (-1 : ℝ) τ := by
           have h2 : HasDerivAt (fun s : ℝ => 2 * t₀ - s) (-1 : ℝ) τ := by
-            simpa using (hasDerivAt_const τ (2 * t₀)).sub (hasDerivAt_id τ)
+            exact (((hasDerivAt_const τ (2 * t₀)).sub (hasDerivAt_id τ)).congr_deriv
+              (by ring)).congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
           exact h2
         exact h1.hasDerivWithinAt
       have hmaps : MapsTo φ (Ici τ) (Iic (φ τ)) := by
@@ -288,7 +289,7 @@ theorem opNorm_sub_le_of_var
     (mul_nonneg (mul_nonneg (mul_nonneg hε (le_of_lt (exp_pos _))) hT.le)
       (le_of_lt (exp_pos _)))
   intro δ
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   have hcompare := variationalSolution_compare_norm hT hM hε
     hA₂_bd hA₁_bd hA_diff (h₁ δ) (h₂ δ) t ht
   calc
@@ -327,7 +328,7 @@ lemma variationalLinearMapAt_opNorm_sub_bound
   have hL₂_eq : L₂ δ = y₂ t :=
     variationalLinearMapAt_apply hT hM hMT hA₂_cont hA₂_bd ht δ
   have h_sub : (L₁ - L₂) δ = y₁ t - y₂ t := by
-    rw [ContinuousLinearMap.sub_apply, hL₁_eq, hL₂_eq]
+    rw [sub_apply, hL₁_eq, hL₂_eq]
   rw [h_sub]
   have h₁ := variationalSolutionFun_isSolution hT hM hMT hA₁_cont hA₁_bd δ
   have h₂ := variationalSolutionFun_isSolution hT hM hMT hA₂_cont hA₂_bd δ
@@ -357,7 +358,7 @@ lemma variationalLinearMapAt_opNorm_time_lipschitz
   have hL₂_eq : L₂ δ = y t₂ :=
     variationalLinearMapAt_apply hT hM hMT hA_cont hA_bd ht₂ δ
   have h_sub : (L₁ - L₂) δ = y t₁ - y t₂ := by
-    rw [ContinuousLinearMap.sub_apply, hL₁_eq, hL₂_eq]
+    rw [sub_apply, hL₁_eq, hL₂_eq]
   rw [h_sub]
   have hy_sol := variationalSolutionFun_isSolution hT hM hMT hA_cont hA_bd δ
   have hy_bd := fun τ (hτ : τ ∈ Icc (t₀ - T) (t₀ + T)) =>
@@ -672,7 +673,7 @@ theorem continuousOn_fderiv_flow_of_isLocalFlow
       Lsp_q.coprod Lti_q - Lsp_p.coprod Lti_p = (Lsp_q - Lsp_p).coprod (Lti_q - Lti_p) := by
     apply ContinuousLinearMap.ext
     rintro ⟨a, b⟩
-    simp [ContinuousLinearMap.sub_apply, ContinuousLinearMap.coprod_apply]
+    simp [sub_apply, ContinuousLinearMap.coprod_apply]
     abel
   rw [hcoprod_diff]
   have hcoprod_norm :

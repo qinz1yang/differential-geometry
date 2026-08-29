@@ -64,7 +64,7 @@ theorem contDiffOn_partial_fderiv_of_succ
     have hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)) := by
       have h1 : (1 : ℕ∞) ≤ k + 1 := by
         calc (1 : ℕ∞) = 0 + 1 := by simp
-          _ ≤ k + 1 := by gcongr; exact zero_le _
+          _ ≤ k + 1 := by gcongr; exact bot_le
       have h1' : ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((k + 1 : ℕ∞) : WithTop ℕ∞) := by exact_mod_cast h1
       have := hf_succ.of_le h1'
       simpa using this
@@ -109,7 +109,7 @@ theorem contDiffOn_partial_fderiv_of_succ_local
     have hf_C1 : ContDiffOn ℝ 1 (uncurry f) Ω := by
       have h1 : (1 : ℕ∞) ≤ k + 1 := by
         calc (1 : ℕ∞) = 0 + 1 := by simp
-          _ ≤ k + 1 := by gcongr; exact zero_le _
+          _ ≤ k + 1 := by gcongr; exact bot_le
       have h1' : ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((k + 1 : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast h1
       exact hf_succ.of_le h1'
@@ -255,7 +255,7 @@ theorem exists_norm_fderiv_le_along_flow_joint
   use ‖fderiv ℝ (f p.2) (Φ p)‖, norm_nonneg _
   intro x hx τ hτ
   have hmem : ((x, τ) : E × ℝ) ∈ (closedBall x₀ ρ) ×ˢ (Icc tmin tmax) := ⟨hx, hτ⟩
-  simpa only using hp_max hmem
+  exact hp_max hmem
 
 omit [CompleteSpace E] in
 theorem exists_lipschitzOnWith_closedBall_of_C1
@@ -295,7 +295,8 @@ theorem exists_lipschitzOnWith_closedBall_of_C1
         Set.mem_prod.mpr ⟨ht, hx⟩
       have : ‖fderiv ℝ (f t) x‖ ≤ C := hp_max hmem
       rw [← NNReal.coe_le_coe]
-      simpa [K, coe_nnnorm] using this
+      change ‖fderiv ℝ (f t) x‖ ≤ C
+      exact this
     exact Exists.intro K hK
   · have hK : ∀ t ∈ Icc a b, LipschitzOnWith 0 (f t) (closedBall x₀ ρ) := by
       intro t _
@@ -542,7 +543,8 @@ theorem exists_isLocalFlow_augVF_of_C2
       (aΦ : (E × (E →L[ℝ] E)) × ℝ → E × (E →L[ℝ] E)),
       IsLocalFlow (augmentedVectorField f) t₀ p₀ R (t₀ - ε) (t₀ + ε) aΦ := by
   have hf_succ : ContDiffOn ℝ ((1 : ℕ∞) + 1) (uncurry f) (Set.univ : Set (ℝ × E)) := by
-    simpa using hf_C2
+    norm_num
+    exact hf_C2
   have h_augVF_C1 : ContDiffOn ℝ 1 (uncurry (augmentedVectorField f))
       (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
     augVF_uncurry_contDiff (k := (1 : ℕ∞)) hf_succ
@@ -571,11 +573,13 @@ theorem contDiffOn_flow_of_isLocalFlow_C2_of_isVariationalFlowProjection
     contDiffOn_flow_of_isLocalFlow hΦ hf_C1 hT hT_lt_mid hT_mid_lt_out hM hMT_mid hsub hr'
       hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
   have hf_succ : ContDiffOn ℝ ((1 : ℕ∞) + 1) (uncurry f) (Set.univ : Set (ℝ × E)) := by
-    simpa using hf_C2
+    norm_num
+    exact hf_C2
   have h_step := contDiffOn_flow_succ_of_isVariationalFlowProjection hΦ hT hT_lt_mid
     hT_mid_lt_out hM hMT_mid hsub hr' hρ_lt_mid hρ_mid_lt_out hρρ' hρ_out_le_r hA_bd
     (k := (1 : ℕ∞)) hf_succ hΦ_C1 hY
-  simpa using h_step
+  norm_num at h_step
+  exact h_step
 
 end LevelTwo
 
@@ -1107,7 +1111,6 @@ theorem spatialPieceFn_eq_fromAugFlow
     rw [hαeq hs]
   have hA_bd₂ : ∀ s ∈ Icc (t₀ - T) (t₀ + T), ‖fderiv ℝ (f s) (α₂ s)‖ ≤ M := by
     intro s hs
-    change ‖fderiv ℝ (f s) (α₂ s)‖ ≤ M
     rw [hαeq hs]
     exact hA_bd₁ s hs
   have h_aug := augFlow_snd_eq_variationalLinearMapAt haΦ hT hM hMT hsub'
@@ -1196,7 +1199,7 @@ theorem contDiffOn_flow_succ_via_augFlow
     have h_le : ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((k + 1 : ℕ∞) : WithTop ℕ∞) := by
       have : (1 : ℕ∞) ≤ k + 1 := by
         calc (1 : ℕ∞) = 0 + 1 := by simp
-          _ ≤ k + 1 := by gcongr; exact zero_le _
+          _ ≤ k + 1 := by gcongr; exact bot_le
       exact_mod_cast this
     have h := hf_succ.of_le h_le
     simpa using h
@@ -1409,7 +1412,7 @@ theorem exists_contDiffOn_flow_succ_driver
     have h_le : ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((k + 1 : ℕ∞) : WithTop ℕ∞) := by
       have : (1 : ℕ∞) ≤ k + 1 := by
         calc (1 : ℕ∞) = 0 + 1 := by simp
-          _ ≤ k + 1 := by gcongr; exact zero_le _
+          _ ≤ k + 1 := by gcongr; exact bot_le
       exact_mod_cast this
     simpa using hf_succ.of_le h_le
   obtain ⟨U, hU_open, hU_mem, hU_Ck⟩ := hΦ_prev
@@ -1529,9 +1532,11 @@ theorem flowCkPred_base : FlowCkPred.{u} 1 := by
 theorem flowCkPred_step {n : ℕ} (hn : 1 ≤ n) (IH : FlowCkPred.{u} n) :
     FlowCkPred.{u} (n + 1) := by
   intro E' _ _ _ _ g t₀ x₀ r tmin tmax Ψ hΨ hg ht₀ hr
+  have horder : ((((n + 1 : ℕ) : ℕ∞) : WithTop ℕ∞)) =
+      (((n : ℕ∞) : WithTop ℕ∞) + 1) := by norm_num
   have hg_succ : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry g) (Set.univ : Set (ℝ × E')) := by
-    rw [ContDiffOn] at hg ⊢
-    convert hg using 2
+    rw [← horder]
+    exact hg
   have h_augVF_Cn : ContDiffOn ℝ (n : ℕ∞) (uncurry (augmentedVectorField g))
       (Set.univ : Set (ℝ × (E' × (E' →L[ℝ] E')))) :=
     augVF_uncurry_contDiff (k := (n : ℕ∞)) hg_succ
@@ -1555,8 +1560,8 @@ theorem flowCkPred_step {n : ℕ} (hn : 1 ≤ n) (IH : FlowCkPred.{u} n) :
   obtain ⟨U, hU_open, hU_mem, hU_C⟩ := exists_contDiffOn_flow_succ_driver hΨ haΨ ht₀_aug hR_pos
     haΨ_Cn hΩ_open hΩ_mem hg_succ ht₀ hr hΨ_prev
   refine ⟨U, hU_open, hU_mem, ?_⟩
-  rw [ContDiffOn] at hU_C ⊢
-  convert hU_C using 2
+  rw [horder]
+  exact hU_C
 
 theorem flowCkPred_all (n : ℕ) (hn : 1 ≤ n) : FlowCkPred.{u} n := by
   induction n, hn using Nat.le_induction with

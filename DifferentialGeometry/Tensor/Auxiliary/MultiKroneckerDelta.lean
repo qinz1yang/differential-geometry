@@ -5,6 +5,7 @@ open Equiv.Perm
 
 namespace Fin
 
+
 noncomputable def multiKroneckerDelta {R : Type*} [CommRing R] {k n : ℕ}
     (I J : Fin k → Fin n) : R :=
   Matrix.det (fun i j : Fin k => if I i = J j then 1 else 0)
@@ -59,9 +60,13 @@ theorem multiKroneckerDelta_eq_zero
 theorem multiKroneckerDelta_symm (I J : Fin k → Fin n) :
     multiKroneckerDelta (R := R) I J = multiKroneckerDelta J I := by
   unfold multiKroneckerDelta
-  conv_lhs => rw [← Matrix.det_transpose]
+  conv_lhs => erw [← Matrix.det_transpose]
   congr 1; ext i j
-  simp [Matrix.transpose_apply, eq_comm]
+  change (if I j = J i then (1 : R) else 0) =
+    (if J i = I j then 1 else 0)
+  by_cases h : I j = J i
+  · rw [if_pos h, if_pos h.symm]
+  · rw [if_neg h, if_neg (mt Eq.symm h)]
 
 theorem multiKroneckerDelta_comp_perm_left
     (I : Fin k → Fin n) (J : Fin k → Fin n) (σ : Equiv.Perm (Fin k)) :
@@ -70,7 +75,8 @@ theorem multiKroneckerDelta_comp_perm_left
   unfold multiKroneckerDelta
   set M : Matrix (Fin k) (Fin k) R := fun i j => if I i = J j then 1 else 0
   have : (fun i j : Fin k => if (I ∘ ⇑σ) i = J j then (1 : R) else 0) = M.submatrix σ id := by
-    ext i j; simp [Matrix.submatrix_apply, M]
+    ext i j
+    rfl
   rw [this, Matrix.det_permute]
 
 theorem multiKroneckerDelta_addCases_comm
@@ -81,7 +87,7 @@ theorem multiKroneckerDelta_addCases_comm
     (-1 : R) ^ (m * n) *
       multiKroneckerDelta (Fin.addCases I J) v := by
   simp only [multiKroneckerDelta]
-  rw [← Matrix.det_reindex_self Fin.finAddCongr]
+  erw [← Matrix.det_reindex_self Fin.finAddCongr]
   set τ := addCasesSwapPerm m n
   set M : Matrix (Fin (m + n)) (Fin (m + n)) R :=
     fun i j => if Fin.addCases I J i = v j then 1 else 0
@@ -91,8 +97,7 @@ theorem multiKroneckerDelta_addCases_comm
           (v ∘ ⇑Fin.finAddCongr) j then (1 : R) else 0) =
       M.submatrix τ id := by
     ext ⟨i, hi⟩ ⟨j, hj⟩
-    simp only [Matrix.reindex_apply, Matrix.submatrix_apply,
-      Function.comp_apply, Equiv.apply_symm_apply, id, M]
+    simp only [      Function.comp_apply, M]
     have h_idx : @Fin.addCases n m (fun _ => Fin d) J I ((@Fin.finAddCongr n m).symm ⟨i, hi⟩) =
         @Fin.addCases m n (fun _ => Fin d) I J (τ ⟨i, hi⟩) := by
       unfold Fin.addCases Fin.finAddCongr finCongr τ addCasesSwapPerm
@@ -104,7 +109,10 @@ theorem multiKroneckerDelta_addCases_comm
       · simp only [h1, dite_false]
         have h2 : i - n < m := by omega
         simp_all
-    rw [h_idx]; rfl
+    change (if Fin.addCases J I (Fin.finAddCongr.symm ⟨i, hi⟩) = v ⟨j, hj⟩
+      then (1 : R) else 0) =
+      (if Fin.addCases I J (τ ⟨i, hi⟩) = v ⟨j, hj⟩ then 1 else 0)
+    rw [h_idx]
   rw [h_eq, Matrix.det_permute]
   have h_sign : (↑(Equiv.Perm.sign τ) : R) = (-1 : R) ^ (m * n) := by
     rw [addCasesSwapPerm_sign]
@@ -120,14 +128,65 @@ theorem multiKroneckerDelta_addCases_assoc
       (v ∘ ⇑Fin.finAssoc.symm) =
     multiKroneckerDelta
       (fun i => Fin.addCases (fun j => Fin.addCases I J j) K i) v := by
+  have h_add (i : Fin (m + n + p)) :
+      @Fin.addCases m (n + p) (fun _ => Fin d) I
+          (fun j => @Fin.addCases n p (fun _ => Fin d) J K j)
+          (@Fin.finAssoc m n p i) =
+        @Fin.addCases (m + n) p (fun _ => Fin d)
+          (fun j => @Fin.addCases m n (fun _ => Fin d) I J j) K i := by
+    refine Fin.addCases ?_ ?_ i
+    · intro q
+      refine Fin.addCases ?_ ?_ q
+      · intro a
+        have h : @Fin.finAssoc m n p (Fin.castAdd p (Fin.castAdd n a)) =
+            Fin.castAdd (n + p) a := by
+          apply Fin.ext
+          rfl
+        rw [h]
+        exact (@Fin.addCases_left m (n + p) (fun _ => Fin d) I
+          (fun j => @Fin.addCases n p (fun _ => Fin d) J K j) a).trans
+          ((@Fin.addCases_left m n (fun _ => Fin d) I J a).symm.trans
+            (@Fin.addCases_left (m + n) p (fun _ => Fin d)
+              (fun j => @Fin.addCases m n (fun _ => Fin d) I J j)
+              K (Fin.castAdd n a)).symm)
+      · intro b
+        have h : @Fin.finAssoc m n p (Fin.castAdd p (Fin.natAdd m b)) =
+            Fin.natAdd m (Fin.castAdd p b) := by
+          apply Fin.ext
+          rfl
+        rw [h]
+        exact (@Fin.addCases_right m (n + p) (fun _ => Fin d) I
+          (fun j => @Fin.addCases n p (fun _ => Fin d) J K j)
+          (Fin.castAdd p b)).trans
+          ((@Fin.addCases_left n p (fun _ => Fin d) J K b).trans
+            ((@Fin.addCases_right m n (fun _ => Fin d) I J b).symm.trans
+              (@Fin.addCases_left (m + n) p (fun _ => Fin d)
+                (fun j => @Fin.addCases m n (fun _ => Fin d) I J j)
+                K (Fin.natAdd m b)).symm))
+    · intro c
+      have h : @Fin.finAssoc m n p (Fin.natAdd (m + n) c) =
+          Fin.natAdd m (Fin.natAdd n c) := by
+        apply Fin.ext
+        change (m + n) + c = m + (n + c)
+        omega
+      rw [h]
+      exact (@Fin.addCases_right m (n + p) (fun _ => Fin d) I
+        (fun j => @Fin.addCases n p (fun _ => Fin d) J K j)
+        (Fin.natAdd n c)).trans
+        ((@Fin.addCases_right n p (fun _ => Fin d) J K c).trans
+          (@Fin.addCases_right (m + n) p (fun _ => Fin d)
+            (fun j => @Fin.addCases m n (fun _ => Fin d) I J j) K c).symm)
   simp only [multiKroneckerDelta]
-  rw [← Matrix.det_reindex_self Fin.finAssoc]
-  congr 1; ext ⟨i, hi⟩ ⟨j, hj⟩
-  simp only [Matrix.reindex, Matrix.submatrix, Equiv.coe_fn_mk, Matrix.of_apply, Function.comp]
+  erw [← Matrix.det_reindex_self Fin.finAssoc]
   congr 1
-  simp only [Fin.addCases, Fin.finAssoc, Fin.val_castLT, Fin.val_subNat, Fin.val_cast,
-    finCongr, Equiv.coe_fn_symm_mk]
-  split_ifs <;> simp_all [Fin.ext_iff, Nat.sub_sub] <;> omega
+  ext i j
+  change
+    (if Fin.addCases I (fun q => Fin.addCases J K q) i =
+        v ((@Fin.finAssoc m n p).symm j) then (1 : R) else 0) =
+      (if Fin.addCases (fun q => Fin.addCases I J q) K
+          ((@Fin.finAssoc m n p).symm i) =
+        v ((@Fin.finAssoc m n p).symm j) then 1 else 0)
+  rw [← h_add ((@Fin.finAssoc m n p).symm i), Equiv.apply_symm_apply]
 
 variable {𝕜 : Type*} [Field 𝕜]
 
@@ -142,24 +201,27 @@ theorem multiKroneckerDelta_cauchyBinet [CharZero 𝕜]
   have h_ne : (↑(m.factorial * p.factorial) : 𝕜) ≠ 0 :=
     Nat.cast_ne_zero.mpr (Nat.mul_pos (Nat.factorial_pos m) (Nat.factorial_pos p)).ne'
   rw [inv_smul_eq_iff₀ h_ne]
-  simp only [multiKroneckerDelta, Function.comp, Matrix.det_apply,
-    Units.smul_def, zsmul_eq_mul, Nat.cast_smul_eq_nsmul 𝕜, nsmul_eq_mul]
+  let A (σ : Equiv.Perm (Fin (m + p))) : Matrix (Fin m) (Fin m) 𝕜 :=
+    fun i j => if I i = v (σ (Fin.castAdd p j)) then 1 else 0
+  let B (σ : Equiv.Perm (Fin (m + p))) : Matrix (Fin p) (Fin p) 𝕜 :=
+    fun i j => if J i = v (σ (Fin.natAdd m j)) then 1 else 0
   set M : Matrix (Fin (m + p)) (Fin (m + p)) 𝕜 :=
     fun a b => if Fin.addCases I J a = v b then 1 else 0 with hM_def
+  change
+    ∑ σ : Equiv.Perm (Fin (m + p)),
+        Equiv.Perm.sign σ • (Matrix.det (A σ) * Matrix.det (B σ)) =
+      (↑(m.factorial * p.factorial) : 𝕜) • Matrix.det M
+  simp only [Matrix.det_apply, Units.smul_def, zsmul_eq_mul,
+    Nat.cast_smul_eq_nsmul 𝕜, nsmul_eq_mul]
   have h1 : ∀ (α : Equiv.Perm (Fin m)) (σ : Equiv.Perm (Fin (m + p))) (i : Fin m),
-      (if I (α i) = v (σ (Fin.castAdd p i)) then (1 : 𝕜) else 0) =
+      A σ (α i) i =
       M (Fin.castAdd p (α i)) (σ (Fin.castAdd p i)) :=
-    fun _ _ _ => by simp [hM_def, Fin.addCases_left]
+    fun _ _ _ => by simp [A, hM_def, Fin.addCases_left]
   have h2 : ∀ (β : Equiv.Perm (Fin p)) (σ : Equiv.Perm (Fin (m + p))) (j : Fin p),
-      (if J (β j) = v (σ (Fin.natAdd m j)) then (1 : 𝕜) else 0) =
+      B σ (β j) j =
       M (Fin.natAdd m (β j)) (σ (Fin.natAdd m j)) :=
-    fun _ _ _ => by simp [hM_def, Fin.addCases_right]
-  conv_lhs =>
-    arg 2; ext σ; arg 2; arg 1; arg 2; ext α; arg 2; arg 2; ext i
-    erw [h1 α σ i]
-  conv_lhs =>
-    arg 2; ext σ; arg 2; arg 2; arg 2; ext β; arg 2; arg 2; ext j
-    erw [h2 β σ j]
+    fun _ _ _ => by simp [B, hM_def, Fin.addCases_right]
+  simp_rw [h1, h2]
   have h_inner : ∀ α : Equiv.Perm (Fin m), ∀ β : Equiv.Perm (Fin p),
       ∀ σ : Equiv.Perm (Fin (m + p)),
       ↑↑(Equiv.Perm.sign σ) * (↑↑(Equiv.Perm.sign α) *

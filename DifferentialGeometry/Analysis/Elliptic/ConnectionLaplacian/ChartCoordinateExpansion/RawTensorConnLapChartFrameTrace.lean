@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -38,7 +37,7 @@ theorem rawTensorConnLap_via_chartFrameNormGlobalSmooth
           chartLeviCivitaGoodSet (I := I) α) :
     rawTensorConnLap (I := I) g r s
         (fun y : M => T.toSection y) b =
-      rawTensorConnLap_fixedFrame (I := I) g r s
+      rawTensorConnLapFixedFrame (I := I) g r s
         (fun i : Fin (Module.finrank ℝ E) =>
           (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun)
         (fun y : M => T.toSection y) b := by

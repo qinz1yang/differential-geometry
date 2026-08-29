@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators

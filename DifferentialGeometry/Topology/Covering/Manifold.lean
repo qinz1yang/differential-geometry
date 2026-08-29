@@ -29,7 +29,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-  [LocPathConnectedSpace M]
+  [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M]
 
@@ -166,9 +166,8 @@ instance instIsManifold :
       have h_eq : MTrans.restr CovT.source =
           MTrans.restrOpen CovT.source hCovT_open := by
         apply OpenPartialHomeomorph.toPartialEquiv_injective
-        rw [OpenPartialHomeomorph.restr_toPartialEquiv,
-          OpenPartialHomeomorph.restrOpen_toPartialEquiv,
-          hCovT_open.interior_eq]
+        exact (MTrans.restr_toPartialEquiv' CovT.source hCovT_open).trans
+          (MTrans.restrOpen_toPartialEquiv CovT.source hCovT_open).symm
       rw [h_eq] at hMR
       exact hMR
     have hEq : CovT ≈ MTrans.restrOpen CovT.source hCovT_open := by
@@ -310,7 +309,7 @@ instance instT2Space :
 theorem fundamentalGroup_isCountablyGenerated_aux
     (X : Type*) [TopologicalSpace X]
     [SecondCountableTopology X]
-    [ConnectedSpace X] [LocPathConnectedSpace X]
+    [ConnectedSpace X] [LocallyPathConnectedSpace X]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     (x : X)
     (B : ℕ → Set X)
@@ -328,7 +327,7 @@ theorem fundamentalGroup_isCountablyGenerated_aux
 theorem fundamentalGroup_countable_of_secondCountable
     (X : Type*) [TopologicalSpace X]
     [SecondCountableTopology X]
-    [ConnectedSpace X] [LocPathConnectedSpace X]
+    [ConnectedSpace X] [LocallyPathConnectedSpace X]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace X]
     (x : X)
     (B : ℕ → Set X)
@@ -357,7 +356,7 @@ theorem fibre_countable
       Countable (FundamentalGroup M (default : M)) :=
     fundamentalGroup_countable_of_secondCountable
       M default B hBopen hBpc hBnull hBbasis
-  haveI : PathConnectedSpace M := PathConnectedSpace.of_locPathConnectedSpace
+  have : PathConnectedSpace M := PathConnectedSpace.of_locallyPathConnectedSpace
   have hpath : Path (default : M) x := PathConnectedSpace.somePath default x
   let e_fibre :
       ((proj :
@@ -365,13 +364,15 @@ theorem fibre_countable
         ⁻¹' {x}) ≃ Path.Homotopic.Quotient (default : M) x :=
     { toFun := fun p => by
         rcases p with ⟨⟨y, q⟩, hy⟩
-        simp only [proj, Set.mem_preimage, Set.mem_singleton_iff] at hy
+        change y = x at hy
         subst hy
         exact q
-      invFun := fun q => ⟨⟨x, q⟩, by simp [proj]⟩
+      invFun := fun q => ⟨⟨x, q⟩, by
+        change x = x
+        rfl⟩
       left_inv := by
         rintro ⟨⟨y, q⟩, hy⟩
-        simp only [proj, Set.mem_preimage, Set.mem_singleton_iff] at hy
+        change y = x at hy
         subst hy
         rfl
       right_inv := fun q => rfl }
@@ -422,10 +423,10 @@ theorem sigmaCompact_from_countable_fibre
     exact Set.mem_iUnion.mpr ⟨y, (hUspec y).1⟩
   obtain ⟨J, hJ⟩ :=
     (hKcomp n).elim_finite_subcover U (fun x => (hUspec x).2.1) hKsub
-  haveI hKnCompact : CompactSpace ↥(K n) :=
+  have hKnCompact : CompactSpace ↥(K n) :=
     isCompact_iff_compactSpace.mp (hKcomp n)
-  haveI : NormalSpace ↥(K n) := inferInstance
-  haveI hJ_finite : Finite ↥(↑J : Set X) := (J.finite_toSet).to_subtype
+  have : NormalSpace ↥(K n) := inferInstance
+  have hJ_finite : Finite ↥(↑J : Set X) := (J.finite_toSet).to_subtype
   let V : ↥(↑J : Set X) → Set ↥(K n) := fun j =>
     Subtype.val ⁻¹' (U (j : X))
   have hVopen : ∀ j : ↥(↑J : Set X), IsOpen (V j) := fun j =>
@@ -541,7 +542,7 @@ theorem sigmaCompact_from_countable_fibre
       rw [← heq1]
       exact hu
   rw [hp_eq]
-  haveI : Countable (p ⁻¹' ({(j : X)} : Set X)) := hfib (j : X)
+  have : Countable (p ⁻¹' ({(j : X)} : Set X)) := hfib (j : X)
   exact isSigmaCompact_iUnion_of_isCompact _ hgS_compact
 
 variable [SecondCountableTopology M] [Nonempty M]
@@ -552,7 +553,7 @@ instance instSigmaCompactSpace :
   sigmaCompact_from_countable_fibre UniversalCover.proj_isCoveringMap fibre_countable
 
 omit [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-    [LocPathConnectedSpace M] [SemilocallySimplyConnectedSpace M] [Inhabited M]
+    [LocallyPathConnectedSpace M] [SemilocallySimplyConnectedSpace M] [Inhabited M]
     [SecondCountableTopology M] [Nonempty M] in
 theorem locallyCompactSpaceBase (I : ModelWithCorners ℝ E H) :
     LocallyCompactSpace M :=

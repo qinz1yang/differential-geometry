@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -65,14 +64,14 @@ theorem tensorChartComponentRaw_rawTensorConnLap_eq_chart_frame_trace_sum
   have hExp :
       rawTensorConnLap (I := I) g r s
           (fun z : M => T₀.toSection z) b =
-        rawTensorConnLap_fixedFrame (I := I) g r s
+        rawTensorConnLapFixedFrame (I := I) g r s
           (fun i : Fin (Module.finrank ℝ E) =>
             (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun)
           (fun z : M => T₀.toSection z) b :=
     rawTensorConnLap_via_chartFrameNormGlobalSmooth
       (I := I) (M := M) g r s T₀ α hb
   have hSum :
-      rawTensorConnLap_fixedFrame (I := I) g r s
+      rawTensorConnLapFixedFrame (I := I) g r s
           (fun i : Fin (Module.finrank ℝ E) =>
             (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun)
           (fun z : M => T₀.toSection z) b =

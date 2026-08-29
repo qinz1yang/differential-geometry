@@ -32,7 +32,7 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_zero_left
     (g : SmoothRiemannianMetric I M) (x : M) (y : TangentSpace I x) :
     g.inner x (0 : TangentSpace I x) y = 0 := by
-  rw [map_zero, ContinuousLinearMap.zero_apply]
+  rw [map_zero, zero_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_zero_right
@@ -44,7 +44,7 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_add_left
     (g : SmoothRiemannianMetric I M) (x : M) (v w y : TangentSpace I x) :
     g.inner x (v + w) y = g.inner x v y + g.inner x w y := by
-  rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+  rw [map_add (g.inner x), add_apply]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_add_right
@@ -56,7 +56,7 @@ omit [Module.Finite ℝ E] in
 private lemma g_inner_smul_left
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ) (v y : TangentSpace I x) :
     g.inner x (c • v) y = c * g.inner x v y := by
-  rw [map_smul (g.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul (g.inner x), smul_apply, smul_eq_mul]
 
 omit [Module.Finite ℝ E] in
 private lemma g_inner_smul_right
@@ -231,7 +231,7 @@ theorem add (g : SmoothRiemannianMetric I M)
     (hu : IsH1Pair (I := I) (M := M) g u G)
     (hv : IsH1Pair (I := I) (M := M) g v G') :
     IsH1Pair (I := I) (M := M) g (u + v) (G + G') := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨hG_weak, hG_p, hG_pair⟩ := hu
@@ -355,7 +355,7 @@ theorem const_smul (g : SmoothRiemannianMetric I M) (c : ℝ)
     {G : Lp E 2 (riemannianVolumeMeasure I M g)}
     (hu : IsH1Pair (I := I) (M := M) g u G) :
     IsH1Pair (I := I) (M := M) g (c • u) (c • G) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   obtain ⟨hG_weak, hG_p, hG_pair⟩ := hu

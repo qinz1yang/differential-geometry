@@ -35,8 +35,8 @@ theorem NetLimitData.sigmaBall_nesting
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     Metric.ball x (16 * L.lamInf α) ⊆
       Metric.ball y ((exponentialBallRadiusFactor hd D / 2) * L.lamInf β) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   obtain ⟨x', y', hx', hy', hmeet⟩ := hk
   have hxx : x' = x := Option.some.inj (hx'.symm.trans hx)
   have hyy : y' = y := Option.some.inj (hy'.symm.trans hy)
@@ -152,14 +152,14 @@ theorem NetLimitData.pair_exp_maps
       ((fun v : E => Geometry.Riemannian.Exponential.expMap
         (I := I) (X.obj (L.φ k)).metric y (show TangentSpace I y from v)) ''
           Metric.ball 0 (exponentialBallRadiusFactor hd D * L.lamInf (β : Nat))) := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).sigmaCompact
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   have hExp :
       (1 : Real) ≤ Real.exp (hd.C * (20 * hd.lambda D 0)) := by
     rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]

@@ -55,11 +55,14 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
       rintro g x ⟨n, rfl⟩
       simpa [f_bcf] using restrict_mem_Icc_of_abs_le hf_bdd n x
     have h_Icc_compact : IsCompact (Set.Icc (-C) C : Set ℝ) := isCompact_Icc
-    have h_lip_restrict : ∀ n, LipschitzWith ⟨L, hL_pos⟩ ((f n) ∘ ((↑) : K → E)) := by
+    have h_lip_restrict : ∀ n, LipschitzWith (NNReal.mk L hL_pos) ((f n) ∘ ((↑) : K → E)) := by
       intro n
       have hsubval : LipschitzWith 1 ((↑) : K → E) := LipschitzWith.subtype_val K
-      have hcomp := (hf_lip n).comp hsubval
-      simpa [show (⟨L, hL_pos⟩ : ℝ≥0) * 1 = ⟨L, hL_pos⟩ by ext; simp] using hcomp
+      have hcomp : LipschitzWith (NNReal.mk L hL_pos * 1)
+          ((f n) ∘ ((↑) : K → E)) :=
+        (hf_lip n).comp hsubval
+      rw [mul_one] at hcomp
+      exact hcomp
     have h_equicont : Equicontinuous ((↑) : (Set.range f_bcf) → K → ℝ) := by
       refine Metric.equicontinuous_of_continuity_modulus
         (fun s => L * s) ?_ _ ?_
@@ -71,7 +74,7 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
         have h_lip_n := h_lip_restrict n
         have : dist (f n (x : E)) (f n (y : E)) ≤ L * dist (x : E) (y : E) := by
           have := h_lip_n.dist_le_mul x y
-          simpa [Function.comp, NNReal.coe_mk] using this
+          exact this
         simpa [f_bcf, BoundedContinuousFunction.mkOfCompact_apply,
           Subtype.dist_eq] using this
     have h_compact_closure :
@@ -96,7 +99,7 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
         simp [f_bcf]
       rw [hcoe] at hTU
       exact hTU
-    have h_g_lip : LipschitzWith ⟨L, hL_pos⟩ g := by
+    have h_g_lip : LipschitzWith (NNReal.mk L hL_pos) g := by
       refine LipschitzWith.of_dist_le_mul fun x y => ?_
       have h_pt_x : Tendsto (fun k => f (φ k) (x : E)) atTop (𝓝 (g x)) :=
         h_uniform_K.tendsto_at x
@@ -111,7 +114,7 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
         intro k
         have hL_n := hf_lip (φ k)
         have := hL_n.dist_le_mul (x : E) (y : E)
-        simpa [NNReal.coe_mk] using this
+        exact this
       have h_le : dist (g x) (g y) ≤ L * dist (x : E) (y : E) :=
         le_of_tendsto_of_tendsto' h_pt_dist tendsto_const_nhds (fun k => h_each k)
       have h_subtype : dist (x : E) (y : E) = dist x y := rfl
@@ -120,7 +123,7 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
       exact h_le
     set g_set : E → ℝ := fun x => if hxK : x ∈ K then g ⟨x, hxK⟩ else 0
       with hg_set_def
-    have h_g_set_lip : LipschitzOnWith ⟨L, hL_pos⟩ g_set K := by
+    have h_g_set_lip : LipschitzOnWith (NNReal.mk L hL_pos) g_set K := by
       refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
       have h_dist :=
         h_g_lip.dist_le_mul (⟨x, hx⟩ : K) (⟨y, hy⟩ : K)
@@ -129,8 +132,8 @@ theorem tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded
       have h_subtype_dist : dist (⟨x, hx⟩ : K) (⟨y, hy⟩ : K) = dist x y := rfl
       have h_real : dist (g_set x) (g_set y) ≤ L * dist x y := by
         rw [h_g_set_x, h_g_set_y, ← h_subtype_dist]
-        simpa using h_dist
-      simpa using h_real
+        exact h_dist
+      exact h_real
     rcases h_g_set_lip.extend_real with ⟨fInf, h_fInf_lip, h_fInf_eq⟩
     refine ⟨φ, hφ_mono, fInf, h_fInf_lip.continuous, ?_⟩
     rw [Metric.tendstoUniformlyOn_iff]

@@ -30,6 +30,8 @@ theorem codRestr_contMDiffAt
   refine ⟨Topology.IsInducing.subtypeVal.continuousAt_iff.mpr
     (by simpa [Function.comp_def] using hcont), ?_⟩
   convert hdiff using 2
+  funext y
+  rfl
 
 omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
 theorem image_opens_isOpen
@@ -148,10 +150,23 @@ theorem mfderiv_toOpensDiffeoCross
       (mfderiv I J (Φ : M → N) (p : M)).comp
         (mfderiv I I (Subtype.val : U → M) p) :=
     mfderiv_comp p hΦd hvalU
-  have happ := DFunLike.congr_fun (hleft.symm.trans hright) v
-  simpa only [Ψ, ContinuousLinearMap.comp_apply,
-    mfderiv_subtype_val (I := J) V (Ψ p),
-    mfderiv_subtype_val (I := I) U p] using happ
+  have hmap := hleft.symm.trans hright
+  have hleft_id :
+      (mfderiv J J (Subtype.val : V → N) (Ψ p)).comp
+          (mfderiv I J (Ψ : U → V) p) = mfderiv I J (Ψ : U → V) p := by
+    ext w
+    exact mfderiv_subtype_val_apply (I := J) V (Ψ p) _
+  have hright_id :
+      (mfderiv I J (Φ : M → N) (p : M)).comp
+          (mfderiv I I (Subtype.val : U → M) p) =
+        mfderiv I J (Φ : M → N) (p : M) := by
+    ext w
+    change mfderiv I J (Φ : M → N) (p : M)
+        (mfderiv I I (Subtype.val : U → M) p w) = _
+    rw [mfderiv_subtype_val_apply (I := I) U p]
+    rfl
+  rw [hleft_id, hright_id] at hmap
+  exact DFunLike.congr_fun hmap v
 
 end PartialDiffeomorph
 end DifferentialGeometry

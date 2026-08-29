@@ -20,7 +20,7 @@ def ChartCoordPicardRegular (X : ℝ → ∀ x : M, TangentSpace I x) : Prop :=
           (fun y : E => (X t ((chartAt H α).symm (I.symm y)) : E))
           (Metric.ball (I ((chartAt H α) α)) r)
 
-noncomputable def chartLocalPicardData_of_regular
+noncomputable def chartLocalPicardDataOfRegular
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hReg : ChartCoordPicardRegular X) (α : M) :
     ChartLocalPicardData X α :=

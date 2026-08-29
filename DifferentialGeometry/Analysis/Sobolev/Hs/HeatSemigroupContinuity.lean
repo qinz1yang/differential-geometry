@@ -306,7 +306,7 @@ private lemma tendsto_heatSemigroupHsExt_of_finite
               ((Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * τ) - 1) *
                 u'.coeff i) ^ 2)
           (𝓝[Set.Ici (0 : ℝ)] 0) (𝓝 0) := by
-      have h := tendsto_finset_sum (f := fun i τ =>
+      have h := tendsto_finsetSum (f := fun i τ =>
         scalarSobolevWeight (I := I) (M := M) i σ *
           ((Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * τ) - 1) *
             u'.coeff i) ^ 2) F h_each_to_zero

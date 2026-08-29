@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -50,7 +49,7 @@ private lemma covGradBundle_trivFibre_eq'
         (Φ.comp ((trivializationAt E (TangentSpace I) α).symmL ℝ b)) :=
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem tensorChartComponentRaw_covGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -66,17 +65,17 @@ theorem tensorChartComponentRaw_covGrad
         + covDerivLowerOrderTerm (I := I) (M := M) g r s S α (Jdx 0) Idx
             (Matrix.vecTail Jdx) y := by
   classical
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
-      (fun z : M => Tensor0SSpace r I z)) := tensor0SBundle_topology r
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
-      (fun z : M => Tensor0SSpace (s + 1) I z)) := tensor0SBundle_topology (s + 1)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
+      (fun z : M => Tensor0SSpace r I z)) := tensor0SBundleTopology r
+  let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+      (fun z : M => Tensor0SSpace (s + 1) I z)) := tensor0SBundleTopology (s + 1)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun z : M => TensorRSSpace r (s + 1) I z)) :=
-    tensorRSBundle_topology r (s + 1)
-  letI : FiberBundle (TensorRSModel r (s + 1) ℝ E)
+    tensorRSBundleTopology r (s + 1)
+  let : FiberBundle (TensorRSModel r (s + 1) ℝ E)
       (fun z : M => TensorRSSpace r (s + 1) I z) :=
-    tensorRSBundle_fiber r (s + 1)
-  letI : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
+    tensorRSBundleFiber r (s + 1)
+  let : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
       (fun z : M => TensorRSSpace r (s + 1) I z) :=
     tensorRSBundle_vector r (s + 1)
   set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb_def
@@ -129,7 +128,10 @@ theorem tensorChartComponentRaw_covGrad
   rw [hsymmL]
   rw [show Φ (chartBasisVecFiber (I := I) α (Jdx 0) b) =
       tensorCovDerivAt (I := I) (M := M) g r s S b
-        (chartBasisVecFiber (I := I) α (Jdx 0) b) from rfl]
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartBasisVecFiber (I := I) α (Jdx 0) b)) from by
+      rw [tensorCovDerivAt_def,
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]]
   rw [tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
     g r s S α (Jdx 0) hb_good]
   exact covDerivComponent_eq_euclidPartial_add_lowerOrder (I := I) (M := M)

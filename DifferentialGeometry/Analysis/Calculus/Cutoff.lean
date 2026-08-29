@@ -42,8 +42,8 @@ theorem exists_bump_one_on
       Set.EqOn χ 1 K ∧
       tsupport χ ⊆ U ∧
       Set.range χ ⊆ Set.Icc 0 1 := by
-  haveI : NormalSpace E := inferInstance
-  haveI : LocallyCompactSpace E := inferInstance
+  have : NormalSpace E := inferInstance
+  have : LocallyCompactSpace E := inferInstance
   obtain ⟨L, hL, hKL, hLU⟩ := exists_compact_between hK hU hKU
   obtain ⟨χM, hχone, hχzero, hχrange⟩ :=
     exists_contMDiffMap_one_nhds_of_subset_interior

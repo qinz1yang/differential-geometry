@@ -129,7 +129,7 @@ theorem nonzeroLaplacianEigenvalueSet_finite_below
     have h_empty : { lam : ℝ |
         lam ∈ nonzeroLaplacianEigenvalueSet (I := I) (M := M) g ∧ lam ≤ N } = ∅ := by
       ext lam
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
       rintro ⟨h_in_S, h_le_N⟩
       have h_pos := nonzeroLaplacianEigenvalueSet_pos (I := I) (M := M) g h_in_S
       linarith

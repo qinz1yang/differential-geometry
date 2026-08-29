@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -36,8 +38,8 @@ private theorem sum_g_inner_T_self_eq_invGram_sum
       ∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
-            g.inner x (T ((chartModelBasis E) k))
-              (T ((chartModelBasis E) l)) := by
+            g.inner x (T ((centeredChartTangentBasis (I := I) x) k))
+              (T ((centeredChartTangentBasis (I := I) x) l)) := by
   classical
   set Hb : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
     (((g.inner x).comp T).flip.comp T).flip with hHb_def
@@ -63,10 +65,11 @@ private theorem sum_g_inner_T_self_eq_invGram_sum
   rw [hHb_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
-private lemma g_inner_modelBasis_eq_chartGram
+private lemma g_inner_centeredBasis_eq_chartGram
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    g.inner x ((chartModelBasis E) i) ((chartModelBasis E) j) =
+    g.inner x ((centeredChartTangentBasis (I := I) x) i)
+        ((centeredChartTangentBasis (I := I) x) j) =
       chartGramMatrix (I := I) g x x i j := by
   classical
   rw [chartGramMatrix_apply]
@@ -74,46 +77,48 @@ private lemma g_inner_modelBasis_eq_chartGram
   rw [chartBasisVecFiber_self (I := I) x j]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
-private lemma g_inner_modelBasis_first_decomp
+private lemma g_inner_centeredBasis_first_decomp
     (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) (n : Fin (Module.finrank ℝ E)) :
-    g.inner x v ((chartModelBasis E) n) =
+    g.inner x v ((centeredChartTangentBasis (I := I) x) n) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr v p *
+        (centeredChartTangentBasis (I := I) x).repr v p *
           chartGramMatrix (I := I) g x x p n := by
   classical
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    centeredChartTangentBasis (I := I) x with hb_def
   have hv_eq : v = ∑ p : Fin (Module.finrank ℝ E), b.repr v p • b p :=
     (Module.Basis.sum_repr b v).symm
   rw [show g.inner x v =
       g.inner x (∑ p : Fin (Module.finrank ℝ E), b.repr v p • b p) from
     congrArg (g.inner x) hv_eq]
   rw [map_sum]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro p _
   rw [show g.inner x (b.repr v p • b p) =
       b.repr v p • g.inner x (b p) from
     (g.inner x).map_smul (b.repr v p) (b p)]
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
-  rw [g_inner_modelBasis_eq_chartGram (I := I) g x p n]
+  rw [smul_apply, smul_eq_mul]
+  rw [g_inner_centeredBasis_eq_chartGram (I := I) g x p n]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] in
-private lemma modelBasis_repr_eq_invGram_sum
+private lemma centeredBasis_repr_eq_invGram_sum
     (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) (n : Fin (Module.finrank ℝ E)) :
-    (chartModelBasis E).repr v n =
+    (centeredChartTangentBasis (I := I) x).repr v n =
       ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
-          g.inner x v ((chartModelBasis E) m) := by
+          g.inner x v ((centeredChartTangentBasis (I := I) x) m) := by
   classical
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    centeredChartTangentBasis (I := I) x with hb_def
   have h_inner : ∀ m : Fin (Module.finrank ℝ E),
       g.inner x v (b m) =
         ∑ p : Fin (Module.finrank ℝ E),
           b.repr v p *
             chartGramMatrix (I := I) g x x p m :=
-    g_inner_modelBasis_first_decomp (I := I) g x v
+    g_inner_centeredBasis_first_decomp (I := I) g x v
   rw [show (∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
           g.inner x v (b m)) =
@@ -205,11 +210,12 @@ omit [SigmaCompactSpace M] in
 theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M) :
-    frobeniusSq_grad_vector (I := I) g
+    frobeniusSqGradVector (I := I) g
         (fun b : M => gradFun (I := I) g f b) x =
       chartHessFrobeniusSq (I := I) g f x := by
   classical
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    centeredChartTangentBasis (I := I) x with hb_def
   set T : TangentSpace I x →L[ℝ] TangentSpace I x :=
     (LeviCivita (I := I) g).toFun
       (fun b => gradFun (I := I) g f b) x with hT_def
@@ -218,7 +224,7 @@ theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
   have hB_orth : ∀ i j : Fin (Module.finrank ℝ E),
       g.inner x (B i) (B j) = if i = j then (1 : ℝ) else 0 := fun i j =>
     smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
-  have hStep1 : frobeniusSq_grad_vector (I := I) g
+  have hStep1 : frobeniusSqGradVector (I := I) g
         (fun b => gradFun (I := I) g f b) x =
       ∑ i : Fin (Module.finrank ℝ E),
         g.inner x (T (B i)) (T (B i)) := by
@@ -279,7 +285,7 @@ theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
         ∑ m : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x n m *
             g.inner x (T (b l)) (b m) :=
-    fun l n => modelBasis_repr_eq_invGram_sum (I := I) g x (T (b l)) n
+    fun l n => centeredBasis_repr_eq_invGram_sum (I := I) g x (T (b l)) n
   rw [show (∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
@@ -374,30 +380,30 @@ omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
-      2 * frobeniusSq_grad_vector (I := I) g
+    ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+      2 * frobeniusSqGradVector (I := I) g
             (fun b => gradFun (I := I) g f b) x +
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         2 * g.inner x (gradFun (I := I) g f x)
-            (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
+            (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) := by
   have h := bochner_pointwise_abstract_of_smooth (I := I) g hf x
-  have hLHS_eq : Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x := rfl
+  have hLHS_eq : ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x := rfl
   rw [hLHS_eq] at h
-  have h' : Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
-      2 * (g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+  have h' : ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+      2 * (g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
             (gradFun (I := I) g f x) +
           ricciTensor (I := I) g x (gradFun (I := I) g f x)
             (gradFun (I := I) g f x) +
-          frobeniusSq_grad_vector (I := I) g
+          frobeniusSqGradVector (I := I) g
             (fun b => gradFun (I := I) g f b) x) := by
     linarith [h]
   rw [h']
-  rw [show g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+  rw [show g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
           (gradFun (I := I) g f x) =
         g.inner x (gradFun (I := I) g f x)
-          (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) from
+          (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) from
     g.symm x _ _]
   ring
 
@@ -405,12 +411,12 @@ omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_concrete_metric
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+    ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
       2 * chartHessFrobeniusSq (I := I) g f x +
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         2 * g.inner x (gradFun (I := I) g f x)
-            (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
+            (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) := by
   rw [bochner_pointwise_grad_normSq_of_boundaryless (I := I) g hf x]
   rw [frobeniusSq_grad_vector_eq_chartHessFrobeniusSq (I := I) g hf x]
 
@@ -427,12 +433,12 @@ omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_half_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
       chartHessFrobeniusSq (I := I) g f x +
         ricciTensor (I := I) g x
           (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         g.inner x (gradFun (I := I) g f x)
-          (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
+          (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) := by
   rw [bochner_pointwise_concrete_metric (I := I) g hf x]
   ring
 

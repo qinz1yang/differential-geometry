@@ -1,5 +1,6 @@
 import DifferentialGeometry.Tensor.Exterior.Model
 
+
 noncomputable section
 
 open ContinuousAlternatingMap Set
@@ -21,7 +22,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 instance : FunLike (Ω^n⟮E, F⟯) E (E [⋀^Fin n]→L[ℝ] F) where
   coe := ModelDifferentialForm.toFun
-  coe_injective' := by
+  coe_injective := by
     intro ⟨_, _⟩ ⟨_, _⟩ h
     cases h
     rfl
@@ -143,9 +144,12 @@ noncomputable def domDomCongrL (e : Fin k ≃ Fin l) :
 
 noncomputable def reindex (e : Fin k ≃ Fin l) (ω : Ω^k⟮E, F⟯) : Ω^l⟮E, F⟯ :=
   ⟨fun x => ContinuousAlternatingMap.domDomCongr e (ω x), by
+    have hω : ContDiff ℝ ⊤ (fun x => ω x) := by
+      change ContDiff ℝ ⊤ ω.toFun
+      exact ω.smooth
     simpa [contDiffOn_univ, domDomCongrL] using
       (contDiff_const (c := domDomCongrL (E := E) (F := F) e)).clm_apply
-        (by simpa [contDiffOn_univ] using ω.smooth)⟩
+        hω⟩
 
 @[simp]
 theorem reindex_apply (e : Fin k ≃ Fin l) (ω : Ω^k⟮E, F⟯) (x : E) :

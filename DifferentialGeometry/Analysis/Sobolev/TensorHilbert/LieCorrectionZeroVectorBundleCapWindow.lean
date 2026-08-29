@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoef
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -80,7 +79,10 @@ theorem exists_lieCorrectionZeroVectorBundle_antidiagonalTupleGridWindow_bound (
       (P.toSection y) ≤ Real.sqrt Λ ^ 2 := by
     intro y
     rw [Real.sq_sqrt hΛ0]
-    simpa using hP0 y
+    have h := hP0 y
+    change riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) y
+        ((iteratedCovGrad (I := I) g₀ 0 2 0 P).toSection y) ≤ Λ at h
+    simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
   have hA : ∀ (m : ℕ) (y : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (4 + m) y
           ((iteratedCovGrad (I := I) g₀ 1 4 m
@@ -201,7 +203,10 @@ theorem exists_lieCorrectionZeroVectorBundle_jet_cap_bound (g₀ : SmoothRiemann
       ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) ≤ Real.sqrt Λ ^ 2 := by
     intro x
     rw [Real.sq_sqrt hΛ0]
-    simpa using hP1 x
+    have h := hP1 x
+    change riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
+        ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) ≤ Λ at h
+    exact h
   exact hint P hcap 2 2 i 1 (lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁) (Kvb i) (hKvb_nn i)
     (fun x => hvb g₁ P htie hδ_le hδ0 hδ hP0 hP1 i x)
 

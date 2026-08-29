@@ -9,7 +9,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -37,11 +36,12 @@ theorem covariantDeriv_vectorField_contMDiff
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)) :
     ContMDiff I (I.prod 𝓘(𝕜, E)) (∞ : WithTop ℕ∞)
       (fun p : M =>
-        (⟨p, covariantDeriv_vectorField (I := I) cov (fun q => X q) (fun q => Y q) p⟩ :
+        (⟨p, covariantDerivVectorField (I := I) cov (fun q => X q) (fun q => Y q) p⟩ :
           TotalSpace E (TangentSpace I : M → Type _))) := by
-  simpa [covariantDeriv_vectorField] using
-    (CovariantDerivative.ContMDiffCovariantDerivative.contMDiff_apply
-      (𝕜 := 𝕜) (I := I) (M := M) cov hcov X Y)
+  refine (CovariantDerivative.ContMDiffCovariantDerivative.contMDiff_apply
+    (𝕜 := 𝕜) (I := I) (M := M) cov hcov X Y).congr ?_
+  intro p
+  rfl
 
 noncomputable def covSection
     [VectorBundle 𝕜 E (TangentSpace I : M → Type _)]
@@ -51,7 +51,7 @@ noncomputable def covSection
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) where
   toFun := fun p : M => (cov (fun q : M => Y q) p) (X p)
   contMDiff_toFun := by
-    simpa [covariantDeriv_vectorField] using
+    simpa [covariantDerivVectorField] using
       covariantDeriv_vectorField_contMDiff (I := I) cov hcov X Y
 
 omit [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜] in
@@ -168,7 +168,7 @@ lemma tangentConstInChart_contMDiffOn_baseSet (x₀ : M) (v : E)
       (T% (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ v :
         (p : M) → TangentSpace I p)) := by
   let e := trivializationAt E (TangentSpace I) x₀
-  haveI : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+  have : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := n)
   rw [e.contMDiffOn_section_baseSet_iff]
   refine (contMDiffOn_const (c := v)).congr ?_
@@ -207,8 +207,8 @@ theorem smoothSections_cov_contMDiffAt_one
         (⟨p, (cov (fun q : M => Y q) p) (X p)⟩ :
           TotalSpace E (TangentSpace I : M → Type _))) x := by
   rcases hM2 with ⟨⟩
-  letI : IsManifold I 2 M := IsManifold.mk
-  haveI : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
+  let : IsManifold I 2 M := IsManifold.mk
+  have : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
     have h : ((1 : WithTop ℕ∞) + 1) = (2 : WithTop ℕ∞) := by
       norm_num
     exact h.symm ▸ (inferInstance : IsManifold I 2 M)
@@ -249,30 +249,38 @@ theorem tangentConst_cov_mdiffAt
     {x : M} (v w : TangentSpace I x) :
     MDiffAt
       (T% (fun p : M =>
-        (cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x w) p)
-          ((TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x v) p))) x := by
+        (cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x
+            ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt 𝕜 x w)) p)
+          ((TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x
+            ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt 𝕜 x v)) p))) x := by
   let e := trivializationAt E (TangentSpace I : M → Type _) x
+  let vModel : E := e.continuousLinearMapAt 𝕜 x v
+  let wModel : E := e.continuousLinearMapAt 𝕜 x w
+  change MDiffAt
+    (T% (fun p : M =>
+      (cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x wModel) p)
+        ((TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x vModel) p))) x
   have hx : x ∈ e.baseSet := FiberBundle.mem_baseSet_trivializationAt' x
-  haveI : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((1 : WithTop ℕ∞) + 1) M := by
     have h : ((1 : WithTop ℕ∞) + 1) = (2 : WithTop ℕ∞) := by
       norm_num
     exact h.symm ▸ (inferInstance : IsManifold I 2 M)
-  haveI : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
+  have : IsManifold I (((1 : WithTop ℕ∞) + 1) + 1) M := by
     have h : (((1 : WithTop ℕ∞) + 1) + 1) = (3 : WithTop ℕ∞) := by
       norm_num
     exact h.symm ▸ (inferInstance : IsManifold I 3 M)
   have hw :
       CMDiff[e.baseSet] ((1 : WithTop ℕ∞) + 1)
-        (T% (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x w :
+        (T% (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x wModel :
           (p : M) → TangentSpace I p)) := by
     simpa [e] using
       (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
         (𝕜 := 𝕜) (I := I) (M := M)
-        (n := (1 : WithTop ℕ∞) + 1) x w)
+        (n := (1 : WithTop ℕ∞) + 1) x wModel)
   have hcovw :
       ContMDiffOn I (I.prod 𝓘(𝕜, E →L[𝕜] E)) (1 : WithTop ℕ∞)
         (fun p : M =>
-          (⟨p, cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x w) p⟩ :
+          (⟨p, cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x wModel) p⟩ :
             TotalSpace (E →L[𝕜] E)
               (fun p : M =>
                 TangentSpace I p →L[𝕜] TangentSpace I p)))
@@ -280,17 +288,17 @@ theorem tangentConst_cov_mdiffAt
     exact (hcov e.open_baseSet).contMDiff hw
   have hv :
       CMDiff[e.baseSet] (1 : WithTop ℕ∞)
-        (T% (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x v :
+        (T% (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x vModel :
           (p : M) → TangentSpace I p)) := by
     simpa [e] using
       (TensorLieDeriv.tangentConstInChart_contMDiffOn_baseSet
         (𝕜 := 𝕜) (I := I) (M := M)
-        (n := (1 : WithTop ℕ∞)) x v)
+        (n := (1 : WithTop ℕ∞)) x vModel)
   have h_on :
       CMDiff[e.baseSet] (1 : WithTop ℕ∞)
         (T% (fun p : M =>
-          (cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x w) p)
-            ((TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x v) p))) := by
+          (cov (TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x wModel) p)
+            ((TensorLieDeriv.tangentConstInChart (𝕜 := 𝕜) (I := I) x vModel) p))) := by
     simpa [e] using hcovw.clm_bundle_apply hv
   exact ((h_on x hx).contMDiffAt (e.open_baseSet.mem_nhds hx)).mdifferentiableAt
     (by norm_num : (1 : WithTop ℕ∞) ≠ 0)

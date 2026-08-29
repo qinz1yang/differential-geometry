@@ -122,7 +122,7 @@ theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
         = negCovariantSlotValue (I := I) (g_DT t)
             (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v
           + christoffelCorrection (I := I) (g_DT t) (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 ((deTurckVF (I := I) (g_DT t) g_bg :
                     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
                   ∀ y : M, TangentSpace I y) (Φ_fam t x))
@@ -132,7 +132,7 @@ theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
         = negCovariantSlotValue (I := I) (g_DT t)
             (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x w
           + christoffelCorrection (I := I) (g_DT t) (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 ((deTurckVF (I := I) (g_DT t) g_bg :
                     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
                   ∀ y : M, TangentSpace I y) (Φ_fam t x))

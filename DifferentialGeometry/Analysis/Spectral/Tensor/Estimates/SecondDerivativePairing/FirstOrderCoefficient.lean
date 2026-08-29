@@ -153,6 +153,7 @@ theorem operator_field_application_second_covariant_derivative_pairing_h3_bound
       oneMinusConnLapSmoothIter_succ,
       oneMinusConnLapSmoothIter_zero,
       SmoothCcTensor.norm_toL2] at heven
+    rw [show (((2 * (0 + 1) : ℕ) : ℝ)) = 2 by norm_num] at heven
     simpa only [L, x, Nat.reduceMul, Nat.cast_ofNat,
       norm_ccHs_eq_smoothHs] using heven.symm
   have hgradL :

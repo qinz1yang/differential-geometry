@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -111,28 +110,34 @@ noncomputable def chartTensorCovDerivPointwiseInner
       tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s S b
-            (chartBasisVecFiber (I := I) α i b)))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (chartBasisVecFiber (I := I) α i b))))
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s T b
-            (chartBasisVecFiber (I := I) α j b)))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (chartBasisVecFiber (I := I) α j b))))
 
 private noncomputable def chartBasisTransitionMatrix (α : M) (b : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun k i =>
-    ((chartModelBasis E).repr (chartBasisVecFiber (I := I) α i b)) k
+    ((chartModelBasis E).repr
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (chartBasisVecFiber (I := I) α i b))) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma chartBasisVecFiber_eq_sum_chartModelBasis
+private lemma chartBasisVecFiber_toModel_eq_sum_chartModelBasis
     (α : M) (b : M) (i : Fin (Module.finrank ℝ E)) :
-    chartBasisVecFiber (I := I) α i b =
+    tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (chartBasisVecFiber (I := I) α i b) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartBasisTransitionMatrix (I := I) α b k i • (chartModelBasis E) k := by
   classical
   unfold chartBasisTransitionMatrix
   simp only [Matrix.of_apply]
   exact (((chartModelBasis E).sum_repr
-    (chartBasisVecFiber (I := I) α i b))).symm
+    (tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (chartBasisVecFiber (I := I) α i b)))).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -141,7 +146,8 @@ private lemma chartBasisTransitionMatrix_eq_toMatrix
     chartBasisTransitionMatrix (I := I) α b =
       (chartModelBasis E).toMatrix
         (fun i : Fin (Module.finrank ℝ E) =>
-          chartBasisVecFiber (I := I) α i b) := by
+          tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α i b)) := by
   classical
   unfold chartBasisTransitionMatrix
   ext k i
@@ -156,13 +162,16 @@ private lemma chartBasisTransitionMatrix_isUnit
   classical
   rw [chartBasisTransitionMatrix_eq_toMatrix]
   set chartBasis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
-    chartBasisFamily (I := I) α hb with hCB_def
+    (chartBasisFamily (I := I) α hb).map
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).toLinearEquiv with hCB_def
   have hfam_eq : (fun i : Fin (Module.finrank ℝ E) =>
-      chartBasisVecFiber (I := I) α i b)
+      tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (chartBasisVecFiber (I := I) α i b))
       = (chartBasis : Fin (Module.finrank ℝ E) → E) := by
     funext i
     rw [hCB_def]
-    exact (chartBasisFamily_apply (I := I) α hb i).symm
+    rw [Module.Basis.map_apply, chartBasisFamily_apply]
+    rfl
   rw [hfam_eq]
   refine ⟨⟨_, chartBasis.toMatrix (chartModelBasis E), ?_, ?_⟩, rfl⟩
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
@@ -170,23 +179,25 @@ private lemma chartBasisTransitionMatrix_isUnit
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma g_inner_bilinear_expand
+private lemma modelInnerAt_bilinear_expand
     (g : SmoothRiemannianMetric I M) (b : M) {n : ℕ}
     (a c : Fin n → ℝ) (u : Fin n → E) :
-    g.inner b (∑ k : Fin n, a k • u k) (∑ l : Fin n, c l • u l) =
+    modelInnerAt (I := I) (M := M) g b
+        (∑ k : Fin n, a k • u k) (∑ l : Fin n, c l • u l) =
       ∑ k : Fin n, ∑ l : Fin n,
-        a k * c l * g.inner b (u k) (u l) := by
+        a k * c l * modelInnerAt (I := I) (M := M) g b (u k) (u l) := by
   classical
-  have houter : g.inner b (∑ k : Fin n, a k • u k) =
-      ∑ k : Fin n, a k • (g.inner b (u k)) := by
+  have houter : modelInnerAt (I := I) (M := M) g b
+        (∑ k : Fin n, a k • u k) =
+      ∑ k : Fin n, a k • (modelInnerAt (I := I) (M := M) g b (u k)) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [map_smul]
-  rw [houter, ContinuousLinearMap.sum_apply]
+  rw [houter, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro k _
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro l _
@@ -207,9 +218,13 @@ private lemma chartGramMatrix_eq_transition
     chartBasisTransitionMatrix (I := I) α b with hT_def
   ext i j
   rw [chartGramMatrix_apply]
-  rw [chartBasisVecFiber_eq_sum_chartModelBasis (I := I) α b i,
-      chartBasisVecFiber_eq_sum_chartModelBasis (I := I) α b j]
-  rw [g_inner_bilinear_expand g b
+  rw [← (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply
+      (chartBasisVecFiber (I := I) α i b),
+    ← (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply
+      (chartBasisVecFiber (I := I) α j b), ← modelInnerAt_apply]
+  rw [chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b i,
+      chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b j]
+  rw [modelInnerAt_bilinear_expand g b
         (fun k => T k i) (fun l => T l j) (chartModelBasis E)]
   rw [Matrix.mul_apply]
   rw [Finset.sum_comm]
@@ -265,10 +280,12 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
     tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s S b
-            (chartBasisVecFiber (I := I) α i b)))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (chartBasisVecFiber (I := I) α i b))))
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s T b
-            (chartBasisVecFiber (I := I) α j b))) =
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (chartBasisVecFiber (I := I) α j b)))) =
       ((chartBasisTransitionMatrix (I := I) α b)ᵀ *
           (Matrix.of fun k l : Fin (Module.finrank ℝ E) =>
             tensorInnerPointwise (I := I) (M := M) g r s b
@@ -282,28 +299,30 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
   classical
   set Tmat : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     chartBasisTransitionMatrix (I := I) α b with hTmat_def
-  have hexp_i := chartBasisVecFiber_eq_sum_chartModelBasis (I := I) α b i
-  have hexp_j := chartBasisVecFiber_eq_sum_chartModelBasis (I := I) α b j
+  have hexp_i := chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b i
+  have hexp_j := chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b j
   have hSi : tensorCovDerivAt (I := I) (M := M) g r s S b
-        (chartBasisVecFiber (I := I) α i b) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartBasisVecFiber (I := I) α i b)) =
       ∑ k : Fin (Module.finrank ℝ E), Tmat k i •
         tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k) := by
     rw [hexp_i]
     unfold tensorCovDerivAt
-    rw [map_sum]
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
-    rw [map_smul]
+    rw [map_smul, map_smul]
   have hTj : tensorCovDerivAt (I := I) (M := M) g r s T b
-        (chartBasisVecFiber (I := I) α j b) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartBasisVecFiber (I := I) α j b)) =
       ∑ l : Fin (Module.finrank ℝ E), Tmat l j •
         tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l) := by
     rw [hexp_j]
     unfold tensorCovDerivAt
-    rw [map_sum]
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
-    rw [map_smul]
+    rw [map_smul, map_smul]
   rw [hSi, hTj]
   have htoM_sum : ∀ (s' : Finset (Fin (Module.finrank ℝ E)))
       (f : Fin (Module.finrank ℝ E) → TensorRSSpace r s I b)
@@ -370,10 +389,12 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
       tensorInnerPointwise (I := I) (M := M) g r s b
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S b
-              (chartBasisVecFiber (I := I) α i b)))
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                (chartBasisVecFiber (I := I) α i b))))
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s T b
-              (chartBasisVecFiber (I := I) α j b))) =
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                (chartBasisVecFiber (I := I) α j b)))) =
         (Tmatᵀ * Bmat * Tmat) i j := by
     intro i j
     exact chartTensorCovDeriv_innerMatrix_eq_transition (I := I) (M := M) g α r s S T b i j
@@ -383,10 +404,12 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b)))
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                    (chartBasisVecFiber (I := I) α i b))))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s T b
-                  (chartBasisVecFiber (I := I) α j b))) =
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                    (chartBasisVecFiber (I := I) α j b)))) =
         ∑ i : Fin n, ∑ j : Fin n,
           (Tmatᵀ * Gmat * Tmat)⁻¹ i j * (Tmatᵀ * Bmat * Tmat) i j := by
     refine Finset.sum_congr rfl ?_
@@ -414,32 +437,39 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
         rw [Fintype.linearIndependent_iff] at hlin
         exact hv (funext (hlin v h))
       have hquad : star v ⬝ᵥ (gramMatrixAt (I := I) (M := M) g b) *ᵥ v =
-          g.inner b w w := by
-        have hexp : g.inner b w w =
+          modelInnerAt (I := I) (M := M) g b w w := by
+        have hexp : modelInnerAt (I := I) (M := M) g b w w =
             ∑ j : Fin (Module.finrank ℝ E),
               v j * ∑ i : Fin (Module.finrank ℝ E),
                 v i * gramMatrixAt (I := I) (M := M) g b i j := by
-          change g.inner b (∑ i, v i • (chartModelBasis E) i)
+          change modelInnerAt (I := I) (M := M) g b
+              (∑ i, v i • (chartModelBasis E) i)
               (∑ j, v j • (chartModelBasis E) j) = _
           rw [map_sum]
           refine Finset.sum_congr rfl ?_
           intro j _
-          have hsm1 : (g.inner b (∑ i, v i • (chartModelBasis E) i))
+          have hsm1 : (modelInnerAt (I := I) (M := M) g b
+                (∑ i, v i • (chartModelBasis E) i))
                 (v j • (chartModelBasis E) j) =
-              v j * (g.inner b (∑ i, v i • (chartModelBasis E) i))
+              v j * (modelInnerAt (I := I) (M := M) g b
+                (∑ i, v i • (chartModelBasis E) i))
                 ((chartModelBasis E) j) := by
             rw [map_smul, smul_eq_mul]
           rw [hsm1]
           congr 1
-          rw [map_sum, ContinuousLinearMap.sum_apply]
+          rw [map_sum, sum_apply]
           refine Finset.sum_congr rfl ?_
           intro i _
-          have hsm2 : (g.inner b (v i • (chartModelBasis E) i))
+          have hsm2 : (modelInnerAt (I := I) (M := M) g b
+                (v i • (chartModelBasis E) i))
                 ((chartModelBasis E) j) =
-              v i * (g.inner b ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
-            rw [show (g.inner b) (v i • (chartModelBasis E) i) =
-                v i • (g.inner b) ((chartModelBasis E) i) from by rw [map_smul]]
-            rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+              v i * (modelInnerAt (I := I) (M := M) g b
+                ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
+            rw [show modelInnerAt (I := I) (M := M) g b
+                (v i • (chartModelBasis E) i) =
+                v i • modelInnerAt (I := I) (M := M) g b
+                  ((chartModelBasis E) i) from by rw [map_smul]]
+            rw [smul_apply, smul_eq_mul]
           rw [hsm2, gramMatrixAt_apply]
         rw [hexp]
         change ∑ j : Fin (Module.finrank ℝ E),
@@ -454,10 +484,10 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
                 gramMatrixAt (I := I) (M := M) g b j i * v i from rfl]
         rw [Finset.mul_sum, Finset.mul_sum]
         refine Finset.sum_congr rfl (fun i (_ : i ∈ Finset.univ) => ?_)
-        rw [gramMatrixAt_apply, gramMatrixAt_apply, g.symm]
+        rw [gramMatrixAt_apply, gramMatrixAt_apply, modelInnerAt_symm]
         ring
       rw [hquad]
-      exact g.pos b w hw_ne
+      exact modelInnerAt_pos_of_ne_zero (I := I) (M := M) g b hw_ne
     have hdet_pos := hposdef.det_pos
     exact ne_of_gt hdet_pos
   exact trace_invariance_under_change_of_basis Tmat hT_unit Gmat hG_unit Bmat
@@ -501,7 +531,7 @@ private lemma frameGram_eq_transition
     (g : SmoothRiemannianMetric I M) (b : M)
     (frame : Fin (Module.finrank ℝ E) → E) :
     (Matrix.of fun i j : Fin (Module.finrank ℝ E) =>
-        g.inner b (frame i) (frame j)) =
+        modelInnerAt (I := I) (M := M) g b (frame i) (frame j)) =
       (frameTransitionMatrix (E := E) frame)ᵀ *
         gramMatrixAt (I := I) (M := M) g b *
         frameTransitionMatrix (E := E) frame := by
@@ -510,7 +540,7 @@ private lemma frameGram_eq_transition
   rw [Matrix.of_apply]
   rw [frame_eq_sum_chartModelBasis (E := E) frame i,
     frame_eq_sum_chartModelBasis (E := E) frame j]
-  rw [g_inner_bilinear_expand g b
+  rw [modelInnerAt_bilinear_expand g b
         (fun k => frameTransitionMatrix (E := E) frame k i)
         (fun l => frameTransitionMatrix (E := E) frame l j) (chartModelBasis E)]
   rw [Matrix.mul_apply]
@@ -553,20 +583,20 @@ private lemma frameInnerMatrix_eq_transition
         tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k) := by
     rw [frame_eq_sum_chartModelBasis (E := E) frame i]
     unfold tensorCovDerivAt
-    rw [map_sum]
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
-    rw [map_smul]
+    rw [map_smul, map_smul]
   have hTj : tensorCovDerivAt (I := I) (M := M) g r s T b (frame j) =
       ∑ l : Fin (Module.finrank ℝ E),
         frameTransitionMatrix (E := E) frame l j •
         tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l) := by
     rw [frame_eq_sum_chartModelBasis (E := E) frame j]
     unfold tensorCovDerivAt
-    rw [map_sum]
+    rw [map_sum, map_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
-    rw [map_smul]
+    rw [map_smul, map_smul]
   rw [hSi, hTj]
   have htoM_sum : ∀ (s' : Finset (Fin (Module.finrank ℝ E)))
       (f : Fin (Module.finrank ℝ E) → TensorRSSpace r s I b)
@@ -610,7 +640,7 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
     (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E) :
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         (Matrix.of fun i' j' : Fin (Module.finrank ℝ E) =>
-          g.inner b (frame i') (frame j'))⁻¹ i j *
+          modelInnerAt (I := I) (M := M) g b (frame i') (frame j'))⁻¹ i j *
           tensorInnerPointwise (I := I) (M := M) g r s b
             (TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s S b (frame i)))
@@ -630,11 +660,11 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l)))
   have hG_eq : (Matrix.of fun i' j' : Fin (Module.finrank ℝ E) =>
-      g.inner b (frame i') (frame j')) = Tmatᵀ * Gmat * Tmat :=
+      modelInnerAt (I := I) (M := M) g b (frame i') (frame j')) = Tmatᵀ * Gmat * Tmat :=
     frameGram_eq_transition (I := I) (M := M) g b (frame : Fin (Module.finrank ℝ E) → E)
   have hterm : ∀ i j : Fin (Module.finrank ℝ E),
       (Matrix.of fun i' j' : Fin (Module.finrank ℝ E) =>
-            g.inner b (frame i') (frame j'))⁻¹ i j *
+            modelInnerAt (I := I) (M := M) g b (frame i') (frame j'))⁻¹ i j *
           tensorInnerPointwise (I := I) (M := M) g r s b
             (TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s S b (frame i)))
@@ -663,32 +693,39 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
         rw [Fintype.linearIndependent_iff] at hlin
         exact hv (funext (hlin v h))
       have hquad : star v ⬝ᵥ (gramMatrixAt (I := I) (M := M) g b) *ᵥ v =
-          g.inner b w w := by
-        have hexp : g.inner b w w =
+          modelInnerAt (I := I) (M := M) g b w w := by
+        have hexp : modelInnerAt (I := I) (M := M) g b w w =
             ∑ j : Fin (Module.finrank ℝ E),
               v j * ∑ i : Fin (Module.finrank ℝ E),
                 v i * gramMatrixAt (I := I) (M := M) g b i j := by
-          change g.inner b (∑ i, v i • (chartModelBasis E) i)
+          change modelInnerAt (I := I) (M := M) g b
+              (∑ i, v i • (chartModelBasis E) i)
               (∑ j, v j • (chartModelBasis E) j) = _
           rw [map_sum]
           refine Finset.sum_congr rfl ?_
           intro j _
-          have hsm1 : (g.inner b (∑ i, v i • (chartModelBasis E) i))
+          have hsm1 : (modelInnerAt (I := I) (M := M) g b
+                (∑ i, v i • (chartModelBasis E) i))
                 (v j • (chartModelBasis E) j) =
-              v j * (g.inner b (∑ i, v i • (chartModelBasis E) i))
+              v j * (modelInnerAt (I := I) (M := M) g b
+                (∑ i, v i • (chartModelBasis E) i))
                 ((chartModelBasis E) j) := by
             rw [map_smul, smul_eq_mul]
           rw [hsm1]
           congr 1
-          rw [map_sum, ContinuousLinearMap.sum_apply]
+          rw [map_sum, sum_apply]
           refine Finset.sum_congr rfl ?_
           intro i _
-          have hsm2 : (g.inner b (v i • (chartModelBasis E) i))
+          have hsm2 : (modelInnerAt (I := I) (M := M) g b
+                (v i • (chartModelBasis E) i))
                 ((chartModelBasis E) j) =
-              v i * (g.inner b ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
-            rw [show (g.inner b) (v i • (chartModelBasis E) i) =
-                v i • (g.inner b) ((chartModelBasis E) i) from by rw [map_smul]]
-            rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+              v i * (modelInnerAt (I := I) (M := M) g b
+                ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
+            rw [show modelInnerAt (I := I) (M := M) g b
+                (v i • (chartModelBasis E) i) =
+                v i • modelInnerAt (I := I) (M := M) g b
+                  ((chartModelBasis E) i) from by rw [map_smul]]
+            rw [smul_apply, smul_eq_mul]
           rw [hsm2, gramMatrixAt_apply]
         rw [hexp]
         change ∑ j : Fin (Module.finrank ℝ E),
@@ -703,10 +740,10 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
                 gramMatrixAt (I := I) (M := M) g b j i * v i from rfl]
         rw [Finset.mul_sum, Finset.mul_sum]
         refine Finset.sum_congr rfl (fun i (_ : i ∈ Finset.univ) => ?_)
-        rw [gramMatrixAt_apply, gramMatrixAt_apply, g.symm]
+        rw [gramMatrixAt_apply, gramMatrixAt_apply, modelInnerAt_symm]
         ring
       rw [hquad]
-      exact g.pos b w hw_ne
+      exact modelInnerAt_pos_of_ne_zero (I := I) (M := M) g b hw_ne
     exact ne_of_gt hposdef.det_pos
   exact trace_invariance_under_change_of_basis Tmat hT_unit Gmat hG_unit Bmat
 
@@ -716,7 +753,8 @@ lemma tensorCovDerivPointwiseInner_eq_orthoFrame_diag_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M)
     (frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E)
-    (horth : ∀ i j, g.inner b (frame i) (frame j) = if i = j then (1 : ℝ) else 0) :
+    (horth : ∀ i j, modelInnerAt (I := I) (M := M) g b (frame i) (frame j) =
+      if i = j then (1 : ℝ) else 0) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T b =
       ∑ i : Fin (Module.finrank ℝ E),
         tensorInnerPointwise (I := I) (M := M) g r s b
@@ -727,7 +765,7 @@ lemma tensorCovDerivPointwiseInner_eq_orthoFrame_diag_sum
   classical
   have hGframe_eq_one :
       (Matrix.of fun i' j' : Fin (Module.finrank ℝ E) =>
-        g.inner b (frame i') (frame j')) =
+        modelInnerAt (I := I) (M := M) g b (frame i') (frame j')) =
         (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ) := by
     ext i j
     rw [Matrix.of_apply, horth i j, Matrix.one_apply]

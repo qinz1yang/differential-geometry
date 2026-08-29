@@ -33,16 +33,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 
-private noncomputable def secondOrderAction_covariantJetNorm_two_inputs_background
-    (hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) :=
-  secondOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g g_bg
-
-private noncomputable def firstOrderAction_covariantJetNorm_two_inputs_background
-    (hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) :=
-  firstOrderAction_perIndex_linear_bound_background (I := I) (M := M) hDim g g_bg
-
 theorem lowerScaleActions_covariantJetNorm_two_tame_bound_background (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Ctop Kr2 Kr1 Kmid : ℝ, 0 ≤ Ctop ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kmid ∧
@@ -81,9 +71,9 @@ theorem lowerScaleActions_covariantJetNorm_two_tame_bound_background (hDim : Mod
             Kmid * (1 + Cδ) * ((1 + Y) ^ 2 * (1 + Z) ^ 2) := by
   classical
   obtain ⟨Cqa, Ka, hCqa, hKa, ha2⟩ :=
-    secondOrderAction_covariantJetNorm_two_inputs_background (I := I) (M := M) hDim g g_bg
+    secondOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g g_bg
   obtain ⟨Cqb, Kb0, Kb1, hCqb, hKb0, hKb1, ha1⟩ :=
-    firstOrderAction_covariantJetNorm_two_inputs_background (I := I) (M := M) hDim g g_bg
+    firstOrderAction_perIndex_linear_bound_background (I := I) (M := M) hDim g g_bg
   have hRest : (0 : ℝ) ≤ Cqa 1 * Ka 1 + Cqa 2 * Ka 1 + Cqa 2 * Ka 2 +
       Cqb 0 * (2 * Kb0 0 + Kb1 0) +
       Cqb 1 * (Kb0 0 + Kb0 1 + Kb1 0 + Kb1 1) +
@@ -530,14 +520,15 @@ private theorem exists_galerkin_energy_three_bound_parameters_raw_background (hD
       intro i hi
       rw [galForceArmBackground (I := I) (M := M) g₀ g_bg hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
         hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
-      exact add_comm _ _
+      simp only [galerkinActionVectorBackground]
+      module
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         tensorSobolevWeight (I := I) (M := M) i 3 *
           ((boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i) ^ 2
           ≤ Cseed 3 ^ 2 := by
       have h := hseed 3 (eigenIdxFinset (I := I) (M := M) g₀ N)
-      simpa only [Nat.cast_ofNat] using h
+      simpa only [boundedDeTurckRemainderOnLowerState, Nat.cast_ofNat] using h
     have hladder :
         Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
             tensorSobolevWeight (I := I) (M := M) i (3 - 1) *

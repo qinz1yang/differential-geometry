@@ -68,7 +68,7 @@ theorem potential_grad_sq
           (gradientFun (I := I) g u x)
           (gradientFun (I := I) g u x) := by
   rw [potential_grad (I := I) g n hu hpos htau x]
-  simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [map_smul, smul_apply, smul_eq_mul]
   field_simp [(hpos x).ne']
 
 omit [TopologicalSpace M] in
@@ -102,7 +102,7 @@ theorem square_pot_energy
   have hvsq_pos (y : M) : 0 < v y * v y := mul_pos (hpos y) (hpos y)
   rw [potential_grad_sq (I := I) g n hvsq hvsq_pos htau x]
   rw [gradientFun_mul_self (I := I) g (hvdiff x)]
-  simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [map_smul, smul_apply, smul_eq_mul]
   field_simp [(hpos x).ne']
   ring
 

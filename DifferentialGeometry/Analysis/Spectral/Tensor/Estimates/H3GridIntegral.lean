@@ -53,8 +53,8 @@ theorem low_grid_int
                         ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K A k := by
   classical
-  letI : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   obtain ⟨Cpt, hCpt, hpt⟩ :=
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
@@ -196,14 +196,14 @@ theorem low_grid_int
               riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g) := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro n hn
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro e he
       exact (hterm n hn e he).1
     refine ⟨hint, ?_⟩
-    rw [MeasureTheory.integral_finset_sum _
-      (fun n hn => MeasureTheory.integrable_finset_sum _
+    rw [MeasureTheory.integral_finsetSum _
+      (fun n hn => MeasureTheory.integrable_finsetSum _
         (fun e he => (hterm n hn e he).1))]
     have hinner : ∀ n ∈ Finset.range (k + 1),
         (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -217,7 +217,7 @@ theorem low_grid_int
               ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       intro n hn
-      exact MeasureTheory.integral_finset_sum _ (fun e he => (hterm n hn e he).1)
+      exact MeasureTheory.integral_finsetSum _ (fun e he => (hterm n hn e he).1)
     rw [Finset.sum_congr rfl hinner]
     calc
       ∑ n ∈ Finset.range (k + 1),
@@ -292,8 +292,8 @@ theorem h3_top_grid_int
                       ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
               ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K R * A ^ 2 := by
   classical
-  letI : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   obtain ⟨Cpt, hCpt, hpt⟩ :=
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
@@ -377,14 +377,14 @@ theorem h3_top_grid_int
             riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
               ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro n hn
-    apply MeasureTheory.integrable_finset_sum
+    apply MeasureTheory.integrable_finsetSum
     intro e he
     exact (hterm n hn e he).1
   refine ⟨hint, ?_⟩
-  rw [MeasureTheory.integral_finset_sum _
-    (fun n hn => MeasureTheory.integrable_finset_sum _
+  rw [MeasureTheory.integral_finsetSum _
+    (fun n hn => MeasureTheory.integrable_finsetSum _
       (fun e he => (hterm n hn e he).1))]
   have hinner : ∀ n ∈ Finset.range 4,
       (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n 3,
@@ -398,7 +398,7 @@ theorem h3_top_grid_int
             ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     intro n hn
-    exact MeasureTheory.integral_finset_sum _ (fun e he => (hterm n hn e he).1)
+    exact MeasureTheory.integral_finsetSum _ (fun e he => (hterm n hn e he).1)
   rw [Finset.sum_congr rfl hinner]
   calc
     ∑ n ∈ Finset.range 4,

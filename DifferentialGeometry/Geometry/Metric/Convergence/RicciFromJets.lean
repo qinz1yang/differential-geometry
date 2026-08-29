@@ -193,6 +193,10 @@ private lemma sRep_pd2_val
           (leviCivitaConnectionOfMetric_contMDiffCovariantDerivative
             (I := I) gRef) σm (W a))) with hcorr
   have hsplit := towerStep_rep_split gRef x A0 0 W σm
+  have hsplit' : writtenInExtChartAt I 𝓘(Real, Real) x
+      (towerStep (I := I) gRef A0 0 W σm) =
+        fun z => sRep gRef x A0 1 (Fin.cons σm W) z + ∑ a : Fin 2, corr a z := by
+    rw [hsplit]
   have hd1 : DifferentiableAt Real (sRep gRef x A0 1 (Fin.cons σm W))
       (extChartAt I x x) := sRep_diffAt gRef x A0 1 (Fin.cons σm W) hαtgt
   have hdc : ∀ a : Fin 2, DifferentiableAt Real (corr a) (extChartAt I x x) :=
@@ -203,18 +207,16 @@ private lemma sRep_pd2_val
           ((chartModelBasis E) mm)
         + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)
             ((chartModelBasis E) mm) := by
-    have hcsum : HasFDerivAt (fun z : E => ∑ a : Fin 2, corr a z)
-        (∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)) (extChartAt I x x) := by
-      simpa [Finset.sum_apply] using
-        HasFDerivAt.sum (fun (a : Fin 2) (_ : a ∈ Finset.univ) => (hdc a).hasFDerivAt)
+    have hcsum := (hdc 0).hasFDerivAt.add (hdc 1).hasFDerivAt
     have htot : HasFDerivAt (writtenInExtChartAt I 𝓘(Real, Real) x
         (towerStep (I := I) gRef A0 0 W σm))
         (fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
           + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)) (extChartAt I x x) := by
-      rw [hsplit]
+      rw [hsplit']
+      simp only [Fin.sum_univ_two]
       exact hd1.hasFDerivAt.add hcsum
     rw [htot.fderiv]
-    simp [ContinuousLinearMap.add_apply]
+    simp [add_apply]
   calc partialDeriv (E := E) mm
         (partialDeriv (E := E) m (sRep gRef x A0 0 W)) (extChartAt I x x)
       = fderiv Real (partialDeriv (E := E) m (sRep gRef x A0 0 W))
@@ -1141,15 +1143,15 @@ private lemma gram_quad_low
       funext ξ
       simp [hf, dotProduct, Matrix.mulVec]
     rw [hfe]
-    exact continuous_finset_sum _ fun i _ =>
-      (continuous_apply i).mul (continuous_finset_sum _ fun j _ =>
+    exact continuous_finsetSum _ fun i _ =>
+      (continuous_apply i).mul (continuous_finsetSum _ fun j _ =>
         continuous_const.mul (continuous_apply j))
   have hg0cont : Continuous fun ξ : Fin (Module.finrank Real E) → Real => ξ ⬝ᵥ ξ := by
     have hge : (fun ξ : Fin (Module.finrank Real E) → Real => ξ ⬝ᵥ ξ)
         = fun ξ => ∑ i, ξ i * ξ i := by
       funext ξ; simp [dotProduct]
     rw [hge]
-    exact continuous_finset_sum _ fun i _ => (continuous_apply i).mul (continuous_apply i)
+    exact continuous_finsetSum _ fun i _ => (continuous_apply i).mul (continuous_apply i)
   set S : Set (Fin (Module.finrank Real E) → Real) := {ξ | ξ ⬝ᵥ ξ = 1} with hSdef
   have hSclosed : IsClosed S := by
     have : S = (fun ξ : Fin (Module.finrank Real E) → Real => ξ ⬝ᵥ ξ) ⁻¹' {1} := rfl
@@ -1666,7 +1668,8 @@ theorem ricciSub_le_dNorm
   obtain ⟨CJ2, hCJ20, hCJ2⟩ := jet2Diff_le_dNorm gRef x
   set crep : Real := ∑ i : Fin (Module.finrank Real E),
     ∑ k : Fin (Module.finrank Real E),
-      |((chartModelBasis E).repr v) k| * |((chartModelBasis E).repr w) i| with hcrep
+      |((centeredChartTangentBasis (I := I) x).repr v) k| *
+        |((centeredChartTangentBasis (I := I) x).repr w) i| with hcrep
   have hcrep0 : 0 ≤ crep :=
     Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun k _ =>
       mul_nonneg (abs_nonneg _) (abs_nonneg _)
@@ -1687,13 +1690,16 @@ theorem ricciSub_le_dNorm
     (chartRiemannBasisIdentity_holds (I := I) u' x) v w
   rw [hbru, hbru']
   have hdiff : (∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           chartRicciTensor (I := I) u x i k (extChartAt I x x))
       - (∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+          ((centeredChartTangentBasis (I := I) x).repr v) k *
+            ((centeredChartTangentBasis (I := I) x).repr w) i *
             chartRicciTensor (I := I) u' x i k (extChartAt I x x))
       = ∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+          ((centeredChartTangentBasis (I := I) x).repr v) k *
+            ((centeredChartTangentBasis (I := I) x).repr w) i *
             (chartRicciTensor (I := I) u x i k (extChartAt I x x)
               - chartRicciTensor (I := I) u' x i k (extChartAt I x x)) := by
     rw [← Finset.sum_sub_distrib]
@@ -1703,11 +1709,13 @@ theorem ricciSub_le_dNorm
     ring
   rw [hdiff]
   calc |∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((centeredChartTangentBasis (I := I) x).repr v) k *
+          ((centeredChartTangentBasis (I := I) x).repr w) i *
           (chartRicciTensor (I := I) u x i k (extChartAt I x x)
             - chartRicciTensor (I := I) u' x i k (extChartAt I x x))|
       ≤ ∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          |((chartModelBasis E).repr v) k| * |((chartModelBasis E).repr w) i|
+          |((centeredChartTangentBasis (I := I) x).repr v) k| *
+            |((centeredChartTangentBasis (I := I) x).repr w) i|
             * (CR * (CJ2 * S)) := by
         refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
         refine Finset.sum_le_sum fun i _ => ?_
@@ -2212,7 +2220,8 @@ theorem ricNormSub_le_dn (lam B : Real) (hlam : 0 < lam) (hB : 0 ≤ B) :
             ricciTensor (I := I) g x (basis k) (basis l) := by
     have hinv : MetricInverseInBasis (I := I) g x basis
         (fun i j => chartInvGramMatrix (I := I) g x x i j) := by
-      simpa only [basis] using chartInvGram_inverse (I := I) g x hxbase
+      intro i j
+      exact chartInvGram_inverse (I := I) g x hxbase i j
     rw [normSq0S_two_eq_coord (I := I) g x basis
       (fun i j => chartInvGramMatrix (I := I) g x x i j) hinv]
     refine Finset.sum_congr rfl fun i _ =>

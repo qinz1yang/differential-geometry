@@ -39,11 +39,11 @@ noncomputable def superIterNormInv
     (1 / moserExponentSeq d p₀ n)
 
 /-- The step constant in the supersolution inverse-power iteration at stage `n`.
-This is `(C_MoserAnchor d / gap² · (Λ (pₙ/(1+pₙ))² + 1))^{1/pₙ}`. -/
+This is `(CMoserAnchor d / gap² · (Λ (pₙ/(1+pₙ))² + 1))^{1/pₙ}`. -/
 noncomputable def superStepConstInv
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     (p₀ : ℝ) (n : ℕ) : ℝ :=
-  ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+  ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
     (A.1.Λ * (moserExponentSeq d p₀ n /
       (1 + moserExponentSeq d p₀ n)) ^ 2 + 1)) ^
     (1 / moserExponentSeq d p₀ n)
@@ -99,7 +99,7 @@ theorem supersolution_iteration_inverse
               (1 / (moserChi d * p_n)) := by
         simp [superIterNormInv, superIterIntegralInv, p_n, moserExponentSeq_succ]
       have heq_step : superStepConstInv (d := d) A p₀ n =
-          ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+          ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
             (A.1.Λ * (p_n / (1 + p_n)) ^ 2 + 1)) ^ (1 / p_n) := by
         simp [superStepConstInv, p_n]
       have hstep_nonneg : 0 ≤ superStepConstInv (d := d) A p₀ n := by
@@ -117,7 +117,7 @@ theorem supersolution_iteration_inverse
             superStepConstInv (d := d) A p₀ n *
               superIterNormInv (d := d) (u := u) p₀ n := by
         rw [heq_norm, heq_step]
-        convert hNorm_succ using 2
+        simpa [superIterNormInv, superIterIntegralInv, p_n] using hNorm_succ
       -- Combine with IH
       calc superIterNormInv (d := d) (u := u) p₀ (n + 1)
           ≤ superStepConstInv (d := d) A p₀ n *
@@ -140,7 +140,7 @@ theorem superStepConstInv_le
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {p₀ : ℝ} (hp₀ : 0 < p₀) (i : ℕ) :
     superStepConstInv (d := d) A p₀ i ≤
-      (16 * C_MoserAnchor d * (A.1.Λ * p₀ ^ 2 + 1) *
+      (16 * CMoserAnchor d * (A.1.Λ * p₀ ^ 2 + 1) *
         (4 * moserChi d ^ 2) ^ i) ^
         (1 / moserExponentSeq d p₀ i) := by
   unfold superStepConstInv
@@ -152,8 +152,8 @@ theorem superStepConstInv_le
     · nlinarith [A.1.Λ_nonneg, sq_nonneg (moserExponentSeq d p₀ i / (1 + moserExponentSeq d p₀ i))]
   · -- Main bound
     have hp_i := moserExponentSeq_pos (d := d) hd hp₀ i
-    have hgap_eq : C_MoserAnchor d / (moserRadius i - moserRadius (i + 1)) ^ 2 =
-        C_MoserAnchor d * (4 : ℝ) ^ (i + 2) := by
+    have hgap_eq : CMoserAnchor d / (moserRadius i - moserRadius (i + 1)) ^ 2 =
+        CMoserAnchor d * (4 : ℝ) ^ (i + 2) := by
       rw [moserRadius_gap]
       have hsq : (((1 / 2 : ℝ) ^ (i + 2)) ^ 2) = (1 / 4 : ℝ) ^ (i + 2) := by
         rw [← pow_mul, show (i + 2) * 2 = 2 * (i + 2) by ring, pow_mul]; norm_num
@@ -190,14 +190,14 @@ theorem superStepConstInv_le
           _ = A.1.Λ * p₀ ^ 2 * (moserChi d ^ 2) ^ i := by rw [pow_mul]; ring
       nlinarith
     rw [hgap_eq, hpow4]
-    calc C_MoserAnchor d * (16 * 4 ^ i) *
+    calc CMoserAnchor d * (16 * 4 ^ i) *
             (A.1.Λ * (moserExponentSeq d p₀ i / (1 + moserExponentSeq d p₀ i)) ^ 2 + 1)
-        ≤ C_MoserAnchor d * (16 * 4 ^ i) *
+        ≤ CMoserAnchor d * (16 * 4 ^ i) *
             ((A.1.Λ * p₀ ^ 2 + 1) * (moserChi d ^ 2) ^ i) := by
           gcongr
           exact mul_nonneg (le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d)))
             (by positivity)
-      _ = 16 * C_MoserAnchor d * (A.1.Λ * p₀ ^ 2 + 1) * (4 * moserChi d ^ 2) ^ i := by
+      _ = 16 * CMoserAnchor d * (A.1.Λ * p₀ ^ 2 + 1) * (4 * moserChi d ^ 2) ^ i := by
           rw [show (4 * moserChi d ^ 2) ^ i = 4 ^ i * (moserChi d ^ 2) ^ i by rw [mul_pow]]
           ring
   · exact div_nonneg (by norm_num) (moserExponentSeq_pos (d := d) hd hp₀ i).le
@@ -207,10 +207,10 @@ theorem supersolution_geometric_majorant_inv
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {p₀ : ℝ} (hp₀ : 0 < p₀) (n : ℕ) :
     ∏ i ∈ Finset.range n, superStepConstInv (d := d) A p₀ i ≤
-      (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+      (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
         (1 / p₀) := by
   let q := moserDecayRatio d
-  let K₀ : ℝ := 16 * C_MoserAnchor d
+  let K₀ : ℝ := 16 * CMoserAnchor d
   let L : ℝ := A.1.Λ * p₀ ^ 2 + 1
   let K : ℝ := K₀ * L
   let CC : ℝ := 4 * moserChi d ^ 2
@@ -346,7 +346,7 @@ theorem supersolution_geometric_majorant_inv
             (Real.rpow_nonneg (sq_nonneg _) _)
             (Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 4) _)
   have hK₀_pow_le_big :
-      K₀ ^ ((d : ℝ) / 2) ≤ ((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) := by
+      K₀ ^ ((d : ℝ) / 2) ≤ ((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) := by
     exact Real.rpow_le_rpow
       hK₀_nonneg
       (by
@@ -354,32 +354,32 @@ theorem supersolution_geometric_majorant_inv
         nlinarith [one_le_C_MoserAnchor (d := d)])
       (by positivity)
   have hCMoser_le :
-      K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤ C_Moser d := by
+      K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤ CMoser d := by
     have hbase :
         K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤
-          ((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+          ((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
             4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) := by
       exact mul_le_mul_of_nonneg_right hK₀_pow_le_big
         (Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 4) _)
     have hmax :
-        ((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+        ((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
             4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤
-          C_Moser d := by
-      dsimp [C_Moser, q]
+          CMoser d := by
+      dsimp [CMoser, q]
       split_ifs with hlt
       · exact
-          le_max_right (C_MoserAnchor d)
-            (((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+          le_max_right (CMoserAnchor d)
+            (((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
               4 ^ (∑' i : ℕ, (i : ℝ) * moserDecayRatio d ^ i))
       · exact False.elim (hlt hd)
     exact hbase.trans hmax
   have hCweak_eq :
-      C_Moser d * (moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * q ^ i) =
-        C_weakHarnack0 d := by
-    simp [C_weakHarnack0, hd, q]
+      CMoser d * (moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * q ^ i) =
+        CWeakHarnack0 d := by
+    simp [CWeakHarnack0, hd, q]
   have hbody_le :
       K ^ S * CC ^ T ≤
-        C_weakHarnack0 d * L ^ ((d : ℝ) / 2) := by
+        CWeakHarnack0 d * L ^ ((d : ℝ) / 2) := by
     have hCC_target_nonneg :
         0 ≤ 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) *
             (moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * q ^ i) := by
@@ -400,11 +400,11 @@ theorem supersolution_geometric_majorant_inv
       _ = (K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i)) *
             ((moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * q ^ i) * L ^ ((d : ℝ) / 2)) := by
               ring
-      _ ≤ C_Moser d *
+      _ ≤ CMoser d *
             ((moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * q ^ i) * L ^ ((d : ℝ) / 2)) := by
               exact mul_le_mul_of_nonneg_right hCMoser_le
                 (mul_nonneg (Real.rpow_nonneg (sq_nonneg _) _) (Real.rpow_nonneg hL_nonneg _))
-      _ = C_weakHarnack0 d * L ^ ((d : ℝ) / 2) := by
+      _ = CWeakHarnack0 d * L ^ ((d : ℝ) / 2) := by
             rw [← hCweak_eq]
             ring
   calc
@@ -412,11 +412,11 @@ theorem supersolution_geometric_majorant_inv
         ≤ ∏ i ∈ Finset.range n, (K * CC ^ i) ^ (1 / moserExponentSeq d p₀ i) := hprod_le
     _ = (K ^ S * CC ^ T) ^ (1 / p₀) := by
           simpa [q, S, T] using hprod_eval n
-    _ ≤ (C_weakHarnack0 d * L ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
+    _ ≤ (CWeakHarnack0 d * L ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
           exact Real.rpow_le_rpow
             (mul_nonneg (Real.rpow_nonneg hK_nonneg _) (Real.rpow_nonneg hCC_nonneg _))
             hbody_le (by positivity)
-    _ = (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
+    _ = (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
           simp [L]
 
 theorem supersolutionCloseoutExponent_tendsto_atTop
@@ -429,7 +429,7 @@ theorem supersolutionInvBoundPow_nonneg
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} {p₀ : ℝ} :
     0 ≤
-      C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+      CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
         ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume := by
   refine mul_nonneg ?_ ?_
   · refine mul_nonneg ?_ ?_
@@ -446,13 +446,13 @@ theorem superIterNormInv_zero
 theorem supersolutionInvMajorant_rpow_half
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} {p₀ : ℝ} (hp₀ : 0 < p₀) :
-    ((((C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+    ((((CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
           (1 / p₀)) *
         superIterNormInv (d := d) (u := u) p₀ 0) ^ (p₀ / 2))
       =
-      (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+      (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
         ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^ (1 / 2 : ℝ) := by
-  let C : ℝ := C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)
+  let C : ℝ := CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)
   let I : ℝ := ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume
   have hp₀_ne : p₀ ≠ 0 := hp₀.ne'
   have hC_nonneg : 0 ≤ C := by
@@ -488,12 +488,12 @@ theorem supersolution_closeout_superlevel_null
         IntegrableOn (fun x => |(u x)⁻¹| ^ moserExponentSeq d p₀ n)
           (Metric.ball (0 : E) (moserRadius n)) volume ∧
         superIterNormInv (d := d) (u := u) p₀ n ≤
-          ((C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+          ((CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
             (1 / p₀)) *
             superIterNormInv (d := d) (u := u) p₀ 0)
     {c : ℝ}
     (hc :
-      (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+      (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
         ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^
           (1 / 2 : ℝ) < c) :
     (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))).real
@@ -503,10 +503,10 @@ theorem supersolution_closeout_superlevel_null
   let f : E → ℝ := fun x => |(u x)⁻¹|
   let g : E → ℝ := fun x => f x ^ (p₀ / 2)
   let K : ℝ :=
-    (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+    (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
       ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^ (1 / 2 : ℝ)
   let S : Set E := {x | c ≤ g x}
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -576,7 +576,8 @@ theorem supersolution_closeout_superlevel_null
       ext x
       exact hgq_eq x
     have hInt_mu : Integrable (fun x => g x ^ q_n) μ := by
-      simpa [μ, Bhalf] using hInt_half
+      change IntegrableOn (fun x => g x ^ q_n) Bhalf volume
+      exact hInt_half
     have hnonneg_ae : 0 ≤ᵐ[μ] fun x => g x ^ q_n := by
       exact Filter.Eventually.of_forall fun x => Real.rpow_nonneg (hg_nonneg x) _
     have hmarkov :
@@ -634,7 +635,7 @@ theorem supersolution_closeout_superlevel_null
                 field_simp [hp₀.ne', pow_ne_zero n (moserChi_pos (d := d) hd).ne']
               have hpow_le :
                   superIterNormInv (d := d) (u := u) p₀ n ^ (p₀ / 2) ≤
-                    (((C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+                    (((CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
                       (1 / p₀)) *
                       superIterNormInv (d := d) (u := u) p₀ 0) ^ (p₀ / 2) := by
                 exact Real.rpow_le_rpow
@@ -648,7 +649,7 @@ theorem supersolution_closeout_superlevel_null
                     = superIterNormInv (d := d) (u := u) p₀ n ^ (p₀ / 2) := by
                         dsimp [Ibig, superIterNormInv]
                         rw [hq_inv, ← Real.rpow_mul hIbig_nonneg]
-                _ ≤ (((C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+                _ ≤ (((CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
                       (1 / p₀)) *
                       superIterNormInv (d := d) (u := u) p₀ 0) ^ (p₀ / 2) := hpow_le
                 _ = K := by
@@ -713,16 +714,16 @@ theorem supersolution_ae_closeout_inv
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       |(u x)⁻¹| ^ p₀ ≤
-        C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+        CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
           ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume := by
   let Bhalf : Set E := Metric.ball (0 : E) (1 / 2 : ℝ)
   let μ : Measure E := volume.restrict Bhalf
   let f : E → ℝ := fun x => |(u x)⁻¹|
   let g : E → ℝ := fun x => f x ^ (p₀ / 2)
   let K : ℝ :=
-    (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+    (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
       ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^ (1 / 2 : ℝ)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -735,7 +736,7 @@ theorem supersolution_ae_closeout_inv
         IntegrableOn (fun x => |(u x)⁻¹| ^ moserExponentSeq d p₀ n)
           (Metric.ball (0 : E) (moserRadius n)) volume ∧
         superIterNormInv (d := d) (u := u) p₀ n ≤
-          ((C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+          ((CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
             (1 / p₀)) *
             superIterNormInv (d := d) (u := u) p₀ 0 := by
     intro n
@@ -746,7 +747,7 @@ theorem supersolution_ae_closeout_inv
       superIterNormInv (d := d) (u := u) p₀ n
           ≤ (∏ i ∈ Finset.range n, superStepConstInv (d := d) A p₀ i) *
               superIterNormInv (d := d) (u := u) p₀ 0 := hraw.2
-      _ ≤ ((C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
+      _ ≤ ((CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2)) ^
             (1 / p₀)) *
             superIterNormInv (d := d) (u := u) p₀ 0 := by
             exact mul_le_mul_of_nonneg_right hgeom
@@ -795,25 +796,25 @@ theorem supersolution_ae_closeout_inv
             ring
   have hK_sq_eq :
       K ^ (2 : ℝ) =
-        C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+        CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
           ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume := by
     calc
       K ^ (2 : ℝ)
           =
-            (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+            (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
               ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume) ^
               ((1 / 2 : ℝ) * 2) := by
                 dsimp [K]
                 rw [← Real.rpow_mul (supersolutionInvBoundPow_nonneg (d := d) A)]
       _ =
-            C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+            CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
               ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume := by
                 rw [show ((1 / 2 : ℝ) * 2) = (1 : ℝ) by ring, Real.rpow_one]
   calc
     |(u x)⁻¹| ^ p₀ = f x ^ p₀ := by rfl
     _ = g x ^ (2 : ℝ) := hg_sq_eq.symm
     _ ≤ K ^ (2 : ℝ) := hgpow
-    _ = C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
+    _ = CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 + 1) ^ ((d : ℝ) / 2) *
           ∫ x in Metric.ball (0 : E) 1, |(u x)⁻¹| ^ p₀ ∂volume := hK_sq_eq
 
 

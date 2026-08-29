@@ -26,10 +26,12 @@ noncomputable def fiberNormSqSummand
     (T : TensorRSSpace r s I b)
     (n : ℕ) (e : Fin n → TangentSpace I b)
     (K : Fin r → Fin n) (J : Fin s → Fin n) : ℝ :=
-  ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-        (fun k => g.inner b (e (K k))))
-      (fun k => e (J k))) ^ 2
+  (Tensor0SSpace.eval
+    ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+          (fun k => g.inner b (e (K k))))))
+    (fun k => e (J k))) ^ 2
 
 omit [FiniteDimensional ℝ E] in
 lemma fiberNormSqSummand_nonneg
@@ -49,15 +51,7 @@ private lemma fiberNormSqSummand_zero
     fiberNormSqSummand (I := I) (M := M) g b r s
       (0 : TensorRSSpace r s I b) n e K J = 0 := by
   unfold fiberNormSqSummand
-  have h_inner : ((0 : TensorRSSpace r s I b)
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-        (fun k => g.inner b (e (K k)))) :
-      Tensor0SSpace s I b) = 0 := rfl
-  rw [show (((0 : TensorRSSpace r s I b)
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-        (fun k => g.inner b (e (K k)))))
-      (fun k => e (J k)) : ℝ) = 0 from by rw [h_inner]; rfl]
-  norm_num
+  simp
 
 noncomputable def riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)

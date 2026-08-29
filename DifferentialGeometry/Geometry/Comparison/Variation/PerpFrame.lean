@@ -1,11 +1,12 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransportSmooth
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
+
 
 noncomputable section
 
@@ -84,7 +85,7 @@ private lemma bGramSchmidt_self_norm
       s⁻¹ * (s⁻¹ * B (bGramSchmidtRaw B v i) (bGramSchmidtRaw B v i)) := by
     have h1 : B (s⁻¹ • bGramSchmidtRaw B v i) = s⁻¹ • B (bGramSchmidtRaw B v i) := by
       rw [map_smul]
-    rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [h1, smul_apply, smul_eq_mul]
     rw [show (B (bGramSchmidtRaw B v i)) (s⁻¹ • bGramSchmidtRaw B v i) =
         s⁻¹ * B (bGramSchmidtRaw B v i) (bGramSchmidtRaw B v i) from by
       rw [map_smul, smul_eq_mul]]
@@ -235,7 +236,7 @@ private theorem bGramSchmidt_orth_strong_aux
           · rintro ⟨n, hn, rfl⟩
             exact ⟨⟨n.val, hn⟩, Set.mem_univ _, rfl⟩
         rw [hset_eq] at hvi_in_span
-        have hi_notin : i ∉ {n : Fin m | n.val < i.val} := by simp [Set.mem_setOf_eq]
+        have hi_notin : i ∉ {n : Fin m | n.val < i.val} := by simp [Set.mem_ofPred_eq]
         exact hLI.notMem_span_image hi_notin hvi_in_span
       set s : ℝ := Real.sqrt (B (bGramSchmidtRaw B v i) (bGramSchmidtRaw B v i))
         with hs_def
@@ -317,7 +318,7 @@ theorem exists_perp_pos
     have : Module.finrank ℝ ↥W = Module.finrank ℝ ↥(LinearMap.ker φ) := rfl
     rw [this]
     omega
-  letI : Module.Finite ℝ ↥W := inferInstance
+  let : Module.Finite ℝ ↥W := inferInstance
   let bW : Module.Basis (Fin (Module.finrank ℝ E - 1)) ℝ ↥W :=
     Module.finBasisOfFinrankEq ℝ ↥W hfinrank
   let v : Fin (Module.finrank ℝ E - 1) → E := fun i => (bW i : E)
@@ -523,7 +524,8 @@ theorem perp_to_velocity_preserved_of_parallel
   rw [hft]
   exact hPerp0
 
-omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [T2Space (TangentBundle I M)] in
 theorem exists_parallel_orthonormal_perp_frame_along_geodesic
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (hgeo : IsGeodesic (I := I) g γ)
@@ -581,7 +583,8 @@ theorem exists_parallel_orthonormal_perp_frame_along_geodesic
         from rfl]
     exact hperp
 
-omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [T2Space (TangentBundle I M)] in
 theorem exists_parallel_frame
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ) {L : ℝ} (hL : 0 < L)
@@ -613,7 +616,8 @@ theorem exists_parallel_frame
   rw [hconst, hV0 i, hV0 j]
   exact hON0 i j
 
-omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [T2Space (TangentBundle I M)] in
 theorem parallel_on_frame_perp_to_geodesic
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hgeo : IsGeodesic (I := I) g γ) {L : ℝ} (hL : 0 < L)
@@ -686,10 +690,16 @@ theorem contMDiff_smul_bundleField_perp
       ((trivializationAt E (TangentSpace I) (γ t₀)).open_baseSet.mem_nhds hmem)
   filter_upwards [hbase] with t ht
   simp only [TotalSpace.mk']
-  rw [(trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt ℝ
-        (γ t) ht,
-      (trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt ℝ
-        (γ t) ht]
+  have hscaled := congrArg Prod.snd
+    ((trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
+      ℝ (γ t) ht (χ t • V t))
+  have hplain := congrArg Prod.snd
+    ((trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
+      ℝ (γ t) ht (V t))
+  rw [hscaled]
+  change _ = χ t •
+    (((trivializationAt E (TangentSpace I) (γ t₀)) ⟨γ t, V t⟩).2 : E)
+  rw [hplain]
   exact map_smul _ _ _
 
 theorem exists_cutoff_one_on_Icc_supported_Ioo {L δ : ℝ} (hδ : 0 < δ) :
@@ -1007,9 +1017,11 @@ theorem velocity_chartRepAt_differentiableAt
     (hderiv_u_cdiffOn.differentiableOn (by simp) t ht_U).differentiableAt hU_nhds
   exact hderiv_u_diff.congr_of_eventuallyEq hurep_eq
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem exists_perp_par_pos
+    [hriemannian : RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L)
     (hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
@@ -1028,8 +1040,9 @@ theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
       (∀ i, ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
         (fun t => TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (γ t) ((e i).toFun t))) := by
+  let _ := hriemannian
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set u₀ : E := (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) : E) with hu₀_def
   obtain ⟨seed, hseed_ON, hseed_perp⟩ :=
     exists_perp_pos (I := I) g (γ 0) u₀ hVel0
@@ -1156,18 +1169,32 @@ theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
             exact mem_nhdsWithin_of_mem_nhds hfull
           filter_upwards [hbase] with t ht
           simp only [TotalSpace.mk']
-          rw [(trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
-                ℝ (γ t) ht,
-              (trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
-                ℝ (γ t) ht]
+          have hscaled := congrArg Prod.snd
+            ((trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
+              ℝ (γ t) ht (χ i t • Vfun i t))
+          have hplain := congrArg Prod.snd
+            ((trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
+              ℝ (γ t) ht (Vfun i t))
+          rw [hscaled]
+          change _ = χ i t •
+            (((trivializationAt E (TangentSpace I) (γ t₀))
+              ⟨γ t, Vfun i t⟩).2 : E)
+          rw [hplain]
           exact map_smul _ _ _
         · have hmem : (γ t₀) ∈ (trivializationAt E (TangentSpace I) (γ t₀)).baseSet :=
             FiberBundle.mem_baseSet_trivializationAt' (γ t₀)
           simp only [TotalSpace.mk']
-          rw [(trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
-                ℝ (γ t₀) hmem,
-              (trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
-                ℝ (γ t₀) hmem]
+          have hscaled := congrArg Prod.snd
+            ((trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
+              ℝ (γ t₀) hmem (χ i t₀ • Vfun i t₀))
+          have hplain := congrArg Prod.snd
+            ((trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
+              ℝ (γ t₀) hmem (Vfun i t₀))
+          rw [hscaled]
+          change _ = χ i t₀ •
+            (((trivializationAt E (TangentSpace I) (γ t₀))
+              ⟨γ t₀, Vfun i t₀⟩).2 : E)
+          rw [hplain]
           exact map_smul _ _ _
       exact (hbundleAt.contMDiffAt (hΩ_open.mem_nhds ht₀))
     · have ht₀_notsupp : t₀ ∉ tsupport (χ i) := fun h => ht₀ (hsupp_sub h)
@@ -1188,8 +1215,9 @@ theorem exists_perp_par_pos [RiemannianBundle (fun x : M => TangentSpace I x)]
         exact this
       exact hzs
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_parallel_perp_frame [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L)

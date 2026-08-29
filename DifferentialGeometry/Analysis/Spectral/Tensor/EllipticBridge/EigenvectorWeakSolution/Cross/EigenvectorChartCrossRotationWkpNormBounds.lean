@@ -72,7 +72,7 @@ private lemma wkpNorm_doubleSum_le_const_mul_aggregateSum
     intro j hj q
     refine (h_bd j hj q).trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (hCf_le_Csup j hj q)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (hCf_le_Csup j hj q)) (zero_le)
   have h_inner_const : ∀ j ∈ S,
       (∑ q : κ, W j q)
         ≤ (Fintype.card κ : ℝ≥0∞) * (ENNReal.ofReal Csup * aggr j) := by
@@ -135,7 +135,7 @@ private lemma wkpNorm_doubleSum_le_const_mul_aggregateSum_uniform
     intro j hj q
     refine (h_bd d j hj q).trans ?_
     exact mul_le_mul_of_nonneg_right
-      (ENNReal.ofReal_le_ofReal (hCf_le_Csup j hj q)) (zero_le _)
+      (ENNReal.ofReal_le_ofReal (hCf_le_Csup j hj q)) (zero_le)
   have h_inner_const : ∀ j ∈ S,
       (∑ q : κ, W d j q)
         ≤ (Fintype.card κ : ℝ≥0∞) * (ENNReal.ofReal Csup * aggr d j) := by
@@ -381,7 +381,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
       rw [crossLeftLimitComponent]
     rw [h_unfold]
     refine hC₀_bd.trans ?_
-    exact mul_le_mul_of_nonneg_left hC₁_bd (zero_le _)
+    exact mul_le_mul_of_nonneg_left hC₁_bd (zero_le)
   refine h_chain.trans ?_
   rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn]
 
@@ -516,7 +516,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
         (eigenvectorResolvent (I := I) (M := M) g r s i))
       (fun β Q' => eigenvectorCovGrad_pou_memWkp (I := I) (M := M)
         g r s i K (h_pou i) β Q')).trans ?_
-    exact mul_le_mul_of_nonneg_left (hC₁_bd i) (zero_le _)
+    exact mul_le_mul_of_nonneg_left (hC₁_bd i) (zero_le)
   refine h_chain.trans ?_
   rw [← mul_assoc, ← ENNReal.ofReal_mul hC₀_nn]
 

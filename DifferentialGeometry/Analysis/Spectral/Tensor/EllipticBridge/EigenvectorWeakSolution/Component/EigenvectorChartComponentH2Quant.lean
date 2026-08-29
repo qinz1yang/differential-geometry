@@ -57,18 +57,18 @@ theorem eigenvector_chartComponent_h2_quantitative
           MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
           DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
             ((eigenvectorTensorChartBilinearData (I := I) (M := M)
-              g r s ι α P₀).weak_partial i) Ω'' ∧
+              g r s ι α P₀).weakPartial i) Ω'' ∧
           eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
             ENNReal.ofReal (C_geom i k * Real.sqrt (
               (∑ l : Fin (Module.finrank ℝ E),
                 (eLpNorm ((eigenvectorTensorChartBilinearData (I := I) (M := M)
-                    g r s ι α P₀).weak_partial l) 2
+                    g r s ι α P₀).weakPartial l) 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
               + (eLpNorm (eigenvectorTensorChartBilinearData (I := I) (M := M)
-                    g r s ι α P₀).u_chart 2
+                    g r s ι α P₀).uChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
               + (eLpNorm (eigenvectorTensorChartBilinearData (I := I) (M := M)
-                    g r s ι α P₀).f_chart 2
+                    g r s ι α P₀).fChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=

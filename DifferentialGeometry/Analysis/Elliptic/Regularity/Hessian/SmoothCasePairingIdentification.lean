@@ -299,7 +299,7 @@ theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_chart_global
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hessPairingMOnLapDom_eq_hessPairingChart_of_per_chart
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_per_chart : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M), ∀ x : M,
+    (h_per_chart : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M), ∀ x : M,
       hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
         (chartAtlasPOU I M α : M → ℝ) x *
@@ -315,10 +315,10 @@ theorem hessPairingMOnLapDom_eq_hessPairingChart_of_per_chart
     (I := I) (M := M) g φ
     (u_h := smoothToH1Compl (I := I) (M := M) g v) x]
   have h_sum_eq :
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           hessPairingChart (I := I) g φ
             (smoothScalarToContMDiffMap (I := I) (g := g) v) x := by
@@ -333,7 +333,7 @@ theorem hessPairingMOnLapDom_eq_hessPairingChart_of_per_chart
 
 theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_per_chart_pointwise
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_per_chart : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M), ∀ x : M,
+    (h_per_chart : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M), ∀ x : M,
       hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
         (chartAtlasPOU I M α : M → ℝ) x *
@@ -354,7 +354,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma hessPairingMOnLapDom_eq_pointwise_at
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
     (x : M)
-    (h_per_chart_at_x : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (h_per_chart_at_x : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
         (chartAtlasPOU I M α : M → ℝ) x *
@@ -369,10 +369,10 @@ private lemma hessPairingMOnLapDom_eq_pointwise_at
     (I := I) (M := M) g φ
     (u_h := smoothToH1Compl (I := I) (M := M) g v) x]
   have h_sum_eq :
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           hessPairingChart (I := I) g φ
             (smoothScalarToContMDiffMap (I := I) (g := g) v) x := by
@@ -387,7 +387,7 @@ private lemma hessPairingMOnLapDom_eq_pointwise_at
 
 theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_per_chart_ae
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_per_chart_ae : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (h_per_chart_ae : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v)
         =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
@@ -402,22 +402,22 @@ theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_per_chart_ae
     (I := I) (M := M) g φ v ?_
   have h_union_null :
       (riemannianVolumeMeasure (I := I) (M := M) g)
-        (⋃ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        (⋃ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           {x : M |
             hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x ≠
               (chartAtlasPOU I M α : M → ℝ) x *
                 hessPairingChart (I := I) g φ
                   (smoothScalarToContMDiffMap (I := I) (g := g) v) x}) = 0 := by
-    have h_count : (chartAtlasPOU_finset (I := I) (M := M) : Set M).Countable :=
-      (chartAtlasPOU_finset (I := I) (M := M)).countable_toSet
+    have h_count : (chartAtlasPOUFinset (I := I) (M := M) : Set M).Countable :=
+      (chartAtlasPOUFinset (I := I) (M := M)).countable_toSet
     refine (MeasureTheory.measure_biUnion_null_iff h_count).mpr ?_
     intro α hα
     have h_ae := h_per_chart_ae α hα
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff] at h_ae
     exact h_ae
   have h_all_ae : ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g),
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
           (chartAtlasPOU I M α : M → ℝ) x *
@@ -426,7 +426,7 @@ theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_of_per_chart_ae
     rw [MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_union_null
     intro x hx
-    simp only [Set.mem_setOf_eq, not_forall] at hx
+    simp only [Set.mem_ofPred_eq, not_forall] at hx
     obtain ⟨α, hα_in_finset, hα_ne⟩ := hx
     simp only [Set.mem_iUnion]
     exact ⟨α, hα_in_finset, hα_ne⟩
@@ -453,7 +453,7 @@ theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_connector
 
 theorem hessPairingLpOnLapDom_eq_hessPairingSmoothLp_connector_perChart_ae
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_per_chart_ae : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (h_per_chart_ae : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v)
         =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]

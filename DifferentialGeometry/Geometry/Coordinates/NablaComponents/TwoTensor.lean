@@ -24,13 +24,13 @@ theorem tensor0S_two_eval_coordFrame_sum
     (Y Z : TangentSpace I x₀) :
     Ax (fun q : Fin 2 => if q = 0 then Y else Z) =
       ∑ i : CoordinateIdx (𝕜 := 𝕜) E, ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord i Y *
-          (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord i Y *
+          (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
           Ax (fun q : Fin 2 =>
             if q = 0 then coordinateFrameAt (I := I) x₀ i x₀
             else coordinateFrameAt (I := I) x₀ j x₀) := by
   classical
-  let b := coordinateFrameAt_toBasis (I := I) x₀
+  let b := coordinateFrameAtToBasis (I := I) x₀
   let pair : TangentSpace I x₀ -> TangentSpace I x₀ -> Fin 2 -> TangentSpace I x₀ :=
     fun U V q => if q = 0 then U else V
   have hslot0 (W : TangentSpace I x₀) :
@@ -40,9 +40,17 @@ theorem tensor0S_two_eval_coordFrame_sum
         Function.update (pair Y W) (0 : Fin 2) w = pair w W := by
       funext q
       fin_cases q <;> simp [pair]
-    have hmap := Ax.toMultilinearMap.map_update_sum
+    have hmap :=
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x₀ Ax).toMultilinearMap.map_update_sum
       (Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E)) (0 : Fin 2)
       (fun i : CoordinateIdx (𝕜 := 𝕜) E => b.coord i Y • b i) (pair Y W)
+    change
+      tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x₀ Ax
+          (Function.update (pair Y W) 0
+            (∑ i : CoordinateIdx (𝕜 := 𝕜) E, b.coord i Y • b i)) =
+        ∑ i : CoordinateIdx (𝕜 := 𝕜) E,
+          tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x₀ Ax
+            (Function.update (pair Y W) 0 (b.coord i Y • b i)) at hmap
     calc
       Ax (pair Y W)
           = Ax (Function.update (pair Y W) (0 : Fin 2)
@@ -56,7 +64,7 @@ theorem tensor0S_two_eval_coordFrame_sum
       _ = ∑ i : CoordinateIdx (𝕜 := 𝕜) E,
             b.coord i Y *
               Ax (Function.update (pair Y W) (0 : Fin 2) (b i)) := by
-            simpa using hmap
+            simpa [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hmap
       _ = ∑ i : CoordinateIdx (𝕜 := 𝕜) E, b.coord i Y * Ax (pair (b i) W) := by
             refine Finset.sum_congr rfl fun i _ => ?_
             rw [hupdate]
@@ -67,9 +75,17 @@ theorem tensor0S_two_eval_coordFrame_sum
         Function.update (pair V Z) (1 : Fin 2) w = pair V w := by
       funext q
       fin_cases q <;> simp [pair]
-    have hmap := Ax.toMultilinearMap.map_update_sum
+    have hmap :=
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x₀ Ax).toMultilinearMap.map_update_sum
       (Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E)) (1 : Fin 2)
       (fun j : CoordinateIdx (𝕜 := 𝕜) E => b.coord j Z • b j) (pair V Z)
+    change
+      tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x₀ Ax
+          (Function.update (pair V Z) 1
+            (∑ j : CoordinateIdx (𝕜 := 𝕜) E, b.coord j Z • b j)) =
+        ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
+          tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x₀ Ax
+            (Function.update (pair V Z) 1 (b.coord j Z • b j)) at hmap
     calc
       Ax (pair V Z)
           = Ax (Function.update (pair V Z) (1 : Fin 2)
@@ -83,7 +99,7 @@ theorem tensor0S_two_eval_coordFrame_sum
       _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
             b.coord j Z *
               Ax (Function.update (pair V Z) (1 : Fin 2) (b j)) := by
-            simpa using hmap
+            simpa [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hmap
       _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E, b.coord j Z * Ax (pair V (b j)) := by
             refine Finset.sum_congr rfl fun j _ => ?_
             rw [hupdate]
@@ -106,8 +122,8 @@ theorem tensor0S_two_eval_coordFrame_sum
           refine Finset.sum_congr rfl fun j _ => ?_
           ring
     _ = ∑ i : CoordinateIdx (𝕜 := 𝕜) E, ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-          (coordinateFrameAt_toBasis (I := I) x₀).coord i Y *
-            (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+          (coordinateFrameAtToBasis (I := I) x₀).coord i Y *
+            (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
             Ax (fun q : Fin 2 =>
               if q = 0 then coordinateFrameAt (I := I) x₀ i x₀
               else coordinateFrameAt (I := I) x₀ j x₀) := by
@@ -127,7 +143,7 @@ theorem tensor0S_two_symm_of_coordFrame
       A (fun q : Fin 2 => if q = 0 then Y else Z) =
         A (fun q : Fin 2 => if q = 0 then Z else Y) := by
   classical
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   let swapped :
       Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 2 x₀ :=
     A.domDomCongr (Equiv.swap (0 : Fin 2) 1)
@@ -164,10 +180,16 @@ theorem tensor0S_two_symm_of_coordFrame
         fun q : Fin 2 => if q = 0 then Z else Y := by
     funext q
     fin_cases q <;> simp
-  change A (fun q : Fin 2 => if q = 0 then Y else Z) =
-    (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1) A)
-      (fun q : Fin 2 => if q = 0 then Y else Z) at h_eval
-  rw [ContinuousMultilinearMap.domDomCongr_apply, hswapYZ] at h_eval
+  have hswapped_eval :
+      swapped (fun q : Fin 2 => if q = 0 then Y else Z) =
+        A (fun i : Fin 2 =>
+          (fun q : Fin 2 => if q = 0 then Y else Z)
+            ((Equiv.swap (0 : Fin 2) 1) i)) := by
+    unfold swapped
+    exact Tensor0SSpace.domDomCongr_apply (I := I)
+      (Equiv.swap (0 : Fin 2) 1) A
+      (fun q : Fin 2 => if q = 0 then Y else Z)
+  rw [hswapped_eval, hswapYZ] at h_eval
   exact h_eval
 
 section TopRegularity
@@ -347,17 +369,17 @@ theorem nabla0SFun_two_eval_coordFrame_symm_of_symm [IsManifold I ∞ M]
           (fun q : Fin 2 => if q = 0 then b else a) := by
     simp only [coordComponent0SAt, component0S]
     have hslots :
-        (fun q : Fin 2 => coordinateFrameAt_toBasis (I := I) x₀ (if q = 0 then a else b)) =
+        (fun q : Fin 2 => coordinateFrameAtToBasis (I := I) x₀ (if q = 0 then a else b)) =
           (fun q : Fin 2 =>
-            if q = 0 then coordinateFrameAt_toBasis (I := I) x₀ a
-            else coordinateFrameAt_toBasis (I := I) x₀ b) := by
+            if q = 0 then coordinateFrameAtToBasis (I := I) x₀ a
+            else coordinateFrameAtToBasis (I := I) x₀ b) := by
       funext q
       by_cases hq : q = 0 <;> simp [hq]
     have hslots' :
-        (fun q : Fin 2 => coordinateFrameAt_toBasis (I := I) x₀ (if q = 0 then b else a)) =
+        (fun q : Fin 2 => coordinateFrameAtToBasis (I := I) x₀ (if q = 0 then b else a)) =
           (fun q : Fin 2 =>
-            if q = 0 then coordinateFrameAt_toBasis (I := I) x₀ b
-            else coordinateFrameAt_toBasis (I := I) x₀ a) := by
+            if q = 0 then coordinateFrameAtToBasis (I := I) x₀ b
+            else coordinateFrameAtToBasis (I := I) x₀ a) := by
       funext q
       by_cases hq : q = 0 <;> simp [hq]
     rw [hslots, hslots']
@@ -412,7 +434,7 @@ theorem nabla0SFun_two_symm_of_symm [IsManifold I ∞ M]
       (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         2 cov X A x₀) (fun q : Fin 2 => if q = 0 then Z else Y) := by
   apply tensor0S_two_symm_of_coordFrame (I := I)
-    (coordinateFrameAt_toBasis (I := I) x₀)
+    (coordinateFrameAtToBasis (I := I) x₀)
   intro j l
   simpa [coordinateFrameAt_toBasis_apply] using
     nabla0SFun_two_eval_coordFrame_symm_of_symm
@@ -429,8 +451,8 @@ theorem nabla0SFun_two_eval_coordFrame_expanded [IsManifold I ∞ M]
     (nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       2 cov X A x₀) (fun q : Fin 2 => if q = 0 then Y else Z) =
       ∑ j : CoordinateIdx (𝕜 := 𝕜) E, ∑ l : CoordinateIdx (𝕜 := 𝕜) E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord j Y *
-          (coordinateFrameAt_toBasis (I := I) x₀).coord l Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord j Y *
+          (coordinateFrameAtToBasis (I := I) x₀).coord l Z *
           (coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => A x)
               (fun q : Fin 2 => if q = 0 then j else l) -
             ∑ k : CoordinateIdx (𝕜 := 𝕜) E,

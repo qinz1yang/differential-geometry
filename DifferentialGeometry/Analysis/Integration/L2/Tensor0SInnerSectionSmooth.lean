@@ -2,14 +2,13 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannian
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 open DifferentialGeometry
 
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -31,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensor0SModelNormedSpace_local {n : ℕ} :
     NormedSpace ℝ (Tensor0SModel n ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace n
+  Tensor0SBundle.tensor0SModelNormedSpace n
 
 private local instance tensor0SModelNormedAddCommGroup_local {n : ℕ} :
     NormedAddCommGroup (Tensor0SModel n ℝ E) := inferInstance
@@ -71,7 +70,7 @@ theorem chartTensorInnerPointwise_contMDiffOn
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have hsmooth :
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => chartTensorInnerPointwise_0s
+        (fun b : M => chartTensorInnerPointwise0s
           (I := I) (M := M) (r + s) g α b
             (loweredCompose (I := I) (M := M) g r s α b (T b))
             (loweredCompose (I := I) (M := M) g r s α b (S b)))
@@ -160,7 +159,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensor0SModelNormedSpace_local {n : ℕ} :
     NormedSpace ℝ (Tensor0SModel n ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace n
+  Tensor0SBundle.tensor0SModelNormedSpace n
 
 
 theorem contMDiff_inner_of_smooth_sections

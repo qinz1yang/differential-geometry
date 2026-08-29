@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff
@@ -97,6 +96,7 @@ theorem joint_riemannianFiberNormSq_cont
     (I := I) (M := M) g₀ r s x ((Φ t).toSection x),
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_iter_joint
@@ -120,6 +120,7 @@ theorem covGrad_iter_joint
       exact covGrad_step_jointContMDiffOn (I := I) (M := M) g₀ r (s + j)
         (fun t => iteratedCovGrad (I := I) g₀ r s j (Φ t)) S ih
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem joint_jet_riemannianFiberNormSq
@@ -167,7 +168,9 @@ private theorem joint_small
     refine ⟨V, hVOpen.mem_nhds htV, W, hWOpen, hxW, ?_⟩
     intro t ht y hy
     have hty : (t, y) ∈ V ×ˢ W := ⟨ht, hy⟩
-    simpa only [F] using hVW hty
+    have h := hVW hty
+    change f t y < ε at h
+    exact h
   choose V hV W hWOpen hxW hloc using hpatch
   obtain ⟨F, _, hF⟩ :=
     (isCompact_univ : IsCompact (Set.univ : Set M)).elim_nhds_subcover W
@@ -185,6 +188,7 @@ private theorem joint_small
   obtain ⟨x, hxF, hyW⟩ := Set.mem_iUnion₂.mp (hF (Set.mem_univ y))
   exact hloc x t (ht x hxF) y hyW
 
+omit [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem joint_jet_small
@@ -240,6 +244,7 @@ theorem joint_jet_small
   intro i hip x
   exact ht i (by simp only [Finset.mem_range]; omega) x
 
+omit [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem joint_jet_bdd

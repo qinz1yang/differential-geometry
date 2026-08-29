@@ -4,7 +4,6 @@ import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle
@@ -26,14 +25,14 @@ noncomputable def tensor0SPartialEval {s : ℕ}
     (T : Π b : M, Tensor0SSpace (s + 1) I b)
     (Y : Π b : M, TangentSpace I b) :
     Π b : M, Tensor0SSpace s I b :=
-  fun b => tensor0S_curry (I := I) (M := M) s b (T b) (Y b)
+  fun b => tensor0SCurry (I := I) (M := M) s b (T b) (Y b)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem tensor0SPartialEval_apply {s : ℕ}
     (T : Π b : M, Tensor0SSpace (s + 1) I b)
     (Y : Π b : M, TangentSpace I b) (b : M) :
     tensor0SPartialEval I M T Y b =
-      tensor0S_curry (I := I) (M := M) s b (T b) (Y b) := rfl
+      tensor0SCurry (I := I) (M := M) s b (T b) (Y b) := rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem tensor0SPartialEval_eq_curriedSection {s : ℕ}
@@ -48,7 +47,7 @@ theorem tensor0SPartialEval_toModel_apply {s : ℕ}
     Tensor0SSpace.toModel (tensor0SPartialEval I M T Y b) v =
       Tensor0SSpace.toModel (T b) (Fin.cons (Y b) v) := by
   change Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) s b (T b) (Y b)) v =
+      (tensor0SCurry (I := I) (M := M) s b (T b) (Y b)) v =
     Tensor0SSpace.toModel (T b) (Fin.cons (Y b) v)
   exact TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := T b) (v0 := Y b) (vs := v)
@@ -60,11 +59,11 @@ theorem tensor0SPartialEval_add_T {s : ℕ}
     tensor0SPartialEval I M (T₁ + T₂) Y =
       tensor0SPartialEval I M T₁ Y + tensor0SPartialEval I M T₂ Y := by
   funext b
-  change tensor0S_curry (I := I) (M := M) s b ((T₁ + T₂) b) (Y b) =
-    tensor0S_curry (I := I) (M := M) s b (T₁ b) (Y b) +
-    tensor0S_curry (I := I) (M := M) s b (T₂ b) (Y b)
-  change tensor0S_curry (I := I) (M := M) s b (T₁ b + T₂ b) (Y b) = _
-  rw [map_add (tensor0S_curry (I := I) (M := M) s b) (T₁ b) (T₂ b)]
+  change tensor0SCurry (I := I) (M := M) s b ((T₁ + T₂) b) (Y b) =
+    tensor0SCurry (I := I) (M := M) s b (T₁ b) (Y b) +
+    tensor0SCurry (I := I) (M := M) s b (T₂ b) (Y b)
+  change tensor0SCurry (I := I) (M := M) s b (T₁ b + T₂ b) (Y b) = _
+  rw [map_add (tensor0SCurry (I := I) (M := M) s b) (T₁ b) (T₂ b)]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -73,10 +72,10 @@ theorem tensor0SPartialEval_smul_T {s : ℕ}
     (Y : Π b : M, TangentSpace I b) :
     tensor0SPartialEval I M (g • T) Y = g • tensor0SPartialEval I M T Y := by
   funext b
-  change tensor0S_curry (I := I) (M := M) s b ((g • T) b) (Y b) =
-    g b • tensor0S_curry (I := I) (M := M) s b (T b) (Y b)
-  change tensor0S_curry (I := I) (M := M) s b (g b • T b) (Y b) = _
-  rw [map_smul (tensor0S_curry (I := I) (M := M) s b) (g b) (T b)]
+  change tensor0SCurry (I := I) (M := M) s b ((g • T) b) (Y b) =
+    g b • tensor0SCurry (I := I) (M := M) s b (T b) (Y b)
+  change tensor0SCurry (I := I) (M := M) s b (g b • T b) (Y b) = _
+  rw [map_smul (tensor0SCurry (I := I) (M := M) s b) (g b) (T b)]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -84,11 +83,11 @@ theorem tensor0SPartialEval_zero_T {s : ℕ}
     (Y : Π b : M, TangentSpace I b) :
     tensor0SPartialEval I M (0 : Π b : M, Tensor0SSpace (s + 1) I b) Y = 0 := by
   funext b
-  change tensor0S_curry (I := I) (M := M) s b
+  change tensor0SCurry (I := I) (M := M) s b
       ((0 : Π b : M, Tensor0SSpace (s + 1) I b) b) (Y b) = 0
-  change tensor0S_curry (I := I) (M := M) s b
+  change tensor0SCurry (I := I) (M := M) s b
       (0 : Tensor0SSpace (s + 1) I b) (Y b) = 0
-  rw [map_zero (tensor0S_curry (I := I) (M := M) s b)]
+  rw [map_zero (tensor0SCurry (I := I) (M := M) s b)]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -98,10 +97,10 @@ theorem tensor0SPartialEval_add_Y {s : ℕ}
     tensor0SPartialEval I M T (Y₁ + Y₂) =
       tensor0SPartialEval I M T Y₁ + tensor0SPartialEval I M T Y₂ := by
   funext b
-  change tensor0S_curry (I := I) (M := M) s b (T b) ((Y₁ + Y₂) b) =
-    tensor0S_curry (I := I) (M := M) s b (T b) (Y₁ b) +
-    tensor0S_curry (I := I) (M := M) s b (T b) (Y₂ b)
-  change tensor0S_curry (I := I) (M := M) s b (T b) (Y₁ b + Y₂ b) = _
+  change tensor0SCurry (I := I) (M := M) s b (T b) ((Y₁ + Y₂) b) =
+    tensor0SCurry (I := I) (M := M) s b (T b) (Y₁ b) +
+    tensor0SCurry (I := I) (M := M) s b (T b) (Y₂ b)
+  change tensor0SCurry (I := I) (M := M) s b (T b) (Y₁ b + Y₂ b) = _
   exact ContinuousLinearMap.map_add _ (Y₁ b) (Y₂ b)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -110,9 +109,9 @@ theorem tensor0SPartialEval_smul_Y {s : ℕ}
     (Y : Π b : M, TangentSpace I b) :
     tensor0SPartialEval I M T (g • Y) = g • tensor0SPartialEval I M T Y := by
   funext b
-  change tensor0S_curry (I := I) (M := M) s b (T b) ((g • Y) b) =
-    g b • tensor0S_curry (I := I) (M := M) s b (T b) (Y b)
-  change tensor0S_curry (I := I) (M := M) s b (T b) (g b • Y b) = _
+  change tensor0SCurry (I := I) (M := M) s b (T b) ((g • Y) b) =
+    g b • tensor0SCurry (I := I) (M := M) s b (T b) (Y b)
+  change tensor0SCurry (I := I) (M := M) s b (T b) (g b • Y b) = _
   exact ContinuousLinearMap.map_smul _ (g b) (Y b)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -120,9 +119,9 @@ theorem tensor0SPartialEval_zero_Y {s : ℕ}
     (T : Π b : M, Tensor0SSpace (s + 1) I b) :
     tensor0SPartialEval I M T (0 : Π b : M, TangentSpace I b) = 0 := by
   funext b
-  change tensor0S_curry (I := I) (M := M) s b (T b)
+  change tensor0SCurry (I := I) (M := M) s b (T b)
       ((0 : Π b : M, TangentSpace I b) b) = 0
-  change tensor0S_curry (I := I) (M := M) s b (T b)
+  change tensor0SCurry (I := I) (M := M) s b (T b)
       (0 : TangentSpace I b) = 0
   exact ContinuousLinearMap.map_zero _
 
@@ -162,7 +161,7 @@ theorem contMDiff_tensor0SPartialEval_of_smoothSections {s : ℕ}
     (T :
       letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
           (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-        tensor0SBundle_topology (s + 1)
+        tensor0SBundleTopology (s + 1)
       Cₛ^∞⟮I; Tensor0SModel (s + 1) ℝ E,
         (fun x : M => Tensor0SSpace (s + 1) I x)⟯)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -170,9 +169,9 @@ theorem contMDiff_tensor0SPartialEval_of_smoothSections {s : ℕ}
       (fun b : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
         (E := fun x : M => Tensor0SSpace s I x) b
         (tensor0SPartialEval I M (fun b => T b) (fun b => Y b) b)) := by
-  letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-    tensor0SBundle_topology (s + 1)
+    tensor0SBundleTopology (s + 1)
   exact contMDiff_tensor0SPartialEval (I := I) (M := M) (s := s)
     (T := fun b => T b) T.contMDiff (Y := fun b => Y b) Y.contMDiff
 

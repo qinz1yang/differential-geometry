@@ -14,6 +14,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialStr
 import DifferentialGeometry.Analysis.Heat.Smoothing.MildSolution
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYauHarnack
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -51,20 +52,20 @@ private local instance completeSpaceE : CompleteSpace E := FiniteDimensional.com
 
 private local instance tensorRSModelNormedAddCommGroupLocal (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance tensorRSModelNormedSpaceLocal (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance tensorRSBundleTopologyLocal (r s : ℕ) :
     TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance tensorRSBundleFiberLocal (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 noncomputable def scalarHeatCoeff
     (g : SmoothRiemannianMetric I M) (u₀ : TensorL2 0 0 g)
@@ -244,8 +245,8 @@ theorem tensor00ToScalarL2_norm
   · intro S
     change ‖tensor00ToScalarL2 g (SmoothCcTensor.toL2 S)‖ = ‖SmoothCcTensor.toL2 S‖
     rw [tensor00ToScalarL2_toL2]
-    simpa [Integral.L2.SmoothCcTensor.norm_toL2]
-      using (scalar0ToLpLin_norm_eq (I := I) (M := M) g S)
+    change ‖scalar0ToLpLin (I := I) (M := M) g S‖ = ‖SmoothCcTensor.toL2 S‖
+    rw [scalar0ToLpLin_norm_eq, Integral.L2.SmoothCcTensor.norm_toL2]
 
 noncomputable def tensor00ToScalarL2LI
     (g : SmoothRiemannianMetric I M) : TensorL2 0 0 g →ₗᵢ[ℝ]
@@ -950,11 +951,14 @@ theorem scalarHeatFlowTensor_contMDiffOn
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) (N : ℕ)
       (fun q : ℝ × M => scalarHeatFlowTensor g u₀ q.1 q.2)
       (Set.Icc a b ×ˢ Set.univ) := by
-  simpa using (scalar_path_recon (I := I) (M := M) g htail hab N
+  rw [show (fun q : ℝ × M ↦ scalarHeatFlowTensor g u₀ q.1 q.2) =
+    (fun q : ℝ × M ↦ scalarSpecSum (I := I) (M := M) g
+      (fun i s ↦ scalarHeatCoeff (I := I) (M := M) g u₀ i s) q.1 q.2) by rfl]
+  exact scalar_path_recon (I := I) (M := M) g htail hab N
     (fun i s => scalarHeatCoeff (I := I) (M := M) g u₀ i s)
     (U := Set.univ) (by exact isOpen_univ) (by intro t ht; trivial)
     (fun i => (scalarHeatCoeff_contDiff (I := I) (M := M) g u₀ i (N : ℕ∞)).contDiffOn)
-    (fun j hj m => scalarHeatCoeff_weighted_deriv_sq_le (I := I) (M := M) g u₀ ha j m))
+    (fun j hj m => scalarHeatCoeff_weighted_deriv_sq_le (I := I) (M := M) g u₀ ha j m)
 
 theorem scalarHeatFlowTensor_contMDiffOn_top
     (g : SmoothRiemannianMetric I M) (u₀ : TensorL2 0 0 g)
@@ -1276,7 +1280,7 @@ theorem scalarHeatCoeff_eq_inner_slice
   let slice : SmoothScalar g := scalarHeatFlowSliceTensor g u₀ htail hab ha ht
   let φj : SmoothScalar g := scalarEigenFunction g j
   set μ := riemannianVolumeMeasure (I := I) (M := M) g
-  haveI : MeasureTheory.IsFiniteMeasure μ :=
+  have : MeasureTheory.IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hslice (x : M) : slice.toFun x =
       ∑' i : TensorEigenIdx00 g, c i * (scalarEigenFunction g i).toFun x := by
@@ -1375,7 +1379,7 @@ theorem scalarHeatCoeff_eq_inner_slice
       (∑' i : TensorEigenIdx00 g, ∫ x : M, F i x ∂μ) =
         ∫ x : M, (∑' i : TensorEigenIdx00 g, F i x) ∂μ :=
     by
-    haveI : Countable (TensorEigenIdx00 g) :=
+    have : Countable (TensorEigenIdx00 g) :=
       DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.countable_tensorEigenIdx
         (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
@@ -1866,7 +1870,7 @@ theorem scalarHeatCoeff_lambda_eq_inner_slice
     scalarHeatFlowTimeDerivSliceTensor g u₀ htail hab ha ht
   let φj : SmoothScalar g := scalarEigenFunction g j
   set μ := riemannianVolumeMeasure (I := I) (M := M) g
-  haveI : MeasureTheory.IsFiniteMeasure μ :=
+  have : MeasureTheory.IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hslice (x : M) : slice.toFun x =
       ∑' i : TensorEigenIdx00 g, c i * (scalarEigenFunction g i).toFun x := by
@@ -1966,7 +1970,7 @@ theorem scalarHeatCoeff_lambda_eq_inner_slice
       (∑' i : TensorEigenIdx00 g, ∫ x : M, F i x ∂μ) =
         ∫ x : M, (∑' i : TensorEigenIdx00 g, F i x) ∂μ :=
     by
-    haveI : Countable (TensorEigenIdx00 g) :=
+    have : Countable (TensorEigenIdx00 g) :=
       DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.countable_tensorEigenIdx
         (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
@@ -3316,7 +3320,6 @@ theorem scalarForcingCoeff_contDiff
 
 section jointSmoothness
 
-set_option backward.isDefEq.respectTransparency false
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [CompactSpace M] in
@@ -3376,6 +3379,11 @@ private lemma fiberNormSq_jointContinuousOn_aux
       ((Ψ t).toSection x),
     tensorRSRiemannianInnerCLM_apply]
 
+private noncomputable def scalarTensor0 (b : M) (c : ℝ) : Tensor0SSpace 0 I b :=
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 b).symm
+    (ContinuousMultilinearMap.constOfIsEmpty ℝ
+      (fun _ : Fin 0 => TangentSpace I b) c)
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
 private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
     (α b : M) (c : ℝ)
@@ -3383,18 +3391,14 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
       (fun x : M => Tensor0SSpace 0 I x) α).baseSet) :
     (trivializationAt (TensorRSModel 0 0 ℝ E)
       (fun y : M => TensorRSSpace 0 0 I y) α
-      ⟨b, (tensor0SSpace_evalScalar b).smulRight
-        (ContinuousMultilinearMap.constOfIsEmpty ℝ
-          (fun _ : Fin 0 => TangentSpace I b) c)⟩).2 =
+      ⟨b, (tensor0SSpaceEvalScalar b).smulRight (scalarTensor0 (I := I) b c)⟩).2 =
       c • (ContinuousLinearMap.id ℝ (Tensor0SModel 0 ℝ E) :
         Tensor0SModel 0 ℝ E →L[ℝ] Tensor0SModel 0 ℝ E) := by
   set e₀ : Trivialization (Tensor0SModel 0 ℝ E)
       (π (Tensor0SModel 0 ℝ E) (fun x : M => Tensor0SSpace 0 I x)) :=
     trivializationAt (Tensor0SModel 0 ℝ E) (fun x : M => Tensor0SSpace 0 I x) α
   set T : TensorRSSpace 0 0 I b :=
-    (tensor0SSpace_evalScalar b).smulRight
-      (ContinuousMultilinearMap.constOfIsEmpty ℝ
-        (fun _ : Fin 0 => TangentSpace I b) c)
+    (tensor0SSpaceEvalScalar b).smulRight (scalarTensor0 (I := I) b c)
   have htriv : (trivializationAt (TensorRSModel 0 0 ℝ E)
       (fun y : M => TensorRSSpace 0 0 I y) α ⟨b, T⟩).2 =
       (e₀.continuousLinearMapAt ℝ b).comp (T.comp (e₀.symmL ℝ b)) := by
@@ -3404,27 +3408,26 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
   apply ContinuousLinearMap.ext
   intro z
   change e₀.continuousLinearMapAt ℝ b
-      ((tensor0SSpace_evalScalar b).smulRight
-        (ContinuousMultilinearMap.constOfIsEmpty ℝ
-          (fun _ : Fin 0 => TangentSpace I b) c) (e₀.symmL ℝ b z)) =
+      (((tensor0SSpaceEvalScalar b).smulRight
+        (scalarTensor0 (I := I) b c)).toFun (e₀.symmL ℝ b z)) =
     c • z
   change e₀.continuousLinearMapAt ℝ b
-      ((tensor0SSpace_evalScalar b (e₀.symmL ℝ b z)) •
-        ContinuousMultilinearMap.constOfIsEmpty ℝ
-          (fun _ : Fin 0 => TangentSpace I b) c) =
+      (((tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
+        scalarTensor0 (I := I) b c) =
     c • z
   have hlmc : e₀.continuousLinearMapAt ℝ b
-        (ContinuousMultilinearMap.constOfIsEmpty ℝ
-          (fun _ : Fin 0 => TangentSpace I b) c) =
+        (scalarTensor0 (I := I) b c) =
       ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) c := by
     rw [Trivialization.continuousLinearMapAt_apply]
     rw [Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₀) hb]
     dsimp
     rw [TensorMultilinear.trivializationAt_tensor0SBundle_zero_fibre
-      (fun _ : M => ContinuousMultilinearMap.constOfIsEmpty ℝ
-        (fun _ : Fin 0 => TangentSpace I b) c) α b]
-    rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
-  have hscalar : tensor0SSpace_evalScalar b (e₀.symmL ℝ b z) = z Fin.elim0 := by
+      (fun _ : M => scalarTensor0 (I := I) b c) α b]
+    change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E)
+        ((scalarTensor0 (I := I) b c) 0) = _
+    congr 1
+  have hscalar : (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b)
+      (e₀.symmL ℝ b z) = z Fin.elim0 := by
     have hA (A : Tensor0SSpace 0 I b) :
         (e₀.continuousLinearMapAt ℝ b A) Fin.elim0 = A Fin.elim0 := by
       rw [Trivialization.continuousLinearMapAt_apply]
@@ -3436,7 +3439,7 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
       congr 1
       exact Subsingleton.elim _ _
     calc
-      tensor0SSpace_evalScalar b (e₀.symmL ℝ b z)
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)
           = (e₀.symmL ℝ b z) Fin.elim0 := by
             rw [Tensor0SSpace.evalScalar_apply]
       _ = (e₀.continuousLinearMapAt ℝ b (e₀.symmL ℝ b z)) Fin.elim0 := by
@@ -3451,17 +3454,15 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
     intro v
     have hv : v = Fin.elim0 := Subsingleton.elim _ _
     subst hv
-    simp [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.constOfIsEmpty_apply]
+    simp [smul_apply, ContinuousMultilinearMap.constOfIsEmpty_apply]
     ring
   calc
     e₀.continuousLinearMapAt ℝ b
-        ((tensor0SSpace_evalScalar b (e₀.symmL ℝ b z)) •
-          ContinuousMultilinearMap.constOfIsEmpty ℝ
-            (fun _ : Fin 0 => TangentSpace I b) c)
-        = (tensor0SSpace_evalScalar b (e₀.symmL ℝ b z)) •
+        (((tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
+          scalarTensor0 (I := I) b c)
+        = ((tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
             (e₀.continuousLinearMapAt ℝ b
-              (ContinuousMultilinearMap.constOfIsEmpty ℝ
-                (fun _ : Fin 0 => TangentSpace I b) c)) := by
+              (scalarTensor0 (I := I) b c)) := by
           rw [map_smul]
     _ = (z Fin.elim0) •
           ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) c := by
@@ -3483,9 +3484,8 @@ private lemma scalarCcLift_jointContMDiffOn_of_jointSmooth
   let Φ : M × ℝ → TotalSpace (TensorRSModel 0 0 ℝ E) (fun z : M => TensorRSSpace 0 0 I z) :=
     fun q => TotalSpace.mk' (TensorRSModel 0 0 ℝ E)
       (E := fun z : M => TensorRSSpace 0 0 I z) q.1
-        ((tensor0SSpace_evalScalar q.1).smulRight
-          (ContinuousMultilinearMap.constOfIsEmpty ℝ
-            (fun _ : Fin 0 => TangentSpace I q.1) q.2))
+        ((tensor0SSpaceEvalScalar q.1).smulRight
+          (scalarTensor0 (I := I) q.1 q.2))
   have hsec (x : M) (t : ℝ) :
       (scalarCcLift g (F t)).toSection x =
         Tensor0SSpace.toRS0 (Tensor0SField.fromScalarField ∞ ((F t).toFun) ((F t).smooth) x) := by
@@ -3581,6 +3581,7 @@ private lemma scalarCcLift_jointContMDiffOn_of_jointSmooth
   rw [hsec q.1 q.2]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lift_jets_jointContMDiffOn
     (g : SmoothRiemannianMetric I M) (F : ℝ → SmoothScalar g) {U : Set ℝ} (j : ℕ)
@@ -3640,7 +3641,7 @@ private lemma jet_l2Norm_contDiff
     funext t
     rw [SmoothCcTensor.norm_def, tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq]
   rw [hbridge]
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have hk : IsCompact (Set.univ : Set M) := isCompact_univ
   have hfs : ∀ p, ∀ x, p ∈ Set.Icc a b → x ∉ (Set.univ : Set M) →
@@ -3652,7 +3653,13 @@ private lemma jet_l2Norm_contDiff
       riemannianFiberNormSq (I := I) (M := M) g 0 (0 + j) x
         ((Analysis.Sobolev.iteratedCovGrad g 0 0 j (scalarCcLift g (F t))).toSection x)))
       (Set.Icc a b ×ˢ (Set.univ : Set M)) := by
-    simpa [Function.uncurry] using hfib
+    rw [show Function.uncurry (fun (t : ℝ) (x : M) =>
+      riemannianFiberNormSq (I := I) (M := M) g 0 (0 + j) x
+        ((Analysis.Sobolev.iteratedCovGrad g 0 0 j (scalarCcLift g (F t))).toSection x)) =
+      (fun p : ℝ × M ↦ riemannianFiberNormSq (I := I) (M := M) g 0 (0 + j) p.2
+        ((Analysis.Sobolev.iteratedCovGrad g 0 0 j
+          (scalarCcLift g (F p.1))).toSection p.2)) by rfl]
+    exact hfib
   simpa using (continuousOn_integral_of_compact_support
     (μ := riemannianVolumeMeasure (I := I) (M := M) g)
     (s := Set.Icc a b) (k := (Set.univ : Set M)) hk hfib' hfs)
@@ -3977,10 +3984,8 @@ theorem scalarForcingCoeff_iteratedDeriv_fun
       have hcompF : HasFDerivAt (fun t : ℝ => L (iteratedDeriv r f t))
           (L.comp (ContinuousLinearMap.toSpanSingleton ℝ (iteratedDeriv (r + 1) f t))) t :=
         L.hasFDerivAt.comp (x := t) hg.hasFDerivAt
-      convert hcompF using 1
-      apply ContinuousLinearMap.ext
-      intro v
-      simp [ContinuousLinearMap.toSpanSingleton, map_smul]
+      rw [ContinuousLinearMap.comp_toSpanSingleton] at hcompF
+      exact hcompF
     simpa [scalarForcingCoeff, L] using hcomp.deriv
 
 theorem scalarForcingCoeff_iteratedDeriv
@@ -4054,10 +4059,8 @@ private lemma scalarForcingCoeff_iteratedDeriv_on
           have hcompF : HasFDerivAt (fun u : ℝ => L (iteratedDeriv r f u))
               (L.comp (ContinuousLinearMap.toSpanSingleton ℝ (iteratedDeriv (r + 1) f s))) s :=
             L.hasFDerivAt.comp (x := s) hg.hasFDerivAt
-          convert hcompF using 1
-          apply ContinuousLinearMap.ext
-          intro v
-          simp [ContinuousLinearMap.toSpanSingleton, map_smul]
+          rw [ContinuousLinearMap.comp_toSpanSingleton] at hcompF
+          exact hcompF
         simpa [scalarForcingCoeff, L] using hcomp.deriv
   exact hmain r t ht
 
@@ -4124,7 +4127,11 @@ private noncomputable def scalarTimeDerivField
               ((contMDiffOn_const : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun _ : M => t) Set.univ).prodMk
                 (contMDiffOn_id : ContMDiffOn I I ∞ id Set.univ))
               (by intro p hp; exact ⟨ht, Set.mem_univ p⟩)
-            simpa using hcomp
+            rw [show (fun x : M ↦ iteratedDeriv r
+              (fun s : ℝ ↦ (F s).toFun x) t) =
+                (fun x : M ↦ iteratedDeriv r
+                  (fun s : ℝ ↦ (F s).toFun (t, x).2) (t, x).1) by rfl]
+            exact hcomp
           exact (contMDiffOn_univ.mp hsliceOn)⟩
     else F t
 
@@ -4175,7 +4182,10 @@ private lemma timeDerivField_slice_hasDerivAt
     contMDiffAt_id.prodMk contMDiffAt_const
   have hcomp := hAt.comp (x := t) harg
   have hcd : ContDiffAt ℝ ∞ (fun v : ℝ => iteratedDeriv r (fun s : ℝ => (F s).toFun x) v) t := by
-    simpa using (contMDiffAt_iff_contDiffAt.mp hcomp)
+    rw [show (fun v : ℝ ↦ iteratedDeriv r (fun s : ℝ ↦ (F s).toFun x) v) =
+      (fun q ↦ iteratedDeriv r (fun s : ℝ ↦ (F s).toFun q.2) q.1) ∘
+        (fun v : ℝ ↦ (v, x)) by rfl]
+    exact contMDiffAt_iff_contDiffAt.mp hcomp
   have hd : HasDerivAt (fun v : ℝ => iteratedDeriv r (fun s : ℝ => (F s).toFun x) v)
       (iteratedDeriv (r + 1) (fun s : ℝ => (F s).toFun x) t) t := by
     have hd' := (hcd.differentiableAt (by norm_num : (∞ : WithTop ℕ∞) ≠ 0)).hasDerivAt
@@ -4213,7 +4223,10 @@ private lemma deriv_integral_timeDerivField
   have hφcont : Continuous (fun p : ℝ × M => φ.toFun p.2) :=
     φ.smooth.continuous.comp continuous_snd
   have hFcont : ContinuousOn (fun p : ℝ × M => Fv p.1 p.2) (U ×ˢ Set.univ) := by
-    simpa [Fv] using (hφcont.continuousOn.mono (by intro p hp; exact Set.mem_univ p)).mul
+    rw [show (fun p : ℝ × M ↦ Fv p.1 p.2) =
+      (fun p ↦ φ.toFun p.2) *
+        (fun q ↦ iteratedDeriv r (fun s : ℝ ↦ (F s).toFun q.2) q.1) by rfl]
+    exact (hφcont.continuousOn.mono (by intro p hp; exact Set.mem_univ p)).mul
       hjointr.continuousOn
   have hF'cont : ContinuousOn (fun p : ℝ × M => F' p.1 p.2) (U ×ˢ Set.univ) := by
     have hts : ContinuousOn (fun p : ℝ × M =>
@@ -4232,10 +4245,10 @@ private lemma deriv_integral_timeDerivField
       hder.const_mul (φ.toFun x)
     have hfd := hderφ.hasFDerivAt
     exact hfd
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
-  haveI : SecondCountableTopology H := I.secondCountableTopology
-  haveI : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
+  have : SecondCountableTopology H := I.secondCountableTopology
+  have : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
   have hmain := hasFDerivAt_integral_compactOn
     (μ := riemannianVolumeMeasure (I := I) (M := M) g) (V := ℝ) (W := ℝ) (U := U) hU Fv F'
     hFcont hF'cont hdiff t ht
@@ -4340,14 +4353,19 @@ private lemma forcingCoeffTimeDeriv_continuousOn
       (fun (t : ℝ) (x : M) => (scalarEigenFunction g i).toFun x *
         iteratedDeriv r (fun s : ℝ => (F s).toFun x) t))
       (U ×ˢ (Set.univ : Set M)) := by
-    simpa [Function.uncurry] using
-      (hφc.continuousOn.mono (by intro p hp; exact Set.mem_univ p)).mul hjoint.continuousOn
+    rw [show Function.uncurry
+      (fun (t : ℝ) (x : M) => (scalarEigenFunction g i).toFun x *
+        iteratedDeriv r (fun s : ℝ => (F s).toFun x) t) =
+      (fun p ↦ (scalarEigenFunction g i).toFun p.2) *
+        (fun q ↦ iteratedDeriv r (fun s : ℝ ↦ (F s).toFun q.2) q.1) by rfl]
+    exact (hφc.continuousOn.mono (by intro p hp; exact Set.mem_univ p)).mul
+      hjoint.continuousOn
   have hfs : ∀ p : ℝ, ∀ x : M, p ∈ U → x ∉ (Set.univ : Set M) →
       (scalarEigenFunction g i).toFun x *
         iteratedDeriv r (fun s : ℝ => (F s).toFun x) p = 0 := by
     intro p x hp hx
     exact False.elim (hx (Set.mem_univ x))
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have hk : IsCompact (Set.univ : Set M) := isCompact_univ
   have hmain := continuousOn_integral_of_compact_support
@@ -5061,7 +5079,7 @@ private lemma smoothToLp_timeDerivField_continuousOn
           (scalarTimeDerivField g F hU hF r t₀).toFun x) ^ 2 = 0 := by
       intro p x hp hx
       exact False.elim (hx (Set.mem_univ x))
-    haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
       riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
     have hk : IsCompact (Set.univ : Set M) := isCompact_univ
     simpa using (continuousOn_integral_of_compact_support
@@ -5697,7 +5715,10 @@ noncomputable def scalarForcedSlice
         refine (contMDiffOn_univ.mpr ?_)
         have hc : ContMDiff I 𝓘(ℝ, ℝ) ∞
             (fun x : M => scalarForcedFlow g u₀ f (t, x).1 (t, x).2) := by
-          simpa using (contMDiffOn_univ.mp hcomp)
+          rw [show (fun x : M ↦ scalarForcedFlow g u₀ f (t, x).1 (t, x).2) =
+            (fun q : ℝ × M ↦ scalarForcedFlow g u₀ f q.1 q.2) ∘
+              (fun x : M ↦ (t, x)) by rfl]
+          exact contMDiffOn_univ.mp hcomp
         convert hc using 1
       exact (contMDiffOn_univ.mp hsliceOn)⟩
 
@@ -5789,7 +5810,7 @@ private lemma scalarSpecCoeff_eq_inner
   let σ : ℝ := ((Module.finrank ℝ E / 2 + 1 : ℕ) : ℝ)
   let φj : SmoothScalar g := scalarEigenFunction g j
   set μ := riemannianVolumeMeasure (I := I) (M := M) g
-  haveI : MeasureTheory.IsFiniteMeasure μ :=
+  have : MeasureTheory.IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   let F : TensorEigenIdx00 g → M → ℝ := fun i x =>
     c i * (φj.toFun x * (scalarEigenFunction g i).toFun x)
@@ -5877,7 +5898,7 @@ private lemma scalarSpecCoeff_eq_inner
       (∑' i : TensorEigenIdx00 g, ∫ x : M, F i x ∂μ) =
         ∫ x : M, (∑' i : TensorEigenIdx00 g, F i x) ∂μ :=
     by
-    haveI : Countable (TensorEigenIdx00 g) :=
+    have : Countable (TensorEigenIdx00 g) :=
       DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.countable_tensorEigenIdx
         (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
@@ -6088,7 +6109,10 @@ noncomputable def scalarForcingSlice
         refine (contMDiffOn_univ.mpr ?_)
         have hc : ContMDiff I 𝓘(ℝ, ℝ) ∞
             (fun x : M => scalarForcingFlow g f (t, x).1 (t, x).2) := by
-          simpa using (contMDiffOn_univ.mp hcomp)
+          rw [show (fun x : M ↦ scalarForcingFlow g f (t, x).1 (t, x).2) =
+            (fun q : ℝ × M ↦ scalarForcingFlow g f q.1 q.2) ∘
+              (fun x : M ↦ (t, x)) by rfl]
+          exact contMDiffOn_univ.mp hcomp
         convert hc using 1
       exact (contMDiffOn_univ.mp hsliceOn)⟩
 
@@ -6456,7 +6480,14 @@ noncomputable def scalarForcedLaplacianSlice
             (fun x : M => scalarSpecSum (I := I) (M := M) g
               (fun i s => -TensorEigenIdx.lambda (I := I) (M := M) i *
                 scalarForcedCoeff (I := I) (M := M) g u₀ f i s) (t, x).1 (t, x).2) := by
-          simpa using (contMDiffOn_univ.mp hcomp)
+          rw [show (fun x : M ↦ scalarSpecSum (I := I) (M := M) g
+              (fun i s ↦ -TensorEigenIdx.lambda (I := I) (M := M) i *
+                scalarForcedCoeff (I := I) (M := M) g u₀ f i s) (t, x).1 (t, x).2) =
+            (fun q : ℝ × M ↦ scalarSpecSum (I := I) (M := M) g
+              (fun i s ↦ -TensorEigenIdx.lambda (I := I) (M := M) i *
+                scalarForcedCoeff (I := I) (M := M) g u₀ f i s) q.1 q.2) ∘
+              (fun x : M ↦ (t, x)) by rfl]
+          exact contMDiffOn_univ.mp hcomp
         convert hc using 1
       exact (contMDiffOn_univ.mp hsliceOn)⟩
 
@@ -6614,7 +6645,15 @@ theorem scalarForcingFlow_eq_smoothRep
           rw [hbridge i]
     _ = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
           (scalarCcLift g (F t)).toSection x := by
-          simpa using (congrFun (scalarSpec_cc g (scalarCcLift g (F t))) x)
+          rw [show scalarSpecSum (I := I) (M := M) g
+            (fun i _ ↦ tensorL2Coeff (I := I) (M := M)
+              (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
+              (SmoothCcTensor.toL2 (scalarCcLift g (F t))) i) t x =
+            scalarSpecSum (I := I) (M := M) g
+              (fun i _ ↦ tensorL2Coeff (I := I) (M := M)
+                (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
+                (SmoothCcTensor.toL2 (scalarCcLift g (F t))) i) 0 x by rfl]
+          exact congrFun (scalarSpec_cc g (scalarCcLift g (F t))) x
     _ = (F t).toFun x := by
           have h := congrArg SmoothScalar.toFun (scalar0Cc_scalarCcLift g (F t))
           exact congrFun h x
@@ -6822,7 +6861,14 @@ private noncomputable def scalarForcedLaplacianSlice_on
             (fun x : M => scalarSpecSum (I := I) (M := M) g
               (fun i s => -TensorEigenIdx.lambda (I := I) (M := M) i *
                 scalarForcedCoeff (I := I) (M := M) g u₀ f i s) (t, x).1 (t, x).2) := by
-          simpa using (contMDiffOn_univ.mp hcomp)
+          rw [show (fun x : M ↦ scalarSpecSum (I := I) (M := M) g
+              (fun i s ↦ -TensorEigenIdx.lambda (I := I) (M := M) i *
+                scalarForcedCoeff (I := I) (M := M) g u₀ f i s) (t, x).1 (t, x).2) =
+            (fun q : ℝ × M ↦ scalarSpecSum (I := I) (M := M) g
+              (fun i s ↦ -TensorEigenIdx.lambda (I := I) (M := M) i *
+                scalarForcedCoeff (I := I) (M := M) g u₀ f i s) q.1 q.2) ∘
+              (fun x : M ↦ (t, x)) by rfl]
+          exact contMDiffOn_univ.mp hcomp
         convert hc using 1
       exact (contMDiffOn_univ.mp hsliceOn)⟩
 
@@ -6939,7 +6985,10 @@ private noncomputable def scalarForcedSlice_on
         refine (contMDiffOn_univ.mpr ?_)
         have hc : ContMDiff I 𝓘(ℝ, ℝ) ∞
             (fun x : M => scalarForcedFlow g u₀ f (t, x).1 (t, x).2) := by
-          simpa using (contMDiffOn_univ.mp hcomp)
+          rw [show (fun x : M ↦ scalarForcedFlow g u₀ f (t, x).1 (t, x).2) =
+            (fun q : ℝ × M ↦ scalarForcedFlow g u₀ f q.1 q.2) ∘
+              (fun x : M ↦ (t, x)) by rfl]
+          exact contMDiffOn_univ.mp hcomp
         convert hc using 1
       exact (contMDiffOn_univ.mp hsliceOn)⟩
 
@@ -7205,7 +7254,10 @@ private noncomputable def scalarForcingSlice_on
         refine (contMDiffOn_univ.mpr ?_)
         have hc : ContMDiff I 𝓘(ℝ, ℝ) ∞
             (fun x : M => scalarForcingFlow g f (t, x).1 (t, x).2) := by
-          simpa using (contMDiffOn_univ.mp hcomp)
+          rw [show (fun x : M ↦ scalarForcingFlow g f (t, x).1 (t, x).2) =
+            (fun q : ℝ × M ↦ scalarForcingFlow g f q.1 q.2) ∘
+              (fun x : M ↦ (t, x)) by rfl]
+          exact contMDiffOn_univ.mp hcomp
         convert hc using 1
       exact (contMDiffOn_univ.mp hsliceOn)⟩
 
@@ -8057,10 +8109,15 @@ theorem scalarHeatFlowTensor_smoothInitial_contMDiffOn_closed
         _ = tensorSobolevWeight (I := I) (M := M) i ((m : ℝ) + (2 * (j + 1) : ℕ)) * (d i) ^ 2 := by
               rw [← mul_assoc]
               rw [hw]
-  simpa using (scalar_path_recon (I := I) (M := M) g htail hT N
+  rw [show (fun q : ℝ × M ↦ scalarHeatFlowTensor g
+      (SmoothCcTensor.toL2 (scalarCcLift g u₀)) q.1 q.2) =
+    (fun q : ℝ × M ↦ scalarSpecSum (I := I) (M := M) g
+      (fun i s ↦ scalarHeatCoeff (I := I) (M := M) g
+        (SmoothCcTensor.toL2 (scalarCcLift g u₀)) i s) q.1 q.2) by rfl]
+  exact scalar_path_recon (I := I) (M := M) g htail hT N
     (fun i s => scalarHeatCoeff (I := I) (M := M) g
       (SmoothCcTensor.toL2 (scalarCcLift g u₀)) i s)
-    (U := Set.univ) isOpen_univ hU hc hmass)
+    (U := Set.univ) isOpen_univ hU hc hmass
 
 theorem scalarHeatFlowTensor_smoothInitial_strict_pos
     (g : SmoothRiemannianMetric I M) (u₀ : SmoothScalar g)
@@ -8079,7 +8136,7 @@ theorem scalarHeatFlowTensor_smoothInitial_strict_pos
         simp [Filter.cocompact_eq_bot]
       let xm : M := Classical.choose hmin'
       exact ⟨u₀.toFun xm, hpos0 xm, Classical.choose_spec hmin'⟩
-    · haveI : IsEmpty M := not_nonempty_iff.mp hM
+    · have : IsEmpty M := not_nonempty_iff.mp hM
       exact ⟨(1 : ℝ), zero_lt_one, fun x => (IsEmpty.false x).elim⟩
   obtain ⟨c₀, hc₀, hc₀_le⟩ := hmin
   have hconst : DifferentialGeometry.Analysis.Parabolic.IsHeatOnStationary
@@ -8154,7 +8211,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem scalarHeatFlowTensor_smoothInitial_one_point_harnack_of_nonnegative_ricci
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (u₀ : SmoothScalar g)
     (htail : EigenvalueTailSummable g 0 0)
@@ -8183,14 +8239,13 @@ private theorem scalarHeatFlowTensor_smoothInitial_one_point_harnack_of_nonnegat
     (fun t ht => ⟨ht.1, le_trans ht.2 (by linarith)⟩)
     (fun t ht => ⟨ht.1, lt_trans ht.2 (by linarith)⟩) x
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem scalarHeatFlowTensor_smoothInitial_harnack_of_nonnegative_ricci
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -8460,12 +8515,20 @@ theorem scalarHeatFlow_smoothInitial_shift_const
       (fun _ _ => (0 : ℝ)) v
     refine ⟨?_, ?_, ?_, ?_⟩
     · have hjoint := hu.jointSmooth
-      simpa [v, D] using hjoint.add
+      have hadd := hjoint.add
         (contMDiffOn_const : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
           (fun _ : ℝ × M => δ) (D.regular ×ˢ Set.univ))
+      rw [show v = fun s y ↦ u s y + δ by rfl]
+      rw [show (fun q : ℝ × M ↦ u q.1 q.2 + δ) =
+        (fun q : ℝ × M ↦ u q.1 q.2) + (fun _ : ℝ × M ↦ δ) by rfl]
+      exact hadd
     · have hcont := hu.jointCont
-      simpa [v, D] using hcont.add
+      have hadd := hcont.add
         (continuousOn_const : ContinuousOn (fun _ : ℝ × M => δ) (D.carrier ×ˢ Set.univ))
+      rw [show v = fun s y ↦ u s y + δ by rfl]
+      rw [show (fun q : ℝ × M ↦ u q.1 q.2 + δ) =
+        (fun q : ℝ × M ↦ u q.1 q.2) + (fun _ : ℝ × M ↦ δ) by rfl]
+      exact hadd
     · intro s hs
       have hslicem := hu.sliceSmooth s hs
       exact hslicem.add (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => δ))
@@ -8542,14 +8605,13 @@ private lemma riemannianEDist_congr_enorm
   intro s
   exact h (γ s) (mfderiv% γ s 1)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [CompactSpace M] in
 private lemma scalarHeatFlow_smoothInitial_harnack_of_nonnegative_ricci_of_enorm
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [PseudoEMetricSpace M] [CompleteSpace M]
     [NeZero (Module.finrank ℝ E)]
     (hENorm : ∀ x : M, ENorm (TangentSpace I x))
@@ -8567,18 +8629,18 @@ private lemma scalarHeatFlow_smoothInitial_harnack_of_nonnegative_ricci_of_enorm
         Real.exp ((edist x y).toReal ^ 2 / (4 * (b - a))) *
         scalarHeatFlow g (smoothToLp (I := I) (M := M) g u₀) b y := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
-  letI RBNAG : ∀ x : M, NormedAddCommGroup (TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
+  let RBNAG : ∀ x : M, NormedAddCommGroup (TangentSpace I x) :=
     fun x => Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
       (E := fun x : M => TangentSpace I x) x
-  letI : ∀ x : M, InnerProductSpace ℝ (TangentSpace I x) :=
+  let : ∀ x : M, InnerProductSpace ℝ (TangentSpace I x) :=
     fun x => Bundle.instInnerProductSpaceReal (E := fun x : M => TangentSpace I x) x
-  letI : ∀ x : M, NormedSpace ℝ (TangentSpace I x) := fun x => inferInstance
+  let : ∀ x : M, NormedSpace ℝ (TangentSpace I x) := fun x => inferInstance
   have hcrb : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) := by
     refine ⟨⟨fun x => g.inner x, g.contMDiff.continuous, ?eq⟩⟩
     intro x v w
     rfl
-  haveI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) := hcrb
+  have : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) := hcrb
   let RBENorm : ∀ x : M, ENorm (TangentSpace I x) := fun x =>
     (@SeminormedAddGroup.toContinuousENorm (TangentSpace I x)
       (@SeminormedAddCommGroup.toSeminormedAddGroup (TangentSpace I x)
@@ -8599,7 +8661,7 @@ private lemma scalarHeatFlow_smoothInitial_harnack_of_nonnegative_ricci_of_enorm
         @enorm (TangentSpace I x) (RBENorm x) v := by
     intro x v
     rw [hEnorm x v, hEnormRB x v]
-  haveI : IsRiemannianManifold I M := ⟨fun x y =>
+  have : IsRiemannianManifold I M := ⟨fun x y =>
     (hedist x y).trans (riemannianEDist_congr_enorm x y hENorm RBENorm hnorm_eq)⟩
   have hdistRB : @riemannianEDist E _ _ H _ I M _ _ RBENorm x y = edist x y :=
     ((inferInstance : IsRiemannianManifold I M).out x y).symm
@@ -8643,7 +8705,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem scalarHeatFlow_smoothInitial_one_point_harnack_of_nonnegative_ricci
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (u₀ : SmoothScalar g)
     (hRic : ∀ x v, 0 ≤ ricciTensor (I := I) g x v v)
@@ -8693,7 +8754,6 @@ theorem scalarHeatFlow_smoothInitial_harnack_of_nonnegative_ricci
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [PseudoEMetricSpace M] [CompleteSpace M]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) (u₀ : SmoothScalar g)

@@ -120,7 +120,7 @@ theorem chartCoordSpatialC1_neg
     rw [hfun]
     exact hDerCont.neg
 
-noncomputable def chartLocalPicardData_of_spatialC1
+noncomputable def chartLocalPicardDataOfSpatialC1
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hCont : ContinuousOn (Function.uncurry (fun t x => X t x))
       (Set.univ : Set (ℝ × M)))
@@ -141,7 +141,7 @@ noncomputable def chartLocalPicardData_of_spatialC1
   have hRegNeg : ChartCoordPicardRegular (I := I) (fun t x => -(X t x)) :=
     chartCoordPicardRegular_of_spatialC1 (fun t x => -(X t x)) hContNeg
       (chartCoordSpatialC1_neg X hC1)
-  exact ⟨fun α => chartLocalPicardData_of_regular X hReg α,
-    fun α => chartLocalPicardData_of_regular (fun t x => -(X t x)) hRegNeg α⟩
+  exact ⟨fun α => chartLocalPicardDataOfRegular X hReg α,
+    fun α => chartLocalPicardDataOfRegular (fun t x => -(X t x)) hRegNeg α⟩
 
 end DifferentialGeometry.Analysis.ODE

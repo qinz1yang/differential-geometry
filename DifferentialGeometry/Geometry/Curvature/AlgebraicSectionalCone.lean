@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensor
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -20,32 +19,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
-private local instance algebraicSectionalTensor04NormedAddCommGroup (x : M) :
-    NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
-
-private local instance algebraicSectionalTensor04NormedSpace (x : M) :
-    NormedSpace Real (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
-
-private local instance algebraicSectionalTensor04AddCommGroup (x : M) :
-    AddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  @NormedAddCommGroup.toAddCommGroup _
-    (algebraicSectionalTensor04NormedAddCommGroup (I := I) x)
-
-private local instance algebraicSectionalTensor04Module (x : M) :
-    Module Real (Tensor04At (I := I) (M := M) x) :=
-  @NormedSpace.toModule _ _ _ _
-    (algebraicSectionalTensor04NormedSpace (I := I) x)
-
-private local instance algebraicSectionalTensor04TopologicalSpace (x : M) :
-    TopologicalSpace (Tensor04At (I := I) (M := M) x) :=
-  @UniformSpace.toTopologicalSpace _
-    (@PseudoMetricSpace.toUniformSpace _
-      (@MetricSpace.toPseudoMetricSpace _
-        (@NormedAddCommGroup.toMetricSpace _
-          (algebraicSectionalTensor04NormedAddCommGroup (I := I) x))))
-
 noncomputable def algebraicSectionalEvalCLM {x : M}
     (v w : TangentSpace I x) :
     StrongDual Real
@@ -53,6 +26,7 @@ noncomputable def algebraicSectionalEvalCLM {x : M}
   (tensor04SectionalEvalCLM (I := I) (M := M) v w).comp
     (algebraicCurvatureTensorSubmodule (I := I) (M := M) x).subtypeL
 
+omit [FiniteDimensional Real E] in
 @[simp]
 theorem algebraicSectionalEvalCLM_apply {x : M}
     (v w : TangentSpace I x)
@@ -68,6 +42,7 @@ noncomputable def algebraicSectionalNonnegativeCone {x : M} :
   (tensor04SectionalNonnegativeCone (I := I) (M := M)).comap
     (algebraicCurvatureTensorSubmodule (I := I) (M := M) x).subtypeL
 
+omit [FiniteDimensional Real E] in
 @[simp]
 theorem mem_algebraicSectionalNonnegativeCone {x : M}
     {A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x} :
@@ -77,6 +52,7 @@ theorem mem_algebraicSectionalNonnegativeCone {x : M}
           (A : Tensor04At (I := I) (M := M) x) v w := by
   simp [algebraicSectionalNonnegativeCone]
 
+omit [FiniteDimensional Real E] in
 theorem algebraicSectionalEvalCLM_isDualElement {x : M}
     (v w : TangentSpace I x) :
     ProperCone.IsDualElement
@@ -85,6 +61,7 @@ theorem algebraicSectionalEvalCLM_isDualElement {x : M}
   intro A hA
   exact (mem_algebraicSectionalNonnegativeCone.mp hA) v w
 
+omit [FiniteDimensional Real E] in
 theorem mem_algebraicSectionalNonnegative_dualZeroFace {x : M}
     {A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x}
     {v w : TangentSpace I x} :

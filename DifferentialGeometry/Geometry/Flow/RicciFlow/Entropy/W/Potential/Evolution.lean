@@ -46,11 +46,13 @@ theorem potential_slice
       ContDiffAt Real ∞ Real.log
         (u s y / perelmanDensityPrefactor n s) :=
     Real.contDiffAt_log.2 (div_ne_zero (hpos y).ne' hpref_pos.ne')
-  simpa only [perelmanPotential] using
-    (hlog.comp_contMDiffAt
-      (I := I)
-      (f := fun z : M => u s z / perelmanDensityPrefactor n s)
-      (x := y) hquot).neg
+  have h := (hlog.comp_contMDiffAt
+    (I := I)
+    (f := fun z : M => u s z / perelmanDensityPrefactor n s)
+    (x := y) hquot).neg
+  change ContMDiffAt I 𝓘(Real, Real) ∞
+    (fun z : M => -Real.log (u s z / perelmanDensityPrefactor n s)) y at h
+  exact h
 
 theorem potential_pde
     (D : RealTimeInterval)
@@ -154,6 +156,7 @@ theorem potential_pde
   have hquot := hu_deriv.div hpref_deriv hpref_ne
   have hraw :=
     (hquot.log (div_ne_zero (hpos x).ne' hpref_ne)).neg
+  change HasDerivAt (fun r : Real => perelmanPotential n r (u r) x) _ s at hraw
   have htime :
       HasDerivAt (fun r : Real => perelmanPotential n r (u r) x)
         (-(u s x)⁻¹ * laplacianAt (I := I) G s (u s) x -
@@ -206,10 +209,13 @@ theorem potential_joint
         ContDiffAt Real ∞ (fun z : Real => z ^ (-(n : Real) / 2))
           (4 * Real.pi * p.1) :=
       Real.contDiffAt_rpow_const_of_ne hbase_pos.ne'
-    simpa only [Function.comp_apply] using
-      hpow.comp_contMDiffAt
-        (I := (modelWithCornersSelf Real Real).prod I)
-        (f := fun q : Real × M => 4 * Real.pi * q.1) (x := p) hbase
+    have h := hpow.comp_contMDiffAt
+      (I := (modelWithCornersSelf Real Real).prod I)
+      (f := fun q : Real × M => 4 * Real.pi * q.1) (x := p) hbase
+    change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
+      (modelWithCornersSelf Real Real) ∞
+      (fun q : Real × M => (4 * Real.pi * q.1) ^ (-(n : Real) / 2)) p at h
+    exact h
   have hpref_pos : 0 < perelmanDensityPrefactor n p.1 := by
     unfold perelmanDensityPrefactor
     exact Real.rpow_pos_of_pos hbase_pos _
@@ -231,11 +237,15 @@ theorem potential_joint
         (modelWithCornersSelf Real Real) ∞
         (fun q : Real × M =>
           Real.log (u q.1 q.2 / perelmanDensityPrefactor n q.1)) p := by
-    simpa only [Function.comp_apply] using
-      hlogAt.comp_contMDiffAt
-        (I := (modelWithCornersSelf Real Real).prod I)
-        (f := fun q : Real × M =>
-          u q.1 q.2 / perelmanDensityPrefactor n q.1) (x := p) hquot
+    have h := hlogAt.comp_contMDiffAt
+      (I := (modelWithCornersSelf Real Real).prod I)
+      (f := fun q : Real × M =>
+        u q.1 q.2 / perelmanDensityPrefactor n q.1) (x := p) hquot
+    change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
+      (modelWithCornersSelf Real Real) ∞
+      (fun q : Real × M =>
+        Real.log (u q.1 q.2 / perelmanDensityPrefactor n q.1)) p at h
+    exact h
   simpa only [perelmanPotential] using hlog.neg.contMDiffWithinAt
 
 theorem potential_df_time
@@ -250,8 +260,8 @@ theorem potential_df_time
     (x : M) (X : TangentSpace I x) :
     HasDerivAt
       (fun r : Real =>
-        extDerivFun (I := I) (perelmanPotential n r (u r)) x X)
-      (extDerivFun (I := I)
+        mvfderiv (I := I) (perelmanPotential n r (u r)) x X)
+      (mvfderiv (I := I)
         (fun y : M =>
           laplacianAt (I := I) G s (perelmanPotential n s (u s)) y -
             (G.metric s).inner y
@@ -305,11 +315,15 @@ theorem potential_df_time
             ContDiffAt Real 2 (fun z : Real => z ^ (-(n : Real) / 2))
               (4 * Real.pi * t) :=
           Real.contDiffAt_rpow_const_of_ne hbase_pos.ne'
-        simpa only [Function.comp_apply] using
-          hpow.comp_contMDiffAt
-            (I := (modelWithCornersSelf Real Real).prod I)
-            (f := fun p : Real × M => 4 * Real.pi * p.1)
-            (x := (t, x)) hbase
+        have h := hpow.comp_contMDiffAt
+          (I := (modelWithCornersSelf Real Real).prod I)
+          (f := fun p : Real × M => 4 * Real.pi * p.1)
+          (x := (t, x)) hbase
+        change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
+          (modelWithCornersSelf Real Real) 2
+          (fun p : Real × M => (4 * Real.pi * p.1) ^ (-(n : Real) / 2))
+          (t, x) at h
+        exact h
       have hpref_pos : 0 < perelmanDensityPrefactor n t := by
         unfold perelmanDensityPrefactor
         exact Real.rpow_pos_of_pos hbase_pos _
@@ -333,13 +347,22 @@ theorem potential_df_time
                 (u t x / perelmanDensityPrefactor n t) :=
             Real.contDiffAt_log.2
               (div_ne_zero (hpos t ht x).ne' hpref_pos.ne')
-          simpa only [Function.comp_apply] using
-            hlogAt.comp_contMDiffAt
-              (I := (modelWithCornersSelf Real Real).prod I)
-              (f := fun p : Real × M =>
-                u p.1 p.2 / perelmanDensityPrefactor n p.1)
-              (x := (t, x)) hquot
-      simpa only [perelmanPotential] using hlog.neg
+          have h := hlogAt.comp_contMDiffAt
+            (I := (modelWithCornersSelf Real Real).prod I)
+            (f := fun p : Real × M =>
+              u p.1 p.2 / perelmanDensityPrefactor n p.1)
+            (x := (t, x)) hquot
+          change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
+            (modelWithCornersSelf Real Real) 2
+            (fun p : Real × M =>
+              Real.log (u p.1 p.2 / perelmanDensityPrefactor n p.1)) (t, x) at h
+          exact h
+      have h := hlog.neg
+      change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
+        (modelWithCornersSelf Real Real) 2
+        (fun p : Real × M =>
+          -Real.log (u p.1 p.2 / perelmanDensityPrefactor n p.1)) (t, x) at h
+      exact h
     · intro t ht x _
       exact
         (potential_pde D G V u n hu ht.1 ht.2 (hpos t ht) x).hasDerivWithinAt

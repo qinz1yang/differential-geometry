@@ -6,6 +6,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold Function
@@ -29,8 +30,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_cutoff_energy
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     ∃ φ : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ φ ∧
@@ -48,8 +49,8 @@ theorem exists_cutoff_energy
             {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal r}) ^
               (1 / 2 : ℝ) := by
   classical
-  letI : MeasurableSpace M := borel M
-  letI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
   let A : Set M :=
     {x | riemannianEDistOf (I := I) g a x < ENNReal.ofReal (r / 2)}
@@ -72,13 +73,13 @@ theorem exists_cutoff_energy
       continuous_const
   have hAne : A.Nonempty := by
     refine ⟨a, ?_⟩
-    simp only [A, mem_setOf_eq, riemannianEDistOf,
+    simp only [A, mem_ofPred_eq, riemannianEDistOf,
       Manifold.riemannianEDist_self]
     exact ENNReal.ofReal_pos.mpr (by positivity)
-  letI : μ.IsOpenPosMeasure :=
+  let : μ.IsOpenPosMeasure :=
     riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
   have hμA : 0 < μ A := hA.measure_pos μ hAne
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   let m : ENNReal := (μ A) ^ (1 / 2 : ℝ)
@@ -139,9 +140,11 @@ theorem exists_cutoff_energy
         eLpNorm u 2 μ = eLpNorm ((fun x => u x - φ x) + φ) 2 μ :=
           congrArg (fun f => eLpNorm f 2 μ) heq
         _ ≤ eLpNorm (fun x => u x - φ x) 2 μ + eLpNorm φ 2 μ := by
-          simpa only [Pi.sub_apply] using
-            eLpNorm_add_le (p := (2 : ENNReal))
-              (hu_aesm.sub hφ_aesm) hφ_aesm (by norm_num)
+          rw [show (fun x => u x - φ x) = u - φ by
+            funext x
+            rw [Pi.sub_apply]]
+          exact eLpNorm_add_le (p := (2 : ENNReal))
+            (hu_aesm.sub hφ_aesm) hφ_aesm (by norm_num)
     have hεm : ENNReal.ofReal ε ≤ m / 2 := by
       calc
         ENNReal.ofReal ε ≤ ENNReal.ofReal (m.toReal / 2) := by
@@ -250,7 +253,7 @@ theorem exists_cutoff_energy
               (gradFun (I := I) g (fun y => u y - φ y) x)
               (gradFun (I := I) g (fun y => u y - φ y) x)) := by
           congr 1
-          simp only [map_neg, ContinuousLinearMap.neg_apply, neg_neg]
+          simp only [map_neg, neg_apply, neg_neg]
     have hgp_l2 : eLpNorm gp 2 μ ≤
         eLpNorm gu 2 μ + eLpNorm ge 2 μ := by
       calc

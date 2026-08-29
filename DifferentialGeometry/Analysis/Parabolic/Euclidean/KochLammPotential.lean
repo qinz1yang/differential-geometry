@@ -43,18 +43,22 @@ omit [FiniteDimensional ℝ V] in
 theorem heatTerm0_fderiv {t s : ℝ} (f : ℝ × V → F) (x y : V) :
     HasFDerivAt (fun z : V ↦ heatKernel (t - s) (z - y) • f (s, y))
       ((heatD1Map (t - s) (x - y)).smulRight (f (s, y))) x := by
-  simpa using
-    ((heatKernel_hasFDeriv (x - y)).smul_const (f (s, y))).comp x
-      ((hasFDerivAt_id x).sub_const y)
+  change HasFDerivAt
+    ((fun z => heatKernel (t - s) z • f (s, y)) ∘ fun z : V => z - y)
+      ((heatD1Map (t - s) (x - y)).smulRight (f (s, y))) x
+  exact ((heatKernel_hasFDeriv (x - y)).smul_const (f (s, y))).comp x
+    ((hasFDerivAt_id x).sub_const y)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] [CompleteSpace F] in
 omit [FiniteDimensional ℝ V] in
 theorem heatTerm1_fderiv {t s : ℝ} (w : V) (f : ℝ × V → F) (x y : V) :
     HasFDerivAt (fun z : V ↦ heatD1 (t - s) w (z - y) • f (s, y))
       ((heatD2Map (t - s) w (x - y)).smulRight (f (s, y))) x := by
-  simpa using
-    ((heatD1_hasFDeriv w (x - y)).smul_const (f (s, y))).comp x
-      ((hasFDerivAt_id x).sub_const y)
+  change HasFDerivAt
+    ((fun z => heatD1 (t - s) w z • f (s, y)) ∘ fun z : V => z - y)
+      ((heatD2Map (t - s) w (x - y)).smulRight (f (s, y))) x
+  exact ((heatD1_hasFDeriv w (x - y)).smul_const (f (s, y))).comp x
+    ((hasFDerivAt_id x).sub_const y)
 
 end Euclidean
 end Parabolic

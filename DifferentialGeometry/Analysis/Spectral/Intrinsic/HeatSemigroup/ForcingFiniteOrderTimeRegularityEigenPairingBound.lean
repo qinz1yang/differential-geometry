@@ -45,16 +45,15 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private local instance tensorRSModelNormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 theorem smoothCcTensor_path_toFun_contDiffWithinAt
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} {N : WithTop ℕ∞}
     (Sfam : ℝ → SmoothCcTensor g₀ 0 2)
@@ -64,7 +63,6 @@ theorem smoothCcTensor_path_toFun_contDiffWithinAt
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T))
     (x : M) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ContDiffWithinAt ℝ N (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 2
   have harg : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) N (fun u : ℝ => (x, u))
       (Set.Icc (0 : ℝ) T) :=
     (contMDiffOn_const (c := x)).prodMk contMDiffOn_id
@@ -119,7 +117,6 @@ open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem partialSnd_set_contMDiffOn_Icc_finiteOrder
     (f : M → ℝ → ℝ) {T : ℝ} (U : Set M) (N : ℕ)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((N : WithTop ℕ∞) + 1)
@@ -182,9 +179,16 @@ private theorem partialSnd_set_contMDiffOn_Icc_finiteOrder
       contMDiffWithinAt_snd contMDiffWithinAt_id contMDiffWithinAt_const le_rfl
       (Set.mapsTo_id _) hp₀
       (fun q hq => hq.2) hUM
-  simpa [inTangentCoordinates_model_space] using h_apply
+  rw [inTangentCoordinates_model_space
+    (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+    (f := fun p : M × ℝ => p.2)
+    (g := fun p : M × ℝ => f p.1 p.2)
+    (ϕ := fun p : M × ℝ =>
+      mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
+        (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2)
+    (x₀ := p₀)] at h_apply
+  exact h_apply
 
-set_option backward.isDefEq.respectTransparency false in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
@@ -218,7 +222,6 @@ private theorem iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
       intro p _
       rw [iteratedDerivWithin_succ']
 
-set_option backward.isDefEq.respectTransparency false in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
@@ -297,14 +300,12 @@ private theorem vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem contMDiff_constOfIsEmpty_tensor0S_section_local :
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 0 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 0 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 0 I z) p.1
         (Tensor0SBundle.Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)))) := by
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0
   intro p₀
   rw [Bundle.contMDiffAt_totalSpace
     (F := Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -337,7 +338,6 @@ private theorem contMDiff_constOfIsEmpty_tensor0S_section_local :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop ℕ∞} {n : ℕ}
     {s : Set (M × ℝ)} {p₀ : M × ℝ}
     (T : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace (n + 1) I p.1)
@@ -349,10 +349,10 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)) N
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p.1
-        (tensor0S_curry (I := I) (M := M) n p.1 (T p))) s p₀ := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
+        (tensor0SCurry (I := I) (M := M) n p.1 (T p))) s p₀ := by
+  let _ : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
       (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y)) :=
-    tensor0SBundle_topology (n + 1)
+    tensor0SBundleTopology (n + 1)
   rw [Bundle.contMDiffWithinAt_totalSpace
     (F := E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
     (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y)
@@ -382,7 +382,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
       (fun _ : M => T p) p₀.1 p.1 hb
     change (trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p₀.1
-        ⟨p.1, tensor0S_curry (I := I) (M := M) n p.1 (T p)⟩).2 =
+        ⟨p.1, tensor0SCurry (I := I) (M := M) n p.1 (T p)⟩).2 =
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p.1, T p⟩).2)
@@ -391,13 +391,12 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
       (fun _ : M => T p₀) p₀.1 p₀.1 (mem_baseSet_trivializationAt _ _ _)
     change (trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p₀.1
-        ⟨p₀.1, tensor0S_curry (I := I) (M := M) n p₀.1 (T p₀)⟩).2 =
+        ⟨p₀.1, tensor0SCurry (I := I) (M := M) n p₀.1 (T p₀)⟩).2 =
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p₀.1, T p₀⟩).2)
     exact hpt
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop ℕ∞} : ∀ (n : ℕ)
@@ -411,7 +410,7 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
     (_hv : ∀ i, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) N
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1 (v i p)) s p₀),
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
-      (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.toModel (T p) (fun i => v i p)) s p₀
+      (fun p : M × ℝ => Tensor0SBundle.Tensor0SSpace.eval (T p) (fun i => v i p)) s p₀
   | 0, s, p₀, T, hT, v, _hv => by
     have hT_at := (Bundle.contMDiffWithinAt_totalSpace
       (F := Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -460,18 +459,18 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
         (fun p : M × ℝ =>
           TotalSpace.mk' (Tensor0SBundle.Tensor0SModel n ℝ E)
             (E := fun x : M => Tensor0SBundle.Tensor0SSpace n I x) p.1
-            ((tensor0S_curry (I := I) (M := M) n p.1 (T p)) (v 0 p))) s p₀ :=
+            ((tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))) s p₀ :=
       ContMDiffWithinAt.clm_bundle_apply (𝕜 := ℝ) (n := N)
         (F₁ := E) (F₂ := Tensor0SBundle.Tensor0SModel n ℝ E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SBundle.Tensor0SSpace n I x)
         (IM := I.prod 𝓘(ℝ, ℝ)) (IB := I)
-        (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0S_curry (I := I) (M := M) n p.1 (T p))
+        (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0SCurry (I := I) (M := M) n p.1 (T p))
         (v := fun p : M × ℝ => v 0 p)
         hCurry (hv 0)
     have hRec := contMDiffWithinAt_section_apply_prod_ofOrder_local n
       (s := s) (p₀ := p₀)
-      (fun p : M × ℝ => (tensor0S_curry (I := I) (M := M) n p.1 (T p)) (v 0 p))
+      (fun p : M × ℝ => (tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))
       hApplied
       (fun (i : Fin n) (p : M × ℝ) => v i.succ p)
       (fun i => hv i.succ)
@@ -484,11 +483,7 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
       refine Fin.cases ?_ ?_ j
       · simp [Fin.cons_zero]
       · intro k; simp [Fin.cons_succ]
-    · change Tensor0SBundle.Tensor0SSpace.toModel (T p₀) (fun i : Fin (n + 1) => v i p₀) =
-        Tensor0SBundle.Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) n p₀.1 (T p₀)) (v 0 p₀))
-          (fun i : Fin n => v i.succ p₀)
-      rw [tensor0S_curry_apply_eval]
+    · rw [tensor0S_curry_apply_eval]
       refine Eq.symm ?_
       congr 1
       funext j
@@ -498,7 +493,6 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
     {N : WithTop ℕ∞} (hN : N ≤ (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M) (α : M) {T : ℝ} :
@@ -514,14 +508,14 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
         (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) n g α p.1 (TT p) (SS p))
+          chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1 (TT p) (SS p))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
   intro n
   induction n with
   | zero =>
       intro TT SS hT hS
       have heq : (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α p.1 (TT p) (SS p)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) 0 g α p.1 (TT p) (SS p)) =
           fun p : M × ℝ =>
             ((TT p) (fun i => Fin.elim0 i)) * ((SS p) (fun i => Fin.elim0 i)) := by
         funext p
@@ -555,19 +549,19 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
   | succ n ih =>
       intro TT SS hT hS
       have heq : (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (n + 1) g α p.1 (TT p) (SS p)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) (n + 1) g α p.1 (TT p) (SS p)) =
           fun p : M × ℝ =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 (chartGramMatrix (I := I) g α p.1)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) n g α p.1
+                  chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1
                     ((TT p).curryLeft ((chartModelBasis E) i))
                     ((SS p).curryLeft ((chartModelBasis E) j)) := by
         funext p
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
-      refine contMDiffOn_finset_sum (fun i _ => ?_)
-      refine contMDiffOn_finset_sum (fun j _ => ?_)
+      refine contMDiffOn_finsetSum (fun i _ => ?_)
+      refine contMDiffOn_finsetSum (fun j _ => ?_)
       refine ContMDiffOn.mul ?_ ?_
       · have hinv := chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
         have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
@@ -613,7 +607,6 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
           rw [heq']
           exact hS ψ'
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
@@ -638,7 +631,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
   have heval : ∀ p : M × ℝ,
       (loweredCompose (I := I) (M := M) g 0 2 α p.1 (arm p))
           (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)) =
-        Tensor0SBundle.Tensor0SSpace.toModel (Tval p)
+        Tensor0SBundle.Tensor0SSpace.eval (Tval p)
           (fun j : Fin 2 => chartBasisVecFiber (I := I) α
             (φ (Fin.natAdd 0 j)) p.1) := by
     intro p
@@ -662,7 +655,6 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private lemma tensorInnerPointwise_abs_le_half_selfInner_add
     (g : SmoothRiemannianMetric I M) (x : M)
     (V W : Tensor0SBundle.TensorRSModel 0 2 ℝ E) :
@@ -697,7 +689,6 @@ private lemma tensorInnerPointwise_abs_le_half_selfInner_add
   rw [← hsymm] at hplus hminus
   refine abs_le.mpr ⟨by linarith, by linarith⟩
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma eigenvectorSmooth_selfInner_integral_eq_one
     (g₀ : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
@@ -730,7 +721,6 @@ private lemma eigenvectorSmooth_selfInner_integral_eq_one
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)).1 i]
   norm_num
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
@@ -748,8 +738,6 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
           (iteratedDerivWithin j (fun s => (Sfam s).toFun p.1) (Set.Icc (0 : ℝ) T) p.2))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
-    (I := I) (M := M) 0 2
   set jetD : M → ℝ → Tensor0SBundle.TensorRSModel 0 2 ℝ E :=
     fun x t => iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t
     with hjetD
@@ -773,7 +761,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
   have hCR : ∀ α : M, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       ((kk : ℕ) : WithTop ℕ∞)
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => (Sfam p.2).toSection z) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro α p hp
@@ -810,10 +798,10 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
         Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hpbase]
   have hChartCommute : ∀ (α : M) (x : M), x ∈ (chartAt H α).source → ∀ t ∈ Set.Icc (0 : ℝ) T,
-      DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+      DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z t)) x =
         iteratedDerivWithin j
-          (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+          (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
             (I := I) 0 2 α (fun z : M => (Sfam s).toSection z) x)
           (Set.Icc (0 : ℝ) T) t := by
     intro α x hx t ht
@@ -821,25 +809,25 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
     set Φ : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSModel 0 2 ℝ E :=
       ((trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).continuousLinearMapAt ℝ x).comp
-        ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+        ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
           : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSSpace 0 2 I x)
       with hΦ
     have hΦeq : ∀ s : ℝ, Φ ((Sfam s).toFun x) =
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => (Sfam s).toSection z) x := by
       intro s
       rw [hΦ, ContinuousLinearMap.comp_apply,
         DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
-      have hsymm : ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+      have hsymm : ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
           : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSSpace 0 2 I x)
           ((Sfam s).toFun x) = (Sfam s).toSection x := by
-        change (Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
-            ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x)
+        change (Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
+            ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x)
               ((Sfam s).toSection x)) = (Sfam s).toSection x
-        exact (Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+        exact (Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
           (I := I) 0 2 x).symm_apply_apply _
       rw [hsymm]
-    have hΦLHS : DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+    have hΦLHS : DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z t)) x =
         Φ (jetD x t) := by
       rw [DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply, hΦ,
@@ -855,20 +843,20 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
   have hChartJet : ∀ α : M, ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E) ((0 : ℕ) : WithTop ℕ∞)
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z p.2)) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro α
     have hCRj : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         ((0 + j : ℕ) : WithTop ℕ∞)
         (fun p : M × ℝ =>
-          DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+          DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
             (fun z : M => (Sfam p.2).toSection z) p.1)
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
       (hCR α).of_le (by exact_mod_cast (by omega : 0 + j ≤ kk))
     have hvecjet := vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
       (V := Tensor0SBundle.TensorRSModel 0 2 ℝ E) (U := (chartAt H α).source) hT
-      (fun x s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun x s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) 0 2 α (fun z : M => (Sfam s).toSection z) x) j 0 hCRj
     refine hvecjet.congr ?_
     intro p hp
@@ -946,7 +934,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
     have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
         DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             (jetD p.1 p.2) (jetD p.1 p.2) =
-          chartTensorInnerPointwise_0s (I := I) (M := M) (0 + 2) g₀ α p.1
+          chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
             (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (jetD p.1 p.2))
             (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (jetD p.1 p.2)) := by
       rintro ⟨y, u⟩ ⟨hy, _⟩
@@ -1023,7 +1011,6 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
       hcoeff_W hcoeff_W
   exact hpair.continuousOn
 
-set_option backward.isDefEq.respectTransparency false in
 theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk j : ℕ) (hj : j ≤ kk)
     (Sfam : ℝ → SmoothCcTensor g₀ 0 2)
@@ -1039,7 +1026,7 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
             (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (Sfam s)) i)
           (Set.Icc (0 : ℝ) T) t| ≤ C := by
   classical
-  haveI : IsFiniteMeasure
+  have _ : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       g₀

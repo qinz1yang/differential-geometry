@@ -26,8 +26,8 @@ private instance sphereModel_neZero :
   rw [finrank_euclideanSpace_fin]
   infer_instance
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable
   [RiemannianBundle
@@ -47,7 +47,7 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
 
 variable [RiemannianBundle (fun x : N => TangentSpace J x)]
   [PseudoEMetricSpace N] [IsRiemannianManifold J N] [CompleteSpace N]
-  [ConnectedSpace N] [SimplyConnectedSpace N] [LocPathConnectedSpace N]
+  [ConnectedSpace N] [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
   [IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
     (fun x : N => TangentSpace J x)]
 
@@ -64,7 +64,7 @@ omit [FiniteDimensional ℝ A] [NeZero n]
   [SigmaCompactSpace N] [T2Space (TangentBundle J N)]
   [RiemannianBundle (fun x : N => TangentSpace J x)]
   [PseudoEMetricSpace N] [IsRiemannianManifold J N] [CompleteSpace N]
-  [ConnectedSpace N] [SimplyConnectedSpace N] [LocPathConnectedSpace N]
+  [ConnectedSpace N] [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
   [IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
     (fun x : N => TangentSpace J x)] in
 private theorem hlocAt_congr_open
@@ -86,13 +86,15 @@ private theorem hlocAt_congr_open
           intro z hz
           change z ∈ Φ.source ∩ U at hz
           exact hz.1
-        simpa only [e] using Φ.contMDiffOn_toFun.mono hsub
+        change ContMDiffOn (𝓡 n) J ∞ (Φ : sphere (0 : A) 1 → N) e.source
+        exact Φ.contMDiffOn_toFun.mono hsub
       contMDiffOn_invFun := by
         have hsub : e.target ⊆ Φ.target := by
           intro z hz
           change z ∈ Φ.target ∩ Φ.symm ⁻¹' U at hz
           exact hz.1
-        simpa only [e] using Φ.contMDiffOn_invFun.mono hsub }
+        change ContMDiffOn J (𝓡 n) ∞ Φ.invFun e.target
+        exact Φ.contMDiffOn_invFun.mono hsub }
   refine ⟨Ψ, ?_, ?_⟩
   · change x ∈ Φ.source ∩ U
     exact ⟨hxΦ, hxU⟩
@@ -101,7 +103,7 @@ private theorem hlocAt_congr_open
     change f₂ z = Φ z
     exact (heq hz.2).trans (hfΦ hz.1)
 
-omit [SimplyConnectedSpace N] [LocPathConnectedSpace N]
+omit [SimplyConnectedSpace N] [LocallyPathConnectedSpace N]
   [ConnectedSpace N] in
 theorem punctCartan_match
     (hn : 1 < n)
@@ -148,9 +150,14 @@ theorem punctCartan_match
   have hj (a b : EuclideanSpace ℝ (Fin n)) :
       g.inner q' (j a) (j b) =
         (roundMetric (E := A) (n := n)).inner q a b := by
-    simpa only [q', j, Fp,
-      IsLocalDiffeomorphAt.mfderivToContinuousLinearEquiv_coe] using
-      punctCartan_inner hRound g hEnorm p p' i hi hR hqneg a b
+    change g.inner (Fp q) ((j : EuclideanSpace ℝ (Fin n) →L[ℝ]
+        EuclideanSpace ℝ (Fin n)) a) ((j : EuclideanSpace ℝ (Fin n) →L[ℝ]
+        EuclideanSpace ℝ (Fin n)) b) =
+      (roundMetric (E := A) (n := n)).inner q a b
+    rw [show (j : EuclideanSpace ℝ (Fin n) →L[ℝ]
+        EuclideanSpace ℝ (Fin n)) = mfderiv (𝓡 n) J Fp q from
+      hqLoc.mfderivToContinuousLinearEquiv_coe (by decide)]
+    exact punctCartan_inner hRound g hEnorm p p' i hi hR hqneg a b
   let Fq : sphere (0 : A) 1 → N :=
     punctCartan g hEnorm q' j q
   have hFqP :
@@ -164,11 +171,11 @@ theorem punctCartan_match
           ({-q} : Set (sphere (0 : A) 1))ᶜ)
       exact isOpen_compl_singleton.inter isOpen_compl_singleton⟩
   have hUconn : IsPreconnected (U : Set (sphere (0 : A) 1)) := by
-    simpa only [U] using
-      punct2_preconn hn (-p) (-q) (neg_injective.ne hpq)
-  letI : PreconnectedSpace U :=
+    change IsPreconnected {x : sphere (0 : A) 1 | x ≠ -p ∧ x ≠ -q}
+    exact punct2_preconn hn (-p) (-q) (neg_injective.ne hpq)
+  let : PreconnectedSpace U :=
     Subtype.preconnectedSpace hUconn
-  letI : SigmaCompactSpace U :=
+  let : SigmaCompactSpace U :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen (𝓡 n) U.isOpen)
   have hFpU :
@@ -195,10 +202,13 @@ theorem punctCartan_match
       (hF x).mdifferentiableAt (by decide : (∞ : WithTop ℕ∞) ≠ 0)
     have hc :=
       mfderiv_comp x hFdiff hval
-    have hv := DFunLike.congr_fun hc v
-    rw [mfderiv_subtype_val (I := 𝓡 n) U x] at hv
-    simpa only [Function.comp_def, ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.id_apply] using hv
+    rw [show (fun y : U => F y) = F ∘ (Subtype.val : U → sphere (0 : A) 1) by
+      rfl]
+    rw [hc]
+    have hvval :
+        mfderiv (𝓡 n) (𝓡 n) (Subtype.val : U → sphere (0 : A) 1) x v = v := by
+      simpa only using mfderiv_subtype_val_apply (I := 𝓡 n) U x v
+    rw [ContinuousLinearMap.comp_apply, hvval]
   have hpres1 :
       ∀ (x : U) (v w : TangentSpace (𝓡 n) x),
         ((roundMetric (E := A) (n := n)).restrictOpen
@@ -240,9 +250,9 @@ theorem punctCartan_match
     have h2 := DFunLike.congr_fun
       (punctCartan_mfd hRound g hEnorm q' j q) v
     have h1' : mfderiv (𝓡 n) J Fp q v = j v := by
-      simpa only [j] using h1.symm
+      exact h1.symm
     have h2' : j v = mfderiv (𝓡 n) J Fq q v := by
-      simpa only [Fq] using h2.symm
+      exact h2.symm
     have hFpRest :
         mfderiv (𝓡 n) J (fun x : U => Fp x) x₀ v =
           mfderiv (𝓡 n) J Fp q v := by
@@ -302,8 +312,8 @@ theorem sphere_diffeo_one
   have hi (a b : EuclideanSpace ℝ (Fin n)) :
       g.inner p' (i a) (i b) =
         (roundMetric (E := A) (n := n)).inner p a b := by
-    simpa only [DS, DT, gS,
-      Tensor0SBundle.TangentMetricData.inner_eq] using hiData a b
+    change DT.metric.inner (i a) (i b) = DS.metric.inner a b
+    exact hiData a b
   obtain ⟨j, hj, hmatch⟩ :=
     punctCartan_match hn hRound g hEnorm hR
       p q hpq hqneg p' i hi
@@ -392,15 +402,15 @@ theorem sphere_diffeo_one
   have hfr : 1 < Module.finrank ℝ A := by
     rw [show Module.finrank ℝ A = n + 1 from Fact.out]
     omega
-  letI : PreconnectedSpace (sphere (0 : A) 1) :=
+  let : PreconnectedSpace (sphere (0 : A) 1) :=
     Subtype.preconnectedSpace
       (isPreconnected_sphere
         (Module.one_lt_rank_of_one_lt_finrank hfr) (0 : A) 1)
-  letI : Nonempty (sphere (0 : A) 1) := ⟨p⟩
+  let : Nonempty (sphere (0 : A) 1) := ⟨p⟩
   have hcov : IsCoveringMap F :=
     hFlocal.isLocalHomeomorph.covering_compact
   let d : Diffeomorph (𝓡 n) J (sphere (0 : A) 1) N ∞ :=
-    hcov.diffeomorph_sc hFlocal
+    hcov.diffeomorphSc hFlocal
   refine ⟨d, ?_⟩
   intro x Y Z
   have hd : (d : sphere (0 : A) 1 → N) = F :=

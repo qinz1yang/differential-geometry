@@ -8,6 +8,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 
@@ -161,12 +162,13 @@ private lemma gram1_le
       (isOpen_interior.mem_nhds hy)
   have hsub : iteratedFDeriv ℝ 1 f₁ y - iteratedFDeriv ℝ 1 f₂ y =
       iteratedFDeriv ℝ 1 (fun z => f₁ z - f₂ z) y := by
-    simpa only [Pi.sub_apply] using
-      (iteratedFDeriv_sub_apply
-        (h₁.of_le (WithTop.coe_le_coe.2
-          (show ((1 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
-        (h₂.of_le (WithTop.coe_le_coe.2
-          (show ((1 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
+    change iteratedFDeriv ℝ 1 f₁ y - iteratedFDeriv ℝ 1 f₂ y =
+      iteratedFDeriv ℝ 1 (f₁ - f₂) y
+    exact (iteratedFDeriv_sub_apply
+      (h₁.of_le (WithTop.coe_le_coe.2
+        (show ((1 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
+      (h₂.of_le (WithTop.coe_le_coe.2
+        (show ((1 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
   have heq : partialDeriv (E := E) d f₁ y - partialDeriv (E := E) d f₂ y =
       iteratedFDeriv ℝ 1 (fun z => f₁ z - f₂ z) y
         ![(chartModelBasis E) d] := by
@@ -217,12 +219,13 @@ private lemma gram2_le
       (isOpen_interior.mem_nhds hy)
   have hsub : iteratedFDeriv ℝ 2 f₁ y - iteratedFDeriv ℝ 2 f₂ y =
       iteratedFDeriv ℝ 2 (fun z => f₁ z - f₂ z) y := by
-    simpa only [Pi.sub_apply] using
-      (iteratedFDeriv_sub_apply
-        (h₁.of_le (WithTop.coe_le_coe.2
-          (show ((2 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
-        (h₂.of_le (WithTop.coe_le_coe.2
-          (show ((2 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
+    change iteratedFDeriv ℝ 2 f₁ y - iteratedFDeriv ℝ 2 f₂ y =
+      iteratedFDeriv ℝ 2 (f₁ - f₂) y
+    exact (iteratedFDeriv_sub_apply
+      (h₁.of_le (WithTop.coe_le_coe.2
+        (show ((2 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
+      (h₂.of_le (WithTop.coe_le_coe.2
+        (show ((2 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
   have heq : partialDeriv (E := E) d (partialDeriv (E := E) c f₁) y -
       partialDeriv (E := E) d (partialDeriv (E := E) c f₂) y =
         iteratedFDeriv ℝ 2 (fun z => f₁ z - f₂ z) y
@@ -283,12 +286,13 @@ private lemma gram3_le
       (isOpen_interior.mem_nhds hy)
   have hsub : iteratedFDeriv ℝ 3 f₁ y - iteratedFDeriv ℝ 3 f₂ y =
       iteratedFDeriv ℝ 3 (fun z => f₁ z - f₂ z) y := by
-    simpa only [Pi.sub_apply] using
-      (iteratedFDeriv_sub_apply
-        (h₁.of_le (WithTop.coe_le_coe.2
-          (show ((3 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
-        (h₂.of_le (WithTop.coe_le_coe.2
-          (show ((3 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
+    change iteratedFDeriv ℝ 3 f₁ y - iteratedFDeriv ℝ 3 f₂ y =
+      iteratedFDeriv ℝ 3 (f₁ - f₂) y
+    exact (iteratedFDeriv_sub_apply
+      (h₁.of_le (WithTop.coe_le_coe.2
+        (show ((3 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
+      (h₂.of_le (WithTop.coe_le_coe.2
+        (show ((3 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
   have heq :
       partialDeriv (E := E) d (partialDeriv (E := E) c
           (partialDeriv (E := E) m f₁)) y -

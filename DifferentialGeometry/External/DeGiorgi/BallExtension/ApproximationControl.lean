@@ -224,7 +224,10 @@ lemma tendsto_measure_unitBallBadAnnulusOne :
   have hsphere_zero : volume (Metric.sphere (0 : E) 1) = 0 := by
     simpa using (Measure.addHaar_sphere (μ := (volume : Measure E)) (x := (0 : E)) 1)
   rw [iInter_unitBallBadAnnulusOne_eq_sphere (d := d), hsphere_zero] at h
-  simpa using h
+  let h' : Tendsto
+      (fun n => volume (unitBallBadAnnulusOne (d := d) (unitBallApproxEps n)))
+      atTop (nhds 0) := h
+  exact h'
 
 lemma tendsto_measure_unitBallBadAnnulusTwo :
     Tendsto (fun n => volume (unitBallBadAnnulusTwo (d := d) (unitBallApproxEps n)))
@@ -239,7 +242,10 @@ lemma tendsto_measure_unitBallBadAnnulusTwo :
   have hsphere_zero : volume (Metric.sphere (0 : E) 2) = 0 := by
     simpa using (Measure.addHaar_sphere (μ := (volume : Measure E)) (x := (0 : E)) 2)
   rw [iInter_unitBallBadAnnulusTwo_eq_sphere (d := d), hsphere_zero] at h
-  simpa using h
+  let h' : Tendsto
+      (fun n => volume (unitBallBadAnnulusTwo (d := d) (unitBallApproxEps n)))
+      atTop (nhds 0) := h
+  exact h'
 
 omit [NeZero d] in
 lemma tendsto_smoothUnitBallExtensionApprox_pointwise

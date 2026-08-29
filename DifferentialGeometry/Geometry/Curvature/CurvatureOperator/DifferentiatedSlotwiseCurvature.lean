@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -200,7 +199,7 @@ lemma nablaRiemannSec_homBundleGen_apply_eq
     rw [hsplit, cov_V.isCovariantDerivativeOnUniv.add hsmσW hsm2]
     rfl
   rw [nablaRiemannSec_def]
-  simp only [ContinuousLinearMap.sub_apply]
+  simp only [sub_apply]
   rw [show covHom.toFun
         (fun b => riemannSec covHom (fun b => Y b) (fun b => Z b) (fun b => τ b) b) x (X x) (W x) =
       cov_V.toFun (HomConnectionGen.pairedSection (M := M) (U := U) (V := V)
@@ -397,7 +396,7 @@ lemma tensor0S_curry_nablaTensor0SCurv_succ_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (A : Π b : M, Tensor0SSpace (s + 1) I b) (hA : TensorSmooth (I := I) (s + 1) A) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         (nablaTensor0SCurv (I := I) g (s + 1) X Y Z A x) =
       nablaRiemannSec (LeviCivita (I := I) g) (homGenS (I := I) (M := M) g s)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (curriedSection I M A) x := by
@@ -496,13 +495,13 @@ theorem nablaTensor0SCurv_succ_consEval
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (A : Π b : M, Tensor0SSpace (s + 1) I b) (hA : TensorSmooth (I := I) (s + 1) A)
     (x : M) (u₀ : TangentSpace I x) (u' : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         (nablaTensor0SCurv (I := I) g (s + 1) X Y Z A x) (Fin.cons u₀ u') =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
           (nablaTensor0SCurv (I := I) g s X Y Z
             (fun b => curriedSection I M A b
               (smoothExtensionTangent (I := I) x u₀ b)) x) u' -
-        Tensor0SSpace.toModel (A x)
+        Tensor0SSpace.eval (A x)
           (Fin.cons (nablaBaseSlotCurv (I := I) g X Y Z x u₀) u') := by
   classical
   set Y₀ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
@@ -532,7 +531,7 @@ theorem nablaTensor0SCurv_succ_consEval
     (cov_U := LeviCivita (I := I) g)
     (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
     (covT := LeviCivita (I := I) g) X Y Z Acurry Y₀ x]
-  rw [Tensor0SBundle.Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [Tensor0SSpace.eval_sub]
   rw [show (Acurry : Π b : M, TangentSpace I b →L[ℝ] Tensor0SSpace s I b) x =
       curriedSection I M A x from rfl, curriedSection_apply,
     show (nablaRiemannSec (LeviCivita (I := I) g) (LeviCivita (I := I) g)
@@ -549,10 +548,10 @@ theorem nablaTensor0SCurv_apply_eval
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ (A : Π b : M, Tensor0SSpace t I b), TensorSmooth (I := I) t A →
       ∀ (x : M) (u : Fin t → TangentSpace I x),
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
           (nablaTensor0SCurv (I := I) g t X Y Z A x) u =
         - ∑ k : Fin t,
-            Tensor0SSpace.toModel (A x)
+            Tensor0SSpace.eval (A x)
               (Function.update u k (nablaBaseSlotCurv (I := I) g X Y Z x (u k))) := by
   induction t with
   | zero =>
@@ -573,9 +572,9 @@ theorem nablaTensor0SCurv_apply_eval
         hpaired_smooth x (Fin.tail u)
       rw [hih]
       have hpx : ∀ v : Fin s → TangentSpace I x,
-          Tensor0SSpace.toModel
+          Tensor0SSpace.eval
               (curriedSection I M A x (smoothExtensionTangent (I := I) x (u 0) x)) v =
-            Tensor0SSpace.toModel (A x) (Fin.cons (u 0) v) := by
+            Tensor0SSpace.eval (A x) (Fin.cons (u 0) v) := by
         intro v
         rw [curriedSection_apply, smoothExtensionTangent_eq (I := I) x (u 0),
           TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -598,14 +597,14 @@ theorem nablaTensor0SCurv_apply_eval
           (y := nablaBaseSlotCurv (I := I) g X Y Z x (u k.succ)), Fin.cons_self_tail]
       rw [Finset.sum_congr rfl (fun k _ => by rw [hcons_succ k]), hcons_lead]
       rw [show (- ∑ k : Fin s,
-            Tensor0SSpace.toModel (A x)
+            Tensor0SSpace.eval (A x)
               (Function.update u k.succ (nablaBaseSlotCurv (I := I) g X Y Z x (u k.succ)))) -
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u 0 (nablaBaseSlotCurv (I := I) g X Y Z x (u 0))) =
-          - (Tensor0SSpace.toModel (A x)
+          - (Tensor0SSpace.eval (A x)
               (Function.update u 0 (nablaBaseSlotCurv (I := I) g X Y Z x (u 0))) +
               ∑ k : Fin s,
-                Tensor0SSpace.toModel (A x)
+                Tensor0SSpace.eval (A x)
                   (Function.update u k.succ (nablaBaseSlotCurv (I := I) g X Y Z x (u k.succ))))
                     from by
         ring]
@@ -613,7 +612,7 @@ theorem nablaTensor0SCurv_apply_eval
       congr 1
       rw [Fin.sum_univ_succ
         (f := fun k : Fin (s + 1) =>
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u k (nablaBaseSlotCurv (I := I) g X Y Z x (u k))))]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -622,10 +621,10 @@ theorem nablaTensorCov_baseSlot_eval
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (A : Π b : M, Tensor0SSpace s I b) (hA : TensorSmooth (I := I) s A)
     (x : M) (u : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         (nablaTensor0SCurv (I := I) g s X Y Z A x) u =
       - ∑ k : Fin s,
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u k (nablaBaseSlotCurv (I := I) g X Y Z x (u k))) :=
   nablaTensor0SCurv_apply_eval (I := I) g s X Y Z A hA x u
 
@@ -660,32 +659,35 @@ theorem nablaTensor0SCurv_cyclic_eq_zero
       + nablaTensor0SCurv (I := I) g s Y Z X A x
       + nablaTensor0SCurv (I := I) g s Z X Y A x = 0 := by
   classical
-  apply Tensor0SSpace.toModel_injective
-  simp only [Tensor0SSpace.toModel_add, Tensor0SSpace.toModel_zero]
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).injective
+  simp only [map_add, map_zero]
   apply ContinuousMultilinearMap.ext
   intro u
-  rw [ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.add_apply,
-      ContinuousMultilinearMap.zero_apply]
+  change Tensor0SSpace.eval (nablaTensor0SCurv (I := I) g s X Y Z A x) u
+      + Tensor0SSpace.eval (nablaTensor0SCurv (I := I) g s Y Z X A x) u
+      + Tensor0SSpace.eval (nablaTensor0SCurv (I := I) g s Z X Y A x) u = 0
   rw [nablaTensorCov_baseSlot_eval (I := I) g s X Y Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s Y Z X A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s Z X Y A hA x u]
   have hkey : ∀ k : Fin s,
-      Tensor0SSpace.toModel (A x)
+      Tensor0SSpace.eval (A x)
           (Function.update u k (nablaBaseSlotCurv (I := I) g X Y Z x (u k)))
-        + Tensor0SSpace.toModel (A x)
+        + Tensor0SSpace.eval (A x)
           (Function.update u k (nablaBaseSlotCurv (I := I) g Y Z X x (u k)))
-        + Tensor0SSpace.toModel (A x)
+        + Tensor0SSpace.eval (A x)
           (Function.update u k (nablaBaseSlotCurv (I := I) g Z X Y x (u k))) = 0 := by
     intro k
-    rw [← (Tensor0SSpace.toModel (A x)).map_update_add u k
+    simp only [Tensor0SSpace.eval]
+    rw [← (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x)).map_update_add u k
           (nablaBaseSlotCurv (I := I) g X Y Z x (u k))
           (nablaBaseSlotCurv (I := I) g Y Z X x (u k))]
-    rw [← (Tensor0SSpace.toModel (A x)).map_update_add u k
+    rw [← (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x)).map_update_add u k
           (nablaBaseSlotCurv (I := I) g X Y Z x (u k)
             + nablaBaseSlotCurv (I := I) g Y Z X x (u k))
           (nablaBaseSlotCurv (I := I) g Z X Y x (u k))]
     rw [nablaBaseSlotCurv_cyclic_eq_zero (I := I) g X Y Z x (u k)]
-    exact (Tensor0SSpace.toModel (A x)).map_coord_zero k (by rw [Function.update_self])
+    exact (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x)).map_coord_zero k
+      (by rw [Function.update_self])
   rw [← neg_add, ← neg_add, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
   rw [Finset.sum_eq_zero (fun k _ => hkey k), neg_zero]
 
@@ -712,12 +714,12 @@ theorem frame_sum_nablaTensor0SCurv_baseSlot_eval
     (A : Π b : M, Tensor0SSpace s I b) (hA : TensorSmooth (I := I) s A)
     (x : M) (u : Fin s → TangentSpace I x) :
     ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (nablaTensor0SCurv (I := I) g s X
             (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
               (smoothOrthoFrame_smooth (I := I) g x i)) Z A x) u =
       - ∑ k : Fin s, ∑ i : Fin (Module.finrank ℝ E),
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u k
               (nablaBaseSlotCurv (I := I) g X
                 (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
@@ -795,7 +797,7 @@ theorem nablaCurvSec_diag_frame_trace_eq_nablaRicci_sub
         nablaCurvSec_inner_pair_symm (I := I) g (X := U) (Y := W) (Z := B i) (W := Y)
           (U := B i) hU hW (hBsm i) hY (hBsm i)
       rw [hps, nablaCurvSec_swap23 (I := I) g (X := U) (Y := Y) (Z := B i) (W := W) (x := x)
-        hY (hBsm i) hW, map_neg, ContinuousLinearMap.neg_apply]
+        hY (hBsm i) hW, map_neg, neg_apply]
     rw [Finset.sum_congr rfl (fun i _ => hconv i), Finset.sum_neg_distrib,
       nablaRicci_eq_frame_trace_nablaCurvSec (I := I) g hU hY hW]
   rw [hterm2, hterm3]
@@ -807,14 +809,14 @@ theorem frame_sum_nablaTensor0SCurv_diag_baseSlot_eval
     (A : Π b : M, Tensor0SSpace s I b) (hA : TensorSmooth (I := I) s A)
     (x : M) (u : Fin s → TangentSpace I x) :
     ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           (nablaTensor0SCurv (I := I) g s
             (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
               (smoothOrthoFrame_smooth (I := I) g x i))
             (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
               (smoothOrthoFrame_smooth (I := I) g x i)) Y A x) u =
       - ∑ k : Fin s,
-          Tensor0SSpace.toModel (A x)
+          Tensor0SSpace.eval (A x)
             (Function.update u k
               (∑ i : Fin (Module.finrank ℝ E),
                 nablaBaseSlotCurv (I := I) g
@@ -831,7 +833,8 @@ theorem frame_sum_nablaTensor0SCurv_diag_baseSlot_eval
   rw [Finset.sum_neg_distrib, Finset.sum_comm]
   congr 1
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  exact ((Tensor0SSpace.toModel (A x)).toMultilinearMap.map_update_sum Finset.univ k
+  exact ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x)).toMultilinearMap.map_update_sum
+    Finset.univ k
     (fun i => nablaBaseSlotCurv (I := I) g
       (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x i)
         (smoothOrthoFrame_smooth (I := I) g x i))

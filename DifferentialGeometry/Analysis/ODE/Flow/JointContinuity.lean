@@ -78,7 +78,12 @@ private theorem linearODE_apriori_bound
       have hd : HasDerivAt Z (A (2 * c - s) (Z (2 * c - s))) (2 * c - s) :=
         hZ_deriv (2 * c - s) hs_mem
       have h_chain : HasDerivAt (fun s => 2 * c - s) (-1 : ℝ) s := by
-        simpa using ((hasDerivAt_const s (2 * c)).sub (hasDerivAt_id s))
+        have h := (hasDerivAt_const s (2 * c)).sub (hasDerivAt_id s)
+        have hfun : (fun _ : ℝ => 2 * c) - id = fun r => 2 * c - r := by
+          funext r
+          rfl
+        rw [hfun, zero_sub] at h
+        exact h
       have hd' : HasDerivAt (Z ∘ (fun s => 2 * c - s))
           ((-1 : ℝ) • A (2 * c - s) (Z (2 * c - s))) s := hd.scomp s h_chain
       have hZ_eq : (Z ∘ (fun s => 2 * c - s)) = W := rfl
@@ -160,7 +165,7 @@ theorem linearODE_gronwall_forward
     change dist (A₂ s (Z₂ s)) (A₁ s (Z₂ s)) ≤ η
     rw [dist_eq_norm]
     have h_eq : A₂ s (Z₂ s) - A₁ s (Z₂ s) = (A₂ s - A₁ s) (Z₂ s) := by
-      simp [ContinuousLinearMap.sub_apply]
+      simp [sub_apply]
     rw [h_eq]
     exact hdiff_bd s hsmem
   have hres := dist_le_of_approx_trajectories_ODE_of_mem (v := v) (s := fun _ => univ)
@@ -210,7 +215,12 @@ theorem linearODE_gronwall_backward
     have hd : HasDerivAt Z₁ (A₁ (2 * h₀ - s) (Z₁ (2 * h₀ - s))) (2 * h₀ - s) :=
       hZ₁_deriv (2 * h₀ - s) (h_dom_swap s hs)
     have h_chain : HasDerivAt (fun s => 2 * h₀ - s) (-1 : ℝ) s := by
-      simpa using ((hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s))
+      have h := (hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s)
+      have hfun : (fun _ : ℝ => 2 * h₀) - id = fun r => 2 * h₀ - r := by
+        funext r
+        rfl
+      rw [hfun, zero_sub] at h
+      exact h
     have hd' : HasDerivAt (Z₁ ∘ (fun s => 2 * h₀ - s))
         ((-1 : ℝ) • A₁ (2 * h₀ - s) (Z₁ (2 * h₀ - s))) s := hd.scomp s h_chain
     have hZ₁_eq : (Z₁ ∘ (fun s => 2 * h₀ - s)) = W₁ := rfl
@@ -218,7 +228,7 @@ theorem linearODE_gronwall_backward
     have hW₁s_eq : W₁ s = Z₁ (2 * h₀ - s) := rfl
     have hB₁s_eq : B₁ s = -A₁ (2 * h₀ - s) := rfl
     have h_eq : ((-1 : ℝ) • A₁ (2 * h₀ - s) (Z₁ (2 * h₀ - s)) : G) = B₁ s (W₁ s) := by
-      rw [hB₁s_eq, hW₁s_eq, ContinuousLinearMap.neg_apply, neg_one_smul]
+      rw [hB₁s_eq, hW₁s_eq, neg_apply, neg_one_smul]
     rw [h_eq] at hd'
     exact hd'
   have hW₂_deriv : ∀ s ∈ Icc h₀ (2 * h₀ - α), HasDerivAt W₂ (B₂ s (W₂ s)) s := by
@@ -226,7 +236,12 @@ theorem linearODE_gronwall_backward
     have hd : HasDerivAt Z₂ (A₂ (2 * h₀ - s) (Z₂ (2 * h₀ - s))) (2 * h₀ - s) :=
       hZ₂_deriv (2 * h₀ - s) (h_dom_swap s hs)
     have h_chain : HasDerivAt (fun s => 2 * h₀ - s) (-1 : ℝ) s := by
-      simpa using ((hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s))
+      have h := (hasDerivAt_const s (2 * h₀)).sub (hasDerivAt_id s)
+      have hfun : (fun _ : ℝ => 2 * h₀) - id = fun r => 2 * h₀ - r := by
+        funext r
+        rfl
+      rw [hfun, zero_sub] at h
+      exact h
     have hd' : HasDerivAt (Z₂ ∘ (fun s => 2 * h₀ - s))
         ((-1 : ℝ) • A₂ (2 * h₀ - s) (Z₂ (2 * h₀ - s))) s := hd.scomp s h_chain
     have hZ₂_eq : (Z₂ ∘ (fun s => 2 * h₀ - s)) = W₂ := rfl
@@ -234,7 +249,7 @@ theorem linearODE_gronwall_backward
     have hW₂s_eq : W₂ s = Z₂ (2 * h₀ - s) := rfl
     have hB₂s_eq : B₂ s = -A₂ (2 * h₀ - s) := rfl
     have h_eq : ((-1 : ℝ) • A₂ (2 * h₀ - s) (Z₂ (2 * h₀ - s)) : G) = B₂ s (W₂ s) := by
-      rw [hB₂s_eq, hW₂s_eq, ContinuousLinearMap.neg_apply, neg_one_smul]
+      rw [hB₂s_eq, hW₂s_eq, neg_apply, neg_one_smul]
     rw [h_eq] at hd'
     exact hd'
   have hB₁_bd : ∀ s ∈ Icc h₀ (2 * h₀ - α), ‖B₁ s‖ ≤ K := by
@@ -251,7 +266,7 @@ theorem linearODE_gronwall_backward
       abel
     rw [h_eq]
     have hW₂s : W₂ s = Z₂ (2 * h₀ - s) := rfl
-    rw [hW₂s, ContinuousLinearMap.neg_apply, norm_neg]
+    rw [hW₂s, neg_apply, norm_neg]
     exact hdiff_bd _ h_in
   have hres := linearODE_gronwall_forward (A₁ := B₁) (A₂ := B₂) (Z₁ := W₁) (Z₂ := W₂)
     (h₀ := h₀) (β := 2 * h₀ - α) (K := K) (η := η) hK_nn
@@ -426,7 +441,7 @@ theorem linearODESolution_continuousOn
         exact lt_of_lt_of_le hη_lt (by rw [hη_target_def]; linarith)
       exact max_lt h1 h2
     have hd := hρ_bd h_pair_mem
-    simp only [Set.mem_setOf_eq] at hd
+    simp only [Set.mem_ofPred_eq] at hd
     rw [Real.dist_0_eq_abs] at hd
     exact lt_of_le_of_lt (le_abs_self _) hd
   set R' : ℝ := (‖Z₀ x₀‖ + 1) * Real.exp (K * T) with hR'_def
@@ -666,7 +681,7 @@ theorem linearODESolution_continuousOn
     exact norm_add_le _ _
   have h_t_piece : ‖Z x₀ t - Z x₀ t₀‖ < ε / 2 := by
     have hd := hδ_t_bd (Metric.mem_ball.mpr hdt_t)
-    simp only [Set.mem_setOf_eq] at hd
+    simp only [Set.mem_ofPred_eq] at hd
     rw [dist_eq_norm] at hd
     exact hd
   have hbd := hbd_diff x hx_param t ht_Icc
@@ -703,7 +718,7 @@ theorem linearODESolution_continuousOn
             rw [hη_target_def]; linarith
           exact max_lt h1 h2
         have hd := hρ_bd h_pair_in_ball
-        simp only [Set.mem_setOf_eq] at hd
+        simp only [Set.mem_ofPred_eq] at hd
         rw [Real.dist_0_eq_abs] at hd
         exact lt_of_le_of_lt (le_abs_self _) hd
       exact lt_of_le_of_lt h_gb_mono_eps h_inner_lt

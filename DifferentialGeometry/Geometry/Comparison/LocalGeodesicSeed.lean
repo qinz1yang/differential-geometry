@@ -46,14 +46,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem exists_isGeodesicOn_Ioo_at
     (g : SmoothRiemannianMetric I M) (y : M) (w : TangentSpace I y) :
     ∃ (η : ℝ → M) (δ : ℝ), 0 < δ ∧ η 0 = y ∧
       IsGeodesicOn (I := I) g η (Set.Ioo (-δ) δ) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨η, f, hf0, hηproj, hη0, hf_int, _hgeo⟩ := exists_geodesic_with_initial_velocity_at
     (I := I) g y w
   subst hηproj
@@ -85,7 +85,7 @@ theorem exists_isGeodesicOn_Ioo_at
     ⟨y, f, hηt, ht_src, hf_at_t⟩
   exact hgeo_at.hasGeodesicEquationAt g
 
-omit [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem exists_isGeodesicOn_Ioo_at_velocity
@@ -95,7 +95,7 @@ theorem exists_isGeodesicOn_Ioo_at_velocity
       (∀ t ∈ Set.Ioo (-δ) δ, MDifferentiableAt 𝓘(ℝ, ℝ) I η t) ∧
       (∀ t ∈ Set.Ioo (-δ) δ, η t ∈ (chartAt H y).source) ∧
       IsGeodesicOn (I := I) g η (Set.Ioo (-δ) δ) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨η, f, hf0, hηproj, hη0, hf_int, _hgeo⟩ := exists_geodesic_with_initial_velocity_at
     (I := I) g y w
   subst hηproj

@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.Representati
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -58,13 +57,14 @@ noncomputable def pouSmul
       show TensorRSSpace.toModel (S.toSection x) = S.toFun x from rfl, hS_zero,
       smul_zero]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 lemma pouSmul_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) (x : M) :
     (pouSmul (I := I) (M := M) g r s α S).toSection x =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • S.toSection x := rfl
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma pouSmul_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -75,6 +75,7 @@ lemma pouSmul_toFun_apply
     TensorRSSpace.toModel_smul]
   rfl
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorTrivProj_pouSmul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -87,6 +88,7 @@ private lemma tensorTrivProj_pouSmul
   rw [pouSmul_toSection_apply]
   exact ContinuousLinearMap.map_smul _ _ _
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComponentRaw_smul_pou
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -102,6 +104,7 @@ theorem tensorChartComponentRaw_smul_pou
   rw [tensorTrivProj_pouSmul (I := I) (M := M) g r s α S x, ContinuousLinearMap.map_smul,
     smul_eq_mul]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComponentRaw_pouSmul_eq_tensorChartComponentPou
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -114,6 +117,7 @@ theorem tensorChartComponentRaw_pouSmul_eq_tensorChartComponentPou
   rw [tensorChartComponentRaw_smul_pou (I := I) (M := M) g r s α S Idx Jdx]
   rfl
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem pouSmul_tsupport_subset_chartSource
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -140,6 +144,7 @@ theorem pouSmul_tsupport_subset_chartSource
   exact (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate
     I M) α
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComponent_eq_tensorComponentEuclid_pouSmul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

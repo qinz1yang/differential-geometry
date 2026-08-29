@@ -122,8 +122,8 @@ def strongCross
     have hfun :
         ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u)
             =ᵐ[timeMeasure T] u.toFun := by
-      simpa only [timeH1.toTimeL2_apply] using
-        (TimeSobolev.coeFn_ofContinuousOn u.continuousOn_toFun)
+      rw [timeH1.toTimeL2_apply, timeH1.toFunL2]
+      exact TimeSobolev.coeFn_ofContinuousOn u.continuousOn_toFun
     exact hincl.symm.trans (heq.trans hfun)
 
 omit [NeZero (Module.finrank ℝ E)] in

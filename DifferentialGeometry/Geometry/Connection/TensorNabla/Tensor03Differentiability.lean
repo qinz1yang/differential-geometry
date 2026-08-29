@@ -54,14 +54,6 @@ noncomputable local instance modelTrilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance modelQuadrilinearNormedAddCommGroup :
-    NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedAddCommGroup
-
-noncomputable local instance modelQuadrilinearNormedSpace :
-    NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedSpace
-
 noncomputable local instance tangentDualNormedAddCommGroup (x : M) :
     NormedAddCommGroup (TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
@@ -70,64 +62,48 @@ noncomputable local instance tangentDualNormedSpace (x : M) :
     NormedSpace ℝ (TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
+local instance tangentDualSMulCommClass (x : M) :
+    SMulCommClass ℝ ℝ (TangentSpace I x →L[ℝ] ℝ) where
+  smul_comm a b f := by
+    ext v
+    change a * (b * f v) = b * (a * f v)
+    ring
+
 noncomputable local instance tangentBilinearNormedAddCommGroup (x : M) :
     NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
 noncomputable local instance tangentBilinearNormedSpace (x : M) :
     NormedSpace ℝ (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedSpace
+  @ContinuousLinearMap.toNormedSpace ℝ ℝ (TangentSpace I x)
+    (TangentSpace I x →L[ℝ] ℝ) _ _ _ _ _ _ (RingHom.id ℝ) _ ℝ _
+      (tangentDualNormedSpace (I := I) x) (tangentDualSMulCommClass (I := I) x)
+
+local instance tangentBilinearSMulCommClass (x : M) :
+    SMulCommClass ℝ ℝ
+      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) where
+  smul_comm a b f := by
+    ext v w
+    change a * (b * f v w) = b * (a * f v w)
+    ring
 
 noncomputable local instance tangentTrilinearNormedAddCommGroup (x : M) :
     NormedAddCommGroup
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedAddCommGroup
+  @ContinuousLinearMap.toNormedAddCommGroup ℝ ℝ (TangentSpace I x)
+    (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+      _ (tangentBilinearNormedAddCommGroup (I := I) x) _ _ _
+        (tangentBilinearNormedSpace (I := I) x) (RingHom.id ℝ) _
 
 noncomputable local instance tangentTrilinearNormedSpace (x : M) :
     NormedSpace ℝ
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedSpace
-
-local instance tangentTrilinearAddCommGroup (x : M) :
-    AddCommGroup
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  (tangentTrilinearNormedAddCommGroup x).toAddCommGroup
-
-local instance tangentTrilinearModule (x : M) :
-    Module ℝ
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) := by
-  letI : NormedAddCommGroup
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    tangentTrilinearNormedAddCommGroup x
-  letI : NormedSpace ℝ
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    tangentTrilinearNormedSpace x
-  exact NormedSpace.toModule
-
-local instance tangentTrilinearSMul (x : M) :
-    SMul ℝ
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-  (tangentTrilinearModule x).toDistribMulAction.toMulAction.toSemigroupAction.toSMul
-
-local instance tangentTrilinearTopology (x : M) :
-    TopologicalSpace
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) := by
-  letI : NormedAddCommGroup
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :=
-    tangentTrilinearNormedAddCommGroup x
-  infer_instance
-
-noncomputable local instance tangentQuadrilinearNormedAddCommGroup (x : M) :
-    NormedAddCommGroup
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
-        TangentSpace I x →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedAddCommGroup
-
-noncomputable local instance tangentQuadrilinearNormedSpace (x : M) :
-    NormedSpace ℝ
-      (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ]
-        TangentSpace I x →L[ℝ] ℝ) :=
-  ContinuousLinearMap.toNormedSpace
+  @ContinuousLinearMap.toNormedSpace ℝ ℝ (TangentSpace I x)
+    (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
+      _ (tangentBilinearNormedAddCommGroup (I := I) x).toSeminormedAddCommGroup
+        _ _ _ (tangentBilinearNormedSpace (I := I) x) (RingHom.id ℝ) _ ℝ _
+          (tangentBilinearNormedSpace (I := I) x)
+            (tangentBilinearSMulCommClass (I := I) x)
 
 section mkHom₃
 
@@ -167,7 +143,7 @@ private noncomputable def mkHom₃FirstSlot
     have hσ₂x : σ₂ x = y := FiberBundle.extend_apply_self F₂ y
     have hσ₃x : σ₃ x = z := FiberBundle.extend_apply_self F₃ z
     rw [show y = σ₂ x from hσ₂x.symm, show z = σ₃ x from hσ₃x.symm]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply]
+    rw [add_apply, add_apply]
     simp only [TensorialAt.mkHom₂_apply _ _ hσ₂ hσ₃]
     have h1 : (FiberBundle.extend F₁ (v + v') : Π x : M, V₁ x) x = v + v' :=
       FiberBundle.extend_apply_self F₁ (v + v')
@@ -197,7 +173,7 @@ private noncomputable def mkHom₃FirstSlot
     have hσ₂x : σ₂ x = y := FiberBundle.extend_apply_self F₂ y
     have hσ₃x : σ₃ x = z := FiberBundle.extend_apply_self F₃ z
     rw [show y = σ₂ x from hσ₂x.symm, show z = σ₃ x from hσ₃x.symm]
-    rw [RingHom.id_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+    rw [RingHom.id_apply, smul_apply, smul_apply]
     simp only [TensorialAt.mkHom₂_apply _ _ hσ₂ hσ₃]
     have h1 : (FiberBundle.extend F₁ (c • v) : Π x : M, V₁ x) x = c • v :=
       FiberBundle.extend_apply_self F₁ (c • v)
@@ -231,7 +207,9 @@ noncomputable def mkHom₃
     (VectorBundle.continuousLinearEquivAt ℝ F₁ V₁ x).toContinuousAddEquiv.isTopologicalAddGroup
   have : ContinuousSMul ℝ (V₁ x) :=
     (VectorBundle.continuousLinearEquivAt ℝ F₁ V₁ x).continuousSMul
-  LinearMap.toContinuousLinearMap (mkHom₃FirstSlot Φ x hΦ₁ hΦ₂ hΦ₃)
+  (LinearMap.toContinuousLinearMap (𝕜 := ℝ) (E := V₁ x)
+    (F' := V₂ x →L[ℝ] V₃ x →L[ℝ] ℝ))
+      (mkHom₃FirstSlot Φ x hΦ₁ hΦ₂ hΦ₃)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mkHom₃_apply
@@ -347,7 +325,7 @@ def tensor03Scalar
       (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x))
     (T : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) (x : M)
     (X Y Z W : Π x : M, TangentSpace I x) : ℝ :=
-  extDerivFun (I := I) (fun b => T b (Y b) (Z b) (W b)) x (X x)
+  mvfderiv (I := I) (fun b => T b (Y b) (Z b) (W b)) x (X x)
     - T x (cov Y x (X x)) (Z x) (W x)
     - T x (Y x) (cov Z x (X x)) (W x)
     - T x (Y x) (Z x) (cov W x (X x))
@@ -404,4 +382,3 @@ end Geometry
 end DifferentialGeometry
 
 end
-

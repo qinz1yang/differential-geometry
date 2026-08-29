@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoeffic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -60,6 +59,14 @@ private theorem lieCorrectionZeroKappa_eq_metricConnectionDifferenceLoweredCoeff
       metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ gB := by
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+private theorem lieCorrectionZeroPureDT_eq_pureTrace_local
+    (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ) :
+    lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p =
+      pureTrace (I := I) (M := M) g₀ g₁ p := rfl
+
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2Jet_smul
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -74,7 +81,7 @@ private theorem h2Jet_smul
   rw [DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real,
     norm_smul, Real.norm_eq_abs, mul_pow, sq_abs]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem lowJetSq_nonneg
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
     (W : SmoothCcTensor g r s) :
@@ -127,10 +134,13 @@ private theorem hs3_of_jet3
     nlinarith
   calc
     ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ≤ C * J := by
-      simpa only [J, Nat.reduceAdd] using hhs T
+      have hhsT := hhs T
+      rw [show ((3 : ℕ) : ℝ) = (3 : ℝ) by norm_num] at hhsT
+      simpa only [J, Nat.reduceAdd] using hhsT
     _ ≤ C * (2 * A) := mul_le_mul_of_nonneg_left hJ hC
     _ = D * A := by simp only [D]; ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2Jet_two
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -147,6 +157,7 @@ private theorem h2Jet_two
   norm_num
   ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2Jet_sum2
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -187,6 +198,7 @@ private theorem h2Jet_sum2
       ring
     _ ≤ 2 * (A ^ 2 + B ^ 2) := by gcongr
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2Jet_sub
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -204,6 +216,7 @@ private theorem h2Jet_sub
   simpa only [sub_eq_add_neg] using
     h2Jet_sum2 (I := I) (M := M) g r s n W (-Z) A B hW hZneg
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h2Jet_sum4
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -241,7 +254,7 @@ private theorem h2Jet_sum4
       rw [hABsq, hCDsq]
       ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem topNorm_le
     (g : SmoothRiemannianMetric I M) {P : SmoothCcTensor g 0 2} {A : ℝ}
     (hA : 0 ≤ A)
@@ -402,7 +415,9 @@ theorem exists_lieCorrectionZeroInsertion_backgroundDifference_covariantJetNormS
       deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gB
   have hTr : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 3 1 i Tr‖ ^ 2) ≤ (Bt R) ^ 2 := by
-    simpa only [Tr] using htr g₁ P htie hδ_le hδ_nonneg hbound
+    simpa only [Tr, lieCorrectionZeroTr, reindexedPureTrace,
+      lieCorrectionZeroPureDT_eq_pureTrace_local] using
+      htr g₁ P htie hδ_le hδ_nonneg hbound
       (Equiv.refl _) R hR hP2
   have hFix : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 3 i Fix‖ ^ 2) ≤ AF ^ 2 := by
@@ -464,10 +479,10 @@ theorem exists_lieCorrectionZeroInsertion_backgroundDifference_covariantJetNormS
     apply tensorRSSpace_ext 1 1 x
     intro om
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply]
+      sub_apply]
     simp only [cometricRaiseSlot0Field_toSection]
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply]
+      sub_apply]
     rfl
   have hSDform :
       SD = cometricRaiseSlot0Field (I := I) (M := M) g₀ 0 AD := by
@@ -554,7 +569,7 @@ private theorem slotIter_sub
       rw [ih, slotExtend_sub]
       rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem amixHalf_bg
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -567,7 +582,7 @@ private theorem amixHalf_bg
     ← operatorFieldComposition_sub_right, ← operatorFieldComposition_sub_right,
     ← operatorFieldComposition_sub_left, ← slotIter_sub]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem bgAmix_eq
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -
@@ -705,15 +720,21 @@ private theorem amixHalf_tame
       (I := I) (M := M) g₀ 0 3 2 K0 (4 * A) hK0
   have hT2 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 4 2 i T2‖ ^ 2) ≤ (Bt2 R) ^ 2 := by
-    simpa only [T2] using htr2 g₁ P htie hδ_le hδ_nonneg hbound
+    simpa only [T2, lieCorrectionZeroTr, reindexedPureTrace,
+      lieCorrectionZeroPureDT_eq_pureTrace_local] using
+      htr2 g₁ P htie hδ_le hδ_nonneg hbound
       σ R hR hP2
   have hT3 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 5 3 i T3‖ ^ 2) ≤ (Bt3 R) ^ 2 := by
-    simpa only [T3] using htr3 g₁ P htie hδ_le hδ_nonneg hbound
+    simpa only [T3, lieCorrectionZeroTr, reindexedPureTrace,
+      lieCorrectionZeroPureDT_eq_pureTrace_local] using
+      htr3 g₁ P htie hδ_le hδ_nonneg hbound
       lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour R hR hP2
   have hT4 : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 6 4 i T4‖ ^ 2) ≤ (Bt4 R) ^ 2 := by
-    simpa only [T4] using htr4 g₁ P htie hδ_le hδ_nonneg hbound
+    simpa only [T4, lieCorrectionZeroTr, reindexedPureTrace,
+      lieCorrectionZeroPureDT_eq_pureTrace_local] using
+      htr4 g₁ P htie hδ_le hδ_nonneg hbound
       lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne R hR hP2
   have hQf : (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 2 3 i Qf‖ ^ 2) ≤ Qb ^ 2 := by
@@ -802,6 +823,7 @@ private noncomputable def bgCorrFam
     RicciDeTurckLowOrder.pathIntegrand (I := I) (M := M)
       g₀ g₀ T hδ hδZ s
 
+omit [SigmaCompactSpace M] in
 private theorem bgCorr_eq
     (g₀ gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -1072,6 +1094,7 @@ private noncomputable def bgCorrInt
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g₀ g₀ T hδ hδZ))
 
+omit [SigmaCompactSpace M] in
 private theorem selfLow_bg_sub
     (g₀ gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -1090,6 +1113,24 @@ private theorem selfLow_bg_sub
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
+  have hBjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+      (RicciDeTurckLowOrder.pathIntegrand
+        (I := I) (M := M) g₀ gB T hδ hδZ) (δ := δ) (δ' := δ) :=
+    RicciDeTurckLowOrder.selfLow_joint
+      (I := I) (M := M) g₀ gB T hδ hδZ
+  have h0joint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+      (RicciDeTurckLowOrder.pathIntegrand
+        (I := I) (M := M) g₀ g₀ T hδ hδZ) (δ := δ) (δ' := δ) :=
+    RicciDeTurckLowOrder.selfLow_joint
+      (I := I) (M := M) g₀ g₀ T hδ hδZ
+  have hDjoint : linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 2
+      (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
+      (δ := δ) (δ' := δ) := by
+    exact threeArmJoint_sub (I := I) (M := M) g₀ _ _ hBjoint h0joint
+  have hBjointRaw := hBjoint
+  have h0jointRaw := h0joint
+  have hDjointRaw := hDjoint
+  rw [linearizedRicciThreeArmHjoint] at hBjointRaw h0jointRaw hDjointRaw
   have hBcont :=
     jointContMDiff_toModel_continuous_slice
       (I := I) g₀ 2 2
@@ -1122,9 +1163,26 @@ private theorem selfLow_bg_sub
           (I := I) (M := M) g₀ g₀ T hδ hδZ s).toSection x))
       MeasureTheory.volume 0 1 :=
     ((h0cont x).mono hSI).intervalIntegrable
-  simp only [RicciDeTurckLowOrder.selfLowInt, bgCorrInt, bgCorrFam,
-    pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_sub,
+  have hBmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 2 2
+    (RicciDeTurckLowOrder.pathIntegrand
+      (I := I) (M := M) g₀ gB T hδ hδZ)
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ))
+    metricPerturbationPathDomain_isOpen hSI hBjointRaw x
+  have h0model := pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 2 2
+    (RicciDeTurckLowOrder.pathIntegrand
+      (I := I) (M := M) g₀ g₀ T hδ hδZ)
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ))
+    metricPerturbationPathDomain_isOpen hSI h0jointRaw x
+  have hDmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 2 2
+    (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
+    (metricPerturbationPathDomain (δ := δ) (δ' := δ))
+    metricPerturbationPathDomain_isOpen hSI hDjointRaw x
+  simp only [RicciDeTurckLowOrder.selfLowInt, bgCorrInt,
+    SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
+  rw [hBmodel, h0model, hDmodel]
+  simp only [bgCorrFam, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
+    Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hBint h0int]
 
 private theorem lowC0_bg_eq

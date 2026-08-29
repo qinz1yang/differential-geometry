@@ -129,7 +129,7 @@ lemma leviCivitaStitched_add_on_goodSet
   intro v
   rw [leviCivitaStitched_eq_chart (I := I) g α hx hsum_at v]
   rw [(chartLeviCivita_isCovariantDerivativeOn (I := I) g α).add hσ hσ' hx]
-  rw [ContinuousLinearMap.add_apply,
+  rw [add_apply,
       ← leviCivitaStitched_eq_chart (I := I) g α hx hσ v,
       ← leviCivitaStitched_eq_chart (I := I) g α hx hσ' v]
   rfl
@@ -143,7 +143,7 @@ lemma leviCivitaStitched_leibniz_on_goodSet
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     leviCivitaStitched (I := I) g (f • σ) x =
       f x • leviCivitaStitched (I := I) g σ x +
-        (extDerivFun f x).smulRight (σ x) := by
+        (mvfderiv (I := I) f x).smulRight (σ x) := by
   classical
   have hsmul_at : MDiffAt (T% (f • σ)) x :=
     hf.smul_section hσ
@@ -151,10 +151,10 @@ lemma leviCivitaStitched_leibniz_on_goodSet
   intro v
   rw [leviCivitaStitched_eq_chart (I := I) g α hx hsmul_at v]
   rw [(chartLeviCivita_isCovariantDerivativeOn (I := I) g α).leibniz hσ hf hx]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  rw [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply,
       ← leviCivitaStitched_eq_chart (I := I) g α hx hσ v]
-  simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
 
 omit [SigmaCompactSpace M] in
@@ -232,7 +232,8 @@ theorem LeviCivita_chart_apply (g : SmoothRiemannianMetric I M) (α : M)
       (by intro y hy; have : y = x := hy; subst this; exact hx)
   have hloc :=
     koszul_local_uniqueness (s := s) hTF₁ hTF₂ hMC₁ hMC₂ hX hσ hxs
-  simpa [hXx] using hloc
+  rw [hXx] at hloc
+  exact hloc
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

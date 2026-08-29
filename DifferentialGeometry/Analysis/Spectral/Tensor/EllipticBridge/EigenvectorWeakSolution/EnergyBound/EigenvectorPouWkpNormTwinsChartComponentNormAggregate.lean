@@ -171,7 +171,7 @@ lemma chartCompNorm_center_le_covGradAggregate
   exact Finset.single_le_sum
     (f := fun Q' : TensorCompIdx (E := E) r s =>
       chartCompNorm (I := I) (M := M) g r s i K β Q')
-    (fun _ _ => zero_le _) (Finset.mem_univ Q)
+    (fun _ _ => zero_le) (Finset.mem_univ Q)
 
 omit [CompleteSpace E] in
 lemma chartCompNorm_transport_le_covGradAggregate
@@ -188,11 +188,11 @@ lemma chartCompNorm_transport_le_covGradAggregate
       (f := fun β'' : M =>
         ∑ Q' : TensorCompIdx (E := E) r s,
           chartCompNorm (I := I) (M := M) g r s i K β'' Q')
-      (fun _ _ => zero_le _) hβ')
+      (fun _ _ => zero_le) hβ')
   exact Finset.single_le_sum
     (f := fun Q' : TensorCompIdx (E := E) r s =>
       chartCompNorm (I := I) (M := M) g r s i K β' Q')
-    (fun _ _ => zero_le _) (Finset.mem_univ Q)
+    (fun _ _ => zero_le) (Finset.mem_univ Q)
 
 end TensorSpectral
 end Parabolic

@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLp
 
 noncomputable section
 
+
 open Real
 open scoped RealInnerProductSpace
 
@@ -70,7 +71,8 @@ theorem heatKernel_time {t : ℝ} (ht : 0 < t) (x : V) :
   have hn : 0 < n := by
     simpa only [n] using (Module.finrank_pos : 0 < Module.finrank ℝ V)
   have hscale : HasDerivAt heatScale (1 / (2 * r)) t := by
-    simpa only [heatScale, r] using Real.hasDerivAt_sqrt ht.ne'
+    change HasDerivAt (fun s : ℝ => Real.sqrt s) (1 / (2 * Real.sqrt t)) t
+    exact Real.hasDerivAt_sqrt ht.ne'
   have hcoeff0 := (hscale.fun_pow n).inv (pow_ne_zero n hr.ne')
   change HasDerivAt (fun s : ℝ => ((heatScale s) ^ n)⁻¹)
     (-((n : ℝ) * r ^ (n - 1) * (1 / (2 * r))) / (r ^ n) ^ 2) t at hcoeff0
@@ -97,13 +99,20 @@ theorem heatKernel_time {t : ℝ} (ht : 0 < t) (x : V) :
       (baseD1Map z ((-(2 * t)⁻¹) • z)) t := by
     exact (baseHeat_hasFDeriv z).comp_hasDerivAt t hz
   have hprod := hcoeff.mul hbase
-  convert hprod using 1
-  unfold heatDt
-  simp only [n, r, z, baseD1Map, ContinuousLinearMap.smul_apply,
-    innerSL_apply_apply, real_inner_smul_right, real_inner_self_eq_norm_sq,
-    smul_eq_mul]
-  field_simp [ht.ne']
-  ring
+  have hder :
+      -((n : ℝ) / (2 * t)) * (r ^ n)⁻¹ * baseHeat z +
+          (r ^ n)⁻¹ * baseD1Map z ((-(2 * t)⁻¹) • z) = heatDt t x := by
+    unfold heatDt
+    simp only [n, r, z, baseD1Map, smul_apply,
+      innerSL_apply_apply, real_inner_smul_right, real_inner_self_eq_norm_sq,
+      smul_eq_mul]
+    field_simp [ht.ne']
+    ring
+  change HasDerivAt
+    ((fun s : ℝ => ((heatScale s) ^ n)⁻¹) *
+      fun s => baseHeat ((heatScale s)⁻¹ • x)) (heatDt t x) t
+  rw [← hder]
+  exact hprod
 
 theorem heatKernel_heatEq {t : ℝ} (ht : 0 < t) (x : V) :
     HasDerivAt (fun s : ℝ => heatKernel s x)

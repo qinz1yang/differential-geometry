@@ -105,7 +105,7 @@ theorem moser_preMoser
       (∫ x in Metric.ball (0 : E) r,
           |max (u x) 0| ^ (moserChi d * p) ∂volume) ^
           (1 / (moserChi d * p)) ≤
-        ((C_MoserAnchor d / (s - r) ^ 2) *
+        ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1)) ^ (1 / p) *
           (∫ x in Metric.ball (0 : E) s, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
   let Ω : Set E := Metric.ball (0 : E) s
@@ -181,7 +181,7 @@ theorem moser_preMoser
   have hSob :
       eLpNorm v
           (ENNReal.ofReal ((d : ℝ) * 2 / ((d : ℝ) - 2))) μ ≤
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ := by
     simpa [Ω, μ, hwvSob] using hSob_raw
   have hae_grad :
@@ -206,27 +206,27 @@ theorem moser_preMoser
         eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ < ⊤ :=
       lt_top_iff_ne_top.mpr (by simpa using hwvSob.weakGrad_norm_memLp.eLpNorm_ne_top)
     have hrhs_lt_top :
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ < ⊤ := by
       rw [ENNReal.mul_lt_top_iff]
       exact Or.inl ⟨by simp, hgrad_lt_top⟩
     exact lt_of_le_of_lt hSob hrhs_lt_top
   have hSob_real :
       MeasureTheory.lpNorm v q μ ≤
-        (C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ := by
+        (CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ := by
     have hgrad_ne_top :
         eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ ≠ ⊤ :=
       by simpa using hwvSob.weakGrad_norm_memLp.eLpNorm_ne_top
     have hrhs_ne_top :
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ ≠ ⊤ :=
       ENNReal.mul_ne_top (by simp) hgrad_ne_top
     have hSob_toReal :
         (eLpNorm v q μ).toReal ≤
-          (ENNReal.ofReal (C_gns d 2) *
+          (ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ).toReal :=
       (ENNReal.toReal_le_toReal hv_memLp_q.eLpNorm_ne_top hrhs_ne_top).2 hSob
-    have hC_toReal : (ENNReal.ofReal (C_gns d 2)).toReal = C_gns d 2 :=
+    have hC_toReal : (ENNReal.ofReal (CGns d 2)).toReal = CGns d 2 :=
       ENNReal.toReal_ofReal (C_gns_nonneg d 2)
     have hSob_toReal' := hSob_toReal
     rw [MeasureTheory.toReal_eLpNorm hv_memLp_q.aestronglyMeasurable,
@@ -291,8 +291,10 @@ theorem moser_preMoser
     · exact hv_memLp_q.aestronglyMeasurable
   have hv_int :
       IntegrableOn (fun x => |v x| ^ qexp) Ω volume := by
-    simpa [μ, Ω, q, qexp, hq_toReal, Real.norm_eq_abs] using
-      hv_memLp_q.integrable_norm_rpow hq_ne_zero ENNReal.ofReal_ne_top
+    change Integrable (fun x => |v x| ^ qexp) μ
+    convert hv_memLp_q.integrable_norm_rpow hq_ne_zero ENNReal.ofReal_ne_top using 1
+    funext x
+    rw [Real.norm_eq_abs, hq_toReal]
   have hpow_eq_on :
       ∀ x ∈ Metric.ball (0 : E) r,
         |v x| ^ qexp = |max (u x) 0| ^ (moserChi d * p) := by
@@ -342,19 +344,19 @@ theorem moser_preMoser
     field_simp [hsr_pos.ne']
     ring
   have hconst_bound :
-      (C_gns d 2) ^ 2 * (2 * Cη ^ 2) ≤ C_MoserAnchor d / (s - r) ^ 2 := by
+      (CGns d 2) ^ 2 * (2 * Cη ^ 2) ≤ CMoserAnchor d / (s - r) ^ 2 := by
     rw [hCη_sq]
     have hanchor :=
       cutoff_sobolev_anchor_le_C_MoserAnchor (d := d)
     have hsr_sq_pos : 0 < (s - r) ^ 2 := by positivity
     have hrewrite :
-        (C_gns d 2) ^ 2 * (2 * (4 * (Mst : ℝ) ^ 2 / (s - r) ^ 2)) =
-          ((C_gns d 2) ^ 2 * (8 * (Mst : ℝ) ^ 2)) / (s - r) ^ 2 := by
+        (CGns d 2) ^ 2 * (2 * (4 * (Mst : ℝ) ^ 2 / (s - r) ^ 2)) =
+          ((CGns d 2) ^ 2 * (8 * (Mst : ℝ) ^ 2)) / (s - r) ^ 2 := by
       field_simp [hsr_pos.ne']
       ring
     rw [hrewrite]
     have hnum :
-        (C_gns d 2) ^ 2 * (8 * (Mst : ℝ) ^ 2) ≤ C_MoserAnchor d := by
+        (CGns d 2) ^ 2 * (8 * (Mst : ℝ) ^ 2) ≤ CMoserAnchor d := by
       simpa [mul_assoc, mul_left_comm, mul_comm] using hanchor
     exact div_le_div_of_nonneg_right hnum (by positivity)
   have hcoeff_nonneg : 0 ≤ A.1.Λ * (p / (p - 1)) ^ 2 + 1 := by
@@ -374,27 +376,27 @@ theorem moser_preMoser
     exact mul_nonneg hcoeff_nonneg hIp_nonneg
   have hbase_nonneg :
       0 ≤
-        (C_gns d 2) ^ 2 * (2 * Cη ^ 2) *
+        (CGns d 2) ^ 2 * (2 * Cη ^ 2) *
           (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume := by
-    have hleft_nonneg : 0 ≤ (C_gns d 2) ^ 2 * (2 * Cη ^ 2) := by
-      exact mul_nonneg (sq_nonneg (C_gns d 2)) (mul_nonneg (by norm_num) (sq_nonneg Cη))
+    have hleft_nonneg : 0 ≤ (CGns d 2) ^ 2 * (2 * Cη ^ 2) := by
+      exact mul_nonneg (sq_nonneg (CGns d 2)) (mul_nonneg (by norm_num) (sq_nonneg Cη))
     have hmid_nonneg :
-        0 ≤ (C_gns d 2) ^ 2 * (2 * Cη ^ 2) * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) := by
+        0 ≤ (CGns d 2) ^ 2 * (2 * Cη ^ 2) * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) := by
       exact mul_nonneg hleft_nonneg hcoeff_nonneg
     exact mul_nonneg hmid_nonneg hIp_nonneg
   have hbase_le :
-      (C_gns d 2) ^ 2 * (2 * Cη ^ 2) *
+      (CGns d 2) ^ 2 * (2 * Cη ^ 2) *
           (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume ≤
-        (C_MoserAnchor d / (s - r) ^ 2) *
+        (CMoserAnchor d / (s - r) ^ 2) *
           (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume := by
     have hmul :
-        ((C_gns d 2) ^ 2 * (2 * Cη ^ 2)) *
+        ((CGns d 2) ^ 2 * (2 * Cη ^ 2)) *
             ((A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
               ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ≤
-          (C_MoserAnchor d / (s - r) ^ 2) *
+          (CMoserAnchor d / (s - r) ^ 2) *
             ((A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
               ∫ x in Ω, |max (u x) 0| ^ p ∂volume) := by
       exact mul_le_mul_of_nonneg_right hconst_bound hcoeffInt_nonneg
@@ -403,7 +405,7 @@ theorem moser_preMoser
       (∫ x in Metric.ball (0 : E) r,
           |max (u x) 0| ^ (moserChi d * p) ∂volume) ^
           (1 / (moserChi d * p)) ≤
-        ((C_MoserAnchor d / (s - r) ^ 2) *
+        ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
     have hleft_nonneg :
@@ -445,16 +447,16 @@ theorem moser_preMoser
             rw [← Real.rpow_mul hright_nonneg, hqexp_mul]
       _ = (MeasureTheory.lpNorm v q μ) ^ (2 / p) := by
             rw [hv_lp_eq]
-      _ ≤ ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ) ^ (2 / p) := by
+      _ ≤ ((CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ) ^ (2 / p) := by
             exact Real.rpow_le_rpow MeasureTheory.lpNorm_nonneg hSob_real (by positivity)
-      _ ≤ ((C_gns d 2) *
+      _ ≤ ((CGns d 2) *
             (2 * Cη ^ 2 * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
               ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / (2 : ℝ))) ^ (2 / p) := by
             exact Real.rpow_le_rpow
               (mul_nonneg (C_gns_nonneg d 2) (MeasureTheory.lpNorm_nonneg))
               (mul_le_mul_of_nonneg_left hgrad_bound (C_gns_nonneg d 2))
               (by positivity)
-      _ = ((C_gns d 2) ^ 2 * (2 * Cη ^ 2) *
+      _ = ((CGns d 2) ^ 2 * (2 * Cη ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
             have hinner_nonneg :
@@ -464,14 +466,14 @@ theorem moser_preMoser
               exact mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg Cη)) hcoeff_nonneg)
                 hIp_nonneg
             calc
-              ((C_gns d 2) *
+              ((CGns d 2) *
                   (2 * Cη ^ 2 * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
                     ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / (2 : ℝ))) ^ (2 / p)
-                  = (C_gns d 2) ^ (2 / p) *
+                  = (CGns d 2) ^ (2 / p) *
                       ((2 * Cη ^ 2 * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
                         ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / (2 : ℝ))) ^ (2 / p) := by
                           rw [Real.mul_rpow (C_gns_nonneg d 2) hgrad_rhs_nonneg]
-              _ = ((C_gns d 2) ^ 2) ^ (1 / p) *
+              _ = ((CGns d 2) ^ 2) ^ (1 / p) *
                     (2 * Cη ^ 2 * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
                       ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
                         congr 1
@@ -481,27 +483,27 @@ theorem moser_preMoser
                           rw [htwo_div]
                           simpa using (Real.rpow_mul (C_gns_nonneg d 2) 2 (1 / p))
                         · rw [← Real.rpow_mul hinner_nonneg, hhalf_mul]
-              _ = (((C_gns d 2) ^ 2) *
+              _ = (((CGns d 2) ^ 2) *
                     (2 * Cη ^ 2 * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
                       ∫ x in Ω, |max (u x) 0| ^ p ∂volume)) ^ (1 / p) := by
                         symm
-                        rw [Real.mul_rpow (sq_nonneg (C_gns d 2)) hinner_nonneg]
-              _ = ((C_gns d 2) ^ 2 * (2 * Cη ^ 2) *
+                        rw [Real.mul_rpow (sq_nonneg (CGns d 2)) hinner_nonneg]
+              _ = ((CGns d 2) ^ 2 * (2 * Cη ^ 2) *
                     (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
                     ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
                         congr 1
                         ring
-      _ ≤ ((C_MoserAnchor d / (s - r) ^ 2) *
+      _ ≤ ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
             exact Real.rpow_le_rpow hbase_nonneg hbase_le (by positivity)
   refine ⟨hleft_int, ?_⟩
   have hsplit_nonneg :
       0 ≤
-        ((C_MoserAnchor d / (s - r) ^ 2) *
+        ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1)) := by
-    have hfactor_nonneg : 0 ≤ C_MoserAnchor d / (s - r) ^ 2 := by
-      have hanchor_nonneg : 0 ≤ C_MoserAnchor d := by
+    have hfactor_nonneg : 0 ≤ CMoserAnchor d / (s - r) ^ 2 := by
+      have hanchor_nonneg : 0 ≤ CMoserAnchor d := by
         exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d))
       exact div_nonneg hanchor_nonneg (by positivity)
     exact mul_nonneg hfactor_nonneg hcoeff_nonneg
@@ -509,14 +511,14 @@ theorem moser_preMoser
     (∫ x in Metric.ball (0 : E) r,
         |max (u x) 0| ^ (moserChi d * p) ∂volume) ^
         (1 / (moserChi d * p))
-        ≤ ((C_MoserAnchor d / (s - r) ^ 2) *
+        ≤ ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
             ∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := hmain_lp
-    _ = ((C_MoserAnchor d / (s - r) ^ 2) *
+    _ = ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1)) ^ (1 / p) *
           (∫ x in Ω, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
             rw [Real.mul_rpow hsplit_nonneg hIp_nonneg]
-    _ = ((C_MoserAnchor d / (s - r) ^ 2) *
+    _ = ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (p - 1)) ^ 2 + 1)) ^ (1 / p) *
           (∫ x in Metric.ball (0 : E) s, |max (u x) 0| ^ p ∂volume) ^ (1 / p) := by
             rfl

@@ -309,9 +309,11 @@ lemma iterWeakPartial_ae_eq_iteratedFDeriv_of_smooth
           (fun x => (iteratedFDeriv ℝ (j + 1) u x)
             (fun i : Fin (j + 1) => EuclideanSpace.single (α i) (1 : ℝ))) := by
           filter_upwards with x
-          simpa [Fin.cons] using
-            congrFun (iteratedFDeriv_fderiv_cons_eq hu_smooth j
-              (fun i : Fin j => α i.succ) (α 0)) x
+          convert congrFun (iteratedFDeriv_fderiv_cons_eq hu_smooth j
+            (fun i : Fin j => α i.succ) (α 0)) x using 1
+          apply congrArg (iteratedFDeriv ℝ (j + 1) u x)
+          funext i
+          exact Fin.cases rfl (fun _ => rfl) i
 
 omit [NeZero d] in
 lemma eLpNorm_iterWeakPartial_le_of_norm_le
@@ -354,7 +356,7 @@ lemma exists_diagonal_extraction_lp
         Tendsto (fun n => eLpNorm (fun x => s t (ψ n) x - a x) 2
           (volume.restrict Ω)) atTop (𝓝 0) := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   have hmain : ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
       ∀ t ∈ (Finset.univ : Finset ι), ∃ a : E → ℝ, MemLp a 2 (volume.restrict Ω) ∧
         Tendsto (fun n => eLpNorm (fun x => s t (ψ n) x - a x) 2
@@ -513,7 +515,7 @@ theorem rellich_kondrachov_W01p_seq_smooth
     have hPhB' : eLpNorm (fun x => u_ext n (x - h) - u_ext n x) 2 volume ≤
         ENNReal.ofReal ‖h‖ * ENNReal.ofReal R := by
       rw [hpoint]
-      exact htrans.trans (mul_le_mul_of_nonneg_left hgrad (zero_le _))
+      exact htrans.trans (mul_le_mul_of_nonneg_left hgrad bot_le)
     have hR_le_max : (R : ℝ) ≤ max R 0 := le_max_left R 0
     have h2 : ENNReal.ofReal ‖h‖ * ENNReal.ofReal R ≤
         ENNReal.ofReal ‖h‖ * ENNReal.ofReal (max R 0) :=

@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.DiagonalCompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.TimeLipschitz
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

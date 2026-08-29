@@ -5,6 +5,8 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Manifold.MorreyManifoldHigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -131,7 +133,7 @@ private lemma smoothRep_eq_zero_off_tsupport_chartAtlasPOU
     rw [laplacianOfChartPOU_apply]
     rw [Δ_g_def]
     have h_grad_ev : ∀ᶠ y in 𝓝 x,
-        (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I,
+        (DifferentialGeometry.Geometry.Operator.gradG (I := I) g (chartAtlasPOU I M α : C^∞⟮I,
           M; ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
         (0 : TangentSpace I y) := by
@@ -217,7 +219,7 @@ private lemma smoothRep_eq_etaTimesV
     have h_lap_zero : (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x = 0 := by
       rw [laplacianOfChartPOU_apply, Δ_g_def]
       have h_grad_ev : ∀ᶠ y in 𝓝 x,
-          (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradG (I := I) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
           (0 : TangentSpace I y) := by
@@ -283,6 +285,10 @@ lemma gradInnerPiece_smooth (g : SmoothRiemannianMetric I M) (α : M)
   have hetaV_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (etaTimesV (I := I) (M := M) α v.toFun) :=
     etaTimesV_smooth (I := I) (M := M) α v.smooth
+  let rhoMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ :=
+    ⟨(chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯), hα_smooth⟩
+  let etaVMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ :=
+    ⟨etaTimesV (I := I) (M := M) α v.toFun, hetaV_smooth⟩
   have h_inner : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => g.inner x
         (gradFun (I := I) g
@@ -291,10 +297,12 @@ lemma gradInnerPiece_smooth (g : SmoothRiemannianMetric I M) (α : M)
           (etaTimesV (I := I) (M := M) α v.toFun) x)) := by
     have h := DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hα_smooth⟩)
-      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hetaV_smooth⟩)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g rhoMap)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g etaVMap)
     refine h.congr (fun x => ?_)
-    simp [DifferentialGeometry.Geometry.Operator.grad_g_apply]
+    rw [DifferentialGeometry.Geometry.Operator.grad_g_apply,
+      DifferentialGeometry.Geometry.Operator.grad_g_apply]
+    congr 1
   exact (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (2 : ℝ))).mul h_inner
 
 omit [SigmaCompactSpace M] in
@@ -457,7 +465,7 @@ lemma chartPushedRaw_lapPiece_factor
         exact hw (subset_tsupport _ hne)
       rw [laplacianOfChartPOU_apply, Δ_g_def]
       have h_grad_ev : ∀ᶠ w in 𝓝 z,
-          (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradG (I := I) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) w =
           (0 : TangentSpace I w) := by

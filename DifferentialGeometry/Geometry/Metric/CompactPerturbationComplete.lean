@@ -72,8 +72,8 @@ theorem bumpExtend_complete
   exact bumpExtendOpen_inner_of_notMem_tsupport
     (I := I) R U gU χ hχ hχ01 hχsupp x hx v w
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem flatModel_complete
     {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
     [FiniteDimensional Real E] [CompleteSpace E] :
@@ -88,14 +88,14 @@ theorem flatModel_complete
     intro x y
     exact IsRiemannianManifold.out (I := 𝓘(Real, E)) x y
   refine ⟨?_⟩
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun x : E => TangentSpace 𝓘(Real, E) x) :=
     ⟨(flatModelMetric E).toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : E => TangentSpace 𝓘(Real, E) x) :=
     ⟨(flatModelMetric E).inner,
       (flatModelMetric E).contMDiff.continuous, by intro x v w; rfl⟩
-  letI : EMetricSpace E :=
+  let : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
   have hed : ∀ x y : E, edist x y = sourceEdist x y := by
     intro x y
@@ -106,8 +106,8 @@ theorem flatModel_complete
       ∀ m, N ≤ m → ∀ n, N ≤ n → edist (s m) (s n) < ε :=
     EMetric.cauchySeq_iff.mp hs
   change ∃ x, Filter.Tendsto s Filter.atTop (𝓝 x)
-  letI : EMetricSpace E := sourceEMetric
-  letI : CompleteSpace E := sourceComplete
+  let : EMetricSpace E := sourceEMetric
+  let : CompleteSpace E := sourceComplete
   have hsSource : CauchySeq s := EMetric.cauchySeq_iff.mpr (by
     intro ε hε
     obtain ⟨N, hN⟩ := hsTarget ε hε

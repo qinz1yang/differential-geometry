@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -40,12 +39,14 @@ theorem cometricDoubleTraceFib_eq_sum_curry (g₀ : SmoothRiemannianMetric I M) 
     (show Tensor0SSpace (b + 2) I x →L[ℝ] Tensor0SSpace b I x from
         (cometricDoubleTraceField (I := I) g₀ b).toSection x) D =
       ∑ k : Fin (Module.finrank ℝ E),
-        tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) b x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
-            (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k))))
-          ((Module.finBasis ℝ E) k) := by
+        tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) b x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (cometricLmodel (I := I) g₀ x
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
+                  ((Module.finBasis ℝ E).cDualBasis k)))))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+            ((Module.finBasis ℝ E) k)) := by
   classical
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
@@ -57,18 +58,19 @@ theorem cometricDoubleTraceFib_eq_sum_curry (g₀ : SmoothRiemannianMetric I M) 
   rw [map_sum (Tensor0SSpace.toModelL b x)]
   rw [cometricDoubleTraceFib_toModel, modelDoubleTrace_apply (E := E) b
     (cometricLmodel (I := I) g₀ x)]
-  simp only [ContinuousMultilinearMap.sum_apply]
+  simp only [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [Tensor0SSpace.toModelL_apply]
-  rw [tensor0S_curry_apply_eval (I := I) (M := M)
-    (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
-      (cometricLmodel (I := I) g₀ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-          ((Module.finBasis ℝ E).cDualBasis k))))
+  rw [tensor0S_curry_toModel_apply (I := I) (M := M)
+    (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+        (cometricLmodel (I := I) g₀ x
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
+            ((Module.finBasis ℝ E).cDualBasis k)))))
     (v0 := ((Module.finBasis ℝ E) k)) (vs := m)]
-  rw [tensor0S_curry_apply_eval (I := I) (M := M) (T := D)
+  rw [tensor0S_curry_toModel_apply (I := I) (M := M) (T := D)
     (v0 := cometricLmodel (I := I) g₀ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis k)))
     (vs := Fin.cons ((Module.finBasis ℝ E) k) m)]
 
@@ -84,8 +86,10 @@ theorem toModel_slotExtend_two_apply (g₀ : SmoothRiemannianMetric I M) (b s : 
         (Fin.cons a (Fin.cons c m)) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) b x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D a) c)) m := by
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) b x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm c))) m := by
   rw [show (show Tensor0SSpace (b + 2) I x →L[ℝ] Tensor0SSpace (s + 2) I x from
         (slotExtend (I := I) (M := M) g₀ (b + 1) (s + 1)
           (slotExtend (I := I) (M := M) g₀ b s Φ)).toSection x) D =
@@ -97,13 +101,16 @@ theorem toModel_slotExtend_two_apply (g₀ : SmoothRiemannianMetric I M) (b s : 
       (slotExtend (I := I) (M := M) g₀ b s Φ).toSection x) D a (Fin.cons c m)]
   rw [show (show Tensor0SSpace (b + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (slotExtend (I := I) (M := M) g₀ b s Φ).toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D a) =
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)) =
       slotExtendPointwise (I := I) (M := M) b s x
         (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D a) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)) from rfl]
   rw [slotExtendFib_apply_eval (I := I) (M := M) b s x
     (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D a) c m]
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)) c m]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -140,11 +147,11 @@ theorem cometricDoubleTraceFib_comp_slotExtend_two_eq (g₀ : SmoothRiemannianMe
             (slotExtend (I := I) (M := M) g₀ b s Φ)).toSection x) D) from rfl]
   rw [cometricDoubleTraceFib_toModel, modelDoubleTrace_apply (E := E) s
     (cometricLmodel (I := I) g₀ x)]
-  simp only [ContinuousMultilinearMap.sum_apply, Tensor0SSpace.toModelL_apply]
+  simp only [sum_apply, Tensor0SSpace.toModelL_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [toModel_slotExtend_two_apply (I := I) (M := M) g₀ b s Φ x D
     (cometricLmodel (I := I) g₀ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis k)))
     ((Module.finBasis ℝ E) k) m]
 
@@ -186,6 +193,7 @@ theorem cometricTrace_ccOperatorFieldComp (g₀ : SmoothRiemannianMetric I M) (r
   rw [← ContinuousLinearMap.comp_assoc, ← ContinuousLinearMap.comp_assoc,
     cometricDoubleTraceFib_comp_slotExtend_two_eq (I := I) g₀ b s Φ x]
 
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLap_operatorFieldApplication_comm_of_rank (g₀ : SmoothRiemannianMetric I M) (b s : ℕ)
     (Φ : SmoothCcTensor g₀ b s) (W : SmoothCcTensor g₀ 0 b) :
     rawTensorConnLapSmooth (I := I) g₀ 0 s (operatorFieldApply (I := I) (M := M) g₀ b s Φ W) =
@@ -264,6 +272,7 @@ theorem rawTensorConnLap_operatorFieldApplication_comm_of_rank (g₀ : SmoothRie
     rfl]
   abel
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem rawConnLap_iteratedCovGrad_two_comm (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g₀ 0 s) :
     rawTensorConnLapSmooth (I := I) g₀ 0 (s + 2) (iteratedCovGrad (I := I) g₀ 0 s 2 S) =
@@ -282,6 +291,7 @@ theorem rawConnLap_iteratedCovGrad_two_comm (g₀ : SmoothRiemannianMetric I M) 
         (covGrad (I := I) (M := M) g₀ 0 s (rawTensorConnLapSmooth (I := I) g₀ 0 s S)) := rfl
   rw [hxeq2]
 
+omit [SigmaCompactSpace M] in
 theorem rawConnLap_operatorFieldApplication_iteratedCovGrad_two_comm (g₀ : SmoothRiemannianMetric I M) (s t : ℕ)
     (C : SmoothCcTensor g₀ (s + 2) t) (S : SmoothCcTensor g₀ 0 s) :
     rawTensorConnLapSmooth (I := I) g₀ 0 t

@@ -118,7 +118,7 @@ theorem klLateCover_abs {T R k : ℝ} {A₁ A_q : ℝ≥0}
         exact hy₁.2 hy₀.2
       have hsplit : S₀ ∪ S₁ = S := by
         ext y
-        simp only [S₀, S₁, Set.mem_union, Set.mem_inter_iff, Set.mem_diff]
+        simp only [S₀, S₁, Set.mem_union, Set.mem_inter_iff, Set.mem_sdiff]
         tauto
       have hS₀ball : S₀ ⊆ Metric.ball c R := fun _ hy ↦ hy.2
       have hfar₀ : ∀ y ∈ S₀, k * R ≤ ‖x - y‖ :=

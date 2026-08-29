@@ -8,7 +8,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -38,24 +37,24 @@ theorem open_upgrade_of_canonical_metric_compactness
         MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
   classical
   let mc := canon.compactness
-  let Phi := pointedCGHMaps_of_manifold (I := I) X
+  let Phi := pointedCGHMapsOfManifold (I := I) X
     mc.limit mc.subseq mc.maps
-  letI : TopologicalSpace mc.limit.M := mc.limit.topology
-  letI : ChartedSpace H mc.limit.M := mc.limit.charted
-  letI : T2Space mc.limit.M := mc.limit.t2
-  letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
-  letI : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
+  let : TopologicalSpace mc.limit.M := mc.limit.topology
+  let : ChartedSpace H mc.limit.M := mc.limit.charted
+  let : T2Space mc.limit.M := mc.limit.t2
+  let : IsManifold I ∞ mc.limit.M := mc.limit.smooth
+  let : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
   have hsrc : SrcSigma (I := I) Phi := by
     intro k
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.source_open (I := I) Phi k)
   have htgt : TgtSigma (I := I) Phi := by
     intro k
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.target_open (I := I) Phi k)
@@ -86,15 +85,15 @@ theorem open_upgrade_of_canonical_metric_compactness
   have hsrcZero (k : Nat) :
       tgtRefSrc (I := I) Phi gRefT k =
         srcMetric (I := I) Phi hsrc htgt k 0 := by
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : T2Space (X.term (mc.subseq k)).M :=
+    let : T2Space (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).t2
-    letI : IsManifold I ∞ (X.term (mc.subseq k)).M :=
+    let : IsManifold I ∞ (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).smooth
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     rfl
   have hrel : ∀ k : Nat,
@@ -159,15 +158,15 @@ theorem open_upgrade_of_canonical_metric_compactness
         (beta n) (psi n) (gRefT k)
         (fun _ t => (X.term (mc.subseq k)).S.family.metric t) (B n) := by
     intro k
-    letI : TopologicalSpace (X.term (mc.subseq k)).M :=
+    let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
-    letI : ChartedSpace H (X.term (mc.subseq k)).M :=
+    let : ChartedSpace H (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).charted
-    letI : T2Space (X.term (mc.subseq k)).M :=
+    let : T2Space (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).t2
-    letI : IsManifold I ∞ (X.term (mc.subseq k)).M :=
+    let : IsManifold I ∞ (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).smooth
-    letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
+    let : SigmaCompactSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).sigmaCompact
     have hall := (hwindowData n).2.2.2 (mc.subseq k)
     have hrestricted := metricUniformEquivalentOnWindow_mono (I := I)
@@ -242,15 +241,15 @@ theorem open_upgrade_of_canonical_metric_compactness
           (refRes (I := I) Phi mc.limit.metric k)
           (srcMetric (I := I) Phi hsrc htgt k t) (Crel * Bmax n) := by
     intro k t ht
-    letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
+    let : TopologicalSpace (SourceDomain (I := I) Phi k) :=
       sourceDomTop (I := I) Phi k
-    letI : ChartedSpace H (SourceDomain (I := I) Phi k) :=
+    let : ChartedSpace H (SourceDomain (I := I) Phi k) :=
       sourceDomCharted (I := I) Phi k
-    letI : T2Space (SourceDomain (I := I) Phi k) :=
+    let : T2Space (SourceDomain (I := I) Phi k) :=
       sourceDomT2 (I := I) Phi k
-    letI : IsManifold I ∞ (SourceDomain (I := I) Phi k) :=
+    let : IsManifold I ∞ (SourceDomain (I := I) Phi k) :=
       sourceDomSmooth (I := I) Phi k
-    letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
+    let : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
       sourceDomSigmaOf (I := I) Phi k (hsrc k)
     have hEq := srcEquivOn (I := I) Phi mc.limit.metric hsrc htgt
       (beta n) (psi n) gRefT (B n) Crel (hequivT n) hrel k t ht
@@ -283,10 +282,10 @@ theorem open_upgrade_of_canonical_metric_compactness
     intro n k t ht y v
     have ht' : t ∈ Set.Icc (beta n) (psi n) := by
       simpa only [beta, psi, RealTimeInterval.openWindow] using ht
-    simpa only [cLow] using
-      (hbound_of_equiv (I := I) Phi mc.limit.metric hsrc htgt
+    with_unfolding_all
+      exact hbound_of_equiv (I := I) Phi mc.limit.metric hsrc htgt
         (beta n) (psi n) gRefT (B n) Crel (Bmax n)
-        (hBmajor n) hCrel (hequivT n) hrel k t ht' y v)
+        (hBmajor n) hCrel (hequivT n) hrel k t ht' y v
   have hcovTail : ∀ n q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real),
       t ∈ RealTimeInterval.openWindow a b 0 n →
       ∀ z : mc.limit.M, z ∈ bf.grow k →

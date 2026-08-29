@@ -170,16 +170,16 @@ structure ChartH2NonSmoothBridgeData
     Metric.cthickening h0 (closure Omega'') ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α
-  M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ
-  M_bound_nn : ∀ i k, 0 ≤ M_bound i k
+  MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ
+  M_bound_nn : ∀ i k, 0 ≤ MBound i k
   uniform_diffQuot_bound :
     ∀ (i : Fin (Module.finrank ℝ E)) (k : Fin (Module.finrank ℝ E))
       (h : ℝ), 0 < |h| → |h| ≤ h0 →
         eLpNorm
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial i)) 2
+              (d := Module.finrank ℝ E) k h (D.weakPartial i)) 2
             ((volume : Measure EuclN).restrict Omega'')
-          ≤ ENNReal.ofReal (M_bound i k)
+          ≤ ENNReal.ofReal (MBound i k)
   memWkp_two_chartPushed :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
@@ -200,9 +200,9 @@ theorem loc_chart_of_chartH2NonSmoothBridgeData
     ∃ g_ik : EuclN → ℝ,
       MemLp g_ik 2 ((volume : Measure EuclN).restrict h.Omega'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-        (h.D.weak_partial i) h.Omega'' ∧
+        (h.D.weakPartial i) h.Omega'' ∧
       eLpNorm g_ik 2 ((volume : Measure EuclN).restrict h.Omega'') ≤
-        ENNReal.ofReal (h.M_bound i k) := by
+        ENNReal.ofReal (h.MBound i k) := by
   exact exists_weak_second_partial_of_uniform_diffQuot_bound (I := I) (M := M) (g := g) (α := α)
     h.D h.Omega''_open h.Omega''_compact_closure h.h0_pos h.room
     h.M_bound_nn h.uniform_diffQuot_bound

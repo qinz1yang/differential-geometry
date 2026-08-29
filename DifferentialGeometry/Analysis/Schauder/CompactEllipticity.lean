@@ -9,7 +9,7 @@ open scoped RealInnerProductSpace
 
 namespace DifferentialGeometry.Analysis.Schauder
 
-private abbrev Euc (n : Type*) [Fintype n] := EuclideanSpace Real n
+private abbrev Euc (n : Type*) := EuclideanSpace Real n
 
 theorem exists_uniform_matrix_quadratic_lower_bound
     {X n : Type*} [TopologicalSpace X]
@@ -24,8 +24,8 @@ theorem exists_uniform_matrix_quadratic_lower_bound
   let Q : X × Euc n → Real := fun p ↦
     ∑ i, ∑ j, A p.1 i j * p.2 i * p.2 j
   have hQcont : ContinuousOn Q (K ×ˢ (Set.univ : Set (Euc n))) := by
-    refine continuousOn_finset_sum Finset.univ (fun i _ ↦ ?_)
-    refine continuousOn_finset_sum Finset.univ (fun j _ ↦ ?_)
+    refine continuousOn_finsetSum Finset.univ (fun i _ ↦ ?_)
+    refine continuousOn_finsetSum Finset.univ (fun j _ ↦ ?_)
     refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) ?_
     · exact (hAcont i j).comp continuous_fst.continuousOn (fun p hp ↦ hp.1)
     · have hval : Continuous (fun v : Euc n => (v : n → Real)) :=
@@ -109,13 +109,13 @@ theorem exists_uniform_matrix_quadratic_lower_bound_of_finite
   choose c hcpos hcbound using hlocal
   cases isEmpty_or_nonempty R with
   | inl hR =>
-      letI := hR
+      let := hR
       refine ⟨1, one_pos, ?_⟩
       intro r
       exact isEmptyElim r
   | inr hR =>
-      letI := hR
-      letI := Fintype.ofFinite R
+      let := hR
+      let := Fintype.ofFinite R
       have himage : (Finset.univ.image c).Nonempty := by simp
       let cmin : Real := (Finset.univ.image c).min' himage
       have hcminmem : cmin ∈ Finset.univ.image c :=

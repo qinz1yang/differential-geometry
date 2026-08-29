@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedSecondBianchi
 import DifferentialGeometry.Geometry.Curvature.CurvatureActionLower
+
+
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
@@ -240,7 +242,7 @@ private theorem curvatureAction_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -301,7 +303,7 @@ private theorem canRmActionSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (A B C D : TangentSpace I x) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -366,7 +368,7 @@ private theorem canRmActionSum
   have hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) :=
     rm04LowersRm13At_of_realizes (I := I) g cov Rm13 Rm04 hRm13 hRm04 x
   have hOut : ∀ P Q S T, R P Q S T = -R P Q T S := by
-    simpa [R] using
+    simpa [R, Rm04OutputSkewAt] using
       (rm04OutputSkewAt_of_leviCivita_realizes
         (I := I) g Rm04 hRm04 (x := x))
   have hIn : ∀ P Q S T, R Q P S T = -R P Q S T := by
@@ -379,9 +381,9 @@ private theorem canRmActionSum
         (I := I) g Rm04 hRm04 (x := x))
   have hFirst : ∀ P Q S T,
       R P Q S T + R Q S P T + R S P Q T = 0 := by
-    simpa [R] using
-      (firstBianchiAt_of_leviCivita_realizes
-        (I := I) g Rm04 hRm04 (x := x))
+    intro P Q S T
+    exact firstBianchiAt_of_leviCivita_realizes
+      (I := I) g Rm04 hRm04 (x := x) P Q S T
   have hAlg := five_actions_eq R basis hOut hIn hPair hFirst A B C D
   have hActions : ∀ i : Idx,
       curvatureAction0SAt (I := I) Rm13 (Rm04 x) A B
@@ -415,7 +417,7 @@ private theorem canRic_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (a b : Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -463,7 +465,7 @@ private theorem canRawLowering
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (a b c d : Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -671,18 +673,19 @@ theorem canRmHessComm
     have h := hRicci U W (vec4 (I := I) X Y Z Q)
     rw [metricTraceInput_eq_finCons, cons_vec4_eq_vec5,
       metricTraceInput_eq_finCons, cons_vec4_eq_vec5] at h
-    simpa [N] using h
+    simpa [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04, N] using h
   rw [comm_eq A B C V D V, comm_eq A V B C D V,
     comm_eq A V B D C V, comm_eq B V A C D V,
     comm_eq B V A D C V] at hAlg
   simpa [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04, N] using hAlg
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem canRicHessSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (A B C D : TangentSpace I x) :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -788,12 +791,13 @@ theorem canRicHessSum
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_neg_distrib]
 
+omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem hamiltonRm04Id
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (identityInvMetric (Idx := Idx)))
     (m : Fin 4 -> Idx) :
     let cov := leviCivitaConnectionOfMetric (I := I) g

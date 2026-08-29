@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.TailReg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -41,23 +40,23 @@ theorem tri_expand {ι : Type*} [Fintype ι]
   have hX : (∑ i, b.repr X i • b i) = X := b.sum_repr X
   have hY : (∑ j, b.repr Y j • b j) = Y := b.sum_repr Y
   have hZ : (∑ k, b.repr Z k • b k) = Z := b.sum_repr Z
-  letI : NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  let : NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) :=
+  let : NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) :=
     ContinuousLinearMap.toNormedAddCommGroup
-  letI : AddMonoidHomClass (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
+  let : AddMonoidHomClass (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
       (TangentSpace I x) (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) :=
     (SemilinearMapClass.distribMulActionSemiHomClass
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)).toAddMonoidHomClass
   have step1 : ((A X) Y) Z = ∑ i, b.repr X i • (((A (b i)) Y) Z) := by
     conv_lhs => rw [← hX]
-    simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply]
+    simp only [map_sum, map_smul, sum_apply,
+      smul_apply]
   have step2 : ∀ i : ι, ((A (b i)) Y) Z = ∑ j, b.repr Y j • (((A (b i)) (b j)) Z) := by
     intro i
     conv_lhs => rw [← hY]
-    simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply]
+    simp only [map_sum, map_smul, sum_apply,
+      smul_apply]
   have step3 : ∀ i j : ι, ((A (b i)) (b j)) Z =
       ∑ k, b.repr Z k • (((A (b i)) (b j)) (b k)) := by
     intro i j
@@ -155,7 +154,7 @@ theorem rmDiffVec_hasDerivAt_of_basis [Finite Idx]
     HasDerivAt (fun r : Real => ((rmDiffVec (I := I) (g₁ r) (g₂ r) x X) Y) Z)
       (((Sdot X) Y) Z) t := by
   classical
-  haveI : Fintype Idx := Fintype.ofFinite Idx
+  have : Fintype Idx := Fintype.ofFinite Idx
   have hexp : ∀ r : Real,
       ((rmDiffVec (I := I) (g₁ r) (g₂ r) x X) Y) Z =
         ∑ i, ∑ j, ∑ k, (b.repr X i * b.repr Y j * b.repr Z k) •

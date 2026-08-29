@@ -97,7 +97,7 @@ omit [IsManifold I ∞ M] in
 theorem fundamental_bochner_of_leviCivita_terms
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -115,7 +115,7 @@ theorem fundamental_bochner_of_leviCivita_terms
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec : OneFormSection (I := I) (M := M))
@@ -170,7 +170,7 @@ omit [IsManifold I ∞ M] in
 theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -188,7 +188,7 @@ theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec normDuSec : OneFormSection (I := I) (M := M))
@@ -253,7 +253,7 @@ omit [IsManifold I ∞ M] in
 theorem lc_bochner_dlap
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -269,7 +269,7 @@ theorem lc_bochner_dlap
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec : OneFormSection (I := I) (M := M))
@@ -341,7 +341,7 @@ omit [IsManifold I ∞ M] in
 theorem lc_bochner_norm
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -357,7 +357,7 @@ theorem lc_bochner_norm
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec normDuSec : OneFormSection (I := I) (M := M))
@@ -438,7 +438,7 @@ omit [IsManifold I ∞ M] in
 theorem lc_bochner_rm04
     [IsManifold I ∞ M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -454,7 +454,7 @@ theorem lc_bochner_rm04
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec : OneFormSection (I := I) (M := M))

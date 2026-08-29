@@ -20,6 +20,11 @@ noncomputable def euclideanToMatrix
     (A : EuclideanSpace ℝ (m × n)) : Matrix m n ℝ :=
   Matrix.of (fun i j => A (i, j))
 
+@[simp] theorem matrixToEuclidean_apply
+    (A : Matrix m n ℝ) (i : m) (j : n) :
+    matrixToEuclidean A (i, j) = A i j := by
+  simp [matrixToEuclidean]
+
 noncomputable def euclideanMatrixSymmetrization
     (v : EuclideanSpace ℝ (ι × ι)) : Matrix ι ι ℝ :=
   (1 / 2 : ℝ) • (euclideanToMatrix v + (euclideanToMatrix v).transpose)
@@ -174,7 +179,7 @@ theorem inner_matrixToEuclidean
     inner ℝ (A.ofLp ij) (B ij.1 ij.2) =
         B ij.1 ij.2 * (starRingEnd ℝ) (A.ofLp ij) := h
     _ = A.ofLp ij * B ij.1 ij.2 := by
-      simp [starRingEnd]
+      change B ij.1 ij.2 * A.ofLp ij = A.ofLp ij * B ij.1 ij.2
       ring
 
 theorem inner_matrixToEuclidean_symm

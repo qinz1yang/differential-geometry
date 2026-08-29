@@ -19,6 +19,7 @@ import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Placement
 
 noncomputable section
 
+
 namespace ContinuousAlternatingMap
 
 section wedge
@@ -33,12 +34,12 @@ variable
   {N'' : Type*} [NormedAddCommGroup N''] [NormedSpace 𝕜 N'']
   {m n p m' d : ℕ}
 
-def wedge_product (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N')
+def wedgeProduct (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N')
     (f : N →L[𝕜] N' →L[𝕜] N'') : M [⋀^Fin (m + n)]→L[𝕜] N'' :=
   uncurryFinAdd (f.compContinuousAlternatingMap₂ g h)
 
-notation g "∧["f"]" h => wedge_product g h f
-notation g "∧["𝕜"]" h => wedge_product g h (ContinuousLinearMap.mul 𝕜 𝕜)
+notation g "∧["f"]" h => wedgeProduct g h f
+notation g "∧["𝕜"]" h => wedgeProduct g h (ContinuousLinearMap.mul 𝕜 𝕜)
 
 noncomputable def covectorWedge (α : M →L[𝕜] 𝕜) (β : M [⋀^Fin n]→L[𝕜] 𝕜) :
     M [⋀^Fin (n + 1)]→L[𝕜] 𝕜 :=
@@ -147,7 +148,7 @@ theorem formValuedLinearMap_eq_sum_smulRight_elementaryCovector
         (elementaryCovector b (I : Fin m → Fin d)) := by
   dsimp
   ext x v
-  rw [ContinuousLinearMap.sum_apply]
+  rw [_root_.sum_apply]
   simp only [ContinuousLinearMap.smulRight_apply]
   rw [ContinuousAlternatingMap.sum_apply]
   have hsum : g' x = ∑ I : Fin m ↪o Fin (Module.finrank 𝕜 M),
@@ -179,19 +180,19 @@ theorem add_wedge (g₁ g₂ : M [⋀^Fin m]→L[𝕜] N)
   rw[add_apply, wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
     wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
     wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply,
-    ContinuousMultilinearMap.sum_apply, ← Finset.sum_add_distrib]
+    _root_.sum_apply, _root_.sum_apply, _root_.sum_apply, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
-  intro σ hσ
-  rcases σ with ⟨σ₁⟩
-  repeat
-    rw[uncurrySum.summand_mk]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-      Function.comp_apply, ContinuousMultilinearMap.uncurrySum_apply,
-      ContinuousMultilinearMap.flipMultilinear_apply, coe_toContinuousMultilinearMap,
-      ContinuousMultilinearMap.flipAlternating_apply,
-      ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
-  rw[← smul_add, add_apply, map_add, ContinuousLinearMap.add_apply, smul_add]
+  intro σ _
+  refine Quotient.inductionOn' σ fun σ₁ => ?_
+  repeat rw [uncurrySum_summand_eval]
+  repeat rw [ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
+  rw [add_apply, map_add]
+  let u : Fin m → M := fun i => (x ∘ ⇑finSumFinEquiv) (σ₁ (Sum.inl i))
+  let v : Fin n → M := fun i => (x ∘ ⇑finSumFinEquiv) (σ₁ (Sum.inr i))
+  let z : N' := h v
+  change Equiv.Perm.sign σ₁ • (f (g₁ u) z + f (g₂ u) z) =
+    Equiv.Perm.sign σ₁ • f (g₁ u) z + Equiv.Perm.sign σ₁ • f (g₂ u) z
+  exact smul_add (Equiv.Perm.sign σ₁) (f (g₁ u) z) (f (g₂ u) z)
 
 theorem wedge_add (g : M [⋀^Fin m]→L[𝕜] N)
     (h₁ h₂ : M [⋀^Fin n]→L[𝕜] N') (f : N →L[𝕜] N' →L[𝕜] N'') :
@@ -200,19 +201,13 @@ theorem wedge_add (g : M [⋀^Fin m]→L[𝕜] N)
   rw[add_apply, wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
     wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
     wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply,
-    ContinuousMultilinearMap.sum_apply, ← Finset.sum_add_distrib]
+    _root_.sum_apply, _root_.sum_apply, _root_.sum_apply, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
-  intro σ hσ
-  rcases σ with ⟨σ₁⟩
-  repeat
-    rw[uncurrySum.summand_mk]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-      Function.comp_apply, ContinuousMultilinearMap.uncurrySum_apply,
-      ContinuousMultilinearMap.flipMultilinear_apply, coe_toContinuousMultilinearMap,
-      ContinuousMultilinearMap.flipAlternating_apply,
-      ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
-  rw[add_apply, map_add, smul_add]
+  intro σ _
+  refine Quotient.inductionOn' σ fun σ₁ => ?_
+  repeat rw [uncurrySum_summand_eval]
+  repeat rw [ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
+  rw [add_apply, map_add, smul_add]
 
 theorem smul_wedge (c : 𝕜) (g : M [⋀^Fin m]→L[𝕜] N)
     (h : M [⋀^Fin n]→L[𝕜] N') (f : N →L[𝕜] N' →L[𝕜] N'') :
@@ -220,18 +215,14 @@ theorem smul_wedge (c : 𝕜) (g : M [⋀^Fin m]→L[𝕜] N)
   ext x
   rw [smul_apply, wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
     wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply, Finset.smul_sum]
+    _root_.sum_apply, _root_.sum_apply, Finset.smul_sum]
   apply Finset.sum_congr rfl
-  intro σ hσ
-  rcases σ with ⟨σ₁⟩
-  repeat
-    rw [uncurrySum.summand_mk]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-      Function.comp_apply, ContinuousMultilinearMap.uncurrySum_apply,
-      ContinuousMultilinearMap.flipMultilinear_apply, coe_toContinuousMultilinearMap,
-      ContinuousMultilinearMap.flipAlternating_apply,
-      ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
-  rw [ContinuousAlternatingMap.smul_apply, f.map_smul, ContinuousLinearMap.smul_apply, smul_comm]
+  intro σ _
+  refine Quotient.inductionOn' σ fun σ₁ => ?_
+  repeat rw [uncurrySum_summand_eval]
+  repeat rw [ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
+  rw [ContinuousAlternatingMap.smul_apply, f.map_smul, smul_comm]
+  rfl
 
 theorem wedge_smul (c : 𝕜) (g : M [⋀^Fin m]→L[𝕜] N)
     (h : M [⋀^Fin n]→L[𝕜] N') (f : N →L[𝕜] N' →L[𝕜] N'') :
@@ -239,17 +230,12 @@ theorem wedge_smul (c : 𝕜) (g : M [⋀^Fin m]→L[𝕜] N)
   ext x
   rw [smul_apply, wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
     wedge_product_def, uncurryFinAdd, domDomCongr_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply, Finset.smul_sum]
+    _root_.sum_apply, _root_.sum_apply, Finset.smul_sum]
   apply Finset.sum_congr rfl
-  intro σ hσ
-  rcases σ with ⟨σ₁⟩
-  repeat
-    rw [uncurrySum.summand_mk]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-      Function.comp_apply, ContinuousMultilinearMap.uncurrySum_apply,
-      ContinuousMultilinearMap.flipMultilinear_apply, coe_toContinuousMultilinearMap,
-      ContinuousMultilinearMap.flipAlternating_apply,
-      ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
+  intro σ _
+  refine Quotient.inductionOn' σ fun σ₁ => ?_
+  repeat rw [uncurrySum_summand_eval]
+  repeat rw [ContinuousLinearMap.compContinuousAlternatingMap₂_apply]
   rw [ContinuousAlternatingMap.smul_apply, ContinuousLinearMap.map_smul, smul_comm]
 
 theorem norm_wedge_product_le (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N')
@@ -259,7 +245,7 @@ theorem norm_wedge_product_le (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]
   refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
   change ‖uncurryFinAdd (f.compContinuousAlternatingMap₂ g h) v‖ ≤ _
   rw [uncurryFinAdd, ContinuousAlternatingMap.domDomCongr_apply, uncurrySum_apply,
-      ContinuousMultilinearMap.sum_apply]
+      _root_.sum_apply]
   have key : ∀ q : Equiv.Perm.ModSumCongr (Fin m) (Fin n),
       ‖uncurrySum.summand (f.compContinuousAlternatingMap₂ g h) q
           (v ∘ ⇑finSumFinEquiv)‖ ≤ (‖f‖ * ‖g‖ * ‖h‖) * ∏ i, ‖v i‖ := by
@@ -301,31 +287,31 @@ theorem norm_wedge_product_le (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]
     _ = Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) * (‖f‖ * ‖g‖ * ‖h‖) *
           ∏ i, ‖v i‖ := by ring
 
-noncomputable def wedge_productL (f : N →L[𝕜] N' →L[𝕜] N'') :
+noncomputable def wedgeProductL (f : N →L[𝕜] N' →L[𝕜] N'') :
     (M [⋀^Fin m]→L[𝕜] N) →L[𝕜] (M [⋀^Fin n]→L[𝕜] N') →L[𝕜]
         (M [⋀^Fin (m + n)]→L[𝕜] N'') :=
   LinearMap.mkContinuous₂
     { toFun := fun g =>
-        { toFun := fun h => wedge_product g h f
+        { toFun := fun h => wedgeProduct g h f
           map_add' := fun h₁ h₂ => wedge_add g h₁ h₂ f
           map_smul' := fun c h => wedge_smul c g h f }
       map_add' := fun g₁ g₂ => by ext h : 1; exact add_wedge g₁ g₂ h f
       map_smul' := fun c g => by ext h : 1; exact smul_wedge c g h f }
     (Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) * ‖f‖ + 1) fun g h => by
-      change ‖wedge_product g h f‖ ≤ _
+      change ‖wedgeProduct g h f‖ ≤ _
       have hwedge := norm_wedge_product_le g h f
       nlinarith [hwedge, norm_nonneg g, norm_nonneg h, norm_nonneg f]
 
 @[simp] theorem wedge_productL_apply (f : N →L[𝕜] N' →L[𝕜] N'')
     (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N') :
-    wedge_productL f g h = wedge_product g h f := rfl
+    wedgeProductL f g h = wedgeProduct g h f := rfl
 
 theorem uncurryFin_wedge_productL_precompL_apply (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N')
     (v : Fin (m + n + 1) → M) :
-    uncurryFin ((wedge_productL f).precompL M g' h) v =
+    uncurryFin ((wedgeProductL f).precompL M g' h) v =
       ∑ k : Fin (m + n + 1), (-1 : ℤ) ^ k.val •
-        wedge_product (g' (v k)) h f (k.removeNth v) := by
+        wedgeProduct (g' (v k)) h f (k.removeNth v) := by
   rw [uncurryFin_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   simp only [ContinuousLinearMap.precompL_apply, wedge_productL_apply]
@@ -333,8 +319,8 @@ theorem uncurryFin_wedge_productL_precompL_apply (f : N →L[𝕜] N' →L[𝕜]
 theorem wedge_product_uncurryFin_apply (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N')
     (v : Fin (m + n + 1) → M) :
-    domDomCongr Fin.finAddFlipAssoc (wedge_product (uncurryFin g') h f) v =
-      (wedge_product (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
+    domDomCongr Fin.finAddFlipAssoc (wedgeProduct (uncurryFin g') h f) v =
+      (wedgeProduct (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
   rw [ContinuousAlternatingMap.domDomCongr_apply]
 
 private def uncurryFinLeftExpandedSummand
@@ -395,8 +381,9 @@ private theorem derivShuffleLeft_expanded_summand_eq
         fun i : Fin m => ((k.removeNth v) ∘ ⇑finSumFinEquiv) (σ (Sum.inl i)) := by
     funext i
     rw [derivShuffleLeftFwdRanked_inl_succAbove]
-    simp [Function.comp_apply, Fin.removeNth_apply, permFinOfSum,
-      Equiv.permCongr_apply, finSumFinEquiv_symm_apply_castAdd]
+    simp only [Equiv.symm_trans, Equiv.permCongr_apply, finSumFinEquiv_symm_apply_castAdd,
+      Equiv.trans_apply, Function.comp_apply, Equiv.apply_symm_apply]
+    rw [Fin.removeNth_apply]
   have hright :
       (fun i : Fin n =>
           ((v ∘ ⇑Fin.finAddFlipAssoc) ∘ ⇑finSumFinEquiv)
@@ -404,8 +391,9 @@ private theorem derivShuffleLeft_expanded_summand_eq
         fun i : Fin n => ((k.removeNth v) ∘ ⇑finSumFinEquiv) (σ (Sum.inr i)) := by
     funext i
     rw [derivShuffleLeftFwdRanked_inr]
-    simp [Function.comp_apply, Fin.removeNth_apply, permFinOfSum,
-      Equiv.permCongr_apply]
+    simp only [Equiv.symm_trans, Equiv.permCongr_apply, finSumFinEquiv_symm_apply_natAdd,
+      Equiv.trans_apply, Function.comp_apply, Equiv.apply_symm_apply]
+    rw [Fin.removeNth_apply]
   have hleft_remove :
       (derivShuffleRank k σ).removeNth
           (fun i : Fin (m + 1) =>
@@ -421,11 +409,12 @@ private theorem derivShuffleLeft_expanded_summand_eq
     simpa [Function.comp_apply, Fin.removeNth_apply] using congr_fun hright i
   have hk_eval :
       v (Fin.finAddFlipAssoc (finSumFinEquiv (finSuccSumEquiv.symm k))) = v k := by
-    simp [finSuccSumEquiv]
+    change v (finSuccSumEquiv (finSuccSumEquiv.symm k)) = v k
+    rw [Equiv.apply_symm_apply]
   rw [hleft_remove, hright_eval, hk_eval]
   simp only [Fin.removeNth_apply]
   simp only [Units.smul_def, smul_smul, mul_assoc]
-  simp only [Int.reduceNeg, Units.val_mul, map_zsmul, ContinuousLinearMap.coe_smul',
+  simp only [Int.reduceNeg, Units.val_mul, map_zsmul, FunLike.coe_smul,
     Pi.smul_apply, smul_smul, mul_assoc]
   congr 1
   rcases Nat.even_or_odd k.val with hq | hq <;>
@@ -671,7 +660,9 @@ private theorem inducedPerm_one {m : ℕ} (j : Fin (m + 1)) :
 private theorem succAbove_val_of_lt {m : ℕ} (j : Fin (m + 1)) (i : Fin m) (h : i.val < j.val) :
     (j.succAbove i).val = i.val := by
   rw [Fin.succAbove]
-  rw [if_pos (by simpa using h)]
+  rw [if_pos (by
+    change i.val < j.val
+    exact h)]
   rfl
 
 private theorem succAbove_val_of_ge {m : ℕ} (j : Fin (m + 1)) (i : Fin m) (h : j.val ≤ i.val) :
@@ -708,7 +699,7 @@ private theorem inducedPerm_swap_left {m : ℕ} (j b : Fin (m + 1)) (hjb : j < b
   by_cases hm : m = 0
   · subst hm
     exact Fin.elim0 i
-  haveI : NeZero m := ⟨hm⟩
+  have : NeZero m := ⟨hm⟩
   have hbj1 : b.val - 1 < m := by omega
   have hjm : j.val < m := by omega
   by_cases h1 : i.val < j.val
@@ -1041,7 +1032,9 @@ private theorem inducedPerm_swap_sign {m : ℕ} (j b : Fin (m + 1)) :
   by_cases h : j = b
   · subst h
     have h1 : inducedPerm (Equiv.swap j j) j = (1 : Equiv.Perm (Fin m)) := by
-      simpa using inducedPerm_one j
+      have hswap : Equiv.swap j j = (1 : Equiv.Perm (Fin (m + 1))) := Equiv.swap_self j
+      rw [hswap]
+      exact inducedPerm_one j
     rw [h1]
     simp only [Equiv.Perm.sign_one, Equiv.swap_self, Equiv.Perm.sign_refl, one_mul]
     have hjj : Even (j.val + j.val) := by
@@ -1110,8 +1103,11 @@ private theorem inducedPerm_swap_away {m : ℕ} (a b j' : Fin (m + 1)) (haj : j'
         have hsa1 : j'.succAbove (removeHole j' b
           (Ne.symm hbj)) = b := succAbove_removeHole j' b (Ne.symm hbj)
         exact ((Fin.succAbove_right_injective (p := j')).eq_iff.mp (hsa1.trans hib.symm)).symm
+      have hba : b ≠ a := by
+        intro hba
+        exact hia (hib.trans hba)
       rw [hi]
-      simp [Equiv.swap_apply_def, haj, hbj]
+      simp [Equiv.swap_apply_def, haj, hbj, hba]
     · have hfix : Equiv.swap a b (j'.succAbove i) = j'.succAbove i := by
         simp [Equiv.swap_apply_def, hia, hib]
       have hne : Equiv.swap a b (j'.succAbove i) ≠ j' := by
@@ -1147,7 +1143,8 @@ private theorem inducedPerm_swap_sign' {m : ℕ} (a b j' : Fin (m + 1)) :
   · rw [hab]
     simp only [Equiv.swap_self, Equiv.Perm.sign_refl, Equiv.refl_apply, one_mul]
     have hrefl : inducedPerm (Equiv.refl (Fin (m + 1))) j' = 1 := by
-      simpa using inducedPerm_one j'
+      change inducedPerm (1 : Equiv.Perm (Fin (m + 1))) j' = 1
+      exact inducedPerm_one j'
     rw [hrefl]
     simp only [Equiv.Perm.sign_one]
     have hjj : Even (j'.val + j'.val) := by
@@ -1307,7 +1304,7 @@ private theorem uncurryFinLeftExpandedSummand_mul_sumCongr
     (τl j).val) :=
     sign_inducedPerm τl j
   simp only [Units.smul_def, smul_smul]
-  simp only [Int.reduceNeg, Units.val_mul, map_zsmul, ContinuousLinearMap.coe_smul',
+  simp only [Int.reduceNeg, Units.val_mul, map_zsmul, FunLike.coe_smul,
     Pi.smul_apply, smul_smul, mul_assoc]
   rw [hsig]
   congr 1
@@ -1476,14 +1473,14 @@ private theorem uncurryFin_wedge_productL_precompL_fiber
 theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
     (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N') :
-    uncurryFin ((wedge_productL f).precompL M g' h) =
-      domDomCongr Fin.finAddFlipAssoc (wedge_product (uncurryFin g') h f) := by
+    uncurryFin ((wedgeProductL f).precompL M g' h) =
+      domDomCongr Fin.finAddFlipAssoc (wedgeProduct (uncurryFin g') h f) := by
   ext v
   let w : Fin (m + 1) ⊕ Fin n → M := (v ∘ ⇑Fin.finAddFlipAssoc) ∘ ⇑finSumFinEquiv
   calc
-    uncurryFin ((wedge_productL f).precompL M g' h) v
+    uncurryFin ((wedgeProductL f).precompL M g' h) v
         = ∑ k : Fin (m + n + 1), (-1 : ℤ) ^ k.val •
-            wedge_product (g' (v k)) h f (k.removeNth v) := by
+            wedgeProduct (g' (v k)) h f (k.removeNth v) := by
           exact uncurryFin_wedge_productL_precompL_apply f g' h v
     _ = ∑ k : Fin (m + n + 1), (-1 : ℤ) ^ k.val •
             uncurrySum (f.compContinuousAlternatingMap₂ (g' (v k)) h)
@@ -1583,10 +1580,10 @@ theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
               uncurrySum.summand (f.compContinuousAlternatingMap₂ (uncurryFin g') h) q w)
               (Quot.out_eq (q := τ')))
     _ = uncurrySum (f.compContinuousAlternatingMap₂ (uncurryFin g') h) w := by
-          rw [uncurrySum_apply, ContinuousMultilinearMap.sum_apply]
-    _ = (wedge_product (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
+          rw [uncurrySum_apply, _root_.sum_apply]
+    _ = (wedgeProduct (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
           rw [wedge_product_def, uncurryFinAdd, ContinuousAlternatingMap.domDomCongr_apply]
-    _ = domDomCongr Fin.finAddFlipAssoc (wedge_product (uncurryFin g') h f) v := by
+    _ = domDomCongr Fin.finAddFlipAssoc (wedgeProduct (uncurryFin g') h f) v := by
           rw [wedge_product_uncurryFin_apply]
 
 private def placementSummand (g : M [⋀^Fin m]→L[𝕜] 𝕜) (h : M [⋀^Fin n]→L[𝕜] 𝕜)
@@ -1609,7 +1606,7 @@ private theorem wedge_mul_assoc_rhs_expand (g : M [⋀^Fin m]→L[𝕜] 𝕜) (h
   rw [wedge_product_def, uncurryFinAdd]
   rw [ContinuousAlternatingMap.domDomCongr_apply]
   rw [uncurrySum_apply]
-  simp only [ContinuousMultilinearMap.sum_apply]
+  simp only [_root_.sum_apply]
   rw [Finset.sum_congr rfl]
   intro q₂ _
   let σ₂ : Equiv.Perm (Fin (m + n) ⊕ Fin p) := Quot.out q₂
@@ -1667,7 +1664,7 @@ private theorem wedge_mul_assoc_rhs_inner (g : M [⋀^Fin m]→L[𝕜] 𝕜) (h 
     rw [wedge_product_def, uncurryFinAdd]
     rw [ContinuousAlternatingMap.domDomCongr_apply]
     rw [uncurrySum_apply]
-    simp only [ContinuousMultilinearMap.sum_apply]
+    simp only [_root_.sum_apply]
   calc
     (∑ q₄ : Equiv.Perm.ModSumCongr (Fin m) (Fin n),
         (Equiv.Perm.sign σ₂ • uncurrySum.summand
@@ -1728,11 +1725,7 @@ private theorem wedge_mul_assoc_rhs_can_point (g : M [⋀^Fin m]→L[𝕜] 𝕜)
   let τ₂ : Equiv.Perm (Fin m ⊕ Fin n) := P.rightInner.toPerm
   have hτ : Quotient.mk'' τ₂ = q₄ := by
     dsimp [τ₂, P, Equiv.Perm.ThreeShuffle.leftShuffle]
-    rw [show (Equiv.Perm.ThreeShuffle.leftAssocShuffle m n p
-        ((Equiv.Perm.TwoShuffle.modSumCongrTwoShuffle (m + n) p) q₂,
-          (Equiv.Perm.TwoShuffle.modSumCongrTwoShuffle m n) q₄)).rightInner =
-        (Equiv.Perm.TwoShuffle.modSumCongrTwoShuffle m n) q₄ from by
-          simp [Equiv.Perm.ThreeShuffle.leftAssocShuffle_rightInner]]
+    rw [Equiv.Perm.ThreeShuffle.leftAssocShuffle_rightInner]
     exact (Equiv.Perm.TwoShuffle.modSumCongrTwoShuffle m n).left_inv q₄
   change Equiv.Perm.sign σ₂ •
     uncurrySum.summand ((ContinuousLinearMap.mul 𝕜 𝕜).compContinuousAlternatingMap₂ g h) q₄
@@ -1851,7 +1844,7 @@ private theorem wedge_mul_assoc_lhs_expand (g : M [⋀^Fin m]→L[𝕜] 𝕜) (h
   rw [wedge_product_def, uncurryFinAdd]
   rw [ContinuousAlternatingMap.domDomCongr_apply]
   rw [uncurrySum_apply]
-  simp only [ContinuousMultilinearMap.sum_apply]
+  simp only [_root_.sum_apply]
   rw [Finset.sum_congr rfl]
   intro q₁ _
   let σ₁ : Equiv.Perm (Fin m ⊕ Fin (n + p)) := Quot.out q₁
@@ -1890,7 +1883,7 @@ private theorem wedge_mul_assoc_lhs_inner (g : M [⋀^Fin m]→L[𝕜] 𝕜) (h 
     rw [wedge_product_def, uncurryFinAdd]
     rw [ContinuousAlternatingMap.domDomCongr_apply]
     rw [uncurrySum_apply]
-    simp only [ContinuousMultilinearMap.sum_apply]
+    simp only [_root_.sum_apply]
   calc
     (∑ q₃ : Equiv.Perm.ModSumCongr (Fin n) (Fin p),
         (Equiv.Perm.sign σ₁ • uncurrySum.summand
@@ -2192,7 +2185,7 @@ private theorem uncurrySum_summand_swap (g : M [⋀^Fin m]→L[𝕜] 𝕜)
     uncurrySum.summand (ContinuousLinearMap.mul 𝕜 𝕜 |>.compContinuousAlternatingMap₂ h g)
         σ (v ∘ finSumFinEquiv) =
       uncurrySum.summand (ContinuousLinearMap.mul 𝕜 𝕜 |>.compContinuousAlternatingMap₂ g h)
-        (Equiv.Perm.finAddFlip_equiv (m := n) (n := m) σ)
+        (Equiv.Perm.finAddFlipEquiv (m := n) (n := m) σ)
         ((v ∘ finAddFlip) ∘ finSumFinEquiv) := by
   refine Quotient.inductionOn' σ ?_
   intro σ'
@@ -2235,16 +2228,16 @@ private theorem wedge_product_swap (g : M [⋀^Fin m]→L[𝕜] 𝕜)
   rw [wedge_product_def]
   rw [uncurryFinAdd, uncurryFinAdd, ContinuousAlternatingMap.domDomCongr_apply,
     ContinuousAlternatingMap.domDomCongr_apply, uncurrySum_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply]
+    _root_.sum_apply, _root_.sum_apply]
   refine Finset.sum_bij
     (fun (σ : Equiv.Perm.ModSumCongr (Fin n) (Fin m)) _ =>
-      Equiv.Perm.finAddFlip_equiv (m := n) (n := m) σ) ?_ ?_ ?_ ?_
+      Equiv.Perm.finAddFlipEquiv (m := n) (n := m) σ) ?_ ?_ ?_ ?_
   · intro σ hσ
     simp
   · intro σ₁ hσ₁ σ₂ hσ₂ h
-    exact Equiv.injective (Equiv.Perm.finAddFlip_equiv (m := n) (n := m)) h
+    exact Equiv.injective (Equiv.Perm.finAddFlipEquiv (m := n) (n := m)) h
   · intro τ hτ
-    exact ⟨(Equiv.Perm.finAddFlip_equiv (m := n) (n := m)).symm τ, by simp,
+    exact ⟨(Equiv.Perm.finAddFlipEquiv (m := n) (n := m)).symm τ, by simp,
       Equiv.apply_symm_apply _ τ⟩
   · intro σ hσ
     exact uncurrySum_summand_swap g h v σ
@@ -2285,25 +2278,18 @@ lemma domDomCongr_finAddFlip_wedge_self (g : M [⋀^Fin m]→L[𝕜] 𝕜) :
     domDomCongr finAddFlip (g∧[𝕜]g) = (g∧[𝕜]g) := by
   ext x
   rw[wedge_product_mul, uncurryFinAdd, domDomCongr_apply, domDomCongr_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, wedge_product_mul, uncurryFinAdd, domDomCongr_apply,
-    uncurrySum_apply, ContinuousMultilinearMap.sum_apply]
-  conv_rhs => rw[← Equiv.sum_comp Equiv.Perm.finAddFlip_equiv_eqFin]
+    _root_.sum_apply, wedge_product_mul, uncurryFinAdd, domDomCongr_apply,
+    uncurrySum_apply, _root_.sum_apply]
+  conv_rhs => rw[← Equiv.sum_comp Equiv.Perm.finAddFlipEquivEqFin]
   apply Finset.sum_congr rfl
   rintro σ -
-  rcases σ with ⟨σ₁⟩
-  simp only [Function.comp_apply, Equiv.Perm.finAddFlip_equiv_eqFin_apply]
-  rw[uncurrySum.summand_mk]
-  rw[uncurrySum.summand_mk]
-  rw[ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.uncurrySum_apply, ContinuousMultilinearMap.flipMultilinear_apply,
-    coe_toContinuousMultilinearMap, ContinuousMultilinearMap.flipAlternating_apply,
-    coe_toContinuousMultilinearMap, ContinuousLinearMap.compContinuousAlternatingMap₂_apply,
-    ContinuousLinearMap.mul_apply']
-  rw[ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.uncurrySum_apply, ContinuousMultilinearMap.flipMultilinear_apply,
-    coe_toContinuousMultilinearMap, ContinuousMultilinearMap.flipAlternating_apply,
-    coe_toContinuousMultilinearMap, ContinuousLinearMap.compContinuousAlternatingMap₂_apply,
-    ContinuousLinearMap.mul_apply']
+  refine Quotient.inductionOn' σ fun σ₁ => ?_
+  rw [show Equiv.Perm.finAddFlipEquivEqFin (Quotient.mk'' σ₁) =
+      Quotient.mk'' (Equiv.Perm.sumCommPermEqFin σ₁) from rfl]
+  rw[uncurrySum_summand_eval]
+  rw[uncurrySum_summand_eval]
+  simp only [Equiv.Perm.sign_sumCommPerm_eqFin, Units.smul_def,
+    ContinuousLinearMap.compContinuousAlternatingMap₂_apply, ContinuousLinearMap.mul_apply']
   simp [Function.comp_def, finAddFlip, mul_comm]
 
 theorem wedge_self_odd_zero (g : M [⋀^Fin m]→L[𝕜] 𝕜) (m_odd : Odd m) (h2 : (2 : 𝕜) ≠ 0) :

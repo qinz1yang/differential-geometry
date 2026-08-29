@@ -32,8 +32,8 @@ def gBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
     Set (TangentSpace I x) :=
   {v | Real.sqrt (g.inner x v v) < R}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def SegDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -43,21 +43,20 @@ def SegDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
         = (riemannianEDist I x (expMapIntrinsic (I := I) g hEnorm x v)).toReal}
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem mem_segDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {x : M} {v : TangentSpace I x} :
     v ∈ SegDom (I := I) g hEnorm x ↔
       Real.sqrt (g.inner x v v)
         = (riemannianEDist I x (expMapIntrinsic (I := I) g hEnorm x v)).toReal :=
   Iff.rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem segDom_zero [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -68,8 +67,8 @@ theorem segDom_zero [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteS
     show g.inner x (0 : TangentSpace I x) (0 : TangentSpace I x) = 0 by simp,
     Real.sqrt_zero, Manifold.riemannianEDist_self, ENNReal.toReal_zero]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem segDom_smul [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -146,8 +145,8 @@ theorem segDom_smul [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManif
     ENNReal.toReal_ofReal (mul_nonneg hLnn hs0)]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem ball_sub_image_segDom [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -187,8 +186,8 @@ theorem measurableSet_gBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
     MeasurableSet (gBall (I := I) g x R) :=
   (isOpen_gBall (I := I) g x R).measurableSet
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem isClosed_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -212,8 +211,8 @@ theorem isClosed_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianM
       (fun v => riemannianEDist_ne_top (I := I) x _)
   exact isClosed_eq hf₁ hf₂
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem measurableSet_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]

@@ -80,43 +80,7 @@ theorem uncurryFin_uncurryFinCLM_comp_of_symmetric {f : E →L[𝕜] E →L[𝕜
   exact toAlternatingMap_injective h₀
 
 def curryFin (f : E [⋀^Fin (n + 1)]→L[𝕜] F) : E →L[𝕜] E [⋀^Fin n]→L[𝕜] F :=
-  have f_curry_bounded (x : E) : ∀ (m : Fin n → E), ‖(f.curryLeft x) m‖ ≤ ‖f‖ * ‖x‖ * ∏ i, ‖m i‖
-    := by
-    intro m
-    let m' : Fin (n + 1) → E := Fin.cons x m
-    have h₀ : (f.curryLeft x) m = f m' := rfl
-    rw [h₀]
-    let m_norm : Fin n → ℝ := fun i => ‖m i‖
-    let m_norm' : Fin (n + 1) → ℝ := Fin.cons (‖x‖) m_norm
-    have h₁ : ∏ i, ‖m' i‖ = ‖x‖ * ∏ i, ‖m i‖ := by
-      have aux := Fin.prod_cons (‖x‖) m_norm
-      unfold m_norm at aux
-      have : ∀ i, ‖m' i‖ = m_norm' i := by
-        apply Fin.induction
-        · simp [Fin.cons_zero, m', m_norm']
-        · intro i _
-          simp [Fin.cons_succ, m', m_norm', m_norm]
-      rw [← aux]
-      simp [this, m_norm', Fin.prod_cons, m_norm]
-    rw [mul_assoc, ←h₁]
-    exact f.le_opNorm m'
-  let f_curry (x : E) := (f.1.curryLeft x).mkContinuous (‖f‖ * ‖x‖) (f_curry_bounded x)
-  LinearMap.mkContinuous
-    { toFun := fun x =>
-        { toContinuousMultilinearMap := f_curry x
-          map_eq_zero_of_eq' := fun v i j hv hne ↦ by
-            apply f.map_eq_zero_of_eq (Fin.cons x v) (i := i.succ) (j := j.succ) <;> simpa }
-      map_add' := fun x y => by unfold f_curry; ext; simp
-      map_smul' := fun c x => by unfold f_curry; ext; simp }
-    ‖f‖ fun x => by
-      rw [LinearMap.coe_mk, AddHom.coe_mk, ← norm_toContinuousMultilinearMap]
-      dsimp
-      apply (ContinuousMultilinearMap.opNorm_le_iff _).mpr
-      · intro m
-        have : (f_curry x) m = (f.curryLeft x) m := rfl
-        rw [this]
-        exact f_curry_bounded x m
-      · positivity
+  f.curryLeft
 
 theorem curryFin_apply (f : E [⋀^Fin (n + 1)]→L[𝕜] F) (x : E) (m : Fin n → E) :
     curryFin f x m = f (Fin.cons x m) :=
@@ -190,14 +154,13 @@ def uncurrySum.summand (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) (σ : 
       rw [QuotientGroup.leftRel_apply] at H
       obtain ⟨⟨sl, sr⟩, h⟩ := H
       ext v
-      simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
+      simp only [_root_.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
         ContinuousMultilinearMap.uncurrySum_apply]
       replace h := inv_mul_eq_iff_eq_mul.mp h.symm
       have : Equiv.Perm.sign (σ₁ * Equiv.Perm.sumCongrHom _ _ (sl, sr))
         = Equiv.Perm.sign σ₁ * (Equiv.Perm.sign sl * Equiv.Perm.sign sr) := by simp
       rw [h, this, mul_smul, mul_smul, smul_left_cancel_iff, smul_comm]
-      simp only [Equiv.Perm.sumCongrHom_apply, Equiv.Perm.coe_mul, Function.comp_apply,
-        Equiv.sumCongr_apply]
+      simp only [Equiv.Perm.coe_mul, Function.comp_apply]
       erw [← (f.flipAlternating
         ((fun i ↦ v (σ₁ (Sum.map (⇑sl) (⇑sr) i))) ∘ Sum.inr)).map_congr_perm fun i => v (σ₁ _)]
       simp only [AlternatingMap.coe_mk, ContinuousMultilinearMap.coe_coe,
@@ -227,10 +190,6 @@ theorem uncurrySum_summand_eval
     uncurrySum.summand f (Quotient.mk'' σ) v =
       Equiv.Perm.sign σ • f (fun i => v (σ (Sum.inl i))) (fun i => v (σ (Sum.inr i))) := by
   rw [uncurrySum.summand_mk'']
-  simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.uncurrySum_apply,
-    ContinuousMultilinearMap.flipMultilinear_apply, coe_toContinuousMultilinearMap,
-    ContinuousMultilinearMap.flipAlternating_apply]
   rfl
 
 theorem uncurrySum.summand_add_swap_smul_eq_zero (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F)
@@ -238,27 +197,32 @@ theorem uncurrySum.summand_add_swap_smul_eq_zero (f : E [⋀^ι]→L[𝕜] E [�
     {i j : ι ⊕ ι'} (hv : v i = v j) (hij : i ≠ j) :
     uncurrySum.summand f σ v + uncurrySum.summand f (Equiv.swap i j • σ) v = 0 := by
   refine Quotient.inductionOn' σ fun σ => ?_
-  dsimp only [Quotient.liftOn'_mk'', Quotient.map'_mk'', MulAction.Quotient.smul_mk,
-    uncurrySum.summand]
-  rw [smul_eq_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hij]
-  simp only [one_mul, neg_mul, Function.comp_apply, Units.neg_smul, Equiv.Perm.coe_mul,
-    ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.neg_apply,
-    ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.uncurrySum_apply]
-  convert add_neg_cancel (G := F) _ using 6 <;>
-    · ext k
-      simp [Function.comp_apply, Function.comp_apply, Equiv.apply_swap_eq_self hv]
+  change uncurrySum.summand f (Quotient.mk'' σ) v +
+    uncurrySum.summand f (Quotient.mk'' (Equiv.swap i j * σ)) v = 0
+  rw [uncurrySum_summand_eval, uncurrySum_summand_eval,
+    Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hij]
+  have hleft : (fun k : ι => v ((Equiv.swap i j * σ) (Sum.inl k))) =
+      fun k : ι => v (σ (Sum.inl k)) := by
+    funext k
+    exact Equiv.apply_swap_eq_self hv (σ (Sum.inl k))
+  have hright : (fun k : ι' => v ((Equiv.swap i j * σ) (Sum.inr k))) =
+      fun k : ι' => v (σ (Sum.inr k)) := by
+    funext k
+    exact Equiv.apply_swap_eq_self hv (σ (Sum.inr k))
+  rw [hleft, hright]
+  rw [mul_smul, Units.neg_smul, one_smul]
+  exact add_neg_cancel
+    (Equiv.Perm.sign σ • f (fun k => v (σ (Sum.inl k))) (fun k => v (σ (Sum.inr k))))
 
 theorem uncurrySum.summand_eq_zero_of_smul_invariant (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F)
     (σ : Equiv.Perm.ModSumCongr ι ι') {v : ι ⊕ ι' → E}
     {i j : ι ⊕ ι'} (hv : v i = v j) (hij : i ≠ j) :
     Equiv.swap i j • σ = σ → uncurrySum.summand f σ v = 0 := by
   refine Quotient.inductionOn' σ fun σ => ?_
-  dsimp only [Quotient.liftOn'_mk'', Quotient.map'_mk'', ContinuousMultilinearMap.smul_apply,
-    ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.uncurrySum_apply,
-    uncurrySum.summand]
   intro hσ
+  rw [uncurrySum_summand_eval]
   rcases hi : σ⁻¹ i with val | val <;> rcases hj : σ⁻¹ j with val_1 | val_1 <;>
-    rw [Equiv.Perm.inv_eq_iff_eq] at hi hj <;> substs hi hj <;> revert val val_1
+    rw [Equiv.Perm.inv_eq_iff_eq] at hi hj <;> subst hi hj <;> revert val val_1
   case inl.inr =>
     intro i' j' _ _ hσ
     obtain ⟨⟨sl, sr⟩, hσ⟩ := QuotientGroup.leftRel_apply.mp (Quotient.exact' hσ)
@@ -277,21 +241,24 @@ theorem uncurrySum.summand_eq_zero_of_smul_invariant (f : E [⋀^ι]→L[𝕜] E
     simp at hσ
   case inr.inr =>
     intro i' j' hv hij _
-    convert smul_zero (M := ℤˣ) (A := F) _
-    exact ContinuousAlternatingMap.map_eq_zero_of_eq _ _ hv fun hij' => hij (hij' ▸ rfl)
+    have hz := (f (fun i => v (σ (Sum.inl i)))).map_eq_zero_of_eq
+      (fun i => v (σ (Sum.inr i))) hv fun hij' =>
+        hij (congrArg (fun i => σ (Sum.inr i)) hij')
+    rw [hz]
+    exact smul_zero _
   case inl.inl =>
     intro i' j' hv hij _
-    convert smul_zero (M := ℤˣ) (A := F) _
-    simp only [ContinuousMultilinearMap.flipMultilinear, coe_toContinuousMultilinearMap,
-    MultilinearMap.coe_mkContinuous, MultilinearMap.coe_mk]
-    exact ContinuousAlternatingMap.map_eq_zero_of_eq (
-      (f.flipAlternating ((fun i ↦ v (σ i)) ∘ Sum.inr))) _ hv fun hij' => hij (hij' ▸ rfl)
+    have hz := f.map_eq_zero_of_eq (fun i => v (σ (Sum.inl i))) hv fun hij' =>
+        hij (congrArg (fun i => σ (Sum.inl i)) hij')
+    rw [hz]
+    change Equiv.Perm.sign σ • (0 : F) = 0
+    exact smul_zero _
 
 def uncurrySum (f : E [⋀^ι]→L[𝕜] E [⋀^ι']→L[𝕜] F) : E [⋀^ι ⊕ ι']→L[𝕜] F :=
     { ∑ σ : Equiv.Perm.ModSumCongr ι ι', uncurrySum.summand f σ with
     toFun := fun v => (⇑(∑ σ : Equiv.Perm.ModSumCongr ι ι', uncurrySum.summand f σ)) v
     map_eq_zero_of_eq' := fun v i j hv hij => by
-      rw [ContinuousMultilinearMap.sum_apply]
+      rw [_root_.sum_apply]
       exact
         Finset.sum_involution (fun σ _ => Equiv.swap i j • σ)
           (fun σ _ => uncurrySum.summand_add_swap_smul_eq_zero f σ hv hij)
@@ -327,14 +294,13 @@ theorem lift_comp_domCoprod_eq_uncurrySum
   ext w; simp only [LinearMap.compAlternatingMap_apply, coe_toAlternatingMap]
   change φ ((g.toAlternatingMap.domCoprod h.toAlternatingMap) w) =
     (uncurrySum (f.compContinuousAlternatingMap₂ g h)) w
-  rw [uncurrySum_apply, ContinuousMultilinearMap.sum_apply,
-    AlternatingMap.domCoprod_apply, MultilinearMap.sum_apply, _root_.map_sum φ]
+  rw [uncurrySum_apply, _root_.sum_apply,
+    AlternatingMap.domCoprod_apply, _root_.sum_apply, _root_.map_sum φ]
   apply Finset.sum_congr rfl; intro q _
   induction q using Quotient.inductionOn' with | h σ =>
   simp only [AlternatingMap.domCoprod.summand_mk'', uncurrySum.summand_mk'',
-    MultilinearMap.smul_apply, MultilinearMap.domDomCongr_apply, MultilinearMap.domCoprod_apply,
-    ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.uncurrySum_apply,
+    _root_.smul_apply, MultilinearMap.domDomCongr_apply, MultilinearMap.domCoprod_apply,
+    ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.uncurrySum_apply,
     Function.comp_def]
   simp only [ContinuousMultilinearMap.flipMultilinear_apply,
     coe_toContinuousMultilinearMap, ContinuousMultilinearMap.flipAlternating_apply,
@@ -564,8 +530,7 @@ theorem curryFin_sum_smul {κ : Type*} {p : ℕ}
     (f : κ → E [⋀^Fin (p + 1)]→L[𝕜] F) (x : E) :
     curryFin (∑ i ∈ s, c i • f i) x = ∑ i ∈ s, c i • curryFin (f i) x := by
   have := congr_fun (congr_arg DFunLike.coe (curryFin_sum_smul_clm s c f)) x
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply] at this
-  exact this
+  simpa only [_root_.sum_apply, _root_.smul_apply] using this
 
 end curry
 end ContinuousAlternatingMap

@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -522,7 +521,7 @@ noncomputable def tensorRSRiemannianNorm
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (W : TensorRSSpace r s I x) : ℝ :=
   let instRS : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ r s
   letI : NormedAddCommGroup (TensorRSSpace r s I x) :=
     (instRS.g.toCore x).toNormedAddCommGroupOfTopology
       (instRS.g.continuousAt x) (instRS.g.isVonNBounded x)
@@ -538,17 +537,18 @@ private theorem tensorRSRiemannianNorm_nonneg
     (W : TensorRSSpace r s I x) :
     0 ≤ tensorRSRiemannianNorm (I := I) (M := M) g₀ r s x W := by
   let instRS : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ r s
-  letI : NormedAddCommGroup (TensorRSSpace r s I x) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ r s
+  let : NormedAddCommGroup (TensorRSSpace r s I x) :=
     (instRS.g.toCore x).toNormedAddCommGroupOfTopology
       (instRS.g.continuousAt x) (instRS.g.isVonNBounded x)
-  letI : NormedSpace ℝ (TensorRSSpace r s I x) :=
+  let : NormedSpace ℝ (TensorRSSpace r s I x) :=
     (instRS.g.toCore x).toNormedSpaceOfTopology
       (instRS.g.continuousAt x) (instRS.g.isVonNBounded x)
   change 0 ≤ ‖W‖
   exact norm_nonneg W
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem firstCovGrad_fiberNorm_le_pointwiseC2Sum
     (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) {B : ℝ}
@@ -565,6 +565,7 @@ private theorem firstCovGrad_fiberNorm_le_pointwiseC2Sum
     exact tensorRSRiemannianNorm_nonneg (I := I) (M := M) g₀ 0 (2 + k) x _
   exact (Finset.single_le_sum hterms (by norm_num : (1 : ℕ) ∈ Finset.range 3)).trans henv
 
+omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_scalar_bounds
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) {δP δ₁ κ B Cq Cbg Cc Ca0 CaB CK : ℝ}

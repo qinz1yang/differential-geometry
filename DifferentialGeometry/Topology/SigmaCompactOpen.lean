@@ -13,11 +13,11 @@ theorem isSigmaCompact_of_isOpen
     [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
     [TopologicalSpace M] [ChartedSpace H M] [SigmaCompactSpace M]
     {U : Set M} (hU : IsOpen U) : IsSigmaCompact U := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : SecondCountableTopology H := I.secondCountableTopology
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
-  haveI : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
-  haveI : LocallyCompactSpace U := hU.locallyCompactSpace
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : SecondCountableTopology H := I.secondCountableTopology
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : SecondCountableTopology M := ChartedSpace.secondCountable_of_sigmaCompact H M
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
   exact isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
 
 end Geometry

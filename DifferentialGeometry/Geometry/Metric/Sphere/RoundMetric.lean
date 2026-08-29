@@ -19,7 +19,7 @@ variable {n : ℕ} [Fact (finrank ℝ E = n + 1)]
 
 noncomputable def dIncl (x : sphere (0 : E) 1) :
     TangentSpace (𝓡 n) x →L[ℝ] E :=
-  mfderiv (𝓡 n) 𝓘(ℝ, E) ((↑) : sphere (0 : E) 1 → E) x
+  mvfderiv (𝓡 n) ((↑) : sphere (0 : E) 1 → E) x
 
 noncomputable def roundInner (x : sphere (0 : E) 1) :
     TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x →L[ℝ] ℝ :=
@@ -39,7 +39,7 @@ theorem roundInner_symm (x : sphere (0 : E) 1) (v w : TangentSpace (𝓡 n) x) :
 theorem dIncl_ne_zero {x : sphere (0 : E) 1} {v : TangentSpace (𝓡 n) x}
     (hv : v ≠ 0) : dIncl (n := n) x v ≠ 0 := by
   intro h
-  refine hv (mfderiv_coe_sphere_injective x ?_)
+  refine hv (injective_mvfderiv_subtypeVal_sphere x ?_)
   rw [map_zero]
   exact h
 
@@ -80,8 +80,8 @@ noncomputable def roundMetric : SmoothRiemannianMetric (𝓡 n) (sphere (0 : E) 
       (fun v hv => roundInner_pos (n := n) x v hv)
   contMDiff := by
     classical
-    haveI : FiniteDimensional ℝ E := .of_fact_finrank_eq_succ n
-    haveI : CompactSpace (sphere (0 : E) 1) := Metric.sphere.compactSpace _ _
+    have : FiniteDimensional ℝ E := .of_fact_finrank_eq_succ n
+    have : CompactSpace (sphere (0 : E) 1) := Metric.sphere.compactSpace _ _
     apply cotangentCov_clmSection_smooth_aux
       (V₂ := fun x : sphere (0 : E) 1 => TangentSpace (𝓡 n) x →L[ℝ] ℝ)
       (φ := fun x : sphere (0 : E) 1 => roundInner (n := n) x)

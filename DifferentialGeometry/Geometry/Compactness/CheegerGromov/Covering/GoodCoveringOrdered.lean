@@ -29,7 +29,7 @@ theorem isClosed_availSet (O : M) {lam : ℝ → ℝ} (hlam : Continuous lam) (U
     rw [this]; exact isClosed_univ
   have hset : availSet O lam U = {x | lam (dist x O) ≤ Metric.infDist x U} := by
     ext x
-    simp only [availSet, Set.mem_setOf_eq, Set.disjoint_left, Metric.mem_ball]
+    simp only [availSet, Set.mem_ofPred_eq, Set.disjoint_left, Metric.mem_ball]
     constructor
     · intro h
       rw [Metric.le_infDist hUne]
@@ -114,7 +114,7 @@ theorem netList_ballsDisjoint (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam
         intro a ha b hb
         rw [List.mem_singleton] at hb
         subst hb
-        simp only [availSet, Set.mem_setOf_eq, forbidden,
+        simp only [availSet, Set.mem_ofPred_eq, forbidden,
           Set.disjoint_iUnion_right] at hxavail
         exact (hxavail a ha).symm
       · rw [ballsDisjoint, netList, dif_neg h]; exact ih
@@ -142,7 +142,7 @@ theorem meets_of_not_avail (O : M) (lam : ℝ → ℝ) {l : List M} {p : M}
     (hp : p ∉ availSet O lam (forbidden O lam l)) :
     ∃ c ∈ l,
       ¬ Disjoint (Metric.ball p (lam (dist p O))) (Metric.ball c (lam (dist c O))) := by
-  simp only [availSet, Set.mem_setOf_eq, forbidden, Set.disjoint_iUnion_right,
+  simp only [availSet, Set.mem_ofPred_eq, forbidden, Set.disjoint_iUnion_right,
     not_forall] at hp
   obtain ⟨c, hc, hmeet⟩ := hp
   exact ⟨c, hc, hmeet⟩
@@ -300,10 +300,10 @@ theorem netList_separated (O : M) {lam : ℝ → ℝ} (hlam : Continuous lam)
   have hpd : (netList O lam hlam α).Pairwise fun a b =>
       Disjoint (Metric.ball a (lam (dist a O))) (Metric.ball b (lam (dist b O))) :=
     netList_ballsDisjoint O lam hlam α
-  have hsymm : Symmetric fun a b : M =>
+  have hsymm : Std.Symm fun a b : M =>
       Disjoint (Metric.ball a (lam (dist a O))) (Metric.ball b (lam (dist b O))) :=
-    fun a b h => h.symm
-  have hdisj := hpd.forall hsymm hx hy hxy
+    ⟨fun _ _ h => h.symm⟩
+  have hdisj := @List.Pairwise.forall M _ _ hsymm hpd x hx y hy hxy
   by_contra hlt
   push Not at hlt
   have hyx : y ∈ Metric.ball x (lam (dist x O)) := by
@@ -561,10 +561,10 @@ theorem netCenter_disjoint (O : M) {lam : ℝ → ℝ} (hlam : Continuous lam)
   have hpd : (netList O lam hlam (max α β)).Pairwise fun a b =>
       Disjoint (Metric.ball a (lam (dist a O))) (Metric.ball b (lam (dist b O))) :=
     netList_ballsDisjoint O lam hlam (max α β)
-  have hsymm : Symmetric fun a b : M =>
+  have hsymm : Std.Symm fun a b : M =>
       Disjoint (Metric.ball a (lam (dist a O))) (Metric.ball b (lam (dist b O))) :=
-    fun a b h => h.symm
-  exact hpd.forall hsymm hxm hym hxy
+    ⟨fun _ _ h => h.symm⟩
+  exact @List.Pairwise.forall M _ _ hsymm hpd x hxm y hym hxy
 
 theorem netCenter_index_lt (O : M) {lam : ℝ → ℝ} (hlam : Continuous lam)
     (hanti : Antitone lam) (hpos : ∀ s : ℝ, 0 < lam s) {A : ℝ → ℕ}
@@ -634,8 +634,8 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem exists_proper_realization_aux {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -654,21 +654,21 @@ private theorem exists_proper_realization_aux {I : ModelWithCorners Real E H}
        ∀ p : Y.M, ∀ t : ℝ, 0 ≤ t → t ≤ dist p Y.basepoint →
          ∃ q : Y.M, dist q Y.basepoint = t) := by
   classical
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) Y.M := Y.smooth
-  letI : IsManifold I 1 Y.M :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) Y.M := Y.smooth
+  let : IsManifold I 1 Y.M :=
     IsManifold.of_le (I := I) (M := Y.M) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  haveI : TopologicalSpace.MetrizableSpace Y.M := Manifold.metrizableSpace I Y.M
-  haveI : T3Space Y.M := inferInstance
-  haveI : ConnectedSpace Y.M := hconn
-  letI rb := Y.riemBundle (I := I)
-  letI hInner := Y.riemInner (I := I)
-  haveI hCont := Y.riemBundle_cont (I := I)
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  have : TopologicalSpace.MetrizableSpace Y.M := Manifold.metrizableSpace I Y.M
+  have : T3Space Y.M := inferInstance
+  have : ConnectedSpace Y.M := hconn
+  let rb : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+    ⟨Y.metric.toRiemannianMetric⟩
+  have hCont := Y.riemBundle_cont (I := I)
   have hcomplete :
       (letI : EMetricSpace Y.M := EMetricSpace.ofRiemannianMetric I Y.M
        CompleteSpace Y.M) := by
@@ -684,17 +684,17 @@ private theorem exists_proper_realization_aux {I : ModelWithCorners Real E H}
       DifferentialGeometry.Geometry.Riemannian.HopfRinow.properSpace_riemMetric
         (I := I) (M := Y.M) hcomplete Y.metric (by
           intro x v
-          simpa using
-            (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-              (I := I) Y.metric x v))
+          exact
+            (DifferentialGeometry.Geometry.Riemannian.isMetricNorm_of_riemannianBundle
+              (I := I) Y.metric) x v)
     simpa using hproper
   · have hhint :=
       DifferentialGeometry.Geometry.Riemannian.HopfRinow.intermediateDist_riemMetric
         (I := I) (M := Y.M) hcomplete Y.metric (by
           intro x v
-          simpa using
-            (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-              (I := I) Y.metric x v)) Y.basepoint
+          exact
+            (DifferentialGeometry.Geometry.Riemannian.isMetricNorm_of_riemannianBundle
+              (I := I) Y.metric) x v) Y.basepoint
     simpa using hhint
 
 omit [CompleteSpace E] in
@@ -750,7 +750,7 @@ theorem ProperMetricOn.top_eq {I : ModelWithCorners Real E H}
          edist x y) =
           ENNReal.ofReal (letI : MetricSpace Y.M := P.ms
            dist x y) := by
-      letI : MetricSpace Y.M := P.ms
+      let : MetricSpace Y.M := P.ms
       exact edist_dist x y
     exact hdist
   have htop :
@@ -819,7 +819,7 @@ theorem packingBound_pack (hd : InjRadiusDecayInput (I := I) X)
     ∀ (r : Real) (J : Finset ((X.obj k).M)),
       (∀ x ∈ J, dist x (X.obj k).basepoint ≤ r) →
       (∀ x ∈ J, ∀ y ∈ J, x ≠ y → hd.lambda D r ≤ dist x y) → J.card ≤ pb.A r := by
-  letI : MetricSpace (X.obj k).M := (P k).ms
+  let : MetricSpace (X.obj k).M := (P k).ms
   intro r J hJr hJsep
   refine pb.card_le k r J (fun x hx => ?_) (fun x hx y hy hxy => ?_)
   · rw [← ProperMetricOn.dist_eq hd hre P k]

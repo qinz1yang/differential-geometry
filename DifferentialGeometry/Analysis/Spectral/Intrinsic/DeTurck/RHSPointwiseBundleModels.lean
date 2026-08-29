@@ -7,6 +7,7 @@ import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RicciDiffAffine
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
 
+
 noncomputable section
 
 
@@ -188,15 +189,15 @@ local instance rhsPointwiseTensor0SModelNormedAddCommGroup {s : ℕ} :
 
 local instance rhsPointwiseTensor0SModelNormedSpace {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace s
+  Tensor0SBundle.tensor0SModelNormedSpace s
 
 local instance rhsPointwiseTensorRSModelNormedAddCommGroup {r s : ℕ} :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 local instance rhsPointwiseTensorRSModelNormedSpace {r s : ℕ} :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 local instance rhsPointwiseTensor01TotalSpaceTopology :
     TopologicalSpace
@@ -308,11 +309,11 @@ local instance rhsPointwiseTensor04ContMDiffVectorBundle :
 local instance rhsPointwiseTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 local instance rhsPointwiseTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 end Spectral
 end Analysis

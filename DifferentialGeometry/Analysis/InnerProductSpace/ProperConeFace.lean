@@ -53,7 +53,7 @@ theorem ProperCone.innerDualZeroFace_isExposed
     obtain ⟨hxC, hxy⟩ := ProperCone.mem_innerDualZeroFace.mp hx
     refine ⟨hxC, fun z hz ↦ ?_⟩
     have hznonneg : 0 ≤ ⟪z, y⟫ := hy hz
-    simp only [ContinuousLinearMap.neg_apply, innerSL_apply_apply]
+    simp only [neg_apply, innerSL_apply_apply]
     rw [real_inner_comm z y, real_inner_comm x y, hxy]
     simpa using neg_nonpos.mpr hznonneg
   · rintro ⟨hxC, hxmax⟩

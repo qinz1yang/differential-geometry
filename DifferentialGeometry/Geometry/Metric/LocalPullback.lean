@@ -62,8 +62,8 @@ private theorem localPullInner_pos
     have hv' :
         (hf.mfderivToContinuousLinearEquiv infty_ne_zero x) v ≠ 0 :=
       (hf.mfderivToContinuousLinearEquiv infty_ne_zero x).map_ne_zero_iff.mpr hv
-    simpa only [
-      IsLocalDiffeomorph.mfderivToContinuousLinearEquiv_coe] using hv'
+    rw [← hf.mfderivToContinuousLinearEquiv_coe infty_ne_zero]
+    exact hv'
   exact g.pos (f x) _ hD
 
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [IsManifold I ∞ M] in
@@ -85,21 +85,20 @@ private theorem localPullInner_bdd
         ((e.symm : TangentSpace J (f x) →L[Real] TangentSpace I x) : _ → _)
           '' {w : TangentSpace J (f x) | g.inner (f x) w w < 1} := by
     ext v
-    simp only [Set.mem_setOf_eq, Set.mem_image]
+    simp only [Set.mem_ofPred_eq, Set.mem_image]
     constructor
     · intro hv
       refine ⟨e v, ?_, e.symm_apply_apply v⟩
       rw [localPullInner_apply] at hv
-      simpa only [e,
-        IsLocalDiffeomorph.mfderivToContinuousLinearEquiv_coe] using hv
+      rw [← hf.mfderivToContinuousLinearEquiv_coe infty_ne_zero] at hv
+      exact hv
     · rintro ⟨w, hw, rfl⟩
       rw [localPullInner_apply]
       have hD :
           mfderiv I J f x
             ((e.symm : TangentSpace J (f x) →L[Real] TangentSpace I x) w) = w := by
-        simpa only [e,
-          IsLocalDiffeomorph.mfderivToContinuousLinearEquiv_coe] using
-            e.apply_symm_apply w
+        rw [← hf.mfderivToContinuousLinearEquiv_coe infty_ne_zero]
+        exact e.apply_symm_apply w
       rw [hD]
       exact hw
   rw [hset]
@@ -211,10 +210,10 @@ theorem localPull_enorm
         (fun y : M ↦ TangentSpace I y) :=
       ⟨(localPullMetric (I := I) (J := J) g f hf).toRiemannianMetric⟩
     ‖mfderiv I J f x v‖ₑ = ‖v‖ₑ := by
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : M ↦ TangentSpace I y) :=
     ⟨(localPullMetric (I := I) (J := J) g f hf).toRiemannianMetric⟩
-  rw [hEnorm, ← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+  rw [hEnorm, ← ofReal_norm, norm_eq_sqrt_real_inner]
   have hsrc :
       (inner Real v v : Real) =
         (localPullMetric (I := I) (J := J) g f hf).inner x v v :=
@@ -237,7 +236,7 @@ theorem localPull_pathLen
       ⟨(localPullMetric (I := I) (J := J) g f hf).toRiemannianMetric⟩
     Manifold.pathELength J (f ∘ γ) a b =
       Manifold.pathELength I γ a b := by
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : M ↦ TangentSpace I y) :=
     ⟨(localPullMetric (I := I) (J := J) g f hf).toRiemannianMetric⟩
   rw [Manifold.pathELength_eq_lintegral_mfderiv_Ioo,

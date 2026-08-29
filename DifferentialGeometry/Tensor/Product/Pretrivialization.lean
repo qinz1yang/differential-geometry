@@ -11,6 +11,7 @@ open scoped TensorProduct
 
 noncomputable section
 
+
 open Bundle Set Topology
 open scoped Bundle TensorProduct
 
@@ -33,7 +34,7 @@ namespace Pretrivialization
 
 def tensorProductCoordChange [e₁.IsLinear 𝕜] [e₁'.IsLinear 𝕜] [e₂.IsLinear 𝕜] [e₂'.IsLinear 𝕜]
     (b : B) : (F₁ ⊗[𝕜] F₂) →L[𝕜] (F₁ ⊗[𝕜] F₂) :=
-  TensorProduct.mapL (e₁.coordChangeL 𝕜 e₁' b) (e₂.coordChangeL 𝕜 e₂' b)
+  TensorProduct.mapLFiniteDimensional (e₁.coordChangeL 𝕜 e₁' b) (e₂.coordChangeL 𝕜 e₂' b)
 
 variable {e₁ e₁' e₂ e₂'}
 variable [∀ x, TopologicalSpace (E₁ x)] [FiberBundle F₁ E₁]
@@ -161,7 +162,7 @@ theorem tensorProductCoordChange_apply (b : B)
     (hb : b ∈ e₁.baseSet ∩ e₂.baseSet ∩ (e₁'.baseSet ∩ e₂'.baseSet)) (t : F₁ ⊗[𝕜] F₂) :
     tensorProductCoordChange (𝕜 := 𝕜) e₁ e₁' e₂ e₂' b t =
       (tensorProduct 𝕜 e₁' e₂' ⟨b, (tensorProduct 𝕜 e₁ e₂).symm b t⟩).2 := by
-  simp only [tensorProductCoordChange, TensorProduct.mapL]
+  simp only [tensorProductCoordChange, TensorProduct.mapLFiniteDimensional]
   simp only [LinearMap.coe_toContinuousLinearMap',
     tensorProduct_symm_apply' (𝕜 := 𝕜) (e₁ := e₁) (e₂ := e₂) hb.1,
     tensorProduct_apply]
@@ -173,14 +174,21 @@ theorem tensorProductCoordChange_apply (b : B)
   simp only [TensorProduct.AlgebraTensorModule.curry_apply, LinearMap.restrictScalars_self,
     TensorProduct.curry_apply, TensorProduct.map_tmul, ContinuousLinearMap.coe_coe,
     ContinuousLinearEquiv.coe_coe, LinearMap.coe_comp, Trivialization.continuousLinearMapAt_apply,
-    Trivialization.symmL_apply, Function.comp_apply]
+    Function.comp_apply]
   rw [Trivialization.coordChangeL_apply (R := 𝕜) (e := e₁) (e' := e₁') (b := b) hb1 (y := v)]
   rw [Trivialization.coordChangeL_apply (R := 𝕜) (e := e₂) (e' := e₂') (b := b) hb2 (y := x)]
-  simp [TensorProduct.tmul, Trivialization.linearMapAt]
-  simp [Pretrivialization.linearMapAt]
-  have hb1' : b ∈ e₁'.toPretrivialization.baseSet := by simpa using hb.2.1
-  have hb2' : b ∈ e₂'.toPretrivialization.baseSet := by simpa using hb.2.2
-  simp [ hb1', hb2']
+  simp only [TensorProduct.tmul, AddCon.coe_mk', Trivialization.linearMapAt]
+  simp only [Pretrivialization.linearMapAt]
+  have hb1' : b ∈ e₁'.toPretrivialization.baseSet := by
+    change b ∈ e₁'.baseSet
+    exact hb.2.1
+  have hb2' : b ∈ e₂'.toPretrivialization.baseSet := by
+    change b ∈ e₂'.baseSet
+    exact hb.2.2
+  simp only [hb1', ↓reduceDIte, LinearEquiv.coe_coe,
+    Pretrivialization.linearEquivAt_apply, hb2']
+  rw [Trivialization.symmL_apply _ hb.1.1,
+    Trivialization.symmL_apply _ hb.1.2]
   rfl
 
 end Pretrivialization

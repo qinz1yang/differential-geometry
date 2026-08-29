@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -60,8 +59,8 @@ private lemma a3_pouTsupport_subset_chartSource (α : M) :
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -69,7 +68,7 @@ private lemma chartTensorRSCovariantDerivative_totalSpace_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensorH1 g r s) (k : Fin (Module.finrank ℝ E)) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ContinuousOn
       (fun b : M =>
         (TotalSpace.mk' (TensorRSModel r s ℝ E)
@@ -109,15 +108,15 @@ private lemma chartTensorRSCovariantDerivative_totalSpace_continuousOn
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasurable
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensorH1 g r s) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     AEStronglyMeasurable
       (fun b : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
@@ -128,8 +127,8 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
                   (chartBasisVecFiber (I := I) α k) b‖ ^ 2))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   set ρ : M → ℝ := fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x with hρ_def
   set f : M → ℝ := fun b : M =>
@@ -167,7 +166,7 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
               (fun b' => S.toCcTensor.toSection b')
               (chartBasisVecFiber (I := I) α k) b‖ ^ 2)
       (chartAt H α).source := by
-    refine continuousOn_finset_sum _ (fun k _ => ?_)
+    refine continuousOn_finsetSum _ (fun k _ => ?_)
     have h_inner : ContinuousOn
         (fun b : M =>
           (⟪chartTensorRSCovariantDerivative (I := I) r s g α
@@ -196,15 +195,15 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma chartTensorRSSlotCorrection_norm_sq_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensorH1 g r s) (k : Fin (Module.finrank ℝ E)) (b : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ‖- (∑ i : Fin r,
           chartTensorRSInputSlotCorrection (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
@@ -223,9 +222,9 @@ private lemma chartTensorRSSlotCorrection_norm_sq_le
                 (fun b' => S.toCcTensor.toSection b')
                 (chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  letI : NormedAddCommGroup (TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
+  let : NormedAddCommGroup (TensorRSSpace r s I b) :=
     tensorRSRiemannianNormedAddCommGroup r s b
   set a : Fin r → TensorRSSpace r s I b := fun i =>
     chartTensorRSInputSlotCorrection (I := I) r s g α
@@ -272,8 +271,8 @@ private lemma chartTensorRSSlotCorrection_norm_sq_le
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :

@@ -39,7 +39,8 @@ structure IsOrderZeroCurvFactor (g : SmoothRiemannianMetric I M)
   local' : ∀ (r : ℕ) (W₁ W₂ : SmoothCcTensor g 0 r) (x : M),
     W₁.toSection x = W₂.toSection x → (op 0 r W₁).toSection x = (op 0 r W₂).toSection x
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 theorem op_zero_value_homogeneous
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
@@ -55,17 +56,17 @@ theorem op_zero_value_homogeneous
   rw [hlin]
   simp only [zero_smul, add_zero]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_eq_bundle_norm_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (z : TensorRSSpace r s I x) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     riemannianFiberNormSq (I := I) (M := M) g r s x z = ‖z‖ ^ 2 := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have h_inner :
       (DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM
           (I := I) (M := M) g r s x z z : ℝ) =
@@ -77,8 +78,8 @@ private lemma riemannianFiberNormSq_eq_bundle_norm_sq
     rw [← h_inner]; rfl
   rw [← hself, real_inner_self_eq_norm_sq]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_clm_apply_le
@@ -87,10 +88,10 @@ theorem riemannianFiberNormSq_clm_apply_le
     ∃ Cφ : ℝ, 0 ≤ Cφ ∧ ∀ v : TensorRSSpace 0 r I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (φ v) ≤
         Cφ * riemannianFiberNormSq (I := I) (M := M) g 0 r x v := by
-  letI instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 r
-  letI instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 s
+  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 r
+  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 s
   let φg : TensorRSSpace 0 r I x →L[ℝ] TensorRSSpace 0 s I x :=
     LinearMap.toContinuousLinearMap (φ.toLinearMap)
   have hφg_apply : ∀ v, φg v = φ v := fun v => by
@@ -110,7 +111,8 @@ abbrev IsPointwiseLinearLocalOperator
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p)) : Prop :=
   IsOrderZeroCurvFactor g op
 
-omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
 theorem order_zero_apply_smul_of_pointwise_smul
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))

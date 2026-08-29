@@ -454,7 +454,7 @@ theorem wkpNormChart_eq_finset_sum_withBoundary
     [CompactSpace M]
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
     wkpNormChart (n := n) (M := M) k p u =
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I_hs) (M := M),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
           (d := n) k p
@@ -470,7 +470,7 @@ theorem wkpNormChart_eq_finset_sum_withBoundary
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α u)
       (chartTargetEuclid (n := n) (M := M) α) with hf_def
   have hf_zero_off : ∀ α : M, α ∉
-      DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I_hs) (M := M) → f α = 0 := by
     intro α hα
     have hρ_zero : ∀ x : M, (DifferentialGeometry.Integral.Measure.chartAtlasPOU
@@ -501,9 +501,9 @@ theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
     [CompactSpace M]
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
-    (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I_hs) (M := M), 0 ≤ Bα α)
-    (hBα_per_chart : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    (hBα_per_chart : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
                 (I := I_hs) (M := M),
         ∀ {u v : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u → ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ v →
           AllChartsInteriorSupport (n := n) (M := M) u →
@@ -553,7 +553,7 @@ theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal hp_one
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I_hs) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I_hs) (M := M)
     with hS_def
   refine ⟨∑ α ∈ S, Bα α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α hα => hBα_nn α hα)
@@ -624,9 +624,9 @@ theorem mul_smooth_chart_bound_withBoundary_interior_of_per_chart
     (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
-    (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I_hs) (M := M), 0 ≤ Bα α)
-    (hBα_per_chart : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    (hBα_per_chart : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
                 (I := I_hs) (M := M),
         ∀ {u v : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u → ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ v →
           AllChartsInteriorSupport (n := n) (M := M) u →
@@ -802,9 +802,9 @@ theorem mul_smooth_chart_bound_withBoundary_interior
     (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
-    (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I_hs) (M := M), 0 ≤ Bα α)
-    (hBα_per_chart : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    (hBα_per_chart : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
                 (I := I_hs) (M := M),
         ∀ {u v : M → ℝ}, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u → ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ v →
           AllChartsInteriorSupport (n := n) (M := M) u →

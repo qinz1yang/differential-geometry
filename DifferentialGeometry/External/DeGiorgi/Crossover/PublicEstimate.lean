@@ -19,7 +19,7 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 local notation "Cmo" =>
-  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d)
+  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d)
 
 /-! ### Crossover Estimate
 
@@ -35,12 +35,12 @@ theorem crossover_estimate
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u) :
     (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-        |u x| ^ (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
+        |u x| ^ (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
       (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-        |u x| ^ (-(c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤
-        C_crossover' d := by
+        |u x| ^ (-(cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤
+        CCrossover' d := by
   -- Proof via local exponential integrability for `v = -log u`.
-  -- Set v = -log u, c = c_crossover' d / Λ^{1/2}.
+  -- Set v = -log u, c = cCrossover' d / Λ^{1/2}.
   -- Define w(x) = exp(c · (v_avg - v(x))) where v_avg = ⨍ v on B_{1/2}.
   -- Then log w = c(v_avg - v), so (log w)_{B_{1/2}} = 0.
   -- Also: w > 0 everywhere (exponential), w⁻¹(x) = exp(c(v(x) - v_avg)).
@@ -49,8 +49,8 @@ theorem crossover_estimate
   --   Choose cutoff φ with φ = 1 on B_{3/4}, supp φ ⊆ B₁, |∇φ| ≤ C.
   --   ∫_{B_{3/4}} |∇v|² ≤ ∫_B φ²|∇v|² ≤ 4Λ ∫_B |∇φ|² ≤ C·Λ.
   --
-  --   With c = c_crossover/Λ^{1/2}, this is ≤ c_crossover² · C.
-  --   Choose c_crossover small enough → ≤ 1.
+  --   With c = cCrossover/Λ^{1/2}, this is ≤ c_crossover² · C.
+  --   Choose cCrossover small enough → ≤ 1.
   --
   --   ∫_{B_{1/2}} |log w| ≤ C_P · ‖∇ log w‖_{L²} ≤ C_P.
   --
@@ -63,7 +63,7 @@ theorem crossover_estimate
   --        ^^^ the exp(±c·v_avg) factors cancel in the product ^^^
   --      = ⨍ w · ⨍ w⁻¹
   -- === Proof assembly ===
-  set c := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+  set c := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
   set v : E → ℝ := fun x => -Real.log (u x)
   set v_avg := ⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ), v x ∂volume
   set w : E → ℝ := fun x => Real.exp (c * (v_avg - v x))
@@ -168,13 +168,13 @@ theorem crossover_estimate_unaveraged
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u) :
     (∫ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-        |u x| ^ (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
+        |u x| ^ (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
       (∫ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-        |u x| ^ (-(c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤
-        C_crossover' d *
+        |u x| ^ (-(cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤
+        CCrossover' d *
           (volume.real (Metric.ball (0 : E) (1 / 2 : ℝ))) ^ 2 := by
   let B : Set E := Metric.ball (0 : E) (1 / 2 : ℝ)
-  set p₀ : ℝ := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+  set p₀ : ℝ := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
   set Ipos : ℝ := ∫ x in B, |u x| ^ p₀ ∂volume
   set Ineg : ℝ := ∫ x in B, |u x| ^ (-p₀) ∂volume
   have havg := crossover_estimate (d := d) hd A hu_pos hsuper
@@ -191,8 +191,8 @@ theorem crossover_estimate_unaveraged
     Ipos * Ineg
         = (volume.real B) ^ 2 * ((volume.real B)⁻¹ * Ipos * ((volume.real B)⁻¹ * Ineg)) := by
             field_simp [hvol_ne]
-    _ ≤ (volume.real B) ^ 2 * C_crossover' d := hscaled
-    _ = C_crossover' d * (volume.real B) ^ 2 := by ring
+    _ ≤ (volume.real B) ^ 2 * CCrossover' d := hscaled
+    _ = CCrossover' d * (volume.real B) ^ 2 := by ring
 
 
 end DeGiorgi

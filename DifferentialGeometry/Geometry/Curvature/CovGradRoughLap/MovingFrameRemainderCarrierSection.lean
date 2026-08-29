@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators RealInnerProductSpace
@@ -40,7 +39,7 @@ theorem orthonormalFrame_parseval_expand
     u = ∑ a : Fin n, g.inner x (e a) u • e a := by
   classical
   have hfinrank_eq : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
-  haveI : Nonempty (Fin n) := by
+  have : Nonempty (Fin n) := by
     refine ⟨⟨0, ?_⟩⟩
     rw [hn, hfinrank_eq]
     exact Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))
@@ -79,16 +78,18 @@ theorem orthonormalFrame_parseval_expand
   · intro b _ hba; rw [horth a b, if_neg (fun h => hba h.symm), mul_zero]
   · intro h; exact absurd (Finset.mem_univ a) h
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_toSection_eq_genuine_add_bracket_ofOrthonormal
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (hn : n = Module.finrank ℝ (TangentSpace I x))
     (horth : ∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0)
-    (w : TangentSpace I x) (m : Fin s → TangentSpace I x) :
+    (w : TangentSpace I x) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
-          (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+          (unitZeroSec (I := I) (M := M) x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       genuineThirdCurvFieldFib (I := I) (M := M) g s S x e w m +
         bracketThirdCurvFieldFib (I := I) (M := M) g s S x e w m := by
   classical
@@ -103,7 +104,7 @@ theorem pointwiseTensorCurv_toSection_eq_genuine_add_bracket_ofOrthonormal
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
     (I := I) (M := M) g s S x (e a)]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, smul_add]
+  rw [Tensor0SSpace.toModel_add, add_apply, smul_add]
 
 noncomputable def genuineCurvPureRSubtracted
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
@@ -122,11 +123,12 @@ theorem genuineCurvPureRSubtracted_toSection_eq_covDeriv_add_bracket
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
       n = Module.finrank ℝ (TangentSpace I x) ∧
       (∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0) ∧
-      ∀ (w : TangentSpace I x) (m : Fin s → TangentSpace I x),
+      ∀ (w : TangentSpace I x) (m : Fin s → E),
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (genuineCurvPureRSubtracted (I := I) (M := M) g s S).toSection x)
-              (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+              (unitZeroSec (I := I) (M := M) x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
           genuineThirdCurvFieldFibCovDeriv (I := I) (M := M) g s S x e w m +
             bracketThirdCurvFieldFib (I := I) (M := M) g s S x e w m := by
   classical
@@ -136,15 +138,18 @@ theorem genuineCurvPureRSubtracted_toSection_eq_covDeriv_add_bracket
   have hsub : Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (genuineCurvPureRSubtracted (I := I) (M := M) g s S).toSection x)
-          (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+          (unitZeroSec (I := I) (M := M) x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
-            (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) -
+            (unitZeroSec (I := I) (M := M) x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) -
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (genuineCurvatureOnlySection (I := I) (M := M) g s S).toSection x)
-            (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) := by
+            (unitZeroSec (I := I) (M := M) x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) := by
     rw [genuineCurvPureRSubtracted_toSection]
     rw [show ((pointwiseTensorCurv (I := I) (M := M) g s S).toSection -
         (genuineCurvatureOnlySection (I := I) (M := M) g s S).toSection) x =
@@ -160,8 +165,8 @@ theorem genuineCurvPureRSubtracted_toSection_eq_covDeriv_add_bracket
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (genuineCurvatureOnlySection (I := I) (M := M) g s S).toSection x)
           (unitZeroSec (I := I) (M := M) x) from
-      ContinuousLinearMap.sub_apply _ _ _]
-    rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+      sub_apply _ _ _]
+    rw [Tensor0SSpace.toModel_sub, sub_apply]
   rw [hsub]
   rw [pointwiseTensorCurv_toSection_eq_genuine_add_bracket_ofOrthonormal
     (I := I) (M := M) g s S x e hn horth w m]

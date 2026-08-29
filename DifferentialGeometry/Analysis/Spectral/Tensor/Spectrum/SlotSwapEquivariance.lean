@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -74,7 +73,7 @@ private lemma unitModel_add (s : ℕ) (S S' : SmoothCcTensor g 0 s) (x : M) :
   classical
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
+    add_apply, Tensor0SSpace.toModel_add]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -90,8 +89,8 @@ private lemma domDomCongrSection_add {s : ℕ} (σ : Equiv.Perm (Fin s))
     domDomCongrSection_unitModel (I := I) g σ A x,
     domDomCongrSection_unitModel (I := I) g σ B x]
   refine ContinuousMultilinearMap.ext (fun w => ?_)
-  rw [ContinuousMultilinearMap.domDomCongr_apply, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.domDomCongr_apply,
+  rw [ContinuousMultilinearMap.domDomCongr_apply, add_apply,
+    add_apply, ContinuousMultilinearMap.domDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -122,7 +121,7 @@ theorem norm_domDomCongrSection {s : ℕ} (σ : Equiv.Perm (Fin s))
     intro x
     have h := riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
       (I := I) (M := M) g σ U 0 x
-    simpa only [iteratedCovGrad_zero] using h
+    simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
   have hsq : ‖domDomCongrSection (I := I) g σ U‖ ^ 2 = ‖U‖ ^ 2 := by
     rw [SmoothCcTensor.norm_def (I := I) (M := M), SmoothCcTensor.norm_def (I := I) (M := M),
       tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g 0 s
@@ -162,6 +161,7 @@ private lemma inner_toL2_domDomCongrSection_swap (A B : SmoothCcTensor g 0 2) :
   rw [SmoothCcTensor.inner_toL2, SmoothCcTensor.inner_toL2]
   exact inner_domDomCongrSection_swap (I := I) (M := M) g A B
 
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_domDomCongrSection {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (U : SmoothCcTensor g 0 s) :
     rawTensorConnLapSmooth (I := I) g 0 s (domDomCongrSection (I := I) g σ U) =
@@ -202,13 +202,17 @@ theorem rawTensorConnLapSmooth_domDomCongrSection {s : ℕ}
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have h2x := congrArg
     (fun T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 2) => E) ℝ =>
-      T (Fin.cons ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
+      T (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g x i x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g x i x))
           (fun j => (v j : E))))) (h2 x)
   simp only [ContinuousMultilinearMap.domDomCongr_apply] at h2x
   rw [cons_cons_comp_decomposeFin_double σ
-    ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
-    ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g x i x))
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g x i x))
     (fun j => (v j : E))] at h2x
   exact h2x
 
@@ -928,7 +932,7 @@ private lemma tsum_weighted_symmS_le (X : SmoothCcTensor g 0 2) (σ : ℝ) :
     rcases isEmpty_or_nonempty
         (Fin (Module.finrank ℝ (tensorResolventEigenspace (I := I) (M := M) g 0 2 μ.val)))
       with hemp | hne
-    · haveI := hemp; simp
+    · have := hemp; simp
     · obtain ⟨c₀⟩ := hne
       have hwc : ∀ c : Fin (Module.finrank ℝ
         (tensorResolventEigenspace (I := I) (M := M) g 0 2 μ.val)),

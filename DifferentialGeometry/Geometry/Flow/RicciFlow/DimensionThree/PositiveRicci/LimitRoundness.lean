@@ -40,12 +40,12 @@ theorem limit_base_scalar_one
     (hconv : hamiltonLimitBaseScalarConvergence (I := I) P Q L) :
     limitBaseScalarOne (I := I) L := by
   classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
+  let : TopologicalSpace L.N := L.topology
+  let : ChartedSpace H L.N := L.charted
+  let : IsManifold I ∞ L.N := L.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
+  let : SigmaCompactSpace L.N := L.sigmaCompact
+  let : T2Space L.N := L.t2
   rcases hsel with ⟨_hscale, _htime, _htimeMem, _hprod, hbase, _hscalarMax⟩
   let f : Nat -> Real :=
     fun k : Nat =>
@@ -75,12 +75,12 @@ theorem tracefree_zero_of_decay
     (hdecay : limitTracefreeRicciDecayAt (I := I) L t) :
     limitTracefreeRicciZeroAt (I := I) L t := by
   classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
+  let : TopologicalSpace L.N := L.topology
+  let : ChartedSpace H L.N := L.charted
+  let : IsManifold I ∞ L.N := L.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
+  let : SigmaCompactSpace L.N := L.sigmaCompact
+  let : T2Space L.N := L.t2
   intro x
   let q : Real :=
     DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq L.S.scalar
@@ -90,7 +90,8 @@ theorem tracefree_zero_of_decay
         forall (_t : Real) (y : L.N),
           Module.finrank Real (TangentSpace I y) = 3 := by
       intro _ y
-      simpa using hdim
+      rw [show Module.finrank Real (TangentSpace I y) = Module.finrank Real E from rfl]
+      exact hdim
     simpa [q] using
       (DifferentialGeometry.PDE.RicciFlow.trace_free_ricci_norm_sq_nonneg (I := I) (M := L.N) L.S hdimT t x)
   have hle0 : q <= 0 := by
@@ -107,17 +108,18 @@ theorem limit_einstein_of_tracefree_ricci_zero
     {t0 : Real} (htf : limitTracefreeRicciZeroAt (I := I) L t0) :
     limitEinsteinAt (I := I) L t0 := by
   classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
+  let : TopologicalSpace L.N := L.topology
+  let : ChartedSpace H L.N := L.charted
+  let : IsManifold I ∞ L.N := L.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
+  let : SigmaCompactSpace L.N := L.sigmaCompact
+  let : T2Space L.N := L.t2
   intro x v w
   let g := L.S.base.metric t0
   let Ric := L.S.ricciAt t0 x
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hsym : DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (M := L.N) Ric :=
     DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t0 x
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (M := L.N) g Ric hdimT
@@ -229,16 +231,16 @@ theorem limit_round_base
     (heinstein : limitEinsteinAt (I := I) L t0) :
     limitRoundAt (I := I) L t0 := by
   classical
-  letI : NeZero (Module.finrank Real E) := ⟨by omega⟩
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
-  haveI : ConnectedSpace L.N := by
+  let : NeZero (Module.finrank Real E) := ⟨by omega⟩
+  let : TopologicalSpace L.N := L.topology
+  let : ChartedSpace H L.N := L.charted
+  let : IsManifold I ∞ L.N := L.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
+  let : SigmaCompactSpace L.N := L.sigmaCompact
+  let : T2Space L.N := L.t2
+  have : ConnectedSpace L.N := by
     simpa [hamiltonLimitConnected] using hconn
-  haveI : I.Boundaryless := by
+  have : I.Boundaryless := by
     simpa [hamiltonLimitBoundaryless] using hbdry
   let g : SmoothRiemannianMetric I L.N := L.S.base.metric t0
   have hEinStatic :
@@ -263,7 +265,8 @@ theorem limit_round_base
             x (fun _ : Fin 1 => X) = 0 := by
     intro x X
     have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
-      simpa using hdim
+      rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+      exact hdim
     have hsym : DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I)
         (L.S.ricciAt t0 x) :=
       DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t0 x
@@ -297,12 +300,14 @@ theorem limit_round_base
             (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) := by
     intro x v
     rw [hEinStatic x v v, hR0_metric x, hdim]
-    convert le_rfl using 1
-    all_goals ring
+    have hcoef : (((3 : Nat) : Real) - 1) * (R0 / 6) = R0 / 3 := by
+      ring
+    rw [hcoef]
   refine ⟨R0 / 6, by nlinarith, hRic, R0 / 6, by nlinarith, ?_⟩
   intro x X Y
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hsym : DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I)
       (L.S.ricciAt t0 x) :=
     DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t0 x
@@ -342,6 +347,7 @@ theorem limit_round_base
           rw [hscalar_x]
           ring
 
+omit [SigmaCompactSpace M] in
 theorem limit_to_orig
     (hM : isClosedThreeManifold (I := I) (M := M))
     {L : HamiltonCGHLimit (I := I) M}
@@ -351,17 +357,17 @@ theorem limit_to_orig
     exists gInf : SmoothRiemannianMetric I M,
       constantPositiveSectionalCurvatureMetric (I := I) (M := M) gInf := by
   classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
-  letI : T2Space (TangentBundle I L.N) := L.t2TangentBundle
-  haveI : ConnectedSpace L.N := by
+  let : TopologicalSpace L.N := L.topology
+  let : ChartedSpace H L.N := L.charted
+  let : IsManifold I ∞ L.N := L.smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
+  let : SigmaCompactSpace L.N := L.sigmaCompact
+  let : T2Space L.N := L.t2
+  let : T2Space (TangentBundle I L.N) := L.t2TangentBundle
+  have : ConnectedSpace L.N := by
     simpa [hamiltonLimitConnected] using _hconn
-  haveI : ConnectedSpace M := hM.2.1
-  haveI : I.Boundaryless := hM.2.2.1
+  have : ConnectedSpace M := hM.2.1
+  have : I.Boundaryless := hM.2.2.1
   let g : SmoothRiemannianMetric I L.N := L.S.base.metric t
   change exists K : Real, 0 < K /\
     (forall x : L.N, forall v : TangentSpace I x,
@@ -379,24 +385,28 @@ theorem limit_to_orig
   have hcomplete :
       DifferentialGeometry.HCGCompactness.MetricComplete
         (I := I) (L.limit.atTime (I := I) t) := by
-    simpa [HamiltonCGHLimit.limit, g] using L.limitComplete t _ht
+    with_unfolding_all
+      exact L.limitComplete t _ht
   have hdim : 2 <= Module.finrank Real E := by
     have hdim3 : Module.finrank Real E = 3 := hM.2.2.2
     omega
-  letI : CompactSpace L.N :=
+  let : CompactSpace L.N :=
     DifferentialGeometry.HCGCompactness.PointedRiemannianManifold.compact_of_ricci
       (I := I) (P := L.limit.atTime (I := I) t) (by
-        simpa [HamiltonCGHLimit.limit, hamiltonLimitConnected] using _hconn)
-      hdim hK (by simpa [HamiltonCGHLimit.limit, g] using hRicBM) hcomplete
+        with_unfolding_all
+          exact _hconn)
+      hdim hK (by
+        with_unfolding_all
+          exact hRicBM) hcomplete
   let Phi := L.cgh.spatial.maps
   obtain ⟨k, hk⟩ :=
     DifferentialGeometry.HCGCompactness.PointedCGHMaps.exists_source_univ
       (I := I) Phi (isCompact_univ : IsCompact (Set.univ : Set L.N))
   have hsource : Phi.source k = Set.univ := hk k le_rfl
   let j : Nat := L.cghSubseq k
-  letI : TopologicalSpace (L.sourceTerm j).M := (L.sourceTerm j).topology
-  letI : ChartedSpace H (L.sourceTerm j).M := (L.sourceTerm j).charted
-  letI : ConnectedSpace (L.sourceTerm j).M :=
+  let : TopologicalSpace (L.sourceTerm j).M := (L.sourceTerm j).topology
+  let : ChartedSpace H (L.sourceTerm j).M := (L.sourceTerm j).charted
+  let : ConnectedSpace (L.sourceTerm j).M :=
     (L.sourceToOrig j).symm.surjective.connectedSpace (L.sourceToOrig j).symm.continuous
   have htarget : Phi.target k = Set.univ :=
     DifferentialGeometry.HCGCompactness.PointedCGHMaps.target_univ

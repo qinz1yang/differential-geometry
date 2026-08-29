@@ -442,7 +442,7 @@ private theorem covGrad_rawConnLapIter_l2_le_ccSpectralEmbed_odd_local
   exact le_of_sq_le_sq hsq hnn
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem norm_iteratedCovGrad_comp_local
     (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     ‖iteratedCovGrad (I := I) g₀ 0 (s + j) i (iteratedCovGrad (I := I) g₀ 0 s j S)‖ =
@@ -472,6 +472,7 @@ private theorem norm_iteratedCovGrad_comp_local
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] in
 private theorem norm_iteratedCovGrad_order_eq_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {n n' : ℕ} (h : n = n')
     (S : SmoothCcTensor g₀ 0 s) :
@@ -483,13 +484,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma contract_eq_covGradBundleEquiv_symm_local
     (s : ℕ) (x : M) (v : TangentSpace I x) (A : TensorRSSpace 0 (s + 1) I x) :
-    Tensor0SBundle.contract_covariant 0 s x v A =
+    Tensor0SBundle.contractCovariant 0 s x v A =
       (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) 0 s x).symm A v := by
   apply tensorRSSpace_ext 0 s x
   intro D
-  apply Tensor0SSpace.toModel_injective
-  apply ContinuousMultilinearMap.ext
-  intro m
+  apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).injective
+  refine ContinuousMultilinearMap.ext (fun m => ?_)
+  change Tensor0SSpace.eval _ m = Tensor0SSpace.eval _ m
   rw [Tensor0SBundle.covGradBundleEquiv_symm_apply_eval (I := I) (M := M) 0 s x A v D m]
   rfl
 
@@ -502,7 +503,7 @@ private lemma riemannianFiberNormSq_eq_sum_contract_orthoFrame_local
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + 1) x A =
       ∑ a : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x
-        (Tensor0SBundle.contract_covariant 0 s x (e a) A) := by
+        (Tensor0SBundle.contractCovariant 0 s x (e a) A) := by
   classical
   set Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x :=
     (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) 0 s x).symm A with hΦ_def
@@ -524,13 +525,13 @@ private lemma riemannianFiberNormSq_contract_le_succ_local
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (i : Fin n) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x
-        (Tensor0SBundle.contract_covariant 0 s x (e i) A) ≤
+        (Tensor0SBundle.contractCovariant 0 s x (e i) A) ≤
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + 1) x A := by
   classical
   rw [riemannianFiberNormSq_eq_sum_contract_orthoFrame_local (I := I) (M := M) g₀ s x A e hn horth]
   refine Finset.single_le_sum
     (f := fun a => riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x
-      (Tensor0SBundle.contract_covariant 0 s x (e a) A))
+      (Tensor0SBundle.contractCovariant 0 s x (e a) A))
     (fun a _ => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 s x _) (Finset.mem_univ i)
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -538,9 +539,10 @@ private lemma covDivergenceRaw_eq_sum_contract_covDeriv_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) (b : M) :
     covDivergenceRaw (I := I) (M := M) g₀ s V b =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SBundle.contract_covariant 0 s b (smoothOrthoFrame (I := I) g₀ b i b)
+        Tensor0SBundle.contractCovariant 0 s b (smoothOrthoFrame (I := I) g₀ b i b)
           (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b
-            (smoothOrthoFrame (I := I) g₀ b i b)) := by
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b))) := by
   classical
   rw [covDivergenceRaw_eq_codiffPsi_smoothOrthoFrame_trace (I := I) (M := M) g₀ s V b
     (fun i => smoothOrthoFrame (I := I) g₀ b i b)
@@ -552,8 +554,11 @@ private lemma covDivergenceRaw_eq_sum_contract_covDeriv_local
     (smoothOrthoFrame_smooth (I := I) g₀ b i).contMDiffAt.mdifferentiableAt (by simp)
   rw [codiffPsi_apply (I := I) (M := M) g₀ s V b hSmooth_at hSmooth_at]
   rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 0 (s + 1) V b
-    (smoothOrthoFrame (I := I) g₀ b i b)]
+    (tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (smoothOrthoFrame (I := I) g₀ b i b)),
+    ContinuousLinearEquiv.symm_apply_apply]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_covGrad_eq_sum_frame_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) (b : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + 1 + 1) b
@@ -561,7 +566,8 @@ private lemma riemannianFiberNormSq_covGrad_eq_sum_frame_local
       ∑ i : Fin (Module.finrank ℝ E),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + 1) b
           (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b
-            (smoothOrthoFrame (I := I) g₀ b i b)) := by
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b
+              (smoothOrthoFrame (I := I) g₀ b i b))) := by
   classical
   rw [covGrad_toSection_apply (I := I) (M := M) g₀ 0 (s + 1) V b]
   rw [riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs (I := I) (M := M) g₀ 0 (s + 1) b
@@ -571,8 +577,11 @@ private lemma riemannianFiberNormSq_covGrad_eq_sum_frame_local
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₀ b i j)]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [tensorCovDerivAt_def (I := I) (M := M) g₀ 0 (s + 1) V b
-    (smoothOrthoFrame (I := I) g₀ b i b)]
+    (tangentSpaceModelContinuousLinearEquiv (I := I) b
+      (smoothOrthoFrame (I := I) g₀ b i b)),
+    ContinuousLinearEquiv.symm_apply_apply]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_covDivergence_le_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) (b : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s b (covDivergenceRaw (I := I) (M := M) g₀ s V b) ≤
@@ -586,8 +595,9 @@ private lemma riemannianFiberNormSq_covDivergence_le_local
       g₀.inner b (e a) (e c) = if a = c then (1 : ℝ) else 0 :=
     fun a c => smoothOrthoFrame_orthonormal_at_center (I := I) g₀ b a c
   set F : Fin (Module.finrank ℝ E) → TensorRSSpace 0 s I b :=
-    fun i => Tensor0SBundle.contract_covariant 0 s b (e i)
-      (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b (e i)) with hF_def
+    fun i => Tensor0SBundle.contractCovariant 0 s b (e i)
+      (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i))) with hF_def
   have hdiv_eq : covDivergenceRaw (I := I) (M := M) g₀ s V b = ∑ i, F i := by
     rw [covDivergenceRaw_eq_sum_contract_covDeriv_local (I := I) (M := M) g₀ s V b]
   rw [hdiv_eq]
@@ -604,8 +614,10 @@ private lemma riemannianFiberNormSq_covDivergence_le_local
   refine mul_le_mul_of_nonneg_left ?_ (by positivity : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ))
   rw [hF_def]
   exact riemannianFiberNormSq_contract_le_succ_local (I := I) (M := M) g₀ s b
-    (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b (e i)) e rfl horth i
+    (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b (e i))) e rfl horth i
 
+omit [CompactSpace M] in
 lemma covDivergence_l2Norm_le_covGrad_local
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) :
     ‖covDivergence (I := I) (M := M) g₀ s V‖ ≤

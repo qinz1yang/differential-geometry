@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -688,7 +687,7 @@ private lemma euclidPartial_eq_zero_off_closed
   have hu_evt : u =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) :=
     Filter.eventually_of_mem hy_nhds (fun z hz => hu z hz)
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma euclidPartial_eq_zero_of_open_zero
@@ -699,7 +698,7 @@ private lemma euclidPartial_eq_zero_of_open_zero
   have hu_evt : u =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) :=
     Filter.eventually_of_mem (hU.mem_nhds hy) (fun z hz => hu z hz)
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]

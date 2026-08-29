@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.AlgebraicSectionalCone
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -18,32 +17,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
-
-private local instance curvatureOperatorTensor04NormedAddCommGroup (x : M) :
-    NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
-
-private local instance curvatureOperatorTensor04NormedSpace (x : M) :
-    NormedSpace Real (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
-
-private local instance curvatureOperatorTensor04AddCommGroup (x : M) :
-    AddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  @NormedAddCommGroup.toAddCommGroup _
-    (curvatureOperatorTensor04NormedAddCommGroup (I := I) x)
-
-private local instance curvatureOperatorTensor04Module (x : M) :
-    Module Real (Tensor04At (I := I) (M := M) x) :=
-  @NormedSpace.toModule _ _ _ _
-    (curvatureOperatorTensor04NormedSpace (I := I) x)
-
-private local instance curvatureOperatorTensor04TopologicalSpace (x : M) :
-    TopologicalSpace (Tensor04At (I := I) (M := M) x) :=
-  @UniformSpace.toTopologicalSpace _
-    (@PseudoMetricSpace.toUniformSpace _
-      (@MetricSpace.toPseudoMetricSpace _
-        (@NormedAddCommGroup.toMetricSpace _
-          (curvatureOperatorTensor04NormedAddCommGroup (I := I) x))))
 
 def algebraicCurvatureOperatorQuadraticEval {x : M} {n : Nat}
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)

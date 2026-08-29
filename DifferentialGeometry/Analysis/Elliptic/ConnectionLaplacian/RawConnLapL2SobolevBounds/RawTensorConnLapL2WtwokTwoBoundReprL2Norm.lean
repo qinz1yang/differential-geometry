@@ -17,7 +17,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -54,7 +53,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 theorem reprNormSq_le_sum_components_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) (b : M) :
-    ‖tensorRSChartE_section_repr (I := I) r s α
+    ‖tensorRSChartESectionRepr (I := I) r s α
         (fun y : M => T.toSection y) b‖ ^ 2 ≤
       ((Finset.univ : Finset
             ((Fin r → Fin (Module.finrank ℝ E)) ×
@@ -89,7 +88,7 @@ theorem reprNormSq_le_sum_components_sq
   have h_rhs_nn : 0 ≤ (∑ p ∈ V,
       |tensorChartComponentRaw (I := I) (M := M) g r s T α p.1 p.2 b|) * Bnorm :=
     mul_nonneg h_sum_nn hBnorm_nn
-  have h_norm_sq : ‖tensorRSChartE_section_repr (I := I) r s α
+  have h_norm_sq : ‖tensorRSChartESectionRepr (I := I) r s α
       (fun y : M => T.toSection y) b‖ ^ 2 ≤
       ((∑ p ∈ V,
           |tensorChartComponentRaw (I := I) (M := M) g r s T α p.1 p.2 b|) *
@@ -117,7 +116,7 @@ theorem reprNormSq_le_sum_components_sq
     (tensorChartComponentRaw (I := I) (M := M) g r s T α p.1 p.2 b) ^ 2
   have h_sumSq_nn : 0 ≤ sumSq :=
     Finset.sum_nonneg (fun _ _ => sq_nonneg _)
-  have h_combined : ‖tensorRSChartE_section_repr (I := I) r s α
+  have h_combined : ‖tensorRSChartESectionRepr (I := I) r s α
       (fun y : M => T.toSection y) b‖ ^ 2 ≤
       (V.card : ℝ) * Bnorm ^ 2 * sumSq := by
     have h_sq_eq : ((∑ p ∈ V,
@@ -130,7 +129,7 @@ theorem reprNormSq_le_sum_components_sq
     have h_bound : (∑ p ∈ V,
             |tensorChartComponentRaw (I := I) (M := M) g r s T α p.1 p.2 b|) ^ 2 *
           Bnorm ^ 2 ≤ (V.card : ℝ) * sumSq * Bnorm ^ 2 := h_mul
-    calc ‖tensorRSChartE_section_repr (I := I) r s α
+    calc ‖tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) b‖ ^ 2
         ≤ (∑ p ∈ V,
             |tensorChartComponentRaw (I := I) (M := M) g r s T α p.1 p.2 b|) ^ 2 *
@@ -181,7 +180,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
-                (‖tensorRSChartE_section_repr (I := I) r s α
+                (‖tensorRSChartESectionRepr (I := I) r s α
                     (fun z : M => T.toSection z)
                     ((extChartAt I α).symm
                       ((toEuclidean (E := E)).symm y))‖ ^ 2)
@@ -206,7 +205,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
   set lhsIntegrand : EuclN → ℝ≥0∞ := fun y : EuclN =>
     ENNReal.ofReal (((chartAtlasPOU I M α : M → ℝ) (sym y)) ^ 2) *
       ENNReal.ofReal
-        (‖tensorRSChartE_section_repr (I := I) r s α
+        (‖tensorRSChartESectionRepr (I := I) r s α
             (fun z : M => T.toSection z) (sym y)‖ ^ 2) with hlhs_def
   set rhsIntegrand : (Fin r → Fin (Module.finrank ℝ E)) →
       (Fin s → Fin (Module.finrank ℝ E)) → EuclN → ℝ≥0∞ :=
@@ -222,7 +221,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
     intro y _hy
     set b : M := sym y
     set ρ : ℝ := (chartAtlasPOU I M α : M → ℝ) b
-    set V_norm : ℝ := ‖tensorRSChartE_section_repr (I := I) r s α
+    set V_norm : ℝ := ‖tensorRSChartESectionRepr (I := I) r s α
       (fun z : M => T.toSection z) b‖
     have hρ_nn : 0 ≤ ρ :=
       (chartAtlasPOU I M).nonneg α b
@@ -350,11 +349,11 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 rhsIntegrand Idx Jdx y ∂(volume : Measure EuclN) := by
-    rw [MeasureTheory.lintegral_finset_sum _
+    rw [MeasureTheory.lintegral_finsetSum _
       (fun Idx _ => by
         exact Finset.measurable_sum _ (fun Jdx _ => h_rhsIntegrand_meas Idx Jdx))]
     refine Finset.sum_congr rfl (fun Idx _ => ?_)
-    exact MeasureTheory.lintegral_finset_sum _
+    exact MeasureTheory.lintegral_finsetSum _
       (fun Jdx _ => h_rhsIntegrand_meas Idx Jdx)
   rw [h_int_double_sum] at h_int_mono
   have h_per_idx_jdx : ∀ Idx Jdx,
@@ -380,7 +379,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
             (ENNReal.ofReal
               ‖tensorChartComp (I := I) (M := M) g r s T α Idx Jdx y‖) ^ 2 from
         ENNReal.ofReal_pow (norm_nonneg _) 2]
-      rw [ofReal_norm_eq_enorm]
+      rw [ofReal_norm]
     rw [h_rhs_eq_enorm]
     have h_sq_eLp :=
       sq_eLpNorm_two_eq_lintegral_enorm_sq
@@ -403,7 +402,7 @@ theorem chartTargetPouWeightedL2NormSq_repr_le_sum_chartComp_L2NormSq
               (chartTargetEuclid (I := I) (M := M) α)) from
       wkpNorm_zero (d := Module.finrank ℝ E) 2 _ _]
   refine le_trans h_int_mono ?_
-  refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_left ?_ (zero_le)
   refine Finset.sum_le_sum (fun Idx _ => ?_)
   refine Finset.sum_le_sum (fun Jdx _ => ?_)
   exact h_per_idx_jdx Idx Jdx

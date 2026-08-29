@@ -27,7 +27,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 lemma chartParallelExtend_repr_eventuallyEq_const
     (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (v : TangentSpace I b) :
-    (chartE_section_repr (I := I) α
+    (chartESectionRepr (I := I) α
         (chartParallelExtend (I := I) α b v)) ∘ (extChartAt I α).symm
       =ᶠ[𝓝 (extChartAt I α b)]
       (fun _ : E => trivToE (I := I) α b v) := by
@@ -55,7 +55,7 @@ lemma chartParallelExtend_repr_eventuallyEq_const
   have hint_nhds : interior ((extChartAt I α).target : Set E) ∈ 𝓝 (extChartAt I α b) :=
     hint_open.mem_nhds hb_int
   filter_upwards [hU_preim_nhds, hint_nhds] with y hy_U hy_int
-  change chartE_section_repr (I := I) α (chartParallelExtend (I := I) α b v)
+  change chartESectionRepr (I := I) α (chartParallelExtend (I := I) α b v)
       ((extChartAt I α).symm y) = trivToE (I := I) α b v
   exact chartE_section_repr_chartParallelExtend (I := I) α b v hy_U
 
@@ -64,7 +64,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 lemma chartParallelExtend_repr_pullback_fderiv_eq_zero
     (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (v : TangentSpace I b) :
-    fderiv ℝ (chartE_section_repr (I := I) α
+    fderiv ℝ (chartESectionRepr (I := I) α
         (chartParallelExtend (I := I) α b v) ∘ (extChartAt I α).symm)
       (extChartAt I α b) = 0 := by
   classical
@@ -78,7 +78,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 lemma chartParallelExtend_repr_pullback_fderiv_apply_eq_zero
     (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (v : TangentSpace I b) (w : E) :
-    fderiv ℝ (chartE_section_repr (I := I) α
+    fderiv ℝ (chartESectionRepr (I := I) α
         (chartParallelExtend (I := I) α b v) ∘ (extChartAt I α).symm)
       (extChartAt I α b) w = 0 := by
   rw [chartParallelExtend_repr_pullback_fderiv_eq_zero (I := I) α hb v]
@@ -101,11 +101,11 @@ theorem chartLeviCivita_chartParallelExtend
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
   have hrepr :
-      chartE_section_repr (I := I) α (chartParallelExtend (I := I) α b v) b =
+      chartESectionRepr (I := I) α (chartParallelExtend (I := I) α b v) b =
         trivToE (I := I) α b v :=
     chartE_section_repr_chartParallelExtend (I := I) α b v hb_base
   have hfderiv :
-      fderiv ℝ (chartE_section_repr (I := I) α
+      fderiv ℝ (chartESectionRepr (I := I) α
           (chartParallelExtend (I := I) α b v) ∘ (extChartAt I α).symm)
         (extChartAt I α b) (trivToE (I := I) α b (X b)) = 0 :=
     chartParallelExtend_repr_pullback_fderiv_apply_eq_zero

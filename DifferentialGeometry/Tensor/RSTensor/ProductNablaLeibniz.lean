@@ -6,7 +6,6 @@ set_option autoImplicit false
 namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff BigOperators
 open Bundle
@@ -43,18 +42,11 @@ theorem nabla0S_product_realizes {s q : ℕ}
       q cov B nablaB) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + q) cov
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s) (q := q) A B)
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv s q)
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := q)
-            nablaA B)
-        + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv s q)
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s) (q := q + 1)
-            A nablaB)) := by
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv s q)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) nablaA B)
+        + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv s q)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A nablaB)) := by
   classical
   intro X x slots
   let V : Fin (s + q) -> ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -72,15 +64,13 @@ theorem nabla0S_product_realizes {s q : ℕ}
     nabla0SFun_product_eval (I := I) cov A B nablaA nablaB hA hB X V x
   rw [show slots = (fun a : Fin (s + q) => V a x) from hslots.symm, hmain]
   change
-    (ContinuousMultilinearMap.domDomCongr (leibnizLeftEquiv s q)
-        ((MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-          (s := s + 1) (q := q) nablaA B) x))
+    (Tensor0SSpace.domDomCongr
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) nablaA B x)
+        (leibnizLeftEquiv s q))
         (Fin.cons (X x) (fun a : Fin (s + q) => V a x)) +
-      (ContinuousMultilinearMap.domDomCongr (leibnizRightEquiv s q)
-        ((MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
-          (s := s) (q := q + 1) A nablaB) x))
+      (Tensor0SSpace.domDomCongr
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) A nablaB x)
+        (leibnizRightEquiv s q))
         (Fin.cons (X x) (fun a : Fin (s + q) => V a x)) = _
   rw [Tensor0SSpace.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
     tensor0SField_product_apply, tensor0SField_product_apply]

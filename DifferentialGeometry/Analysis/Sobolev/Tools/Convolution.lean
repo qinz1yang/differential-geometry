@@ -29,16 +29,18 @@ lemma lipschitz_of_contDiff_compactSupport
   refine ⟨max C 0, le_max_right _ _, fun x y => ?_⟩
   have hbnd : ∀ z, ‖fderiv ℝ η z‖ ≤ max C 0 := fun z =>
     (hC z).trans (le_max_left _ _)
-  have hbnd_nn : ∀ z, ‖fderiv ℝ η z‖₊ ≤ ⟨max C 0, le_max_right _ _⟩ := by
+  have hbnd_nn : ∀ z, ‖fderiv ℝ η z‖₊ ≤
+      NNReal.mk (max C 0) (le_max_right _ _) := by
     intro z
-    have := hbnd z
-    rwa [← NNReal.coe_le_coe, coe_nnnorm]
-  have hLip : LipschitzWith ⟨max C 0, le_max_right _ _⟩ η :=
+    change ‖fderiv ℝ η z‖ ≤ max C 0
+    exact hbnd z
+  have hLip : LipschitzWith (NNReal.mk (max C 0) (le_max_right _ _)) η :=
     lipschitzWith_of_nnnorm_fderiv_le (𝕜 := ℝ)
       (hη_C1.differentiable (by norm_cast)) hbnd_nn
   have hdist : dist (η x) (η y) ≤ max C 0 * dist x y := by
     have := hLip.dist_le_mul x y
-    simpa [NNReal.coe_mk] using this
+    change dist (η x) (η y) ≤ max C 0 * dist x y at this
+    exact this
   rw [show ‖η x - η y‖ = dist (η x) (η y) from (Real.dist_eq _ _).symm,
     show ‖x - y‖ = dist x y from (dist_eq_norm _ _).symm]
   exact hdist

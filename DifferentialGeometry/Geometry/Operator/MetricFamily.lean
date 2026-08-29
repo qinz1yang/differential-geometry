@@ -461,7 +461,6 @@ def laplacianNonnegativeAtSpatialMinFamily
 theorem laplacian_nonnegative_at_spatial_min_family
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time) :
     laplacianNonnegativeAtSpatialMinFamily (I := I) G := by
   intro t
@@ -471,7 +470,6 @@ theorem laplacian_nonnegative_at_spatial_min_family
 theorem laplacianAt_nonpos_at_spatial_max
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) {f : M -> Real} {x : M}
     (hmax : IsLocalMax f x)
@@ -517,7 +515,6 @@ theorem laplacianAt_smul_at
 
 theorem laplacianAt_nonpos_at_spatial_max_of_isInteriorPoint
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) {f : M → Real} {x : M}
     (hmax : IsLocalMax f x)
@@ -554,8 +551,6 @@ theorem laplacianAt_nonpos_at_spatial_max_of_isInteriorPoint
   linarith
 
 theorem heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {f : M -> Real} {x : M}
@@ -574,8 +569,6 @@ theorem heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
 
 theorem heatOperatorWithDrift_at_spatial_min_nonneg
     [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {f : M -> Real} {x : M}

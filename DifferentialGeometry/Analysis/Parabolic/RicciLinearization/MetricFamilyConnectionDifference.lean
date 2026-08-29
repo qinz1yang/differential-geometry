@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators InnerProductSpace
@@ -35,20 +34,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private local instance connectionDifferenceJointTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance connectionDifferenceJointTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance connectionDifferenceJointTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance connectionDifferenceJointTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -118,7 +117,9 @@ private theorem covComp_joint
         (fun _ : Fin 1 => chartBasisVecFiber (I := I) α i p.1))
       ((chartAt H α).source ×ˢ S) :=
     hbase.comp contMDiffOn_fst (fun _p hp => hp.1)
-  simpa only [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hcomp
+  refine hcomp.congr ?_
+  intro p hp
+  rfl
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
@@ -145,7 +146,7 @@ private theorem conn_pair_joint
           chartChristoffel (I := I) q α k j a (extChartAt I α p.1)) *
         (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α a p.1))
       ((chartAt H α).source ×ˢ D.regular) := by
-    refine contMDiffOn_finset_sum (fun a _ => ?_)
+    refine contMDiffOn_finsetSum (fun a _ => ?_)
     exact ((christ_of_family (I := I) g_fam hG α k j a).sub
       (christ_const_joint (I := I) q α k j a)).mul
         (covComp_joint (I := I) om α a)
@@ -160,10 +161,12 @@ private theorem conn_pair_joint
   rw [DifferentialGeometry.PDE.DeTurck.connectionDifference_chartBasis_pair_eq_sum
     (I := I) (g_fam p.2) q α hxgood j k]
   set φ : TangentSpace I p.1 →L[ℝ] ℝ :=
-    continuousMultilinearCurryFin1 ℝ (TangentSpace I p.1) ℝ (om p.1) with hφ
+    continuousMultilinearCurryFin1 ℝ (TangentSpace I p.1) ℝ
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 p.1 (om p.1)) with hφ
   have hφapply : ∀ v : TangentSpace I p.1,
       (om p.1) (fun _ : Fin 1 => v) = φ v := by
     intro v
+    change Tensor0SSpace.eval (om p.1) (fun _ : Fin 1 => v) = φ v
     rw [hφ, continuousMultilinearCurryFin1_apply]
     rfl
   rw [hφapply, map_sum]
@@ -185,12 +188,12 @@ private theorem connectionDifference_app_joint
           (connectionDifferenceSection (I := I) (g_fam p.2) q).toSection p.1) (om p.1)))
       ((Set.univ : Set M) ×ˢ D.regular) := by
   classical
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   intro p₀ hp₀
   set α := p₀.1
   set e := trivializationAt (Tensor0SModel 2 ℝ E)
     (fun x : M => Tensor0SSpace 2 I x) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -232,18 +235,21 @@ private theorem connectionDifference_app_joint
       rw [hcoe]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem
         (I := I) α z.1 hzbase
-        ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
-          (connectionDifferenceSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1))
+        (Tensor0SSpace.toModel
+          ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
+            (connectionDifferenceSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)))
         (fun a => (chartModelBasis E) (σ a))
-      rw [tensor0SSpace_continuousLinearEquiv_symm_apply] at happly
+      rw [Tensor0SSpace.toModel,
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 z.1).symm_apply_apply] at happly
       rw [happly]
       rw [connectionDifferenceSection_toSection]
-      rw [show (fun a => (trivializationAt E (TangentSpace I) α).symmL ℝ z.1
-            ((chartModelBasis E) (σ a))) =
-          (fun a => chartBasisVecFiber (I := I) α (σ a) z.1) from by
-        funext a
-        rfl]
-      rfl
+      change Tensor0SSpace.eval
+          ((connectionDifferenceFib (I := I) (g_fam z.2) q z.1) (om z.1))
+            (fun a => (trivializationAt E (TangentSpace I) α).symmL ℝ z.1
+              ((chartModelBasis E) (σ a))) = _
+      congr 1
+      funext a
+      fin_cases a <;> rfl
     refine hscalAt.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [hnhd] with z hz
       have hzbaseT : z.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by

@@ -360,14 +360,14 @@ private lemma abs_integral_mul_le_eLpNorm_two
     have hint : ‖∫ x, f x * g x ∂μ‖ₑ ≤ ∫⁻ x, ‖f x * g x‖ₑ ∂μ :=
       enorm_integral_le_lintegral_enorm _
     have hofreal : ENNReal.ofReal ‖∫ x, f x * g x ∂μ‖ = ‖∫ x, f x * g x ∂μ‖ₑ :=
-      ofReal_norm_eq_enorm _
+      ofReal_norm _
     rw [hofreal]; exact hint
   have h_lintegral_eq :
       ∫⁻ x, ‖f x * g x‖ₑ ∂μ = eLpNorm (fun x => g x * f x) 1 μ := by
     rw [eLpNorm_one_eq_lintegral_enorm]
     refine lintegral_congr (fun x => ?_)
     simp [enorm_mul, mul_comm]
-  haveI : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
+  have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
     constructor
     rw [show (1 : ℝ≥0∞)⁻¹ = 1 from inv_one]
     rw [ENNReal.inv_two_add_inv_two]
@@ -377,7 +377,7 @@ private lemma abs_integral_mul_le_eLpNorm_two
         (fun x => g x * f x) = (g : E → ℝ) • (f : E → ℝ) := by
       funext x; simp [smul_eq_mul]
     rw [h_mul_eq]
-    haveI : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := inferInstance
+    have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := inferInstance
     exact eLpNorm_smul_le_mul_eLpNorm hf.aestronglyMeasurable hg.aestronglyMeasurable
   calc
     ENNReal.ofReal |∫ x, f x * g x ∂μ|
@@ -548,7 +548,7 @@ private lemma abs_smoothTestFunctional_le
   have hₙ_bd : ∀ n, |hₙ n| ≤ h₀ := fun n => by
     rw [abs_of_pos (hₙ_pos n)]
     have h1 : (1 : ℝ) ≤ n + 1 := by
-      have h0 : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le n
+      have h0 : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le (n := n)
       linarith
     rw [div_le_iff₀ (by exact_mod_cast Nat.zero_lt_succ n : (0 : ℝ) < n + 1)]
     have : h₀ ≤ h₀ * (n + 1) := by nlinarith [hh₀.le]
@@ -650,7 +650,7 @@ private lemma abs_smoothTestFunctional_le_lpNorm
   rw [h_norm_eq]
   exact h
 
-def smoothTestFunctional_ext
+def smoothTestFunctionalExt
     {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E)) (k : Fin d) :
     Lp ℝ 2 (volume : Measure E) →L[ℝ] ℝ :=
   (smoothTestFunctional (d := d) hw_l2 k).extendOfNorm
@@ -662,8 +662,8 @@ private lemma opNorm_smoothTestFunctional_ext_le
     (k : Fin d) {M : ℝ} (hM_nn : 0 ≤ M) {h₀ : ℝ} (hh₀ : 0 < h₀)
     (h_bdd : ∀ h : ℝ, 0 < |h| → |h| ≤ h₀ →
       eLpNorm (diffQuot k h w) 2 (volume : Measure E) ≤ ENNReal.ofReal M) :
-    ‖smoothTestFunctional_ext (d := d) hw_l2 k‖ ≤ M := by
-  unfold smoothTestFunctional_ext
+    ‖smoothTestFunctionalExt (d := d) hw_l2 k‖ ≤ M := by
+  unfold smoothTestFunctionalExt
   refine LinearMap.opNorm_extendOfNorm_le (denseRange_smoothCSToLp (d := d))
     hM_nn ?_
   intro φ
@@ -676,29 +676,29 @@ private lemma smoothTestFunctional_ext_apply
     (h_bdd : ∀ h : ℝ, 0 < |h| → |h| ≤ h₀ →
       eLpNorm (diffQuot k h w) 2 (volume : Measure E) ≤ ENNReal.ofReal M)
     (φ : smoothCSSubmodule (d := d)) :
-    smoothTestFunctional_ext (d := d) hw_l2 k
+    smoothTestFunctionalExt (d := d) hw_l2 k
         (smoothCSToLp (d := d) φ) =
       smoothTestFunctional (d := d) hw_l2 k φ := by
-  unfold smoothTestFunctional_ext
+  unfold smoothTestFunctionalExt
   refine LinearMap.extendOfNorm_eq (denseRange_smoothCSToLp (d := d))
     ⟨M, ?_⟩ φ
   intro ψ
   exact abs_smoothTestFunctional_le_lpNorm (d := d) hw_l2 k hM_nn hh₀ h_bdd ψ
 
-def smoothTestFunctional_riesz
+def smoothTestFunctionalRiesz
     {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E))
     (k : Fin d) :
     Lp ℝ 2 (volume : Measure E) :=
   (InnerProductSpace.toDual ℝ (Lp ℝ 2 (volume : Measure E))).symm
-    (smoothTestFunctional_ext (d := d) hw_l2 k)
+    (smoothTestFunctionalExt (d := d) hw_l2 k)
 
 omit [NeZero d] in
 private lemma norm_smoothTestFunctional_riesz
     {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E))
     (k : Fin d) :
-    ‖smoothTestFunctional_riesz (d := d) hw_l2 k‖ =
-      ‖smoothTestFunctional_ext (d := d) hw_l2 k‖ := by
-  unfold smoothTestFunctional_riesz
+    ‖smoothTestFunctionalRiesz (d := d) hw_l2 k‖ =
+      ‖smoothTestFunctionalExt (d := d) hw_l2 k‖ := by
+  unfold smoothTestFunctionalRiesz
   exact (InnerProductSpace.toDual ℝ
     (Lp ℝ 2 (volume : Measure E))).symm.norm_map _
 
@@ -707,9 +707,9 @@ private lemma smoothTestFunctional_ext_eq_inner
     {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E))
     (k : Fin d)
     (f : Lp ℝ 2 (volume : Measure E)) :
-    smoothTestFunctional_ext (d := d) hw_l2 k f =
-      ⟪smoothTestFunctional_riesz (d := d) hw_l2 k, f⟫_ℝ := by
-  unfold smoothTestFunctional_riesz
+    smoothTestFunctionalExt (d := d) hw_l2 k f =
+      ⟪smoothTestFunctionalRiesz (d := d) hw_l2 k, f⟫_ℝ := by
+  unfold smoothTestFunctionalRiesz
   rw [InnerProductSpace.toDual_symm_apply]
 
 omit [NeZero d] in
@@ -724,7 +724,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_univ
       DeGiorgi.HasWeakPartialDeriv (d := d) k g w (Set.univ) ∧
       eLpNorm g 2 (volume : Measure E) ≤ ENNReal.ofReal M := by
   set g_lp : Lp ℝ 2 (volume : Measure E) :=
-    smoothTestFunctional_riesz (d := d) hw_l2 k with hg_lp_def
+    smoothTestFunctionalRiesz (d := d) hw_l2 k with hg_lp_def
   refine ⟨⇑g_lp, ?_, ?_, ?_⟩
   · exact Lp.memLp g_lp
   · intro φ hφ_smooth hφ_supp _
@@ -771,7 +771,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_univ
     have h_g_lp_nn : 0 ≤ ‖g_lp‖ := norm_nonneg _
     have h_enorm_le : (‖g_lp‖ₑ : ℝ≥0∞) ≤ ENNReal.ofReal M := by
       have hofreal : (‖g_lp‖ₑ : ℝ≥0∞) = ENNReal.ofReal ‖g_lp‖ :=
-        (ofReal_norm_eq_enorm _).symm
+        (ofReal_norm _).symm
       rw [hofreal]
       exact ENNReal.ofReal_le_ofReal h_g_lp_le
     have h_enorm_eq : ‖g_lp‖ₑ = eLpNorm (⇑g_lp) 2 (volume : Measure E) :=

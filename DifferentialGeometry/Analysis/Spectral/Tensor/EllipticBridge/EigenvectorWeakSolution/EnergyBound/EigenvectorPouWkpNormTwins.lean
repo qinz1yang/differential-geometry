@@ -42,7 +42,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma wkpNorm_sub_le
-    {d : ℕ} [NeZero d] {k : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
+    {d k : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) {u v : EuclideanSpace ℝ (Fin d) → ℝ}
     (hu : MemWkp (d := d) k 2 u Ω) (hv : MemWkp (d := d) k 2 v Ω) :
     iteratedWeakSobolevNorm (d := d) k 2 (fun y => u y - v y) Ω ≤
@@ -379,7 +379,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
       wkpNorm_const_smul (d := Module.finrank ℝ E)
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_mem i.fst.val
     _ ≤ ‖i.fst.val‖ₑ * (ENNReal.ofReal (C1 + C2 + C3) * Saggr) :=
-      mul_le_mul_of_nonneg_left h_scaled_norm (zero_le _)
+      mul_le_mul_of_nonneg_left h_scaled_norm (zero_le)
     _ = ENNReal.ofReal (‖i.fst.val‖ * (C1 + C2 + C3)) * Saggr := by
       rw [← mul_assoc, ← ofReal_norm (x := i.fst.val),
         ← ENNReal.ofReal_mul (norm_nonneg _)]
@@ -642,7 +642,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_mem i.fst.val
     _ ≤ ‖i.fst.val‖ₑ *
           (ENNReal.ofReal ((i.fst.val)⁻¹ * (D1 + D2 + D3)) * Saggr) :=
-      mul_le_mul_of_nonneg_left h_scaled_norm (zero_le _)
+      mul_le_mul_of_nonneg_left h_scaled_norm (zero_le)
     _ = ENNReal.ofReal (D1 + D2 + D3) * Saggr := by
       rw [← mul_assoc, ← ofReal_norm (x := i.fst.val),
         ← ENNReal.ofReal_mul (norm_nonneg _),

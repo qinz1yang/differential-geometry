@@ -135,7 +135,7 @@ lemma partialDerivWithin_mul (u v : E → ℝ)
         v y * partialDerivWithin (E := E) s i u y := by
   unfold partialDerivWithin
   rw [fderivWithin_fun_mul hs hu hv]
-  simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp [add_apply, smul_apply,
     smul_eq_mul]
 
 end LeibnizIdentities

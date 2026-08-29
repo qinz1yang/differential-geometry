@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -339,7 +338,7 @@ private lemma tensorInnerPointwise_F_rotatedSummand_chart
     g r s α hb_chart (F.toSection b)
     ((rotatedSummand (I := I) (M := M) g r s α P₀ hχs hχt Q).toSection b)]
   have hterm : ∀ P Q' : CompIdx E r s,
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (tensorChartBasisElement (E := E) r s P.1 P.2)
             (tensorChartBasisElement (E := E) r s Q'.1 Q'.2) *
           (wrappedComponentProj (I := I) (M := M) r s α b P.1 P.2
@@ -353,7 +352,7 @@ private lemma tensorInnerPointwise_F_rotatedSummand_chart
                 (rotatedSummandBump (I := I) (M := M) g r s α P₀ Q χ) y *
               (if (Q'.1, Q'.2) = Q then (1 : ℝ) else 0))) := by
     intro P Q'
-    rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
           (tensorChartBasisElement (E := E) r s P.1 P.2)
           (tensorChartBasisElement (E := E) r s Q'.1 Q'.2) =
         covChartMetricGram (I := I) (M := M) g r s α P Q' y from by

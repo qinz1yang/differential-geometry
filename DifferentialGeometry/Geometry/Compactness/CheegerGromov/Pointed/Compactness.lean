@@ -115,11 +115,11 @@ theorem source_open
     (Φ : PointedRiemannianCGMaps (I := I) X L subseq) (k : Nat) :
     letI : TopologicalSpace L.M := L.topology
     IsOpen (Φ.source k) := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : ChartedSpace H L.M := L.charted
-  letI : TopologicalSpace (X.obj (subseq k)).M :=
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : TopologicalSpace (X.obj (subseq k)).M :=
     (X.obj (subseq k)).topology
-  letI : ChartedSpace H (X.obj (subseq k)).M :=
+  let : ChartedSpace H (X.obj (subseq k)).M :=
     (X.obj (subseq k)).charted
   exact (Φ.partialDiffeomorph k).open_source
 
@@ -131,11 +131,11 @@ theorem target_open
     (Φ : PointedRiemannianCGMaps (I := I) X L subseq) (k : Nat) :
     letI : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
     IsOpen (Φ.target k) := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : ChartedSpace H L.M := L.charted
-  letI : TopologicalSpace (X.obj (subseq k)).M :=
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : TopologicalSpace (X.obj (subseq k)).M :=
     (X.obj (subseq k)).topology
-  letI : ChartedSpace H (X.obj (subseq k)).M :=
+  let : ChartedSpace H (X.obj (subseq k)).M :=
     (X.obj (subseq k)).charted
   exact (Φ.partialDiffeomorph k).open_target
 
@@ -150,7 +150,7 @@ theorem source_subset
       letI : TopologicalSpace L.M := L.topology
       IsCompact K) :
     exists k0 : Nat, forall k : Nat, k0 <= k -> K ⊆ Φ.source k := by
-  letI : TopologicalSpace L.M := L.topology
+  let : TopologicalSpace L.M := L.topology
   exact Φ.source_exhausts.subset K hK
 
 def unrepoint
@@ -260,8 +260,9 @@ noncomputable def metricSourceDomCharted
   exact TopologicalSpace.Opens.instChartedSpace (H := H) (M := L.M)
     (s := metricSourceOpen (I := I) Φ k)
 
-@[implicit_reducible]
-noncomputable def metricSourceDomT2
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [I.Boundaryless] in
+theorem metricSourceDomT2
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -269,15 +270,16 @@ noncomputable def metricSourceDomT2
     letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
       metricSourceDomTop (I := I) Φ k
     T2Space (MetricSourceDomain (I := I) Φ k) := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : T2Space L.M := L.t2
-  letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace L.M := L.topology
+  let : T2Space L.M := L.t2
+  let : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomTop (I := I) Φ k
   change T2Space {x : L.M // x ∈ Φ.source k}
   infer_instance
 
-@[implicit_reducible]
-noncomputable def metricSourceDomSmooth
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [I.Boundaryless] in
+theorem metricSourceDomSmooth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -287,12 +289,12 @@ noncomputable def metricSourceDomSmooth
     letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
       metricSourceDomCharted (I := I) Φ k
     IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : ChartedSpace H L.M := L.charted
-  letI : IsManifold I ∞ L.M := L.smooth
-  letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : IsManifold I ∞ L.M := L.smooth
+  let : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
+  let : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomCharted (I := I) Φ k
   change IsManifold I ∞ (metricSourceOpen (I := I) Φ k)
   exact { (metricSourceOpen (I := I) Φ k).instHasGroupoid (contDiffGroupoid ∞ I) with }
@@ -307,8 +309,8 @@ theorem metricSourceDomSigmaOf
     letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
       metricSourceDomTop (I := I) Φ k
     SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace L.M := L.topology
+  let : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomTop (I := I) Φ k
   change SigmaCompactSpace {x : L.M // x ∈ Φ.source k}
   exact isSigmaCompact_iff_sigmaCompactSpace.mp hσ
@@ -344,8 +346,9 @@ noncomputable def metricTargetDomCharted
   exact TopologicalSpace.Opens.instChartedSpace (H := H)
     (M := (X.obj (subseq k)).M) (s := metricTargetOpen (I := I) Φ k)
 
-@[implicit_reducible]
-noncomputable def metricTargetDomT2
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [I.Boundaryless] in
+theorem metricTargetDomT2
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -353,16 +356,17 @@ noncomputable def metricTargetDomT2
     letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
       metricTargetDomTop (I := I) Φ k
     T2Space (MetricTargetDomain (I := I) Φ k) := by
-  letI : TopologicalSpace (X.obj (subseq k)).M :=
+  let : TopologicalSpace (X.obj (subseq k)).M :=
     (X.obj (subseq k)).topology
-  letI : T2Space (X.obj (subseq k)).M := (X.obj (subseq k)).t2
-  letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
+  let : T2Space (X.obj (subseq k)).M := (X.obj (subseq k)).t2
+  let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomTop (I := I) Φ k
   change T2Space {x : (X.obj (subseq k)).M // x ∈ Φ.target k}
   infer_instance
 
-@[implicit_reducible]
-noncomputable def metricTargetDomSmooth
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [I.Boundaryless] in
+theorem metricTargetDomSmooth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -372,14 +376,14 @@ noncomputable def metricTargetDomSmooth
     letI : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
       metricTargetDomCharted (I := I) Φ k
     IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) := by
-  letI : TopologicalSpace (X.obj (subseq k)).M :=
+  let : TopologicalSpace (X.obj (subseq k)).M :=
     (X.obj (subseq k)).topology
-  letI : ChartedSpace H (X.obj (subseq k)).M :=
+  let : ChartedSpace H (X.obj (subseq k)).M :=
     (X.obj (subseq k)).charted
-  letI : IsManifold I ∞ (X.obj (subseq k)).M := (X.obj (subseq k)).smooth
-  letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
+  let : IsManifold I ∞ (X.obj (subseq k)).M := (X.obj (subseq k)).smooth
+  let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomTop (I := I) Φ k
-  letI : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
+  let : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomCharted (I := I) Φ k
   change IsManifold I ∞ (metricTargetOpen (I := I) Φ k)
   exact { (metricTargetOpen (I := I) Φ k).instHasGroupoid (contDiffGroupoid ∞ I) with }
@@ -397,9 +401,9 @@ theorem metricTargetDomSigmaOf
     letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
       metricTargetDomTop (I := I) Φ k
     SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) := by
-  letI : TopologicalSpace (X.obj (subseq k)).M :=
+  let : TopologicalSpace (X.obj (subseq k)).M :=
     (X.obj (subseq k)).topology
-  letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
+  let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomTop (I := I) Φ k
   change SigmaCompactSpace {x : (X.obj (subseq k)).M // x ∈ Φ.target k}
   exact isSigmaCompact_iff_sigmaCompactSpace.mp hσ
@@ -413,14 +417,15 @@ private theorem metricContMDiffOpenCod
     {f : M -> U}
     (hf : ContMDiff I I (∞ : WithTop ℕ∞) (fun x : M => (f x : N))) :
     ContMDiff I I (∞ : WithTop ℕ∞) f := by
-  haveI : IsManifold I ∞ U :=
+  have : IsManifold I ∞ U :=
     { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
   rw [contMDiff_iff_target] at hf ⊢
   constructor
   · exact Continuous.subtype_mk hf.1 (fun x => (f x).2)
   · intro y
     have hy := hf.2 (y : N)
-    simpa [Function.comp_def, extChartAt, TopologicalSpace.Opens.chartAt_eq] using hy
+    simpa [Function.comp_def, extChartAt, TopologicalSpace.Opens.chartAt_eq,
+      Set.preimage_preimage] using hy
 
 noncomputable def metricSourceTargetDiff
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -542,23 +547,23 @@ theorem metricSourceTargetDiff_mfderiv
     ∀ (x : MetricSourceDomain (I := I) Φ k) (v : TangentSpace I x),
       mfderiv I I (metricSourceTargetDiff (I := I) Φ k) x v =
         mfderiv I I (Φ.map k) (x : L.M) v := by
-  letI : TopologicalSpace L.M := L.topology
-  letI : ChartedSpace H L.M := L.charted
-  letI : IsManifold I ∞ L.M := L.smooth
-  letI : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
-  letI : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
-  letI : IsManifold I ∞ (X.obj (subseq k)).M := (X.obj (subseq k)).smooth
-  letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : IsManifold I ∞ L.M := L.smooth
+  let : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
+  let : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
+  let : IsManifold I ∞ (X.obj (subseq k)).M := (X.obj (subseq k)).smooth
+  let : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
+  let : ChartedSpace H (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomCharted (I := I) Φ k
-  letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
+  let : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
     metricSourceDomSmooth (I := I) Φ k
-  letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
+  let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomTop (I := I) Φ k
-  letI : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
+  let : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomCharted (I := I) Φ k
-  letI : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
+  let : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomSmooth (I := I) Φ k
   intro x v
   let F := metricSourceTargetDiff (I := I) Φ k
@@ -666,7 +671,7 @@ theorem metricSourceCompactSet_isCompact
       K ⊆ Φ.source k) :
     letI : TopologicalSpace L.M := L.topology
     IsCompact (metricSourceCompactSet (I := I) Φ k K) := by
-  letI : TopologicalSpace L.M := L.topology
+  let : TopologicalSpace L.M := L.topology
   change IsCompact ((Subtype.val : MetricSourceDomain (I := I) Φ k -> L.M) ⁻¹' K)
   rw [Subtype.isCompact_iff]
   have hImage :
@@ -1150,7 +1155,7 @@ def unrepoint
     simpa only [PointedRiemannianCGMaps.unrepoint_source,
       MetricSourceData.unrepoint_supOn] using Cd.converges K hK p ε hε
 
-noncomputable def of_derivNormSupOn
+noncomputable def ofDerivNormSupOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -1197,7 +1202,7 @@ noncomputable def ofRestrictPullback
               (Φ := Φ) (k := k) (hσsrc k)
               (referenceMetric k)).derivNormSupOn (I := I) K p) < ε) :
     MetricCGConvergenceData (I := I) Φ :=
-  MetricCGConvergenceData.of_derivNormSupOn (I := I)
+  MetricCGConvergenceData.ofDerivNormSupOn (I := I)
     (D := fun k => MetricSourceData.ofRestrictPullback (I := I)
       (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k))
     hconv
@@ -1231,7 +1236,7 @@ def unrepoint
     PointedRiemannianCGConverges (I := I) X L subseq (Φ.unrepoint b hbase) where
   metrics := C.metrics.unrepoint b hbase
 
-noncomputable def of_derivNormSupOn
+noncomputable def ofDerivNormSupOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -1244,7 +1249,7 @@ noncomputable def of_derivNormSupOn
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             (D k).derivNormSupOn (I := I) K p < ε) :
     PointedRiemannianCGConverges (I := I) X L subseq Φ where
-  metrics := MetricCGConvergenceData.of_derivNormSupOn (I := I) hconv
+  metrics := MetricCGConvergenceData.ofDerivNormSupOn (I := I) hconv
 
 noncomputable def ofRestrictPullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

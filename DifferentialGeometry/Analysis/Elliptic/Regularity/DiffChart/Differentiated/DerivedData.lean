@@ -151,17 +151,17 @@ private lemma integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
     hasCompactSupport_fderiv_apply_single (ψ := ψ) hψ_cs l
   have hψl_supp : tsupport ψl ⊆ Ω :=
     (tsupport_fderiv_apply_single_subset_ψ ψ l).trans hψ_supp
-  set u_chart : EuclN → ℝ := chartPushed (I := I) (M := M)
+  set uChart : EuclN → ℝ := chartPushed (I := I) (M := M)
     (chartAtlasPOU I M) α
     ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ) with hu_chart_def
-  have h_u_chart_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u_chart Ω :=
+  have h_u_chart_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 uChart Ω :=
     (laplacianDomainPow_two_chartPushed_memWkp_two_two
       (I := I) (M := M) g α hu_h).memW1p
   set g_i : EuclN → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-      (d := Module.finrank ℝ E) 2 i u_chart Ω with hg_i_def
+      (d := Module.finrank ℝ E) 2 i uChart Ω with hg_i_def
   have h_g_i_isWeakPartial :
-      DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i g_i u_chart Ω :=
+      DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i g_i uChart Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
       h_u_chart_memW1p i
   have h_second_eq :
@@ -263,7 +263,7 @@ private lemma chosenSecondPartialChartPushedU_locallyIntegrableOn
     chosenSecondPartialChartPushedU_locally_memLp
       (I := I) (M := M) g α hu_h i l hB_compact hB_subset
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have hB_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -333,7 +333,7 @@ theorem chosenSecondPartialChartPushedU_swap_ae
     have hK_compact : IsCompact (tsupport ψ) := hψ_cs
     have hK_meas : MeasurableSet (tsupport ψ) := (isClosed_tsupport ψ).measurableSet
     have hK_finite : (volume : Measure EuclN) (tsupport ψ) < ⊤ := hK_compact.measure_lt_top
-    haveI hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict (tsupport ψ)) := by
+    have hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict (tsupport ψ)) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hK_finite
@@ -428,9 +428,9 @@ private noncomputable def derived_u_chart
     (l : Fin (Module.finrank ℝ E))
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) : EuclN → ℝ :=
-  (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+  (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain
-      (I := I) (M := M) g 1 hu_h)).weak_partial l
+      (I := I) (M := M) g 1 hu_h)).weakPartial l
 
 private noncomputable def derived_f_chart
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -555,9 +555,9 @@ noncomputable def derivedChartBilinearH1ComplData
             derived_f_chart (I := I) (M := M) g α l hu_h y * ψ y
           ∂(volume : Measure EuclN)) :
     ChartBilinearH1ComplData (I := I) (M := M) g α where
-  u_chart := derived_u_chart (I := I) (M := M) g α l hu_h
-  f_chart := derived_f_chart (I := I) (M := M) g α l hu_h
-  weak_partial := derived_weak_partial (I := I) (M := M) g α l hu_h
+  uChart := derived_u_chart (I := I) (M := M) g α l hu_h
+  fChart := derived_f_chart (I := I) (M := M) g α l hu_h
+  weakPartial := derived_weak_partial (I := I) (M := M) g α l hu_h
   u_chart_memLp_weighted :=
     derived_u_chart_memLp_weighted (I := I) (M := M) g α l hu_h
   f_chart_memLp_weighted :=

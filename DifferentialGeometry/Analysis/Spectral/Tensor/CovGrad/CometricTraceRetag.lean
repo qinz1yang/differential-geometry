@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators InnerProductSpace
@@ -29,20 +28,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance traceRetagTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance traceRetagTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance traceRetagTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance traceRetagTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -74,18 +73,22 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
       Tensor0SSpace.toModel
           (slotExtendPointwise (I := I) (M := M) 1 1 x
             ((g0FlatCLM (I := I) q x).comp (inverseMetricSharpFib (I := I) h x)) D)
-          (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E) mm)) =
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) q x a x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) q x a x)) mm)) =
         Tensor0SSpace.toModel D
-          (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
-            (Fin.cons (show E from inverseMetricSharpFib (I := I) h x
-              (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) mm)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) q x a x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (inverseMetricSharpFib (I := I) h x
+                (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x)))) mm)) := by
     intro a
     rw [slotExtendFib_apply_eval]
     rw [ContinuousLinearMap.comp_apply, g0FlatCLM_apply]
     change q.inner x
         (inverseMetricSharpFib (I := I) h x
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
             (smoothOrthoFrame (I := I) q x a x)))
         (smoothOrthoFrame (I := I) q x a x) = _
     rw [q.symm x]
@@ -96,44 +99,53 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
       (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))]
     rw [h.symm x]
     rw [inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_apply]
-    rw [show (fun _ : Fin 1 =>
-        (inverseMetricSharpFib (I := I) h x
-          (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x)) : E)) =
-        Fin.cons
-          (show E from inverseMetricSharpFib (I := I) h x
-            (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) mm from by
-      funext j
-      fin_cases j
-      rfl]
-    change Tensor0SSpace.toModel
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
+    change Tensor0SSpace.eval
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
           (smoothOrthoFrame (I := I) q x a x))
-        (Fin.cons
-          (show E from inverseMetricSharpFib (I := I) h x
-            (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) mm) = _
+        (fun _ => inverseMetricSharpFib (I := I) h x
+          (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) = _
     rw [TensorMultilinear.tensor0S_curry_apply_eval]
+    rw [← Tensor0SSpace.toModel_apply_tangent]
+    congr 1
+    funext i
+    fin_cases i <;> rfl
   rw [Finset.sum_congr rfl (fun a _ => hslot a)]
   have horthH : ∀ i j : Fin (Module.finrank ℝ E),
       h.inner x (smoothOrthoFrame (I := I) h x i x)
         (smoothOrthoFrame (I := I) h x j x) = if i = j then (1 : ℝ) else 0 :=
     fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) h x i j
   have hF : ∀ a : Fin (Module.finrank ℝ E),
-      (show E from inverseMetricSharpFib (I := I) h x
-        (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) h x
+            (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) =
         ∑ c : Fin (Module.finrank ℝ E),
           q.inner x (smoothOrthoFrame (I := I) q x a x)
               (smoothOrthoFrame (I := I) h x c x) •
-            ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) := by
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) h x c x) := by
     intro a
     have hexp := orthonormal_tangent_expansion (I := I) (M := M) h x
       (fun c => smoothOrthoFrame (I := I) h x c x) horthH
       (inverseMetricSharpFib (I := I) h x
         (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x)))
-    rw [← hexp]
-    refine Finset.sum_congr rfl fun c _ => ?_
-    congr 1
-    rw [h.symm x, inverseMetricSharpFib_inner, cotangentToDualLinear_apply,
-      cotangentToDual_g0FlatCLM]
+    calc
+      tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (inverseMetricSharpFib (I := I) h x
+            (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) =
+          ∑ c : Fin (Module.finrank ℝ E),
+            h.inner x (smoothOrthoFrame (I := I) h x c x)
+                (inverseMetricSharpFib (I := I) h x
+                  (g0FlatCLM (I := I) q x
+                    (smoothOrthoFrame (I := I) q x a x))) •
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) h x c x) := by
+        simpa only [map_sum, map_smul] using congrArg
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x) hexp.symm
+      _ = _ := by
+        refine Finset.sum_congr rfl fun c _ => ?_
+        congr 1
+        rw [h.symm x, inverseMetricSharpFib_inner, cotangentToDualLinear_apply,
+          cotangentToDual_g0FlatCLM]
   have horthQ : ∀ i j : Fin (Module.finrank ℝ E),
       q.inner x (smoothOrthoFrame (I := I) q x i x)
         (smoothOrthoFrame (I := I) q x j x) = if i = j then (1 : ℝ) else 0 :=
@@ -142,48 +154,62 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
       (∑ a : Fin (Module.finrank ℝ E),
           q.inner x (smoothOrthoFrame (I := I) q x a x)
               (smoothOrthoFrame (I := I) h x c x) •
-            ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)) =
-        ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) := by
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) q x a x)) =
+        tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) h x c x) := by
     intro c
-    exact orthonormal_tangent_expansion (I := I) (M := M) q x
-      (fun a => smoothOrthoFrame (I := I) q x a x) horthQ
-      (smoothOrthoFrame (I := I) h x c x)
+    simpa only [map_sum, map_smul] using congrArg
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+        (orthonormal_tangent_expansion (I := I) (M := M) q x
+          (fun a => smoothOrthoFrame (I := I) q x a x) horthQ
+          (smoothOrthoFrame (I := I) h x c x))
   symm
   calc
     (∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-          (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
-            (Fin.cons (show E from inverseMetricSharpFib (I := I) h x
-              (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) mm))) =
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) q x a x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (inverseMetricSharpFib (I := I) h x
+                (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x)))) mm))) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
         q.inner x (smoothOrthoFrame (I := I) q x a x)
             (smoothOrthoFrame (I := I) h x c x) *
           Tensor0SSpace.toModel D
-            (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) mm)) := by
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) q x a x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) h x c x)) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hF a]
         change (((Tensor0SSpace.toModel D).curryLeft
-            ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)).curryLeft
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) q x a x))).curryLeft
               (∑ c : Fin (Module.finrank ℝ E),
                 q.inner x (smoothOrthoFrame (I := I) q x a x)
                     (smoothOrthoFrame (I := I) h x c x) •
-                  ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E))) mm = _
-        rw [map_sum, ContinuousMultilinearMap.sum_apply]
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x
+                    (smoothOrthoFrame (I := I) h x c x))) mm = _
+        rw [map_sum, sum_apply]
         refine Finset.sum_congr rfl fun c _ => ?_
-        rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        rw [map_smul, smul_apply, smul_eq_mul]
         rfl
     _ = ∑ c : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         q.inner x (smoothOrthoFrame (I := I) q x a x)
             (smoothOrthoFrame (I := I) h x c x) *
           Tensor0SSpace.toModel D
-            (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) mm)) :=
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) q x a x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) h x c x)) mm)) :=
       Finset.sum_comm
     _ = ∑ c : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
-          (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) mm)) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) h x c x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) h x c x)) mm)) := by
         refine Finset.sum_congr rfl fun c _ => ?_
         have hlin :
             Tensor0SSpace.toModel D
@@ -191,24 +217,29 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
                   (∑ a : Fin (Module.finrank ℝ E),
                     q.inner x (smoothOrthoFrame (I := I) q x a x)
                         (smoothOrthoFrame (I := I) h x c x) •
-                      ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E))
-                  (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) mm)) =
+                      tangentSpaceModelContinuousLinearEquiv (I := I) x
+                        (smoothOrthoFrame (I := I) q x a x))
+                  (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                    (smoothOrthoFrame (I := I) h x c x)) mm)) =
               ∑ a : Fin (Module.finrank ℝ E),
                 q.inner x (smoothOrthoFrame (I := I) q x a x)
                     (smoothOrthoFrame (I := I) h x c x) *
                   Tensor0SSpace.toModel D
-                    (Fin.cons ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)
-                      (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E)
-                        mm)) := by
+                    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                        (smoothOrthoFrame (I := I) q x a x))
+                      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                        (smoothOrthoFrame (I := I) h x c x)) mm)) := by
           change ((Tensor0SSpace.toModel D).curryLeft
               (∑ a : Fin (Module.finrank ℝ E),
                 q.inner x (smoothOrthoFrame (I := I) q x a x)
                     (smoothOrthoFrame (I := I) h x c x) •
-                  ((smoothOrthoFrame (I := I) q x a x : TangentSpace I x) : E)))
-              (Fin.cons ((smoothOrthoFrame (I := I) h x c x : TangentSpace I x) : E) mm) = _
-          rw [map_sum, ContinuousMultilinearMap.sum_apply]
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x
+                    (smoothOrthoFrame (I := I) q x a x)))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) h x c x)) mm) = _
+          rw [map_sum, sum_apply]
           refine Finset.sum_congr rfl fun a _ => ?_
-          rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+          rw [map_smul, smul_apply, smul_eq_mul]
           rfl
         rw [← hlin, hQexp c]
 

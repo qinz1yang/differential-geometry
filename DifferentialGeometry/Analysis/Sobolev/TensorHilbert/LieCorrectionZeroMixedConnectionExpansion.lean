@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieC
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -63,7 +62,8 @@ private lemma unitTensor_model (x : M) (m : Fin 0 → E) :
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v₀ : E) :
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D v₀ =
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v₀) =
       (Tensor0SSpace.toModel D (fun _ : Fin 1 => v₀)) •
         unitTensor (I := I) (M := M) x := by
   apply Tensor0SSpace.toModel_injective
@@ -71,11 +71,12 @@ private lemma curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v₀ : E) :
   intro m
   beta_reduce
   have h₁ : Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D v₀) m =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v₀)) m =
       Tensor0SSpace.toModel D (Fin.cons v₀ m) :=
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 0)
+    TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 0)
       (T := D) (v0 := v₀) (vs := m)
-  rw [h₁, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
+  rw [h₁, Tensor0SSpace.toModel_smul, smul_apply,
     unitTensor_model (I := I) (M := M) x m, smul_eq_mul, mul_one]
   congr 1
   funext k
@@ -119,7 +120,8 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
     rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 1 4 x _ D
       (m 0) (Fin.tail m)]
     set D₁ : Tensor0SSpace 1 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (m 0) with hD₁
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₁
     rw [show
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
           (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D₁) =
@@ -135,10 +137,10 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
     rw [curry_zero (I := I) (M := M) x D₁ (m 1)]
     rw [clm_unit_smul (I := I) (M := M) x 3 _ _]
     rw [← hκ, Tensor0SSpace.toModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     have hD₁val : Tensor0SSpace.toModel D₁ (fun _ : Fin 1 => m 1) =
         Tensor0SSpace.toModel D ![m 0, m 1] := by
-      rw [hD₁, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₁, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 1) (T := D) (v0 := m 0)
         (vs := fun _ : Fin 1 => m 1)]
       congr 1
@@ -188,7 +190,8 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
     rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 2 5 x _ D
       (m 0) (Fin.tail m)]
     set D₂ : Tensor0SSpace 2 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (m 0) with hD₂
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_rank_two_by_rank_three_apply (I := I) (M := M) g₀ K x D₂, ← hκ,
       tensor0SProdKappaFib_apply (I := I) x κ D₂,
       Tensor0SSpace.toModel_ofModel,
@@ -196,7 +199,7 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
     have hD₂val : Tensor0SSpace.toModel D₂
         ((Fin.tail m : Fin 5 → E) ∘ Fin.castAdd 3) =
         Tensor0SSpace.toModel D ![m 0, m 1, m 2] := by
-      rw [hD₂, TensorMultilinear.tensor0S_curry_apply_eval
+      rw [hD₂, TensorMultilinear.tensor0S_curry_toModel_apply
         (I := I) (M := M) (n := 2) (T := D) (v0 := m 0)
         (vs := (Fin.tail m : Fin 5 → E) ∘ Fin.castAdd 3)]
       congr 1
@@ -280,12 +283,12 @@ private lemma lieCorrectionZeroMixedConnection_trace_output_swap (g₁ : SmoothR
   funext i
   have hpt : ∀ t : Fin 4,
       (Fin.cons (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k)
           (fun j : Fin 2 => w ((Equiv.swap (0 : Fin 2) 1) j))) : Fin 4 → E) t =
       (Fin.cons (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k) w) : Fin 4 → E) (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation t) := by
     intro t
@@ -375,9 +378,15 @@ private lemma lieCorrectionZeroMixedConnectionExpansion_apply (g₀ g₁ gB : Sm
       (2 : ℝ) • (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ gB x D +
         domDomCongrFibRank (I := I) 2 (Equiv.swap 0 1) x
           (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ gB x D)) from by
-    rw [lieCorrectionZeroMixedConnectionFib, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]]
-  rfl
+    rw [lieCorrectionZeroMixedConnectionFib, smul_apply,
+      add_apply, ContinuousLinearMap.comp_apply]]
+  apply congrArg (fun Z : Tensor0SSpace 2 I x ↦ (2 : ℝ) • Z)
+  apply congrArg₂ (fun A B : Tensor0SSpace 2 I x ↦ A + B)
+  · simp only [lieCorrectionZeroMixedConnectionHalfFib,
+      ContinuousLinearMap.comp_apply]
+  · apply congrArg
+    simp only [lieCorrectionZeroMixedConnectionHalfFib,
+      ContinuousLinearMap.comp_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -413,6 +422,7 @@ def lieCorrectionZeroMixedConnectionBackgroundDifferenceHalfExpansion (g₀ g₁
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroMixedConnectionHalfExpansion_sub_eq_backgroundDifferenceHalfExpansion
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -426,6 +436,7 @@ theorem lieCorrectionZeroMixedConnectionHalfExpansion_sub_eq_backgroundDifferenc
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem lieCorrectionZeroMixedConnection_sub_reference_eq_backgroundDifferenceExpansion
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -

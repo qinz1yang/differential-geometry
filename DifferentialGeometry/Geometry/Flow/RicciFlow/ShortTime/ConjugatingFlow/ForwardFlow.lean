@@ -12,6 +12,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Glob
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.FullIntervalFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -112,7 +114,10 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
       (y := Φ s x) hΦsrc'
     have := congrArg (fun L : TangentSpace I (Φ s x) →L[ℝ] TangentSpace I (Φ s x) =>
         L (mfderiv I I (fun y : M => Φ s y) x v)) hcancel
-    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply, hc] using this
+    rw [hc]
+    rw [(extChartAt I y₀).left_inv hΦsrc']
+    rw [← ContinuousLinearMap.comp_apply]
+    exact this
   have hrecon : (fun s : ℝ =>
         (⟨Φ s x, mfderiv I I (fun y : M => Φ s y) x v⟩ : TangentBundle I M))
       =ᶠ[nhds (0 : ℝ)]
@@ -132,7 +137,7 @@ private theorem flow_mfderiv_continuousWithinAt_zero_of_jointSmooth
         (TotalSpace.mk' E (c (Φ s x)) (P s))) 0 := by
     have hcsm : ContMDiffOn 𝓘(ℝ, E) I 1 c.symm c.target :=
       (contMDiffOn_extChartAt_symm (I := I) (n := ∞) y₀).of_le (by
-        exact le_of_lt (by exact_mod_cast ENat.coe_lt_top 1))
+        exact le_of_lt (by exact_mod_cast ENat.natCast_lt_top 1))
     have htm : ContinuousOn (tangentMapWithin 𝓘(ℝ, E) I c.symm c.target)
         (Bundle.TotalSpace.proj ⁻¹' c.target) :=
       hcsm.continuousOn_tangentMapWithin le_rfl hctgt_open.uniqueMDiffOn
@@ -242,7 +247,10 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
             (fun x => mfderivWithin I I (f x) (Set.univ) ((fun q : ℝ × M => q.2) x))
             (t₀, b₀) q) := by
       funext q
-      rw [inTangentCoordinates, mfderivWithin_univ]
+      unfold inTangentCoordinates
+      have hfq : f q = fun y => Φ q.1 y := congrFun hf_def q
+      dsimp only
+      rw [hfq, mfderivWithin_univ]
     rw [hrw]
     exact hϕ
 
@@ -298,7 +306,12 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
     have hmaps : Set.MapsTo (fun y : M => ((t, y) : ℝ × M)) (Set.univ : Set M)
         (Set.Ioo lo hi ×ˢ (Set.univ : Set M)) := fun y _ => ⟨ht, Set.mem_univ _⟩
     have hcomp := hxsm.comp x hpair.contMDiffWithinAt hmaps
-    simpa using hcomp.contMDiffAt Filter.univ_mem
+    have hc := hcomp.contMDiffAt Filter.univ_mem
+    have hfun : (fun q : ℝ × M => Φ q.1 q.2) ∘ Prod.mk t = Φ t := by
+      funext y
+      rfl
+    rw [hfun] at hc
+    exact hc
   refine ⟨Φ, hΦ0, ?_, hvel_eq, ?_, ?_, ?_, ?_, ⟨lo, hi, hlo, hhi, hΦsm⟩⟩
   · intro t ht
     have ht0 : 0 < t := ht.1

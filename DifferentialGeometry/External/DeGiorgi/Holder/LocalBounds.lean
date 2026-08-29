@@ -47,7 +47,7 @@ noncomputable def moserHolderNorm
     (∫ z in Metric.ball (0 : E) 1, |u z| ^ p₀ ∂volume) ^ ((1 : ℝ) / p₀)
 
 noncomputable def localMoserPrefactor (p₀ : ℝ) : ℝ :=
-  (C_Moser d * (2 : ℝ) ^ (d : ℝ)) ^ ((1 : ℝ) / p₀)
+  (CMoser d * (2 : ℝ) ^ (d : ℝ)) ^ ((1 : ℝ) / p₀)
 
 theorem le_of_forall_pos_add_bound {a b : ℝ}
     (h : ∀ ε > 0, a ≤ b + ε) :
@@ -78,15 +78,15 @@ theorem moserDyadicRadius_eq_half_pow (n : ℕ) :
   simp [moserDyadicRadius, div_eq_mul_inv, inv_pow]
 
 theorem one_le_localMoserPrefactor_base :
-    1 ≤ C_Moser d * (2 : ℝ) ^ (d : ℝ) := by
+    1 ≤ CMoser d * (2 : ℝ) ^ (d : ℝ) := by
   have hpow : 1 ≤ (2 : ℝ) ^ (d : ℝ) := by
     exact Real.one_le_rpow (by norm_num) (by positivity)
   exact one_le_mul_of_one_le_of_one_le (one_le_C_Moser (d := d)) hpow
 
 theorem localMoserPrefactor_le_holderConstant
     {p₀ : ℝ} (hp₀ : 1 < p₀) :
-    localMoserPrefactor (d := d) p₀ ≤ C_holder_Moser d / 64 := by
-  let B : ℝ := C_Moser d * (2 : ℝ) ^ (d : ℝ)
+    localMoserPrefactor (d := d) p₀ ≤ CHolderMoser d / 64 := by
+  let B : ℝ := CMoser d * (2 : ℝ) ^ (d : ℝ)
   have hp₀_pos : 0 < p₀ := lt_trans zero_lt_one hp₀
   have hB_one : 1 ≤ B := one_le_localMoserPrefactor_base (d := d)
   have hroot_le : B ^ ((1 : ℝ) / p₀) ≤ B := by
@@ -97,15 +97,15 @@ theorem localMoserPrefactor_le_holderConstant
     linarith
   have hB_nonneg : 0 ≤ B := by
     exact le_trans (by norm_num : (0 : ℝ) ≤ 1) hB_one
-  have hB_le : B ≤ C_holder_Moser d / 64 := by
-    unfold C_holder_Moser B
-    have hlocal_nonneg : 0 ≤ C_Moser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ)) := by
+  have hB_le : B ≤ CHolderMoser d / 64 := by
+    unfold CHolderMoser B
+    have hlocal_nonneg : 0 ≤ CMoser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ)) := by
       exact localMoserBase_nonneg (d := d)
-    have hweak_nonneg : 0 ≤ C_weakHarnack_of d * (d : ℝ) ^ (d : ℝ) := by
+    have hweak_nonneg : 0 ≤ CWeakHarnackOf d * (d : ℝ) ^ (d : ℝ) := by
       refine mul_nonneg ?_ ?_
       · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_weakHarnack_of (d := d))
       · exact Real.rpow_nonneg (by positivity : (0 : ℝ) ≤ d) _
-    nlinarith [abs_nonneg (C_harnack d), hlocal_nonneg, hB_nonneg, hweak_nonneg]
+    nlinarith [abs_nonneg (CHarnack d), hlocal_nonneg, hB_nonneg, hweak_nonneg]
   simpa [localMoserPrefactor, B] using hroot_le.trans hB_le
 
 theorem moserHolderNorm_nonneg
@@ -174,7 +174,7 @@ theorem harnack_on_ball
     (hu_pos : ∀ x ∈ Metric.ball x₀ R, 0 < u x)
     (hsol : IsSolution A.1 u) :
     essSup u (ballMeasure x₀ (R / 2 : ℝ)) ≤
-      Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
+      Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
         essInf u (ballMeasure x₀ (R / 2 : ℝ)) := by
   let uR : E → ℝ := rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u
   let AR : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1) :=
@@ -198,7 +198,7 @@ theorem harnack_on_ball
   change
     essSup (fun z : E => u (x₀ + R • z))
         (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))) ≤
-      Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
+      Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
         essInf (fun z : E => u (x₀ + R • z))
           (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))) at hbase
   rw [essSup_rescale_halfBall (d := d) (x₀ := x₀) (R := R) hR,
@@ -243,7 +243,7 @@ theorem harnack_on_ball_ae_pos
     (hu_pos : ∀ᵐ x ∂ballMeasure x₀ R, 0 < u x)
     (hsol : IsSolution A.1 u) :
     essSup u (ballMeasure x₀ (R / 2 : ℝ)) ≤
-      Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
+      Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
         essInf u (ballMeasure x₀ (R / 2 : ℝ)) := by
   let v : E → ℝ := positiveBallRepresentative u x₀ R 1
   have hv_ae_ball : v =ᵐ[ballMeasure x₀ R] u :=
@@ -304,11 +304,11 @@ theorem localMoserBoundPow_eq
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} {p₀ : ℝ} (hp₀ : 1 < p₀) :
     (localMoserPrefactor (d := d) p₀ * moserHolderNorm A u p₀) ^ p₀ =
-      C_Moser d * (2 : ℝ) ^ (d : ℝ) *
+      CMoser d * (2 : ℝ) ^ (d : ℝ) *
         A.1.Λ ^ ((d : ℝ) / 2) *
         (p₀ / (p₀ - 1)) ^ (d : ℝ) *
         (∫ z in Metric.ball (0 : E) 1, |u z| ^ p₀ ∂volume) := by
-  let B : ℝ := C_Moser d * (2 : ℝ) ^ (d : ℝ)
+  let B : ℝ := CMoser d * (2 : ℝ) ^ (d : ℝ)
   let L : ℝ := A.1.Λ ^ ((d : ℝ) / (2 * p₀))
   let P : ℝ := (p₀ / (p₀ - 1)) ^ ((d : ℝ) / p₀)
   let I : ℝ := ∫ z in Metric.ball (0 : E) 1, |u z| ^ p₀ ∂volume
@@ -371,7 +371,7 @@ theorem localMoserBoundPow_eq
           rw [Real.mul_rpow hL_nonneg hP_nonneg]
     _ = B * (A.1.Λ ^ ((d : ℝ) / 2) * (p₀ / (p₀ - 1)) ^ (d : ℝ) * I) := by
           rw [hLpow, hPpow, hIpow]
-    _ = C_Moser d * (2 : ℝ) ^ (d : ℝ) *
+    _ = CMoser d * (2 : ℝ) ^ (d : ℝ) *
           A.1.Λ ^ ((d : ℝ) / 2) *
           (p₀ / (p₀ - 1)) ^ (d : ℝ) *
           (∫ z in Metric.ball (0 : E) 1, |u z| ^ p₀ ∂volume) := by
@@ -430,13 +430,15 @@ theorem ae_posPart_le_localMoserBound_on_quarterBall
   have hlinfty :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
         |max (u z) 0| ^ p₀ ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (p₀ / (p₀ - 1)) ^ (d : ℝ) *
             (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
               ∫ z in Metric.ball x (1 / 2 : ℝ), |max (u z) 0| ^ p₀ ∂volume) := by
-    convert hlinfty_raw using 1
-    · simp [ballMeasure, div_eq_mul_inv]
+    have hradius : (1 / 2 : ℝ) / 2 = 1 / 4 := by
       norm_num
+    rw [hradius] at hlinfty_raw
+    simpa [ballMeasure, Ahalf, NormalizedEllipticCoeff.restrict,
+      div_eq_mul_inv] using hlinfty_raw
   have hhalf_pos_le_abs :
       ∫ z in Metric.ball x (1 / 2 : ℝ), |max (u z) 0| ^ p₀ ∂volume ≤
         ∫ z in Metric.ball x (1 / 2 : ℝ), |u z| ^ p₀ ∂volume := by
@@ -449,7 +451,7 @@ theorem ae_posPart_le_localMoserBound_on_quarterBall
       (ae_of_all _ (by intro z; exact Real.rpow_nonneg (abs_nonneg _) _))
       (ae_of_all _ hhalf_ball)
   have hcoeff_nonneg :
-      0 ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * (p₀ / (p₀ - 1)) ^ (d : ℝ) := by
+      0 ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * (p₀ / (p₀ - 1)) ^ (d : ℝ) := by
     refine mul_nonneg (mul_nonneg ?_ ?_) ?_
     · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_Moser (d := d))
     · exact Real.rpow_nonneg A.1.Λ_nonneg _
@@ -462,7 +464,7 @@ theorem ae_posPart_le_localMoserBound_on_quarterBall
   have hscale_nonneg : 0 ≤ (2 : ℝ) ^ (d : ℝ) := by
     exact Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 2) _
   have hrhs_le :
-      C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+      CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
           (p₀ / (p₀ - 1)) ^ (d : ℝ) *
           (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
             ∫ z in Metric.ball x (1 / 2 : ℝ), |max (u z) 0| ^ p₀ ∂volume) ≤
@@ -505,7 +507,7 @@ theorem ae_abs_le_moserHolderNorm_on_quarterBall
     (hInt : IntegrableOn (fun z => |u z| ^ p₀) (Metric.ball (0 : E) 1) volume)
     {x : E} (hx : x ∈ Metric.ball (0 : E) (1 / 2 : ℝ)) :
     ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-      |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+      |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
   have hpos :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
         max (u z) 0 ≤ localMoserPrefactor (d := d) p₀ * moserHolderNorm A u p₀ :=
@@ -533,7 +535,7 @@ theorem ae_abs_le_moserHolderNorm_on_quarterBall
     exact mul_nonneg hpref_nonneg (moserHolderNorm_nonneg (d := d) A hp₀)
   have hpref_le :
       localMoserPrefactor (d := d) p₀ * moserHolderNorm A u p₀ ≤
-        (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+        (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     exact mul_le_mul_of_nonneg_right
       (localMoserPrefactor_le_holderConstant (d := d) (p₀ := p₀) hp₀)
       (moserHolderNorm_nonneg (d := d) A hp₀)

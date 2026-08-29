@@ -124,7 +124,7 @@ theorem triFormToModel_norm_map (B : F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :
     ext u
     simp only [ContinuousLinearEquiv.arrowCongr_apply, ContinuousLinearEquiv.refl_symm,
       ContinuousLinearEquiv.refl_apply, LinearIsometryEquiv.coe_toContinuousLinearEquiv,
-      ContinuousLinearMap.coe_comp', Function.comp_apply,
+      ContinuousLinearMap.coe_comp, Function.comp_apply,
       LinearIsometry.coe_toContinuousLinearMap, LinearIsometryEquiv.coe_toLinearIsometry]
   rw [hcomp, (biForm₂ToModelₗᵢ F).toLinearIsometry.norm_toContinuousLinearMap_comp]
 
@@ -172,7 +172,7 @@ theorem quadFormToModel_norm_map (B : F →L[ℝ] F →L[ℝ] F →L[ℝ] F →L
     ext u
     simp only [ContinuousLinearEquiv.arrowCongr_apply, ContinuousLinearEquiv.refl_symm,
       ContinuousLinearEquiv.refl_apply, LinearIsometryEquiv.coe_toContinuousLinearEquiv,
-      ContinuousLinearMap.coe_comp', Function.comp_apply,
+      ContinuousLinearMap.coe_comp, Function.comp_apply,
       LinearIsometry.coe_toContinuousLinearMap, LinearIsometryEquiv.coe_toLinearIsometry]
   rw [hcomp, (triFormToModelₗᵢ F).toLinearIsometry.norm_toContinuousLinearMap_comp]
 

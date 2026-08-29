@@ -36,18 +36,17 @@ lemma chartBasisVecFiber_eq_chartParallelExtend_on_baseSet
           (chartBasisVecFiber (I := I) α j b) b' := by
   intro b'
   unfold chartParallelExtend
-  change (trivializationAt E (TangentSpace I) α).symm b' ((chartModelBasis E) j) =
-    trivFromE (I := I) α b'
-      (trivToE (I := I) α b
-        ((trivializationAt E (TangentSpace I) α).symm b ((chartModelBasis E) j)))
-  have hround : trivToE (I := I) α b
-      ((trivializationAt E (TangentSpace I) α).symm b ((chartModelBasis E) j)) =
+  have hcoe : ∀ z, chartBasisVecFiber (I := I) α j z =
+      trivFromE (I := I) α z ((chartModelBasis E) j) := by
+    intro z
+    unfold chartBasisVecFiber trivFromE
+    rfl
+  have hround : trivToE (I := I) α b (chartBasisVecFiber (I := I) α j b) =
       (chartModelBasis E) j := by
-    change trivToE (I := I) α b
-        (trivFromE (I := I) α b ((chartModelBasis E) j)) = (chartModelBasis E) j
+    rw [hcoe b]
     exact trivToE_trivFromE (I := I) α hb ((chartModelBasis E) j)
   rw [hround]
-  rfl
+  exact hcoe b'
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma chartBasisVecFiber_eventuallyEq_chartParallelExtend
@@ -93,7 +92,7 @@ lemma LeviCivita_chartBasisVecFiber_eq
       trivFromE (I := I) α b
         (christoffelCorrection (I := I) g α b ((chartModelBasis E) j) v) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hsection_diff : MDiffAt
       (T% (fun b' : M => chartBasisVecFiber (I := I) α j b')) b :=
     chartBasisVecFiber_mdifferentiableAt (I := I) α j
@@ -438,12 +437,10 @@ theorem deTurckVF_apply_eq_chartDeTurckVFComp_sum_self
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       ∑ p : Fin (Module.finrank ℝ E),
         DeTurckLinearization.chartDeTurckVFComp (I := I) g g' x p (extChartAt I x x) •
-          ((chartModelBasis E) p : TangentSpace I x) := by
+          (centeredChartTangentBasis (I := I) x) p := by
   rw [deTurckVF_apply_eq_chartDeTurckVFComp_sum (I := I) g g' x
     (self_mem_chartLeviCivitaGoodSet (I := I) (α := x))]
-  refine Finset.sum_congr rfl (fun p _ => ?_)
-  congr 1
-  exact chartBasisVecFiber_self (I := I) x p
+  exact Finset.sum_congr rfl (fun p _ ↦ congrArg _ (chartBasisVecFiber_self (I := I) x p))
 
 end DeTurck
 end PDE

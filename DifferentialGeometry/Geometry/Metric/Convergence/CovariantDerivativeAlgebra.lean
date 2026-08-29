@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -90,7 +89,7 @@ theorem metricCovDeriv_succ_eval_smooth_slots_gen
     (x : M) :
     metricCovDeriv (I := I) h gRef (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCovDeriv (I := I) h gRef a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),
@@ -177,13 +176,13 @@ noncomputable def covStep
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
     Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s + 1) := by
-  haveI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  let _ : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
   let cov :=
@@ -255,23 +254,23 @@ theorem covStep_eval_smooth_slots
       (TangentSpace I : M -> Type _))
     (x : M) :
     covStep (I := I) g₂ r A x (Fin.cons (X x) (fun q : Fin r => V q x))
-      = extDerivFun (I := I)
+      = mvfderiv (I := I)
           (fun y : M => A y (fun q : Fin r => V q y)) x (X x) -
         ∑ q : Fin r,
           A x (Function.update (fun b : Fin r => V b x) q
             (((leviCivitaConnectionOfMetric (I := I) g₂)
                 (fun y : M => V q y) x) (X x))) := by
-  haveI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  let _ : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  let _ : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  let _ : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   rw [covStep_apply, Tensor0SBundle.totalNabla0SFun_apply_section]
   exact Tensor0SBundle.nabla0SFun_eval_smooth_slots
@@ -335,17 +334,17 @@ theorem diffStep_apply
             (((CovariantDerivative.difference
                 (leviCivitaConnectionOfMetric (I := I) g₁)
                 (leviCivitaConnectionOfMetric (I := I) g₂) x) (V a x)) (X x))) := by
-  haveI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  let _ : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  let _ : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  let _ : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   have hsec : diffStep (I := I) g₁ g₂ s S x =
       covStep (I := I) g₁ s S x - covStep (I := I) g₂ s S x := by
@@ -461,22 +460,22 @@ theorem diffStep_leibniz_eval
                     (leviCivitaConnectionOfMetric (I := I) g₂) x
                     (Vslots a x)) (V x)))) := by
   classical
-  haveI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I 2 M :=
+  let _ : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  let _ : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
-  haveI : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
+  let _ : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  haveI hcov₁ : CovariantDerivative.ContMDiffCovariantDerivative
+  let _ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₁)
         (∞ : WithTop ℕ∞) := leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₁
-  haveI hcov₂ : CovariantDerivative.ContMDiffCovariantDerivative
+  let _ : CovariantDerivative.ContMDiffCovariantDerivative
       (leviCivitaConnectionOfMetric (I := I) g₂)
         (∞ : WithTop ℕ∞) := leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set VV : Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -533,26 +532,29 @@ theorem diffStep_leibniz_eval
         (x₀ := x)
         (T := fun y : M => S y) hS (v := fun b : Fin s => fun y : M => (τ a b) y)
         (hv := fun b => ((τ a b).contMDiff.contMDiffAt))
-      simpa [Tensor0SBundle.Tensor0SSpace.toModel,
-        Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply] using hEval
+      convert hEval using 1
+      · rfl
+      · rfl
+      · funext y
+        rfl
     exact hSAt.mdifferentiableAt (by simp)
   simp only [← hτeval]
-  have hDF : extDerivFun (I := I)
+  have hDF : mvfderiv (I := I)
         (fun y : M => -∑ a : Fin s, (S y) (fun b : Fin s => (τ a b) y)) x (W x)
       = -∑ a : Fin s,
-          extDerivFun (I := I) (fun y : M => (S y) (fun b : Fin s => (τ a b) y)) x (W x) := by
+          mvfderiv (I := I) (fun y : M => (S y) (fun b : Fin s => (τ a b) y)) x (W x) := by
     have h1 : (fun y : M => -∑ a : Fin s, (S y) (fun b : Fin s => (τ a b) y))
         = (fun y : M => -(Finset.univ.sum
             (fun a : Fin s => fun y' : M => (S y') (fun b : Fin s => (τ a b) y'))) y) := by
       funext y; simp only [Finset.sum_apply]
-    rw [h1, extDerivFun_neg_at (I := I) (W x)
+    rw [h1, mvfderiv_neg_at (I := I) (W x)
           (mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hdiff a)),
-        extDerivFun_finset_sum_at (I := I) Finset.univ
+        mvfderiv_finset_sum_at (I := I) Finset.univ
           (fun a : Fin s => fun y : M => (S y) (fun b : Fin s => (τ a b) y)) (W x)
           (fun a _ => hdiff a)]
   rw [hDF]
   have hEDF : ∀ a : Fin s,
-      extDerivFun (I := I) (fun y : M => (S y) (fun b : Fin s => (τ a b) y)) x (W x)
+      mvfderiv (I := I) (fun y : M => (S y) (fun b : Fin s => (τ a b) y)) x (W x)
       = (covStep (I := I) g₂ s S) x (Fin.cons (W x) (fun b : Fin s => (τ a b) x))
         + ∑ b : Fin s, (S x) (Function.update (fun b' : Fin s => (τ a b') x) b
             ((cov₂ (fun y : M => (τ a b) y) x) (W x))) := by
@@ -611,8 +613,8 @@ theorem diffStep_leibniz_eval
       rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun a _ => ?_)
       rw [← Finset.add_sum_erase _ _ (Finset.mem_univ a), hτeval a x, Function.update_idem,
-        hFact1 a, ContinuousMultilinearMap.map_update_add,
-        ContinuousMultilinearMap.map_update_add]
+        hFact1 a, Tensor0SBundle.Tensor0SSpace.map_update_add,
+        Tensor0SBundle.Tensor0SSpace.map_update_add]
       have herase : ∀ b ∈ Finset.univ.erase a,
           (S x) (Function.update (Function.update (fun c : Fin s => (Vslots c) x) a
               ((CovariantDerivative.difference cov₁ cov₂ x ((Vslots a) x)) (V x))) b

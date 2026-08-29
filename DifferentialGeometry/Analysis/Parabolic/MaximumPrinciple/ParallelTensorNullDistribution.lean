@@ -23,30 +23,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-private local instance nullTensor02NormedAddCommGroup (x : M) :
-    NormedAddCommGroup (Tensor0SSpace 2 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 2 x
-
-private local instance nullTensor02NormedSpace (x : M) :
-    NormedSpace Real (Tensor0SSpace 2 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 2 x
-
-private local instance nullTensor02AddCommGroup (x : M) :
-    AddCommGroup (Tensor0SSpace 2 I x) :=
-  @NormedAddCommGroup.toAddCommGroup _ (nullTensor02NormedAddCommGroup (I := I) x)
-
-private local instance nullTensor02Module (x : M) :
-    Module Real (Tensor0SSpace 2 I x) :=
-  @NormedSpace.toModule _ _ _ _ (nullTensor02NormedSpace (I := I) x)
-
-private local instance nullTensor02TopologicalSpace (x : M) :
-    TopologicalSpace (Tensor0SSpace 2 I x) :=
-  @UniformSpace.toTopologicalSpace _
-    (@PseudoMetricSpace.toUniformSpace _
-      (@MetricSpace.toPseudoMetricSpace _
-        (@NormedAddCommGroup.toMetricSpace _
-          (nullTensor02NormedAddCommGroup (I := I) x))))
-
 def ParallelNullDistribution
     {F : M → Type _} [∀ x, NormedAddCommGroup (F x)]
     [∀ x, NormedSpace Real (F x)]
@@ -54,7 +30,7 @@ def ParallelNullDistribution
   ∀ x y, (N x).map (tr x y : F x →ₗ[Real] F y) = N y
 
 theorem parallelTensorNullDirection_of_terminal_null
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -108,7 +84,9 @@ theorem parallelTensorNullDirection_of_terminal_null
     simpa [C, phi] using
       (tensor02EvalSelfCLM_isDualElement (I := I) (M := M) v₀)
   have hzero' : dualScalarization u₀ phi tau x₁ = 0 := by
-    simpa [dualScalarization, u₀, phi] using hzero
+    change tensor02EvalSelfCLM (I := I) (M := M) v₀ (tr x₁ x₀ (u tau x₁)) = 0
+    rw [tensor02EvalSelfCLM_apply]
+    exact hzero
   have hfixed_mem : ∀ t : Real, t ∈ Set.Icc 0 tau → ∀ x : M, u₀ t x ∈ C x₀ := by
     intro t ht x
     change tr x x₀ (u t x) ∈ C x₀
@@ -138,7 +116,7 @@ theorem parallelTensorNullDirection_of_terminal_null
   exact ⟨hkernel, by simpa [A, C] using hA_mem⟩
 
 theorem parallelTensorNullSpace_of_terminal_null
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -187,7 +165,6 @@ theorem parallelTensorNullSpace_of_terminal_null
   have hmem_tau : u tau x₁ ∈ C x₁ := by
     simpa [C] using hmem tau ⟨le_of_lt htau.1, le_rfl⟩ x₁
   have htransported_mem : tr x₁ x₀ (u tau x₁) ∈ C x₀ := by
-    change tr x₁ x₀ (u tau x₁) ∈ C x₀
     change tr x₁ x₀ (u tau x₁) ∈ tensor02PositiveSemidefiniteCone (I := I) (M := M)
     rw [← hC x₁ x₀]
     exact (ProperCone.mem_map_continuousLinearEquiv_iff
@@ -208,7 +185,7 @@ theorem parallelTensorNullSpace_of_terminal_null
       hgrad_cont hlaplacian_cont L hV hzero) t ht x |>.1
 
 theorem parallelTensorNullSpace_eq_transported_terminal_of_constant_finrank
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiField
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Metric.FiberExpansion
 import DifferentialGeometry.Analysis.ODE.SecondOrderLinearExistence
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -68,8 +69,8 @@ theorem parInner_d2
   rw [jacobi_d2_eq (I := I) g γ Y hY] at h
   simpa using h
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
 theorem parInner_curv_expand
@@ -94,11 +95,11 @@ theorem parInner_curv_expand
   classical
   have hexp := gON_expand (I := I) g (γ t) (fun j => F j t) hON hcard (Y t)
   conv_lhs => rw [hexp]
-  simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
-    ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
+  simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
+    FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
 theorem jacobi_unique
@@ -215,7 +216,6 @@ theorem jacobi_unique
         rw [neg_sub_neg, hexp₁, hexp₂, ← Finset.sum_sub_distrib]
         refine Finset.sum_congr rfl fun j _ => ?_
         ring
-      simp only []
       rw [hw]
       calc |∑ j, (g.inner (γ t) (F j t) (Y₂ t)
                 - g.inner (γ t) (F j t) (Y₁ t))
@@ -244,8 +244,8 @@ theorem jacobi_unique
             rw [Finset.mul_sum]
             refine Finset.sum_congr rfl fun j _ => ?_
             rw [abs_sub_comm]; ring)
-    (fun i => by simp only []; rw [h0, sub_self])
-    (fun i => by simp only []; rw [h0', sub_self])
+    (fun i => by rw [h0, sub_self])
+    (fun i => by rw [h0', sub_self])
   intro t ht
   have hexp₁ := gON_expand (I := I) g (γ t) (fun j => F j t)
     (hON t ht) (hcard t ht) (Y₁ t)

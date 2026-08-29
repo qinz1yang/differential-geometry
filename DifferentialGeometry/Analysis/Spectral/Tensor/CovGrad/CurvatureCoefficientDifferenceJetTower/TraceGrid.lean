@@ -653,6 +653,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_pairTraceOp_diff_grid
             c2 * K4 l * gridSumPairCount (m + 1) (l + 1))) * Ggrid j := by
         ring
 
+omit [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_iteratedCovGrad_WBform_le (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (l : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + l) x

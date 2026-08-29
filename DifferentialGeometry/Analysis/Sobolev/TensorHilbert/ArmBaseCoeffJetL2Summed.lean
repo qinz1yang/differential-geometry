@@ -33,16 +33,17 @@ private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ)
     ∑ i ∈ Finset.range m, g (i + c) ≤ ∑ j ∈ Finset.range (m + c), g j := by
   classical
   have hsub :
-      (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩ ⊆
+      (Finset.range m).map ⟨fun i => i + c, fun _ _ h => Nat.add_right_cancel h⟩ ⊆
         Finset.range (m + c) := by
     intro j hj
     rw [Finset.mem_map] at hj
     obtain ⟨i, hi, rfl⟩ := hj
     rw [Finset.mem_range] at hi ⊢
-    simp only [Function.Embedding.coeFn_mk]
+    change i + c < m + c
     omega
   calc ∑ i ∈ Finset.range m, g (i + c)
-      = ∑ j ∈ (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩, g j := by
+      = ∑ j ∈ (Finset.range m).map
+          ⟨fun i => i + c, fun _ _ h => Nat.add_right_cancel h⟩, g j := by
         rw [Finset.sum_map]; rfl
     _ ≤ ∑ j ∈ Finset.range (m + c), g j :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun j _ _ => hg j)

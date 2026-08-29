@@ -304,12 +304,21 @@ theorem nonautL2_contract
       (nonautL2Map (I := I) (M := M) hT hT1 h_compact
         A2 hA2 C2 hC2 A1 hA1) := by
   refine ⟨?_, ?_⟩
-  · rw [← NNReal.coe_lt_coe]
-    simpa only [NNReal.coe_mk] using hsmall
+  · change
+      (C2 : ℝ) * (1 + T) +
+          2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖ < 1
+    exact hsmall
   · refine LipschitzWith.of_dist_le_mul (fun f f' => ?_)
     have h := nonautL2_dist_le (I := I) (M := M)
       hT hT1 h_compact A2 hA2 C2 hC2 A1 hA1 f f'
-    simpa only [NNReal.coe_mk] using h
+    change dist
+      (nonautL2Map (I := I) (M := M) hT hT1 h_compact
+        A2 hA2 C2 hC2 A1 hA1 f)
+      (nonautL2Map (I := I) (M := M) hT hT1 h_compact
+        A2 hA2 C2 hC2 A1 hA1 f') ≤
+      ((C2 : ℝ) * (1 + T) +
+          2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖) * dist f f'
+    exact h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem nonautL2_forced

@@ -64,7 +64,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     (W : SmoothCcTensor g 0 s) :
     ccUnitField (I := I) g' s (W.recast (g' := g')) = ccUnitField (I := I) g s W := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem iterCovGrad_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ)
     (W : SmoothCcTensor g 0 s) (j : ℕ) :
     (fun x : M => (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + j) I x from
@@ -80,9 +80,14 @@ theorem iterCovGrad_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ)
         (covGrad (I := I) (M := M) g 0 (s + j) Tj).toSection x)
         (unitZeroSec (I := I) (M := M) x) =
       iterCov (I := I) g s (ccUnitField (I := I) g s W) (j + 1) x
-    apply Tensor0SSpace.toModel_injective
-    apply ContinuousMultilinearMap.ext
+    apply Tensor0SBundle.tensor0SSpace_ext (I := I) (s + j + 1) x
     intro v
+    change Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace ((s + j) + 1) I x from
+          (covGrad (I := I) (M := M) g 0 (s + j) Tj).toSection x)
+          (unitZeroSec (I := I) (M := M) x)) v =
+      Tensor0SSpace.eval
+        (iterCov (I := I) g s (ccUnitField (I := I) g s W) (j + 1) x) v
     obtain ⟨X, hXx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
       (F := E) (V := (TangentSpace I : M → Type _)) x (v 0)
     have hcons : v = Fin.cons (v 0) (Matrix.vecTail v) := by
@@ -91,7 +96,9 @@ theorem iterCovGrad_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ)
       · simp
       · intro k; simp [Matrix.vecTail]
     rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g (s + j) Tj x v]
-    rw [tensorCovDerivAt_def (I := I) (M := M) g 0 (s + j) Tj x (v 0)]
+    rw [tensorCovDerivAt_def (I := I) (M := M) g 0 (s + j) Tj x
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0)),
+      ContinuousLinearEquiv.symm_apply_apply]
     rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) g (s + j) (Tj.toSection) x (v 0)]
     rw [ih]
     rw [← hXx]
@@ -100,15 +107,7 @@ theorem iterCovGrad_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ)
     rw [iterCov_succ, covStep_apply]
     have hcons2 : v = Fin.cons (X x) (Matrix.vecTail v) := by rw [hXx]; exact hcons
     conv_rhs => rw [hcons2]
-    rw [show Tensor0SSpace.toModel (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-          (s + j) (leviCivitaConnectionOfMetric (I := I) g)
-          (iterCov (I := I) g s (ccUnitField (I := I) g s W) j) x)
-          (Fin.cons (X x) (Matrix.vecTail v)) =
-        totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-          (s + j) (leviCivitaConnectionOfMetric (I := I) g)
-          (iterCov (I := I) g s (ccUnitField (I := I) g s W) j) x
-          (Fin.cons (X x) (Matrix.vecTail v)) from rfl]
-    rw [totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    rw [totalNabla0SFun_eval_section (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + j) (leviCivitaConnectionOfMetric (I := I) g) X
       (iterCov (I := I) g s (ccUnitField (I := I) g s W) j) x (Matrix.vecTail v)]
     rfl
@@ -119,7 +118,8 @@ private lemma lowerAllUpper0_unit (g : SmoothRiemannianMetric I M) (s : ℕ) (x 
     (W : SmoothCcTensor g 0 s) (w : Fin (0 + s) → TangentSpace I x) :
     lowerAllUpperIndices (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel
-          (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)) w =
+          (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
         (unitZeroSec (I := I) (M := M) x) (fun j : Fin s => w (Fin.natAdd 0 j)) := by
   rw [lowerAllUpperIndices_apply, separableFormAt_zero]
@@ -152,7 +152,9 @@ theorem riemannianFiberNormSq0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ
     (metricInverseInBasis_of_orthonormal (I := I) g basis hON) _]
   symm
   refine Fintype.sum_equiv
-    (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm) (Equiv.refl _)) _ _ ?_
+    (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm)
+      (finCongr (show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from rfl)))
+      _ _ ?_
   intro slots
   rw [component0S_apply]
   rw [show ccUnitField (I := I) g s W x =
@@ -162,12 +164,12 @@ theorem riemannianFiberNormSq0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ
   rw [sq]
   congr 1 <;>
     (congr 1; funext a;
-     simp only [Equiv.arrowCongr_apply, Equiv.coe_refl, Function.comp_apply, id_eq];
+     simp only [Equiv.arrowCongr_apply, Function.comp_apply];
      congr 1;
      apply Fin.ext;
      simp)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iterCovGrad_eq (g : SmoothRiemannianMetric I M) (s j : ℕ)
     (W : SmoothCcTensor g 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (s + j) x
@@ -327,7 +329,7 @@ private theorem towerCrossOne_le
       (fun _ => le_refl 0) hEq hjet (Set.mem_univ x) 1 hacc
     nlinarith
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem sqrtRiemannianFiberNormSq_one_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Λ' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
@@ -470,7 +472,7 @@ private theorem towerCross_le
   · have h2 := iterCovG1_two (I := I) gBase g₀ s U x hEq hjet hJet1 hJet2 (Set.mem_univ x)
     nlinarith
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem sqrtRiemannianFiberNormSq_cross_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Λ' Λ'' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
@@ -633,7 +635,7 @@ theorem jetCross_l2_one
     integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (s + k) _
   have hIntF0 : Integrable F μ0 := by
     rw [hF]
-    exact (integrable_finset_sum (Finset.range 2) (fun k _ => hIntR k)).const_mul
+    exact (integrable_finsetSum (Finset.range 2) (fun k _ => hIntR k)).const_mul
       (2 * P ^ 2)
   have hmeasle : μB ≤ ENNReal.ofReal c • μ0 :=
     (volumeMeasure_cross_le (I := I) gBase g₀ hEq).2
@@ -659,7 +661,7 @@ theorem jetCross_l2_one
       2 * P ^ 2 * ∑ k ∈ Finset.range 2, b k ^ 2 := by
     rw [hF, MeasureTheory.integral_const_mul]
     congr 1
-    rw [MeasureTheory.integral_finset_sum (Finset.range 2) (fun k _ => hIntR k)]
+    rw [MeasureTheory.integral_finsetSum (Finset.range 2) (fun k _ => hIntR k)]
     exact (Finset.sum_congr rfl (fun k _ => hnormB k)).symm
   have hchain : ‖A‖ ^ 2 ≤
       c * (2 * P ^ 2 * ∑ k ∈ Finset.range 2, b k ^ 2) := by
@@ -778,7 +780,7 @@ theorem jetCross_l2
     integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (s + k) _
   have hIntF0 : Integrable F μ0 := by
     rw [hF]
-    exact (integrable_finset_sum (Finset.range 3) (fun k _ => hIntR k)).const_mul (3 * P ^ 2)
+    exact (integrable_finsetSum (Finset.range 3) (fun k _ => hIntR k)).const_mul (3 * P ^ 2)
   have hmeasle : μB ≤ ENNReal.ofReal c • μ0 := (volumeMeasure_cross_le (I := I) gBase g₀ hEq).2
   have hIntFs : Integrable F (ENNReal.ofReal c • μ0) :=
     hIntF0.smul_measure ENNReal.ofReal_ne_top
@@ -799,7 +801,7 @@ theorem jetCross_l2
     rw [hF]
     rw [MeasureTheory.integral_const_mul]
     congr 1
-    rw [MeasureTheory.integral_finset_sum (Finset.range 3) (fun k _ => hIntR k)]
+    rw [MeasureTheory.integral_finsetSum (Finset.range 3) (fun k _ => hIntR k)]
     exact (Finset.sum_congr rfl (fun k _ => (hnormB k))).symm
   have hchain : ‖A‖ ^ 2 ≤ c * (3 * P ^ 2 * ∑ k ∈ Finset.range 3, b k ^ 2) := by
     rw [hnormA]

@@ -558,20 +558,20 @@ theorem christD2_pou_bnd
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
     (Q₁ Q₂ Q₃ : ℝ) (hQ₁_nn : 0 ≤ Q₁) (hQ₂_nn : 0 ≤ Q₂) (hQ₃_nn : 0 ≤ Q₃)
-    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
-    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) d
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a c)) (extChartAt I α b)| ≤ Q₂)
-    (hQ₃ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₃ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -580,7 +580,7 @@ theorem christD2_pou_bnd
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α a c))) (extChartAt I α b)| ≤ Q₃) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d m i j l : Fin (Module.finrank ℝ E),
@@ -663,20 +663,20 @@ theorem christD2_pou_lip
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
     (Q₁ Q₂ Q₃ : ℝ) (hQ₁_nn : 0 ≤ Q₁) (hQ₂_nn : 0 ≤ Q₂) (hQ₃_nn : 0 ≤ Q₃)
-    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
-    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) d
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a c)) (extChartAt I α b)| ≤ Q₂)
-    (hQ₃ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₃ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -685,7 +685,7 @@ theorem christD2_pou_lip
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α a c))) (extChartAt I α b)| ≤ Q₃) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d m i j l : Fin (Module.finrank ℝ E),

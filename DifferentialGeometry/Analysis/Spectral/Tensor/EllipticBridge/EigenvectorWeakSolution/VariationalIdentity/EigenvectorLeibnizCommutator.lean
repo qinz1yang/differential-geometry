@@ -286,16 +286,16 @@ def diffVariationalSource
   (∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
       (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
-          (EuclideanSpace.single j 1) * D.weak_partial i y)
+          (EuclideanSpace.single j 1) * D.weakPartial i y)
   + (∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weak_partial i)
+          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weakPartial i)
             (chartTargetEuclid (I := I) (M := M) α) y)
-  - densityDerivOnEuclid (I := I) g α l y * D.u_chart y
-  + densityDerivOnEuclid (I := I) g α l y * D.f_chart y
+  - densityDerivOnEuclid (I := I) g α l y * D.uChart y
+  + densityDerivOnEuclid (I := I) g α l y * D.fChart y
   + densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.f_chart
+      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.fChart
         (chartTargetEuclid (I := I) (M := M) α) y
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -319,7 +319,7 @@ private lemma integrable_triple
       ((volume : Measure EuclN).restrict K) Set.univ < (⊤ : ℝ≥0∞) := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hK_compact.measure_lt_top
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
   have hu_int_K : IntegrableOn u K (volume : Measure EuclN) :=
     (hu K hK_compact hK_in).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   set ah : EuclN → ℝ := fun y => a y * h y with hah_def
@@ -366,12 +366,12 @@ theorem chartBilinear_diff_variational_identity
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (l : Fin (Module.finrank ℝ E))
-    (h_u_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.u_chart
+    (h_u_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.uChart
       (chartTargetEuclid (I := I) (M := M) α))
     (h_wp_memW1p : ∀ i : Fin (Module.finrank ℝ E),
-      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 (D.weak_partial i)
+      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 (D.weakPartial i)
         (chartTargetEuclid (I := I) (M := M) α))
-    (h_f_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.f_chart
+    (h_f_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.fChart
       (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
@@ -380,13 +380,13 @@ theorem chartBilinear_diff_variational_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i)
+            chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weakPartial i)
               (chartTargetEuclid (I := I) (M := M) α) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.u_chart
+        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.uChart
           (chartTargetEuclid (I := I) (M := M) α) y * ψ y
       ∂(volume : Measure EuclN)) =
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -456,30 +456,30 @@ theorem chartBilinear_diff_variational_identity
       tsupport (fun y : EuclN => (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1)) ⊆ Ω :=
     fun j => (tsupport_partial_subset ψ_l j).trans hψ_l_supp
   have h_u_loc : ∀ K : Set EuclN, IsCompact K → K ⊆ Ω →
-      MemLp D.u_chart 2 ((volume : Measure EuclN).restrict K) :=
+      MemLp D.uChart 2 ((volume : Measure EuclN).restrict K) :=
     fun K hKc hKi => memLp_restrict_of_memLp_restrict h_u_memW1p.1 hKc hKi
   have h_f_loc : ∀ K : Set EuclN, IsCompact K → K ⊆ Ω →
-      MemLp D.f_chart 2 ((volume : Measure EuclN).restrict K) :=
+      MemLp D.fChart 2 ((volume : Measure EuclN).restrict K) :=
     fun K hKc hKi => memLp_restrict_of_memLp_restrict h_f_memW1p.1 hKc hKi
   have h_wp_loc : ∀ (i : Fin (Module.finrank ℝ E)) (K : Set EuclN),
       IsCompact K → K ⊆ Ω →
-      MemLp (D.weak_partial i) 2 ((volume : Measure EuclN).restrict K) :=
+      MemLp (D.weakPartial i) 2 ((volume : Measure EuclN).restrict K) :=
     fun i K hKc hKi => memLp_restrict_of_memLp_restrict (h_wp_memW1p i).1 hKc hKi
   have h_wp_wp_loc : ∀ (i j : Fin (Module.finrank ℝ E)) (K : Set EuclN),
       IsCompact K → K ⊆ Ω →
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weak_partial i) Ω)
+      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weakPartial i) Ω)
         2 ((volume : Measure EuclN).restrict K) :=
     fun i j K hKc hKi =>
       memLp_restrict_of_memLp_restrict
         (chosenWeakPartial'_memLp_of_mem (h_wp_memW1p i) j) hKc hKi
   have h_f_wp_loc : ∀ (K : Set EuclN), IsCompact K → K ⊆ Ω →
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.f_chart Ω)
+      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.fChart Ω)
         2 ((volume : Measure EuclN).restrict K) :=
     fun K hKc hKi =>
       memLp_restrict_of_memLp_restrict
         (chosenWeakPartial'_memLp_of_mem h_f_memW1p l) hKc hKi
   have h_u_wp_loc : ∀ (K : Set EuclN), IsCompact K → K ⊆ Ω →
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.u_chart Ω)
+      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.uChart Ω)
         2 ((volume : Measure EuclN).restrict K) :=
     fun K hKc hKi =>
       memLp_restrict_of_memLp_restrict
@@ -488,27 +488,27 @@ theorem chartBilinear_diff_variational_identity
     fun i j =>
       ∫ y in Ω,
         (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
-            (EuclideanSpace.single j 1) * D.weak_partial i y * ψ y
+            (EuclideanSpace.single j 1) * D.weakPartial i y * ψ y
         ∂(volume : Measure EuclN) with hA_pair_def
   set B_pair : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j =>
       ∫ y in Ω,
         weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weak_partial i) Ω y *
+          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weakPartial i) Ω y *
           ψ y
         ∂(volume : Measure EuclN) with hB_pair_def
   set PR_pair : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j =>
       ∫ y in Ω,
         weightedInvGramOnEuclid (I := I) g α i j y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i) Ω y *
+          chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weakPartial i) Ω y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
         ∂(volume : Measure EuclN) with hPR_pair_def
   set LHS_m_pair : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j =>
       ∫ y in Ω,
         weightedInvGramOnEuclid (I := I) g α i j y *
-          D.weak_partial i y *
+          D.weakPartial i y *
           (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1)
         ∂(volume : Measure EuclN) with hLHS_m_pair_def
   have h_principal_pair : ∀ i j : Fin (Module.finrank ℝ E),
@@ -525,12 +525,12 @@ theorem chartBilinear_diff_variational_identity
     have h_lhs_schwarz : LHS_m_pair i j =
         ∫ y in Ω,
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.weak_partial i y *
+            D.weakPartial i y *
             (fderiv ℝ ψ_j y) (EuclideanSpace.single l 1)
           ∂(volume : Measure EuclN) := by
       change (∫ y in Ω,
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.weak_partial i y *
+            D.weakPartial i y *
             (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1)
           ∂(volume : Measure EuclN)) = _
       refine setIntegral_congr_fun hΩ_meas (fun y _ => ?_)
@@ -546,21 +546,21 @@ theorem chartBilinear_diff_variational_identity
     have h_pp' : LHS_m_pair i j =
         -((∫ y in Ω,
             weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-              D.weak_partial i y * ψ_j y
+              D.weakPartial i y * ψ_j y
             ∂(volume : Measure EuclN)) + PR_pair i j) := by
       rw [h_lhs_schwarz]
       exact h_pp
     have h_inner' :
         (∫ y in Ω,
             weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-              D.weak_partial i y * ψ_j y
+              D.weakPartial i y * ψ_j y
             ∂(volume : Measure EuclN)) =
         -(A_pair i j + B_pair i j) := h_inner
     rw [h_pp', h_inner']
     ring
   have h_int_LHS : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y => weightedInvGramOnEuclid (I := I) g α i j y *
-          D.weak_partial i y *
+          D.weakPartial i y *
           (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1))
         ((volume : Measure EuclN).restrict Ω) := fun i j =>
     integrable_triple hΩ_open (h_a_cont i j) (h_wp_loc i)
@@ -568,14 +568,14 @@ theorem chartBilinear_diff_variational_identity
   have h_int_A : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
-          (EuclideanSpace.single j 1) * D.weak_partial i y * ψ y)
+          (EuclideanSpace.single j 1) * D.weakPartial i y * ψ y)
         ((volume : Measure EuclN).restrict Ω) := fun i j =>
     integrable_triple hΩ_open (h_da_fderiv_cont i j) (h_wp_loc i)
       hψ_cont hψ_cs hψ_supp
   have h_int_B : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weak_partial i) Ω y *
+        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weakPartial i) Ω y *
         ψ y)
         ((volume : Measure EuclN).restrict Ω) := fun i j =>
     integrable_triple hΩ_open (h_da_cont i j) (h_wp_wp_loc i j)
@@ -583,7 +583,7 @@ theorem chartBilinear_diff_variational_identity
   have h_int_PR : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         weightedInvGramOnEuclid (I := I) g α i j y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i) Ω y *
+        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weakPartial i) Ω y *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ((volume : Measure EuclN).restrict Ω) := fun i j =>
     integrable_triple hΩ_open (h_a_cont i j) (h_wp_wp_loc i l)
@@ -593,16 +593,16 @@ theorem chartBilinear_diff_variational_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.weak_partial i y *
+            D.weakPartial i y *
             (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN) with hLHS_principal0_def
   set LHS_mass0 : ℝ :=
     ∫ y in Ω,
-      densityOnEuclid (I := I) g α y * D.u_chart y * ψ_l y
+      densityOnEuclid (I := I) g α y * D.uChart y * ψ_l y
       ∂(volume : Measure EuclN) with hLHS_mass0_def
   set RHS0 : ℝ :=
     ∫ y in Ω,
-      densityOnEuclid (I := I) g α y * D.f_chart y * ψ_l y
+      densityOnEuclid (I := I) g α y * D.fChart y * ψ_l y
       ∂(volume : Measure EuclN) with hRHS0_def
   have h_level0' : LHS_principal0 + LHS_mass0 = RHS0 := h_level0
   have h_swap_principal0 : LHS_principal0 = ∑ i, ∑ j, LHS_m_pair i j := by
@@ -610,13 +610,13 @@ theorem chartBilinear_diff_variational_identity
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              D.weak_partial i y *
+              D.weakPartial i y *
               (fderiv ℝ ψ_l y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) = _
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_LHS i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_LHS i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_LHS i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_LHS i j)]
   have h_sum_principal :
       ∑ i, ∑ j, LHS_m_pair i j =
       (∑ i, ∑ j, A_pair i j) + (∑ i, ∑ j, B_pair i j) -
@@ -649,31 +649,31 @@ theorem chartBilinear_diff_variational_identity
           ring
   set N_C : ℝ :=
     ∫ y in Ω, densityDerivOnEuclid (I := I) g α l y *
-      D.u_chart y * ψ y ∂(volume : Measure EuclN) with hN_C_def
+      D.uChart y * ψ y ∂(volume : Measure EuclN) with hN_C_def
   set N_mass_C2 : ℝ :=
     ∫ y in Ω, densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.u_chart Ω y * ψ y
+      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.uChart Ω y * ψ y
       ∂(volume : Measure EuclN) with hN_mass_C2_def
   have h_mass_ibp : LHS_mass0 = -(N_C + N_mass_C2) := by
     have hb := generic_per_pair_ibp (I := I) (M := M) α h_u_memW1p
       (densityOnEuclid_contDiffOn (I := I) g α) hψ_smooth hψ_cs hψ_supp l
     change (∫ y in Ω,
-        densityOnEuclid (I := I) g α y * D.u_chart y * ψ_l y
+        densityOnEuclid (I := I) g α y * D.uChart y * ψ_l y
         ∂(volume : Measure EuclN)) = _
     rw [hb]
     rfl
   set N_D : ℝ :=
     ∫ y in Ω, densityDerivOnEuclid (I := I) g α l y *
-      D.f_chart y * ψ y ∂(volume : Measure EuclN) with hN_D_def
+      D.fChart y * ψ y ∂(volume : Measure EuclN) with hN_D_def
   set N_E : ℝ :=
     ∫ y in Ω, densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.f_chart Ω y * ψ y
+      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.fChart Ω y * ψ y
       ∂(volume : Measure EuclN) with hN_E_def
   have h_rhs_ibp : RHS0 = -(N_D + N_E) := by
     have hb := generic_per_pair_ibp (I := I) (M := M) α h_f_memW1p
       (densityOnEuclid_contDiffOn (I := I) g α) hψ_smooth hψ_cs hψ_supp l
     change (∫ y in Ω,
-        densityOnEuclid (I := I) g α y * D.f_chart y * ψ_l y
+        densityOnEuclid (I := I) g α y * D.fChart y * ψ_l y
         ∂(volume : Measure EuclN)) = _
     rw [hb]
     rfl
@@ -687,7 +687,7 @@ theorem chartBilinear_diff_variational_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i) Ω y *
+            chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weakPartial i) Ω y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN) with hgoal_LHS_principal_def
   have h_goal_principal_eq : goal_LHS_principal = ∑ i, ∑ j, PR_pair i j := by
@@ -695,13 +695,13 @@ theorem chartBilinear_diff_variational_identity
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i) Ω y *
+              chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weakPartial i) Ω y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) = _
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => h_int_PR i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => h_int_PR i j)))]
     refine Finset.sum_congr rfl ?_; intro i _
-    rw [integral_finset_sum _ (fun j _ => h_int_PR i j)]
+    rw [integral_finsetSum _ (fun j _ => h_int_PR i j)]
   set goal_RHS : ℝ :=
     ∫ y in Ω,
       diffVariationalSource (I := I) (M := M) g α D l y * ψ y
@@ -711,19 +711,19 @@ theorem chartBilinear_diff_variational_identity
     set f_A : EuclN → ℝ := fun y => ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
-          (EuclideanSpace.single j 1) * D.weak_partial i y * ψ y with hf_A_def
+          (EuclideanSpace.single j 1) * D.weakPartial i y * ψ y with hf_A_def
     set f_B : EuclN → ℝ := fun y => ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weak_partial i) Ω y *
+        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j (D.weakPartial i) Ω y *
         ψ y with hf_B_def
     set f_C : EuclN → ℝ := fun y =>
-      -(densityDerivOnEuclid (I := I) g α l y * D.u_chart y * ψ y) with hf_C_def
+      -(densityDerivOnEuclid (I := I) g α l y * D.uChart y * ψ y) with hf_C_def
     set f_D : EuclN → ℝ := fun y =>
-      densityDerivOnEuclid (I := I) g α l y * D.f_chart y * ψ y with hf_D_def
+      densityDerivOnEuclid (I := I) g α l y * D.fChart y * ψ y with hf_D_def
     set f_E : EuclN → ℝ := fun y =>
       densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.f_chart Ω y *
+        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.fChart Ω y *
         ψ y with hf_E_def
     have h_integrand_eq : ∀ y : EuclN,
         diffVariationalSource (I := I) (M := M) g α D l y * ψ y =
@@ -738,11 +738,11 @@ theorem chartBilinear_diff_variational_identity
         ∂(volume : Measure EuclN) from rfl,
       setIntegral_congr_fun hΩ_meas (fun y _ => h_integrand_eq y)]
     have hint_A : Integrable f_A ((volume : Measure EuclN).restrict Ω) :=
-      integrable_finset_sum _ (fun i _ =>
-        integrable_finset_sum _ (fun j _ => h_int_A i j))
+      integrable_finsetSum _ (fun i _ =>
+        integrable_finsetSum _ (fun j _ => h_int_A i j))
     have hint_B : Integrable f_B ((volume : Measure EuclN).restrict Ω) :=
-      integrable_finset_sum _ (fun i _ =>
-        integrable_finset_sum _ (fun j _ => h_int_B i j))
+      integrable_finsetSum _ (fun i _ =>
+        integrable_finsetSum _ (fun j _ => h_int_B i j))
     have hint_C : Integrable f_C ((volume : Measure EuclN).restrict Ω) :=
       (integrable_triple hΩ_open h_dens_deriv_cont h_u_loc
         hψ_cont hψ_cs hψ_supp).neg
@@ -768,12 +768,12 @@ theorem chartBilinear_diff_variational_identity
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
-                (EuclideanSpace.single j 1) * D.weak_partial i y * ψ y
+                (EuclideanSpace.single j 1) * D.weakPartial i y * ψ y
           ∂(volume : Measure EuclN)) = _
-      rw [integral_finset_sum _ (fun i _ =>
-        (integrable_finset_sum _ (fun j _ => h_int_A i j)))]
+      rw [integral_finsetSum _ (fun i _ =>
+        (integrable_finsetSum _ (fun j _ => h_int_A i j)))]
       refine Finset.sum_congr rfl ?_; intro i _
-      rw [integral_finset_sum _ (fun j _ => h_int_A i j)]
+      rw [integral_finsetSum _ (fun j _ => h_int_A i j)]
     have h_int_f_B : (∫ y in Ω, f_B y ∂(volume : Measure EuclN)) =
         ∑ i, ∑ j, B_pair i j := by
       change (∫ y in Ω,
@@ -781,15 +781,15 @@ theorem chartBilinear_diff_variational_identity
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α i j l y *
               chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-                (D.weak_partial i) Ω y * ψ y
+                (D.weakPartial i) Ω y * ψ y
           ∂(volume : Measure EuclN)) = _
-      rw [integral_finset_sum _ (fun i _ =>
-        (integrable_finset_sum _ (fun j _ => h_int_B i j)))]
+      rw [integral_finsetSum _ (fun i _ =>
+        (integrable_finsetSum _ (fun j _ => h_int_B i j)))]
       refine Finset.sum_congr rfl ?_; intro i _
-      rw [integral_finset_sum _ (fun j _ => h_int_B i j)]
+      rw [integral_finsetSum _ (fun j _ => h_int_B i j)]
     have h_int_f_C : (∫ y in Ω, f_C y ∂(volume : Measure EuclN)) = -N_C := by
       change (∫ y in Ω,
-          -(densityDerivOnEuclid (I := I) g α l y * D.u_chart y * ψ y)
+          -(densityDerivOnEuclid (I := I) g α l y * D.uChart y * ψ y)
           ∂(volume : Measure EuclN)) = _
       rw [MeasureTheory.integral_neg]
     have h_int_f_D : (∫ y in Ω, f_D y ∂(volume : Measure EuclN)) = N_D := rfl
@@ -813,12 +813,12 @@ theorem tensorChartComponent_diff_variational_identity
     {P₀ : TensorCompIdx (E := E) r s}
     (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀)
     (l : Fin (Module.finrank ℝ E))
-    (h_u_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.u_chart
+    (h_u_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.uChart
       (chartTargetEuclid (I := I) (M := M) α))
     (h_wp_memW1p : ∀ i : Fin (Module.finrank ℝ E),
-      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 (D.weak_partial i)
+      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 (D.weakPartial i)
         (chartTargetEuclid (I := I) (M := M) α))
-    (h_f_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.f_chart
+    (h_f_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D.fChart
       (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
@@ -827,13 +827,13 @@ theorem tensorChartComponent_diff_variational_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weak_partial i)
+            chosenWeakPartial' (d := Module.finrank ℝ E) 2 l (D.weakPartial i)
               (chartTargetEuclid (I := I) (M := M) α) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.u_chart
+        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l D.uChart
           (chartTargetEuclid (I := I) (M := M) α) y * ψ y
       ∂(volume : Measure EuclN)) =
     ∫ y in chartTargetEuclid (I := I) (M := M) α,

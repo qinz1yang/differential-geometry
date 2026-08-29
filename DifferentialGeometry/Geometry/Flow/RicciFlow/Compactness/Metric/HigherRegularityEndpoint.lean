@@ -108,7 +108,10 @@ theorem higher_regularity_canonical_metric_compactness_connected
     let C := b.higherRegularityCanonicalMetricCompactness d hcomplete hconn
     letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
     ConnectedSpace C.compactness.limit.M := by
-  simpa only [higherRegularityCanonicalMetricCompactness] using
+  change @ConnectedSpace
+    (b.toSeed.higherRegularityCanonicalMetricCompactness d hcomplete hconn).compactness.limit.M
+    (b.toSeed.higherRegularityCanonicalMetricCompactness d hcomplete hconn).compactness.limit.topology
+  exact
     b.toSeed.higher_regularity_canonical_metric_compactness_connected d hcomplete hconn
 
 end MetricCompactBase

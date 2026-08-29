@@ -36,8 +36,8 @@ theorem seqCenterD_dist_eq
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     seqRadius hd D P (L.φ k) gamma =
       dist (seqCenterD hd P L k gamma) (X.obj (L.φ k)).basepoint := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   unfold seqRadius seqCenterD seqCenter OrderedNet.netRadius
   cases OrderedNet.netCenter (X.obj (L.φ k)).basepoint (hd.lambda D)
       (hd.lambda_continuous D) gamma <;> simp

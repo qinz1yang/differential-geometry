@@ -61,15 +61,18 @@ theorem homModeCoeff_eq_init_add_integral
     filter_upwards [hae] with s hs using hs
   rw [hint_congr]
   have hF : ∀ s : ℝ, HasDerivAt (fun s => Real.exp (-lam * s) * c)
-      (-lam * (Real.exp (-lam * s) * c)) s := by
+      (Real.exp (-lam * s) * (-lam) * c) s := by
     intro s
     have hlin : HasDerivAt (fun s : ℝ => -lam * s) (-lam) s := by
       simpa using (hasDerivAt_id s).const_mul (-lam)
     have hexp : HasDerivAt (fun s => Real.exp (-lam * s))
         (Real.exp (-lam * s) * (-lam)) s := hlin.exp
-    have := hexp.mul_const c
-    convert this using 1
+    exact hexp.mul_const c
+  have hderivFun : (fun s : ℝ => -lam * (Real.exp (-lam * s) * c)) =
+      fun s : ℝ => Real.exp (-lam * s) * (-lam) * c := by
+    funext s
     ring
+  rw [hderivFun]
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hF s)
     (by
       apply Continuous.intervalIntegrable
@@ -263,7 +266,7 @@ theorem solField_toFun_ae (hT : 0 < T)
         (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce t))
       =ᵐ[timeMeasure T]
         (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).toFun := by
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g) (r := r) (s := s) h_compact
   set u := maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce with hu_def
@@ -313,7 +316,7 @@ theorem solFieldHa1_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t))
       =ᵐ[timeMeasure T]
         (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).toFun := by
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g r s) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g) (r := r) (s := s) h_compact
   set u := maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce with hu_def

@@ -289,16 +289,18 @@ noncomputable def gradInnerSmoothBundle
   toFun := fun x => g.inner x (gradFun (I := I) g (φ : C^∞⟮I, M; ℝ⟯) x)
     (gradFun (I := I) g v.toFun x)
   smooth := by
+    let vSmooth : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v.toFun, v.smooth⟩
     have h := contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g φ) (grad_g (I := I) g ⟨v.toFun, v.smooth⟩)
+      (gradG (I := I) g φ) (gradG (I := I) g vSmooth)
     refine h.congr ?_
     intro x
-    change g.inner x ((grad_g (I := I) g φ :
+    change g.inner x ((gradG (I := I) g φ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+          ((gradG (I := I) g vSmooth :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v.toFun x)
-    simp [grad_g_apply]
+    rw [grad_g_apply, grad_g_apply]
+    rw [show (vSmooth : M → ℝ) = v.toFun from rfl]
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

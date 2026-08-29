@@ -111,9 +111,11 @@ theorem evolvingCutoffGradientError_le_evolvingLocalizedL2Mass
     ⟨u t, hu.comp (contMDiff_const.prodMk contMDiff_id)⟩
   have hfixed := cutoffGradientError_le_localizedL2Mass
     (I := I) (M := M) cutoff_t outer_t u_t hgrad
+  have hgradient (x : M) :
+      gradientFun (I := I) (g t) cutoff x = gradFun (I := I) (g t) cutoff x := rfl
   simpa only [evolvingCutoffGradientError, evolvingLocalizedL2Mass,
     cutoffGradientError, localizedL2Mass, riemannianMeasureFamily_def,
-    cutoff_t, outer_t, u_t] using hfixed
+    cutoff_t, outer_t, u_t, hgradient] using hfixed
 
 omit [I.Boundaryless] in
 theorem evolvingLocalizedDirichletEnergy_continuousOn
@@ -360,8 +362,11 @@ theorem timeCutoff_caccioppoli_evolving_rhs_le
   have hrhs_int : IntervalIntegrable (fun s => coefficient * outerMass s)
       volume a t := by
     apply ContinuousOn.intervalIntegrable
-    simpa [uIcc_of_le hat] using continuousOn_const.mul
-      (houter_cont.mono (fun s hs => ⟨hs.1, hs.2.trans htt₁⟩))
+    have hproduct : ContinuousOn ((fun _ : ℝ => coefficient) * outerMass) (Icc a t) :=
+      continuousOn_const.mul
+        (houter_cont.mono (fun s hs => ⟨hs.1, hs.2.trans htt₁⟩))
+    change ContinuousOn ((fun _ : ℝ => coefficient) * outerMass) (uIcc a t)
+    simpa [uIcc_of_le hat] using hproduct
   have hpoint : ∀ s ∈ Icc a t, lhs s ≤ coefficient * outerMass s := by
     intro s hs
     have hs' : s ∈ Icc a t₁ := ⟨hs.1, hs.2.trans htt₁⟩
@@ -469,7 +474,7 @@ theorem deriv_evolvingLocalizedL2Mass_eq_deriv_localizedL2Mass_add_volume
           ((1 / 2) * traceTimeDerivMetric (I := I) g t x * u t x ^ 2)
         ∂(riemannianMeasureFamily (I := I) (M := M) g t) := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -520,7 +525,7 @@ theorem caccioppoli_differential_evolving
       (fun p : ℝ × M => source p.1 p.2))
     (hpde : ∀ x : M,
       deriv (fun s => u s x) t =
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x) :
     deriv (evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u) t +
         localizedDirichletEnergy (I := I) (M := M)
@@ -567,7 +572,7 @@ theorem caccioppoli_differential_evolving_of_subsolution
     (hu_nonneg : ∀ x : M, 0 ≤ u t x)
     (hpde : ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x) :
     deriv (evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u) t +
         localizedDirichletEnergy (I := I) (M := M)
@@ -613,7 +618,7 @@ theorem caccioppoli_differential_evolving_of_trace_le
       (fun p : ℝ × M => source p.1 p.2))
     (hpde : ∀ x : M,
       deriv (fun s => u s x) t =
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x)
     (htrace : ∀ x : M, traceTimeDerivMetric (I := I) g t x ≤ B) :
     deriv (evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u) t +
@@ -659,7 +664,7 @@ theorem caccioppoli_differential_evolving_of_subsolution_of_trace_le
     (hu_nonneg : ∀ x : M, 0 ≤ u t x)
     (hpde : ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x)
     (htrace : ∀ x : M, traceTimeDerivMetric (I := I) g t x ≤ B) :
     deriv (evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u) t +
@@ -819,7 +824,7 @@ theorem caccioppoli_evolving
     (hweight_nonneg : ∀ t ∈ Icc a b, 0 ≤ weight t)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
       deriv (fun s => u s x) t =
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x) :
     weight b * evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u b -
         weight a * evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u a +
@@ -874,7 +879,7 @@ theorem caccioppoli_evolving_of_subsolution
     (hu_nonneg : ∀ t ∈ Icc a b, ∀ x : M, 0 ≤ u t x)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x) :
     weight b * evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u b -
         weight a * evolvingLocalizedL2Mass (I := I) (M := M) g cutoff u a +
@@ -931,7 +936,7 @@ theorem caccioppoli_evolving_inner_energy_of_subsolution
     (hu_nonneg : ∀ s ∈ Icc a t₁, ∀ x : M, 0 ≤ u s x)
     (hpde : ∀ s ∈ Icc a t₁, ∀ x : M,
       deriv (fun r => u r x) s ≤
-        Δ_g (I := I) (g s)
+        ΔG (I := I) (g s)
           (smoothScalarSlice (I := I) (g s) u hu s).toContMDiffMap x + source s x)
     (hrhs_le : ∀ s ∈ Icc t₀ t₁,
       (∫ r in a..s,

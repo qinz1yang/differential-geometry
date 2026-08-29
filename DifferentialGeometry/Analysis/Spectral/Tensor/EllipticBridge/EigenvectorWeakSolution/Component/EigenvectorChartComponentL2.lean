@@ -55,7 +55,7 @@ private lemma resolventL2_eq_smul_eigenvector
         tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           i := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_eq := eigenvector_eq_resolvent_smul (I := I) (M := M) g r s i
   have hμ_ne : i.fst.val ≠ 0 := i.fst.val_ne_zero
   rw [h_eq, smul_smul, mul_inv_cancel₀ hμ_ne, one_smul]
@@ -73,7 +73,7 @@ private lemma smoothApprox_coe_tendsto
         tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           i)) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_l2 :
       Filter.Tendsto
         (fun n => TensorH1ComplToTensorL2 (I := I) (M := M) g r s
@@ -111,7 +111,7 @@ private lemma smoothApprox_smul_coe_tendsto
       (𝓝 (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
         i)) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_smul :=
     (smoothApprox_coe_tendsto (I := I) (M := M) g r s i).const_smul
       (i.fst.val)⁻¹
@@ -182,7 +182,7 @@ theorem eigenvectorChartComponentL2_tendsto
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           i) α P₀)) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_clm :=
     ((tensorL2ChartComponentCLM (I := I) (M := M) g r s α P₀).continuous.tendsto
       _).comp

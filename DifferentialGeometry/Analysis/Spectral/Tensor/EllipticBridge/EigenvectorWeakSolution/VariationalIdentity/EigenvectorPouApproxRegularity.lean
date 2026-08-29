@@ -97,7 +97,7 @@ lemma euclidPartial_zero_off_tsupport
     Filter.eventually_of_mem (hopen_c.mem_nhds hy)
       (fun z hz => image_eq_zero_of_notMem_tsupport hz)
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
@@ -183,7 +183,7 @@ private lemma principalSymbolTest_memLp
   have hsum_memLp : MemLp (fun y => ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i' j y *
           euclidPartial (E := E) j ψ y) 2 (volume : Measure EuclN) := by
-    refine memLp_finset_sum (μ := (volume : Measure EuclN))
+    refine memLp_finsetSum (μ := (volume : Measure EuclN))
       (Finset.univ : Finset (Fin (Module.finrank ℝ E))) (fun j _ => ?_)
     have hcd : ContDiff ℝ ∞ (fun y => weightedInvGramOnEuclid (I := I) g α i' j y *
         euclidPartial (E := E) j ψ y) :=
@@ -219,7 +219,8 @@ lemma density_coeff_test_memLp
   rw [chartL2Measure]
   exact (hcd.continuous.memLp_of_hasCompactSupport hcs).restrict _
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [I.Boundaryless] in
 lemma pouSmul_eq_scalarSmul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) :
@@ -362,7 +363,7 @@ private lemma euclidPartial_eigenvectorPouApprox_component_hasCompactSupport
         (fun h => hz (eigenvectorPouApprox_component_tsupport_subset
           (I := I) (M := M) g r s i α P₀ n h)))
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [CompleteSpace E] in
 private lemma euclidPartial_eigenvectorPouApprox_component_memLp
@@ -557,7 +558,7 @@ private lemma principalIntegrand_eigenvectorPouApprox_eqOn
             (fun h => hz (eigenvectorPouApprox_component_tsupport_subset
               (I := I) (M := M) g r s i α P₀ n h)))
       rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-        fderiv_const_apply, ContinuousLinearMap.zero_apply]
+        fderiv_const_apply, zero_apply]
     have hLHS_zero :
         (tensorPrincipalForm (I := I) (M := M) g α
             (chartPouKernel_isCompact (I := I) (M := M) α)
@@ -765,7 +766,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
             (fun h => hz ((eigenvectorPouApprox_component_tsupport_subset
               (I := I) (M := M) g r s i α P₀ n) h)))
       rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-        fderiv_const_apply, ContinuousLinearMap.zero_apply]
+        fderiv_const_apply, zero_apply]
     have hgram_cd : ∀ k l : Fin (Module.finrank ℝ E),
         ContDiffOn ℝ ∞ (fun y => weightedInvGramOnEuclid (I := I) g α k l y)
           (chartTargetEuclid (I := I) (M := M) α) := by
@@ -837,8 +838,8 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
               euclidPartial (E := E) i' uₙ y *
               euclidPartial (E := E) l ψ y) ∂(volume : Measure EuclN))
         from funext hsplit]
-    rw [← MeasureTheory.integral_finset_sum _
-      (fun i' _ => MeasureTheory.integrable_finset_sum _
+    rw [← MeasureTheory.integral_finsetSum _
+      (fun i' _ => MeasureTheory.integrable_finsetSum _
         (fun l _ => hsummand_int i' l))]
     have hdouble_split :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -959,7 +960,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
                 g r s i α P₀ i' :
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
             ∂(chartL2Measure (I := I) (M := M) α))) :=
-    tendsto_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    tendsto_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun i' _ => h_dir i')
   have h_limit_eq :
       ∑ i' : Fin (Module.finrank ℝ E),
@@ -1080,7 +1081,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl (fun j' _ => ?_)
       ring
-    rw [← MeasureTheory.integral_finset_sum _
+    rw [← MeasureTheory.integral_finsetSum _
       (fun i' _ => h_inner_integrable i')]
   rw [show (fun n => (tensorPrincipalForm (I := I) (M := M) g α
         (chartPouKernel_isCompact (I := I) (M := M) α)

@@ -355,18 +355,18 @@ theorem operatorFieldApplication_h23_uniform
   have hV0 :
       ‖iteratedCovGrad (I := I) g 0 3 0 V‖ =
         ‖iteratedCovGrad (I := I) g 0 2 1 U‖ := by
-    simpa only [V, Nat.add_zero] using
-      (iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 0 U)
+    with_unfolding_all
+      exact iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 0 U
   have hV1 :
       ‖iteratedCovGrad (I := I) g 0 3 1 V‖ =
         ‖iteratedCovGrad (I := I) g 0 2 2 U‖ := by
-    simpa only [V] using
-      (iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 1 U)
+    with_unfolding_all
+      exact iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 1 U
   have hV2 :
       ‖iteratedCovGrad (I := I) g 0 3 2 V‖ =
         ‖iteratedCovGrad (I := I) g 0 2 3 U‖ := by
-    simpa only [V] using
-      (iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 2 U)
+    with_unfolding_all
+      exact iteratedCovGrad_comp_norm (I := I) (M := M) g 2 1 2 U
   have hVjet :
       (∑ j ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g 0 3 j V‖ ^ 2) ≤

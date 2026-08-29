@@ -15,7 +15,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter Topology DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Manifold Topology ContDiff BigOperators
@@ -43,6 +42,7 @@ variable
 private local instance instCompleteSpaceE : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem phi_dev_joint
     (g₀ : SmoothRiemannianMetric I M)
@@ -411,9 +411,22 @@ theorem path_add_sub_cap
     have hIΨ : IntervalIntegrable (fun t : ℝ =>
         TensorRSSpace.toModel ((Ψ t).toSection y)) MeasureTheory.volume 0 1 :=
       (hcΨ.mono hSI).intervalIntegrable
-    simp only [PK, pathIntegralCoeffField_toModel, SmoothCcTensor.toSection_add,
+    dsimp only [PK]
+    simp only [SmoothCcTensor.toSection_add,
       SmoothCcTensor.toSection_sub, ContMDiffSection.coe_add, ContMDiffSection.coe_sub,
-      Pi.add_apply, Pi.sub_apply, TensorRSSpace.toModel_add, TensorRSSpace.toModel_sub, K]
+      Pi.add_apply, Pi.sub_apply, TensorRSSpace.toModel_add, TensorRSSpace.toModel_sub]
+    rw [pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 Φ
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+        metricPerturbationPathDomain_isOpen hSI hΦ y,
+      pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 Ψ
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+        metricPerturbationPathDomain_isOpen hSI hΨ y,
+      pathIntegralCoeffField_toModel (I := I) (M := M) g r 2 K
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+        metricPerturbationPathDomain_isOpen hSI hK y]
+    simp only [K, SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_sub,
+      ContMDiffSection.coe_add, ContMDiffSection.coe_sub, Pi.add_apply, Pi.sub_apply,
+      TensorRSSpace.toModel_add, TensorRSSpace.toModel_sub]
     rw [intervalIntegral.integral_sub (hIΦ.add hIΨ) intervalIntegrable_const,
       intervalIntegral.integral_add hIΦ hIΨ, intervalIntegral.integral_const]
     norm_num
@@ -849,8 +862,13 @@ theorem top_path_dev_h2
           (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀).toSection x from by
       rw [SmoothCcTensor.toSection_sub]; rfl]
     rw [TensorRSSpace.toModel_sub, hPeq]
-    dsimp [Pdev]
-    rw [pathIntegralFib_toModel, pathIntegralFib_toModel]
+    dsimp only [Pdev]
+    rw [pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 4 2
+        (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjpath x,
+      pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 4 2 Φ
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev x]
     have hint : IntervalIntegrable (fun t : ℝ =>
         TensorRSSpace.toModel
           ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀
@@ -908,6 +926,7 @@ theorem top_path_dev_h2
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev
       (fun t ht => by simpa using (hper t ht).2)
 
+omit [SigmaCompactSpace M] in
 theorem top_path_split
     (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)

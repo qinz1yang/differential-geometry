@@ -35,7 +35,7 @@ theorem nabla0SFun_eval_coordFrame {s : ℕ}
             coordComponent0SAt (I := I) (α x₀) (Function.update I0 a k) := by
   rw [nabla0SFun_eval_coordFrame_moving_raw cov X
     (fun a => coordinateFrameAt (I := I) x₀ (I0 a)) α x₀ ?hpair ?hV ?hVmodel ?hcoord]
-  · rw [extDerivFun_real_eq_mfderiv]
+  · rw [mvfderiv_real_eq_mfderiv]
     congr 1
     refine Finset.sum_congr rfl fun a _ => ?_
     have hcov :

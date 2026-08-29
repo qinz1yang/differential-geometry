@@ -12,6 +12,7 @@ import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 noncomputable section
 
+
 open Bundle Set ContinuousAlternatingMap Function Filter
 open scoped Topology Manifold ContDiff Bundle
 
@@ -104,7 +105,7 @@ private lemma tangentCoordChange_comp_self {x₀ x : M} (hx : x ∈ (extChartAt 
       ContinuousLinearMap.id ℝ EM := by
   apply ContinuousLinearMap.ext
   intro v
-  rw [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  rw [ContinuousLinearMap.coe_comp, Function.comp_apply]
   have hw : x ∈ (extChartAt IM x₀).source ∩ (extChartAt IM x).source ∩
     (extChartAt IM x₀).source := by
     exact ⟨⟨hx, by simp⟩, hx⟩
@@ -324,12 +325,15 @@ theorem exteriorDerivative_localRepresentation
     have h1 : S = extDeriv (fun y => ((rep₁ ∘ ψ) y).compContinuousLinearMap (fderiv ℝ ψ y))
       (c₀ x) := by
       refine Filter.EventuallyEq.extDeriv_eq ?_
-      simpa [rep₁, ψ, c₀, c₁, Function.comp_def] using
+      simpa [rep₀, rep₁, ψ, c₀, c₁, Function.comp_def] using!
         rep_eqOn_pullback (IM := IM) (M := M) (α := α) hx hxi
     have h2 : extDeriv (fun y => ((rep₁ ∘ ψ) y).compContinuousLinearMap (fderiv ℝ ψ y)) (c₀ x) =
         (extDeriv rep₁ (ψ (c₀ x))).compContinuousLinearMap (fderiv ℝ ψ (c₀ x)) := by
       have h := @extDeriv_pullback ℝ EM EM ℝ _ _ _ _ _ _ _ k ⊤ (c₀ x) rep₁ ψ hω hf le_top
-      simpa only using h
+      change extDeriv
+        (fun y => (rep₁ (ψ y)).compContinuousLinearMap (fderiv ℝ ψ y)) (c₀ x) =
+          (extDeriv rep₁ (ψ (c₀ x))).compContinuousLinearMap (fderiv ℝ ψ (c₀ x))
+      exact h
     have h3 : (extDeriv rep₁ (ψ (c₀ x))).compContinuousLinearMap (fderiv ℝ ψ (c₀ x)) =
         Z.compContinuousLinearMap D := by
       calc
@@ -499,7 +503,8 @@ noncomputable def exteriorDerivative [BoundarylessManifold IM M] (α : Different
 
 theorem exteriorDerivative_add [BoundarylessManifold IM M] (α β : DifferentialForm IM M k) :
     exteriorDerivative (α + β) = exteriorDerivative α + exteriorDerivative β := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   have hα : DifferentiableAt ℝ (fun y : EM => (trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
           (Bundle.Trivial M ℝ)) x ⟨(extChartAt IM x).symm y, α ((extChartAt IM x).symm y)⟩).2)
@@ -560,7 +565,8 @@ theorem exteriorDerivative_add [BoundarylessManifold IM M] (α β : Differential
 
 theorem exteriorDerivative_smul [BoundarylessManifold IM M] (c : ℝ) (α : DifferentialForm IM M k) :
     exteriorDerivative (c • α) = c • exteriorDerivative α := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   change exteriorDerivativeAt (c • α) x = c • exteriorDerivativeAt α x
   rw [exteriorDerivativeAt, exteriorDerivativeAtInterior, exteriorDerivativeAtRaw,
     exteriorDerivativeAt, exteriorDerivativeAtInterior, exteriorDerivativeAtRaw]
@@ -597,7 +603,8 @@ noncomputable def exteriorDerivativeLinearMap [BoundarylessManifold IM M] (k : �
 
 theorem exteriorDerivative_sq [BoundarylessManifold IM M] (α : DifferentialForm IM M k) :
     exteriorDerivative (exteriorDerivative α) = 0 := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   let e := trivializationAt (EM [⋀^Fin (k + 2)]→L[ℝ] ℝ)
     (Bundle.continuousAlternatingMap ℝ (Fin (k + 2)) EM (TangentSpace IM) ℝ
       (Bundle.Trivial M ℝ)) x

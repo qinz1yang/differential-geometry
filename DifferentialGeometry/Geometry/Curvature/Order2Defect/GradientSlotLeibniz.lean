@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -176,7 +175,7 @@ theorem tensorCov_toFun_finset_sum
         (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
           (E := fun z : M => TensorRSSpace r s I z) y (∑ i ∈ t', σ i y)) x :=
       MDifferentiableAt.sum_section (s := t')
-        (t := fun i (y : M) => σ i y) (fun i => hσ i)
+        (t := fun i (y : M) => σ i y) (fun i _ => hσ i)
     have hadd := cov.isCovariantDerivativeOnUniv.add
       (σ := (fun y => σ a y : Π b : M, TensorRSSpace r s I b))
       (σ' := (fun y => ∑ i ∈ t', σ i y : Π b : M, TensorRSSpace r s I b))
@@ -220,7 +219,7 @@ theorem covDeriv_frozenFrameTrace_eq_sum
   rw [tensorCov_toFun_finset_sum (I := I) g r s Finset.univ
     (fun i (y : M) => tensorSecondCovDeriv (I := I) g r s
       (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) T y) hσ]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
 
 omit [CompactSpace M] [I.Boundaryless] in
 theorem covDeriv_rawConnLap_eq_frozenFrameTrace_sum
@@ -274,7 +273,7 @@ theorem covDerivMap_rawConnLap_eq_frozenFrameTrace_sum
           (fun y : M => tensorSecondCovDeriv (I := I) g r s
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) T y) x := by
   refine ContinuousLinearMap.ext (fun v => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   exact covDeriv_rawConnLap_eq_frozenFrameTrace_sum (I := I) g r s hT x v
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -296,6 +295,7 @@ theorem covGradBundleEquiv_covDeriv_rawConnLap_eq_sum
   rw [covDerivMap_rawConnLap_eq_frozenFrameTrace_sum (I := I) g r s hT x]
   exact map_sum (covGradBundleEquiv (I := I) (M := M) r s x) _ _
 
+omit [CompactSpace M] in
 theorem covGrad_rawConnLap_toSection_eq_frame_sum
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     (covGrad (I := I) (M := M) g 0 2
@@ -317,6 +317,7 @@ theorem covGrad_rawConnLap_toSection_eq_frame_sum
     funext y; rw [rawTensorConnLapSmooth_toSection_apply]]
   exact covGradBundleEquiv_covDeriv_rawConnLap_eq_sum (I := I) g 0 2 hT x
 
+omit [CompactSpace M] in
 theorem covGradRoughLapCurv_toSection_eq_frame_sum
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     (covGradRoughLapCurv (I := I) (M := M) g T₀).toSection x =

@@ -39,7 +39,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem unitModel_add_app
     (g : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g 0 2)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (A + B) x v =
       unitModel (I := I) (M := M) g 2 A x v +
         unitModel (I := I) (M := M) g 2 B x v := by
@@ -47,12 +47,9 @@ private theorem unitModel_add_app
       unitModel (I := I) (M := M) g 2 A x +
         unitModel (I := I) (M := M) g 2 B x := by
     simp only [unitModel]
-    change Tensor0SSpace.toModel
-        ((A.toSection x) (unitTensor (I := I) (M := M) x) +
-          (B.toSection x) (unitTensor (I := I) (M := M) x)) = _
-    rw [Tensor0SSpace.toModel_add]
-    rfl
-  rw [hfun, ContinuousMultilinearMap.add_apply]
+    rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
+      add_apply, Tensor0SSpace.toModel_add]
+  rw [hfun, add_apply]
 
 theorem lowerScaleActionCoefficients_sum_eq_path_integral_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -249,6 +246,7 @@ theorem oneMinusConnectionLaplacian_lowerScaleActionCoefficients_eq_path_terms
     hL_lap, htopLT]
   module
 
+omit [SigmaCompactSpace M] in
 theorem low_order_path_integral_eq_decomposition_add_edge_pairing
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -293,7 +291,8 @@ theorem low_order_path_integral_eq_decomposition_add_edge_pairing
       g g_bg T hdelta hdeltaZ
   have hQ : linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Q
       (δ := delta) (δ' := delta) := by
-    simpa only [Q] using ricciDeTurckTopOrderPairingCoefficient_joint_contDiff (I := I) (M := M)
+    rw [linearizedRicciThreeArmHjoint]
+    exact ricciDeTurckTopOrderPairingCoefficient_joint_contDiff (I := I) (M := M)
       g T T hdelta hdeltaZ ricciDecompositionQA ricciDecompositionQB
         lieDecompositionQ lieDecompositionEps
   have hcA : ∀ x : M, ContinuousOn (fun t : Real =>
@@ -362,11 +361,20 @@ theorem low_order_path_integral_eq_decomposition_add_edge_pairing
         operatorFieldApply (I := I) (M := M) g 2 2 (R s) T +
           operatorFieldApply (I := I) (M := M) g 2 2 (Q s) T := by
     rw [hdiag]
-    simpa only [A, R] using rhsLow0_decomposition (I := I) (M := M)
+    have hcoeff :
+        ricciDeTurckRemainderZeroOrderCoefficient
+            (I := I) (M := M) g g_bg T 0 hdelta hdeltaZ s =
+          DeTurckCoefficients.ricciDeTurckRemainderZeroOrderCoefficient
+            (I := I) (M := M) g g_bg T 0 hdelta hdeltaZ s := by
+      with_unfolding_all rfl
+    dsimp only [A, R]
+    rw [hcoeff]
+    exact rhsLow0_decomposition (I := I) (M := M)
       g g_bg T hTsymm hdelta_lt hdelta hdeltaZ hsI
   simpa only [unitModel_add_app] using congrArg
     (fun W => unitModel (I := I) (M := M) g 2 W x v) hpoint
 
+omit [SigmaCompactSpace M] in
 theorem lowerScaleZerothSecondOrderTerms_eq_raw_commutator_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -423,6 +431,7 @@ theorem lowerScaleZerothSecondOrderTerms_eq_raw_commutator_decomposition
   rw [oneMinusConn_add (I := I) (M := M) g 0 2]
   module
 
+omit [SigmaCompactSpace M] in
 theorem lowerScaleZerothSecondOrderTerms_eq_centered_commutator_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),

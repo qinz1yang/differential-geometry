@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.GreatCircle
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
 open DifferentialGeometry.Geometry.Curvature
 
+
 noncomputable section
 
 open Bundle Manifold Set Metric Module
@@ -29,11 +30,11 @@ theorem dIncl_orth (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p) :
   rw [real_inner_comm]
   apply Submodule.inner_left_of_mem_orthogonal
     (Submodule.mem_span_singleton_self (p : E))
-  rw [← range_mfderiv_coe_sphere (n := n) p]
+  rw [← range_mvfderiv_subtypeVal (n := n) p]
   exact ⟨v, rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable
   [RiemannianBundle
@@ -78,13 +79,17 @@ theorem intrinsic_eq_gc
     · simp [γi, γc]
     · dsimp only [γi, γc]
       rw [intrinsicGeodesic_mfderiv_zero]
-      apply mfderiv_coe_sphere_injective p
+      apply injective_mvfderiv_subtypeVal_sphere p
       have hvel :=
         greatCircle_vel (n := n) p (dIncl (n := n) p v)
           hv (dIncl_orth p v) 0
       rw [greatCircle_zero] at hvel
-      simpa only [Real.sin_zero, neg_zero, zero_smul, Real.cos_zero, one_smul,
-        zero_add] using hvel.symm
+      change dIncl (n := n) p v = dIncl (n := n) p
+        (mfderiv 𝓘(ℝ, ℝ) (𝓡 n)
+          (greatCircle p (dIncl (n := n) p v) hv (dIncl_orth p v)) 0 1)
+      simp only [Real.sin_zero, neg_zero, zero_smul, Real.cos_zero, one_smul,
+        zero_add] at hvel
+      with_unfolding_all exact hvel.symm
   exact heq (Set.mem_univ t)
 
 theorem round_exp_radial

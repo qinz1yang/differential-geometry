@@ -65,6 +65,6 @@ theorem mfderiv_subtype_val_apply
       (mfderiv I I (TopologicalSpace.Opens.inclusion hVU : V → U) x) at hcomp
   rw [mfderiv_subtype_val (I := I) V x,
     mfderiv_subtype_val (I := I) U (TopologicalSpace.Opens.inclusion hVU x)] at hcomp
-  simpa using hcomp.symm
+  simpa using! hcomp.symm
 
 end DifferentialGeometry

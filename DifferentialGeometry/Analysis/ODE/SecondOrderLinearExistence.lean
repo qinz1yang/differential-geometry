@@ -91,12 +91,14 @@ theorem forward_ode2_of_bound
     have h := ((ContinuousLinearMap.fst ℝ F F).comp
         (prodContinuousLinearEquiv 2 ℝ F F).toContinuousLinearMap)
       |>.hasFDerivAt.comp_hasDerivWithinAt t (hγderiv t ht)
-    simpa using h
+    exact (h.congr_deriv (hf_fst t (γ t))).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl) rfl
   · intro t ht
     have h := ((ContinuousLinearMap.snd ℝ F F).comp
         (prodContinuousLinearEquiv 2 ℝ F F).toContinuousLinearMap)
       |>.hasFDerivAt.comp_hasDerivWithinAt t (hγderiv t ht)
-    simpa using h
+    exact (h.congr_deriv (hf_snd t (γ t))).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl) rfl
 
 theorem ode2_pi_zero
     {ι : Type*} [Fintype ι]

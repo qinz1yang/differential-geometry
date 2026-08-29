@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -97,7 +96,7 @@ theorem tensorSecondCovDeriv_add
     exact hcov_loc.add (σ := T) (σ' := T') hTd hT'd
   rw [tensorSecondCovDeriv_def, tensorSecondCovDeriv_def, tensorSecondCovDeriv_def]
   rw [hiter, hchrist]
-  simp only [ContinuousLinearMap.add_apply]
+  simp only [add_apply]
   abel
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in

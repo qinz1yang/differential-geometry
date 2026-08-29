@@ -42,9 +42,9 @@ lemma density_cont_of_gram
       simp [Units.smul_def]
       rfl
     rw [hexp]
-    refine continuousOn_finset_sum _ (fun sigma _ => ?_)
+    refine continuousOn_finsetSum _ (fun sigma _ => ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ => ?_)
+    refine continuousOn_finsetProd _ (fun i _ => ?_)
     exact hG (sigma i) i
   exact Real.continuous_sqrt.comp_continuousOn hdet
 
@@ -131,7 +131,7 @@ theorem volume_density_bdd
       (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) alpha).baseSet)) :
     ∃ C : ℝ, 1 ≤ C ∧
-      ∀ alpha ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ alpha ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ t ∈ J, ∀ x ∈ tsupport
           (fun y : M => (chartAtlasPOU I M alpha : M → ℝ) y),
           chartDensity (I := I) (g t) alpha x ≤
@@ -148,7 +148,7 @@ theorem volume_density_bdd
             C * chartDensity (I := I) (g t) alpha x := fun alpha =>
     density_ratio_bdd (I := I) (M := M) q g alpha hJ (hgram alpha)
   choose Cchart hCchart hCchart_bdd using h_each
-  let Sfin : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let Sfin : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let C : ℝ := 1 + ∑ alpha ∈ Sfin, Cchart alpha
   have hC : 1 ≤ C := by
     dsimp [C]
@@ -228,7 +228,7 @@ private lemma volume_tsum_eq_sum
     ∑' alpha : M, ∫⁻ x,
         ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
           ∂(chartLocalMeasure (I := I) g alpha) =
-      ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+      ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
         ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
           ∂(chartLocalMeasure (I := I) g alpha) := by
   classical
@@ -241,7 +241,7 @@ private lemma volume_tsum_eq_sum
 private lemma volume_lintegral_sum
     (g : SmoothRiemannianMetric I M) {F : M → ℝ≥0∞} (hF : Measurable F) :
     ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+      ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
         ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
           ∂(chartLocalMeasure (I := I) g alpha) := by
   rw [riemannianVolumeMeasure_def,
@@ -273,10 +273,10 @@ theorem volume_lintegral_le
   constructor
   · calc
       ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) (g t)) =
-          ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+          ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
             ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
               ∂(chartLocalMeasure (I := I) (g t) alpha) := hsum_g
-      _ ≤ ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M),
+      _ ≤ ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M),
           ENNReal.ofReal C * ∫⁻ x,
             ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
               ∂(chartLocalMeasure (I := I) q alpha) := by
@@ -284,7 +284,7 @@ theorem volume_lintegral_le
             exact chart_lintegral_le (I := I) (M := M) q (g t) alpha C hC0
               (fun x hx => (hdensity alpha halpha t ht x hx).1) hF
       _ = ENNReal.ofReal C *
-          ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+          ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
             ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
               ∂(chartLocalMeasure (I := I) q alpha) := by
             rw [Finset.mul_sum]
@@ -293,10 +293,10 @@ theorem volume_lintegral_le
             rw [hsum_q]
   · calc
       ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) q) =
-          ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+          ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
             ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
               ∂(chartLocalMeasure (I := I) q alpha) := hsum_q
-      _ ≤ ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M),
+      _ ≤ ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M),
           ENNReal.ofReal C * ∫⁻ x,
             ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
               ∂(chartLocalMeasure (I := I) (g t) alpha) := by
@@ -304,7 +304,7 @@ theorem volume_lintegral_le
             exact chart_lintegral_le (I := I) (M := M) (g t) q alpha C hC0
               (fun x hx => (hdensity alpha halpha t ht x hx).2) hF
       _ = ENNReal.ofReal C *
-          ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+          ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
             ENNReal.ofReal ((chartAtlasPOU I M alpha : M → ℝ) x) * F x
               ∂(chartLocalMeasure (I := I) (g t) alpha) := by
             rw [Finset.mul_sum]

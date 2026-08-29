@@ -47,7 +47,7 @@ lemma moserRegPowerCutoffWitness_norm_sq_le
   -- The gradient identity is callable now that the /-! comment is fixed.
   -- Componentwise: hwReg_i = η·α·clip_i + ∂ᵢη·β
   -- where α = deriv(moserRegPow)(clip), β = moserRegPow(clip).
-  -- Also: hwComp_i = α · clip_i (from comp_smooth_bounded).
+  -- Also: hwComp_i = α · clip_i (from compSmoothBounded).
   -- So (hwReg_i)² = (η·α·clip_i + ∂ᵢη·β)² ≤ 2(η·α·clip_i)² + 2(∂ᵢη·β)²
   -- Summing: ‖hwReg‖² ≤ 2η²α²‖clip_grad‖² + 2β²‖∇η‖²
   let hwClip := moserClippedPosPartWitness (d := d) (u := u) hs hs1 hN hu1
@@ -60,13 +60,13 @@ lemma moserRegPowerCutoffWitness_norm_sq_le
       2 * ((fderiv ℝ η x) (EuclideanSpace.single i 1) *
         moserRegPow ε N p (min (max (u x) 0) N)) ^ 2 := by
     intro i
-    -- Use gradient identity + comp_smooth_bounded unfolding
+    -- Use gradient identity + compSmoothBounded unfolding
     have hgi := moserRegPowerCutoffWitness_grad (d := d) (p := p) hs hs1 hε hN hu1
       hη hη_bound hη_grad_bound x i
     have hcomp : (moserRegClippedPosPartWitness (d := d) (u := u) (p := p)
         hs hs1 hε hN hu1).weakGrad x i =
       deriv (moserRegPow ε N p) (min (max (u x) 0) N) * hwClip.weakGrad x i := by
-      simp only [moserRegClippedPosPartWitness, MemW1pWitness.comp_smooth_bounded]
+      simp only [moserRegClippedPosPartWitness, MemW1pWitness.compSmoothBounded]
       ring
     rw [hgi, hcomp]
     nlinarith [sq_nonneg (η x * (deriv (moserRegPow ε N p) (min (max (u x) 0) N) *
@@ -335,9 +335,10 @@ theorem moserExactReg_core_eq_ae
               moserExactRegTestPow ε N p (max (u x) 0) +
             η x ^ 2 * deriv (moserExactRegTestPow ε N p) (max (u x) 0) *
               hwPosBig.weakGrad x i := by
-        simpa [hwφ, hwφBig, hwPosBig] using
-          (moserExactRegTestCutoffWitness_grad (d := d) (u := u) (η := η) (ε := ε) (N := N)
-            (p := p) (Cη := Cη) hε hN hu1 hη hη_bound hη_grad_bound x i)
+        change hwφBig.weakGrad x i = _
+        exact moserExactRegTestCutoffWitness_grad
+          (d := d) (u := u) (η := η) (ε := ε) (N := N)
+          (p := p) (Cη := Cη) hε hN hu1 hη hη_bound hη_grad_bound x i
       rw [hformula]
       have hfdi_zero :
           (fderiv ℝ η x) (EuclideanSpace.single i 1) = 0 := by
@@ -550,17 +551,22 @@ private theorem moserExactReg_grad_split
       Integrable (fun x => 2 * termAfun x + 2 * termBfun x) μ := by
     convert (hTermA_int.const_mul (2 : ℝ)).add
       (hTermB_int.const_mul (2 : ℝ)) using 1
+    · congr
+    · funext x
+      rfl
   have hmono :
       ∫ x, ‖hwRegρ.weakGrad x‖ ^ 2 ∂μ ≤
         ∫ x, 2 * termAfun x + 2 * termBfun x ∂μ := by
     refine integral_mono_ae ?_ hupper_int ?_
     · simpa [pow_two, μ, hwRegρ] using hwRegρ.weakGrad_norm_memLp.integrable_sq
     · filter_upwards with x
-      simpa [hwRegρ, hwReg, termAfun, termBfun, hwPos, mul_assoc,
-        add_comm, add_left_comm, add_assoc] using
-        (moserExactRegPowerCutoffWitness_norm_sq_le
-          (d := d) (u := u) (η := η) (ε := ε) (N := N) (p := p)
-          (Cη := Cη) hε hN hu1 hη hη_bound hη_grad_bound x)
+      change ‖hwReg.weakGrad x‖ ^ 2 ≤
+        2 * (η x ^ 2 * deriv (moserExactRegPow ε N p) (max (u x) 0) ^ 2 *
+          ‖(moserPosPartWitnessUnitBall (d := d) (u := u) hu1).weakGrad x‖ ^ 2) +
+        2 * (‖fderiv ℝ η x‖ ^ 2 * moserExactRegPow ε N p (max (u x) 0) ^ 2)
+      convert moserExactRegPowerCutoffWitness_norm_sq_le
+        (d := d) (u := u) (η := η) (ε := ε) (N := N) (p := p)
+        (Cη := Cη) hε hN hu1 hη hη_bound hη_grad_bound x using 1
   calc
     ∫ x in Ω, ‖hwReg.weakGrad x‖ ^ 2 ∂volume
         = ∫ x, ‖hwRegρ.weakGrad x‖ ^ 2 ∂μ := by
@@ -822,9 +828,11 @@ private theorem moserExactReg_energyPrep
           (1 / 2 : ℝ) * leftTerm x + 2 * Aρ.1.Λ * boundTerm x) μ := by
     have htmp :
         Integrable (fun x => 2 * (Aρ.1.Λ * boundTerm x) + (1 / 2 : ℝ) * leftTerm x) μ := by
-      simpa [mul_assoc] using
-        (hbound_int.const_mul (2 * Aρ.1.Λ)).add
-          (hleft_int.const_mul (1 / 2 : ℝ))
+      convert (hbound_int.const_mul (2 * Aρ.1.Λ)).add
+        (hleft_int.const_mul (1 / 2 : ℝ)) using 1 <;> try rfl
+      ring_nf
+      funext x
+      rfl
     simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using htmp
   have hcrossAbs_int : Integrable crossAbs μ := by
     apply integrable_of_ae_nonneg_le hcross_upper_int
@@ -885,9 +893,12 @@ theorem moser_exact_regularized_energy_bound
   let hwRegρ : MemW1pWitness 2 (moserExactRegPowerCutoff η u ε N p) Ω :=
     hwReg.restrict Metric.isOpen_ball hball_sub
   have hsubρ : IsSubsolution Aρ.1 u := by
-    simpa [Aρ] using
-      isSubsolution_restrict_ball (d := d) (Ω := Metric.ball (0 : E) 1)
-        Metric.isOpen_ball (c := (0 : E)) (r := ρ) hρ (Metric.closedBall_subset_ball hρ1) hsub
+    change IsSubsolution
+      (A.1.restrict
+        (Metric.ball_subset_closedBall.trans (Metric.closedBall_subset_ball hρ1))) u
+    exact isSubsolution_restrict_ball (d := d) (Ω := Metric.ball (0 : E) 1)
+      Metric.isOpen_ball (c := (0 : E)) (r := ρ) hρ
+        (Metric.closedBall_subset_ball hρ1) hsub
   have hφ0 : MemH01 (moserExactRegTestCutoff η u ε N p) Ω := by
     simpa [Ω] using
       moserExactRegTestCutoff_memH01_on_ball (d := d) (u := u) (η := η)
@@ -1357,8 +1368,8 @@ theorem moserExactReg_energy_mainBall
             (ae_of_all _ fun x => hpw x)
       _ = Cη ^ 2 * ∫ x in Ω, (ε + |max (u x) 0|) ^ p ∂volume :=
           integral_const_mul _ _
-  -- The weak gradient of hwReg = η · (comp_smooth_bounded grad) + fderiv η · (comp value)
-  -- by mul_smooth_bounded.
+  -- The weak gradient of hwReg = η · (compSmoothBounded grad) + fderiv η · (comp value)
+  -- by mulSmoothBounded.
   have hgrad_split :
       ∫ x in Ω, ‖hwReg.weakGrad x‖ ^ 2 ∂volume ≤
         2 * ∫ x in Ω, η x ^ 2 *

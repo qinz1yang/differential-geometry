@@ -37,12 +37,14 @@ private theorem coordRadiusSq_contMDiffOn (c : M) :
       (fun z : E => ‖(toEuclidean (E := E)) (z - extChartAt I c c)‖ ^ 2) := by
     exact ((toEuclidean (E := E)).contDiff.comp
       (contDiff_id.sub contDiff_const)).norm_sq Real
-  simpa only [Function.comp_apply] using
-    (hq.contMDiff.contMDiffAt.comp x
-      (((contMDiffOn_extChartAt (I := I) (x := c)) x hx).contMDiffAt
-        ((chartAt H c).open_source.mem_nhds hx))).contMDiffWithinAt
+  change ContMDiffWithinAt I 𝓘(Real, Real) ∞
+    ((fun z : E => ‖(toEuclidean (E := E)) (z - extChartAt I c c)‖ ^ 2) ∘
+      extChartAt I c) (chartAt H c).source x
+  exact (hq.contMDiff.contMDiffAt.comp x
+    (((contMDiffOn_extChartAt (I := I) (x := c)) x hx).contMDiffAt
+      ((chartAt H c).open_source.mem_nhds hx))).contMDiffWithinAt
 
-private def compactCoordRadiusSq [T2Space M]
+private def compactCoordRadiusSq
     {c : M} (b : SmoothBumpFunction I c) (x : M) : Real :=
   b x * coordRadiusSq (I := I) c x
 
@@ -54,7 +56,7 @@ private theorem compactCoordRadiusSq_contMDiff [T2Space M]
     b.contMDiff_smul (coordRadiusSq_contMDiffOn (I := I) c)
 
 omit [IsManifold I ∞ M] in
-private theorem compactCoordRadiusSq_eventuallyEq [T2Space M]
+private theorem compactCoordRadiusSq_eventuallyEq
     {c x : M} (b : SmoothBumpFunction I c)
     (hx : x ∈ (chartAt H c).source)
     (hd : dist (extChartAt I c x) (extChartAt I c c) < b.rIn) :
@@ -74,8 +76,8 @@ private theorem fderiv_coordNormSq_apply_self (z z0 : E) :
         fun y => id y - z0) x‖ ^ 2) z (z - z0) = _
   rw [h.fderiv]
   simp only [id_eq, Function.comp_apply, map_sub, ContinuousLinearMap.comp_id,
-    ContinuousLinearMap.sub_comp, ContinuousLinearMap.coe_smul',
-    ContinuousLinearMap.coe_sub', ContinuousLinearMap.coe_comp', coe_innerSL_apply,
+    ContinuousLinearMap.sub_comp, FunLike.coe_smul,
+    FunLike.coe_sub, ContinuousLinearMap.coe_comp, coe_innerSL_apply,
     ContinuousLinearEquiv.coe_coe, Pi.smul_apply, Pi.sub_apply, nsmul_eq_mul,
     Nat.cast_ofNat]
   rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq,
@@ -101,8 +103,11 @@ private theorem coordRadiusSq_mfderiv_ne_zero
       exact hqcd.mdifferentiable (by simp) z
     have hchart : MDifferentiableAt I 𝓘(Real, E) (extChartAt I c) x :=
       mdifferentiableAt_extChartAt (I := I) hx
-    simpa only [coordRadiusSq, q, z, mfderiv_eq_fderiv, Function.comp_apply] using
-      mfderiv_comp x hq hchart
+    change mfderiv I 𝓘(Real, Real) (q ∘ extChartAt I c) x = _
+    have h := mfderiv_comp x hq hchart
+    rw [mfderiv_eq_fderiv (𝕜 := Real) (f := q)
+      (x := extChartAt I c x)] at h
+    exact h
   intro hzero
   have hqzero : fderiv Real q z = 0 := by
     have hinv := isInvertible_mfderiv_extChartAt (I := I)
@@ -112,11 +117,13 @@ private theorem coordRadiusSq_mfderiv_ne_zero
     obtain ⟨w, hw⟩ := hinv.surjective v
     have happ := congrArg (fun L : TangentSpace I x →L[Real] Real => L w) hzero
     rw [hcomp] at happ
-    simp only [ContinuousLinearMap.comp_apply] at happ
     calc
       fderiv Real q z v = fderiv Real q z
           ((mfderiv I 𝓘(Real, E) (extChartAt I c) x) w) := by rw [hw]
-      _ = 0 := by simpa using happ
+      _ = 0 := by
+        change fderiv Real q z ((mfderiv I 𝓘(Real, E) (extChartAt I c) x) w) =
+          (0 : Real) at happ
+        exact happ
   have hz_ne : z ≠ z0 := by
     intro hz
     apply hxc
@@ -133,12 +140,12 @@ private theorem coordRadiusSq_mfderiv_ne_zero
     exact (sub_ne_zero.mpr hz_ne) hsub
   have happ := fderiv_coordNormSq_apply_self (E := E) z z0
   rw [hqzero] at happ
-  simp only [ContinuousLinearMap.zero_apply] at happ
+  simp only [zero_apply] at happ
   have hpos : 0 < 2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2 := by
     positivity
   linarith
 
-private theorem compactCoordRadiusSq_gradient_ne_zero [T2Space M]
+private theorem compactCoordRadiusSq_gradient_ne_zero
     (g : SmoothRiemannianMetric I M) {c x : M}
     (b : SmoothBumpFunction I c)
     (hx : x ∈ (chartAt H c).source)
@@ -157,9 +164,12 @@ private theorem compactCoordRadiusSq_gradient_ne_zero [T2Space M]
   have hinner := inner_gradientFun (I := I) g
     (compactCoordRadiusSq (I := I) b) x v
   rw [hgrad] at hinner
-  simpa using hinner.symm
+  apply (NormedSpace.fromTangentSpace
+    (compactCoordRadiusSq (I := I) b x)).injective
+  change mvfderiv (I := I) (compactCoordRadiusSq (I := I) b) x v = (0 : Real)
+  simpa only [map_zero, zero_apply] using hinner.symm
 
-private theorem gradientNormSq_continuous [T2Space M]
+private theorem gradientNormSq_continuous
     (g : SmoothRiemannianMetric I M) {f : M → Real}
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f) :
     Continuous (fun x => g.inner x
@@ -178,7 +188,7 @@ private def chartClosedAnnulus (c : M) (r R : Real) : Set M :=
       Metric.ball (extChartAt I c c) r) ∩ Set.range I)
 
 omit [IsManifold I ∞ M] in
-private theorem chartClosedAnnulus_isCompact [T2Space M]
+private theorem chartClosedAnnulus_isCompact
     {c : M} (b : SmoothBumpFunction I c) {r R : Real}
     (hR : R ≤ b.rOut) :
     IsCompact (chartClosedAnnulus (I := I) c r R) := by
@@ -271,8 +281,9 @@ private def fixedMetricFamily
   connection := fun _ => LeviCivita (I := I) g
   metricCompatible := by
     intro t
-    simpa using
-      (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
+    change IsMetricCompatibleGen (I := I)
+      (leviCivitaConnectionOfMetric (I := I) g) g
+    exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
 
 @[simp] private theorem fixedMetricFamily_metric
     (g : SmoothRiemannianMetric I M) (t : Real) :
@@ -291,10 +302,10 @@ private theorem exists_abs_laplacian_le_on_chartClosedAnnulus
     (hR : R < b.rIn)
     (hne : (chartClosedAnnulus (I := I) c r R).Nonempty) :
     ∃ B : Real, 0 ≤ B ∧ ∀ x ∈ chartClosedAnnulus (I := I) c r R,
-      |Δ_g (I := I) g
+      |ΔG (I := I) g
         ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x| ≤ B := by
   let f : M → Real := compactCoordRadiusSq (I := I) b
-  let q : M → Real := fun x => |Δ_g (I := I) g
+  let q : M → Real := fun x => |ΔG (I := I) g
     ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x|
   have hK := chartClosedAnnulus_isCompact (I := I) b (r := r) (R := R)
     (hR.le.trans b.rIn_lt_rOut.le)
@@ -322,9 +333,9 @@ private theorem delta_exp_neg_mul
     (g : SmoothRiemannianMetric I M) {f : M → Real}
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
     (alpha : Real) (x : M) :
-    Δ_g (I := I) g ⟨_, exp_neg_mul_contMDiff (I := I) hf alpha⟩ x =
+    ΔG (I := I) g ⟨_, exp_neg_mul_contMDiff (I := I) hf alpha⟩ x =
       Real.exp (-alpha * f x) *
-        (-alpha * Δ_g (I := I) g ⟨f, hf⟩ x + alpha ^ 2 *
+        (-alpha * ΔG (I := I) g ⟨f, hf⟩ x + alpha ^ 2 *
           g.inner x (gradientFun (I := I) g f x)
             (gradientFun (I := I) g f x)) := by
   let G := fixedMetricFamily (I := I) g
@@ -336,8 +347,7 @@ private theorem delta_exp_neg_mul
     have hev : phi =ᶠ[nhds s] Real.exp ∘ HMul.hMul (-alpha) :=
       Filter.Eventually.of_forall fun y => by simp [phi]
     have h := hraw.congr_of_eventuallyEq hev
-    convert h using 1
-    ring
+    exact h.congr_deriv (by ring)
   have hphi : Differentiable Real phi := by
     intro s
     exact (hphiDeriv s).differentiableAt
@@ -351,20 +361,20 @@ private theorem delta_exp_neg_mul
     (fun _ => 0) hphi hphi'
     (fun y => hf.mdifferentiable (by simp) y)
     (gradientFun_mdiffAt (I := I) g hf x)
-  have hfLap : laplacianAt (I := I) G 0 f x = Δ_g (I := I) g ⟨f, hf⟩ x := by
+  have hfLap : laplacianAt (I := I) G 0 f x = ΔG (I := I) g ⟨f, hf⟩ x := by
     exact laplacianAt_eq_delta (I := I) G 0 hf rfl x
   have hcompSmooth : ContMDiff I 𝓘(Real, Real) ∞
       (fun y => phi (f y)) :=
     exp_neg_mul_contMDiff (I := I) hf alpha
   have hcompLap :
       laplacianAt (I := I) G 0 (fun y => phi (f y)) x =
-        Δ_g (I := I) g ⟨_, hcompSmooth⟩ x := by
+        ΔG (I := I) g ⟨_, hcompSmooth⟩ x := by
     exact laplacianAt_eq_delta (I := I) G 0 hcompSmooth rfl x
   unfold heatOperatorWithDrift driftTerm at hchain
   rw [hcompLap, hfLap] at hchain
   have hchain' :
-      Δ_g (I := I) g ⟨_, hcompSmooth⟩ x =
-        deriv phi (f x) * Δ_g (I := I) g ⟨f, hf⟩ x +
+      ΔG (I := I) g ⟨_, hcompSmooth⟩ x =
+        deriv phi (f x) * ΔG (I := I) g ⟨f, hf⟩ x +
           deriv (deriv phi) (f x) *
             g.inner x (gradientFun (I := I) g f x)
               (gradientFun (I := I) g f x) := by
@@ -381,11 +391,11 @@ private theorem delta_exp_neg_mul
     have hs := hexp.const_mul (-alpha)
     rw [hderiv]
     simpa [pow_two, mul_assoc, mul_left_comm, mul_comm] using hs.deriv
-  change Δ_g (I := I) g ⟨_, hcompSmooth⟩ x = _
+  change ΔG (I := I) g ⟨_, hcompSmooth⟩ x = _
   rw [hchain', hderiv1, hderiv2]
   ring
 
-private def barrierRadius [T2Space M]
+private def barrierRadius
     {c : M} (b : SmoothBumpFunction I c) (R : Real) (x : M) : Real :=
   compactCoordRadiusSq (I := I) b x + R * (1 - b x)
 
@@ -396,7 +406,7 @@ private theorem barrierRadius_contMDiff [T2Space M]
     (contMDiff_const.mul (contMDiff_const.sub b.contMDiff))
 
 omit [IsManifold I ∞ M] in
-private theorem barrierRadius_nonneg [T2Space M]
+private theorem barrierRadius_nonneg
     {c : M} (b : SmoothBumpFunction I c) {R : Real} (hR : 0 ≤ R) (x : M) :
     0 ≤ barrierRadius (I := I) b R x := by
   have hb0 := b.nonneg (x := x)
@@ -407,7 +417,7 @@ private theorem barrierRadius_nonneg [T2Space M]
     (mul_nonneg hR (sub_nonneg.mpr hb1))
 
 omit [IsManifold I ∞ M] in
-private theorem barrierRadius_lt_imp [T2Space M]
+private theorem barrierRadius_lt_imp
     {c x : M} (b : SmoothBumpFunction I c) {R : Real}
     (h : barrierRadius (I := I) b R x < R) :
     0 < b x ∧ coordRadiusSq (I := I) c x < R := by
@@ -425,7 +435,7 @@ private theorem barrierRadius_lt_imp [T2Space M]
   · exact (not_lt_of_ge hb0 hcase.1).elim
 
 omit [IsManifold I ∞ M] in
-private theorem barrierRadius_eventuallyEq_coordRadiusSq [T2Space M]
+private theorem barrierRadius_eventuallyEq_coordRadiusSq
     {c x : M} (b : SmoothBumpFunction I c)
     (hx : x ∈ (chartAt H c).source)
     (hd : dist (extChartAt I c x) (extChartAt I c c) < b.rIn)
@@ -436,7 +446,7 @@ private theorem barrierRadius_eventuallyEq_coordRadiusSq [T2Space M]
   simp [barrierRadius, compactCoordRadiusSq, hy]
 
 omit [IsManifold I ∞ M] in
-private theorem barrierRadius_eventuallyEq_compactCoordRadiusSq [T2Space M]
+private theorem barrierRadius_eventuallyEq_compactCoordRadiusSq
     {c x : M} (b : SmoothBumpFunction I c)
     (hx : x ∈ (chartAt H c).source)
     (hd : dist (extChartAt I c x) (extChartAt I c c) < b.rIn)
@@ -448,20 +458,19 @@ private theorem barrierRadius_eventuallyEq_compactCoordRadiusSq [T2Space M]
 
 private theorem delta_barrierRadius_eq_compactCoordRadiusSq
     [I.Boundaryless] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) {c x : M}
     (b : SmoothBumpFunction I c)
     (hx : x ∈ (chartAt H c).source)
     (hd : dist (extChartAt I c x) (extChartAt I c c) < b.rIn)
     (R : Real) :
-    Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x =
-      Δ_g (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x :=
+    ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x =
+      ΔG (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x :=
   Δ_g_congr_of_eventuallyEq (I := I) g
     (barrierRadius_contMDiff (I := I) b R)
     (compactCoordRadiusSq_contMDiff (I := I) b)
     (barrierRadius_eventuallyEq_compactCoordRadiusSq (I := I) b hx hd R)
 
-private def chartParabolicBarrier [T2Space M]
+private def chartParabolicBarrier
     {c : M} (b : SmoothBumpFunction I c)
     (epsilon alpha R kappa tau : Real) (t : Real) (x : M) : Real :=
   epsilon * (Real.exp (-alpha *
@@ -491,7 +500,7 @@ private theorem chartParabolicBarrier_joint_continuous [T2Space M]
   fun_prop
 
 omit [IsManifold I ∞ M] in
-private theorem chartParabolicBarrier_time_differentiable [T2Space M]
+private theorem chartParabolicBarrier_time_differentiable
     {c : M} (b : SmoothBumpFunction I c)
     (epsilon alpha R kappa tau : Real) (x : M) :
     Differentiable Real
@@ -500,13 +509,13 @@ private theorem chartParabolicBarrier_time_differentiable [T2Space M]
   unfold chartParabolicBarrier
   fun_prop
 
-private def barrierPhase [T2Space M]
+private def barrierPhase
     {c : M} (b : SmoothBumpFunction I c)
     (R kappa tau : Real) (t : Real) (x : M) : Real :=
   barrierRadius (I := I) b R x + kappa * (t - tau) ^ 2
 
 omit [IsManifold I ∞ M] in
-private theorem barrierPhase_time_differentiable [T2Space M]
+private theorem barrierPhase_time_differentiable
     {c : M} (b : SmoothBumpFunction I c)
     (R kappa tau : Real) (x : M) :
     Differentiable Real (fun t => barrierPhase (I := I) b R kappa tau t x) := by
@@ -526,8 +535,13 @@ private theorem gradient_barrierPhase_eq_compactCoordRadiusSq
   have hbr : gradientFun (I := I) g (barrierRadius (I := I) b R) x =
       gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x := by
     unfold gradientFun metricSharp
-    rw [(barrierRadius_eventuallyEq_compactCoordRadiusSq
-      (I := I) b hx hd R).mfderiv_eq]
+    congr 1
+    apply LinearMap.ext
+    intro v
+    change (mfderiv I 𝓘(Real, Real) (barrierRadius (I := I) b R) x) v =
+      (mfderiv I 𝓘(Real, Real) (compactCoordRadiusSq (I := I) b) x) v
+    exact DFunLike.congr_fun
+      (barrierRadius_eventuallyEq_compactCoordRadiusSq (I := I) b hx hd R).mfderiv_eq v
   rw [show barrierPhase (I := I) b R kappa tau t =
       fun y => barrierRadius (I := I) b R y + kappa * (t - tau) ^ 2 from rfl]
   rw [gradientFun_add (I := I) g
@@ -536,7 +550,7 @@ private theorem gradient_barrierPhase_eq_compactCoordRadiusSq
   rw [gradientFun_const, add_zero, hbr]
 
 omit [IsManifold I ∞ M] in
-private theorem barrierPhase_time_derivWithin [T2Space M]
+private theorem barrierPhase_time_derivWithin
     {c : M} (b : SmoothBumpFunction I c)
     {T R kappa tau t : Real} (hT : 0 < T) (ht : t ∈ Set.Icc 0 T)
     (x : M) :
@@ -546,8 +560,10 @@ private theorem barrierPhase_time_derivWithin [T2Space M]
       (fun s => barrierPhase (I := I) b R kappa tau s x)
       (2 * kappa * (t - tau)) t := by
     unfold barrierPhase
-    convert (hasDerivAt_const t (barrierRadius (I := I) b R x)).add
-      (((hasDerivAt_id t).sub_const tau).pow 2 |>.const_mul kappa) using 1
+    have h := (hasDerivAt_const t (barrierRadius (I := I) b R x)).add
+      (((hasDerivAt_id t).sub_const tau).pow 2 |>.const_mul kappa)
+    refine (h.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
     simp only [id_eq]
     ring
   exact hderiv.hasDerivWithinAt.derivWithin
@@ -555,7 +571,6 @@ private theorem barrierPhase_time_derivWithin [T2Space M]
 
 private theorem barrierPhase_parabolicOperator
     [I.Boundaryless] [T2Space M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) {c : M}
     (b : SmoothBumpFunction I c)
     {T R kappa tau t : Real} (hT : 0 < T) (ht : t ∈ Set.Icc 0 T)
@@ -563,7 +578,7 @@ private theorem barrierPhase_parabolicOperator
     parabolicOperatorWithDrift (I := I) (fixedMetricFamily (I := I) g) T
         (fun _ _ => 0) (barrierPhase (I := I) b R kappa tau) t x =
       2 * kappa * (t - tau) -
-        Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x := by
+        ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x := by
   unfold parabolicOperatorWithDrift heatOperatorWithDrift driftTerm
   rw [barrierPhase_time_derivWithin (I := I) b hT ht x]
   have hslice : ContMDiff I 𝓘(Real, Real) ∞
@@ -571,7 +586,7 @@ private theorem barrierPhase_parabolicOperator
     (barrierRadius_contMDiff (I := I) b R).add contMDiff_const
   have hlap : laplacianAt (I := I) (fixedMetricFamily (I := I) g) t
       (barrierPhase (I := I) b R kappa tau t) x =
-      Δ_g (I := I) g ⟨_, hslice⟩ x :=
+      ΔG (I := I) g ⟨_, hslice⟩ x :=
     laplacianAt_eq_delta (I := I) (fixedMetricFamily (I := I) g) t hslice rfl x
   rw [hlap]
   have hadd := Δ_g_add (I := I) g
@@ -579,16 +594,19 @@ private theorem barrierPhase_parabolicOperator
     ⟨_, (contMDiff_const : ContMDiff I 𝓘(Real, Real) ∞
       (fun _ : M => kappa * (t - tau) ^ 2))⟩ x
   have hconst := Δ_g_const (I := I) g (kappa * (t - tau) ^ 2) x
-  have hadd' : Δ_g (I := I) g ⟨_, hslice⟩ x =
-      Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x := by
+  have hadd' : ΔG (I := I) g ⟨_, hslice⟩ x =
+      ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x := by
     calc
-      Δ_g (I := I) g ⟨_, hslice⟩ x =
-          Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x +
-            Δ_g (I := I) g
+      ΔG (I := I) g ⟨_, hslice⟩ x =
+          ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x +
+            ΔG (I := I) g
               ⟨_, (contMDiff_const : ContMDiff I 𝓘(Real, Real) ∞
                 (fun _ : M => kappa * (t - tau) ^ 2))⟩ x := by
-                  simpa using hadd
-      _ = Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x := by
+                  change ΔG (I := I) g ⟨_, hslice⟩ x = _ at hadd
+                  exact hadd
+      _ = ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x := by
+            change ΔG (I := I) g
+              ⟨(fun _ : M => kappa * (t - tau) ^ 2), contMDiff_const⟩ x = 0 at hconst
             rw [hconst, add_zero]
   rw [hadd']
   simp
@@ -604,8 +622,7 @@ private theorem expNegMul_hasDerivAt (alpha s : Real) :
   have hev : expNegMul alpha =ᶠ[nhds s] Real.exp ∘ HMul.hMul (-alpha) :=
     Filter.Eventually.of_forall fun y => by simp [expNegMul]
   have h := hraw.congr_of_eventuallyEq hev
-  convert h using 1
-  ring
+  exact h.congr_deriv (by ring)
 
 private theorem expNegMul_deriv (alpha s : Real) :
     deriv (expNegMul alpha) s = -alpha * Real.exp (-alpha * s) :=
@@ -635,7 +652,7 @@ private theorem exp_barrierPhase_parabolicOperator
         (fun s y => Real.exp (-alpha * barrierPhase (I := I) b R kappa tau s y)) t x =
       Real.exp (-alpha * barrierPhase (I := I) b R kappa tau t x) *
         (-alpha * (2 * kappa * (t - tau) -
-          Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
+          ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
           alpha ^ 2 * g.inner x
             (gradientFun (I := I) g
               (barrierPhase (I := I) b R kappa tau t) x)
@@ -675,7 +692,7 @@ private theorem exp_barrierPhase_parabolicOperator
         -alpha * Real.exp
             (-alpha * barrierPhase (I := I) b R kappa tau t x) *
             (2 * kappa * (t - tau) -
-              Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
+              ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
           alpha ^ 2 * Real.exp
             (-alpha * barrierPhase (I := I) b R kappa tau t x) *
             g.inner x
@@ -700,7 +717,7 @@ private theorem chartParabolicBarrier_parabolicOperator
       epsilon * Real.exp
           (-alpha * barrierPhase (I := I) b R kappa tau t x) *
         (-alpha * (2 * kappa * (t - tau) -
-          Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
+          ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
           alpha ^ 2 * g.inner x
             (gradientFun (I := I) g
               (barrierPhase (I := I) b R kappa tau t) x)
@@ -772,7 +789,7 @@ private theorem chartParabolicBarrier_parabolicOperator
       epsilon * (Real.exp
           (-alpha * barrierPhase (I := I) b R kappa tau t x) *
         (-alpha * (2 * kappa * (t - tau) -
-          Δ_g (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
+          ΔG (I := I) g ⟨_, barrierRadius_contMDiff (I := I) b R⟩ x) -
           alpha ^ 2 * g.inner x
             (gradientFun (I := I) g
               (barrierPhase (I := I) b R kappa tau t) x)
@@ -782,7 +799,7 @@ private theorem chartParabolicBarrier_parabolicOperator
 
 private theorem fixed_metric_local_positivity
     [I.Boundaryless]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M) {T : Real} (hT : 0 < T)
     (u : Real → M → Real)
@@ -812,7 +829,7 @@ private theorem fixed_metric_local_positivity
         (gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x)
         (gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x))
     (hlap_bound : ∀ x ∈ chartClosedAnnulus (I := I) c r Rdist,
-      |Δ_g (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x| ≤ B)
+      |ΔG (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x| ≤ B)
     (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
     (htime : R ≤ kappa * delta ^ 2)
     (halpha : 0 < alpha) (hdom : 2 * kappa * T + B ≤ alpha * m)
@@ -990,26 +1007,26 @@ private theorem fixed_metric_local_positivity
       g b epsilon alpha (R := R) (kappa := kappa) (tau := T) hT ht x
     rw [hdelta_eq, hgrad_eq] at hPv
     have hdelta_upper :
-        Δ_g (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x ≤ B :=
+        ΔG (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x ≤ B :=
       le_trans (le_abs_self _) hlap
     have hbracket :
         -alpha * (2 * kappa * (t - T) -
-          Δ_g (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) -
+          ΔG (I := I) g ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) -
           alpha ^ 2 * g.inner x
             (gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x)
             (gradientFun (I := I) g (compactCoordRadiusSq (I := I) b) x) ≤ 0 := by
       have hkt : 0 ≤ kappa * t := mul_nonneg hkappa_nonneg ht.1
       have hlin :
           -(2 * kappa * (t - T) -
-            Δ_g (I := I) g
+            ΔG (I := I) g
               ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) ≤
             2 * kappa * T + B := by
         calc
           -(2 * kappa * (t - T) -
-              Δ_g (I := I) g
+              ΔG (I := I) g
                 ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) =
               2 * kappa * T +
-                Δ_g (I := I) g
+                ΔG (I := I) g
                   ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x -
                 2 * (kappa * t) := by ring
           _ ≤ 2 * kappa * T + B := by linarith
@@ -1019,7 +1036,7 @@ private theorem fixed_metric_local_positivity
         mul_le_mul_of_nonneg_left hgradq halpha.le
       have hlinq :
           -(2 * kappa * (t - T) -
-            Δ_g (I := I) g
+            ΔG (I := I) g
               ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) ≤
             alpha * g.inner x
               (gradientFun (I := I) g
@@ -1030,7 +1047,7 @@ private theorem fixed_metric_local_positivity
       have hmul := mul_le_mul_of_nonneg_left hlinq halpha.le
       calc
         -alpha * (2 * kappa * (t - T) -
-            Δ_g (I := I) g
+            ΔG (I := I) g
               ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x) -
             alpha ^ 2 * g.inner x
               (gradientFun (I := I) g
@@ -1038,7 +1055,7 @@ private theorem fixed_metric_local_positivity
               (gradientFun (I := I) g
                 (compactCoordRadiusSq (I := I) b) x) =
           alpha * (-(2 * kappa * (t - T) -
-            Δ_g (I := I) g
+            ΔG (I := I) g
               ⟨_, compactCoordRadiusSq_contMDiff (I := I) b⟩ x)) -
             alpha * (alpha * g.inner x
               (gradientFun (I := I) g

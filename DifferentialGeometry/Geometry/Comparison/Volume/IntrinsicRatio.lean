@@ -31,8 +31,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [riemannianBundle : RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [pseudoEMetricSpace : PseudoEMetricSpace M]
@@ -128,7 +128,8 @@ omit [NeZero (Module.finrank ℝ E)]
   pseudoEMetricSpace
   riemannianManifold
   completeSpaceM
-  continuousRiemannianBundle in
+  continuousRiemannianBundle
+  riemannianBundle in
 theorem exists_perp_basis
     (g : SmoothRiemannianMetric I M) (p : M) (u : TangentSpace I p)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)

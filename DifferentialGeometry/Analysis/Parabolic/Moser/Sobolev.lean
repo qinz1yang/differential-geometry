@@ -37,8 +37,8 @@ private theorem metric_inner_add_self_le
   have hparallelogram :
       g.inner x (v + w) (v + w) + g.inner x (v - w) (v - w) =
         2 * g.inner x v v + 2 * g.inner x w w := by
-    simp only [map_add, ContinuousLinearMap.add_apply, map_sub,
-      ContinuousLinearMap.sub_apply]
+    simp only [map_add, add_apply, map_sub,
+      sub_apply]
     rw [g.symm x w v]
     ring
   linarith
@@ -72,7 +72,7 @@ private theorem inner_grad_mul_self_le
           (u.toFun x • gradientFun (I := I) g cutoff.toFun x) :=
       metric_inner_add_self_le (I := I) (M := M) g x _ _
     _ = _ := by
-      simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_smul, smul_apply, smul_eq_mul]
       have hgrad_u : gradientFun (I := I) g u.toFun x =
           gradFun (I := I) g u.toFun x := rfl
       have hgrad_cutoff : gradientFun (I := I) g cutoff.toFun x =
@@ -99,7 +99,7 @@ theorem localized_sobolev
   refine ⟨4 * C ^ 2, by positivity, ?_⟩
   intro cutoff u
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -109,21 +109,36 @@ theorem localized_sobolev
       g.inner x
         (gradFun (I := I) g v.toFun x)
         (gradFun (I := I) g v.toFun x)) := by
-    simpa only [grad_g_apply] using v.continuous_inner_grad v
+    have h := v.continuous_inner_grad v
+    change Continuous (fun x : M =>
+      g.inner x
+        (gradFun (I := I) g v.toFun x)
+        (gradFun (I := I) g v.toFun x)) at h
+    exact h
   have hD_cont : Continuous (fun x : M =>
       cutoff.toFun x ^ 2 *
         g.inner x
           (gradFun (I := I) g u.toFun x)
           (gradFun (I := I) g u.toFun x)) := by
-    simpa only [grad_g_apply] using
-      (cutoff.smooth.continuous.pow 2).mul (u.continuous_inner_grad u)
+    have h := (cutoff.smooth.continuous.pow 2).mul (u.continuous_inner_grad u)
+    change Continuous (fun x : M =>
+      cutoff.toFun x ^ 2 *
+        g.inner x
+          (gradFun (I := I) g u.toFun x)
+          (gradFun (I := I) g u.toFun x)) at h
+    exact h
   have hE_cont : Continuous (fun x : M =>
       u.toFun x ^ 2 *
         g.inner x
           (gradFun (I := I) g cutoff.toFun x)
           (gradFun (I := I) g cutoff.toFun x)) := by
-    simpa only [grad_g_apply] using
-      (u.smooth.continuous.pow 2).mul (cutoff.continuous_inner_grad cutoff)
+    have h := (u.smooth.continuous.pow 2).mul (cutoff.continuous_inner_grad cutoff)
+    change Continuous (fun x : M =>
+      u.toFun x ^ 2 *
+        g.inner x
+          (gradFun (I := I) g cutoff.toFun x)
+          (gradFun (I := I) g cutoff.toFun x)) at h
+    exact h
   have hgrad_v_int := hgrad_v_cont.integrable_of_hasCompactSupport
     (μ := μ) (HasCompactSupport.of_compactSpace _)
   have hD_int := hD_cont.integrable_of_hasCompactSupport
@@ -232,7 +247,7 @@ theorem critical_slice_interpolation
                 ((Module.finrank ℝ E : ℝ) - 2)))
             (riemannianVolumeMeasure (I := I) (M := M) g) ^ 2 := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -372,7 +387,7 @@ theorem localized_parabolic_sobolev_time_le
     cutoffGradientError (I := I) (M := M) cutoff
       (smoothScalarSlice (I := I) g u hu t)
   let energy : ℝ → ℝ := fun t => mass t + dirichlet t + error t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -397,8 +412,12 @@ theorem localized_parabolic_sobolev_time_le
   have herror_cont : ContinuousOn error (Icc a b) := by
     simpa only [error] using
       (contDiff_cutoffGradientError (I := I) (M := M) cutoff u hu).continuous.continuousOn
+  have hdirichlet_cont : ContinuousOn dirichlet (Icc a b) := by
+    simpa only [dirichlet] using hdirichlet
   have henergy_cont : ContinuousOn energy (Icc a b) := by
-    simpa only [energy] using (hmass_cont.add hdirichlet).add herror_cont
+    have h := (hmass_cont.add hdirichlet_cont).add herror_cont
+    change ContinuousOn (fun t => mass t + dirichlet t + error t) (Icc a b) at h
+    simpa only [energy] using h
   have hmass_nonneg : ∀ t ∈ Icc a b, 0 ≤ mass t := by
     intro t _
     exact localizedL2Mass_nonneg (I := I) (M := M) cutoff

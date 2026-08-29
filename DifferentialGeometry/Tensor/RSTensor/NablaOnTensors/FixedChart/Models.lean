@@ -8,7 +8,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -71,19 +70,19 @@ theorem tensor0SModelInChart_apply (s : ℕ) (x₀ : M)
 noncomputable def tensorRSModelAt (r s : ℕ) (x₀ x : M)
     (T : TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x) :
     TensorRSModel r s 𝕜 E := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   exact ((trivializationAt (TensorRSModel r s 𝕜 E)
     (fun x => TensorRSSpace r s I x) x₀) ⟨x, T⟩).2
 
 omit [CompleteSpace 𝕜] in
 theorem tensorRSModelAt_trivializationAt_symm (r s : ℕ) (x₀ : M)
     (T : TensorRSModel r s 𝕜 E) :
-    letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+    letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
     tensorRSModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s x₀ x₀
         ((trivializationAt (TensorRSModel r s 𝕜 E)
           (fun x => TensorRSSpace r s I x) x₀).symm x₀ T) = T := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  let := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   unfold tensorRSModelAt
   exact congrArg Prod.snd
     ((trivializationAt (TensorRSModel r s 𝕜 E)

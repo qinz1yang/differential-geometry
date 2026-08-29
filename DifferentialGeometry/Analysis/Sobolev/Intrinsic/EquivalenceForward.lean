@@ -42,7 +42,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Intrinsic
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
 
-private noncomputable def chartInvGramMatrix_l1Sum
+private noncomputable def chartInvGramMatrixL1Sum
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (x : M) : ℝ :=
   ∑ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -52,18 +52,18 @@ private noncomputable def chartInvGramMatrix_l1Sum
 private lemma chartInvGramMatrix_l1Sum_nonneg
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (x : M) :
-    0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x := by
-  unfold chartInvGramMatrix_l1Sum
+    0 ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x := by
+  unfold chartInvGramMatrixL1Sum
   exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
 
 private lemma chartInvGramMatrix_l1Sum_continuousOn
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
-    ContinuousOn (chartInvGramMatrix_l1Sum (I := I) (M := M) g α)
+    ContinuousOn (chartInvGramMatrixL1Sum (I := I) (M := M) g α)
       (chartAt H α).source := by
   classical
-  unfold chartInvGramMatrix_l1Sum
-  refine continuousOn_finset_sum _ (fun ij _ => ?_)
+  unfold chartInvGramMatrixL1Sum
+  refine continuousOn_finsetSum _ (fun ij _ => ?_)
   have h1 :
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun x : M =>
@@ -104,7 +104,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
           (I := I) g f x)
         (DifferentialGeometry.Geometry.Operator.gradFun
           (I := I) g f x)
-      ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x *
+      ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x *
           ∑ k : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
               (E := E) k
@@ -261,8 +261,8 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
     exact h
   have h_main_le :
       (∑ j, ∑ k, Ginv j k * d j * d k) ≤
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α x * D := by
-    unfold chartInvGramMatrix_l1Sum
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α x * D := by
+    unfold chartInvGramMatrixL1Sum
     rw [Finset.sum_mul]
     rw [show (∑ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
             |DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
@@ -295,7 +295,7 @@ private lemma norm_gradFun_le_sqrt_chartInvGramMatrix_l1Sum_mul
             (I := I) g f x)
           (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g f x))
-      ≤ Real.sqrt (chartInvGramMatrix_l1Sum (I := I) (M := M) g α x) *
+      ≤ Real.sqrt (chartInvGramMatrixL1Sum (I := I) (M := M) g α x) *
           Real.sqrt
             (∑ k : Fin (Module.finrank ℝ E),
               (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
@@ -333,7 +333,7 @@ private noncomputable def gramInvL1SumSupOnPouTsupport
     have hKα_sub : Kα ⊆ (chartAt H α).source :=
       DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
     have h_cont : ContinuousOn
-        (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) Kα :=
+        (chartInvGramMatrixL1Sum (I := I) (M := M) g α) Kα :=
       (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKα_sub
     exact (hKα_compact.image_of_continuousOn h_cont).bddAbove.choose
   · exact 0
@@ -354,18 +354,18 @@ private lemma gramInvL1SumSupOnPouTsupport_nonneg
     have hKα_sub : Kα ⊆ (chartAt H α).source :=
       DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
     have h_cont : ContinuousOn
-        (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) Kα :=
+        (chartInvGramMatrixL1Sum (I := I) (M := M) g α) Kα :=
       (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKα_sub
     set hImg :=
       (hKα_compact.image_of_continuousOn h_cont).bddAbove
     obtain ⟨x₀, hx₀⟩ := hKα_ne
     have hx₀_val :
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α x₀ ∈
-        (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) '' Kα :=
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α x₀ ∈
+        (chartInvGramMatrixL1Sum (I := I) (M := M) g α) '' Kα :=
       ⟨x₀, hx₀, rfl⟩
     have h_le := hImg.choose_spec hx₀_val
     have h_val_nn :
-        (0 : ℝ) ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x₀ :=
+        (0 : ℝ) ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x₀ :=
       chartInvGramMatrix_l1Sum_nonneg (I := I) (M := M) g α x₀
     exact le_trans h_val_nn h_le
   · rw [dif_neg hKα_ne]
@@ -377,7 +377,7 @@ private lemma chartInvGramMatrix_l1Sum_le_sup
     (hx : x ∈ tsupport
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :
-    chartInvGramMatrix_l1Sum (I := I) (M := M) g α x ≤
+    chartInvGramMatrixL1Sum (I := I) (M := M) g α x ≤
       gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α := by
   classical
   unfold gramInvL1SumSupOnPouTsupport
@@ -390,7 +390,7 @@ private lemma chartInvGramMatrix_l1Sum_le_sup
   have hKα_sub : Kα ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
   have h_cont : ContinuousOn
-      (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) Kα :=
+      (chartInvGramMatrixL1Sum (I := I) (M := M) g α) Kα :=
     (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKα_sub
   set hImg :=
     (hKα_compact.image_of_continuousOn h_cont).bddAbove
@@ -566,12 +566,12 @@ private lemma gNormGrad_pou_mul_le_sqrt_partial_sum
     norm_gradFun_le_sqrt_chartInvGramMatrix_l1Sum_mul
       (I := I) (M := M) g α (f := f) (x := x) hf_diff hxbase hx_int
   refine le_trans h_pointwise ?_
-  have h_M_le : chartInvGramMatrix_l1Sum (I := I) (M := M) g α x ≤
+  have h_M_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α x ≤
       gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α :=
     chartInvGramMatrix_l1Sum_le_sup (I := I) (M := M) g α (x := x) hx
-  have h_M_nn : 0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x :=
+  have h_M_nn : 0 ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x :=
     chartInvGramMatrix_l1Sum_nonneg (I := I) (M := M) g α x
-  have h_sqrt_M_le : Real.sqrt (chartInvGramMatrix_l1Sum (I := I) (M := M) g α x) ≤
+  have h_sqrt_M_le : Real.sqrt (chartInvGramMatrixL1Sum (I := I) (M := M) g α x) ≤
       Real.sqrt (gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α) :=
     Real.sqrt_le_sqrt h_M_le
   have h_partial_sum_nn : (0 : ℝ) ≤ ∑ k : Fin (Module.finrank ℝ E),
@@ -753,7 +753,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
           unfold gNormGrad
           refine h_pt.trans ?_
           have h_sqrt_M_le : Real.sqrt
-              (chartInvGramMatrix_l1Sum (I := I) (M := M) g α z) ≤
+              (chartInvGramMatrixL1Sum (I := I) (M := M) g α z) ≤
               Real.sqrt M_g_α := Real.sqrt_le_sqrt h_M_le
           have h_partial_sum_nn : (0 : ℝ) ≤ Real.sqrt
               (∑ k : Fin (Module.finrank ℝ E),
@@ -1030,12 +1030,12 @@ theorem eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
           ≤ ENNReal.ofReal C *
               wkpNormChart (I := I) (M := M) 1 p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have h_per_α : ∀ α : M, ∃ C_α : ℝ, 0 ≤ C_α ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
         eLpNorm (gNormGrad (I := I) (M := M) g
@@ -1150,10 +1150,10 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
           ENNReal.ofReal C *
             wkpNormChart (I := I) (M := M) 1 p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨C₀, hC₀_nn, hC₀_bound⟩ :=
     eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       (I := I) (M := M) g hp_one hp_top
@@ -1231,7 +1231,7 @@ theorem MemWkpChart_of_MemW1pIntrinsicLp_smooth
     (I := I) (M := M) hp_one hu_smooth
 
 private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
@@ -1239,10 +1239,10 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
       (I := I) (M := M) g p u = 0) :
     u = (fun _ => (0 : ℝ)) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_eLp_u_zero : eLpNorm u p
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) = 0 := by
     have h_le_sum :
@@ -1253,7 +1253,7 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
       unfold DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
       exact le_self_add
     rw [h_zero] at h_le_sum
-    exact le_antisymm h_le_sum (zero_le _)
+    exact le_antisymm h_le_sum (zero_le)
   have h_aestronglyMeasurable : AEStronglyMeasurable u
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     hu_smooth.continuous.aestronglyMeasurable
@@ -1292,10 +1292,10 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth
           DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
             (I := I) (M := M) g p u := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have h_chart_lt_top : wkpNormChart (I := I) (M := M) 1 p u < ⊤ :=
     DifferentialGeometry.Analysis.Sobolev.Equivalence.wkpNormChart_lt_top_of_contMDiff
       (I := I) (M := M) hp_one hu_smooth
@@ -1346,10 +1346,10 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth_uniform
               (I := I) (M := M) g p u := by
   intro u hu_smooth
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   by_cases h_intr_zero :
       DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
         (I := I) (M := M) g p u = 0
@@ -1387,10 +1387,10 @@ theorem wkpNormChart_w1pNormIntrinsicLp_equiv_smooth_uniform
                 DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
                   (I := I) (M := M) g p u) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   obtain ⟨K, hK_nn, hK_bound⟩ :=
     w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
       (I := I) (M := M) g hp_one hp_top
@@ -1460,16 +1460,16 @@ private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
         DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g]
       (fun x : M => Real.sqrt (g.inner x (G x) (G x))) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   set σ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hu_smooth⟩ with hσ_def
+    DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hu_smooth⟩ with hσ_def
   have hgradFun_weak :
       DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.HasWeakRiemannianGradLp
         (I := I) (M := M) g u
@@ -1637,11 +1637,11 @@ private lemma eLpNorm_gradFun_le_eLpNorm_smooth_of_HasWeakRiemannianGradLp
       eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g

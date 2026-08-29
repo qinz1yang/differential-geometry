@@ -27,7 +27,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -80,7 +79,7 @@ private theorem lrJoint0S_add_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -113,7 +112,7 @@ private theorem lrJoint0S_smulFun_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (f p.2 • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -139,6 +138,7 @@ private theorem lrJoint0S_smulFun_local {d : ℕ} {S : Set ℝ}
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -209,7 +209,7 @@ private lemma lrFamilyField_eq (g₀ : SmoothRiemannianMetric I M)
   rfl
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem lrFamily_threeArmHjoint (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -564,7 +564,7 @@ theorem exists_deTurckLieCovariantDerivativeArm_basepointBackground_pairTraceRes
       rw [MeasureTheory.integral_const_mul]
       refine le_trans (mul_le_mul_of_nonneg_left hWbound (hC_nn i)) (le_of_eq ?_)
       ring
-    · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+    · have hM' : IsEmpty M := not_nonempty_iff.mp hM
       have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
           (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) g₀

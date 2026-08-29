@@ -75,7 +75,7 @@ theorem secondOrderInterp_lpFiberJet_fin_rs
     exact le_max_right _ _
   intro m w i hi1 hreg_lt
   set μ : MeasureTheory.Measure M := Integral.Measure.riemannianVolumeMeasure I M g with hμ
-  haveI : MeasureTheory.IsFiniteMeasure μ :=
+  have : MeasureTheory.IsFiniteMeasure μ :=
     Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set K' : ℝ := gnStepConst (Module.finrank ℝ E) k with hK'def
   have hK'_nn : 0 ≤ K' := by
@@ -246,7 +246,7 @@ theorem secondOrderInterp_lpFiberJet_sup_rs
     exact le_max_right _ _
   intro m w A hA hsup
   set μ : MeasureTheory.Measure M := Integral.Measure.riemannianVolumeMeasure I M g with hμ
-  haveI : MeasureTheory.IsFiniteMeasure μ :=
+  have : MeasureTheory.IsFiniteMeasure μ :=
     Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set K' : ℝ := gnStepConst (Module.finrank ℝ E) k with hK'def
   have hK'_nn : 0 ≤ K' := by

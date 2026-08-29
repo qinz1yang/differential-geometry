@@ -194,7 +194,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
     refine le_trans (eigenvectorVec_pou_memWkp_and_wkpNorm_le
       (I := I) (M := M) g r s i K β' Q
       ((h_pou_phi β' Q).le_of_le (Nat.le_succ K))).2 ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     refine le_trans (wkpNorm_mono_order (d := Module.finrank ℝ E)
       (Nat.le_succ K) _ _) ?_
     exact chartCompNorm_transport_le_covGradAggregate (I := I)
@@ -255,7 +255,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
               ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                 ‖(i.fst.val)⁻¹‖)) * Saggr) := by
     refine le_trans hCcut_bd ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     rw [← h_double_const]
     exact h_double_le
   refine ⟨h_prod_memWkp,
@@ -305,7 +305,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
                 (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
                   ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                     ‖(i.fst.val)⁻¹‖)) * Saggr)) :=
-      mul_le_mul_of_nonneg_left h_cutoff_le (zero_le _)
+      mul_le_mul_of_nonneg_left h_cutoff_le (zero_le)
     _ = ENNReal.ofReal
           (Kmul * (Ccut *
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
@@ -460,7 +460,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
     refine le_trans (eigenvectorVec_pou_memWkp_and_wkpNorm_le
       (I := I) (M := M) g r s i K β' Q
       ((h_pou_phi i β' Q).le_of_le (Nat.le_succ K))).2 ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     refine le_trans (wkpNorm_mono_order (d := Module.finrank ℝ E)
       (Nat.le_succ K) _ _) ?_
     exact chartCompNorm_transport_le_covGradAggregate (I := I)
@@ -522,7 +522,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
       (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
       (fun β' Q => h_eigen_K β' Q)) ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     rw [← h_double_const]
     exact h_double_le
   have h_unfold : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -566,7 +566,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
                 (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
                   ((Fintype.card (TensorCompIdx (E := E) r s) : ℝ) *
                     ‖(i.fst.val)⁻¹‖)) * Saggr)) :=
-      mul_le_mul_of_nonneg_left h_cutoff_le (zero_le _)
+      mul_le_mul_of_nonneg_left h_cutoff_le (zero_le)
     _ = ENNReal.ofReal ((i.fst.val)⁻¹ *
           (Kmul * (Ccut *
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *

@@ -51,7 +51,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
   rhsLip_pos : 0 < D.rhsLip
   rhsD1Lip_pos : 0 < D.rhsD1Lip
   elliptic :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
@@ -64,20 +64,20 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
                   chartInvGramMatrix (I := I) (gSeq k) α b i j * ξ i * ξ j) ≤
               D.ellMax * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2)
   gram0_bound :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ i j : Fin (Module.finrank ℝ E),
           |chartGramOnE (I := I) (gSeq k) α i j (extChartAt I α b)| ≤ D.gram0
   gram1_bound :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m i j : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ D.gram1
   gram2_bound :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m i j : Fin (Module.finrank ℝ E),
@@ -85,7 +85,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α i j)) (extChartAt I α b)| ≤ D.gram2
   gram3_bound :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d c m i j : Fin (Module.finrank ℝ E),
@@ -94,14 +94,14 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α i j))) (extChartAt I α b)| ≤ D.gram3
   rhs_bound :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ i j : Fin (Module.finrank ℝ E),
           |chartDeTurckRHSComp (I := I) gBase (gSeq k) α i j
             (extChartAt I α b)| ≤ D.rhsBound
   rhs_d1_bound :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d i j : Fin (Module.finrank ℝ E),
@@ -109,7 +109,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
             (chartDeTurckRHSComp (I := I) gBase (gSeq k) α i j)
               (extChartAt I α b)| ≤ D.rhsD1Bound
   rhs_lipschitz :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ i j : Fin (Module.finrank ℝ E),
@@ -118,7 +118,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
               D.rhsLip * chartMetricJet2DiffSup (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
   rhs_d1_lipschitz :
-    ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d i j : Fin (Module.finrank ℝ E),
@@ -188,21 +188,21 @@ theorem exists_low_reg_coeff {ι : Type*}
       (fun k q hq => hAllBdd k q (by omega))
   obtain ⟨Q₃, hQ₃_nn, hQ₃⟩ :=
     chartGram_pou_d3 (I := I) gBase gAll BAll hAllBdd
-  have hQ₀Seq : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₀Seq : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ i j : Fin (Module.finrank ℝ E),
           |chartGramOnE (I := I) (gSeq k) α i j (extChartAt I α b)| ≤ Q₀ := by
     intro α hα k b hb i j
     simpa [gAll] using hQ₀ α hα (some k) b hb i j
-  have hQ₀Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₀Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ i j : Fin (Module.finrank ℝ E),
           |chartGramOnE (I := I) gBase α i j (extChartAt I α b)| ≤ Q₀ := by
     intro α hα b hb i j
     simpa [gAll] using hQ₀ α hα none b hb i j
-  have hQ₁Seq : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₁Seq : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m i j : Fin (Module.finrank ℝ E),
@@ -210,7 +210,7 @@ theorem exists_low_reg_coeff {ι : Type*}
               (extChartAt I α b)| ≤ Q₁ := by
     intro α hα k b hb m i j
     simpa [gAll] using hQ₁ α hα (some k) b hb m i j
-  have hQ₁Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₁Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m i j : Fin (Module.finrank ℝ E),
@@ -218,7 +218,7 @@ theorem exists_low_reg_coeff {ι : Type*}
               (extChartAt I α b)| ≤ Q₁ := by
     intro α hα b hb m i j
     simpa [gAll] using hQ₁ α hα none b hb m i j
-  have hQ₂Seq : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₂Seq : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m i j : Fin (Module.finrank ℝ E),
@@ -227,7 +227,7 @@ theorem exists_low_reg_coeff {ι : Type*}
               (chartGramOnE (I := I) (gSeq k) α i j)) (extChartAt I α b)| ≤ Q₂ := by
     intro α hα k b hb c m i j
     simpa [gAll] using hQ₂ α hα (some k) b hb c m i j
-  have hQ₂Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₂Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m i j : Fin (Module.finrank ℝ E),
@@ -236,7 +236,7 @@ theorem exists_low_reg_coeff {ι : Type*}
               (chartGramOnE (I := I) gBase α i j)) (extChartAt I α b)| ≤ Q₂ := by
     intro α hα b hb c m i j
     simpa [gAll] using hQ₂ α hα none b hb c m i j
-  have hQ₃Seq : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₃Seq : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d c m i j : Fin (Module.finrank ℝ E),
@@ -246,7 +246,7 @@ theorem exists_low_reg_coeff {ι : Type*}
                 (chartGramOnE (I := I) (gSeq k) α i j))) (extChartAt I α b)| ≤ Q₃ := by
     intro α hα k b hb d c m i j
     simpa [gAll] using hQ₃ α hα (some k) b hb d c m i j
-  have hQ₃Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₃Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d c m i j : Fin (Module.finrank ℝ E),

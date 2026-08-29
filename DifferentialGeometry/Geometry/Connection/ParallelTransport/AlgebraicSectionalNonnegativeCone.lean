@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.SectionalNonne
 import DifferentialGeometry.Geometry.Curvature.AlgebraicSectionalCone
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -26,11 +25,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance parallelAlgebraicTensor04NormedAddCommGroup (x : M) :
     NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
+  Tensor0SBundle.tensor0SSpaceNormedAddCommGroup 4 x
 
 private local instance parallelAlgebraicTensor04NormedSpace (x : M) :
     NormedSpace Real (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
+  Tensor0SBundle.tensor0SSpaceNormedSpace 4 x
 
 private local instance parallelAlgebraicTensor04AddCommGroup (x : M) :
     AddCommGroup (Tensor04At (I := I) (M := M) x) :=
@@ -60,6 +59,7 @@ noncomputable def parallelTransportAlgebraicCurvatureTensorCLEOnIcc
   algebraicCurvatureTensorPullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_sectionalEval
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -85,6 +85,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_sectionalEval
   rw [algebraicSectionalEval_pullback]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_sectionalNonnegativeCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -99,6 +100,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_sectionalNonnegati
     (I := I) (M := M)
       (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicSectionalNonnegativeCone_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -115,6 +117,7 @@ theorem algebraicSectionalNonnegativeCone_map_parallelTransportOnIcc
   algebraicSectionalNonnegativeCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicSectionalNonnegative_dualZeroFace_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -146,6 +149,7 @@ theorem algebraicSectionalNonnegative_dualZeroFace_map_parallelTransportOnIcc
   simpa using algebraicSectionalNonnegative_dualZeroFace_map_pullback
     (I := I) (M := M) e.symm (e v) (e w)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_dualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -176,6 +180,7 @@ noncomputable def parallelTransportAlgebraicCurvatureTensorCLEBetween
   algebraicCurvatureTensorPullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_sectionalEval
     [I.Boundaryless]
@@ -202,6 +207,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_sectionalEval
   rw [algebraicSectionalEval_pullback]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_mem_sectionalNonnegativeCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -216,6 +222,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_mem_sectionalNonnega
     (I := I) (M := M)
       (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicSectionalNonnegativeCone_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -232,6 +239,7 @@ theorem algebraicSectionalNonnegativeCone_map_parallelTransportBetween
   algebraicSectionalNonnegativeCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicSectionalNonnegative_dualZeroFace_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -263,6 +271,7 @@ theorem algebraicSectionalNonnegative_dualZeroFace_map_parallelTransportBetween
   simpa using algebraicSectionalNonnegative_dualZeroFace_map_pullback
     (I := I) (M := M) e.symm (e v) (e w)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_mem_dualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)

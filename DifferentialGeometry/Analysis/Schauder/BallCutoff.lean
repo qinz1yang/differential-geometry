@@ -7,6 +7,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 open Real
 open scoped ContDiff RealInnerProductSpace
 
@@ -30,7 +31,7 @@ omit [FiniteDimensional Real V] in
 @[simp]
 theorem ballNormSqFDeriv_apply (center x v : V) :
     ballNormSqFDeriv center x v = 2 * inner Real (x - center) v := by
-  simp only [ballNormSqFDeriv, two_nsmul, ContinuousLinearMap.add_apply,
+  simp only [ballNormSqFDeriv, two_nsmul, add_apply,
     coe_innerSL_apply]
   ring
 
@@ -162,15 +163,17 @@ theorem hasFDerivAt_ballCutoffLaplacian
   have hsecond := ha2.mul
     ((hasFDerivAt_ballNormSq center x).mul_const B)
   have hsum := hfirst.add hsecond
-  convert hsum using 1
-  · funext y
-    simp only [ballCutoffLaplacian, A, B, Pi.add_apply, Pi.mul_apply]
-    ring
-  · ext v
-    simp only [ballCutoffLaplacianFDeriv, ballNormSqFDeriv_apply,
-      a, A, B, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
-    ring
+  have hresult : HasFDerivAt (ballCutoffLaplacian center r R)
+      (ballCutoffLaplacianFDeriv center r R x) x :=
+    (hsum.congr_fderiv (by
+      ext v
+      simp only [ballCutoffLaplacianFDeriv, ballNormSqFDeriv_apply,
+        a, A, B, add_apply, smul_apply, smul_eq_mul]
+      ring)).congr_of_eventuallyEq <|
+        Filter.Eventually.of_forall fun y => by
+          simp only [ballCutoffLaplacian, A, B, Pi.add_apply, Pi.mul_apply]
+          ring
+  exact hresult
 
 omit [FiniteDimensional Real V] in
 theorem abs_ballCutoffLaplacian_le
@@ -438,8 +441,8 @@ theorem lapEval_ballCutoffFDeriv2
       ballCutoffLaplacian center r R x := by
   classical
   rw [lapEval_apply]
-  simp only [ballCutoffFDeriv2, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
+  simp only [ballCutoffFDeriv2, add_apply,
+    smul_apply, ContinuousLinearMap.smulRight_apply,
     ballCutoffArgumentFDeriv_apply, ballCutoffArgumentFDeriv2_apply,
     smul_eq_mul]
   rw [Finset.sum_add_distrib]

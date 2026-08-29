@@ -65,7 +65,7 @@ theorem gradSq_joint
     hf.contMDiffAt
       ((hUo.prod isOpen_univ).mem_nhds ⟨hp.1, Set.mem_univ _⟩)
   let dF : (Real × M) -> Idx -> Real := fun q i =>
-    extDerivFun (I := I) (f q.1) q.2 (frame i q.2)
+    mvfderiv (I := I) (f q.1) q.2 (frame i q.2)
   have hdF (i : Idx) :
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q : Real × M => dF q i) p := by
@@ -129,17 +129,20 @@ theorem gradSq_joint
     intro i j
     have hunit : IsUnit (Gm q).det :=
       isUnit_iff_ne_zero.2 (hdetne q hq)
+    have hbasis (k : Idx) :
+        hframe.toBasisAt hq k = chartBasisVecFiber (I := I) x₀ k q.2 := by
+      rw [hframe.toBasisAt_coe]
+      change e.localFrame b k q.2 = chartBasisVecFiber (I := I) x₀ k q.2
+      rw [e.localFrame_apply_of_mem_baseSet b hq]
+      change (e.linearEquivAt ℝ q.2 hq).symm (b k) =
+        e.symmL ℝ q.2 ((chartModelBasis E) k)
+      rw [e.linearEquivAt_symm_apply, e.symmL_apply hq]
     have hGb (i' j' : Idx) :
         (g_fam q.1).inner q.2
             (hframe.toBasisAt hq i') (hframe.toBasisAt hq j') =
           Gm q i' j' := by
-      rw [hframe.toBasisAt_coe, hframe.toBasisAt_coe]
+      rw [hbasis i', hbasis j']
       simp only [Gm, chartGramMatrix_apply]
-      change (g_fam q.1).inner q.2
-          (e.localFrame b i' q.2) (e.localFrame b j' q.2) = _
-      rw [e.localFrame_apply_of_mem_baseSet b hq,
-        e.localFrame_apply_of_mem_baseSet b hq]
-      rfl
     constructor
     · have hmul : (∑ k, (Gm q)⁻¹ i k * Gm q k j) =
           ((Gm q)⁻¹ * Gm q) i j := (Matrix.mul_apply).symm
@@ -184,7 +187,7 @@ theorem gradSq_joint
         unfold rhs
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         simp only [df, dF, cotangentToDual_apply,
-          differential1FormFun_apply_eq_extDerivFun,
+          differential1FormFun_apply_eq_mvfderiv,
           hframe.toBasisAt_coe]
   exact (hrhs.congr_of_eventuallyEq heq).contMDiffWithinAt
 
@@ -198,8 +201,8 @@ theorem normGradSq_time {x : M} {t : Real}
         ((-2 : Real) * Q (fun a : Fin 2 => if a = 0 then X else Y)) t)
     (hdf : ∀ X : TangentSpace I x,
       HasDerivAt
-        (fun r : Real => extDerivFun (I := I) (f r) x X)
-        (extDerivFun (I := I) ft x X) t) :
+        (fun r : Real => mvfderiv (I := I) (f r) x X)
+        (mvfderiv (I := I) ft x X) t) :
     HasDerivAt
       (fun r : Real =>
         (g r).inner x
@@ -218,7 +221,7 @@ theorem normGradSq_time {x : M} {t : Real}
       HasDerivAt
         (fun r : Real => A r (fun _ : Fin 1 => X))
         (Adot (fun _ : Fin 1 => X)) t := by
-    simpa only [A, Adot, differential1FormFun_apply_eq_extDerivFun] using hdf X
+    simpa only [A, Adot, differential1FormFun_apply_eq_mvfderiv] using hdf X
   have hbase := normSq_one_time (I := I) g Q A Adot hg hA
   have hsharp (m : SmoothRiemannianMetric I M) (u : M -> Real) :
       cotangentSharp (I := I) m x (differential1FormFun (I := I) u x) =

@@ -104,7 +104,7 @@ noncomputable def chartTargetUnitSqSumSupOnPouTsupport
           g.inner x
             (chartTargetUnitFiber (I := I) α i x)
             (chartTargetUnitFiber (I := I) α i x)) Kα := by
-      apply continuousOn_finset_sum
+      apply continuousOn_finsetSum
       intro i _
       exact (g_inner_chartTargetUnit_continuousOn (I := I) g α i).mono hKα_base
     exact (hKα_compact.image_of_continuousOn h_cont).bddAbove.choose
@@ -134,7 +134,7 @@ lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
           g.inner x
             (chartTargetUnitFiber (I := I) α i x)
             (chartTargetUnitFiber (I := I) α i x)) Kα := by
-      apply continuousOn_finset_sum
+      apply continuousOn_finsetSum
       intro i _
       exact (g_inner_chartTargetUnit_continuousOn (I := I) g α i).mono hKα_base
     set hImg :=
@@ -199,7 +199,7 @@ lemma chartTargetUnitSqSum_le_sup
         g.inner y
           (chartTargetUnitFiber (I := I) α i y)
           (chartTargetUnitFiber (I := I) α i y)) Kα := by
-    apply continuousOn_finset_sum
+    apply continuousOn_finsetSum
     intro i _
     exact (g_inner_chartTargetUnit_continuousOn (I := I) g α i).mono hKα_base
   set hImg :=

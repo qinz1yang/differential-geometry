@@ -131,7 +131,7 @@ theorem implicitFDeriv_eq {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     rw [hsplit] at hv
     have hval : Dj (Df v, (0 : P)) = -(Dj ((0 : E), v)) := eq_neg_of_add_eq_zero_left hv
     simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inl_apply,
-      ContinuousLinearMap.inr_apply, ContinuousLinearMap.neg_apply]
+      ContinuousLinearMap.inr_apply, neg_apply]
     exact hval
   have hcancel : (Ring.inverse (Dj.comp (ContinuousLinearMap.inl ℝ E P))).comp
       (Dj.comp (ContinuousLinearMap.inl ℝ E P)) = ContinuousLinearMap.id ℝ E := by
@@ -185,8 +185,8 @@ theorem graphBlockDeriv {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
   refine ⟨_, hAd, ?_⟩
   refine ContinuousLinearMap.opNorm_le_bound _
     (mul_nonneg (ContinuousLinearMap.opNorm_nonneg _) hmax0) fun v => ?_
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.zero_apply, map_zero, zero_add, ContinuousLinearMap.flip_apply,
+  simp only [add_apply, ContinuousLinearMap.comp_apply,
+    zero_apply, map_zero, zero_add, ContinuousLinearMap.flip_apply,
     ContinuousLinearMap.compL_apply, ContinuousLinearMap.prod_apply,
     ContinuousLinearMap.coe_id', id_eq]
   calc ‖(H' (Df₀ v, v)).comp j‖
@@ -259,7 +259,7 @@ theorem implicitDeriv_two_le {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ
         refine ContinuousLinearMap.opNorm_le_bound _
           (add_nonneg (mul_nonneg (mul_nonneg (pow_nonneg hΛ0 2) ha₂0) hb₁0)
             (mul_nonneg hΛ0 hb₂0)) fun v => ?_
-        simp only [ContinuousLinearMap.neg_apply, ContinuousLinearMap.add_apply,
+        simp only [neg_apply, add_apply,
           ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
           ContinuousLinearMap.compL_apply, norm_neg, ContinuousLinearMap.neg_comp]
         have h1 : ‖(Ring.inverse ((Dj params₀).comp (ContinuousLinearMap.inl ℝ E P))).comp
@@ -312,7 +312,7 @@ theorem norm_iteratedFDeriv_id_le {P : Type*} [NormedAddCommGroup P] [NormedSpac
   · omega
   · rw [← norm_iteratedFDeriv_fderiv]
     have hfd : (fderiv ℝ (fun p : P => p)) = fun _ : P => ContinuousLinearMap.id ℝ P := by
-      funext y; exact fderiv_id'
+      funext y; exact fderiv_fun_id
     rw [hfd]
     obtain _ | l := k
     · rw [norm_iteratedFDeriv_zero]; exact ContinuousLinearMap.norm_id_le
@@ -392,8 +392,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure CmHessianBoundInput
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -404,8 +404,8 @@ structure CmHessianBoundInput
   hL : HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀
   hLinv : ‖(L.symm : E →L[ℝ] E)‖ ≤ Λ
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem CmHessianBoundInput.toInv
@@ -419,8 +419,8 @@ theorem CmHessianBoundInput.toInv
       HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀ :=
   ⟨hbd.L, hbd.hL⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def CmGDerivBound
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -432,8 +432,8 @@ def CmGDerivBound
         (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn' (I := I) g hEnorm p w.1 w.2)
         (z₀, params₀)‖ ≤ B j
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure CmHessianNbhdInput
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -450,8 +450,8 @@ structure CmHessianNbhdInput
         ((NormalCoordinates.normalChartAt (I := I) g p (c params₀) : E), params₀)).comp
       (ContinuousLinearMap.inl ℝ E ((ι → ℝ) × (ι → E))))‖ ≤ Λ
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem cmChartFDerivLe
@@ -480,8 +480,8 @@ theorem cmChartFDerivLe
       B1
     hc0 hcderiv hG hbd.hL hbd.hLinv hB hc_solves
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem cmChartDerivLe2

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 

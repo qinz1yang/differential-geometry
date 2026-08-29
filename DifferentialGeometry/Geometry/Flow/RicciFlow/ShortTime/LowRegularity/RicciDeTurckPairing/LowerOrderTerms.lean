@@ -195,7 +195,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -203,7 +203,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_d
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -1545,7 +1545,7 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroVectorBundle_covariantJetNo
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1553,7 +1553,7 @@ theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroVectorBundle_covariantJetNo
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -2146,7 +2146,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -2154,7 +2154,7 @@ private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_di
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),

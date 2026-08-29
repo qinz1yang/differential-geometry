@@ -567,7 +567,7 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
           (d := Module.finrank ℝ E) 1 q ψ Ω := by
     rw [hWkpEq, Finset.sum_range_succ, Finset.sum_range_one, ← h_j1_term]
     refine le_add_of_nonneg_left ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_wkp.trans ?_
   have hd_pos : 0 < Module.finrank ℝ E := NeZero.pos _
   have hd_one_le : (1 : ℝ≥0∞) ≤ ((Module.finrank ℝ E : ℕ) : ℝ≥0∞) := by

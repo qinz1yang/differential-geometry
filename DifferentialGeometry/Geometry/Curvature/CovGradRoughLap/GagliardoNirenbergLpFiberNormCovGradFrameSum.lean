@@ -61,12 +61,14 @@ private lemma fiberNormSqComponent_covGradBundleEquiv_symm_apply_eq_finCons
   set ωK : Tensor0SBundle.Tensor0SSpace r I x :=
     (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
       (fun k => g.inner x (e (K k))) with hωK
-  rw [show (((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a)) ωK
-        (fun k => e (J k)) : ℝ) =
-      Tensor0SBundle.Tensor0SSpace.toModel
-        ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
-          ((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T) (e a)) ωK)
-        (fun k => e (J k)) from rfl]
+  change Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
+        ((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T) (e a)) ωK)
+      (fun k => e (J k)) =
+    Tensor0SBundle.Tensor0SSpace.eval
+      ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ]
+        Tensor0SBundle.Tensor0SSpace (s + 1) I x from T) ωK)
+      (fun k => e (((Fin.cons a J) : Fin (s + 1) → Fin n) k))
   rw [Tensor0SBundle.covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a) ωK
     (fun k => e (J k))]
   congr 1
@@ -85,7 +87,7 @@ theorem riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame
           (M := M) g x r s S n e K J) ^ 2 := by
   classical
   subst hn
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
@@ -208,9 +210,9 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_le_card_mul_rs
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I x) with hn_def
   set eob : OrthonormalBasis (Fin n) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _

@@ -46,7 +46,7 @@ theorem metricCovDeriv_succ_eval_smooth_slots
     (x : M) :
     metricCovDeriv (I := I) h gRef (a + 1) x
         (Fin.cons (X x) (fun q : Fin (a + 2) => V q x)) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => metricCovDeriv (I := I) h gRef a y
             (fun q : Fin (a + 2) => V q y)) x (X x) -
         ∑ p : Fin (a + 2),
@@ -64,7 +64,7 @@ omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_succ_component_coordFrame
     (h gRef : SmoothRiemannianMetric I M) (a : Nat) (x : M)
     (I0 : Fin (a + 3) → CoordinateIdx (𝕜 := Real) E) :
-    component0S (I := I) (coordinateFrameAt_toBasis (I := I) x)
+    component0S (I := I) (coordinateFrameAtToBasis (I := I) x)
         (metricCovDeriv (I := I) h gRef (a + 1) x) I0 =
       coordDeriv0SAt (I := I) (coordinateFrameAt (I := I) x (I0 0)) x
           (metricCovDeriv (I := I) h gRef a) (Fin.tail I0)

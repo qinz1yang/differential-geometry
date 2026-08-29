@@ -22,7 +22,7 @@ namespace WithBoundary
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -30,7 +30,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Integral.Measure
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma partialDerivWithin_scalarOnE_continuousOn_target
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (j : Fin (Module.finrank ℝ E)) :
@@ -51,7 +50,6 @@ private lemma partialDerivWithin_scalarOnE_continuousOn_target
   exact hpartial_target.continuousOn
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (j : Fin (Module.finrank ℝ E)) :
@@ -80,7 +78,6 @@ private lemma partialDerivWithin_scalarOnE_extChartAt_continuousOn_source
   exact hpartial.comp hchart hmaps
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma gradChartCoeffWithin_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -95,7 +92,7 @@ private lemma gradChartCoeffWithin_continuousOn_source
               (scalarOnE (I := I) α f) (extChartAt I α y) := by
     intro y _; rfl
   refine ContinuousOn.congr ?_ heq
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine ContinuousOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞
         (fun y => chartInvGramMatrix (I := I) g α y i j)
@@ -112,7 +109,6 @@ private lemma gradChartCoeffWithin_continuousOn_source
       (I := I) α hf j
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartGramMatrix_entry_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
@@ -127,7 +123,6 @@ private lemma chartGramMatrix_entry_continuousOn_source
   exact hy
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma g_inner_gradChartLocalWithin_expand
     (g : SmoothRiemannianMetric I M) (α : M) (f h : M → ℝ) (y : M) :
     g.inner y (gradChartLocalWithin (I := I) g α f y)
@@ -159,10 +154,10 @@ private lemma g_inner_gradChartLocalWithin_expand
             ∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α f i y •
                 g.inner y (chartBasisVecFiber (I := I) α i y) from ?_]
-    · rw [ContinuousLinearMap.sum_apply]
+    · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
     · rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -189,7 +184,6 @@ private lemma g_inner_gradChartLocalWithin_expand
     rfl
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
     (g : SmoothRiemannianMetric I M) (α : M)
     {f h : M → ℝ}
@@ -209,15 +203,14 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
   refine ContinuousOn.congr ?_ (fun y hy => h_rewrite y hy)
   refine ContinuousOn.congr (s := (chartAt H α).source) ?_
     (fun y _ => g_inner_gradChartLocalWithin_expand (I := I) g α f h y)
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) ?_
   · exact gradChartCoeffWithin_continuousOn_source (I := I) g α hf i
   · exact gradChartCoeffWithin_continuousOn_source (I := I) g α hh j
   · exact chartGramMatrix_entry_continuousOn_source (I := I) g α i j
 
 
-omit [InnerProductSpace ℝ E] in
 private lemma g_inner_gradFun_gradFun_continuous_general
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
@@ -292,7 +285,7 @@ theorem integrable_g_inner_gradFun_gradFun
           (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x))
       (riemannianVolumeMeasure
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) := by
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (riemannianVolumeMeasure
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace

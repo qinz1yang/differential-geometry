@@ -78,7 +78,7 @@ theorem ricciVariationFromConnectionRHSInFrame_nablaGammaDtFromNabla2Ric
   simp [ricciVariationFromConnectionRHSInFrame,
     nablaGammaDtFromNabla2RicInFrame, ricciVariationExpandedRHSInFrame]
 
-def RicciVariationExpandedRHS_eq_evolutionRHS
+def RicciVariationExpandedRHSEqEvolutionRHS
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -375,15 +375,15 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
     exact contractedTrace23_mdiffAt
       (I := I) gInv nablaRic (t : Real) (x := x) j hginv_mdiff hN_mdiff
   have hhalf_deriv :
-      extDerivFun (I := I) (fun y : M => (1 / 2 : Real) * scalarTrace y)
+      mvfderiv (I := I) (fun y : M => (1 / 2 : Real) * scalarTrace y)
           x (frame i x) =
-        (1 / 2 : Real) * extDerivFun (I := I) scalarTrace x (frame i x) := by
-    rw [ricci_extDerivFun_mul (I := I) (v := frame i x)
+        (1 / 2 : Real) * mvfderiv (I := I) scalarTrace x (frame i x) := by
+    rw [ricci_mvfderiv_mul (I := I) (v := frame i x)
       (f := fun _ : M => (1 / 2 : Real)) (g := scalarTrace)
       (mdifferentiableAt_const
         (I := I) (I' := 𝓘(Real, Real)) (c := (1 / 2 : Real)) (x := x))
       hscalar_mdiff]
-    simp
+    rw [_root_.mvfderiv_const, zero_apply, zero_mul, add_zero]
   have hscalar_cov :=
     contractedTrace23CovDeriv_eq_nabla2RicTrace
       (I := I) S gInv frame hframe nablaRic (t : Real) x i j
@@ -399,7 +399,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
   have hscalar_eval :
       scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
           (t : Real) x i j =
-        extDerivFun (I := I) scalarTrace x (frame i x) -
+        mvfderiv (I := I) scalarTrace x (frame i x) -
           (∑ a : Idx, Γj a *
             (∑ k : Idx, ∑ l : Idx,
               gInv (t : Real) x k l * nablaRic (t : Real) x a k l)) := by
@@ -416,7 +416,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
             refine Finset.sum_congr rfl fun l _ => ?_
             rw [hnabla2_at i j k l]
       _ =
-        extDerivFun (I := I) scalarTrace x (frame i x) -
+        mvfderiv (I := I) scalarTrace x (frame i x) -
           (∑ a : Idx, Γj a *
             (∑ k : Idx, ∑ l : Idx,
               gInv (t : Real) x k l * nablaRic (t : Real) x a k l)) := by
@@ -425,7 +425,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
   have htraceA_eval :
       contractedNabla2RicTraceAInFrame (M := M) gInv nabla2Ric
           (t : Real) x i j =
-        extDerivFun (I := I) traceA x (frame i x) -
+        mvfderiv (I := I) traceA x (frame i x) -
           (∑ a : Idx, Γj a *
             (∑ k : Idx, ∑ l : Idx,
               gInv (t : Real) x k l * nablaRic (t : Real) x k a l)) := by
@@ -442,7 +442,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
             refine Finset.sum_congr rfl fun l _ => ?_
             rw [hnabla2_at i k j l]
       _ =
-        extDerivFun (I := I) traceA x (frame i x) -
+        mvfderiv (I := I) traceA x (frame i x) -
           (∑ a : Idx, Γj a *
             (∑ k : Idx, ∑ l : Idx,
               gInv (t : Real) x k l * nablaRic (t : Real) x k a l)) := by
@@ -451,7 +451,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
   have htraceB_eval :
       contractedNabla2RicTraceBInFrame (M := M) gInv nabla2Ric
           (t : Real) x i j =
-        extDerivFun (I := I) traceB x (frame i x) -
+        mvfderiv (I := I) traceB x (frame i x) -
           (∑ a : Idx, Γj a *
             (∑ k : Idx, ∑ l : Idx,
               gInv (t : Real) x k l * nablaRic (t : Real) x l k a)) := by
@@ -468,7 +468,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
             refine Finset.sum_congr rfl fun l _ => ?_
             rw [hnabla2_at i l k j]
       _ =
-        extDerivFun (I := I) traceB x (frame i x) -
+        mvfderiv (I := I) traceB x (frame i x) -
           (∑ a : Idx, Γj a *
             (∑ k : Idx, ∑ l : Idx,
               gInv (t : Real) x k l * nablaRic (t : Real) x l k a)) := by
@@ -483,10 +483,10 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
     filter_upwards [hu.mem_nhds hx] with y hy
     exact (hbianchi t y hy j).2
   have hA_deriv :=
-    ricci_extDerivFun_congr_eventually (I := I) (x := x)
+    ricci_mvfderiv_congr_eventually (I := I) (x := x)
       (v := frame i x) hA_event
   have hB_deriv :=
-    ricci_extDerivFun_congr_eventually (I := I) (x := x)
+    ricci_mvfderiv_congr_eventually (I := I) (x := x)
       (v := frame i x) hB_event
   have hA_corr :
       (∑ a : Idx, Γj a *

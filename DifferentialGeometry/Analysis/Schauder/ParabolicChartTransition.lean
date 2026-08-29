@@ -449,7 +449,7 @@ theorem exists_eParabolicC2HolderGaugeInEuclideanChartsOn_le_mul_of_chartTransit
               (fun j => parabolicCylinder J
                 (Metric.ball (sourceBallCenter j) (R j))) u := by
   classical
-  letI := Fintype.ofFinite A
+  let := Fintype.ofFinite A
   have hlocal : ∀ i, ∃ Ki : NNReal,
       ∀ {u : Real → M → F},
         MapsTo
@@ -506,8 +506,9 @@ theorem exists_eParabolicC2HolderGaugeInEuclideanChartsOn_le_mul_of_chartTransit
             (fun j => parabolicCylinder J
               (Metric.ball (sourceBallCenter j) (R j))) u := by
       have hKi : (Ki i : ENNReal) ≤ ((∑ j, Ki j : NNReal) : ENNReal) := by
-        exact_mod_cast Finset.single_le_sum
-          (fun j _ => zero_le (Ki j)) (Finset.mem_univ i)
+        have hKiNN : Ki i ≤ ∑ j, Ki j := Finset.single_le_sum
+          (fun j _ => show (0 : NNReal) ≤ Ki j from bot_le) (Finset.mem_univ i)
+        exact_mod_cast hKiNN
       calc
         (Ki i : ENNReal) * eParabolicC2HolderGaugeInEuclideanChartsOn
             beta I sourceCenter
@@ -666,7 +667,7 @@ theorem exists_eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_le_of_cha
       eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn
           beta I center (fun i ↦ parabolicCylinder J (s i)) u ≤ Catlas := by
   classical
-  letI := Fintype.ofFinite A
+  let := Fintype.ofFinite A
   have hlocal : ∀ i, ∃ Ctarget : NNReal,
       eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartOn
           beta I (center i) (parabolicCylinder J (s i)) u ≤ Ctarget := by
@@ -708,7 +709,7 @@ theorem exists_eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_le_mul_of
           K * eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn
             beta I sourceCenter R u := by
   classical
-  letI := Fintype.ofFinite A
+  let := Fintype.ofFinite A
   have hlocal : ∀ i, ∃ Ki : NNReal,
       ∀ {Ri : Set (ParabolicPoint
           (EuclideanSpace Real (Fin (Module.finrank Real E))))}
@@ -753,8 +754,9 @@ theorem exists_eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_le_mul_of
         eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn
           beta I sourceCenter R u := by
       have hKi : (Ki i : ENNReal) ≤ ((∑ j, Ki j : NNReal) : ENNReal) := by
-        exact_mod_cast Finset.single_le_sum
-          (fun j _ => zero_le (Ki j)) (Finset.mem_univ i)
+        have hKiNN : Ki i ≤ ∑ j, Ki j := Finset.single_le_sum
+          (fun j _ => show (0 : NNReal) ≤ Ki j from bot_le) (Finset.mem_univ i)
+        exact_mod_cast hKiNN
       calc
         (Ki i : ENNReal) *
             eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn

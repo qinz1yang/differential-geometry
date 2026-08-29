@@ -78,13 +78,13 @@ private lemma measurable_pou_mul
   exact hcont.measurable.mul hu
 
 private theorem chartAtlasPOU_pou_decomp
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (u : M → ℝ) (x : M) :
-    u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
       (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x * u x := by
   classical
-  have hsum : ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  have hsum : ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
       (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x = 1 :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartAtlasPOU_finset_sum_eq_one
@@ -291,7 +291,7 @@ theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
   classical
-  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hS_def
   have hpointwise : ∀ x : M, u x =
       ∑ α ∈ S, (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x * u x :=
@@ -307,7 +307,7 @@ theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x * u x
     exact hpointwise x
   refine (memLp_congr_ae h_ae).mpr ?_
-  refine memLp_finset_sum' (ε' := ℝ) S ?_
+  refine memLp_finsetSum' (ε' := ℝ) S ?_
   intro α _
   exact perChart_memLp_riemannianMeasure (I := I) (M := M) g hp_one hp_top
     hq_one hq_top hqp hu_meas hu α
@@ -325,7 +325,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart_of_le_exponent
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) ≤
           ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 1 p u := by
   classical
-  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hS_def
   set D : ℝ≥0∞ :=
     ∑ α ∈ S, perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α

@@ -2,6 +2,7 @@
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.Sequences
 import Mathlib.Topology.MetricSpace.Thickening
 
+
 /-!
 # Moser Cutoff Preparation Basics
 
@@ -195,7 +196,7 @@ theorem sobolev_prepare_on_ball
       eLpNorm v
           (ENNReal.ofReal ((d : ℝ) * 2 / ((d : ℝ) - 2)))
           (volume.restrict (Metric.ball x₀ s)) ≤
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2
             (volume.restrict (Metric.ball x₀ s)) := by
   let _ := _hs
@@ -205,7 +206,7 @@ theorem sobolev_prepare_on_ball
   have hΩ_open : IsOpen Ω := by
     simp [Ω]
   have hΩ_meas : MeasurableSet Ω := measurableSet_ball
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
@@ -223,7 +224,7 @@ theorem sobolev_prepare_on_ball
     simpa using hwv
   let hwv_univ_raw :
       MemW1pWitness (ENNReal.ofReal (2 : ℝ)) (Ω.indicator v) Set.univ :=
-    zeroExtend_memW1pWitness_p (d := d) hΩ_open (p := 2) (by norm_num) hvW01_real hwv_real
+    zeroExtendMemW1pWitnessP (d := d) hΩ_open (p := 2) (by norm_num) hvW01_real hwv_real
   let hwv_univ : MemW1pWitness (ENNReal.ofReal (2 : ℝ)) v Set.univ :=
     { memLp := by
         simpa [hv_indicator_eq] using hwv_univ_raw.memLp
@@ -243,14 +244,14 @@ theorem sobolev_prepare_on_ball
       MemW1pWitness.ae_eq_p (d := d) isOpen_univ (p := 2) (by norm_num) hwSob hwv_univ
   have hSob' :
       eLpNorm v qexp volume ≤
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwv_univ.weakGrad x‖) 2 volume := by
     calc
       eLpNorm v qexp volume
-          ≤ ENNReal.ofReal (C_gns d 2) *
+          ≤ ENNReal.ofReal (CGns d 2) *
               eLpNorm (fun x => ‖hwSob.weakGrad x‖) 2 volume := by
                 simpa [qexp] using hSob
-      _ = ENNReal.ofReal (C_gns d 2) *
+      _ = ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwv_univ.weakGrad x‖) 2 volume := by
           congr 1
           exact eLpNorm_congr_ae (hae_grad.fun_comp (‖·‖))
@@ -258,8 +259,8 @@ theorem sobolev_prepare_on_ball
       hwv_univ.weakGrad = Ω.indicator hwv_real.weakGrad := by
     ext x i
     by_cases hx : x ∈ Ω
-    · simp [hwv_univ, hwv_univ_raw, zeroExtend_memW1pWitness_p, hx]
-    · simp [hwv_univ, hwv_univ_raw, zeroExtend_memW1pWitness_p, hx]
+    · simp [hwv_univ, hwv_univ_raw, zeroExtendMemW1pWitnessP, hx]
+    · simp [hwv_univ, hwv_univ_raw, zeroExtendMemW1pWitnessP, hx]
   have hgrad_ext :
       (fun x => ‖hwv_univ.weakGrad x‖) = Ω.indicator (fun x => ‖hwv_real.weakGrad x‖) := by
     ext x
@@ -280,12 +281,12 @@ theorem sobolev_prepare_on_ball
         (μ := volume) (p := qexp) hv_support_fun)
   have hSob'' :
       eLpNorm v qexp μ ≤
-        ENNReal.ofReal (C_gns d 2) * eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
+        ENNReal.ofReal (CGns d 2) * eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
     calc
       eLpNorm v qexp μ = eLpNorm v qexp volume := hv_restrict
-      _ ≤ ENNReal.ofReal (C_gns d 2) *
+      _ ≤ ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwv_univ.weakGrad x‖) 2 volume := hSob'
-      _ = ENNReal.ofReal (C_gns d 2) * eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
+      _ = ENNReal.ofReal (CGns d 2) * eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
             rw [hgrad_restrict]
   exact ⟨hwv_real, hSob''⟩
 
@@ -406,18 +407,24 @@ theorem local_ae_bound_on_halfBall_of_subsolution
         Metric.isOpen_ball (c := x₀) (r := R) hR hball_sub hsub
   let huBall : MemW1pWitness 2 u (Metric.ball x₀ R) :=
     hu1.restrict Metric.isOpen_ball (Metric.ball_subset_closedBall.trans hball_sub)
-  let huR := huBall.rescale_to_unitBall (d := d) (x₀ := x₀) (R := R) hR
+  let huR := huBall.rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) hR
   have hposInt_scaled :
       IntegrableOn
         (fun z => |max (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u z) 0| ^ 2)
         (Metric.ball (0 : E) 1) volume := by
-    simpa [huR, rescaleToUnitBall, pow_two] using huR.memLp.pos_part.integrable_sq
+    change Integrable _ (volume.restrict (Metric.ball (0 : E) 1))
+    refine huR.memLp.pos_part.integrable_sq.congr
+      (Filter.Eventually.of_forall ?_)
+    intro z
+    simp [rescaleToUnitBall, pow_two]
   have hsub_scaled :
       IsSubsolution
         (rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR Aball).1
         (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u) := by
-    simpa [Aball] using
-      rescaleToUnitBall_isSubsolution (d := d) (x₀ := x₀) (R := R) hR Aball.1 hsub_ball
+    change IsSubsolution (rescaleCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR Aball.1)
+      (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u)
+    exact rescaleToUnitBall_isSubsolution (d := d) (x₀ := x₀) (R := R)
+      hR Aball.1 hsub_ball
   obtain ⟨lamStar, hlam_pos, -, hbound_unit⟩ :=
     linfty_subsolution_DeGiorgi_exists_threshold (d := d) hd
       (rescaleNormalizedCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR Aball).1
@@ -593,21 +600,23 @@ theorem moser_comp_abs_le_linear
     ∃ M, 0 ≤ M ∧ ∀ t, |Φ t| ≤ M * |t| := by
   obtain ⟨M, hM⟩ := hΦ'_bdd
   have hM_nonneg : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
-  have hΦ_lip : LipschitzWith ⟨M, hM_nonneg⟩ Φ :=
+  have hΦ_lip : LipschitzWith (⟨M, hM_nonneg⟩ : NNReal) Φ :=
     lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
-      simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
-      exact (Real.norm_eq_abs _).symm ▸ hM t)
+      change ‖deriv Φ t‖ ≤ M
+      simpa only [Real.norm_eq_abs] using hM t)
   refine ⟨M, hM_nonneg, ?_⟩
   intro t
   have ht := hΦ_lip.dist_le_mul t 0
-  simpa [Real.dist_eq, hΦ0, Real.norm_eq_abs] using ht
+  simp only [Real.dist_eq, hΦ0, sub_zero] at ht
+  change |Φ t| ≤ M * |t| at ht
+  exact ht
 
 /-- Smooth bounded-derivative composition helper for Chapter 06.
 
 This keeps the nonlinear Moser work inside Chapter 06 from having to rebuild
 the generic chain-rule packaging every time we introduce a regularized power or
 test function. -/
-noncomputable def MemW1pWitness.comp_smooth_bounded
+noncomputable def MemW1pWitness.compSmoothBounded
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u : E → ℝ} (hu : MemW1pWitness 2 u Ω)
     (Φ : ℝ → ℝ) (hΦ : ContDiff ℝ (⊤ : ℕ∞) Φ) (hΦ0 : Φ 0 = 0)
@@ -617,14 +626,16 @@ noncomputable def MemW1pWitness.comp_smooth_bounded
   let M : ℝ := Classical.choose hΦ'_bdd
   have hM : ∀ t, |deriv Φ t| ≤ M := Classical.choose_spec hΦ'_bdd
   have hM_nonneg : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
-  have hΦ_lip : LipschitzWith ⟨M, hM_nonneg⟩ Φ :=
+  have hΦ_lip : LipschitzWith (⟨M, hM_nonneg⟩ : NNReal) Φ :=
     lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
-      simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
-      exact (Real.norm_eq_abs _).symm ▸ hM t)
+      change ‖deriv Φ t‖ ≤ M
+      simpa only [Real.norm_eq_abs] using hM t)
   have hΦ_abs_le : ∀ t, |Φ t| ≤ M * |t| := by
     intro t
     have ht := hΦ_lip.dist_le_mul t 0
-    simpa [Real.dist_eq, hΦ0, Real.norm_eq_abs] using ht
+    simp only [Real.dist_eq, hΦ0, sub_zero] at ht
+    change |Φ t| ≤ M * |t| at ht
+    exact ht
   have hcomp_memLp :
       MemLp (fun x => Φ (u x)) 2 (volume.restrict Ω) := by
     refine MemLp.of_le_mul (g := u) (c := M) hu.memLp ?_ ?_
@@ -681,11 +692,11 @@ theorem moser_shiftApprox_on_ball_of_unitBall
               2 (volume.restrict (Metric.ball (0 : E) s)))
           Filter.atTop (nhds 0)) := by
   let _ := _hs
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let huShift : MemW1pWitness 2 (fun x => u x - θ) (Metric.ball (0 : E) 1) :=
-    hu1.sub_const Metric.isOpen_ball θ
+    hu1.subConst Metric.isOpen_ball θ
   rcases exists_smooth_W12_approx_on_unitBall (d := d) huShift with
     ⟨ψ, hψ_smooth, hψ_compact, hψ_fun, hψ_grad⟩
   refine ⟨ψ, ?_, hψ_compact, ?_, ?_⟩
@@ -768,10 +779,10 @@ noncomputable def moserClippedPosPartWitness
   have happroxN :=
     moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1 hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) s) :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS 0 happrox0
   let hwN : MemW1pWitness 2 (positivePartSub u N) (Metric.ball (0 : E) s) :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS N happroxN
   let hwClip :
       MemW1pWitness 2
@@ -802,7 +813,7 @@ lemma positivePartSub_grad_eq_on_superlevel
     (hw_trunc : MemW1pWitness 2 (positivePartSub u k) Ω) :
     ∀ᵐ x ∂(volume.restrict Ω), k < u x → hu.weakGrad x = hw_trunc.weakGrad x := by
   let w : E → ℝ := positivePartSub u k
-  let hw_shift : MemW1pWitness 2 (fun x => u x - k) Ω := hu.sub_const hΩ k
+  let hw_shift : MemW1pWitness 2 (fun x => u x - k) Ω := hu.subConst hΩ k
   let hw_diff :
       MemW1pWitness 2 (fun x => u x - k + (-1 : ℝ) * w x) Ω :=
     hw_shift.add (hw_trunc.smul (-1))
@@ -816,12 +827,13 @@ lemma positivePartSub_grad_eq_on_superlevel
       have huxk : 0 ≤ u x - k := le_of_lt (sub_pos.mpr hku)
       simp [w, positivePartSub, max_eq_left huxk]
     have hgrad0 : hw_diff.weakGrad x i = 0 := hx hfun
-    have hgrad0' :
-        (hu.weakGrad x).ofLp i - (hw_trunc.weakGrad x).ofLp i = 0 := by
-      simpa [hw_diff, hw_shift, w, MemW1pWitness.add, MemW1pWitness.smul,
-        MemW1pWitness.sub_const, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-        using hgrad0
-    exact sub_eq_zero.mp hgrad0'
+    simp only [hw_diff, hw_shift, w, MemW1pWitness.add, MemW1pWitness.smul,
+      MemW1pWitness.subConst, WithLp.ofLp_add, WithLp.ofLp_smul,
+      Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hgrad0
+    have hcomponent :
+        (hu.weakGrad x).ofLp i = (hw_trunc.weakGrad x).ofLp i := by
+      linarith only [hgrad0]
+    exact hcomponent
   filter_upwards [ae_all_iff.2 hcomp] with x hx hku
   ext i
   exact hx i hku
@@ -855,18 +867,18 @@ lemma moserClippedPosPartWitness_grad_eq_on_midrange
         (moserClippedPosPartWitness (d := d) (u := u) (s := s) (N := N) hs hs1 hN hu1).weakGrad x =
           (hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)).weakGrad x := by
   let Ω := Metric.ball (0 : E) s
-  letI : IsFiniteMeasure (volume.restrict Ω) := by
+  let : IsFiniteMeasure (volume.restrict Ω) := by
     dsimp [Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let huS : MemW1pWitness 2 u Ω :=
     hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) Ω :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
         hu1)
   let hwN : MemW1pWitness 2 (positivePartSub u N) Ω :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
         hu1)
   have h0_eq := positivePartSub_grad_eq_on_superlevel (d := d) Metric.isOpen_ball huS hw0
@@ -893,11 +905,11 @@ lemma moserClippedPosPartWitness_grad_zero_on_nonpos
   let huS : MemW1pWitness 2 u Ω :=
     hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) Ω :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
         hu1)
   let hwN : MemW1pWitness 2 (positivePartSub u N) Ω :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
         hu1)
   have h0_zero := positivePartSub_grad_zero_on_sublevel (d := d) Metric.isOpen_ball hw0
@@ -921,19 +933,19 @@ lemma moserClippedPosPartWitness_grad_zero_on_toplevel
         (moserClippedPosPartWitness (d := d) (u := u) (s := s) (N := N) hs hs1 hN hu1).weakGrad x =
           0 := by
   let Ω := Metric.ball (0 : E) s
-  letI : IsFiniteMeasure (volume.restrict Ω) := by
+  let : IsFiniteMeasure (volume.restrict Ω) := by
     dsimp [Ω]
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let huS : MemW1pWitness 2 u Ω :=
     hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)
-  let huSN : MemW1pWitness 2 (fun x => u x - N) Ω := huS.sub_const Metric.isOpen_ball N
+  let huSN : MemW1pWitness 2 (fun x => u x - N) Ω := huS.subConst Metric.isOpen_ball N
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) Ω :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
         hu1)
   let hwN : MemW1pWitness 2 (positivePartSub u N) Ω :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := s)
       hs huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
         hu1)
   have h0_eq := positivePartSub_grad_eq_on_superlevel (d := d) Metric.isOpen_ball huS hw0
@@ -962,7 +974,7 @@ lemma moserClippedPosPartWitness_grad_zero_on_toplevel
     have huSi_zero : huS.weakGrad x i = 0 := by
       have hshift_zero : huSN.weakGrad x i = 0 := by
         exact hz i (by linarith [heq])
-      simpa [huSN, MemW1pWitness.sub_const] using hshift_zero
+      simpa [huSN, MemW1pWitness.subConst] using hshift_zero
     have hNi : hwN.weakGrad x i = 0 := by
       have hxNarg : u x ≤ N := by
         rw [heq]

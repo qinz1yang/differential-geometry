@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -265,7 +264,7 @@ noncomputable def finePouRepack
     (r s : ℕ) (φ : ∀ α, κ α → C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) : RSTensorSection I M r s :=
   fun x =>
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∑ z : κ α,
         chartRepack (I := I) (M := M) r s α
           (fun P => fineLocComp (I := I) (M := M) r s (φ α z) S α P) x
@@ -274,7 +273,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem finePou_retract
     {κ : M → Type*} [∀ α, Fintype (κ α)]
     (r s : ℕ) (φ : ∀ α, κ α → C^∞⟮I, M; ℝ⟯)
-    (hsum : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hsum : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ x ∈ tsupport
         (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)),
         ∑ z : κ α, ((φ α z : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1)
@@ -283,7 +282,7 @@ theorem finePou_retract
   classical
   funext x
   unfold finePouRepack
-  have hinner : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hinner : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (∑ z : κ α,
           chartRepack (I := I) (M := M) r s α
             (fun P => fineLocComp (I := I) (M := M) r s
@@ -311,17 +310,17 @@ theorem finePou_retract
           · rw [hρ, mul_zero]
           · rw [hsum α hα x (subset_tsupport _ hρ), one_mul]
   calc
-    (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ z : κ α,
           chartRepack (I := I) (M := M) r s α
             (fun P => fineLocComp (I := I) (M := M) r s
               (φ α z) S α P) x) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • S x := by
           refine Finset.sum_congr rfl ?_
           intro α hα
           exact hinner α hα
-    _ = (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    _ = (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) • S x := by
         rw [Finset.sum_smul]
     _ = S x := by
@@ -367,7 +366,7 @@ noncomputable def canonFinePsi
   (canonFineData (I := I) (M := M) rFine hr α).psi z
 
 abbrev CanonChartIdx : Type _ :=
-  chartAtlasPOU_finset (I := I) (M := M)
+  chartAtlasPOUFinset (I := I) (M := M)
 
 abbrev CanonFineFlat
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) : Type _ :=
@@ -546,8 +545,8 @@ theorem canonCut_retract
       (∑ a : CanonChartIdx (I := I) (M := M),
           ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = 1 := by
     exact (Finset.sum_subtype
-      (s := chartAtlasPOU_finset (I := I) (M := M))
-      (p := fun a => a ∈ chartAtlasPOU_finset (I := I) (M := M))
+      (s := chartAtlasPOUFinset (I := I) (M := M))
+      (p := fun a => a ∈ chartAtlasPOUFinset (I := I) (M := M))
       (fun _ => Iff.rfl)
       (fun a =>
         ((chartAtlasPOU I M a : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)).symm.trans

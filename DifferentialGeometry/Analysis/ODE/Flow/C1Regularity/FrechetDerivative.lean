@@ -202,9 +202,8 @@ theorem hasFDerivAt_flow_at_initial_of_isLocalFlow
     have h_norm_le : ‖z - Φ ⟨x₀, τ⟩‖ ≤ δ_K_strict := by
       have := Metric.mem_closedBall.mp hz
       rw [dist_eq_norm] at this; exact this
-    change (‖fderiv ℝ (f τ) z‖₊ : ℝ≥0) ≤ ⟨K_lip, hK_lip_nn⟩
-    rw [← NNReal.coe_le_coe]
-    exact hK_bd τ hτ z h_norm_le
+    change ‖fderiv ℝ (f τ) z‖₊ ≤ (⟨K_lip, hK_lip_nn⟩ : NNReal)
+    exact NNReal.coe_le_coe.mp (hK_bd τ hτ z h_norm_le)
   rw [hasFDerivAt_iff_isLittleO_nhds_zero]
   rw [Asymptotics.isLittleO_iff]
   intro c hc
@@ -456,7 +455,12 @@ theorem hasFDerivAt_flow_at_initial_of_isLocalFlow
       refine ⟨by linarith [hs.2], by linarith [hs.1, hT.le]⟩
     have hψ_deriv : ∀ s, HasDerivAt ψ (-1 : ℝ) s := fun s => by
       have h1 : HasDerivAt (fun s => 2 * t₀ - s) (-1 : ℝ) s := by
-        simpa using (hasDerivAt_const s (2 * t₀)).sub (hasDerivAt_id s)
+        have hraw := (hasDerivAt_const s (2 * t₀)).sub (hasDerivAt_id s)
+        have hfun : ((fun _ : ℝ => 2 * t₀) - id) = fun r : ℝ => 2 * t₀ - r := by
+          funext r
+          rfl
+        rw [hfun] at hraw
+        simpa only [zero_sub] using hraw
       exact h1
     have h_neg_lip_one : LipschitzWith 1 (Neg.neg : E → E) := LipschitzWith.id.neg
     have hvR_lip : ∀ τ' ∈ Ico t₀ (t₀ + T),

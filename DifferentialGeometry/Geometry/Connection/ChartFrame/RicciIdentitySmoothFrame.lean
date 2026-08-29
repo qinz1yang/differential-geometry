@@ -116,7 +116,7 @@ private lemma chartFrameNormFiber_at_zero_norm
     have h_outer : g.inner b (s⁻¹ • v) = s⁻¹ • g.inner b v := by
       rw [map_smul]
     rw [h_outer]
-    rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [smul_apply, smul_eq_mul]
     rw [show g.inner b v (s⁻¹ • v) = s⁻¹ * g.inner b v v from by
       rw [map_smul]; rfl]
   rw [hexpand]
@@ -243,7 +243,17 @@ theorem chartBasisVecFiber_eq_of_chartAt_eq
     apply Subtype.ext
     change (chartAt H α₁ : OpenPartialHomeomorph M H) = (chartAt H α₂ : OpenPartialHomeomorph M H)
     exact h
-  rw [h_triv]
+  let LT := {e : Bundle.Trivialization E
+      (@Bundle.TotalSpace.proj M E (TangentSpace I)) //
+        Bundle.Trivialization.IsLinear ℝ e}
+  let e₁ : LT := ⟨trivializationAt E (TangentSpace I) α₁, inferInstance⟩
+  let e₂ : LT := ⟨trivializationAt E (TangentSpace I) α₂, inferInstance⟩
+  have he : e₁ = e₂ := by
+    apply Subtype.ext
+    exact h_triv
+  exact congrArg (fun e : LT =>
+    let _ : Bundle.Trivialization.IsLinear ℝ e.1 := e.2
+    e.1.symmL ℝ x (chartModelBasis E i)) he
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem chartFrame_eq_of_chartAt_eq_strong
@@ -336,7 +346,7 @@ private lemma g_inner_sum_left
     rw [show ((g.inner b) (c a • v a + ∑ x ∈ s, c x • v x)) =
         ((g.inner b) (c a • v a)) + ((g.inner b) (∑ x ∈ s, c x • v x)) from by
       rw [map_add]]
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [show ((g.inner b) (c a • v a)) w = c a * ((g.inner b) (v a)) w from by
       rw [map_smul]; rfl]
     rw [ih]
@@ -604,7 +614,7 @@ private theorem chartFrameNormFiber_orth_strong_aux
               exact Set.mem_univ _
           rw [hset_eq]
           have hi_notin : i ∉ {n : Fin (Module.finrank ℝ E) | n.val < i.val} := by
-            simp [Set.mem_setOf_eq]
+            simp [Set.mem_ofPred_eq]
           exact hLI.notMem_span_image hi_notin
         exact hcontra hvi_in_span
       have hgpos : 0 < g.inner b
@@ -643,7 +653,7 @@ private theorem chartFrameNormFiber_orth_strong_aux
           have h1 : g.inner b (s⁻¹ • chartFrameRawFiber (I := I) g α b i) =
               s⁻¹ • g.inner b (chartFrameRawFiber (I := I) g α b i) := by
             rw [map_smul]
-          rw [h1, ContinuousLinearMap.smul_apply, smul_eq_mul]
+          rw [h1, smul_apply, smul_eq_mul]
           rw [show g.inner b (chartFrameRawFiber (I := I) g α b i)
                 (s⁻¹ • chartFrameRawFiber (I := I) g α b i) =
               s⁻¹ * g.inner b (chartFrameRawFiber (I := I) g α b i)
@@ -723,14 +733,14 @@ private lemma smoothOrtho_li
         (smoothOrthoFrame (I := I) g α i b) = 0 := by
     rw [hc]
     simp
-  rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+  rw [map_sum, sum_apply] at hpair
   rw [Finset.sum_eq_single i] at hpair
-  · rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
+  · rw [ContinuousLinearMap.map_smul, smul_apply,
       smoothOrthoFrame_orthonormal (I := I) g α hb i i,
       if_pos rfl, smul_eq_mul, mul_one] at hpair
     exact hpair
   · intro j _ hji
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
+    rw [ContinuousLinearMap.map_smul, smul_apply,
       smoothOrthoFrame_orthonormal (I := I) g α hb j i,
       if_neg (by simpa using hji), smul_zero]
   · intro hi
@@ -743,14 +753,14 @@ theorem bochner_identity_smoothOrthoFrame_of_inner_form [I.Boundaryless]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (localConnLap_vector (LeviCivita (I := I) g)
+      g.inner x (localConnLapVector (LeviCivita (I := I) g)
                   (smoothOrthoFrame (I := I) g x)
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    localConnLap_vector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
+    localConnLapVector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+      gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   localConnLap_vector_eq_bochnerFormula_of_inner_form (I := I) g hf
     (smoothOrthoFrame (I := I) g x) x hInner
@@ -1196,14 +1206,14 @@ theorem heart_of_bochner_smoothOrthoFrame [I.Boundaryless]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (localConnLap_vector (LeviCivita (I := I) g)
+      g.inner x (localConnLapVector (LeviCivita (I := I) g)
                   (smoothOrthoFrame (I := I) g x)
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    localConnLap_vector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
+    localConnLapVector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+      gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   bochner_identity_smoothOrthoFrame_of_inner_form (I := I) g hf x
     hInner
@@ -1390,19 +1400,35 @@ private lemma metricInner_continuousOn_family
     ContinuousOn (fun q : ℝ × M => (g q.1).inner q.2 (X q) (Y q))
       (K ×ˢ U) := by
   classical
-  rw [continuousOn_iff_continuous_restrict]
-  let P := {q : ℝ × M // q.1 ∈ K ∧ q.2 ∈ U}
+  rw [continuousOn_iff_continuous_domRestrict]
   have heval := tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 2)
     (K := K) (A := fun t x => metricTensorField (I := I) (g t) x) hG
-    (P := P) (τ := fun p : P => p.1.1) (b := fun p : P => p.1.2)
-    (continuous_fst.comp continuous_subtype_val) (fun p : P => p.2.1)
+    (P := ↥(K ×ˢ U)) (τ := fun p : ↥(K ×ˢ U) => p.1.1)
+    (b := fun p : ↥(K ×ˢ U) => p.1.2)
+    (continuous_fst.comp continuous_subtype_val) (fun p : ↥(K ×ˢ U) => p.2.1)
     (continuous_snd.comp continuous_subtype_val)
-    (v := fun a : Fin 2 => fun p : P => if a = 0 then X p.1 else Y p.1)
+    (v := fun a : Fin 2 => fun p : ↥(K ×ˢ U) => if a = 0 then X p.1 else Y p.1)
     (by
       intro a
       fin_cases a
-      · simpa using (continuousOn_iff_continuous_restrict.mp hX)
-      · simpa using (continuousOn_iff_continuous_restrict.mp hY))
+      · have hX' := continuousOn_iff_continuous_domRestrict.mp hX
+        have hfun : (K ×ˢ U).domRestrict (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (X q)) =
+            (fun p : ↥(K ×ˢ U) =>
+              TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1.2 (X p.1)) := by
+          funext p
+          rfl
+        rw [hfun] at hX'
+        exact hX'
+      · have hY' := continuousOn_iff_continuous_domRestrict.mp hY
+        have hfun : (K ×ˢ U).domRestrict (fun q : ℝ × M =>
+            TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2 (Y q)) =
+            (fun p : ↥(K ×ˢ U) =>
+              TotalSpace.mk' E (E := fun x : M => TangentSpace I x) p.1.2 (Y p.1)) := by
+          funext p
+          rfl
+        rw [hfun] at hY'
+        exact hY')
   refine heval.congr (fun p => ?_)
   change metricTensorField (I := I) (g p.1.1) p.1.2
       (fun i : Fin 2 => if i = 0 then X p.1 else Y p.1) =
@@ -1427,7 +1453,15 @@ private lemma chartBasisVec_section_continuousOn_param
       (trivializationAt E (TangentSpace I) α).baseSet := by
     intro q hq
     exact hq.2
-  simpa [chartBasisVec] using hc.comp hmap hmaps
+  have hcomp := hc.comp hmap hmaps
+  have hfun : (chartBasisVec (I := I) α i ∘ fun q : ℝ × M => q.2) =
+      (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun x : M => TangentSpace I x) q.2
+          (chartBasisVecFiber (I := I) α i q.2)) := by
+    funext q
+    rfl
+  rw [hfun] at hcomp
+  exact hcomp
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem chartFrameNormFiber_continuousOn_metricFamily_strong

@@ -22,7 +22,8 @@ theorem Convex.real_inner_sub_nonpos_of_norm_eq_iInf_of_mem_posTangentConeAt
     rw [inner_sub_right] at this
     exact sub_nonpos.mp this
   have hderiv : HasFDerivAt (fun y : E ↦ inner ℝ (x - p) y) (innerSL ℝ (x - p)) p := by
-    simpa only [innerSL_apply_apply] using (innerSL ℝ (x - p)).hasFDerivAt
+    change HasFDerivAt (innerSL ℝ (x - p)) (innerSL ℝ (x - p)) p
+    exact (innerSL ℝ (x - p)).hasFDerivAt
   exact hmax.localize.hasFDerivWithinAt_nonpos hderiv.hasFDerivWithinAt hv
 
 theorem frequently_slope_lt_of_le_of_eq_of_hasDerivWithinAt_right

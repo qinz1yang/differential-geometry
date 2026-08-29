@@ -21,8 +21,7 @@ theorem klL1_eq_L2_sq {R : ℝ} (hR : 0 < R) :
     klL1Scale (V := V) R = klL2Scale (V := V) R ^ 2 := by
   unfold klL1Scale klL1ScaleR klL2Scale klL2ScaleR
   have hre :
-      Real.rpow R (-klDim V) =
-        (Real.rpow R (-klDim V / 2)) ^ 2 := by
+      R ^ (-klDim V) = (R ^ (-klDim V / 2)) ^ 2 := by
     calc
       Real.rpow R (-klDim V) =
           Real.rpow R ((-klDim V / 2) * 2) := by
@@ -40,8 +39,7 @@ theorem klLq_eq_Lp_sq {R : ℝ} (hR : 0 < R) :
     klLqScale (V := V) R = klLpScale (V := V) R ^ 2 := by
   unfold klLqScale klLqScaleR klLpScale klLpScaleR
   have hre :
-      Real.rpow R (4 / (klDim V + 4)) =
-        (Real.rpow R (2 / (klDim V + 4))) ^ 2 := by
+      R ^ (4 / (klDim V + 4)) = (R ^ (2 / (klDim V + 4))) ^ 2 := by
     calc
       Real.rpow R (4 / (klDim V + 4)) =
           Real.rpow R ((2 / (klDim V + 4)) * 2) := by
@@ -166,10 +164,10 @@ theorem klBilin_source {T : ℝ}
     (h₂ : KLSource1 T A₂₂ Aₚ₂ d₂) :
     KLSource0 T (K * A₂₁ * A₂₂) (K * Aₚ₁ * Aₚ₂)
       (fun z => B z (d₁ z) (d₂ z)) := by
-  letI : ENNReal.HolderTriple 2 2 1 := by
+  let : ENNReal.HolderTriple 2 2 1 := by
     constructor
     rw [inv_one, ENNReal.inv_two_add_inv_two]
-  letI : ENNReal.HolderTriple (klP V) (klP V) (klQ V) :=
+  let : ENNReal.HolderTriple (klP V) (klP V) (klQ V) :=
     klP_holderTriple (V := V)
   refine ⟨hmeas, ?_, ?_⟩
   · intro x R hR hRT

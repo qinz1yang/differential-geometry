@@ -161,7 +161,7 @@ private lemma chartLocalMeasure_open_pos_under_boundaryless [I.Boundaryless]
   have h0_eq : ∫⁻ y in W, ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y)) *
         V.indicator (fun _ => (1 : ℝ≥0∞)) ((extChartAt I α).symm y)
           ∂(modelHaar (E := E)) = 0 :=
-    le_antisymm h0 (zero_le _)
+    le_antisymm h0 bot_le
   have hT_meas : MeasurableSet (extChartAt I α).target :=
     measurableSet_extChartAt_target (I := I) α
   have haem_density_T : AEMeasurable
@@ -578,8 +578,8 @@ theorem voss_weyl_divergence_formula [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {x : M} (hx_α : x ∈ (chartAt H α).source) :
-    divergence_g (I := I) g X x = localDivergence (I := I) g α X x := by
-  unfold divergence_g
+    divergenceG (I := I) g X x = localDivergence (I := I) g α X x := by
+  unfold divergenceG
   exact localDivergence_chart_invariance (I := I) g x α X (mem_chart_source H x) hx_α
 
 theorem localDivergence_contMDiffOn_baseSet [I.Boundaryless]
@@ -599,7 +599,7 @@ theorem divergence_g_contMDiff [I.Boundaryless]
     [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ContMDiff I 𝓘(ℝ) ∞ (divergence_g (I := I) g X) := by
+    ContMDiff I 𝓘(ℝ) ∞ (divergenceG (I := I) g X) := by
   intro x
   have hsmooth : ContMDiffOn I 𝓘(ℝ) ∞ (localDivergence (I := I) g x X)
       (chartAt H x).source :=
@@ -607,7 +607,7 @@ theorem divergence_g_contMDiff [I.Boundaryless]
   have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
   have hsrc_open : IsOpen (chartAt H x).source := (chartAt H x).open_source
   have h_eq : ∀ y ∈ (chartAt H x).source,
-      divergence_g (I := I) g X y = localDivergence (I := I) g x X y := by
+      divergenceG (I := I) g X y = localDivergence (I := I) g x X y := by
     intro y hy
     exact voss_weyl_divergence_formula (I := I) g x X hy
   refine ((hsmooth x hxsrc).contMDiffAt (hsrc_open.mem_nhds hxsrc)).congr_of_eventuallyEq ?_

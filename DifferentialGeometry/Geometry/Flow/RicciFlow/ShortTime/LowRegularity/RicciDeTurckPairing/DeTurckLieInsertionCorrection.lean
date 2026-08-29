@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturalit
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -136,9 +135,8 @@ private lemma deTurckLieInsertionCorrectionEndomorphism_apply
   have hdiff : endoDiffSection (I := I) (M := M) g gm g_bg x =
       lieCorrectionZeroNEndo (I := I) g gm g_bg x -
         lieCorrectionZeroNEndo (I := I) g gm g x := by
-    simpa only [endoDiffSection, connectionDifferenceDeTurckVectorFieldSection,
-      ContMDiffSection.coe_sub, Pi.sub_apply] using
-      (nEndo_diff (I := I) (M := M) g gm g_bg x).symm
+    simp only [endoDiffSection, ContMDiffSection.coe_sub, Pi.sub_apply]
+    exact (nEndo_diff (I := I) (M := M) g gm g_bg x).symm
   rw [hdiff]
   simp only [deTurckVectorFieldCovariantDerivativeEndomorphismSection_apply]
 
@@ -184,7 +182,7 @@ private theorem deTurckLieInsertionCorrection_eq_pair
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (X + Y).toSection x) D) m
   rw [hsum, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+    add_apply]
   rw [show
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         ((deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g gm g_bg -
@@ -195,9 +193,9 @@ private theorem deTurckLieInsertionCorrection_eq_pair
           deTurckLieCovariantDerivativeInsertionFib (I := I) gm g x D) +
         (lieCorrectionZeroInsertionFib (I := I) g gm g_bg x D -
           lieCorrectionZeroInsertionFib (I := I) g gm g x D) from rfl]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply,
-    Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply,
-    Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [Tensor0SSpace.toModel_add, add_apply,
+    Tensor0SSpace.toModel_sub, sub_apply,
+    Tensor0SSpace.toModel_sub, sub_apply]
   rw [deTurckLieCovariantDerivativeInsertionFib_toModel (I := I) gm g_bg x D m,
     deTurckLieCovariantDerivativeInsertionFib_toModel (I := I) gm g x D m,
     lieCorrectionZeroInsertionFib_toModel (I := I) g gm g_bg x D m,
@@ -241,31 +239,31 @@ private theorem deTurckLieInsertionCorrection_eq_pair
   have harg :
       (fun k => Function.update
         (fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
-        (Λ x ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
+        (tangentLinearMapToModel (Λ x)
+          ((fun i => m ((Equiv.swap (0 : Fin 2) 1) i)) 0))
         ((Equiv.swap (0 : Fin 2) 1) k)) =
-      Function.update m 1 (Λ x (m 1)) := by
+      Function.update m 1 (tangentLinearMapToModel (Λ x) (m 1)) := by
     funext k
-    have hswap0 : (Equiv.swap (0 : Fin 2) 1) 0 = 1 :=
-      Equiv.swap_apply_left 0 1
-    have hswap1 : (Equiv.swap (0 : Fin 2) 1) 1 = 0 :=
-      Equiv.swap_apply_right 0 1
-    simp only [Function.update_apply]
-    rw [hswap0, Equiv.swap_apply_self]
-    have hcond : ((Equiv.swap (0 : Fin 2) 1) k = 0) = (k = 1) := by
-      apply propext
-      constructor
-      · intro h
-        have h2 := congrArg (Equiv.swap (0 : Fin 2) 1) h
-        rwa [Equiv.swap_apply_self, hswap0] at h2
-      · intro h
-        rw [h, hswap1]
-    simp only [hcond]
+    fin_cases k <;> rfl
   rw [harg]
   have hΛ := deTurckLieInsertionCorrectionEndomorphism_apply (I := I) (M := M) g gm g_bg x
   dsimp only [Λ] at hΛ ⊢
   rw [hΛ]
-  simp only [ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.sub_apply,
+  have hmodel_add (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
+      tangentLinearMapToModel (A + B) =
+        tangentLinearMapToModel A + tangentLinearMapToModel B := by
+    apply ContinuousLinearMap.ext
+    intro v
+    simp only [tangentLinearMapToModel_apply, add_apply, map_add]
+  have hmodel_sub (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
+      tangentLinearMapToModel (A - B) =
+        tangentLinearMapToModel A - tangentLinearMapToModel B := by
+    apply ContinuousLinearMap.ext
+    intro v
+    simp only [tangentLinearMapToModel_apply, sub_apply, map_sub]
+  rw [hmodel_add, hmodel_sub, hmodel_sub]
+  simp only [add_apply,
+    sub_apply,
     ContinuousMultilinearMap.map_update_add,
     ContinuousMultilinearMap.map_update_sub]
   simp only [sub_eq_add_neg, neg_add_rev]
@@ -301,6 +299,7 @@ private theorem cometricRaiseSlot0Field_add
     cometricRaiseSlot0Field_toSection]
   rfl
 
+omit [SigmaCompactSpace M] in
 private theorem slotInsert_deTurckLieInsertionCorrectionEndomorphism
     (g gm g_bg : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g 0
@@ -321,6 +320,7 @@ private theorem slotInsert_deTurckLieInsertionCorrectionEndomorphism
   rw [deTurckVectorFieldCovariantDerivativeLowered, deTurckVectorFieldCovariantDerivativeLowered, cometricRaiseSlot0Field_add, cometricRaiseSlot0Field_add, cometricRaiseSlot0Field_sub]
   module
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 private theorem deTurckVectorFieldCovector_backgroundDifference_sub
@@ -442,6 +442,7 @@ private theorem exists_deTurckVectorFieldCovector_backgroundDifference_covariant
       _ = (B R * (D3 + D2 + A * D2)) ^ 2 := by
         simp only [Q]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference
     (g g_bg gm : SmoothRiemannianMetric I M) :
@@ -454,6 +455,7 @@ private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDiffe
   unfold deTurckVectorFieldCovariantDerivativeLoweredBase
   rw [← domDomCongrSection_sub, ← covGrad_sub]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_sub
     (g g_bg gT gU : SmoothRiemannianMetric I M) :

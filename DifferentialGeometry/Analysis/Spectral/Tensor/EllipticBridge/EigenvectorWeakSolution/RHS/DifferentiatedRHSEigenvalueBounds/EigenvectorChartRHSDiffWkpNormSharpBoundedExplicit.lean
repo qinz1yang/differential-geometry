@@ -177,7 +177,7 @@ private lemma rhsZeroAggregate_le_at_target
       ENNReal.ofReal_le_ofReal hCmul_le
     have h_step : w ≤ ENNReal.ofReal (Cval * (i.fst.val)⁻¹ ^ target) * Rhs := by
       refine hw.trans ?_
-      exact mul_le_mul_of_nonneg_right h_eNN_le (by exact zero_le _)
+      exact mul_le_mul_of_nonneg_right h_eNN_le (by exact zero_le)
     have h_rw : ENNReal.ofReal (Cval * (i.fst.val)⁻¹ ^ target) * Rhs
           = ENNReal.ofReal Cval * Rhs_eff := by
       rw [hRhs_eff_def, ENNReal.ofReal_mul hCval_nn, mul_assoc]
@@ -1304,7 +1304,7 @@ private lemma sharpDiffBdd_recursion_at_target
         have h_arith : K + m + 1 = K + (m + 1) := by ring
         rw [h_arith]
         refine le_trans h_eig ?_
-        refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+        refine mul_le_mul_of_nonneg_right ?_ (zero_le)
         exact sharpDiff_ofReal_const_pow_eigen_inv_le
           (I := I) (M := M) g r s i (H.hCeig_nn _)
           (le_trans (h_atom_bd (K + (m + 1)) (by omega)).1 (Nat.le_succ _))
@@ -1347,7 +1347,7 @@ private lemma sharpDiffBdd_recursion_at_target
         have h_arith : K + m + 2 = (K + 1) + (m + 1) := by ring
         rw [h_arith]
         refine le_trans h_eig ?_
-        refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+        refine mul_le_mul_of_nonneg_right ?_ (zero_le)
         exact sharpDiff_ofReal_const_pow_eigen_inv_le
           (I := I) (M := M) g r s i (H.hCeig_nn _)
           (le_trans (h_atom_bd ((K + 1) + (m + 1)) (by omega)).1 (Nat.le_succ _))
@@ -1378,7 +1378,7 @@ private lemma sharpDiffBdd_recursion_at_target
             (Fin.init l)).2
         refine le_trans h_bridge ?_
         refine le_trans (H.hCeig_bd i (K + m) (by omega)) ?_
-        refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+        refine mul_le_mul_of_nonneg_right ?_ (zero_le)
         exact sharpDiff_ofReal_const_pow_eigen_inv_le
           (I := I) (M := M) g r s i (H.hCeig_nn _)
           (le_trans (h_atom_bd (K + m) (by omega)).1 (Nat.le_succ _))

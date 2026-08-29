@@ -21,13 +21,13 @@ theorem tensor0S_two_eval_coordFrame_sum
     (Y Z : TangentSpace I x₀) :
     Ax (fun q : Fin 2 => if q = 0 then Y else Z) =
       ∑ i : CoordinateIdx E, ∑ j : CoordinateIdx E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord i Y *
-          (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord i Y *
+          (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
           Ax (fun q : Fin 2 =>
             if q = 0 then coordinateFrameAt (I := I) x₀ i x₀
             else coordinateFrameAt (I := I) x₀ j x₀) := by
   classical
-  let b := coordinateFrameAt_toBasis (I := I) x₀
+  let b := coordinateFrameAtToBasis (I := I) x₀
   let pair : TangentSpace I x₀ -> TangentSpace I x₀ -> Fin 2 -> TangentSpace I x₀ :=
     fun U V q => if q = 0 then U else V
   have hslot0 (W : TangentSpace I x₀) :
@@ -139,8 +139,8 @@ theorem tensor0S_two_eval_coordFrame_sum
           refine Finset.sum_congr rfl fun j _ => ?_
           ring
     _ = ∑ i : CoordinateIdx E, ∑ j : CoordinateIdx E,
-          (coordinateFrameAt_toBasis (I := I) x₀).coord i Y *
-            (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+          (coordinateFrameAtToBasis (I := I) x₀).coord i Y *
+            (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
             Ax (fun q : Fin 2 =>
               if q = 0 then coordinateFrameAt (I := I) x₀ i x₀
               else coordinateFrameAt (I := I) x₀ j x₀) := by
@@ -171,10 +171,10 @@ theorem nabla0S_two_model_coord
             coordComponent0SAt (I := I) (A x₀)
               (fun q : Fin 2 => if q = 0 then j else k) := by
   classical
-  simp only [nabla0SFun, TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection,
-    TensorLieDeriv.mcovariantDeriv_tensor0SWithinFromConnection]
+  simp only [nabla0SFun, TensorLieDeriv.mcovariantDerivTensor0SFromConnection,
+    TensorLieDeriv.mcovariantDerivTensor0SWithinFromConnection]
   rw [← tensor0SModelAt_coordComponent0SAt (I := I) x₀
-    (TensorLieDeriv.mcovariantDeriv_tensor0SWithin
+    (TensorLieDeriv.mcovariantDerivTensor0SWithin
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (⊤ : WithTop ℕ∞)) 2 X
       (connectionEndomorphismInChart (𝕜 := Real) (I := I) cov (fun x => X x) x₀)
@@ -199,7 +199,7 @@ theorem nabla0S_two_model_coord
       (fun f : Fin 2 → E =>
         (TensorLieDeriv.tensor0SModelAt
             (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x₀ x₀
-            (TensorLieDeriv.mcovariantDeriv_tensor0SWithin
+            (TensorLieDeriv.mcovariantDerivTensor0SWithin
               (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
               (n := (⊤ : WithTop ℕ∞)) 2 X
               (connectionEndomorphismInChart (𝕜 := Real) (I := I) cov
@@ -366,8 +366,8 @@ theorem nabla0SFun_two_eval_coordFrame_expanded
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 cov X A x₀) (fun q : Fin 2 => if q = 0 then Y else Z) =
       ∑ j : CoordinateIdx E, ∑ l : CoordinateIdx E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord j Y *
-          (coordinateFrameAt_toBasis (I := I) x₀).coord l Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord j Y *
+          (coordinateFrameAtToBasis (I := I) x₀).coord l Z *
           (coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => A x)
               (fun q : Fin 2 => if q = 0 then j else l) -
             ∑ k : CoordinateIdx E,

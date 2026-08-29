@@ -148,9 +148,9 @@ noncomputable def riemSeqDist
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     (edist x y).toReal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-def injDecay_of_bg
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+def injDecayOfBg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -274,41 +274,41 @@ def injDecay_of_bg
     mul_pos (mul_pos ha (pow_pos hb _)) (Real.exp_pos _)
   refine ⟨by simpa only [n, b] using hprofile, ?_⟩
   intro hcomplete'
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : IsManifold I 1 Y.M :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : IsManifold I 1 Y.M :=
     IsManifold.of_le (I := I) (M := Y.M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) :=
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) :=
     Y.t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace Y.M :=
+  let : TopologicalSpace.MetrizableSpace Y.M :=
     Manifold.metrizableSpace I Y.M
-  letI : T3Space Y.M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space Y.M := inferInstance
+  let : RiemannianBundle
       (fun y : Y.M => TangentSpace I y) :=
     Y.riemBundle (I := I)
-  letI : (y : Y.M) →
+  let : (y : Y.M) →
       InnerProductSpace Real (TangentSpace I y) :=
     Y.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : Y.M => TangentSpace I y) :=
     Y.riemBundle_cont (I := I)
-  letI : EMetricSpace Y.M :=
+  let : EMetricSpace Y.M :=
     Y.emetricSpace (I := I)
-  haveI : IsRiemannianManifold I Y.M :=
+  have : IsRiemannianManifold I Y.M :=
     ⟨fun _ _ => rfl⟩
-  letI : CompleteSpace Y.M :=
+  let : CompleteSpace Y.M :=
     MetricComplete.complete (I := I) Y hcomplete'
-  letI : ConnectedSpace Y.M := hconn k
+  let : ConnectedSpace Y.M := hconn k
   let hEnorm : ∀ (y : Y.M) (w : TangentSpace I y),
       ‖w‖ₑ =
         ENNReal.ofReal (Real.sqrt (Y.metric.inner y w w)) := by
     intro y w
-    simpa using
-      (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) Y.metric y w)
+    with_unfolding_all
+      exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) Y.metric y w
   have htauCtrl : tau ≤ rCtrl / 10 := by
     exact min_le_left _ _
   have htauPi :
@@ -765,12 +765,12 @@ def injDecay_of_bg
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    (injDecay_of_bg (I := I) X hcomplete hconn bg base).dist =
+    (injDecayOfBg (I := I) X hcomplete hconn bg base).dist =
       riemSeqDist (I := I) X := by
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem injDecay_realizes
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -779,34 +779,34 @@ theorem injDecay_realizes
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    (injDecay_of_bg (I := I) X hcomplete hconn bg base).RealizesEdist := by
+    (injDecayOfBg (I := I) X hcomplete hconn bg base).RealizesEdist := by
   refine ⟨?_, ?_⟩
   · intro k x y
     rw [injDecay_dist]
     exact ENNReal.toReal_nonneg
   · intro k x y
     rw [injDecay_dist]
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-    letI : T2Space (X.obj k).M := (X.obj k).t2
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+    let : T2Space (X.obj k).M := (X.obj k).t2
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    letI : RiemannianBundle
+    let : RiemannianBundle
         (fun z : (X.obj k).M => TangentSpace I z) :=
       (X.obj k).riemBundle (I := I)
-    letI : (z : (X.obj k).M) →
+    let : (z : (X.obj k).M) →
         InnerProductSpace Real (TangentSpace I z) :=
       (X.obj k).riemInner (I := I)
-    letI : IsContinuousRiemannianBundle E
+    let : IsContinuousRiemannianBundle E
         (fun z : (X.obj k).M => TangentSpace I z) :=
       (X.obj k).riemBundle_cont (I := I)
-    letI : EMetricSpace (X.obj k).M :=
+    let : EMetricSpace (X.obj k).M :=
       (X.obj k).emetricSpace (I := I)
-    haveI : IsRiemannianManifold I (X.obj k).M :=
+    have : IsRiemannianManifold I (X.obj k).M :=
       ⟨fun _ _ => rfl⟩
-    letI : ConnectedSpace (X.obj k).M := hconn k
+    let : ConnectedSpace (X.obj k).M := hconn k
     dsimp only [riemSeqDist]
     exact
       (ENNReal.ofReal_toReal (by
@@ -822,7 +822,7 @@ theorem exists_injDecay
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
     ∃ hd : InjRadiusDecayInput (I := I) X, hd.RealizesEdist :=
-  ⟨injDecay_of_bg (I := I) X hcomplete hconn bg base,
+  ⟨injDecayOfBg (I := I) X hcomplete hconn bg base,
     injDecay_realizes (I := I) X hcomplete hconn bg base⟩
 
 end HCGCompactness

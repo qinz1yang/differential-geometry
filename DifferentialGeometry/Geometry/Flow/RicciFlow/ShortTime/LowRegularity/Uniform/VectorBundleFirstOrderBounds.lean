@@ -8,7 +8,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoef
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroVectorBundleExpansion
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -189,7 +188,12 @@ theorem lieCorrectionZeroVectorBundle_h1_uniform_bound
           (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2 := by
     intro i hi
     have h := norm_iteratedCovGrad_lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_sq_le (I := I) (M := M) g₀ g₁ i
-    simpa only [Hf, lieCorrectionZeroKappa, hDim, Nat.cast_ofNat] using h
+    have hκ : lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀ =
+        metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀ := by
+      apply SmoothCcTensor.ext
+      rfl
+    rw [hκ]
+    simpa only [Hf, hDim, Nat.cast_ofNat] using h
   have hH : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 1 4 i Hf‖ ^ 2) ≤ (Hb R) ^ 2 := by
     calc
@@ -304,8 +308,14 @@ theorem lieCorrectionZeroVectorBundle_h1_uniform_bound
       norm_smul, Real.norm_eq_abs]
     rw [mul_pow]
     norm_num
-  rw [show lieCorrectionZeroVectorBundleExpansion (I := I) (M := M) g₀ g₁ =
-      (2 : ℝ) • Out by rfl, htwo]
+  have hExpansion :
+      lieCorrectionZeroVectorBundleExpansion (I := I) (M := M) g₀ g₁ =
+        (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 T2 Inn := by
+    rw [lieCorrectionZeroVectorBundleExpansion]
+  have hOut_def :
+      ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2 T2 Inn = Out := by
+    rfl
+  rw [hExpansion, hOut_def, htwo]
   change 4 * (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i Out‖ ^ 2) ≤
     (B0 R + B1 R * A) ^ 2

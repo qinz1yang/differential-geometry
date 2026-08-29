@@ -137,7 +137,7 @@ def christoffelSymbolTimeDerivativeInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (t : Time) (x : M) (i j k : Idx) : Real :=
-  td.dt_apply (fun s => christoffelSymbolInFrame (covFam s) frame hframe x i j k) t
+  td.dtApply (fun s => christoffelSymbolInFrame (covFam s) frame hframe x i j k) t
 
 @[simp] theorem christoffelSymbolTimeDerivativeInFrame_eval
     (td : TimeDerivativeData Real A Time)
@@ -146,7 +146,7 @@ def christoffelSymbolTimeDerivativeInFrame
     (hframe : IsLocalFrameOn I E 1 frame u)
     (t : Time) (x : M) (i j k : Idx) :
     christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
-      td.dt_apply (fun s => christoffelSymbolInFrame (covFam s) frame hframe x i j k) t := by
+      td.dtApply (fun s => christoffelSymbolInFrame (covFam s) frame hframe x i j k) t := by
   rfl
 
 def ChristoffelSymbolEvolutionEquationInFrame

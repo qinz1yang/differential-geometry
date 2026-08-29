@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
@@ -47,12 +46,8 @@ private lemma ofModel_domDomCongr_toModel_eq {r : ℕ} {x : M} (σ' : Equiv.Perm
     (d : Tensor0SSpace r I x) :
     (Tensor0SSpace.ofModel (ContinuousMultilinearMap.domDomCongr σ'
         (Tensor0SSpace.toModel d)) : Tensor0SSpace r I x) =
-      ContinuousMultilinearMap.domDomCongr σ'
-        (show ContinuousMultilinearMap ℝ (fun _ : Fin r => TangentSpace I x) ℝ from d) := by
-  have h : ContinuousMultilinearMap.domDomCongr σ' (Tensor0SSpace.toModel d) =
-      Tensor0SSpace.toModel (ContinuousMultilinearMap.domDomCongr σ'
-        (show ContinuousMultilinearMap ℝ (fun _ : Fin r => TangentSpace I x) ℝ from d)) := rfl
-  rw [h, Tensor0SSpace.ofModel_toModel]
+      Tensor0SSpace.domDomCongr d σ' := by
+  rfl
 
 private lemma domDomCongr_perm_fin0_apply {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
     (σ : Equiv.Perm (Fin 0)) (f : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => A) ℝ) :
@@ -108,8 +103,9 @@ private def reindexInputSection {r : ℕ} (σ' : Equiv.Perm (Fin r))
       rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
       change (ContinuousMultilinearMap.domDomCongr σ'
           (Tensor0SBundle.Tensor0SSpace.toModel (w x)))
-          (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-            ((Module.finBasis ℝ E) (τ j))) = _
+          (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
+              ((Module.finBasis ℝ E) (τ j)))) = _
       rw [ContinuousMultilinearMap.domDomCongr_apply]
       rfl)
 
@@ -209,7 +205,7 @@ lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : �
     congr 1
     exact hcomm.symm
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma covGrad_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) :
     covGrad (I := I) (M := M) g r s (reindexCoeffGen (I := I) (M := M) g r s R σ') =
@@ -231,7 +227,7 @@ lemma covGrad_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [reindexCoeffFibGen_apply] at hopD
   rw [hopD]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma iteratedCovGrad_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) (k : ℕ) :
     iteratedCovGrad (I := I) g r s k (reindexCoeffGen (I := I) (M := M) g r s R σ') =
@@ -247,24 +243,34 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma domDomCongr_compMkPiAlgebra_eq (g : SmoothRiemannianMetric I M) (r : ℕ) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K : Fin r → Fin n) (σ' : Equiv.Perm (Fin r)) :
-    ContinuousMultilinearMap.domDomCongr σ'
-        (show ContinuousMultilinearMap ℝ (fun _ : Fin r => TangentSpace I x) ℝ from
+    Tensor0SSpace.domDomCongr
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm
           ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-            (fun k => g.inner x (e (K k))))) =
-      (show ContinuousMultilinearMap ℝ (fun _ : Fin r => TangentSpace I x) ℝ from
+            (fun k => g.inner x (e (K k))))) σ' =
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm
         ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k => g.inner x (e (K (σ'.symm k)))))) := by
+          (fun k => g.inner x (e (K (σ'.symm k))))) := by
   classical
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [ContinuousMultilinearMap.domDomCongr_apply,
-    ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    ContinuousMultilinearMap.mkPiAlgebra_apply,
-    ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    ContinuousMultilinearMap.mkPiAlgebra_apply]
+  change Tensor0SSpace.eval
+      (Tensor0SSpace.domDomCongr
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+            (fun k => g.inner x (e (K k))))) σ') v =
+    Tensor0SSpace.eval
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+          (fun k => g.inner x (e (K (σ'.symm k)))))) v
+  rw [Tensor0SSpace.eval_domDomCongr, Tensor0SSpace.eval_eq, Tensor0SSpace.eval_eq,
+    tensor0SSpaceFiberContinuousLinearEquiv_symm_apply,
+    tensor0SSpaceFiberContinuousLinearEquiv_symm_apply]
+  change (∏ k : Fin r, g.inner x (e (K k)) ((v ∘ σ') k)) =
+    ∏ k : Fin r, g.inner x (e (K (σ'.symm k))) (v k)
   rw [← Equiv.prod_comp σ' (fun j => g.inner x (e (K (σ'.symm j))) (v j))]
   refine Finset.prod_congr rfl (fun k _ => ?_)
   rw [Equiv.symm_apply_apply]
+  rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -346,7 +352,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma iteratedCovGrad_smul_aux (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by

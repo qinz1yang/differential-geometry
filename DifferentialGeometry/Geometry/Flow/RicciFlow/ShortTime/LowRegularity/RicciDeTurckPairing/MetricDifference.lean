@@ -136,7 +136,7 @@ private theorem metricComparisonEndomorphismField_sub_eq_differenceEndomorphismF
     ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro v
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply,
+  rw [sub_apply, sub_apply,
     metricComparisonEndomorphismField_apply, metricComparisonEndomorphismField_apply,
     show metricComparisonDifferenceEndomorphismField (I := I) g gT x =
       metricComparisonDifferenceEndomorphism (I := I) g gT x from rfl,

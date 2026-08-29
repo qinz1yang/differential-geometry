@@ -124,7 +124,7 @@ private lemma integrable_principalIntegrand_smooth_test
       hψ_partial_supp.mul_left
     exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
   unfold SmoothEllipticBilinearForm.principalIntegrand
-  exact integrable_finset_sum _ (fun i _ => integrable_finset_sum _
+  exact integrable_finsetSum _ (fun i _ => integrable_finsetSum _
     (fun j _ => h_summand_int i j))
 
 private lemma integrable_zeroth_smooth_test
@@ -180,14 +180,14 @@ private lemma bilin_decomp_smooth
   rw [integral_add h_princ_int h_zero_int]
   congr 1
   unfold SmoothEllipticBilinearForm.principalIntegrand
-  rw [integral_finset_sum (s := Finset.univ) (f := fun (i : Fin d) (x : E) =>
+  rw [integral_finsetSum (s := Finset.univ) (f := fun (i : Fin d) (x : E) =>
       ∑ j : Fin d, B.a x i j *
         (fderiv ℝ v x) (EuclideanSpace.single i 1) *
         (fderiv ℝ ψ x) (EuclideanSpace.single j 1))
-    (fun i _ => integrable_finset_sum _ (fun j _ => h_summand_int i j))]
+    (fun i _ => integrable_finsetSum _ (fun j _ => h_summand_int i j))]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [integral_finset_sum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
+  rw [integral_finsetSum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
       B.a x i j *
         (fderiv ℝ v x) (EuclideanSpace.single i 1) *
         (fderiv ℝ ψ x) (EuclideanSpace.single j 1))
@@ -254,7 +254,7 @@ private lemma principal_eq_neg_classical
         ((fderiv ℝ ψ x) (EuclideanSpace.single i 1))) (volume.restrict Ω) := fun j =>
       integrable_principalIntegrand_term_smooth_test (d := d)
         B hv hψ hψ_supp j i
-    rw [← integral_finset_sum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
+    rw [← integral_finsetSum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
         B.a x j i *
           (fderiv ℝ v x) (EuclideanSpace.single j 1) *
           (fderiv ℝ ψ x) (EuclideanSpace.single i 1))
@@ -392,11 +392,11 @@ theorem isSmoothWeakSolution_classicalApply
                 (fderiv ℝ v y) (EuclideanSpace.single j 1)) x)
               (EuclideanSpace.single i 1) * ψ x))
             (volume.restrict Ω) := by
-        exact integrable_finset_sum _ (fun i _ => h_class_int i)
+        exact integrable_finsetSum _ (fun i _ => h_class_int i)
       exact h_sum_int.neg
     rw [integral_add h_neg_sum_int h_zero_int]
     rw [integral_neg]
-    rw [integral_finset_sum (s := Finset.univ)
+    rw [integral_finsetSum (s := Finset.univ)
       (f := fun (i : Fin d) (x : E) => (fderiv ℝ (fun y : E =>
           ∑ j : Fin d, B.a y i j *
             (fderiv ℝ v y) (EuclideanSpace.single j 1)) x)

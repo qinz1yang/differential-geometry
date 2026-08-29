@@ -107,7 +107,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem lieArm1Piece_connectionDifference_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -196,7 +195,7 @@ private theorem lieArm1Piece_connectionDifference_metricPerturbationPath_allOrde
       linarith
     have hW_nn : (0 : ℝ) ≤ W := le_trans zero_le_one hW1
     by_cases hM : Nonempty M
-    · haveI := hM
+    · have := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
         lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -342,7 +341,7 @@ private theorem lieArm1Piece_connectionDifference_metricPerturbationPath_allOrde
       rw [Real.sq_sqrt hΛcom_nn, Real.sq_sqrt (mul_nonneg (by positivity) hΛcd_nn)]
       dsimp only
       ring
-    · haveI hIsE := not_nonempty_iff.mp hM
+    · have hIsE := not_nonempty_iff.mp hM
       have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
         (iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ'
@@ -361,7 +360,6 @@ private theorem lieArm1Piece_connectionDifference_metricPerturbationPath_allOrde
       dsimp only
       nlinarith
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -460,7 +458,7 @@ private theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPa
       linarith
     have hW_nn : (0 : ℝ) ≤ W := le_trans zero_le_one hW1
     by_cases hM : Nonempty M
-    · haveI := hM
+    · have := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
         lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -642,7 +640,7 @@ private theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPa
       rw [Real.sq_sqrt hΛcom_nn, Real.sq_sqrt (mul_nonneg (by positivity) hΨ0_nn)]
       dsimp only
       ring
-    · haveI hIsE := not_nonempty_iff.mp hM
+    · have hIsE := not_nonempty_iff.mp hM
       have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
         (iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ'
@@ -669,7 +667,6 @@ private theorem lieArm1Piece_connectionDifferenceBackground_metricPerturbationPa
       dsimp only
       nlinarith
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem lieArm1Piece_psiB_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -758,7 +755,7 @@ private theorem lieArm1Piece_psiB_metricPerturbationPath_allOrder_tameEnvelope
       linarith
     have hW_nn : (0 : ℝ) ≤ W := le_trans zero_le_one hW1
     by_cases hM : Nonempty M
-    · haveI := hM
+    · have := hM
       obtain ⟨htie, hδP, hδP_le⟩ :=
         lieArm1_metricPerturbationPath_pack (I := I) (M := M) g₀ hδ₀ T T' hδ_le hδ hδ'_le hδ' hs
       have hδP0 : (0 : ℝ) ≤ (1 - s) * δ' + s * δ :=
@@ -906,7 +903,7 @@ private theorem lieArm1Piece_psiB_metricPerturbationPath_allOrder_tameEnvelope
       rw [Real.sq_sqrt hΛcom_nn, Real.sq_sqrt (mul_nonneg (by positivity) hΛpb_nn)]
       dsimp only
       ring
-    · haveI hIsE := not_nonempty_iff.mp hM
+    · have hIsE := not_nonempty_iff.mp hM
       have h0 := lieArm1_norm_isEmpty (I := I) (M := M) hIsE g₀ 3 (2 + i)
         (iteratedCovGrad (I := I) g₀ 3 2 i
           (deTurckLieTraceCoeffPiece (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) σ'
@@ -932,7 +929,6 @@ private theorem norm_sq_le_of_norm_le_mul_sqrt {V : Type*} [SeminormedAddCommGro
   have h2 := pow_le_pow_left₀ (norm_nonneg v) h 2
   rwa [mul_pow, hSw_sq] at h2
 
-set_option backward.isDefEq.respectTransparency false in
 theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1168,7 +1164,6 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_allOrder_tameEnvelope
   have h14 := hcd (Equiv.refl (Fin 4)) lieArm1RhoSlot0
   linarith [htri1, htri2, htri3, hblock1, hblock2]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem linearizedRicciArm1CorrField_allOrder_tameEnvelope_interface
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)

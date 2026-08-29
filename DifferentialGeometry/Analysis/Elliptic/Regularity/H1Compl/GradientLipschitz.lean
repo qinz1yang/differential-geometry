@@ -461,7 +461,7 @@ theorem smoothChartExtPartial_add
         fderiv ℝ (smoothChartExt (I := I) (M := M) g α w) y := by
     rw [smoothChartExt_add (I := I) (M := M) g α v w]
     exact fderiv_fun_add h1 h2
-  rw [h_fderiv_eq, ContinuousLinearMap.add_apply]
+  rw [h_fderiv_eq, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothChartExtPartial_smul
@@ -478,7 +478,7 @@ theorem smoothChartExtPartial_smul
       c • fderiv ℝ (smoothChartExt (I := I) (M := M) g α v) y := by
     rw [smoothChartExt_smul (I := I) (M := M) g α c v]
     exact fderiv_const_smul h c
-  rw [h_fderiv_eq, ContinuousLinearMap.smul_apply]
+  rw [h_fderiv_eq, smul_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothChartExtPartial_sub
@@ -500,7 +500,7 @@ theorem smoothChartExtPartial_sub
         fderiv ℝ (smoothChartExt (I := I) (M := M) g α w) y := by
     rw [smoothChartExt_sub (I := I) (M := M) g α v w]
     exact fderiv_fun_sub h1 h2
-  rw [h_fderiv_eq, ContinuousLinearMap.sub_apply]
+  rw [h_fderiv_eq, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushed_eventuallyEq_smoothChartExt

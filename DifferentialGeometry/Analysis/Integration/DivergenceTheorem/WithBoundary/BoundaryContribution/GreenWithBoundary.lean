@@ -25,7 +25,7 @@ namespace WithBoundary
 
 open DifferentialGeometry.Geometry.Operator.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -41,17 +41,16 @@ noncomputable def boundaryFaceSum
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     chartBoundaryFaceIntegral (I := I) g α X
       ((chartAtlasPOU I M) α : M → ℝ)
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma boundaryFaceSum_def
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     boundaryFaceSum (I := I) g X =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         chartBoundaryFaceIntegral (I := I) g α X
           ((chartAtlasPOU I M) α : M → ℝ) := rfl
 
@@ -59,21 +58,18 @@ section StokesGlobal
 
 variable [hI : HasSmoothBoundary E H I]
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∫ x, divergence_g_with_boundary (I := I) g X x
+    ∫ x, divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g X := by
   rw [boundaryFaceSum_def]
   exact stokes_compact_via_pou (I := I) g X
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma inner_grad_grad_continuous_of_interior_support
-    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
@@ -82,7 +78,7 @@ private lemma inner_grad_grad_continuous_of_interior_support
       (fun x : M => g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x)) := by
   classical
   set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    grad_g_with_boundary_section (I := I) g hh hh_int with hY_def
+    gradGWithBoundarySection (I := I) g hh hh_int with hY_def
   have hY_int : tsupport (Y : ∀ x, TangentSpace I x) ⊆ I.interior M :=
     tsupport_grad_g_with_boundary_section_subset_interior (I := I) g hh hh_int
   have h_eq : ∀ x : M,
@@ -137,45 +133,41 @@ private lemma inner_grad_grad_continuous_of_interior_support
   exact (h_eq x).symm
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_continuous
     [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
     Continuous (fun x : M =>
-      f x * Δ_g_with_boundary (I := I) g hh hh_int x) :=
+      f x * ΔGWithBoundary (I := I) g hh hh_int x) :=
   hf.continuous.mul (Δ_g_with_boundary_continuous (I := I) g hh hh_int)
 
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_hasCompactSupport
-    [T2Space M] [CompactSpace M]
+    [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (_hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
     HasCompactSupport (fun x : M =>
-      f x * Δ_g_with_boundary (I := I) g hh hh_int x) :=
+      f x * ΔGWithBoundary (I := I) g hh hh_int x) :=
   HasCompactSupport.of_compactSpace _
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma f_mul_Δ_integrable
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
     Integrable
-      (fun x : M => f x * Δ_g_with_boundary (I := I) g hh hh_int x)
+      (fun x : M => f x * ΔGWithBoundary (I := I) g hh hh_int x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact (f_mul_Δ_continuous (I := I) g hf hh hh_int).integrable_of_hasCompactSupport
     (f_mul_Δ_hasCompactSupport (I := I) g hf hh hh_int)
 
 omit hI in
-omit [InnerProductSpace ℝ E] in
 private lemma inner_grad_grad_integrable
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -184,13 +176,12 @@ private lemma inner_grad_grad_integrable
     Integrable
       (fun x : M => g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact (inner_grad_grad_continuous_of_interior_support
     (I := I) g hf hh hh_int).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
-omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -198,26 +189,26 @@ theorem green_first_with_boundary
     (hh_int : tsupport h ⊆ I.interior M) :
     ∫ x, g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
-      ∫ x, f x * Δ_g_with_boundary (I := I) g hh hh_int x
+      ∫ x, f x * ΔGWithBoundary (I := I) g hh hh_int x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g
         (smoothSmul (I := I) f hf
-          (grad_g_with_boundary_section (I := I) g hh hh_int)) := by
+          (gradGWithBoundarySection (I := I) g hh hh_int)) := by
   classical
   set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    grad_g_with_boundary_section (I := I) g hh hh_int with hX_def
+    gradGWithBoundarySection (I := I) g hh hh_int with hX_def
   set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     smoothSmul (I := I) f hf X with hY_def
   have hStokes :=
     integral_divergence_with_boundary_eq_boundaryFaceSum (I := I) g Y
   have h_leibniz : ∀ x : M,
-      divergence_g_with_boundary (I := I) g Y x =
-        f x * divergence_g_with_boundary (I := I) g X x +
+      divergenceGWithBoundary (I := I) g Y x =
+        f x * divergenceGWithBoundary (I := I) g X x +
           tangentSectionAction (I := I) X f x :=
     divergence_g_with_boundary_smoothSmul (I := I) g f hf X
   have h1 : ∀ x : M,
-      f x * divergence_g_with_boundary (I := I) g X x =
-        f x * Δ_g_with_boundary (I := I) g hh hh_int x := by
+      f x * divergenceGWithBoundary (I := I) g X x =
+        f x * ΔGWithBoundary (I := I) g hh hh_int x := by
     intro x; rfl
   have h2 : ∀ x : M,
       tangentSectionAction (I := I) X f x =
@@ -228,21 +219,21 @@ theorem green_first_with_boundary
       g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x)
     exact g.symm x _ _
   have h_combined : ∀ x : M,
-      divergence_g_with_boundary (I := I) g Y x =
-        f x * Δ_g_with_boundary (I := I) g hh hh_int x +
+      divergenceGWithBoundary (I := I) g Y x =
+        f x * ΔGWithBoundary (I := I) g hh hh_int x +
           g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x) := by
     intro x
     rw [h_leibniz x, h1 x, h2 x]
   have h_int_eq :
-      ∫ x, divergence_g_with_boundary (I := I) g Y x
+      ∫ x, divergenceGWithBoundary (I := I) g Y x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, (f x * Δ_g_with_boundary (I := I) g hh hh_int x +
+        ∫ x, (f x * ΔGWithBoundary (I := I) g hh hh_int x +
                 g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     exact h_combined x
   have h_int_fΔh : Integrable
-      (fun x : M => f x * Δ_g_with_boundary (I := I) g hh hh_int x)
+      (fun x : M => f x * ΔGWithBoundary (I := I) g hh hh_int x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     f_mul_Δ_integrable (I := I) g hf hh hh_int
   have h_int_inner : Integrable
@@ -255,7 +246,6 @@ theorem green_first_with_boundary
   linarith
 
 
-omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -263,10 +253,10 @@ theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
     (hh_int : tsupport h ⊆ I.interior M) :
     boundaryFaceSum (I := I) g
         (smoothSmul (I := I) f hf
-          (grad_g_with_boundary_section (I := I) g hh hh_int)) = 0 := by
+          (gradGWithBoundarySection (I := I) g hh hh_int)) = 0 := by
   classical
   set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    grad_g_with_boundary_section (I := I) g hh hh_int with hX_def
+    gradGWithBoundarySection (I := I) g hh hh_int with hX_def
   set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     smoothSmul (I := I) f hf X with hY_def
   have hY_cs : HasCompactSupport Y := HasCompactSupport.of_compactSpace _
@@ -275,7 +265,7 @@ theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
   have hY_int : tsupport (Y : ∀ x, TangentSpace I x) ⊆ I.interior M :=
     tsupport_smoothSmul_subset_interior (I := I) hf X hX_int
   have h_div_Y_zero :
-      ∫ x, divergence_g_with_boundary (I := I) g Y x
+      ∫ x, divergenceGWithBoundary (I := I) g Y x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
     integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
       (I := I) g Y hY_cs hY_int
@@ -284,7 +274,6 @@ theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
   rw [h_div_Y_zero] at h_stokes
   exact h_stokes.symm
 
-omit [InnerProductSpace ℝ E] in
 private theorem green_first_with_boundary_swap
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -292,29 +281,28 @@ private theorem green_first_with_boundary_swap
     (hf_int : tsupport f ⊆ I.interior M) :
     ∫ x, g.inner x (gradFun (I := I) g h x) (gradFun (I := I) g f x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
-      ∫ x, h x * Δ_g_with_boundary (I := I) g hf hf_int x
+      ∫ x, h x * ΔGWithBoundary (I := I) g hf hf_int x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g
         (smoothSmul (I := I) h hh
-          (grad_g_with_boundary_section (I := I) g hf hf_int)) :=
+          (gradGWithBoundarySection (I := I) g hf hf_int)) :=
   green_first_with_boundary (I := I) g hh hf hf_int
 
-omit [InnerProductSpace ℝ E] in
 theorem green_second_with_boundary
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M)
     (hh_int : tsupport h ⊆ I.interior M) :
-    ∫ x, (f x * Δ_g_with_boundary (I := I) g hh hh_int x -
-            h x * Δ_g_with_boundary (I := I) g hf hf_int x)
+    ∫ x, (f x * ΔGWithBoundary (I := I) g hh hh_int x -
+            h x * ΔGWithBoundary (I := I) g hf hf_int x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g
         (smoothSmul (I := I) f hf
-          (grad_g_with_boundary_section (I := I) g hh hh_int)) -
+          (gradGWithBoundarySection (I := I) g hh hh_int)) -
       boundaryFaceSum (I := I) g
         (smoothSmul (I := I) h hh
-          (grad_g_with_boundary_section (I := I) g hf hf_int)) := by
+          (gradGWithBoundarySection (I := I) g hf hf_int)) := by
   classical
   have h_main := green_first_with_boundary (I := I) g hf hh hh_int
   have h_swap := green_first_with_boundary_swap (I := I) g hf hh hf_int
@@ -330,11 +318,11 @@ theorem green_second_with_boundary
     integral_congr_ae (Filter.Eventually.of_forall h_inner_symm)
   rw [h_inner_int_eq] at h_swap
   have h_int_fΔh : Integrable
-      (fun x : M => f x * Δ_g_with_boundary (I := I) g hh hh_int x)
+      (fun x : M => f x * ΔGWithBoundary (I := I) g hh hh_int x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     f_mul_Δ_integrable (I := I) g hf hh hh_int
   have h_int_hΔf : Integrable
-      (fun x : M => h x * Δ_g_with_boundary (I := I) g hf hf_int x)
+      (fun x : M => h x * ΔGWithBoundary (I := I) g hf hf_int x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     f_mul_Δ_integrable (I := I) g hh hf hf_int
   rw [integral_sub h_int_fΔh h_int_hΔf]

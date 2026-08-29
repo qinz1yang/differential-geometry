@@ -77,7 +77,7 @@ theorem manifold_contMDiffAt_of_chart_smooth_flow
   have h_chart : ContMDiffAt I I ∞ (chartAt H α) x :=
     contMDiffAt_of_mem_maximalAtlas (chart_mem_maximalAtlas α) hx_src
   have h_I : ContMDiffAt I 𝓘(ℝ, E) ∞ I ((chartAt H α) x) :=
-    (contMDiff_model (I := I)).contMDiffAt
+    I.contMDiff.contMDiffAt
   have h_I_chart : ContMDiffAt I 𝓘(ℝ, E) ∞
       (fun y : M => I ((chartAt H α) y)) x :=
     h_I.comp x h_chart
@@ -104,7 +104,7 @@ theorem manifold_contMDiffAt_of_chart_smooth_flow
       (I ((chartAt H α) x)) := h_flow_y.contMDiffAt
   have h_I_symm : ContMDiff 𝓘(ℝ, E) I ∞ (I.symm : E → H) := by
     rw [← contMDiffOn_univ, ← I.range_eq_univ]
-    exact contMDiffOn_model_symm
+    exact I.contMDiffOn_symm
   have h_chart_symm : ContMDiffAt I I ∞ (chartAt H α).symm
       (I.symm (flow (I ((chartAt H α) x)) t)) :=
     (contMDiffOn_chart_symm (I := I) (x := α)).contMDiffAt

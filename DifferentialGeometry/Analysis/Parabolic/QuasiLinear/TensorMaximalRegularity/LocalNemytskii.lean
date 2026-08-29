@@ -242,7 +242,9 @@ theorem memLp_tame {S : Set X} (hzero : (0 : X) ∈ S) {R : ℝ} (hR : 0 ≤ R)
     have hscaled : MemLp (K • fun t => ‖f t‖) 2 (timeMeasure T) := hnorm.const_smul K
     have hconst : MemLp (fun _ : ℝ => Q) 2 (timeMeasure T) := memLp_const Q
     have hadd := hscaled.add hconst
-    simpa only [major, Pi.add_apply, Pi.smul_apply, smul_eq_mul] using hadd
+    apply (memLp_congr_ae ?_).1 hadd
+    filter_upwards with t
+    rfl
   refine hmajor.of_le hmeas ?_
   filter_upwards [hf] with t ht
   let u : S := ⟨f t, ht⟩

@@ -134,18 +134,17 @@ theorem param_dens_ge
             ∑ i, v i •
               mfderiv (modelWithCornersSelf Real E) I c.hom z
                 ((chartModelBasis E) i) := by
-        change
-          (mfderiv (modelWithCornersSelf Real E) I c.hom z)
-              (∑ i, v i • (chartModelBasis E) i) =
-            ∑ i, v i •
-              (mfderiv (modelWithCornersSelf Real E) I c.hom z)
-                ((chartModelBasis E) i)
-        rw [map_sum]
-        apply Finset.sum_congr rfl
-        intro i _
-        exact ContinuousLinearMap.map_smul
-          (mfderiv (modelWithCornersSelf Real E) I c.hom z)
-          (v i) ((chartModelBasis E) i)
+        have hD' :
+            (mfderiv (modelWithCornersSelf Real E) I c.hom z)
+                ((tangentSpaceModelContinuousLinearEquiv
+                  (I := modelWithCornersSelf Real E) z).symm w) =
+              ∑ i, v i •
+                (mfderiv (modelWithCornersSelf Real E) I c.hom z)
+                  ((tangentSpaceModelContinuousLinearEquiv
+                    (I := modelWithCornersSelf Real E) z).symm
+                    ((chartModelBasis E) i)) := by
+          simp only [w, map_sum, map_smul]
+        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using hD'
       rw [NormalBallChart.metric_apply]
       exact congrArg₂ (fun a b => g.inner (c.hom z) a b) hD hD
     have hquad :=
@@ -172,8 +171,8 @@ theorem param_dens_ge
       (A := paramGramMatrix (I := I) g c.hom z) (a := a)
       hgram.posSemidef ha hray)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrBall_vol_ge
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -196,8 +195,15 @@ theorem intrBall_vol_ge
         (modelHaar (E := E)) (Metric.ball (0 : E) r) ≤
       riemannianVolumeMeasure (I := I) (M := M) g
         (smallNormalBall (I := I) p r) := by
+  have hMetricNorm : IsMetricNorm (I := I) (M := M) g := by
+    unfold IsMetricNorm
+    exact hEnorm
   let nc : NormalBallChart (I := I) p :=
     c.toNormalBallChart (I := I) g hEnorm p hr
+  have hnc_radius : nc.radius = r := by
+    dsimp only [nc]
+    unfold IntrinsicBallChart.toNormalBallChart
+    rfl
   have heq :
       nc.MetricEquivOn g (Metric.ball (0 : E) nc.radius) := by
     intro z hz v
@@ -233,18 +239,19 @@ theorem intrBall_vol_ge
         riemannianVolumeMeasure (I := I) (M := M) g
           (nc.hom '' Metric.ball (0 : E) r) := by
     apply param_vol_ge (I := I) g nc.hom measurableSet_ball
-    · simpa only [nc, IntrinsicBallChart.toNormalBallChart] using
-        nc.ball_subset
+    · rw [← hnc_radius]
+      exact nc.ball_subset
     · intro z hz
       apply param_dens_ge (I := I) g nc heq
-      simpa only [nc, IntrinsicBallChart.toNormalBallChart] using hz
+      rw [hnc_radius]
+      exact hz
   have himage :
       nc.hom '' Metric.ball (0 : E) r ⊆
         smallNormalBall (I := I) p r := by
     rintro y ⟨z, hz, rfl⟩
     change c.hom z ∈ smallNormalBall (I := I) p r
-    rw [c.hom_eq hz, intrFrame_apply, expMapIntrinsic_def]
-    apply smallNormalBall_radial_confined (I := I) g hEnorm p
+    rw [c.hom_eq hz, intrFrame_apply]
+    apply smallNormalBall_radial_confined (I := I) g hMetricNorm p
     · simpa only [normalFrame_sqrt, Metric.mem_ball, dist_zero_right] using hz
     · exact ⟨zero_le_one, le_rfl⟩
   exact hparam.trans (measure_mono himage)

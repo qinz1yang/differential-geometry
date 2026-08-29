@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.Residual
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CrossTermIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -123,10 +124,10 @@ private lemma base_weak_partial_locally_memLp
     (i : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).weak_partial i) 2
+    MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).weakPartial i) 2
       ((volume : Measure EuclN).restrict K) :=
-  (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+  (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
     hu_h).weak_partial_locally_memLp i K hK_compact hK_in
 
 omit [SigmaCompactSpace M] in
@@ -137,18 +138,18 @@ private lemma base_u_chart_locally_memLp
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_meas : MeasurableSet K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).u_chart) 2
+    MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).uChart) 2
       ((volume : Measure EuclN).restrict K) := by
   set D :=
-    chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h
+    chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h
     with hD_def
   have h_weighted := D.u_chart_memLp_weighted
   obtain ⟨c, hc_pos, h_le⟩ :=
     volume_restrict_compact_le_chartPulledWeightedMeasure (I := I) (M := M)
       (g := g) (α := α) hK_compact hK_meas hK_in
   have hc_ne_top : (ENNReal.ofReal c) ≠ (⊤ : ℝ≥0∞) := ENNReal.ofReal_ne_top
-  have h_smul : MemLp D.u_chart 2
+  have h_smul : MemLp D.uChart 2
       (ENNReal.ofReal c •
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) :=
@@ -163,18 +164,18 @@ private lemma base_f_chart_locally_memLp
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_meas : MeasurableSet K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).f_chart) 2
+    MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).fChart) 2
       ((volume : Measure EuclN).restrict K) := by
   set D :=
-    chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h
+    chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h
     with hD_def
   have h_weighted := D.f_chart_memLp_weighted
   obtain ⟨c, hc_pos, h_le⟩ :=
     volume_restrict_compact_le_chartPulledWeightedMeasure (I := I) (M := M)
       (g := g) (α := α) hK_compact hK_meas hK_in
   have hc_ne_top : (ENNReal.ofReal c) ≠ (⊤ : ℝ≥0∞) := ENNReal.ofReal_ne_top
-  have h_smul : MemLp D.f_chart 2
+  have h_smul : MemLp D.fChart 2
       (ENNReal.ofReal c •
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) :=
@@ -192,18 +193,18 @@ private lemma weightedInvGram_ibp_per_pair
     (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       weightedInvGramOnEuclid (I := I) g α i j y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+            (I := I) (M := M) g 1 hu_h)).weakPartial i y *
         (fderiv ℝ
           (fun z => (fderiv ℝ ψ z) (EuclideanSpace.single l 1)) y)
           (EuclideanSpace.single j 1)
       ∂(volume : Measure EuclN))
     = -((∫ y in chartTargetEuclid (I := I) (M := M) α,
           weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-          (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+          (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+              (I := I) (M := M) g 1 hu_h)).weakPartial i y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
           ∂(volume : Measure EuclN))
       + (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -215,15 +216,15 @@ private lemma weightedInvGram_ibp_per_pair
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
-  set D_base := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+  set D_base := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
     g α (laplacianDomainPow_succ_subset_laplacianDomain
       (I := I) (M := M) g 1 hu_h) with hD_def
   set φ : EuclN → ℝ := weightedInvGramOnEuclid (I := I) g α i j with hφ_def
   have hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ Ω :=
     weightedInvGramOnEuclid_contDiffOn (I := I) g α i j
-  set v : EuclN → ℝ := D_base.weak_partial i with hv_def
+  set v : EuclN → ℝ := D_base.weakPartial i with hv_def
   have hv_eq : v = ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) : EuclN → ℝ) := rfl
   set w : Fin (Module.finrank ℝ E) → EuclN → ℝ :=
@@ -374,9 +375,9 @@ private lemma weightedInvGram_ibp_double_sum
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+                (I := I) (M := M) g 1 hu_h)).weakPartial i y *
             (fderiv ℝ
               (fun z => (fderiv ℝ ψ z) (EuclideanSpace.single l 1)) y)
               (EuclideanSpace.single j 1))
@@ -385,10 +386,10 @@ private lemma weightedInvGram_ibp_double_sum
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-                (chartBilinearH1ComplData_of_laplacianDomain
+                (chartBilinearH1ComplDataOfLaplacianDomain
                   (I := I) (M := M) g α
                   (laplacianDomainPow_succ_subset_laplacianDomain
-                    (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+                    (I := I) (M := M) g 1 hu_h)).weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN))
       + (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -403,7 +404,7 @@ private lemma weightedInvGram_ibp_double_sum
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
-  set D_base := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+  set D_base := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
     g α (laplacianDomainPow_succ_subset_laplacianDomain
       (I := I) (M := M) g 1 hu_h) with hD_def
   set A : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
@@ -411,7 +412,7 @@ private lemma weightedInvGram_ibp_double_sum
   set dA : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j => weightedInvGramDerivOnEuclid (I := I) g α i j l with hdA_def
   set v : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i =>
-    D_base.weak_partial i with hv_def
+    D_base.weakPartial i with hv_def
   set w : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i =>
     chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l with hw_def
   set ψl : EuclN → ℝ := fun y =>
@@ -425,7 +426,7 @@ private lemma weightedInvGram_ibp_double_sum
   have hvolK_finite' : (volume.restrict K : Measure EuclN) Set.univ < (⊤ : ℝ≥0∞) := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hvolK_finite
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := ⟨hvolK_finite'⟩
   have hψ_cont : Continuous ψ := hψ_smooth.continuous
   have hψl_smooth : ContDiff ℝ (⊤ : ℕ∞) ψl :=
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth l
@@ -573,11 +574,11 @@ private lemma weightedInvGram_ibp_double_sum
             ∑ j : Fin (Module.finrank ℝ E),
               ∫ y in Ω, F i j y ∂(volume : Measure EuclN) := by
     intro F hF_int
-    rw [integral_finset_sum _ (fun i _ =>
-      (integrable_finset_sum _ (fun j _ => hF_int i j)))]
+    rw [integral_finsetSum _ (fun i _ =>
+      (integrable_finsetSum _ (fun j _ => hF_int i j)))]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finset_sum _ (fun j _ => hF_int i j)]
+    rw [integral_finsetSum _ (fun j _ => hF_int i j)]
   have hLHS_sum_swap := sum_swap (F := fun i j y => A i j y * v i y *
     (fderiv ℝ ψl y) (EuclideanSpace.single j 1)) h_int_LHS_pair
   have hRHS1_sum_swap := sum_swap (F := fun i j y => dA i j y * v i y *
@@ -768,28 +769,28 @@ private lemma density_u_chart_ibp
     (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).u_chart y *
+            (I := I) (M := M) g 1 hu_h)).uChart y *
         (fderiv ℝ ψ y) (EuclideanSpace.single l 1)
       ∂(volume : Measure EuclN))
     = -((∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α l y *
-          (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+          (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).u_chart y * ψ y
+              (I := I) (M := M) g 1 hu_h)).uChart y * ψ y
           ∂(volume : Measure EuclN))
       + (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
-          (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+          (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).weak_partial l y * ψ y
+              (I := I) (M := M) g 1 hu_h)).weakPartial l y * ψ y
           ∂(volume : Measure EuclN))) := by
-  set D_base := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+  set D_base := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
     g α (laplacianDomainPow_succ_subset_laplacianDomain
       (I := I) (M := M) g 1 hu_h) with hD_def
-  refine density_coef_ibp (I := I) (M := M) g α l (v := D_base.u_chart)
-    (w := fun l' => D_base.weak_partial l')
+  refine density_coef_ibp (I := I) (M := M) g α l (v := D_base.uChart)
+    (w := fun l' => D_base.weakPartial l')
     (fun l' => D_base.weak_partial_isWeakPartial l') ?_ ?_
     hψ_smooth hψ_cs hψ_supp
   · intro K' hK'_compact hK'_in
@@ -811,29 +812,29 @@ private lemma density_f_chart_ibp
     (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart y *
+            (I := I) (M := M) g 1 hu_h)).fChart y *
         (fderiv ℝ ψ y) (EuclideanSpace.single l 1)
       ∂(volume : Measure EuclN))
     = -((∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α l y *
-          (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+          (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
-              (I := I) (M := M) g 1 hu_h)).f_chart y * ψ y
+              (I := I) (M := M) g 1 hu_h)).fChart y * ψ y
           ∂(volume : Measure EuclN))
       + (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
             chosenFChartDeriv (I := I) (M := M) g α hu_h l y * ψ y
           ∂(volume : Measure EuclN))) := by
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
-  set D_base := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+  set D_base := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
     g α (laplacianDomainPow_succ_subset_laplacianDomain
       (I := I) (M := M) g 1 hu_h) with hD_def
   have h_base_f_chart_memW1p :=
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
       (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
-  refine density_coef_ibp (I := I) (M := M) g α l (v := D_base.f_chart)
+  refine density_coef_ibp (I := I) (M := M) g α l (v := D_base.fChart)
     (w := fun l' => chosenFChartDeriv (I := I) (M := M) g α hu_h l')
     (fun l' => chosenFChartDeriv_isWeakPartial (I := I) (M := M) g α hu_h l'
       h_base_f_chart_memW1p) ?_ ?_ hψ_smooth hψ_cs hψ_supp
@@ -845,10 +846,9 @@ private lemma density_f_chart_ibp
     have h_global :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
         h_base_f_chart_memW1p l'
-    have h_unfold : (fun l' => chosenFChartDeriv (I := I) (M := M) g α hu_h l') l' =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l' D_base.f_chart Ω := rfl
-    rw [h_unfold]
+    change MemLp
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (d := Module.finrank ℝ E) 2 l' D_base.fChart Ω) 2 (volume.restrict K')
     have h_K'_meas : MeasurableSet K' := hK'_compact.isClosed.measurableSet
     have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K' =
         (volume : Measure EuclN).restrict K' := by
@@ -876,9 +876,9 @@ theorem differentiated_variational_identity_holds
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).weak_partial direction y * ψ y
+            (I := I) (M := M) g 1 hu_h)).weakPartial direction y * ψ y
       ∂(volume : Measure EuclN)) =
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
@@ -888,27 +888,27 @@ theorem differentiated_variational_identity_holds
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j direction y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+                (I := I) (M := M) g 1 hu_h)).weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α direction y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).u_chart y * ψ y
+            (I := I) (M := M) g 1 hu_h)).uChart y * ψ y
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α direction y *
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart y * ψ y
+            (I := I) (M := M) g 1 hu_h)).fChart y * ψ y
       ∂(volume : Measure EuclN)) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   set l : Fin (Module.finrank ℝ E) := direction with hl_def
-  set D_base := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+  set D_base := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
     g α (laplacianDomainPow_succ_subset_laplacianDomain
       (I := I) (M := M) g 1 hu_h) with hD_def
   set ψl : EuclN → ℝ := fun y =>
@@ -930,14 +930,14 @@ theorem differentiated_variational_identity_holds
     (∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
-          D_base.weak_partial i y *
+          D_base.weakPartial i y *
           (fderiv ℝ ψl y) (EuclideanSpace.single j 1))
     ∂(volume : Measure EuclN) with hT1_def
   set T2 : ℝ := ∫ y in Ω,
-    densityOnEuclid (I := I) g α y * D_base.u_chart y * ψl y
+    densityOnEuclid (I := I) g α y * D_base.uChart y * ψl y
     ∂(volume : Measure EuclN) with hT2_def
   set T3 : ℝ := ∫ y in Ω,
-    densityOnEuclid (I := I) g α y * D_base.f_chart y * ψl y
+    densityOnEuclid (I := I) g α y * D_base.fChart y * ψl y
     ∂(volume : Measure EuclN) with hT3_def
   have h_base_TS : T1 + T2 = T3 := h_base_id
   set A1_principal : ℝ := ∫ y in Ω,
@@ -952,21 +952,21 @@ theorem differentiated_variational_identity_holds
     (∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramDerivOnEuclid (I := I) g α i j l y *
-          D_base.weak_partial i y *
+          D_base.weakPartial i y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
     ∂(volume : Measure EuclN) with hA1_cross_def
   set A2_principal : ℝ := ∫ y in Ω,
-    densityOnEuclid (I := I) g α y * D_base.weak_partial l y * ψ y
+    densityOnEuclid (I := I) g α y * D_base.weakPartial l y * ψ y
     ∂(volume : Measure EuclN) with hA2_principal_def
   set A2_cross : ℝ := ∫ y in Ω,
-    densityDerivOnEuclid (I := I) g α l y * D_base.u_chart y * ψ y
+    densityDerivOnEuclid (I := I) g α l y * D_base.uChart y * ψ y
     ∂(volume : Measure EuclN) with hA2_cross_def
   set B_principal : ℝ := ∫ y in Ω,
     densityOnEuclid (I := I) g α y *
       chosenFChartDeriv (I := I) (M := M) g α hu_h l y * ψ y
     ∂(volume : Measure EuclN) with hB_principal_def
   set B_cross : ℝ := ∫ y in Ω,
-    densityDerivOnEuclid (I := I) g α l y * D_base.f_chart y * ψ y
+    densityDerivOnEuclid (I := I) g α l y * D_base.fChart y * ψ y
     ∂(volume : Measure EuclN) with hB_cross_def
   have hT1' : T1 = -(A1_cross + A1_principal) := hT1
   have hT2' : T2 = -(A2_cross + A2_principal) := hT2

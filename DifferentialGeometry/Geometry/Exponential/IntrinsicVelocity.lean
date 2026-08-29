@@ -5,6 +5,7 @@ import DifferentialGeometry.Topology.FiberBundleT2
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open Set Filter Topology Metric Bundle Manifold Function
@@ -27,8 +28,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [RiemannianBundle (fun (x : M) => TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def intrinsicVelocityLift
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -39,8 +40,8 @@ def intrinsicVelocityLift
     (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm p v) s :
       ℝ →L[ℝ] TangentSpace I (intrinsicGeodesic (I := I) g hEnorm p v s)) 1⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp] theorem velocityLift_proj
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -50,8 +51,8 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
     (intrinsicVelocityLift (I := I) g hEnorm p v s).proj =
       intrinsicGeodesic (I := I) g hEnorm p v s := rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp] theorem velocityLift_zero
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -65,8 +66,8 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   · apply heq_of_eq
     exact intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p v
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lift_isIntegral
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -121,8 +122,8 @@ theorem lift_isIntegral
   filter_upwards [hs_eq_nhds] with u hu
   exact hu.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem velocityLift_one
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -149,8 +150,8 @@ theorem velocityLift_one
         exact lift_isIntegral (I := I) g hEnorm u.proj u.snd t)
   exact contMDiffOn_univ.mp (hslice 1 (by norm_num))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsicExp_smooth
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -165,8 +166,8 @@ theorem intrinsicExp_smooth
     (contMDiff_proj (TangentSpace I)).comp (velocityLift_one (I := I) g hEnorm)
   simpa only [velocityLift_proj, expMapIntrinsic_def] using hproj
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsicFiber_smooth
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -207,11 +208,10 @@ theorem intrinsicFiber_smooth
       (fun v : E => (⟨p, v⟩ : TangentBundle I M)) := by
     rw [← heq]
     exact hsymm
-  simpa only [Function.comp_apply] using
-    (intrinsicExp_smooth (I := I) g hEnorm).comp htotal
+  with_unfolding_all exact (intrinsicExp_smooth (I := I) g hEnorm).comp htotal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsicVar_smooth
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) => TangentSpace I x)]
@@ -271,8 +271,8 @@ theorem intrinsicVar_smooth
         (show TangentSpace I p from launch q) 1 =
       intrinsicGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from x + q.1 • w) q.2
-    simpa only [launch] using
-      intrinsicGeodesic_smul (I := I) g hEnorm p
+    with_unfolding_all
+      exact intrinsicGeodesic_smul (I := I) g hEnorm p
         (show TangentSpace I p from x + q.1 • w) q.2
   rw [heq] at hcomp
   exact hcomp

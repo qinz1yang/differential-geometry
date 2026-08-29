@@ -96,20 +96,23 @@ theorem conj_inputs
                     lapDiffCore (I := I) (M := M)
                       (S.family.metric (T : Real))
                       (S.family.metric ((T : Real) - s)) v)) := by
-  letI : SeminormedAddCommGroup
+  let _ : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (S.family.metric (T : Real))
           0 0 (0 + 2) →L[Real]
         tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
-  letI : SeminormedAddCommGroup
+  let _ : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (S.family.metric (T : Real))
           0 0 (0 + 1) →L[Real]
         tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   let C2 : NNReal := ⟨(1 / 4 : Real), by norm_num⟩
+  have hC2pos : 0 < (C2 : Real) := by
+    change 0 < (1 / 4 : Real)
+    norm_num
   obtain ⟨tau2, htau2, htau2one, hcont2, _hmeas2, hbound2, _hboundAE2⟩ :=
     lapDiffA20_short (I := I) (M := M) S.family.metric hS.smoothMetric T
-      (epsilon := (C2 : Real)) (by norm_num [C2])
+      (epsilon := (C2 : Real)) hC2pos
   obtain ⟨tau1, htau1, htau1one, C1, hcont1, _hmeas1, hbound1, _hboundAE1⟩ :=
     conjA1_short (I := I) (M := M) S hS T
   let f : Real → Real := fun t =>
@@ -117,7 +120,9 @@ theorem conj_inputs
   have hfcont : ContinuousAt f 0 := by
     fun_prop
   have hfzero : f 0 < 1 := by
-    norm_num [f, C2]
+    change (1 / 4 : Real) * (1 + 0) + (C1 : Real) * (2 * Real.sqrt 0) < 1
+    rw [Real.sqrt_zero]
+    norm_num
   have hfsmall : {t : Real | f t < 1} ∈ 𝓝 0 := by
     exact hfcont.eventually_lt_const hfzero
   let graphGood : Set Real := {s |
@@ -138,7 +143,8 @@ theorem conj_inputs
                   (S.family.metric (T : Real))
                   (S.family.metric ((T : Real) - s)) v))}
   have hgraphNhds : graphGood ∈ 𝓝 (0 : Real) := by
-    simpa only [graphGood] using
+    change ∀ᶠ s in 𝓝 (0 : Real), s ∈ graphGood
+    simpa only [graphGood, Set.mem_ofPred_eq] using
       (lapDiffA20_graph (I := I) (M := M) S.family.metric hS.smoothMetric T)
   have hsafe : {t : Real | f t < 1} ∩ graphGood ∈ 𝓝 (0 : Real) :=
     inter_mem hfsmall hgraphNhds
@@ -426,10 +432,10 @@ theorem conj_weak_ae
             closure
               (Set.range fun v : ScalarH2Core (I := I) (M := M) q =>
                 ((v.1 : tensorHs (I := I) (M := M) q 0 0 2),
-                  ∫ x, (Δ_g (I := I) (S.family.metric ((T : Real) - t))
+                  ∫ x, (ΔG (I := I) (S.family.metric ((T : Real) - t))
                           ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                             reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x -
-                        Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
+                        ΔG (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
                       reprScalar0 (I := I) (M := M) w.1 w.2 x
                     ∂(riemannianVolumeMeasure (I := I) (M := M) q)))) ∧
         (∀ v : ScalarH1Core (I := I) (M := M) q,
@@ -508,11 +514,19 @@ theorem conj_weak_ae
       tensorHsInclusion (I := I) (M := M)
         (g := S.family.metric (T : Real)) (r := 0) (s := 0)
         (show (2 : Real) ≤ 0 + 2 by norm_num) (U2 t)
+    have hJ_apply (v : tensorHs (I := I) (M := M)
+        (S.family.metric (T : Real)) 0 0 0) :
+        J.toLinearIsometry.toContinuousLinearMap v = J v := rfl
+    have hL_apply (v : tensorHs (I := I) (M := M)
+        (S.family.metric (T : Real)) 0 0 0) :
+        L v = inner Real (J v) test := by
+      simp only [L, ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
+        innerSL_apply_apply, hJ_apply]
     refine ⟨?_, ?_⟩
     · have hsder : HasDerivWithinAt (fun s => L (u.toFun s))
           (L (u.deriv t)) (Set.Icc 0 tau) t :=
         L.hasFDerivAt.comp_hasDerivWithinAt t htder
-      simpa only [L, J, test, ContinuousLinearMap.comp_apply] using hsder
+      simpa only [hL_apply, J, test] using hsder
     · have hres :
           u.deriv t - tensorScaleLaplacian (I := I) (M := M) 0 (U2 t) -
               conjA1MR (I := I) (M := M) S T t (U1 t) =

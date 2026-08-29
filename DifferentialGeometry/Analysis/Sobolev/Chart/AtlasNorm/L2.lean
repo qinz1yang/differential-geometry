@@ -51,7 +51,7 @@ theorem wkpNormChartL2Sq_eq_tsum
           (chartTargetEuclid (I := I) (M := M) α) := rfl
 
 private theorem wkpNormChartL2_eq_ofReal_sqrt_toReal
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     {k : ℕ} {u : M → ℝ}
     (hSq : wkpNormChartL2Sq (I := I) (M := M) k u ≠ (⊤ : ℝ≥0∞)) :
     wkpNormChartL2 (I := I) (M := M) k u =
@@ -841,18 +841,18 @@ lemma inner_wkpChartL2_def
       wkpInnerChartL2 (I := I) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun v) := rfl
 
 private def activeChartSupp
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless] : Set M :=
+    [T2Space M] [SigmaCompactSpace M] : Set M :=
   { α : M | (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ)).Nonempty }
 
 private theorem activeChartSupp_finite
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless] :
+    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] :
     (activeChartSupp (I := I) (M := M)).Finite :=
   ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I
     M).locallyFinite).finite_nonempty_of_compact
 
 private theorem chartPushed_eq_zero_off_activeChartSupp
-    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) (hα : α ∉ activeChartSupp (I := I) (M := M)) (u : M → ℝ) :
     chartPushed (I := I) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u =
@@ -1004,7 +1004,7 @@ private theorem wkpChartL2_norm_sq_eq_inner
     (d := Module.finrank ℝ E) (hu_mem α)
 
 private theorem wkpInnerChartL2_apply_comm
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (k : ℕ) (u v : WkpChartL2 (I := I) (M := M) k) :
     @inner ℝ _ _ v u = @inner ℝ _ _ u v := by
   change wkpInnerChartL2 (I := I) (M := M) k _ _ = _

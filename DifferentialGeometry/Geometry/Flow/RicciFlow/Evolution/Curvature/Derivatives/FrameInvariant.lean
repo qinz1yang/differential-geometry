@@ -105,6 +105,7 @@ theorem nablaRm04NormSqInFrame_orthoBasis_eq_normSq0S
 
 end ProducerNorms
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_spatialCommNablaRm_intrinsic_le

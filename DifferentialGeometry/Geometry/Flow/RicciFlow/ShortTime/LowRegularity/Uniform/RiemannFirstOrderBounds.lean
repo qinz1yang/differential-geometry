@@ -8,7 +8,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoefficientDecomposition
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -48,6 +47,7 @@ private lemma riemRiemannianFiberNormSq_neg
   rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
   norm_num
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma riemRiemannianFiberNormSq_iteratedCovGrad_neg
     (g : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -61,6 +61,7 @@ private lemma riemRiemannianFiberNormSq_iteratedCovGrad_neg
       (-((iteratedCovGrad (I := I) g r s i Φ).toSection x)) = _
   exact riemRiemannianFiberNormSq_neg (I := I) (M := M) g r (s + i) x _
 
+omit [SigmaCompactSpace M] in
 private lemma riemPass_riemannianFiberNormSq
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (C : ℕ → ℝ)
@@ -117,7 +118,7 @@ private lemma riemPass_riemannianFiberNormSq
       (I := I) (M := M) g 1 3
       (slotFreeOpCc (I := I) (M := M) g 1) i x
     rw [hDim] at h
-    simpa only [slotExtendIter, Nat.reduceAdd] using
+    simpa only [slotExtendIter, Nat.reduceAdd, Nat.cast_ofNat] using
       h.trans (mul_le_mul_of_nonneg_left (hgrid i hi x) (by norm_num))
   calc
     _ = riemannianFiberNormSq (I := I) (M := M) g 2 (4 + i) x

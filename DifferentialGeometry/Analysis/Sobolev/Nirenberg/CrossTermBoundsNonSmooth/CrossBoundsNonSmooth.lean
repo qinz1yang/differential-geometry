@@ -779,7 +779,7 @@ theorem cross_1_bound_nonsmooth_quantitative
             (diffQuot k h (g i) x)^2 ∂(volume : Measure E) =
         ∫ x, (η x)^2 *
             ∑ i : Fin d, (diffQuot k h (g i) x)^2 ∂(volume : Measure E) := by
-      rw [← integral_finset_sum _ (fun i _ => h_first_int_per i)]
+      rw [← integral_finsetSum _ (fun i _ => h_first_int_per i)]
       refine integral_congr_ae ?_
       filter_upwards with x
       rw [Finset.mul_sum]

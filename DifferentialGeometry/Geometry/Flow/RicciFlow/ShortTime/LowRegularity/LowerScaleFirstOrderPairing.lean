@@ -87,7 +87,7 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrder_ball_bound
   have hclosed :
       IsClosed {w : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) |
         R + 1 ≤ ‖w‖ ∨ ‖F w‖ ≤ K₀ * ‖w‖ + ‖F 0‖} := by
-    simpa only [Set.setOf_or] using
+    simpa only [Set.ofPred_or] using
       (isClosed_le continuous_const continuous_norm).union
         (isClosed_le hFnorm hright)
   have hall :

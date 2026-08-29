@@ -170,7 +170,7 @@ lemma chartVossWeylLaplacian_expand_hypBearing
             (gradChartCoeffOnE (I := I) g α f i) (extChartAt I α x)
     unfold partialDeriv
     rw [fderiv_fun_mul (𝕜 := ℝ) hu hv]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
       smul_eq_mul]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
             partialDeriv (E := E) i
@@ -193,12 +193,12 @@ theorem chartHessTrace_eq_laplacian
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j) :
-    chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x := by
+    chartHessTrace (I := I) g f x = ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   set y₀ : E := extChartAt I x x with hy₀_def
   set α : M := x with hα_def
   have hxsrc : x ∈ (chartAt H α).source := mem_chart_source H x
-  have hVW : Δ_g (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x :=
+  have hVW : ΔG (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x :=
     voss_weyl_laplacian_formula_of_closed (I := I) g α hf hxsrc
   rw [hVW]
   rw [chartHessTrace_expand (I := I) g f x]
@@ -374,7 +374,7 @@ theorem chartHessTrace_eq_laplacian
     intro k l
     unfold partialDeriv
     rw [fderiv_fun_mul (𝕜 := ℝ) hDens_diffAt (hG_diffAt k l)]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       smul_eq_mul]
     ring
   rw [show (∑ k : Fin (Module.finrank ℝ E),
@@ -658,7 +658,7 @@ theorem trace_hessFun_eq_laplacian
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x i j *
           chartHessianTensor (I := I) g x f i j x =
-      Δ_g (I := I) g ⟨_, hf⟩ x := by
+      ΔG (I := I) g ⟨_, hf⟩ x := by
   have h := chartHessTrace_eq_laplacian (I := I) g hf x hcc
   rw [chartHessTrace_def] at h
   exact h
@@ -671,7 +671,7 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_via_chartContracted
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j)
     (h_orth : ∀ i j : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x i j = if i = j then (1 : ℝ) else 0) :
-    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 ≤
+    (ΔG (I := I) g ⟨_, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -680,10 +680,10 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_via_chartContracted
   have h1 : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
       chartHessTrace (I := I) g f x :=
     traceFun_hessFun_eq_chartHessTrace_of_orthonormal (I := I) g f x h_orth
-  have h2 : chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x :=
+  have h2 : chartHessTrace (I := I) g f x = ΔG (I := I) g ⟨_, hf⟩ x :=
     chartHessTrace_eq_laplacian (I := I) g hf x hcc
   have htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
-      Δ_g (I := I) g ⟨_, hf⟩ x := h1.trans h2
+      ΔG (I := I) g ⟨_, hf⟩ x := h1.trans h2
   exact laplacian_sq_le_dim_mul_frobenius_sq_of_trace_eq
     (I := I) g hf x htr
 
@@ -796,7 +796,6 @@ theorem chartContractedChristoffel_holds
               GU i k * GU j l * dGD i l k) from Finset.sum_comm]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    change GU k i * GU j l * dGD k l i = GU i k * GU j l * dGD k l i
     have hGUki : GU k i = GU i k := by
       change chartInvGramOnE (I := I) g α k i y₀ = chartInvGramOnE (I := I) g α i k y₀
       exact chartInvGramOnE_symm_pointwise (I := I) g α k i y₀
@@ -1068,7 +1067,7 @@ theorem chartContractedChristoffel_holds
             partialDeriv (E := E) l (chartInvGramOnE (I := I) g α j l) y₀ := by
       unfold partialDeriv
       rw [fderiv_fun_mul (𝕜 := ℝ) hdens_diff hG_diff]
-      simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [add_apply, smul_apply, smul_eq_mul]
       ring
     rw [hLeibniz]
     change (1 / chartDensityOnE (I := I) g α y₀) *
@@ -1108,7 +1107,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartHessTrace_eq_laplacian_of_boundaryless
     [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x := by
+    chartHessTrace (I := I) g f x = ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   have hxsrc : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
@@ -1128,7 +1127,7 @@ theorem chartInvGram_trace_hessianTensor_eq_laplacian_of_boundaryless
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x i j *
           chartHessianTensor (I := I) g x f i j x =
-      Δ_g (I := I) g ⟨_, hf⟩ x := by
+      ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   have hxsrc : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
@@ -1147,7 +1146,7 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_of_orthonormal
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (h_orth : ∀ i j : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x i j = if i = j then (1 : ℝ) else 0) :
-    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 ≤
+    (ΔG (I := I) g ⟨_, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -1171,12 +1170,12 @@ theorem chartHessTrace_eq_laplacian_pointwise
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j) :
-    chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x := by
+    chartHessTrace (I := I) g f x = ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   set y₀ : E := extChartAt I x x with hy₀_def
   set α : M := x with hα_def
   have hxsrc : x ∈ (chartAt H α).source := mem_chart_source H x
-  have hVW : Δ_g (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x :=
+  have hVW : ΔG (I := I) g ⟨_, hf⟩ x = chartVossWeylLaplacian (I := I) g α f x :=
     voss_weyl_laplacian_formula_pointwise (I := I) g α hf hxsrc
   rw [hVW]
   rw [chartHessTrace_expand (I := I) g f x]
@@ -1352,7 +1351,7 @@ theorem chartHessTrace_eq_laplacian_pointwise
     intro k l
     unfold partialDeriv
     rw [fderiv_fun_mul (𝕜 := ℝ) hDens_diffAt (hG_diffAt k l)]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       smul_eq_mul]
     ring
   rw [show (∑ k : Fin (Module.finrank ℝ E),
@@ -1612,7 +1611,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartHessTrace_eq_laplacian_pointwise_of_boundaryless
     [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x := by
+    chartHessTrace (I := I) g f x = ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   have hxsrc : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]

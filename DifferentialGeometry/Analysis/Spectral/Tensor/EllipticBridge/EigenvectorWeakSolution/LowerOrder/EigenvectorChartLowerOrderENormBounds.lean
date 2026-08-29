@@ -143,7 +143,7 @@ private lemma eLpNorm_finsetSum_le_const_mul_atomSum
       (f := fun p => eLpNorm (atom p) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)))
-      (fun p _ => zero_le _) (hproj j hj)
+      (fun p _ => zero_le) (hproj j hj)
   have h_const : ∑ _j ∈ s, ENNReal.ofReal C
         * ∑ p ∈ t, eLpNorm (atom p) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -273,7 +273,7 @@ lemma partialLpLimit_ae_zero_off_chartPouKernel_weighted
         chartTargetEuclid (I := I) (M := M) α =
         chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α := by
-      rw [Set.diff_eq, Set.inter_comm]
+      rw [Set.sdiff_eq, Set.inter_comm]
     rw [h_inter]
     filter_upwards [h_weak_sdiff] with y hy using hy
   have h_weak_w : ∀ᵐ y ∂((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -336,7 +336,7 @@ lemma partialLpLimit_memLp_weighted
         chartTargetEuclid (I := I) (M := M) α =
         chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α := by
-      rw [Set.diff_eq, Set.inter_comm]
+      rw [Set.sdiff_eq, Set.inter_comm]
     rw [h_inter]
     filter_upwards [h_weak_sdiff] with y hy using hy
   have h_atom_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
@@ -604,12 +604,12 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
   have h_part_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
       × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
       × Fin (Module.finrank ℝ E), Fpart x y) 2 μw :=
-    memLp_finset_sum _ (fun x _ => (h_part_data x).1)
+    memLp_finsetSum _ (fun x _ => (h_part_data x).1)
   have h_comp_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
       × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,
       Fcomp x y) 2 μw :=
-    memLp_finset_sum _ (fun x _ => (h_comp_data x).1)
+    memLp_finsetSum _ (fun x _ => (h_comp_data x).1)
   unfold covLowerOrderRotationValueCoeffLimit
   have h_bridge : (fun y => (∑ P : TensorCompIdx (E := E) r s,
           ∑ Q : TensorCompIdx (E := E) r s,
@@ -927,11 +927,11 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
   have h_comp_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
       × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
       × TensorCompIdx (E := E) r s, Fcomp x y) 2 μw :=
-    memLp_finset_sum _ (fun x _ => (h_comp_data x).1)
+    memLp_finsetSum _ (fun x _ => (h_comp_data x).1)
   have h_part_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
       × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
       × TensorCompIdx (E := E) r s, Fpart x y) 2 μw :=
-    memLp_finset_sum _ (fun x _ => (h_part_data x).1)
+    memLp_finsetSum _ (fun x _ => (h_part_data x).1)
   unfold weightedGradCoeffDivLimit
   have h_bridge : (fun y => (∑ P : TensorCompIdx (E := E) r s,
           ∑ Q : TensorCompIdx (E := E) r s,

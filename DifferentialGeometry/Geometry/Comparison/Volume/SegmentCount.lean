@@ -155,8 +155,8 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
@@ -194,7 +194,7 @@ theorem edistBall_shift {a b : M} {t ρ : ℝ}
     {y : M | riemannianEDist I a y < ENNReal.ofReal ρ} ⊆
       {y : M | riemannianEDist I b y < ENNReal.ofReal (t + ρ)} := by
   intro y hy
-  simp only [Set.mem_setOf_eq] at hy ⊢
+  simp only [Set.mem_ofPred_eq] at hy ⊢
   calc riemannianEDist I b y
       ≤ riemannianEDist I b a + riemannianEDist I a y := riemannianEDist_triangle
     _ = riemannianEDist I a b + riemannianEDist I a y := by
@@ -218,7 +218,7 @@ theorem edistBall_disj {ι : Type*} {J : Finset ι} {centers : ι → M} {r : �
     (↑J : Set ι).PairwiseDisjoint
       (fun i => {y : M | riemannianEDist I (centers i) y < ENNReal.ofReal (r / 2)}) := by
   intro i hi j hj hij
-  simp only [Function.onFun, Set.disjoint_left, Set.mem_setOf_eq]
+  simp only [Function.onFun, Set.disjoint_left, Set.mem_ofPred_eq]
   intro y hyi hyj
   have hsep_ij := hsep i (Finset.mem_coe.mp hi) j (Finset.mem_coe.mp hj) hij
   have hlt : riemannianEDist I (centers i) (centers j) < ENNReal.ofReal r := by
@@ -269,7 +269,7 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     have hmrpos : 0 < ENNReal.ofReal (m * r) := by
       by_contra hnp
       rw [not_lt] at hnp
-      rw [le_antisymm hnp (zero_le _), add_zero] at hle
+      rw [le_antisymm hnp (zero_le), add_zero] at hle
       exact absurd hle (not_le.mpr hrpos)
     have hmr : 0 < m * r := ENNReal.ofReal_pos.mp hmrpos
     have hle2 : ENNReal.ofReal r ≤ ENNReal.ofReal (2 * (m * r)) := by
@@ -292,7 +292,7 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     have hvR'_pos : 0 < hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) :=
       hypRadVol_pos hq hR'_pos
     set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ
-    haveI : μ.IsOpenPosMeasure :=
+    have : μ.IsOpenPosMeasure :=
       riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
     set big : Set M := {y : M | riemannianEDist I z y < ENNReal.ofReal ((m + 1 / 2) * r)}
       with hbig
@@ -303,7 +303,7 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     have hbig_ne : big.Nonempty := by
       rw [hbig]
       exact ⟨z, by
-        simp only [Set.mem_setOf_eq, Manifold.riemannianEDist_self]
+        simp only [Set.mem_ofPred_eq, Manifold.riemannianEDist_self]
         exact ENNReal.ofReal_pos.mpr hbigR_pos⟩
     have hbig_pos : 0 < μ big := hbig_open.measure_pos μ hbig_ne
     have hbig_fin : μ big ≠ ⊤ := by

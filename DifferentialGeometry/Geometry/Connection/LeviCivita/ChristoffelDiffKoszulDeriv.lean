@@ -45,10 +45,10 @@ theorem connectionDifference_koszul_nabla
         (1 / 2) * Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) Z (Tensor0SBundle.metricTensorField (I := I) g₁) x
           (fun q : Fin 2 => if q = 0 then X x else Y x) := by
-  haveI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
-  have hmc : IsMetricCompatible_gen (I := I) (LeviCivita (I := I) g₁) g₁ := by
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  have hmc : IsMetricCompatibleGen (I := I) (LeviCivita (I := I) g₁) g₁ := by
     simpa [LeviCivita] using
       leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g₁
   have htf : IsTorsionFreeAt (I := I) (LeviCivita (I := I) g₁) x :=
@@ -75,7 +75,7 @@ theorem nablaMetric_combo_extDeriv
     (V : Fin 3 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun p : M => Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) (V 0) (Tensor0SBundle.metricTensorField (I := I) g₁) p
           (fun q : Fin 2 => V q.succ p)) x (W x) =
@@ -117,7 +117,7 @@ theorem metric_leibniz_extDeriv
     (V : Fin 2 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun p : M => Tensor0SBundle.metricTensorField (I := I) g₁ p
           (fun c : Fin 2 => V c p)) x (W x) =
       Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -196,9 +196,9 @@ theorem connectionDifference_koszul_deriv
           ![(CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
               (Y x) (X x), Z x] := by
   classical
-  haveI : IsManifold I 1 M :=
+  let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
+  let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   set field := Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
     (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
     (metricField_totalReg (I := I) g₁ g₂) with hfield
@@ -264,8 +264,7 @@ theorem connectionDifference_koszul_deriv
         ((CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) p)
           (Y p) (X p)) (Z p) = _
     rw [connectionDifference_koszul_nabla (I := I) g₁ g₂ X Y Z]
-  have hmaster := congrArg (fun f : M → ℝ => extDerivFun (I := I) f x (W x)) hfun
-  simp only [] at hmaster
+  have hmaster := congrArg (fun f : M → ℝ => mvfderiv (I := I) f x (W x)) hfun
   rw [hLHS] at hmaster
   have hMDcombo : ∀ (V : Fin 3 → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),
@@ -341,20 +340,20 @@ theorem connectionDifference_koszul_deriv
   simp only [← hcX_app, ← hcY_app, ← hcZ_app] at hmaster
   have hsub' : ∀ {f g : M → ℝ}, MDifferentiableAt I 𝓘(ℝ, ℝ) f x →
       MDifferentiableAt I 𝓘(ℝ, ℝ) g x →
-      extDerivFun (I := I) (f - g) x = extDerivFun (I := I) f x - extDerivFun (I := I) g x := by
+      mvfderiv (I := I) (f - g) x = mvfderiv (I := I) f x - mvfderiv (I := I) g x := by
     intro f g hf hg
-    have h := extDerivFun_add (I := I) (g := f - g) (g' := g) (hf.sub hg) hg
+    have h := mvfderiv_add (I := I) (g := f - g) (g' := g) (hf.sub hg) hg
     rw [sub_add_cancel] at h
     exact eq_sub_of_add_eq h.symm
   rw [show (fun p : M => (1 / 2) * cX p + (1 / 2) * cY p - (1 / 2) * cZ p)
         = ((fun p : M => (1 / 2) * cX p) + (fun p : M => (1 / 2) * cY p))
           - (fun p : M => (1 / 2) * cZ p) from rfl,
     hsub' ((hdc _ hMDcX).add (hdc _ hMDcY)) (hdc _ hMDcZ),
-    extDerivFun_add (hdc _ hMDcX) (hdc _ hMDcY),
-    extDerivFun_const_mul I (1 / 2 : ℝ) hMDcX, extDerivFun_const_mul I (1 / 2 : ℝ) hMDcY,
-    extDerivFun_const_mul I (1 / 2 : ℝ) hMDcZ] at hmaster
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul] at hmaster
+    mvfderiv_add (hdc _ hMDcX) (hdc _ hMDcY),
+    mvfderiv_const_mul I (1 / 2 : ℝ) hMDcX, mvfderiv_const_mul I (1 / 2 : ℝ) hMDcY,
+    mvfderiv_const_mul I (1 / 2 : ℝ) hMDcZ] at hmaster
+  simp only [sub_apply, add_apply,
+    smul_apply, smul_eq_mul] at hmaster
   rw [hRX, hRY, hRZ] at hmaster
   rw [← hfield] at hmaster
   have e3 : ∀ (a b c : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
@@ -408,7 +407,7 @@ theorem connectionDifference_koszul_deriv
   rw [← hfield] at hk1 hk2 hk3
   have g_add_left : ∀ (v w y : TangentSpace I x),
       g₁.inner x (v + w) y = g₁.inner x v y + g₁.inner x w y := by
-    intro v w y; rw [map_add (g₁.inner x), ContinuousLinearMap.add_apply]
+    intro v w y; rw [map_add (g₁.inner x), add_apply]
   rw [hB] at hmaster
   simp only [g_add_left, hAx] at hmaster hk3 ⊢
   linarith [hmaster, hk1, hk2, hk3]

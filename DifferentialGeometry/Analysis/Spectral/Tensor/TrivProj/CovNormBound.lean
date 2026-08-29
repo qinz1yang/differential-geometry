@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.Inn
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -56,10 +55,10 @@ theorem chartRSTwistInv_sq_norm_le_const_mul_tensorInnerPointwise_on_compact
   set T : TensorRSModel r s ℝ E :=
     chartRSTwistInv (I := I) (M := M) α b r s X with hT_def
   have h_T : ‖T‖ ^ 2 ≤ K *
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T :=
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T :=
     h_chart b hb T
   have h_bridge :
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T =
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T =
         tensorInnerPointwise (I := I) (M := M) g r s b
           (chartRSTwist (I := I) (M := M) α b r s T)
           (chartRSTwist (I := I) (M := M) α b r s T) :=

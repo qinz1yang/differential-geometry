@@ -26,6 +26,7 @@ variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem small_ray_data
     [I.Boundaryless] [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (q : M) :
@@ -240,6 +241,8 @@ private theorem eq_of_point_data
   exact ((mem_agree_iff (I := I) (J := J) f₁ f₂ x).mp
     (huniv ▸ Set.mem_univ x)).1
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem localIso_eventually
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -296,12 +299,8 @@ theorem localIso_eventually
       rw [hγ0] at hcomp
       have hγvE :
           (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) : E) = a := hγv
-      calc
-        mfderiv 𝓘(ℝ, ℝ) J (fun t => f₁ (γ t)) 0 (1 : ℝ) =
-            mfderiv I J f₁ q
-              (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) := by
-          simpa only [Function.comp_def] using hcomp
-        _ = mfderiv I J f₁ q a := congrArg (mfderiv I J f₁ q) hγvE
+      with_unfolding_all
+        exact hcomp.trans (congrArg (mfderiv I J f₁ q) hγvE)
     have hmfd₂ :
         mfderiv 𝓘(ℝ, ℝ) J (fun t => f₂ (γ t)) 0 (1 : ℝ) =
           mfderiv I J f₂ q a := by
@@ -316,12 +315,8 @@ theorem localIso_eventually
       rw [hγ0] at hcomp
       have hγvE :
           (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) : E) = a := hγv
-      calc
-        mfderiv 𝓘(ℝ, ℝ) J (fun t => f₂ (γ t)) 0 (1 : ℝ) =
-            mfderiv I J f₂ q
-              (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) := by
-          simpa only [Function.comp_def] using hcomp
-        _ = mfderiv I J f₂ q a := congrArg (mfderiv I J f₂ q) hγvE
+      with_unfolding_all
+        exact hcomp.trans (congrArg (mfderiv I J f₂ q) hγvE)
     have hvel :
         (mfderiv 𝓘(ℝ, ℝ) J (fun t => f₁ (γ t)) 0 (1 : ℝ) : F) =
           mfderiv 𝓘(ℝ, ℝ) J (fun t => f₂ (γ t)) 0 (1 : ℝ) := by
@@ -330,8 +325,6 @@ theorem localIso_eventually
     have hzero : f₁ (γ 0) = f₂ (γ 0) := by
       rw [hγ0]
       exact hq
-    letI : RiemannianBundle (fun x : N => TangentSpace J x) :=
-      ⟨g'.toRiemannianMetric⟩
     have heq :=
       Exponential.geo_eqOn_of_init (I := J) g'
         hO hOconn h0O hgeo₁ hgeo₂ hcont₁ hcont₂ hzero hvel
@@ -356,6 +349,8 @@ theorem localIso_eventually
   rw [hΦexp a ha.1]
   exact hkey a (by simpa using ha.2)
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem localIso_rigid
     [PreconnectedSpace M]
     [I.Boundaryless] [J.Boundaryless]

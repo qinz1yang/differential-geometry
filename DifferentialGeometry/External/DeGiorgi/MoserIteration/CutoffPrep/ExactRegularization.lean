@@ -26,7 +26,7 @@ noncomputable def moserPosPartWitnessUnitBall
     moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := (1 : ℝ)) (θ := 0)
       (by norm_num) (by norm_num) hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) 1) :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
       (by norm_num) hu1 0 happrox0
   have hEq : positivePartSub u 0 = fun x => max (u x) 0 := by
     funext x
@@ -45,14 +45,14 @@ lemma moserPosPartWitnessUnitBall_grad_eq_on_pos
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) 1)),
       0 < u x →
         (moserPosPartWitnessUnitBall (d := d) (u := u) hu1).weakGrad x = hu1.weakGrad x := by
-  haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
+  let _ : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let happrox0 :=
     moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := (1 : ℝ)) (θ := 0)
       (by norm_num) (by norm_num) hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) 1) :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
       (by norm_num) hu1 0 happrox0
   have hEq : positivePartSub u 0 = fun x => max (u x) 0 := by
     funext x
@@ -72,7 +72,7 @@ lemma moserPosPartWitnessUnitBall_grad_zero_on_nonpos
     moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := (1 : ℝ)) (θ := 0)
       (by norm_num) (by norm_num) hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) 1) :=
-    positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
+    positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
       (by norm_num) hu1 0 happrox0
   have hEq : positivePartSub u 0 = fun x => max (u x) 0 := by
     funext x
@@ -130,7 +130,7 @@ noncomputable def moserExactRegPosPartWitness
     rw [moserExactRegPow_eq_shifted_of_nonneg_le_N (ε := ε) (N := N) (p := p) hε le_rfl hN]
     ring_nf
   exact
-    (MemW1pWitness.comp_smooth_bounded
+    (MemW1pWitness.compSmoothBounded
       (d := d) Metric.isOpen_ball hwPos
       (moserExactRegPow ε N p)
       (moserExactRegPow_contDiff (ε := ε) (N := N) (p := p) hε hN)
@@ -155,7 +155,7 @@ noncomputable def moserExactRegPowerCutoffWitness
     moserExactRegPosPartWitness (d := d) (u := u) (ε := ε) (N := N) (p := p) hε hN hu1
   have hCη_nonneg : 0 ≤ Cη := by
     exact le_trans (norm_nonneg _) (hη_grad_bound (0 : E))
-  exact hwReg.mul_smooth_bounded Metric.isOpen_ball hη
+  exact hwReg.mulSmoothBounded Metric.isOpen_ball hη
     (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 noncomputable def moserExactRegTestCutoff
@@ -182,7 +182,7 @@ noncomputable def moserExactRegTestCutoffWitness
         rw [moserExactRegTestPow_eq_shifted_of_nonneg_le_N (ε := ε) (N := N) (p := p) hε le_rfl hN]
         ring_nf
       exact
-        (MemW1pWitness.comp_smooth_bounded
+        (MemW1pWitness.compSmoothBounded
           (d := d) Metric.isOpen_ball hwPos
           (moserExactRegTestPow ε N p)
           (moserExactRegTestPow_contDiff (ε := ε) (N := N) (p := p) hε hN)
@@ -191,10 +191,10 @@ noncomputable def moserExactRegTestCutoffWitness
   have hCη_nonneg : 0 ≤ Cη := by
     exact le_trans (norm_nonneg _) (hη_grad_bound (0 : E))
   let hwη :=
-    hwTest.mul_smooth_bounded Metric.isOpen_ball hη
+    hwTest.mulSmoothBounded Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
   exact
-    hwη.mul_smooth_bounded Metric.isOpen_ball hη
+    hwη.mulSmoothBounded Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 theorem moserExactRegTestPow_nonneg_of_nonneg_le_N
@@ -356,7 +356,7 @@ lemma moserExactRegPowerCutoffWitness_grad
         moserExactRegPow ε N p (max (u x) 0) := by
   simp only [moserExactRegPowerCutoffWitness, moserExactRegPosPartWitness,
     moserPosPartWitnessUnitBall,
-    MemW1pWitness.mul_smooth_bounded, MemW1pWitness.comp_smooth_bounded,
+    MemW1pWitness.mulSmoothBounded, MemW1pWitness.compSmoothBounded,
     WithLp.ofLp_add, WithLp.ofLp_smul, smul_eq_mul, Pi.add_apply, Pi.smul_apply]
   ring
 
@@ -375,8 +375,8 @@ lemma moserExactRegTestCutoffWitness_grad
       η x ^ 2 * deriv (moserExactRegTestPow ε N p) (max (u x) 0) *
         (moserPosPartWitnessUnitBall (d := d) (u := u) hu1).weakGrad x i := by
   simp only [moserExactRegTestCutoffWitness, moserPosPartWitnessUnitBall,
-    MemW1pWitness.mul_smooth_bounded,
-    MemW1pWitness.comp_smooth_bounded, WithLp.ofLp_add, WithLp.ofLp_smul,
+    MemW1pWitness.mulSmoothBounded,
+    MemW1pWitness.compSmoothBounded, WithLp.ofLp_add, WithLp.ofLp_smul,
     smul_eq_mul, Pi.add_apply, Pi.smul_apply]
   ring
 
@@ -749,7 +749,7 @@ theorem tendsto_moserEpsSeq :
 
 theorem moserEpsSeq_le_one (n : ℕ) : moserEpsSeq n ≤ 1 := by
   dsimp [moserEpsSeq]
-  have hn_nonneg : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le n
+  have hn_nonneg : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le (n := n)
   have hden_ge : (1 : ℝ) ≤ (n : ℝ) + 1 := by linarith
   exact inv_le_one_of_one_le₀ hden_ge
 
@@ -925,8 +925,11 @@ theorem moser_weighted_absorb
         (fun x =>
           (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +
             2 * Λ * ζ x ^ 2 * (|ψ x| ^ 2 / ψd x)) μ := by
-    simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using
-      (hleft_int.const_mul (1 / 2 : ℝ)).add (hbound_int.const_mul (2 * Λ))
+    convert (hleft_int.const_mul (1 / 2 : ℝ)).add
+      (hbound_int.const_mul (2 * Λ)) using 1 <;> try rfl
+    ring_nf
+    funext x
+    rfl
   have hcross_bound :
       ∫ x, 2 * η x * |ψ x| * ζ x * |M x| ∂μ ≤
         ∫ x, (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +

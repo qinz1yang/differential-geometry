@@ -90,7 +90,7 @@ theorem eigenvector_eq_resolvent_smul
       (i.fst.val)⁻¹ •
         TensorH1ComplToTensorL2 (I := I) (M := M) g r s
           (eigenvectorResolvent (I := I) (M := M) g r s i) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g r s
     with hc_def
   have h_mem :
@@ -128,7 +128,7 @@ theorem eigenvector_chartComponent_eq
         tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i)) α P₀ := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   rw [eigenvector_eq_resolvent_smul (I := I) (M := M) g r s i]
   exact tensorL2ChartComponent_smul (I := I) (M := M) g r s (i.fst.val)⁻¹
     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
@@ -175,7 +175,7 @@ theorem eigenWeakEquation
         tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           i⟫_ℝ := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_var := tensorResolvent_inner_eq_lpFunctional (I := I) (M := M) g r s
     (tensorResolventEigenbasisVec (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)

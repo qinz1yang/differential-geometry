@@ -13,6 +13,7 @@ import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 noncomputable section
 
+
 open scoped BigOperators
 
 namespace ContinuousAlternatingMap
@@ -31,12 +32,13 @@ noncomputable def elementaryCovector
     ((k.factorial : ℝ) * ∏ i : Fin k, ‖b (ι i)‖)
     (fun v => by
       change ‖Matrix.detRowAlternating (R := 𝕜) (n := Fin k)
-            (fun r c => b (ι c) (v r))‖ ≤
+            (show Matrix (Fin k) (Fin k) 𝕜 from fun r c => b (ι c) (v r))‖ ≤
           ((k.factorial : ℝ) * ∏ i : Fin k, ‖b (ι i)‖) * ∏ i : Fin k, ‖v i‖
-      rw [show Matrix.detRowAlternating (R := 𝕜) (n := Fin k) (fun r c => b (ι c) (v r)) =
-            Matrix.det (fun i j : Fin k => b (ι i) (v j)) from by
-          change Matrix.det (fun r c : Fin k => b (ι c) (v r)) =
-            Matrix.det (fun i j : Fin k => b (ι i) (v j))
+      rw [show Matrix.detRowAlternating (R := 𝕜) (n := Fin k)
+              (show Matrix (Fin k) (Fin k) 𝕜 from fun r c => b (ι c) (v r)) =
+            Matrix.det (show Matrix (Fin k) (Fin k) 𝕜 from fun i j => b (ι i) (v j)) from by
+          change Matrix.det (show Matrix (Fin k) (Fin k) 𝕜 from fun r c => b (ι c) (v r)) =
+            Matrix.det (show Matrix (Fin k) (Fin k) 𝕜 from fun i j => b (ι i) (v j))
           rw [← Matrix.det_transpose]; rfl]
       rw [Matrix.det_apply]
       calc ‖∑ σ : Equiv.Perm (Fin k),
@@ -72,9 +74,10 @@ theorem elementaryCovector_apply
     (b : Module.Basis (Fin n) 𝕜 (E →L[𝕜] 𝕜))
     (ι : Fin k → Fin n)
     (v : Fin k → E) :
-    elementaryCovector b ι v = Matrix.det (fun i j => b (ι i) (v j)) := by
-  change Matrix.det (fun r c : Fin k => b (ι c) (v r)) =
-    Matrix.det (fun i j : Fin k => b (ι i) (v j))
+    elementaryCovector b ι v =
+      Matrix.det (show Matrix (Fin k) (Fin k) 𝕜 from fun i j => b (ι i) (v j)) := by
+  change Matrix.det (show Matrix (Fin k) (Fin k) 𝕜 from fun r c => b (ι c) (v r)) =
+    Matrix.det (show Matrix (Fin k) (Fin k) 𝕜 from fun i j => b (ι i) (v j))
   rw [← Matrix.det_transpose]; rfl
 
 theorem curryFin_elementaryCovector

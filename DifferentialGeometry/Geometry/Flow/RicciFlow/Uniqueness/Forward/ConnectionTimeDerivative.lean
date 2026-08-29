@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Fields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionDifference
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -34,21 +33,24 @@ def bilin12At
         intro α β
         apply ContinuousMultilinearMap.ext
         intro v
+        change Tensor0SSpace.eval (connectionDifferenceOutput (I := I) A (α + β)) v =
+          Tensor0SSpace.eval
+            (connectionDifferenceOutput (I := I) A α + connectionDifferenceOutput (I := I) A β) v
         rw [connectionDifferenceOutput_apply]
-        change (α + β) (fun _ : Fin 1 => (A (v 1)) (v 0)) =
-          connectionDifferenceOutput (I := I) A α v +
-            connectionDifferenceOutput (I := I) A β v
-        rw [connectionDifferenceOutput_apply, connectionDifferenceOutput_apply]
-        rfl
+        change Tensor0SSpace.eval (α + β) (fun _ : Fin 1 => (A (v 1)) (v 0)) = _
+        rw [Tensor0SSpace.eval_add]
+        rw [Tensor0SSpace.eval_add, connectionDifferenceOutput_apply,
+          connectionDifferenceOutput_apply]
       map_smul' := by
         intro c α
         apply ContinuousMultilinearMap.ext
         intro v
+        change Tensor0SSpace.eval (connectionDifferenceOutput (I := I) A (c • α)) v =
+          Tensor0SSpace.eval (c • connectionDifferenceOutput (I := I) A α) v
         rw [connectionDifferenceOutput_apply]
-        change (c • α) (fun _ : Fin 1 => (A (v 1)) (v 0)) =
-          c • connectionDifferenceOutput (I := I) A α v
-        rw [connectionDifferenceOutput_apply]
-        rfl }
+        change Tensor0SSpace.eval (c • α) (fun _ : Fin 1 => (A (v 1)) (v 0)) = _
+        rw [Tensor0SSpace.eval_smul]
+        rw [Tensor0SSpace.eval_smul, connectionDifferenceOutput_apply] }
 
 omit [SigmaCompactSpace M] [T2Space M] in
 @[simp]
@@ -56,46 +58,54 @@ theorem bilin12At_apply
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (v : Fin 2 -> TangentSpace I x) :
-    bilin12At (I := I) A α v = α (fun _ : Fin 1 => (A (v 1)) (v 0)) := by
-  change connectionDifferenceOutput (I := I) A α v = _
+    Tensor0SSpace.eval (bilin12At (I := I) A α) v =
+      Tensor0SSpace.eval α (fun _ : Fin 1 => (A (v 1)) (v 0)) := by
+  change Tensor0SSpace.eval (connectionDifferenceOutput (I := I) A α) v = _
   rw [connectionDifferenceOutput_apply]
 
 private def lowerBilinOut (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x :=
-  ContinuousLinearMap.uncurryLeft (𝕜 := Real) (n := 2)
-    (Ei := fun _ : Fin 3 => TangentSpace I x) (G := Real)
-    (LinearMap.toContinuousLinearMap
-      { toFun := fun W =>
-          (bilin12At (I := I) A
-              (ContinuousMultilinearMap.curryLeft
-                (q : ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real)
-                W) :
-            ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real)
-        map_add' := by
-          intro W₁ W₂
-          rw [map_add]
-          exact (bilin12At (I := I) A).toCLM.map_add _ _
-        map_smul' := by
-          intro c W
-          rw [map_smul]
-          exact (bilin12At (I := I) A).toCLM.map_smul c _ })
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x).symm
+    (ContinuousLinearMap.uncurryLeft (𝕜 := Real) (n := 2)
+      (Ei := fun _ : Fin 3 => TangentSpace I x) (G := Real)
+      (LinearMap.toContinuousLinearMap
+        { toFun := fun W =>
+            tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x
+              (bilin12At (I := I) A
+                ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x).symm
+                  (ContinuousMultilinearMap.curryLeft
+                    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x q) W)))
+          map_add' := by
+            intro W₁ W₂
+            rw [map_add, map_add, map_add, map_add]
+          map_smul' := by
+            intro c W
+            rw [map_smul, map_smul, map_smul, map_smul, RingHom.id_apply] }))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem lowerBilinOut_apply
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (w : Fin 3 -> TangentSpace I x) :
-    lowerBilinOut (I := I) q A w =
-      q (fun a : Fin 2 => if a = 0 then w 0 else (A (w 2)) (w 1)) := by
-  have h : lowerBilinOut (I := I) q A w =
-      bilin12At (I := I) A
-        (ContinuousMultilinearMap.curryLeft
-          (q : ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real) (w 0))
+    Tensor0SSpace.eval (lowerBilinOut (I := I) q A) w =
+      Tensor0SSpace.eval q
+        (fun a : Fin 2 => if a = 0 then w 0 else (A (w 2)) (w 1)) := by
+  have h : Tensor0SSpace.eval (lowerBilinOut (I := I) q A) w =
+      Tensor0SSpace.eval
+        (bilin12At (I := I) A
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x).symm
+            (ContinuousMultilinearMap.curryLeft
+              (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x q) (w 0))))
         (Fin.tail w) := by
-    rw [lowerBilinOut, ContinuousLinearMap.uncurryLeft_apply]
-    exact rfl
-  rw [h, bilin12At_apply, ContinuousMultilinearMap.curryLeft_apply]
+    unfold lowerBilinOut Tensor0SSpace.eval
+    rw [ContinuousLinearEquiv.apply_symm_apply, ContinuousLinearMap.uncurryLeft_apply]
+    rw [LinearMap.coe_toContinuousLinearMap']
+    rfl
+  rw [h, bilin12At_apply, Tensor0SSpace.eval_fiber_equiv_symm,
+    ContinuousMultilinearMap.curryLeft_apply]
+  change Tensor0SSpace.eval q
+      (Fin.cons (w 0) (fun x_1 => (A (Fin.tail w 1)) (Fin.tail w 0))) = _
   congr 1
   funext a
   fin_cases a <;> simp [Fin.tail]
@@ -109,24 +119,26 @@ private def lowerStdPerm : Equiv.Perm (Fin 3) where
 def lowerBilin (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x :=
-  ContinuousMultilinearMap.domDomCongr lowerStdPerm
+  Tensor0SSpace.domDomCongr
     (lowerBilinOut (I := I)
-      (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1) q) A)
+      (Tensor0SSpace.domDomCongr q (Equiv.swap (0 : Fin 2) 1)) A)
+    lowerStdPerm
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem lowerBilin_apply
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (v : Fin 3 -> TangentSpace I x) :
-    lowerBilin (I := I) q A v =
-      q (fun a : Fin 2 => if a = 0 then (A (v 1)) (v 0) else v 2) := by
-  have h : lowerBilin (I := I) q A v =
-      lowerBilinOut (I := I)
-        (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1) q) A
+    Tensor0SSpace.eval (lowerBilin (I := I) q A) v =
+      Tensor0SSpace.eval q
+        (fun a : Fin 2 => if a = 0 then (A (v 1)) (v 0) else v 2) := by
+  have h : Tensor0SSpace.eval (lowerBilin (I := I) q A) v =
+      Tensor0SSpace.eval
+        (lowerBilinOut (I := I)
+          (Tensor0SSpace.domDomCongr q (Equiv.swap (0 : Fin 2) 1)) A)
         (fun i : Fin 3 => v (lowerStdPerm i)) := rfl
   rw [h, lowerBilinOut_apply]
-  change ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1) q _ = _
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  rw [Tensor0SSpace.eval_domDomCongr]
   congr 1
   funext a
   fin_cases a <;> simp [lowerStdPerm]
@@ -169,8 +181,8 @@ theorem bilin_expand {ι : Type*} [Fintype ι]
   have hX : (∑ i, b.repr X i • b i) = X := b.sum_repr X
   have step1 : (A Y) X = ∑ j, b.repr Y j • ((A (b j)) X) := by
     conv_lhs => rw [← hY]
-    simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply,
-      ContinuousLinearMap.smul_apply]
+    simp only [map_sum, map_smul, sum_apply,
+      smul_apply]
   have step2 : ∀ j : ι, (A (b j)) X = ∑ i, b.repr X i • (A (b j)) (b i) := by
     intro j
     conv_lhs => rw [← hX]
@@ -201,31 +213,22 @@ theorem connectionDifferenceDot_apply (g₁ g₂ : Real → SmoothRiemannianMetr
     (Adot : (x : M) →
       TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (t : Real) (x : M) (v : Fin 3 -> TangentSpace I x) :
-    connectionDifferenceDot (I := I) g₁ g₂ Adot t x v =
+    Tensor0SSpace.eval (connectionDifferenceDot (I := I) g₁ g₂ Adot t x) v =
       (-2 : Real) * metricRicciAt (I := I) (g₁ t) x
           (fun a : Fin 2 => if a = 0 then
             CovariantDerivative.difference (metricCov (I := I) (g₁ t))
               (metricCov (I := I) (g₂ t)) x (v 1) (v 0) else v 2) +
         (g₁ t).inner x ((Adot x (v 1)) (v 0)) (v 2) := by
   have hadd :
-      connectionDifferenceDot (I := I) g₁ g₂ Adot t x v =
-        ((-2 : Real) •
+      Tensor0SSpace.eval (connectionDifferenceDot (I := I) g₁ g₂ Adot t x) v =
+        Tensor0SSpace.eval (((-2 : Real) •
             lowerBilin (I := I) (metricRicciAt (I := I) (g₁ t) x)
               (CovariantDerivative.difference (metricCov (I := I) (g₁ t))
-                (metricCov (I := I) (g₂ t)) x)) v +
-          lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x) (Adot x) v :=
-    Tensor0SSpace.add_apply (I := I) 3 x _ _ v
-  have hsmul :
-      ((-2 : Real) •
-          lowerBilin (I := I) (metricRicciAt (I := I) (g₁ t) x)
-            (CovariantDerivative.difference (metricCov (I := I) (g₁ t))
-              (metricCov (I := I) (g₂ t)) x)) v =
-        (-2 : Real) •
-          lowerBilin (I := I) (metricRicciAt (I := I) (g₁ t) x)
-            (CovariantDerivative.difference (metricCov (I := I) (g₁ t))
-              (metricCov (I := I) (g₂ t)) x) v :=
-    Tensor0SSpace.smul_apply (I := I) 3 x (-2 : Real) _ v
-  rw [hadd, hsmul, lowerBilin_apply, lowerBilin_apply, smul_eq_mul,
+                (metricCov (I := I) (g₂ t)) x)) +
+          lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x) (Adot x)) v := rfl
+  rw [hadd, Tensor0SSpace.eval_add, Tensor0SSpace.eval_smul,
+    lowerBilin_apply, lowerBilin_apply, Tensor0SSpace.eval_eq,
+    Tensor0SSpace.eval_eq, smul_eq_mul,
     metricTensorField_apply]
   simp
 
@@ -252,8 +255,10 @@ theorem connectionDifferenceLow_hasDerivAt
             (metricCov (I := I) (g₂ r)) x Y X)
         ((Adot x Y) X) t)
     (v : Fin 3 -> TangentSpace I x) :
-    HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
-      (connectionDifferenceDot (I := I) g₁ g₂ Adot t x v) t := by
+    HasDerivAt
+      (fun r : Real =>
+        Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x) v)
+      (Tensor0SSpace.eval (connectionDifferenceDot (I := I) g₁ g₂ Adot t x) v) t := by
   classical
   set b : Module.Basis
       (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x) :=
@@ -275,7 +280,7 @@ theorem connectionDifferenceLow_hasDerivAt
       ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
         (fun a : Fin 2 => if a = 0 then b k else v 2)) t := fun k => hPDE₁ (b k) (v 2)
   have hsum : ∀ r : Real,
-      connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v =
+      Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x) v =
         ∑ k, b.repr (F r) k * (g₁ r).inner x (b k) (v 2) := by
     intro r
     rw [connectionDifferenceLowAt_apply]
@@ -304,7 +309,7 @@ theorem connectionDifferenceLow_hasDerivAt
       (∑ k, (b.repr Fdot k * (g₁ t).inner x (b k) (v 2) +
         b.repr (F t) k * ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
           (fun a : Fin 2 => if a = 0 then b k else v 2)))) =
-        connectionDifferenceDot (I := I) g₁ g₂ Adot t x v := by
+        Tensor0SSpace.eval (connectionDifferenceDot (I := I) g₁ g₂ Adot t x) v := by
     rw [Finset.sum_add_distrib, connectionDifferenceDot_apply]
     have hg : (∑ k, b.repr Fdot k * (g₁ t).inner x (b k) (v 2)) =
         (g₁ t).inner x Fdot (v 2) := by
@@ -359,7 +364,7 @@ theorem connectionDifferenceVec_hasDerivAt [Finite Idx]
           (metricCov (I := I) (g₂ r)) x Y X)
       ((Adot x Y) X) t := by
   classical
-  haveI : Fintype Idx := Fintype.ofFinite Idx
+  let _ : Fintype Idx := Fintype.ofFinite Idx
   set b : Module.Basis Idx Real (TangentSpace I x) := hframe.toBasisAt hx with hbdef
   have hbcoe : ∀ i : Idx, b i = frame i x := fun i =>
     IsLocalFrameOn.toBasisAt_coe hframe hx i
@@ -473,7 +478,7 @@ theorem connectionDifferenceLow_hasDerivAt_frame [Finite Idx]
     HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
       (connectionDifferenceDot (I := I) g₁ g₂ Adot t x v) t := by
   classical
-  haveI : Fintype Idx := Fintype.ofFinite Idx
+  let _ : Fintype Idx := Fintype.ofFinite Idx
   exact connectionDifferenceLow_hasDerivAt (I := I) g₁ g₂ Adot hPDE₁
     (fun X Y => connectionDifferenceVec_hasDerivAt (I := I) g₁ g₂ frame hframe hu hx Adot hΓ X Y) v
 

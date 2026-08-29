@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldAppl
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold Topology ContDiff
@@ -67,6 +66,7 @@ private theorem fiber_path_le
   have hroot := Real.sqrt_le_sqrt hsq
   simpa only [fiberLpFun, Real.sqrt_sq hA] using hroot
 
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderPathIntegral_zero_uniform_bound :
     ∃ K : Real, 0 ≤ K ∧
       ∀ (g : SmoothRiemannianMetric I M)

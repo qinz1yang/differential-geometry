@@ -26,7 +26,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 theorem operatorFieldComposition_zero_right (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) :
     ccOperatorFieldComp (I := I) (M := M) g a b c Φ (0 : SmoothCcTensor g a b) = 0 := by
@@ -39,7 +40,7 @@ theorem operatorFieldComposition_zero_right (g : SmoothRiemannianMetric I M) (a 
   exact (add_left_cancel h0).symm
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_eq_zero_of_covGrad_eq_zero (g : SmoothRiemannianMetric I M) (a b : ℕ)
     (W : SmoothCcTensor g a b)
     (hW : covGrad (I := I) (M := M) g a b W = 0) :
@@ -53,7 +54,7 @@ theorem iteratedCovGrad_eq_zero_of_covGrad_eq_zero (g : SmoothRiemannianMetric I
       rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma operatorFieldApplicationLeibnizPsi_order_zero (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) (i : ℕ) :
     operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ i 0 =
@@ -66,7 +67,7 @@ private lemma operatorFieldApplicationLeibnizPsi_order_zero (g : SmoothRiemannia
           iteratedCovGrad (I := I) g b c (i + 1) Φ
       rw [ih, iteratedCovGrad_succ]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem iteratedCovGrad_operatorFieldCompose_of_covGrad_right_eq_zero
     (g : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g a b)

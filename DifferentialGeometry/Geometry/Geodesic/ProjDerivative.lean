@@ -7,6 +7,7 @@ import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
+
 noncomputable section
 
 open Bundle Manifold Set Filter Function
@@ -550,12 +551,12 @@ theorem IsMIntegralCurveAt.mfderiv_proj_one {g : SmoothRiemannianMetric I M} {f 
       (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) ((f t₀).snd : E)) := by
     refine ⟨hγ_cont, ?_⟩
     have hext_self : extChartAt 𝓘(ℝ, ℝ) t₀ t₀ = t₀ := by
-      simp
+      simp [extChartAt, chartAt_self_eq]
     rw [hext_self]
     have hrewrite :
         writtenInExtChartAt 𝓘(ℝ, ℝ) I t₀ γ = extChartAt I (f t₀).proj ∘ γ := by
       funext s
-      simp [writtenInExtChartAt, hγ_def]
+      simp [writtenInExtChartAt, hγ_def, chartAt_self_eq]
     rw [hrewrite]
     exact hfdw
   have hmfd : mfderiv 𝓘(ℝ, ℝ) I γ t₀ =

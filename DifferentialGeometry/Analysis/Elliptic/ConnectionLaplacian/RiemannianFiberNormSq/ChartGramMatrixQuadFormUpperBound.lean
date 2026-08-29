@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -60,7 +59,7 @@ private lemma chartGramMatrix_eq_inner
   chartGramMatrix_apply g α b i j
 
 private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
-    [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C₀ : ℝ, 0 ≤ C₀ ∧
       ∀ b : M, b ∈ tsupport (fun x : M =>
@@ -107,7 +106,7 @@ private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
   linarith
 
 theorem exists_chartGramMatrix_quadForm_upper_bound_on_pouTsupport
-    [I.Boundaryless] [SigmaCompactSpace M] [CompactSpace M]
+    [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {b : M}, b ∈ tsupport (fun x : M =>

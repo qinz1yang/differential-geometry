@@ -166,7 +166,13 @@ private lemma partialDeriv_jointContDiffOn {G : ℝ × E → ℝ} {U : Set (ℝ 
   have hdiffAt : DifferentiableAt ℝ G q :=
     (hG.differentiableOn (by simp)).differentiableAt (hUopen.mem_nhds hq)
   have hι : HasFDerivAt (fun z : E => (q.1, z)) (ContinuousLinearMap.inr ℝ ℝ E) q.2 := by
-    simpa using (hasFDerivAt_const (q.1) q.2).prodMk (hasFDerivAt_id q.2)
+    have hι' : HasFDerivAt (fun z : E => (q.1, z))
+        (ContinuousLinearMap.prod (0 : E →L[ℝ] ℝ) (ContinuousLinearMap.id ℝ E)) q.2 :=
+      (hasFDerivAt_const (q.1) q.2).prodMk (hasFDerivAt_id q.2)
+    refine hι'.congr_fderiv ?_
+    apply ContinuousLinearMap.ext
+    intro v
+    rfl
   have hslice : HasFDerivAt (fun z : E => G (q.1, z))
       ((fderiv ℝ G q).comp (ContinuousLinearMap.inr ℝ ℝ E)) q.2 :=
     hdiffAt.hasFDerivAt.comp q.2 hι
@@ -198,7 +204,7 @@ private lemma spatialJet_set
       (G := fun t y => fderiv ℝ (G t) y) hJ hV hfd
     have hcurried :=
       (continuousMultilinearCurryFin1 ℝ E (E →L[ℝ] F)).symm.contDiff.comp_contDiffOn hfd2
-    letI :
+    let :
         NormedAddCommGroup
           (ContinuousMultilinearMap ℝ (fun _ : Fin 1 => E) (E →L[ℝ] F)) :=
       ContinuousMultilinearMap.normedAddCommGroup
@@ -697,8 +703,12 @@ theorem metricVariationEquationOn_of_pde
       ((-2 : ℝ) * DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g (t : ℝ)) x X Y)
       (Set.Ico a b) (t : ℝ) :=
     (hpde (t : ℝ) htmem x X Y).mono Set.Ico_subset_Ici_self
-  simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor,
-    DifferentialGeometry.ricciCurvatureAt_leviCivita_apply_eq_ricciTensor] using h
+  simpa [MetricVariationEquationOn,
+    DifferentialGeometry.PDE.RicciFlow.MetricConnectionFamilyVariationEquationOn,
+    SolutionOn.family, RicciAtFamily.toTensorField, SolutionOn.ricciAt,
+    SolutionFamily.ricciAt,
+    DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen,
+    metricRicciAt_apply_eq_ricciTensor] using h
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -768,7 +778,7 @@ theorem metricFamilySmoothOn_of_chartGram
           (fun s : ℝ => Tensor0SBundle.metricTensorField (I := I) (g s) x
             (DifferentialGeometry.Geometry.Curvature.vec2 X Y))
           (Set.Ico a b) := by
-      rw [continuousOn_iff_continuous_restrict]
+      rw [continuousOn_iff_continuous_domRestrict]
       exact hcontTensor.eval_continuous (P := {s : ℝ // s ∈ Set.Ico a b})
         (τ := Subtype.val) (b := fun _ => x) continuous_subtype_val
         (fun p => p.2) continuous_const
@@ -897,7 +907,7 @@ theorem rm04Cont_of_joint [I.Boundaryless]
           chartRiemannTensor (I := I) (g q.1) x₀ (idx 2) (idx 0) (idx 1) l (extChartAt I x₀ q.2) *
             Integral.Measure.chartGramMatrix (I := I) (g q.1) x₀ q.2 (idx 3) l)
       (J ×ˢ chartLeviCivitaGoodSet (I := I) x₀) := by
-    refine continuousOn_finset_sum _ (fun l _ => ?_)
+    refine continuousOn_finsetSum _ (fun l _ => ?_)
     refine (chartRiemann_jointContinuousOn (I := I) g x₀
         (J ×ˢ chartLeviCivitaGoodSet (I := I) x₀) (fun q hq => hq.2)
         (fun a' b' => chartGram_jet_set
@@ -1040,7 +1050,6 @@ theorem scalarTime_of_joint [I.Boundaryless]
         chartInvGramOnE (I := I) (g s') x i j (extChartAt I x x) *
           chartRicciTensor (I := I) (g s') x i j (extChartAt I x x) := by
     intro s'
-    change DifferentialGeometry.Geometry.Curvature.metricScalarAt (I := I) (g s') x = _
     rw [metricScalar_chartTrace_eq (I := I) (g s') x hgood]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     rw [ricciTensor_chartBasisVec_alpha_eq (I := I) (g s') x i j hgood]

@@ -49,8 +49,8 @@ private theorem hasDerivAt_second (g : E → ℝ) (hg : ContDiff ℝ 2 g) (x : E
     rw [ContinuousLinearMap.smulRight_apply]
     rw [map_smul]
     simp
-  rw [hasDerivAt_iff_hasFDerivAt]
-  simpa [hdeq] using hcapp
+  simpa only [hdeq, ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul] using
+    hcapp.hasDerivAt
 
 private theorem hasDerivAt_first (g : E → ℝ) (hg : ContDiff ℝ 2 g) (x : E) (t : ℝ) :
     HasDerivAt (fun t : ℝ => g (t • x)) ((fderiv ℝ g (t • x)) x) t := by
@@ -71,8 +71,8 @@ private theorem hasDerivAt_first (g : E → ℝ) (hg : ContDiff ℝ 2 g) (x : E)
     rw [ContinuousLinearMap.smulRight_apply]
     rw [map_smul]
     rfl
-  rw [hasDerivAt_iff_hasFDerivAt]
-  simpa [hdeq] using hcomp
+  simpa only [hdeq, ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul] using
+    hcomp.hasDerivAt
 
 theorem second_order_taylor_integral (g : E → ℝ) (hg : ContDiff ℝ 2 g) (x : E) :
     g x - g 0 = (fderiv ℝ g 0) x + ∫ t in (0 : ℝ)..1,
@@ -138,7 +138,9 @@ theorem second_order_taylor_integral (g : E → ℝ) (hg : ContDiff ℝ 2 g) (x 
   have hIBP : ∫ t in (0 : ℝ)..1, (1 - t) * h'' t = - h' 0 + ∫ t in (0 : ℝ)..1, h' t := by
     have hu : ∀ x : ℝ, x ∈ [[(0 : ℝ), 1]] → HasDerivAt (fun t : ℝ => 1 - t) (-1) x := by
       intro x hx
-      simpa using ((hasDerivAt_const (c := (1 : ℝ)) (x := x)).sub (hasDerivAt_id x))
+      change HasDerivAt ((fun _ : ℝ => 1) - id) (-1) x
+      simpa only [zero_sub] using
+        (hasDerivAt_const (c := (1 : ℝ)) (x := x)).sub (hasDerivAt_id x)
     have hv : ∀ x : ℝ, x ∈ [[(0 : ℝ), 1]] → HasDerivAt h' (h'' x) x := by
       intro x hx
       exact hh'' x
@@ -170,15 +172,22 @@ theorem fderiv_translate {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
   have hc : HasFDerivAt (fun z : E => z + c) (1 : E →L[ℝ] E) y := by
     have h := (hasFDerivAt_id (x := y) (𝕜 := ℝ)).add
       (hasFDerivAt_const (x := y) (c := c) (𝕜 := ℝ))
-    convert h using 1
-    · ext z
-      simp
+    change HasFDerivAt (id + fun _ : E => c) (1 : E →L[ℝ] E) y
+    have hmap : ContinuousLinearMap.id ℝ E + 0 = (1 : E →L[ℝ] E) := by
+      ext z
+      simp only [ContinuousLinearMap.id_apply, add_zero, one_apply_eq_self]
+    rw [hmap] at h
+    exact h
   have hcomp : HasFDerivAt (fun z : E => g (z + c))
       (ContinuousLinearMap.comp (fderiv ℝ g (y + c)) (1 : E →L[ℝ] E)) y := by
     exact HasFDerivAt.comp (x := y) (g := g) (g' := fderiv ℝ g (y + c))
       (f := fun z : E => z + c) (f' := (1 : E →L[ℝ] E)) (hg := hg.hasFDerivAt) (hf := hc)
   have hcomp' : HasFDerivAt (fun z : E => g (z + c)) (fderiv ℝ g (y + c)) y := by
-    simpa using hcomp
+    have hmap : (fderiv ℝ g (y + c)).comp (1 : E →L[ℝ] E) = fderiv ℝ g (y + c) := by
+      ext z
+      rw [ContinuousLinearMap.comp_apply, one_apply_eq_self]
+    rw [hmap] at hcomp
+    exact hcomp
   exact hcomp'.fderiv
 
 theorem fderiv_fderiv_translate (g : E → ℝ) (hg : ContDiff ℝ 2 g) (c y : E) :
@@ -215,7 +224,9 @@ theorem hadamardFactor_contDiff (f : ℝ → F) (hf : ContDiff ℝ (⊤ : ℕ∞
     exact hderiv.comp_contDiffOn hinner.contDiffOn
   have hmain := contDiffOn_paramIntervalIntegral
     (f := fun x : ℝ => fun t : ℝ => deriv f (a + t * (x - a))) hH
-  exact contDiffOn_univ.mp (by simpa [hadamardFactor] using hmain)
+  change ContDiff ℝ (⊤ : ℕ∞)
+    (fun x : ℝ => ∫ t in (0 : ℝ)..1, deriv f (a + t * (x - a)))
+  exact contDiffOn_univ.mp hmain
 
 theorem hadamard_factorization (f : ℝ → F) (hf : ContDiff ℝ (⊤ : ℕ∞) f) (a x : ℝ) :
     f x - f a = (x - a) • hadamardFactor f a x := by

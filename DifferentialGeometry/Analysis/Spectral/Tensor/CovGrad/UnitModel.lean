@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def unitTensor (x : M) : Tensor0SSpace 0 I x :=
   Tensor0SSpace.ofModel
     (ContinuousMultilinearMap.constOfIsEmpty ℝ
-      (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
+      (fun _ : Fin 0 => E) (1 : ℝ))
 
 def unitModel (g : SmoothRiemannianMetric I M) (s : ℕ)
     (W : SmoothCcTensor g 0 s) (x : M) : Tensor0SModel s ℝ E :=

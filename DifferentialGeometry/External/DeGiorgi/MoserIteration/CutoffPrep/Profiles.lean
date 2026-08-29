@@ -38,20 +38,22 @@ theorem moserSmoothClip_contDiff {ε N : ℝ} (_hε : 0 < ε) :
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t / ε) := by
       simpa [div_eq_mul_inv, mul_comm] using
         ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => ε⁻¹).mul contDiff_id)
-    simpa using Real.smoothTransition.contDiff.comp hlin
+    convert Real.smoothTransition.contDiff.comp hlin using 1 <;>
+      ext <;> rfl
   have hσ₁ :
       ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => Real.smoothTransition (N + 1 - t)) := by
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => N + 1 - t) := by
       simpa using
         ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => N + 1).sub contDiff_id)
-    simpa using Real.smoothTransition.contDiff.comp hlin
-  simpa [moserSmoothClip]
-    using (((contDiff_id.mul hσ₀).mul hσ₁).add
+    convert Real.smoothTransition.contDiff.comp hlin using 1 <;>
+      ext <;> rfl
+  convert (((contDiff_id.mul hσ₀).mul hσ₁).add
     (contDiff_const.mul (contDiff_const.sub hσ₁))
       : ContDiff ℝ (⊤ : ℕ∞)
           (fun t : ℝ =>
             t * Real.smoothTransition (t / ε) * Real.smoothTransition (N + 1 - t) +
-              N * (1 - Real.smoothTransition (N + 1 - t))))
+              N * (1 - Real.smoothTransition (N + 1 - t)))) using 1 <;>
+    rfl
 
 theorem moserSmoothClip_eq_zero_of_nonpos
     {ε N t : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) (ht : t ≤ 0) :
@@ -144,7 +146,8 @@ theorem moserRegPow_contDiff {ε N p : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) :
           dsimp [moserSmoothClip]
           positivity
     linarith
-  simpa [moserRegPow] using (hbase.rpow_const_of_ne hbase_ne).sub contDiff_const
+  convert (hbase.rpow_const_of_ne hbase_ne).sub contDiff_const using 1 <;>
+    rfl
 
 theorem moserRegPow_eq_zero_of_nonpos
     {ε N p t : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) (ht : t ≤ 0) :
@@ -218,7 +221,8 @@ theorem moserRegTestPow_contDiff {ε N p : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) :
             exact mul_nonneg hN this
           linarith
     linarith
-  simpa [moserRegTestPow] using (hbase.rpow_const_of_ne hbase_ne).sub contDiff_const
+  convert (hbase.rpow_const_of_ne hbase_ne).sub contDiff_const using 1 <;>
+    rfl
 
 theorem moserRegTestPow_eq_zero_of_nonpos
     {ε N p t : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) (ht : t ≤ 0) :
@@ -286,7 +290,6 @@ theorem moserExactLeftTransition_eq_one_of_nonneg
     {ε t : ℝ} (hε : 0 < ε) (ht : 0 ≤ t) :
     moserExactLeftTransition ε t = 1 := by
   apply Real.smoothTransition.one_of_one_le
-  dsimp [moserExactLeftTransition]
   have haux : 1 ≤ 1 + (2 / ε) * t := by
     have : 0 ≤ (2 / ε) * t := by positivity
     linarith
@@ -316,7 +319,6 @@ theorem moserExactInput_lower_bound
   by_cases ht0 : t ≤ -ε / 2
   · have hσL : moserExactLeftTransition ε t = 0 := by
       apply Real.smoothTransition.zero_of_nonpos
-      dsimp [moserExactLeftTransition]
       have : 1 + (2 / ε) * t ≤ 0 := by
         have hcoeff_nonneg : 0 ≤ 2 / ε := by positivity
         have hmul : (2 / ε) * t ≤ (2 / ε) * (-ε / 2) :=
@@ -419,8 +421,9 @@ theorem moserExactLeftTransition_contDiff
     simpa [mul_comm, mul_left_comm, mul_assoc] using
       ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => 2 / ε).mul contDiff_id).add
         contDiff_const
-  simpa [moserExactLeftTransition, add_comm, add_left_comm, add_assoc] using
-    Real.smoothTransition.contDiff.comp hlin
+  convert Real.smoothTransition.contDiff.comp hlin using 1 <;> try rfl
+  ext t
+  simp only [moserExactLeftTransition, Function.comp_apply, add_comm]
 
 theorem moserExactInput_contDiff
     {ε N : ℝ} (hε : 0 < ε) :
@@ -433,14 +436,15 @@ theorem moserExactInput_contDiff
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => N + 1 - t) := by
       simpa using
         ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => N + 1).sub contDiff_id)
-    simpa using Real.smoothTransition.contDiff.comp hlin
-  simpa [moserExactInput, moserExactLeftTransition] using
-    (((contDiff_id.mul hσL).mul hσR).add
+    convert Real.smoothTransition.contDiff.comp hlin using 1 <;>
+      ext <;> rfl
+  convert (((contDiff_id.mul hσL).mul hσR).add
       (contDiff_const.mul (contDiff_const.sub hσR))
       : ContDiff ℝ (⊤ : ℕ∞)
           (fun t : ℝ =>
             t * Real.smoothTransition (1 + (2 / ε) * t) * Real.smoothTransition (N + 1 - t) +
-              N * (1 - Real.smoothTransition (N + 1 - t))))
+              N * (1 - Real.smoothTransition (N + 1 - t)))) using 1 <;>
+    rfl
 
 theorem moserExactBase_ne_zero
     {ε N : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) :
@@ -459,16 +463,18 @@ theorem moserExactRegPow_contDiff
     ContDiff ℝ (⊤ : ℕ∞) (moserExactRegPow ε N p) := by
   have hbase : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => ε + moserExactInput ε N t) := by
     exact contDiff_const.add (moserExactInput_contDiff (ε := ε) (N := N) hε)
-  simpa [moserExactRegPow] using
-    (hbase.rpow_const_of_ne (moserExactBase_ne_zero (ε := ε) (N := N) hε hN)).sub contDiff_const
+  convert (hbase.rpow_const_of_ne
+      (moserExactBase_ne_zero (ε := ε) (N := N) hε hN)).sub contDiff_const using 1 <;>
+    rfl
 
 theorem moserExactRegTestPow_contDiff
     {ε N p : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) :
     ContDiff ℝ (⊤ : ℕ∞) (moserExactRegTestPow ε N p) := by
   have hbase : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => ε + moserExactInput ε N t) := by
     exact contDiff_const.add (moserExactInput_contDiff (ε := ε) (N := N) hε)
-  simpa [moserExactRegTestPow] using
-    (hbase.rpow_const_of_ne (moserExactBase_ne_zero (ε := ε) (N := N) hε hN)).sub contDiff_const
+  convert (hbase.rpow_const_of_ne
+      (moserExactBase_ne_zero (ε := ε) (N := N) hε hN)).sub contDiff_const using 1 <;>
+    rfl
 
 theorem moserExactRegPow_deriv_bounded
     {ε N p : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) :
@@ -486,7 +492,6 @@ theorem moserExactRegPow_deriv_bounded
         filter_upwards [Iio_mem_nhds ht0] with y hy
         have hσL : moserExactLeftTransition ε y = 0 := by
           apply Real.smoothTransition.zero_of_nonpos
-          dsimp [moserExactLeftTransition]
           have : 1 + (2 / ε) * y ≤ 0 := by
             have hcoeff_nonneg : 0 ≤ 2 / ε := by positivity
             have hmul : (2 / ε) * y ≤ (2 / ε) * (-ε / 2) :=
@@ -534,7 +539,6 @@ theorem moserExactRegTestPow_deriv_bounded
         filter_upwards [Iio_mem_nhds ht0] with y hy
         have hσL : moserExactLeftTransition ε y = 0 := by
           apply Real.smoothTransition.zero_of_nonpos
-          dsimp [moserExactLeftTransition]
           have : 1 + (2 / ε) * y ≤ 0 := by
             have hcoeff_nonneg : 0 ≤ 2 / ε := by positivity
             have hmul : (2 / ε) * y ≤ (2 / ε) * (-ε / 2) :=

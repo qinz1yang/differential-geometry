@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarLowerBound
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -42,13 +44,13 @@ theorem parabolicOperatorWithDrift_affine_sub
       (fun s : Real => a + b * s) (Set.Icc 0 T) t := by
     have hlin : DifferentiableWithinAt Real (fun s : Real => b * s) (Set.Icc 0 T) t := by
       simpa using
-        (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
+        (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
     exact (differentiableWithinAt_const a).add hlin
   have hbarrier_deriv :
       derivWithin (fun s : Real => a + b * s) (Set.Icc 0 T) t = b := by
     have hlin : DifferentiableWithinAt Real (fun s : Real => b * s) (Set.Icc 0 T) t := by
       simpa using
-        (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
+        (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
     rw [derivWithin_fun_add (differentiableWithinAt_const a) hlin]
     have hconst_deriv :
         derivWithin (fun _s : Real => a) (Set.Icc 0 T) t = 0 :=
@@ -154,9 +156,11 @@ theorem laplacianAt_linear_combo
             DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) g y) := by
     funext y
     have hc1 : MDifferentiableAt I 𝓘(Real, Real) (fun z : M => c1 * f z) y := by
-      simpa using (hf y).const_smul c1
+      change MDifferentiableAt I 𝓘(Real, Real) (c1 • f) y
+      exact (hf y).const_smul c1
     have hc2 : MDifferentiableAt I 𝓘(Real, Real) (fun z : M => c2 * g z) y := by
-      simpa using (hg y).const_smul c2
+      change MDifferentiableAt I 𝓘(Real, Real) (c2 • g) y
+      exact (hg y).const_smul c2
     calc
       DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t)
           (fun z : M => c1 * f z + c2 * g z) y =
@@ -257,7 +261,7 @@ theorem scalar_subsolution_affine_bound
         (fun s : Real => a + b * s) (Set.Icc 0 T) t := by
       have hlin : DifferentiableWithinAt Real (fun s : Real => b * s) (Set.Icc 0 T) t := by
         simpa using
-          (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
+          (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
       exact (differentiableWithinAt_const a).add hlin
     exact hbarrier.sub (hF_time t ht htpos x)
   have hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
@@ -462,8 +466,12 @@ theorem bernstein_first_derivative_estimate
             (u t x + t * du) (Set.Icc 0 T) t := by
         have hid : HasDerivWithinAt (fun s : Real => s) 1 (Set.Icc 0 T) t :=
           hasDerivWithinAt_id t (Set.Icc 0 T)
-        have := hid.mul hdu_slab
-        simpa [one_mul, mul_comm] using this
+        have hmul := hid.mul hdu_slab
+        have hfun : (fun s : Real => s * u s x) =
+            (fun s : Real => s) * fun s : Real => u s x := by
+          rfl
+        rw [hfun, show u t x + t * du = 1 * u t x + t * du by ring]
+        exact hmul
       have hscaled :
           HasDerivWithinAt (fun s : Real => β * v s x)
             (β * (vLap t x + (-2 * u t x + reaction t x))) (Set.Icc 0 T) t :=

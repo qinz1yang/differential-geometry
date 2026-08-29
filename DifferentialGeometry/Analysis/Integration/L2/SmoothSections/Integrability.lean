@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Compactness.SigmaCompact
@@ -27,7 +27,6 @@ import Mathlib.Topology.Algebra.Support
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -219,7 +218,7 @@ private lemma tensorRS_centre_point_identity
   rw [heq]
   ext v
   unfold ContinuousLinearMap.inCoordinates
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   rw [tensor0S_symmL_self_apply (I := I) (M := M) r x v]
   rw [tensor0S_continuousLinearMapAt_self_apply (I := I) (M := M) s x
     ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from S.toSection x) v)]
@@ -308,7 +307,7 @@ theorem integrable_inner_cross
       (fun x : M => tensorInnerPointwise (I := I) (M := M) g r s x
         (S.toFun x) (T.toFun x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact (continuous_inner_cross (I := I) (M := M) S T).integrable_of_hasCompactSupport

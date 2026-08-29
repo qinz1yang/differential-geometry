@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -43,57 +42,57 @@ def permOfImages {n : ℕ} (f g : Fin n → Fin n)
     (h₁ : Function.LeftInverse g f) (h₂ : Function.RightInverse g f) : Equiv.Perm (Fin n) :=
   ⟨f, g, h₁, h₂⟩
 
-def perm2_10 : Equiv.Perm (Fin 2) :=
+def perm210 : Equiv.Perm (Fin 2) :=
   permOfImages ![1, 0] ![1, 0] (by decide) (by decide)
 
-def perm3_102 : Equiv.Perm (Fin 3) :=
+def perm3102 : Equiv.Perm (Fin 3) :=
   permOfImages ![1, 0, 2] ![1, 0, 2] (by decide) (by decide)
 
-def perm3_120 : Equiv.Perm (Fin 3) :=
+def perm3120 : Equiv.Perm (Fin 3) :=
   permOfImages ![1, 2, 0] ![2, 0, 1] (by decide) (by decide)
 
-def perm4_0312 : Equiv.Perm (Fin 4) :=
+def perm40312 : Equiv.Perm (Fin 4) :=
   permOfImages ![0, 3, 1, 2] ![0, 2, 3, 1] (by decide) (by decide)
 
-def perm4_0213 : Equiv.Perm (Fin 4) :=
+def perm40213 : Equiv.Perm (Fin 4) :=
   permOfImages ![0, 2, 1, 3] ![0, 2, 1, 3] (by decide) (by decide)
 
-def perm4_2301 : Equiv.Perm (Fin 4) :=
+def perm42301 : Equiv.Perm (Fin 4) :=
   permOfImages ![2, 3, 0, 1] ![2, 3, 0, 1] (by decide) (by decide)
 
-def perm4_1302 : Equiv.Perm (Fin 4) :=
+def perm41302 : Equiv.Perm (Fin 4) :=
   permOfImages ![1, 3, 0, 2] ![2, 0, 3, 1] (by decide) (by decide)
 
-def perm4_1203 : Equiv.Perm (Fin 4) :=
+def perm41203 : Equiv.Perm (Fin 4) :=
   permOfImages ![1, 2, 0, 3] ![2, 0, 1, 3] (by decide) (by decide)
 
-def perm4_3012 : Equiv.Perm (Fin 4) :=
+def perm43012 : Equiv.Perm (Fin 4) :=
   permOfImages ![3, 0, 1, 2] ![1, 2, 3, 0] (by decide) (by decide)
 
-def perm4_2013 : Equiv.Perm (Fin 4) :=
+def perm42013 : Equiv.Perm (Fin 4) :=
   permOfImages ![2, 0, 1, 3] ![1, 2, 0, 3] (by decide) (by decide)
 
-def perm4_3201 : Equiv.Perm (Fin 4) :=
+def perm43201 : Equiv.Perm (Fin 4) :=
   permOfImages ![3, 2, 0, 1] ![2, 3, 1, 0] (by decide) (by decide)
 
-def perm4_3102 : Equiv.Perm (Fin 4) :=
+def perm43102 : Equiv.Perm (Fin 4) :=
   permOfImages ![3, 1, 0, 2] ![2, 1, 3, 0] (by decide) (by decide)
 
-def perm4_2103 : Equiv.Perm (Fin 4) :=
+def perm42103 : Equiv.Perm (Fin 4) :=
   permOfImages ![2, 1, 0, 3] ![2, 1, 0, 3] (by decide) (by decide)
 
-def perm4_0231 : Equiv.Perm (Fin 4) :=
+def perm40231 : Equiv.Perm (Fin 4) :=
   permOfImages ![0, 2, 3, 1] ![0, 3, 1, 2] (by decide) (by decide)
 
-def perm4_0321 : Equiv.Perm (Fin 4) :=
+def perm40321 : Equiv.Perm (Fin 4) :=
   permOfImages ![0, 3, 2, 1] ![0, 3, 2, 1] (by decide) (by decide)
 
 noncomputable def slotPermCLM {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M) :
     Tensor0SBundle.Tensor0SSpace d I x →L[ℝ] Tensor0SBundle.Tensor0SSpace d I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) d x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).symm.toContinuousLinearMap.comp
     (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
           ρ).toContinuousLinearEquiv.toContinuousLinearMap).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) d x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).toContinuousLinearMap)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -105,18 +104,18 @@ theorem slotPermCLM_apply {d : ℕ} (ρ : Equiv.Perm (Fin d)) (x : M)
         (ContinuousMultilinearMap.domDomCongr ρ
           (Tensor0SBundle.Tensor0SSpace.toModel D)) := by
   rw [slotPermCLM]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
   rfl
 
 noncomputable def tensorProdWithCLM (m k : ℕ) (x : M)
     (P : Tensor0SBundle.Tensor0SSpace m I x) :
     Tensor0SBundle.Tensor0SSpace k I x →L[ℝ] Tensor0SBundle.Tensor0SSpace (m + k) I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I)
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I)
       (m + k) x).symm.toContinuousLinearMap.comp
     ((Bundle.continuousMultilinearMap.modelProductL (𝕜 := ℝ) (F := E) m k
         (Tensor0SBundle.Tensor0SSpace.toModel P)).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) k x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) k x).toContinuousLinearMap)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -129,7 +128,7 @@ theorem tensorProdWithCLM_apply (m k : ℕ) (x : M)
           (Tensor0SBundle.Tensor0SSpace.toModel P)
           (Tensor0SBundle.Tensor0SSpace.toModel Q)) := by
   rw [tensorProdWithCLM]
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearEquiv.coe_coe, Bundle.continuousMultilinearMap.modelProductL_apply]
   rfl
 
@@ -152,12 +151,11 @@ noncomputable def tensorProdPairCLM (m k : ℕ) (x : M) :
               (Tensor0SBundle.Tensor0SSpace.toModel Q) := by
           apply ContinuousMultilinearMap.ext
           intro v
-          simp only [Bundle.continuousMultilinearMap.modelProduct_apply,
-            ContinuousMultilinearMap.add_apply, add_mul]
-        rw [ContinuousLinearMap.add_apply, tensorProdWithCLM_apply, tensorProdWithCLM_apply,
+          simp only [Bundle.continuousMultilinearMap.modelProduct_apply, add_apply, add_mul]
+        rw [add_apply, tensorProdWithCLM_apply, tensorProdWithCLM_apply,
           tensorProdWithCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_add, hsplit]
         exact map_add
-          ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) (m + k) x).symm) _ _
+          ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) (m + k) x).symm) _ _
       map_smul' := fun c P => by
         apply ContinuousLinearMap.ext
         intro Q
@@ -170,12 +168,12 @@ noncomputable def tensorProdPairCLM (m k : ℕ) (x : M) :
           apply ContinuousMultilinearMap.ext
           intro v
           simp only [Bundle.continuousMultilinearMap.modelProduct_apply,
-            ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+            smul_apply, smul_eq_mul]
           ring
-        rw [RingHom.id_apply, ContinuousLinearMap.smul_apply, tensorProdWithCLM_apply,
+        rw [RingHom.id_apply, smul_apply, tensorProdWithCLM_apply,
           tensorProdWithCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_smul, hsplit]
         exact map_smul
-          ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) (m + k) x).symm) c _ }
+          ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) (m + k) x).symm) c _ }
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -186,14 +184,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 noncomputable def contractUnitCLM (n : ℕ) (x : M) :
     Tensor0SBundle.TensorRSSpace 1 (n + 1) I x →L[ℝ] Tensor0SBundle.Tensor0SSpace n I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) n x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) n x).symm.toContinuousLinearMap.comp
     ((ContinuousLinearMap.apply ℝ (Tensor0SBundle.Tensor0SModel n ℝ E)
         (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ))).comp
-      ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 n
+      ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 n
         x).toContinuousLinearMap.comp
         (show Tensor0SBundle.TensorRSSpace 1 (n + 1) I x →L[ℝ]
             Tensor0SBundle.TensorRSSpace 0 n I x from
-          Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 n x)))
+          Tensor0SBundle.contractTrace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 n x)))
 
 noncomputable def connContrCLM (m k : ℕ) (x : M)
     (B : Tensor0SBundle.TensorRSSpace 1 (k + 1) I x) :
@@ -216,50 +214,50 @@ noncomputable def connContrCLM (m k : ℕ) (x : M)
 noncomputable def linearizedRicciConnectionDifferenceOrder1CLM (x : M)
     (A : Tensor0SBundle.TensorRSSpace 1 2 I x) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 4 I x :=
-  -((slotPermCLM (I := I) perm4_0312 x).comp
-        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3_102 x))
-      + (slotPermCLM (I := I) perm4_0213 x).comp
-        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3_120 x))
-      + (slotPermCLM (I := I) perm4_2301 x).comp (connContrCLM (I := I) 2 1 x A)
-      + (slotPermCLM (I := I) perm4_1302 x).comp
-        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3_102 x))
-      + (slotPermCLM (I := I) perm4_1203 x).comp
-        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3_120 x)))
+  -((slotPermCLM (I := I) perm40312 x).comp
+        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3102 x))
+      + (slotPermCLM (I := I) perm40213 x).comp
+        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3120 x))
+      + (slotPermCLM (I := I) perm42301 x).comp (connContrCLM (I := I) 2 1 x A)
+      + (slotPermCLM (I := I) perm41302 x).comp
+        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3102 x))
+      + (slotPermCLM (I := I) perm41203 x).comp
+        ((connContrCLM (I := I) 2 1 x A).comp (slotPermCLM (I := I) perm3120 x)))
 
 noncomputable def linearizedRicciConnectionDifferenceOrder0CLM (x : M)
     (A : Tensor0SBundle.TensorRSSpace 1 2 I x)
     (DA : Tensor0SBundle.TensorRSSpace 1 3 I x) :
     Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 4 I x :=
-  ((slotPermCLM (I := I) perm4_3201 x).comp
+  ((slotPermCLM (I := I) perm43201 x).comp
         ((connContrCLM (I := I) 2 1 x A).comp
-          ((slotPermCLM (I := I) perm3_102 x).comp (connContrCLM (I := I) 1 1 x A)))
-      + (slotPermCLM (I := I) perm4_2301 x).comp
+          ((slotPermCLM (I := I) perm3102 x).comp (connContrCLM (I := I) 1 1 x A)))
+      + (slotPermCLM (I := I) perm42301 x).comp
         ((connContrCLM (I := I) 2 1 x A).comp
-          ((slotPermCLM (I := I) perm3_102 x).comp
-            ((connContrCLM (I := I) 1 1 x A).comp (slotPermCLM (I := I) perm2_10 x))))
-      + (slotPermCLM (I := I) perm4_3102 x).comp
+          ((slotPermCLM (I := I) perm3102 x).comp
+            ((connContrCLM (I := I) 1 1 x A).comp (slotPermCLM (I := I) perm210 x))))
+      + (slotPermCLM (I := I) perm43102 x).comp
         ((connContrCLM (I := I) 2 1 x A).comp
-          ((slotPermCLM (I := I) perm3_120 x).comp (connContrCLM (I := I) 1 1 x A)))
-      + (slotPermCLM (I := I) perm4_1302 x).comp
+          ((slotPermCLM (I := I) perm3120 x).comp (connContrCLM (I := I) 1 1 x A)))
+      + (slotPermCLM (I := I) perm41302 x).comp
         ((connContrCLM (I := I) 2 1 x A).comp
-          ((connContrCLM (I := I) 1 1 x A).comp (slotPermCLM (I := I) perm2_10 x)))
-      + (slotPermCLM (I := I) perm4_1203 x).comp
+          ((connContrCLM (I := I) 1 1 x A).comp (slotPermCLM (I := I) perm210 x)))
+      + (slotPermCLM (I := I) perm41203 x).comp
         ((connContrCLM (I := I) 2 1 x A).comp (connContrCLM (I := I) 1 1 x A))
-      + (slotPermCLM (I := I) perm4_2103 x).comp
+      + (slotPermCLM (I := I) perm42103 x).comp
         ((connContrCLM (I := I) 2 1 x A).comp
-          ((slotPermCLM (I := I) perm3_120 x).comp
-            ((connContrCLM (I := I) 1 1 x A).comp (slotPermCLM (I := I) perm2_10 x)))))
-    - (slotPermCLM (I := I) perm4_3012 x).comp (connContrCLM (I := I) 1 2 x DA)
-    - (slotPermCLM (I := I) perm4_2013 x).comp
-      ((connContrCLM (I := I) 1 2 x DA).comp (slotPermCLM (I := I) perm2_10 x))
+          ((slotPermCLM (I := I) perm3120 x).comp
+            ((connContrCLM (I := I) 1 1 x A).comp (slotPermCLM (I := I) perm210 x)))))
+    - (slotPermCLM (I := I) perm43012 x).comp (connContrCLM (I := I) 1 2 x DA)
+    - (slotPermCLM (I := I) perm42013 x).comp
+      ((connContrCLM (I := I) 1 2 x DA).comp (slotPermCLM (I := I) perm210 x))
 
 noncomputable def ricciCometricFourTraceCLM (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   ((1 : ℝ) / 2) •
-    ((cometricDoubleTraceFib (I := I) g₁ 2 x).comp (slotPermCLM (I := I) perm4_0231 x)
-      + (cometricDoubleTraceFib (I := I) g₁ 2 x).comp (slotPermCLM (I := I) perm4_0321 x)
+    ((cometricDoubleTraceFib (I := I) g₁ 2 x).comp (slotPermCLM (I := I) perm40231 x)
+      + (cometricDoubleTraceFib (I := I) g₁ 2 x).comp (slotPermCLM (I := I) perm40321 x)
       - cometricDoubleTraceFib (I := I) g₁ 2 x
-      - (cometricDoubleTraceFib (I := I) g₁ 2 x).comp (slotPermCLM (I := I) perm4_2301 x))
+      - (cometricDoubleTraceFib (I := I) g₁ 2 x).comp (slotPermCLM (I := I) perm42301 x))
 
 end TensorSpectral
 end Parabolic

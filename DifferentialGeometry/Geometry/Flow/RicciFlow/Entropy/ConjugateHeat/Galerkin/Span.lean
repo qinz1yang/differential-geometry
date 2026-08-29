@@ -74,7 +74,10 @@ theorem gal_span
   have hpert : ContinuousOn
       (fun s : Real ↦ scalarGalPert (I := I) (M := M) S T s)
       (Set.Icc (0 : Real) h) := by
-    simpa only [scalarGalPert, q, Inc] using hcont2.add hPot
+    change ContinuousOn (fun s : Real =>
+      lapDiffA20 (I := I) (M := M) S.family.metric T s +
+        (conjA1 (I := I) (M := M) S T s).comp Inc) (Set.Icc 0 h)
+    exact hcont2.add hPot
   have hG : IsConjGalTime (I := I) (M := M) S T ⟨h⟩ :=
     gal_exists_on (I := I) (M := M) S T hh (hhρ.trans hρone) hpert
   have hbound := gal_bound_on (I := I) (M := M) S T hG
@@ -154,7 +157,7 @@ theorem gallim_unit_span
   rcases isEmpty_or_nonempty M with hM | hM
   · exact Or.inl hM
   · right
-    letI : Nonempty M := hM
+    let _ : Nonempty M := hM
     obtain ⟨ρ, hρ, hρone, hspan⟩ :=
       gallim_span (I := I) (M := M) S hS hab
     refine ⟨ρ, hρ, hρone, ?_⟩
@@ -185,7 +188,8 @@ theorem gallim_unit_span
         dsimp only [u]
         rw [galLim_initial (I := I) (M := M) hlim]
         simpa only [volumeMeasureFamily, metricFamilyForMeasure,
-          riemannianMeasureFamily, reverseFamily, flowG, sub_zero] using hunit
+          riemannianMeasureFamily, reverseFamily, flowG, sub_zero,
+          SolutionOn.family_metric] using hunit
       refine ⟨u, ?_, hpos, ?_⟩
       · simpa only [u] using hpot
       · intro s hs

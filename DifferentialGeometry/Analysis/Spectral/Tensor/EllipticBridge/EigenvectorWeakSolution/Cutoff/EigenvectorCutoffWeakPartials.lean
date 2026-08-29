@@ -97,7 +97,7 @@ private lemma cutoff_smoothApprox_smul_coe_tendsto
       (𝓝 (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
         i)) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_l2 :
       Filter.Tendsto
         (fun n => TensorH1ComplToTensorL2 (I := I) (M := M) g r s
@@ -277,7 +277,7 @@ private lemma eigenvectorCutoffChartComponentL2_tendsto
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           i) α P₀)) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_clm :=
     ((tensorL2ChartComponentCutoffCLM (I := I) (M := M)
         g r s α P₀).continuous.tendsto _).comp
@@ -306,7 +306,7 @@ private lemma eigenvectorCutoffChartComponent_eLpNorm_tendsto
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)) 2
         (chartL2Measure (I := I) (M := M) α))
       atTop (𝓝 0) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   exact (MeasureTheory.Lp.tendsto_Lp_iff_tendsto_eLpNorm'
     (fun n => tensorL2ChartComponentCutoff (I := I) (M := M) g r s
       ((i.fst.val)⁻¹ •
@@ -365,7 +365,7 @@ theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   set uApprox : ℕ → EuclN → ℝ := fun n =>
     ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
         ((i.fst.val)⁻¹ •

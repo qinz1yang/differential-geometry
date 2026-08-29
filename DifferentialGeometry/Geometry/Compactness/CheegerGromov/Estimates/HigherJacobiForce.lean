@@ -41,11 +41,11 @@ theorem curvAlong_le
         C * Real.sqrt (P.metric.inner (γ t) (X t) (X t)) *
           Real.sqrt (P.metric.inner (γ t) (Y t) (Y t)) *
           Real.sqrt (P.metric.inner (γ t) (Z t) (Z t)) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
   intro γ X Y Z t
   simpa only [Geometry.Riemannian.Variation.curvAlong] using
     (HasCurvDerivBound.riemannOp_le (I := I) P hP
@@ -86,11 +86,11 @@ theorem curvDerivAlong_le
           Real.sqrt (P.metric.inner (γ t) (X t) (X t)) *
           Real.sqrt (P.metric.inner (γ t) (Y t) (Y t)) *
           Real.sqrt (P.metric.inner (γ t) (Z t) (Z t)) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
   intro γ X Y Z t hγ hX hY hZ
   rw [Geometry.Riemannian.Variation.curvDeriv_eq_nabla
     (I := I) P.metric γ X Y Z t hγ hX hY hZ]
@@ -184,11 +184,11 @@ theorem jacVarForce_le
           C1 * L A * L J * L T * L T +
           C0 * L J * L K * L T +
           C0 * L J * L T * L K := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
   intro f V t hγt hAt hTt hJt hγs hJs hTs
   let A := Geometry.Riemannian.Variation.varFst (I := I) f 0 t
   let T := Geometry.Riemannian.Variation.varSnd (I := I) f 0 t
@@ -327,8 +327,8 @@ theorem jacVarForce_le
     hneg]
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem intrJacForce_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -358,9 +358,8 @@ theorem intrJacForce_le
     let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (P.metric.inner x v v)) := by
       intro x v
-      simpa using
-        (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) P.metric x v)
+      exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) P.metric x v
     let f : Real → Real → P.M := fun s v =>
       Geometry.Riemannian.Exponential.intrLaunch3
         (I := I) P.metric hEnorm p u a b ((s, 0), v)
@@ -387,30 +386,29 @@ theorem intrJacForce_le
         C1 * L A * L J * L T * L T +
         C0 * L J * L K * L T +
         C0 * L J * L T * L K := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
-  letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
-  letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : T2Space P.M := P.t2
+  let : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
     P.riemBundle (I := I)
-  letI : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+  let : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
     P.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : P.M => TangentSpace I x) :=
     P.riemBundle_cont (I := I)
-  letI : EMetricSpace P.M := P.emetricSpace (I := I)
-  letI : CompleteSpace P.M :=
+  let : EMetricSpace P.M := P.emetricSpace (I := I)
+  let : CompleteSpace P.M :=
     MetricComplete.complete (I := I) P hcomplete
   let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (P.metric.inner x v v)) := by
     intro x v
-    simpa using
-      (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) P.metric x v)
+    exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+      (I := I) P.metric x v
   let f : Real → Real → P.M := fun s v =>
     Geometry.Riemannian.Exponential.intrLaunch3
       (I := I) P.metric hEnorm p u a b ((s, 0), v)
@@ -446,10 +444,21 @@ theorem intrJacForce_le
             (f q.1 q.2)
             (Geometry.Riemannian.Variation.varFst
               (I := I) f q.1 q.2) : TangentBundle I P.M)) := by
-    simpa only [f,
-      Geometry.Riemannian.Exponential.intrLaunchA_eq] using
+    change ContMDiff Q (I.prod 𝓘(Real, E)) ∞
+      (fun q : Real × Real =>
+        (TotalSpace.mk' E (E := (TangentSpace I : P.M → Type _))
+          (f q.1 q.2)
+          (Geometry.Riemannian.Variation.varFst
+            (I := I) f q.1 q.2) : TangentBundle I P.M))
+    refine ContMDiff.congr
       (Geometry.Riemannian.Exponential.intrLaunchDir_smooth
-        (I := I) P.metric hEnorm p u a b ((1, 0), 0))
+        (I := I) P.metric hEnorm p u a b ((1, 0), 0)) ?_
+    intro q
+    apply TotalSpace.ext
+    · rfl
+    · exact heq_of_eq
+        (Geometry.Riemannian.Exponential.intrLaunchA_eq
+          (I := I) P.metric hEnorm p u a b q).symm
   have hT :
       ContMDiff Q I.tangent ∞
         (fun q : Real × Real =>
@@ -457,10 +466,21 @@ theorem intrJacForce_le
             (f q.1 q.2)
             (Geometry.Riemannian.Variation.varSnd
               (I := I) f q.1 q.2) : TangentBundle I P.M)) := by
-    simpa only [f,
-      Geometry.Riemannian.Exponential.intrLaunchT_eq] using
+    change ContMDiff Q (I.prod 𝓘(Real, E)) ∞
+      (fun q : Real × Real =>
+        (TotalSpace.mk' E (E := (TangentSpace I : P.M → Type _))
+          (f q.1 q.2)
+          (Geometry.Riemannian.Variation.varSnd
+            (I := I) f q.1 q.2) : TangentBundle I P.M))
+    refine ContMDiff.congr
       (Geometry.Riemannian.Exponential.intrLaunchDir_smooth
-        (I := I) P.metric hEnorm p u a b ((0, 0), 1))
+        (I := I) P.metric hEnorm p u a b ((0, 0), 1)) ?_
+    intro q
+    apply TotalSpace.ext
+    · rfl
+    · exact heq_of_eq
+        (Geometry.Riemannian.Exponential.intrLaunchT_eq
+          (I := I) P.metric hEnorm p u a b q).symm
   have hzero :
       ContMDiff (modelWithCornersSelf Real Real) Q ∞
         (fun v : Real => ((0 : Real), v)) :=

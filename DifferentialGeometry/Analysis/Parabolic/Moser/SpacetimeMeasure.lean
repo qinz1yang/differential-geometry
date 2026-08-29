@@ -35,7 +35,7 @@ instance cutoffWeightedMeasure_isFiniteMeasure
     {g : SmoothRiemannianMetric I M} (cutoff : SmoothScalar g) :
     IsFiniteMeasure (cutoffWeightedMeasure (I := I) (M := M) cutoff) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   exact isFiniteMeasure_withDensity_ofReal
@@ -365,7 +365,7 @@ theorem localizedSpacetimeMeasure_real_univ
   have hν : ν Set.univ = ENNReal.ofReal (cutoffMass (I := I) (M := M) cutoff) := by
     dsimp [ν]
     unfold cutoffWeightedMeasure
-    haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
       riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
     have hlin : (∫⁻ x, ENNReal.ofReal (cutoff.toFun x ^ 2)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
@@ -458,7 +458,7 @@ theorem localizedSpacetimeRpowNorm_le_of_bound_on_cutoff
     ∫ x, cutoff.toFun x ^ 2 * u t x ^ q ∂μ
   let Mp := localizedSpacetimeRpowMoment (I := I) (M := M) cutoff u p a b
   let Mq := localizedSpacetimeRpowMoment (I := I) (M := M) cutoff u q a b
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -592,9 +592,9 @@ theorem localizedSpacetimeMeasure_real_superlevel
       apply integral_congr_ae
       filter_upwards with x
       by_cases hx : x ∈ St
-      · have hxS : (t, x) ∈ S := by simpa only [S, St, mem_setOf_eq] using hx
+      · have hxS : (t, x) ∈ S := by simpa only [S, St, mem_ofPred_eq] using hx
         simp only [Set.indicator_of_mem hxS, Set.indicator_of_mem hx, Pi.one_apply, mul_one]
-      · have hxS : (t, x) ∉ S := by simpa only [S, St, mem_setOf_eq] using hx
+      · have hxS : (t, x) ∉ S := by simpa only [S, St, mem_ofPred_eq] using hx
         simp only [Set.indicator_of_notMem hxS, Set.indicator_of_notMem hx, mul_zero]
 
 theorem localizedSpacetimeMeasure_real_sublevel

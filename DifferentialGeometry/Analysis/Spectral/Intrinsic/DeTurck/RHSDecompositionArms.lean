@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ThreeArmJointA
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -78,7 +77,7 @@ theorem lieDecomposition2_joint
   obtain ⟨K, hK, hmain⟩ :=
     exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindow
       (I := I) (M := M) g a ha hR hδ_lt lieDecompositionQ lieDecompositionEps hε
-  simpa only [lieDecomposition2] using
+  simpa only [linearizedRicciThreeArmHjoint, lieDecomposition2] using
     (hmain T le_rfl hδ hδZ hball).1
 
 theorem rhsDecompositionTop_joint
@@ -99,7 +98,8 @@ theorem rhsDecompositionTop_joint
   have hDecomposition := threeArmJoint_add (I := I) (M := M) g _ _ hRic hLie
   have hTop := rhs_top_path_joint (I := I) (M := M) g T 0 hδ hδZ
   have hAll := threeArmJoint_add (I := I) (M := M) g _ _ hDecomposition hTop
-  simpa only [rhsDecompositionTop, rhsDecomposition2, ricciDecomposition2, lieDecomposition2] using hAll
+  simpa only [linearizedRicciThreeArmHjoint, rhsDecompositionTop, rhsDecomposition2,
+    ricciDecomposition2, lieDecomposition2] using hAll
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -112,8 +112,9 @@ private theorem zero_symm (g : SmoothRiemannianMetric I M) :
       (0 : ℝ) • (0 : SmoothCcTensor g 0 2) := (zero_smul ℝ _).symm
   rw [h0]
   simp only [ccTensorBilin_apply, ccTensorModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul, zero_mul]
+    smul_apply, smul_eq_mul, zero_mul]
 
+omit [SigmaCompactSpace M] in
 theorem rhsSlope_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (v w : TangentSpace I x),
@@ -134,7 +135,9 @@ theorem rhsSlope_decomposition
             (iteratedCovGrad (I := I) g 0 2 1 T) +
           operatorFieldApply (I := I) (M := M) g 4 2
             (rhsDecompositionTop (I := I) (M := M) g T hδ hδZ s)
-            (iteratedCovGrad (I := I) g 0 2 2 T)) x ![v, w] := by
+            (iteratedCovGrad (I := I) g 0 2 2 T)) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
   rw [ricciDeTurckRemainderSlope_eq_arms (I := I) (M := M) g g_bg T 0 hT
     (zero_symm (I := I) (M := M) g) hδ_lt hδ hδ_lt hδZ x v w hs]
   simp only [sub_zero, iteratedCovGrad_zero]
@@ -148,7 +151,9 @@ theorem rhsSlope_decomposition
     ⟨le_of_lt hs.1, le_of_lt hs.2⟩]
   simp only [rhsDecompositionTop, operatorFieldApplication_add_left]
   apply congrArg (fun Z : SmoothCcTensor g 0 2 =>
-    unitModel (I := I) (M := M) g 2 Z x ![v, w])
+    unitModel (I := I) (M := M) g 2 Z x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w])
   abel
 
 end IntrinsicSpectral

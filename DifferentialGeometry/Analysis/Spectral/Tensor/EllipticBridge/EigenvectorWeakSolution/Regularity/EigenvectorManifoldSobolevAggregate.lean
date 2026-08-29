@@ -83,7 +83,7 @@ private lemma perChartCompConstant_bound
       g r s (2 * k) α (Idx, Jdx))).2 i
 
 private noncomputable def aggregateConstant : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
         perChartCompConstant (I := I) (M := M) g r s k α Idx Jdx
@@ -204,7 +204,7 @@ private lemma chartTerm_eigenvectorSmooth_le
     rw [← Finset.sum_mul]
   refine le_trans (Finset.sum_le_sum h_double_le) ?_
   rw [← Finset.sum_mul]
-  refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_right ?_ (zero_le)
   have h_inner :
       ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∀ _hIdx : Idx ∈ (Finset.univ : Finset (Fin r → Fin (Module.finrank ℝ E))),
@@ -272,7 +272,7 @@ theorem eigenvectorSmooth_wtwokTwoNorm_le_uniform
     (fun α _hα => chartTerm_eigenvectorSmooth_le
       (I := I) (M := M) g r s k α i)) ?_
   rw [← Finset.sum_mul]
-  refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+  refine mul_le_mul_of_nonneg_right ?_ (zero_le)
   rw [← ENNReal.ofReal_sum_of_nonneg (fun α _ =>
     mul_nonneg
       (Finset.sum_nonneg (fun Idx _ =>

@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicat
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralNormLIterateLadder
 
+
 noncomputable section
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
@@ -73,7 +74,8 @@ theorem operator_field_application_second_covariant_derivative_pairing_h2_bound
       oneMinusConnLapSmoothIter_succ,
       oneMinusConnLapSmoothIter_zero,
       SmoothCcTensor.norm_toL2] at heven
-    simpa only [L, H2, Nat.reduceMul, Nat.cast_ofNat,
+    rw [show (((2 * (0 + 1) : ℕ) : ℝ)) = 2 by norm_num] at heven
+    simpa only [L, H2, Nat.zero_add, Nat.reduceMul, Nat.cast_ofNat,
       norm_ccHs_eq_smoothHs] using heven.symm
   have hpair :
       |tensorL2Inner (I := I) (M := M) g 0 2 L.toFun A.toFun| ≤

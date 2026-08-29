@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
@@ -55,12 +54,12 @@ omit [CompleteSpace E] in
 theorem inner_self_eq_tensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (T : TensorRSSpace r s I x) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     (inner ℝ T T : ℝ) =
       tensorInnerPointwise (I := I) (M := M) g r s x
         (TensorRSSpace.toModel T) (TensorRSSpace.toModel T) := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hclm : (tensorRSRiemannianInnerCLM (I := I) (M := M) g r s x T T : ℝ) =
       tensorInnerPointwise (I := I) (M := M) g r s x
         (TensorRSSpace.toModel T) (TensorRSSpace.toModel T) :=
@@ -68,25 +67,25 @@ theorem inner_self_eq_tensorInnerPointwise
   rw [← hclm]
   rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem norm_eq_sqrt_tensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (T : TensorRSSpace r s I x) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ‖T‖ =
       Real.sqrt
         (tensorInnerPointwise (I := I) (M := M) g r s x
           (TensorRSSpace.toModel T) (TensorRSSpace.toModel T)) := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rw [← inner_self_eq_tensorInnerPointwise (I := I) (M := M) g r s x T]
   rw [real_inner_self_eq_norm_sq]
   exact (Real.sqrt_sq (norm_nonneg T)).symm
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem norm_eq_of_tensorInnerPointwise_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
@@ -96,10 +95,10 @@ theorem norm_eq_of_tensorInnerPointwise_eq
       tensorInnerPointwise (I := I) (M := M) g r s x
         (TensorRSSpace.toModel S) (TensorRSSpace.toModel S)) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ‖T‖ = ‖S‖ := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rw [norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x T,
     norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x S, h]
 

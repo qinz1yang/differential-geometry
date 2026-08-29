@@ -3,6 +3,7 @@ import Mathlib.Analysis.Calculus.MeanValue
 
 noncomputable section
 
+
 open Set
 open scoped ENNReal NNReal
 
@@ -291,9 +292,9 @@ theorem holderWith_parabolicCylinder_Icc_of_time_support
     (hsupport : ∀ p, p.time ∈ Set.Icc (0 : Real) S →
       p.time ∉ Set.Ioo a b → f p = 0)
     (hlocal : HolderWith K alpha
-      ((parabolicCylinder (Set.Ioc (0 : Real) T) Set.univ).restrict f)) :
+      ((parabolicCylinder (Set.Ioc (0 : Real) T) Set.univ).domRestrict f)) :
     HolderWith K alpha
-      ((parabolicCylinder (Set.Icc (0 : Real) S) Set.univ).restrict f) := by
+      ((parabolicCylinder (Set.Icc (0 : Real) S) Set.univ).domRestrict f) := by
   let Q := parabolicCylinder (Set.Icc (0 : Real) S) (Set.univ : Set V)
   let U := parabolicCylinder (Set.Ioc (0 : Real) T) (Set.univ : Set V)
   let project : Q → U := fun p ↦
@@ -307,12 +308,6 @@ theorem holderWith_parabolicCylinder_Icc_of_time_support
     change dist (project p).1 (project q).1 ≤ (1 : Real) * dist p.1 q.1
     rw [one_mul]
     dsimp only [project]
-    change dist
-      (parabolicPoint
-        ((Set.projIcc a T haT p.1.time : Set.Icc a T) : Real) p.1.space)
-      (parabolicPoint
-        ((Set.projIcc a T haT q.1.time : Set.Icc a T) : Real) q.1.space) ≤
-      dist p.1 q.1
     rw [dist_parabolicPoint, ← parabolicPoint_time_space p.1,
       ← parabolicPoint_time_space q.1, dist_parabolicPoint]
     apply max_le_max
@@ -355,8 +350,8 @@ theorem holderWith_parabolicCylinder_Icc_of_time_support
             (not_lt_of_ge hbT.le) (hprojectTime ▸ hmem.2))]
   have hcomp := hlocal.comp hproject.holderWith
   have hfun :
-      ((parabolicCylinder (Set.Ioc (0 : Real) T) Set.univ).restrict f) ∘
-          project = Q.restrict f := by
+      ((parabolicCylinder (Set.Ioc (0 : Real) T) Set.univ).domRestrict f) ∘
+          project = Q.domRestrict f := by
     funext p
     exact hprojectValue p
   rw [hfun] at hcomp
@@ -634,10 +629,10 @@ theorem holderWith_restrict_of_buffered_ball_cover
     (hcover : ∀ x ∈ K, ∃ i, x ∈ Metric.ball (center i) (radius i / 2))
     {f : X → F}
     (hlocal : ∀ i, HolderWith C alpha
-      ((Metric.ball (center i) (radius i)).restrict f))
+      ((Metric.ball (center i) (radius i)).domRestrict f))
     (hbound : ∀ x ∈ K, ‖f x‖ ≤ B) :
     HolderWith (bufferedBallHolderConst alpha C B delta) alpha
-      (K.restrict f) := by
+      (K.domRestrict f) := by
   intro x y
   rw [edist_dist, edist_dist]
   have hreal : dist (f x.1) (f y.1) ≤
@@ -664,7 +659,7 @@ theorem holderWith_restrict_of_buffered_ball_cover
           (by
             exact_mod_cast
               (show C ≤ bufferedBallHolderConst alpha C B delta by
-                exact le_add_of_nonneg_right (zero_le _)))
+                exact le_add_of_nonneg_right (zero_le)))
           (Real.rpow_nonneg (dist_nonneg) _))
     · have hdelta_dist : (delta : Real) ≤ dist x.1 y.1 :=
         (hbuffer i).trans (le_of_not_gt hxy)
@@ -717,10 +712,10 @@ theorem holderWith_restrict_of_finite_buffered_ball_cover
     (hcover : K ⊆ ⋃ x ∈ s, Metric.ball x (radius x / 2))
     {f : X → F}
     (hlocal : ∀ x ∈ s, HolderWith C alpha
-      ((Metric.ball x (radius x)).restrict f))
+      ((Metric.ball x (radius x)).domRestrict f))
     (hbound : ∀ x ∈ K, ‖f x‖ ≤ B) :
     HolderWith (bufferedBallHolderConst alpha C B delta) alpha
-      (K.restrict f) := by
+      (K.domRestrict f) := by
   apply holderWith_restrict_of_buffered_ball_cover hdelta
     (fun x : ↥s ↦ x.1) (fun x : ↥s ↦ radius x.1)
   · intro x
@@ -767,12 +762,12 @@ theorem eParabolicC2HolderGaugeOn_le_of_buffered_ball_cover
     obtain ⟨i, hqi⟩ := hcover q hq
     exact parabolicTimeDerivative_norm_le (hlocal i) (hhalfFull i hqi)
   have hspatialHolderLocal : ∀ i, HolderWith C alpha
-      ((Metric.ball (center i) (radius i)).restrict
+      ((Metric.ball (center i) (radius i)).domRestrict
         (parabolicSpatialJet 2 u)) := by
     intro i
     exact parabolicSpatialJet_holderWith_restrict (hlocal i)
   have htimeHolderLocal : ∀ i, HolderWith C alpha
-      ((Metric.ball (center i) (radius i)).restrict
+      ((Metric.ball (center i) (radius i)).domRestrict
         (parabolicTimeDerivative u)) := by
     intro i
     exact parabolicTimeDerivative_holderWith_restrict (hlocal i)
@@ -861,7 +856,7 @@ theorem eParabolicC2HolderGaugeOn_le_of_finite_buffered_ball_cover_sum
   · intro i
     apply (hlocal i.1 i.2).trans
     exact_mod_cast Finset.single_le_sum
-      (fun j _ ↦ zero_le (localBound j)) i.2
+      (fun j _ ↦ zero_le) i.2
 
 theorem eParabolicC2HolderGaugeOn_le_of_finite_buffered_scaledBall_rescaleAt
     {ι : Type*} {Q : Set (ParabolicPoint V)} {alpha delta : NNReal}
@@ -930,7 +925,7 @@ omit [NormedSpace Real F] [NormedAddCommGroup V] [NormedSpace Real V] in
 theorem norm_sub_le_holderBallOscillationConst_of_mem_ball
     {center x : X} {R : Real} (hR : 0 < R)
     {alpha K : NNReal} {f : X → F}
-    (hf : HolderWith K alpha ((Metric.ball center R).restrict f))
+    (hf : HolderWith K alpha ((Metric.ball center R).domRestrict f))
     (hx : x ∈ Metric.ball center R) :
     ‖f center - f x‖ ≤ holderBallOscillationConst R alpha K := by
   have hcenter : center ∈ Metric.ball center R := by
@@ -945,7 +940,7 @@ theorem norm_sub_le_holderBallOscillationConst_of_mem_ball
   calc
     ‖f center - f x‖ = dist (f center) (f x) := (dist_eq_norm _ _).symm
     _ ≤ (K : Real) * dist center x ^ (alpha : Real) := by
-      simpa only [Set.restrict_apply, Subtype.dist_eq] using hraw
+      simpa only [Set.domRestrict_apply, Subtype.dist_eq] using hraw
     _ ≤ (K : Real) * R ^ (alpha : Real) :=
       mul_le_mul_of_nonneg_left hrpow K.coe_nonneg
     _ = holderBallOscillationConst R alpha K := by
@@ -953,59 +948,79 @@ theorem norm_sub_le_holderBallOscillationConst_of_mem_ball
         Real.coe_toNNReal R hR.le]
 
 theorem holderWith_smul_of_norm_le
-    {alpha C D M N : NNReal} {f : X → Real} {g : X → F}
+    {X₀ : Type*} [PseudoEMetricSpace X₀]
+    {alpha C D M N : NNReal} {f : X₀ → Real} {g : X₀ → F}
     (hf : HolderWith C alpha f) (hg : HolderWith D alpha g)
     (hfnorm : ∀ x, ‖f x‖ ≤ M) (hgnorm : ∀ x, ‖g x‖ ≤ N) :
     HolderWith (M * D + N * C) alpha (f • g) := by
   intro x y
-  rw [edist_dist, edist_dist]
-  have hreal : dist (f x • g x) (f y • g y) ≤
-      ((M * D + N * C : NNReal) : Real) *
-        dist x y ^ (alpha : Real) := by
-    rw [dist_eq_norm]
+  have hleft : edist (f x • g x) (f x • g y) ≤
+      (M : ENNReal) * edist (g x) (g y) := by
+    refine (edist_smul_le (f x) (g x) (g y)).trans ?_
+    rw [ENNReal.smul_def]
+    have hnorm : (↑‖f x‖₊ : ENNReal) ≤ (M : ENNReal) := by
+      exact_mod_cast hfnorm x
+    exact _root_.mul_le_mul_left hnorm _
+  have hright : edist (f x • g y) (f y • g y) ≤
+      edist (f x) (f y) * (N : ENNReal) := by
+    rw [edist_dist, edist_dist]
+    have hreal : dist (f x • g y) (f y • g y) ≤
+        dist (f x) (f y) * (N : Real) :=
+      (dist_pair_smul (f x) (f y) (g y)).trans
+        (mul_le_mul_of_nonneg_left
+          (by simpa only [dist_zero_right] using hgnorm y) dist_nonneg)
     calc
-      ‖f x • g x - f y • g y‖ =
-          ‖f x • (g x - g y) + (f x - f y) • g y‖ := by
+      ENNReal.ofReal (dist (f x • g y) (f y • g y)) ≤
+          ENNReal.ofReal (dist (f x) (f y) * (N : Real)) :=
+        ENNReal.ofReal_le_ofReal hreal
+      _ = ENNReal.ofReal (dist (f x) (f y)) * (N : ENNReal) := by
+        rw [ENNReal.ofReal_mul (dist_nonneg : 0 ≤ dist (f x) (f y))]
         congr 1
-        module
-      _ ≤ ‖f x • (g x - g y)‖ +
-          ‖(f x - f y) • g y‖ := norm_add_le _ _
-      _ ≤ (M : Real) * ((D : Real) * dist x y ^ (alpha : Real)) +
-          ((C : Real) * dist x y ^ (alpha : Real)) * (N : Real) := by
-        rw [norm_smul, norm_smul]
-        gcongr
-        · simpa only [Real.norm_eq_abs] using hfnorm x
-        · simpa only [dist_eq_norm] using hg.dist_le x y
-        · simpa only [Real.dist_eq] using hf.dist_le x y
-        · exact hgnorm y
-      _ = ((M * D + N * C : NNReal) : Real) *
-          dist x y ^ (alpha : Real) := by
-        push_cast
-        ring
+        exact ENNReal.ofReal_coe_nnreal
   calc
-    ENNReal.ofReal (dist (f x • g x) (f y • g y)) ≤
-        ENNReal.ofReal (((M * D + N * C : NNReal) : Real) *
-          dist x y ^ (alpha : Real)) := ENNReal.ofReal_le_ofReal hreal
+    edist (f x • g x) (f y • g y) ≤
+        edist (f x • g x) (f x • g y) +
+          edist (f x • g y) (f y • g y) := edist_triangle _ _ _
+    _ ≤ (M : ENNReal) * edist (g x) (g y) +
+        edist (f x) (f y) * (N : ENNReal) := add_le_add hleft hright
+    _ ≤ (M : ENNReal) * ((D : ENNReal) * edist x y ^ (alpha : Real)) +
+        ((C : ENNReal) * edist x y ^ (alpha : Real)) * (N : ENNReal) := by
+      gcongr
+      · exact hg x y
+      · exact hf x y
     _ = ((M * D + N * C : NNReal) : ENNReal) *
-        ENNReal.ofReal (dist x y ^ (alpha : Real)) := by
-      rw [ENNReal.ofReal_mul (by positivity :
-        (0 : Real) ≤ ((M * D + N * C : NNReal) : Real))]
-      congr 1
-      exact ENNReal.ofReal_coe_nnreal
-    _ = ((M * D + N * C : NNReal) : ENNReal) *
-        ENNReal.ofReal (dist x y) ^ (alpha : Real) := by
-      rw [ENNReal.ofReal_rpow_of_nonneg (dist_nonneg) alpha.coe_nonneg]
+        edist x y ^ (alpha : Real) := by
+      push_cast
+      ring
+
+theorem holderWith_congr
+    {X₀ Y₀ : Type*} [PseudoEMetricSpace X₀] [PseudoEMetricSpace Y₀]
+    {alpha C : NNReal} {f g : X₀ → Y₀}
+    (hf : HolderWith C alpha f) (hfg : ∀ x, f x = g x) :
+    HolderWith C alpha g := by
+  have h : f = g := funext hfg
+  exact h ▸ hf
+
+theorem holderWith_add
+    {X₀ Y₀ : Type*} [PseudoEMetricSpace X₀] [SeminormedAddCommGroup Y₀]
+    {alpha C D : NNReal} {f g : X₀ → Y₀}
+    (hf : HolderWith C alpha f) (hg : HolderWith D alpha g) :
+    HolderWith (C + D) alpha (f + g) := by
+  intro x y
+  simp only [Pi.add_apply, ENNReal.coe_add]
+  grw [edist_add_add_le, hf x y, hg x y]
+  rw [add_mul]
 
 theorem holderWith_smul_of_eq_zero_outside
     {Q U : Set X} {alpha Kchi Ku Mchi Mu : NNReal}
     (chi : X → Real) (u : X → F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hu : HolderWith Ku alpha ((Q ∩ U).restrict u))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hu : HolderWith Ku alpha ((Q ∩ U).domRestrict u))
     (hchiNorm : ∀ x, x ∈ Q → x ∈ U → ‖chi x‖ ≤ Mchi)
     (huNorm : ∀ x, x ∈ Q → x ∈ U → ‖u x‖ ≤ Mu)
     (hchiZero : ∀ x, x ∈ Q → x ∉ U → chi x = 0) :
     HolderWith (Mchi * Ku + Mu * Kchi) alpha
-      (Q.restrict (fun x ↦ chi x • u x)) := by
+      (Q.domRestrict (fun x ↦ chi x • u x)) := by
   intro x y
   rw [edist_dist, edist_dist]
   have hreal : dist (chi x.1 • u x.1) (chi y.1 • u y.1) ≤
@@ -1027,11 +1042,14 @@ theorem holderWith_smul_of_eq_zero_outside
             rw [norm_smul, norm_smul]
             gcongr
             · simpa only [Real.norm_eq_abs] using hchiNorm x.1 x.2 hxU
-            · simpa only [dist_eq_norm, Subtype.dist_eq] using
-                hu.dist_le
-                  (⟨x.1, ⟨x.2, hxU⟩⟩ : (Q ∩ U : Set X))
-                  (⟨y.1, ⟨y.2, hyU⟩⟩ : (Q ∩ U : Set X))
-            · simpa only [Real.dist_eq, Subtype.dist_eq] using hchi.dist_le x y
+            · have h := hu.dist_le
+                (⟨x.1, ⟨x.2, hxU⟩⟩ : (Q ∩ U : Set X))
+                (⟨y.1, ⟨y.2, hyU⟩⟩ : (Q ∩ U : Set X))
+              simpa only [Set.domRestrict_apply, Subtype.dist_eq, dist_eq_norm] using h
+            · change |chi x.1 - chi y.1| ≤
+                (Kchi : Real) * dist x y ^ (alpha : Real)
+              simpa only [Set.domRestrict_apply, Real.dist_eq, Subtype.dist_eq] using
+                hchi.dist_le x y
             · exact huNorm y.1 y.2 hyU
           _ = ((Mchi * Ku + Mu * Kchi : NNReal) : Real) *
               dist x y ^ (alpha : Real) := by
@@ -1043,7 +1061,7 @@ theorem holderWith_smul_of_eq_zero_outside
               ((Kchi : Real) * dist x y ^ (alpha : Real)) * (Mu : Real) := by
             gcongr
             · have hc := hchi.dist_le x y
-              simpa only [Set.restrict_apply, Real.dist_eq,
+              simpa only [Set.domRestrict_apply, Real.dist_eq,
                 hchiZero y.1 y.2 hyU, sub_zero, Real.norm_eq_abs,
                 Subtype.dist_eq] using hc
             · exact huNorm x.1 x.2 hxU
@@ -1063,7 +1081,7 @@ theorem holderWith_smul_of_eq_zero_outside
               ((Kchi : Real) * dist x y ^ (alpha : Real)) * (Mu : Real) := by
             gcongr
             · have hc := hchi.dist_le x y
-              simpa only [Set.restrict_apply, Real.dist_eq,
+              simpa only [Set.domRestrict_apply, Real.dist_eq,
                 hchiZero x.1 x.2 hxU, zero_sub, norm_neg,
                 Real.norm_eq_abs, abs_neg, Subtype.dist_eq] using hc
             · exact huNorm y.1 y.2 hyU
@@ -1132,17 +1150,17 @@ theorem cutoffExtension_eq_of_eq_zero
 theorem cutoffExtension_holderWith
     {Q U : Set X} {alpha Kchi Kf Mchi Mf : NNReal}
     (chi : X → Real) (f0 : F) (f : X → F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hf : HolderWith Kf alpha ((Q ∩ U).restrict f))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hf : HolderWith Kf alpha ((Q ∩ U).domRestrict f))
     (hchiNorm : ∀ x, x ∈ Q → x ∈ U → ‖chi x‖ ≤ Mchi)
     (hfNorm : ∀ x, x ∈ Q → x ∈ U → ‖f x‖ ≤ Mf)
     (hchiZero : ∀ x, x ∈ Q → x ∉ U → chi x = 0) :
     HolderWith (Mchi * Kf + (Mf + ‖f0‖₊) * Kchi) alpha
-      (Q.restrict (cutoffExtension chi f0 f)) := by
+      (Q.domRestrict (cutoffExtension chi f0 f)) := by
   have hdiff : HolderWith Kf alpha
-      ((Q ∩ U).restrict (fun x ↦ f x - f0)) := by
+      ((Q ∩ U).domRestrict (fun x ↦ f x - f0)) := by
     intro x y
-    simpa only [Set.restrict_apply, edist_dist, dist_eq_norm,
+    simpa only [Set.domRestrict_apply, edist_dist, dist_eq_norm,
       sub_sub_sub_cancel_right] using hf x y
   have hdiffNorm : ∀ x, x ∈ Q → x ∈ U →
       ‖f x - f0‖ ≤ Mf + ‖f0‖₊ := by
@@ -1152,7 +1170,7 @@ theorem cutoffExtension_holderWith
     (Mu := Mf + ‖f0‖₊)
     chi (fun x ↦ f x - f0) hchi hdiff hchiNorm hdiffNorm hchiZero
   intro x y
-  simpa only [cutoffExtension, Set.restrict_apply, edist_dist,
+  simpa only [cutoffExtension, Set.domRestrict_apply, edist_dist,
     dist_eq_norm, add_sub_add_left_eq_sub] using hproduct x y
 
 omit [MetricSpace X] in
@@ -1178,35 +1196,43 @@ theorem norm_cutoffExtension_le
     (add_le_add le_rfl (by simpa using hproduct x hxQ))
 
 theorem holderWith_comp_continuousLinearMap_of_norm_le_one
-    {A B : Type*}
+    {X₀ A B : Type*} [PseudoEMetricSpace X₀]
     [NormedAddCommGroup A] [NormedSpace Real A]
     [NormedAddCommGroup B] [NormedSpace Real B]
-    {alpha K : NNReal} {f : X → A}
+    {alpha K : NNReal} {f : X₀ → A}
     (L : A →L[Real] B) (hL : ‖L‖ ≤ 1)
     (hf : HolderWith K alpha f) :
     HolderWith K alpha (fun x ↦ L (f x)) := by
   have hraw := L.lipschitz.holderWith.comp hf
   have hraw' : HolderWith (‖L‖₊ * K) alpha (fun x ↦ L (f x)) := by
-    simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul, Function.comp_apply] using hraw
+    change HolderWith (‖L‖₊ * K) alpha (⇑L ∘ f)
+    simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul] using hraw
   have hnorm : ‖L‖₊ * K ≤ K := by
-    apply mul_le_of_le_one_left (zero_le K)
+    apply mul_le_of_le_one_left zero_le
     exact_mod_cast hL
   exact hraw'.mono hnorm
 
 omit [NormedSpace Real F] in
 theorem holderWith_finset_sum
-    {I : Type*} {alpha : NNReal} {K : I → NNReal} {f : I → X → F}
+    {X₀ I : Type*} [PseudoEMetricSpace X₀]
+    {alpha : NNReal} {K : I → NNReal} {f : I → X₀ → F}
     (s : Finset I) (h : ∀ i ∈ s, HolderWith (K i) alpha (f i)) :
     HolderWith (∑ i ∈ s, K i) alpha (fun x ↦ ∑ i ∈ s, f i x) := by
   classical
   induction s using Finset.induction_on with
   | empty =>
-      simpa only [Finset.sum_empty] using
-        (HolderWith.zero : HolderWith 0 alpha (0 : X → F))
+      change HolderWith 0 alpha (0 : X₀ → F)
+      exact HolderWith.zero
   | @insert i s hi ih =>
       have hi' := h i (Finset.mem_insert_self i s)
       have hs' := ih fun j hj ↦ h j (Finset.mem_insert_of_mem hj)
-      simpa only [Finset.sum_insert hi, Pi.add_apply] using hi'.add hs'
+      rw [Finset.sum_insert hi]
+      have hfun : (fun x => ∑ j ∈ insert i s, f j x) =
+          f i + fun x => ∑ j ∈ s, f j x := by
+        funext x
+        rw [Finset.sum_insert hi, Pi.add_apply]
+      rw [hfun]
+      exact holderWith_add hi' hs'
 
 theorem holderWith_of_hasFDerivAt_of_norm_le
     {A : Type*} [NormedAddCommGroup A] [NormedSpace Real A]
@@ -1230,15 +1256,17 @@ theorem holderWith_of_hasFDerivAt_of_norm_le
 theorem eHolderSeminormOn_smul_le
     {s : Set X} {alpha C D M N : NNReal}
     {f : X → Real} {g : X → F}
-    (hf : HolderWith C alpha (s.restrict f))
-    (hg : HolderWith D alpha (s.restrict g))
+    (hf : HolderWith C alpha (s.domRestrict f))
+    (hg : HolderWith D alpha (s.domRestrict g))
     (hfnorm : ∀ x ∈ s, ‖f x‖ ≤ M)
     (hgnorm : ∀ x ∈ s, ‖g x‖ ≤ N) :
     eHolderSeminormOn alpha s (f • g) ≤ M * D + N * C := by
   apply HolderWith.eHolderNorm_le
   have hproduct := holderWith_smul_of_norm_le hf hg
     (fun x ↦ hfnorm x x.2) (fun x ↦ hgnorm x x.2)
-  simpa only [Pi.smul_apply] using hproduct
+  change HolderWith (M * D + N * C) alpha
+    (s.domRestrict f • s.domRestrict g)
+  exact hproduct
 
 end DifferentialGeometry.Analysis.Schauder
 

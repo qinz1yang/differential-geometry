@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -86,7 +85,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_per_section_improved
   have h_envelope_le :
       ENNReal.ofReal (CIJ (Idx, Jdx)) * (‖S‖₊ + 1) ≤
         ENNReal.ofReal Csum * (‖S‖₊ + 1) :=
-    mul_le_mul_of_nonneg_right h_ofReal_le (by exact zero_le _)
+    mul_le_mul_of_nonneg_right h_ofReal_le (by exact zero_le)
   exact (hCIJ_le (Idx, Jdx)).trans h_envelope_le
 
 omit [NeZero (Module.finrank ℝ E)] in

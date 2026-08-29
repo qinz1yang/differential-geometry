@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix ENNReal NNReal
@@ -95,13 +94,13 @@ theorem covPrincipalRotationCoeff_pouSmul_memLp
             g r s i n).toCcTensor) α P₀) 2
       (chartL2Measure (I := I) (M := M) α) := by
   classical
-  refine (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+  refine (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-    (fun P _ => memLp_finset_sum
+    (fun P _ => memLp_finsetSum
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun Q _ => memLp_finset_sum
+      (fun Q _ => memLp_finsetSum
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-        (fun k _ => memLp_finset_sum
+        (fun k _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
           (fun l _ =>
             memLp_factor_mul_partialAtom (I := I) (M := M)
@@ -122,12 +121,12 @@ theorem covPrincipalRotationCoeffLimit_memLp
       (chartL2Measure (I := I) (M := M) α) := by
   classical
   unfold covPrincipalRotationCoeffLimit
-  exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-    (fun P _ => memLp_finset_sum
+  exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+    (fun P _ => memLp_finsetSum
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun Q _ => memLp_finset_sum
+      (fun Q _ => memLp_finsetSum
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-        (fun k _ => memLp_finset_sum
+        (fun k _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
           (fun l _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
             (principalRotationFactor_contDiffOn (I := I) (M := M)
@@ -284,13 +283,13 @@ theorem weightedGradCoeff_pouSmul_memLp
             g r s i n).toCcTensor) α P₀ l) 2
       (chartL2Measure (I := I) (M := M) α) := by
   classical
-  refine (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+  refine (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-    (fun P _ => memLp_finset_sum
+    (fun P _ => memLp_finsetSum
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun Q _ => memLp_finset_sum
+      (fun Q _ => memLp_finsetSum
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-        (fun k _ => memLp_finset_sum
+        (fun k _ => memLp_finsetSum
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun p _ =>
             memLp_factor_mul_componentAtom (I := I) (M := M)
@@ -316,12 +315,12 @@ theorem weightedGradCoeffLimit_memLp
       (chartL2Measure (I := I) (M := M) α) := by
   classical
   unfold weightedGradCoeffLimit
-  exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-    (fun P _ => memLp_finset_sum
+  exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+    (fun P _ => memLp_finsetSum
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun Q _ => memLp_finset_sum
+      (fun Q _ => memLp_finsetSum
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-        (fun k _ => memLp_finset_sum
+        (fun k _ => memLp_finsetSum
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
             (weightedGradFactor_contDiffOn (I := I) (M := M)
@@ -467,13 +466,13 @@ theorem euclidPartial_weightedGradCoeff_pouSmul_memLp
                   (eigenvectorSmoothApprox (I := I) (M := M)
                     g r s i n).toCcTensor α p.1 p.2 y) 2
       (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (TensorCompIdx (E := E) r s))
             (fun p _ => memLp_factor_mul_componentAtom (I := I) (M := M)
               g r s i α p n
@@ -490,13 +489,13 @@ theorem euclidPartial_weightedGradCoeff_pouSmul_memLp
                     (eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor α p.1 p.2) y) 2
       (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (TensorCompIdx (E := E) r s))
             (fun p _ => memLp_factor_mul_partialAtom (I := I) (M := M)
               g r s i α p l n
@@ -525,23 +524,23 @@ theorem weightedGradCoeffDivLimit_memLp
   classical
   unfold weightedGradCoeffDivLimit
   refine MemLp.add ?_ ?_
-  · exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+  · exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (TensorCompIdx (E := E) r s))
             (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
               (euclidPartial_weightedGradFactor_contDiffOn (I := I) (M := M)
                 g r s α P₀ l P Q k p)
               (componentLpLimit (I := I) (M := M) g r s i α p)))))
-  · exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+  · exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (TensorCompIdx (E := E) r s))
             (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
               (weightedGradFactor_contDiffOn (I := I) (M := M)
@@ -625,18 +624,18 @@ theorem weightedGradCoeffDiv_tendsto
   have h_termN : ∀ n : ℕ,
       (euclidPartial_weightedGradCoeff_pouSmul_memLp (I := I) (M := M)
         g r s i α P₀ l n).toLp _ =
-      (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun p _ => memLp_factor_mul_componentAtom
                   (I := I) (M := M) g r s i α p n
                   (euclidPartial_weightedGradFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ l P Q k p)))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun p _ => memLp_factor_mul_partialAtom
                   (I := I) (M := M) g r s i α p l n
                   (weightedGradFactor_contDiffOn (I := I) (M := M)
@@ -654,19 +653,19 @@ theorem weightedGradCoeffDiv_tendsto
   have h_termLim :
       (weightedGradCoeffDivLimit_memLp (I := I) (M := M)
         g r s i α P₀ l).toLp _ =
-      (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
                   (euclidPartial_weightedGradFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ l P Q k p)
                   (componentLpLimit (I := I) (M := M)
                     g r s i α p)))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
                   (weightedGradFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ l P Q k p)
@@ -677,18 +676,18 @@ theorem weightedGradCoeffDiv_tendsto
     rw [weightedGradCoeffDivLimit]
   rw [show (fun n => (euclidPartial_weightedGradCoeff_pouSmul_memLp
         (I := I) (M := M) g r s i α P₀ l n).toLp _) =
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun p _ => memLp_factor_mul_componentAtom
                   (I := I) (M := M) g r s i α p n
                   (euclidPartial_weightedGradFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ l P Q k p)))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun p _ => memLp_factor_mul_partialAtom
                   (I := I) (M := M) g r s i α p l n
                   (weightedGradFactor_contDiffOn (I := I) (M := M)
@@ -709,7 +708,7 @@ theorem weightedGradCoeffDivSum_tendsto
       (𝓝 (∑ l : Fin (Module.finrank ℝ E),
         (weightedGradCoeffDivLimit_memLp (I := I) (M := M)
           g r s i α P₀ l).toLp _)) :=
-  tendsto_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+  tendsto_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (fun l _ => weightedGradCoeffDiv_tendsto (I := I) (M := M)
       g r s i α P₀ l)
 
@@ -760,13 +759,13 @@ theorem covLowerOrderRotationValueCoeff_pouSmul_memLp
                     (eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor α P.1 P.2) y) 2
       (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
             (fun l _ => memLp_factor_mul_partialAtom (I := I) (M := M)
               g r s i α P k n
@@ -783,15 +782,15 @@ theorem covLowerOrderRotationValueCoeff_pouSmul_memLp
                     (eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor α p.1 p.2 y) 2
       (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-            (fun l _ => memLp_finset_sum
+            (fun l _ => memLp_finsetSum
               (Finset.univ : Finset (TensorCompIdx (E := E) r s))
               (fun p _ => memLp_factor_mul_componentAtom (I := I) (M := M)
                 g r s i α p n
@@ -819,25 +818,25 @@ theorem covLowerOrderRotationValueCoeffLimit_memLp
   classical
   unfold covLowerOrderRotationValueCoeffLimit
   refine MemLp.add ?_ ?_
-  · exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+  · exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
             (fun l _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
               (valuePartialFactor_contDiffOn (I := I) (M := M)
                 g r s α P₀ P Q k l)
               (partialLpLimit (I := I) (M := M) g r s i α P k)))))
-  · exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-      (fun P _ => memLp_finset_sum
+  · exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+      (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun Q _ => memLp_finset_sum
+        (fun Q _ => memLp_finsetSum
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-          (fun k _ => memLp_finset_sum
+          (fun k _ => memLp_finsetSum
             (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-            (fun l _ => memLp_finset_sum
+            (fun l _ => memLp_finsetSum
               (Finset.univ : Finset (TensorCompIdx (E := E) r s))
               (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
                 (valueComponentFactor_contDiffOn (I := I) (M := M)
@@ -915,19 +914,19 @@ theorem covLowerOrderRotationValueCoeff_tendsto
   have h_termN : ∀ n : ℕ,
       (covLowerOrderRotationValueCoeff_pouSmul_memLp (I := I) (M := M)
         g r s i α P₀ n).toLp _ =
-      (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun l _ => memLp_factor_mul_partialAtom
                   (I := I) (M := M) g r s i α P k n
                   (valuePartialFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ P Q k l)))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
-                (fun l _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
+                (fun l _ => memLp_finsetSum Finset.univ
                   (fun p _ => memLp_factor_mul_componentAtom
                     (I := I) (M := M) g r s i α p n
                     (valueComponentFactor_contDiffOn (I := I) (M := M)
@@ -945,20 +944,20 @@ theorem covLowerOrderRotationValueCoeff_tendsto
   have h_termLim :
       (covLowerOrderRotationValueCoeffLimit_memLp (I := I) (M := M)
         g r s i α P₀).toLp _ =
-      (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun l _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
                   (valuePartialFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ P Q k l)
                   (partialLpLimit (I := I) (M := M)
                     g r s i α P k)))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
-                (fun l _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
+                (fun l _ => memLp_finsetSum Finset.univ
                   (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
                     (valueComponentFactor_contDiffOn (I := I) (M := M)
                       g r s α P₀ P Q k l p)
@@ -969,19 +968,19 @@ theorem covLowerOrderRotationValueCoeff_tendsto
     rw [covLowerOrderRotationValueCoeffLimit]
   rw [show (fun n => (covLowerOrderRotationValueCoeff_pouSmul_memLp
         (I := I) (M := M) g r s i α P₀ n).toLp _) =
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
                 (fun l _ => memLp_factor_mul_partialAtom
                   (I := I) (M := M) g r s i α P k n
                   (valuePartialFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ P Q k l)))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun P _ => memLp_finset_sum Finset.univ
-            (fun Q _ => memLp_finset_sum Finset.univ
-              (fun k _ => memLp_finset_sum Finset.univ
-                (fun l _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun P _ => memLp_finsetSum Finset.univ
+            (fun Q _ => memLp_finsetSum Finset.univ
+              (fun k _ => memLp_finsetSum Finset.univ
+                (fun l _ => memLp_finsetSum Finset.univ
                   (fun p _ => memLp_factor_mul_componentAtom
                     (I := I) (M := M) g r s i α p n
                     (valueComponentFactor_contDiffOn (I := I) (M := M)

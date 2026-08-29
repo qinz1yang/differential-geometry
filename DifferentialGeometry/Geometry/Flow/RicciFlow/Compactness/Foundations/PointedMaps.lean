@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -71,8 +72,8 @@ def compSubseq
     PointedCGHMaps (I := I) X P (subseq ∘ φ) where
   partialDiffeomorph k := Φ.partialDiffeomorph (φ k)
   source_exhausts := by
-    letI : TopologicalSpace P.M := P.topology
-    letI : ChartedSpace H P.M := P.charted
+    let : TopologicalSpace P.M := P.topology
+    let : ChartedSpace H P.M := P.charted
     exact Φ.source_exhausts.comp_subseq hφ
   base_mem k := Φ.base_mem (φ k)
   basepoint_map k := Φ.basepoint_map (φ k)
@@ -152,11 +153,11 @@ theorem source_open
     (Φ : PointedCGHMaps (I := I) X P subseq) (k : Nat) :
     letI : TopologicalSpace P.M := P.topology
     IsOpen (Φ.source k) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
+  let : ChartedSpace H (X.term (subseq k)).M :=
     (X.term (subseq k)).charted
   exact (Φ.partialDiffeomorph k).open_source
 
@@ -168,11 +169,11 @@ theorem target_open
     letI : TopologicalSpace (X.term (subseq k)).M :=
       (X.term (subseq k)).topology
     IsOpen (Φ.target k) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
+  let : ChartedSpace H (X.term (subseq k)).M :=
     (X.term (subseq k)).charted
   exact (Φ.partialDiffeomorph k).open_target
 
@@ -183,7 +184,7 @@ theorem source_mono
     (Φ : PointedCGHMaps (I := I) X P subseq) (k : Nat) :
     letI : TopologicalSpace P.M := P.topology
     Φ.source k ⊆ Φ.source (k + 1) := by
-  letI : TopologicalSpace P.M := P.topology
+  let : TopologicalSpace P.M := P.topology
   exact Φ.source_exhausts.mono_step k
 
 theorem source_subset
@@ -196,7 +197,7 @@ theorem source_subset
       letI : TopologicalSpace P.M := P.topology
       IsCompact K) :
     exists k0 : Nat, forall k : Nat, k0 <= k -> K ⊆ Φ.source k := by
-  letI : TopologicalSpace P.M := P.topology
+  let : TopologicalSpace P.M := P.topology
   exact Φ.source_exhausts.subset K hK
 
 end PointedCGHMaps
@@ -266,22 +267,20 @@ noncomputable def sourceDomCharted
   exact TopologicalSpace.Opens.instChartedSpace (H := H) (M := P.M)
     (s := sourceOpen (I := I) Φ k)
 
-@[implicit_reducible]
-noncomputable def sourceDomT2
+theorem sourceDomT2
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
     (Φ : PointedCGHMaps (I := I) X P subseq) (k : Nat) :
     letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
     T2Space (SourceDomain (I := I) Φ k) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : T2Space P.M := P.t2
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : TopologicalSpace P.M := P.topology
+  let : T2Space P.M := P.t2
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
   change T2Space {x : P.M // x ∈ Φ.source k}
   infer_instance
 
-@[implicit_reducible]
-noncomputable def sourceDomSmooth
+theorem sourceDomSmooth
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -289,11 +288,11 @@ noncomputable def sourceDomSmooth
     letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
     letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
     IsManifold I ∞ (SourceDomain (I := I) Φ k) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : IsManifold I ∞ P.M := P.smooth
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
   change IsManifold I ∞ (sourceOpen (I := I) Φ k)
   exact { (sourceOpen (I := I) Φ k).instHasGroupoid (contDiffGroupoid ∞ I) with }
 
@@ -305,8 +304,8 @@ theorem sourceDomSigmaOf
     (hσ : letI : TopologicalSpace P.M := P.topology; IsSigmaCompact (Φ.source k)) :
     letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
     SigmaCompactSpace (SourceDomain (I := I) Φ k) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : TopologicalSpace P.M := P.topology
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
   change SigmaCompactSpace {x : P.M // x ∈ Φ.source k}
   exact isSigmaCompact_iff_sigmaCompactSpace.mp hσ
 
@@ -339,24 +338,22 @@ noncomputable def targetDomCharted
   exact TopologicalSpace.Opens.instChartedSpace (H := H)
     (M := (X.term (subseq k)).M) (s := targetOpen (I := I) Φ k)
 
-@[implicit_reducible]
-noncomputable def targetDomT2
+theorem targetDomT2
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
     (Φ : PointedCGHMaps (I := I) X P subseq) (k : Nat) :
     letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
     T2Space (TargetDomain (I := I) Φ k) := by
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : T2Space (X.term (subseq k)).M :=
+  let : T2Space (X.term (subseq k)).M :=
     (X.term (subseq k)).t2
-  letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
   change T2Space {x : (X.term (subseq k)).M // x ∈ Φ.target k}
   infer_instance
 
-@[implicit_reducible]
-noncomputable def targetDomSmooth
+theorem targetDomSmooth
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -364,14 +361,14 @@ noncomputable def targetDomSmooth
     letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
     letI : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
     IsManifold I ∞ (TargetDomain (I := I) Φ k) := by
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
+  let : ChartedSpace H (X.term (subseq k)).M :=
     (X.term (subseq k)).charted
-  letI : IsManifold I ∞ (X.term (subseq k)).M :=
+  let : IsManifold I ∞ (X.term (subseq k)).M :=
     (X.term (subseq k)).smooth
-  letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
-  letI : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
+  let : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
   change IsManifold I ∞ (targetOpen (I := I) Φ k)
   exact { (targetOpen (I := I) Φ k).instHasGroupoid (contDiffGroupoid ∞ I) with }
 
@@ -386,9 +383,9 @@ theorem targetDomSigmaOf
       IsSigmaCompact (Φ.target k)) :
     letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
     SigmaCompactSpace (TargetDomain (I := I) Φ k) := by
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
   change SigmaCompactSpace {x : (X.term (subseq k)).M // x ∈ Φ.target k}
   exact isSigmaCompact_iff_sigmaCompactSpace.mp hσ
 
@@ -401,14 +398,15 @@ private theorem contMDiff_openCod
     {f : M -> U}
     (hf : ContMDiff I I (∞ : WithTop ℕ∞) (fun x : M => (f x : N))) :
     ContMDiff I I (∞ : WithTop ℕ∞) f := by
-  haveI : IsManifold I ∞ U :=
+  have : IsManifold I ∞ U :=
     { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
   rw [contMDiff_iff_target] at hf ⊢
   constructor
   · exact Continuous.subtype_mk hf.1 (fun x => (f x).2)
   · intro y
     have hy := hf.2 (y : N)
-    simpa [Function.comp_def, extChartAt, TopologicalSpace.Opens.chartAt_eq] using hy
+    simpa [Function.comp_def, extChartAt, TopologicalSpace.Opens.chartAt_eq,
+      Set.preimage_preimage] using hy
 
 noncomputable def sourceTargetDiff
     {X : PointedFlowSeq (I := I)}
@@ -532,7 +530,7 @@ theorem sourceCompactSet_isCompact
     (hKsrc : letI : TopologicalSpace P.M := P.topology; K ⊆ Φ.source k) :
     letI : TopologicalSpace P.M := P.topology
     IsCompact (sourceCompactSet (I := I) Φ k K) := by
-  letI : TopologicalSpace P.M := P.topology
+  let : TopologicalSpace P.M := P.topology
   change IsCompact ((Subtype.val : SourceDomain (I := I) Φ k -> P.M) ⁻¹' K)
   rw [Subtype.isCompact_iff]
   have hImage :
@@ -563,7 +561,7 @@ theorem targetCompactSet_isCompact
     letI : TopologicalSpace (X.term (subseq k)).M :=
       (X.term (subseq k)).topology
     IsCompact (targetCompactSet (I := I) Φ k K) := by
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
   change IsCompact ((Subtype.val : TargetDomain (I := I) Φ k ->
       (X.term (subseq k)).M) ⁻¹' K)
@@ -1035,7 +1033,7 @@ structure SourceMetricConvergenceData
 
 namespace SourceMetricConvergenceData
 
-noncomputable def of_derivNormSupOn
+noncomputable def ofDerivNormSupOn
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -1086,7 +1084,7 @@ noncomputable def ofRestrictPullback
               (Φ := Φ) (k := k) (hσsrc k)
               (referenceMetric k) limitMetricFamily).derivNormSupOn (I := I) K p t) < ε) :
     SourceMetricConvergenceData (I := I) Φ :=
-  SourceMetricConvergenceData.of_derivNormSupOn (I := I)
+  SourceMetricConvergenceData.ofDerivNormSupOn (I := I)
     (D := fun k => SourceDomainMetricData.ofRestrictPullback (I := I)
       (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k) limitMetricFamily)
     hconv

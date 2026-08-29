@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
-import Mathlib.MeasureTheory.Measure.Typeclasses.NoAtoms
+import Mathlib.MeasureTheory.Measure.Typeclasses.NullSingletonClass
 
 noncomputable section
 

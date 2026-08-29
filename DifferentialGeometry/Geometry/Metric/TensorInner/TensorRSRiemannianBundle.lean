@@ -12,14 +12,13 @@ import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Riemannian
 
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Bornology
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -157,7 +156,7 @@ lemma innerModelCLMRS_smul_right
 
 private def bundleCLERS (r s : ℕ) (b : M) :
     TensorRSSpace r s I b ≃L[ℝ] TensorRSModel r s ℝ E :=
-  Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+  Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
     (𝕜 := ℝ) (E := E) (I := I) (M := M) r s b
 
 private def bundleToModelCLMRS (r s : ℕ) (b : M) :
@@ -359,8 +358,8 @@ private lemma innerModelRS_quadratic_continuous
   have hcont : Continuous (fun T : TensorRSModel r s ℝ E =>
       ∑ i : ι, ∑ j : ι, (φ i T) * (φ j T) *
         tensorInnerPointwise (I := I) (M := M) g r s b (basis i) (basis j)) := by
-    refine continuous_finset_sum _ (fun i _ => ?_)
-    refine continuous_finset_sum _ (fun j _ => ?_)
+    refine continuous_finsetSum _ (fun i _ => ?_)
+    refine continuous_finsetSum _ (fun j _ => ?_)
     refine ((hφ_cont i).mul (hφ_cont j)).mul continuous_const
   refine hcont.congr ?_
   intro T
@@ -390,14 +389,13 @@ theorem tensorRSRiemannianInnerCLM_diagonal_continuousAt_zero
       tensorRSRiemannianInnerCLM (I := I) (M := M) g r s b v v) 0 :=
   (tensorRSRiemannianInnerCLM_diagonal_continuous (I := I) (M := M) g r s b).continuousAt
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma innerModelRS_diagonal_sublevel_isBounded
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M) :
     Bornology.IsBounded
       {T : TensorRSModel r s ℝ E |
         innerModelCLMRS (I := I) (M := M) g r s b T T < 1} := by
   by_cases hNT : Nontrivial (TensorRSModel r s ℝ E)
-  · haveI := hNT
+  · have := hNT
     have hPD : ∀ v : TensorRSModel r s ℝ E,
         v ≠ 0 → 0 < innerModelCLMRS (I := I) (M := M) g r s b v v := by
       intro v hv
@@ -423,14 +421,13 @@ private lemma innerModelRS_diagonal_sublevel_isBounded
       (innerModelCLMRS (I := I) (M := M) g r s b) hPD hNN hSmulL hSmulR
   · have hSubsingleton : Subsingleton (TensorRSModel r s ℝ E) :=
       not_nontrivial_iff_subsingleton.mp hNT
-    haveI := hSubsingleton
+    have := hSubsingleton
     refine (Metric.isBounded_iff_subset_ball 0).mpr ⟨1, ?_⟩
     intro v _
     rw [Metric.mem_ball, dist_zero_right]
     have hv0 : v = 0 := Subsingleton.elim v 0
     rw [hv0, norm_zero]; exact one_pos
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma innerModelRS_diagonal_sublevel_isVonNBounded
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M) :
     IsVonNBounded ℝ
@@ -456,7 +453,7 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
       {v : TensorRSSpace r s I b |
         tensorRSRiemannianInnerCLM (I := I) (M := M) g r s b v v < 1} := by
   set e : TensorRSSpace r s I b ≃L[ℝ] TensorRSModel r s ℝ E :=
-    Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+    Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
       (𝕜 := ℝ) (E := E) (I := I) (M := M) r s b with he_def
   have hModel := innerModelRS_diagonal_sublevel_isVonNBounded
     (I := I) (M := M) g r s b
@@ -471,8 +468,8 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
     ext v
     refine ⟨?_, ?_⟩
     · rintro ⟨T, hT, rfl⟩
-      rw [Set.mem_setOf_eq] at hT
-      rw [Set.mem_setOf_eq, tensorRSRiemannianInner_diagonal_clm_apply]
+      rw [Set.mem_ofPred_eq] at hT
+      rw [Set.mem_ofPred_eq, tensorRSRiemannianInner_diagonal_clm_apply]
       have hRound : (e (e.symm T) : _) = T := e.apply_symm_apply T
       have hToModel :
           Tensor0SBundle.TensorRSSpace.toModel
@@ -485,8 +482,8 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
       exact hT
     · intro hv
       refine ⟨e v, ?_, ?_⟩
-      · rw [Set.mem_setOf_eq]
-        rw [Set.mem_setOf_eq, tensorRSRiemannianInner_diagonal_clm_apply] at hv
+      · rw [Set.mem_ofPred_eq]
+        rw [Set.mem_ofPred_eq, tensorRSRiemannianInner_diagonal_clm_apply] at hv
         rw [innerModelCLMRS_apply]
         exact hv
       · exact e.symm_apply_apply v
@@ -495,8 +492,8 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 noncomputable def tensorRSRiemannianMetric
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Bundle.RiemannianMetric (E := fun b : M => TensorRSSpace r s I b) where
@@ -527,7 +524,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 @[reducible]
-noncomputable def tensorRS_riemannianBundle
+noncomputable def tensorRSRiemannianBundle
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
   ⟨tensorRSRiemannianMetric (I := I) (M := M) g r s⟩

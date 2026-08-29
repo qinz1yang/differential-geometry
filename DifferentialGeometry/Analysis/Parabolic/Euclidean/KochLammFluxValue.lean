@@ -177,7 +177,7 @@ theorem klHeat1_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
         ENNReal.ofReal
           (klFluxSeries (Module.finrank ℝ V) *
             (‖w‖ * (klFluxTailC V * (Aₚ : ℝ)))) := by
-    simpa only [ofReal_norm_eq_enorm, enorm_eq_nnnorm] using
+    simpa only [ofReal_norm, enorm_eq_nnnorm] using
       ENNReal.ofReal_le_ofReal hlate
   have hearly := kl1_early_norm (V := V) ht htT w f x h
   unfold klHeat1

@@ -97,41 +97,52 @@ theorem galArmIdBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
             (symmS (I := I) (M := M) g₀
               (galCoreRep (I := I) (M := M) g₀ R S c))) := by
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g₀ g_bg
-  calc
-    deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal
-          ⟨galTameStateC (I := I) (M := M) g₀ 1 R S c,
-            galTameStateC_mem (I := I) (M := M) g₀ 1 hR.le S c⟩ -
-        deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal
-          ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩ =
-      deTurckSmoothN (I := I) (M := M) g₀ g_bg 1
-            (symmS (I := I) (M := M) g₀
-              (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
-            (galRepFib (I := I) (M := M) g₀ hR.le hreal S c) -
-          deTurckSmoothN (I := I) (M := M) g₀ g_bg 1
-            (0 : SmoothCcTensor g₀ 0 2) hδ
-            (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal) := by
-        rw [galN_evalBackground (I := I) (M := M) g₀ g_bg hR hδ hreal hcore S c,
-          deTurckRemainderOnLowerState_zero_eq_deTurckRHS (I := I) (M := M) g₀ g_bg hR hδ hreal hcore,
-          ← deTurckSmoothN_zero (I := I) (M := M) g₀ g_bg 1 hδ
-            (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal)]
-    _ = smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
-          (deTurckSmoothRemainder (I := I) g₀ g_bg
-              (symmS (I := I) (M := M) g₀
-                (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
-              (galRepFib (I := I) (M := M) g₀ hR.le hreal S c) -
-            deTurckSmoothRemainder (I := I) g₀ g_bg
-              (0 : SmoothCcTensor g₀ 0 2) hδ
-              (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal)) :=
-        deTurckSmoothN_sub_eq_smoothCcToTensorHs_remainderSub
-          (I := I) (M := M) g₀ g_bg 1 _ _ hδ _ hδ _
-    _ = _ :=
-        congrArg (smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ))
-          (hsplit _
-            (ccTensorBilin_symmS_symm
-              (I := I) (M := M) g₀
-              (galCoreRep (I := I) (M := M) g₀ R S c))
-            hδ3 hδ0 (galRepFib (I := I) (M := M) g₀ hR.le hreal S c)
-            (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal)).1
+  set W := symmS (I := I) (M := M) g₀
+    (galCoreRep (I := I) (M := M) g₀ R S c) with hW
+  set U : lowerState (I := I) (M := M) g₀ 1 R :=
+    ⟨galTameStateC (I := I) (M := M) g₀ 1 R S c,
+      galTameStateC_mem (I := I) (M := M) g₀ 1 hR.le S c⟩ with hU
+  set Z : lowerState (I := I) (M := M) g₀ 1 R :=
+    ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩ with hZ
+  let P := galRepFib (I := I) (M := M) g₀ hR.le hreal S c
+  let P₀ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal
+  let N := deTurckSmoothN (I := I) (M := M) g₀ g_bg 1 W hδ P
+  let N₀ := deTurckSmoothN (I := I) (M := M) g₀ g_bg 1
+    (0 : SmoothCcTensor g₀ 0 2) hδ P₀
+  let Rm := deTurckSmoothRemainder (I := I) g₀ g_bg W hδ P
+  let Rm₀ := deTurckSmoothRemainder (I := I) g₀ g_bg
+    (0 : SmoothCcTensor g₀ 0 2) hδ P₀
+  set A :=
+    (lowerScaleActionCoefficients (I := I) (M := M) g₀ g_bg W hδ P P₀).secondOrderAction
+        (I := I) (M := M) W +
+      (lowerScaleActionCoefficients (I := I) (M := M) g₀ g_bg W hδ P P₀).firstOrderAction
+        (I := I) (M := M) W with hA
+  have h₁ :
+      deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal U -
+          deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal Z =
+        N - N₀ := by
+    dsimp only [N, N₀, P, P₀, W]
+    rw [hU, hZ]
+    rw [galN_evalBackground (I := I) (M := M) g₀ g_bg hR hδ hreal hcore S c,
+      deTurckRemainderOnLowerState_zero_eq_deTurckRHS (I := I) (M := M) g₀ g_bg hR hδ hreal hcore,
+      ← deTurckSmoothN_zero (I := I) (M := M) g₀ g_bg 1 hδ
+        (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal)]
+  have h₂ : N - N₀ =
+      smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) (Rm - Rm₀) := by
+    dsimp only [N, N₀, Rm, Rm₀, P, P₀]
+    exact deTurckSmoothN_sub_eq_smoothCcToTensorHs_remainderSub (I := I) (M := M)
+      g₀ g_bg 1 _ _ hδ _ hδ _
+  have hsymm : ∀ (x : M) (u v : TangentSpace I x),
+      ccTensorBilin (I := I) g₀ W x u v = ccTensorBilin (I := I) g₀ W x v u := by
+    rw [hW]
+    exact ccTensorBilin_symmS_symm
+      (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R S c)
+  have h₃ : Rm - Rm₀ = A := by
+    rw [hA]
+    dsimp only [Rm, Rm₀]
+    exact (hsplit W hsymm hδ3 hδ0 P P₀).1
+  exact h₁.trans (h₂.trans
+    (congrArg (smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)) h₃))
 
 theorem galArmCapBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)

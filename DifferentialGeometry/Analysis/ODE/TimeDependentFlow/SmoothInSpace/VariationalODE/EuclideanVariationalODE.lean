@@ -93,7 +93,8 @@ theorem IsLocalFlow.hasDerivAt_partial_spatial_fderiv_apply
     hsndHas.comp_hasDerivAt s hcurveT
   have hslopeApply : HasDerivAt (fun u : ℝ => fderiv ℝ Φ (x, u) eX) (B eT eX) s := by
     have := (ContinuousLinearMap.apply ℝ E eX).hasFDerivAt.comp_hasDerivAt s hfderivCurve
-    simpa [ContinuousLinearMap.apply_apply] using this
+    let h : HasDerivAt (fun u : ℝ => fderiv ℝ Φ (x, u) eX) (B eT eX) s := this
+    exact h
   have hUx_open : IsOpen {u : ℝ | (x, u) ∈ U} := hUopen.preimage (by fun_prop)
   have hEvEq : (fun u : ℝ => fderiv ℝ Φ (x, u) eX)
       =ᶠ[𝓝 s] (fun u : ℝ => fderiv ℝ (fun y => Φ (y, u)) x δ) := by
@@ -113,7 +114,9 @@ theorem IsLocalFlow.hasDerivAt_partial_spatial_fderiv_apply
     have h1 : HasDerivAt (fun rr : ℝ => fderiv ℝ Φ (x + rr • δ, s)) (B eX) 0 :=
       hsndHas.comp_hasDerivAt_of_eq 0 hlineCurve (by simp)
     have := (ContinuousLinearMap.apply ℝ E eT).hasFDerivAt.comp_hasDerivAt 0 h1
-    simpa [ContinuousLinearMap.apply_apply] using this
+    let h : HasDerivAt (fun rr : ℝ => fderiv ℝ Φ (x + rr • δ, s) eT)
+        (B eX eT) 0 := this
+    exact h
   have hball_open : IsOpen {rr : ℝ | (x + rr • δ) ∈ ball x₀ (r : ℝ)} :=
     (isOpen_ball).preimage (by fun_prop)
   have hball_mem : (0 : ℝ) ∈ {rr : ℝ | (x + rr • δ) ∈ ball x₀ (r : ℝ)} := by
@@ -147,9 +150,13 @@ theorem IsLocalFlow.hasDerivAt_partial_spatial_fderiv_apply
       have hsliceHas : HasFDerivAt (fun y => Φ (y, s))
           (fderiv ℝ (fun y => Φ (y, s)) x) x := hsliceDiff.hasFDerivAt
       have := hsliceHas.comp_hasDerivAt_of_eq 0 (hasDerivAt_line x δ) (by simp)
-      simpa using this
+      let h : HasDerivAt (fun rr : ℝ => Φ (x + rr • δ, s))
+          (fderiv ℝ (fun y => Φ (y, s)) x δ) 0 := this
+      exact h
     have := hfs_diff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hinner (by simp)
-    simpa using this
+    let h : HasDerivAt (fun rr : ℝ => f s (Φ (x + rr • δ, s)))
+        (fderiv ℝ (f s) (Φ (x, s)) (fderiv ℝ (fun y => Φ (y, s)) x δ)) 0 := this
+    exact h
   have hBval : B eX eT
       = fderiv ℝ (f s) (Φ (x, s)) (fderiv ℝ (fun y => Φ (y, s)) x δ) :=
     hRHSline.unique hRHSchain
@@ -201,7 +208,9 @@ theorem IsLocalFlow.hasDerivAt_partial_spatial_fderiv
     intro δ
     have hcurveδ : HasDerivAt (fun u : ℝ => fderiv ℝ (fun y => Φ (y, u)) x δ) (D' δ) s := by
       have := (ContinuousLinearMap.apply ℝ E δ).hasFDerivAt.comp_hasDerivAt s hSliceDeriv
-      simpa [ContinuousLinearMap.apply_apply] using this
+      let h : HasDerivAt (fun u : ℝ => fderiv ℝ (fun y => Φ (y, u)) x δ)
+          (D' δ) s := this
+      exact h
     have hvarδ := IsLocalFlow.hasDerivAt_partial_spatial_fderiv_apply hΦ hf hUopen hΦsmooth
       hxsU hx hs δ
     have := hcurveδ.unique hvarδ

@@ -18,7 +18,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -81,12 +80,12 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma toModel_ccTensorUnitValueSection_domDomCongrSection_swap
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
-    (p q' : TangentSpace I x) :
+    (p q' : E) :
     Tensor0SSpace.toModel (ccTensorUnitValueSection (I := I) (M := M) g₀
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T) x)
-        ![(p : E), (q' : E)] =
+        ![p, q'] =
       Tensor0SSpace.toModel (ccTensorUnitValueSection (I := I) (M := M) g₀ T x)
-        ![(q' : E), (p : E)] := by
+        ![q', p] := by
   have hbridge : ∀ (S : SmoothCcTensor g₀ 0 2),
       Tensor0SSpace.toModel (ccTensorUnitValueSection (I := I) (M := M) g₀ S x) =
         unitModel (I := I) (M := M) g₀ 2 S x := fun S => rfl
@@ -95,6 +94,22 @@ lemma toModel_ccTensorUnitValueSection_domDomCongrSection_swap
   congr 1
   funext i
   fin_cases i <;> rfl
+
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+lemma eval_ccTensorUnitValueSection_domDomCongrSection_swap
+    (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
+    (p q' : TangentSpace I x) :
+    Tensor0SSpace.eval (ccTensorUnitValueSection (I := I) (M := M) g₀
+        (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T) x)
+        ![p, q'] =
+      Tensor0SSpace.eval (ccTensorUnitValueSection (I := I) (M := M) g₀ T x)
+        ![q', p] := by
+  rw [← Tensor0SSpace.toModel_apply_tangent, ← Tensor0SSpace.toModel_apply_tangent]
+  exact toModel_ccTensorUnitValueSection_domDomCongrSection_swap (I := I) (M := M) g₀ T x
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x q')
 
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -120,23 +135,27 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_trans_swap
   refine ContinuousMultilinearMap.ext (fun v => ?_)
   rw [curvatureActionMonomialTrace, curvatureActionMonomialTrace,
     curvatureDecompositionMonomialFibFixedFrame_toModel, curvatureDecompositionMonomialFibFixedFrame_toModel]
-  have hcons : ∀ (p q' : TangentSpace I x) (j : Fin 4),
-      (Fin.cons (p : E) (Fin.cons (q' : E) v) : Fin 4 → E) ((Equiv.swap (0 : Fin 4) 1) j) =
-        (Fin.cons (q' : E) (Fin.cons (p : E) v) : Fin 4 → E) j := by
+  have hcons : ∀ (p q' : E) (j : Fin 4),
+      (Fin.cons p (Fin.cons q' v) : Fin 4 → E) ((Equiv.swap (0 : Fin 4) 1) j) =
+        (Fin.cons q' (Fin.cons p v) : Fin 4 → E) j := by
     intro p q' j
     fin_cases j <;> rfl
   have hstep : ∀ a b : Fin (Module.finrank ℝ E),
-      Tensor0SSpace.toModel (𝕜 := ℝ) (ccTensorUnitValueSection (I := I) (M := M) g₀ T x)
-          ![(smoothOrthoFrame (I := I) g₁ x a x : E), (smoothOrthoFrame (I := I) g₁ x b x : E)] *
+      Tensor0SSpace.eval (ccTensorUnitValueSection (I := I) (M := M) g₀ T x)
+          ![smoothOrthoFrame (I := I) g₁ x a x, smoothOrthoFrame (I := I) g₁ x b x] *
         Tensor0SSpace.toModel (𝕜 := ℝ) G
-          (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E)) v) : Fin 4 → E)
+          (fun i => (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)) v) : Fin 4 → E)
             ((σ.trans (Equiv.swap (0 : Fin 4) 1)) i)) =
-      Tensor0SSpace.toModel (𝕜 := ℝ) (ccTensorUnitValueSection (I := I) (M := M) g₀ T x)
-          ![(smoothOrthoFrame (I := I) g₁ x a x : E), (smoothOrthoFrame (I := I) g₁ x b x : E)] *
+      Tensor0SSpace.eval (ccTensorUnitValueSection (I := I) (M := M) g₀ T x)
+          ![smoothOrthoFrame (I := I) g₁ x a x, smoothOrthoFrame (I := I) g₁ x b x] *
         Tensor0SSpace.toModel (𝕜 := ℝ) G
-          (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E))
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E)) v) : Fin 4 → E) (σ i)) := by
+          (fun i => (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x b x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x)) v) : Fin 4 → E) (σ i)) := by
     intro a b
     congr 1
     refine congrArg _ ?_
@@ -145,7 +164,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_trans_swap
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hstep a b))]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
-  rw [toModel_ccTensorUnitValueSection_domDomCongrSection_swap]
+  rw [eval_ccTensorUnitValueSection_domDomCongrSection_swap]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -207,7 +226,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_add
         + curvatureActionMonomialTrace (I := I) (M := M) g₁
           (ccTensorUnitValueSection (I := I) (M := M) g₀ S') σ x G := rfl
   rw [hadd]
-  simp only [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply,
+  simp only [Tensor0SSpace.toModel_add, add_apply,
     TensorRSSpace.ofCLM]
   rw [curvatureActionMonomialTrace, curvatureActionMonomialTrace,
     curvatureActionMonomialTrace, curvatureDecompositionMonomialFibFixedFrame_toModel,
@@ -217,7 +236,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_add
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [ccTensorUnitValueSection_add]
-  simp only [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  simp only [Tensor0SSpace.eval_add]
   rw [add_mul]
 
 
@@ -245,7 +264,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_smul
       c • curvatureActionMonomialTrace (I := I) (M := M) g₁
         (ccTensorUnitValueSection (I := I) (M := M) g₀ S) σ x G := rfl
   rw [hsmul]
-  simp only [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+  simp only [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
     TensorRSSpace.ofCLM]
   rw [curvatureActionMonomialTrace, curvatureActionMonomialTrace,
     curvatureDecompositionMonomialFibFixedFrame_toModel, curvatureDecompositionMonomialFibFixedFrame_toModel]
@@ -254,7 +273,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_smul
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [ccTensorUnitValueSection_smul]
-  simp only [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  simp only [Tensor0SSpace.eval_smul, smul_eq_mul]
   ring
 
 

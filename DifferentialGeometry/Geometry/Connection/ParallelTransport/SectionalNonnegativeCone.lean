@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -24,11 +23,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance parallelTensor04NormedAddCommGroup (x : M) :
     NormedAddCommGroup (Tensor0SSpace 4 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
+  Tensor0SBundle.tensor0SSpaceNormedAddCommGroup 4 x
 
 private local instance parallelTensor04NormedSpace (x : M) :
     NormedSpace ℝ (Tensor0SSpace 4 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
+  Tensor0SBundle.tensor0SSpaceNormedSpace 4 x
 
 private local instance parallelTensor04AddCommGroup (x : M) :
     AddCommGroup (Tensor0SSpace 4 I x) :=
@@ -51,9 +50,10 @@ noncomputable def parallelTransportTensor04CLEOnIcc [I.Boundaryless]
     (hgamma : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) gamma)
     {L : ℝ} (hL : 0 < L) :
     Tensor0SSpace 4 I (gamma 0) ≃L[ℝ] Tensor0SSpace 4 I (gamma L) :=
-  tensor0SPullbackCLE (I := I) (M := M) 4
+  tensor04SectionalPullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor04CLEOnIcc_sectionalEval [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
     (hgamma : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) gamma)
@@ -66,10 +66,11 @@ theorem parallelTransportTensor04CLEOnIcc_sectionalEval [I.Boundaryless]
       tensor04SectionalEval (I := I) (M := M) A v w := by
   let e := parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL
   change tensor04SectionalEval (I := I) (M := M)
-      (tensor0SPullbackCLE (I := I) (M := M) 4 e.symm A) (e v) (e w) = _
-  rw [tensor04SectionalEval_pullback]
+      (tensor04SectionalPullbackCLE (I := I) (M := M) e.symm A) (e v) (e w) = _
+  rw [tensor04SectionalEval_normPullback]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor04CLEOnIcc_mem_sectionalNonnegativeCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -78,9 +79,10 @@ theorem parallelTransportTensor04CLEOnIcc_mem_sectionalNonnegativeCone_iff
     parallelTransportTensor04CLEOnIcc (I := I) g gamma hgamma hL A ∈
         tensor04SectionalNonnegativeCone (I := I) (M := M) ↔
       A ∈ tensor04SectionalNonnegativeCone (I := I) (M := M) :=
-  tensor0SPullbackCLE_mem_sectionalNonnegativeCone_iff (I := I) (M := M)
+  tensor04SectionalPullbackCLE_mem_sectionalNonnegativeCone_iff (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor04SectionalNonnegativeCone_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -95,6 +97,7 @@ theorem tensor04SectionalNonnegativeCone_map_parallelTransportOnIcc
   tensor04SectionalNonnegativeCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor04SectionalNonnegative_dualZeroFace_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -114,13 +117,14 @@ theorem tensor04SectionalNonnegative_dualZeroFace_map_parallelTransportOnIcc
   change (((tensor04SectionalNonnegativeCone (I := I) (M := M) :
       ProperCone ℝ (Tensor0SSpace 4 I (gamma 0))).dualZeroFace
         (tensor04SectionalEvalCLM (I := I) (M := M) v w)).map
-          (tensor0SPullbackCLE (I := I) (M := M) 4 e.symm).toContinuousLinearMap) =
+          (tensor04SectionalPullbackCLE (I := I) (M := M) e.symm).toContinuousLinearMap) =
     ((tensor04SectionalNonnegativeCone (I := I) (M := M) :
       ProperCone ℝ (Tensor0SSpace 4 I (gamma L))).dualZeroFace
         (tensor04SectionalEvalCLM (I := I) (M := M) (e v) (e w)))
   simpa using tensor04SectionalNonnegative_dualZeroFace_map_pullback
     (I := I) (M := M) e.symm (e v) (e w)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor04CLEOnIcc_mem_dualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -144,9 +148,10 @@ noncomputable def parallelTransportTensor04CLEBetween [I.Boundaryless]
     (hgamma : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) gamma)
     {a b : ℝ} (hab : a < b) :
     Tensor0SSpace 4 I (gamma a) ≃L[ℝ] Tensor0SSpace 4 I (gamma b) :=
-  tensor0SPullbackCLE (I := I) (M := M) 4
+  tensor04SectionalPullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportTensor04CLEBetween_sectionalEval [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -160,10 +165,11 @@ theorem parallelTransportTensor04CLEBetween_sectionalEval [I.Boundaryless]
       tensor04SectionalEval (I := I) (M := M) A v w := by
   let e := parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab
   change tensor04SectionalEval (I := I) (M := M)
-      (tensor0SPullbackCLE (I := I) (M := M) 4 e.symm A) (e v) (e w) = _
-  rw [tensor04SectionalEval_pullback]
+      (tensor04SectionalPullbackCLE (I := I) (M := M) e.symm A) (e v) (e w) = _
+  rw [tensor04SectionalEval_normPullback]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor04CLEBetween_mem_sectionalNonnegativeCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -172,9 +178,10 @@ theorem parallelTransportTensor04CLEBetween_mem_sectionalNonnegativeCone_iff
     parallelTransportTensor04CLEBetween (I := I) g gamma hgamma hab A ∈
         tensor04SectionalNonnegativeCone (I := I) (M := M) ↔
       A ∈ tensor04SectionalNonnegativeCone (I := I) (M := M) :=
-  tensor0SPullbackCLE_mem_sectionalNonnegativeCone_iff (I := I) (M := M)
+  tensor04SectionalPullbackCLE_mem_sectionalNonnegativeCone_iff (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor04SectionalNonnegativeCone_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -189,6 +196,7 @@ theorem tensor04SectionalNonnegativeCone_map_parallelTransportBetween
   tensor04SectionalNonnegativeCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor04SectionalNonnegative_dualZeroFace_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
@@ -208,13 +216,14 @@ theorem tensor04SectionalNonnegative_dualZeroFace_map_parallelTransportBetween
   change (((tensor04SectionalNonnegativeCone (I := I) (M := M) :
       ProperCone ℝ (Tensor0SSpace 4 I (gamma a))).dualZeroFace
         (tensor04SectionalEvalCLM (I := I) (M := M) v w)).map
-          (tensor0SPullbackCLE (I := I) (M := M) 4 e.symm).toContinuousLinearMap) =
+          (tensor04SectionalPullbackCLE (I := I) (M := M) e.symm).toContinuousLinearMap) =
     ((tensor04SectionalNonnegativeCone (I := I) (M := M) :
       ProperCone ℝ (Tensor0SSpace 4 I (gamma b))).dualZeroFace
         (tensor04SectionalEvalCLM (I := I) (M := M) (e v) (e w)))
   simpa using tensor04SectionalNonnegative_dualZeroFace_map_pullback
     (I := I) (M := M) e.symm (e v) (e w)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor04CLEBetween_mem_dualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)

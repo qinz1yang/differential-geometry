@@ -23,7 +23,7 @@ def chartRawRepr (α : M) (X : Π y : M, TangentSpace I y) (z : E) : E :=
   (X ((extChartAt I α).symm z) : E)
 
 def chartTrivRepr (α : M) (X : Π y : M, TangentSpace I y) (z : E) : E :=
-  chartE_section_repr (I := I) α X ((extChartAt I α).symm z)
+  chartESectionRepr (I := I) α X ((extChartAt I α).symm z)
 
 def chartMovingTriv (α : M) (z : E) : E →L[ℝ] E :=
   trivToE (I := I) α ((extChartAt I α).symm z)
@@ -71,7 +71,7 @@ theorem chartTrivRepr_fderiv_eq
     funext (fun z => chartTrivRepr_eq_movingTriv_rawRepr (I := I) α X z)
   rw [hTeq]
   rw [fderiv_clm_apply hC hR]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+  rw [add_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply]
   rw [chartMovingTriv_basepoint (I := I) α (fderiv ℝ (chartRawRepr (I := I) α X) z₀ h)]
 
@@ -81,12 +81,12 @@ theorem chartLeviCivita_flat_summand_eq_rawRepr
     (α : M) (X : Π y : M, TangentSpace I y) (w : E)
     (hR : DifferentiableAt ℝ (chartRawRepr (I := I) α X) (extChartAt I α α))
     (hC : DifferentiableAt ℝ (fun z => chartMovingTriv (I := I) α z) (extChartAt I α α)) :
-    fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+    fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
         (extChartAt I α α) w
       = fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α) w
         + (fderiv ℝ (fun z => chartMovingTriv (I := I) α z) (extChartAt I α α) w)
             (chartRawRepr (I := I) α X (extChartAt I α α)) := by
-  have hcomp : (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+  have hcomp : (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
       = chartTrivRepr (I := I) α X := rfl
   rw [hcomp]
   exact chartTrivRepr_fderiv_eq (I := I) α X w hR hC

@@ -157,8 +157,8 @@ private lemma norm_iteratedFDerivWithin_rawCompOnE_le_rawPullR
   rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
   rw [mul_comm]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma exists_rawCompOnE_jet_le_toHs_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -202,7 +202,7 @@ lemma exists_rawCompOnE_jet_le_toHs_on_compact
           (iteratedCovGrad g 0 2 i S) α (toEuclidean (E := E) (extChartAt I α b)) ≤
         Cz * (letI : Bundle.RiemannianBundle
                 (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
           ‖(iteratedCovGrad g 0 2 i S).toSection b‖) := by
     intro i
     obtain ⟨Cz, hCz_nn, hCz⟩ :=
@@ -241,7 +241,7 @@ lemma exists_rawCompOnE_jet_le_toHs_on_compact
       Czmax * ∑ i ∈ Finset.range (m + 1),
         (letI : Bundle.RiemannianBundle
            (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
         ‖(iteratedCovGrad g 0 2 i S).toSection b‖) := by
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum (fun i hi => ?_)
@@ -249,8 +249,8 @@ lemma exists_rawCompOnE_jet_le_toHs_on_compact
     have hzi := hCzf i S hb_mem
     rw [hy_eq] at hzi
     refine le_trans hzi ?_
-    letI : Bundle.RiemannianBundle (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+    let : Bundle.RiemannianBundle (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
     exact mul_le_mul_of_nonneg_right (hCz_le i hi) (norm_nonneg _)
   have hemb := hCemb S b
   have hpeel_y' : ‖iteratedFDeriv ℝ m (tensorComponentEuclideanChart (I := I) (M := M) g 0 2 S α
@@ -263,19 +263,19 @@ lemma exists_rawCompOnE_jet_le_toHs_on_compact
         Cpeel * (Czmax * ∑ i ∈ Finset.range (m + 1),
           (letI : Bundle.RiemannianBundle
              (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
           ‖(iteratedCovGrad g 0 2 i S).toSection b‖)) :=
       mul_le_mul_of_nonneg_left hsum_fiber hCpeel_nn
     refine le_trans hstep1 ?_
     have hfiber_le : ∑ i ∈ Finset.range (m + 1),
           (letI : Bundle.RiemannianBundle
              (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
           ‖(iteratedCovGrad g 0 2 i S).toSection b‖) ≤ Cemb * N := hemb
     have hthis : Czmax * ∑ i ∈ Finset.range (m + 1),
           (letI : Bundle.RiemannianBundle
              (fun bb : M => Tensor0SBundle.TensorRSSpace 0 (2 + i) I bb) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
           ‖(iteratedCovGrad g 0 2 i S).toSection b‖) ≤ Czmax * (Cemb * N) :=
       mul_le_mul_of_nonneg_left hfiber_le hCzmax_nn
     exact mul_le_mul_of_nonneg_left hthis hCpeel_nn

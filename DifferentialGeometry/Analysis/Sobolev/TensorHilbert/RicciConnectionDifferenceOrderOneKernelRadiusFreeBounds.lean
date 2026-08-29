@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -32,6 +31,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma l1IteratedCovGradSmul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
@@ -41,6 +41,7 @@ private lemma l1IteratedCovGradSmul (g : SmoothRiemannianMetric I M) (r s j : �
   | zero => simp only [iteratedCovGrad_zero]
   | succ j ih => rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih, covGrad_smul]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma l1RiemannianFiberNormSqNeg (g : SmoothRiemannianMetric I M) {r s : ℕ} (l : ℕ) (x : M)
@@ -283,6 +284,7 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_antidiagon
   rw [hidx] at hfold
   exact hfold
 
+omit [SigmaCompactSpace M] in
 theorem sfEndoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ksf : ℕ → ℝ, (∀ l, 0 ≤ Ksf l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -468,7 +470,14 @@ theorem bgCcAntidiagonalTupleGridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
       ((iteratedCovGrad (I := I) g₀ 1 2 n
         (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) ≤ Kcd n * W := by
     have h := hcd g₁ P htie hδ_le hδ0 hδ n x
-    simpa only [W, covariantJetFiberNormSqGrid] using h
+    rw [hW_def]
+    change riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
+        ((iteratedCovGrad (I := I) g₀ 1 2 n
+          (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) ≤
+      Kcd n * Combinatorics.antidiagonalTupleGridWindow
+        (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
+          ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2)
+    exact h
   have hfx' : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
       ((iteratedCovGrad (I := I) g₀ 1 2 n
         (lieArm1FixCd (I := I) (M := M) g₀ g_bg)).toSection x) ≤ Kfx n * W := by

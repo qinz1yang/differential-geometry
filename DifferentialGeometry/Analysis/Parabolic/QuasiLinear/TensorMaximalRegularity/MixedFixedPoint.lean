@@ -219,14 +219,14 @@ theorem mixedMap_contract
     (hsmall :
       (L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T) < 1) :
     ContractingWith
-      ⟨(L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T),
-        add_nonneg
+      (NNReal.mk ((L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T))
+        (add_nonneg
           (mul_nonneg L2.coe_nonneg (by linarith [hT.le]))
-          (mul_nonneg L1.coe_nonneg (by positivity))⟩
+          (mul_nonneg L1.coe_nonneg (by positivity))))
       (mixedMap (I := I) (M := M) a hT u0 N2 hN2 N1 hN1) := by
   refine ⟨?_, ?_⟩
   · rw [← NNReal.coe_lt_coe]
-    simpa only [NNReal.coe_mk] using hsmall
+    simpa only [NNReal.coe_mk, NNReal.coe_one] using hsmall
   · refine LipschitzWith.of_dist_le_mul (fun force force' => ?_)
     have h := mixedMap_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 u0 N2 hN2 N1 hN1

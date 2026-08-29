@@ -17,8 +17,8 @@ open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E]
   [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -197,26 +197,26 @@ theorem pair_overlap_at
             (d.chartMap j cAlpha z) := by
   let j := L.φ k
   let Y := X.obj j
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace Y.M :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace.MetrizableSpace Y.M :=
     Manifold.metrizableSpace I Y.M
-  letI : T3Space Y.M := inferInstance
-  letI : RiemannianBundle (fun y : Y.M ↦ TangentSpace I y) :=
+  let : T3Space Y.M := inferInstance
+  let : RiemannianBundle (fun y : Y.M ↦ TangentSpace I y) :=
     Y.riemBundle (I := I)
-  letI : (y : Y.M) → InnerProductSpace Real (TangentSpace I y) :=
+  let : (y : Y.M) → InnerProductSpace Real (TangentSpace I y) :=
     Y.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : Y.M ↦ TangentSpace I y) := Y.riemBundle_cont (I := I)
-  letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
-  letI : CompleteSpace Y.M :=
+  let : EMetricSpace Y.M := Y.emetricSpace (I := I)
+  let : CompleteSpace Y.M :=
     MetricComplete.complete (I := I) Y (hcomplete.complete j)
-  letI : ConnectedSpace Y.M := hconn j
-  letI : MetricSpace Y.M := (P j).ms
+  let : ConnectedSpace Y.M := hconn j
+  let : MetricSpace Y.M := (P j).ms
   let cAlpha := seqCenterD inp.decay P L k alpha
   let cGamma := seqCenterD inp.decay P L k gamma
   let chiAlpha := d.chart j cAlpha
@@ -328,7 +328,8 @@ theorem pair_overlap_at
     have hed : riemannianEDist I cGamma y =
         ENNReal.ofReal (inp.decay.dist j cGamma y) := by
       have hrealize := inp.realizes.edist_eq j cGamma y
-      simpa [PointedRiemannianManifold.emetricSpace] using hrealize
+      change riemannianEDist I cGamma y = _ at hrealize
+      exact hrealize
     have hedRad : riemannianEDist I cGamma y <
         ENNReal.ofReal chiGamma.radius := by
       rw [hed]
@@ -465,26 +466,26 @@ theorem transition_patch_eventually
     with k hscaledK hcentersK haliveK
   let j := L.φ k
   let Y := X.obj j
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace Y.M :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace.MetrizableSpace Y.M :=
     Manifold.metrizableSpace I Y.M
-  letI : T3Space Y.M := inferInstance
-  letI : RiemannianBundle (fun y : Y.M ↦ TangentSpace I y) :=
+  let : T3Space Y.M := inferInstance
+  let : RiemannianBundle (fun y : Y.M ↦ TangentSpace I y) :=
     Y.riemBundle (I := I)
-  letI : (y : Y.M) → InnerProductSpace Real (TangentSpace I y) :=
+  let : (y : Y.M) → InnerProductSpace Real (TangentSpace I y) :=
     Y.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : Y.M ↦ TangentSpace I y) := Y.riemBundle_cont (I := I)
-  letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
-  letI : CompleteSpace Y.M :=
+  let : EMetricSpace Y.M := Y.emetricSpace (I := I)
+  let : CompleteSpace Y.M :=
     MetricComplete.complete (I := I) Y (hcomplete.complete j)
-  letI : ConnectedSpace Y.M := hconn j
-  letI : MetricSpace Y.M := (P j).ms
+  let : ConnectedSpace Y.M := hconn j
+  let : MetricSpace Y.M := (P j).ms
   have hsqrt : Real.sqrt 2 < (10 / 7 : Real) := by
     have hs := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 2)
     have hn := Real.sqrt_nonneg 2
@@ -619,7 +620,8 @@ theorem transition_patch_eventually
     have hed : riemannianEDist I c y =
         ENNReal.ofReal (inp.decay.dist j c y) := by
       have hrealize := inp.realizes.edist_eq j c y
-      simpa [PointedRiemannianManifold.emetricSpace] using hrealize
+      change riemannianEDist I c y = _ at hrealize
+      exact hrealize
     have hedRad : riemannianEDist I c y <
         ENNReal.ofReal chi.radius := by
       rw [hed]
@@ -684,13 +686,13 @@ theorem transition_target_ball_eventually
           (inp.decay.dist (L.φ k)
             (seqCenterD inp.decay P L k (alpha.1 : Nat))
             (X.obj (L.φ k)).basepoint) := by
-    letI : TopologicalSpace (X.obj (L.φ k)).M :=
+    let : TopologicalSpace (X.obj (L.φ k)).M :=
       (X.obj (L.φ k)).topology
-    letI : ChartedSpace H (X.obj (L.φ k)).M :=
+    let : ChartedSpace H (X.obj (L.φ k)).M :=
       (X.obj (L.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (L.φ k)).M :=
+    let : IsManifold I ∞ (X.obj (L.φ k)).M :=
       (X.obj (L.φ k)).smooth
-    letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+    let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
       (X.obj (L.φ k)).t2TangentBundle
     simpa only [d.radius_eq] using
       d.stage_radius_gt inp aMin hphys P L hratio (hcentersK alpha)
@@ -772,42 +774,30 @@ private theorem trans_fin
           (hUanorm a (Finset.mem_insert_self a s))
           (hVanorm a (Finset.mem_insert_self a s))
           (fun k => by
-            simpa only [d0, BoundedGeometryNormalData.subseq,
-              InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
-              PointedRiemannianSeq.subseq] using
-              hUarad a (Finset.mem_insert_self a s) (phi0 k))
+            with_unfolding_all
+              exact hUarad a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, BoundedGeometryNormalData.subseq,
-              InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
-              PointedRiemannianSeq.subseq] using
-              hVarad a (Finset.mem_insert_self a s) (phi0 k))
+            with_unfolding_all
+              exact hVarad a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, BoundedGeometryNormalData.subseq,
-              BoundedGeometryNormalData.chartOverlapOn,
-              PointedRiemannianSeq.subseq] using
-              hovlJ a (Finset.mem_insert_self a s) (phi0 k))
+            with_unfolding_all
+              exact hovlJ a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, BoundedGeometryNormalData.subseq,
-              BoundedGeometryNormalData.chartOverlapOn,
-              PointedRiemannianSeq.subseq] using
-              hovlJbar a (Finset.mem_insert_self a s) (phi0 k))
+            with_unfolding_all
+              exact hovlJbar a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, BoundedGeometryNormalData.subseq,
-              BoundedGeometryNormalData.chartTransition,
-              PointedRiemannianSeq.subseq] using
-              hmapJ a (Finset.mem_insert_self a s) (phi0 k))
+            with_unfolding_all
+              exact hmapJ a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, BoundedGeometryNormalData.subseq,
-              BoundedGeometryNormalData.chartTransition,
-              PointedRiemannianSeq.subseq] using
-              hmapJbar a (Finset.mem_insert_self a s) (phi0 k))
+            with_unfolding_all
+              exact hmapJbar a (Finset.mem_insert_self a s) (phi0 k))
       refine ⟨phi0 ∘ phi1, hphi0.comp hphi1, fun i hi => ?_⟩
       rcases Finset.mem_insert.mp hi with rfl | his
       · refine ⟨Jinf, Jbarinf, hJinf, hJbarinf, ?_, ?_, hleft, hright⟩
-        · simpa only [Function.comp_apply, d0, BoundedGeometryNormalData.subseq,
-            BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq] using hJ
-        · simpa only [Function.comp_apply, d0, BoundedGeometryNormalData.subseq,
-            BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq] using hJbar
+        · with_unfolding_all
+            exact hJ
+        · with_unfolding_all
+            exact hJbar
       · obtain ⟨Jprev, Jbarprev, hJprev, hJbarprev, hconv, hconvbar,
             hleftprev, hrightprev⟩ := hprev i his
         refine ⟨Jprev, Jbarprev, hJprev, hJbarprev, ?_, ?_,
@@ -846,12 +836,12 @@ theorem atomOn_readout
   let cGamma := seqCenterD inp.decay P L k (gamma : Nat)
   let lam := L.lamInf (gamma : Nat)
   let hlam := inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := (P j).ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := (P j).ms
   have hdist :
       dist cGamma (d.chartMap j cAlpha z) =
         ‖d.chartTransition j cAlpha cGamma z‖ := by
@@ -1038,7 +1028,7 @@ theorem exists_supp_data
   classical
   let PairSlot := Σ alpha : LiveSlot L inp.pack r,
     InterSlot L inp.pack r alpha
-  letI (alpha : LiveSlot L inp.pack r) :
+  let (alpha : LiveSlot L inp.pack r) :
       Finite (InterSlot L inp.pack r alpha) :=
     Finite.of_injective
       (fun target : InterSlot L inp.pack r alpha => target.1.1)
@@ -1047,8 +1037,8 @@ theorem exists_supp_data
         apply Subtype.ext
         apply Subtype.ext
         exact hab)
-  letI : Finite PairSlot := inferInstance
-  letI : Fintype PairSlot := Fintype.ofFinite PairSlot
+  let : Finite PairSlot := inferInstance
+  let : Fintype PairSlot := Fintype.ofFinite PairSlot
   have hpair (pair : PairSlot) :
       ∀ᶠ k : Nat in Filter.atTop,
         (d.chartOverlapOn (L.φ k)
@@ -1249,7 +1239,8 @@ theorem exists_supp_data
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hall
   let shift : Nat → Nat := fun k => k + N
   have hshift : StrictMono shift := by
-    simpa only [shift] using strictMono_id.add_const N
+    intro a b hab
+    exact Nat.add_lt_add_right hab N
   let L0 := L.subseq hshift
   have hstage (k : Nat) := hN (shift k) (by
     simpa only [shift] using Nat.le_add_left N k)
@@ -1285,40 +1276,28 @@ theorem exists_supp_data
           simpa only [Va, Metric.mem_ball, dist_zero_right] using hz))
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [Ua, d0, BoundedGeometryNormalData.subseq,
-          InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
-          PointedRiemannianSeq.subseq, x0, L0, NetLimitData.subseq,
-          Function.comp_apply, seqCenterD_subseq] using hk.2.2.1)
+        with_unfolding_all
+          exact hk.2.2.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [Va, d0, BoundedGeometryNormalData.subseq,
-          InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
-          PointedRiemannianSeq.subseq, y0, L0, NetLimitData.subseq,
-          Function.comp_apply, seqCenterD_subseq] using hk.2.2.2)
+        with_unfolding_all
+          exact hk.2.2.2)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [U8, d0, BoundedGeometryNormalData.subseq,
-          BoundedGeometryNormalData.chartOverlapOn, PointedRiemannianSeq.subseq,
-          x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
-          seqCenterD_subseq] using hk.1.1)
+        with_unfolding_all
+          exact hk.1.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [V8, d0, BoundedGeometryNormalData.subseq,
-          BoundedGeometryNormalData.chartOverlapOn, PointedRiemannianSeq.subseq,
-          x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
-          seqCenterD_subseq] using hk.2.1.1)
+        with_unfolding_all
+          exact hk.2.1.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [U8, Va, d0, BoundedGeometryNormalData.subseq,
-          BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
-          x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
-          seqCenterD_subseq] using hk.1.2.1)
+        with_unfolding_all
+          exact hk.1.2.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [V8, Ua, d0, BoundedGeometryNormalData.subseq,
-          BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
-          x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
-          seqCenterD_subseq] using hk.2.1.2.1)
+        with_unfolding_all
+          exact hk.2.1.2.1)
   have hlim0 (pair : PairSlot) :=
     hlim pair (Finset.mem_univ pair)
   let J : PairSlot → E → E := fun pair =>
@@ -1393,10 +1372,13 @@ theorem exists_supp_data
             Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
               interior (C0 alpha) := by
     have hk := (hstage (tau k)).1
-    simpa only [U, C0, Lphi, phi, L0, Function.comp_apply,
-      seqCenterD_subseq, NetLimitData.hatBall_subseq,
-      NetLimitData.innerBall_subseq,
-      NetLimitData.hatSourceBall_subseq] using hk
+    dsimp only [U, C0]
+    convert hk using 1
+    all_goals
+      simp only [Lphi, phi, NetLimitData.subseq_phi, Function.comp_apply,
+        seqCenterD_subseq, NetLimitData.hatBall_subseq,
+        NetLimitData.innerBall_subseq, NetLimitData.hatSourceBall_subseq]
+    all_goals rfl
   have hgeom := transition_patch_geometry inp P L r
   have hlimAll : ∀ alpha,
       HasAtomWeightLimOn (I := I) d.chart
@@ -1426,13 +1408,13 @@ theorem exists_supp_data
           (U alpha)
           (⋃ gamma : Fin (inp.pack.A r),
             Lphi.innerBall inp.decay inp.D P inp.pack r k gamma) := by
-      letI : TopologicalSpace (X.obj (Lphi.φ k)).M :=
+      let : TopologicalSpace (X.obj (Lphi.φ k)).M :=
         (X.obj (Lphi.φ k)).topology
-      letI : ChartedSpace H (X.obj (Lphi.φ k)).M :=
+      let : ChartedSpace H (X.obj (Lphi.φ k)).M :=
         (X.obj (Lphi.φ k)).charted
-      letI : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
+      let : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
         (X.obj (Lphi.φ k)).smooth
-      letI : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
+      let : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
         (X.obj (Lphi.φ k)).t2TangentBundle
       intro z hz
       exact ((hpatchPhi k).1 alpha).2 hz |>.2
@@ -1449,10 +1431,8 @@ theorem exists_supp_data
       intro K hK hKU p
       have hc := (hspec (⟨alpha, target⟩ : PairSlot)).2.2.1
         K hK (hKU.trans hU8alpha) p
-      simpa only [Jinf, J, U8, d0, BoundedGeometryNormalData.subseq,
-        BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
-        x0, y0, beta, Lphi, phi, L0, Function.comp_apply,
-        seqCenterD_subseq] using hc
+      with_unfolding_all
+        exact hc
     have hJStage (target : InterSlot L inp.pack r alpha) (k : Nat) :
         ContDiffOn Real (⊤ : ℕ∞)
           (d.chartTransition (Lphi.φ k)
@@ -1466,15 +1446,15 @@ theorem exists_supp_data
             (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
             (Metric.ball (0 : E)
               (8 * L.lamInf (alpha.1 : Nat))) := by
-        simpa only [Lphi, phi, L0, Function.comp_apply,
-          beta, seqCenterD_subseq] using hp.1.1
-      letI : TopologicalSpace (X.obj (Lphi.φ k)).M :=
+        with_unfolding_all
+          exact hp.1.1
+      let : TopologicalSpace (X.obj (Lphi.φ k)).M :=
         (X.obj (Lphi.φ k)).topology
-      letI : ChartedSpace H (X.obj (Lphi.φ k)).M :=
+      let : ChartedSpace H (X.obj (Lphi.φ k)).M :=
         (X.obj (Lphi.φ k)).charted
-      letI : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
+      let : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
         (X.obj (Lphi.φ k)).smooth
-      letI : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
+      let : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
         (X.obj (Lphi.φ k)).t2TangentBundle
       have hs := (d.chart (Lphi.φ k) (beta k)).transition_smooth
         (d.chart (Lphi.φ k)
@@ -1493,8 +1473,8 @@ theorem exists_supp_data
       refine Filter.Eventually.of_forall fun k z hz => ?_
       have hp := (hstage (tau k)).2.2 (⟨alpha, target⟩ : PairSlot)
       have hreadK := hp.1.2.2 z (hU8alpha hz)
-      simpa only [Lphi, phi, L0, Function.comp_apply,
-        beta, seqCenterD_subseq] using hreadK
+      with_unfolding_all
+        exact hreadK
     have hatom (gamma : Fin (inp.pack.A r)) :
         MapCInfConvOnCompacts (U alpha)
           (fun k => seqAtomOn (I := I) d.chart inp.decay inp.hD P Lphi
@@ -1526,9 +1506,8 @@ theorem exists_supp_data
             · have hdisjointPhi : ∀ᶠ k in Filter.atTop,
                   ¬ BInter inp.decay inp.D P Lphi.lamInf
                     (alpha.1 : Nat) (gamma : Nat) (Lphi.φ k) := by
-                simpa only [Lphi, NetLimitData.subseq, Function.comp_apply,
-                  NetLimitData.subseq_lamInf] using
-                    hphi.tendsto_atTop.eventually hdisjoint
+                with_unfolding_all
+                  exact hphi.tendsto_atTop.eventually hdisjoint
               have hsourceTail : ∀ᶠ k in Filter.atTop,
                   letI : TopologicalSpace (X.obj (Lphi.φ k)).M :=
                     (X.obj (Lphi.φ k)).topology
@@ -1575,8 +1554,8 @@ theorem exists_supp_data
         have hc :
             seqCenter inp.decay inp.D P (Lphi.φ k) (gamma : Nat) =
               some (seqCenterD inp.decay P Lphi k (gamma : Nat)) := by
-          simpa only [Lphi, phi, L0, Function.comp_apply,
-            NetLimitData.subseq, seqCenterD_subseq] using hc0
+          with_unfolding_all
+            exact hc0
         have hreadK (z : E) (hz : z ∈ U alpha) :
             ‖d.chartTransition (Lphi.φ k)
               (beta k)
@@ -1587,8 +1566,8 @@ theorem exists_supp_data
           have hp := (hstage (tau k)).2.2
             (⟨alpha, target⟩ : PairSlot)
           have hr := hp.1.2.2 z (hU8alpha hz)
-          simpa only [Lphi, phi, L0, Function.comp_apply, beta, hslot,
-            seqCenterD_subseq] using hr
+          simpa only [Lphi, phi, NetLimitData.subseq_phi,
+            Function.comp_apply, beta, seqCenterD_subseq, hslot] using hr
         have hsmooth := normBump_smooth (hJStage target k)
           (Lphi.lamInf (gamma : Nat))
           (inp.decay.lambda_pos inp.hD (Lphi.rInf (gamma : Nat)))
@@ -1625,9 +1604,8 @@ theorem exists_supp_data
               have hdisjointK :
                   ¬ BInter inp.decay inp.D P Lphi.lamInf
                     (alpha.1 : Nat) (gamma : Nat) (Lphi.φ k) := by
-                simpa only [Lphi, phi, L0, Function.comp_apply,
-                  NetLimitData.subseq, NetLimitData.subseq_lamInf] using
-                    hdisjoint0
+                with_unfolding_all
+                  exact hdisjoint0
               refine ContDiffOn.congr
                 (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
                   (fun _ : E => (0 : Real)) (U alpha)) fun z hz => ?_
@@ -1704,14 +1682,10 @@ theorem exists_supp_data
       simpa only [Jbarinf, Jbar, V8] using hs.2.1
     refine ⟨hsmoothF, hsmoothR, hsmoothF.continuousOn,
       hsmoothR.continuousOn, ?_, ?_, ?_, ?_⟩
-    · simpa only [Jinf, J, U8, d0, BoundedGeometryNormalData.subseq,
-        BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
-        x0, y0, Lphi, phi, L0, Function.comp_apply,
-        seqCenterD_subseq] using hs.2.2.1
-    · simpa only [Jbarinf, Jbar, V8, d0, BoundedGeometryNormalData.subseq,
-        BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
-        x0, y0, Lphi, phi, L0, Function.comp_apply,
-        seqCenterD_subseq] using hs.2.2.2.1
+    · with_unfolding_all
+        exact hs.2.2.1
+    · with_unfolding_all
+        exact hs.2.2.2.1
     · simpa only [Jinf, Jbarinf, J, Jbar, U8, V8] using
         hs.2.2.2.2.1
     · simpa only [Jinf, Jbarinf, J, Jbar, U8, V8] using
@@ -1733,13 +1707,13 @@ theorem exists_supp_data
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)))
         (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) := by
-    letI : TopologicalSpace (X.obj (Lphi.φ k)).M :=
+    let : TopologicalSpace (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).topology
-    letI : ChartedSpace H (X.obj (Lphi.φ k)).M :=
+    let : ChartedSpace H (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
+    let : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).smooth
-    letI : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
+    let : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
       (X.obj (Lphi.φ k)).t2TangentBundle
     have hp := (hstage (tau k)).2.2 (⟨alpha, target⟩ : PairSlot)
     have hovF :
@@ -1748,16 +1722,16 @@ theorem exists_supp_data
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
           (Metric.ball (0 : E)
             (8 * L.lamInf (alpha.1 : Nat))) := by
-      simpa only [Lphi, phi, L0, Function.comp_apply,
-        seqCenterD_subseq] using hp.1.1
+      with_unfolding_all
+        exact hp.1.1
     have hovR :
         d.chartOverlapOn (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
           (Metric.ball (0 : E)
             (8 * L.lamInf (target.1.1 : Nat))) := by
-      simpa only [Lphi, phi, L0, Function.comp_apply,
-        seqCenterD_subseq] using hp.2.1.1
+      with_unfolding_all
+        exact hp.2.1.1
     have hsF :=
       (d.chart (Lphi.φ k)
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).transition_smooth
@@ -1796,17 +1770,17 @@ theorem exists_supp_data
           (d.chart (Lphi.φ k)
             (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).hom ''
               U alpha := by
-    letI : TopologicalSpace (X.obj (Lphi.φ k)).M :=
+    let : TopologicalSpace (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).topology
-    letI : ChartedSpace H (X.obj (Lphi.φ k)).M :=
+    let : ChartedSpace H (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).charted
-    letI : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
+    let : IsManifold I ∞ (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).smooth
-    letI : T2Space (X.obj (Lphi.φ k)).M :=
+    let : T2Space (X.obj (Lphi.φ k)).M :=
       (X.obj (Lphi.φ k)).t2
-    letI : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
+    let : T2Space (TangentBundle I (X.obj (Lphi.φ k)).M) :=
       (X.obj (Lphi.φ k)).t2TangentBundle
-    letI : MetricSpace (X.obj (Lphi.φ k)).M := (P (Lphi.φ k)).ms
+    let : MetricSpace (X.obj (Lphi.φ k)).M := (P (Lphi.φ k)).ms
     refine ⟨(hpatchPhi k).1, ?_⟩
     intro y hy
     obtain ⟨alpha, z, hz, rfl⟩ :=
@@ -1829,19 +1803,28 @@ theorem exists_supp_data
   · simpa only [C0] using hgeom.2.2.2.2.2.2.2.1
   · refine ⟨fun alpha => transitionCoreBuffer L alpha, hgeom.2.2.2.2.2.2.2.2, ?_⟩
     intro k
-    simpa only [C0, Lphi] using (hpatchPhi k).2.2
+    with_unfolding_all
+      exact (hpatchPhi k).2.2
   · intro k
-    simpa only [C0, Lphi] using (hpatchPhi k).2.1
+    with_unfolding_all
+      exact (hpatchPhi k).2.1
   · intro k
-    simpa only [Lphi] using hchartAll k
-  · simpa only [Lphi] using hlimAll
+    simp only [NormalChartFamily.hom, NormalChartFamily.radius]
+    convert hchartAll k using 1
+    all_goals
+      simp only [Lphi, phi, NetLimitData.subseq_phi, Function.comp_apply,
+        seqCenterD_subseq, NetLimitData.hatBall_subseq,
+        NetLimitData.innerBall_subseq, NetLimitData.hatSourceBall_subseq]
+    all_goals rfl
+  · with_unfolding_all
+      exact hlimAll
   · exact hweightAll
   · intro alpha target
-    simpa only [Lphi, BoundedGeometryNormalData.chartTransition] using
-      htransAll alpha target
+    with_unfolding_all
+      exact htransAll alpha target
   · intro alpha target k
-    simpa only [Lphi, BoundedGeometryNormalData.chartTransition] using
-      hsmoothAll alpha target k
+    with_unfolding_all
+      exact hsmoothAll alpha target k
 
 end BoundedGeometryNormalData
 

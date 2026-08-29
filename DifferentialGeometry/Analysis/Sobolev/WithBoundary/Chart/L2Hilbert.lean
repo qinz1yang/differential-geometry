@@ -1064,7 +1064,7 @@ private theorem wkpChartL2_norm_sq_eq_inner
     (d := n) (hu_mem α)
 
 private theorem wkpInnerChartL2_apply_comm
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (u v : WkpChartL2 (n := n) (M := M) k) :
     @inner ℝ _ _ v u = @inner ℝ _ _ u v := by
   change wkpInnerChartL2 (n := n) (M := M) k _ _ = _

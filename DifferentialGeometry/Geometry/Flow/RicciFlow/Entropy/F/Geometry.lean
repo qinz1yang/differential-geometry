@@ -40,28 +40,28 @@ theorem weightedIBP
     (hlap :
       Integrable (fun x : M =>
         expNegPotentialDensity potential x *
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hpotential⟩ x)
         (riemannianVolumeMeasure (I := I) (M := M) g))
     (hgrad :
       Integrable (fun x : M =>
         expNegPotentialDensity potential x *
           g.inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
         (riemannianVolumeMeasure (I := I) (M := M) g)) :
     ∫ x,
-      (DifferentialGeometry.Geometry.Operator.Δ_g
+      (DifferentialGeometry.Geometry.Operator.ΔG
           (I := I) g ⟨_, hpotential⟩ x -
         g.inner x
-          ((DifferentialGeometry.Geometry.Operator.grad_g
+          ((DifferentialGeometry.Geometry.Operator.gradG
             (I := I) g ⟨_, hpotential⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((DifferentialGeometry.Geometry.Operator.grad_g
+          ((DifferentialGeometry.Geometry.Operator.gradG
             (I := I) g ⟨_, hpotential⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       ∂(expNegPotentialWeightedMeasure
@@ -70,14 +70,14 @@ theorem weightedIBP
     (mu := riemannianVolumeMeasure (I := I) (M := M) g)
     (potential := potential)
     (lapPotential :=
-      DifferentialGeometry.Geometry.Operator.Δ_g
+      DifferentialGeometry.Geometry.Operator.ΔG
         (I := I) g ⟨_, hpotential⟩)
     (gradPotentialNormSq := fun x : M =>
       g.inner x
-        ((DifferentialGeometry.Geometry.Operator.grad_g
+        ((DifferentialGeometry.Geometry.Operator.gradG
           (I := I) g ⟨_, hpotential⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((DifferentialGeometry.Geometry.Operator.grad_g
+        ((DifferentialGeometry.Geometry.Operator.gradG
           (I := I) g ⟨_, hpotential⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
   · exact hmeas
@@ -147,19 +147,19 @@ theorem weightedGreen
         (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) g)) :
     ∫ x,
-        DifferentialGeometry.Geometry.Operator.Δ_g
+        DifferentialGeometry.Geometry.Operator.ΔG
           (I := I) g ⟨_, hq⟩ x
       ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential) =
       ∫ x,
         q x *
-          (-DifferentialGeometry.Geometry.Operator.Δ_g
+          (-DifferentialGeometry.Geometry.Operator.ΔG
               (I := I) g ⟨_, hpotential⟩ x +
             g.inner x
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       ∂(expNegPotentialWeightedMeasure
@@ -168,32 +168,32 @@ theorem weightedGreen
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
   let gradSq : M -> Real := fun x =>
     g.inner x
-      ((DifferentialGeometry.Geometry.Operator.grad_g
+      ((DifferentialGeometry.Geometry.Operator.gradG
         (I := I) g ⟨_, hpotential⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      ((DifferentialGeometry.Geometry.Operator.grad_g
+      ((DifferentialGeometry.Geometry.Operator.gradG
         (I := I) g ⟨_, hpotential⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
   rw [expNegPotentialWeightedMeasure_integral_eq_base
     (mu := μ) (potential := potential)
     (integrand := fun x : M =>
-      DifferentialGeometry.Geometry.Operator.Δ_g (I := I) g ⟨_, hq⟩ x)
+      DifferentialGeometry.Geometry.Operator.ΔG (I := I) g ⟨_, hq⟩ x)
     hmeas]
   rw [expNegPotentialWeightedMeasure_integral_eq_base
     (mu := μ) (potential := potential)
     (integrand := fun x : M =>
       q x *
-        (-DifferentialGeometry.Geometry.Operator.Δ_g
+        (-DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hpotential⟩ x + gradSq x))
     hmeas]
   calc
     ∫ x,
         expNegPotentialDensity potential x *
-          DifferentialGeometry.Geometry.Operator.Δ_g (I := I) g ⟨_, hq⟩ x ∂μ =
+          DifferentialGeometry.Geometry.Operator.ΔG (I := I) g ⟨_, hq⟩ x ∂μ =
       ∫ x,
         q x *
           (expNegPotentialDensity potential x *
-            (-DifferentialGeometry.Geometry.Operator.Δ_g
+            (-DifferentialGeometry.Geometry.Operator.ΔG
                 (I := I) g ⟨_, hpotential⟩ x + gradSq x)) ∂μ := by
       simpa [μ, expNegPotentialDensity, gradSq] using
         DifferentialGeometry.Integral.DivergenceTheorem.expNegGreen
@@ -202,7 +202,7 @@ theorem weightedGreen
       ∫ x,
         expNegPotentialDensity potential x *
           (q x *
-            (-DifferentialGeometry.Geometry.Operator.Δ_g
+            (-DifferentialGeometry.Geometry.Operator.ΔG
                 (I := I) g ⟨_, hpotential⟩ x + gradSq x)) ∂μ := by
       apply integral_congr_ae
       refine Filter.Eventually.of_forall ?_
@@ -220,7 +220,7 @@ theorem weightedDivZero
         (riemannianVolumeMeasure (I := I) (M := M) g))
     (hdiv :
       ∀ x : M,
-        DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+        DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
             (I := I) g X x =
           expNegPotentialDensity potential x * weightedDivergenceTrace x) :
     ∫ x, weightedDivergenceTrace x
@@ -233,7 +233,7 @@ theorem weightedDivZero
     (integrand := weightedDivergenceTrace) hmeas]
   calc
     ∫ x, expNegPotentialDensity potential x * weightedDivergenceTrace x ∂μ =
-        ∫ x, DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+        ∫ x, DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
           (I := I) g X x ∂μ := by
       apply integral_congr_ae
       exact Filter.Eventually.of_forall fun x => (hdiv x).symm
@@ -247,8 +247,11 @@ theorem expNegPotentialDensity_contMDiff
     {potential : M -> Real}
     (hpotential : ContMDiff I 𝓘(Real, Real) ∞ potential) :
     ContMDiff I 𝓘(Real, Real) ∞ (expNegPotentialDensity potential) := by
-  simpa [expNegPotentialDensity] using
-    Real.contDiff_exp.contMDiff.comp hpotential.neg
+  change ContMDiff I 𝓘(Real, Real) ∞ (fun x => Real.exp (-(potential x)))
+  have h := Real.contDiff_exp.contMDiff.comp hpotential.neg
+  convert h using 1
+  · with_reducible_and_instances rfl
+  · rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem tangentSectionAction_expNeg
@@ -267,13 +270,16 @@ theorem tangentSectionAction_expNeg
   unfold DifferentialGeometry.Integral.DivergenceTheorem.tangentSectionAction
     expNegPotentialDensity
   change
-    extDerivFun (I := I) (fun y : M => Real.exp (-(potential y))) x (X x) =
+    (show ℝ from mfderiv I 𝓘(ℝ, ℝ) (fun y : M => Real.exp (-(potential y))) x (X x)) =
       -Real.exp (-(potential x)) *
-        extDerivFun (I := I) potential x (X x)
-  rw [extDerivFun, extDerivFun]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearMap.comp_apply]
-  have happly := congrArg (fun L => L (X x)) hmf
-  simpa [smul_eq_mul] using happly
+        (show ℝ from mfderiv I 𝓘(ℝ, ℝ) potential x (X x))
+  have happly := congrArg
+    (fun L : TangentSpace I x →ₗ[ℝ] ℝ => L (X x)) hmf
+  change
+    (show ℝ from mfderiv I 𝓘(ℝ, ℝ) (fun y : M => Real.exp (-(potential y))) x (X x)) =
+      -Real.exp (-(potential x)) *
+        (show ℝ from mfderiv I 𝓘(ℝ, ℝ) potential x (X x)) at happly
+  exact happly
 
 def connTraceVec
     {potential : M -> Real}
@@ -291,7 +297,7 @@ theorem connTraceDivEq
     (traceVec : Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯)
     (hdivTrace :
       ∀ x : M,
-        DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+        DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
             (I := I) g traceVec x =
           rawTrace x)
     (hactionTrace :
@@ -303,7 +309,7 @@ theorem connTraceDivEq
       ∀ x : M,
         weightedDivergenceTrace x = rawTrace x - actionTrace x) :
     ∀ x : M,
-      DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+      DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
           (I := I) g
           (connTraceVec (I := I) hpotential traceVec) x =
         expNegPotentialDensity potential x * weightedDivergenceTrace x := by
@@ -329,7 +335,7 @@ theorem weightedDivZero_of_connTrace
         (riemannianVolumeMeasure (I := I) (M := M) g))
     (hdivTrace :
       ∀ x : M,
-        DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+        DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
             (I := I) g traceVec x =
           rawTrace x)
     (hactionTrace :
@@ -355,12 +361,12 @@ theorem weighted_grad_zero
     (hpotential : ContMDiff I 𝓘(Real, Real) ∞ potential)
     (hq : ContMDiff I 𝓘(Real, Real) ∞ q) :
     ∫ x,
-        (DifferentialGeometry.Geometry.Operator.Δ_g
+        (DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hq⟩ x -
           g.inner x
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hq⟩) x)
-            ((DifferentialGeometry.Geometry.Operator.grad_g
+            ((DifferentialGeometry.Geometry.Operator.gradG
               (I := I) g ⟨_, hpotential⟩) x))
       ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential) = 0 := by
@@ -371,7 +377,7 @@ theorem weighted_grad_zero
     (ENNReal.continuous_ofReal.comp
       (expNegPotentialDensity_contMDiff (I := I) hpotential).continuous).aemeasurable
   exact weightedDivZero_of_connTrace (I := I) g hpotential
-    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hq⟩)
+    (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hq⟩)
     hmeas
     (fun x =>
       (DifferentialGeometry.Geometry.Operator.Δ_g_def
@@ -379,7 +385,7 @@ theorem weighted_grad_zero
     (fun x =>
       DifferentialGeometry.Geometry.Operator.tangentSectionAction_eq_inner_grad_g
         (I := I) g ⟨_, hpotential⟩
-        (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hq⟩) x)
+        (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hq⟩) x)
     (fun _ => rfl)
 
 theorem shiftIntEq
@@ -396,7 +402,7 @@ theorem shiftIntEq
     (hshift :
       ∀ x : M,
         shiftedTrace x =
-          DifferentialGeometry.Geometry.Operator.Δ_g
+          DifferentialGeometry.Geometry.Operator.ΔG
             (I := I) g ⟨_, hq⟩ x)
     (hqeq :
       ∀ x : M,
@@ -407,13 +413,13 @@ theorem shiftIntEq
       ∫ x,
         expWeightedMeasureVariationFactor potentialVariation
           metricVariationTrace x *
-          (DifferentialGeometry.Geometry.Operator.Δ_g
+          (DifferentialGeometry.Geometry.Operator.ΔG
               (I := I) g ⟨_, hpotential⟩ x -
             g.inner x
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       ∂(expNegPotentialWeightedMeasure
@@ -423,20 +429,20 @@ theorem shiftIntEq
       ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential) =
         ∫ x,
-          DifferentialGeometry.Geometry.Operator.Δ_g (I := I) g ⟨_, hq⟩ x
+          DifferentialGeometry.Geometry.Operator.ΔG (I := I) g ⟨_, hq⟩ x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) := by
       apply integral_congr_ae
       exact Filter.Eventually.of_forall hshift
     _ = ∫ x,
         q x *
-          (-DifferentialGeometry.Geometry.Operator.Δ_g
+          (-DifferentialGeometry.Geometry.Operator.ΔG
               (I := I) g ⟨_, hpotential⟩ x +
             g.inner x
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
         ∂(expNegPotentialWeightedMeasure
@@ -445,13 +451,13 @@ theorem shiftIntEq
     _ = ∫ x,
         expWeightedMeasureVariationFactor potentialVariation
           metricVariationTrace x *
-          (DifferentialGeometry.Geometry.Operator.Δ_g
+          (DifferentialGeometry.Geometry.Operator.ΔG
               (I := I) g ⟨_, hpotential⟩ x -
             g.inner x
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((DifferentialGeometry.Geometry.Operator.grad_g
+              ((DifferentialGeometry.Geometry.Operator.gradG
                 (I := I) g ⟨_, hpotential⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
         ∂(expNegPotentialWeightedMeasure
@@ -567,7 +573,10 @@ theorem fFunctionalBracket_hasDerivAt
         gradPotentialNormSqVariation x)
       s0 := by
   have h := (hscalar_deriv x).add (hgrad_deriv x)
-  simpa [fFunctionalBracket, fFunctionalBracketVariation] using h
+  change HasDerivAt
+    (fun s : Real => scalarCurvaturePath s x + gradPotentialNormSqPath s x)
+    (scalarCurvatureVariation x + gradPotentialNormSqVariation x) s0
+  exact h
 
 omit [TopologicalSpace M] in
 theorem closedBracket_deriv
@@ -591,7 +600,10 @@ theorem closedBracket_deriv
         lapPotentialVariation x)
       s0 := by
   have h := (hscalar_deriv x).add (hlap_deriv x)
-  simpa [fFunctionalClosedBracket, fFunctionalClosedBracketVariation] using h
+  change HasDerivAt
+    (fun s : Real => scalarCurvaturePath s x + lapPotentialPath s x)
+    (scalarCurvatureVariation x + lapPotentialVariation x) s0
+  exact h
 
 theorem fFunctionalBaseIntegral_hasDerivAt_at
     [T2Space M] [CompactSpace M]

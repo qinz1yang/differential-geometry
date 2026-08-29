@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AntidiagonalTupleGrid
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -73,6 +72,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneKernel_expansion (g₀ g₁ :
   rw [kernelField_eq_neg_arm_combination (I := I) (M := M) g₀ g₁]
   simp only [permAppEqRs, kInPerm102, kInPerm120]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma iteratedCovGradSmul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
@@ -92,6 +92,7 @@ private lemma riemannianFiberNormSqSmul (g : SmoothRiemannianMetric I M) (r s : 
     tensorInnerPointwise_smul_right]
   ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma riemannianFiberNormSqNegIteratedCovGrad (g : SmoothRiemannianMetric I M) {r s : ℕ} (l : ℕ) (x : M)
     (X : SmoothCcTensor g r s) :
@@ -105,6 +106,7 @@ private lemma riemannianFiberNormSqNegIteratedCovGrad (g : SmoothRiemannianMetri
     Pi.smul_apply, riemannianFiberNormSqSmul]
   norm_num
 
+omit [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSqArmEq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (l : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + l) x
@@ -121,6 +123,7 @@ private lemma riemannianFiberNormSqArmEq (g₀ g₁ : SmoothRiemannianMetric I M
     (fun y d => by
       rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) l x
 
+omit [SigmaCompactSpace M] in
 theorem insertAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Cins : ℕ → ℝ, (∀ l, 0 ≤ Cins l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -168,6 +171,7 @@ theorem insertAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {�
           (hcd g₁ P htie hδ_le hδ0 hδ l x) hfr_nn) hfr_nn
     _ = (Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) * Ccd l) * W := by ring
 
+omit [SigmaCompactSpace M] in
 theorem ricciKerAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Kk : ℕ → ℝ, (∀ l, 0 ≤ Kk l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)

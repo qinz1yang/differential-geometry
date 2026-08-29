@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -112,8 +111,8 @@ lemma euclidPartial_mul
       euclidPartial (E := E) l f y * h y + f y * euclidPartial (E := E) l h y := by
   rw [euclidPartial_def, euclidPartial_def, euclidPartial_def,
     fderiv_fun_mul hf hh]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, smul_eq_mul]
+  rw [add_apply, smul_apply,
+    smul_apply, smul_eq_mul, smul_eq_mul]
   ring
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]

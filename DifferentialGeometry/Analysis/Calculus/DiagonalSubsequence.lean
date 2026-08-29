@@ -16,7 +16,7 @@ theorem exists_subseq_tendsto_pi {C : ℕ → ℝ} (f : ℕ → ℕ → ℝ)
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
       ∀ n, ∃ L ∈ Set.Icc (0 : ℝ) (C n),
         Tendsto (fun k => f n (φ k)) atTop (𝓝 L) := by
-  haveI : ∀ n : ℕ, CompactSpace (Set.Icc (0 : ℝ) (C n)) :=
+  have : ∀ n : ℕ, CompactSpace (Set.Icc (0 : ℝ) (C n)) :=
     fun n => isCompact_iff_compactSpace.mp isCompact_Icc
   set x : ℕ → (Π n : ℕ, Set.Icc (0 : ℝ) (C n)) := fun k n => ⟨f n k, hbd n k⟩ with hx
   obtain ⟨a, -, φ, hφ, ha⟩ :=
@@ -26,7 +26,9 @@ theorem exists_subseq_tendsto_pi {C : ℕ → ℝ} (f : ℕ → ℕ → ℝ)
   have h1 : Tendsto (fun k => x (φ k) n) atTop (𝓝 (a n)) := by
     exact (tendsto_pi_nhds.mp ha) n
   have h2 := (continuous_subtype_val.tendsto (a n)).comp h1
-  simpa [hx, Function.comp] using h2
+  change Tendsto (fun k => (x (φ k) n : ℝ)) atTop (𝓝 (a n : ℝ)) at h2
+  rw [hx] at h2
+  exact h2
 
 theorem exists_subseq_eventually_eq {ι : Type*} [Countable ι] (b : ι → ℕ → Bool) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧

@@ -165,7 +165,14 @@ private theorem coreLip
     LipschitzWith ⟨C, hC⟩ F := by
   apply LipschitzWith.of_dist_le_mul
   intro x y
-  simpa only [NNReal.coe_mk, dist_eq_norm, Subtype.dist_eq] using hF x y
+  have hcoe : ((⟨C, hC⟩ : NNReal) : ℝ) = C := rfl
+  calc
+    dist (F x) (F y) = ‖F x - F y‖ := dist_eq_norm _ _
+    _ ≤ C * ‖(x : X) - (y : X)‖ := hF x y
+    _ = ((⟨C, hC⟩ : NNReal) : ℝ) * ‖(x : X) - (y : X)‖ :=
+      congrArg (fun a : ℝ => a * ‖(x : X) - (y : X)‖) hcoe.symm
+    _ = ((⟨C, hC⟩ : NNReal) : ℝ) * dist x y := by
+      rw [Subtype.dist_eq, dist_eq_norm]
 
 private theorem highCorePair {Y : Type*} [SeminormedAddCommGroup Y]
     (g : SmoothRiemannianMetric I M) {C : ℝ}
@@ -790,15 +797,15 @@ theorem lowRegularitySecondOrderActionLowerScaleTime_data
   have hmem : ∀ᵐ t ∂timeMeasure T,
       lowRegularityStateL2 (I := I) (M := M) g hT f hR hball t ∈
         principalOperatorDomainBall (I := I) (M := M) g R := by
-    simpa only [principalOperatorDomainBall, Set.mem_setOf_eq] using
+    simpa only [principalOperatorDomainBall, Set.mem_ofPred_eq] using
       lowRegularityState_ae_le (I := I) (M := M) g hT f hR hball
   have hsub : principalOperatorDomainBall (I := I) (M := M) g R ⊆
       {S : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) | ‖S‖ ≤ ρk} :=
     fun _ hS => le_trans hS hRk
   have hres : Continuous
-      (Set.restrict (principalOperatorDomainBall (I := I) (M := M) g R)
+      (Set.domRestrict (principalOperatorDomainBall (I := I) (M := M) g R)
         (lowRegularityPrincipalOperatorH1 (I := I) (M := M) g)) :=
-    (hcontOn.mono hsub).restrict
+    (hcontOn.mono hsub).domRestrict
   have hΦ : Continuous fun x : principalOperatorDomainBall (I := I) (M := M) g R =>
       (tensorHsCongrL (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)).comp

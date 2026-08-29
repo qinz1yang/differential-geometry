@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Defs
 
 noncomputable section
 
+
 open Set Function Filter Metric Asymptotics Real
 open scoped Topology NNReal
 
@@ -90,7 +91,10 @@ theorem exists_isVariationalSolutionOn_Icc_of_short
     · intro t ht y hy
       have hAt_bd : ‖A t‖ ≤ M := hA_bd t ht
       have hy_norm : ‖y‖ ≤ a₀ := by
-        simpa [mem_closedBall_zero_iff] using hy
+        have hy' : ‖y‖ ≤ (aN : ℝ) := by
+          simpa [mem_closedBall_zero_iff] using hy
+        change ‖y‖ ≤ (aN : ℝ)
+        exact hy'
       change ‖v t y‖ ≤ (LN : ℝ)
       calc ‖v t y‖ = ‖(A t) y‖ := rfl
         _ ≤ ‖A t‖ * ‖y‖ := (A t).le_opNorm y
@@ -185,7 +189,7 @@ theorem IsVariationalSolutionOn.norm_le_exp_of_mem_Icc
       have hφ : HasDerivWithinAt φ (-1 : ℝ) (Ici τ) τ := by
         have h1 : HasDerivAt φ (-1 : ℝ) τ := by
           have h2 : HasDerivAt (fun s : ℝ => 2 * t₀ - s) (-1 : ℝ) τ := by
-            simpa using (hasDerivAt_const τ (2 * t₀)).sub (hasDerivAt_id τ)
+            exact (hasDerivAt_id' τ).const_sub (2 * t₀)
           exact h2
         exact h1.hasDerivWithinAt
       have hmaps : MapsTo φ (Ici τ) (Iic (2 * t₀ - τ)) := by
@@ -258,7 +262,6 @@ theorem IsVariationalSolutionOn.unique_Icc
     have hsimp : (1 : ℝ) • δ + (-1 : ℝ) • δ = (0 : E) := by simp
     have hfun_eq : (fun s => (1 : ℝ) • y₁ s + (-1 : ℝ) • y₂ s) = fun s => y₁ s - y₂ s := by
       funext s
-      change (1 : ℝ) • y₁ s + (-1 : ℝ) • y₂ s = y₁ s - y₂ s
       rw [one_smul]
       module
     rw [hsimp, hfun_eq] at hcomb

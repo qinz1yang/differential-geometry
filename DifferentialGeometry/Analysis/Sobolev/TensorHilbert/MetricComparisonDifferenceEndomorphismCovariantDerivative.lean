@@ -58,14 +58,12 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 def metricComparisonDifferenceEndomorphismField (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) where
   toFun := fun x : M => metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
   contMDiff_toFun := metricComparisonDifferenceEndomorphism_contMDiff (I := I) g₀ g₁
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -103,7 +101,6 @@ private theorem cotangent_g0FlatY_mdiffAtCotangent
   rw [heq]
   exact metricFlat_mdiff (I := I) g₀ (Y.contMDiff.mdifferentiableAt (by norm_num))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -226,7 +223,7 @@ private lemma sqrt_g0_inner_add_le'
       g₀.inner x a a + 2 * g₀.inner x a b + g₀.inner x b b := by
     have h1 : g₀.inner x (a + b) (a + b)
         = g₀.inner x a (a + b) + g₀.inner x b (a + b) := by
-      rw [map_add (g₀.inner x), ContinuousLinearMap.add_apply]
+      rw [map_add (g₀.inner x), add_apply]
     have h2 : g₀.inner x a (a + b) = g₀.inner x a a + g₀.inner x a b :=
       map_add (g₀.inner x a) a b
     have h3 : g₀.inner x b (a + b) = g₀.inner x b a + g₀.inner x b b :=
@@ -262,9 +259,9 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local2
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
     (g₀ : SmoothRiemannianMetric I M) :
@@ -277,7 +274,7 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
       (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x
           (((endoCovariantDerivative (I := I) (M := M) g₀)
             (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) x v) (Y x))
@@ -287,9 +284,9 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ *
           Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x (Y x) (Y x)) := by
   classical
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ := connectionDifference_gFibreNorm_le_iteratedCovGrad (I := I) (M := M) g₀
   refine ⟨4 * C₀, by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound Y x v
@@ -330,7 +327,7 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
             (metricComparisonEndomorphism (I := I) g₀ g₁ x w) v)
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             (metricComparisonEndomorphism (I := I) g₀ g₁ x w) v) := by
-      simp only [hT2_def, map_neg, ContinuousLinearMap.neg_apply, neg_neg]
+      simp only [hT2_def, map_neg, neg_apply, neg_neg]
     rw [hT2_sq]
     refine hraw.trans ?_
     have hgir' : Real.sqrt (g₀.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x w)
@@ -364,7 +361,7 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
     have hDval : ∀ z : TangentSpace I x, Dfun z =
         - g₀.inner x w (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x z v) := by
       intro z
-      rw [hDfun_def, ContinuousLinearMap.neg_apply, ContinuousLinearMap.comp_apply,
+      rw [hDfun_def, neg_apply, ContinuousLinearMap.comp_apply,
         ContinuousLinearMap.flip_apply]
       change - cotangentToDual (I := I) (g0FlatCLM (I := I) g₀ x w)
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x z v) = _

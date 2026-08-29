@@ -178,8 +178,8 @@ lemma gradFun_mul_pointwise
     rw [hAt.mfderiv]
     change ((ρ x • d_u + u x • d_ρ : TangentSpace I x →L[ℝ] ℝ)) v =
         ρ x * d_u v + u x * d_ρ v
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-        ContinuousLinearMap.smul_apply]
+    rw [add_apply, smul_apply,
+        smul_apply]
     simp [smul_eq_mul]
   rw [h_mfderiv_mul]
   symm
@@ -230,12 +230,12 @@ lemma continuous_sqrt_g_inner_gradFun_self
         (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x))) := by
   have hcont := TangentBundle.continuous_g_inner_of_smooth_sections
     (I := I) (M := M) g
-    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩)
-    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩)
+    (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩)
+    (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩)
   have hcoe : (fun x : M => g.inner x
-        ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩ :
+        ((DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩ :
+          ((DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
       (fun x : M => g.inner x
         (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
@@ -333,14 +333,14 @@ lemma sqrt_g_inner_gradFun_pou_mul_le
   have ha_self_eq : g.inner x a a = ((ρ : M → ℝ) x)^2 * g.inner x gu gu := by
     change (g.inner x ((((ρ : M → ℝ) x)) • gu)) ((((ρ : M → ℝ) x)) • gu) =
       _ * g.inner x gu gu
-    rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply]
+    rw [(g.inner x).map_smul, smul_apply]
     rw [(g.inner x gu).map_smul]
     simp [smul_eq_mul, sq]
     ring
   have hb_self_eq : g.inner x b b = (u x)^2 * g.inner x gρ gρ := by
     change (g.inner x ((u x) • gρ)) ((u x) • gρ) =
       _ * g.inner x gρ gρ
-    rw [(g.inner x).map_smul, ContinuousLinearMap.smul_apply]
+    rw [(g.inner x).map_smul, smul_apply]
     rw [(g.inner x gρ).map_smul]
     simp [smul_eq_mul, sq]
     ring

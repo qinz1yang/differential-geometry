@@ -358,7 +358,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β
               ‖tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i‖) :=
-    mul_le_mul_of_nonneg_left h_eig_bd (zero_le _)
+    mul_le_mul_of_nonneg_left h_eig_bd (zero_le)
   have h_mul_assoc :
       ENNReal.ofReal i.fst.val *
         (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -383,7 +383,7 @@ theorem eigenvector_resolventHigh_perK_from_uniform_β
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     refine ENNReal.ofReal_le_ofReal ?_
     have h_reorder : i.fst.val * (CN * (i.fst.val)⁻¹ ^ eN)
         = CN * (i.fst.val * (i.fst.val)⁻¹ ^ eN) := by ring
@@ -523,7 +523,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β
               ‖tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i‖) :=
-    mul_le_mul_of_nonneg_left h_eig_bd (zero_le _)
+    mul_le_mul_of_nonneg_left h_eig_bd (zero_le)
   have h_mul_assoc :
       ENNReal.ofReal i.fst.val *
         (ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
@@ -548,7 +548,7 @@ theorem eigenvector_resolventLow_perK_from_uniform_β
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖ := by
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     refine ENNReal.ofReal_le_ofReal ?_
     have h_reorder : i.fst.val * (CN * (i.fst.val)⁻¹ ^ eN)
         = CN * (i.fst.val * (i.fst.val)⁻¹ ^ eN) := by ring

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
+import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -45,8 +45,8 @@ theorem metricUnitTimeSlabRefQuad_cont_of_bundle
   have hincl : Continuous incl := by
     dsimp [incl]
     exact continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
-  simpa [metricUnitTimeSlabRefQuad, metricTimeBundleQuad, incl,
-    MetricUnitTangent.base, MetricUnitTangent.vec] using hquad.comp hincl
+  change Continuous (metricTimeBundleQuad (I := I) (M := M) G K ∘ incl)
+  exact hquad.comp hincl
 
 noncomputable def metricUnitTimeSlabScale
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -134,9 +134,9 @@ theorem metricUnitTimeSlabScaledBundle_unit
         (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).2
         (metricUnitTimeSlabScaledBundle (I := I) (M := M) G K g₀ q).2
         = a * a * r := by
-          simpa [metricUnitTimeSlabScaledBundle, metricUnitTimeSlabScale,
-            metricUnitTimeSlabRefQuad, r, s, a, x, v] using
-            metric_smul2 (I := I) (M := M) (G q.1.1) a v
+          change (G q.1.1).inner x (a • v) (a • v) = a * a * r
+          rw [metric_smul2]
+          rfl
     _ = 1 := haa
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
@@ -147,8 +147,9 @@ private theorem tangentBundle_smul_cont :
   intro p₀
   rw [FiberBundle.continuousAt_totalSpace]
   constructor
-  · simpa using
-      (((FiberBundle.continuous_proj E (TangentSpace I)).comp continuous_snd).continuousAt)
+  · change ContinuousAt (TotalSpace.proj ∘ Prod.snd) p₀
+    exact (((FiberBundle.continuous_proj E (TangentSpace I)).comp
+      continuous_snd).continuousAt)
   · let e := trivializationAt E (TangentSpace I : M -> Type _) p₀.2.proj
     have hbase :
         e.baseSet ∈ nhds p₀.2.proj :=
@@ -197,9 +198,10 @@ theorem metricUnitTimeSlabScaledBundle_cont_of_bundle
   have hpair : Continuous sourceToPair := by
     dsimp [sourceToPair]
     exact hscale.prodMk (continuous_subtype_val.comp continuous_snd)
-  simpa [sourceToPair, metricUnitTimeSlabScaledBundle,
-    MetricUnitTangent.base, MetricUnitTangent.vec] using
-    tangentBundle_smul_cont (I := I) (M := M).comp hpair
+  change Continuous
+    ((fun p : Real × TangentBundle I M ↦
+      (⟨p.2.proj, p.1 • p.2.2⟩ : TangentBundle I M)) ∘ sourceToPair)
+  exact tangentBundle_smul_cont (I := I) (M := M).comp hpair
 
 noncomputable def metricUnitTimeSlabParam
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -348,7 +350,12 @@ theorem metricUnitTimeSlabParam_surjective
           field_simp [hs₀ne]
         rw [hcoef]
         simp
-  simpa [hGtunit, hsqrtRaw] using hvecRaw
+  rw [hGtunit, mul_one] at hvecRaw
+  congr 2
+  change (Real.sqrt ((G t).inner x (s₀⁻¹ • v) (s₀⁻¹ • v)))⁻¹ •
+    (s₀⁻¹ • v) = v
+  rw [metric_smul2, hGtunit, mul_one]
+  exact hvecRaw
 
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlab_compact_of_param
@@ -406,7 +413,7 @@ theorem metricUnitTimeSlab_icc_compact_of_param_cont
       (Set.univ :
         Set (MetricUnitTangentTimeSlab (I := I) (M := M) G
           (Set.Icc t0 t1))) := by
-  letI : CompactSpace {t : Real // t ∈ Set.Icc t0 t1} :=
+  let : CompactSpace {t : Real // t ∈ Set.Icc t0 t1} :=
     isCompact_iff_compactSpace.mp isCompact_Icc
   have hsource :
       IsCompact
@@ -637,20 +644,85 @@ theorem timeSlabAbsQuadCont
   have hT : Continuous (fun p : P =>
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) (b p) (T p)) := by
-    simpa [P, b, T, MetricUnitTangentTimeSlab.time,
-      MetricUnitTangentTimeSlab.base, MetricUnitTangentTimeSlab.bundlePoint] using
-      hA.comp (continuous_subtype_val :
-        Continuous (fun p : P => (p.1 : {t : Real // t ∈ K} × TangentBundle I M)))
+    change Continuous
+      ((fun q : {t : Real // t ∈ K} × TangentBundle I M ↦
+        TotalSpace.mk' (Tensor0SModel 2 Real E)
+          (E := fun x : M ↦ Tensor0SSpace 2 I x) q.2.proj
+            (A q.1 q.2.proj)) ∘ Subtype.val)
+    exact hA.comp continuous_subtype_val
   have hv : ∀ i : Fin 2, Continuous (fun p : P =>
       TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b p) (v i p)) := by
     intro i
-    simpa [P, b, v, MetricUnitTangentTimeSlab.base,
-      MetricUnitTangentTimeSlab.vec, MetricUnitTangentTimeSlab.bundlePoint] using
-      (continuous_snd.comp continuous_subtype_val :
-        Continuous (fun p : P => (p.1.2 : TangentBundle I M)))
+    change Continuous (Prod.snd ∘ Subtype.val : P → TangentBundle I M)
+    exact continuous_snd.comp continuous_subtype_val
   have hEval := TensorMultilinear.continuous_section_apply_base
     (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
     b hb T hT v hv
-  simpa [quad02, P, b, T, v] using hEval.abs
+  change Continuous (fun p : P ↦
+    |Tensor0SSpace.toModel (T p) (fun i : Fin 2 ↦ v i p)|)
+  exact hEval.abs
+
+theorem metric_lower_icc
+    [CompactSpace M] [T2Space M]
+    (G : Real → SmoothRiemannianMetric I M) (t0 t1 : Real)
+    (gRef : SmoothRiemannianMetric I M)
+    (hquad :
+      Continuous
+        (metricTimeBundleQuad (I := I) (M := M) G (Set.Icc t0 t1))) :
+    ∃ c : Real, 0 < c ∧
+      ∀ t, t ∈ Set.Icc t0 t1 →
+        ∀ x (v : TangentSpace I x),
+          c * gRef.inner x v v ≤ (G t).inner x v v := by
+  classical
+  let K : Set Real := Set.Icc t0 t1
+  have hcompact :
+      IsCompact
+        (Set.univ :
+          Set (MetricUnitTangentTimeSlab (I := I) (M := M) G K)) := by
+    simpa only [K] using
+      metricUnitTimeSlab_icc_compact_of_bundle
+        (I := I) (M := M) G t0 t1 gRef hquad
+  have hcont :
+      Continuous
+        (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G K =>
+          |quad02 (I := I) (M := M)
+            (Tensor0SBundle.metricTensorField (I := I) gRef
+              (MetricUnitTangentTimeSlab.base (I := I) (M := M) p))
+            (MetricUnitTangentTimeSlab.vec (I := I) (M := M) p)|) := by
+    change Continuous (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G K =>
+      |gRef.inner p.val.2.proj p.val.2.2 p.val.2.2|)
+    exact ((metricQuad_cont (I := I) (M := M) gRef).comp
+      (continuous_snd.comp continuous_subtype_val)).abs
+  obtain ⟨C, hC, hbound⟩ :=
+    compactUnitTimeSlab_absBound (I := I) (M := M) G
+      (fun _ x => Tensor0SBundle.metricTensorField (I := I) gRef x)
+      K hcompact hcont
+  have hC1 : 0 < C + 1 := by linarith
+  refine ⟨(C + 1)⁻¹, inv_pos.mpr hC1, ?_⟩
+  intro t ht x v
+  have href : 0 ≤ gRef.inner x v v := by
+    by_cases hv : v = 0
+    · subst v
+      simp
+    · exact (gRef.pos x v hv).le
+  have hGt : 0 ≤ (G t).inner x v v := by
+    by_cases hv : v = 0
+    · subst v
+      simp
+    · exact ((G t).pos x v hv).le
+  have hraw := hbound t (by simpa only [K] using ht) x v
+  have href_le : gRef.inner x v v ≤ C * (G t).inner x v v := by
+    simpa [quad02, Tensor0SBundle.metricTensorField_apply,
+      abs_of_nonneg href] using hraw
+  have hratio : (C + 1)⁻¹ * C ≤ 1 :=
+    (inv_mul_le_one₀ hC1).2 (by linarith)
+  calc
+    (C + 1)⁻¹ * gRef.inner x v v
+        ≤ (C + 1)⁻¹ * (C * (G t).inner x v v) :=
+      mul_le_mul_of_nonneg_left href_le (inv_pos.mpr hC1).le
+    _ = ((C + 1)⁻¹ * C) * (G t).inner x v v := by ring
+    _ ≤ 1 * (G t).inner x v v :=
+      mul_le_mul_of_nonneg_right hratio hGt
+    _ = (G t).inner x v v := one_mul _
 
 end DifferentialGeometry

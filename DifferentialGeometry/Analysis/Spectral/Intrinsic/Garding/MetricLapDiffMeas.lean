@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -46,7 +45,7 @@ theorem lapDiffA2_cont
         (1 / 2 : Real)) :
     ContinuousOn
       (fun s : Real => lapDiffA2 (I := I) (M := M) g_fam T s) S := by
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
         TensorL2 0 0 (g_fam (T : Real))) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
@@ -61,12 +60,12 @@ theorem lapDiffA2_cont
       Tendsto (fun s : Real => (T : Real) - s)
         (nhds s0) (nhds (K : Real)) := by
     dsimp only [K]
-    simpa only using
+    simpa only [id_eq] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (nhds s0) (nhds s0)))
   have hrhoK : Tendsto rhoK (nhds s0) (nhds 0) := by
-    simpa only [rhoK, k] using
-      (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG K).comp hshiftK
+    refine Filter.Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) ?_
+    exact (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG K).comp hshiftK
   obtain ⟨C, hC, hpair⟩ :=
     lapDiff_pair_norm (I := I) (M := M) q k
   change Tendsto
@@ -120,7 +119,7 @@ theorem lapDiffA20_short
         ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon) ∧
       ∀ᵐ s ∂timeMeasure tau,
         ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
         tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
@@ -131,12 +130,12 @@ theorem lapDiffA20_short
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
         (nhds 0) (nhds (T : Real)) := by
-    simpa only [sub_zero] using
+    simpa only [id_eq, sub_zero] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (nhds 0) (nhds 0)))
   have hrhoQ : Tendsto rhoQ (nhds 0) (nhds 0) := by
-    simpa only [rhoQ, q] using
-      (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG T).comp hshift
+    refine Filter.Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) ?_
+    exact (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG T).comp hshift
   have hreg :
       ∀ᶠ s in nhds (0 : Real), (T : Real) - s ∈ D.regular :=
     hshift.eventually (D.regular_isOpen.mem_nhds T.2)
@@ -180,7 +179,8 @@ theorem lapDiffA20_short
       (T : Real) - s ∈ D.regular ∧
         (Module.finrank Real E : Real) * rhoQ s ≤ (1 / 2 : Real) ∧
         ‖lapDiffA2 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
-    simpa only [U] using hIccU hs
+    change s ∈ U
+    exact hIccU hs
   have hA2cont :
       ContinuousOn
         (fun s : Real => lapDiffA2 (I := I) (M := M) g_fam T s)

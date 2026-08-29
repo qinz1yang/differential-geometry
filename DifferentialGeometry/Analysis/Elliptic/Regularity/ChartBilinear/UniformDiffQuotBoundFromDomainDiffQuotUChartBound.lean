@@ -60,10 +60,10 @@ theorem chartBilinearFK_diffQuot_u_discharge
     ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       ∫ x in tsupport η,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart x)^2
+            (d := Module.finrank ℝ E) k h D.uChart x)^2
         ∂(volume : Measure EuclN) ≤
         ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
-          ((D.weak_partial l) x) ^ 2
+          ((D.weakPartial l) x) ^ 2
         ∂(volume : Measure EuclN) := by
   classical
   have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
@@ -111,10 +111,10 @@ theorem chartBilinearFK_diffQuot_u_discharge
     intro x
     have hx_range : χ x ∈ Set.range χ := Set.mem_range_self x
     exact ⟨(hχ_range hx_range).1, (hχ_range hx_range).2⟩
-  set u_g : EuclN → ℝ := fun x => χ x * D.u_chart x with hu_g_def
+  set u_g : EuclN → ℝ := fun x => χ x * D.uChart x with hu_g_def
   set G : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i x =>
-    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-    χ x * D.weak_partial i x with hG_def
+    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+    χ x * D.weakPartial i x with hG_def
   have hu_g_l2 : MemLp u_g 2 (volume : Measure EuclN) :=
     cutoff_uChart_memLp_two_univ (I := I) (M := M) D hχ_smooth hχ_cs hχ_tsupp
   have hG_l2 : ∀ i, MemLp (G i) 2 (volume : Measure EuclN) := fun i =>
@@ -161,7 +161,7 @@ theorem chartBilinearFK_diffQuot_u_discharge
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h u_g x =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart x := by
+        (d := Module.finrank ℝ E) k h D.uChart x := by
     intro x hx
     have hx_in_r : x ∈ Metric.cthickening r (tsupport η) := by
       exact h_cthick_h_subset_r (h_self_subset_cthick_h hx)
@@ -180,13 +180,13 @@ theorem chartBilinearFK_diffQuot_u_discharge
       (if h = 0 then 0 else
         (u_g (x + h • EuclideanSpace.single k 1) - u_g x) / h) =
       (if h = 0 then 0 else
-        (D.u_chart (x + h • EuclideanSpace.single k 1) - D.u_chart x) / h)
+        (D.uChart (x + h • EuclideanSpace.single k 1) - D.uChart x) / h)
     rw [if_neg hh, if_neg hh, hu_g_def]
     simp only [hχ_shift, hχx, one_mul]
   have h_LHS_eq :
       ∫ x in tsupport η,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart x)^2
+            (d := Module.finrank ℝ E) k h D.uChart x)^2
         ∂(volume : Measure EuclN) =
       ∫ x in tsupport η,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -224,7 +224,7 @@ theorem chartBilinearFK_diffQuot_u_discharge
     rw [h_fderiv_eq]
     simp
   have hG_eq_on_cthick_h : ∀ x ∈ Metric.cthickening |h| (tsupport η),
-      G k x = D.weak_partial k x := by
+      G k x = D.weakPartial k x := by
     intro x hx
     have hx_in_r : x ∈ Metric.cthickening r (tsupport η) := h_cthick_h_subset_r hx
     have hx_in_thick_r : x ∈ Metric.thickening r (tsupport η) :=
@@ -232,12 +232,12 @@ theorem chartBilinearFK_diffQuot_u_discharge
     have hχx : χ x = 1 := hχ_one x hx_in_r
     have hdχx : (fderiv ℝ χ x) (EuclideanSpace.single k 1) = 0 :=
       h_fderiv_zero_on_thick_r x hx_in_thick_r
-    change (fderiv ℝ χ x) (EuclideanSpace.single k 1) * D.u_chart x +
-      χ x * D.weak_partial k x = D.weak_partial k x
+    change (fderiv ℝ χ x) (EuclideanSpace.single k 1) * D.uChart x +
+      χ x * D.weakPartial k x = D.weakPartial k x
     rw [hdχx, hχx, zero_mul, one_mul, zero_add]
   have h_FK_RHS_eq :
       ∫ x in Ω'_fk, (G k x)^2 ∂(volume : Measure EuclN) =
-      ∫ x in Ω'_fk, (D.weak_partial k x)^2 ∂(volume : Measure EuclN) := by
+      ∫ x in Ω'_fk, (D.weakPartial k x)^2 ∂(volume : Measure EuclN) := by
     refine setIntegral_congr_fun hΩ'_fk_meas ?_
     intro x hx
     have h_eq := hG_eq_on_cthick_h x (by rw [hΩ'_fk_def] at hx; exact hx)
@@ -246,64 +246,64 @@ theorem chartBilinearFK_diffQuot_u_discharge
     hh_supp_in_Ω' hh_le
   have h_closure_Ω'_meas : MeasurableSet (closure Ω') :=
     isClosed_closure.measurableSet
-  have h_wp_k_l2_closure_Ω' : MemLp (D.weak_partial k) 2
+  have h_wp_k_l2_closure_Ω' : MemLp (D.weakPartial k) 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     D.weak_partial_locally_memLp k (closure Ω') hΩ'_compact_closure hΩ'_chart
-  have h_wp_k_l2_Ω' : MemLp (D.weak_partial k) 2
+  have h_wp_k_l2_Ω' : MemLp (D.weakPartial k) 2
       ((volume : Measure EuclN).restrict Ω') :=
     h_wp_k_l2_closure_Ω'.mono_measure
       (Measure.restrict_mono subset_closure le_rfl)
-  have h_wp_k_intOn_Ω' : IntegrableOn (fun x => (D.weak_partial k x) ^ 2)
+  have h_wp_k_intOn_Ω' : IntegrableOn (fun x => (D.weakPartial k x) ^ 2)
       Ω' (volume : Measure EuclN) :=
     h_wp_k_l2_Ω'.integrable_sq
   have h_set_mono :
-      ∫ x in Ω'_fk, (D.weak_partial k x)^2 ∂(volume : Measure EuclN) ≤
-      ∫ x in Ω', (D.weak_partial k x)^2 ∂(volume : Measure EuclN) := by
+      ∫ x in Ω'_fk, (D.weakPartial k x)^2 ∂(volume : Measure EuclN) ≤
+      ∫ x in Ω', (D.weakPartial k x)^2 ∂(volume : Measure EuclN) := by
     refine setIntegral_mono_set h_wp_k_intOn_Ω' ?_ ?_
     · exact Filter.Eventually.of_forall fun x => sq_nonneg _
     · refine Filter.Eventually.of_forall ?_
       intro x hx
       rw [hΩ'_fk_def] at hx
       exact h_cthick_h_subset_Ω' hx
-  have h_per_l_intOn : ∀ l, IntegrableOn (fun x => (D.weak_partial l x) ^ 2)
+  have h_per_l_intOn : ∀ l, IntegrableOn (fun x => (D.weakPartial l x) ^ 2)
       Ω' (volume : Measure EuclN) := by
     intro l
-    have h_wp_l_l2_closure_Ω' : MemLp (D.weak_partial l) 2
+    have h_wp_l_l2_closure_Ω' : MemLp (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict (closure Ω')) :=
       D.weak_partial_locally_memLp l (closure Ω') hΩ'_compact_closure hΩ'_chart
-    have h_wp_l_l2_Ω' : MemLp (D.weak_partial l) 2
+    have h_wp_l_l2_Ω' : MemLp (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict Ω') :=
       h_wp_l_l2_closure_Ω'.mono_measure
         (Measure.restrict_mono subset_closure le_rfl)
     exact h_wp_l_l2_Ω'.integrable_sq
   have h_sum_intOn : IntegrableOn
-      (fun x => ∑ l : Fin (Module.finrank ℝ E), (D.weak_partial l x) ^ 2)
+      (fun x => ∑ l : Fin (Module.finrank ℝ E), (D.weakPartial l x) ^ 2)
       Ω' (volume : Measure EuclN) :=
-    integrable_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    integrable_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (μ := (volume : Measure EuclN).restrict Ω')
-      (f := fun l x => (D.weak_partial l x) ^ 2)
+      (f := fun l x => (D.weakPartial l x) ^ 2)
       (fun l _ => h_per_l_intOn l)
   have h_k_le_sum :
-      ∫ x in Ω', (D.weak_partial k x)^2 ∂(volume : Measure EuclN) ≤
-      ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((D.weak_partial l) x)^2
+      ∫ x in Ω', (D.weakPartial k x)^2 ∂(volume : Measure EuclN) ≤
+      ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((D.weakPartial l) x)^2
         ∂(volume : Measure EuclN) := by
     refine integral_mono_ae (h_per_l_intOn k) h_sum_intOn ?_
     refine Filter.Eventually.of_forall ?_
     intro x
-    exact Finset.single_le_sum (f := fun l => (D.weak_partial l x) ^ 2)
+    exact Finset.single_le_sum (f := fun l => (D.weakPartial l x) ^ 2)
       (fun l _ => sq_nonneg _) (Finset.mem_univ k)
   calc ∫ x in tsupport η,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart x)^2
+            (d := Module.finrank ℝ E) k h D.uChart x)^2
         ∂(volume : Measure EuclN)
       = ∫ x in tsupport η,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h u_g x)^2
         ∂(volume : Measure EuclN) := h_LHS_eq
     _ ≤ ∫ x in Ω'_fk, (G k x)^2 ∂(volume : Measure EuclN) := h_FK
-    _ = ∫ x in Ω'_fk, (D.weak_partial k x)^2 ∂(volume : Measure EuclN) := h_FK_RHS_eq
-    _ ≤ ∫ x in Ω', (D.weak_partial k x)^2 ∂(volume : Measure EuclN) := h_set_mono
-    _ ≤ ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((D.weak_partial l) x)^2
+    _ = ∫ x in Ω'_fk, (D.weakPartial k x)^2 ∂(volume : Measure EuclN) := h_FK_RHS_eq
+    _ ≤ ∫ x in Ω', (D.weakPartial k x)^2 ∂(volume : Measure EuclN) := h_set_mono
+    _ ≤ ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((D.weakPartial l) x)^2
         ∂(volume : Measure EuclN) := h_k_le_sum
 
 end ChartBilinearUniformDiffQuotBoundCanonical

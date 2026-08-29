@@ -22,6 +22,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 open Set Function Filter Bundle Manifold
@@ -55,8 +56,8 @@ theorem velocity_converges_of_bounded_accel
     (hderiv : ∀ s : ℝ, s < b → HasDerivAt P (P' s) s)
     (hbound : ∀ s : ℝ, s < b → ‖P' s‖ ≤ C) :
     ∃ w : E, Tendsto P (𝓝[<] b) (𝓝 w) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  haveI hNB : (𝓝[<] b).NeBot := nhdsLT_neBot b
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hNB : (𝓝[<] b).NeBot := nhdsLT_neBot b
   suffices hcauchy : Cauchy (Filter.map P (𝓝[<] b)) by
     exact cauchy_map_iff_exists_tendsto.mp hcauchy
   refine Metric.cauchy_iff.mpr ⟨Filter.map_neBot, ?_⟩
@@ -109,8 +110,8 @@ theorem velocity_converges_of_bounded_accel_Ioo
     (hderiv : ∀ s : ℝ, s ∈ Set.Ioo a b → HasDerivAt P (P' s) s)
     (hbound : ∀ s : ℝ, s ∈ Set.Ioo a b → ‖P' s‖ ≤ C) :
     ∃ w : E, Tendsto P (𝓝[<] b) (𝓝 w) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  haveI hNB : (𝓝[<] b).NeBot := nhdsLT_neBot b
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hNB : (𝓝[<] b).NeBot := nhdsLT_neBot b
   suffices hcauchy : Cauchy (Filter.map P (𝓝[<] b)) by
     exact cauchy_map_iff_exists_tendsto.mp hcauchy
   refine Metric.cauchy_iff.mpr ⟨Filter.map_neBot, ?_⟩
@@ -177,10 +178,10 @@ theorem chartChristoffelContraction_continuousOn_prod
       (Set.univ ×ˢ interior (extChartAt I α).target) := by
   classical
   unfold chartChristoffelContraction
-  refine continuousOn_finset_sum _ (fun k _ => ?_)
+  refine continuousOn_finsetSum _ (fun k _ => ?_)
   refine ContinuousOn.smul ?_ continuousOn_const
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   have hΓ : ContinuousOn (fun y : E => chartChristoffel (I := I) g α i j k y)
       (interior (extChartAt I α).target) :=
     (chartChristoffel_contDiffOn_interior (I := I) g α i j k).continuousOn
@@ -363,7 +364,7 @@ private lemma chartGramQuad_continuousOn
       ((extChartAt I y).target ×ˢ (Set.univ : Set E)) := by
   classical
   unfold chartGramQuad
-  refine continuousOn_finset_sum _ (fun i _ => continuousOn_finset_sum _ (fun j _ => ?_))
+  refine continuousOn_finsetSum _ (fun i _ => continuousOn_finsetSum _ (fun j _ => ?_))
   have hG : ContinuousOn (fun p : E × E => chartGramOnE (I := I) g y i j p.1)
       ((extChartAt I y).target ×ˢ (Set.univ : Set E)) :=
     ((chartGramOnE_contDiffOn (I := I) g y i j).continuousOn).comp continuousOn_fst
@@ -385,7 +386,7 @@ private lemma exists_chartGramQuad_lower_bound
     ∃ m : ℝ, 0 < m ∧ ∀ z ∈ S, ∀ V : E, m * ‖V‖ ^ 2 ≤ chartGramQuad (I := I) g y z V := by
   classical
   have hfin_pos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
-  haveI : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
+  have : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
   set T : Set (E × E) := S ×ˢ Metric.sphere (0 : E) 1 with hT_def
   have hsphere_compact : IsCompact (Metric.sphere (0 : E) 1) :=
     isCompact_sphere (0 : E) 1
@@ -478,7 +479,7 @@ theorem chartVelocity_bound_near_limit
       (continuousAt_extChartAt (I := I) y)
     have : Tendsto (fun s => extChartAt I y (γ s)) (𝓝[<] b) (𝓝 (extChartAt I y y)) :=
       hcont_at.tendsto.comp hy_lim
-    simpa [chartCurve] using this
+    convert! this using 1
   have hu_mem_ev : ∀ᶠ s in 𝓝[<] b, chartCurve (I := I) y γ s ∈ S := by
     have hball_nhds : Metric.closedBall (extChartAt I y y) (ρ / 2) ∈
         𝓝 (extChartAt I y y) :=

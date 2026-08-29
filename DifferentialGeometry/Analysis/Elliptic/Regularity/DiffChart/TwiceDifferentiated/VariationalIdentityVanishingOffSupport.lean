@@ -337,7 +337,7 @@ private lemma locallyIntegrableOn_of_locally_memLp_two_chart
   have hf_K : MemLp f 2 ((volume : Measure EuclN).restrict B) :=
     hf B hB_compact hB_subset_Ω
   have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-  haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+  have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
@@ -415,8 +415,8 @@ private lemma base_u_chart_ae_eq_chartPushed_on_vol
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).u_chart =ᵐ[
+    (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).uChart =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
       DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
@@ -435,8 +435,8 @@ private lemma base_u_chart_ae_zero_off_K_α
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).u_chart y = 0 := by
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).uChart y = 0 := by
   classical
   have h_aeEq := base_u_chart_ae_eq_chartPushed_on_vol (I := I) (M := M) g α hu_h
   have h_abs : (volume : Measure EuclN).restrict
@@ -464,16 +464,16 @@ private lemma base_weak_partial_ae_zero_off_K_α
     (i : Fin (Module.finrank ℝ E)) :
     ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).weak_partial i y = 0 := by
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).weakPartial i y = 0 := by
   classical
-  set D := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h
+  set D := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hU_open := chartTarget_diff_K_α_isOpen (I := I) (M := M) α
   have hU_sub := chartTarget_diff_K_α_subset_target (I := I) (M := M) α
   have h_isWeak := D.weak_partial_isWeakPartial i
-  have hw_li : LocallyIntegrableOn (D.weak_partial i)
+  have hw_li : LocallyIntegrableOn (D.weakPartial i)
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)
       (volume : Measure EuclN) :=
     locallyIntegrableOn_of_locally_memLp_two_chart (I := I) (M := M) g α
@@ -489,8 +489,8 @@ private lemma base_f_chart_locally_memLp_helper
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).f_chart) 2
+    MemLp ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).fChart) 2
       ((volume : Measure EuclN).restrict K) :=
   base_f_chart_locally_memLp (I := I) (M := M) g α hu_h hK_compact
     hK_compact.isClosed.measurableSet hK_in
@@ -544,10 +544,10 @@ private lemma base_f_chart_ae_zero_off_K_α
     (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-        hu_h).f_chart y = 0 := by
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+        hu_h).fChart y = 0 := by
   classical
-  set D := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h
+  set D := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α
   set U : Set EuclN := Ω \ K_α (I := I) (M := M) α
   have hU_open := chartTarget_diff_K_α_isOpen (I := I) (M := M) α
@@ -558,7 +558,7 @@ private lemma base_f_chart_ae_zero_off_K_α
   have h_density_contOn : ContinuousOn (densityOnEuclid (I := I) g α) Ω :=
     densityOnEuclid_continuousOn (I := I) g α
   have h_prod_locInt : LocallyIntegrableOn
-      (fun y => densityOnEuclid (I := I) g α y * D.f_chart y) U
+      (fun y => densityOnEuclid (I := I) g α y * D.fChart y) U
       (volume : Measure EuclN) := by
     intro x hx
     obtain ⟨r, hr_pos, hr_subset⟩ := Metric.isOpen_iff.mp hU_open x hx
@@ -573,15 +573,15 @@ private lemma base_f_chart_ae_zero_off_K_α
     have h_density_memLp_top := memLp_top_of_continuousOn_on_compact_chart
       (I := I) (M := M) g α h_density_contOn hB_compact hB_subset_Ω
     have h_prod_memLp : MemLp (fun y => densityOnEuclid (I := I) g α y *
-        D.f_chart y) 2 ((volume : Measure EuclN).restrict B) :=
+        D.fChart y) 2 ((volume : Measure EuclN).restrict B) :=
       MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fchart_K_memLp h_density_memLp_top
     have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
-    haveI : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
+    have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hB_finite
     have h_int : IntegrableOn (fun y => densityOnEuclid (I := I) g α y *
-        D.f_chart y) B (volume : Measure EuclN) :=
+        D.fChart y) B (volume : Measure EuclN) :=
       h_prod_memLp.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     refine ⟨B, ?_, h_int⟩
     refine Filter.mem_inf_of_left ?_
@@ -590,7 +590,7 @@ private lemma base_f_chart_ae_zero_off_K_α
     exact Metric.ball_subset_closedBall
   have h_zero_for_test : ∀ ψ : EuclN → ℝ, ContDiff ℝ ∞ ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ U →
-      ∫ y, ψ y • (densityOnEuclid (I := I) g α y * D.f_chart y)
+      ∫ y, ψ y • (densityOnEuclid (I := I) g α y * D.fChart y)
         ∂(volume : Measure EuclN) = 0 := by
     intro ψ hψ_smooth hψ_cs hψ_supp_U
     have hψ_supp_chart : tsupport ψ ⊆ Ω := hψ_supp_U.trans hU_sub
@@ -599,39 +599,39 @@ private lemma base_f_chart_ae_zero_off_K_α
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              D.weak_partial i y *
+              D.weakPartial i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) +
       (∫ y in Ω,
-        densityOnEuclid (I := I) g α y * D.u_chart y * ψ y
+        densityOnEuclid (I := I) g α y * D.uChart y * ψ y
         ∂(volume : Measure EuclN)) =
       ∫ y in Ω,
-        densityOnEuclid (I := I) g α y * D.f_chart y * ψ y
+        densityOnEuclid (I := I) g α y * D.fChart y * ψ y
         ∂(volume : Measure EuclN) at h_var
     have h_principal_zero :
         ∫ y in Ω,
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramOnEuclid (I := I) g α i j y *
-                D.weak_partial i y *
+                D.weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN) = 0 := by
       have h_integrand_ae_zero :
           (fun y : EuclN => ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramOnEuclid (I := I) g α i j y *
-                D.weak_partial i y *
+                D.weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) =ᵐ[
             (volume : Measure EuclN).restrict Ω]
             (fun _ : EuclN => (0 : ℝ)) := by
         refine (ae_restrict_iff' hΩ_meas).mpr ?_
         have h_wp_each : ∀ i : Fin (Module.finrank ℝ E),
             ∀ᵐ y ∂((volume : Measure EuclN).restrict U),
-              D.weak_partial i y = 0 := fun i =>
+              D.weakPartial i y = 0 := fun i =>
           base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α hu_h i
         have h_wp_all_vol : ∀ᵐ y ∂(volume : Measure EuclN),
             ∀ i : Fin (Module.finrank ℝ E),
-              y ∈ U → D.weak_partial i y = 0 := by
+              y ∈ U → D.weakPartial i y = 0 := by
           rw [ae_all_iff]; intro i
           rw [← ae_restrict_iff' hU_meas]
           exact h_wp_each i
@@ -654,18 +654,18 @@ private lemma base_f_chart_ae_zero_off_K_α
           rw [h_fderiv_zero]; simp
       rw [MeasureTheory.integral_congr_ae h_integrand_ae_zero]; simp
     have h_mass_zero :
-        ∫ y in Ω, densityOnEuclid (I := I) g α y * D.u_chart y * ψ y
+        ∫ y in Ω, densityOnEuclid (I := I) g α y * D.uChart y * ψ y
           ∂(volume : Measure EuclN) = 0 := by
       have h_integrand_ae_zero :
-          (fun y : EuclN => densityOnEuclid (I := I) g α y * D.u_chart y * ψ y) =ᵐ[
+          (fun y : EuclN => densityOnEuclid (I := I) g α y * D.uChart y * ψ y) =ᵐ[
             (volume : Measure EuclN).restrict Ω]
             (fun _ : EuclN => (0 : ℝ)) := by
         refine (ae_restrict_iff' hΩ_meas).mpr ?_
         have h_uc_ae : ∀ᵐ y ∂((volume : Measure EuclN).restrict U),
-            D.u_chart y = 0 :=
+            D.uChart y = 0 :=
           base_u_chart_ae_zero_off_K_α (I := I) (M := M) g α hu_h
         have h_uc_vol : ∀ᵐ y ∂(volume : Measure EuclN),
-            y ∈ U → D.u_chart y = 0 := by
+            y ∈ U → D.uChart y = 0 := by
           rw [← ae_restrict_iff' hU_meas]; exact h_uc_ae
         filter_upwards [h_uc_vol] with y hy _hyΩ
         by_cases hy_U : y ∈ U
@@ -676,11 +676,11 @@ private lemma base_f_chart_ae_zero_off_K_α
       rw [MeasureTheory.integral_congr_ae h_integrand_ae_zero]; simp
     rw [h_principal_zero, h_mass_zero] at h_var
     have h_fchart_int_zero :
-        ∫ y in Ω, densityOnEuclid (I := I) g α y * D.f_chart y * ψ y
+        ∫ y in Ω, densityOnEuclid (I := I) g α y * D.fChart y * ψ y
           ∂(volume : Measure EuclN) = 0 := by
       linarith
     have h_vanish_off_Ω : ∀ x ∉ Ω, ψ x • (densityOnEuclid (I := I) g α x *
-        D.f_chart x) = 0 := fun x hx => by
+        D.fChart x) = 0 := fun x hx => by
       have hx_supp : x ∉ tsupport ψ := fun h => hx (hψ_supp_chart h)
       have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_supp
       rw [hψ_x]; simp
@@ -689,13 +689,13 @@ private lemma base_f_chart_ae_zero_off_K_α
     refine (MeasureTheory.setIntegral_congr_fun hΩ_meas ?_).trans h_fchart_int_zero
     intro x _hxΩ; simp [smul_eq_mul, mul_comm]
   have h_cf_vol : ∀ᵐ y ∂(volume : Measure EuclN),
-      y ∈ U → densityOnEuclid (I := I) g α y * D.f_chart y = 0 :=
+      y ∈ U → densityOnEuclid (I := I) g α y * D.fChart y = 0 :=
     hU_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero h_prod_locInt h_zero_for_test
   refine (ae_restrict_iff' hU_meas).mpr ?_
   filter_upwards [h_cf_vol] with y hy hy_U
   have h_pos : 0 < densityOnEuclid (I := I) g α y :=
     densityOnEuclid_pos (I := I) g α hy_U.1
-  have h_eq : densityOnEuclid (I := I) g α y * D.f_chart y = 0 := hy hy_U
+  have h_eq : densityOnEuclid (I := I) g α y * D.fChart y = 0 := hy hy_U
   have h_ne : densityOnEuclid (I := I) g α y ≠ 0 := ne_of_gt h_pos
   exact (mul_eq_zero.mp h_eq).resolve_left h_ne
 
@@ -777,9 +777,9 @@ private lemma fChartEffTwiceNumerator_ae_zero_off_K_α
   have h_wp_each : ∀ i : Fin (Module.finrank ℝ E),
       ∀ᵐ y ∂((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
-          (I := I) (M := M) g 1 hu_h)).weak_partial i y = 0 := fun i =>
+          (I := I) (M := M) g 1 hu_h)).weakPartial i y = 0 := fun i =>
     base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) i
@@ -811,9 +811,9 @@ private lemma fChartEffTwiceNumerator_ae_zero_off_K_α
     (chartTarget_diff_K_α_isOpen (I := I) (M := M) α).measurableSet
   have h_wp_all : ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
-      ∀ i, (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      ∀ i, (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
-          (I := I) (M := M) g 1 hu_h)).weak_partial i y = 0 := by
+          (I := I) (M := M) g 1 hu_h)).weakPartial i y = 0 := by
     rw [ae_all_iff]; exact h_wp_each
   have h_sec_all : ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
@@ -853,9 +853,9 @@ private lemma fChartEffTwiceNumerator_ae_zero_off_K_α
         ∑ j : Fin (Module.finrank ℝ E),
           (fderiv ℝ (weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂) y)
               (EuclideanSpace.single j 1) *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial i y) = 0 := by
+                (I := I) (M := M) g 1 hu_h)).weakPartial i y) = 0 := by
     refine Finset.sum_eq_zero ?_; intro i _
     refine Finset.sum_eq_zero ?_; intro _ _
     rw [hy_wp i]; ring

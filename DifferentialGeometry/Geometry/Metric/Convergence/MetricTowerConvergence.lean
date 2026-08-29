@@ -96,7 +96,15 @@ theorem metric_tower_conv
   have hbase_zero : MapCInfConvOnCompacts U
       (fun n z => errComp (pair n z))
       (fun (_ : E) (_ : Fin 2 → Idx) => (0 : Real)) := by
-    simpa [pairInf, errComp, metricSub, metricComp] using hbase
+    have hlim : (fun z => errComp (pairInf z)) =
+        (fun (_ : E) (_ : Fin 2 → Idx) => (0 : Real)) := by
+      funext z i
+      unfold pairInf errComp metricSub metricComp
+      change (gInf z - gInf z) (e (i 0)) (e (i 1)) = 0
+      rw [sub_self]
+      rfl
+    rw [← hlim]
+    exact hbase
   have hbase_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun z => errComp (pair n z)) U :=
     fun n => errComp.contDiff.comp_contDiffOn (hpair_cd n)
@@ -118,11 +126,24 @@ theorem metric_tower_conv
     fun n => (christoffelComp e).contDiff.comp_contDiffOn (hraised_cd n)
   have hchrInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) chrInf U :=
     (christoffelComp e).contDiff.comp_contDiffOn hraisedInf_cd
-  simpa only [pair, pairInf, errComp, metricComp, metricSub,
-      ContinuousLinearMap.comp_apply, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.pi_apply, sub_self, map_zero, chr, chrInf,
-      christoffelComp, raised, raisedInf] using
-    iter_comp_zero hU (fun i => e i) chr chrInf
-      (fun n z => errComp (pair n z)) hchr hbase_zero hchr_cd hchrInf_cd hbase_cd a
+  have hchr_eq : chr = fun n z i j k =>
+      e.coord k (MetricKoszul.raisedKoszulOp (g n z) (fderiv Real (g n) z) (e i) (e j)) := by
+    funext n z i j k
+    rfl
+  have herr_eq : (fun n z => errComp (pair n z)) = fun n z s =>
+      (q n z - g n z) (e (s 0)) (e (s 1)) := by
+    funext n z s
+    rfl
+  have hiter := iter_comp_zero hU (fun i => e i) chr chrInf
+    (fun n z => errComp (pair n z)) hchr hbase_zero hchr_cd hchrInf_cd hbase_cd a
+  rw [hchr_eq] at hiter
+  convert hiter using 1
+  funext n
+  exact congrArg
+    (fun B => iterCovComp (I := 𝓘(Real, E)) (fun i _ => e i)
+      (fun z i j k =>
+        e.coord k (MetricKoszul.raisedKoszulOp (g n z) (fderiv Real (g n) z) (e i) (e j)))
+      B a)
+    (congrFun herr_eq n).symm
 
 end DifferentialGeometry.PDE.RicciFlow

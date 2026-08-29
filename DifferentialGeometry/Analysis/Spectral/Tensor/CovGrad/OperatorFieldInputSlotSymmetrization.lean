@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -34,7 +33,7 @@ private lemma ofModel_add {s : ℕ} {x : M}
     (f g : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (f + g) : Tensor0SSpace s I x) =
       Tensor0SSpace.ofModel f + Tensor0SSpace.ofModel g :=
-  map_add (tensor0SSpace_continuousLinearEquiv s x).symm f g
+  map_add (tensor0SSpaceContinuousLinearEquiv s x).symm f g
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -42,7 +41,7 @@ private lemma ofModel_smul {s : ℕ} {x : M} (c : ℝ)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (c • f) : Tensor0SSpace s I x) =
       c • Tensor0SSpace.ofModel f :=
-  map_smul (tensor0SSpace_continuousLinearEquiv s x).symm c f
+  map_smul (tensor0SSpaceContinuousLinearEquiv s x).symm c f
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 private lemma domDomCongr_swap_add
@@ -99,7 +98,7 @@ theorem ccSlotSwapFib_contMDiff :
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun x => inputSlotSwapFib (I := I) (M := M) x)
   intro Y
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   classical
   have heq : (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
       (E := fun z : M => Tensor0SSpace 2 I z) x
@@ -132,8 +131,9 @@ theorem ccSlotSwapFib_contMDiff :
   rw [continuousMultilinearMap_basis_repr, continuousMultilinearMap_basis_repr]
   change (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
       (Tensor0SSpace.toModel (𝕜 := ℝ) (Y x)))
-      (fun j => (Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
-        ((Module.finBasis ℝ E) (τ j))) = _
+      (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((Bundle.Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) x₀) x)
+          ((Module.finBasis ℝ E) (τ j)))) = _
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
@@ -167,7 +167,8 @@ lemma ccInputSlotSymm_toSection (g : SmoothRiemannianMetric I M) (C : SmoothCcTe
           (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from C.toSection x).comp
             (inputSlotSwapFib (I := I) (M := M) x))) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E]
+    [SigmaCompactSpace M] in
 theorem ccInputSlotSymm_add (g : SmoothRiemannianMetric I M) (C D : SmoothCcTensor g 2 2) :
     ccInputSlotSymm (I := I) (M := M) g (C + D) =
       ccInputSlotSymm (I := I) (M := M) g C + ccInputSlotSymm (I := I) (M := M) g D := by
@@ -185,7 +186,7 @@ theorem ccInputSlotSymm_add (g : SmoothRiemannianMetric I M) (C D : SmoothCcTens
   rw [smul_add]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [CompleteSpace E] in
+    [CompleteSpace E] [SigmaCompactSpace M] in
 theorem ccInputSlotSymm_sub (g : SmoothRiemannianMetric I M)
     (C D : SmoothCcTensor g 2 2) :
     ccInputSlotSymm (I := I) (M := M) g C -
@@ -204,7 +205,8 @@ theorem ccInputSlotSymm_sub (g : SmoothRiemannianMetric I M)
   rw [operatorFieldComposition_sub_left]
   module
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E]
+    [SigmaCompactSpace M] in
 lemma sub_ccInputSlotSymm_eq_half_smul_sub_ccOperatorFieldComp (g : SmoothRiemannianMetric I M)
     (C : SmoothCcTensor g 2 2) :
     C - ccInputSlotSymm (I := I) (M := M) g C =

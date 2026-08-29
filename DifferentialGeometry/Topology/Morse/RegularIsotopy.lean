@@ -5,14 +5,27 @@ import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
 namespace DifferentialGeometry.Topology.Morse
 
 open Manifold Set Filter DifferentialGeometry.Analysis.ODE
-open scoped Manifold ContDiff Topology Filter
+open scoped Manifold ContDiff _root_.Topology Filter
 
 noncomputable section
 
 variable {m : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
 
+private theorem hasDerivAt_of_hasMFDerivAt_real
+    {f : ℝ → ℝ} {x : ℝ}
+    {f' : TangentSpace 𝓘(ℝ, ℝ) x →L[ℝ] TangentSpace 𝓘(ℝ, ℝ) (f x)}
+    (h : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) f x f') :
+    HasDerivAt f (NormedSpace.fromTangentSpace (f x) (f' 1)) x := by
+  rw [hasDerivAt_iff_hasFDerivAt]
+  refine h.hasFDerivAt.congr_fderiv ?_
+  ext
+  let z : ℝ := NormedSpace.fromTangentSpace (f x) (f' 1)
+  change z = (ContinuousLinearMap.toSpanSingleton ℝ z) 1
+  change z = 1 * z
+  rw [one_mul]
+
 private theorem familyChartRep_contDiffOn
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
     [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x₀ : M) :
@@ -37,27 +50,30 @@ private theorem familyChartRep_contDiffOn
       (hs := by intro x hx; exact ⟨hx.1, trivial⟩)).1
       (hFOn.mono (by intro x hx; trivial))
     convert hraw using 1
-    ext q
-    constructor
-    · rintro ⟨⟨hq1, hq2⟩, hq3⟩
-      refine ⟨((chartAt H x₀).symm (I.symm q.1), q.2), ⟨?_, hq3⟩, ?_⟩
-      · exact (chartAt H x₀).symm.mapsTo hq2
-      · change (I (chartAt H x₀ ((chartAt H x₀).symm (I.symm q.1))), q.2) = q
-        apply Prod.ext
-        · ext i
-          rw [show chartAt H x₀ ((chartAt H x₀).symm (I.symm q.1)) = I.symm q.1 by
-            exact (chartAt H x₀).right_inv hq2]
-          exact congrFun (I.right_inv (by simpa [ModelWithCorners.target_eq] using hq1)) i
-        · rfl
-    · rintro ⟨a, ha, hx⟩
-      have hx1 : I (chartAt H x₀ a.1) = q.1 := congrArg Prod.fst hx
-      refine ⟨⟨?_, ?_⟩, ?_⟩
-      · rw [← hx1]
-        simp [ModelWithCorners.target_eq]
-      · rw [← hx1]
-        change I.symm (I (chartAt H x₀ a.1)) ∈ (chartAt H x₀).target
-        simpa using (chartAt H x₀).mapsTo ha.1
-      · trivial
+    · with_reducible_and_instances rfl
+    · funext q
+      rfl
+    · ext q
+      constructor
+      · rintro ⟨⟨hq1, hq2⟩, hq3⟩
+        refine ⟨((chartAt H x₀).symm (I.symm q.1), q.2), ⟨?_, hq3⟩, ?_⟩
+        · exact (chartAt H x₀).symm.mapsTo hq2
+        · change (I (chartAt H x₀ ((chartAt H x₀).symm (I.symm q.1))), q.2) = q
+          apply Prod.ext
+          · ext i
+            rw [show chartAt H x₀ ((chartAt H x₀).symm (I.symm q.1)) = I.symm q.1 by
+              exact (chartAt H x₀).right_inv hq2]
+            exact congrFun (I.right_inv (by simpa [ModelWithCorners.target_eq] using hq1)) i
+          · rfl
+      · rintro ⟨a, ha, hx⟩
+        have hx1 : I (chartAt H x₀ a.1) = q.1 := congrArg Prod.fst hx
+        refine ⟨⟨?_, ?_⟩, ?_⟩
+        · rw [← hx1]
+          simp [ModelWithCorners.target_eq]
+        · rw [← hx1]
+          change I.symm (I (chartAt H x₀ a.1)) ∈ (chartAt H x₀).target
+          simpa using (chartAt H x₀).mapsTo ha.1
+        · trivial
   exact (contMDiffOn_iff_contDiffOn (𝕜 := ℝ) (E := MorseModel (m + 1) × ℝ) (E' := ℝ)
     (f := fun q : MorseModel (m + 1) × ℝ => F ((extChartAt I x₀).symm q.1) q.2)
     (s := (extChartAt I x₀).target ×ˢ Set.univ) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))).1 hc'
@@ -104,7 +120,8 @@ private theorem familyChartRep_fderiv_curry
     exact hasFDerivAt_prodMk_left y s
   have hfd : HasFDerivAt (fun z : MorseModel (m + 1) => g (z, s))
       ((fderiv ℝ g (y, s)).comp (ContinuousLinearMap.inl ℝ (MorseModel (m + 1)) ℝ)) y := by
-    simpa [g] using (hgdiff.hasFDerivAt.comp y hpair)
+    exact (hgdiff.hasFDerivAt.comp y hpair).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun z => by rfl)
   simpa [g] using hfd.fderiv
 
 private theorem familyChartRep_fderiv_curry_time
@@ -128,7 +145,8 @@ private theorem familyChartRep_fderiv_curry_time
     exact hasFDerivAt_prodMk_right y s
   have hfd : HasFDerivAt (fun t : ℝ => g (y, t))
       ((fderiv ℝ g (y, s)).comp (ContinuousLinearMap.inr ℝ (MorseModel (m + 1)) ℝ)) s := by
-    simpa [g] using (hgdiff.hasFDerivAt.comp s hpair)
+    exact (hgdiff.hasFDerivAt.comp s hpair).congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun t => by rfl)
   simpa [g] using hfd.fderiv
 
 private theorem familyTimeDeriv_contMDiffOn
@@ -162,7 +180,11 @@ private theorem familyTimeDeriv_contMDiffOn
       ((extChartAt I x₀).source ×ˢ Set.univ) := by
     have hc := contMDiffOn_extChartAt (I := I.prod 𝓘(ℝ, ℝ)) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       (x := (x₀, (0 : ℝ)))
-    simpa [extChartAt_prod, extChartAt_source (I := I) (x := x₀)] using hc
+    convert hc using 1
+    · with_reducible_and_instances rfl
+    · funext p
+      rfl
+    · simp [chartAt_self_eq]
   exact (ha'.comp hφ (by intro p hp; exact ⟨(extChartAt I x₀).map_source hp.1, trivial⟩)).congr
     (by
       intro p hp
@@ -199,8 +221,7 @@ private theorem familyTimeDeriv_contMDiff
       ⟨(extChartAt I p.1).source ×ˢ Set.univ, hC, inter_subset_left⟩))
 
 private theorem family_mfderiv_decomp
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x : M) (s : ℝ)
     (w : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, s)) :
@@ -312,7 +333,11 @@ private theorem family_mfderiv_decomp
     change w = (show TangentSpace (I.prod 𝓘(ℝ, ℝ)) (x, s) from
       ((w₁, (0 : TangentSpace 𝓘(ℝ, ℝ) s)) + ((0 : TangentSpace I x), w₂)))
     rw [hw₁, hw₂]
-    simp
+    apply Prod.ext
+    · change w.1 = w.1 + (0 : MorseModel (m + 1))
+      rw [add_zero]
+    · change w.2 = (0 : ℝ) + w.2
+      rw [zero_add]
   have hmain : (mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) Fp (x, s)) w =
       (mfderiv I 𝓘(ℝ, ℝ) (fun y : M => F y s) x) w₁ +
         (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun t : ℝ => F x t) s) w₂ := by
@@ -389,8 +414,7 @@ private theorem family_mfderiv_decomp
   rw [hlin]
 
 private theorem suspension_level_equation
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] (F : M → ℝ → ℝ)
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) (x : M) (s : ℝ)
     (v : TangentSpace I x) (ρs : ℝ) :
@@ -459,13 +483,17 @@ private theorem familyChartRep_coefficient_contMDiffOn
       ((extChartAt I x₀).source ×ˢ Set.univ) := by
     have hc := contMDiffOn_extChartAt (I := I.prod 𝓘(ℝ, ℝ)) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       (x := (x₀, (0 : ℝ)))
-    simpa [extChartAt_prod, extChartAt_source (I := I) (x := x₀)] using hc
+    convert hc using 1
+    · with_reducible_and_instances rfl
+    · funext p
+      rfl
+    · simp [chartAt_self_eq]
   exact (ha'.comp hφ (by intro p hp; exact ⟨(extChartAt I x₀).map_source hp.1, trivial⟩)).congr
     (by intro p hp; rfl)
 
 private theorem familyTangentSection_contMDiffWithinAt_section_iff
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {a : Set (M × ℝ)} {p : M × ℝ}
     (ha : a ⊆ (extChartAt I p.1).source ×ˢ Set.univ) :
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -492,8 +520,21 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff
         (fun q : M × ℝ => ((extChartAt I p.1)
           ((trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).1),
           (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2)) a p := by
-      simpa [FiberBundle.extChartAt, hσp, Function.comp_def, PartialEquiv.trans_apply,
-        PartialEquiv.prod_coe, PartialEquiv.refl_coe] using h2
+      exact h2.congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun q => by
+          change ((extChartAt I p.1)
+              ((trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).1),
+            (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2) =
+            extChartAt (I.prod 𝓘(ℝ, MorseModel (m + 1))) (σ p) (σ q)
+          rw [FiberBundle.extChartAt, hσp]
+          rfl)
+        (by
+          change ((extChartAt I p.1)
+              ((trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ p)).1),
+            (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ p)).2) =
+            extChartAt (I.prod 𝓘(ℝ, MorseModel (m + 1))) (σ p) (σ p)
+          rw [FiberBundle.extChartAt, hσp]
+          rfl)
     have hfiber : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, MorseModel (m + 1)) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun q : M × ℝ => (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2) a p := by
       have hsplit := (contMDiffWithinAt_prod_module_iff (𝕜 := ℝ) (I := I.prod 𝓘(ℝ, ℝ))
@@ -502,7 +543,10 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff
           ((trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).1),
           (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2))
         (s := a) (x := p) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))).1 h2'
-      simpa using hsplit.2
+      convert hsplit.2 using 1
+      · with_reducible_and_instances rfl
+      · funext q
+        rfl
     simpa [σ, hσp] using (contMDiffWithinAt_iff_target (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, MorseModel (m + 1)))
       (f := fun q : M × ℝ => (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2)
       (s := a) (x := p) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))).mpr
@@ -557,8 +601,8 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff
     exact hσcmd
 
 private theorem familyTangentSection_contMDiffWithinAt_section_iff'
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {a : Set (M × ℝ)} {p : M × ℝ}
     (x₀ : M) (hp : p.1 ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) x₀).baseSet) :
     ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, MorseModel (m + 1)) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -576,14 +620,16 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff'
     have hfst : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) I (↑(⊤ : ℕ∞) : WithTop ℕ∞)
         (fun q : M × ℝ => q.1) a p := by
       exact contMDiffWithinAt_fst
-    simpa [σ] using hfst
+    exact hfst.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun q => by rfl) (by rfl)
   have he₁ : σ p ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1).source := by
     dsimp [σ]
     simp
   have he₂ : σ p ∈ e.source := by
     dsimp [σ]
     rw [e.mem_source]
-    simpa using hp
+    change p.1 ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) x₀).baseSet
+    exact hp
   have hiff := Bundle.Trivialization.contMDiffWithinAt_snd_comp_iff₂ (f := σ)
     (hp := hproj) (he := he₁) (he' := he₂)
   change ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, MorseModel (m + 1)) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -593,8 +639,8 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff'
   exact hiff
 
 private theorem familyTangentSection_smul_section
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {ψ : M × ℝ → ℝ} {u : Set (M × ℝ)} {p : M × ℝ}
     (hψ : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) ψ u p)
     (hW : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -631,6 +677,8 @@ private theorem familyTangentSection_smul_section
     filter_upwards [self_mem_nhdsWithin] with q hq
     have hqbase : q.1 ∈ e.baseSet := by
       have hq' := hu'sub hq
+      change q.1 ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1).baseSet
+      rw [TangentBundle.trivializationAt_baseSet]
       simpa [← extChartAt_source] using hq'.1
     exact (e.linear ℝ hqbase).2 (ψ q) (W q.1 q.2)
   have hsmul' : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, MorseModel (m + 1)) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -652,8 +700,8 @@ private theorem familyTangentSection_smul_section
     exact inter_mem_nhdsWithin u hC)
 
 private theorem familyTangentSection_finsum_of_locallyFinite
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {ι : Type*} {t : ι → (x : M) → (s : ℝ) → TangentSpace I x}
     (ht : LocallyFinite (fun i : ι => {q : M × ℝ | t i q.1 q.2 ≠ 0}))
     (ht' : ∀ i, ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -703,6 +751,8 @@ private theorem familyTangentSection_finsum_of_locallyFinite
       intro q hq
       have hqbase : q.1 ∈ e.baseSet := by
         have hq' := hU'sub hq
+        change q.1 ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1).baseSet
+        rw [TangentBundle.trivializationAt_baseSet]
         simpa [← extChartAt_source] using hq'.1
       let L : TangentSpace I q.1 →+ MorseModel (m + 1) :=
         { toFun := fun v => (e ⟨q.1, v⟩).2
@@ -739,7 +789,10 @@ private theorem familyTangentSection_finsum_of_locallyFinite
           (contMDiffWithinAt_const : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, MorseModel (m + 1))
             (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : M × ℝ => (0 : MorseModel (m + 1))) U' p)
       | insert i s hi ih =>
-        simpa only [Finset.sum_insert hi] using (hfibs i).add ih
+        convert (hfibs i).add ih using 1
+        funext q
+        rw [Finset.sum_insert hi]
+        rfl
     exact hsum'.congr_of_eventuallyEq (by
       filter_upwards [self_mem_nhdsWithin] with q hq
       exact hlin q hq) (hlin p hpU')
@@ -752,10 +805,7 @@ private theorem familyTangentSection_finsum_of_locallyFinite
     refine hfibsum.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with q hq
       rw [hfinite q hq]
-    · change (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1
-        ⟨p.1, ∑ᶠ i, t i p.1 p.2⟩).2 = (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1
-          ⟨p.1, ∑ i ∈ F, t i p.1 p.2⟩).2
-      rw [hsum]
+    · rw [hsum]
   exact hsec.mono_of_mem_nhdsWithin (by
     have hC : (extChartAt I p.1).source ×ˢ Set.univ ∈ nhds p :=
       (IsOpen.prod (isOpen_extChartAt_source p.1) isOpen_univ).mem_nhds
@@ -763,8 +813,8 @@ private theorem familyTangentSection_finsum_of_locallyFinite
     simpa [U', nhdsWithin_univ] using (Filter.inter_mem hUp hC))
 
 private theorem familyTangentSection_smul_of_tsupport
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {ψ : M × ℝ → ℝ} {u : Set (M × ℝ)}
     (hψ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) ψ u)
     (ht : IsOpen u) (ht' : tsupport ψ ⊆ u)
@@ -802,6 +852,8 @@ private theorem familyTangentSection_smul_of_tsupport
           filter_upwards [self_mem_nhdsWithin] with q hq
           have hqbase : q.1 ∈ e.baseSet := by
             have hq' := hu'sub hq
+            change q.1 ∈ (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1).baseSet
+            rw [TangentBundle.trivializationAt_baseSet]
             simpa [← extChartAt_source] using hq'.1
           exact (e.linear ℝ hqbase).map_zero
         exact hconst.congr_of_eventuallyEq heq (by
@@ -824,8 +876,8 @@ private theorem familyTangentSection_smul_of_tsupport
   · exact (isClosed_tsupport ψ).isOpen_compl
 
 private theorem suspensionSection_contMDiff
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x}
     (hW : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => (⟨q.1, W q.1 q.2⟩ : TangentBundle I M))) :
@@ -839,7 +891,11 @@ private theorem suspensionSection_contMDiff
         (fun t : ℝ => (⟨t, (1 : TangentSpace 𝓘(ℝ, ℝ) t)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)) := by
       intro t₀
       rw [Bundle.contMDiffAt_section]
-      simpa using (contMDiffAt_const (c := (1 : ℝ)))
+      refine (contMDiffAt_const (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+        (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞)) (x := t₀) (c := (1 : ℝ))).congr_of_eventuallyEq ?_
+      exact Filter.Eventually.of_forall fun t => by
+        simp
+        rfl
     exact hone.comp contMDiff_snd
   have hpair : ContMDiff (I.prod 𝓘(ℝ, ℝ))
       ((I.prod 𝓘(ℝ, MorseModel (m + 1))).prod (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)))
@@ -852,14 +908,16 @@ private theorem suspensionSection_contMDiff
       ((I.prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, (MorseModel (m + 1)) × ℝ))
       (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       ((equivTangentBundleProd I M 𝓘(ℝ, ℝ) ℝ).symm) := by
-    haveI : IsManifold I (1 : WithTop ℕ∞) M := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-    haveI : IsManifold 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) ℝ := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    have hIM : IsManifold I (1 : WithTop ℕ∞) M := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    let _ := hIM
+    have hIR : IsManifold 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) ℝ := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    let _ := hIR
     exact contMDiff_equivTangentBundleProd_symm
   exact hsymm.comp hpair
 
 private theorem suspensionSection_smul_contMDiff
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {α : M × ℝ → ℝ}
     (hW : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => (⟨q.1, W q.1 q.2⟩ : TangentBundle I M)))
@@ -894,14 +952,16 @@ private theorem suspensionSection_smul_contMDiff
       ((I.prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, (MorseModel (m + 1)) × ℝ))
       (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       ((equivTangentBundleProd I M 𝓘(ℝ, ℝ) ℝ).symm) := by
-    haveI : IsManifold I (1 : WithTop ℕ∞) M := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-    haveI : IsManifold 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) ℝ := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    have hIM : IsManifold I (1 : WithTop ℕ∞) M := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    let _ := hIM
+    have hIR : IsManifold 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) ℝ := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    let _ := hIR
     exact contMDiff_equivTangentBundleProd_symm
   exact hsymm.comp hpair
 
 private theorem suspensionSection_smul2_contMDiff
-    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    {I : ModelWithCorners ℝ (MorseModel (m + 1)) H}
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     {W : (x : M) → (s : ℝ) → TangentSpace I x} {α : M × ℝ → ℝ} {β : M × ℝ → ℝ}
     (hW : ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, MorseModel (m + 1))) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => (⟨q.1, W q.1 q.2⟩ : TangentBundle I M)))
@@ -937,8 +997,10 @@ private theorem suspensionSection_smul2_contMDiff
       ((I.prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, (MorseModel (m + 1)) × ℝ))
       (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       ((equivTangentBundleProd I M 𝓘(ℝ, ℝ) ℝ).symm) := by
-    haveI : IsManifold I (1 : WithTop ℕ∞) M := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-    haveI : IsManifold 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) ℝ := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    have hIM : IsManifold I (1 : WithTop ℕ∞) M := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    let _ := hIM
+    have hIR : IsManifold 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) ℝ := IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+    let _ := hIR
     exact contMDiff_equivTangentBundleProd_symm
   exact hsymm.comp hpair
 
@@ -993,7 +1055,8 @@ private lemma sublevel_const_of_deriv_eq_zero_ge'
         intro u hu
         exact le_of_lt (hu.1).2⟩
     have htend : Tendsto f (nhdsWithin t₀ S) (nhds (f t₀)) := hcont.tendsto.mono_left nhdsWithin_le_nhds
-    haveI : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+    have hne : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+    let _ := hne
     exact ge_of_tendsto htend hright
   have hsub : ∀ u : ℝ, a < u → u < t₀ → f u ≤ f a := by
     intro u hu₁ hu₂
@@ -1018,7 +1081,8 @@ private lemma sublevel_const_of_deriv_eq_zero_ge'
         rw [closure_Iio]
         change t₀ ≤ t₀
         exact le_rfl
-      haveI : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp ht₀cl
+      have hne : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp ht₀cl
+      let _ := hne
       exact le_of_tendsto htend hleft
   have hf₀ : f t₀ = f a := le_antisymm hf₀_le hf₀_ge
   have hinner : f t₀ ∈ Set.Ioo (-L) L := by
@@ -1096,6 +1160,7 @@ private lemma sublevel_const_of_deriv_eq_zero_ge
         intro u hu
         have h0 : deriv g u = -deriv f u := by
           dsimp [g]
+          change deriv (-f) u = -deriv f u
           simpa only [neg_one_smul] using (deriv_const_smul (c := (-1 : ℝ)) (f := f) (x := u) (hf := (hf u trivial).differentiableAt Filter.univ_mem))
         rw [h0]
         have hu' : f u ∈ Set.Icc (-L) L := by
@@ -1145,7 +1210,7 @@ private lemma sublevel_const_of_deriv_eq_zero_on_interval
         change deriv (f ∘ (fun u : ℝ => a - u)) u = -deriv f (a - u)
         rw [deriv_comp u hout hin]
         · have hd : deriv (fun u : ℝ => a - u) u = -1 := by
-            simpa [deriv_id] using (deriv_const_sub (c := a) (f := fun u : ℝ => u) (x := u))
+            simp
           rw [hd]
           simp
       rw [h0]
@@ -1180,7 +1245,8 @@ private lemma sublevel_const_of_deriv_eq_zero_on_unit'
         intro u hu
         exact le_of_lt (hu.1).2⟩
     have htend : Tendsto f (nhdsWithin t₀ S) (nhds (f t₀)) := hcont.tendsto.mono_left nhdsWithin_le_nhds
-    haveI : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+    have hne : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+    let _ := hne
     exact ge_of_tendsto htend hright
   have hsub : ∀ u : ℝ, 0 < u → u < t₀ → f u ≤ f 0 := by
     intro u hu₁ hu₂
@@ -1205,7 +1271,8 @@ private lemma sublevel_const_of_deriv_eq_zero_on_unit'
         rw [closure_Iio]
         change t₀ ≤ t₀
         exact le_rfl
-      haveI : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp ht₀cl
+      have hne : (nhdsWithin t₀ (Set.Iio t₀)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp ht₀cl
+      let _ := hne
       exact le_of_tendsto htend hleft
   have hf₀ : f t₀ = f 0 := le_antisymm hf₀_le hf₀_ge
   have hinner : f t₀ ∈ Set.Ioo (-L) L := by
@@ -1378,6 +1445,7 @@ private lemma sublevel_const_of_deriv_eq_zero_on_unit
         intro t ht hgt
         have h0 : deriv g t = -deriv f t := by
           dsimp [g]
+          change deriv (-f) t = -deriv f t
           simpa only [neg_one_smul] using (deriv_const_smul (c := (-1 : ℝ)) (f := f) (x := t)
             (hf := (hf t trivial).differentiableAt Filter.univ_mem))
         rw [h0]
@@ -1398,7 +1466,7 @@ private lemma sublevel_const_of_deriv_eq_zero_on_unit
     · exact sublevel_const_of_deriv_eq_zero_on_unit' hf hL hf0 hderiv ht₁ hgt
 theorem localUnitSpeedFamilyVectorField_at_noncritical
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M]
     (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2)) {x₀ : M} {s₀ : ℝ}
@@ -1416,7 +1484,7 @@ theorem localUnitSpeedFamilyVectorField_at_noncritical
     have hpair : ContMDiff I (I.prod 𝓘(ℝ, ℝ)) (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun x : M => (x, s₀)) := by
       exact (contMDiff_id (I := I) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))).prodMk
         (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : M => s₀))
-    simpa using hF.comp hpair
+    exact (hF.comp hpair).congr (fun x => by rfl)
   have hcritChart : fderiv ℝ (fun y : MorseModel (m + 1) => F ((extChartAt I x₀).symm y) s₀)
       (extChartAt I x₀ x₀) ≠ 0 := by
     have hiff := isCriticalPointAt_iff_chart_fderiv I (fun x : M => F x s₀) hfSlice x₀
@@ -1498,8 +1566,9 @@ theorem localUnitSpeedFamilyVectorField_at_noncritical
     have hcomp : mfderiv I 𝓘(ℝ, ℝ) (fun y : M => g (e y, p.2)) p.1 =
         (mfderiv 𝓘(ℝ, MorseModel (m + 1)) 𝓘(ℝ, ℝ) (fun y : MorseModel (m + 1) => g (y, p.2)) (e p.1)).comp
           (mfderiv I 𝓘(ℝ, MorseModel (m + 1)) e p.1) := by
-      simpa using (mfderiv_comp (x := p.1) (g := (fun y : MorseModel (m + 1) => g (y, p.2))) (f := e)
-        (hg := hmdg') (hf := hmdchart))
+      change mfderiv I 𝓘(ℝ, ℝ) ((fun y : MorseModel (m + 1) => g (y, p.2)) ∘ e) p.1 = _
+      exact mfderiv_comp (x := p.1) (g := (fun y : MorseModel (m + 1) => g (y, p.2))) (f := e)
+        (hg := hmdg') (hf := hmdchart)
     have hfuneq : (fun y : M => F y p.2) =ᶠ[nhds p.1] (fun y : M => g (e y, p.2)) := by
       have hsrcopen : IsOpen e.source := isOpen_extChartAt_source x₀
       exact Filter.eventuallyEq_of_mem (by simpa [e] using (hsrcopen.mem_nhds hxsrc))
@@ -1528,6 +1597,7 @@ theorem localUnitSpeedFamilyVectorField_at_noncritical
         (mfderivWithin 𝓘(ℝ, MorseModel (m + 1)) I e.symm (range I) (e p.1)))) w = w
       rw [hid']
       simp
+      rfl
     have hchartW : ((mfderiv I 𝓘(ℝ, MorseModel (m + 1)) e p.1) : TangentSpace I p.1 →L[ℝ] MorseModel (m + 1))
         (W p.1 p.2) = -(a p)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel (m + 1)) := by
       dsimp [W, a]
@@ -1659,8 +1729,10 @@ theorem exists_unitSpeedFamilyVectorField_on_compact
     fun x => localUnitSpeedFamilyVectorField_at_noncritical I F hF (hregular x x.2)
   choose U hUmem hUopen W hWdf hWsec using hpts
   have hKclosed : IsClosed K := hcompact.isClosed
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have hlocH : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ := hlocH
+  have hlocM : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  let _ := hlocM
   rcases exists_open_between_and_isCompact_closure hcompact isOpen_univ (subset_univ K)
     with ⟨W₀, hW₀open, hKW₀, hW₀cl, hW₀compact⟩
   let U' : K → Set (M × ℝ) := fun x => U x ∩ W₀
@@ -1735,7 +1807,7 @@ theorem exists_unitSpeedFamilyVectorField_on_compact
           (ρ x : M × ℝ → ℝ) (U' x) := by
         have hc' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
             (ρ x : M × ℝ → ℝ) Set.univ := by
-          simpa using (ρ x).property.contMDiffOn
+          exact (ρ x).property.contMDiffOn
         exact (hc'.mono (subset_univ _)).of_le le_rfl
       exact familyTangentSection_smul_of_tsupport (I := I) (W := W x) (ψ := ρ x) (u := U' x)
         hρOn (hU'open x) (hρsub x) ((hWsec x).mono (by intro y hy; exact hy.1))
@@ -1811,7 +1883,8 @@ private lemma snd_range_of_deriv_unit
     · intro t ht
       have hd : deriv (fun t : ℝ => s t - t) t = deriv s t - 1 := by
         have hsub := deriv_sub ((hs t trivial).differentiableAt Filter.univ_mem) differentiableAt_id
-        simpa using hsub
+        change deriv (s - id) t = deriv s t - 1
+        simpa only [deriv_id] using hsub
       rw [hd]
       have hb := hs' t ⟨(interior_subset ht).1, le_trans (interior_subset ht).2 hu.2⟩
       linarith [hb.2]
@@ -1843,7 +1916,8 @@ private lemma sublevel_const_of_deriv_eq_zero_below
       rw [Filter.eventually_iff_exists_mem]
       exact ⟨A ∩ Set.univ, inter_mem_nhdsWithin A Filter.univ_mem, by intro u hu; exact hu.1.2⟩
     have htend : Tendsto f (nhdsWithin τ A) (nhds (f τ)) := hcont.tendsto.mono_left nhdsWithin_le_nhds
-    haveI : (nhdsWithin τ A).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+    have hne : (nhdsWithin τ A).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+    let _ := hne
     exact le_of_tendsto htend hright
   have hfτ_ge : -L ≤ f τ := by
     by_cases hτt₁' : τ = t₁
@@ -2182,7 +2256,7 @@ private lemma pairFlow_aux_curve_integral
   have hpair : HasMFDerivAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) (fun u : ℝ => (y, τ u)) u
       ((0 : TangentSpace 𝓘(ℝ, ℝ) u →L[ℝ] TangentSpace I y).prod
         ((1 : ℝ →L[ℝ] ℝ).smulRight (ρ (y, τ u) * χt (τ u)))) := by
-    simpa using (hasMFDerivAt_const (c := y) (x := u)).prodMk hτ'
+    exact (hasMFDerivAt_const (c := y) (x := u)).prodMk hτ'
   have hV : Vsusp (y, τ u) = (show TangentSpace (I.prod 𝓘(ℝ, ℝ)) (y, τ u) from
       (χs (y, τ u) • w y (τ u), ρ (y, τ u) * χt (τ u))) := by
     rw [hVsusp]
@@ -2190,14 +2264,18 @@ private lemma pairFlow_aux_curve_integral
   have hderiv_eq : (0 : TangentSpace 𝓘(ℝ, ℝ) u →L[ℝ] TangentSpace I y).prod
       ((1 : ℝ →L[ℝ] ℝ).smulRight (ρ (y, τ u) * χt (τ u))) =
       ((1 : ℝ →L[ℝ] ℝ).smulRight (Vsusp (y, τ u))) := by
-    apply ContinuousLinearMap.ext_ring
-    change ((0 : TangentSpace 𝓘(ℝ, ℝ) u →L[ℝ] TangentSpace I y) (1 : ℝ),
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (ρ (y, τ u) * χt (τ u))) (1 : ℝ)) =
-      ((1 : ℝ →L[ℝ] ℝ) (1 : ℝ) • Vsusp (y, τ u))
+    apply ContinuousLinearMap.ext
+    intro z
     rw [hV]
     rw [hχs0]
-    simp [ContinuousLinearMap.smulRight_apply, smul_eq_mul]
-    rfl
+    rw [zero_smul]
+    apply Prod.ext
+    · change (0 : MorseModel (m + 1)) =
+        NormedSpace.fromTangentSpace u z • (0 : MorseModel (m + 1))
+      rw [smul_zero]
+    · change NormedSpace.fromTangentSpace u z * (ρ (y, τ u) * χt (τ u)) =
+        NormedSpace.fromTangentSpace u z * (ρ (y, τ u) * χt (τ u))
+      rfl
   exact hpair.congr_mfderiv hderiv_eq
 
 private lemma orbit_spatial_mem_projection
@@ -2338,7 +2416,8 @@ private lemma orbit_spatial_mem_projection
           rw [Filter.eventually_iff_exists_mem]
           exact ⟨Set.Ico 0 t₀, self_mem_nhdsWithin,
             by intro u hu; exact hx_in_A_below u hu⟩
-        haveI : (nhdsWithin t₀ (Set.Ico 0 t₀)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+        have hne : (nhdsWithin t₀ (Set.Ico 0 t₀)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+        let _ := hne
         exact hAcl.mem_of_tendsto hlim hxIco
     have hx_t₀_cl : (curveAt Vsusp hcomplete (x₀, s₀) t₀).1 ∈ closure (Set.compl A) := by
       have hclS : t₀ ∈ closure S := csInf_mem_closure hSne hSbdd
@@ -2348,7 +2427,8 @@ private lemma orbit_spatial_mem_projection
       have hxS : ∀ᶠ u in nhdsWithin t₀ S, (curveAt Vsusp hcomplete (x₀, s₀) u).1 ∈ Set.compl A := by
         rw [Filter.eventually_iff_exists_mem]
         exact ⟨S, self_mem_nhdsWithin, by intro u hu; exact hu.2⟩
-      haveI : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hclS
+      have hne : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hclS
+      let _ := hne
       have hxScl : ∀ᶠ u in nhdsWithin t₀ S,
           (curveAt Vsusp hcomplete (x₀, s₀) u).1 ∈ closure (Set.compl A) :=
         hxS.mono (by intro u hu; exact subset_closure hu)
@@ -2453,7 +2533,8 @@ private lemma orbit_spatial_mem_projection
           rw [Filter.eventually_iff_exists_mem]
           exact ⟨Set.Ioc t₀ 0, self_mem_nhdsWithin,
             by intro u hu; exact hx_in_A_above u hu⟩
-        haveI : (nhdsWithin t₀ (Set.Ioc t₀ 0)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+        have hne : (nhdsWithin t₀ (Set.Ioc t₀ 0)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hcl
+        let _ := hne
         exact hAcl.mem_of_tendsto hlim hxIoc
     have hx_t₀_cl : (curveAt Vsusp hcomplete (x₀, s₀) t₀).1 ∈ closure (Set.compl A) := by
       have hclS : t₀ ∈ closure S := csSup_mem_closure hSne hSbdd
@@ -2463,7 +2544,8 @@ private lemma orbit_spatial_mem_projection
       have hxS : ∀ᶠ u in nhdsWithin t₀ S, (curveAt Vsusp hcomplete (x₀, s₀) u).1 ∈ Set.compl A := by
         rw [Filter.eventually_iff_exists_mem]
         exact ⟨S, self_mem_nhdsWithin, by intro u hu; exact hu.2⟩
-      haveI : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hclS
+      have hne : (nhdsWithin t₀ S).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hclS
+      let _ := hne
       have hxScl : ∀ᶠ u in nhdsWithin t₀ S,
           (curveAt Vsusp hcomplete (x₀, s₀) u).1 ∈ closure (Set.compl A) :=
         hxS.mono (by intro u hu; exact subset_closure hu)
@@ -2492,7 +2574,7 @@ private lemma orbit_spatial_mem_projection
 theorem exists_relDiffeomorph_sublevel_of_regularFamily
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
-    [FiniteDimensional ℝ (MorseModel (m + 1))] [CompleteSpace (MorseModel (m + 1))]
+    [CompleteSpace (MorseModel (m + 1))]
     (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2))
@@ -2534,8 +2616,10 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
     exact familyTangentSection_smul_of_tsupport (I := I) (W := V)
       (ψ := fun q => (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) (u := Set.univ)
       (by intro q hq; exact hdt q) isOpen_univ (by simp) (by intro q hq; exact hVsec q)
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have hlocH : LocallyCompactSpace H := I.locallyCompactSpace
+  let _ := hlocH
+  have hlocM : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  let _ := hlocM
   let D01 : Set (M × ℝ) := D ×ˢ Set.Icc (-1) 2
   have hD01closed : IsClosed D01 := hDcl.prod isClosed_Icc
   have hKsubD01 : K ⊆ Set.compl D01 := by
@@ -2578,7 +2662,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
         have hsub' : q ∈ Set.compl K := by simpa using hsub
         have hqnot : q ∉ Set.compl K := by
           intro hc
-          exact (by simpa [Set.mem_compl_iff] using hc : q ∉ K) hq
+          exact ((Set.mem_compl_iff K q).mp hc) hq
         exact False.elim (hqnot hsub')
       exact image_eq_zero_of_notMem_tsupport hts
     have hfin : (∑ᶠ i : Fin 2, ρsp i q) = ρsp 0 q + ρsp 1 q := by
@@ -2706,7 +2790,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
         have hsub' : q ∈ Set.compl SA := by simpa using hsub
         have hqnot : q ∉ Set.compl SA := by
           intro hc
-          exact (by simpa [Set.mem_compl_iff] using hc : q ∉ SA) hq
+          exact ((Set.mem_compl_iff SA q).mp hc) hq
         exact False.elim (hqnot hsub')
       exact image_eq_zero_of_notMem_tsupport hts
     have hfin : (∑ᶠ i : Fin 2, ρM i q) = ρM 0 q + ρM 1 q := by
@@ -2740,10 +2824,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
         have htime0' : ρ q * χt q.2 = 0 := not_not.mp htime0
         exact hq (by
           dsimp [Vsusp]
-          change (χs q • w q.1 q.2, ρ q * χt q.2) =
-            ((0 : TangentSpace I q.1), (0 : TangentSpace 𝓘(ℝ, ℝ) q.2))
-          simp [hsp, htime0']
-          rfl)
+          exact Prod.ext hsp htime0')
       · left
         exact hsp
     have hswsub : Function.support (fun q : M × ℝ => χs q • w q.1 q.2) ⊆ Function.support χs := by
@@ -2752,9 +2833,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       have hχ0' : χs q = 0 := not_not.mp hχ0
       exact hq (by
         dsimp
-        rw [hχ0']
-        rw [zero_smul]
-        rfl)
+        exact hχ0' ▸ zero_smul ℝ (w q.1 q.2))
     have hsw : tsupport (fun q : M × ℝ => χs q • w q.1 q.2) ⊆ tsupport χs := by
       exact closure_mono hswsub
     have hρt_ts : tsupport (fun q : M × ℝ => ρ q * χt q.2) ⊆
@@ -2855,8 +2934,12 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       deriv (fun t : ℝ => (curveAt Vsusp hcomplete p t).2) u = β (curveAt Vsusp hcomplete p u) := by
     intro p u
     have hd := hsnd_deriv p u
-    rw [hasMFDerivAt_iff_hasFDerivAt] at hd
-    rw [hd.hasDerivAt.deriv]
+    have hd' := hasDerivAt_of_hasMFDerivAt_real hd
+    have hd'' : HasDerivAt (fun t : ℝ => (curveAt Vsusp hcomplete p t).2)
+        (NormedSpace.fromTangentSpace ((curveAt Vsusp hcomplete p u).2)
+          (((1 : ℝ →L[ℝ] ℝ).smulRight (β (curveAt Vsusp hcomplete p u))) 1)) u :=
+      hd'.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
+    rw [hd''.deriv]
     change (1 : ℝ) • β (curveAt Vsusp hcomplete p u) = β (curveAt Vsusp hcomplete p u)
     simp
   have hs01 : ∀ (x : M) (u : ℝ), u ∈ Set.Icc 0 1 →
@@ -2944,25 +3027,9 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
           ((mfderiv I 𝓘(ℝ, ℝ) (fun x : M => F x q.2) q.1) (V q.1 q.2)) = -1
         exact hdF
       rw [hcast]
-      have hsmul : (χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) •
-          (-1 : TangentSpace 𝓘(ℝ, ℝ) (F q.1 q.2)) =
-          -((χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) :
-            TangentSpace 𝓘(ℝ, ℝ) (F q.1 q.2)) := by
-        calc
-          (χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) •
-              (-1 : TangentSpace 𝓘(ℝ, ℝ) (F q.1 q.2))
-              = -((χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) •
-                  (1 : TangentSpace 𝓘(ℝ, ℝ) (F q.1 q.2))) := by
-                rw [smul_neg]
-          _ = -((χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) :
-              TangentSpace 𝓘(ℝ, ℝ) (F q.1 q.2)) := by
-                congr 1
-                change (χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) • (1 : ℝ) =
-                  (χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1 : ℝ)
-                rw [smul_eq_mul]
-                ring
-      rw [hsmul]
-      ring_nf
+      change (χs q * (fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) * (-1) =
+        -((fderiv ℝ (fun t : ℝ => F q.1 t) q.2) 1) * χs q
+      ring
     have hlev' : (NormedSpace.fromTangentSpace (F q.1 q.2))
         ((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun x : M × ℝ => F x.1 x.2) q) (Vsusp q)) =
         (NormedSpace.fromTangentSpace (F q.1 q.2))
@@ -3007,7 +3074,9 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       have hpair : HasMFDerivAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) c u
           ((0 : TangentSpace 𝓘(ℝ, ℝ) u →L[ℝ] TangentSpace I x).prod
             ((1 : ℝ →L[ℝ] ℝ).smulRight (ρ (x, τ u) * χt (τ u)))) := by
-        simpa [c] using (hasMFDerivAt_const (c := x) (x := u)).prodMk hτ'
+        change HasMFDerivAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ))
+          (fun u : ℝ => (x, τ u)) u _
+        exact (hasMFDerivAt_const (c := x) (x := u)).prodMk hτ'
       have hV : Vsusp (c u) = (show TangentSpace (I.prod 𝓘(ℝ, ℝ)) (c u) from
           (χs (c u) • w x (τ u), ρ (c u) * χt (τ u))) := by
         rw [hVsusp]
@@ -3015,14 +3084,18 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       have hderiv_eq : (0 : TangentSpace 𝓘(ℝ, ℝ) u →L[ℝ] TangentSpace I x).prod
           ((1 : ℝ →L[ℝ] ℝ).smulRight (ρ (x, τ u) * χt (τ u))) =
           ((1 : ℝ →L[ℝ] ℝ).smulRight (Vsusp (c u))) := by
-        apply ContinuousLinearMap.ext_ring
-        change ((0 : TangentSpace 𝓘(ℝ, ℝ) u →L[ℝ] TangentSpace I x) (1 : ℝ),
-            ((1 : ℝ →L[ℝ] ℝ).smulRight (ρ (x, τ u) * χt (τ u))) (1 : ℝ)) =
-          ((1 : ℝ →L[ℝ] ℝ) (1 : ℝ) • Vsusp (c u))
+        apply ContinuousLinearMap.ext
+        intro z
         rw [hV]
         rw [hχs0]
-        simp [ContinuousLinearMap.smulRight_apply, smul_eq_mul]
-        rfl
+        rw [zero_smul]
+        apply Prod.ext
+        · change (0 : MorseModel (m + 1)) =
+            NormedSpace.fromTangentSpace u z • (0 : MorseModel (m + 1))
+          rw [smul_zero]
+        · change NormedSpace.fromTangentSpace u z * (ρ (x, τ u) * χt (τ u)) =
+            NormedSpace.fromTangentSpace u z * (ρ (x, τ u) * χt (τ u))
+          rfl
       exact hpair.congr_mfderiv hderiv_eq
     have heq : curveAt Vsusp hcomplete (x, s₀) = c := by
       exact isMIntegralCurve_eq_of_contMDiff (t₀ := 0)
@@ -3069,11 +3142,18 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
     intro x t ht hft
     have hcomp := (hF (curveAt Vsusp hcomplete (x, 0) t)).mdifferentiableAt (by norm_num : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0) |>.hasMFDerivAt.comp t (curveAt_integralCurve Vsusp hcomplete (x, 0) t)
     have hd : deriv (fun u : ℝ => F (curveAt Vsusp hcomplete (x, 0) u).1 (curveAt Vsusp hcomplete (x, 0) u).2) t =
-        (mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (x, 0) t)) (Vsusp (curveAt Vsusp hcomplete (x, 0) t)) := by
-      have hfd : HasFDerivAt (fun u : ℝ => F (curveAt Vsusp hcomplete (x, 0) u).1 (curveAt Vsusp hcomplete (x, 0) u).2)
-          ((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (x, 0) t)).comp
-            ((1 : ℝ →L[ℝ] ℝ).smulRight (Vsusp (curveAt Vsusp hcomplete (x, 0) t)))) t := hcomp.hasFDerivAt
-      rw [hfd.hasDerivAt.deriv]
+        NormedSpace.fromTangentSpace
+          (F (curveAt Vsusp hcomplete (x, 0) t).1
+            (curveAt Vsusp hcomplete (x, 0) t).2)
+          ((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2)
+            (curveAt Vsusp hcomplete (x, 0) t))
+            (Vsusp (curveAt Vsusp hcomplete (x, 0) t))) := by
+      have hderiv := hasDerivAt_of_hasMFDerivAt_real hcomp
+      have hderiv' : HasDerivAt
+          (fun u : ℝ => F (curveAt Vsusp hcomplete (x, 0) u).1
+            (curveAt Vsusp hcomplete (x, 0) u).2) _ t :=
+        hderiv.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
+      rw [hderiv'.deriv]
       change (mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (x, 0) t))
           ((1 : ℝ →L[ℝ] ℝ).smulRight (Vsusp (curveAt Vsusp hcomplete (x, 0) t)) 1) =
         (mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (x, 0) t)) (Vsusp (curveAt Vsusp hcomplete (x, 0) t))
@@ -3081,7 +3161,12 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
     rw [hd]
     have hs01t : (curveAt Vsusp hcomplete (x, 0) t).2 ∈ Set.Icc 0 1 := hs01 x t ht
     have hKmem : curveAt Vsusp hcomplete (x, 0) t ∈ K := ⟨abs_le.mpr ⟨hft.1, hft.2⟩, hs01t⟩
-    have hzero : (mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (x, 0) t)) (Vsusp (curveAt Vsusp hcomplete (x, 0) t)) = 0 := by
+    have hzero : NormedSpace.fromTangentSpace
+        (F (curveAt Vsusp hcomplete (x, 0) t).1
+          (curveAt Vsusp hcomplete (x, 0) t).2)
+        ((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2)
+          (curveAt Vsusp hcomplete (x, 0) t))
+          (Vsusp (curveAt Vsusp hcomplete (x, 0) t))) = 0 := by
       exact hVsuspdf (curveAt Vsusp hcomplete (x, 0) t) hKmem
     exact hzero
   have hFconst : ∀ (x : M) (u : ℝ), u ∈ Set.Icc 0 1 →
@@ -3339,15 +3424,21 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
     intro y t ht hft
     have hcomp := (hF (curveAt Vsusp hcomplete (y, 1) (-t))).mdifferentiableAt (by norm_num : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0) |>.hasMFDerivAt.comp (-t) (curveAt_integralCurve Vsusp hcomplete (y, 1) (-t))
     have hd : deriv (fun u : ℝ => F (curveAt Vsusp hcomplete (y, 1) (-u)).1 (curveAt Vsusp hcomplete (y, 1) (-u)).2) t =
-        -(mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (y, 1) (-t))) (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t))) := by
+        -(NormedSpace.fromTangentSpace
+          (F (curveAt Vsusp hcomplete (y, 1) (-t)).1
+            (curveAt Vsusp hcomplete (y, 1) (-t)).2)
+          ((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2)
+            (curveAt Vsusp hcomplete (y, 1) (-t)))
+            (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t))))) := by
       have hneg : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => -s) t (-1 : ℝ →L[ℝ] ℝ) := by
         exact (hasFDerivAt_id t).neg |>.hasMFDerivAt
       have hchain := hcomp.comp t hneg
-      have hfd : HasFDerivAt (fun u : ℝ => F (curveAt Vsusp hcomplete (y, 1) (-u)).1 (curveAt Vsusp hcomplete (y, 1) (-u)).2)
-          (((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (y, 1) (-t))).comp
-            ((1 : ℝ →L[ℝ] ℝ).smulRight (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t))))).comp (-1 : ℝ →L[ℝ] ℝ)) t := by
-        exact hchain.hasFDerivAt
-      rw [hfd.hasDerivAt.deriv]
+      have hderiv := hasDerivAt_of_hasMFDerivAt_real hchain
+      have hderiv' : HasDerivAt
+          (fun u : ℝ => F (curveAt Vsusp hcomplete (y, 1) (-u)).1
+            (curveAt Vsusp hcomplete (y, 1) (-u)).2) _ t :=
+        hderiv.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
+      rw [hderiv'.deriv]
       change ((((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (y, 1) (-t))).comp
         ((1 : ℝ →L[ℝ] ℝ).smulRight (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t))))).comp (-1 : ℝ →L[ℝ] ℝ)) 1) =
         -(mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (y, 1) (-t))) (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t)))
@@ -3355,7 +3446,12 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
     rw [hd]
     have hsbackt : (curveAt Vsusp hcomplete (y, 1) (-t)).2 ∈ Set.Icc 0 1 := hsback y t ht
     have hKmem : curveAt Vsusp hcomplete (y, 1) (-t) ∈ K := ⟨abs_le.mpr ⟨hft.1, hft.2⟩, hsbackt⟩
-    have hzneg : -((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2) (curveAt Vsusp hcomplete (y, 1) (-t))) (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t)))) = 0 := by
+    have hzneg : -(NormedSpace.fromTangentSpace
+        (F (curveAt Vsusp hcomplete (y, 1) (-t)).1
+          (curveAt Vsusp hcomplete (y, 1) (-t)).2)
+        ((mfderiv (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (fun q : M × ℝ => F q.1 q.2)
+          (curveAt Vsusp hcomplete (y, 1) (-t)))
+          (Vsusp (curveAt Vsusp hcomplete (y, 1) (-t))))) = 0 := by
       simpa using congrArg Neg.neg (hVsuspdf (curveAt Vsusp hcomplete (y, 1) (-t)) hKmem)
     exact hzneg
   have hFconstBack : ∀ (y : M) (u : ℝ), u ∈ Set.Icc 0 1 →
@@ -3570,7 +3666,7 @@ theorem regularFamilySliceRegular
 theorem exists_diffeomorph_sublevel_of_regularFamily
     (I : ModelWithCorners ℝ (MorseModel (m + 1)) H) [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
-    [FiniteDimensional ℝ (MorseModel (m + 1))] [CompleteSpace (MorseModel (m + 1))]
+    [CompleteSpace (MorseModel (m + 1))]
     (F : M → ℝ → ℝ)
     (hF : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun q : M × ℝ => F q.1 q.2))
@@ -3613,8 +3709,8 @@ theorem exists_diffeomorph_sublevel_of_regularFamily
       (SublevelSpace (fun x : M => F x 0) 0) _ hcs₁
       (SublevelSpace (fun x : M => F x 1) 0) _ hcs₂ (⊤ : ℕ∞)) := by
   classical
-  letI := hcs₁
-  letI := hcs₂
+  let _ := hcs₁
+  let _ := hcs₂
   rcases exists_relDiffeomorph_sublevel_of_regularFamily (I := I) F hF ε₀ hε₀ hstrip hreg D hDcl
     hDsep hDsign with
     ⟨Φ, Ψ, hΦsm, hΨsm, hDfix, hsub_fwd, hsub_back, hbnd_fwd, hbnd_back,
@@ -3637,11 +3733,13 @@ theorem exists_diffeomorph_sublevel_of_regularFamily
       (SublevelSpace (fun x : M => F x 0) 0) _ hcs₁
       (SublevelSpace (fun x : M => F x 1) 0) _ hcs₂ (⊤ : ℕ∞) := by
     refine { toEquiv := e, contMDiff_toFun := ?_, contMDiff_invFun := ?_ }
-    · simpa [toFun] using contMDiff_manifoldSublevelMap (I := I)
+    · change ContMDiff _ _ _ toFun
+      exact contMDiff_manifoldSublevelMap (I := I)
         (fun x : M => F x 0) (fun x : M => F x 1) 0 0 hf₀ hf₁ hreg₀ hreg₁
         Φ hΦsm hsub_fwd hbnd_fwd hstrict_fwd
         (hcs₁ := hcs₁) (hcs₂ := hcs₂) (hchart₁ := hchart₁) (hchart₂ := hchart₂)
-    · simpa [invFun] using contMDiff_manifoldSublevelMap (I := I)
+    · change ContMDiff _ _ _ invFun
+      exact contMDiff_manifoldSublevelMap (I := I)
         (fun x : M => F x 1) (fun x : M => F x 0) 0 0 hf₁ hf₀ hreg₁ hreg₀
         Ψ hΨsm hsub_back hbnd_back hstrict_back
         (hcs₁ := hcs₂) (hcs₂ := hcs₁) (hchart₁ := hchart₂) (hchart₂ := hchart₁)

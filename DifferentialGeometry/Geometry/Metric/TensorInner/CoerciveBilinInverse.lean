@@ -309,7 +309,7 @@ theorem sharpCLM_cont_sub
     (hco : ∀ x ∈ S, IsCoercive (B x)) :
     Continuous (fun x : S => (hco x x.2).sharpCLM) := by
   have hsub : ContinuousOn
-      (fun x : S => B x) (Set.univ : Set S) := hB.restrict.continuousOn
+      (fun x : S => B x) (Set.univ : Set S) := hB.domRestrict.continuousOn
   have h := sharpCLM_contOn (fun x : S => B x) hsub
     (fun x => hco x x.2)
   exact continuousOn_univ.mp h
@@ -337,7 +337,7 @@ theorem sharp_sub_le
       _ = hBco.sharp (C (hCco.sharp eta) - B (hCco.sharp eta)) := by
         rw [hCco.apply_sharp]
       _ = hBco.sharp ((C - B) (hCco.sharp eta)) := by
-        rw [ContinuousLinearMap.sub_apply]
+        rw [sub_apply]
   rw [heq]
   calc
     ‖hBco.sharp ((C - B) (hCco.sharp eta))‖ ≤

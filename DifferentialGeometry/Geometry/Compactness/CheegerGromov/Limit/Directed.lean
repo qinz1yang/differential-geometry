@@ -83,7 +83,9 @@ theorem chainComp_base {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
       rfl
   | succ l ih =>
       rw [chainComp_apply_succ, ih]
-      simpa [Nat.add_assoc] using hbase (j + l)
+      change (Ψ (j + l) : Mf (j + l) → Mf ((j + l) + 1)) (b (j + l)) =
+        b ((j + l) + 1)
+      exact hbase (j + l)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_add_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
@@ -142,7 +144,7 @@ noncomputable def chainCompAssoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 private theorem targetCast_source {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
-    [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
+    [∀ j, ChartedSpace H (Mf j)]
     {j l m : ℕ} (h : l = m)
     (Φ : PartialDiffeomorph I I (Mf j) (Mf l) (∞ : WithTop ℕ∞)) :
     (h ▸ Φ).source = Φ.source := by
@@ -311,8 +313,8 @@ theorem closedEBall_ofReal_subset_ball {α : Type*} [PseudoMetricSpace α]
     exact (ENNReal.ofReal_le_ofReal_iff hr).1 hy
   exact lt_of_le_of_lt hdist_le hR
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem data_image_metric_ball
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -345,8 +347,8 @@ theorem data_image_metric_ball
   exact closedEBall_ofReal_subset_ball ((Φ : M → N) O)
     (mul_nonneg (Real.sqrt_nonneg _) hr.le) hR hyClosed
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem data_image_metric_ball_of_superset
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
@@ -387,11 +389,11 @@ theorem member_isRiemannian (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
     letI : MetricSpace Y.M := P.ms
     IsRiemannianManifold I Y.M := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
-  letI : MetricSpace Y.M := P.ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) := Y.riemBundle
+  let : MetricSpace Y.M := P.ms
   refine ⟨fun x y => ?_⟩
   have hreal := P.realizes x y
   rw [edist_dist, ← hreal]
@@ -406,7 +408,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsMan
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
   [SigmaCompactSpace N]
 
-noncomputable def MapMetricApproximationOn.congr_eq {K : Set M} {ε : ℝ} {p : ℕ} {F F' : M → N}
+noncomputable def MapMetricApproximationOn.congrEq {K : Set M} {ε : ℝ} {p : ℕ} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : MapMetricApproximationOn (I := I) K ε p F g h) (hEq : F' = F) :
     MapMetricApproximationOn (I := I) K ε p F' g h :=
@@ -428,13 +430,13 @@ noncomputable def MapMetricApproximationBoundsOn.congr {K : Set M} {c0 cov : ℝ
   c0_small := D.c0_small
   cov_small := D.cov_small
 
-noncomputable def MapMetricApproximationBoundsOn.congr_eq {K : Set M} {c0 cov : ℝ} {p : ℕ} {F F' : M → N}
+noncomputable def MapMetricApproximationBoundsOn.congrEq {K : Set M} {c0 cov : ℝ} {p : ℕ} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p F g h) (hEq : F' = F) :
     MapMetricApproximationBoundsOn (I := I) K c0 cov p F' g h :=
   D.congr (fun _ _ => Filter.EventuallyEq.of_eq hEq)
 
-noncomputable def MapMetricApproximationBoundsOn.congr_set {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
+noncomputable def MapMetricApproximationBoundsOn.congrSet {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
     {F : M → N} {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p F g h) (hK : K' = K) :
     MapMetricApproximationBoundsOn (I := I) K' c0 cov p F g h := by
@@ -463,7 +465,7 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.ofParts {K : Set M
   forward := forward
   reverse := reverse
 
-noncomputable def PartialDiffeomorphMetricApproximationBounds.congr_set {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
+noncomputable def PartialDiffeomorphMetricApproximationBounds.congrSet {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
     {Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (D : PartialDiffeomorphMetricApproximationBounds (I := I) K c0 cov p Φ g h) (hK : K' = K) :
@@ -502,7 +504,6 @@ end DataTransport
 
 section ReflData
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
@@ -512,7 +513,7 @@ theorem tensor02CovDeriv_metric_zero {M' : Type u} [TopologicalSpace M'] [Charte
     (g : SmoothRiemannianMetric I M') (a : ℕ) :
     tensor02CovDeriv (I := I) (Tensor0SBundle.metricTensorField (I := I) g) g (a + 1) = 0 := by
   rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov, iterCov_metric_zero,
-    MultilinearSection.domDomCongr_zero]
+    Tensor0SField.domDomCongr_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
@@ -784,7 +785,7 @@ theorem properMetric_isOpen_ball
       @IsOpen Y.M P.ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
         (letI : MetricSpace Y.M := P.ms
          Metric.ball x r) := by
-    letI : MetricSpace Y.M := P.ms
+    let : MetricSpace Y.M := P.ms
     exact Metric.isOpen_ball
   rw [ProperMetricOn.top_eq Y P] at hb
   exact hb
@@ -796,7 +797,7 @@ theorem properMetric_mem_ball_self
     x ∈
       (letI : MetricSpace Y.M := P.ms
        Metric.ball x r) := by
-  letI : MetricSpace Y.M := P.ms
+  let : MetricSpace Y.M := P.ms
   exact Metric.mem_ball_self hr
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
@@ -827,7 +828,7 @@ theorem properMetricOpenBall_nonempty
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (P : ProperMetricOn (I := I) Y) (x : Y.M) {r : ℝ} (hr : 0 < r) :
     Nonempty (properMetricOpenBall (I := I) Y P x r) := by
-  letI : TopologicalSpace Y.M := Y.topology
+  let : TopologicalSpace Y.M := Y.topology
   dsimp [properMetricOpenBall]
   exact nonempty_opens_mk (properMetric_isOpen_ball (I := I) Y P x r)
     (properMetric_ball_nonempty (I := I) Y P x hr)
@@ -1108,7 +1109,7 @@ theorem exists_strictMono_ge (T : ℕ → ℕ) :
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
     (B : PairwiseApproximateIsometryInput (X := X) P) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧
@@ -1137,25 +1138,25 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       (helt j) j).choose with hT
   obtain ⟨σ, hσmono, hσge⟩ := exists_strictMono_ge T
   refine ⟨σ, hσmono, ?_⟩
-  letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
-  letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
-  letI : ∀ j, IsManifold I ∞ (X.obj (σ j)).M := fun j => (X.obj (σ j)).smooth
-  letI : ∀ j, T2Space (X.obj (σ j)).M := fun j => (X.obj (σ j)).t2
-  letI : ∀ j, SigmaCompactSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).sigmaCompact
-  letI : ∀ j, MetricSpace (X.obj (σ j)).M := fun j => (P (σ j)).ms
-  letI : ∀ j, IsManifold I 1 (X.obj (σ j)).M := fun j =>
+  let : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
+  let : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
+  let : ∀ j, IsManifold I ∞ (X.obj (σ j)).M := fun j => (X.obj (σ j)).smooth
+  let : ∀ j, T2Space (X.obj (σ j)).M := fun j => (X.obj (σ j)).t2
+  let : ∀ j, SigmaCompactSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).sigmaCompact
+  let : ∀ j, MetricSpace (X.obj (σ j)).M := fun j => (P (σ j)).ms
+  let : ∀ j, IsManifold I 1 (X.obj (σ j)).M := fun j =>
     IsManifold.of_le (I := I) (M := (X.obj (σ j)).M) (n := (∞ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : ∀ j, IsManifold I 2 (X.obj (σ j)).M := fun j =>
+  let : ∀ j, IsManifold I 2 (X.obj (σ j)).M := fun j =>
     IsManifold.of_le (I := I) (M := (X.obj (σ j)).M) (n := (∞ : WithTop ℕ∞))
       (by decide : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-  letI : ∀ j, IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.obj (σ j)).M := fun j => by
+  let : ∀ j, IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.obj (σ j)).M := fun j => by
     change IsManifold I ∞ (X.obj (σ j)).M; infer_instance
-  letI hRB : ∀ j, Bundle.RiemannianBundle (fun x : (X.obj (σ j)).M => TangentSpace I x) :=
+  let hRB : ∀ j, Bundle.RiemannianBundle (fun x : (X.obj (σ j)).M => TangentSpace I x) :=
     fun j => (X.obj (σ j)).riemBundle
-  haveI hRiem : ∀ j, IsRiemannianManifold I (X.obj (σ j)).M := fun j =>
+  have hRiem : ∀ j, IsRiemannianManifold I (X.obj (σ j)).M := fun j =>
     member_isRiemannian (X.obj (σ j)) (P (σ j))
-  haveI hProper : ∀ j, ProperSpace (X.obj (σ j)).M := fun j => (P (σ j)).proper
+  have hProper : ∀ j, ProperSpace (X.obj (σ j)).M := fun j => (P (σ j)).proper
   have hstep : ∀ j : ℕ, T j ≤ σ j ∧ T j ≤ σ (j + 1) := fun j =>
     ⟨hσge j, le_trans (hσge j) (le_of_lt (hσmono (Nat.lt_succ_self j)))⟩
   have hΨex : ∀ j : ℕ,
@@ -1346,7 +1347,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               @IsOpen (X.obj (σ s)).M
                 (P (σ s)).ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
                 (Metric.ball ((X.obj (σ s)).basepoint) Rmid) := by
-            letI : MetricSpace (X.obj (σ s)).M := (P (σ s)).ms
+            let : MetricSpace (X.obj (σ s)).M := (P (σ s)).ms
             exact Metric.isOpen_ball
           rwa [ProperMetricOn.top_eq (X.obj (σ s)) (P (σ s))] at hb⟩
       let K₂ : TopologicalSpace.Opens (X.obj (σ (s + l))).M :=
@@ -1356,12 +1357,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
                 @IsOpen (X.obj (σ (s + l))).M
                   (P (σ (s + l))).ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
                   (Metric.ball ((X.obj (σ (s + l))).basepoint) ((2 : ℝ) ^ (s + l + 1))) := by
-              letI : MetricSpace (X.obj (σ (s + l))).M := (P (σ (s + l))).ms
+              let : MetricSpace (X.obj (σ (s + l))).M := (P (σ (s + l))).ms
               exact Metric.isOpen_ball
             rwa [ProperMetricOn.top_eq (X.obj (σ (s + l))) (P (σ (s + l)))] at hb⟩
-      haveI hU₁_nonempty : Nonempty U₁ :=
+      have hU₁_nonempty : Nonempty U₁ :=
         ⟨⟨(X.obj (σ s)).basepoint, Metric.mem_ball_self hRmid_pos⟩⟩
-      haveI hK₂_nonempty : Nonempty K₂ :=
+      have hK₂_nonempty : Nonempty K₂ :=
         ⟨⟨(X.obj (σ (s + l))).basepoint,
           Metric.mem_ball_self (by positivity : (0 : ℝ) < (2 : ℝ) ^ (s + l + 1))⟩⟩
       have hU₁_src : (U₁ : Set (X.obj (σ s)).M) ⊆
@@ -1425,14 +1426,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
             (by
               intro x v
-              simpa using
-                (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-                  (I := I) (X.obj (σ s)).metric x v))
+              exact (Geometry.Riemannian.isMetricNorm_of_riemannianBundle
+                (I := I) (X.obj (σ s)).metric) x v)
             (by
               intro x v
-              simpa using
-                (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-                  (I := I) (X.obj (σ (s + l))).metric x v))
+              exact (Geometry.Riemannian.isMetricNorm_of_riemannianBundle
+                (I := I) (X.obj (σ (s + l))).metric) x v)
             hRmid_pos le_rfl (by norm_num : (0 : ℝ) ≤ 1 / 2)
             (by
               simpa [Rmid] using
@@ -1447,8 +1446,8 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             @IsCompact (X.obj (σ s)).M
               (P (σ s)).ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
               (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) := by
-          letI : MetricSpace (X.obj (σ s)).M := (P (σ s)).ms
-          haveI : ProperSpace (X.obj (σ s)).M := (P (σ s)).proper
+          let : MetricSpace (X.obj (σ s)).M := (P (σ s)).ms
+          have : ProperSpace (X.obj (σ s)).M := (P (σ s)).proper
           simpa using (isCompact_closedBall ((X.obj (σ s)).basepoint) Rnext)
         rw [ProperMetricOn.top_eq (X.obj (σ s)) (P (σ s))] at hcompact
         exact hcompact
@@ -1513,7 +1512,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           properMetric_isOpen_ball (I := I) (X.obj (σ (s + 1))) (P (σ (s + 1)))
             ((X.obj (σ (s + 1))).basepoint)
             ((2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1)))⟩
-      haveI hKtail_nonempty : Nonempty Ktail := by
+      have hKtail_nonempty : Nonempty Ktail := by
         dsimp [Ktail]
         exact properMetric_ball_nonempty (I := I) (X.obj (σ (s + 1))) (P (σ (s + 1)))
           ((X.obj (σ (s + 1))).basepoint) (openRad_pos (s + 1) l)
@@ -1557,14 +1556,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           data_image_metric_ball_of_superset (I := I) (Ψ s)
             (by
               intro x v
-              simpa using
-                (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-                  (I := I) (X.obj (σ s)).metric x v))
+              exact (Geometry.Riemannian.isMetricNorm_of_riemannianBundle
+                (I := I) (X.obj (σ s)).metric) x v)
             (by
               intro x v
-              simpa using
-                (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-                  (I := I) (X.obj (σ (s + 1))).metric x v))
+              exact (Geometry.Riemannian.isMetricNorm_of_riemannianBundle
+                (I := I) (X.obj (σ (s + 1))).metric) x v)
             hRmid_pos le_rfl hδR0 hstep_image_radius hclosed_mid_step DstepR_p.forward
             hsrc_step_mid
         intro y hy
@@ -1654,7 +1651,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
             (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
-        hFclosedSep.congr_eq hfoldF_eq
+        hFclosedSep.congrEq hfoldF_eq
       have hRclosed : MapMetricApproximationBoundsOn (I := I)
           ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl :
@@ -1665,7 +1662,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric := by
         simpa [image_eq_of_fun_eq hfoldR_eq] using
-          hRclosedSep.congr_eq hfoldR_symm_eq
+          hRclosedSep.congrEq hfoldR_symm_eq
       have hLR_eq :
           (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl :
@@ -1680,7 +1677,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             (s + (l + 1)) rfl :
             (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
-        hFclosed.congr_eq hLR_eq
+        hFclosed.congrEq hLR_eq
       have hRightClosed :
           PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
@@ -1698,7 +1695,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1)).source := by
         intro x hx
         exact ⟨hU₁_src hx, hK₂_src (himg_mid (Set.mem_image_of_mem _ hx))⟩
-      haveI hNonempty_src_s : Nonempty (X.obj (σ s)).M := ⟨(X.obj (σ s)).basepoint⟩
+      have hNonempty_src_s : Nonempty (X.obj (σ s)).M := ⟨(X.obj (σ s)).basepoint⟩
       have hrev_germ_final :
           ∀ y ∈ (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
                 (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''

@@ -294,7 +294,7 @@ theorem eLpNorm_mollifyEps_le
           ENNReal.ofReal (‖((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x)‖
             ^ (2 : ℝ)) := by
         intro x
-        rw [← ofReal_norm_eq_enorm,
+        rw [← ofReal_norm,
           ENNReal.ofReal_rpow_of_nonneg (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 2)]
       have h_lint_pt :
           (fun x => ‖((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x)‖ₑ
@@ -395,12 +395,12 @@ structure H1WeakSolutionData
   weakPartial_isWeak : ∀ j,
     DeGiorgi.HasWeakPartialDeriv (d := d) j (weakPartial j) u Set.univ
   isWeakSolution : B.IsWeakSolution u f
-  fseq_l2_bound : ℝ
-  fseq_l2_bound_nn : 0 ≤ fseq_l2_bound
+  fseqL2Bound : ℝ
+  fseq_l2_bound_nn : 0 ≤ fseqL2Bound
   fseq_l2_bounded : ∀ n : ℕ,
     eLpNorm (B.classicalApply
       (mollifyEps (d := d) (show (0 : ℝ) < 1 / ((n : ℝ) + 2) by positivity) u))
-      2 (volume : Measure E) ≤ ENNReal.ofReal fseq_l2_bound
+      2 (volume : Measure E) ≤ ENNReal.ofReal fseqL2Bound
 
 omit [NeZero d] in
 private lemma contDiff_mollifyEps_of_memLp_two
@@ -525,13 +525,13 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
     refine ⟨?_, ?_⟩
     · exact (hfSeq_cont n).aestronglyMeasurable
     · have h_bound := D.fseq_l2_bounded n
-      have hM_top : ENNReal.ofReal D.fseq_l2_bound ≠ ∞ := ENNReal.ofReal_ne_top
+      have hM_top : ENNReal.ofReal D.fseqL2Bound ≠ ∞ := ENNReal.ofReal_ne_top
       exact lt_of_le_of_lt h_bound (lt_of_le_of_ne le_top hM_top)
   set DB : ℝ :=
     ((eLpNorm u 2 (volume : Measure E)).toReal) ^ 2 +
       ∑ j : Fin d, ((eLpNorm (D.weakPartial j) 2 (volume : Measure E)).toReal) ^ 2 +
         ((eLpNorm f 2 (volume : Measure E)).toReal) ^ 2 +
-        D.fseq_l2_bound ^ 2 with hDB_def
+        D.fseqL2Bound ^ 2 with hDB_def
   have hDB_nn : 0 ≤ DB := by
     refine add_nonneg (add_nonneg (add_nonneg (sq_nonneg _) ?_) (sq_nonneg _))
       (sq_nonneg _)
@@ -548,14 +548,14 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
         2 (volume.restrict S) := fun n {S} _ j =>
     memLp_two_restrict_of_memLp_two (hgrad_l2 n j) S
   refine ⟨{
-    u_seq := uSeq
-    f_seq := fSeq
+    uSeq := uSeq
+    fSeq := fSeq
     u_seq_smooth := huSeq_smooth
     is_smooth_weak_sol := h_smooth_weak
     f_seq_l2_loc := hf_seq_l2_loc
     u_seq_l2_loc := hu_seq_l2_loc
     grad_seq_l2_loc := hgrad_seq_l2_loc
-    data_bound := DB
+    dataBound := DB
     data_bound_nn := hDB_nn
     data_integrated_bound := ?_
   }⟩
@@ -604,16 +604,16 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
     exact pow_le_pow_left₀ h_lhs_nn h_toReal_le 2
   have h_f_bound :
       ∫ y in Ω', (fSeq n y) ^ 2 ∂(volume : Measure E) ≤
-      D.fseq_l2_bound ^ 2 := by
+      D.fseqL2Bound ^ 2 := by
     refine (integral_sq_le_eLpNorm_sq (hfSeq_l2 n) hΩ'_open).trans ?_
     have h_eLp_bound : eLpNorm (fSeq n) 2 (volume : Measure E) ≤
-        ENNReal.ofReal D.fseq_l2_bound := D.fseq_l2_bounded n
+        ENNReal.ofReal D.fseqL2Bound := D.fseq_l2_bounded n
     have h_lhs_top : eLpNorm (fSeq n) 2 (volume : Measure E) ≠ ∞ :=
       (hfSeq_l2 n).eLpNorm_ne_top
-    have h_rhs_top : ENNReal.ofReal D.fseq_l2_bound ≠ ∞ := ENNReal.ofReal_ne_top
+    have h_rhs_top : ENNReal.ofReal D.fseqL2Bound ≠ ∞ := ENNReal.ofReal_ne_top
     have h_toReal_le :
         (eLpNorm (fSeq n) 2 (volume : Measure E)).toReal ≤
-          (ENNReal.ofReal D.fseq_l2_bound).toReal :=
+          (ENNReal.ofReal D.fseqL2Bound).toReal :=
       (ENNReal.toReal_le_toReal h_lhs_top h_rhs_top).mpr h_eLp_bound
     rw [ENNReal.toReal_ofReal D.fseq_l2_bound_nn] at h_toReal_le
     have h_lhs_nn : 0 ≤ (eLpNorm (fSeq n) 2 (volume : Measure E)).toReal :=
@@ -626,7 +626,7 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
       ∑ j : Fin d, ∫ y in Ω',
           ((fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1)) ^ 2
         ∂(volume : Measure E) := by
-    refine integral_finset_sum (μ := (volume : Measure E).restrict Ω') Finset.univ ?_
+    refine integral_finsetSum (μ := (volume : Measure E).restrict Ω') Finset.univ ?_
     intro j _
     have h_norm_eq : ∀ y : E,
         ((fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1)) ^ 2 =
@@ -662,7 +662,7 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
       (∫ y in Ω', (fSeq n y) ^ 2 ∂(volume : Measure E)) ≤
       (∑ j : Fin d, ((eLpNorm (D.weakPartial j) 2 (volume : Measure E)).toReal) ^ 2) +
       ((eLpNorm u 2 (volume : Measure E)).toReal) ^ 2 +
-      D.fseq_l2_bound ^ 2 := by
+      D.fseqL2Bound ^ 2 := by
     linarith
   refine h_combined.trans ?_
   rw [hDB_def]
@@ -700,7 +700,7 @@ theorem exists_smoothApproximation_of_h1_weak_solution
       weakPartial_l2 := hwp_l2
       weakPartial_isWeak := hwp_isWeak
       isWeakSolution := h_weak
-      fseq_l2_bound := M_F
+      fseqL2Bound := M_F
       fseq_l2_bound_nn := hMF_nn
       fseq_l2_bounded := hMF_bound }
   exact exists_smoothApproximation_of_h1WeakSolutionData hΩ B D

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul
 import DifferentialGeometry.Geometry.Connection.ConnectionDifference
 
+
 noncomputable section
 
 open Bundle Manifold Set
@@ -65,14 +66,27 @@ theorem connectionDifference_koszul (g₁ g₀ : SmoothRiemannianMetric I M)
   rw [PDE.DeTurck.connectionDifference_apply (I := I) g₁ g₀ hY (X x)]
   unfold metricCovDeriv
   simp only [directionalDeriv_eq, ← hnXY, ← hnYX, ← hnXZ, ← hnZX, ← hnYZ, ← hnZY]
+  simp only [directionalDeriv_eq] at hK1
   rw [← tf_XY, ← tf_XZ, ← tf_YZ] at hK1
   have hlin : ∀ a b c : TangentSpace I x,
       g₁.inner x (a - b) c = g₁.inner x a c - g₁.inner x b c := fun a b c => by
-    simp [map_sub, ContinuousLinearMap.sub_apply]
+    simp [map_sub, sub_apply]
   rw [hlin, hlin, hlin] at hK1
-  rw [map_sub, ContinuousLinearMap.sub_apply, mul_sub]
+  rw [map_sub, sub_apply, mul_sub]
   rw [hK1]
   rw [g₁.symm x (Y x) nXZ, g₁.symm x (X x) nYZ, g₁.symm x (X x) nZY]
+  let dYZ : ℝ := (mfderiv I 𝓘(ℝ) (fun b => g₁.inner b (Y b) (Z b)) x) (X x)
+  let dXZ : ℝ := (mfderiv I 𝓘(ℝ) (fun b => g₁.inner b (X b) (Z b)) x) (Y x)
+  let dXY : ℝ := (mfderiv I 𝓘(ℝ) (fun b => g₁.inner b (X b) (Y b)) x) (Z x)
+  let pXY : ℝ := g₁.inner x nXY (Z x)
+  let pYX : ℝ := g₁.inner x nYX (Z x)
+  let pXZ : ℝ := g₁.inner x nXZ (Y x)
+  let pZX : ℝ := g₁.inner x nZX (Y x)
+  let pYZ : ℝ := g₁.inner x nYZ (X x)
+  let pZY : ℝ := g₁.inner x nZY (X x)
+  change (dYZ + dXZ - dXY + (pXY - pYX) - (pXZ - pZX) - (pYZ - pZY)) -
+      2 * pXY =
+    dYZ - pXY - pXZ + (dXZ - pYX - pYZ) - (dXY - pZX - pZY)
   ring
 
 def metricDiffCovDeriv (g₁ g₀ : SmoothRiemannianMetric I M)

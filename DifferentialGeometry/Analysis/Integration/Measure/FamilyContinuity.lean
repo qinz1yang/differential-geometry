@@ -45,9 +45,9 @@ private lemma density_cont
       simp [Units.smul_def]
       rfl
     rw [hexp]
-    refine continuousOn_finset_sum _ (fun σ _ ↦ ?_)
+    refine continuousOn_finsetSum _ (fun σ _ ↦ ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ ↦ ?_)
+    refine continuousOn_finsetProd _ (fun i _ ↦ ?_)
     exact hg x₀ (σ i) i
   exact Real.continuous_sqrt.comp_continuousOn hdet
 
@@ -184,7 +184,15 @@ private theorem chart_int_cont
     (by filter_upwards [self_mem_nhdsWithin] with s hs; exact hmeas s hs)
     (by filter_upwards [self_mem_nhdsWithin] with s hs; exact hbound s hs)
     hb_int hlim
-  simpa only [F, ρ, symm, target, μ] using hdct
+  change Tendsto
+    (fun s ↦ ∫ y in (extChartAt I α).target,
+      f s ((extChartAt I α).symm y) * chartAtlasPOU I M α ((extChartAt I α).symm y) *
+        chartDensity (I := I) (g s) α ((extChartAt I α).symm y) ∂modelHaar)
+    (𝓝[K] t)
+    (𝓝 (∫ y in (extChartAt I α).target,
+      f t ((extChartAt I α).symm y) * chartAtlasPOU I M α ((extChartAt I α).symm y) *
+        chartDensity (I := I) (g t) α ((extChartAt I α).symm y) ∂modelHaar))
+  exact hdct
 
 theorem integral_family_cont
     [T2Space M] [CompactSpace M]
@@ -205,7 +213,7 @@ theorem integral_family_cont
     rw [← continuousOn_univ]
     exact hf.comp (continuousOn_const.prodMk continuousOn_id)
       (fun x _ ↦ ⟨ht, Set.mem_univ x⟩)
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let J : M → Real → Real := fun α t ↦
     ∫ y in (extChartAt I α).target,
       f t ((extChartAt I α).symm y) *
@@ -216,7 +224,7 @@ theorem integral_family_cont
     simpa only [J] using
       chart_int_cont (I := I) (M := M) hK hg hf α
   have hsum : ContinuousOn (fun t ↦ ∑ α ∈ S, J α t) K := by
-    exact continuousOn_finset_sum S (fun α _ ↦ hJ α)
+    exact continuousOn_finsetSum S (fun α _ ↦ hJ α)
   refine hsum.congr ?_
   intro t ht
   change (∫ x, f t x ∂(riemannianMeasureFamily (I := I) (M := M) g t)) =

@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -37,7 +36,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-noncomputable def chartAtlasPOU_activeFinset
+noncomputable def chartAtlasPOUActiveFinset
     (I : ModelWithCorners ℝ E H)
     (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] : Finset M :=
@@ -45,16 +44,16 @@ noncomputable def chartAtlasPOU_activeFinset
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma mem_chartAtlasPOU_activeFinset_iff (α : M) :
-    α ∈ chartAtlasPOU_activeFinset I M ↔
+    α ∈ chartAtlasPOUActiveFinset I M ↔
       (Function.support (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)).Nonempty := by
   classical
-  unfold chartAtlasPOU_activeFinset
+  unfold chartAtlasPOUActiveFinset
   exact Set.Finite.mem_toFinset _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartAtlasPOU_eq_zero_of_notMem_activeFinset
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M) :
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M) :
     ∀ x : M, ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0 := by
   classical
   intro x
@@ -86,7 +85,7 @@ lemma tensorChartComponentScalar_eq_zero_of_pou_zero
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma eLpNorm_tensorChartComponentScalar_eq_zero_of_inactive
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -132,7 +131,7 @@ private lemma perAlphaConstant_bound
 
 private noncomputable def totalActiveConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_activeFinset I M,
+  ∑ α ∈ chartAtlasPOUActiveFinset I M,
     perAlphaConstant (I := I) (M := M) g r s α
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -147,21 +146,21 @@ private lemma totalActiveConstant_nonneg
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma perAlphaConstant_le_totalActiveConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {α : M}
-    (hα : α ∈ chartAtlasPOU_activeFinset I M) :
+    (hα : α ∈ chartAtlasPOUActiveFinset I M) :
     perAlphaConstant (I := I) (M := M) g r s α ≤
       totalActiveConstant (I := I) (M := M) g r s := by
   classical
   unfold totalActiveConstant
   have h_split :
-      ∑ β ∈ chartAtlasPOU_activeFinset I M,
+      ∑ β ∈ chartAtlasPOUActiveFinset I M,
         perAlphaConstant (I := I) (M := M) g r s β =
         perAlphaConstant (I := I) (M := M) g r s α +
-        ∑ β ∈ (chartAtlasPOU_activeFinset I M).erase α,
+        ∑ β ∈ (chartAtlasPOUActiveFinset I M).erase α,
           perAlphaConstant (I := I) (M := M) g r s β := by
     rw [← Finset.sum_erase_add _ _ hα, add_comm]
   rw [h_split]
   have h_rest_nn :
-      0 ≤ ∑ β ∈ (chartAtlasPOU_activeFinset I M).erase α,
+      0 ≤ ∑ β ∈ (chartAtlasPOUActiveFinset I M).erase α,
             perAlphaConstant (I := I) (M := M) g r s β :=
     Finset.sum_nonneg (fun β _ =>
       perAlphaConstant_nonneg (I := I) (M := M) g r s β)
@@ -184,7 +183,7 @@ private theorem tensorChartComponentScalar_eLpNorm_le_smoothCcTensor
   refine ⟨totalActiveConstant (I := I) (M := M) g r s,
     totalActiveConstant_nonneg (I := I) (M := M) g r s, ?_⟩
   intro S α Idx Jdx
-  by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
+  by_cases hα : α ∈ chartAtlasPOUActiveFinset I M
   · have h_per :
         eLpNorm (tensorChartComponentScalar (I := I) (M := M)
             g r s S α Idx Jdx) 2
@@ -206,11 +205,11 @@ private theorem tensorChartComponentScalar_eLpNorm_le_smoothCcTensor
           ENNReal.ofReal (totalActiveConstant (I := I) (M := M) g r s) *
             ENNReal.ofReal
               (tensorL2Norm (I := I) (M := M) g r s S.toFun) :=
-      mul_le_mul_of_nonneg_right h_const_le (by exact zero_le _)
+      mul_le_mul_of_nonneg_right h_const_le (by exact zero_le)
     exact h_per.trans h_envelope_le
   · rw [eLpNorm_tensorChartComponentScalar_eq_zero_of_inactive
       (I := I) (M := M) g r s hα S Idx Jdx]
-    exact zero_le _
+    exact zero_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma tensorL2Norm_eq_norm_toCcTensor
@@ -244,7 +243,7 @@ private lemma coe_nnnorm_eq_ofReal_norm_scalar {X : Type*} [SeminormedAddCommGro
     (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -294,7 +293,7 @@ theorem tensorChartComponentScalar_eLpNorm_le
         ENNReal.ofReal C₀ * (‖S‖₊ : ℝ≥0∞) :=
     mul_le_mul_of_nonneg_left
       (ofReal_tensorL2Norm_le_norm_ennreal (I := I) (M := M) g r s S)
-      (by exact zero_le _)
+      (by exact zero_le)
   exact h_smoothCc'.trans h_rhs_le
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -351,7 +350,7 @@ private lemma sqrt_g_inner_gradFun_eq_zero_of_scalar_zero
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma eLpNorm_sqrt_g_inner_gradFun_eq_zero_of_inactive
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -403,7 +402,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma wkpNormChart_tensorChartComponentScalar_eq_zero_of_inactive
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :

@@ -28,7 +28,7 @@ theorem gronwall_zero_on {a c K : ℝ} (hac : a < c)
     ⟨hs.1, lt_of_lt_of_le hs.2 ht.2⟩
   have hlim : Tendsto energy (nhdsWithin a (Ioo a t)) (𝓝 0) :=
     hlimc.mono_left (nhdsWithin_mono a hsub)
-  haveI : (nhdsWithin a (Ioo a t)).NeBot := by
+  have : (nhdsWithin a (Ioo a t)).NeBot := by
     rw [nhdsWithin_Ioo_eq_nhdsGT htpos]
     infer_instance
   have heps : Tendsto (fun ε : ℝ => ε) (nhdsWithin a (Ioo a t)) (𝓝 a) :=

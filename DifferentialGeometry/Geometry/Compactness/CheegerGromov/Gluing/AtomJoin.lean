@@ -165,7 +165,8 @@ theorem exists_joint_normal_metric_transition_limit
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp htail
   let tau : Nat → Nat := fun k => k + N
   have htau : StrictMono tau := by
-    simpa only [tau] using strictMono_id.add_const N
+    intro a b hab
+    simpa only [tau, Nat.add_lt_add_iff_right] using hab
   have hgeom (k : Nat) (gamma : LiveSlot L pb r) :=
     hN (tau k) (by simpa only [tau] using Nat.le_add_left N k) gamma
   have hOvl k gamma := (hgeom k gamma).1
@@ -220,7 +221,9 @@ theorem exists_joint_normal_metric_transition_limit
         simpa only [PointedRiemannianSeq.subseq, f] using
           (contDiffOn_pi.mp (hsmooth k) gamma))
       (fun k => by
-        simpa only [PointedRiemannianSeq.subseq, f] using hOvl k gamma)
+        intro z hz
+        have hov := hOvl k gamma z hz
+        exact ⟨hov.1, hov.2⟩)
       (fun k => by
         simpa only [PointedRiemannianSeq.subseq, f] using hcoord k gamma)
     simpa only [PointedRiemannianSeq.subseq, f] using hbound

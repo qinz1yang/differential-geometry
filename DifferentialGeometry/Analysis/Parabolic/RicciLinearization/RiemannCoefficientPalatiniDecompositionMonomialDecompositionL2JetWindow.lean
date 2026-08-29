@@ -24,7 +24,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -52,8 +51,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -101,7 +100,7 @@ lemma toModel_unitValue_symmS_abs_le (g₀ : SmoothRiemannianMetric I M)
           (T + domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T) from rfl]
       rw [ccTensorUnitValueSection_smul, ccTensorUnitValueSection_add]
     rw [h1, Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_add,
-      ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.add_apply,
+      smul_apply, add_apply,
       smul_eq_mul,
       toModel_ccTensorUnitValueSection_domDomCongrSection_swap (I := I) (M := M) g₀ T y v w]
     have h2 : ∀ (p q' : TangentSpace I y),
@@ -145,7 +144,6 @@ private lemma curvatureDecompositionSlotPerm_natAdd (σ : Equiv.Perm (Fin 4)) (k
     armPairTraceSlotPerm6 (Fin.natAdd 4 k') = (![0, 2] : Fin 2 → Fin 6) k') k
 
 
-set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -169,7 +167,7 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
       (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
         (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S)).toSection x) G with hY_def
-  have hYval : ∀ w : Fin 6 → TangentSpace I x,
+  have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
         Tensor0SSpace.toModel G
             (fun j : Fin 4 => w ((![1, 3, 4, 5] : Fin 4 → Fin 6) (σ j))) *
@@ -180,7 +178,7 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
         (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
           (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S)).toSection x) G) =
         ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr (curvatureDecompositionSlotPerm σ)
+          tensorRSDomDomCongr (curvatureDecompositionSlotPerm σ)
             ((slotExtendIter (I := I) (M := M) g₀ 0 2 4 S).toSection x)) G) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (curvatureDecompositionSlotPerm σ)
@@ -208,11 +206,15 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀ S) σ).toSection x) G) v =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel (𝕜 := ℝ) (ccTensorUnitValueSection (I := I) (M := M) g₀ S x)
-            ![(smoothOrthoFrame (I := I) g₁ x a x : E),
-              (smoothOrthoFrame (I := I) g₁ x b x : E)] *
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x b x)] *
           Tensor0SSpace.toModel (𝕜 := ℝ) G
-            (fun i => (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-              (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E)) v) : Fin 4 → E)
+            (fun i => (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x a x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x b x)) v) : Fin 4 → E)
               (σ i)) := by
     rw [show ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (curvatureActionMonomialCoeffField (I := I) (M := M) g₀ g₁
@@ -231,11 +233,14 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
             (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S))).toSection x) G) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Y
-          (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-                (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-                  (fun j => (v j : E)))))) := by
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x a x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x a x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x b x))
+                (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₁ x b x)) v)))) := by
     rw [show ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 4 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
@@ -257,9 +262,10 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
       (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel Y)
-      (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-          (fun j => (v j : E))))]
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₁ x b x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₁ x b x)) v))]
   rw [hLHS, hRHS]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b _ => ?_
@@ -269,13 +275,18 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
   · refine congrArg _ ?_
     funext i
     have htuple : ∀ k : Fin 4,
-        (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : E))
-          (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E)) v) : Fin 4 → E) k =
-        ((Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₁ x a x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : TangentSpace I x) : E)
-                (fun j => (v j : E)))))) : Fin 6 → E)
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x a x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x b x)) v) : Fin 4 → E) k =
+        ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x a x))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₁ x a x))
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₁ x b x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₁ x b x)) v)))) : Fin 6 → E)
           ((![1, 3, 4, 5] : Fin 4 → Fin 6) k) := by
       intro k
       fin_cases k <;> rfl
@@ -654,7 +665,7 @@ private theorem iteratedCovGrad_normSq_tameEnvelope_of_gridWindow_rank42
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    (MeasureTheory.integrable_finset_sum _
+    (MeasureTheory.integrable_finsetSum _
       (fun k hk => (hKg P hPball k).1)).const_mul C
   have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 4 (2 + i)
     (iteratedCovGrad (I := I) g₀ 4 2 i V)
@@ -667,7 +678,7 @@ private theorem iteratedCovGrad_normSq_tameEnvelope_of_gridWindow_rank42
     hF_int hpt'
   refine le_trans key ?_
   rw [MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum _ (fun k hk => (hKg P hPball k).1)]
+    MeasureTheory.integral_finsetSum _ (fun k hk => (hKg P hPball k).1)]
   have hsum_le : ∑ k ∈ Finset.range (i + 2),
         (∫ x, ∑ n ∈ Finset.range (k + 1),
             ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -786,7 +797,7 @@ theorem exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbation
           (ccTensor02Symm (I := I) (M := M) g₀ T)) σ)
       (fun x => hpt (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
         (convexPerturbation (I := I) g₀ T 0 s) T htie hδ_le' hδ0 hδP hδ hPS i x)
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · let _ : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 4 2 i
         (curvatureActionMonomialCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)

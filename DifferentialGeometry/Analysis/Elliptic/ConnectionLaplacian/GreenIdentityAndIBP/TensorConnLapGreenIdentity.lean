@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -64,9 +63,11 @@ theorem tensorInnerPointwise_covDeriv_eq_tensorInnerPointwise_0s_lowered_two
     (W S : SmoothCcTensor g 0 2) (x : M) (a b : TangentSpace I x) :
     tensorInnerPointwise (I := I) (M := M) g 0 2 x
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g 0 2 W x a))
+          (tensorCovDerivAt (I := I) (M := M) g 0 2 W x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x a)))
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g 0 2 S x b)) =
+          (tensorCovDerivAt (I := I) (M := M) g 0 2 S x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x b))) =
       covariantTensorInnerPointwise (I := I) (M := M) (0 + 2) g x
         (Tensor0SSpace.toModel
           (loweredCovDerivAt (I := I) (M := M) g 0 2 W.toSection x a))
@@ -75,13 +76,15 @@ theorem tensorInnerPointwise_covDeriv_eq_tensorInnerPointwise_0s_lowered_two
   unfold tensorInnerPointwise
   rw [show lowerAllUpperIndices (I := I) (M := M) g 0 2 x
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g 0 2 W x a)) =
+          (tensorCovDerivAt (I := I) (M := M) g 0 2 W x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x a))) =
       Tensor0SSpace.toModel
         (loweredCovDerivAt (I := I) (M := M) g 0 2 W.toSection x a) from
     (loweredCovDerivAt_eq_lower_tensorCovDerivAt (I := I) (M := M) g W.toSection x a).symm]
   rw [show lowerAllUpperIndices (I := I) (M := M) g 0 2 x
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g 0 2 S x b)) =
+          (tensorCovDerivAt (I := I) (M := M) g 0 2 S x
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x b))) =
       Tensor0SSpace.toModel
         (loweredCovDerivAt (I := I) (M := M) g 0 2 S.toSection x b) from
     (loweredCovDerivAt_eq_lower_tensorCovDerivAt (I := I) (M := M) g S.toSection x b).symm]
@@ -122,20 +125,30 @@ theorem tensorCovDerivPointwiseInner_eq_lowered_orthoFrame_diag_sum_two
     · intro j _ hjk
       rw [if_neg (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
-      Module.finrank ℝ E := by
+      Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]
+    rfl
+  set tangentFrame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I b) :=
+    basisOfLinearIndependentOfCardEqFinrank hB_li hcard with htangentFrame_def
   set frame : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
-    basisOfLinearIndependentOfCardEqFinrank hB_li hcard with hframe_def
-  have hframe_eq : ∀ i, frame i = B i b := by
+    tangentFrame.map
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).toLinearEquiv with hframe_def
+  have hframe_eq : ∀ i, frame i =
+      tangentSpaceModelContinuousLinearEquiv (I := I) b (B i b) := by
     intro i
     rw [hframe_def]
-    change (basisOfLinearIndependentOfCardEqFinrank hB_li hcard :
-        Fin (Module.finrank ℝ E) → E) i = B i b
+    rw [Module.Basis.map_apply, htangentFrame_def]
+    change tangentSpaceModelContinuousLinearEquiv (I := I) b
+        ((basisOfLinearIndependentOfCardEqFinrank hB_li hcard :
+          Fin (Module.finrank ℝ E) → TangentSpace I b) i) = _
     rw [coe_basisOfLinearIndependentOfCardEqFinrank]
   have hframe_orth : ∀ i j,
-      g.inner b (frame i) (frame j) = if i = j then (1 : ℝ) else 0 := by
+      modelInnerAt (I := I) (M := M) g b (frame i) (frame j) =
+        if i = j then (1 : ℝ) else 0 := by
     intro i j
-    rw [hframe_eq i, hframe_eq j]
+    rw [hframe_eq i, hframe_eq j, modelInnerAt_apply,
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply,
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]
     exact hB_orth i j
   rw [tensorCovDerivPointwiseInner_eq_orthoFrame_diag_sum
     (I := I) (M := M) g 0 2 T v b frame hframe_orth]

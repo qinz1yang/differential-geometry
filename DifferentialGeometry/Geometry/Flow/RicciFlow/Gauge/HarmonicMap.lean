@@ -22,6 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
 theorem hmf_inverse_DT
     (g_RF : ℝ → SmoothRiemannianMetric I M)

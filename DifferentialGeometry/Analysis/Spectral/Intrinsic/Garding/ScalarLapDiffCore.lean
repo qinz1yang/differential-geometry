@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -67,7 +66,7 @@ private theorem traceFib_diag
         (cometricDoubleTraceFib (I := I) g 0 x D)
         (fun i : Fin 0 => Fin.elim0 i) =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel D
+        Tensor0SSpace.eval D
           (vec2 (I := I)
             (smoothOrthoFrame (I := I) g x i x)
             (smoothOrthoFrame (I := I) g x i x)) := by
@@ -78,6 +77,7 @@ private theorem traceFib_diag
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) (fun i : Fin 0 => Fin.elim0 i)]
   refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← Tensor0SSpace.toModel_apply_tangent]
   congr 1
   funext a
   fin_cases a <;> rfl
@@ -89,7 +89,7 @@ private theorem lapTrace_diag
     (D : Tensor0SSpace 2 I x) :
     scalarLapTraceAt (I := I) g D =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel D
+        Tensor0SSpace.eval D
           (vec2 (I := I)
             (smoothOrthoFrame (I := I) g x i x)
             (smoothOrthoFrame (I := I) g x i x)) := by
@@ -107,15 +107,15 @@ private theorem lapTrace_diag
     have hp : g.inner x (∑ i, c i • frame i) (frame j) = 0 := by
       rw [hc]
       simp
-    rw [map_sum, ContinuousLinearMap.sum_apply,
+    rw [map_sum, sum_apply,
       Finset.sum_eq_single j] at hp
     · rw [ContinuousLinearMap.map_smul,
-        ContinuousLinearMap.smul_apply, horth j j,
+        smul_apply, horth j j,
         if_pos rfl, smul_eq_mul, mul_one] at hp
       exact hp
     · intro i _ hij
       rw [ContinuousLinearMap.map_smul,
-        ContinuousLinearMap.smul_apply, horth i j,
+        smul_apply, horth i j,
         if_neg (by simpa using hij), smul_zero]
     · intro hj
       exact absurd (Finset.mem_univ j) hj
@@ -124,7 +124,7 @@ private theorem lapTrace_diag
       (by rw [Fintype.card_fin]; rfl)
   have hbasis (i) : basis i = frame i := by
     simp only [basis, coe_basisOfLinearIndependentOfCardEqFinrank]
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     constructor <;>
@@ -136,6 +136,7 @@ private theorem lapTrace_diag
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_eq_single i]
   · rw [identityInvMetric_apply_self, one_mul]
+    rw [← Tensor0SSpace.toModel_apply_tangent]
     rfl
   · intro j _ hji
     rw [identityInvMetric,
@@ -149,11 +150,11 @@ private theorem trace_eq_lap
     (a : SmoothRiemannianMetric I M) (x : M)
     (D Hs : Tensor0SSpace 2 I x)
     (hdiag : ∀ i : Fin (Module.finrank ℝ E),
-      Tensor0SSpace.toModel D
+      Tensor0SSpace.eval D
           (vec2 (I := I)
             (smoothOrthoFrame (I := I) a x i x)
             (smoothOrthoFrame (I := I) a x i x)) =
-        Tensor0SSpace.toModel Hs
+        Tensor0SSpace.eval Hs
           (vec2 (I := I)
             (smoothOrthoFrame (I := I) a x i x)
             (smoothOrthoFrame (I := I) a x i x))) :
@@ -175,7 +176,7 @@ private theorem lift_unit {x : M} (c : ℝ) :
           (unitZeroSec (I := I) (M := M) x))
         (fun i : Fin 0 => Fin.elim0 i) = c := by
   rw [Tensor0SSpace.toRS0_apply]
-  have hu : tensor0SSpace_evalScalar x
+  have hu : (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
       (unitZeroSec (I := I) (M := M) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
@@ -195,33 +196,52 @@ private theorem one0_eq_unit (x : M) :
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro slots
-  rw [Tensor0SField.one0_apply, unitZeroSec_apply]
-  change (1 : ℝ) =
-    ContinuousMultilinearMap.constOfIsEmpty ℝ
-      (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ) slots
-  rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
+  have hone : Tensor0SSpace.toModel
+      (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
+        (I := I) (M := M) (∞ : WithTop ℕ∞) x) slots = (1 : ℝ) :=
+    Tensor0SField.one0_apply (𝕜 := ℝ) (E := E) (H := H)
+      (I := I) (M := M) (∞ : WithTop ℕ∞) x slots
+  have hunit : Tensor0SSpace.toModel
+      (unitZeroSec (I := I) (M := M) x) slots = (1 : ℝ) := by
+    calc
+      _ = Tensor0SSpace.toModel
+          (Tensor0SSpace.ofModel (I := I) (x := x)
+            (ContinuousMultilinearMap.constOfIsEmpty ℝ
+              (fun _ : Fin 0 => E) (1 : ℝ))) slots :=
+        congrArg
+          (fun T : Tensor0SSpace 0 I x => Tensor0SSpace.toModel T slots)
+          (unitZeroSec_apply (I := I) (M := M) x)
+      _ = ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => E) (1 : ℝ) slots :=
+        congrArg
+          (fun f : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => E) ℝ => f slots)
+          (Tensor0SSpace.toModel_ofModel (I := I) (x := x)
+            (ContinuousMultilinearMap.constOfIsEmpty ℝ
+              (fun _ : Fin 0 => E) (1 : ℝ)))
+      _ = 1 := by
+        rw [ContinuousMultilinearMap.constOfIsEmpty_apply]
+  exact hone.trans hunit.symm
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem grad_cc_apply
     (g : SmoothRiemannianMetric I M) (U : SmoothCcTensor g 0 0)
     (x : M) (X : TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
           (iteratedCovGrad (I := I) (M := M) g 0 0 1 U).toSection x)
           (unitZeroSec (I := I) (M := M) x))
         (fun _ : Fin 1 => X) =
-      duSec (I := I)
-        (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection)
-        (TensorRSField.scalar0_smooth
-          (n := (∞ : WithTop ℕ∞)) U.toSection) x
-        (fun _ : Fin 1 => X) := by
+      mvfderiv (I := I)
+        (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection) x X := by
   let f := TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection
   let hf := TensorRSField.scalar0_smooth
     (n := (∞ : WithTop ℕ∞)) U.toSection
   let A : Tensor0SField ∞ 0 (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) :=
     Tensor0SField.fromScalarField ∞ f hf
   have hunit (y : M) :
-      tensor0SSpace_evalScalar y (unitZeroSec (I := I) (M := M) y) = 1 := by
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) y)
+        (unitZeroSec (I := I) (M := M) y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
       Fin.elim0 = 1
@@ -242,34 +262,34 @@ private theorem grad_cc_apply
     change Tensor0SField.toScalarField ∞ A y = f y
     exact congrFun (Tensor0SField.toScalarField_fromScalarField ∞ f hf) y
   rw [iteratedCovGrad_succ, iteratedCovGrad_zero]
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 0 U x
+  rw [covGrad_toSection_apply_natural (I := I) (M := M) g 0 0 U x
     (unitZeroSec (I := I) (M := M) x) (fun _ : Fin 1 => X)]
   rw [tensorCovDerivAt_def,
     tensorRSCovariantDerivative_zeroS_unit_eval, hsection,
-    Tensor0SNabla.tensor0SCovariantDerivative_apply_zero, hscalar,
-    duSec_apply, differential1FormFun_apply_eq_extDerivFun]
+    Tensor0SNabla.tensor0SCovariantDerivative_apply_zero, hscalar]
   change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm
-        (extDerivFun (I := I) f x X)) = _
+        (mvfderiv (I := I) f x X)) = _
   rw [ContinuousLinearEquiv.apply_symm_apply]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem grad2_cc_diag
     (g : SmoothRiemannianMetric I M) (U : SmoothCcTensor g 0 0)
     (B : ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) (x : M) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
           (iteratedCovGrad (I := I) (M := M) g 0 0 2 U).toSection x)
           (unitZeroSec (I := I) (M := M) x))
         (vec2 (I := I) (B x) (B x)) =
-      hessianSec (I := I) (LeviCivita (I := I) g)
+      Tensor0SSpace.eval (hessianSec (I := I) (LeviCivita (I := I) g)
         (by
           simpa [LeviCivita] using
             (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
               (I := I) (M := M) g))
         (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection)
         (TensorRSField.scalar0_smooth
-          (n := (∞ : WithTop ℕ∞)) U.toSection) x
+          (n := (∞ : WithTop ℕ∞)) U.toSection) x)
         (vec2 (I := I) (B x) (B x)) := by
   let f := TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection
   let hf := TensorRSField.scalar0_smooth
@@ -307,7 +327,8 @@ private theorem grad2_cc_diag
     secondRS_scalar (I := I) (M := M) g hcov hf B x]
   rw [hslots, Tensor0SSpace.toRS0_apply]
   have hunit :
-      tensor0SSpace_evalScalar x (unitZeroSec (I := I) (M := M) x) = 1 := by
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+        (unitZeroSec (I := I) (M := M) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
       Fin.elim0 = 1
@@ -318,14 +339,16 @@ private theorem grad2_cc_diag
         (hessianSec (I := I) (LeviCivita (I := I) g) hcov f hf x
           (vec2 (I := I) (B x) (B x)))) = _
   rw [ContinuousLinearEquiv.apply_symm_apply]
+  rfl
 
+omit [SigmaCompactSpace M] in
 theorem scalarLapDiff_eq
     (q h : SmoothRiemannianMetric I M) (U : SmoothCcTensor q 0 0) (x : M) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
         (scalarLapDiffCc (I := I) q h U).toSection x =
-      Δ_g (I := I) h ⟨_, (TensorRSField.scalar0_smooth
+      ΔG (I := I) h ⟨_, (TensorRSField.scalar0_smooth
             (n := (∞ : WithTop ℕ∞)) U.toSection)⟩ x -
-        Δ_g (I := I) q ⟨_, (TensorRSField.scalar0_smooth
+        ΔG (I := I) q ⟨_, (TensorRSField.scalar0_smooth
             (n := (∞ : WithTop ℕ∞)) U.toSection)⟩ x := by
   let f := TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection
   let hf := TensorRSField.scalar0_smooth
@@ -340,11 +363,11 @@ theorem scalarLapDiff_eq
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) q)
-  have hmch : IsMetricCompatible_gen (I := I)
+  have hmch : IsMetricCompatibleGen (I := I)
       (LeviCivita (I := I) h) h := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) h)
-  have hmcq : IsMetricCompatible_gen (I := I)
+  have hmcq : IsMetricCompatibleGen (I := I)
       (LeviCivita (I := I) q) q := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) q)
@@ -373,10 +396,10 @@ theorem scalarLapDiff_eq
         scalarLapTraceAt (I := I) a Hs := by
     apply trace_eq_lap (I := I) (M := M)
     intro i
-    simpa only [D2, Hs, hcovq, f, hf] using
-      (grad2_cc_diag (I := I) (M := M) q U
-        ⟨smoothOrthoFrame (I := I) a x i,
-          smoothOrthoFrame_smooth (I := I) a x i⟩ x)
+    convert grad2_cc_diag (I := I) (M := M) q U
+      ⟨smoothOrthoFrame (I := I) a x i,
+        smoothOrthoFrame_smooth (I := I) a x i⟩ x using 1 <;>
+      rfl
   have hconn :
       Tensor0SSpace.toModel
           (cometricDoubleTraceFib (I := I) h 0 x CD)
@@ -385,7 +408,7 @@ theorem scalarLapDiff_eq
     apply trace_eq_lap (I := I) (M := M)
     intro i
     dsimp only [CD, D1, Corr]
-    change
+    change Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           connectionDifferenceFib (I := I) h q x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
@@ -394,13 +417,14 @@ theorem scalarLapDiff_eq
         (vec2 (I := I)
           (smoothOrthoFrame (I := I) h x i x)
           (smoothOrthoFrame (I := I) h x i x)) =
-        connectionDifferenceOutput (I := I)
+        Tensor0SSpace.eval (connectionDifferenceOutput (I := I)
           (CovariantDerivative.difference
             (LeviCivita (I := I) h) (LeviCivita (I := I) q) x)
-          (duSec (I := I) f hf x)
+          (duSec (I := I) f hf x))
           (vec2 (I := I)
             (smoothOrthoFrame (I := I) h x i x)
             (smoothOrthoFrame (I := I) h x i x))
+    conv_lhs => rw [Tensor0SSpace.eval_eq]
     rw [connectionDifferenceFib_apply_eval]
     rw [show vec2 (I := I)
           (smoothOrthoFrame (I := I) h x i x)
@@ -410,7 +434,7 @@ theorem scalarLapDiff_eq
           (smoothOrthoFrame (I := I) h x i x)
           (smoothOrthoFrame (I := I) h x i x) 1 =
         smoothOrthoFrame (I := I) h x i x by simp only [vec2, ite_self]]
-    change Tensor0SSpace.toModel D1
+    change Tensor0SSpace.eval D1
         (fun _ : Fin 1 => connectionDifference (I := I) h q x
           (smoothOrthoFrame (I := I) h x i x)
           (smoothOrthoFrame (I := I) h x i x)) = _
@@ -420,6 +444,9 @@ theorem scalarLapDiff_eq
         (smoothOrthoFrame (I := I) h x i x))]
     rw [← connectionDifference_eq_difference (I := I) q h]
     rw [connectionDifferenceOutput_apply]
+    rw [duSec_apply]
+    conv_rhs => rw [Tensor0SSpace.eval_eq]
+    rw [differential1FormFun_apply_eq_mvfderiv]
     congr 2
   rw [TensorRSField.scalar0, Tensor0SField.toScalarField,
     TensorRSField.rs0_apply, one0_eq_unit (I := I) (M := M)]

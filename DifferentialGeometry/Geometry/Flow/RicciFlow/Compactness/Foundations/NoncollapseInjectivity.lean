@@ -125,9 +125,9 @@ private lemma cgt_quarter {s : Real} (hs : 0 < s) :
     s < (5 * s) / 4 := by
   nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-noncomputable def flowInj_of_vol
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+noncomputable def flowInjOfVol
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) (X.atZero (I := I)))
     (hconn : ∀ i : Nat,
@@ -227,37 +227,37 @@ noncomputable def flowInj_of_vol
   intro i
   refine ⟨hρ, ?_⟩
   intro hcomplete'
-  letI : TopologicalSpace (Y.obj i).M := (Y.obj i).topology
-  letI : ChartedSpace H (Y.obj i).M := (Y.obj i).charted
-  letI : IsManifold I ∞ (Y.obj i).M := (Y.obj i).smooth
-  letI : IsManifold I 1 (Y.obj i).M :=
+  let : TopologicalSpace (Y.obj i).M := (Y.obj i).topology
+  let : ChartedSpace H (Y.obj i).M := (Y.obj i).charted
+  let : IsManifold I ∞ (Y.obj i).M := (Y.obj i).smooth
+  let : IsManifold I 1 (Y.obj i).M :=
     IsManifold.of_le (I := I) (M := (Y.obj i).M) (n := ∞) (by decide)
-  letI : T2Space (Y.obj i).M := (Y.obj i).t2
-  letI : SigmaCompactSpace (Y.obj i).M := (Y.obj i).sigmaCompact
-  letI : T2Space (TangentBundle I (Y.obj i).M) :=
+  let : T2Space (Y.obj i).M := (Y.obj i).t2
+  let : SigmaCompactSpace (Y.obj i).M := (Y.obj i).sigmaCompact
+  let : T2Space (TangentBundle I (Y.obj i).M) :=
     (Y.obj i).t2TangentBundle
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : (Y.obj i).M => TangentSpace I y) :=
     (Y.obj i).riemBundle (I := I)
-  letI : (y : (Y.obj i).M) →
+  let : (y : (Y.obj i).M) →
       InnerProductSpace Real (TangentSpace I y) :=
     (Y.obj i).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : (Y.obj i).M => TangentSpace I y) :=
     (Y.obj i).riemBundle_cont (I := I)
-  letI : EMetricSpace (Y.obj i).M :=
+  let : EMetricSpace (Y.obj i).M :=
     (Y.obj i).emetricSpace (I := I)
-  haveI : IsRiemannianManifold I (Y.obj i).M := ⟨fun _ _ => rfl⟩
-  letI : CompleteSpace (Y.obj i).M :=
+  have : IsRiemannianManifold I (Y.obj i).M := ⟨fun _ _ => rfl⟩
+  let : CompleteSpace (Y.obj i).M :=
     MetricComplete.complete (I := I) (Y.obj i) hcomplete'
-  letI : ConnectedSpace (Y.obj i).M := hconn i
+  let : ConnectedSpace (Y.obj i).M := hconn i
   let hEnorm : ∀ (y : (Y.obj i).M) (w : TangentSpace I y),
       ‖w‖ₑ =
         ENNReal.ofReal (Real.sqrt ((Y.obj i).metric.inner y w w)) := by
     intro y w
-    simpa using
-      (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) (Y.obj i).metric y w)
+    with_unfolding_all
+      exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) (Y.obj i).metric y w
   have hsCtrl : s < rCtrl := by
     have hsle : s ≤ rCtrl / 10 := min_le_left _ _
     nlinarith
@@ -456,13 +456,9 @@ noncomputable def flowInj_of_vol
       ENNReal.ofReal V.kappa *
           ENNReal.ofReal V.radius ^ n ≤ Vlarge := by
     have hraw := (hvol.noncollapsed i).2
-    simpa only [Vlarge, Y, PointedFlowSeq.atZero,
-      PointedFlowSeq.atTime, PointedFlowData.atTime,
-      PointedFlowData.baseFlowBall, FlowMetricBall.volume,
-      FlowMetricBall.set, FlowMetricBall.setAt,
-      volumeMeasureOn_eq_metric,
-      DifferentialGeometry.PDE.RicciFlow.SolutionOn.family_metric,
-      riemannianEDistOf, n] using hraw
+    convert hraw using 1 <;>
+      with_unfolding_all
+        rfl
   have hcomb :
       (ENNReal.ofReal V.kappa * ENNReal.ofReal V.radius ^ n) *
           ENNReal.ofReal modelSmall ≤

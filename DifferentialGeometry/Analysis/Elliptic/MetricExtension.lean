@@ -365,9 +365,9 @@ private lemma rayleighInt_continuousOn
     funext p
     exact rayleighInt_eq_sum (I := I) g α p.1 p.2
   rw [h_eq]
-  refine continuousOn_finset_sum _ ?_
+  refine continuousOn_finsetSum _ ?_
   intro i _
-  refine continuousOn_finset_sum _ ?_
+  refine continuousOn_finsetSum _ ?_
   intro j _
   have h_fst : ContinuousOn (fun p : EuclN × EuclN => p.1)
       ((chartTargetEuclid (I := I) (M := M) α) ×ˢ (Set.univ : Set EuclN)) :=

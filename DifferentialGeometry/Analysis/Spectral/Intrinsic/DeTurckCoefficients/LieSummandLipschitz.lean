@@ -1038,33 +1038,33 @@ theorem chartLie_pou_lip
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
     (Q₀ : ℝ) (hQ₀_nn : 0 ≤ Q₀)
-    (hQ₀ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₀ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ a c : Fin (Module.finrank ℝ E),
           |chartGramOnE (I := I) (gSeq k) α a c (extChartAt I α b)| ≤ Q₀)
     (Q₁ : ℝ) (hQ₁_nn : 0 ≤ Q₁)
-    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
-    (hQ₁Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) gBase α a c)
               (extChartAt I α b)| ≤ Q₁)
     (Q₂ : ℝ) (hQ₂_nn : 0 ≤ Q₂)
-    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m a q : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) c
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a q)) (extChartAt I α b)| ≤ Q₂)
-    (hQ₂Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m a q : Fin (Module.finrank ℝ E),
@@ -1072,7 +1072,7 @@ theorem chartLie_pou_lip
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) gBase α a q)) (extChartAt I α b)| ≤ Q₂) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ i j : Fin (Module.finrank ℝ E),
@@ -1128,7 +1128,7 @@ theorem chartLie_pou_lip
     (1 * V + Q₀ * Cdw) + (1 * V + Q₀ * Cdw)) + 1
   have hn_nn : 0 ≤ n := by
     dsimp [n]
-    exact_mod_cast Nat.zero_le (Module.finrank ℝ E)
+    exact_mod_cast Nat.zero_le (n := Module.finrank ℝ E)
   have hP_nn : 0 ≤ P := add_nonneg hMΓ_nn hMΓb_nn
   have hR_nn : 0 ≤ R := add_nonneg hMdΓ_nn hMdΓb_nn
   have hD_nn : 0 ≤ D := mul_nonneg (mul_nonneg (sq_nonneg n) (sq_nonneg M_b)) hQ₁_nn

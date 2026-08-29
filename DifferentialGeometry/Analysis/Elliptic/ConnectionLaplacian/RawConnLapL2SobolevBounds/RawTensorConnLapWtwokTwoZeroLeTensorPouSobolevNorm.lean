@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter MeasureTheory
 open scoped Manifold Topology Bundle ContDiff BigOperators ENNReal NNReal
@@ -171,7 +170,7 @@ private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
       ENNReal.rpow_natCast]
     rw [show ((f x) ^ 2 : ℝ) = ‖f x‖ ^ 2 from by
       rw [Real.norm_eq_abs, sq_abs]]
-    rw [← ofReal_norm_eq_enorm]
+    rw [← ofReal_norm]
     rw [ENNReal.ofReal_pow (norm_nonneg _) 2]
   have h_step1 : (I ^ ((1 : ℝ) / 2)) ^ 2 = (I ^ ((1 : ℝ) / 2)) ^ ((2 : ℕ) : ℝ) := by
     rw [ENNReal.rpow_natCast]
@@ -232,7 +231,7 @@ private lemma tensorPouSobolevNormSqAgg_eq_finset_sum
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     tensorPouSobolevNormSqAgg (I := I) (M := M) g T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range 3,
@@ -247,7 +246,7 @@ private lemma tensorPouSobolevNormSqAgg_eq_finset_sum
               ∂(volume : Measure EuclN) := by
   classical
   unfold tensorPouSobolevNormSqAgg
-  rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+  rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
   intro α hα
   have hρ_zero : ∀ x : M,
       (chartAtlasPOU I M α : M → ℝ) x = 0 := fun x =>
@@ -278,7 +277,7 @@ private lemma wtwokTwoNorm_zero_rawTensorConnLap_collapsed
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     wtwokTwoNorm (I := I) (M := M) g 0
         (rawTensorConnLapSmooth (I := I) g r s T) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             eLpNorm
@@ -291,7 +290,7 @@ private lemma wtwokTwoNorm_zero_rawTensorConnLap_collapsed
     (rawTensorConnLapSmooth (I := I) g r s T)]
   rw [show (2 * 0 : ℕ) = 0 from by norm_num]
   rw [tsum_eq_sum
-    (s := chartAtlasPOU_finset (I := I) (M := M))
+    (s := chartAtlasPOUFinset (I := I) (M := M))
     (f := fun α : M =>
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
@@ -1328,7 +1327,7 @@ private lemma sq_eLpNorm_tensorChartComp_le_pou_summand
                       ((tensorChartComponentRaw (I := I) (M := M) g r s T α IJ'.1 IJ'.2)
                         ∘ (extChartAt I α).symm)
                       ((toEuclidean (E := E)).symm y)‖ ^ 2) ∂μ := by
-    refine lintegral_finset_sum' _ (fun IJ' _ => ?_)
+    refine lintegral_finsetSum' _ (fun IJ' _ => ?_)
     refine Finset.aemeasurable_fun_sum _ (fun j _ => ?_)
     exact pouWeightedSummand_aemeasurable_on_chartTarget
       (I := I) (M := M) g r s T α IJ' j
@@ -1351,7 +1350,7 @@ private lemma sq_eLpNorm_tensorChartComp_le_pou_summand
                     ((tensorChartComponentRaw (I := I) (M := M) g r s T α IJ'.1 IJ'.2)
                       ∘ (extChartAt I α).symm)
                     ((toEuclidean (E := E)).symm y)‖ ^ 2) ∂μ := by
-    refine lintegral_finset_sum' _ (fun j _ => ?_)
+    refine lintegral_finsetSum' _ (fun j _ => ?_)
     exact pouWeightedSummand_aemeasurable_on_chartTarget
       (I := I) (M := M) g r s T α IJ' j
   rw [h_swap_j]
@@ -1367,7 +1366,7 @@ theorem wtwokTwoNorm_zero_rawTensorConnLap_le_tensorPouSobolevNorm_one
           C * tensorPouSobolevNorm (I := I) (M := M) g 1 T := by
   classical
   set n := Module.finrank ℝ E with hn_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have h_each : ∀ α : M, ∃ K : ℝ, 0 ≤ K ∧
       ∀ (T : SmoothCcTensor g r s)
         (Idx : Fin r → Fin n)

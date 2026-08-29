@@ -101,13 +101,15 @@ theorem coreRetract_preserves_attachingRegion (k l : ℕ) (t : I) {p : StandardH
     (hp : p ∈ attachingRegion k l) :
     (coreRetract k l).homotopy (t, p) ∈ attachingRegion k l := by
   rcases p with ⟨x, y⟩
-  simpa [coreRetract, coreRetract_homotopy_apply] using hp
+  rw [coreRetract_homotopy_apply]
+  simpa [attachingRegion] using hp
 
 theorem cocoreRetract_preserves_beltRegion (k l : ℕ) (t : I) {p : StandardHandle k l}
     (hp : p ∈ beltRegion k l) :
     (cocoreRetract k l).homotopy (t, p) ∈ beltRegion k l := by
   rcases p with ⟨x, y⟩
-  simpa [cocoreRetract, cocoreRetract_homotopy_apply] using hp
+  rw [cocoreRetract_homotopy_apply]
+  simpa [beltRegion] using hp
 
 theorem coreRetract_swap (k l : ℕ) (t : I) (p : StandardHandle k l) :
     swap k l ((coreRetract k l).homotopy (t, p)) =

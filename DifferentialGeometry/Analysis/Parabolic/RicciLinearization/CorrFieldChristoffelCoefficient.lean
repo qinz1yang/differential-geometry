@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
@@ -315,8 +314,8 @@ private noncomputable def corrField_outerPairBilinChartα (g : SmoothRiemannianM
           (ContinuousLinearMap.flip Dd (chartBasisVecFiber (I := I) α l x))
       map_add' := fun X X' => by
         ext Y'
-        simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [add_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_add, smul_eq_mul]
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -325,8 +324,8 @@ private noncomputable def corrField_outerPairBilinChartα (g : SmoothRiemannianM
         ring
       map_smul' := fun c X => by
         ext Y'
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [smul_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul, RingHom.id_apply]
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -345,7 +344,7 @@ private lemma corrField_outerPairBilinChartα_apply (g : SmoothRiemannianMetric 
             Dd X' (chartBasisVecFiber (I := I) α l x)) := by
   rw [corrField_outerPairBilinChartα, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
+  simp only [sum_apply, smul_apply, smul_eq_mul,
     ContinuousLinearMap.flip_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -391,39 +390,52 @@ private lemma corrField_riemannBiContrFib_toModel_chartα
     Tensor0SSpace.toModel (riemannBiContrFib (I := I) g x D) v =
       2 * ∑ m, ∑ n, chartInvGramMatrix (I := I) g α x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g α x k l *
-          (g.inner x (riemannOp (LeviCivita (I := I) g) x (v 0)
-              (chartBasisVecFiber (I := I) α m x) (chartBasisVecFiber (I := I) α k x)) (v 1) *
-            Tensor0SSpace.toModel D
-              ![(chartBasisVecFiber (I := I) α n x : E),
-                (chartBasisVecFiber (I := I) α l x : E)])) := by
+          (g.inner x (riemannOp (LeviCivita (I := I) g) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+              (chartBasisVecFiber (I := I) α m x) (chartBasisVecFiber (I := I) α k x))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) *
+            Tensor0SSpace.eval D
+              ![chartBasisVecFiber (I := I) α n x,
+                chartBasisVecFiber (I := I) α l x])) := by
   classical
   set Bf : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun a => smoothOrthoFrame (I := I) g x a x with hBf
   have hBf_on : ∀ i j : Fin (Module.finrank ℝ E),
       g.inner x (Bf i) (Bf j) = if i = j then (1 : ℝ) else 0 := fun i j =>
     smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
-  rw [riemannBiContrFib, riemannBiContrFibFixedFrame_toModel]
+  change Tensor0SSpace.eval (riemannBiContrFib (I := I) g x D)
+      (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)) = _
+  rw [riemannBiContrFib, riemannBiContrFibFixedFrame_eval]
   refine congrArg (fun t => (2 : ℝ) * t) ?_
+  let Dt : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ :=
+    tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D
+  have hDt (p q : TangentSpace I x) :
+      (bilinFormToModel (TangentSpace I x)).symm Dt p q =
+        Tensor0SSpace.eval D ![p, q] := by
+    rw [bilinFormToModel_symm_apply]
+    rfl
   have hsummand : ∀ a b : Fin (Module.finrank ℝ E),
-      g.inner x (riemannOp (LeviCivita (I := I) g) x (v 0) (Bf a) (Bf b)) (v 1) *
-          Tensor0SSpace.toModel D ![(Bf a : E), (Bf b : E)] =
-        frameRiemannKernel (I := I) g x (v 0) (v 1) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I x)).symm (Tensor0SSpace.toModel D) (Bf a) (Bf b) :=
+      g.inner x (riemannOp (LeviCivita (I := I) g) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          (Bf a) (Bf b))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) *
+          Tensor0SSpace.eval D ![Bf a, Bf b] =
+        frameRiemannKernel (I := I) g x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) (Bf a) (Bf b) *
+          (bilinFormToModel (TangentSpace I x)).symm Dt (Bf a) (Bf b) :=
     fun a b => by
-      rw [frameRiemannKernel_apply (I := I) g x (v 0) (v 1) (Bf a) (Bf b),
-        bilinFormToModel_symm_apply (TangentSpace I x) (Tensor0SSpace.toModel D) (Bf a) (Bf b)]
-      rfl
+      rw [frameRiemannKernel_apply, hDt]
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsummand a b))]
   rw [corrField_double_frame_bilin_trace_chartα (I := I) g α hxbase
-    (frameRiemannKernel (I := I) g x (v 0) (v 1))
-    ((bilinFormToModel (TangentSpace I x)).symm (Tensor0SSpace.toModel D)) Bf hBf_on]
+    (frameRiemannKernel (I := I) g x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
+    ((bilinFormToModel (TangentSpace I x)).symm Dt) Bf hBf_on]
   refine Finset.sum_congr rfl (fun m _ => Finset.sum_congr rfl (fun n _ => ?_))
   refine congrArg (fun t => chartInvGramMatrix (I := I) g α x m n * t) ?_
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun l _ => ?_))
-  rw [frameRiemannKernel_apply,
-    bilinFormToModel_symm_apply (TangentSpace I x) (Tensor0SSpace.toModel D)
-      (chartBasisVecFiber (I := I) α n x) (chartBasisVecFiber (I := I) α l x)]
-  rfl
+  rw [frameRiemannKernel_apply, hDt]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -449,7 +461,7 @@ private lemma corrField_riemannChartLoweredScalar_metricPerturbationPath_jointCo
             (extChartAt I α p.1) *
           chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 m l)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-    refine contMDiffOn_finset_sum (fun m _ => ?_)
+    refine contMDiffOn_finsetSum (fun m _ => ?_)
     have hriem := corrField_metricPerturbationPath_chartRiemannTensor_jointContMDiffOn
       (I := I) g₀ T T' hδ hδ' α k i j m
     have hgram := corrField_metricPerturbationPath_chartGramMatrix_jointContMDiffOn
@@ -463,9 +475,9 @@ private lemma corrField_riemannChartLoweredScalar_metricPerturbationPath_jointCo
   set gs := metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2 with hgs
   rw [riemannOp_chartBasisVec_alpha_eq (I := I) gs α k i j hxgood]
   rw [map_sum]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun m _ => ?_)
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
   rw [g_inner_eq_chartGramMatrix_basis (I := I) gs α p.1 m l, mul_comm]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -478,16 +490,16 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
       x⟯)
     (α : M) (σ : Fin 2 → Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => Tensor0SSpace.toModel
+      (fun p : M × ℝ => Tensor0SSpace.eval
         (riemannBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1))
-        ![(chartBasisVecFiber (I := I) α (σ 0) p.1 : E),
-          (chartBasisVecFiber (I := I) α (σ 1) p.1 : E)])
+        ![chartBasisVecFiber (I := I) α (σ 0) p.1,
+          chartBasisVecFiber (I := I) α (σ 1) p.1])
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYbasis : ∀ n l : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => Tensor0SSpace.toModel (Y p.1)
-          ![(chartBasisVecFiber (I := I) α n p.1 : E), (chartBasisVecFiber (I := I) α l p.1 : E)])
+        (fun p : M × ℝ => Tensor0SSpace.eval (Y p.1)
+          ![chartBasisVecFiber (I := I) α n p.1, chartBasisVecFiber (I := I) α l p.1])
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro n l p₀ hp₀
     have hYon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -527,20 +539,18 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 k l *
           ((metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
               (riemannOp (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)) p.1
-                ((![(chartBasisVecFiber (I := I) α (σ 0) p.1 : E),
-                    (chartBasisVecFiber (I := I) α (σ 1) p.1 : E)] : Fin 2 → E) 0)
+                (chartBasisVecFiber (I := I) α (σ 0) p.1)
                 (chartBasisVecFiber (I := I) α m p.1) (chartBasisVecFiber (I := I) α k p.1))
-              ((![(chartBasisVecFiber (I := I) α (σ 0) p.1 : E),
-                    (chartBasisVecFiber (I := I) α (σ 1) p.1 : E)] : Fin 2 → E) 1) *
-            Tensor0SSpace.toModel (Y p.1)
-              ![(chartBasisVecFiber (I := I) α n p.1 : E),
-                (chartBasisVecFiber (I := I) α l p.1 : E)])))
+              (chartBasisVecFiber (I := I) α (σ 1) p.1) *
+            Tensor0SSpace.eval (Y p.1)
+              ![chartBasisVecFiber (I := I) α n p.1,
+                chartBasisVecFiber (I := I) α l p.1])))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine (contMDiffOn_const (c := (2 : ℝ))).mul ?_
-    refine contMDiffOn_finset_sum (fun m _ => contMDiffOn_finset_sum (fun n _ => ?_))
+    refine contMDiffOn_finsetSum (fun m _ => contMDiffOn_finsetSum (fun n _ => ?_))
     refine (metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T T' hδ hδ' α m n).mul
       ?_
-    refine contMDiffOn_finset_sum (fun k _ => contMDiffOn_finset_sum (fun l _ => ?_))
+    refine contMDiffOn_finsetSum (fun k _ => contMDiffOn_finsetSum (fun l _ => ?_))
     refine (metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T T' hδ hδ' α k l).mul
       ?_
     refine (corrField_riemannChartLoweredScalar_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
@@ -550,8 +560,14 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
   obtain ⟨hx, _hs⟩ := hp
   have hxbase : p.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hx
-  rw [corrField_riemannBiContrFib_toModel_chartα (I := I)
-    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxbase]
+  let vT : Fin 2 → TangentSpace I p.1 :=
+    ![chartBasisVecFiber (I := I) α (σ 0) p.1,
+      chartBasisVecFiber (I := I) α (σ 1) p.1]
+  let vE : Fin 2 → E :=
+    fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1 (vT i)
+  have h := corrField_riemannBiContrFib_toModel_chartα (I := I)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxbase (Y p.1) vE
+  simpa [vT, vE, Tensor0SSpace.toModel_apply_tangent] using h
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
@@ -567,7 +583,6 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
         (riemannBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   set gfam : ℝ → SmoothRiemannianMetric I M := fun s => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
     with hgfam
   set S := metricPerturbationPathDomain (δ := δ) (δ' := δ') with hS
@@ -575,7 +590,7 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -597,9 +612,9 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
     have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)⟩).2 σ =
-          Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
-            ![(chartBasisVecFiber (I := I) α (σ 0) q.1 : E),
-              (chartBasisVecFiber (I := I) α (σ 1) q.1 : E)] := by
+          Tensor0SSpace.eval (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
+            ![chartBasisVecFiber (I := I) α (σ 0) q.1,
+              chartBasisVecFiber (I := I) α (σ 1) q.1] := by
       intro q hqbase
       rw [continuousMultilinearMap_basis_repr]
       have hcoe : (e ⟨q.1,
@@ -608,11 +623,12 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
         (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hqbase) _).symm
       rw [hcoe]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1 hqbase
-        (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
+        (Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)))
         (fun j => (chartModelBasis E) (σ j))
-      rw [tensor0SSpace_continuousLinearEquiv_symm_apply] at happly
+      rw [Tensor0SSpace.toModel,
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
       rw [happly]
-      change Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
+      change Tensor0SSpace.eval (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
           (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
             ((chartModelBasis E) (σ j))) = _
       congr 1
@@ -680,22 +696,18 @@ private lemma corrField_raisedKoszulVec_metricPerturbationPath_chartα
     rw [cotangentToDualLinear_apply,
       DifferentialGeometry.Analysis.Sobolev.TensorHilbert.cotangentToDual_g0FlatCLM]
     rfl
-  rw [hraisedeq]
-  have hlocal := metricSharpChartLocal_eq_metricSharp (I := I) g₀ α (fun _ : M => cvx) hxbase
-  rw [← hlocal]
-  rw [metricSharpChartLocal]
+  rw [hraisedeq, metricSharp_eq_chartBasis_sum (I := I) g₀ α cvx hxbase]
   refine Finset.sum_congr rfl (fun p _ => ?_)
   congr 1
-  rw [metricSharpChartCoeff_def]
   refine Finset.sum_congr rfl (fun l _ => ?_)
   congr 1
   show cvx (chartBasisVecFiber (I := I) α l x) = _
   rw [hcvx]
   change g₁.inner x W (chartBasisVecFiber (I := I) α l x) = _
   rw [hW, DifferentialGeometry.PDE.DeTurck.connectionDifference_chartBasis_pair_eq_sum (I := I) g₁ g₀ α hx j k]
-  rw [map_sum, ContinuousLinearMap.sum_apply]
+  rw [map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun q _ => ?_)
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
   rw [g_inner_eq_chartGramMatrix_basis (I := I) g₁ α x q l]
 
 omit [BoundarylessManifold I M] in
@@ -711,7 +723,7 @@ private lemma corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
       x⟯)
     (α : M) (σ : Fin 2 → Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => (om p.1) (fun _ : Fin 1 =>
+      (fun p : M × ℝ => Tensor0SSpace.eval (om p.1) (fun _ : Fin 1 =>
         raisedKoszulVec (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1
           (chartBasisVecFiber (I := I) α (σ 0) p.1)
           (chartBasisVecFiber (I := I) α (σ 1) p.1)))
@@ -726,13 +738,13 @@ private lemma corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
                   (extChartAt I α p.1) -
                 chartChristoffel (I := I) g₀ α (σ 1) (σ 0) q (extChartAt I α p.1)) *
                 chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 q l)) *
-          (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α r p.1))
+          Tensor0SSpace.eval (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α r p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-    refine contMDiffOn_finset_sum (fun r _ => ?_)
+    refine contMDiffOn_finsetSum (fun r _ => ?_)
     refine ContMDiffOn.mul ?_ (omAppChartBasisVec_jointContMDiffOn (I := I) om α r)
-    refine contMDiffOn_finset_sum (fun l _ => ?_)
+    refine contMDiffOn_finsetSum (fun l _ => ?_)
     refine (corrField_chartInvGramMatrix_g0_jointContMDiffOn (I := I) g₀ α r l).mul ?_
-    refine contMDiffOn_finset_sum (fun q _ => ?_)
+    refine contMDiffOn_finsetSum (fun q _ => ?_)
     refine ContMDiffOn.mul ?_
       (corrField_metricPerturbationPath_chartGramMatrix_jointContMDiffOn (I := I) g₀ T T' hδ hδ' α q l)
     refine ContMDiffOn.sub ?_ ?_
@@ -748,8 +760,10 @@ private lemma corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
   rw [corrField_raisedKoszulVec_metricPerturbationPath_chartα (I := I) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxgood (σ 0) (σ 1)]
   set φ : TangentSpace I p.1 →L[ℝ] ℝ :=
-    continuousMultilinearCurryFin1 ℝ (TangentSpace I p.1) ℝ (om p.1) with hφ
-  have hφapply : ∀ v : TangentSpace I p.1, (om p.1) (fun _ : Fin 1 => v) = φ v := by
+    continuousMultilinearCurryFin1 ℝ (TangentSpace I p.1) ℝ
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 p.1 (om p.1)) with hφ
+  have hφapply : ∀ v : TangentSpace I p.1,
+      Tensor0SSpace.eval (om p.1) (fun _ : Fin 1 => v) = φ v := by
     intro v; rw [hφ, continuousMultilinearCurryFin1_apply]; rfl
   rw [hφapply]
   rw [map_sum]
@@ -773,7 +787,6 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
             raisedKoszulFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1) (om p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   set gfam : ℝ → SmoothRiemannianMetric I M := fun s => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
     with hgfam
   set S := metricPerturbationPathDomain (δ := δ) (δ' := δ') with hS
@@ -781,7 +794,7 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -807,7 +820,8 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
         Bcmm.repr (e ⟨q.1, (show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
             Tensor0SBundle.Tensor0SSpace 2 I q.1 from
           raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)⟩).2 σ =
-          (om q.1) (fun _ : Fin 1 => raisedKoszulVec (I := I) g₀ (gfam q.2) q.1
+          Tensor0SSpace.eval (om q.1) (fun _ : Fin 1 =>
+            raisedKoszulVec (I := I) g₀ (gfam q.2) q.1
             (chartBasisVecFiber (I := I) α (σ 0) q.1)
             (chartBasisVecFiber (I := I) α (σ 1) q.1)) := by
       intro q hqbase
@@ -821,16 +835,25 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
         (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hqbase) _).symm
       rw [hcoe]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1 hqbase
-        ((show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I q.1 from
-          raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1))
+        (Tensor0SSpace.toModel
+          ((show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
+              Tensor0SBundle.Tensor0SSpace 2 I q.1 from
+            raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)))
         (fun j => (chartModelBasis E) (σ j))
-      rw [tensor0SSpace_continuousLinearEquiv_symm_apply] at happly
+      rw [Tensor0SSpace.toModel,
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
       rw [happly]
       rw [raisedKoszulFib_apply]
-      rw [show (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
-            ((chartModelBasis E) (σ j))) =
-          (fun j => chartBasisVecFiber (I := I) α (σ j) q.1) from by
-        funext j; rfl]
+      change Tensor0SSpace.eval (raisedKoszulPairing (I := I) g₀ (gfam q.2) q.1 (om q.1))
+        (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
+          ((chartModelBasis E) (σ j))) = _
+      rw [Tensor0SSpace.eval_eq, raisedKoszulPairing_apply]
+      change Tensor0SSpace.eval (om q.1) (fun _ : Fin 1 =>
+        raisedKoszulVec (I := I) g₀ (gfam q.2) q.1
+          ((trivializationAt E (TangentSpace I) α).symmL ℝ q.1
+            ((chartModelBasis E) (σ 0)))
+          ((trivializationAt E (TangentSpace I) α).symmL ℝ q.1
+            ((chartModelBasis E) (σ 1)))) = _
       rfl
     refine hscalAt.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [hnhd] with q hq

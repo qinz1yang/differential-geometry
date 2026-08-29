@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpola
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -72,7 +71,10 @@ private theorem exists_firstOrderAction_thirdToSecondOrder_spectralSobolev_bound
       _ ≤ Q * covariantJetNormSq (I := I) (M := M) g 3 W := hact W
       _ ≤ Q * D ^ 2 :=
         mul_le_mul_of_nonneg_left
-          (by simpa only [D, N] using hin W) hQ
+          (by
+            have hinW := hin W
+            rw [show ((3 : ℕ) : ℝ) = (3 : ℝ) by norm_num] at hinW
+            simpa only [D, N] using hinW) hQ
       _ = R ^ 2 := hR2.symm
   have hbound :
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
@@ -121,7 +123,10 @@ theorem exists_firstOrderAction_secondToFirstOrder_spectralSobolev_bound
       _ ≤ Q * covariantJetNormSq (I := I) (M := M) g 2 W := hact W
       _ ≤ Q * D ^ 2 :=
         mul_le_mul_of_nonneg_left
-          (by simpa only [D, N] using hin W) hQ
+          (by
+            have hinW := hin W
+            rw [show ((2 : ℕ) : ℝ) = (2 : ℝ) by norm_num] at hinW
+            simpa only [D, N] using hinW) hQ
       _ = R ^ 2 := hR2.symm
   have hbound :
       ‖ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
@@ -295,7 +300,7 @@ noncomputable def LowerScaleActionCoefficients.firstOrderCoefficientDifference
   firstOrderCoefficient := A.firstOrderCoefficient - B.firstOrderCoefficient
   secondOrderCoefficient := 0
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem LowerScaleActionCoefficients.firstOrderCoefficientDifference_firstOrderAction
     {g : SmoothRiemannianMetric I M}
     (A B : LowerScaleActionCoefficients g) (W : SmoothCcTensor g 0 2) :
@@ -424,6 +429,7 @@ theorem firstOrderActionSecondToFirstOrder_apply_ccTensorToHs
   apply LinearMap.extendOfNorm_eq hdense2
   exact ⟨Cs * Real.sqrt Q, hspec A Q hQ hact⟩
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_iteratedCovGrad_one_le
     (g : SmoothRiemannianMetric I M) {s : ℕ}
@@ -576,7 +582,7 @@ theorem exists_firstOrderActionSecondToFirstOrder_difference_bound
       hdense2.equalizer L.continuous P.continuous (by
         funext W
         simp only [Function.comp_apply, L, P, ccToHsLin_apply,
-          ContinuousLinearMap.sub_apply]
+          sub_apply]
         rw [firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g D W,
           firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g A W,
           firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g B W,
@@ -704,7 +710,7 @@ theorem exists_firstOrderAction_spectralSobolev_difference_bounds
       hdense3.equalizer L.continuous P.continuous (by
         funext W
         simp only [Function.comp_apply, L, P, ccToHsLin_apply,
-          ContinuousLinearMap.sub_apply]
+          sub_apply]
         rw [hDhiCore,
           firstOrderActionThirdToSecondOrder_apply_ccTensorToHs (I := I) (M := M) hDim g A W,
           firstOrderActionThirdToSecondOrder_apply_ccTensorToHs (I := I) (M := M) hDim g B W,
@@ -727,7 +733,7 @@ theorem exists_firstOrderAction_spectralSobolev_difference_bounds
       hdense2.equalizer L.continuous P.continuous (by
         funext W
         simp only [Function.comp_apply, L, P, ccToHsLin_apply,
-          ContinuousLinearMap.sub_apply]
+          sub_apply]
         rw [hDloCore,
           firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g A W,
           firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g B W,

@@ -31,6 +31,13 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
+private local instance modelCovectorAddCommGroup : AddCommGroup (E →L[Real] Real) :=
+  ContinuousLinearMap.addCommGroup
+
+private local instance modelBilinearAddCommGroup :
+    AddCommGroup (E →L[Real] E →L[Real] Real) :=
+  ContinuousLinearMap.addCommGroup
+
 def normalBall (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -94,16 +101,27 @@ noncomputable def normalExpPD
       open_source := U.2
       open_target := image_opens_isOpen Φ hU
       contMDiffOn_toFun := by
-        simpa only [Φ, U, normalBall] using
-          expMapDiffeo_contMDiffOn_expBall (I := I) Y x
+        have h := expMapDiffeo_contMDiffOn_expBall (I := I) Y x
+        have hfun :
+            (Φ : E → Y.M) = fun w : E ↦ expMapDiffeo (I := I) Y.metric x w := by
+          funext w
+          rfl
+        have hset : (U : Set E) = Metric.ball 0 (expMapC2Radius (I := I) Y.metric x) :=
+          rfl
+        rw [hfun, hset]
+        exact h
       contMDiffOn_invFun := by
         have hsm := normalChartAt_contMDiffOn_infty (I := I) Y.metric x
         have hsm' : ContMDiffOn I 𝓘(Real, E) ∞
             (normalChartAt (I := I) Y.metric x) ((Φ : E → Y.M) '' (U : Set E)) := by
           rw [himage]
-          simpa only [U, normalBall] using hsm
+          have hset : (U : Set E) =
+              Metric.ball 0 (expMapC2Radius (I := I) Y.metric x) := rfl
+          rw [hset]
+          exact hsm
         exact hsm' }
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem normalExpPD_source
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -113,6 +131,21 @@ theorem normalExpPD_source
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     (normalExpPD (I := I) Y x).source = normalBall (I := I) Y x := by
   rfl
+
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem normalBall_sub
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
+    letI : TopologicalSpace Y.M := Y.topology
+    letI : ChartedSpace H Y.M := Y.charted
+    letI : IsManifold I ∞ Y.M := Y.smooth
+    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    (normalBall (I := I) Y x : Set E) ⊆
+      (normalExpPD (I := I) Y x).source := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  rw [normalExpPD_source]
 
 def normalImage
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -127,7 +160,8 @@ def normalImage
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact ⟨(normalExpPD (I := I) Y x : E → Y.M) ''
       (normalBall (I := I) Y x : Set E),
-    image_opens_isOpen (normalExpPD (I := I) Y x) (by simp)⟩
+    image_opens_isOpen (normalExpPD (I := I) Y x)
+      (normalBall_sub (I := I) Y x)⟩
 
 noncomputable def normalBallDiffeo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -142,36 +176,39 @@ noncomputable def normalBallDiffeo
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  simpa only [normalImage] using
-    PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x) (by simp)
+  unfold normalImage
+  exact PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x)
+    (normalBall_sub (I := I) Y x)
 
-@[implicit_reducible] private noncomputable def normalBallSigma
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem normalBallSigma
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     SigmaCompactSpace (normalBall (I := I) Y x) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : LocallyCompactSpace (normalBall (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : LocallyCompactSpace (normalBall (I := I) Y x) :=
     (normalBall (I := I) Y x).2.locallyCompactSpace
   infer_instance
 
-@[implicit_reducible] private noncomputable def normalImageSigma
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem normalImageSigma
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     SigmaCompactSpace (normalImage (I := I) Y x) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalBall (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalBall (I := I) Y x) :=
     normalBallSigma (I := I) Y x
   apply isSigmaCompact_univ_iff.mp
   have hrange : Set.range (normalBallDiffeo (I := I) Y x :
@@ -180,6 +217,7 @@ noncomputable def normalBallDiffeo
   rw [← hrange]
   exact isSigmaCompact_range (normalBallDiffeo (I := I) Y x).continuous
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem ballDiffeo_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : normalBall (I := I) Y x) :
@@ -191,6 +229,7 @@ private theorem ballDiffeo_apply
       expMapDiffeo (I := I) Y.metric x (z : E) := by
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem ballDiffeo_mfd
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : normalBall (I := I) Y x) (v : E) :
@@ -200,16 +239,22 @@ private theorem ballDiffeo_mfd
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     mfderiv 𝓘(Real, E) I
         (normalBallDiffeo (I := I) Y x :
-          normalBall (I := I) Y x → normalImage (I := I) Y x) z v =
+          normalBall (I := I) Y x → normalImage (I := I) Y x) z
+        ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v) =
       mfderiv 𝓘(Real, E) I
-        (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) v := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+        (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) (z : E)).symm v) := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
-    (normalExpPD (I := I) Y x) (by simp) z v
-  simpa only [normalBallDiffeo, normalExpPD] using h
+    (normalExpPD (I := I) Y x) (normalBall_sub (I := I) Y x) z
+      ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
+  rw [show (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) =
+    (expMapDiffeo (I := I) Y.metric x : E → Y.M) by rfl]
+  exact h
 
 noncomputable def normalMetric
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -234,6 +279,7 @@ noncomputable def normalMetric
     (Y.metric.restrictOpen (I := I) (normalImage (I := I) Y x))
     (normalBallDiffeo (I := I) Y x)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalMetric_inner
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : normalBall (I := I) Y x) (v w : E) :
@@ -243,17 +289,19 @@ theorem normalMetric_inner
     letI : SigmaCompactSpace Y.M := Y.sigmaCompact
     letI : T2Space Y.M := Y.t2
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    (normalMetric (I := I) Y x).inner z v w =
+    (normalMetric (I := I) Y x).inner z
+        ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
+        ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm w) =
       normalCoordMetric (I := I) Y x z v w := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalBall (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalBall (I := I) Y x) :=
     normalBallSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalImage (I := I) Y x) :=
     normalImageSigma (I := I) Y x
   rw [normalMetric, Diffeomorph.pullbackMetricCross_inner,
     SmoothRiemannianMetric.restrictOpen_inner]
@@ -275,6 +323,7 @@ noncomputable def normalCut
   have hR : 0 < R := expMapC2Radius_pos (I := I) Y.metric x
   exact ⟨R / 4, R / 2, by positivity, by linarith⟩
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalCut_smooth
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -282,12 +331,13 @@ theorem normalCut_smooth
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContMDiff 𝓘(Real, E) 𝓘(Real, Real) ∞ (normalCut (I := I) Y x : E → Real) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact (normalCut (I := I) Y x).contDiff.contMDiff
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalCut_range
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) (z : E) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -295,12 +345,13 @@ theorem normalCut_range
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     (normalCut (I := I) Y x : E → Real) z ∈ Set.Icc (0 : Real) 1 := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact ⟨(normalCut (I := I) Y x).nonneg, (normalCut (I := I) Y x).le_one⟩
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalCut_supp
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -309,10 +360,10 @@ theorem normalCut_supp
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     tsupport (normalCut (I := I) Y x : E → Real) ⊆
       (normalBall (I := I) Y x : Set E) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [(normalCut (I := I) Y x).tsupport_eq]
   change Metric.closedBall (0 : E) (expMapC2Radius (I := I) Y.metric x / 2) ⊆
     Metric.ball 0 (expMapC2Radius (I := I) Y.metric x)
@@ -320,6 +371,7 @@ theorem normalCut_supp
     have hR := expMapC2Radius_pos (I := I) Y.metric x
     linarith)
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalCut_one
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -329,14 +381,15 @@ theorem normalCut_one
     ∀ {z : E}, z ∈ Metric.ball (0 : E)
       (expMapC2Radius (I := I) Y.metric x / 4) →
       (normalCut (I := I) Y x : E → Real) z = 1 := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz
   apply (normalCut (I := I) Y x).one_of_mem_closedBall
   exact Metric.ball_subset_closedBall hz
 
+omit [NeZero (Module.finrank Real E)] in
 theorem normalInner_sub
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -345,10 +398,10 @@ theorem normalInner_sub
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x / 4) ⊆
       (normalBall (I := I) Y x : Set E) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   change Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x / 4) ⊆
     Metric.ball 0 (expMapC2Radius (I := I) Y.metric x)
   exact Metric.ball_subset_ball (by
@@ -365,6 +418,14 @@ private noncomputable def modelFlatMetric
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   let B : E →L[Real] E →L[Real] Real := normalCoordMetric (I := I) Y x 0
+  let Bt (y : E) :
+      TangentSpace 𝓘(Real, E) y →L[Real] TangentSpace 𝓘(Real, E) y →L[Real] Real :=
+    let e := (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) y).toContinuousLinearMap
+    (((B.comp e).flip.comp e).flip)
+  have hBt (y : E) (v w : TangentSpace 𝓘(Real, E) y) :
+      Bt y v w =
+        B (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) y v)
+          (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) y w) := rfl
   have hBsymm : ∀ v w : E, B v w = B w v := by
     intro v w
     dsimp only [B]
@@ -376,22 +437,43 @@ private noncomputable def modelFlatMetric
     rw [normalMetric_zero (I := I)]
     exact Y.metric.pos x v hv
   exact
-    { inner := fun _ ↦ B
-      symm := fun _ ↦ hBsymm
-      pos := fun _ ↦ hBpos
-      isVonNBounded := fun _ ↦
+    { inner := Bt
+      symm := by
+        intro y v w
+        rw [hBt, hBt, hBsymm]
+      pos := by
+        intro y v hv
+        rw [hBt]
+        apply hBpos
+        intro heq
+        apply hv
+        apply (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) y).injective
+        simpa using heq
+      isVonNBounded := fun y ↦
         DifferentialGeometry.Geometry.posDef_isVonNBounded
-          B hBpos
+          (Bt y) (by
+            intro v hv
+            rw [hBt]
+            apply hBpos
+            intro heq
+            apply hv
+            apply (tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) y).injective
+            simpa using heq)
       contMDiff := by
         intro y
         rw [contMDiffAt_section]
-        convert contMDiffAt_const (I := 𝓘(Real, E))
-          (I' := 𝓘(Real, E →L[Real] E →L[Real] Real))
-          (x := y) (c := B)
+        refine (contMDiffAt_const (x := y) (c := B)).congr_of_eventuallyEq ?_
+        filter_upwards [
+          (trivializationAt E (TangentSpace (modelWithCornersSelf Real E)) y).open_baseSet.mem_nhds
+            (mem_baseSet_trivializationAt E
+              (TangentSpace (modelWithCornersSelf Real E)) y)] with q hq
         ext v w
         rw [DifferentialGeometry.Geometry.metricCoeffInModel_apply
-          (I := 𝓘(Real, E)) y (by simp) B v w]
+          (I := _) y hq (Bt q) v w]
         rw [TangentBundle.symmL_model_space]
+        rw [hBt]
+        change B v w = B v w
         rfl }
 
 noncomputable def normalTotal
@@ -417,6 +499,7 @@ noncomputable def normalTotal
     (normalCut_smooth (I := I) Y x) (normalCut_range (I := I) Y x)
     (normalCut_supp (I := I) Y x)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalTotal_inner
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -427,23 +510,42 @@ theorem normalTotal_inner
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ∀ (z : E), z ∈ Metric.ball (0 : E)
       (expMapC2Radius (I := I) Y.metric x / 4) → ∀ v w : E,
-      (normalTotal (I := I) Y x).inner z v w =
+      (normalTotal (I := I) Y x).inner z
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm w) =
         normalCoordMetric (I := I) Y x z v w := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalBall (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalBall (I := I) Y x) :=
     normalBallSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalImage (I := I) Y x) :=
     normalImageSigma (I := I) Y x
   intro z hz v w
   have hsub := normalInner_sub (I := I) Y x
+  let zU : normalBall (I := I) Y x := ⟨z, hsub hz⟩
+  have hv : (show TangentSpace 𝓘(Real, E) zU from
+      (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v) =
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm v := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).injective
+    simp only [      tangentSpaceModelContinuousLinearEquiv_symm_apply]
+  have hw : (show TangentSpace 𝓘(Real, E) zU from
+      (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm w) =
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm w := by
+    apply (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).injective
+    simp only [      tangentSpaceModelContinuousLinearEquiv_symm_apply]
   calc
-    (normalTotal (I := I) Y x).inner z v w =
-        (normalMetric (I := I) Y x).inner ⟨z, hsub hz⟩ v w := by
+    (normalTotal (I := I) Y x).inner z
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm w) =
+        (normalMetric (I := I) Y x).inner zU
+          (show TangentSpace 𝓘(Real, E) zU from
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
+          (show TangentSpace 𝓘(Real, E) zU from
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm w) := by
       simpa only [normalTotal] using
         bumpExtendOpen_eq_gU_on (I := 𝓘(Real, E))
           (modelFlatMetric (I := I) Y x) (normalBall (I := I) Y x)
@@ -451,10 +553,17 @@ theorem normalTotal_inner
           (normalCut_smooth (I := I) Y x) (normalCut_range (I := I) Y x)
           (normalCut_supp (I := I) Y x)
           (Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x / 4))
-          (fun q hq ↦ normalCut_one (I := I) Y x hq) hsub z hz v w
+          (fun q hq ↦ normalCut_one (I := I) Y x hq) hsub z hz
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm w)
+    _ = (normalMetric (I := I) Y x).inner zU
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm v)
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) zU).symm w) := by
+      rw [hv, hw]
     _ = normalCoordMetric (I := I) Y x z v w :=
-      normalMetric_inner (I := I) Y x ⟨z, hsub hz⟩ v w
+      normalMetric_inner (I := I) Y x zU v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalTotal_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -465,20 +574,23 @@ theorem normalTotal_eq
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ∀ (z : E), z ∈ Metric.ball (0 : E)
       (expMapC2Radius (I := I) Y.metric x / 4) →
-      (normalTotal (I := I) Y x).inner z = normalCoordMetric (I := I) Y x z := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+      tangentBilinearFormToModel z ((normalTotal (I := I) Y x).inner z) =
+        normalCoordMetric (I := I) Y x z := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz
   apply ContinuousLinearMap.ext
   intro v
   apply ContinuousLinearMap.ext
   intro w
+  rw [tangentBilinearFormToModel_apply]
   exact normalTotal_inner (I := I) Y x z hz v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normal_cov_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -490,20 +602,24 @@ theorem normal_cov_eq
     ∀ (z : E), z ∈ Metric.ball (0 : E)
       (expMapC2Radius (I := I) Y.metric x / 4) →
     ∀ (hco : IsCoercive (normalCoordMetric (I := I) Y x z)) (v w : E),
-    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
-        (normalTotal (I := I) Y x) (fun _ : E ↦ w) z) v =
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z
+        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
+          (I := 𝓘(Real, E)) (normalTotal (I := I) Y x)
+          (constantModelVectorField w) z)
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)) =
       MetricKoszul.koszulVec hco
         (fderiv Real (normalCoordMetric (I := I) Y x) z) v w := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz hco v w
   have hsub := normalInner_sub (I := I) Y x
-  have hB : (fun y : E ↦ (normalTotal (I := I) Y x).inner y) =ᶠ[nhds z]
-      normalCoordMetric (I := I) Y x := by
+  have hB : (fun y : E ↦
+      tangentBilinearFormToModel y ((normalTotal (I := I) Y x).inner y)) =ᶠ[nhds z]
+        normalCoordMetric (I := I) Y x := by
     filter_upwards [Metric.isOpen_ball.mem_nhds hz] with y hy
     exact normalTotal_eq (I := I) Y x y hy
   have hdiff : DifferentiableAt Real (normalCoordMetric (I := I) Y x) z := by
@@ -513,6 +629,7 @@ theorem normal_cov_eq
     (normalTotal (I := I) Y x) (normalCoordMetric (I := I) Y x)
     hB hdiff hco v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normal_cov_eq_fderiv
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -527,23 +644,31 @@ theorem normal_cov_eq_fderiv
       (V : E → E)
       (_hV : MDifferentiableAt 𝓘(Real, E)
         (𝓘(Real, E).prod 𝓘(Real, E))
-        (fun y : E ↦ (⟨y, V y⟩ : TangentBundle 𝓘(Real, E) E)) z)
+        (fun y : E ↦
+          (⟨y, (tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) y).symm (V y)⟩ :
+              TangentBundle 𝓘(Real, E) E)) z)
       (v : E),
-    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
-        (normalTotal (I := I) Y x) V z) v =
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z
+        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
+          (I := 𝓘(Real, E)) (normalTotal (I := I) Y x)
+          (fun y : E ↦
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) y).symm (V y)) z)
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)) =
       fderiv Real V z v +
         MetricKoszul.koszulVec hco
           (fderiv Real (normalCoordMetric (I := I) Y x) z) v (V z) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz hco V _hV v
   have hsub := normalInner_sub (I := I) Y x
-  have hB : (fun y : E ↦ (normalTotal (I := I) Y x).inner y) =ᶠ[nhds z]
-      normalCoordMetric (I := I) Y x := by
+  have hB : (fun y : E ↦
+      tangentBilinearFormToModel y ((normalTotal (I := I) Y x).inner y)) =ᶠ[nhds z]
+        normalCoordMetric (I := I) Y x := by
     filter_upwards [Metric.isOpen_ball.mem_nhds hz] with y hy
     exact normalTotal_eq (I := I) Y x y hy
   have hdiff : DifferentiableAt Real (normalCoordMetric (I := I) Y x) z := by

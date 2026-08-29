@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import Mathlib.LinearAlgebra.Trace
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -58,7 +59,8 @@ private lemma mfderiv_symm_compose
   have hchain := mfderiv_comp x hΦsymm hΦ
   rw [hcomp, mfderiv_id] at hchain
   have := congrArg (fun f : TangentSpace I x →L[ℝ] TangentSpace I x => f v) hchain.symm
-  simpa [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using this
+  change ((mfderiv I I (⇑Φ.symm) (Φ x)).comp (mfderiv I I (⇑Φ) x)) v = v
+  exact this
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -78,7 +80,8 @@ private lemma mfderiv_compose_symm
   have hΦatx : mfderiv I I (⇑Φ) (Φ.symm (Φ x)) = mfderiv I I (⇑Φ) x := by congr 1
   rw [hΦatx] at hchain
   have := congrArg (fun f : TangentSpace I (Φ x) →L[ℝ] TangentSpace I (Φ x) => f w) hchain.symm
-  simpa [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] using this
+  change ((mfderiv I I (⇑Φ) x).comp (mfderiv I I (⇑Φ.symm) (Φ x))) w = w
+  exact this
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -283,7 +286,10 @@ theorem ricciTensor_pullback
     have h2 : ((e : TangentSpace I x →L[ℝ] TangentSpace I (Φ x)).toLinearMap :
         TangentSpace I x →ₗ[ℝ] TangentSpace I (Φ x)) =
         (mfderiv I I (⇑Φ) x).toLinearMap := by rw [he_coe]
-    rw [h1, h2]; rfl
+    exact congrArg₂
+      (fun (Lout : TangentSpace I (Φ x) →ₗ[ℝ] TangentSpace I x)
+          (Lin : TangentSpace I x →ₗ[ℝ] TangentSpace I (Φ x)) =>
+        Lout.comp (F.comp Lin)) h1.symm h2.symm
   rw [hreplace_outer]
   have hconj : (e.toLinearEquiv.symm.conj F :
       TangentSpace I x →ₗ[ℝ] TangentSpace I x) =

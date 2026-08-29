@@ -56,30 +56,32 @@ private lemma tensor0Iso_symm_apply_empty (x : M) (a : ℝ) :
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [T2Space M] [BoundarylessManifold I M] in
-private lemma extDerivFun_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
-    extDerivFun (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
+private lemma mvfderiv_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
+    mvfderiv (I := I) f x v =
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ)) (f x)
+        (mfderiv I 𝓘(ℝ) f x v) := by
+  simp only [mvfderiv, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
+  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 private lemma mfderiv_section_zero_eq_scalarFn
     (T : Π b : M, Tensor0SSpace 0 I b) (b : M) (v : TangentSpace I b) :
-    mfderiv I 𝓘(ℝ, ℝ)
-        (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-          (fun i => Fin.elim0 i)) b v =
-      mfderiv I 𝓘(ℝ, ℝ) (scalarFn I M T) b v := by
+    tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ)) (Tensor0SSpace.eval (T b) (fun i => Fin.elim0 i))
+        (mfderiv I 𝓘(ℝ)
+          (fun b' : M => Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b v) =
+      tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ)) (scalarFn I M T b)
+        (mfderiv I 𝓘(ℝ) (scalarFn I M T) b v) := by
   classical
   have h_funeq :
       (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-          (fun i => Fin.elim0 i)) =
+          Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) =
         scalarFn I M T := by
     funext b'
+    rw [Tensor0SSpace.eval_eq]
     rw [scalarFn_eq_apply_zero (I := I) (M := M) T b']
     congr 1
     funext i
@@ -97,8 +99,13 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_zero
       Tensor0SNabla.tensor0SCovariantDerivative I M 0
           (LeviCivita (I := I) g) T b (X b) := by
   classical
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext
   intro m
+  change Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) 0 g α T X b) m =
+    Tensor0SSpace.eval
+      (Tensor0SNabla.tensor0SCovariantDerivative I M 0
+        (LeviCivita (I := I) g) T b (X b)) m
   have hm : m = (fun i : Fin 0 => Fin.elim0 i) := by
     funext i; exact i.elim0
   subst hm
@@ -106,10 +113,24 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_zero
       (I := I) g α T X b (fun i : Fin 0 => Fin.elim0 i)]
   rw [tensor0SCovariantDerivative_apply_zero
       (I := I) (M := M) (LeviCivita (I := I) g) T b (X b)]
-  rw [mfderiv_section_zero_eq_scalarFn (I := I) (M := M) T b (X b)]
-  rw [tensor0Iso_symm_apply_empty (I := I) (M := M) b
-      (extDerivFun (I := I) (scalarFn I M T) b (X b))]
-  exact (extDerivFun_apply_scalar (I := I) (scalarFn I M T) b (X b)).symm
+  calc
+    tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ)) (Tensor0SSpace.eval (T b) (fun i => Fin.elim0 i))
+        (mfderiv I 𝓘(ℝ)
+          (fun b' : M => Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b (X b)) =
+        tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ)) (scalarFn I M T b)
+          (mfderiv I 𝓘(ℝ) (scalarFn I M T) b (X b)) :=
+      mfderiv_section_zero_eq_scalarFn (I := I) (M := M) T b (X b)
+    _ = mvfderiv (I := I) (scalarFn I M T) b (X b) :=
+      (mvfderiv_apply_scalar (I := I) (scalarFn I M T) b (X b)).symm
+    _ = Tensor0SSpace.eval
+        ((tensor0Iso I M b).symm
+          (mvfderiv (I := I) (scalarFn I M T) b (X b)))
+        (fun i : Fin 0 => Fin.elim0 i) :=
+      ((Tensor0SSpace.eval_eq _ _).trans
+        (tensor0Iso_symm_apply_empty (I := I) (M := M) b
+          (mvfderiv (I := I) (scalarFn I M T) b (X b)))).symm
 
 example
     (g : SmoothRiemannianMetric I M) (α : M)

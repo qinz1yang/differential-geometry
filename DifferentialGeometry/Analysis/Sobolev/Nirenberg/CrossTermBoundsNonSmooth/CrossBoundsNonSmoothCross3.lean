@@ -654,7 +654,7 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative
             ∂(volume : Measure E) =
           ∑ i : Fin d, ∫ x in Ω',
               ((g i) x)^2 ∂(volume : Measure E) := by
-        exact integral_finset_sum (Finset.univ : Finset (Fin d))
+        exact integral_finsetSum (Finset.univ : Finset (Fin d))
           (fun i _ => h_int_Ω' i)
       rw [h_sum_eq]
       exact Finset.sum_le_sum (fun i _ => h_part_bound i)

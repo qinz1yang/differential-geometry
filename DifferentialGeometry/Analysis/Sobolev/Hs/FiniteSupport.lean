@@ -88,7 +88,7 @@ def finiteSupportSubmodule (g : SmoothRiemannianMetric I M) (σ : ℝ) :
       not_not] at hcon
     exact hi (by rw [hcon.1, hcon.2, add_zero])
   zero_mem' := by
-    simp only [Set.mem_setOf_eq, zero_coeff]
+    simp only [Set.mem_ofPred_eq, zero_coeff]
     refine Set.finite_empty.subset ?_
     intro i hi
     simp only [Function.mem_support, ne_eq, not_true_eq_false] at hi

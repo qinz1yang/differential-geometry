@@ -167,7 +167,7 @@ theorem combinedLowerScaleActionCoefficients_firstOrderActionSecondToFirstOrder
     simp only [C, O, F, combinedLowerScaleActionCoefficients, firstOrderCoreActionCoefficients, firstOrderCoreActionCoefficientsBackground, LowerScaleActionCoefficients.firstOrderAction,
       ← operatorFieldComposition_zero_eq_operatorFieldApply, operatorFieldComposition_zero_left, operatorFieldComposition_add_left,
       zero_add, add_assoc]
-  rw [ContinuousLinearMap.add_apply,
+  rw [add_apply,
     firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g C W,
     firstOrderActionSecondToFirstOrder_apply_ccTensorToHs (I := I) (M := M) hDim g O W,
     ← ccTensorToHs_add, hcore]
@@ -850,6 +850,7 @@ private noncomputable def zeroBundle
   firstOrderCoefficient := 0
   secondOrderCoefficient := 0
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem zeroBundle_a1
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2) :
@@ -857,6 +858,7 @@ private theorem zeroBundle_a1
   simp only [zeroBundle, LowerScaleActionCoefficients.firstOrderAction, ← operatorFieldComposition_zero_eq_operatorFieldApply,
     operatorFieldComposition_zero_left, zero_add]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iterZ
     (g : SmoothRiemannianMetric I M) (r s j : ℕ) :
@@ -866,6 +868,7 @@ private theorem iterZ
     (0 : ℝ) (0 : SmoothCcTensor g r s)
   simpa only [zero_smul] using h
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem lowJetZ
     (g : SmoothRiemannianMetric I M) (r s m : ℕ) :
@@ -989,9 +992,36 @@ private theorem c0bg_aff
             (A.firstOrderCoefficient - (zeroBundle (I := I) (M := M) g).firstOrderCoefficient) = 0 := by
       simp only [A, backgroundDifferenceLowerScaleActionCoefficients, zeroBundle, sub_zero]
       exact lowJetZ (I := I) (M := M) g 3 2 2
+    have hcoreB :
+        lowCoreActionCoefficientsBackground (I := I) (M := M)
+            g gB hρ.le hδ0 hδ_le hreal T =
+          lowerScaleActionCoefficients (I := I) (M := M) g gB S
+            (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ := by
+      unfold lowCoreActionCoefficientsBackground
+      dsimp only [S]
+    have hcoreSelf :
+        lowCoreActionCoefficientsBackground (I := I) (M := M)
+            g g hρ.le hδ0 hδ_le hreal T =
+          lowerScaleActionCoefficients (I := I) (M := M) g g S
+            (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ := by
+      unfold lowCoreActionCoefficientsBackground
+      dsimp only [S]
+    have hA0 :
+        A.zeroOrderCoefficient -
+            (zeroBundle (I := I) (M := M) g).zeroOrderCoefficient =
+          (lowerScaleActionCoefficients (I := I) (M := M) g gB S
+              (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ).zeroOrderCoefficient -
+            (lowerScaleActionCoefficients (I := I) (M := M) g g S
+              (lt_of_le_of_lt hδ_le (by norm_num)) hSδ hZδ).zeroOrderCoefficient := by
+      change
+        ((lowCoreActionCoefficientsBackground (I := I) (M := M)
+              g gB hρ.le hδ0 hδ_le hreal T).zeroOrderCoefficient -
+            (lowCoreActionCoefficientsBackground (I := I) (M := M)
+              g g hρ.le hδ0 hδ_le hreal T).zeroOrderCoefficient) - 0 = _
+      rw [sub_zero, hcoreB, hcoreSelf]
     rw [hC1, add_zero]
-    simpa only [A, backgroundDifferenceLowerScaleActionCoefficients, lowCoreActionCoefficientsBackground, zeroBundle, S, sub_zero]
-      using hraw
+    rw [hA0]
+    exact hraw
   have hop := hact A (zeroBundle (I := I) (M := M) g) Q hQ hcoeffAct
   obtain ⟨hzHi, hzLo⟩ := zeroBundle_pair (I := I) (M := M) g
   constructor
@@ -1197,9 +1227,13 @@ private theorem c0bg_pair
         ring
   have hSV3j : covariantJetNormSq (I := I) (M := M) g 3 (S - V) ≤ D3 ^ 2 := by
     refine (hjet3 (S - V)).trans ?_
+    have hSV3' :
+        ‖ccTensorToHs (I := I) (M := M) g 2 ((3 : ℕ) : ℝ) (S - V)‖ ≤
+          Lr * D := by
+      simpa only [Nat.cast_ofNat] using hSV3
     simpa only [D3, mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC3 (norm_nonneg _))
-      (mul_le_mul_of_nonneg_left hSV3 hC3) 2
+      (mul_le_mul_of_nonneg_left hSV3' hC3) 2
   have hbg := hb S V
     (lowRadial_symm (I := I) (M := M) g ρ T)
     (lowRadial_symm (I := I) (M := M) g ρ U)

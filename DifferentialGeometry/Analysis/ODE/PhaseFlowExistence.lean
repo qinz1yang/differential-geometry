@@ -108,7 +108,17 @@ theorem scaledPhase_lip {P V κ : NNReal} {a : E × E → E}
   have hm := (phaseField_lip (E := E) ha).comp hu
     (unscale_maps_box (E := E) P V)
   have hs := (phaseScale (E := E) P V).lipschitz.comp_lipschitzOnWith hm
-  simpa only [scaledPhase, Function.comp_def, mul_assoc] using hs
+  let hscaled : LipschitzOnWith
+      (‖phaseScale (E := E) P V‖₊ *
+        (max 1 κ * ‖phaseUnscale (E := E) P V‖₊))
+      (scaledPhase P V a) (closedBall (0 : E × E) 1) := by
+    change LipschitzOnWith
+      (‖phaseScale (E := E) P V‖₊ *
+        (max 1 κ * ‖phaseUnscale (E := E) P V‖₊))
+      (fun x => phaseScale P V (phaseField a (phaseUnscale P V x)))
+      (closedBall (0 : E × E) 1)
+    exact hs
+  exact hscaled
 
 theorem scaledPhase_norm {P V A L : NNReal} {a : E × E → E}
     (hP : 0 < P) (hV : 0 < V)
@@ -217,7 +227,9 @@ private theorem exists_fenced_Icc [CompleteSpace E]
         norm_le := ?_,
         mul_max_le := ?_ }
     · intro _ _
-      simpa only [K] using scaledPhase_lip (E := E) haLip
+      let hLip : LipschitzOnWith K (scaledPhase P V a)
+          (closedBall (0 : E × E) (1 : Real)) := scaledPhase_lip (E := E) haLip
+      exact hLip
     · intro _ _
       exact continuousOn_const
     · intro _ _ z hz
@@ -241,7 +253,13 @@ private theorem exists_fenced_Icc [CompleteSpace E]
   · intro t ht
     have hraw := (phaseUnscale P V).hasFDerivAt.comp_hasDerivWithinAt t
       (hΨd t ht)
-    simpa only [Φ, unscale_scaled hP0 hV0] using hraw
+    change HasDerivWithinAt
+      (fun s => phaseUnscale P V (Ψ (phaseScale P V z) s))
+      (phaseUnscale P V (scaledPhase P V a (Ψ (phaseScale P V z) t)))
+      (Icc tmin tmax) t at hraw
+    rw [unscale_scaled hP0 hV0] at hraw
+    change HasDerivWithinAt (Φ z) (phaseField a (Φ z t)) (Icc tmin tmax) t
+    exact hraw
   · intro t ht
     exact unscale_maps_box P V (hΨmem t ht)
 

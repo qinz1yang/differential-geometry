@@ -475,7 +475,7 @@ theorem eParabolicC2HolderGaugeInExtChartsOn_le_sum_of_finite
   intro i
   exact (h i).trans
     (ENNReal.coe_le_coe.mpr
-      (Finset.single_le_sum (fun j _ ↦ zero_le (C j)) (Finset.mem_univ i)))
+      (Finset.single_le_sum (fun _ _ ↦ bot_le) (Finset.mem_univ i)))
 
 theorem eParabolicC2HolderGaugeInEuclideanChartsOn_le_sum_of_finite
     [FiniteDimensional Real E]
@@ -495,7 +495,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_le_sum_of_finite
   intro i
   exact (h i).trans
     (ENNReal.coe_le_coe.mpr
-      (Finset.single_le_sum (fun j _ ↦ zero_le (C j)) (Finset.mem_univ i)))
+      (Finset.single_le_sum (fun _ _ ↦ bot_le) (Finset.mem_univ i)))
 
 theorem eParabolicC2HolderGaugeWithLowerJetsInExtChartsOn_le_sum_of_finite
     {A : Type*} [Fintype A]
@@ -513,7 +513,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInExtChartsOn_le_sum_of_finite
   intro i
   exact (h i).trans
     (ENNReal.coe_le_coe.mpr
-      (Finset.single_le_sum (fun j _ ↦ zero_le (C j)) (Finset.mem_univ i)))
+      (Finset.single_le_sum (fun _ _ ↦ bot_le) (Finset.mem_univ i)))
 
 theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_le_sum_of_finite
     [FiniteDimensional Real E]
@@ -534,7 +534,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_le_sum_of_finite
   intro i
   exact (h i).trans
     (ENNReal.coe_le_coe.mpr
-      (Finset.single_le_sum (fun j _ ↦ zero_le (C j)) (Finset.mem_univ i)))
+      (Finset.single_le_sum (fun _ _ ↦ bot_le) (Finset.mem_univ i)))
 
 end DifferentialGeometry.Analysis.Schauder
 

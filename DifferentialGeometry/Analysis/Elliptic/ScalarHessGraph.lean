@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -35,7 +36,7 @@ theorem scalar_hess_graph
       ∀ {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f),
       ∫ x, chartHessFrobeniusSq (I := I) g f x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
-        (∫ x, (Δ_g (I := I) g ⟨_, hf⟩ x) ^ 2
+        (∫ x, (ΔG (I := I) g ⟨_, hf⟩ x) ^ 2
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
         C * ∫ x, normGradSqFun (I := I) g f x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
@@ -43,20 +44,22 @@ theorem scalar_hess_graph
   obtain ⟨C, hC, hRic⟩ := exists_ricci_bound (I := I) (M := M) g
   refine ⟨C, hC, ?_⟩
   intro f hf
+  let fMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨f, hf⟩
   let μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ :=
+  let _ : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   let Hess : M → ℝ := fun x => chartHessFrobeniusSq (I := I) g f x
   let Ric : M → ℝ := fun x => ricciTensor (I := I) g x
     (gradFun (I := I) g f x) (gradFun (I := I) g f x)
   let Grad : M → ℝ := normGradSqFun (I := I) g f
-  let LapSq : M → ℝ := fun x => (Δ_g (I := I) g ⟨_, hf⟩ x) ^ 2
+  let LapSq : M → ℝ := fun x => (ΔG (I := I) g fMap x) ^ 2
   let Cross : M → ℝ := fun x => g.inner x
     (gradFun (I := I) g f x)
-    (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
-  have hΔf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (Δ_g (I := I) g ⟨_, hf⟩) :=
-    Δ_g_contMDiff (I := I) g ⟨_, hf⟩
+    (gradFun (I := I) g (ΔG (I := I) g fMap) x)
+  have hΔf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (ΔG (I := I) g fMap) :=
+    Δ_g_contMDiff (I := I) g fMap
+  let lapMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨ΔG (I := I) g fMap, hΔf⟩
   have hHess_cont : Continuous Hess := by
     exact chartHessFrobeniusSq_continuous (I := I) g hf
   have hGrad_cont : Continuous Grad := by
@@ -64,17 +67,18 @@ theorem scalar_hess_graph
   have hLapSq_cont : Continuous LapSq := by
     exact hΔf.continuous.pow 2
   have hCross_cont : Continuous Cross := by
-    let Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := grad_g (I := I) g ⟨_, hf⟩
-    let GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := grad_g (I := I) g ⟨_, hΔf⟩
+    let Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g fMap
+    let GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g lapMap
     have h := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g Gf GΔf
-    simpa only [Cross, Gf, GΔf, grad_g_apply] using h
+    change Continuous (fun x => g.inner x (Gf x) (GΔf x))
+    exact h
   have hRic_cont : Continuous Ric := by
     have hnormLap : Continuous
-        (Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩) :=
+        (ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩) :=
       (Δ_g_contMDiff (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩).continuous
     have heq : Ric = fun x =>
-        (Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x -
+        (ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x -
           2 * Hess x - 2 * Cross x) / 2 := by
       funext x
       have hB := bochner_pointwise_concrete_metric (I := I) g hf x
@@ -92,11 +96,11 @@ theorem scalar_hess_graph
   have hLapSq_int : Integrable LapSq μ := integrable_of_cont hLapSq_cont
   have hCross_int : Integrable Cross μ := integrable_of_cont hCross_cont
   have hzero :
-      ∫ x, Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x ∂μ = 0 := by
+      ∫ x, ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x ∂μ = 0 := by
     exact integral_divergence_eq_zero_of_compact (I := I) g
-      (grad_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩)
+      (gradG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩)
   have hbochner :
-      ∫ x, Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x ∂μ =
+      ∫ x, ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x ∂μ =
         ∫ x, (2 * Hess x + 2 * Ric x + 2 * Cross x) ∂μ := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
     simpa only [Hess, Ric, Cross] using
@@ -105,7 +109,7 @@ theorem scalar_hess_graph
       0 = 2 * (∫ x, Hess x ∂μ) + 2 * (∫ x, Ric x ∂μ) +
         2 * (∫ x, Cross x ∂μ) := by
     calc
-      0 = ∫ x, Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x ∂μ := hzero.symm
+      0 = ∫ x, ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x ∂μ := hzero.symm
       _ = ∫ x, (2 * Hess x + 2 * Ric x + 2 * Cross x) ∂μ := hbochner
       _ = 2 * (∫ x, Hess x ∂μ) + 2 * (∫ x, Ric x ∂μ) +
           2 * (∫ x, Cross x ∂μ) := by
@@ -127,21 +131,21 @@ theorem scalar_hess_graph
     calc
       ∫ x, Cross x ∂μ =
           ∫ x, g.inner x
-            ((grad_g (I := I) g ⟨_, hΔf⟩ :
+            ((gradG (I := I) g lapMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) ∂μ := by
             refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
             change g.inner x (gradFun (I := I) g f x)
-                (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) =
+                (gradFun (I := I) g (ΔG (I := I) g fMap) x) =
               g.inner x
-                ((grad_g (I := I) g ⟨_, hΔf⟩ :
+                ((gradG (I := I) g lapMap :
                   Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-                ((grad_g (I := I) g ⟨_, hf⟩ :
+                ((gradG (I := I) g fMap :
                   Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
             simp only [grad_g_apply]
             exact g.symm x _ _
-      _ = -∫ x, (Δ_g (I := I) g ⟨_, hf⟩ x) * (Δ_g (I := I) g ⟨_, hf⟩ x) ∂μ :=
+      _ = -∫ x, (ΔG (I := I) g fMap x) * (ΔG (I := I) g fMap x) ∂μ :=
         green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
           (I := I) g hΔf hf (HasCompactSupport.of_compactSpace _)
       _ = -∫ x, LapSq x ∂μ := by

@@ -184,7 +184,7 @@ lemma FullSmoothScalar.integrable_mul
     {g : SmoothRiemannianMetric (I_half n) M} (f h : FullSmoothScalar g) :
     Integrable (fun x : M => f.toFun x * h.toFun x)
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) g
   exact (f.continuous_mul h).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
@@ -316,7 +316,7 @@ lemma fullSmoothScalar_integral_inner_grad_add_left
         (gradFun (I := I_half n) g h.toFun x) := by
     intro x
     rw [FullSmoothScalar.gradFun_add_apply f₁ f₂ x]
-    rw [map_add, ContinuousLinearMap.add_apply]
+    rw [map_add, add_apply]
   rw [show (fun x : M => g.inner x
       (gradFun (I := I_half n) g (f₁ + f₂).toFun x)
       (gradFun (I := I_half n) g h.toFun x)) =
@@ -350,7 +350,7 @@ lemma FullSmoothScalar.gradFun_smul_apply
   rw [show g.inner x (c • gradFun (I := I_half n) g f.toFun x) v =
       c * g.inner x (gradFun (I := I_half n) g f.toFun x) v from ?_]
   swap
-  · rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  · rw [map_smul, smul_apply, smul_eq_mul]
   rw [inner_gradFun (I := I_half n) g f.toFun x v]
   set d_f : TangentSpace (I_half n) x →L[ℝ] ℝ :=
     mfderiv (I_half n) 𝓘(ℝ, ℝ) f.toFun x with hd_f_def
@@ -363,7 +363,7 @@ lemma FullSmoothScalar.gradFun_smul_apply
     hHa_smul.mfderiv
   rw [hd_smul]
   change (c • d_f) v = c * d_f v
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
 
 
 lemma fullSmoothScalar_integral_mul_smul_left
@@ -396,7 +396,7 @@ lemma fullSmoothScalar_integral_inner_grad_smul_left
         (gradFun (I := I_half n) g h.toFun x)) := by
     funext x
     rw [FullSmoothScalar.gradFun_smul_apply c f x]
-    rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [map_smul, smul_apply, smul_eq_mul]
   rw [hpt, integral_const_mul]
 
 

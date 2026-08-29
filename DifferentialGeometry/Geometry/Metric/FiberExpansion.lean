@@ -28,9 +28,9 @@ theorem gON_expand (g : SmoothRiemannianMetric I M) (x : M)
   have hbnd : Bornology.IsVonNBounded ℝ {w : TangentSpace I x |
       RCLike.re (cd.inner w w) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   have hinner_eq : ∀ u w : TangentSpace I x,
       (inner ℝ u w : ℝ) = g.inner x u w := fun _ _ => rfl

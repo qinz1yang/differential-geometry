@@ -99,19 +99,27 @@ theorem tensor0S_one_eval_coordFrame_sum
     (Z : TangentSpace I x₀) :
     αx (fun _ : Fin 1 => Z) =
       ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
           αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by
   classical
-  let b := coordinateFrameAt_toBasis (I := I) x₀
+  let b := coordinateFrameAtToBasis (I := I) x₀
   have hupdate (w : TangentSpace I x₀) :
       Function.update (fun _ : Fin 1 => Z) (0 : Fin 1) w =
         fun _ : Fin 1 => w := by
     funext q
     fin_cases q
     simp
-  have hmap := αx.toMultilinearMap.map_update_sum
+  have hmap :=
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x₀ αx).toMultilinearMap.map_update_sum
     (Finset.univ : Finset (CoordinateIdx (𝕜 := 𝕜) E)) (0 : Fin 1)
     (fun j : CoordinateIdx (𝕜 := 𝕜) E => b.coord j Z • b j) (fun _ : Fin 1 => Z)
+  change
+    tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x₀ αx
+        (Function.update (fun _ : Fin 1 => Z) 0
+          (∑ j : CoordinateIdx (𝕜 := 𝕜) E, b.coord j Z • b j)) =
+      ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
+        tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x₀ αx
+          (Function.update (fun _ : Fin 1 => Z) 0 (b.coord j Z • b j)) at hmap
   calc
     αx (fun _ : Fin 1 => Z)
         = αx (Function.update (fun _ : Fin 1 => Z) (0 : Fin 1)
@@ -123,13 +131,13 @@ theorem tensor0S_one_eval_coordFrame_sum
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
           b.coord j Z *
             αx (Function.update (fun _ : Fin 1 => Z) (0 : Fin 1) (b j)) := by
-          simpa using hmap
+          simpa [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hmap
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
           b.coord j Z * αx (fun _ : Fin 1 => b j) := by
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [hupdate]
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-          (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+          (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
             αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by
           simp [b]
 
@@ -149,8 +157,15 @@ theorem tensor0S_one_eval_finset_sum
     funext q
     fin_cases q
     simp
-  have hmap := αx.toMultilinearMap.map_update_sum
+  have hmap :=
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x αx).toMultilinearMap.map_update_sum
     t (0 : Fin 1) V (fun _ : Fin 1 => t.sum V)
+  change
+    tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x αx
+        (Function.update (fun _ : Fin 1 => t.sum V) 0 (t.sum V)) =
+      t.sum (fun i =>
+        tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x αx
+          (Function.update (fun _ : Fin 1 => t.sum V) 0 (V i))) at hmap
   calc
     αx (fun _ : Fin 1 => t.sum V)
         = αx (Function.update (fun _ : Fin 1 => t.sum V) (0 : Fin 1)
@@ -159,7 +174,7 @@ theorem tensor0S_one_eval_finset_sum
     _ = t.sum (fun i =>
           αx (Function.update (fun _ : Fin 1 => t.sum V) (0 : Fin 1)
             (V i))) := by
-          simpa using hmap
+          simpa only [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply] using hmap
     _ = t.sum (fun i => αx (fun _ : Fin 1 => V i)) := by
           refine Finset.sum_congr rfl fun i _ => ?_
           rw [hupdate]
@@ -173,8 +188,8 @@ private theorem mdifferentiableAt_finset_sum
   classical
   induction t using Finset.induction_on with
   | empty =>
-      simpa using (mdifferentiableAt_const
-        (I := I) (I' := 𝓘(𝕜, 𝕜)) (c := (0 : 𝕜)) (x := x))
+      change MDifferentiableAt I 𝓘(𝕜, 𝕜) (fun _ : M => (0 : 𝕜)) x
+      exact mdifferentiableAt_const
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(𝕜, 𝕜) (f i) x := hf i (by simp [hit])
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(𝕜, 𝕜) (f j) x := by
@@ -186,12 +201,12 @@ private theorem mdifferentiableAt_finset_sum
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [IsManifold I 1 M] [IsManifold I 2 M] in
 omit [IsManifold I ∞ M] in
-theorem oneForm_extDerivFun_finset_sum
+theorem oneForm_mvfderiv_finset_sum
     {ι : Type*} (t : Finset ι) (f : ι -> M -> 𝕜)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(𝕜, 𝕜) (f i) x) :
-    extDerivFun (I := I) (t.sum f) x v =
-      t.sum (fun i => extDerivFun (I := I) (f i) x v) := by
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
   classical
   induction t using Finset.induction_on with
   | empty =>
@@ -204,36 +219,35 @@ theorem oneForm_extDerivFun_finset_sum
       have hsum : MDifferentiableAt I 𝓘(𝕜, 𝕜) (t.sum f) x := by
         exact mdifferentiableAt_finset_sum (I := I) t f hft
       calc
-        extDerivFun (I := I) ((insert i t).sum f) x v
-            = extDerivFun (I := I)
+        mvfderiv (I := I) ((insert i t).sum f) x v
+            = mvfderiv (I := I)
                 (f i + t.sum f) x v := by
               simp [Finset.sum_insert, hit]
-        _ = extDerivFun (I := I) (f i) x v +
-              extDerivFun (I := I) (t.sum f) x v := by
-              have hadd := congr($(extDerivFun_add
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
                 (I := I) (g := f i) (g' := t.sum f)
                 (x := x) hfi hsum) v)
               simpa [Pi.add_apply] using hadd
-        _ = (insert i t).sum (fun j => extDerivFun (I := I) (f j) x v) := by
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [IsManifold I 1 M] [IsManifold I 2 M] in
 omit [IsManifold I ∞ M] in
-theorem oneForm_extDerivFun_mul
+theorem oneForm_mvfderiv_mul
     {f g : M -> 𝕜} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(𝕜, 𝕜) f x)
     (hg : MDifferentiableAt I 𝓘(𝕜, 𝕜) g x) :
-    extDerivFun (I := I) (fun y : M => f y * g y) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x := by
-  change extDerivFun (I := I) (f • g) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := g) hf hg v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc]
-    using hprod
+    mvfderiv (I := I) (fun y : M => f y * g y) x v =
+      f x * mvfderiv (I := I) g x v +
+        mvfderiv (I := I) f x v * g x := by
+  change mvfderiv (I := I) (f • g) x v =
+      f x * mvfderiv (I := I) g x v +
+        mvfderiv (I := I) f x v * g x
+  have hprod := congrArg (fun L : TangentSpace I x →L[𝕜] 𝕜 => L v)
+    (mvfderiv_mul hf hg)
+  simpa [smul_eq_mul, mul_comm, mul_left_comm, mul_assoc] using hprod
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [IsManifold I 2 M] in
 omit [IsManifold I ∞ M] in
@@ -250,7 +264,8 @@ theorem oneForm_covariantDerivative_finset_sum
   | insert i t hit ih =>
       have hσi : MDiffAt (T% (σ i)) x := hσ i
       have hsum : MDiffAt (T% (t.sum σ)) x := by
-        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ) hσ
+        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ)
+          (fun j _ => hσ j)
         simpa using hsum_raw
       calc
         (cov ((insert i t).sum σ) x) v
@@ -269,11 +284,11 @@ omit [CompleteSpace 𝕜] in
 theorem oneForm_coordinateFrame_coeff_at_base_eq_coord
     (x₀ : M) (Z : TangentSpace I x₀) (j : CoordinateIdx (𝕜 := 𝕜) E) :
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j x₀ Z =
-      (coordinateFrameAt_toBasis (I := I) x₀).coord j Z := by
+      (coordinateFrameAtToBasis (I := I) x₀).coord j Z := by
   have hbasis :
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt
           (coordinateFrameAt_mem (I := I) x₀) =
-        coordinateFrameAt_toBasis (I := I) x₀ := by
+        coordinateFrameAtToBasis (I := I) x₀ := by
     ext k
     rw [IsLocalFrameOn.toBasisAt_coe]
     rw [coordinateFrameAt_toBasis_apply]
@@ -283,12 +298,12 @@ theorem oneForm_coordinateFrame_coeff_at_base_eq_coord
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [IsManifold I 1 M] [IsManifold I 2 M] in
 omit [IsManifold I ∞ M] in
-theorem oneForm_extDerivFun_congr_eventually
+theorem oneForm_mvfderiv_congr_eventually
     {f g : M -> 𝕜} {x : M} (v : TangentSpace I x)
     (h : f =ᶠ[𝓝 x] g) :
-    extDerivFun (I := I) f x v = extDerivFun (I := I) g x v := by
+    mvfderiv (I := I) f x v = mvfderiv (I := I) g x v := by
   have hmf := Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(𝕜, 𝕜)) h
   have hx : f x = g x := h.eq_of_nhds
-  unfold extDerivFun
+  unfold mvfderiv
   rw [hmf, hx]
 end DifferentialGeometry.Tensor.Coordinates

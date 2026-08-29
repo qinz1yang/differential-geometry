@@ -177,7 +177,7 @@ private theorem local_boundedness_of_subsolution_of_lt_two
     (hlowerUpper : lower < upper)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
       deriv (fun s ↦ u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc c d, ∀ x : M,
       (bombieriGiustiSpatialCutoff rho lower upper 0).toFun x ≠ 0 →
       u t x ≤
@@ -260,7 +260,7 @@ private theorem local_boundedness_of_subsolution_of_lt_two
       hpivotInner.le.trans ((hab k).trans hbInnerOuter.le)
     have hpdeOuter : ∀ s ∈ Icc (a (k + 1)) (b (k + 1)), ∀ y : M,
         deriv (fun q ↦ u q y) s ≤
-          Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu s).toContMDiffMap y := by
+          ΔG (I := I) g (smoothScalarSlice (I := I) g u hu s).toContMDiffMap y := by
       intro s hs y
       exact hpde s ⟨(ha (k + 1)).trans hs.1, hs.2.trans (hb (k + 1))⟩ y
     have hnormBound : ∀ s ∈ Icc (a (k + 1)) (b (k + 1)), ∀ y,
@@ -393,7 +393,7 @@ private theorem local_boundedness_of_subsolution_of_two_le
     (hlowerUpper : lower < upper)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
       deriv (fun s ↦ u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc c d, ∀ x : M,
       (bombieriGiustiSpatialCutoff rho lower upper 0).toFun x ≠ 0 →
       u t x ≤
@@ -434,7 +434,7 @@ private theorem local_boundedness_of_subsolution_of_two_le
     hpivotc.le.trans (hcd.trans hdbOuter.le)
   have hpdeOuter : ∀ t ∈ Icc aOuter bOuter, ∀ x : M,
       deriv (fun s ↦ u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x := by
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x := by
     intro t ht x
     exact hpde t ⟨hτaOuter.le.trans ht.1, ht.2.trans hbOuterD.le⟩ x
   intro t ht x hx
@@ -512,7 +512,7 @@ theorem local_boundedness_of_subsolution_rpow
     (hlowerUpper : lower < upper)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
       deriv (fun s ↦ u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc c d, ∀ x : M,
       (bombieriGiustiSpatialCutoff rho lower upper 0).toFun x ≠ 0 →
       u t x ≤
