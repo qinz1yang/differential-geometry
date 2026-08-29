@@ -11,6 +11,9 @@
 !/LICENSE
 !/NOTICE
 !/.gitignore
+!/AGENTS.md
+!/STRUCTURE.md
+!/NAMING.md
 # end of whitelist
 
 .lake/
