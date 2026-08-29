@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Directed
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Limit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentSubsequence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat

@@ -2141,7 +2141,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelLocalODE
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransportSmooth
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.PositiveSemidefiniteCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.PullbackCross
@@ -2751,7 +2751,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Directed
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Limit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.LimitMetrics
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.VolumeComparisonBridge
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap
@@ -3763,7 +3763,6 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciSharpChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.ConnectionBackward
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionAttain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionAttainC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionBootstrap

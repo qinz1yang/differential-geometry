@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection

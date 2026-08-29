@@ -1,6 +1,6 @@
 # Differential Geometry in Lean 4
 
-An ongoing Lean 4 library for differential geometry and geometric analysis, currently focused on Ricci flow.
+An ongoing Lean 4 library for differential geometry and geometric analysis, currently focused on Ricci flow and Perelman's L-geometry.
 
 ## How to use
 
@@ -10,8 +10,10 @@ Use DifferentialGeometry as an upstream dependency and build on its geometric-an
 [[require]]
 name = "DifferentialGeometry"
 git = "https://github.com/qinz1yang/differential-geometry.git"
-rev = "v0.1.1"
+rev = "v0.1.2"
 ```
+
+Release `v0.1.2` is pinned to Lean and Mathlib `v4.33.1`.
 
 Import the full library with
 
@@ -35,6 +37,7 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 
 - [Hamilton's theorem (1982)](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/PositiveRicci/Hamilton.lean#L29) — a closed three-manifold admitting a positive-Ricci metric admits a constant-positive-sectional-curvature metric and is a spherical space form.
 - [Ricci flow short-time existence](DifferentialGeometry/Geometry/Flow/RicciFlow/ShortTime/Existence.lean#L35) — on every closed Riemannian manifold $(M, g_0)$ the Ricci flow $\partial_t g = -2\,\mathrm{Ric}_{g(t)}$ has a solution on some $[0, T)$ with $g(0) = g_0$, jointly smooth in $(t, x)$ up to and including the initial time. Proved via the DeTurck's trick and a conjugating flow of the DeTurck vector field.
+- [Perelman's reduced-volume monotonicity](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/LGeometry/ReducedVolume.lean#L330) — along a Ricci flow on a closed connected manifold, the reduced volume is nonincreasing in backward time, built on the L-length minimizer, L-cut-locus, and reduced-Jacobian theory.
 - [Ricci–DeTurck flow short-time existence](DifferentialGeometry/Geometry/Flow/RicciFlow/ShortTime/DeTurck/InitialData.lean#L144) — the gauge-fixed, strictly parabolic flow behind the reduction: a solution whose chart-Gram entries are jointly smooth on the closed time slab, together with joint smoothness of the DeTurck vector field.
 - [Ricci-tensor naturality under diffeomorphisms](DifferentialGeometry/Geometry/Curvature/CurvatureOperator/RicciNaturality.lean#L247) — $\mathrm{Ric}_{\Phi^* g}(v, w) = \mathrm{Ric}_g(d\Phi\, v, d\Phi\, w)$, the equivariance that transports the DeTurck solution back to a Ricci flow.
 - [Scalar-curvature evolution under Ricci flow](DifferentialGeometry/Geometry/Flow/RicciFlow/Evolution/Scalar/IntrinsicDerivation.lean#L733).
