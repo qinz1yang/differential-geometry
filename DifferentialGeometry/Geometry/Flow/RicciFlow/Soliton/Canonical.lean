@@ -529,6 +529,97 @@ theorem canonicalMetric_scalar
     metricScalarAt_scaleMetric,
     canonicalFlowDiffeomorph_apply]
 
+theorem canonicalMetric_hamilton_constant_scaled
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) :
+    ∃ C : Real, ∀ x : M,
+      metricScalarAt (I := I)
+          (canonicalMetric (I := I) g f sigma hcomplete hsol ht) x +
+        normGradSqFun (I := I)
+          (canonicalMetric (I := I) g f sigma hcomplete hsol ht)
+          (canonicalPotential (I := I) g f sigma hcomplete hsol t) x -
+        (sigma / (1 - sigma * t)) *
+          canonicalPotential (I := I) g f sigma hcomplete hsol t x =
+      C / (1 - sigma * t) := by
+  obtain ⟨C, hC⟩ := gradientRicciSoliton_hamilton_constant hsol
+  refine ⟨C, ?_⟩
+  intro x
+  let tau : Real := 1 - sigma * t
+  let Phi := canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+    (canonicalFlowParameter sigma t)
+  have hτ : 0 < tau := by
+    dsimp [tau]
+    exact mem_canonicalTimeDomain_iff.mp ht
+  have hscalar := canonicalMetric_scalar (I := I) g f sigma hcomplete hsol ht x
+  have hnorm :
+      normGradSqFun (I := I)
+          (canonicalMetric (I := I) g f sigma hcomplete hsol ht)
+          (canonicalPotential (I := I) g f sigma hcomplete hsol t) x =
+        tau⁻¹ * ((g.inner (Phi x))
+          (gradientFun (I := I) g (f : M → Real) (Phi x)))
+          (gradientFun (I := I) g (f : M → Real) (Phi x)) := by
+    rw [normGradSqFun_def]
+    have hgrad := DifferentialGeometry.PDE.RicciFlow.gradientFun_pullback
+      (I := I) (M := M) (N := M) (g := scaleMetric (I := I) tau hτ g)
+      Phi (f : M → Real) x ((f.contMDiff (Phi x)).mdifferentiableAt (by simp))
+    have hgrad' :
+        gradientFun (I := I)
+          (canonicalMetric (I := I) g f sigma hcomplete hsol ht)
+          (canonicalPotential (I := I) g f sigma hcomplete hsol t) x =
+          (Phi.mfderivToContinuousLinearEquiv (by simp) x).symm
+            (gradientFun (I := I) (scaleMetric (I := I) tau hτ g)
+              (f : M → Real) (Phi x)) := by
+      change gradientFun (I := I)
+          (Diffeomorph.pullbackMetric (scaleMetric (I := I) tau hτ g) Phi)
+          (f ∘ (Phi : M → M)) x = _
+      exact hgrad
+    change ((canonicalMetric (I := I) g f sigma hcomplete hsol ht).inner x)
+      (gradientFun (I := I)
+        (canonicalMetric (I := I) g f sigma hcomplete hsol ht)
+        (canonicalPotential (I := I) g f sigma hcomplete hsol t) x)
+      (gradientFun (I := I)
+        (canonicalMetric (I := I) g f sigma hcomplete hsol ht)
+        (canonicalPotential (I := I) g f sigma hcomplete hsol t) x) =
+      tau⁻¹ * ((g.inner (Phi x))
+        (gradientFun (I := I) g (f : M → Real) (Phi x)))
+        (gradientFun (I := I) g (f : M → Real) (Phi x))
+    rw [hgrad']
+    rw [canonicalMetric, Diffeomorph.pullbackMetric_inner]
+    rw [← Phi.mfderivToContinuousLinearEquiv_coe (by simp) (x := x)]
+    simp only [ContinuousLinearEquiv.coe_coe, ContinuousLinearEquiv.apply_symm_apply]
+    rw [Operator.gradientFun_scale (I := I) tau hτ g (f : M → Real) (Phi x)]
+    rw [scaleMetric_inner]
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    dsimp [tau]
+    have ha : 1 - sigma * t = tau := rfl
+    rw [ha]
+    field_simp [ne_of_gt hτ]
+    rw [show canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma t) x = Phi x by rfl]
+  have hPhi : Phi x = canonicalFlowMap (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma t) x := by
+    exact canonicalFlowDiffeomorph_apply (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma t) x
+  rw [hscalar, hnorm, hPhi.symm]
+  change (1 - sigma * t)⁻¹ * metricScalarAt (I := I) g (Phi x) +
+      tau⁻¹ * ((g.inner (Phi x))
+        (gradientFun (I := I) g (f : M → Real) (Phi x)))
+        (gradientFun (I := I) g (f : M → Real) (Phi x)) -
+      (sigma / (1 - sigma * t)) * f (Phi x) = C / (1 - sigma * t)
+  have hCy := hC (Phi x)
+  rw [← DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun] at hCy
+  dsimp [tau]
+  calc
+    _ = (metricScalarAt (I := I) g (Phi x) +
+      ((g.inner (Phi x))
+        (gradientFun (I := I) g (f : M → Real) (Phi x)))
+        (gradientFun (I := I) g (f : M → Real) (Phi x)) - sigma * f (Phi x)) /
+        (1 - sigma * t) := by
+      ring_nf
+    _ = C / (1 - sigma * t) := by rw [hCy]
+
 theorem canonicalMetric_metricRm04
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
     (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
