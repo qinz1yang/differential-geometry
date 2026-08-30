@@ -1115,4 +1115,905 @@ theorem gradientRicciSoliton_exists_weightedLogDistanceUpperSupport
             dsimp only [B, radialBound]
             nlinarith [abs_nonneg C, abs_nonneg sigma, hbaseBound]
 
+private theorem cutoff_rhs_bound
+    {T r C sigma : Real}
+    (hT : 1 ≤ T) (hr : 0 ≤ r) (hrT : r < T) :
+    4 * (T ^ 2 - r ^ 2) * r * C + 4 * (T ^ 2 - r ^ 2) + 24 * r ^ 2 -
+        sigma * ((T ^ 2 - r ^ 2) ^ 2 +
+          2 * (T ^ 2 - r ^ 2) * r ^ 2) ≤
+      (4 * |C| + 28 + max 0 (-sigma)) * T ^ 4 := by
+  have hT0 : 0 < T := lt_of_lt_of_le zero_lt_one hT
+  have hrle : r ≤ T := hrT.le
+  have hr2 : r ^ 2 ≤ T ^ 2 := by nlinarith
+  have hh : 0 ≤ T ^ 2 - r ^ 2 := sub_nonneg.mpr hr2
+  have hhT : T ^ 2 - r ^ 2 ≤ T ^ 2 := by nlinarith [sq_nonneg r]
+  have hrT3 : (T ^ 2 - r ^ 2) * r ≤ T ^ 3 := by
+    calc
+      (T ^ 2 - r ^ 2) * r ≤ T ^ 2 * r :=
+        mul_le_mul_of_nonneg_right hhT hr
+      _ ≤ T ^ 2 * T := mul_le_mul_of_nonneg_left hrle (sq_nonneg T)
+      _ = T ^ 3 := by ring
+  have hC : C ≤ |C| := le_abs_self C
+  have hCr : (T ^ 2 - r ^ 2) * r * C ≤ T ^ 3 * |C| := by
+    calc
+      (T ^ 2 - r ^ 2) * r * C ≤ (T ^ 2 - r ^ 2) * r * |C| :=
+        mul_le_mul_of_nonneg_left hC (mul_nonneg hh hr)
+      _ ≤ T ^ 3 * |C| :=
+        mul_le_mul_of_nonneg_right hrT3 (abs_nonneg C)
+  have hT2T4 : T ^ 2 ≤ T ^ 4 := by nlinarith [sq_nonneg (T ^ 2 - 1)]
+  have hr4 : r ^ 4 ≤ T ^ 4 := by nlinarith [sq_nonneg (T ^ 2 - r ^ 2)]
+  have hshape :
+      (T ^ 2 - r ^ 2) ^ 2 + 2 * (T ^ 2 - r ^ 2) * r ^ 2 =
+        T ^ 4 - r ^ 4 := by ring
+  have hshape0 : 0 ≤ T ^ 4 - r ^ 4 := sub_nonneg.mpr hr4
+  have hsigma :
+      -sigma * (T ^ 4 - r ^ 4) ≤ max 0 (-sigma) * T ^ 4 := by
+    by_cases hs : 0 ≤ sigma
+    · have hleft : -sigma * (T ^ 4 - r ^ 4) ≤ 0 :=
+        mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hs) hshape0
+      exact hleft.trans (mul_nonneg (le_max_left _ _) (by positivity))
+    · have hneg : 0 ≤ -sigma := by linarith
+      calc
+        -sigma * (T ^ 4 - r ^ 4) ≤ -sigma * T ^ 4 :=
+          mul_le_mul_of_nonneg_left (by nlinarith [sq_nonneg r]) hneg
+        _ ≤ max 0 (-sigma) * T ^ 4 :=
+          mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity)
+  rw [hshape]
+  nlinarith [mul_nonneg (abs_nonneg C) (by positivity : 0 ≤ T ^ 3)]
+
+private theorem cutoff_scalar_bound
+    {n T r R C sigma : Real}
+    (hn : 0 < n) (hT : 1 ≤ T) (hr : 0 ≤ r) (hrT : r < T)
+    (hR : R < 0)
+    (hineq :
+      0 ≤ sigma * (T ^ 2 - r ^ 2) ^ 2 * R -
+          2 * (T ^ 2 - r ^ 2) ^ 2 * (R ^ 2 / n) +
+        R * (-4 * (T ^ 2 - r ^ 2) * r * (C - sigma / 2 * r) +
+          8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2)) - 32 * R * r ^ 2) :
+    (2 / n) * (-((T ^ 2 - r ^ 2) ^ 2 * R)) ≤
+      (4 * |C| + 28 + max 0 (-sigma)) * T ^ 4 := by
+  have hr2 : r ^ 2 ≤ T ^ 2 := by nlinarith
+  have hh : 0 ≤ T ^ 2 - r ^ 2 := sub_nonneg.mpr hr2
+  have hcut := cutoff_rhs_bound (T := T) (r := r) (C := C)
+    (sigma := sigma) hT hr hrT
+  have hn0 : n ≠ 0 := hn.ne'
+  have hlocal :
+      (2 / n) * (-((T ^ 2 - r ^ 2) ^ 2 * R)) ≤
+        4 * (T ^ 2 - r ^ 2) * r * C + 4 * (T ^ 2 - r ^ 2) +
+          24 * r ^ 2 - sigma * ((T ^ 2 - r ^ 2) ^ 2 +
+            2 * (T ^ 2 - r ^ 2) * r ^ 2) := by
+    field_simp [hn0] at hineq ⊢
+    nlinarith
+  exact hlocal.trans hcut
+
+open _root_.DifferentialGeometry.Tensor0SBundle
+  (MetricFiberData MetricInverseInBasisGen TangentMetricDataGen
+  diagonalInvMetric identityInvMetric tangentMetricDataGen)
+
+omit [NeZero (Module.finrank Real E)] [T2Space M] [I.Boundaryless]
+  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+private theorem exists_metric_onFrame
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    ∃ b : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
+        (TangentSpace I x),
+      ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
+  classical
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
+  let : InnerProductSpace Real (TangentSpace I x) :=
+    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  let ob := stdOrthonormalBasis Real (TangentSpace I x)
+  refine ⟨ob.toBasis, ?_⟩
+  intro i j
+  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
+    MetricFiberData.toCore_inner D (ob i) (ob j)
+  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
+  rw [← hinner]
+  exact ob.inner_eq_ite i j
+
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [T2Space M]
+  [I.Boundaryless] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+private theorem metric_onFrame_inv
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hON : ∀ i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
+    MetricInverseInBasisGen (I := I) g x basis
+      (identityInvMetric (Idx := Idx)) := by
+  intro i j
+  constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
+
+omit [I.Boundaryless] [T2Space M] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] in
+private theorem scalar_sq_div_rank_le_ricci_normSq
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    metricScalarAt (I := I) (M := M) g x ^ 2 /
+        (Module.finrank Real E : Real) ≤
+      Tensor0SBundle.normSq0S (I := I) g x 2
+        (metricRicciAt (I := I) (M := M) g x) := by
+  classical
+  obtain ⟨basis, hON⟩ := exists_metric_onFrame (I := I) g x
+  have h := metricTracePair0SAt_sq_le_card_mul_normSq0S
+    (I := I) g basis
+      (identityInvMetric
+        (Idx := Fin (Module.finrank Real (TangentSpace I x))))
+      (metric_onFrame_inv (I := I) g basis hON)
+      (metricRicciAt (I := I) (M := M) g x)
+  rw [show Module.finrank Real (TangentSpace I x) =
+    Module.finrank Real E from rfl] at h
+  simp only [Fintype.card_fin] at h
+  have hn : (0 : Real) < Module.finrank Real E := by
+    exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))
+  apply (div_le_iff₀ hn).2
+  rw [mul_comm]
+  simpa only [metricScalarAt_def] using h
+
+private theorem squared_cutoff_hasDerivAt (T t : Real) :
+    HasDerivAt (fun s : Real => (T ^ 2 - s ^ 2) ^ 2)
+      (-4 * t * (T ^ 2 - t ^ 2)) t := by
+  have hinner : HasDerivAt (fun s : Real => T ^ 2 - s ^ 2) (-2 * t) t := by
+    convert! (hasDerivAt_const t (T ^ 2)).sub ((hasDerivAt_id t).pow 2) using 1
+    all_goals dsimp only [id]
+    all_goals ring
+  convert! hinner.pow 2 using 1
+  all_goals ring
+
+private theorem deriv_squared_cutoff (T t : Real) :
+    deriv (fun s : Real => (T ^ 2 - s ^ 2) ^ 2) t =
+      -4 * t * (T ^ 2 - t ^ 2) :=
+  (squared_cutoff_hasDerivAt T t).deriv
+
+private theorem deriv_deriv_squared_cutoff (T t : Real) :
+    deriv (deriv (fun s : Real => (T ^ 2 - s ^ 2) ^ 2)) t =
+      8 * t ^ 2 - 4 * (T ^ 2 - t ^ 2) := by
+  have hfirst :
+      deriv (fun s : Real => (T ^ 2 - s ^ 2) ^ 2) =
+        fun s => -4 * s * (T ^ 2 - s ^ 2) := by
+    funext s
+    exact deriv_squared_cutoff T s
+  rw [hfirst]
+  have hleft : HasDerivAt (fun s : Real => -4 * s) (-4) t := by
+    convert! (hasDerivAt_id t).const_mul (-4) using 1
+    all_goals ring
+  have hright : HasDerivAt (fun s : Real => T ^ 2 - s ^ 2) (-2 * t) t := by
+    convert! (hasDerivAt_const t (T ^ 2)).sub ((hasDerivAt_id t).pow 2) using 1
+    all_goals dsimp only [id]
+    all_goals ring
+  convert! (hleft.mul hright).deriv using 1
+  all_goals ring
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+private theorem weighted_scalar_cutoff_estimate
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (T r C : Real) (x : M) (rho : M → Real)
+    (hT : 1 ≤ T) (hr : 0 ≤ r) (hrT : r < T)
+    (hrho_inf : ContMDiffAt I 𝓘(Real, Real) ∞ rho x)
+    (hrho_x : rho x = r)
+    (hrho_eventually : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) rho y)
+    (hgrad_rho : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g rho y) x)
+    (hnorm_rho : g.inner x (gradientFun (I := I) g rho x)
+      (gradientFun (I := I) g rho x) = 1)
+    (hweighted_rho :
+      laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+          g.inner x (gradFun (I := I) g f x)
+            (gradientFun (I := I) g rho x) ≤ C - sigma / 2 * r)
+    (hRneg : metricScalarAt (I := I) (M := M) g x < 0)
+    (hmin : IsLocalMin
+      (fun y : M => (T ^ 2 - rho y ^ 2) ^ 2 *
+        metricScalarAt (I := I) (M := M) g y) x) :
+    (2 / (Module.finrank Real E : Real)) *
+        (-((T ^ 2 - r ^ 2) ^ 2 *
+          metricScalarAt (I := I) (M := M) g x)) ≤
+      (4 * |C| + 28 + max 0 (-sigma)) * T ^ 4 := by
+  let R : M → Real := fun y => metricScalarAt (I := I) (M := M) g y
+  let outer : Real → Real := fun s => (T ^ 2 - s ^ 2) ^ 2
+  let cutoff : M → Real := fun y => outer (rho y)
+  let v : M → Real := fun y => cutoff y * R y
+  have hR_inf : ContMDiff I 𝓘(Real, Real) ∞ R :=
+    metricScalar_smooth (I := I) (M := M) g
+  have hcutoff_inf : ContMDiffAt I 𝓘(Real, Real) ∞ cutoff x := by
+    exact ((contMDiffAt_const.sub (hrho_inf.pow 2)).pow 2)
+  have hcutoff_eventually : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) cutoff y := by
+    filter_upwards [hrho_eventually] with y hy
+    exact (mdifferentiableAt_const.sub (hy.pow 2)).pow 2
+  have hgrad_cutoff : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g cutoff y) x :=
+    (gradientFun_contMDiffAt (I := I) g hcutoff_inf).mdifferentiableAt (by simp)
+  have hgrad_R : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g R y) x :=
+    gradientFun_mdiffAt (I := I) g hR_inf x
+  have hR_eventually : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) R y :=
+    Filter.Eventually.of_forall fun y =>
+      hR_inf.mdifferentiableAt (by simp)
+  have hv_inf : ContMDiffAt I 𝓘(Real, Real) ∞ v x :=
+    hcutoff_inf.mul hR_inf.contMDiffAt
+  have hv_mdiff : MDifferentiableAt I 𝓘(Real, Real) v x :=
+    hv_inf.mdifferentiableAt (by simp)
+  have hv_eventually : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) v y := by
+    filter_upwards [hcutoff_eventually, hR_eventually] with y hk hRy
+    exact hk.mul hRy
+  have hgrad_v : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g v y) x :=
+    (gradientFun_contMDiffAt (I := I) g hv_inf).mdifferentiableAt (by simp)
+  have hmetric : IsMetricCompatibleGen (I := I)
+      (LeviCivita (I := I) g) g := by
+    simpa [LeviCivita] using
+      (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
+  have hlap_v_nonneg :
+      0 ≤ laplacian (I := I) (LeviCivita (I := I) g) g v x :=
+    laplacian_nonneg_at_spatial_min_of_metricCompatible
+      (I := I) (LeviCivita (I := I) g) g hmetric
+        hmin hv_mdiff hv_eventually hgrad_v
+  have hgrad_v_zero : gradientFun (I := I) g v x = 0 :=
+    gradientFun_eq_zero_at_spatial_min (I := I) g hmin hv_mdiff
+  have houter_diff : Differentiable Real outer :=
+    fun t => (squared_cutoff_hasDerivAt T t).differentiableAt
+  have houter_deriv_diff : DifferentiableAt Real (deriv outer) r := by
+    have hfirst : deriv outer = fun s => -4 * s * (T ^ 2 - s ^ 2) := by
+      funext s
+      exact deriv_squared_cutoff T s
+    rw [hfirst]
+    fun_prop
+  have hlap_cutoff := laplacian_comp_at (I := I)
+    (LeviCivita (I := I) g) g houter_diff
+      (hrho_x ▸ houter_deriv_diff) hrho_eventually hgrad_rho
+  change laplacian (I := I) (LeviCivita (I := I) g) g cutoff x = _ at hlap_cutoff
+  rw [hrho_x, deriv_squared_cutoff, deriv_deriv_squared_cutoff,
+    hnorm_rho] at hlap_cutoff
+  have hgrad_cutoff_eq : gradientFun (I := I) g cutoff x =
+      (-4 * r * (T ^ 2 - r ^ 2)) •
+        gradientFun (I := I) g rho x := by
+    have h := gradientFun_comp (I := I) g
+      (houter_diff (rho x))
+      (hrho_inf.mdifferentiableAt (by simp))
+    change gradientFun (I := I) g cutoff x = _ at h
+    rw [hrho_x, deriv_squared_cutoff] at h
+    exact h
+  have hcutoff_x : cutoff x = (T ^ 2 - r ^ 2) ^ 2 := by
+    simp only [cutoff, outer, hrho_x]
+  have hgrad_product : gradientFun (I := I) g v x =
+      cutoff x • gradientFun (I := I) g R x +
+        R x • gradientFun (I := I) g cutoff x := by
+    exact gradientFun_mul (I := I) g
+      (hcutoff_inf.mdifferentiableAt (by simp))
+      (hR_inf.mdifferentiableAt (by simp))
+  have hgrad_relation :
+      cutoff x • gradientFun (I := I) g R x +
+        R x • gradientFun (I := I) g cutoff x = 0 := by
+    rw [← hgrad_product]
+    exact hgrad_v_zero
+  have hgap : 0 < T ^ 2 - r ^ 2 := by nlinarith
+  have hcutoff_pos : 0 < cutoff x := by
+    rw [hcutoff_x]
+    positivity
+  have hgrad_R_eq : gradientFun (I := I) g R x =
+      (-R x / cutoff x) • gradientFun (I := I) g cutoff x := by
+    have hscaled : cutoff x • gradientFun (I := I) g R x =
+        (-R x) • gradientFun (I := I) g cutoff x :=
+      by
+        simpa only [neg_smul] using
+          eq_neg_of_add_eq_zero_left hgrad_relation
+    have h := congrArg (fun w : TangentSpace I x =>
+      (cutoff x)⁻¹ • w) hscaled
+    simpa [smul_smul, hcutoff_pos.ne', div_eq_mul_inv, mul_comm] using h
+  have hgrad_cutoff_norm :
+      g.inner x (gradientFun (I := I) g cutoff x)
+          (gradientFun (I := I) g cutoff x) =
+        (-4 * r * (T ^ 2 - r ^ 2)) ^ 2 := by
+    rw [hgrad_cutoff_eq, map_smul, smul_eq_mul,
+      g.symm x ((-4 * r * (T ^ 2 - r ^ 2)) •
+        gradientFun (I := I) g rho x) (gradientFun (I := I) g rho x),
+      map_smul, smul_eq_mul, hnorm_rho]
+    ring
+  have hcross :
+      2 * g.inner x (gradientFun (I := I) g cutoff x)
+          (gradientFun (I := I) g R x) = -32 * R x * r ^ 2 := by
+    rw [hgrad_R_eq, map_smul, smul_eq_mul, hgrad_cutoff_norm, hcutoff_x]
+    field_simp [hgap.ne']
+    ring
+  have hweighted_cutoff :
+      laplacian (I := I) (LeviCivita (I := I) g) g cutoff x -
+          g.inner x (gradFun (I := I) g f x)
+            (gradientFun (I := I) g cutoff x) =
+        (-4 * r * (T ^ 2 - r ^ 2)) *
+            (laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+              g.inner x (gradFun (I := I) g f x)
+                (gradientFun (I := I) g rho x)) +
+          8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2) := by
+    rw [hlap_cutoff, hgrad_cutoff_eq, map_smul, smul_eq_mul]
+    ring
+  have hweighted_R := gradientRicciSoliton_weightedLaplacian_scalar hsol x
+  have hbridge := laplacian_levi_eq (I := I) g hR_inf x
+  have hweighted_R_local :
+      laplacian (I := I) (LeviCivita (I := I) g) g R x -
+          g.inner x (gradFun (I := I) g f x)
+            (gradientFun (I := I) g R x) =
+        sigma * R x - 2 * Tensor0SBundle.normSq0S (I := I) g x 2
+          (metricRicciAt (I := I) (M := M) g x) := by
+    change ΔG (I := I) g
+        (⟨R, hR_inf⟩ : C^∞⟮I, M; Real⟯) x -
+          g.inner x (gradFun (I := I) g f x)
+            (gradFun (I := I) g R x) = _ at hweighted_R
+    rw [← hbridge] at hweighted_R
+    simpa only [R, Connection.gradient_eq_gradFun] using hweighted_R
+  have hlap_product := laplacian_mul_at (I := I)
+    (LeviCivita (I := I) g) g hcutoff_eventually hR_eventually
+      hgrad_cutoff hgrad_R
+  change laplacian (I := I) (LeviCivita (I := I) g) g v x = _ at hlap_product
+  have hweighted_product :
+      laplacian (I := I) (LeviCivita (I := I) g) g v x -
+          g.inner x (gradFun (I := I) g f x)
+            (gradientFun (I := I) g v x) =
+        cutoff x *
+            (laplacian (I := I) (LeviCivita (I := I) g) g R x -
+              g.inner x (gradFun (I := I) g f x)
+                (gradientFun (I := I) g R x)) +
+          R x *
+            (laplacian (I := I) (LeviCivita (I := I) g) g cutoff x -
+              g.inner x (gradFun (I := I) g f x)
+                (gradientFun (I := I) g cutoff x)) +
+          2 * g.inner x (gradientFun (I := I) g cutoff x)
+            (gradientFun (I := I) g R x) := by
+    rw [hlap_product, hgrad_product, map_add, map_smul, map_smul]
+    simp only [smul_eq_mul]
+    ring
+  have hweighted_v_nonneg :
+      0 ≤ laplacian (I := I) (LeviCivita (I := I) g) g v x -
+        g.inner x (gradFun (I := I) g f x)
+          (gradientFun (I := I) g v x) := by
+    rw [hgrad_v_zero]
+    simpa using hlap_v_nonneg
+  rw [hweighted_product, hweighted_R_local, hweighted_cutoff,
+    hcross, hcutoff_x] at hweighted_v_nonneg
+  have hRic := scalar_sq_div_rank_le_ricci_normSq (I := I) g x
+  let n : Real := Module.finrank Real E
+  have hn : 0 < n := by
+    dsimp only [n]
+    exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))
+  have hk : 0 ≤ (T ^ 2 - r ^ 2) ^ 2 := sq_nonneg _
+  have hnorm_term :
+      (T ^ 2 - r ^ 2) ^ 2 *
+          (sigma * R x - 2 * Tensor0SBundle.normSq0S (I := I) g x 2
+            (metricRicciAt (I := I) (M := M) g x)) ≤
+        (T ^ 2 - r ^ 2) ^ 2 *
+          (sigma * R x - 2 * (R x ^ 2 / n)) := by
+    apply mul_le_mul_of_nonneg_left _ hk
+    dsimp only [n]
+    nlinarith
+  have hcoeff_nonneg :
+      0 ≤ R x * (-4 * r * (T ^ 2 - r ^ 2)) := by
+    have hcoeff : -4 * r * (T ^ 2 - r ^ 2) ≤ 0 := by
+      rw [show -4 * r * (T ^ 2 - r ^ 2) =
+        -(4 * r * (T ^ 2 - r ^ 2)) by ring]
+      exact neg_nonpos.mpr (mul_nonneg (mul_nonneg (by norm_num) hr) hgap.le)
+    exact mul_nonneg_of_nonpos_of_nonpos hRneg.le
+      hcoeff
+  have hrho_term := mul_le_mul_of_nonneg_left hweighted_rho hcoeff_nonneg
+  have hafter_norm :
+      0 ≤ (T ^ 2 - r ^ 2) ^ 2 *
+            (sigma * R x - 2 * (R x ^ 2 / n)) +
+          R x *
+            ((-4 * r * (T ^ 2 - r ^ 2)) *
+                (laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+                  g.inner x (gradFun (I := I) g f x)
+                    (gradientFun (I := I) g rho x)) +
+              8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2)) +
+            -32 * R x * r ^ 2 := by
+    exact hweighted_v_nonneg.trans
+      (add_le_add (add_le_add hnorm_term le_rfl) le_rfl)
+  have hrho_part :
+      R x *
+          ((-4 * r * (T ^ 2 - r ^ 2)) *
+              (laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+                g.inner x (gradFun (I := I) g f x)
+                  (gradientFun (I := I) g rho x)) +
+            8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2)) ≤
+        R x *
+          ((-4 * r * (T ^ 2 - r ^ 2)) * (C - sigma / 2 * r) +
+            8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2)) := by
+    nlinarith only [hrho_term]
+  have hineq' :
+      0 ≤ (T ^ 2 - r ^ 2) ^ 2 *
+            (sigma * R x - 2 * (R x ^ 2 / n)) +
+          R x *
+            ((-4 * r * (T ^ 2 - r ^ 2)) * (C - sigma / 2 * r) +
+              8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2)) +
+            -32 * R x * r ^ 2 := by
+    exact hafter_norm.trans
+      (add_le_add (add_le_add le_rfl hrho_part) le_rfl)
+  have hineq :
+      0 ≤ sigma * (T ^ 2 - r ^ 2) ^ 2 * R x -
+          2 * (T ^ 2 - r ^ 2) ^ 2 * (R x ^ 2 / n) +
+        R x * (-4 * (T ^ 2 - r ^ 2) * r * (C - sigma / 2 * r) +
+          8 * r ^ 2 - 4 * (T ^ 2 - r ^ 2)) - 32 * R x * r ^ 2 := by
+    ring_nf at hineq' ⊢
+    exact hineq'
+  simpa only [R, n] using cutoff_scalar_bound hn hT hr hrT hRneg hineq
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem gradientRicciSoliton_scalar_boundedBelow
+    [ConnectedSpace M]
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma) (O : M) :
+    ∃ m : Real, ∀ x : M,
+      m ≤ metricScalarAt (I := I) (M := M) g x := by
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let _ : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y u w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
+  let _ : MetricSpace M :=
+    Riemannian.HopfRinow.riemMetricSpace (I := I) (M := M)
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro y u
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y u
+  let _ : ProperSpace M :=
+    Riemannian.HopfRinow.properSpace_riemMetric
+      (I := I) (M := M) hcomplete.complete g hEnorm
+  let R : M → Real := fun y => metricScalarAt (I := I) (M := M) g y
+  have hRcont : Continuous R :=
+    (metricScalar_smooth (I := I) (M := M) g).continuous
+  obtain ⟨C, hsupport⟩ :=
+    gradientRicciSoliton_exists_weightedDistanceUpperSupport
+      (I := I) g f sigma hcomplete hsol O
+  have hOcore : O ∈ Metric.closedBall O 3 := by simp
+  obtain ⟨q, hqcore, hqmin⟩ :=
+    (isCompact_closedBall O 3).exists_isMinOn
+      ⟨O, hOcore⟩ hRcont.continuousOn
+  let K : Real := min 0 (R q)
+  have hK : K ≤ 0 := min_le_left _ _
+  have hKcore : ∀ y ∈ Metric.closedBall O 3, K ≤ R y := by
+    intro y hy
+    exact (min_le_right _ _).trans (hqmin hy)
+  let n : Real := Module.finrank Real E
+  let D : Real := 4 * |C| + 28 + max 0 (-sigma)
+  let m : Real := min (4 * K) (-2 * n * D)
+  have hn : 0 < n := by
+    dsimp only [n]
+    exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))
+  have hD : 0 ≤ D := by
+    dsimp only [D]
+    positivity
+  refine ⟨m, ?_⟩
+  intro p
+  by_cases hRp : 0 ≤ R p
+  · exact (min_le_left _ _).trans
+      ((mul_nonpos_of_nonneg_of_nonpos (by norm_num) hK).trans hRp)
+  · have hRpneg : R p < 0 := lt_of_not_ge hRp
+    let rp : Real := dist O p
+    let T : Real := 2 * (rp + 3)
+    let F : M → Real := fun y =>
+      (T ^ 2 - dist O y ^ 2) ^ 2 * R y
+    have hrp : 0 ≤ rp := dist_nonneg
+    have hT : 1 ≤ T := by
+      dsimp only [T]
+      nlinarith
+    have hTpos : 0 < T := lt_of_lt_of_le zero_lt_one hT
+    have hrpT : rp < T := by
+      dsimp only [T]
+      nlinarith
+    have hpclosed : p ∈ Metric.closedBall O T := by
+      rw [Metric.mem_closedBall]
+      simpa only [dist_comm, rp] using hrpT.le
+    have hdistcont : Continuous (fun y : M => dist O y) :=
+      continuous_const.dist continuous_id
+    have hFcont : Continuous F := by
+      exact ((continuous_const.sub (hdistcont.pow 2)).pow 2).mul hRcont
+    obtain ⟨z, hzclosed, hzmin⟩ :=
+      (isCompact_closedBall O T).exists_isMinOn
+        ⟨p, hpclosed⟩ hFcont.continuousOn
+    have hp_gap_pos : 0 < T ^ 2 - rp ^ 2 := by
+      have hprod : 0 < (T - rp) * (T + rp) :=
+        mul_pos (sub_pos.mpr hrpT) (add_pos_of_pos_of_nonneg hTpos hrp)
+      nlinarith
+    have hFpneg : F p < 0 := by
+      apply mul_neg_of_pos_of_neg
+      · exact sq_pos_of_pos hp_gap_pos
+      · exact hRpneg
+    have hFzle : F z ≤ F p := hzmin hpclosed
+    have hFzneg : F z < 0 := hFzle.trans_lt hFpneg
+    let rz : Real := dist O z
+    have hrz : 0 ≤ rz := dist_nonneg
+    have hrz_le : rz ≤ T := by
+      simpa only [Metric.mem_closedBall, dist_comm, rz] using hzclosed
+    have hrzT : rz < T := by
+      apply lt_of_le_of_ne hrz_le
+      intro heq
+      have hzero : F z = 0 := by
+        simp [F, rz, heq]
+      linarith
+    have hRzneg : R z < 0 := by
+      by_contra hnot
+      have hnonneg : 0 ≤ R z := le_of_not_gt hnot
+      have : 0 ≤ F z := by
+        exact mul_nonneg (sq_nonneg _) hnonneg
+      linarith
+    have hrp_half : 2 * rp ≤ T := by
+      dsimp only [T]
+      nlinarith
+    have hrp_sq : 4 * rp ^ 2 ≤ T ^ 2 := by nlinarith
+    have hp_gap_half : T ^ 2 / 2 ≤ T ^ 2 - rp ^ 2 := by nlinarith
+    have hp_gap_nonneg : 0 ≤ T ^ 2 - rp ^ 2 := by nlinarith
+    have hp_gap_sum : 0 ≤ T ^ 2 - rp ^ 2 + T ^ 2 / 2 := by
+      nlinarith [sq_nonneg T]
+    have hp_cutoff_lower : T ^ 4 / 4 ≤ (T ^ 2 - rp ^ 2) ^ 2 := by
+      have hprod := mul_nonneg
+        (sub_nonneg.mpr hp_gap_half) hp_gap_sum
+      nlinarith
+    have hT4pos : 0 < T ^ 4 := by positivity
+    by_cases hzcore : rz ≤ 3
+    · have hzcore_mem : z ∈ Metric.closedBall O 3 := by
+        rw [Metric.mem_closedBall]
+        simpa only [dist_comm, rz] using hzcore
+      have hKz := hKcore z hzcore_mem
+      have hz_gap : 0 ≤ T ^ 2 - rz ^ 2 := by nlinarith
+      have hz_gap_le : T ^ 2 - rz ^ 2 ≤ T ^ 2 := by
+        nlinarith [sq_nonneg rz]
+      have hz_cutoff_le : (T ^ 2 - rz ^ 2) ^ 2 ≤ T ^ 4 := by
+        have hprod := mul_nonneg (sub_nonneg.mpr hz_gap_le)
+          (add_nonneg (sq_nonneg T) hz_gap)
+        nlinarith
+      have hTKF : T ^ 4 * K ≤ F p := by
+        calc
+          T ^ 4 * K ≤ (T ^ 2 - rz ^ 2) ^ 2 * K :=
+            mul_le_mul_of_nonpos_right hz_cutoff_le hK
+          _ ≤ (T ^ 2 - rz ^ 2) ^ 2 * R z :=
+            mul_le_mul_of_nonneg_left hKz (sq_nonneg _)
+          _ = F z := by simp only [F, R, rz]
+          _ ≤ F p := hFzle
+      have hFp_upper : F p ≤ T ^ 4 / 4 * R p := by
+        dsimp only [F, R, rp]
+        exact mul_le_mul_of_nonpos_right hp_cutoff_lower hRpneg.le
+      have hKquarter : K ≤ R p / 4 := by
+        apply (mul_le_mul_iff_of_pos_left hT4pos).mp
+        calc
+          T ^ 4 * K ≤ F p := hTKF
+          _ ≤ T ^ 4 / 4 * R p := hFp_upper
+          _ = T ^ 4 * (R p / 4) := by ring
+      exact (min_le_left _ _).trans (by nlinarith)
+    · have hrz3 : 3 ≤ rz := le_of_not_ge hzcore
+      have hrz_support :
+          3 ≤ (riemannianEDistOf (I := I) g O z).toReal := by
+        have hdist := Riemannian.HopfRinow.riemMetric_dist_eq
+          (I := I) (M := M) O z
+        simpa only [riemannianEDistOf, rz] using hdist ▸ hrz3
+      obtain ⟨rho, hrho_inf, hrho_value, hrho_upper, hrho_eventually,
+          hgrad_rho, hnorm_rho, hweighted_rho⟩ :=
+        hsupport z hrz_support
+      have hrho_value' : rho z = rz := by
+        have hdist := Riemannian.HopfRinow.riemMetric_dist_eq
+          (I := I) (M := M) O z
+        simpa only [riemannianEDistOf, rz] using hrho_value.trans hdist.symm
+      have hrho_upper_dist : ∀ᶠ y in 𝓝 z, dist O y ≤ rho y := by
+        filter_upwards [hrho_upper] with y hy
+        have hdist := Riemannian.HopfRinow.riemMetric_dist_eq
+          (I := I) (M := M) O y
+        simpa only [riemannianEDistOf] using hdist.symm ▸ hy
+      have hrho_range : ∀ᶠ y in 𝓝 z, rho y ∈ Set.Ioo 0 T := by
+        have hmem : Set.Ioo (0 : Real) T ∈ 𝓝 (rho z) := by
+          rw [hrho_value']
+          exact Ioo_mem_nhds (lt_of_lt_of_le (by norm_num) hrz3) hrzT
+        exact hrho_inf.continuousAt hmem
+      have hRneg_eventually : ∀ᶠ y in 𝓝 z, R y < 0 :=
+        hRcont.continuousAt (Iio_mem_nhds hRzneg)
+      have hsmooth_min : IsLocalMin
+          (fun y : M => (T ^ 2 - rho y ^ 2) ^ 2 * R y) z := by
+        unfold IsLocalMin IsMinFilter
+        filter_upwards [hrho_upper_dist, hrho_range, hRneg_eventually]
+          with y hdist hyrange hRy
+        have hdist0 : 0 ≤ dist O y := dist_nonneg
+        have hydistT : dist O y < T := hdist.trans_lt hyrange.2
+        have hyclosed : y ∈ Metric.closedBall O T := by
+          rw [Metric.mem_closedBall]
+          simpa only [dist_comm] using hydistT.le
+        have hdist_sq : dist O y ^ 2 ≤ rho y ^ 2 :=
+          (sq_le_sq₀ hdist0 hyrange.1.le).2 hdist
+        have hrho_sq : rho y ^ 2 ≤ T ^ 2 :=
+          (sq_le_sq₀ hyrange.1.le hTpos.le).2 hyrange.2.le
+        have hrho_gap : 0 ≤ T ^ 2 - rho y ^ 2 :=
+          sub_nonneg.mpr hrho_sq
+        have hdist_sq_T : dist O y ^ 2 ≤ T ^ 2 :=
+          (sq_le_sq₀ hdist0 hTpos.le).2 hydistT.le
+        have hdist_gap : 0 ≤ T ^ 2 - dist O y ^ 2 :=
+          sub_nonneg.mpr hdist_sq_T
+        have hgap_le : T ^ 2 - rho y ^ 2 ≤ T ^ 2 - dist O y ^ 2 := by
+          linarith
+        have hcutoff_le :
+            (T ^ 2 - rho y ^ 2) ^ 2 ≤
+              (T ^ 2 - dist O y ^ 2) ^ 2 :=
+          (sq_le_sq₀ hrho_gap hdist_gap).2 hgap_le
+        have hmul := mul_le_mul_of_nonpos_right hcutoff_le hRy.le
+        calc
+          (T ^ 2 - rho z ^ 2) ^ 2 * R z = F z := by
+            simp only [F, hrho_value', rz]
+          _ ≤ F y := hzmin hyclosed
+          _ ≤ (T ^ 2 - rho y ^ 2) ^ 2 * R y := hmul
+      rw [← hrho_value, hrho_value'] at hweighted_rho
+      have hcutoff := weighted_scalar_cutoff_estimate
+        (I := I) g f sigma hsol T rz C z rho hT hrz hrzT
+          hrho_inf hrho_value' hrho_eventually hgrad_rho hnorm_rho
+            (by simpa only [R] using hweighted_rho)
+              (by simpa only [R] using hRzneg) hsmooth_min
+      have hFcompare : -F p ≤ -((T ^ 2 - rz ^ 2) ^ 2 * R z) := by
+        change -((T ^ 2 - rp ^ 2) ^ 2 * R p) ≤
+          -((T ^ 2 - rz ^ 2) ^ 2 * R z)
+        exact neg_le_neg hFzle
+      have hscale_nonneg : 0 ≤ 2 / n := by positivity
+      have hFp_est : (2 / n) * (-F p) ≤ D * T ^ 4 := by
+        calc
+          (2 / n) * (-F p) ≤
+              (2 / n) * (-((T ^ 2 - rz ^ 2) ^ 2 * R z)) :=
+            mul_le_mul_of_nonneg_left hFcompare hscale_nonneg
+          _ ≤ (4 * |C| + 28 + max 0 (-sigma)) * T ^ 4 := hcutoff
+          _ = D * T ^ 4 := by rfl
+      have hnegRp : 0 ≤ -R p := by linarith
+      have hcutoff_mul :
+          T ^ 4 / 4 * (-R p) ≤ (T ^ 2 - rp ^ 2) ^ 2 * (-R p) :=
+        mul_le_mul_of_nonneg_right hp_cutoff_lower hnegRp
+      have hnormalized :
+          (2 / n) * (T ^ 4 / 4 * (-R p)) ≤ D * T ^ 4 := by
+        calc
+          _ ≤ (2 / n) * ((T ^ 2 - rp ^ 2) ^ 2 * (-R p)) :=
+            mul_le_mul_of_nonneg_left hcutoff_mul hscale_nonneg
+          _ = (2 / n) * (-F p) := by
+            simp only [F, R, rp]
+            ring
+          _ ≤ D * T ^ 4 := hFp_est
+      have hdiv : (-R p) / (2 * n) ≤ D := by
+        apply (mul_le_mul_iff_of_pos_left hT4pos).mp
+        calc
+          T ^ 4 * ((-R p) / (2 * n)) =
+              (2 / n) * (T ^ 4 / 4 * (-R p)) := by
+            field_simp [hn.ne']
+            ring
+          _ ≤ D * T ^ 4 := hnormalized
+          _ = T ^ 4 * D := by ring
+      have hfinal : -R p ≤ 2 * n * D := by
+        calc
+          -R p ≤ D * (2 * n) :=
+            (div_le_iff₀ (mul_pos (by norm_num) hn)).mp hdiv
+          _ = 2 * n * D := by ring
+      calc
+        m ≤ -2 * n * D := min_le_right _ _
+        _ = -(2 * n * D) := by ring
+        _ ≤ -(-R p) := neg_le_neg hfinal
+        _ = R p := neg_neg _
+
+private theorem scalar_quadratic_neg
+    {n sigma r : Real} (hn : 0 < n)
+    (hr : r < min 0 (n * sigma / 2)) :
+    sigma * r - 2 * r ^ 2 / n < 0 := by
+  have hrneg : r < 0 := hr.trans_le (min_le_left _ _)
+  have hfactor :
+      sigma * r - 2 * r ^ 2 / n =
+        r * (sigma - 2 * r / n) := by ring
+  rw [hfactor]
+  apply mul_neg_of_neg_of_pos hrneg
+  by_cases hs : 0 ≤ sigma
+  · have hfrac : 2 * r / n < 0 :=
+      div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by norm_num) hrneg) hn
+    linarith
+  · have hsneg : sigma < 0 := lt_of_not_ge hs
+    have hrootneg : n * sigma / 2 < 0 :=
+      div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg hn hsneg) (by norm_num)
+    rw [min_eq_right hrootneg.le] at hr
+    have hfrac : 2 * r / n < sigma := by
+      apply (div_lt_iff₀ hn).2
+      nlinarith
+    linarith
+
+private theorem scalar_quadratic_mono
+    {n sigma r a : Real} (hn : 0 < n) (hra : r ≤ a)
+    (ha : a < min 0 (n * sigma / 2)) :
+    sigma * r - 2 * r ^ 2 / n ≤
+      sigma * a - 2 * a ^ 2 / n := by
+  have haneg : a < 0 := ha.trans_le (min_le_left _ _)
+  have hrneg : r < 0 := hra.trans_lt haneg
+  have hcoef : 0 < sigma - 2 * (a + r) / n := by
+    by_cases hs : 0 ≤ sigma
+    · have hsum : a + r < 0 := add_neg haneg hrneg
+      have hfrac : 2 * (a + r) / n < 0 :=
+        div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg (by norm_num) hsum) hn
+      linarith
+    · have hsneg : sigma < 0 := lt_of_not_ge hs
+      have hrootneg : n * sigma / 2 < 0 :=
+        div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg hn hsneg) (by norm_num)
+      rw [min_eq_right hrootneg.le] at ha
+      have hsum : a + r < n * sigma := by nlinarith
+      have hfrac : 2 * (a + r) / n < sigma := by
+        apply (div_lt_iff₀ hn).2
+        nlinarith
+      linarith
+  have hfactor :
+      (sigma * a - 2 * a ^ 2 / n) -
+          (sigma * r - 2 * r ^ 2 / n) =
+        (a - r) * (sigma - 2 * (a + r) / n) := by ring
+  apply sub_nonneg.mp
+  rw [hfactor]
+  exact mul_nonneg (sub_nonneg.mpr hra) hcoef.le
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem gradientRicciSoliton_scalar_lower_bound
+    [ConnectedSpace M]
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma) (x : M) :
+    min 0 ((Module.finrank Real E : Real) * sigma / 2) ≤
+      metricScalarAt (I := I) (M := M) g x := by
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let _ : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y u w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
+  let _ : MetricSpace M :=
+    Riemannian.HopfRinow.riemMetricSpace (I := I) (M := M)
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro y u
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y u
+  let _ : ProperSpace M :=
+    Riemannian.HopfRinow.properSpace_riemMetric
+      (I := I) (M := M) hcomplete.complete g hEnorm
+  let R : C^∞⟮I, M; Real⟯ :=
+    ⟨(fun y : M => metricScalarAt (I := I) (M := M) g y),
+      metricScalar_smooth (I := I) (M := M) g⟩
+  let psi : M → Real := fun y =>
+    Real.log (1 + (riemannianEDistOf (I := I) g x y).toReal ^ 2)
+  have hpsi_eq : psi = fun y : M => Real.log (1 + dist x y ^ 2) := by
+    funext y
+    have hdist := Riemannian.HopfRinow.riemMetric_dist_eq
+      (I := I) (M := M) x y
+    change Real.log (1 + (riemannianEDist I x y).toReal ^ 2) = _
+    rw [← hdist]
+  have hpsi : Continuous psi := by
+    rw [hpsi_eq]
+    exact (continuous_const.add
+      ((continuous_const.dist continuous_id).pow 2)).log
+        (fun y => by
+          change 1 + dist x y ^ 2 ≠ 0
+          exact ne_of_gt (by positivity))
+  have hpsi_nonneg : ∀ y : M, 0 ≤ psi y := by
+    intro y
+    rw [hpsi_eq]
+    exact Real.log_nonneg (by nlinarith [sq_nonneg (dist x y)])
+  have hpsi_atTop : Tendsto psi (cocompact M) atTop := by
+    rw [hpsi_eq, Filter.tendsto_atTop]
+    intro b
+    have hdist_eventually :
+        ∀ᶠ y in cocompact M, Real.sqrt (Real.exp b) ≤ dist x y :=
+      (tendsto_dist_left_cocompact_atTop x)
+        (Filter.eventually_ge_atTop (Real.sqrt (Real.exp b)))
+    filter_upwards [hdist_eventually] with y hy
+    have hsquare : Real.exp b ≤ dist x y ^ 2 := by
+      rw [← Real.sq_sqrt (Real.exp_pos b).le]
+      exact (sq_le_sq₀ (Real.sqrt_nonneg _) dist_nonneg).2 hy
+    rw [← Real.log_exp b]
+    apply Real.log_le_log (Real.exp_pos b)
+    nlinarith
+  obtain ⟨m, hm⟩ :=
+    gradientRicciSoliton_scalar_boundedBelow
+      (I := I) g f sigma hcomplete hsol x
+  have hlower : ∃ m : Real, ∀ y : M, m ≤ R y := by
+    exact ⟨m, hm⟩
+  obtain ⟨A, B, hA, hB, hsupport⟩ :=
+    gradientRicciSoliton_exists_weightedLogDistanceUpperSupport
+      (I := I) g f sigma hcomplete hsol x
+  let n : Real := Module.finrank Real E
+  have hn : 0 < n := by
+    dsimp only [n]
+    exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))
+  change min 0 (n * sigma / 2) ≤ R x
+  by_contra hnot
+  have hRx : R x < min 0 (n * sigma / 2) := lt_of_not_ge hnot
+  let c : Real := min 0 (n * sigma / 2)
+  let a : Real := (R x + c) / 2
+  have hRa : R x < a := by
+    dsimp only [a, c]
+    linarith
+  have hac : a < c := by
+    dsimp only [a, c]
+    linarith
+  have hqa : sigma * a - 2 * a ^ 2 / n < 0 :=
+    scalar_quadratic_neg hn (by simpa only [c] using hac)
+  have hgap : 0 < a - R x := sub_pos.mpr hRa
+  have hden : 0 < B + 1 := by linarith
+  have hmargin : 0 < -(sigma * a - 2 * a ^ 2 / n) := by linarith
+  have hcap :
+      0 < min (a - R x)
+        (-(sigma * a - 2 * a ^ 2 / n) / (B + 1)) :=
+    lt_min hgap (div_pos hmargin hden)
+  let epsilon : Real :=
+    min (a - R x) (-(sigma * a - 2 * a ^ 2 / n) / (B + 1)) / 2
+  have hepsilon : 0 < epsilon := by
+    dsimp only [epsilon]
+    linarith
+  have hepsilon_cap :
+      epsilon < min (a - R x)
+        (-(sigma * a - 2 * a ^ 2 / n) / (B + 1)) := by
+    dsimp only [epsilon]
+    linarith
+  have hepsilon_gap : epsilon < a - R x :=
+    hepsilon_cap.trans_le (min_le_left _ _)
+  have hepsilon_margin :
+      epsilon < -(sigma * a - 2 * a ^ 2 / n) / (B + 1) :=
+    hepsilon_cap.trans_le (min_le_right _ _)
+  have herror :
+      epsilon * B < -(sigma * a - 2 * a ^ 2 / n) := by
+    calc
+      epsilon * B < epsilon * (B + 1) := by nlinarith
+      _ < (-(sigma * a - 2 * a ^ 2 / n) / (B + 1)) * (B + 1) :=
+        mul_lt_mul_of_pos_right hepsilon_margin hden
+      _ = -(sigma * a - 2 * a ^ 2 / n) := by
+        field_simp [hden.ne']
+  obtain ⟨z, hzvalue, hzgrad, hzweighted⟩ :=
+    weightedOmoriYau_of_upperSupports
+      (I := I) g f R psi hpsi hpsi_nonneg hpsi_atTop hlower
+        hA hB hepsilon hsupport x
+  have hRza : R z ≤ a := by
+    calc
+      R z ≤ R x + epsilon := hzvalue
+      _ ≤ a := by linarith
+  have hqz :
+      sigma * R z - 2 * (R z) ^ 2 / n ≤
+        sigma * a - 2 * a ^ 2 / n :=
+    scalar_quadratic_mono hn hRza (by simpa only [c] using hac)
+  have hRic := scalar_sq_div_rank_le_ricci_normSq (I := I) g z
+  have hweighted_eq := gradientRicciSoliton_weightedLaplacian_scalar hsol z
+  change weightedLaplacian (I := I) g f R z = _ at hweighted_eq
+  have hweighted_upper :
+      weightedLaplacian (I := I) g f R z ≤
+        sigma * R z - 2 * (R z) ^ 2 / n := by
+    rw [hweighted_eq]
+    change sigma * metricScalarAt (I := I) (M := M) g z -
+        2 * Tensor0SBundle.normSq0S (I := I) g z 2
+          (metricRicciAt (I := I) (M := M) g z) ≤
+      sigma * metricScalarAt (I := I) (M := M) g z -
+        2 * metricScalarAt (I := I) (M := M) g z ^ 2 /
+          (Module.finrank Real E : Real)
+    calc
+      _ ≤ sigma * metricScalarAt (I := I) (M := M) g z -
+          2 * (metricScalarAt (I := I) (M := M) g z ^ 2 /
+            (Module.finrank Real E : Real)) :=
+        sub_le_sub_left (mul_le_mul_of_nonneg_left hRic (by norm_num)) _
+      _ = _ := by ring
+  have hchain :
+      -epsilon * B ≤ sigma * a - 2 * a ^ 2 / n :=
+    hzweighted.trans (hweighted_upper.trans hqz)
+  have hstrict :
+      sigma * a - 2 * a ^ 2 / n < -epsilon * B := by
+    linarith
+  exact (not_lt_of_ge hchain) hstrict
+
 end DifferentialGeometry.Geometry

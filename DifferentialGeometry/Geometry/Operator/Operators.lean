@@ -1053,6 +1053,102 @@ theorem laplacian_mul
             (gradientFun (I := I) g f x)]
           ring_nf
 
+theorem laplacian_mul_at
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (g : SmoothRiemannianMetric I M)
+    {f h : M → Real} {x : M}
+    (hf : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hh : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) h y)
+    (hgradf : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g f y) x)
+    (hgradh : MDiffAt
+      (T% fun y : M => gradientFun (I := I) g h y) x) :
+    laplacian (I := I) cov g (fun y : M => f y * h y) x =
+      f x * laplacian (I := I) cov g h x +
+        h x * laplacian (I := I) cov g f x +
+          2 * g.inner x
+            (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g h x) := by
+  have hfx : MDifferentiableAt I 𝓘(Real, Real) f x :=
+    hf.self_of_nhds
+  have hhx : MDifferentiableAt I 𝓘(Real, Real) h x :=
+    hh.self_of_nhds
+  have hleft : MDiffAt
+      (T% (f • fun y : M => gradientFun (I := I) g h y)) x :=
+    hfx.smul_section hgradh
+  have hright : MDiffAt
+      (T% (h • fun y : M => gradientFun (I := I) g f y)) x :=
+    hhx.smul_section hgradf
+  have hsum : MDiffAt
+      (T% fun y : M =>
+        f y • gradientFun (I := I) g h y +
+          h y • gradientFun (I := I) g f y) x :=
+    mdifferentiableAt_add_section hleft hright
+  have hgrad_eq :
+      (fun y : M => gradientFun (I := I) g (fun z : M => f z * h z) y) =ᶠ[nhds x]
+        (fun y : M =>
+          f y • gradientFun (I := I) g h y +
+            h y • gradientFun (I := I) g f y) := by
+    filter_upwards [hf, hh] with y hfy hhy
+    exact gradientFun_mul (I := I) g hfy hhy
+  have hgrad_total :
+      (T% fun y : M =>
+        gradientFun (I := I) g (fun z : M => f z * h z) y) =ᶠ[nhds x]
+        (T% fun y : M =>
+          f y • gradientFun (I := I) g h y +
+            h y • gradientFun (I := I) g f y) := by
+    filter_upwards [hgrad_eq] with y hy
+    change TotalSpace.mk' E y
+        (gradientFun (I := I) g (fun z : M => f z * h z) y) =
+      TotalSpace.mk' E y
+        (f y • gradientFun (I := I) g h y +
+          h y • gradientFun (I := I) g f y)
+    rw [hy]
+  have hgrad_mul : MDiffAt
+      (T% fun y : M =>
+        gradientFun (I := I) g (fun z : M => f z * h z) y) x :=
+    hsum.congr_of_eventuallyEq hgrad_total
+  have hcov :
+      cov.toFun
+          (fun y : M => gradientFun (I := I) g (fun z : M => f z * h z) y) x =
+        cov.toFun
+          (fun y : M =>
+            f y • gradientFun (I := I) g h y +
+              h y • gradientFun (I := I) g f y) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hgrad_mul hsum Filter.univ_mem hgrad_eq
+  calc
+    laplacian (I := I) cov g (fun y : M => f y * h y) x =
+        divergence (I := I) cov
+          (fun y : M =>
+            f y • gradientFun (I := I) g h y +
+              h y • gradientFun (I := I) g f y) x := by
+      unfold laplacian divergence
+      rw [hcov]
+    _ = divergence (I := I) cov
+          (f • fun y : M => gradientFun (I := I) g h y) x +
+        divergence (I := I) cov
+          (h • fun y : M => gradientFun (I := I) g f y) x := by
+      exact divergence_add (I := I) cov inferInstance hleft hright
+    _ = (f x * laplacian (I := I) cov g h x +
+          g.inner x (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g h x)) +
+        (h x * laplacian (I := I) cov g f x +
+          g.inner x (gradientFun (I := I) g h x)
+            (gradientFun (I := I) g f x)) := by
+      rw [divergence_smul_gradientFun_pair (I := I) cov g hfx hgradh]
+      rw [divergence_smul_gradientFun_pair (I := I) cov g hhx hgradf]
+    _ = f x * laplacian (I := I) cov g h x +
+        h x * laplacian (I := I) cov g f x +
+          2 * g.inner x
+            (gradientFun (I := I) g f x)
+            (gradientFun (I := I) g h x) := by
+      rw [g.symm x (gradientFun (I := I) g h x)
+        (gradientFun (I := I) g f x)]
+      ring
+
 theorem laplacian_rpow
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
