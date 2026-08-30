@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Scaling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturalityCross
+import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 import DifferentialGeometry.Geometry.Operator.Pullback
 
@@ -62,5 +63,40 @@ theorem gradientRicciSoliton_pullbackCross
     Diffeomorph.pullbackMetricCross_inner]
   exact h (Φ x) (mfderiv I J (Φ : M → N) x v)
     (mfderiv I J (Φ : M → N) x w)
+
+theorem gradientRicciSoliton_prod
+    [CompleteSpace E] [CompleteSpace F]
+    [BoundarylessManifold I M] [BoundarylessManifold J N]
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
+    {f : C^∞⟮I, M; Real⟯} {k : C^∞⟮J, N; Real⟯} {σ : Real}
+    (hg : gradientRicciSoliton (I := I) g f σ)
+    (hh : gradientRicciSoliton (I := J) h k σ) :
+    gradientRicciSoliton (I := I.prod J) (g.prod h)
+      (f.comp ContMDiffMap.fst + k.comp ContMDiffMap.snd) σ := by
+  intro x u v
+  let uM : TangentSpace I x.1 := u.1
+  let uN : TangentSpace J x.2 := u.2
+  let vM : TangentSpace I x.1 := v.1
+  let vN : TangentSpace J x.2 := v.2
+  change Curvature.ricciTensor (I := I.prod J) (g.prod h) x u v +
+      Operator.hessFun (I := I.prod J) (g.prod h)
+        (fun q : M × N => f q.1 + k q.2) x u v =
+    (σ / 2) * (g.prod h).inner x u v
+  rw [Curvature.ricciTensor_prod, Operator.hessFun_prod,
+    SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+  change Curvature.ricciTensor (I := I) g x.1 uM vM +
+        Curvature.ricciTensor (I := J) h x.2 uN vN +
+      (Operator.hessFun (I := I) g f x.1 uM vM +
+        Operator.hessFun (I := J) h k x.2 uN vN) =
+    (σ / 2) * (g.inner x.1 uM vM + h.inner x.2 uN vN)
+  calc
+    _ = (Curvature.ricciTensor (I := I) g x.1 uM vM +
+          Operator.hessFun (I := I) g f x.1 uM vM) +
+        (Curvature.ricciTensor (I := J) h x.2 uN vN +
+          Operator.hessFun (I := J) h k x.2 uN vN) := by ring
+    _ = (σ / 2) * g.inner x.1 uM vM +
+        (σ / 2) * h.inner x.2 uN vN := by
+      rw [hg x.1 uM vM, hh x.2 uN vN]
+    _ = _ := by ring
 
 end DifferentialGeometry.Geometry
