@@ -179,6 +179,36 @@ theorem hamiltonBlock_exact_evolution_eq_j_add_sigma_square
   unfold hamiltonBlockExactEvolution
   exact hamiltonBlock_pre_square_eq_j_add_sigma_square K P M U W
 
+theorem hamiltonBlock_heat_product_eq_pre_square_of_producer_equations
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (LK : Idx -> Idx -> Idx -> Idx -> Real)
+    (LP : Idx -> Idx -> Idx -> Real)
+    (LM : Idx -> Idx -> Real)
+    (DK : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (DP : Idx -> Idx -> Idx -> Idx -> Real)
+    (DM : Idx -> Idx -> Idx -> Real)
+    (DU : Idx -> Idx -> Idx -> Real)
+    (DW : Idx -> Real)
+    (LU : Idx -> Idx -> Real)
+    (LW : Idx -> Real)
+    (U : Idx -> Idx -> Real)
+    (W : Idx -> Real)
+    (hDW : ∀ e, DW e = 0)
+    (hLU : ∀ a b, LU a b = 0)
+    (hMsym : ∀ a b, M a b = M b a)
+    (hK : hamiltonBlockRawKProduct K LK DK DU U =
+      hamiltonBlockPreSquareK K U)
+    (hP : hamiltonBlockRawPProduct P LP DP DU LW U W =
+      hamiltonBlockPreSquareP K P U W)
+    (hM : hamiltonBlockRawMProduct M LM LW W =
+      hamiltonBlockPreSquareM K P M W) :
+    hamiltonBlockHeatProduct K P M LK LP LM DK DP DM DU DW LU LW U W =
+      hamiltonBlockPreSquare K P M U W := by
+  rw [hamiltonBlock_heat_product_eq_split K P M LK LP LM DK DP DM DU DW LU LW U W
+    hDW hLU hMsym, hK, hP, hM, hamiltonBlockPreSquare_eq_split]
+
 theorem hamiltonBlockExactEvolution_eq_gram_reaction_add_sigma_square
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
