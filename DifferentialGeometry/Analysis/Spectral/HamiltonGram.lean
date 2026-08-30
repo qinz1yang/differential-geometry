@@ -281,6 +281,21 @@ theorem hamiltonGram_linearTerm_eq_zero_of_quadratic_eq_zero
     (fun s _ => sq_nonneg (hamiltonGramLinearTerm Y X U W s))).mp hzero
   exact sq_eq_zero_iff.mp (hterms r (Finset.mem_univ r))
 
+theorem hamiltonGram_quadratic_eq_zero_iff_linearTerms_eq_zero
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real) :
+    hamiltonGramQuadratic Y X U W = 0 ↔
+      ∀ r, hamiltonGramLinearTerm Y X U W r = 0 := by
+  constructor
+  · exact hamiltonGram_linearTerm_eq_zero_of_quadratic_eq_zero Y X U W
+  · intro hterm
+    unfold hamiltonGramQuadratic
+    apply Finset.sum_eq_zero
+    intro r hr
+    rw [hterm r]
+    simp
+
 theorem hamiltonGram_reaction_nonneg
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real)
