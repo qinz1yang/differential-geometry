@@ -3938,6 +3938,7 @@ import DifferentialGeometry.Analysis.Spectral.LowerKyFan
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Galerkin
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MetricComparison
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinWeakIdentity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinSequence
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinTimeL2
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakCompactness
