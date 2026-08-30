@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
 import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 set_option autoImplicit false
 
@@ -86,5 +87,53 @@ theorem hamilton_shifted_scalar_deriv_nonneg
     mul_nonneg hτ.le htrace
   field_simp [hτne] at hscale
   nlinarith
+
+theorem hamilton_shifted_scalar_monotoneOn
+    {R dR : Real → Real} {α a b : Real}
+    (hαa : α ≤ a)
+    (hcont : ContinuousOn (fun s : Real => (s - α) * R s) (Set.Icc a b))
+    (hderiv : ∀ s ∈ Set.Ioo a b, HasDerivAt R (dR s) s)
+    (htrace : ∀ s ∈ Set.Ioo a b,
+      0 ≤ dR s + R s / (s - α)) :
+    MonotoneOn (fun s : Real => (s - α) * R s) (Set.Icc a b) := by
+  apply monotoneOn_of_deriv_nonneg (convex_Icc a b) hcont
+    (fun s hs =>
+      (hamilton_shifted_scalar_hasDerivAt (α := α) (t := s)
+        (hderiv s (by simpa [interior_Icc] using hs))).differentiableAt.differentiableWithinAt)
+    (fun s hs => by
+      have hsi : s ∈ Set.Ioo a b := by simpa [interior_Icc] using hs
+      rw [(hamilton_shifted_scalar_hasDerivAt (α := α) (t := s)
+        (hderiv s hsi)).deriv]
+      exact hamilton_shifted_scalar_deriv_nonneg
+        (lt_of_le_of_lt hαa hsi.1) (htrace s hsi))
+
+theorem hamilton_shifted_scalar_two_time
+    {R : Real → Real} {α t₁ t₂ : Real}
+    (ht : t₁ ≤ t₂)
+    (hmono : MonotoneOn (fun s : Real => (s - α) * R s)
+      (Set.Icc t₁ t₂)) :
+    (t₁ - α) * R t₁ ≤ (t₂ - α) * R t₂ := by
+  exact hmono ⟨le_rfl, ht⟩ ⟨ht, le_rfl⟩ ht
+
+theorem hamilton_ancient_scalar_monotoneOn
+    {R dR : Real → Real} {a b : Real}
+    (hcont : ContinuousOn R (Set.Icc a b))
+    (hderiv : ∀ s ∈ Set.Ioo a b, HasDerivAt R (dR s) s)
+    (htrace : ∀ s ∈ Set.Ioo a b, 0 ≤ dR s) :
+    MonotoneOn R (Set.Icc a b) := by
+  apply monotoneOn_of_deriv_nonneg (convex_Icc a b) hcont
+    (fun s hs =>
+      (hderiv s (by simpa [interior_Icc] using hs)).differentiableAt.differentiableWithinAt)
+    (fun s hs => by
+      have hsi : s ∈ Set.Ioo a b := by simpa [interior_Icc] using hs
+      rw [(hderiv s hsi).deriv]
+      exact htrace s hsi)
+
+theorem hamilton_ancient_scalar_two_time
+    {R : Real → Real} {t₁ t₂ : Real}
+    (ht : t₁ ≤ t₂)
+    (hmono : MonotoneOn R (Set.Icc t₁ t₂)) :
+    R t₁ ≤ R t₂ := by
+  exact hmono ⟨le_rfl, ht⟩ ⟨ht, le_rfl⟩ ht
 
 end DifferentialGeometry.PDE.RicciFlow
