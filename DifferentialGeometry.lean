@@ -1516,6 +1516,7 @@ import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx
 import DifferentialGeometry.Analysis.Spectral.Scalar.Enumeration
 import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Scalar.Spectrum
+import DifferentialGeometry.Analysis.Spectral.HamiltonGram
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartLeviCivitaParallelCLMOpNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.IntrinsicL2Bridge
