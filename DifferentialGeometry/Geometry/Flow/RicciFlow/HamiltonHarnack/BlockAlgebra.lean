@@ -79,4 +79,30 @@ theorem hamiltonBlockPolarized_diag_nonneg_of_gram
       Y X U W]
   exact DifferentialGeometry.Analysis.Spectral.hamiltonGram_quadratic_nonneg Y X U W
 
+theorem hamiltonBlockSigma_eq_zero_of_gram_quadratic_eq_zero
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hzero : hamiltonBlockPolarized
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U U W W = 0)
+    (a b : ι) :
+    hamiltonBlockSigma
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X) U W a b = 0 := by
+  rw [← hamiltonGramSigma_eq_hamiltonBlockSigma Y X U W a b]
+  apply DifferentialGeometry.Analysis.Spectral.hamiltonGram_sigma_eq_zero_of_quadratic_eq_zero
+    Y X U W
+  have hblock :
+      hamiltonQuadraticForm
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W = 0 := by
+    rw [← hamiltonBlockPolarized_diag]
+    exact hzero
+  rw [← DifferentialGeometry.Analysis.Spectral.hamiltonGram_quadratic_eq_hamiltonQuadraticForm
+    Y X U W] at hblock
+  exact hblock
+
 end DifferentialGeometry.PDE.RicciFlow
