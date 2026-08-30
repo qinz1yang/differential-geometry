@@ -609,6 +609,109 @@ theorem globalFlow_diffeomorph_of_complete [FiniteDimensional ℝ E]
   · intro x
     rfl
 
+theorem contMDiffAt_globalFlow_joint_of_complete [FiniteDimensional ℝ E]
+    [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
+    (t₀ : ℝ) (x₀ : M) :
+    ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => curveAt v hcomplete p.2 p.1) (t₀, x₀) := by
+  have hv1 : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
+    hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
+  have hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (⟨q.2, v q.2⟩ : TangentBundle I M)) := by
+    have hproj : ContMDiff (𝓘(ℝ, ℝ).prod I) I ∞
+        (Prod.snd : ℝ × M → M) :=
+      contMDiff_snd (I := 𝓘(ℝ, ℝ)) (J := I) (n := ∞)
+    have hcomp : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+        ((fun x : M => (⟨x, v x⟩ : TangentBundle I M)) ∘
+          (Prod.snd : ℝ × M → M)) := hv.comp hproj
+    simpa [Function.comp_def] using hcomp
+  let y : M := curveAt v hcomplete x₀ t₀
+  obtain ⟨U, hUopen, hyU, T, hT, Ψ, hΨinit, hΨsm, hΨbare⟩ :=
+    local_flow_jointSmooth_and_integralCurve (E := E) (I := I) (M := M)
+      (X := fun _ : ℝ => v) hX t₀ y
+  have hz : ContMDiffAt I I ∞
+      (fun x : M => curveAt v hcomplete x t₀) x₀ :=
+    contMDiffAt_globalFlow_of_complete v hv hcomplete t₀ x₀
+  have hzU : {x : M | curveAt v hcomplete x t₀ ∈ U} ∈ 𝓝 x₀ := by
+    have hy : curveAt v hcomplete x₀ t₀ ∈ U := by
+      exact hyU
+    exact hz.continuousAt.preimage_mem_nhds (hUopen.mem_nhds hy)
+  let V : Set (ℝ × M) :=
+    Set.Ioo (t₀ - T) (t₀ + T) ×ˢ {x : M | curveAt v hcomplete x t₀ ∈ U}
+  have hVmem : (t₀, x₀) ∈ V := by
+    constructor
+    · exact ⟨by linarith, by linarith⟩
+    · exact hyU
+  have hVnhds : V ∈ 𝓝 (t₀, x₀) := by
+    exact prod_mem_nhds (isOpen_Ioo.mem_nhds ⟨by linarith, by linarith⟩) hzU
+  have hagree : ∀ p ∈ U, ∀ t ∈ Set.Ioo (t₀ - T) (t₀ + T),
+      curveAt v hcomplete p (t - t₀) = Ψ p t := by
+    intro p hp t ht
+    let γp : ℝ → M := fun s => curveAt v hcomplete p (s - t₀)
+    have hγp : IsMIntegralCurve γp v := by
+      have hcomp := (curveAt_integralCurve v hcomplete p).comp_add (-t₀)
+      simpa [γp, Function.comp_def, sub_eq_add_neg] using hcomp
+    have hγOn : IsMIntegralCurveOn γp v
+        (Set.Ioo (t₀ - T) (t₀ + T)) :=
+      hγp.isMIntegralCurveOn _
+    have hΨOn : IsMIntegralCurveOn (Ψ p) v
+        (Set.Ioo (t₀ - T) (t₀ + T)) := by
+      intro s hs
+      simpa using (hΨbare p hp s hs).hasMFDerivWithinAt
+    have ht₀ : t₀ ∈ Set.Ioo (t₀ - T) (t₀ + T) := by
+      constructor <;> linarith
+    have heq := isMIntegralCurveOn_Ioo_eqOn_of_contMDiff_boundaryless
+      (t₀ := t₀) (a := t₀ - T) (b := t₀ + T) ht₀ hv1 hγOn hΨOn
+      (by
+        change curveAt v hcomplete p (t₀ - t₀) = Ψ p t₀
+        rw [sub_self, curveAt_zero v hcomplete p]
+        exact (hΨinit p hp).symm)
+    have hval := heq ht
+    simpa [γp, sub_eq_add_neg] using hval
+  have hmain : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => Ψ (curveAt v hcomplete p.2 t₀) p.1) (t₀, x₀) := by
+    have hpair : ContMDiffAt (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞
+        (fun p : ℝ × M => (p.1, curveAt v hcomplete p.2 t₀)) (t₀, x₀) := by
+      exact (contMDiffAt_fst (p := (t₀, x₀))).prodMk
+        (hz.comp (t₀, x₀) (contMDiffAt_snd (p := (t₀, x₀))))
+    have hΨat : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
+        (fun q : ℝ × M => Ψ q.2 q.1) (t₀, y) := by
+      exact (hΨsm (t₀, y) (by constructor <;> [exact ⟨by linarith, by linarith⟩; exact hyU])).contMDiffAt
+        (prod_mem_nhds (isOpen_Ioo.mem_nhds ⟨by linarith, by linarith⟩)
+          (hUopen.mem_nhds hyU))
+    have hcomp := hΨat.comp (t₀, x₀) hpair
+    simpa [Function.comp_def, y] using hcomp
+  have heq : (fun p : ℝ × M => curveAt v hcomplete p.2 p.1) =ᶠ[𝓝 (t₀, x₀)]
+      (fun p : ℝ × M => Ψ (curveAt v hcomplete p.2 t₀) p.1) := by
+    exact Filter.Eventually.mono hVnhds (fun p hp => by
+      have hstep := curveAt_add v hv1 hcomplete p.2 t₀ (p.1 - t₀)
+      have hstep' : curveAt v hcomplete p.2 p.1 =
+          curveAt v hcomplete (curveAt v hcomplete p.2 t₀) (p.1 - t₀) := by
+        rw [← hstep]
+        congr 1
+        ring
+      change curveAt v hcomplete p.2 p.1 = Ψ
+        (curveAt v hcomplete p.2 t₀) p.1
+      rw [hstep']
+      exact hagree (curveAt v hcomplete p.2 t₀) hp.2 p.1 hp.1)
+  exact hmain.congr_of_eventuallyEq heq
+
+theorem contMDiff_globalFlow_joint_of_complete [FiniteDimensional ℝ E]
+    [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+    (v : (x : M) → TangentSpace I x)
+    (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+      (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) :
+    ContMDiff (𝓘(ℝ, ℝ).prod I) I ∞
+      (fun p : ℝ × M => curveAt v hcomplete p.2 p.1) := by
+  intro p
+  rcases p with ⟨t₀, x₀⟩
+  exact contMDiffAt_globalFlow_joint_of_complete v hv hcomplete t₀ x₀
+
 private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensional ℝ E]
     [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
