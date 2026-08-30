@@ -30,15 +30,15 @@ theorem finite_gram_factorization_quadratic
   simp_rw [real_inner_smul_left]
   ring_nf
 
-def hamiltonGramK {ι κ : Type*} [Fintype ι] [Fintype κ]
+def hamiltonGramK {ι κ : Type*} [Fintype κ]
     (Y : κ → ι → ι → Real) (a b c d : ι) : Real :=
   ∑ r, Y r a b * Y r c d
 
-def hamiltonGramP {ι κ : Type*} [Fintype ι] [Fintype κ]
+def hamiltonGramP {ι κ : Type*} [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real) (a b c : ι) : Real :=
   ∑ r, Y r a b * X r c
 
-def hamiltonGramM {ι κ : Type*} [Fintype ι] [Fintype κ]
+def hamiltonGramM {ι κ : Type*} [Fintype κ]
     (X : κ → ι → Real) (a b : ι) : Real :=
   ∑ r, X r a * X r b
 
