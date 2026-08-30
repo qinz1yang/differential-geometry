@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
 
 set_option autoImplicit false
 
@@ -22,6 +23,8 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.ODE
+open DifferentialGeometry.PDE.DeTurck (lieDerivMetric lieDerivMetric_smul_vectorField)
+open DifferentialGeometry.PDE.RicciFlow.Pullback (cartan_formula_for_lie_deriv_metric)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -299,6 +302,26 @@ noncomputable def canonicalMetric
     (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
       (canonicalFlowParameter sigma t))
 
+noncomputable def canonicalMetricFamily
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    (t : Real) : SmoothRiemannianMetric I M := by
+  classical
+  exact if ht : t ∈ canonicalTimeDomain sigma then
+      canonicalMetric (I := I) g f sigma hcomplete hsol ht
+    else g
+
+theorem canonicalMetricFamily_eq
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) :
+    canonicalMetricFamily (I := I) g f sigma hcomplete hsol t =
+      canonicalMetric (I := I) g f sigma hcomplete hsol ht := by
+  classical
+  simp only [canonicalMetricFamily, dif_pos ht]
+
 noncomputable def canonicalPotential
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
     (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
@@ -415,6 +438,204 @@ theorem canonicalFlowDiffeomorph_hasMFDerivAt
   rw [canonicalFlowDiffeomorph_apply]
   exact h
 
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] [ConnectedSpace M] in
+private theorem lieDerivMetric_gradFun
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (x : M) (v w : TangentSpace I x) :
+    lieDerivMetric (I := I) g
+        (⟨fun y => gradFun (I := I) g f y,
+          gradFun_contMDiff_total_section (I := I) g f.contMDiff⟩ :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x v w =
+      2 * hessFun (I := I) g f x v w := by
+  let W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+    ⟨fun y => gradFun (I := I) g f y,
+      gradFun_contMDiff_total_section (I := I) g f.contMDiff⟩
+  change lieDerivMetric (I := I) g W x v w = _
+  rw [cartan_formula_for_lie_deriv_metric]
+  change g.inner x
+      ((LeviCivita (I := I) g) (fun y => gradFun (I := I) g f y) x v) w +
+    g.inner x v
+      ((LeviCivita (I := I) g) (fun y => gradFun (I := I) g f y) x w) = _
+  rw [← hessFun_eq_cov_grad (I := I) g f.contMDiff x v w]
+  rw [g.symm x v]
+  rw [← hessFun_eq_cov_grad (I := I) g f.contMDiff x w v]
+  rw [hessFun_symm_of_boundaryless (I := I) g f.contMDiff x w v]
+  ring
+
+private theorem canonicalPullbackMetric_hasDerivAt
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma)
+    (x : M) (v w : TangentSpace I x) :
+    HasDerivAt
+      (fun s : Real =>
+        (Diffeomorph.pullbackMetric g
+          (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma s))).inner x v w)
+      ((2 / (1 - sigma * t)) *
+        hessFun (I := I) g f
+          (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) x)
+          (mfderiv I I
+            (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) : M → M) x v)
+          (mfderiv I I
+            (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) : M → M) x w)) t := by
+  classical
+  have hopen : IsOpen (canonicalTimeDomain sigma) := by
+    rw [canonicalTimeDomain]
+    exact isOpen_lt continuous_const
+      (continuous_const.sub (continuous_const.mul continuous_id))
+  obtain ⟨a, b, htab, hab⟩ :=
+    mem_nhds_iff_exists_Ioo_subset.mp (hopen.mem_nhds ht)
+  let gradSection : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+    ⟨fun y => gradFun (I := I) g f y,
+      gradFun_contMDiff_total_section (I := I) g f.contMDiff⟩
+  let Phi : Real → M ≃ₘ⟮I, I⟯ M := fun r =>
+    canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma (a + r))
+  let Y : Real → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := fun r =>
+    (1 / (1 - sigma * (a + r))) • gradSection
+  have htime : ∀ r ∈ Ioo (0 : Real) (b - a),
+      a + r ∈ canonicalTimeDomain sigma := by
+    intro r hr
+    apply hab
+    constructor <;> linarith [hr.1, hr.2]
+  have hPhiOde : ∀ z : M, ∀ r ∈ Ioo (0 : Real) (b - a),
+      HasMFDerivWithinAt 𝓘(Real, Real) I
+        (fun s : Real => (Phi s : M → M) z) (Ici (0 : Real)) r
+        ((1 : Real →L[Real] Real).smulRight (Y r (Phi r z))) := by
+    intro z r hr
+    have hflow := canonicalFlowDiffeomorph_hasMFDerivAt
+      (I := I) g f sigma hcomplete hsol (htime r hr) z
+    have htrans : HasDerivAt (fun s : Real => a + s) 1 r :=
+      (hasDerivAt_id r).const_add a
+    have hcomp := hflow.comp r htrans.hasFDerivAt.hasMFDerivAt
+    have hcomp' : HasMFDerivAt 𝓘(Real, Real) I
+        (fun s : Real => (Phi s : M → M) z) r
+        ((1 : Real →L[Real] Real).smulRight (Y r (Phi r z))) := by
+      have hder :
+          ((1 : Real →L[Real] Real).smulRight
+              ((1 / (1 - sigma * (a + r))) •
+                gradFun (I := I) g f
+                  (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                    (canonicalFlowParameter sigma (a + r)) z))) ∘SL
+            ContinuousLinearMap.toSpanSingleton Real 1 =
+          (1 : Real →L[Real] Real).smulRight (Y r (Phi r z)) := by
+        apply ContinuousLinearMap.ext
+        intro c
+        change (c * 1) • ((1 / (1 - sigma * (a + r))) •
+            gradFun (I := I) g f
+              (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma (a + r)) z)) =
+          c • ((1 / (1 - sigma * (a + r))) •
+            gradFun (I := I) g f
+              (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma (a + r)) z))
+        rw [mul_one]
+      have hcompDer := hcomp.congr_mfderiv hder
+      rw [show (fun s : Real => (Phi s : M → M) z) =
+          (fun s : Real =>
+            canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma s) z) ∘ (fun s : Real => a + s) by
+        funext s
+        rfl]
+      exact hcompDer
+    exact hcomp'.hasMFDerivWithinAt
+  have hPhiJoint : ContMDiffOn (𝓘(Real, Real).prod I) I ∞
+      (fun q : Real × M => (Phi q.1 : M → M) q.2)
+      (Ioo (0 : Real) (b - a) ×ˢ (Set.univ : Set M)) := by
+    intro q hq
+    have hflow := canonicalFlowMap_contMDiffAt
+      (I := I) g f sigma hcomplete hsol (htime q.1 hq.1) q.2
+    have hfirst : ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+        (fun p : Real × M => a + p.1) q := by
+      exact contMDiffAt_const.add contMDiffAt_fst
+    have hpair : ContMDiffAt (𝓘(Real, Real).prod I)
+        (𝓘(Real, Real).prod I) ∞
+        (fun p : Real × M => (a + p.1, p.2)) q :=
+      hfirst.prodMk contMDiffAt_snd
+    have hcomp := hflow.comp q hpair
+    have hcomp' : ContMDiffAt (𝓘(Real, Real).prod I) I ∞
+        (fun p : Real × M => (Phi p.1 : M → M) p.2) q := by
+      refine hcomp.congr_of_eventuallyEq ?_
+      filter_upwards with p
+      change (Phi p.1 : M → M) p.2 =
+        canonicalFlowMap (I := I) g f sigma hcomplete hsol
+          (canonicalFlowParameter sigma (a + p.1)) p.2
+      exact canonicalFlowDiffeomorph_apply
+        (I := I) g f sigma hcomplete hsol _ _
+    exact hcomp'.contMDiffWithinAt
+  have hr : t - a ∈ Ioo (0 : Real) (b - a) := by
+    constructor <;> linarith [htab.1, htab.2]
+  have hslot := flow_slot_pos (I := I) g Y (b - a) Phi hPhiOde hPhiJoint
+    (t - a) hr x v w
+  have hslotAt := hslot.hasDerivAt (Ici_mem_nhds hr.1)
+  have hback := hslotAt.comp t ((hasDerivAt_id t).sub_const a)
+  have htimeEq : a + (t - a) = t := by ring
+  rw [show Phi (t - a) =
+      canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma t) by
+      simp only [Phi, htimeEq]] at hback
+  rw [show Y (t - a) =
+      (1 / (1 - sigma * t)) • gradSection by
+      simp only [Y, htimeEq]] at hback
+  rw [lieDerivMetric_smul_vectorField] at hback
+  have hlie := lieDerivMetric_gradFun (I := I) g f
+    (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma t) x)
+    (mfderiv I I
+      (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma t) : M → M) x v)
+    (mfderiv I I
+      (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma t) : M → M) x w)
+  change lieDerivMetric (I := I) g gradSection _ _ _ = _ at hlie
+  rw [hlie] at hback
+  have hvalue :
+      (1 / (1 - sigma * t)) *
+          (2 * hessFun (I := I) g f
+            (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) x)
+            (mfderiv I I
+              (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma t) : M → M) x v)
+            (mfderiv I I
+              (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma t) : M → M) x w)) * 1 =
+        (2 / (1 - sigma * t)) *
+          hessFun (I := I) g f
+            (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) x)
+            (mfderiv I I
+              (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma t) : M → M) x v)
+            (mfderiv I I
+              (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma t) : M → M) x w) := by
+    ring
+  have hback' := hback.congr_deriv hvalue
+  have hfun :
+      ((fun r : Real =>
+        g.inner (Phi r x)
+          (mfderiv I I (Phi r : M → M) x v)
+          (mfderiv I I (Phi r : M → M) x w)) ∘
+          (fun s : Real => id s - a)) =
+        (fun s : Real =>
+          (Diffeomorph.pullbackMetric g
+            (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma s))).inner x v w) := by
+    funext s
+    rw [Diffeomorph.pullbackMetric_inner]
+    simp only [Function.comp_apply, id_eq, Phi]
+    rw [show a + (s - a) = s by ring]
+    rfl
+  rw [hfun] at hback'
+  exact hback'
+
 theorem canonicalMetric_ricciTensor
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
     (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
@@ -436,6 +657,98 @@ theorem canonicalMetric_ricciTensor
     DifferentialGeometry.Geometry.Curvature.ricciTensor_pullback,
     DifferentialGeometry.Geometry.Curvature.ricciTensor_scaleMetric,
     canonicalFlowDiffeomorph_apply]
+
+theorem canonicalMetricFamily_ricciFlow
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma)
+    (x : M) (v w : TangentSpace I x) :
+    HasDerivAt
+      (fun s : Real =>
+        (canonicalMetricFamily (I := I) g f sigma hcomplete hsol s).inner x v w)
+      ((-2 : Real) * ricciTensor (I := I)
+        (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t) x v w) t := by
+  classical
+  let Phi : Real → M ≃ₘ⟮I, I⟯ M := fun s =>
+    canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma s)
+  let pullbackInner : Real → Real := fun s =>
+    (Diffeomorph.pullbackMetric g (Phi s)).inner x v w
+  have hpullback : HasDerivAt pullbackInner
+      ((2 / (1 - sigma * t)) *
+        hessFun (I := I) g f (Phi t x)
+          (mfderiv I I (Phi t : M → M) x v)
+          (mfderiv I I (Phi t : M → M) x w)) t := by
+    exact canonicalPullbackMetric_hasDerivAt
+      (I := I) g f sigma hcomplete hsol ht x v w
+  have hscale : HasDerivAt (fun s : Real => 1 - sigma * s) (-sigma) t := by
+    have hraw := (hasDerivAt_const t (1 : Real)).sub
+      ((hasDerivAt_const t sigma).mul (hasDerivAt_id t))
+    have hfun : ((fun _ : Real => (1 : Real)) - (fun _ : Real => sigma) * id) =
+        (fun s : Real => 1 - sigma * s) := by
+      funext s
+      rfl
+    have hder : (0 - (0 * id t + sigma * 1) : Real) = -sigma := by ring
+    rw [hfun, hder] at hraw
+    exact hraw
+  have hproduct := hscale.mul hpullback
+  have htau : 1 - sigma * t ≠ 0 := ne_of_gt ht
+  have hsolPoint := hsol (Phi t x)
+    (mfderiv I I (Phi t : M → M) x v)
+    (mfderiv I I (Phi t : M → M) x w)
+  have hvalue :
+      -sigma * pullbackInner t +
+          (1 - sigma * t) *
+            ((2 / (1 - sigma * t)) *
+              hessFun (I := I) g f (Phi t x)
+                (mfderiv I I (Phi t : M → M) x v)
+                (mfderiv I I (Phi t : M → M) x w)) =
+        (-2 : Real) * ricciTensor (I := I)
+          (canonicalMetricFamily (I := I) g f sigma hcomplete hsol t) x v w := by
+    dsimp only [pullbackInner]
+    rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol ht]
+    rw [canonicalMetric_ricciTensor (I := I) g f sigma hcomplete hsol ht]
+    have hPhiPoint :
+        canonicalFlowMap (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) x = Phi t x := by
+      exact (canonicalFlowDiffeomorph_apply
+        (I := I) g f sigma hcomplete hsol _ _).symm
+    rw [hPhiPoint]
+    rw [Diffeomorph.pullbackMetric_inner]
+    let G : Real := g.inner (Phi t x)
+      (mfderiv I I (Phi t : M → M) x v)
+      (mfderiv I I (Phi t : M → M) x w)
+    let Hess : Real := hessFun (I := I) g f (Phi t x)
+      (mfderiv I I (Phi t : M → M) x v)
+      (mfderiv I I (Phi t : M → M) x w)
+    let Ric : Real := ricciTensor (I := I) g (Phi t x)
+      (mfderiv I I (Phi t : M → M) x v)
+      (mfderiv I I (Phi t : M → M) x w)
+    change -sigma * G + (1 - sigma * t) * ((2 / (1 - sigma * t)) * Hess) =
+      -2 * Ric
+    have hcancel : (1 - sigma * t) * ((2 / (1 - sigma * t)) * Hess) =
+        2 * Hess := by
+      field_simp [htau]
+    rw [hcancel]
+    change Ric + Hess = sigma / 2 * G at hsolPoint
+    linarith
+  have hproduct' := hproduct.congr_deriv hvalue
+  have hopen : IsOpen (canonicalTimeDomain sigma) := by
+    rw [canonicalTimeDomain]
+    exact isOpen_lt continuous_const
+      (continuous_const.sub (continuous_const.mul continuous_id))
+  have heq :
+      (fun s : Real =>
+        (canonicalMetricFamily (I := I) g f sigma hcomplete hsol s).inner x v w) =ᶠ[nhds t]
+      (fun s : Real => (1 - sigma * s) * pullbackInner s) := by
+    filter_upwards [hopen.eventually_mem ht] with s hs
+    rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol hs]
+    rw [canonicalMetric, Diffeomorph.pullbackMetric_inner,
+      scaleMetric_inner]
+    dsimp only [pullbackInner]
+    rw [Diffeomorph.pullbackMetric_inner]
+  exact hproduct'.congr_of_eventuallyEq heq
 
 theorem canonicalMetric_gradientRicciSoliton
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
@@ -722,6 +1035,15 @@ theorem canonicalMetric_zero
     exact mfderiv_id
   rw [hmapx, hmfd]
   simp
+
+theorem canonicalMetricFamily_zero
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma) :
+    canonicalMetricFamily (I := I) g f sigma hcomplete hsol 0 = g := by
+  rw [canonicalMetricFamily_eq (I := I) g f sigma hcomplete hsol
+    (zero_mem_canonicalTimeDomain sigma)]
+  exact canonicalMetric_zero (I := I) g f sigma hcomplete hsol
 
 theorem canonicalMetric_complete
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
