@@ -3929,3 +3929,14 @@ import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 import DifferentialGeometry.Topology.CurveChartCover
 import DifferentialGeometry.Topology.CurveChartHead
 import DifferentialGeometry.Topology.FiniteSubdivision
+import DifferentialGeometry.Analysis.Spectral.LowerKyFan
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Galerkin
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Counterexamples
+import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
+import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
+import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
