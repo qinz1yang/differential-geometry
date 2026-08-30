@@ -140,6 +140,25 @@ noncomputable def dirichletH1HilbertBasis
       (dirichletH1Eigenfunction_orthonormal g)
       (span_dirichletH1Eigenfunction_orthogonal_eq_bot g)) i
 
+theorem resolventDirichlet_H1ComplDirichletToLp_dirichletH1HilbertBasis
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (i : DirichletLaplacianEigenindex g) :
+    resolventDirichlet g
+        (H1ComplDirichletToLp g (dirichletH1HilbertBasis g i)) =
+      i.1.val • dirichletH1HilbertBasis g i := by
+  rw [dirichletH1HilbertBasis_apply,
+    (H1ComplDirichletToLp g).map_smul,
+    H1ComplDirichletToLp_dirichletLaplacianEigenfunction,
+    (resolventDirichlet g).map_smul]
+  change Real.sqrt i.1.val • resolventDirichlet g
+      (dirichletLaplacianHilbertBasis g i) =
+    i.1.val • (Real.sqrt i.1.val •
+      (i.1.val⁻¹ • resolventDirichlet g
+        (dirichletLaplacianHilbertBasis g i)))
+  simp only [smul_smul]
+  congr 1
+  field_simp [i.1.val_ne_zero]
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 
 end
