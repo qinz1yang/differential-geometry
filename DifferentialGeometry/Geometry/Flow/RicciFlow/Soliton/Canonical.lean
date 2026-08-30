@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.CompactSupportFlow
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Scaling
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Operations
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialCompleteness
 import DifferentialGeometry.Geometry.Metric.Scaling
@@ -24,7 +25,9 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.DeTurck (lieDerivMetric lieDerivMetric_smul_vectorField)
-open DifferentialGeometry.PDE.RicciFlow.Pullback (cartan_formula_for_lie_deriv_metric)
+open DifferentialGeometry.PDE.RicciFlow.Pullback
+  (cartan_formula_for_lie_deriv_metric
+    lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -461,6 +464,25 @@ private theorem lieDerivMetric_gradFun
   rw [g.symm x v]
   rw [← hessFun_eq_cov_grad (I := I) g f.contMDiff x w v]
   rw [hessFun_symm_of_boundaryless (I := I) g f.contMDiff x w v]
+  ring
+
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] [ConnectedSpace M] in
+private theorem lieDerivMetric_scaleMetric
+    (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
+    (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (x : M) (v w : TangentSpace I x) :
+    lieDerivMetric (I := I) (scaleMetric (I := I) c hc g) V x v w =
+      c * lieDerivMetric (I := I) g V x v w := by
+  rw [cartan_formula_for_lie_deriv_metric,
+    cartan_formula_for_lie_deriv_metric]
+  have hcov : LeviCivita (I := I) (scaleMetric (I := I) c hc g) =
+      LeviCivita (I := I) g := by
+    rw [LeviCivita_eq_leviCivitaConnectionOfMetric,
+      LeviCivita_eq_leviCivitaConnectionOfMetric]
+    exact lcConn_scaleMetric (I := I) c hc g
+  rw [hcov]
+  simp only [scaleMetric_inner]
   ring
 
 private theorem canonicalPullbackMetric_hasDerivAt
@@ -1060,5 +1082,246 @@ theorem canonicalMetric_complete
     (RiemannianMetricComplete.scaleMetric hcomplete
       (1 - sigma * t) (mem_canonicalTimeDomain_iff.mp ht))
 
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] [ConnectedSpace M] in
+private theorem pullbackMetric_family_hasDerivAt
+    (J : Set Real) (hJopen : IsOpen J)
+    (gbar : SmoothRiemannianMetric I M)
+    (Phi : Real → M ≃ₘ⟮I, I⟯ M)
+    (V : Real → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (hPhiDeriv : ∀ t ∈ J, ∀ x : M,
+      HasMFDerivAt 𝓘(Real, Real) I (fun s : Real => (Phi s : M → M) x) t
+        ((1 : Real →L[Real] Real).smulRight
+          (mfderiv I I (Phi t : M → M) x (V t x))))
+    (hPhiJoint : ContMDiffOn (𝓘(Real, Real).prod I) I ∞
+      (fun q : Real × M => (Phi q.1 : M → M) q.2) (J ×ˢ Set.univ))
+    {t : Real} (ht : t ∈ J) (x : M) (v w : TangentSpace I x) :
+    HasDerivAt
+      (fun s : Real =>
+        (Diffeomorph.pullbackMetric gbar (Phi s)).inner x v w)
+      (lieDerivMetric (I := I) (Diffeomorph.pullbackMetric gbar (Phi t))
+        (V t) x v w) t := by
+  classical
+  obtain ⟨a, b, htab, hab⟩ :=
+    mem_nhds_iff_exists_Ioo_subset.mp (hJopen.mem_nhds ht)
+  let PhiShift : Real → M ≃ₘ⟮I, I⟯ M := fun r => Phi (a + r)
+  let Y : Real → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := fun r =>
+    ⟨Diffeomorph.pushforward (Phi (a + r)) (V (a + r)),
+      Diffeomorph.pushforward_contMDiff (Phi (a + r)) (V (a + r)).contMDiff⟩
+  have htime : ∀ r ∈ Ioo (0 : Real) (b - a), a + r ∈ J := by
+    intro r hr
+    apply hab
+    constructor <;> linarith [hr.1, hr.2]
+  have hPhiOde : ∀ z : M, ∀ r ∈ Ioo (0 : Real) (b - a),
+      HasMFDerivWithinAt 𝓘(Real, Real) I
+        (fun s : Real => (PhiShift s : M → M) z) (Ici (0 : Real)) r
+        ((1 : Real →L[Real] Real).smulRight (Y r (PhiShift r z))) := by
+    intro z r hr
+    have hraw := hPhiDeriv (a + r) (htime r hr) z
+    have htrans : HasDerivAt (fun s : Real => a + s) 1 r :=
+      (hasDerivAt_id r).const_add a
+    have hcomp := hraw.comp r htrans.hasFDerivAt.hasMFDerivAt
+    have hder :
+        ((1 : Real →L[Real] Real).smulRight
+            (mfderiv I I (Phi (a + r) : M → M) z (V (a + r) z))) ∘SL
+          ContinuousLinearMap.toSpanSingleton Real 1 =
+        (1 : Real →L[Real] Real).smulRight (Y r (PhiShift r z)) := by
+      apply ContinuousLinearMap.ext
+      intro q
+      rw [show Y r (PhiShift r z) =
+          mfderiv I I (Phi (a + r) : M → M) z (V (a + r) z) by
+        exact Diffeomorph.pushforward_image (I := I) (Phi (a + r)) (V (a + r)) z]
+      change (q * 1) •
+          mfderiv I I (Phi (a + r) : M → M) z (V (a + r) z) =
+        q • mfderiv I I (Phi (a + r) : M → M) z (V (a + r) z)
+      rw [mul_one]
+    have hcomp' := hcomp.congr_mfderiv hder
+    have hfun : (fun s : Real => (PhiShift s : M → M) z) =
+        (fun s : Real => (Phi s : M → M) z) ∘ (fun s : Real => a + s) := by
+      funext s
+      rfl
+    rw [hfun]
+    exact hcomp'.hasMFDerivWithinAt
+  have hPhiShiftJoint : ContMDiffOn (𝓘(Real, Real).prod I) I ∞
+      (fun q : Real × M => (PhiShift q.1 : M → M) q.2)
+      (Ioo (0 : Real) (b - a) ×ˢ (Set.univ : Set M)) := by
+    intro q hq
+    have hmem : (a + q.1, q.2) ∈ J ×ˢ (Set.univ : Set M) :=
+      ⟨htime q.1 hq.1, Set.mem_univ _⟩
+    have hbase : ContMDiffAt (𝓘(Real, Real).prod I) I ∞
+        (fun p : Real × M => (Phi p.1 : M → M) p.2) (a + q.1, q.2) :=
+      (hPhiJoint _ hmem).contMDiffAt
+        ((hJopen.prod isOpen_univ).mem_nhds hmem)
+    have hpair : ContMDiffAt (𝓘(Real, Real).prod I)
+        (𝓘(Real, Real).prod I) ∞
+        (fun p : Real × M => (a + p.1, p.2)) q :=
+      (contMDiffAt_const.add contMDiffAt_fst).prodMk contMDiffAt_snd
+    have hcomp := hbase.comp q hpair
+    exact hcomp.contMDiffWithinAt
+  have hr : t - a ∈ Ioo (0 : Real) (b - a) := by
+    constructor <;> linarith [htab.1, htab.2]
+  have hslot := flow_slot_pos (I := I) gbar Y (b - a) PhiShift
+    hPhiOde hPhiShiftJoint (t - a) hr x v w
+  have hslotAt := hslot.hasDerivAt (Ici_mem_nhds hr.1)
+  have hback := hslotAt.comp t ((hasDerivAt_id t).sub_const a)
+  have htimeEq : a + (t - a) = t := by ring
+  have hnat :=
+    lie_derivative_metric_pullback_natural_under_diffeomorphism_pointwise
+      (I := I) gbar (Phi t) (V t) (V t).contMDiff
+      (Diffeomorph.pushforward_contMDiff (Phi t) (V t).contMDiff) x v w
+  have hvalue :
+      lieDerivMetric (I := I) gbar (Y (t - a)) (PhiShift (t - a) x)
+          (mfderiv I I (PhiShift (t - a) : M → M) x v)
+          (mfderiv I I (PhiShift (t - a) : M → M) x w) * 1 =
+        lieDerivMetric (I := I) (Diffeomorph.pullbackMetric gbar (Phi t))
+          (V t) x v w := by
+    rw [mul_one]
+    rw [show PhiShift (t - a) = Phi t by
+      simp only [PhiShift, htimeEq]]
+    have hY : Y (t - a) =
+        ⟨Diffeomorph.pushforward (Phi t) (V t),
+          Diffeomorph.pushforward_contMDiff (Phi t) (V t).contMDiff⟩ := by
+      apply ContMDiffSection.coe_inj
+      simp only [Y, htimeEq]
+    rw [hY]
+    have hV :
+        ({ toFun := (V t : ∀ y : M, TangentSpace I y)
+           contMDiff_toFun := (V t).contMDiff } :
+          Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) = V t :=
+      ContMDiffSection.coe_inj rfl
+    rw [hV] at hnat
+    exact hnat.symm
+  have hback' := hback.congr_deriv hvalue
+  have hfun :
+      ((fun r : Real =>
+        gbar.inner (PhiShift r x)
+          (mfderiv I I (PhiShift r : M → M) x v)
+          (mfderiv I I (PhiShift r : M → M) x w)) ∘
+          (fun s : Real => id s - a)) =
+        (fun s : Real =>
+          (Diffeomorph.pullbackMetric gbar (Phi s)).inner x v w) := by
+    funext s
+    rw [Diffeomorph.pullbackMetric_inner]
+    simp only [Function.comp_apply, id_eq, PhiShift]
+    rw [show a + (s - a) = s by ring]
+    rfl
+  rw [hfun] at hback'
+  exact hback'
+
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] [ConnectedSpace M] in
+theorem selfSimilarRicciFlow_slice_equation
+    (J : Set Real) (hJopen : IsOpen J)
+    (gbar : SmoothRiemannianMetric I M)
+    (g : Real → SmoothRiemannianMetric I M)
+    (c : Real → Real) (hcSmooth : ContDiffOn Real ∞ c J)
+    (hc : ∀ t ∈ J, 0 < c t)
+    (Phi : Real → M ≃ₘ⟮I, I⟯ M)
+    (V : Real → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (hPhiDeriv : ∀ t ∈ J, ∀ x : M,
+      HasMFDerivAt 𝓘(Real, Real) I (fun s : Real => (Phi s : M → M) x) t
+        ((1 : Real →L[Real] Real).smulRight
+          (mfderiv I I (Phi t : M → M) x (V t x))))
+    (hPhiJoint : ContMDiffOn (𝓘(Real, Real).prod I) I ∞
+      (fun q : Real × M => (Phi q.1 : M → M) q.2) (J ×ˢ Set.univ))
+    (hself : ∀ (t : Real) (ht : t ∈ J),
+      g t = scaleMetric (I := I) (c t) (hc t ht)
+        (Diffeomorph.pullbackMetric gbar (Phi t)))
+    (hRicciFlow : ∀ t ∈ J, ∀ x : M, ∀ v w : TangentSpace I x,
+      HasDerivAt (fun s : Real => (g s).inner x v w)
+        ((-2 : Real) * ricciTensor (I := I) (g t) x v w) t)
+    {t : Real} (ht : t ∈ J) (x : M) (v w : TangentSpace I x) :
+    ricciTensor (I := I) (g t) x v w +
+        (1 / 2 : Real) * lieDerivMetric (I := I) (g t) (V t) x v w =
+      (-(deriv c t) / (2 * c t)) * (g t).inner x v w := by
+  classical
+  let pullbackInner : Real → Real := fun s =>
+    (Diffeomorph.pullbackMetric gbar (Phi s)).inner x v w
+  have hpullback : HasDerivAt pullbackInner
+      (lieDerivMetric (I := I) (Diffeomorph.pullbackMetric gbar (Phi t))
+        (V t) x v w) t := by
+    exact pullbackMetric_family_hasDerivAt
+      (I := I) J hJopen gbar Phi V hPhiDeriv hPhiJoint ht x v w
+  have hcAt : ContDiffAt Real ∞ c t :=
+    (hcSmooth t ht).contDiffAt (hJopen.mem_nhds ht)
+  have hcderiv : HasDerivAt c (deriv c t) t :=
+    (hcAt.differentiableAt (by simp)).hasDerivAt
+  have hproduct := hcderiv.mul hpullback
+  have hmetricEq :
+      (fun s : Real => (g s).inner x v w) =ᶠ[nhds t]
+        (fun s : Real => c s * pullbackInner s) := by
+    filter_upwards [hJopen.eventually_mem ht] with s hs
+    rw [hself s hs, scaleMetric_inner]
+  have hselfDeriv := hproduct.congr_of_eventuallyEq hmetricEq
+  have hderivEq := (hRicciFlow t ht x v w).unique hselfDeriv
+  have hcne : c t ≠ 0 := ne_of_gt (hc t ht)
+  have hmetricValue : (g t).inner x v w = c t * pullbackInner t := by
+    rw [hself t ht, scaleMetric_inner]
+  have hlieValue :
+      lieDerivMetric (I := I) (g t) (V t) x v w =
+        c t * lieDerivMetric (I := I)
+          (Diffeomorph.pullbackMetric gbar (Phi t)) (V t) x v w := by
+    rw [hself t ht]
+    exact lieDerivMetric_scaleMetric
+      (I := I) (c t) (hc t ht)
+        (Diffeomorph.pullbackMetric gbar (Phi t)) (V t) x v w
+  let R : Real := ricciTensor (I := I) (g t) x v w
+  let L : Real := lieDerivMetric (I := I)
+    (Diffeomorph.pullbackMetric gbar (Phi t)) (V t) x v w
+  let P : Real := pullbackInner t
+  change -2 * R = deriv c t * P + c t * L at hderivEq
+  have halgebra : R + (1 / 2) * (c t * L) =
+      -(deriv c t) / 2 * P := by
+    linarith
+  have hright : -(deriv c t) / 2 * P =
+      (-(deriv c t) / (2 * c t)) * (c t * P) := by
+    field_simp [hcne]
+  calc
+    ricciTensor (I := I) (g t) x v w +
+          (1 / 2 : Real) * lieDerivMetric (I := I) (g t) (V t) x v w =
+        R + (1 / 2) * (c t * L) := by rw [hlieValue]
+    _ = -(deriv c t) / 2 * P := halgebra
+    _ = (-(deriv c t) / (2 * c t)) * (c t * P) := hright
+    _ = (-(deriv c t) / (2 * c t)) * (g t).inner x v w := by
+      rw [hmetricValue]
+
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+  [SigmaCompactSpace M] [ConnectedSpace M] in
+theorem selfSimilarRicciFlow_slice_gradientRicciSoliton
+    (J : Set Real) (hJopen : IsOpen J)
+    (gbar : SmoothRiemannianMetric I M)
+    (g : Real → SmoothRiemannianMetric I M)
+    (c : Real → Real) (hcSmooth : ContDiffOn Real ∞ c J)
+    (hc : ∀ t ∈ J, 0 < c t)
+    (Phi : Real → M ≃ₘ⟮I, I⟯ M)
+    (V : Real → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    (hPhiDeriv : ∀ t ∈ J, ∀ x : M,
+      HasMFDerivAt 𝓘(Real, Real) I (fun s : Real => (Phi s : M → M) x) t
+        ((1 : Real →L[Real] Real).smulRight
+          (mfderiv I I (Phi t : M → M) x (V t x))))
+    (hPhiJoint : ContMDiffOn (𝓘(Real, Real).prod I) I ∞
+      (fun q : Real × M => (Phi q.1 : M → M) q.2) (J ×ˢ Set.univ))
+    (hself : ∀ (t : Real) (ht : t ∈ J),
+      g t = scaleMetric (I := I) (c t) (hc t ht)
+        (Diffeomorph.pullbackMetric gbar (Phi t)))
+    (hRicciFlow : ∀ t ∈ J, ∀ x : M, ∀ v w : TangentSpace I x,
+      HasDerivAt (fun s : Real => (g s).inner x v w)
+        ((-2 : Real) * ricciTensor (I := I) (g t) x v w) t)
+    {t : Real} (ht : t ∈ J) (F : C^∞⟮I, M; Real⟯)
+    (hV : V t =
+      ⟨fun y => gradFun (I := I) (g t) F y,
+        gradFun_contMDiff_total_section (I := I) (g t) F.contMDiff⟩) :
+    gradientRicciSoliton (I := I) (g t) F (-deriv c t / c t) := by
+  intro x v w
+  have hs := selfSimilarRicciFlow_slice_equation
+    (I := I) J hJopen gbar g c hcSmooth hc Phi V hPhiDeriv hPhiJoint
+      hself hRicciFlow ht x v w
+  rw [hV, lieDerivMetric_gradFun] at hs
+  calc
+    ricciTensor (I := I) (g t) x v w + hessFun (I := I) (g t) F x v w =
+        ricciTensor (I := I) (g t) x v w +
+          (1 / 2 : Real) * (2 * hessFun (I := I) (g t) F x v w) := by ring
+    _ = (-(deriv c t) / (2 * c t)) * (g t).inner x v w := hs
+    _ = ((-deriv c t / c t) / 2) * (g t).inner x v w := by ring
 
 end DifferentialGeometry.PDE.RicciFlow.Soliton
