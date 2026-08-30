@@ -68,4 +68,33 @@ theorem crossProduct_contraction_range_finrank
   rw [hsource] at hdim
   omega
 
+theorem dotProductLinearMap3_kernel_finrank
+    {a : Fin 3 → ℝ} (ha : a ≠ 0) :
+    Module.finrank ℝ (dotProductLinearMap3 a).ker = 2 := by
+  have haa : a ⬝ᵥ a ≠ 0 := by
+    intro haa
+    exact ha (dotProduct_self_eq_zero.mp haa)
+  have hrange : (dotProductLinearMap3 a).range = ⊤ := by
+    apply LinearMap.range_eq_top.mpr
+    intro c
+    refine ⟨(c * (a ⬝ᵥ a)⁻¹) • a, ?_⟩
+    change a ⬝ᵥ ((c * (a ⬝ᵥ a)⁻¹) • a) = c
+    rw [dotProduct_smul]
+    simp [smul_eq_mul, haa]
+  have hdim := (dotProductLinearMap3 a).finrank_range_add_finrank_ker
+  rw [hrange] at hdim
+  have hsource : Module.finrank ℝ (Fin 3 → ℝ) = 3 := by
+    simp
+  rw [hsource] at hdim
+  simp at hdim
+  omega
+
+theorem crossProduct_contraction_range_eq_dotProduct_kernel
+    {a : Fin 3 → ℝ} (ha : a ≠ 0) :
+    (crossProduct a).range = (dotProductLinearMap3 a).ker := by
+  apply Submodule.eq_of_le_of_finrank_eq
+    (crossProduct_contraction_range_le_dotProduct_kernel a)
+  rw [crossProduct_contraction_range_finrank ha,
+    dotProductLinearMap3_kernel_finrank ha]
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

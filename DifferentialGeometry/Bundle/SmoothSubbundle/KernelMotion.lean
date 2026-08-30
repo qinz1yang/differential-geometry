@@ -41,6 +41,38 @@ theorem continuousLinearMap_kernel_eq_of_constant_on_left
     isClosed_singleton.mem_of_tendsto hlim hev
   simpa using hmem
 
+theorem continuousLinearMap_kernel_annihilation_of_constant_on_left
+    [FiniteDimensional Real E]
+    {G : Type*} [NormedAddCommGroup G] [NormedSpace Real G]
+    {A : Real → E →L[Real] F} {B : Real → E →L[Real] G}
+    {K : Submodule Real E} {a b : Real} (hab : a < b)
+    (hA : ContinuousAt A b) (hB : ContinuousAt B b)
+    (hK : ∀ t ∈ Set.Ioo a b, (A t).ker = K)
+    (hfin : Module.finrank Real K = Module.finrank Real (A b).ker)
+    (hzero : ∀ t ∈ Set.Ioo a b, ∀ v, v ∈ (A t).ker → B t v = 0) :
+    ∀ v, v ∈ (A b).ker → B b v = 0 := by
+  have hKb : K = (A b).ker :=
+    continuousLinearMap_kernel_eq_of_constant_on_left hab hA hK hfin
+  intro v hv
+  have hvK : v ∈ K := by
+    rw [hKb]
+    exact hv
+  have hzero' : ∀ t ∈ Set.Ioo a b, B t v = 0 := by
+    intro t ht
+    apply hzero t ht v
+    rw [hK t ht]
+    exact hvK
+  have hlim : Tendsto (fun t : Real => B t v)
+      (𝓝[Set.Ioo a b] b) (𝓝 (B b v)) :=
+    (hB.clm_apply continuousAt_const).continuousWithinAt.tendsto
+  have hev : ∀ᶠ t in 𝓝[Set.Ioo a b] b, B t v ∈ ({0} : Set G) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact Set.mem_singleton_iff.mpr (hzero' t ht)
+  let _ : (𝓝[Set.Ioo a b] b).NeBot := right_nhdsWithin_Ioo_neBot hab
+  have hmem : B b v ∈ ({0} : Set G) :=
+    isClosed_singleton.mem_of_tendsto hlim hev
+  simpa using hmem
+
 theorem hasDerivAt_apply_eq_zero_of_continuousLinearMap
     {A : Real → E →L[Real] F} {w : Real → E}
     {A' : E →L[Real] F} {w' : E} {t : Real}
