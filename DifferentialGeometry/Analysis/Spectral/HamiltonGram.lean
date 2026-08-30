@@ -65,6 +65,23 @@ def hamiltonGramSigma {ι κ : Type*} [Fintype ι] [Fintype κ]
     (U : ι → ι → Real) (W : ι → Real) (a b : ι) : Real :=
   ∑ r, Y r a b * hamiltonGramLinearTerm Y X U W r
 
+def hamiltonQuadraticForm {ι : Type*} [Fintype ι]
+    (K : ι → ι → ι → ι → Real) (P : ι → ι → ι → Real)
+    (M : ι → ι → Real) (U : ι → ι → Real) (W : ι → Real) : Real :=
+  (∑ a, ∑ b, ∑ c, ∑ d, K a b c d * U a b * U c d) +
+    2 * (∑ a, ∑ b, ∑ c, P a b c * U a b * W c) +
+    ∑ a, ∑ b, M a b * W a * W b
+
+def hamiltonReactionPolynomial {ι : Type*} [Fintype ι]
+    (K : ι → ι → ι → ι → Real) (P : ι → ι → ι → Real)
+    (M : ι → ι → Real) (U : ι → ι → Real) (W : ι → Real) : Real :=
+  2 * ∑ a, ∑ b, ∑ c, ∑ d, K a c b d * M c d * W a * W b -
+    2 * ∑ a, ∑ b, ∑ c, ∑ d, P a c d * P b d c * W a * W b +
+    8 * ∑ a, ∑ b, ∑ c, ∑ d, ∑ e,
+      K a d c e * P d b e * U a b * W c +
+    4 * ∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
+      K a e c f * K b e d f * U a b * U c d
+
 theorem hamiltonGram_quadratic_nonneg
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real)
