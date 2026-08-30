@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakLimit
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedMassTrace
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakFTC
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
@@ -253,6 +254,90 @@ theorem IsWeakEvolutionSolution.exists_mass_timeH1
   · filter_upwards [hwsource] with t ht
     simpa only [source, sourceForm, variationForm, weakForm,
       add_apply] using ht
+
+private theorem dirichletMassLp_riesz_eq_resolvent_of_metric_eq
+    {q h : SmoothRiemannianMetric (I_half n) M}
+    (hh : h = q)
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    (InnerProductSpace.toDual ℝ (H1ComplDirichlet q)).symm
+        ((dirichletMassLp h Cv hCvtop hvol u).comp
+          (H1ComplDirichletToLp q)) =
+      resolventDirichlet q u := by
+  cases hh
+  exact dirichletMassLp_self_riesz_eq_resolventDirichlet Cv hCvtop hvol u
+
+private theorem dirichletMassComplOnIcc_riesz_eq_resolvent_of_metric_eq
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (g : ℝ → SmoothRiemannianMetric (I_half n) M)
+    {T Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      ∀ v : TangentSpace (I_half n) x,
+        Cg⁻¹ * q.inner x v v ≤ (g t).inner x v v ∧
+          (g t).inner x v v ≤ Cg * q.inner x v v)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_half n) (M := M) (g t) ≤
+        Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) (hgt : g t = q)
+    (u : H1ComplDirichlet q) :
+    (InnerProductSpace.toDual ℝ (H1ComplDirichlet q)).symm
+        (dirichletMassComplOnIcc g hCg hequiv
+          Cv hCv0 hCvtop hvol t u) =
+      resolventDirichlet q (H1ComplDirichletToLp q u) := by
+  rw [dirichletMassComplOnIcc, dif_pos ht]
+  cases hgt
+  exact dirichletMassCompl_self_riesz_eq_resolventDirichlet
+    hCg (hequiv t ht) Cv hCv0 hCvtop (hvol t ht) u
+
+theorem IsWeakEvolutionSolution.exists_continuous_l2_representative_of_static_metric
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : RealTimeInterval}
+    {G : MetricConnectionFamilyOn (I := I_half n) (M := M) D}
+    {hG : MetricFamilySmoothOn (I := I_half n) (M := M) D G.metric}
+    {T : ℝ} {hT : 0 ≤ T} {hreg : Icc (0 : ℝ) T ⊆ D.regular}
+    {X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯}
+    (hXcont : ContinuousOn
+      (fun p : ℝ × M ↦
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    {a : ℝ → ℝ} (hacont : ContinuousOn a (Icc (0 : ℝ) T))
+    {Bx Bv : ℝ}
+    {hX : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      (G.metric t).inner x (X t x) (X t x) ≤ Bx}
+    {htrace : ∀ t ∈ Ico (0 : ℝ) T, ∀ x : M,
+      |traceTimeDerivMetric (I := I_half n) G.metric t x| ≤ Bv}
+    {f₀ : Lp ℝ 2
+      (riemannianVolumeMeasure (I := I_half n) (M := M) q)}
+    {u : timeL2 (H1ComplDirichlet q) T}
+    (hu : IsWeakEvolutionSolution hG hT hreg X a Bx Bv
+      hX htrace f₀ u)
+    (hmetric : ∀ t ∈ Icc (0 : ℝ) T, G.metric t = q) :
+    ∃ U : ℝ → Lp ℝ 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) q),
+      ContinuousOn U (Icc (0 : ℝ) T) ∧
+      (U =ᵐ[timeMeasure T] fun t => H1ComplDirichletToLp q (u t)) ∧
+      U 0 = f₀ := by
+  obtain ⟨Cg, Cv, hCg, hequiv, hCv0, hCvtop, hvol,
+      w, hwinit, hwmass, _⟩ := hu.exists_mass_timeH1 hXcont hacont
+  have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, hT⟩
+  have hinit : w.init = resolventDirichlet q f₀ :=
+    hwinit.trans (dirichletMassLp_riesz_eq_resolvent_of_metric_eq
+      (hmetric 0 hzero) Cv hCvtop (hvol 0 hzero) f₀)
+  have hmass : (fun t => resolventDirichlet q
+      (H1ComplDirichletToLp q (u t))) =ᵐ[timeMeasure T] w.toFun := by
+    filter_upwards [hwmass, ae_restrict_mem measurableSet_Icc] with t ht htIcc
+    exact (dirichletMassComplOnIcc_riesz_eq_resolvent_of_metric_eq
+      G.metric hCg hequiv Cv hCv0 hCvtop hvol htIcc
+        (hmetric t htIcc) (u t)).symm.trans ht
+  obtain ⟨U, hUcont, hUae, hUzero, _⟩ :=
+    exists_continuous_l2_representative_of_mass_timeH1
+      q hT u w f₀ hmass hinit
+  exact ⟨U, hUcont, hUae, hUzero⟩
 
 theorem IsIntegratedWeakSolution.isWeakEvolutionSolution
     {q : SmoothRiemannianMetric (I_half n) M}
