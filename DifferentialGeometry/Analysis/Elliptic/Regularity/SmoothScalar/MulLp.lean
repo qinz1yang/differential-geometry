@@ -255,6 +255,88 @@ theorem smoothMulLp_apply_coeFn
   rw [smoothMulLp_apply]
   exact smoothMulLpFun_coeFn (I := I) (M := M) g φ f
 
+private theorem dist_smoothMulLp_le_continuousMap_dist
+    (g : SmoothRiemannianMetric I M) (φ ψ : C^∞⟮I, M; ℝ⟯) :
+    dist (smoothMulLp (I := I) (M := M) g φ)
+        (smoothMulLp (I := I) (M := M) g ψ) ≤
+      dist (⟨φ, φ.contMDiff.continuous⟩ : C(M, ℝ))
+        (⟨ψ, ψ.contMDiff.continuous⟩ : C(M, ℝ)) := by
+  rw [dist_eq_norm, dist_eq_norm]
+  apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _)
+  intro f
+  rw [sub_apply]
+  apply Lp.norm_le_mul_norm_of_ae_le_mul
+  have hsub := Lp.coeFn_sub
+    (smoothMulLp (I := I) (M := M) g φ f)
+    (smoothMulLp (I := I) (M := M) g ψ f)
+  have hφ := smoothMulLp_apply_coeFn (I := I) (M := M) g φ f
+  have hψ := smoothMulLp_apply_coeFn (I := I) (M := M) g ψ f
+  filter_upwards [hsub, hφ, hψ] with x hsubx hφx hψx
+  rw [hsubx, Pi.sub_apply, hφx, hψx]
+  calc
+    ‖φ x * f x - ψ x * f x‖ = ‖φ x - ψ x‖ * ‖f x‖ := by
+      rw [← sub_mul, norm_mul]
+    _ ≤ ‖(⟨φ, φ.contMDiff.continuous⟩ : C(M, ℝ)) -
+          (⟨ψ, ψ.contMDiff.continuous⟩ : C(M, ℝ))‖ * ‖f x‖ := by
+      gcongr
+      exact ContinuousMap.norm_coe_le_norm
+        ((⟨φ, φ.contMDiff.continuous⟩ : C(M, ℝ)) -
+          (⟨ψ, ψ.contMDiff.continuous⟩ : C(M, ℝ))) x
+
+theorem continuousOn_smoothMulLp_apply
+    (g : SmoothRiemannianMetric I M) {K : Set ℝ}
+    (φ : ℝ → C^∞⟮I, M; ℝ⟯)
+    (hφ : ContinuousOn (fun p : ℝ × M => φ p.1 p.2)
+      (K ×ˢ (Set.univ : Set M)))
+    {f : ℝ → Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
+    (hf : ContinuousOn f K) :
+    ContinuousOn (fun t => smoothMulLp (I := I) (M := M) g (φ t) (f t)) K := by
+  let Φ : ℝ → C(M, ℝ) := fun t => ⟨φ t, (φ t).contMDiff.continuous⟩
+  have hΦ : ContinuousOn Φ K := by
+    apply ContinuousMap.continuousOn_of_continuousOn_uncurry
+    change ContinuousOn (fun p : ℝ × M => φ p.1 p.2)
+      (K ×ˢ (Set.univ : Set M))
+    exact hφ
+  have hmul : ContinuousOn
+      (fun t => smoothMulLp (I := I) (M := M) g (φ t)) K := by
+    rw [Metric.continuousOn_iff]
+    intro t ht ε hε
+    obtain ⟨δ, hδ, hclose⟩ := (Metric.continuousOn_iff.mp hΦ) t ht ε hε
+    refine ⟨δ, hδ, fun s hs hst => ?_⟩
+    exact (dist_smoothMulLp_le_continuousMap_dist
+      (I := I) (M := M) g (φ s) (φ t)).trans_lt (hclose s hs hst)
+  exact hmul.clm_apply hf
+
+theorem smoothMulLp_mul
+    (g : SmoothRiemannianMetric I M) (φ ψ : C^∞⟮I, M; ℝ⟯) :
+    (smoothMulLp (I := I) (M := M) g φ).comp
+        (smoothMulLp (I := I) (M := M) g ψ) =
+      smoothMulLp (I := I) (M := M) g (φ * ψ) := by
+  apply ContinuousLinearMap.ext
+  intro f
+  apply Lp.ext
+  have hφ := smoothMulLp_apply_coeFn (I := I) (M := M) g φ
+    (smoothMulLp (I := I) (M := M) g ψ f)
+  have hψ := smoothMulLp_apply_coeFn (I := I) (M := M) g ψ f
+  have hmul := smoothMulLp_apply_coeFn (I := I) (M := M) g (φ * ψ) f
+  filter_upwards [hφ, hψ, hmul] with x hφx hψx hmulx
+  rw [ContinuousLinearMap.comp_apply, hφx, hψx, hmulx]
+  simp only [ContMDiffMap.coe_mul, Pi.mul_apply]
+  ring
+
+@[simp] theorem smoothMulLp_one
+    (g : SmoothRiemannianMetric I M) :
+    smoothMulLp (I := I) (M := M) g 1 =
+      ContinuousLinearMap.id ℝ
+        (Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) := by
+  apply ContinuousLinearMap.ext
+  intro f
+  apply Lp.ext
+  have hone := smoothMulLp_apply_coeFn (I := I) (M := M) g 1 f
+  filter_upwards [hone] with x honex
+  rw [honex, ContinuousLinearMap.id_apply]
+  simp only [ContMDiffMap.coe_one, Pi.one_apply, one_mul]
+
 end Laplacian
 end Analysis
 end DifferentialGeometry
