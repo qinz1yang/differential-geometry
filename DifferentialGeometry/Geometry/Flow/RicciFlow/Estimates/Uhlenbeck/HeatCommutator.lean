@@ -785,6 +785,36 @@ theorem uhlenbeck_heat_covariantDerivative_commutator
     _ = curvatureSlotActionContraction R DA a b :=
       curvatureSkewActionContraction_eq_slots R DA hskewLast a b
 
+theorem uhlenbeck_heat_covariantDerivative_commutator_slots
+    {q : Nat}
+    (R : Idx -> Idx -> Idx -> Idx -> Real)
+    (nablaR : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (Ric : Idx -> Idx -> Real)
+    (nablaRic : Idx -> Idx -> Idx -> Real)
+    (A : (Fin q -> Idx) -> Real)
+    (DA : Idx -> (Fin q -> Idx) -> Real)
+    (nablaDtA : Idx -> (Fin q -> Idx) -> Real)
+    (D3A : Idx -> Idx -> Idx -> (Fin q -> Idx) -> Real)
+    (hdiff : differentiatedTensorRicciIdentityComponents R nablaR A DA D3A)
+    (hgrad : tensorGradientRicciIdentityComponents R DA D3A)
+    (hcontract : contractedCurvatureDerivativeComponents nablaR nablaRic)
+    (hskewFirst : ∀ a e c d, R a e c d = -R e a c d)
+    (hskewLast : ∀ a e c d, R a e c d = -R a e d c)
+    (htrace : curvatureRicciTraceComponents R Ric)
+    (a : Idx) (b : Fin q -> Idx) :
+    (uhlenbeckTimeDerivativeOfCovariantDerivative
+          Ric nablaRic A DA nablaDtA a b -
+        roughLaplacianCovariantDerivativeComponents D3A a b) -
+      (uhlenbeckCovariantDerivativeOfTimeDerivative
+          Ric nablaRic A DA nablaDtA a b -
+        covariantDerivativeRoughLaplacianComponents D3A a b) =
+      2 * ∑ r : Fin q, ∑ e : Idx, ∑ d : Idx,
+        R a e d (b r) * DA e (Function.update b r d) := by
+  rw [uhlenbeck_heat_covariantDerivative_commutator
+    R nablaR Ric nablaRic A DA nablaDtA D3A hdiff hgrad hcontract
+    hskewFirst hskewLast htrace a b]
+  rfl
+
 theorem uhlenbeck_heat_covariantDerivative_commutator_zero
     (R : Idx -> Idx -> Idx -> Idx -> Real)
     (nablaR : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
