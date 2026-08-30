@@ -247,6 +247,25 @@ theorem AEStronglyMeasurable.clm_apply_of_denseRange
   exact aestronglyMeasurable_of_tendsto_ae atTop (fun m => hFj (i m))
     (Eventually.of_forall fun p => (F p).continuous.continuousAt.tendsto.comp hji)
 
+theorem AEStronglyMeasurable.clm_apply₂_of_denseRange
+    {𝕜 ι κ P X Y Z : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup X] [NormedSpace 𝕜 X]
+    [SeminormedAddCommGroup Y] [NormedSpace 𝕜 Y]
+    [SeminormedAddCommGroup Z] [NormedSpace 𝕜 Z]
+    [MeasurableSpace P] {j : ι → X} {k : κ → Z}
+    (hj : DenseRange j) (hk : DenseRange k)
+    {F : P → X →L[𝕜] Z →L[𝕜] Y} {μ : Measure P}
+    (hFj : ∀ i l, AEStronglyMeasurable (fun p ↦ F p (j i) (k l)) μ)
+    (x : X) (z : Z) :
+    AEStronglyMeasurable (fun p ↦ F p x z) μ := by
+  have hleft (i : ι) :
+      AEStronglyMeasurable (fun p ↦ F p (j i) z) μ :=
+    AEStronglyMeasurable.clm_apply_of_denseRange hk (hFj i) z
+  have hright :
+      AEStronglyMeasurable (fun p ↦ (F p).flip z x) μ :=
+    AEStronglyMeasurable.clm_apply_of_denseRange hj hleft x
+  simpa only [ContinuousLinearMap.flip_apply] using hright
+
 end DifferentialGeometry.Analysis
 
 end
