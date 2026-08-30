@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedTrace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Trace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength
 
 set_option autoImplicit false

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegIndex
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity

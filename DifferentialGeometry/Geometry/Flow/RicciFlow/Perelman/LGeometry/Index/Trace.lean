@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedIndex
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Adapted
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ContractedBianchi
 
 set_option autoImplicit false

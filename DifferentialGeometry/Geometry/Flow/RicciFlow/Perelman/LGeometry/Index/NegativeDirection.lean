@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.JacobiUnique
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Uniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Conjugate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayGlobalize
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegIndexAlgebra
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegIndexSmooth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Smoothness
 import DifferentialGeometry.Geometry.Comparison.Variation.VelocityLocal
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailActionBranch
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNode
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegIndexAlgebra
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve

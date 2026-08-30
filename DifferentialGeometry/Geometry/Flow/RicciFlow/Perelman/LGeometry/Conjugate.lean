@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Basic
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothClamp
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.JacobiSmooth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Smoothness
 
 set_option autoImplicit false
 

@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MinimizerC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNegative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNode
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.NegativeDirection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 
 set_option autoImplicit false
 
