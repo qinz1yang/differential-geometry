@@ -2751,7 +2751,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Directed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.LimitMetrics
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Basic
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Completeness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.VolumeComparisonBridge
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap
 import DifferentialGeometry.Geometry.Metric.Convergence.CoordinateControl
