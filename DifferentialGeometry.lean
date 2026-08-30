@@ -3934,6 +3934,7 @@ import DifferentialGeometry.Topology.CurveChartHead
 import DifferentialGeometry.Topology.FiniteSubdivision
 import DifferentialGeometry.Analysis.Spectral.LowerKyFan
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Galerkin
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MetricComparison
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinSequence
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Counterexamples
