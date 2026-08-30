@@ -3941,3 +3941,4 @@ import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureImageLine
