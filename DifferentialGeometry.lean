@@ -3937,6 +3937,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Galerkin
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MetricComparison
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinSequence
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinTimeL2
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Counterexamples
 import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
 import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
