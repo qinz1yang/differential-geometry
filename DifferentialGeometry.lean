@@ -2345,6 +2345,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.Stationary
+import DifferentialGeometry.Geometry.Metric.Family.UniformEquivalence
 import DifferentialGeometry.Geometry.Operator.MetricFamily
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
