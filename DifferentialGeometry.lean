@@ -2473,6 +2473,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.WeightedHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.AllDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.LimitData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Complete
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompactSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.HigherDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution
@@ -2623,6 +2624,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ConventionChecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.CurvatureBlock
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FullyPulledDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.HeatCommutator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionLeibniz
