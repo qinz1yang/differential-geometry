@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutConjSard
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.ConjugateSard
 import DifferentialGeometry.Analysis.Integration.Measure.ChartNull
 
 set_option autoImplicit false

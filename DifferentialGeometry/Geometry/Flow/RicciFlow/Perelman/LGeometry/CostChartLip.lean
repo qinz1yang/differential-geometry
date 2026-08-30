@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostNoCurve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostMinBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Defs
 
 set_option autoImplicit false
 

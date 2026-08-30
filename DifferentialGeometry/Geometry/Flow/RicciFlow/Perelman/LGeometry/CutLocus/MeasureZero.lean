@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ManifoldRademacher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostChartLip
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutConjNull
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutMultiCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.ConjugateMeasureZero
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MultipleMinimizers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.LocalBranch
 
 set_option autoImplicit false

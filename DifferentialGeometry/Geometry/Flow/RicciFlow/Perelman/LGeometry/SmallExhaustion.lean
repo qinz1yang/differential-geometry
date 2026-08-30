@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutExist
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortMinimizing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallTime

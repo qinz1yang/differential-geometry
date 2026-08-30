@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutAlternative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutStrict
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Alternative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.BeforeCutTime
 
 set_option autoImplicit false
 

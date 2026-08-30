@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutCompact
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutExist
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerClosedness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.LocalExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinVecVar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayContinue
 

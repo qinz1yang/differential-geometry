@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNegativeLeft
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailFamilySpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNode
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutMinimizerRm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.CurvatureBoundedMinimizer
 
 set_option autoImplicit false
 

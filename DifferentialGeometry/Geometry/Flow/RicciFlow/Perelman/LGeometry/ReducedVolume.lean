@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
 import DifferentialGeometry.Geometry.Comparison.CGTPaths
 import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutMultiNull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MeasureZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Monotonicity
 
 set_option autoImplicit false

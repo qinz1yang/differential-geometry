@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MinimizerC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutMinimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNegative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.IndexNode
 

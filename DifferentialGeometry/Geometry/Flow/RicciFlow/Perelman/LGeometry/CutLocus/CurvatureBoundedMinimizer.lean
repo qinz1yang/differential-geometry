@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteActionBound
 
 set_option autoImplicit false
 
@@ -9,8 +10,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 open Set
 open scoped ContDiff Manifold Topology
 
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Tensor0SBundle
 
 universe u uE uH
 
@@ -19,14 +20,18 @@ variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] in
-theorem lMinVec_reg_min
+omit [SigmaCompactSpace M] in
+theorem lMinVec_min_rm
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (T : Real) (x : M) {Z : TangentSpace I x} {tau : Real}
+    (K T : Real) (x : M) {Z : TangentSpace I x} {tau : Real}
     (hmin : (Z, tau) ∈ lMinDomain S T x)
+    (hreg : Icc (T - tau) T ⊆ D.regular)
+    (hRm : ∀ q ∈ Icc (T - tau) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (delta : Real → M)
     (hdelta : ContMDiff (modelWithCornersSelf Real Real) I 1 delta)
     (hd0 : delta 0 = lRegCurve S T x Z 0)
@@ -36,31 +41,13 @@ theorem lMinVec_reg_min
       lRegAction S T delta 0 (Real.sqrt tau) := by
   have hvec := (mem_lMinDomain S T x Z tau).1 hmin
   have htau : 0 < tau := lMinDomain_pos S T x Z tau hmin
-  have hreg : ∀ s ∈ Icc (0 : Real) (Real.sqrt tau),
-      T - s ^ 2 ∈ D.regular := by
-    intro s hs
-    exact lExpPosDom_reg S T x Z hvec.1 hs
-  have hback : ∀ s ∈ Icc (0 : Real) (Real.sqrt tau),
-      T - s ^ 2 ∈ Icc (T - tau) T := by
-    intro s hs
-    have hsSq : s ^ 2 ≤ tau := by
-      calc
-        s ^ 2 ≤ (Real.sqrt tau) ^ 2 :=
-          (sq_le_sq₀ hs.1 (Real.sqrt_nonneg tau)).2 hs.2
-        _ = tau := Real.sq_sqrt htau.le
-    exact ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-  have htime : Icc (T - tau) T ⊆ D.carrier := by
-    intro r hr
-    have hnonneg : 0 ≤ T - r := by linarith [hr.2]
-    have hleTau : T - r ≤ tau := by linarith [hr.1]
-    have hsqrtMem : Real.sqrt (T - r) ∈
-        Icc (0 : Real) (Real.sqrt tau) :=
-      ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hleTau⟩
-    have hregR := lExpPosDom_reg S T x Z hvec.1 hsqrtMem
-    have heq : T - (Real.sqrt (T - r)) ^ 2 = r := by
-      rw [Real.sq_sqrt hnonneg]
-      ring
-    exact D.regular_subset (by simpa only [heq] using hregR)
+  have hsqrt : 0 ≤ Real.sqrt tau := Real.sqrt_nonneg tau
+  have hsq : (Real.sqrt tau) ^ 2 = tau := Real.sq_sqrt htau.le
+  have hregSq : Icc (T - (Real.sqrt tau) ^ 2) T ⊆ D.regular := by
+    simpa only [hsq] using hreg
+  have hRmSq : ∀ q ∈ Icc (T - (Real.sqrt tau) ^ 2) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K := by
+    simpa only [hsq] using hRm
   have hcost : lRegAction S T (lRegCurve S T x Z) 0
       (Real.sqrt tau) = lRegCostC1 S T 0 (Real.sqrt tau) x
         (lRegCurve S T x Z (Real.sqrt tau)) := by
@@ -79,10 +66,12 @@ theorem lMinVec_reg_min
         lCost_eq_reg (I := I) S T x (lExp S T x Z tau) tau htau.le
       _ = lRegCostC1 S T 0 (Real.sqrt tau) x
           (lRegCurve S T x Z (Real.sqrt tau)) := by rfl
+  have hbdd := lRegCosts_bdd_rm (I := I) S hS K T 0
+    (Real.sqrt tau) (by norm_num) hsqrt hregSq hRmSq x
+    (lRegCurve S T x Z (Real.sqrt tau))
   rw [hcost]
-  exact lRegCostC1_le (I := I) S hS T (T - tau) T 0
-    (Real.sqrt tau) (Real.sqrt_pos.2 htau).le htime hback x
-    (lRegCurve S T x Z (Real.sqrt tau)) delta hdelta
-    (hd0.trans (by simp only [lRegCurve_zero])) hdt hreg
+  exact lRegCostC1_le_bdd (I := I) S T 0 (Real.sqrt tau) x
+    (lRegCurve S T x Z (Real.sqrt tau)) hbdd delta hdelta
+    (hd0.trans (by simp only [lRegCurve_zero])) hdt
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
