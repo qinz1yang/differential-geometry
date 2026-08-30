@@ -159,6 +159,71 @@ theorem canonicalFlowDiffeomorph_symm_apply
   exact (Classical.choose_spec
     (canonicalFlowMap_diffeomorph (I := I) g f sigma hcomplete hsol s)).2 x
 
+theorem canonicalFlowParameter_contDiffAt {sigma t : Real}
+    (ht : t ∈ canonicalTimeDomain sigma) :
+    ContDiffAt Real ∞ (canonicalFlowParameter sigma) t := by
+  by_cases hσ : sigma = 0
+  · subst hσ
+    have hp : canonicalFlowParameter 0 = id := by
+      funext s
+      simp [canonicalFlowParameter]
+    rw [hp]
+    exact contDiffAt_id
+  · have hpos : 0 < 1 - sigma * t := ht
+    have hlin : ContDiffAt Real ∞ (fun s : Real => 1 - sigma * s) t := by
+      have hconst : ContDiffAt Real ∞ (fun _ : Real => (1 : Real)) t :=
+        contDiffAt_const
+      have hsig : ContDiffAt Real ∞ (fun _ : Real => sigma) t :=
+        contDiffAt_const
+      have hid : ContDiffAt Real ∞ (id : Real → Real) t := contDiffAt_id
+      simpa [Function.comp_def] using hconst.sub (hsig.mul hid)
+    have hlog : ContDiffAt Real ∞
+        (fun s : Real => Real.log (1 - sigma * s)) t := by
+      have hlog0 : ContDiffAt Real ∞ Real.log (1 - sigma * t) :=
+        Real.contDiffAt_log.2 hpos.ne'
+      change ContDiffAt Real ∞
+        (Real.log ∘ (fun s : Real => 1 - sigma * s)) t
+      exact hlog0.comp t hlin
+    have hscaled : ContDiffAt Real ∞
+        (fun s : Real => (-1 / sigma) * Real.log (1 - sigma * s)) t :=
+      hlog.const_smul (-1 / sigma)
+    have hfun : canonicalFlowParameter sigma =
+        (fun s : Real => (-1 / sigma) * Real.log (1 - sigma * s)) := by
+      funext s
+      simp [canonicalFlowParameter, hσ, div_eq_mul_inv]
+      ring
+    rw [hfun]
+    exact hscaled
+
+theorem canonicalFlowMap_contMDiffAt
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M) :
+    ContMDiffAt (𝓘(Real, Real).prod I) I ∞
+      (fun p : Real × M => canonicalFlowMap (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma p.1) p.2) (t, x) := by
+  let hcurves := potentialIntegralCurves (I := I) g f sigma hcomplete hsol
+  let v : (y : M) → TangentSpace I y := fun y => gradFun (I := I) g f y
+  have hv : ContMDiff I (I.prod 𝓘(Real, E)) ∞
+      (fun y : M => (⟨y, v y⟩ : TangentBundle I M)) := by
+    exact gradFun_contMDiff_total_section (I := I) g f.contMDiff
+  have hflow := contMDiffAt_globalFlow_joint_of_complete
+    (I := I) v hv hcurves (canonicalFlowParameter sigma t) x
+  have hparam := canonicalFlowParameter_contDiffAt ht
+  have hparamAt : ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
+      (fun p : Real × M => canonicalFlowParameter sigma p.1) (t, x) := by
+    exact hparam.contMDiffAt.comp (t, x)
+      (contMDiffAt_fst (I := 𝓘(Real, Real)) (J := I) (p := (t, x)))
+  have hsnd : ContMDiffAt (𝓘(Real, Real).prod I) I ∞
+      (fun p : Real × M => p.2) (t, x) := contMDiffAt_snd
+  have hpair : ContMDiffAt (𝓘(Real, Real).prod I)
+      (𝓘(Real, Real).prod I) ∞
+      (fun p : Real × M => (canonicalFlowParameter sigma p.1, p.2)) (t, x) := by
+    exact hparamAt.prodMk hsnd
+  have hcomp := hflow.comp (t, x) hpair
+  simpa [canonicalFlowMap, v, Function.comp_def] using hcomp
+
 theorem canonicalFlowMap_hasMFDerivAt
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
     (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
