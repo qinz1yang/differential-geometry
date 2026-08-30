@@ -136,4 +136,11 @@ theorem curvatureOperatorReaction3_diagonal_rank_two_null_direction_pos
   rw [curvatureOperatorReaction3_diagonal_rank_two_null_direction]
   exact mul_pos ha hb
 
+theorem curvatureOperatorReaction3_diagonal_rank_two_excluded
+    {a b : Real} (ha : 0 < a) (hb : 0 < b)
+    (hnull : curvatureOperatorReaction3 (Matrix.diagonal ![a, b, 0]) 2 2 = 0) :
+    False := by
+  have hpos := curvatureOperatorReaction3_diagonal_rank_two_null_direction_pos ha hb
+  linarith
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
