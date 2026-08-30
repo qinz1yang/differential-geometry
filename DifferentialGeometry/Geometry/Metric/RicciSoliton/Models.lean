@@ -527,6 +527,88 @@ theorem roundThreeSphere_hamiltonNormalized :
   normalizedGradientRicciSoliton_hamilton_normalized
     normalizedGradientRicciSoliton_roundThreeSphere
 
+noncomputable def roundThreeCylinderShrinkerMetric :
+    SmoothRiemannianMetric ((𝓡 2).prod 𝓘(Real, Real))
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :=
+  roundTwoSphereShrinkerMetric.prod (euclideanMetric (E := Real))
+
+noncomputable def roundThreeCylinderShrinkerPotential :
+    C^∞⟮(𝓡 2).prod 𝓘(Real, Real),
+      Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real; Real⟯ :=
+  roundTwoSphereShrinkerPotential.comp ContMDiffMap.fst +
+    gaussianPotential.comp ContMDiffMap.snd
+
+@[simp] theorem roundThreeCylinderShrinkerPotential_apply
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    roundThreeCylinderShrinkerPotential x = 1 + x.2 ^ 2 / 4 := by
+  change roundTwoSphereShrinkerPotential x.1 + gaussianPotential x.2 = _
+  rw [roundTwoSphereShrinkerPotential_apply, gaussianPotential_apply]
+  simp [Real.norm_eq_abs]
+
+theorem gradientRicciSoliton_roundThreeCylinder :
+    gradientRicciSoliton (I := (𝓡 2).prod 𝓘(Real, Real))
+      roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential 1 := by
+  simpa [roundThreeCylinderShrinkerMetric,
+    roundThreeCylinderShrinkerPotential] using
+    gradientRicciSoliton_prod
+      normalizedGradientRicciSoliton_roundTwoSphere.2.1
+      (gradientRicciSoliton_gaussian (E := Real))
+
+theorem roundThreeCylinderShrinkerMetric_complete :
+    RiemannianMetricComplete (I := (𝓡 2).prod 𝓘(Real, Real))
+      roundThreeCylinderShrinkerMetric := by
+  simpa [roundThreeCylinderShrinkerMetric] using
+    RiemannianMetricComplete.prod
+      normalizedGradientRicciSoliton_roundTwoSphere.1
+      (normalizedGradientRicciSoliton_gaussian (E := Real)).1
+
+theorem roundThreeCylinderShrinkerMetric_scalarCurvature
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    metricScalarAt (I := (𝓡 2).prod 𝓘(Real, Real))
+      roundThreeCylinderShrinkerMetric x = 1 := by
+  rw [roundThreeCylinderShrinkerMetric, Curvature.metricScalarAt_prod,
+    roundTwoSphereShrinkerMetric_scalarCurvature,
+    euclideanMetric_scalarCurvature]
+  ring
+
+theorem roundThreeCylinderShrinkerPotential_normGradSqFun
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    normGradSqFun (I := (𝓡 2).prod 𝓘(Real, Real))
+        roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential x =
+      x.2 ^ 2 / 4 := by
+  have hsphere := normalizedGradientRicciSoliton_roundTwoSphere.2.2 x.1
+  rw [roundTwoSphereShrinkerMetric_scalarCurvature,
+    roundTwoSphereShrinkerPotential_apply] at hsphere
+  have hnorm : normGradSqFun (I := 𝓡 2) roundTwoSphereShrinkerMetric
+      roundTwoSphereShrinkerPotential x.1 = 0 := by
+    linarith [hsphere]
+  change normGradSqFun (I := (𝓡 2).prod 𝓘(Real, Real))
+      (roundTwoSphereShrinkerMetric.prod (euclideanMetric (E := Real)))
+      (fun q : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real =>
+        roundTwoSphereShrinkerPotential q.1 + gaussianPotential q.2) x = _
+  rw [Operator.normGradSqFun_prod, hnorm,
+    gaussianPotential_normGradSqFun, gaussianPotential_apply]
+  simp [Real.norm_eq_abs]
+
+theorem normalizedGradientRicciSoliton_roundThreeCylinder :
+    normalizedGradientRicciSoliton
+      (I := (𝓡 2).prod 𝓘(Real, Real))
+      roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential := by
+  simpa [roundThreeCylinderShrinkerMetric,
+    roundThreeCylinderShrinkerPotential] using
+    normalizedGradientRicciSoliton_prod
+      normalizedGradientRicciSoliton_roundTwoSphere
+      (normalizedGradientRicciSoliton_gaussian (E := Real))
+
+theorem roundThreeCylinder_hamiltonNormalized :
+    hamiltonNormalized (I := (𝓡 2).prod 𝓘(Real, Real))
+      roundThreeCylinderShrinkerMetric
+      roundThreeCylinderShrinkerPotential 1 :=
+  normalizedGradientRicciSoliton_hamilton_normalized
+    normalizedGradientRicciSoliton_roundThreeCylinder
+
 def isGaussianGradientRicciSoliton
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯) (σ : Real) : Prop :=
   ∃ hσ : 0 < σ, ∃ Ψ : M ≃ₘ⟮I, 𝓘(Real, E)⟯ E, ∃ b : Real,

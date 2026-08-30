@@ -1,11 +1,14 @@
 import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Operator.HessianAlgebra
+import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 
 set_option autoImplicit false
@@ -13,7 +16,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Manifold
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Geometry
 
@@ -240,6 +243,168 @@ theorem SmoothRiemannianMetric.prod_inner
       (productMetricForm_pos (I := I) (J := J) g h)
       (productMetricForm_coeff_contMDiffOn (I := I) (J := J) g h)).choose_spec x v w]
   rw [productMetricForm_apply, mfderiv_fst, mfderiv_snd]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_fst_le_prod
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x y : M × N) :
+    riemannianEDistOf (I := I) g x.1 y.1 ≤
+      riemannianEDistOf (I := I.prod J) (g.prod h) x y := by
+  rw [edistOf_iInf, edistOf_iInf]
+  refine le_iInf fun γ => ?_
+  refine le_iInf fun hγ => ?_
+  let γ' : Path x.1 y.1 := γ.map continuous_fst
+  have hγ' : CMDiff 1 γ' := by
+    simpa only [γ', Path.map_coe, Function.comp_def] using
+      (contMDiff_fst.comp hγ)
+  calc
+    _ ≤ ∫⁻ t, ENNReal.ofReal (Real.sqrt
+        (g.inner (γ' t) (mfderiv% γ' t 1) (mfderiv% γ' t 1))) :=
+      iInf_le_of_le γ' (iInf_le_of_le hγ' le_rfl)
+    _ ≤ ∫⁻ t, ENNReal.ofReal (Real.sqrt
+        ((g.prod h).inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) := by
+      refine MeasureTheory.lintegral_mono fun t => ?_
+      apply ENNReal.ofReal_le_ofReal
+      apply Real.sqrt_le_sqrt
+      have hder := mfderiv_comp_apply t
+        (contMDiff_fst.contMDiffAt.mdifferentiableAt one_ne_zero)
+        (hγ.contMDiffAt.mdifferentiableAt one_ne_zero) 1
+      have hγ'fun : (γ' : unitInterval → M) = Prod.fst ∘ γ := by
+        rfl
+      rw [hγ'fun]
+      change g.inner (γ t).1 (mfderiv% (Prod.fst ∘ γ) t 1)
+          (mfderiv% (Prod.fst ∘ γ) t 1) ≤ _
+      rw [hder, SmoothRiemannianMetric.prod_inner]
+      apply le_add_of_nonneg_right
+      let v := mfderiv (I.prod J) J Prod.snd (γ t) (mfderiv% γ t 1)
+      by_cases hv : v = 0
+      · change 0 ≤ h.inner (γ t).2 v v
+        rw [hv]
+        simp only [map_zero, le_refl]
+      · exact (h.pos (γ t).2 v hv).le
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_snd_le_prod
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x y : M × N) :
+    riemannianEDistOf (I := J) h x.2 y.2 ≤
+      riemannianEDistOf (I := I.prod J) (g.prod h) x y := by
+  rw [edistOf_iInf, edistOf_iInf]
+  refine le_iInf fun γ => ?_
+  refine le_iInf fun hγ => ?_
+  let γ' : Path x.2 y.2 := γ.map continuous_snd
+  have hγ' : CMDiff 1 γ' := by
+    simpa only [γ', Path.map_coe, Function.comp_def] using
+      (contMDiff_snd.comp hγ)
+  calc
+    _ ≤ ∫⁻ t, ENNReal.ofReal (Real.sqrt
+        (h.inner (γ' t) (mfderiv% γ' t 1) (mfderiv% γ' t 1))) :=
+      iInf_le_of_le γ' (iInf_le_of_le hγ' le_rfl)
+    _ ≤ ∫⁻ t, ENNReal.ofReal (Real.sqrt
+        ((g.prod h).inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) := by
+      refine MeasureTheory.lintegral_mono fun t => ?_
+      apply ENNReal.ofReal_le_ofReal
+      apply Real.sqrt_le_sqrt
+      have hder := mfderiv_comp_apply t
+        (contMDiff_snd.contMDiffAt.mdifferentiableAt one_ne_zero)
+        (hγ.contMDiffAt.mdifferentiableAt one_ne_zero) 1
+      have hγ'fun : (γ' : unitInterval → N) = Prod.snd ∘ γ := by
+        rfl
+      rw [hγ'fun]
+      change h.inner (γ t).2 (mfderiv% (Prod.snd ∘ γ) t 1)
+          (mfderiv% (Prod.snd ∘ γ) t 1) ≤ _
+      rw [hder, SmoothRiemannianMetric.prod_inner]
+      apply le_add_of_nonneg_left
+      let v := mfderiv (I.prod J) I Prod.fst (γ t) (mfderiv% γ t 1)
+      by_cases hv : v = 0
+      · change 0 ≤ g.inner (γ t).1 v v
+        rw [hv]
+        simp only [map_zero, le_refl]
+      · exact (g.pos (γ t).1 v hv).le
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem RiemannianMetricComplete.prod
+    [CompleteSpace E] [CompleteSpace F]
+    [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
+    (hg : RiemannianMetricComplete (I := I) g)
+    (hh : RiemannianMetricComplete (I := J) h) :
+    RiemannianMetricComplete (I := I.prod J) (g.prod h) := by
+  let : IsManifold (I.prod J) 1 (M × N) :=
+    IsManifold.of_le (I := I.prod J) (M := M × N) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace (M × N) :=
+    Manifold.metrizableSpace (I.prod J) (M × N)
+  let : T3Space (M × N) := inferInstance
+  refine ⟨?_⟩
+  let : RiemannianBundle
+      (fun x : M × N => TangentSpace (I.prod J) x) :=
+    ⟨(g.prod h).toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle (E × F)
+      (fun x : M × N => TangentSpace (I.prod J) x) :=
+    ⟨(g.prod h).inner, (g.prod h).contMDiff.continuous, by intro x v w; rfl⟩
+  let : EMetricSpace (M × N) :=
+    EMetricSpace.ofRiemannianMetric (I.prod J) (M × N)
+  refine EMetric.complete_of_cauchySeq_tendsto (α := M × N) fun s hs => ?_
+  have hsProduct : ∀ ε > (0 : ENNReal), ∃ K,
+      ∀ m, K ≤ m → ∀ n, K ≤ n →
+        riemannianEDistOf (I := I.prod J) (g.prod h) (s m) (s n) < ε := by
+    intro ε hε
+    obtain ⟨K, hK⟩ := EMetric.cauchySeq_iff.mp hs ε hε
+    refine ⟨K, fun m hm n hn => ?_⟩
+    change edist (s m) (s n) < ε
+    exact hK m hm n hn
+  change ∃ x, Filter.Tendsto s Filter.atTop (𝓝 x)
+  have hsFst : ∃ x, Filter.Tendsto (fun n => (s n).1) Filter.atTop (𝓝 x) := by
+    let : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := ∞)
+        (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+    let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+    let : T3Space M := inferInstance
+    let : RiemannianBundle (fun x : M => TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle E
+        (fun x : M => TangentSpace I x) :=
+      ⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩
+    let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    let : CompleteSpace M := hg.complete
+    apply cauchySeq_tendsto_of_complete
+    apply EMetric.cauchySeq_iff.mpr
+    intro ε hε
+    obtain ⟨K, hK⟩ := hsProduct ε hε
+    refine ⟨K, fun m hm n hn => ?_⟩
+    change riemannianEDistOf (I := I) g (s m).1 (s n).1 < ε
+    exact lt_of_le_of_lt
+      (riemannianEDistOf_fst_le_prod g h (s m) (s n))
+      (hK m hm n hn)
+  have hsSnd : ∃ y, Filter.Tendsto (fun n => (s n).2) Filter.atTop (𝓝 y) := by
+    let : IsManifold J 1 N :=
+      IsManifold.of_le (I := J) (M := N) (n := ∞)
+        (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+    let : TopologicalSpace.MetrizableSpace N := Manifold.metrizableSpace J N
+    let : T3Space N := inferInstance
+    let : RiemannianBundle (fun x : N => TangentSpace J x) :=
+      ⟨h.toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle F
+        (fun x : N => TangentSpace J x) :=
+      ⟨h.inner, h.contMDiff.continuous, by intro x v w; rfl⟩
+    let : EMetricSpace N := EMetricSpace.ofRiemannianMetric J N
+    let : CompleteSpace N := hh.complete
+    apply cauchySeq_tendsto_of_complete
+    apply EMetric.cauchySeq_iff.mpr
+    intro ε hε
+    obtain ⟨K, hK⟩ := hsProduct ε hε
+    refine ⟨K, fun m hm n hn => ?_⟩
+    change riemannianEDistOf (I := J) h (s m).2 (s n).2 < ε
+    exact lt_of_le_of_lt
+      (riemannianEDistOf_snd_le_prod g h (s m) (s n))
+      (hK m hm n hn)
+  obtain ⟨x, hx⟩ := hsFst
+  obtain ⟨y, hy⟩ := hsSnd
+  exact ⟨(x, y), by simpa only [Prod.eta] using hx.prodMk_nhds hy⟩
 
 end DifferentialGeometry
 
@@ -2038,6 +2203,35 @@ theorem Curvature.riemannOp_prod
       (productLift_contMDiff (I := I) (J := J) hU hV)
   exact hoplift.trans (hopsec.trans (hsplit.trans hpoint))
 
+private theorem exists_metric_orthonormalBasis
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
+    [FiniteDimensional Real V]
+    {K : Type*} [TopologicalSpace K]
+    {L : ModelWithCorners Real V K}
+    {P : Type*} [TopologicalSpace P] [ChartedSpace K P] [IsManifold L ∞ P]
+    (g : SmoothRiemannianMetric L P) (x : P) :
+    ∃ basis : Module.Basis (Fin (Module.finrank Real (TangentSpace L x))) Real
+        (TangentSpace L x),
+      ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0 := by
+  classical
+  let D := (Tensor0SBundle.tangentMetricDataGen (I := L) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace L x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace L x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace L x) _ _ _ D.toCore
+  let : InnerProductSpace Real (TangentSpace L x) :=
+    @InnerProductSpace.ofCore Real (TangentSpace L x) _ _ _ D.toCore.toCore
+  let ob := stdOrthonormalBasis Real (TangentSpace L x)
+  refine ⟨ob.toBasis, ?_⟩
+  intro i j
+  have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
+    Tensor0SBundle.MetricFiberData.toCore_inner D (ob i) (ob j)
+  change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
+  rw [← Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
+    (Tensor0SBundle.tangentMetricDataGen (I := L) g x) (ob.toBasis i) (ob.toBasis j)]
+  change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
+  rw [← hinner]
+  exact ob.inner_eq_ite i j
+
 theorem Curvature.ricciTensor_prod
     [CompleteSpace E] [CompleteSpace F] [T2Space M] [T2Space N]
     [BoundarylessManifold I M] [BoundarylessManifold J N]
@@ -2075,6 +2269,85 @@ theorem Curvature.ricciTensor_prod
         (Curvature.ricciEndo (I := J) h x.2 uN vN)) = _
   rw [LinearMap.trace_prodMap',
     ← Curvature.ricciTensor_apply, ← Curvature.ricciTensor_apply]
+
+set_option backward.isDefEq.respectTransparency false in
+theorem Curvature.metricScalarAt_prod
+    [CompleteSpace E] [CompleteSpace F] [T2Space M] [T2Space N]
+    [BoundarylessManifold I M] [BoundarylessManifold J N]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x : M × N) :
+    metricScalarAt (I := I.prod J) (g.prod h) x =
+      metricScalarAt (I := I) g x.1 + metricScalarAt (I := J) h x.2 := by
+  classical
+  obtain ⟨basisM, hM⟩ := exists_metric_orthonormalBasis (L := I) g x.1
+  obtain ⟨basisN, hN⟩ := exists_metric_orthonormalBasis (L := J) h x.2
+  let basis : Module.Basis
+      (Fin (Module.finrank Real (TangentSpace I x.1)) ⊕
+        Fin (Module.finrank Real (TangentSpace J x.2))) Real
+      (TangentSpace (I.prod J) x) :=
+    basisM.prod basisN
+  have basis_inl (i : Fin (Module.finrank Real (TangentSpace I x.1))) :
+      basis (Sum.inl i) = (basisM i, 0) := by
+    apply Prod.ext
+    · exact Module.Basis.prod_apply_inl_fst basisM basisN i
+    · exact Module.Basis.prod_apply_inl_snd basisM basisN i
+  have basis_inr (i : Fin (Module.finrank Real (TangentSpace J x.2))) :
+      basis (Sum.inr i) = (0, basisN i) := by
+    apply Prod.ext
+    · exact Module.Basis.prod_apply_inr_fst basisM basisN i
+    · exact Module.Basis.prod_apply_inr_snd basisM basisN i
+  have hprod : ∀ i j,
+      (g.prod h).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0 := by
+    intro i j
+    rcases i with i | i
+    · rcases j with j | j
+      · rw [basis_inl, basis_inl]
+        rw [SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+        change g.inner x.1 (basisM i) (basisM j) + h.inner x.2 0 0 = _
+        rw [hM]
+        simp
+      · rw [basis_inl, basis_inr]
+        rw [SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+        change g.inner x.1 (basisM i) 0 + h.inner x.2 0 (basisN j) = _
+        simp
+    · rcases j with j | j
+      · rw [basis_inr, basis_inl]
+        rw [SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+        change g.inner x.1 0 (basisM j) + h.inner x.2 (basisN i) 0 = _
+        simp
+      · rw [basis_inr, basis_inr]
+        rw [SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+        change g.inner x.1 0 0 + h.inner x.2 (basisN i) (basisN j) = _
+        rw [hN]
+        simp
+  have hinvProd : Tensor0SBundle.MetricInverseInBasisGen
+      (g.prod h) x basis
+      (Tensor0SBundle.identityInvMetric (Idx :=
+          Fin (Module.finrank Real (TangentSpace I x.1)) ⊕
+          Fin (Module.finrank Real (TangentSpace J x.2)))) := by
+    exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
+      (g.prod h) basis hprod
+  have hinvM : Tensor0SBundle.MetricInverseInBasisGen g x.1 basisM
+      (Tensor0SBundle.identityInvMetric (Idx :=
+        Fin (Module.finrank Real (TangentSpace I x.1)))) := by
+    exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal g basisM hM
+  have hinvN : Tensor0SBundle.MetricInverseInBasisGen h x.2 basisN
+      (Tensor0SBundle.identityInvMetric (Idx :=
+        Fin (Module.finrank Real (TangentSpace J x.2)))) := by
+    exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal h basisN hN
+  rw [metricScalarAt_def,
+    Operator.metricTracePair0SAt_eq_sum_basis (I := I.prod J)
+      (g.prod h) basis _ hinvProd]
+  rw [metricScalarAt_def,
+    Operator.metricTracePair0SAt_eq_sum_basis (I := I) g basisM _ hinvM]
+  rw [metricScalarAt_def,
+    Operator.metricTracePair0SAt_eq_sum_basis (I := J) h basisN _ hinvN]
+  simp only [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric,
+    ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq, Fintype.sum_sum_type]
+  simp_rw [basis_inl, basis_inr]
+  simp only [metricRicciAt_apply_eq_ricciTensor, Curvature.ricciTensor_prod]
+  simp
 
 theorem Operator.gradFun_prod
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
@@ -2143,6 +2416,23 @@ theorem Operator.gradFun_prod
         (hfprod.mdifferentiableAt (by simp)) (hkprod.mdifferentiableAt (by simp)),
         add_apply]
     _ = mvfderiv (I := I.prod J) (fun q : M × N => f q.1 + k q.2) x z := rfl
+
+set_option backward.isDefEq.respectTransparency false in
+theorem Operator.normGradSqFun_prod
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : C^∞⟮I, M; Real⟯) (k : C^∞⟮J, N; Real⟯) (x : M × N) :
+    Operator.normGradSqFun (I := I.prod J) (g.prod h)
+        (fun q : M × N => f q.1 + k q.2) x =
+      Operator.normGradSqFun (I := I) g f x.1 +
+        Operator.normGradSqFun (I := J) h k x.2 := by
+  rw [Operator.normGradSqFun_def,
+    Operator.gradFun_prod (I := I) (J := J) g h f k x,
+    SmoothRiemannianMetric.prod_inner, mfderiv_fst, mfderiv_snd]
+  change g.inner x.1 (Operator.gradFun (I := I) g f x.1)
+        (Operator.gradFun (I := I) g f x.1) +
+      h.inner x.2 (Operator.gradFun (I := J) h k x.2)
+        (Operator.gradFun (I := J) h k x.2) = _
+  rw [← Operator.normGradSqFun_def, ← Operator.normGradSqFun_def]
 
 theorem Operator.hessFun_prod
     [CompleteSpace E] [CompleteSpace F] [T2Space M] [T2Space N]

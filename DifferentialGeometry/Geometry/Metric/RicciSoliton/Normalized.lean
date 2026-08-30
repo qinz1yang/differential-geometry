@@ -28,6 +28,44 @@ def normalizedGradientRicciSoliton
       ∀ x : M, metricScalarAt (I := I) g x +
         normGradSqFun (I := I) g f x = f x
 
+section Product
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+  [FiniteDimensional Real F]
+variable {G : Type*} [TopologicalSpace G]
+variable {J : ModelWithCorners Real F G} [J.Boundaryless]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
+  [IsManifold J ∞ N] [SigmaCompactSpace N] [T2Space N]
+
+theorem normalizedGradientRicciSoliton_prod
+    [CompleteSpace E] [CompleteSpace F]
+    [BoundarylessManifold I M] [BoundarylessManifold J N]
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
+    {f : C^∞⟮I, M; Real⟯} {k : C^∞⟮J, N; Real⟯}
+    (hg : normalizedGradientRicciSoliton (I := I) g f)
+    (hh : normalizedGradientRicciSoliton (I := J) h k) :
+    normalizedGradientRicciSoliton (I := I.prod J) (g.prod h)
+      (f.comp ContMDiffMap.fst + k.comp ContMDiffMap.snd) := by
+  refine ⟨RiemannianMetricComplete.prod hg.1 hh.1,
+    gradientRicciSoliton_prod hg.2.1 hh.2.1, ?_⟩
+  intro x
+  change metricScalarAt (I := I.prod J) (g.prod h) x +
+      normGradSqFun (I := I.prod J) (g.prod h)
+        (fun q : M × N => f q.1 + k q.2) x = f x.1 + k x.2
+  rw [Curvature.metricScalarAt_prod,
+    Operator.normGradSqFun_prod]
+  calc
+    metricScalarAt (I := I) g x.1 + metricScalarAt (I := J) h x.2 +
+          (normGradSqFun (I := I) g f x.1 +
+            normGradSqFun (I := J) h k x.2) =
+        (metricScalarAt (I := I) g x.1 +
+            normGradSqFun (I := I) g f x.1) +
+          (metricScalarAt (I := J) h x.2 +
+            normGradSqFun (I := J) h k x.2) := by ring
+    _ = f x.1 + k x.2 := by rw [hg.2.2 x.1, hh.2.2 x.2]
+
+end Product
+
 theorem normalizedGradientRicciSoliton_complete
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f) :
