@@ -1432,31 +1432,35 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_positive
     g hT X hC hX u hu_cont hu_nonneg hu_time hu_space hu_super hy0 t ht x
   linarith
 
-private theorem time_dependent_metric_with_drift_strong_maximum_principle_of_barrier
-    [I.Boundaryless] [CompactSpace M]
+private theorem time_dependent_metric_with_drift_strong_maximum_principle_of_barrier_interior_region
+    [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
     (X : Real → (x : M) → TangentSpace I x)
     (u : Real → M → Real)
+    (U : Set M)
+    (hUopen : IsOpen U)
+    (hUint : U ⊆ I.interior M)
     (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
       (spacetimeSlab (M := M) T))
     (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
-    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
     (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDifferentiableAt I 𝓘(Real, Real) (u t) x)
-    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (u t) y) x)
-    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
     (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
     {r R delta eta : Real}
     (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
-    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+    (hsublevel : ∀ x : M, rho x < R → x ∈ U)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x ∈ U,
       rho x < r → eta ≤ u t x)
     (hcompact : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R})
     (hgrad_ne : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
@@ -1535,13 +1539,14 @@ private theorem time_dependent_metric_with_drift_strong_maximum_principle_of_bar
     apply le_of_lt ((div_lt_iff₀ hm).mp ?_)
     dsimp [alpha]
     linarith
-  apply scalar_strong_maximum_principle_of_barrier (I := I)
-    G hT X u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hrho
-    hrho_nonneg hR hdelta heta hlocal (m := m) (B := B)
+  apply scalar_strong_maximum_principle_of_barrier_interior_region (I := I)
+    G hT X u U hUopen hUint hu_cont hu_nonneg hu_time hu_mdiff hu_grad
+    hu_super hrho hrho_nonneg hR hdelta heta hsublevel hlocal
+    (m := m) (B := B)
     (kappa := kappa) (alpha := alpha)
-  · intro t ht htpos x hxr hxR
+  · intro t ht htpos x hx hxr hxR
     exact hgrad_lower (t, x) ⟨ht, hxr, hxR⟩
-  · intro t ht htpos x hxr hxR
+  · intro t ht htpos x hx hxr hxR
     exact hheat_upper (t, x) ⟨ht, hxr, hxR⟩
   · exact hkappa
   · exact hinit
@@ -1664,6 +1669,191 @@ private theorem time_dependent_metric_strong_maximum_principle_of_barrier
   · exact hdom
   · exact hy
 
+theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial_interior_region
+    [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (hgrad_cont : ∀ (rho : M → Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2))
+        (spacetimeSlab (M := M) T))
+    (hheat_cont : ∀ (rho : M → Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+        (spacetimeSlab (M := M) T))
+    (u : Real → M → Real)
+    (U : Set M)
+    (hUopen : IsOpen U)
+    (hUint : U ⊆ I.interior M)
+    (hUconn : IsPreconnected U)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x)
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
+      0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
+    {c : M} (hcU : c ∈ U) (hc : 0 < u T c) (y : M) (hyU : y ∈ U) :
+    0 < u T y := by
+  let P : Set M := U ∩ {x | 0 < u T x}
+  have hTs : T ∈ Set.Icc (0 : Real) T := ⟨hT.le, le_rfl⟩
+  have huT_cont : Continuous (u T) := by
+    rw [continuous_iff_continuousAt]
+    intro x
+    exact (hu_mdiff T hTs hT x).continuousAt
+  have hPopen : IsOpen P := hUopen.inter (isOpen_lt continuous_const huT_cont)
+  have hPclosure : closure P ∩ U ⊆ P := by
+    intro a ha
+    by_cases haP : a ∈ P
+    · exact haP
+    obtain ⟨b, -, hbU⟩ :=
+      (SmoothBumpFunction.nhds_basis_tsupport (I := I) a).mem_iff.mp
+        (hUopen.mem_nhds ha.2)
+    let Cchart : Real :=
+      ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1
+    have hCchart : 0 < Cchart := by
+      dsimp [Cchart]
+      linarith [norm_nonneg
+        (toEuclidean (E := E)).symm.toContinuousLinearMap]
+    let S : Set E :=
+      Metric.ball (extChartAt I a a) (b.rIn / 2) ∩
+        {z | ‖(toEuclidean (E := E)) (z - extChartAt I a a)‖ <
+          b.rIn / (4 * Cchart)}
+    have hSopen : IsOpen S := by
+      exact Metric.isOpen_ball.inter (isOpen_lt (by fun_prop) (by fun_prop))
+    have haS : extChartAt I a a ∈ S := by
+      constructor
+      · change dist (extChartAt I a a) (extChartAt I a a) < b.rIn / 2
+        rw [dist_self]
+        exact half_pos b.rIn_pos
+      · change ‖(toEuclidean (E := E))
+          (extChartAt I a a - extChartAt I a a)‖ < b.rIn / (4 * Cchart)
+        rw [sub_self, map_zero, norm_zero]
+        exact div_pos b.rIn_pos (mul_pos (by norm_num) hCchart)
+    let W : Set M := (chartAt H a).source ∩ extChartAt I a ⁻¹' S
+    have hWopen : IsOpen W := isOpen_extChartAt_preimage a hSopen
+    have haW : a ∈ W := ⟨mem_chart_source H a, haS⟩
+    obtain ⟨c, hcW, hcP⟩ := (mem_closure_iff.mp ha.1) W hWopen haW
+    have hcsource : c ∈ (chartAt H a).source := hcW.1
+    have hc_dist_half :
+        dist (extChartAt I a c) (extChartAt I a a) < b.rIn / 2 := hcW.2.1
+    have hc_dist :
+        dist (extChartAt I a c) (extChartAt I a a) < b.rIn := by
+      linarith [b.rIn_pos]
+    have hc_eucl_small :
+        ‖(toEuclidean (E := E))
+          (extChartAt I a c - extChartAt I a a)‖ < b.rIn / (4 * Cchart) := hcW.2.2
+    let s : Real :=
+      (b.rIn - dist (extChartAt I a c) (extChartAt I a a)) / (2 * Cchart)
+    have hs : 0 < s := by
+      dsimp [s]
+      exact div_pos (sub_pos.mpr hc_dist) (mul_pos (by norm_num) hCchart)
+    have hsmall_lt_s : b.rIn / (4 * Cchart) < s := by
+      have hden : 0 < 4 * Cchart := mul_pos (by norm_num) hCchart
+      calc
+        b.rIn / (4 * Cchart) <
+            (2 * (b.rIn - dist (extChartAt I a c) (extChartAt I a a))) /
+              (4 * Cchart) := by
+          apply (div_lt_div_iff₀ hden hden).mpr
+          nlinarith [hc_dist_half]
+        _ = s := by
+          dsimp [s]
+          field_simp
+          ring
+    have hc_eucl : ‖(toEuclidean (E := E))
+        (extChartAt I a c - extChartAt I a a)‖ < s :=
+      hc_eucl_small.trans hsmall_lt_s
+    let Q : Real := s ^ 2
+    have hQ : 0 < Q := sq_pos_of_pos hs
+    have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
+      apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
+      change ‖(toEuclidean (E := E))
+        (extChartAt I a a - extChartAt I a c)‖ < s
+      simpa only [map_sub, norm_sub_rev] using hc_eucl
+    obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
+      exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP.2
+    obtain ⟨r, hr, hrV⟩ := exists_strongPropagationRadius_sublevel_subset (I := I)
+      b hcsource hQ hV
+    let rho : M → Real := strongPropagationRadius (I := I) b c Q
+    have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
+      strongPropagationRadius_contMDiff (I := I) b Q
+    have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
+      strongPropagationRadius_nonneg (I := I) b hQ.le
+    have hbc : b c = 1 := b.one_of_dist_le hcsource hc_dist.le
+    have hrhoc : rho c = 0 := by
+      simp [rho, strongPropagationRadius, strongChartRadiusSq, hbc]
+    have hrhoa : rho a = strongChartRadiusSq (I := I) a c a := by
+      simp [rho, strongPropagationRadius]
+    let R : Real := (rho a + Q) / 2
+    have hrhoaR : rho a < R := by
+      dsimp [R]
+      rw [hrhoa]
+      linarith
+    have hRQ : R < Q := by
+      dsimp [R]
+      rw [hrhoa]
+      linarith
+    have hR : 0 < R := lt_of_le_of_lt (hrho_nonneg a) hrhoaR
+    have hsublevel : ∀ x : M, rho x < R → x ∈ U := by
+      intro x hxR
+      have hrad := strongPropagationRadius_lt_imp (I := I) b hRQ hxR
+      apply hbU
+      exact subset_closure (by
+        simpa [Function.mem_support] using ne_of_gt hrad.1)
+    have hcompact : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R} := by
+      have hclosed : IsClosed (rho ⁻¹' Set.Icc r R) :=
+        isClosed_Icc.preimage hrho.continuous
+      change IsCompact (rho ⁻¹' Set.Icc r R)
+      exact hclosed.isCompact
+    have hgrad : ∀ t ∈ Set.Icc 0 T, ∀ x : M, r ≤ rho x → rho x ≤ R →
+        gradientFun (I := I) (G.metric t) rho x ≠ 0 := by
+      intro t _ x hxr hxR
+      have hmidR : R < (R + Q) / 2 := by linarith
+      have hmidQ : (R + Q) / 2 < Q := by linarith
+      have hltmid : rho x < (R + Q) / 2 := hxR.trans_lt hmidR
+      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
+      have hbx : b x ≠ 0 := ne_of_gt hrad.1
+      have hxsource : x ∈ (chartAt H a).source := by
+        apply b.support_subset_source
+        simpa [Function.mem_support] using hbx
+      have hxcore :
+          dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
+        apply strongChartRadiusSq_lt_imp_mem_core (I := I) b hc_dist
+        simpa [Q, s, Cchart] using hrad.2
+      have hxc : x ≠ c := by
+        intro heq
+        subst x
+        rw [hrhoc] at hxr
+        linarith
+      exact strongPropagationRadius_gradient_ne_zero (I := I) (G.metric t) b hcsource
+        hxsource hxcore hxc Q
+    have hlocal' : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x ∈ U,
+        rho x < r → eta ≤ u t x := by
+      intro t ht htnear x hx hxr
+      exact hlocal t ht htnear x (hrV hxr)
+    have hpos :=
+      time_dependent_metric_with_drift_strong_maximum_principle_of_barrier_interior_region
+      (I := I) G hT X u U hUopen hUint hu_cont hu_nonneg
+      hu_time hu_mdiff hu_grad hu_super hrho hrho_nonneg hR hdelta heta
+      hsublevel hlocal' hcompact hgrad
+      (hgrad_cont rho hrho) (hheat_cont rho hrho) hrhoaR
+    exact (haP ⟨ha.2, hpos⟩).elim
+  have hUP : U ⊆ P :=
+    hUconn.subset_of_closure_inter_subset hPopen
+      ⟨c, hcU, ⟨hcU, hc⟩⟩ hPclosure
+  exact (hUP hyU).2
+
 theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
     [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
@@ -1698,145 +1888,16 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
       0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
-  let P : Set M := {x | 0 < u T x}
-  have hTs : T ∈ Set.Icc (0 : Real) T := ⟨hT.le, le_rfl⟩
-  have huT_cont : Continuous (u T) := by
-    rw [continuous_iff_continuousAt]
-    intro x
-    exact (hu_mdiff T hTs hT x).continuousAt
-  have hPopen : IsOpen P := isOpen_lt continuous_const huT_cont
-  have hPclosed : IsClosed P := by
-    rw [← closure_subset_iff_isClosed]
-    intro a ha
-    by_cases haP : a ∈ P
-    · exact haP
-    let b : SmoothBumpFunction I a := Classical.choice inferInstance
-    let Cchart : Real :=
-      ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1
-    have hCchart : 0 < Cchart := by
-      dsimp [Cchart]
-      linarith [norm_nonneg
-        (toEuclidean (E := E)).symm.toContinuousLinearMap]
-    let S : Set E :=
-      Metric.ball (extChartAt I a a) (b.rIn / 2) ∩
-        {z | ‖(toEuclidean (E := E)) (z - extChartAt I a a)‖ <
-          b.rIn / (4 * Cchart)}
-    have hSopen : IsOpen S := by
-      exact Metric.isOpen_ball.inter (isOpen_lt (by fun_prop) (by fun_prop))
-    have haS : extChartAt I a a ∈ S := by
-      constructor
-      · change dist (extChartAt I a a) (extChartAt I a a) < b.rIn / 2
-        rw [dist_self]
-        exact half_pos b.rIn_pos
-      · change ‖(toEuclidean (E := E))
-          (extChartAt I a a - extChartAt I a a)‖ < b.rIn / (4 * Cchart)
-        rw [sub_self, map_zero, norm_zero]
-        exact div_pos b.rIn_pos (mul_pos (by norm_num) hCchart)
-    let U : Set M := (chartAt H a).source ∩ extChartAt I a ⁻¹' S
-    have hUopen : IsOpen U := isOpen_extChartAt_preimage a hSopen
-    have haU : a ∈ U := ⟨mem_chart_source H a, haS⟩
-    obtain ⟨c, hcU, hcP⟩ := (mem_closure_iff.mp ha) U hUopen haU
-    have hcsource : c ∈ (chartAt H a).source := hcU.1
-    have hc_dist_half :
-        dist (extChartAt I a c) (extChartAt I a a) < b.rIn / 2 := hcU.2.1
-    have hc_dist :
-        dist (extChartAt I a c) (extChartAt I a a) < b.rIn := by
-      linarith [b.rIn_pos]
-    have hc_eucl_small :
-        ‖(toEuclidean (E := E))
-          (extChartAt I a c - extChartAt I a a)‖ < b.rIn / (4 * Cchart) := hcU.2.2
-    let s : Real :=
-      (b.rIn - dist (extChartAt I a c) (extChartAt I a a)) / (2 * Cchart)
-    have hs : 0 < s := by
-      dsimp [s]
-      exact div_pos (sub_pos.mpr hc_dist) (mul_pos (by norm_num) hCchart)
-    have hsmall_lt_s : b.rIn / (4 * Cchart) < s := by
-      have hden : 0 < 4 * Cchart := mul_pos (by norm_num) hCchart
-      calc
-        b.rIn / (4 * Cchart) <
-            (2 * (b.rIn - dist (extChartAt I a c) (extChartAt I a a))) /
-              (4 * Cchart) := by
-          apply (div_lt_div_iff₀ hden hden).mpr
-          nlinarith [hc_dist_half]
-        _ = s := by
-          dsimp [s]
-          field_simp
-          ring
-    have hc_eucl : ‖(toEuclidean (E := E))
-        (extChartAt I a c - extChartAt I a a)‖ < s :=
-      hc_eucl_small.trans hsmall_lt_s
-    let Q : Real := s ^ 2
-    have hQ : 0 < Q := sq_pos_of_pos hs
-    have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
-      apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
-      change ‖(toEuclidean (E := E))
-        (extChartAt I a a - extChartAt I a c)‖ < s
-      simpa only [map_sub, norm_sub_rev] using hc_eucl
-    obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
-      exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP
-    obtain ⟨r, hr, hrV⟩ := exists_strongPropagationRadius_sublevel_subset (I := I)
-      b hcsource hQ hV
-    let rho : M → Real := strongPropagationRadius (I := I) b c Q
-    have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
-      strongPropagationRadius_contMDiff (I := I) b Q
-    have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
-      strongPropagationRadius_nonneg (I := I) b hQ.le
-    have hbc : b c = 1 := b.one_of_dist_le hcsource hc_dist.le
-    have hrhoc : rho c = 0 := by
-      simp [rho, strongPropagationRadius, strongChartRadiusSq, hbc]
-    have hrhoa : rho a = strongChartRadiusSq (I := I) a c a := by
-      simp [rho, strongPropagationRadius]
-    let R : Real := (rho a + Q) / 2
-    have hrhoaR : rho a < R := by
-      dsimp [R]
-      rw [hrhoa]
-      linarith
-    have hRQ : R < Q := by
-      dsimp [R]
-      rw [hrhoa]
-      linarith
-    have hR : 0 < R := lt_of_le_of_lt (hrho_nonneg a) hrhoaR
-    have hcompact : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R} := by
-      have hclosed : IsClosed (rho ⁻¹' Set.Icc r R) :=
-        isClosed_Icc.preimage hrho.continuous
-      change IsCompact (rho ⁻¹' Set.Icc r R)
-      exact hclosed.isCompact
-    have hgrad : ∀ t ∈ Set.Icc 0 T, ∀ x : M, r ≤ rho x → rho x ≤ R →
-        gradientFun (I := I) (G.metric t) rho x ≠ 0 := by
-      intro t _ x hxr hxR
-      have hmidR : R < (R + Q) / 2 := by linarith
-      have hmidQ : (R + Q) / 2 < Q := by linarith
-      have hltmid : rho x < (R + Q) / 2 := hxR.trans_lt hmidR
-      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
-      have hbx : b x ≠ 0 := ne_of_gt hrad.1
-      have hxsource : x ∈ (chartAt H a).source := by
-        apply b.support_subset_source
-        simpa [Function.mem_support] using hbx
-      have hxcore :
-          dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
-        apply strongChartRadiusSq_lt_imp_mem_core (I := I) b hc_dist
-        simpa [Q, s, Cchart] using hrad.2
-      have hxc : x ≠ c := by
-        intro heq
-        subst x
-        rw [hrhoc] at hxr
-        linarith
-      exact strongPropagationRadius_gradient_ne_zero (I := I) (G.metric t) b hcsource
-        hxsource hxcore hxc Q
-    have hlocal' : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
-        rho x < r → eta ≤ u t x := by
-      intro t ht htnear x hxr
-      exact hlocal t ht htnear x (hrV hxr)
-    have hpos :=
-      time_dependent_metric_with_drift_strong_maximum_principle_of_barrier (I := I)
-      G hT X u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hrho
-      hrho_nonneg hR hdelta heta hlocal' hcompact hgrad
-      (hgrad_cont rho hrho) (hheat_cont rho hrho) hrhoaR
-    exact (haP hpos).elim
-  have hPuniv : P = Set.univ :=
-    IsClopen.eq_univ ⟨hPclosed, hPopen⟩ ⟨c, hc⟩
-  have hyP : y ∈ P := by rw [hPuniv]; exact Set.mem_univ y
-  exact hyP
+  exact
+    scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial_interior_region
+      (I := I) G hT X hgrad_cont hheat_cont u Set.univ isOpen_univ
+      (fun _ _ => BoundarylessManifold.isInteriorPoint) isPreconnected_univ
+      hu_cont hu_nonneg
+      (fun t ht htpos x hx => hu_time t ht htpos x)
+      hu_mdiff
+      (fun t ht htpos x hx => hu_grad t ht htpos x)
+      (fun t ht htpos x hx => hu_super t ht htpos x)
+      (Set.mem_univ c) hc y (Set.mem_univ y)
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_spatial
     [I.Boundaryless]
