@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.LipschitzGradient
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
+import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 
 set_option autoImplicit false
 
@@ -178,5 +180,86 @@ theorem normalizedGradientRicciSoliton_potential_le_sq_distance
     apply ge_of_tendsto htend
     exact Filter.Eventually.of_forall fun n => hε _ (by positivity)
   simpa only [d] using hlim
+
+omit [NeZero (Module.finrank Real E)] [ConnectedSpace M] in
+theorem normalizedGradientRicciSoliton_potential_eq_scalar_of_isLocalMin
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f) {o : M}
+    (ho : IsLocalMin (f : M → Real) o) :
+    f o = metricScalarAt (I := I) g o := by
+  have hgrad : gradFun (I := I) g f o = 0 :=
+    gradientFun_eq_zero_at_spatial_min (I := I) g ho
+      ((f.contMDiff o).mdifferentiableAt (by simp))
+  have hpot := normalizedGradientRicciSoliton_potential_equation (I := I) h o
+  rw [hgrad] at hpot
+  simpa only [map_zero, add_zero] using hpot.symm
+
+omit [NeZero (Module.finrank Real E)] [ConnectedSpace M] in
+theorem normalizedGradientRicciSoliton_potential_le_finrank_div_two_of_isLocalMin
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f) {o : M}
+    (ho : IsLocalMin (f : M → Real) o) :
+    f o ≤ (Module.finrank Real E : Real) / 2 := by
+  have hf_mdiff : MDifferentiableAt I 𝓘(Real, Real) (f : M → Real) o :=
+    (f.contMDiff o).mdifferentiableAt (by simp)
+  have hf_eventually : ∀ᶠ y in 𝓝 o,
+      MDifferentiableAt I 𝓘(Real, Real) (f : M → Real) y :=
+    Filter.Eventually.of_forall fun y =>
+      (f.contMDiff y).mdifferentiableAt (by simp)
+  have hgrad : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g f y) o :=
+    (gradientFun_contMDiffAt (I := I) g (f.contMDiff o)).mdifferentiableAt
+      (by simp)
+  have hmetric : IsMetricCompatibleGen (I := I)
+      (LeviCivita (I := I) g) g := by
+    simpa [LeviCivita] using
+      (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
+  have hlap : 0 ≤ ΔG (I := I) g f o := by
+    have hlap' : 0 ≤ laplacian (I := I) (LeviCivita (I := I) g) g f o :=
+      laplacian_nonneg_at_spatial_min_of_metricCompatible
+        (I := I) (LeviCivita (I := I) g) g hmetric
+          ho hf_mdiff hf_eventually hgrad
+    rw [laplacian_levi_eq (I := I) g f.contMDiff o] at hlap'
+    exact hlap'
+  have htrace := gradientRicciSoliton_trace (I := I) h.2.1 o
+  have hfo :=
+    normalizedGradientRicciSoliton_potential_eq_scalar_of_isLocalMin
+      (I := I) h ho
+  rw [hfo]
+  linarith
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem normalizedGradientRicciSoliton_potential_le_sq_distance_of_isMinOn
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f) {o : M}
+    (ho : IsMinOn (f : M → Real) Set.univ o) (x : M) :
+    f x ≤ 1 / 4 * ((riemannianEDistOf (I := I) g o x).toReal +
+      Real.sqrt (2 * (Module.finrank Real E : Real))) ^ 2 := by
+  have hlocal : IsLocalMin (f : M → Real) o := ho.isLocalMin univ_mem
+  have hfo :=
+    normalizedGradientRicciSoliton_potential_le_finrank_div_two_of_isLocalMin
+      (I := I) h hlocal
+  have hfo_nonneg := normalizedGradientRicciSoliton_potential_nonneg
+    (I := I) h o
+  have hn : 0 ≤ (Module.finrank Real E : Real) := by positivity
+  have hsqrt : 2 * Real.sqrt (f o) ≤
+      Real.sqrt (2 * (Module.finrank Real E : Real)) := by
+    apply (sq_le_sq₀ (by positivity) (Real.sqrt_nonneg _)).mp
+    rw [mul_pow, Real.sq_sqrt hfo_nonneg, Real.sq_sqrt (by positivity)]
+    nlinarith
+  have hbase := normalizedGradientRicciSoliton_potential_le_sq_distance
+    (I := I) h o x
+  have hd : 0 ≤ (riemannianEDistOf (I := I) g o x).toReal :=
+    ENNReal.toReal_nonneg
+  have hsq :
+      ((riemannianEDistOf (I := I) g o x).toReal +
+          2 * Real.sqrt (f o)) ^ 2 ≤
+        ((riemannianEDistOf (I := I) g o x).toReal +
+          Real.sqrt (2 * (Module.finrank Real E : Real))) ^ 2 := by
+    apply (sq_le_sq₀ (add_nonneg hd (by positivity))
+      (add_nonneg hd (Real.sqrt_nonneg _))).2
+    linarith
+  exact hbase.trans (mul_le_mul_of_nonneg_left hsq (by norm_num))
 
 end DifferentialGeometry.Geometry
