@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.CGTWhiteheadJensen
-import DifferentialGeometry.Geometry.Comparison.CGTEvenCover
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.JensenConvexity
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.ExponentialFiber
 
 set_option autoImplicit false
 

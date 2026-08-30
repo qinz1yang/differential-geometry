@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CGTWhiteheadBigon
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.WhiteheadBigon
 
 set_option autoImplicit false
 

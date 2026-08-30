@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CGTPaths
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompleteManifoldMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedField

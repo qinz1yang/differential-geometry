@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.CenterOfMass
-import DifferentialGeometry.Geometry.Comparison.CGTWhiteheadProducer
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.MinimizingVector
 import Mathlib.Analysis.Normed.Module.Connected
 
 set_option autoImplicit false

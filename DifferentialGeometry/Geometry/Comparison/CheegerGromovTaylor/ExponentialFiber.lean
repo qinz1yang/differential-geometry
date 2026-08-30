@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CGTRadialPath
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.RadialPaths
 
 set_option autoImplicit false
 

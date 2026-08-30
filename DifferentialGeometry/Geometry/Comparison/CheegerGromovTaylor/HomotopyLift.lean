@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.CGTExpLift
-import DifferentialGeometry.Geometry.Comparison.CGTPaths
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.ExponentialPathLift
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
 import Mathlib.Topology.Homotopy.Lifting
 
 set_option autoImplicit false

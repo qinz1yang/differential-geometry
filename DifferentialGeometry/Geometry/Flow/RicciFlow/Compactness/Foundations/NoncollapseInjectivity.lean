@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.InjectivityRadius
-import DifferentialGeometry.Geometry.Comparison.CGTInjectivity
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentPolar
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallEuclideanUpper
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoord

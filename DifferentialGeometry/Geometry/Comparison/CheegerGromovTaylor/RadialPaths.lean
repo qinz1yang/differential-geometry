@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CGTHomotopyLift
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.HomotopyLift
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 
 set_option autoImplicit false

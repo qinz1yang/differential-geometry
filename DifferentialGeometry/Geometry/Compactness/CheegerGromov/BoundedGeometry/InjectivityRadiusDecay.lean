@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CGTInjectivity
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius
 
 
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicBallVolume

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
-import DifferentialGeometry.Geometry.Comparison.CGTWhiteheadBase
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.CompleteMetricExtension
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
 
