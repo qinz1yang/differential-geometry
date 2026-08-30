@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Spectral.HamiltonGramReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockEvolution
 
 set_option autoImplicit false
@@ -41,5 +42,51 @@ theorem hamiltonBlock_pre_square_eq_j_add_sigma_square
       hamiltonBlockJ K P M U W + hamiltonBlockSigmaSquare K P U W := by
   unfold hamiltonBlockPreSquare
   rw [hamiltonBlock_sigma_square_expand]
+
+theorem hamiltonBlockJ_eq_reaction_polynomial_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real) :
+    hamiltonBlockJ
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W =
+      DifferentialGeometry.Analysis.Spectral.hamiltonReactionPolynomial
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
+  rfl
+
+theorem hamiltonBlockJ_nonneg_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hY : ∀ r a b, Y r a b = -Y r b a)
+    (hU : ∀ a b, U a b = -U b a) :
+    0 ≤ hamiltonBlockJ
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
+  rw [hamiltonBlockJ_eq_reaction_polynomial_of_gram]
+  exact DifferentialGeometry.Analysis.Spectral.hamiltonReactionPolynomial_nonneg_of_gram
+    Y X U W hY hU
+
+theorem hamiltonBlock_pre_square_nonneg_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hY : ∀ r a b, Y r a b = -Y r b a)
+    (hU : ∀ a b, U a b = -U b a) :
+    0 ≤ hamiltonBlockPreSquare
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
+  rw [hamiltonBlock_pre_square_eq_j_add_sigma_square]
+  exact add_nonneg
+    (hamiltonBlockJ_nonneg_of_gram Y X U W hY hU)
+    (by
+      unfold hamiltonBlockSigmaSquare
+      exact Finset.sum_nonneg fun a _ =>
+        Finset.sum_nonneg fun b _ => sq_nonneg _)
 
 end DifferentialGeometry.PDE.RicciFlow
