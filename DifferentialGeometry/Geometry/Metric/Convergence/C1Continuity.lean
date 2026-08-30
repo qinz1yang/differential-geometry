@@ -11,6 +11,7 @@ import Mathlib.Topology.Instances.Matrix
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Tensor.Coordinates
 
 set_option autoImplicit false
 
@@ -23,7 +24,6 @@ namespace HCGCompactness
 
 open Bundle
 
-open DifferentialGeometry.Coordinates
 open scoped Manifold ContDiff Topology BigOperators
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]

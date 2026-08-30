@@ -2,9 +2,6 @@ import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
 import DifferentialGeometry.Geometry.Exponential.Smoothness.UniformChartFlowBridge
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
-import DifferentialGeometry.Geometry.Connection.Chart.NablaComponents.Basic
-import DifferentialGeometry.Geometry.Connection.Chart.NablaComponents.OneForm
-import DifferentialGeometry.Geometry.Connection.Chart.NablaComponents.TwoTensor
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Geometry.Manifold.IntegralCurve.Transform
 

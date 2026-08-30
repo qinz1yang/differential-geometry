@@ -12,7 +12,6 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyI
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
-import DifferentialGeometry.Geometry.Connection.Chart.Christoffel
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaLogDensity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.RicciCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
@@ -28,7 +27,6 @@ noncomputable section
 open Filter MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Coordinates
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 

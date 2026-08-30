@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.IteratedCovariantCompone
 
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.KoszulDifference
-import DifferentialGeometry.Geometry.Connection.Chart.Christoffel
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 open DifferentialGeometry.Geometry.Curvature
@@ -263,18 +262,6 @@ theorem ginv_hinv
   · simp
   · rw [if_neg h, if_neg fun hce => h hce.symm]
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 2 M]
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] [Fintype Idx] [DecidableEq Idx] in
-private theorem chr_eq_chartChr {u : Set M}
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (frame : Idx → (x : M) → TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u) (x : M) (i j k : Idx) :
-    christoffelSymbolInFrame cov frame hframe x i j k =
-      DifferentialGeometry.Coordinates.christoffelSymbolInFrame cov frame hframe x i j k := rfl
-
-
 omit [I.Boundaryless] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem koszulComp_at
@@ -362,7 +349,7 @@ theorem koszulComp_at
           (Fin.snoc (fun i : Fin 2 => idx (Fin.castAdd 1 i)) d) *
           frameComp0S (I := I) (metricTensorField (I := I) gK) frame y
             (Fin.snoc (fun j : Fin 1 => idx (Fin.natAdd 2 j)) d) =
-        DifferentialGeometry.Coordinates.christoffelSymbolDifferenceInFrame
+        DifferentialGeometry.Tensor.Coordinates.christoffelSymbolDifferenceInFrame
             (leviCivitaConnectionOfMetric (I := I) gK) (leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe y (idx 0) (idx 1) d *
           gK.inner y (frame (idx 2) y) (frame d y) := by
@@ -379,23 +366,19 @@ theorem koszulComp_at
         simp [Fin.snoc]
       simp only [e0, e1, e2]
       rw [frameComp0S_apply, metricTensorField_apply, f0, f1,
-        chr_eq_chartChr (leviCivitaConnectionOfMetric (I := I) gK) frame hframe y
-          (idx 0) (idx 1) d,
-        chr_eq_chartChr (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe y
-          (idx 0) (idx 1) d,
-        ← DifferentialGeometry.Coordinates.christoffelSymbolDifferenceInFrame_eq_sub
+        ← DifferentialGeometry.Tensor.Coordinates.christoffelSymbolDifferenceInFrame_eq_sub
           (leviCivitaConnectionOfMetric (I := I) gK) (leviCivitaConnectionOfMetric (I := I) gRef)
           frame hframe (idx 0) (idx 1) d hframe_b]
     rw [Finset.sum_congr rfl fun d _ => hsum d]
     have hlin : (∑ d : Idx,
-          DifferentialGeometry.Coordinates.christoffelSymbolDifferenceInFrame
+          DifferentialGeometry.Tensor.Coordinates.christoffelSymbolDifferenceInFrame
               (leviCivitaConnectionOfMetric (I := I) gK)
                 (leviCivitaConnectionOfMetric (I := I) gRef)
               frame hframe y (idx 0) (idx 1) d *
             gK.inner y (frame (idx 2) y) (frame d y)) =
         gK.inner y (frame (idx 2) y)
           (∑ d : Idx,
-            DifferentialGeometry.Coordinates.christoffelSymbolDifferenceInFrame
+            DifferentialGeometry.Tensor.Coordinates.christoffelSymbolDifferenceInFrame
                 (leviCivitaConnectionOfMetric (I := I) gK)
                   (leviCivitaConnectionOfMetric (I := I) gRef)
                 frame hframe y (idx 0) (idx 1) d • frame d y) := by
@@ -403,7 +386,7 @@ theorem koszulComp_at
       refine Finset.sum_congr rfl fun d _ => ?_
       rw [ContinuousLinearMap.map_smul, smul_eq_mul]
     rw [hlin,
-      ← DifferentialGeometry.Coordinates.christoffelSymbolDifference_expansion
+      ← DifferentialGeometry.Tensor.Coordinates.christoffelSymbolDifference_expansion
         (leviCivitaConnectionOfMetric (I := I) gK) (leviCivitaConnectionOfMetric (I := I) gRef)
         frame hframe hy (idx 0) (idx 1),
       gK.symm y]
