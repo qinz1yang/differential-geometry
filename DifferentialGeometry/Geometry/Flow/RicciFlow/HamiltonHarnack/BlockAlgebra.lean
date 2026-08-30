@@ -27,6 +27,22 @@ def hamiltonBlockSigma
     (a b : Idx) : Real :=
   ∑ c, P a b c * W c + ∑ c, ∑ d, K a b c d * U c d
 
+def hamiltonBlockTrace
+    (gInv : Idx -> Idx -> Real) (M : Idx -> Idx -> Real) : Real :=
+  ∑ a, ∑ b, gInv a b * M a b
+
+theorem hamiltonBlockTrace_shift
+    (gInv M Ric : Idx -> Idx -> Real) (c : Real) :
+    hamiltonBlockTrace gInv (fun a b => M a b + c * Ric a b) =
+      hamiltonBlockTrace gInv M + c * hamiltonBlockTrace gInv Ric := by
+  unfold hamiltonBlockTrace
+  simp only [mul_add, Finset.sum_add_distrib]
+  simp_rw [Finset.mul_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun a _ => ?_
+  refine Finset.sum_congr rfl fun b _ => ?_
+  ring
+
 theorem hamiltonBlockPolarized_diag
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
