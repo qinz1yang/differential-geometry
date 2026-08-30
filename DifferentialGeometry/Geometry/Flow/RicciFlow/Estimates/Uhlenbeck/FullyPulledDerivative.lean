@@ -61,6 +61,51 @@ omit [CompleteSpace E] [IsManifold I ∞ M]
         s cov A x (fun i ↦ U (slots i)) := by
   exact uhlenbeckPulledTensor0SAt_apply (I := I) U _ slots
 
+omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem uhlenbeckPulledCovariantDerivativeAt_eq_realized
+    {s : Nat}
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s)
+    (DA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) (s + 1))
+    (hDA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov A DA)
+    (x : M) (U : TangentSpace I x →L[Real] TangentSpace I x)
+    (slots : Fin (s + 1) → TangentSpace I x) :
+    uhlenbeckPulledCovariantDerivativeAt (I := I) cov A x U slots =
+      DA x (fun i => U (slots i)) := by
+  classical
+  let X : ContMDiffSection I E (∞ : WithTop ℕ∞)
+      (TangentSpace I : M → Type _) :=
+    ⟨smoothExtensionTangent (I := I) x (U (slots 0)),
+      smoothExtensionTangent_contMDiff (I := I) x (U (slots 0))⟩
+  let rest : Fin s → TangentSpace I x :=
+    fun i => U (slots i.succ)
+  have hX : X x = U (slots 0) := by
+    simp [X]
+  have hcons :
+      (Fin.cons (X x) rest : Fin (s + 1) → TangentSpace I x) =
+        (fun i => U (slots i)) := by
+    funext i
+    cases i using Fin.cases with
+    | zero => simp [hX]
+    | succ j => rfl
+  have hreal := hDA X x rest
+  have htotal := totalNabla0SFun_apply_section
+    (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    s cov X A x rest
+  rw [uhlenbeckPulledCovariantDerivativeAt_apply]
+  calc
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov A x (fun i => U (slots i)) =
+      totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov A x (Fin.cons (X x) rest) := by rw [hcons]
+    _ = nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s cov X A x rest := htotal
+    _ = DA x (Fin.cons (X x) rest) := hreal.symm
+    _ = DA x (fun i => U (slots i)) := by rw [hcons]
+
 noncomputable def uhlenbeckPulledNablaKRm04At
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
