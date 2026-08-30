@@ -268,6 +268,74 @@ theorem hamiltonBlockQuadratic_nonneg_of_shifted_family
     all_goals ring
   · exact hRic
 
+theorem hamiltonShiftedBlockPSD_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (clock : HarnackClock)
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (Ric : ι -> ι -> Real)
+    (hRic : ∀ (W : ι -> Real), 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b) :
+    hamiltonBlockPSD
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (hamiltonShiftedM clock
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) Ric) := by
+  intro U W
+  change 0 ≤ hamiltonShiftedBlockQuadratic clock
+    (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+    (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+    (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) Ric U W
+  rw [hamiltonShiftedBlockQuadratic_expand]
+  exact add_nonneg
+    (hamiltonBlockQuadratic_nonneg_of_gram Y X U W)
+    (mul_nonneg (le_of_lt (by
+      exact one_div_pos.mpr (mul_pos (by norm_num) clock.elapsed_pos))) (hRic W))
+
+theorem hamiltonBlockPSD_of_shifted_family
+    {ι : Type*} [Fintype ι]
+    (t : Real)
+    (K : ι -> ι -> ι -> ι -> Real)
+    (P : ι -> ι -> ι -> Real)
+    (M Ric : ι -> ι -> Real)
+    (hshift : ∀ (α : Real) (hα : α < t),
+      hamiltonBlockPSD K P (hamiltonShiftedM ⟨α, t, hα⟩ M Ric))
+    (hRic : ∀ (W : ι -> Real), 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b) :
+    hamiltonBlockPSD K P M := by
+  intro U W
+  exact hamiltonBlockQuadratic_nonneg_of_shifted_family t K P M Ric
+    U W (fun α hα => hshift α hα U W) (hRic W)
+
+theorem hamilton_trace_from_shifted_quadratic_nonneg
+    {ι : Type*} [Fintype ι]
+    (t : Real)
+    (R : ι -> ι -> ι -> ι -> Real)
+    (P : ι -> ι -> ι -> Real)
+    (M Ric : ι -> ι -> Real)
+    (v dR : ι -> Real)
+    (hshift : ∀ (α : Real) (hα : α < t)
+      (U : ι -> ι -> Real) (W : ι -> Real),
+      0 ≤ hamiltonShiftedBlockQuadratic
+        ⟨α, t, hα⟩ (fun a b c d => R a b d c) P M Ric U W)
+    (hRic : ∀ (W : ι -> Real), 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b)
+    (hPFirst : ∀ a, (∑ c, P c a c) = -(1 / 2 : Real) * dR a)
+    (hPSecond : ∀ a, (∑ c, P a c c) = (1 / 2 : Real) * dR a)
+    (hRFirst : ∀ a b c d, R a b c d = -R b a c d)
+    (hRLast : ∀ a b c d, R a b c d = -R a b d c)
+    (hRPair : ∀ a b c d, R a b c d = R c d a b) :
+    0 ≤ (∑ a, M a a) + ∑ a, dR a * v a +
+      ∑ a, ∑ b, hamiltonRicciContraction R a b * v a * v b := by
+  apply hamilton_trace_from_quadratic_nonneg R P M v dR
+  · intro U W
+    rw [← hamiltonBlockQuadratic_eq_hamiltonQuadraticForm
+      (fun a b c d => R a b d c) P M U W]
+    exact hamiltonBlockQuadratic_nonneg_of_shifted_family t
+      (fun a b c d => R a b d c) P M Ric U W
+      (fun α hα => hshift α hα U W) (hRic W)
+  · exact hPFirst
+  · exact hPSecond
+  · exact hRFirst
+  · exact hRLast
+  · exact hRPair
+
 def hamiltonCoordinateCurvature
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H]
