@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Basic
 
 set_option autoImplicit false
 

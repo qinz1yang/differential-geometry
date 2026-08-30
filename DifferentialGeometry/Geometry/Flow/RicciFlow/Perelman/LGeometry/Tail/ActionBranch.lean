@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailLocalBranch
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailEndpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LocalInverse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.EndpointInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve

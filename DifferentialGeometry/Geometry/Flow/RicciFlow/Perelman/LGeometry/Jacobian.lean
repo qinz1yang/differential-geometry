@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.HamiltonBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound
 
 set_option autoImplicit false
 

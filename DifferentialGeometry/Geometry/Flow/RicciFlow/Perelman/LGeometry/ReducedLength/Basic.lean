@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Injectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.LocalExponentialMap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.LocalBranch
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.LocalCostBranch
 
 set_option autoImplicit false
 

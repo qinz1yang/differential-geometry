@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.NegativeDirectionLeft
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailFamilySpan
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.VariationExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.CurvatureBoundedMinimizer
 

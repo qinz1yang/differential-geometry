@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailLaplacian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LaplacianBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TraceIntegral
 
 set_option autoImplicit false

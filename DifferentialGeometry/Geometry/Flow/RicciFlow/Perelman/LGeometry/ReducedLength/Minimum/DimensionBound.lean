@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RedMinTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Minimum.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallTime
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.WeakBarrier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.WeakBarrier
 
 set_option autoImplicit false
 

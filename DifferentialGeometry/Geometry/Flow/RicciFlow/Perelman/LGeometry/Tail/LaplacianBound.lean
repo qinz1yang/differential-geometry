@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.TailHessian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.HessianBound
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
 
 set_option autoImplicit false
