@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.CurvatureBlock
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
 
 set_option autoImplicit false
 
@@ -122,6 +123,21 @@ theorem hamiltonBlockPSD_reaction_nonneg_of_gram
   unfold hamiltonBlockExactEvolution
   exact hamiltonBlock_pre_square_nonneg_of_gram Y X U W hY hU
 
+theorem hamiltonBlockJ_eq_gram_reaction
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hY : ∀ r a b, Y r a b = -Y r b a)
+    (hU : ∀ a b, U a b = -U b a) :
+    hamiltonBlockJ
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W =
+      DifferentialGeometry.Analysis.Spectral.hamiltonGramReaction Y X U W := by
+  rw [hamiltonBlockJ_eq_reaction_polynomial_of_gram]
+  exact (DifferentialGeometry.Analysis.Spectral.hamiltonGram_reaction_eq_hamiltonReactionPolynomial
+    Y X U W hY hU).symm
+
 theorem hamiltonBlock_exact_evolution_eq_pre_square
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
@@ -140,6 +156,23 @@ theorem hamiltonBlock_exact_evolution_eq_j_add_sigma_square
       hamiltonBlockJ K P M U W + hamiltonBlockSigmaSquare K P U W := by
   unfold hamiltonBlockExactEvolution
   exact hamiltonBlock_pre_square_eq_j_add_sigma_square K P M U W
+
+theorem hamiltonBlockExactEvolution_eq_gram_reaction_add_sigma_square
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hY : ∀ r a b, Y r a b = -Y r b a)
+    (hU : ∀ a b, U a b = -U b a) :
+    hamiltonBlockExactEvolution
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W =
+      DifferentialGeometry.Analysis.Spectral.hamiltonGramReaction Y X U W +
+        hamiltonBlockSigmaSquare
+          (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+          (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X) U W := by
+  rw [hamiltonBlock_exact_evolution_eq_j_add_sigma_square,
+    hamiltonBlockJ_eq_gram_reaction Y X U W hY hU]
 
 theorem hamiltonBlock_exact_evolution_nonneg_of_gram
     {ι κ : Type*} [Fintype ι] [Fintype κ]
@@ -191,6 +224,49 @@ theorem hamiltonShiftedBlockQuadratic_expand
     ring
   rw [hscale]
   ring_nf
+
+theorem hamiltonShiftedBlockQuadratic_nonneg_of_origin
+    (clock : HarnackClock)
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M Ric : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real)
+    (hQ : 0 ≤ hamiltonBlockQuadratic K P M U W)
+    (hRic : 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b) :
+    0 ≤ hamiltonShiftedBlockQuadratic clock K P M Ric U W := by
+  rw [hamiltonShiftedBlockQuadratic_expand]
+  exact add_nonneg hQ (mul_nonneg (le_of_lt (by
+    exact one_div_pos.mpr (mul_pos (by norm_num) clock.elapsed_pos))) hRic)
+
+theorem hamiltonBlockQuadratic_nonneg_of_all_shifted
+    {q c t : Real}
+    (hshift : ∀ α : Real, α < t → 0 ≤ q + c / (2 * (t - α)))
+    (hc : 0 ≤ c) :
+    0 ≤ q := by
+  exact hamilton_ancient_matrix_limit hshift hc
+
+theorem hamiltonBlockQuadratic_nonneg_of_shifted_family
+    (t : Real)
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M Ric : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real)
+    (hshift : ∀ (α : Real) (hα : α < t),
+      0 ≤ hamiltonShiftedBlockQuadratic
+        ⟨α, t, hα⟩ K P M Ric U W)
+    (hRic : 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b) :
+    0 ≤ hamiltonBlockQuadratic K P M U W := by
+  apply hamilton_ancient_matrix_limit (q := hamiltonBlockQuadratic K P M U W)
+    (c := ∑ a, ∑ b, Ric a b * W a * W b)
+  · intro α hα
+    have h := hshift α hα
+    rw [hamiltonShiftedBlockQuadratic_expand] at h
+    change 0 ≤ hamiltonBlockQuadratic K P M U W +
+      (1 / (2 * (t - α)) : Real) *
+        (∑ a, ∑ b, Ric a b * W a * W b) at h
+    convert h using 1
+    all_goals ring
+  · exact hRic
 
 def hamiltonCoordinateCurvature
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
