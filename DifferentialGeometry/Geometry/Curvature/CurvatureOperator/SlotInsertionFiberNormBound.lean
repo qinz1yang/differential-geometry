@@ -1,38 +1,17 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebeyToHs
-import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
-import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SecondBianchi
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
-import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleProductGrid
-open DifferentialGeometry.Analysis.Spectral
-open DifferentialGeometry.Analysis.Elliptic
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.Tensor02
+import Mathlib.Logic.Equiv.Fin.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
-open scoped Manifold Topology ContDiff ENNReal BigOperators
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
+open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
-
-open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.TensorRSNabla
-open DifferentialGeometry.Analysis.Spectral.MetricRealization
-  (metricCauchySchwarzBound ccTensorBilinSymm)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -83,7 +62,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 2 2 x
+  rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g₀ 2 2 x
     (show TensorRSSpace 2 2 I x from
       TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) e bse hnE hbse horth]
   have hcompsq : ∀ (K J : Fin 2 → Fin n),
@@ -267,7 +246,7 @@ private lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_general
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ s s x
+  rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g₀ s s x
     (show TensorRSSpace s s I x from
       TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) e bse hnE hbse horth]
   rw [Finset.sum_comm]

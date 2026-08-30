@@ -1,8 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.CovGradBundleEquivFiberNormFrameSum
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorCurvatureUnitEvalBridge
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvatureRS
+import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.FrameSum
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -58,22 +54,6 @@ private lemma fiberNormSqComponent_covGradBundleEquivSymm_slice_eq
   congr 1
   exact (Fin.comp_cons e a J).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_basis
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (S : TensorRSSpace r s I x)
-    {n : ℕ} (e : Fin n → TangentSpace I x)
-    (bse : Module.Basis (Fin n) ℝ (TangentSpace I x))
-    (hn : n = Module.finrank ℝ E) (hbse : ∀ i : Fin n, bse i = e i)
-    (horth : ∀ a b : Fin n, g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
-    riemannianFiberNormSq (I := I) (M := M) g r s x S =
-      ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
-        (fiberNormSqComponent (I := I) (M := M) g x r s S n e K J) ^ 2 := by
-  rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x S]
-  rw [tensorInnerPointwise_eq_sum_componentS_mul (I := I) (M := M) g r s x e bse hn hbse horth S S]
-  refine Finset.sum_congr rfl (fun K _ => Finset.sum_congr rfl (fun J _ => ?_))
-  rw [pow_two]
-
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
@@ -112,10 +92,10 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
   have hbse : ∀ i : Fin (Module.finrank ℝ E), bse i = eC i := fun i => by
     rw [hbse_def, coe_basisOfLinearIndependentOfCardEqFinrank]
   have hnd : Module.finrank ℝ E = Module.finrank ℝ E := rfl
-  rw [riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_basis (I := I) (M := M) g r s x _ eC
+  rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g r s x _ eC
     bse hnd hbse
     horthC]
-  rw [riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_basis (I := I) (M := M) g r (s + 1) x
+  rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g r (s + 1) x
     T eC bse hnd
     hbse horthC]
   have hBix : B i x = eC i := rfl

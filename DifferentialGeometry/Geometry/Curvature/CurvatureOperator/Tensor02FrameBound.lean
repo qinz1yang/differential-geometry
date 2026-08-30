@@ -1,5 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.TensorRicciCommutatorRiemannianFiberNormBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormChartBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Components
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
@@ -18,7 +17,6 @@ namespace Analysis
 namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

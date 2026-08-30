@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.Tensor02
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 
 
 noncomputable section
@@ -494,6 +495,20 @@ lemma riemannianFiberNormSq_eq_sum_componentRS_sq
   rw [hrepr T]
   refine Finset.sum_congr rfl (fun K _ => Finset.sum_congr rfl (fun J _ => ?_))
   rw [fiberNormSqSummand_eq_component_sq]
+
+theorem riemannianFiberNormSq_eq_sum_component_sq_of_basis
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (S : TensorRSSpace r s I x)
+    {n : ℕ} (e : Fin n → TangentSpace I x)
+    (bse : Module.Basis (Fin n) ℝ (TangentSpace I x))
+    (hn : n = Module.finrank ℝ E) (hbse : ∀ i : Fin n, bse i = e i)
+    (horth : ∀ a b : Fin n, g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
+    riemannianFiberNormSq (I := I) (M := M) g r s x S =
+      ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
+        (fiberNormSqComponent (I := I) (M := M) g x r s S n e K J) ^ 2 := by
+  rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x S]
+  rw [tensorInnerPointwise_eq_sum_componentS_mul (I := I) (M := M) g r s x e bse hn hbse horth S S]
+  refine Finset.sum_congr rfl (fun K _ => Finset.sum_congr rfl (fun J _ => ?_))
+  rw [pow_two]
 
 lemma tangent_orthonormalBasisRS_witness
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
