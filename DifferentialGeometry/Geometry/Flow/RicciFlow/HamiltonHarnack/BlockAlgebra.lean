@@ -54,4 +54,29 @@ theorem hamiltonBlockPolarized_diag
   simp only [mul_add, Finset.sum_add_distrib]
   ring_nf
 
+theorem hamiltonGramSigma_eq_hamiltonBlockSigma
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real) (a b : ι) :
+    DifferentialGeometry.Analysis.Spectral.hamiltonGramSigma Y X U W a b =
+      hamiltonBlockSigma
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+        (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X) U W a b := by
+  unfold hamiltonBlockSigma
+  exact DifferentialGeometry.Analysis.Spectral.hamiltonGramSigma_eq_block
+    Y X U W a b
+
+theorem hamiltonBlockPolarized_diag_nonneg_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real) :
+    0 ≤ hamiltonBlockPolarized
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U U W W := by
+  rw [hamiltonBlockPolarized_diag,
+    ← DifferentialGeometry.Analysis.Spectral.hamiltonGram_quadratic_eq_hamiltonQuadraticForm
+      Y X U W]
+  exact DifferentialGeometry.Analysis.Spectral.hamiltonGram_quadratic_nonneg Y X U W
+
 end DifferentialGeometry.PDE.RicciFlow
