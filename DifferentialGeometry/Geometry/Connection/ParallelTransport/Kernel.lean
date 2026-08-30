@@ -189,6 +189,30 @@ theorem fixed_kernel_mem_iff_physical
     rw [fixed_kernel_transport (V := V) h x] at hv'
     exact hv'
 
+theorem fixed_range_mem_iff_physical
+    (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x : X) (v : V base) :
+    P.transport base x v ∈ (physicalOperator x).range ↔
+      v ∈ fixedOperator.range := by
+  constructor
+  · intro hv
+    have hv' : P.transport base x v ∈
+        Submodule.map (P.transport base x).toLinearMap fixedOperator.range := by
+      rw [fixed_range_transport (V := V) h x]
+      exact hv
+    rcases hv' with ⟨w, hw, hwy⟩
+    have : w = v := by
+      apply (P.transport base x).injective
+      change P.transport base x w = P.transport base x v at hwy
+      exact hwy
+    simpa [this] using hw
+  · intro hv
+    have hv' : P.transport base x v ∈
+        Submodule.map (P.transport base x).toLinearMap fixedOperator.range :=
+      ⟨v, hv, rfl⟩
+    rw [fixed_range_transport (V := V) h x] at hv'
+    exact hv'
+
 end UhlenbeckKernelTransfer
 
 end DifferentialGeometry.Geometry.Connection
