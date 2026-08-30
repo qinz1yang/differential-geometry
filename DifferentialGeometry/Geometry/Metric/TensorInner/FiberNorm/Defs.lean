@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Topology.VectorBundle.Riemannian
@@ -14,7 +14,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

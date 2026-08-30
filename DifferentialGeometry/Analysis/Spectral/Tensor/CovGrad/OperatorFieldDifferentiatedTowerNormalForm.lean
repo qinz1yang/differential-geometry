@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldContractionBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.GenuineCurvatureField
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -310,7 +310,7 @@ theorem normalForm_of_base (g : SmoothRiemannianMetric I M)
                                   ih r
 
 omit [CompleteSpace E] in
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_jet_bound_of_normalForm (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (p r : ℕ) (hNF : IsIteratedCovGradNormalForm (I := I) (M := M) g op p r) :

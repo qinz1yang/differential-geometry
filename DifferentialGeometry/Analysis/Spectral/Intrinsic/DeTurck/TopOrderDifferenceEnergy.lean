@@ -177,7 +177,7 @@ theorem topOrderDifferenceCoefficient_riemannianFiberNormSq (g₀ : SmoothRieman
           ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) := by
       rw [Real.sq_sqrt hB0]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem edgePair_point_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {C δ : ℝ}

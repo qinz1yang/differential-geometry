@@ -561,7 +561,7 @@ theorem ricciConnectionDifferenceQuadraticCoefficient_fiberNormSq_le (g : Smooth
     _ = (Real.sqrt K) ^ 2 * P1 ^ 2 := by rw [Real.sq_sqrt hK0]
 
 omit [SigmaCompactSpace M] in
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem aa_pair_point
     (g : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (F : SmoothCcTensor g 2 2)

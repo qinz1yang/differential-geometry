@@ -421,7 +421,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g
     _ = (Real.sqrt K) ^ 2 * P1 := by rw [Real.sq_sqrt hK0]
 
 omit [SigmaCompactSpace M] in
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem onePair_point
     (g : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (F : SmoothCcTensor g 3 2)

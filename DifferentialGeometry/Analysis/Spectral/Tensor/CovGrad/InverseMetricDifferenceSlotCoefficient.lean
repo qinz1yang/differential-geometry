@@ -58,7 +58,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [CompleteSpace E]
 
-omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem inverseMetricDifferenceCoefficientFamily_iteratedCovGrad_singleSum_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (x₀ : M) (W : SmoothCcTensor g₀ 0 2) (a : ℕ) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + a) x₀

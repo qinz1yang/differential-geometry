@@ -44,7 +44,7 @@ def ricBackgroundArmCoeffField (g₀ : SmoothRiemannianMetric I M) :
     | 2 => ricBackgroundSlotCoeff (I := I) g₀
     | _ => 0
 
-omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem ricBackgroundArm_iteratedCovGrad_singleSum_le
     (g₀ : SmoothRiemannianMetric I M) (x₀ : M) (W : SmoothCcTensor g₀ 0 2) (a : ℕ) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + a) x₀

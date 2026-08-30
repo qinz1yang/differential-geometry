@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Integrati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureBounds
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra

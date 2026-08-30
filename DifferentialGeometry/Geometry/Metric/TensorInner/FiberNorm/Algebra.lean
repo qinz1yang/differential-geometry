@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 open DifferentialGeometry.Analysis.Elliptic
 
 
@@ -11,9 +11,7 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
   [NeZero (Module.finrank ℝ E)]

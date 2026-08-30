@@ -124,6 +124,7 @@ theorem exists_genuineDiffCurvSection_l2Norm_le_self
       exact riemannianFiberNormSq_zero (I := I) (M := M) g 0 s x
     rw [hz, add_zero]; exact hpt x
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_ricTraceSection_l2Norm_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ Cric : ℝ, 0 ≤ Cric ∧ ∀ S : SmoothCcTensor g 0 s,

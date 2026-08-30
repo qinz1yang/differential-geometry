@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricContractionLeibnizGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedDiffOpProportionalBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldDifferentiatedTowerNormalForm
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
@@ -296,6 +296,7 @@ theorem diffCurvOp_zero_eq_operatorFieldApply (g : SmoothRiemannianMetric I M)
             (V := fun z : M => Tensor0SSpace r I z) (fun b => W.toSection b) (fun b => dSec b) y))
         from hWd_smooth)]]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_proportional_diffCurvOp_highOrder :
     ∃ kappaHigh : ℕ → ℕ → ℝ, (∀ p r, 0 ≤ kappaHigh p r) ∧
       ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r) (x : M),

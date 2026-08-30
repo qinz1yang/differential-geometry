@@ -276,6 +276,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
     operatorFieldApplication_toSection (I := I) (M := M) g (s + 1) (s + 1)
       (ricSlotOpField (I := I) (M := M) g s) (covGrad (I := I) (M := M) g 0 s S) x]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_ricTraceSection_fiberNormSq_bound
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ s, 0 ≤ C s) ∧

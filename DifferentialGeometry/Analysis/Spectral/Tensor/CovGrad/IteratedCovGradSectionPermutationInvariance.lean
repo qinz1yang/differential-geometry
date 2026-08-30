@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffPassZero
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.Norm
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Norm
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral

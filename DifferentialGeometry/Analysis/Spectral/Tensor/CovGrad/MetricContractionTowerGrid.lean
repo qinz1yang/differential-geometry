@@ -84,7 +84,7 @@ def fixedCoeffDiffOp (g : SmoothRiemannianMetric I M)
         (exists_jet_bound_of_normalForm (I := I) (M := M) g op p r (hNF p r))).2 W x }
 
 
-omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem fixedCoeffDiffOp_iteratedCovGrad_singleSum_le (g : SmoothRiemannianMetric I M)
     (Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0))
     (x₀ : M) (r : ℕ) (W : SmoothCcTensor g 0 r) (a : ℕ) :

@@ -1,8 +1,7 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.Defs
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpVWFactorBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Components
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
-import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Logic.Equiv.Fin.Basic
@@ -10,9 +9,6 @@ import Mathlib.Data.Fin.Tuple.Basic
 
 
 open DifferentialGeometry.Analysis.Elliptic
-open DifferentialGeometry.Geometry.Curvature
-
-
 noncomputable section
 
 open Bundle Manifold Set
@@ -22,7 +18,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 
@@ -604,25 +599,6 @@ theorem tensorInnerPointwise_eq_sum_componentS_mul
         (Module.finrank ℝ E) e p.1 p.2).symm
     · exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x B
         (Module.finrank ℝ E) e p.1 p.2).symm
-
-open MeasureTheory in
-omit [CompleteSpace E] in
-theorem tensorL2Norm_sq_eq_integral_riemannianFiberNormSq
-    [T2Space M] [SigmaCompactSpace M]
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (T : ∀ x, TensorRSSpace r s I x) :
-    tensorL2Norm (I := I) (M := M) g r s
-          (fun x => TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
-            (r := r) (s := s) (x := x) (T x)) ^ 2
-      = ∫ x, riemannianFiberNormSq (I := I) (M := M) g r s x (T x)
-          ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-  rw [tensorL2Norm_def, Real.sq_sqrt (by
-        unfold tensorL2Inner
-        refine integral_nonneg (fun x => ?_)
-        exact tensorInnerPointwise_nonneg (I := I) (M := M) g r s x _)]
-  unfold tensorL2Inner
-  refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-  exact (riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (T x)).symm
 
 end Elliptic
 end Analysis

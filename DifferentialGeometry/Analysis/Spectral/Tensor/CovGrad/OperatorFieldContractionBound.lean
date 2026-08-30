@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculus
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpHigherRankParseval
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqSmoothCcUniformBound
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -34,7 +36,8 @@ variable [CompleteSpace E]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [CompleteSpace E] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_repr_of_orthoFrame_cb
     (g : SmoothRiemannianMetric I M) (t : ℕ) (x : M) (S : TensorRSSpace 0 t I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -45,8 +48,6 @@ lemma riemannianFiberNormSq_repr_of_orthoFrame_cb
         fiberNormSqSummand (I := I) (M := M) g x 0 t S n e K J := by
   classical
   subst hn
-  have : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
-    ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
     intro fs c hsum k hk_mem
@@ -61,10 +62,11 @@ lemma riemannianFiberNormSq_repr_of_orthoFrame_cb
   have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
       Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
   set bse : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x) :=
-    basisOfLinearIndependentOfCardEqFinrank he_li hcard with hbse_def
+    basisOfLinearIndependentOfCardEqFinrank' e he_li hcard with hbse_def
   have hbse_eq : ∀ i, bse i = e i := by
-    intro i; rw [hbse_def]; exact congrFun (coe_basisOfLinearIndependentOfCardEqFinrank he_li hcard)
-      i
+    intro i
+    rw [hbse_def]
+    exact congrFun (coe_basisOfLinearIndependentOfCardEqFinrank' e he_li hcard) i
   have hbse_orth : ∀ i j, g.inner x (bse i) (bse j) = if i = j then (1 : ℝ) else 0 := by
     intro i j; rw [hbse_eq i, hbse_eq j]; exact horth i j
   have hstep : riemannianFiberNormSq (I := I) (M := M) g 0 t x S =
@@ -208,7 +210,8 @@ private lemma fiberNormSqComponent_comp_eq
 
 
 omit [CompactSpace M] [I.Boundaryless] [CompleteSpace E] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_comp_le_mul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (Φx : TensorRSSpace r s I x) (Wx : TensorRSSpace 0 r I x) :
@@ -264,7 +267,7 @@ theorem riemannianFiberNormSq_comp_le_mul
 
 
 omit [CompleteSpace E] in
-omit [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem exists_uniform_riemannianFiberNormSq_operatorFieldApplication_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (Φ : SmoothCcTensor g r s) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (W : SmoothCcTensor g 0 r) (x : M),
