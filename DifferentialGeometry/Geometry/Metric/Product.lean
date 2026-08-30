@@ -326,6 +326,102 @@ theorem riemannianEDistOf_snd_le_prod
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_prod_left
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x y : M) (z : N) :
+    riemannianEDistOf (I := I.prod J) (g.prod h) (x, z) (y, z) =
+      riemannianEDistOf (I := I) g x y := by
+  apply le_antisymm
+  · rw [edistOf_iInf, edistOf_iInf]
+    refine le_iInf fun γ => ?_
+    refine le_iInf fun hγ => ?_
+    let γ' : Path (x, z) (y, z) := {
+      toContinuousMap :=
+        ⟨fun t => (γ t, z), γ.continuous.prodMk continuous_const⟩
+      source' := by simp
+      target' := by simp }
+    have hγ' : CMDiff 1 γ' := by
+      change ContMDiff (𝓡∂ 1) (I.prod J) 1 (fun t => (γ t, z))
+      simpa using hγ.prodMk contMDiff_const
+    calc
+      _ ≤ ∫⁻ t, ENNReal.ofReal (Real.sqrt
+          ((g.prod h).inner (γ' t) (mfderiv% γ' t 1) (mfderiv% γ' t 1))) :=
+        iInf_le_of_le γ' (iInf_le_of_le hγ' le_rfl)
+      _ = ∫⁻ t, ENNReal.ofReal (Real.sqrt
+          (g.inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) := by
+        apply MeasureTheory.lintegral_congr
+        intro t
+        have hpath : MDiffAt (fun s : unitInterval => (γ s, z)) t := by
+          exact hγ'.contMDiffAt.mdifferentiableAt one_ne_zero
+        have hfst := mfderiv_comp_apply t
+          (contMDiff_fst.contMDiffAt.mdifferentiableAt one_ne_zero)
+          hpath 1
+        have hsnd := mfderiv_comp_apply t
+          (contMDiff_snd.contMDiffAt.mdifferentiableAt one_ne_zero)
+          hpath 1
+        change ENNReal.ofReal (Real.sqrt
+          ((g.prod h).inner (γ t, z)
+            (mfderiv (𝓡∂ 1) (I.prod J) (fun s => (γ s, z)) t 1)
+            (mfderiv (𝓡∂ 1) (I.prod J) (fun s => (γ s, z)) t 1))) = _
+        rw [SmoothRiemannianMetric.prod_inner, ← hfst, ← hsnd]
+        change ENNReal.ofReal (Real.sqrt
+          (g.inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1) +
+            h.inner z (mfderiv% (fun _ : unitInterval => z) t 1)
+              (mfderiv% (fun _ : unitInterval => z) t 1))) = _
+        rw [mfderiv_const]
+        simp
+  · exact riemannianEDistOf_fst_le_prod g h (x, z) (y, z)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_prod_right
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (x : M) (y z : N) :
+    riemannianEDistOf (I := I.prod J) (g.prod h) (x, y) (x, z) =
+      riemannianEDistOf (I := J) h y z := by
+  apply le_antisymm
+  · rw [edistOf_iInf, edistOf_iInf]
+    refine le_iInf fun γ => ?_
+    refine le_iInf fun hγ => ?_
+    let γ' : Path (x, y) (x, z) := {
+      toContinuousMap :=
+        ⟨fun t => (x, γ t), continuous_const.prodMk γ.continuous⟩
+      source' := by simp
+      target' := by simp }
+    have hγ' : CMDiff 1 γ' := by
+      change ContMDiff (𝓡∂ 1) (I.prod J) 1 (fun t => (x, γ t))
+      simpa using contMDiff_const.prodMk hγ
+    calc
+      _ ≤ ∫⁻ t, ENNReal.ofReal (Real.sqrt
+          ((g.prod h).inner (γ' t) (mfderiv% γ' t 1) (mfderiv% γ' t 1))) :=
+        iInf_le_of_le γ' (iInf_le_of_le hγ' le_rfl)
+      _ = ∫⁻ t, ENNReal.ofReal (Real.sqrt
+          (h.inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) := by
+        apply MeasureTheory.lintegral_congr
+        intro t
+        have hpath : MDiffAt (fun s : unitInterval => (x, γ s)) t := by
+          exact hγ'.contMDiffAt.mdifferentiableAt one_ne_zero
+        have hfst := mfderiv_comp_apply t
+          (contMDiff_fst.contMDiffAt.mdifferentiableAt one_ne_zero)
+          hpath 1
+        have hsnd := mfderiv_comp_apply t
+          (contMDiff_snd.contMDiffAt.mdifferentiableAt one_ne_zero)
+          hpath 1
+        change ENNReal.ofReal (Real.sqrt
+          ((g.prod h).inner (x, γ t)
+            (mfderiv (𝓡∂ 1) (I.prod J) (fun s => (x, γ s)) t 1)
+            (mfderiv (𝓡∂ 1) (I.prod J) (fun s => (x, γ s)) t 1))) = _
+        rw [SmoothRiemannianMetric.prod_inner, ← hfst, ← hsnd]
+        change ENNReal.ofReal (Real.sqrt
+          (g.inner x (mfderiv% (fun _ : unitInterval => x) t 1)
+              (mfderiv% (fun _ : unitInterval => x) t 1) +
+            h.inner (γ t) (mfderiv% γ t 1) (mfderiv% γ t 1))) = _
+        rw [mfderiv_const]
+        simp
+  · exact riemannianEDistOf_snd_le_prod g h (x, y) (x, z)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem RiemannianMetricComplete.prod
     [CompleteSpace E] [CompleteSpace F]
     [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
@@ -405,6 +501,120 @@ theorem RiemannianMetricComplete.prod
   obtain ⟨x, hx⟩ := hsFst
   obtain ⟨y, hy⟩ := hsSnd
   exact ⟨(x, y), by simpa only [Prod.eta] using hx.prodMk_nhds hy⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem RiemannianMetricComplete.fst_of_prod
+    [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
+    (hgh : RiemannianMetricComplete (I := I.prod J) (g.prod h))
+    (z : N) : RiemannianMetricComplete (I := I) g := by
+  let : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  refine ⟨?_⟩
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E
+      (fun x : M => TangentSpace I x) :=
+    ⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  refine EMetric.complete_of_cauchySeq_tendsto (α := M) fun s hs => ?_
+  let : IsManifold (I.prod J) 1 (M × N) :=
+    IsManifold.of_le (I := I.prod J) (M := M × N) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace (M × N) :=
+    Manifold.metrizableSpace (I.prod J) (M × N)
+  let : T3Space (M × N) := inferInstance
+  let : RiemannianBundle
+      (fun x : M × N => TangentSpace (I.prod J) x) :=
+    ⟨(g.prod h).toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle (E × F)
+      (fun x : M × N => TangentSpace (I.prod J) x) :=
+    ⟨(g.prod h).inner, (g.prod h).contMDiff.continuous,
+      by intro x v w; rfl⟩
+  let : EMetricSpace (M × N) :=
+    EMetricSpace.ofRiemannianMetric (I.prod J) (M × N)
+  let : CompleteSpace (M × N) := hgh.complete
+  have hsProd : CauchySeq (fun n => (s n, z)) := by
+    apply EMetric.cauchySeq_iff.mpr
+    intro ε hε
+    obtain ⟨K, hK⟩ := EMetric.cauchySeq_iff.mp hs ε hε
+    refine ⟨K, fun m hm n hn => ?_⟩
+    change riemannianEDistOf (I := I.prod J) (g.prod h)
+      (s m, z) (s n, z) < ε
+    rw [riemannianEDistOf_prod_left]
+    exact hK m hm n hn
+  obtain ⟨p, hp⟩ := cauchySeq_tendsto_of_complete hsProd
+  refine ⟨p.1, ?_⟩
+  simpa only [Function.comp_def] using
+    continuous_fst.continuousAt.tendsto.comp hp
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem RiemannianMetricComplete.snd_of_prod
+    [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N}
+    (hgh : RiemannianMetricComplete (I := I.prod J) (g.prod h))
+    (x : M) : RiemannianMetricComplete (I := J) h := by
+  let : IsManifold J 1 N :=
+    IsManifold.of_le (I := J) (M := N) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace N := Manifold.metrizableSpace J N
+  let : T3Space N := inferInstance
+  refine ⟨?_⟩
+  let : RiemannianBundle (fun y : N => TangentSpace J y) :=
+    ⟨h.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle F
+      (fun y : N => TangentSpace J y) :=
+    ⟨h.inner, h.contMDiff.continuous, by intro y v w; rfl⟩
+  let : EMetricSpace N := EMetricSpace.ofRiemannianMetric J N
+  refine EMetric.complete_of_cauchySeq_tendsto (α := N) fun s hs => ?_
+  let : IsManifold (I.prod J) 1 (M × N) :=
+    IsManifold.of_le (I := I.prod J) (M := M × N) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  let : TopologicalSpace.MetrizableSpace (M × N) :=
+    Manifold.metrizableSpace (I.prod J) (M × N)
+  let : T3Space (M × N) := inferInstance
+  let : RiemannianBundle
+      (fun y : M × N => TangentSpace (I.prod J) y) :=
+    ⟨(g.prod h).toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle (E × F)
+      (fun y : M × N => TangentSpace (I.prod J) y) :=
+    ⟨(g.prod h).inner, (g.prod h).contMDiff.continuous,
+      by intro y v w; rfl⟩
+  let : EMetricSpace (M × N) :=
+    EMetricSpace.ofRiemannianMetric (I.prod J) (M × N)
+  let : CompleteSpace (M × N) := hgh.complete
+  have hsProd : CauchySeq (fun n => (x, s n)) := by
+    apply EMetric.cauchySeq_iff.mpr
+    intro ε hε
+    obtain ⟨K, hK⟩ := EMetric.cauchySeq_iff.mp hs ε hε
+    refine ⟨K, fun m hm n hn => ?_⟩
+    change riemannianEDistOf (I := I.prod J) (g.prod h)
+      (x, s m) (x, s n) < ε
+    rw [riemannianEDistOf_prod_right]
+    exact hK m hm n hn
+  obtain ⟨p, hp⟩ := cauchySeq_tendsto_of_complete hsProd
+  refine ⟨p.2, ?_⟩
+  simpa only [Function.comp_def] using
+    continuous_snd.continuousAt.tendsto.comp hp
+
+theorem RiemannianMetricComplete.prod_iff
+    [CompleteSpace E] [CompleteSpace F]
+    [T2Space M] [T2Space N] [SigmaCompactSpace M] [SigmaCompactSpace N]
+    [Nonempty M] [Nonempty N]
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric J N} :
+    RiemannianMetricComplete (I := I.prod J) (g.prod h) ↔
+      RiemannianMetricComplete (I := I) g ∧
+        RiemannianMetricComplete (I := J) h := by
+  constructor
+  · intro hgh
+    exact ⟨hgh.fst_of_prod (Nonempty.some (inferInstance : Nonempty N)),
+      hgh.snd_of_prod (Nonempty.some (inferInstance : Nonempty M))⟩
+  · exact fun hgh => hgh.1.prod hgh.2
 
 end DifferentialGeometry
 
@@ -1992,6 +2202,33 @@ private lemma leviCivita_productLift
   rw [leviCivita_horizontal_vertical (I := I) (J := J) g h X W hX hW x]
   rw [leviCivita_vertical (I := I) (J := J) g h Y W hY hW x]
   simp only [add_zero, zero_add]
+
+set_option backward.isDefEq.respectTransparency false in
+theorem Connection.leviCivita_prod
+    [CompleteSpace E] [CompleteSpace F] [T2Space M] [T2Space N]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (X Z : (x : M) → TangentSpace I x) (Y W : (x : N) → TangentSpace J x)
+    (hX : ContMDiff I (I.prod (modelWithCornersSelf Real E)) ∞ (T% X))
+    (hZ : ContMDiff I (I.prod (modelWithCornersSelf Real E)) ∞ (T% Z))
+    (hY : ContMDiff J (J.prod (modelWithCornersSelf Real F)) ∞ (T% Y))
+    (hW : ContMDiff J (J.prod (modelWithCornersSelf Real F)) ∞ (T% W))
+    (x : M × N) :
+    (Connection.LeviCivita (I := I.prod J) (g.prod h)).toFun
+        (fun p : M × N => (Z p.1, W p.2)) x (X x.1, Y x.2) =
+      ((Connection.LeviCivita (I := I) g).toFun Z x.1 (X x.1),
+        (Connection.LeviCivita (I := J) h).toFun W x.2 (Y x.2)) := by
+  have hsection : (fun p : M × N => (Z p.1, W p.2)) =
+      productLift (I := I) (J := J) Z W := by
+    funext p
+    exact (productLift_apply (I := I) (J := J) Z W p).symm
+  have hvector : (X x.1, Y x.2) =
+      productLift (I := I) (J := J) X Y x :=
+    (productLift_apply (I := I) (J := J) X Y x).symm
+  rw [hsection, hvector]
+  simpa only [Connection.LeviCivita_eq_leviCivitaConnectionOfMetric,
+    productLift_apply] using
+    (leviCivita_productLift (I := I) (J := J)
+      g h X Z Y W hX hZ hY hW x)
 
 private lemma riemannSec_productLift
     [CompleteSpace E] [CompleteSpace F] [T2Space M] [T2Space N]
