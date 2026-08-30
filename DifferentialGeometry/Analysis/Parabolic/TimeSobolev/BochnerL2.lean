@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+import Mathlib.Analysis.InnerProductSpace.Dual
 
 noncomputable section
 
@@ -156,6 +157,37 @@ theorem norm_ofContinuousOn_le_of_bound (hf : ContinuousOn f (Set.Icc (0 : ℝ) 
     · rw [h, zero_mul]
 
 end ContinuousEmbedding
+
+section HilbertDuality
+
+variable {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+  [CompleteSpace Y]
+
+theorem inner_ofContinuousOn_dualRepresentative
+    (F : ℝ → Y →L[ℝ] ℝ) (hF : ContinuousOn F (Set.Icc (0 : ℝ) T))
+    (u : timeL2 Y T) :
+    inner ℝ u (ofContinuousOn
+      (((InnerProductSpace.toDual ℝ Y).symm.continuous.comp_continuousOn hF))) =
+      ∫ t in Set.Icc (0 : ℝ) T, F t (u t) := by
+  rw [inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [coeFn_ofContinuousOn
+    (((InnerProductSpace.toDual ℝ Y).symm.continuous.comp_continuousOn hF))] with t ht
+  rw [ht, real_inner_comm]
+  exact InnerProductSpace.toDual_symm_apply
+
+theorem tendsto_integral_apply_of_weakly_tendsto
+    {U : ℕ → timeL2 Y T} {u : timeL2 Y T}
+    (hU : ∀ z, Tendsto (fun m => inner ℝ (U m) z) atTop
+      (𝓝 (inner ℝ u z)))
+    (F : ℝ → Y →L[ℝ] ℝ) (hF : ContinuousOn F (Set.Icc (0 : ℝ) T)) :
+    Tendsto (fun m => ∫ t in Set.Icc (0 : ℝ) T, F t (U m t)) atTop
+      (𝓝 (∫ t in Set.Icc (0 : ℝ) T, F t (u t))) := by
+  let z : timeL2 Y T := ofContinuousOn
+    (((InnerProductSpace.toDual ℝ Y).symm.continuous.comp_continuousOn hF))
+  simpa only [z, inner_ofContinuousOn_dualRepresentative F hF] using hU z
+
+end HilbertDuality
 
 section Const
 
