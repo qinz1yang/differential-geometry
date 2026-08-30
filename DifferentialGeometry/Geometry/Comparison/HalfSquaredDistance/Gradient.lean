@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradVar
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Variation
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
 
 

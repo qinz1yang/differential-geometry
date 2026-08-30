@@ -10,8 +10,8 @@ import DifferentialGeometry.Geometry.Comparison.Volume.SegmentFrameBound
 import DifferentialGeometry.Geometry.Comparison.Volume.RatioIntegral
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
 import DifferentialGeometry.Geometry.Comparison.DistanceCalabi
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradMain
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 open DifferentialGeometry.Geometry.Curvature
 

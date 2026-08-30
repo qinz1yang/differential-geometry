@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.CGTHomotopyLift
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 
 set_option autoImplicit false
 

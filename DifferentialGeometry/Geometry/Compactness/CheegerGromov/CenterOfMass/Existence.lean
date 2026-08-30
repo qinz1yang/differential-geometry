@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradMain
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance

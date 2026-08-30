@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 
 
 import DifferentialGeometry.Geometry.Comparison.CenterOfMass
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradMain
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

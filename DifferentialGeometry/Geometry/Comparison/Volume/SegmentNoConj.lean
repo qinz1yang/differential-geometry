@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentDomain
-import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
+import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
 
 set_option autoImplicit false
