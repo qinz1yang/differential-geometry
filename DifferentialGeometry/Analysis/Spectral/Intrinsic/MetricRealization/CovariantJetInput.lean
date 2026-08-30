@@ -168,9 +168,9 @@ theorem reprDiffChartCompOnE_eq_symm_tensorChartComponentRaw
 omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv_eq_euclidPartial_comp_toEuclidean
     (a : Fin (Module.finrank ℝ E)) (f : E → ℝ) (y : E) :
-    partialDeriv (E := E) a f y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f y =
       euclidPartial (E := E) a (f ∘ (toEuclidean (E := E)).symm) (toEuclidean (E := E) y) := by
-  rw [euclidPartial_def, partialDeriv]
+  rw [euclidPartial_def, DifferentialGeometry.Tensor.Coordinates.partialDeriv]
   rw [(toEuclidean (E := E)).symm.comp_right_fderiv
     (f := f) (x := toEuclidean (E := E) y)]
   rw [ContinuousLinearMap.comp_apply]
@@ -182,7 +182,7 @@ theorem partialDeriv_eq_euclidPartial_comp_toEuclidean
 omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv_comp_toEuclidean_symm_eq_euclidPartial
     (a : Fin (Module.finrank ℝ E)) (f : E → ℝ) :
-    (partialDeriv (E := E) a f) ∘ (toEuclidean (E := E)).symm =
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f) ∘ (toEuclidean (E := E)).symm =
       euclidPartial (E := E) a (f ∘ (toEuclidean (E := E)).symm) := by
   funext z
   rw [Function.comp_apply,
@@ -193,11 +193,11 @@ theorem partialDeriv_comp_toEuclidean_symm_eq_euclidPartial
 omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv2_eq_euclidPartial2_comp_toEuclidean
     (c a : Fin (Module.finrank ℝ E)) (f : E → ℝ) (y : E) :
-    partialDeriv (E := E) c (partialDeriv (E := E) a f) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f) y =
       euclidPartial (E := E) c
         (euclidPartial (E := E) a (f ∘ (toEuclidean (E := E)).symm))
         (toEuclidean (E := E) y) := by
-  rw [partialDeriv_eq_euclidPartial_comp_toEuclidean (E := E) c (partialDeriv (E := E) a f) y]
+  rw [partialDeriv_eq_euclidPartial_comp_toEuclidean (E := E) c (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f) y]
   rw [partialDeriv_comp_toEuclidean_symm_eq_euclidPartial (E := E) a f]
 
 omit [BoundarylessManifold I M] in
@@ -292,7 +292,7 @@ theorem partialDeriv_reprDiffChartCompOnE_eq_covGrad_sub_lowerOrder
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (a l b : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior ((extChartAt I α).target : Set E)) :
-    partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y =
       (1 / 2 : ℝ) *
         ((tensorChartComponentRaw (I := I) (M := M) g_bg 0 (2 + 1)
               (covGrad (I := I) (M := M) g_bg 0 2
@@ -1071,7 +1071,7 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
     (α : M) {K : Set E} (hK : IsCompact K)
     (hKsub : K ⊆ interior ((extChartAt I α).target : Set E)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ l b a : Fin (Module.finrank ℝ E),
-      |partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y| ≤
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y| ≤
         C * iteratedCovGradJetSum (I := I) g_bg
           (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
           ((extChartAt I α).symm y) := by
@@ -1181,8 +1181,8 @@ theorem partialDeriv2_reprDiffChartCompOnE_abs_le
     (α : M) {K : Set E} (hK : IsCompact K)
     (hKsub : K ⊆ interior ((extChartAt I α).target : Set E)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ l b c a : Fin (Module.finrank ℝ E),
-      |partialDeriv (E := E) c
-          (partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y| ≤
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y| ≤
         C * iteratedCovGradJetSum (I := I) g_bg
           (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
           ((extChartAt I α).symm y) := by
@@ -1310,14 +1310,14 @@ theorem hcovgrad_jet_bound_holds
             (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
             ((extChartAt I α).symm y) ∧
         (∀ a : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) a
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
               (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y| ≤
             C₀ * iteratedCovGradJetSum (I := I) g_bg
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
               ((extChartAt I α).symm y)) ∧
         (∀ c a : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) c
-              (partialDeriv (E := E) a
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
                 (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y| ≤
             C₀ * iteratedCovGradJetSum (I := I) g_bg
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
@@ -1347,13 +1347,13 @@ theorem hcovgrad_jet_bound_holds
       _ ≤ max C0 (max C1 C2) * R :=
           mul_le_mul_of_nonneg_right (le_max_left _ _) hR_nn
   · intro a
-    calc |partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y|
+    calc |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y|
         ≤ C1 * R := hC1_bd y hy l b a
       _ ≤ max C0 (max C1 C2) * R :=
           mul_le_mul_of_nonneg_right ((le_max_left _ _).trans (le_max_right _ _)) hR_nn
   · intro c a
-    calc |partialDeriv (E := E) c
-            (partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y|
+    calc |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y|
         ≤ C2 * R := hC2_bd y hy l b c a
       _ ≤ max C0 (max C1 C2) * R :=
           mul_le_mul_of_nonneg_right ((le_max_right _ _).trans (le_max_right _ _)) hR_nn

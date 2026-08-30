@@ -132,7 +132,7 @@ theorem chartNablaRicci [I.Boundaryless]
       (S.family.metric t) alpha i j y)
     D.regular_isOpen.uniqueDiffOn isOpen_interior (hRicChart i j)
   have hpart : ContDiffOn Real ∞
-      (fun p : Real × E => partialDeriv (E := E) d
+      (fun p : Real × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (chartRicciTensor (I := I) (S.family.metric p.1) alpha i j) p.2) U := by
     change ContDiffOn Real ∞
       (fun p : Real × E =>
@@ -148,7 +148,7 @@ theorem chartNablaRicci [I.Boundaryless]
       (J := D.regular) (fun _ ht => ht) D.regular_isOpen.uniqueDiffOn alpha a b c
   have hformula : ContDiffOn Real ∞
       (fun p : Real × E =>
-        partialDeriv (E := E) d
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (chartRicciTensor (I := I) (S.family.metric p.1) alpha i j) p.2 -
           ∑ m, chartChristoffel (I := I) (S.family.metric p.1)
               alpha d i m p.2 *

@@ -880,7 +880,7 @@ private theorem lWeak_pos_pair
     rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt
       (I := I) p (hf.mdifferentiableAt (by simp)) hysrc
         (by simpa only [hright] using hx) i]
-    simp only [partialDeriv, hright, f]
+    simp only [DifferentialGeometry.Tensor.Coordinates.partialDeriv, hright, f]
     rfl
   have hcovDecomp :
       chartScalCov (I := I) S p (T - (a + r) ^ 2, u.toFun r) w =

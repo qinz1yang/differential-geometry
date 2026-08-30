@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeTimeR
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
-import DifferentialGeometry.Analysis.Calculus.PartialDerivIteratedFDerivOrderBridge
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Operator.Hessian
@@ -36,7 +36,7 @@ open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDe
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Calculus
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -1340,7 +1340,7 @@ theorem chartGram_pou_d1
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ m i j : Fin (Module.finrank Real E),
-            |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α y)| ≤ Q := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := chartGram_pou_le (I := I) gRef gSeq 1 B hbdd
@@ -1351,7 +1351,7 @@ theorem chartGram_pou_d1
   have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ C_E :=
     Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
-  rw [partial_eq_iter1]
+  rw [partialDeriv_eq_iteratedFDeriv_one]
   rw [← Real.norm_eq_abs]
   calc
     ‖iteratedFDeriv Real 1 (chartGramOnE (I := I) (gSeq k) α i j)
@@ -1379,8 +1379,8 @@ theorem chartGram_pou_d2
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ c m i j : Fin (Module.finrank Real E),
-            |partialDeriv (E := E) c
-              (partialDeriv (E := E) m
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α i j)) (extChartAt I α y)| ≤ Q := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := chartGram_pou_le (I := I) gRef gSeq 2 B hbdd
@@ -1408,7 +1408,7 @@ theorem chartGram_pou_d2
   have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ C_E :=
     Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
-  rw [partial2_eq_iter2 _ hcont]
+  rw [partialDeriv_partialDeriv_eq_iteratedFDeriv_two _ hcont]
   rw [← Real.norm_eq_abs]
   calc
     ‖iteratedFDeriv Real 2 (chartGramOnE (I := I) (gSeq k) α i j)
@@ -1439,9 +1439,9 @@ theorem chartGram_pou_d3
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d c m i j : Fin (Module.finrank Real E),
-            |partialDeriv (E := E) d
-              (partialDeriv (E := E) c
-                (partialDeriv (E := E) m
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                   (chartGramOnE (I := I) (gSeq k) α i j))) (extChartAt I α y)| ≤ Q := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := chartGram_pou_le (I := I) gRef gSeq 3 B hbdd
@@ -1473,7 +1473,7 @@ theorem chartGram_pou_d3
   have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ C_E :=
     Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
-  rw [partial3_eq_iter3 _ hcont]
+  rw [partialDeriv_partialDeriv_partialDeriv_eq_iteratedFDeriv_three _ hcont]
   rw [← Real.norm_eq_abs]
   calc
     ‖iteratedFDeriv Real 3 (chartGramOnE (I := I) (gSeq k) α i j)

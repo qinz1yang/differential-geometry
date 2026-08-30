@@ -46,9 +46,9 @@ private lemma hasDerivAt_partialDeriv_comm_at
     (Φ : ℝ × E → ℝ) (p : Fin (Module.finrank ℝ E)) (s₀ : ℝ) (y₀ : E)
     (hΦ : ContDiffAt ℝ ∞ Φ (s₀, y₀)) :
     HasDerivAt
-      (fun s => partialDeriv (E := E) p (fun y => Φ (s, y)) y₀)
-      (partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) s₀) y₀) s₀ := by
-  unfold partialDeriv
+      (fun s => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (fun y => Φ (s, y)) y₀)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) s₀) y₀) s₀ := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   exact DifferentialGeometry.Analysis.fderiv_deriv_hasDerivAt_comm Φ s₀ y₀
     (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) hΦ
 
@@ -254,9 +254,9 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartGramOnE (g₀ : SmoothRie
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
     (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     HasDerivAt
-      (fun s : ℝ => partialDeriv (E := E) p
+      (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) y)
-      (partialDeriv (E := E) p
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y) s₀ := by
   have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hjoint : ContDiffAt ℝ ∞
@@ -281,9 +281,9 @@ theorem hasDerivAt_metricPerturbationPath_chartChristoffelBracket (g₀ : Smooth
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
     (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     HasDerivAt (fun s : ℝ => chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y)
-      (partialDeriv (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j) y +
-        partialDeriv (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l i) y -
-        partialDeriv (E := E) l
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j) y +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l i) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y) s₀ := by
   have h1 := hasDerivAt_metricPerturbationPath_partial_chartGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j
     i
@@ -297,11 +297,11 @@ theorem hasDerivAt_metricPerturbationPath_chartChristoffelBracket (g₀ : Smooth
   have hsum := (h1.add h2).sub h3
   have heq : (fun s : ℝ => chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y) =
       (fun s : ℝ =>
-        partialDeriv (E := E) i (chartGramOnE (I := I)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l j) y +
-          partialDeriv (E := E) j (chartGramOnE (I := I)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l i) y -
-          partialDeriv (E := E) l (chartGramOnE (I := I)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) y) := by
     funext s; rw [chartChristoffelBracket]
   rw [heq]; exact hsum
@@ -325,11 +325,11 @@ theorem hasDerivAt_metricPerturbationPath_chartChristoffel (g₀ : SmoothRiemann
                 chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x q l y)) *
             chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j l y +
           chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k l y *
-            (partialDeriv (E := E) i
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j) y +
-              partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l i) y -
-              partialDeriv (E := E) l
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y))) s₀ := by
   classical
   have heq : (fun s : ℝ =>
@@ -359,9 +359,9 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartChristoffel (g₀ : Smoot
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
     (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     HasDerivAt
-      (fun s : ℝ => partialDeriv (E := E) m
+      (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (fun y' => chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k y') y)
-      (partialDeriv (E := E) m
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (fun y' => deriv (fun s : ℝ =>
           chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k y') s₀) y)
             s₀ := by

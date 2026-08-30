@@ -43,22 +43,22 @@ lemma chartInvGramOnE_differentiableAt_interior
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_contDiff_of_contDiff
     {u : E → ℝ} (hu : ContDiff ℝ ∞ u) (i : Fin (Module.finrank ℝ E)) :
-    ContDiff ℝ ∞ (partialDeriv (E := E) i u) := by
+    ContDiff ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) := by
   have hfderiv : ContDiff ℝ ∞ (fderiv ℝ u) :=
     hu.fderiv_right (by rw [ENat.coe_top_add_one])
-  unfold partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   exact hfderiv.clm_apply contDiff_const
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_perturbation_contDiff
     (h : ChartMetricPerturbation E) (i a b : Fin (Module.finrank ℝ E)) :
-    ContDiff ℝ ∞ (partialDeriv (E := E) i (h a b)) :=
+    ContDiff ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h a b)) :=
   partialDeriv_contDiff_of_contDiff (h.smooth a b) i
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_perturbation_differentiableAt
     (h : ChartMetricPerturbation E) (i a b : Fin (Module.finrank ℝ E)) (y : E) :
-    DifferentiableAt ℝ (partialDeriv (E := E) i (h a b)) y :=
+    DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h a b)) y :=
   ((partialDeriv_perturbation_contDiff h i a b).differentiable (by simp)).differentiableAt
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -82,8 +82,8 @@ lemma chartLinearizedChristoffelPrincipal_differentiableAt
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_partialDeriv_perturbation_swap
     (h : ChartMetricPerturbation E) (a b p q : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) p (partialDeriv (E := E) q (h a b)) y =
-      partialDeriv (E := E) q (partialDeriv (E := E) p (h a b)) y := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h a b)) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h a b)) y := by
   classical
   have hsmooth : ContDiff ℝ ∞ (h a b) := h.smooth a b
   have hcontDiffAt : ContDiffAt ℝ ∞ (h a b) y := hsmooth.contDiffAt
@@ -96,11 +96,11 @@ lemma partialDeriv_partialDeriv_perturbation_swap
       hsmooth.fderiv_right (by rw [ENat.coe_top_add_one])
     exact (hfderiv.differentiable (by simp)).differentiableAt
   have hkey : ∀ r s : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) r (partialDeriv (E := E) s (h a b)) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) s (h a b)) y =
         (fderiv ℝ (fderiv ℝ (h a b)) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) r))
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) s) := by
     intro r s
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     set L : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
       ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) s)
     have hcomp_eq : (fun z : E => fderiv ℝ (h a b) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) s)) =
@@ -116,9 +116,9 @@ end Differentiability
 def chartRicciSecondOrderPart (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   ∑ j : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) j
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i k j y') y -
-      partialDeriv (E := E) k
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i j j y') y)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -127,9 +127,9 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     (h : ChartMetricPerturbation E) (i k : Fin (Module.finrank ℝ E)) (y : E) :
     chartRicciSecondOrderPart (I := I) g α h i k y =
       ∑ j : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) j
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i k j y') y -
-          partialDeriv (E := E) k
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
             (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i j j y') y) :=
   rfl
 
@@ -138,10 +138,10 @@ def chartRicciSecondOrderPrincipalSymbol (g : SmoothRiemannianMetric I M) (α : 
   (1 / 2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
     ∑ l : Fin (Module.finrank ℝ E),
       chartInvGramOnE (I := I) g α j l y *
-        (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-         partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y -
-         partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y -
-         partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 @[simp] lemma chartRicciSecondOrderPrincipalSymbol_def
@@ -151,26 +151,26 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
       (1 / 2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-             partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y -
-             partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y) :=
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y) :=
   rfl
 
 def chartRicciFirstOrderRemainder (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (1 / 2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
     ∑ l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h l k) y +
-         partialDeriv (E := E) k (h l i) y -
-         partialDeriv (E := E) l (h i k) y) -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y) -
   (1 / 2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
     ∑ l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h l j) y +
-         partialDeriv (E := E) j (h l i) y -
-         partialDeriv (E := E) l (h i j) y)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 @[simp] lemma chartRicciFirstOrderRemainder_def
@@ -179,16 +179,16 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     chartRicciFirstOrderRemainder (I := I) g α h i k y =
       (1 / 2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l k) y +
-             partialDeriv (E := E) k (h l i) y -
-             partialDeriv (E := E) l (h i k) y) -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y) -
       (1 / 2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l j) y +
-             partialDeriv (E := E) j (h l i) y -
-             partialDeriv (E := E) l (h i j) y) :=
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y) :=
   rfl
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -197,29 +197,29 @@ lemma partialDeriv_chartLinearizedChristoffelPrincipal
     (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (a b j d : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) d
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h a b j y') y =
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) d (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) a (h l b) y +
-             partialDeriv (E := E) b (h l a) y -
-             partialDeriv (E := E) l (h a b) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b) y) +
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) d (partialDeriv (E := E) a (h l b)) y +
-             partialDeriv (E := E) d (partialDeriv (E := E) b (h l a)) y -
-             partialDeriv (E := E) d (partialDeriv (E := E) l (h a b)) y)) := by
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b)) y)) := by
   classical
   set S : Fin (Module.finrank ℝ E) → E → ℝ := fun l y' =>
-    partialDeriv (E := E) a (h l b) y' +
-      partialDeriv (E := E) b (h l a) y' -
-      partialDeriv (E := E) l (h a b) y' with hS
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b) y' +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a) y' -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b) y' with hS
   have hS_diff : ∀ l : Fin (Module.finrank ℝ E), DifferentiableAt ℝ (S l) y := by
     intro l
-    have h1 : DifferentiableAt ℝ (partialDeriv (E := E) a (h l b)) y :=
+    have h1 : DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b)) y :=
       partialDeriv_perturbation_differentiableAt h a l b y
-    have h2 : DifferentiableAt ℝ (partialDeriv (E := E) b (h l a)) y :=
+    have h2 : DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a)) y :=
       partialDeriv_perturbation_differentiableAt h b l a y
-    have h3 : DifferentiableAt ℝ (partialDeriv (E := E) l (h a b)) y :=
+    have h3 : DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b)) y :=
       partialDeriv_perturbation_differentiableAt h l a b y
     exact (h1.add h2).sub h3
   have hG_diff : ∀ l : Fin (Module.finrank ℝ E),
@@ -246,23 +246,23 @@ lemma partialDeriv_chartLinearizedChristoffelPrincipal
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [partialDeriv_mul (chartInvGramOnE (I := I) g α j l) (S l)
         (hG_diff l) (hS_diff l)]
-  have hSderiv : partialDeriv (E := E) d (S l) y =
-      partialDeriv (E := E) d (partialDeriv (E := E) a (h l b)) y +
-        partialDeriv (E := E) d (partialDeriv (E := E) b (h l a)) y -
-        partialDeriv (E := E) d (partialDeriv (E := E) l (h a b)) y := by
-    have h1 : DifferentiableAt ℝ (partialDeriv (E := E) a (h l b)) y :=
+  have hSderiv : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (S l) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b)) y +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a)) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b)) y := by
+    have h1 : DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b)) y :=
       partialDeriv_perturbation_differentiableAt h a l b y
-    have h2 : DifferentiableAt ℝ (partialDeriv (E := E) b (h l a)) y :=
+    have h2 : DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a)) y :=
       partialDeriv_perturbation_differentiableAt h b l a y
-    have h3 : DifferentiableAt ℝ (partialDeriv (E := E) l (h a b)) y :=
+    have h3 : DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b)) y :=
       partialDeriv_perturbation_differentiableAt h l a b y
     rw [hS]
     rw [partialDeriv_sub (E := E)
-          (fun y' => partialDeriv (E := E) a (h l b) y' +
-            partialDeriv (E := E) b (h l a) y')
-          (partialDeriv (E := E) l (h a b)) (h1.add h2) h3]
+          (fun y' => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b) y' +
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a) y')
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h a b)) (h1.add h2) h3]
     rw [partialDeriv_add (E := E)
-          (partialDeriv (E := E) a (h l b)) (partialDeriv (E := E) b (h l a)) h1 h2]
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h l b)) (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (h l a)) h1 h2]
   rw [hSderiv, hS]
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -277,71 +277,71 @@ theorem chartRicciSecondOrderPart_eq_principalSymbol_add_remainder
   classical
   rw [chartRicciSecondOrderPart_def]
   have hexpand : ∀ j : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i k j y') y -
-        partialDeriv (E := E) k
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
           (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i j j y') y =
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l k) y +
-             partialDeriv (E := E) k (h l i) y -
-             partialDeriv (E := E) l (h i k) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y) +
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-             partialDeriv (E := E) j (partialDeriv (E := E) k (h l i)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y))) -
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y))) -
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l j) y +
-             partialDeriv (E := E) j (h l i) y -
-             partialDeriv (E := E) l (h i j) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y) +
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y +
-             partialDeriv (E := E) k (partialDeriv (E := E) j (h l i)) y -
-             partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y))) := by
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y))) := by
     intro j
     rw [partialDeriv_chartLinearizedChristoffelPrincipal (I := I) g α h i k j j hy,
       partialDeriv_chartLinearizedChristoffelPrincipal (I := I) g α h i j j k hy]
   rw [Finset.sum_congr rfl (fun j _ => hexpand j)]
   have hsplit : ∀ j : Fin (Module.finrank ℝ E),
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l k) y +
-             partialDeriv (E := E) k (h l i) y -
-             partialDeriv (E := E) l (h i k) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y) +
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-             partialDeriv (E := E) j (partialDeriv (E := E) k (h l i)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y))) -
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y))) -
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l j) y +
-             partialDeriv (E := E) j (h l i) y -
-             partialDeriv (E := E) l (h i j) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y) +
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y +
-             partialDeriv (E := E) k (partialDeriv (E := E) j (h l i)) y -
-             partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y))) =
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y))) =
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-             partialDeriv (E := E) j (partialDeriv (E := E) k (h l i)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y) -
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y) -
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y +
-             partialDeriv (E := E) k (partialDeriv (E := E) j (h l i)) y -
-             partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y)) +
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y)) +
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l k) y +
-             partialDeriv (E := E) k (h l i) y -
-             partialDeriv (E := E) l (h i k) y) -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y) -
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l j) y +
-             partialDeriv (E := E) j (h l i) y -
-             partialDeriv (E := E) l (h i j) y)) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y)) := by
     intro j
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, mul_add, mul_add]
     ring
@@ -349,48 +349,48 @@ theorem chartRicciSecondOrderPart_eq_principalSymbol_add_remainder
   rw [Finset.sum_add_distrib]
   have hrem : (∑ j : Fin (Module.finrank ℝ E),
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l k) y +
-             partialDeriv (E := E) k (h l i) y -
-             partialDeriv (E := E) l (h i k) y) -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y) -
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-            (partialDeriv (E := E) i (h l j) y +
-             partialDeriv (E := E) j (h l i) y -
-             partialDeriv (E := E) l (h i j) y))) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y))) =
       chartRicciFirstOrderRemainder (I := I) g α h i k y := by
     rw [chartRicciFirstOrderRemainder_def]
     rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
   have hsymbol : (∑ j : Fin (Module.finrank ℝ E),
       ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-             partialDeriv (E := E) j (partialDeriv (E := E) k (h l i)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y) -
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y) -
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y +
-             partialDeriv (E := E) k (partialDeriv (E := E) j (h l i)) y -
-             partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y))) =
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y))) =
       chartRicciSecondOrderPrincipalSymbol (I := I) g α h i k y := by
     rw [chartRicciSecondOrderPrincipalSymbol_def]
     have hcombine : ∀ j : Fin (Module.finrank ℝ E),
         ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α j l y *
-              (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-               partialDeriv (E := E) j (partialDeriv (E := E) k (h l i)) y -
-               partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y) -
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i)) y -
+               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y) -
           (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α j l y *
-              (partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y +
-               partialDeriv (E := E) k (partialDeriv (E := E) j (h l i)) y -
-               partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y)) =
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y +
+               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i)) y -
+               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y)) =
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-             partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y -
-             partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y) := by
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y) := by
       intro j
       rw [← mul_sub, ← Finset.sum_sub_distrib]
       congr 1
@@ -425,24 +425,24 @@ theorem chartRicciFirstOrderRemainder_eq_first_order_sum
     chartRicciFirstOrderRemainder (I := I) g α h i k y =
       ∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
-          (((1 / 2 : ℝ) * partialDeriv (E := E) j
+          (((1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartInvGramOnE (I := I) g α j l) y) *
-              partialDeriv (E := E) i (h l k) y +
-            ((1 / 2 : ℝ) * partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+            ((1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartInvGramOnE (I := I) g α j l) y) *
-              partialDeriv (E := E) k (h l i) y +
-            (-(1 / 2 : ℝ) * partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y +
+            (-(1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartInvGramOnE (I := I) g α j l) y) *
-              partialDeriv (E := E) l (h i k) y +
-            (-(1 / 2 : ℝ) * partialDeriv (E := E) k
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y +
+            (-(1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
                 (chartInvGramOnE (I := I) g α j l) y) *
-              partialDeriv (E := E) i (h l j) y +
-            (-(1 / 2 : ℝ) * partialDeriv (E := E) k
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+            (-(1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
                 (chartInvGramOnE (I := I) g α j l) y) *
-              partialDeriv (E := E) j (h l i) y +
-            ((1 / 2 : ℝ) * partialDeriv (E := E) k
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y +
+            ((1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
                 (chartInvGramOnE (I := I) g α j l) y) *
-              partialDeriv (E := E) l (h i j) y) := by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y) := by
   classical
   rw [chartRicciFirstOrderRemainder_def]
   simp only [Finset.mul_sum]
@@ -461,10 +461,10 @@ lemma chartRicciSecondOrderPart_zero
   classical
   rw [chartRicciSecondOrderPart_def]
   have hzero : ∀ j : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α
             (0 : ChartMetricPerturbation E) i k j y') y -
-        partialDeriv (E := E) k
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
           (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α
             (0 : ChartMetricPerturbation E) i j j y') y = 0 := by
     intro j
@@ -490,12 +490,12 @@ theorem chartRicciSecondOrderPart_add
   rw [chartRicciSecondOrderPart_def, chartRicciSecondOrderPart_def,
     chartRicciSecondOrderPart_def, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  have hadd_ik : partialDeriv (E := E) j
+  have hadd_ik : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α (h₁ + h₂) i k j y')
         y =
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h₁ i k j y') y +
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h₂ i k j y') y := by
     have heq : (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α
           (h₁ + h₂) i k j y') =
@@ -507,12 +507,12 @@ theorem chartRicciSecondOrderPart_add
           (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h₂ i k j y')
           (chartLinearizedChristoffelPrincipal_differentiableAt (I := I) g α h₁ i k j hy)
           (chartLinearizedChristoffelPrincipal_differentiableAt (I := I) g α h₂ i k j hy)]
-  have hadd_ij : partialDeriv (E := E) k
+  have hadd_ij : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α (h₁ + h₂) i j j y')
         y =
-      partialDeriv (E := E) k
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h₁ i j j y') y +
-      partialDeriv (E := E) k
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h₂ i j j y') y := by
     have heq : (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α
           (h₁ + h₂) i j j y') =
@@ -539,10 +539,10 @@ theorem chartRicciSecondOrderPart_smul
   rw [chartRicciSecondOrderPart_def, chartRicciSecondOrderPart_def, smul_eq_mul,
     Finset.mul_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  have hsmul_ik : partialDeriv (E := E) j
+  have hsmul_ik : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α (c • h) i k j y')
         y =
-      c * partialDeriv (E := E) j
+      c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i k j y') y := by
     have heq : (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α
           (c • h) i k j y') =
@@ -552,10 +552,10 @@ theorem chartRicciSecondOrderPart_smul
           (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i k j y')
           (chartLinearizedChristoffelPrincipal_differentiableAt (I := I) g α h i k j hy),
       smul_eq_mul]
-  have hsmul_ij : partialDeriv (E := E) k
+  have hsmul_ij : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α (c • h) i j j y')
         y =
-      c * partialDeriv (E := E) k
+      c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h i j j y') y := by
     have heq : (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α
           (c • h) i j j y') =
@@ -577,10 +577,10 @@ lemma chartRicciSecondOrderPrincipalSymbol_zero
   classical
   rw [chartRicciSecondOrderPrincipalSymbol_def]
   have hiter : ∀ p q a b : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) p
-          (partialDeriv (E := E) q ((0 : ChartMetricPerturbation E) a b)) y = 0 := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q ((0 : ChartMetricPerturbation E) a b)) y = 0 := by
     intro p q a b
-    have hinner : partialDeriv (E := E) q ((0 : ChartMetricPerturbation E) a b) =
+    have hinner : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q ((0 : ChartMetricPerturbation E) a b) =
         fun _ : E => (0 : ℝ) := by
       funext y'
       have hconst : ((0 : ChartMetricPerturbation E) a b) = fun _ : E => (0 : ℝ) := rfl
@@ -588,13 +588,13 @@ lemma chartRicciSecondOrderPrincipalSymbol_zero
     rw [hinner, partialDeriv_const]
   have hzero : ∀ j l : Fin (Module.finrank ℝ E),
       chartInvGramOnE (I := I) g α j l y *
-        (partialDeriv (E := E) j (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             ((0 : ChartMetricPerturbation E) l k)) y +
-         partialDeriv (E := E) k (partialDeriv (E := E) l
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             ((0 : ChartMetricPerturbation E) i j)) y -
-         partialDeriv (E := E) j (partialDeriv (E := E) l
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             ((0 : ChartMetricPerturbation E) i k)) y -
-         partialDeriv (E := E) k (partialDeriv (E := E) i
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             ((0 : ChartMetricPerturbation E) l j)) y) = 0 := by
     intro j l
     rw [hiter j i l k, hiter k l i j, hiter j l i k, hiter k i l j]
@@ -606,33 +606,33 @@ lemma chartRicciSecondOrderPrincipalSymbol_zero
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_partialDeriv_add_apply
     (h₁ h₂ : ChartMetricPerturbation E) (p q a b : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) p (partialDeriv (E := E) q ((h₁ + h₂) a b)) y =
-      partialDeriv (E := E) p (partialDeriv (E := E) q (h₁ a b)) y +
-        partialDeriv (E := E) p (partialDeriv (E := E) q (h₂ a b)) y := by
-  have hinner : partialDeriv (E := E) q ((h₁ + h₂) a b) =
-      fun y' => partialDeriv (E := E) q (h₁ a b) y' +
-        partialDeriv (E := E) q (h₂ a b) y' := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q ((h₁ + h₂) a b)) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h₁ a b)) y +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h₂ a b)) y := by
+  have hinner : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q ((h₁ + h₂) a b) =
+      fun y' => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h₁ a b) y' +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h₂ a b) y' := by
     funext y'
     have heq : ((h₁ + h₂) a b) = fun y'' => h₁ a b y'' + h₂ a b y'' := rfl
     rw [heq, partialDeriv_add (E := E) (h₁ a b) (h₂ a b)
           (h₁.differentiableAt a b y') (h₂.differentiableAt a b y')]
   rw [hinner, partialDeriv_add (E := E)
-        (partialDeriv (E := E) q (h₁ a b)) (partialDeriv (E := E) q (h₂ a b))
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h₁ a b)) (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h₂ a b))
         (partialDeriv_perturbation_differentiableAt h₁ q a b y)
         (partialDeriv_perturbation_differentiableAt h₂ q a b y)]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_partialDeriv_smul_apply
     (c : ℝ) (h : ChartMetricPerturbation E) (p q a b : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) p (partialDeriv (E := E) q ((c • h) a b)) y =
-      c * partialDeriv (E := E) p (partialDeriv (E := E) q (h a b)) y := by
-  have hinner : partialDeriv (E := E) q ((c • h) a b) =
-      fun y' => c • partialDeriv (E := E) q (h a b) y' := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q ((c • h) a b)) y =
+      c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h a b)) y := by
+  have hinner : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q ((c • h) a b) =
+      fun y' => c • DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h a b) y' := by
     funext y'
     have heq : ((c • h) a b) = fun y'' => c • h a b y'' := rfl
     rw [heq, partialDeriv_const_smul (E := E) c (h a b) (h.differentiableAt a b y')]
   rw [hinner, partialDeriv_const_smul (E := E) c
-        (partialDeriv (E := E) q (h a b))
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h a b))
         (partialDeriv_perturbation_differentiableAt h q a b y), smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -666,15 +666,15 @@ theorem chartRicciSecondOrderPrincipalSymbol_smul
     smul_eq_mul]
   have hsummand : ∀ j l : Fin (Module.finrank ℝ E),
       chartInvGramOnE (I := I) g α j l y *
-        (partialDeriv (E := E) j (partialDeriv (E := E) i ((c • h) l k)) y +
-         partialDeriv (E := E) k (partialDeriv (E := E) l ((c • h) i j)) y -
-         partialDeriv (E := E) j (partialDeriv (E := E) l ((c • h) i k)) y -
-         partialDeriv (E := E) k (partialDeriv (E := E) i ((c • h) l j)) y) =
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((c • h) l k)) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((c • h) i j)) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((c • h) i k)) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((c • h) l j)) y) =
       c * (chartInvGramOnE (I := I) g α j l y *
-        (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-         partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y -
-         partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y -
-         partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y)) := by
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y)) := by
     intro j l
     rw [partialDeriv_partialDeriv_smul_apply c h j i l k y,
       partialDeriv_partialDeriv_smul_apply c h k l i j y,
@@ -686,16 +686,16 @@ theorem chartRicciSecondOrderPrincipalSymbol_smul
   have hinner : ∀ j : Fin (Module.finrank ℝ E),
       (∑ l : Fin (Module.finrank ℝ E),
         c * (chartInvGramOnE (I := I) g α j l y *
-          (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-           partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y -
-           partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y -
-           partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y))) =
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y -
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y -
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y))) =
       c * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g α j l y *
-          (partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y +
-           partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y -
-           partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y -
-           partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y) :=
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y +
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y -
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y -
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y) :=
     fun j => by rw [← Finset.mul_sum]
   rw [Finset.sum_congr rfl (fun j _ => hinner j), ← Finset.mul_sum]
   ring
@@ -709,10 +709,10 @@ lemma chartRicciFirstOrderRemainder_zero
   classical
   rw [chartRicciFirstOrderRemainder_def]
   have hzero1 : ∀ j l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i ((0 : ChartMetricPerturbation E) l k) y +
-         partialDeriv (E := E) k ((0 : ChartMetricPerturbation E) l i) y -
-         partialDeriv (E := E) l ((0 : ChartMetricPerturbation E) i k) y) = 0 := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((0 : ChartMetricPerturbation E) l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ((0 : ChartMetricPerturbation E) l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((0 : ChartMetricPerturbation E) i k) y) = 0 := by
     intro j l
     have e1 : ((0 : ChartMetricPerturbation E) l k) = fun _ : E => (0 : ℝ) := rfl
     have e2 : ((0 : ChartMetricPerturbation E) l i) = fun _ : E => (0 : ℝ) := rfl
@@ -721,10 +721,10 @@ lemma chartRicciFirstOrderRemainder_zero
     simp only [partialDeriv_const]
     ring
   have hzero2 : ∀ j l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i ((0 : ChartMetricPerturbation E) l j) y +
-         partialDeriv (E := E) j ((0 : ChartMetricPerturbation E) l i) y -
-         partialDeriv (E := E) l ((0 : ChartMetricPerturbation E) i j) y) = 0 := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((0 : ChartMetricPerturbation E) l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ((0 : ChartMetricPerturbation E) l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((0 : ChartMetricPerturbation E) i j) y) = 0 := by
     intro j l
     have e1 : ((0 : ChartMetricPerturbation E) l j) = fun _ : E => (0 : ℝ) := rfl
     have e2 : ((0 : ChartMetricPerturbation E) l i) = fun _ : E => (0 : ℝ) := rfl
@@ -749,62 +749,62 @@ theorem chartRicciFirstOrderRemainder_add
   rw [chartRicciFirstOrderRemainder_def, chartRicciFirstOrderRemainder_def,
     chartRicciFirstOrderRemainder_def]
   have hsummand1 : ∀ j l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i ((h₁ + h₂) l k) y +
-         partialDeriv (E := E) k ((h₁ + h₂) l i) y -
-         partialDeriv (E := E) l ((h₁ + h₂) i k) y) =
-      partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h₁ l k) y +
-         partialDeriv (E := E) k (h₁ l i) y -
-         partialDeriv (E := E) l (h₁ i k) y) +
-      partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h₂ l k) y +
-         partialDeriv (E := E) k (h₂ l i) y -
-         partialDeriv (E := E) l (h₂ i k) y) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((h₁ + h₂) l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ((h₁ + h₂) l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((h₁ + h₂) i k) y) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₁ l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h₁ l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₁ i k) y) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₂ l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h₂ l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₂ i k) y) := by
     intro j l
-    have ea : partialDeriv (E := E) i ((h₁ + h₂) l k) y =
-        partialDeriv (E := E) i (h₁ l k) y + partialDeriv (E := E) i (h₂ l k) y := by
+    have ea : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((h₁ + h₂) l k) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₁ l k) y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₂ l k) y := by
       have heq : ((h₁ + h₂) l k) = fun y'' => h₁ l k y'' + h₂ l k y'' := rfl
       rw [heq, partialDeriv_add (E := E) (h₁ l k) (h₂ l k)
             (h₁.differentiableAt l k y) (h₂.differentiableAt l k y)]
-    have eb : partialDeriv (E := E) k ((h₁ + h₂) l i) y =
-        partialDeriv (E := E) k (h₁ l i) y + partialDeriv (E := E) k (h₂ l i) y := by
+    have eb : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ((h₁ + h₂) l i) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h₁ l i) y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h₂ l i) y := by
       have heq : ((h₁ + h₂) l i) = fun y'' => h₁ l i y'' + h₂ l i y'' := rfl
       rw [heq, partialDeriv_add (E := E) (h₁ l i) (h₂ l i)
             (h₁.differentiableAt l i y) (h₂.differentiableAt l i y)]
-    have ec : partialDeriv (E := E) l ((h₁ + h₂) i k) y =
-        partialDeriv (E := E) l (h₁ i k) y + partialDeriv (E := E) l (h₂ i k) y := by
+    have ec : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((h₁ + h₂) i k) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₁ i k) y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₂ i k) y := by
       have heq : ((h₁ + h₂) i k) = fun y'' => h₁ i k y'' + h₂ i k y'' := rfl
       rw [heq, partialDeriv_add (E := E) (h₁ i k) (h₂ i k)
             (h₁.differentiableAt i k y) (h₂.differentiableAt i k y)]
     rw [ea, eb, ec]
     ring
   have hsummand2 : ∀ j l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i ((h₁ + h₂) l j) y +
-         partialDeriv (E := E) j ((h₁ + h₂) l i) y -
-         partialDeriv (E := E) l ((h₁ + h₂) i j) y) =
-      partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h₁ l j) y +
-         partialDeriv (E := E) j (h₁ l i) y -
-         partialDeriv (E := E) l (h₁ i j) y) +
-      partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h₂ l j) y +
-         partialDeriv (E := E) j (h₂ l i) y -
-         partialDeriv (E := E) l (h₂ i j) y) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((h₁ + h₂) l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ((h₁ + h₂) l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((h₁ + h₂) i j) y) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₁ l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h₁ l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₁ i j) y) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₂ l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h₂ l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₂ i j) y) := by
     intro j l
-    have ea : partialDeriv (E := E) i ((h₁ + h₂) l j) y =
-        partialDeriv (E := E) i (h₁ l j) y + partialDeriv (E := E) i (h₂ l j) y := by
+    have ea : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((h₁ + h₂) l j) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₁ l j) y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h₂ l j) y := by
       have heq : ((h₁ + h₂) l j) = fun y'' => h₁ l j y'' + h₂ l j y'' := rfl
       rw [heq, partialDeriv_add (E := E) (h₁ l j) (h₂ l j)
             (h₁.differentiableAt l j y) (h₂.differentiableAt l j y)]
-    have eb : partialDeriv (E := E) j ((h₁ + h₂) l i) y =
-        partialDeriv (E := E) j (h₁ l i) y + partialDeriv (E := E) j (h₂ l i) y := by
+    have eb : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ((h₁ + h₂) l i) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h₁ l i) y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h₂ l i) y := by
       have heq : ((h₁ + h₂) l i) = fun y'' => h₁ l i y'' + h₂ l i y'' := rfl
       rw [heq, partialDeriv_add (E := E) (h₁ l i) (h₂ l i)
             (h₁.differentiableAt l i y) (h₂.differentiableAt l i y)]
-    have ec : partialDeriv (E := E) l ((h₁ + h₂) i j) y =
-        partialDeriv (E := E) l (h₁ i j) y + partialDeriv (E := E) l (h₂ i j) y := by
+    have ec : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((h₁ + h₂) i j) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₁ i j) y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h₂ i j) y := by
       have heq : ((h₁ + h₂) i j) = fun y'' => h₁ i j y'' + h₂ i j y'' := rfl
       rw [heq, partialDeriv_add (E := E) (h₁ i j) (h₂ i j)
             (h₁.differentiableAt i j y) (h₂.differentiableAt i j y)]
@@ -828,54 +828,54 @@ theorem chartRicciFirstOrderRemainder_smul
   classical
   rw [chartRicciFirstOrderRemainder_def, chartRicciFirstOrderRemainder_def, smul_eq_mul]
   have hsummand1 : ∀ j l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i ((c • h) l k) y +
-         partialDeriv (E := E) k ((c • h) l i) y -
-         partialDeriv (E := E) l ((c • h) i k) y) =
-      c * (partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h l k) y +
-         partialDeriv (E := E) k (h l i) y -
-         partialDeriv (E := E) l (h i k) y)) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((c • h) l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ((c • h) l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((c • h) i k) y) =
+      c * (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y)) := by
     intro j l
-    have ea : partialDeriv (E := E) i ((c • h) l k) y =
-        c * partialDeriv (E := E) i (h l k) y := by
+    have ea : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((c • h) l k) y =
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k) y := by
       have heq : ((c • h) l k) = fun y'' => c • h l k y'' := rfl
       rw [heq, partialDeriv_const_smul (E := E) c (h l k) (h.differentiableAt l k y),
         smul_eq_mul]
-    have eb : partialDeriv (E := E) k ((c • h) l i) y =
-        c * partialDeriv (E := E) k (h l i) y := by
+    have eb : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ((c • h) l i) y =
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i) y := by
       have heq : ((c • h) l i) = fun y'' => c • h l i y'' := rfl
       rw [heq, partialDeriv_const_smul (E := E) c (h l i) (h.differentiableAt l i y),
         smul_eq_mul]
-    have ec : partialDeriv (E := E) l ((c • h) i k) y =
-        c * partialDeriv (E := E) l (h i k) y := by
+    have ec : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((c • h) i k) y =
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k) y := by
       have heq : ((c • h) i k) = fun y'' => c • h i k y'' := rfl
       rw [heq, partialDeriv_const_smul (E := E) c (h i k) (h.differentiableAt i k y),
         smul_eq_mul]
     rw [ea, eb, ec]
     ring
   have hsummand2 : ∀ j l : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i ((c • h) l j) y +
-         partialDeriv (E := E) j ((c • h) l i) y -
-         partialDeriv (E := E) l ((c • h) i j) y) =
-      c * (partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
-        (partialDeriv (E := E) i (h l j) y +
-         partialDeriv (E := E) j (h l i) y -
-         partialDeriv (E := E) l (h i j) y)) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((c • h) l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ((c • h) l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((c • h) i j) y) =
+      c * (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y +
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y -
+         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y)) := by
     intro j l
-    have ea : partialDeriv (E := E) i ((c • h) l j) y =
-        c * partialDeriv (E := E) i (h l j) y := by
+    have ea : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i ((c • h) l j) y =
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j) y := by
       have heq : ((c • h) l j) = fun y'' => c • h l j y'' := rfl
       rw [heq, partialDeriv_const_smul (E := E) c (h l j) (h.differentiableAt l j y),
         smul_eq_mul]
-    have eb : partialDeriv (E := E) j ((c • h) l i) y =
-        c * partialDeriv (E := E) j (h l i) y := by
+    have eb : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ((c • h) l i) y =
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (h l i) y := by
       have heq : ((c • h) l i) = fun y'' => c • h l i y'' := rfl
       rw [heq, partialDeriv_const_smul (E := E) c (h l i) (h.differentiableAt l i y),
         smul_eq_mul]
-    have ec : partialDeriv (E := E) l ((c • h) i j) y =
-        c * partialDeriv (E := E) l (h i j) y := by
+    have ec : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l ((c • h) i j) y =
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j) y := by
       have heq : ((c • h) i j) = fun y'' => c • h i j y'' := rfl
       rw [heq, partialDeriv_const_smul (E := E) c (h i j) (h.differentiableAt i j y),
         smul_eq_mul]
@@ -904,62 +904,62 @@ theorem chartRicciSecondOrderPrincipalSymbol_symm
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) p (h l q)) y +
-             partialDeriv (E := E) q (partialDeriv (E := E) l (h p j)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h p q)) y -
-             partialDeriv (E := E) q (partialDeriv (E := E) p (h l j)) y)) =
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l q)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p j)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p q)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l j)) y)) =
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) p (h l q)) y) +
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l q)) y) +
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) q (partialDeriv (E := E) l (h p j)) y) -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p j)) y) -
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) l (h p q)) y) -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p q)) y) -
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) q (partialDeriv (E := E) p (h l j)) y) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l j)) y) := by
     intro p q
     have hinner : ∀ j : Fin (Module.finrank ℝ E),
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            (partialDeriv (E := E) j (partialDeriv (E := E) p (h l q)) y +
-             partialDeriv (E := E) q (partialDeriv (E := E) l (h p j)) y -
-             partialDeriv (E := E) j (partialDeriv (E := E) l (h p q)) y -
-             partialDeriv (E := E) q (partialDeriv (E := E) p (h l j)) y)) =
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l q)) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p j)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p q)) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l j)) y)) =
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) p (h l q)) y) +
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l q)) y) +
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) q (partialDeriv (E := E) l (h p j)) y) -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p j)) y) -
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) l (h p q)) y) -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p q)) y) -
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) q (partialDeriv (E := E) p (h l j)) y) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l j)) y) := by
       intro j
       rw [show (∑ l : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g α j l y *
-                (partialDeriv (E := E) j (partialDeriv (E := E) p (h l q)) y +
-                 partialDeriv (E := E) q (partialDeriv (E := E) l (h p j)) y -
-                 partialDeriv (E := E) j (partialDeriv (E := E) l (h p q)) y -
-                 partialDeriv (E := E) q (partialDeriv (E := E) p (h l j)) y)) =
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l q)) y +
+                 DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p j)) y -
+                 DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p q)) y -
+                 DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l j)) y)) =
             (∑ l : Fin (Module.finrank ℝ E),
               (chartInvGramOnE (I := I) g α j l y *
-                  partialDeriv (E := E) j (partialDeriv (E := E) p (h l q)) y +
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l q)) y +
                 chartInvGramOnE (I := I) g α j l y *
-                  partialDeriv (E := E) q (partialDeriv (E := E) l (h p j)) y -
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p j)) y -
                 chartInvGramOnE (I := I) g α j l y *
-                  partialDeriv (E := E) j (partialDeriv (E := E) l (h p q)) y -
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h p q)) y -
                 chartInvGramOnE (I := I) g α j l y *
-                  partialDeriv (E := E) q (partialDeriv (E := E) p (h l j)) y)) from
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h l j)) y)) from
         Finset.sum_congr rfl (fun l _ => by ring)]
       rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib, Finset.sum_add_distrib]
     rw [Finset.sum_congr rfl (fun j _ => hinner j)]
@@ -968,11 +968,11 @@ theorem chartRicciSecondOrderPrincipalSymbol_symm
   have hA : (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) k (h l i)) y) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l i)) y) =
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) k (partialDeriv (E := E) l (h i j)) y) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i j)) y) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -981,11 +981,11 @@ theorem chartRicciSecondOrderPrincipalSymbol_symm
   have hB : (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) i (partialDeriv (E := E) l (h k j)) y) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h k j)) y) =
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) i (h l k)) y) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l k)) y) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -994,22 +994,22 @@ theorem chartRicciSecondOrderPrincipalSymbol_symm
   have hC : (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) l (h k i)) y) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h k i)) y) =
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) j (partialDeriv (E := E) l (h i k)) y) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (h i k)) y) := by
     refine Finset.sum_congr rfl (fun j _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [h.symm_fun k i]
   have hD : (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) i (partialDeriv (E := E) k (h l j)) y) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (h l j)) y) =
       (∑ j : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y *
-            partialDeriv (E := E) k (partialDeriv (E := E) i (h l j)) y) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (h l j)) y) := by
     refine Finset.sum_congr rfl (fun j _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [partialDeriv_partialDeriv_perturbation_swap h l j i k y]

@@ -27,7 +27,7 @@ lemma partialDeriv_joint_contDiffAt
     (Ψ : ℝ → E → ℝ) (q : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E}
     (hΨ : ContDiffAt ℝ ∞ (fun r : ℝ × E => Ψ r.1 r.2) (s₀, y₀)) :
     ContDiffAt ℝ ∞
-      (fun p : ℝ × E => partialDeriv (E := E) q (fun y => Ψ p.1 y) p.2) (s₀, y₀) := by
+      (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (fun y => Ψ p.1 y) p.2) (s₀, y₀) := by
   have hf : ContDiffAt ℝ ∞
       (Function.uncurry (fun (p : ℝ × E) (y : E) => Ψ p.1 y))
       ((s₀, y₀), (fun p : ℝ × E => p.2) (s₀, y₀)) := by
@@ -149,9 +149,9 @@ lemma chartChristoffelBracket_joint_contDiffAt {S : Set ℝ}
       (fun r : ℝ × E => chartChristoffelBracket (I := I) (gfam r.1) α i j l r.2) (s₀, y₀) := by
   have heq : (fun r : ℝ × E => chartChristoffelBracket (I := I) (gfam r.1) α i j l r.2) =
       (fun r : ℝ × E =>
-        partialDeriv (E := E) i (fun y => chartGramOnE (I := I) (gfam r.1) α l j y) r.2 +
-          partialDeriv (E := E) j (fun y => chartGramOnE (I := I) (gfam r.1) α l i y) r.2 -
-          partialDeriv (E := E) l (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => chartGramOnE (I := I) (gfam r.1) α l j y) r.2 +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun y => chartGramOnE (I := I) (gfam r.1) α l i y) r.2 -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2) := by
     funext r; rw [chartChristoffelBracket]
   rw [heq]
   exact ((partialDeriv_joint_contDiffAt (fun s y => chartGramOnE (I := I) (gfam s) α l j y) i
@@ -185,7 +185,7 @@ lemma partial_chartChristoffel_joint_contDiffAt {S : Set ℝ}
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun r : ℝ × E =>
-        partialDeriv (E := E) m (fun y => chartChristoffel (I := I) (gfam r.1) α i j k y) r.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun y => chartChristoffel (I := I) (gfam r.1) α i j k y) r.2)
       (s₀, y₀) :=
   partialDeriv_joint_contDiffAt (fun s y => chartChristoffel (I := I) (gfam s) α i j k y) m
     (chartChristoffel_joint_contDiffAt (I := I) gfam α hG i j k hs hy)
@@ -198,8 +198,8 @@ lemma chartRiemannTensor_joint_contDiffAt {S : Set ℝ} (hG : chartGramFamilyJoi
       (fun r : ℝ × E => chartRiemannTensor (I := I) (gfam r.1) α i j k l r.2) (s₀, y₀) := by
   have heq : (fun r : ℝ × E => chartRiemannTensor (I := I) (gfam r.1) α i j k l r.2) =
       (fun r : ℝ × E =>
-        partialDeriv (E := E) j (fun y => chartChristoffel (I := I) (gfam r.1) α i k l y) r.2 -
-          partialDeriv (E := E) k (fun y => chartChristoffel (I := I) (gfam r.1) α i j l y) r.2 +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun y => chartChristoffel (I := I) (gfam r.1) α i k l y) r.2 -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun y => chartChristoffel (I := I) (gfam r.1) α i j l y) r.2 +
           (∑ m : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) (gfam r.1) α j m l r.2 *
                 chartChristoffel (I := I) (gfam r.1) α i k m r.2 -

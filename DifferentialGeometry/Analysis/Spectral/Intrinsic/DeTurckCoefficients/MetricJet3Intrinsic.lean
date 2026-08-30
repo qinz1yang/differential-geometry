@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metr
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RawComponentEuclideanBridge
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.CovariantJetInput
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
-open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -147,8 +147,8 @@ private lemma gram1_le
     (hN : 1 ≤ N) {y : E}
     (hy : y ∈ interior (extChartAt I α).target)
     (d a b : Fin (Module.finrank ℝ E)) :
-    |partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α a b) y -
-      partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α a b) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α a b) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α a b) y| ≤
       (∑ q : Fin (Module.finrank ℝ E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q‖) *
         chartGramJetDiffSeminormSum (I := I) (M := M) N g₁ g₂ α
           (interior (extChartAt I α).target) y := by
@@ -169,10 +169,10 @@ private lemma gram1_le
         (show ((1 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
       (h₂.of_le (WithTop.coe_le_coe.2
         (show ((1 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
-  have heq : partialDeriv (E := E) d f₁ y - partialDeriv (E := E) d f₂ y =
+  have heq : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d f₁ y - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d f₂ y =
       iteratedFDeriv ℝ 1 (fun z => f₁ z - f₂ z) y
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d] := by
-    rw [partial_eq_iter1, partial_eq_iter1]
+    rw [partialDeriv_eq_iteratedFDeriv_one, partialDeriv_eq_iteratedFDeriv_one]
     exact congrArg (fun F => F ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d]) hsub
   rw [show chartGramOnE (I := I) g₁ α a b = f₁ from rfl,
     show chartGramOnE (I := I) g₂ α a b = f₂ from rfl, heq]
@@ -202,10 +202,10 @@ private lemma gram2_le
     (hN : 2 ≤ N) {y : E}
     (hy : y ∈ interior (extChartAt I α).target)
     (d c a b : Fin (Module.finrank ℝ E)) :
-    |partialDeriv (E := E) d
-        (partialDeriv (E := E) c (chartGramOnE (I := I) g₁ α a b)) y -
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) c (chartGramOnE (I := I) g₂ α a b)) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c (chartGramOnE (I := I) g₁ α a b)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c (chartGramOnE (I := I) g₂ α a b)) y| ≤
       (∑ q : Fin (Module.finrank ℝ E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q‖) ^ 2 *
         chartGramJetDiffSeminormSum (I := I) (M := M) N g₁ g₂ α
           (interior (extChartAt I α).target) y := by
@@ -226,11 +226,12 @@ private lemma gram2_le
         (show ((2 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))
       (h₂.of_le (WithTop.coe_le_coe.2
         (show ((2 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
-  have heq : partialDeriv (E := E) d (partialDeriv (E := E) c f₁) y -
-      partialDeriv (E := E) d (partialDeriv (E := E) c f₂) y =
+  have heq : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c f₁) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c f₂) y =
         iteratedFDeriv ℝ 2 (fun z => f₁ z - f₂ z) y
           ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c] := by
-    rw [partial2_eq_iter2 f₁ h₁ d c, partial2_eq_iter2 f₂ h₂ d c]
+    rw [partialDeriv_partialDeriv_eq_iteratedFDeriv_two f₁ h₁ d c,
+      partialDeriv_partialDeriv_eq_iteratedFDeriv_two f₂ h₂ d c]
     exact congrArg
       (fun F => F ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c]) hsub
   rw [show chartGramOnE (I := I) g₁ α a b = f₁ from rfl,
@@ -267,12 +268,12 @@ private lemma gram3_le
     (hN : 3 ≤ N) {y : E}
     (hy : y ∈ interior (extChartAt I α).target)
     (d c m a b : Fin (Module.finrank ℝ E)) :
-    |partialDeriv (E := E) d
-        (partialDeriv (E := E) c
-          (partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b))) y -
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) c
-          (partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b))) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b))) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b))) y| ≤
       (∑ q : Fin (Module.finrank ℝ E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q‖) ^ 3 *
         chartGramJetDiffSeminormSum (I := I) (M := M) N g₁ g₂ α
           (interior (extChartAt I α).target) y := by
@@ -294,14 +295,15 @@ private lemma gram3_le
       (h₂.of_le (WithTop.coe_le_coe.2
         (show ((3 : ℕ) : ℕ∞) ≤ ⊤ from le_top)))).symm
   have heq :
-      partialDeriv (E := E) d (partialDeriv (E := E) c
-          (partialDeriv (E := E) m f₁)) y -
-        partialDeriv (E := E) d (partialDeriv (E := E) c
-          (partialDeriv (E := E) m f₂)) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m f₁)) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m f₂)) y =
         iteratedFDeriv ℝ 3 (fun z => f₁ z - f₂ z) y
           ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c,
             (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] := by
-    rw [partial3_eq_iter3 f₁ h₁ d c m, partial3_eq_iter3 f₂ h₂ d c m]
+    rw [partialDeriv_partialDeriv_partialDeriv_eq_iteratedFDeriv_three f₁ h₁ d c m,
+      partialDeriv_partialDeriv_partialDeriv_eq_iteratedFDeriv_three f₂ h₂ d c m]
     exact congrArg
       (fun F => F ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c,
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]) hsub
@@ -382,8 +384,8 @@ theorem metricJet2_le_gram (α : M) :
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₁ α p.1 p.2.2) y -
-            partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₂ α p.1 p.2.2) y|)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₁ α p.1 p.2.2) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₂ α p.1 p.2.2) y|)
           ≤ ∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E), B * J :=
         Finset.sum_le_sum fun p _ => by
@@ -400,11 +402,11 @@ theorem metricJet2_le_gram (α : M) :
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
                 (chartGramOnE (I := I) g₁ α p.2.2.1 p.2.2.2)) y -
-            partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
                 (chartGramOnE (I := I) g₂ α p.2.2.1 p.2.2.2)) y|)
           ≤ ∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), B ^ 2 * J :=
@@ -483,8 +485,8 @@ theorem metricJet3_le_gram (α : M) :
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₁ α p.1 p.2.2) y -
-            partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₂ α p.1 p.2.2) y|)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₁ α p.1 p.2.2) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) g₂ α p.1 p.2.2) y|)
           ≤ ∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E), B * J :=
         Finset.sum_le_sum fun p _ => by
@@ -501,11 +503,11 @@ theorem metricJet3_le_gram (α : M) :
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
                 (chartGramOnE (I := I) g₁ α p.2.2.1 p.2.2.2)) y -
-            partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
                 (chartGramOnE (I := I) g₂ α p.2.2.1 p.2.2.2)) y|)
           ≤ ∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), B ^ 2 * J :=
@@ -524,13 +526,13 @@ theorem metricJet3_le_gram (α : M) :
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
-                (partialDeriv (E := E) p.2.2.1
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.2.1
                   (chartGramOnE (I := I) g₁ α p.2.2.2.1 p.2.2.2.2))) y -
-            partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
-                (partialDeriv (E := E) p.2.2.1
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.2.1
                   (chartGramOnE (I := I) g₂ α p.2.2.2.1 p.2.2.2.2))) y|)
           ≤ ∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×

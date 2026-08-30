@@ -203,7 +203,7 @@ lemma chartHessianTensor_add_of_smooth
       (fun y : M => f y + f' y) i j z =
       chartIteratedPartialDeriv (I := I) α f i j z +
         chartIteratedPartialDeriv (I := I) α f' i j z := by
-    unfold chartIteratedPartialDeriv partialDeriv
+    unfold chartIteratedPartialDeriv DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [scalarOnE_add_pointwise (I := I) α f f']
     have h_inner_pointwise : ∀ y ∈ interior ((extChartAt I α).target : Set E),
         fderiv ℝ (fun w : E => u w + u' w) y =
@@ -266,12 +266,12 @@ lemma chartHessianTensor_add_of_smooth
     rw [h_outer_add]
     rfl
   have h_chris_add : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
           (scalarOnE (I := I) α (fun y : M => f y + f' y)) z =
-        partialDeriv (E := E) k (scalarOnE (I := I) α f) z +
-          partialDeriv (E := E) k (scalarOnE (I := I) α f') z := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) z +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f') z := by
     intro k
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [scalarOnE_add_pointwise (I := I) α f f']
     have hu_diff : DifferentiableAt ℝ u z := hf_int_diff z hx_int
     have hu'_diff : DifferentiableAt ℝ u' z := hf'_int_diff z hx_int
@@ -284,14 +284,14 @@ lemma chartHessianTensor_add_of_smooth
   have h_chris_sum :
       ∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k z *
-          partialDeriv (E := E) k
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
             (scalarOnE (I := I) α (fun y : M => f y + f' y)) z =
       ∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k z *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) z +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) z +
       ∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k z *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f') z := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f') z := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl ?_
     intro k _
@@ -324,7 +324,7 @@ lemma chartHessianTensor_neg_of_smooth
   rw [chartHessianTensor_def, chartHessianTensor_def]
   have h_iter_neg : chartIteratedPartialDeriv (I := I) α
       (fun y : M => -f y) i j z = -chartIteratedPartialDeriv (I := I) α f i j z := by
-    unfold chartIteratedPartialDeriv partialDeriv
+    unfold chartIteratedPartialDeriv DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [scalarOnE_neg_pointwise (I := I) α f]
     have h_fderiv_neg_fn : (fun y : E => fderiv ℝ (fun w : E => -u w) y
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
@@ -343,10 +343,10 @@ lemma chartHessianTensor_neg_of_smooth
     rw [h_outer_neg]
     rfl
   have h_chris_neg : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (scalarOnE (I := I) α (fun y : M => -f y)) z =
-        -partialDeriv (E := E) k (scalarOnE (I := I) α f) z := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α (fun y : M => -f y)) z =
+        -DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) z := by
     intro k
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [scalarOnE_neg_pointwise (I := I) α f]
     have h_fderiv_neg : fderiv ℝ (fun y : E => -u y) z = -fderiv ℝ u z := by
       change fderiv ℝ (-u) z = -fderiv ℝ u z
@@ -356,10 +356,10 @@ lemma chartHessianTensor_neg_of_smooth
   have h_chris_sum :
       ∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k z *
-          partialDeriv (E := E) k (scalarOnE (I := I) α (fun y : M => -f y)) z =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α (fun y : M => -f y)) z =
       -∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k z *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) z := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) z := by
     rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl ?_
     intro k _

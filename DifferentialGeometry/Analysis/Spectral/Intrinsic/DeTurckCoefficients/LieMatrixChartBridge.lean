@@ -104,9 +104,9 @@ theorem partialDeriv_chartCoeffOnE_deTurckVF_eq
     (g g_bg : SmoothRiemannianMetric I M) (α : M)
     (m k : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
-    partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (chartCoeffOnE (I := I) α (deTurckVF (I := I) g g_bg) k) (extChartAt I α x) =
-      partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (chartDeTurckVFComp (I := I) g g_bg α k) (extChartAt I α x) := by
   have hU_open : IsOpen ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     chartLeviCivitaGoodSet_image_isOpen (I := I) α
@@ -117,7 +117,7 @@ theorem partialDeriv_chartCoeffOnE_deTurckVF_eq
       chartCoeffOnE (I := I) α (deTurckVF (I := I) g g_bg) k =ᶠ[𝓝 (extChartAt I α x)]
         chartDeTurckVFComp (I := I) g g_bg α k :=
     heqOn.eventuallyEq_of_mem (hU_open.mem_nhds hx_mem)
-  rw [partialDeriv, partialDeriv, heventually.fderiv_eq]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, DifferentialGeometry.Tensor.Coordinates.partialDeriv, heventually.fderiv_eq]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

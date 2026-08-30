@@ -373,7 +373,7 @@ private lemma fderiv_chartGramOnE_apply_eq_partialDeriv_sum
     fderiv ℝ (chartGramOnE (I := I) g α i j) y₀ w =
       ∑ k : Fin (Module.finrank ℝ E),
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) k *
-          partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y₀ := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y₀ := by
   classical
   have hw_decomp : w =
       ∑ k : Fin (Module.finrank ℝ E),
@@ -502,7 +502,7 @@ private lemma mfderiv_g_inner_chart_expand
     (trivToE (I := I) α x v)]
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-        partialDeriv (E := E) k (chartGramOnE (I := I) g α i j)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j)
           (extChartAt I α x)) =
     ∑ k : Fin (Module.finrank ℝ E),
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *

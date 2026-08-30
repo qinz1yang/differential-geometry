@@ -32,7 +32,7 @@ theorem metric_compat_coord_identity
     (g : SmoothRiemannianMetric I M)
     (α : M) {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (i j k : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
       (∑ l : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α k i l (extChartAt I α x) *
             chartGramOnE (I := I) g α l j (extChartAt I α x))
@@ -128,7 +128,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
         ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x v)) i =
       (∑ j : Fin (Module.finrank ℝ E),
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j *
-            partialDeriv (E := E) j (chartCoeffOnE (I := I) x W i)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W i)
               (extChartAt I x x))
       + (∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
@@ -188,7 +188,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
     rw [← fderiv_comp (x := extChartAt I x x)
           (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).differentiableAt
           (differentiableAt_chartE_pullback_self (I := I) W x)]
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     have hev := chartCoeffOnE_self_eq_basis_comp_pullback_eventuallyEq (I := I) W x i
     rw [hev.fderiv_eq]
   · rw [christoffelCorrection_apply (I := I) g x x
@@ -283,7 +283,7 @@ theorem cartan_formula_chart_algebra
       (∑ k : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
             ((∑ l : Fin (Module.finrank ℝ E),
-                  partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
                     (extChartAt I x x) *
                     (if l = k then (1 : ℝ) else 0))
               + (∑ l : Fin (Module.finrank ℝ E),
@@ -292,7 +292,7 @@ theorem cartan_formula_chart_algebra
       + (∑ k : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
             ((∑ l : Fin (Module.finrank ℝ E),
-                  partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
                     (extChartAt I x x) *
                     (if l = k then (1 : ℝ) else 0))
               + (∑ l : Fin (Module.finrank ℝ E),
@@ -311,7 +311,7 @@ theorem cartan_formula_chart_algebra
     unfold chartGramOnE
     rw [(extChartAt I x).left_inv hx_src]
   have hmc : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) (extChartAt I x x) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) (extChartAt I x x) =
         (∑ l, chartChristoffel (I := I) g x k i l (extChartAt I x x) *
             chartGramOnE (I := I) g x l j (extChartAt I x x))
         + (∑ l, chartChristoffel (I := I) g x k j l (extChartAt I x x) *
@@ -319,9 +319,9 @@ theorem cartan_formula_chart_algebra
     metric_compat_coord_identity (I := I) g x hx_good i j k
   have hcoll1 : ∀ k : Fin (Module.finrank ℝ E),
       (∑ l : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x) *
           (if l = k then (1 : ℝ) else 0)) =
-      partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
     intro k
     rw [Finset.sum_eq_single k
       (fun l _ hl => by rw [if_neg hl]; ring)
@@ -329,9 +329,9 @@ theorem cartan_formula_chart_algebra
     simp
   have hcoll2 : ∀ k : Fin (Module.finrank ℝ E),
       (∑ l : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x) *
           (if l = k then (1 : ℝ) else 0)) =
-      partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
     intro k
     rw [Finset.sum_eq_single k
       (fun l _ hl => by rw [if_neg hl]; ring)
@@ -341,12 +341,12 @@ theorem cartan_formula_chart_algebra
     rw [show
       (∑ k : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-          ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                   chartCoeff (I := I) x W l x))) =
         (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
         + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
           (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
               chartCoeff (I := I) x W l x))
@@ -357,12 +357,12 @@ theorem cartan_formula_chart_algebra
     rw [show
       (∑ k : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-          ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                   chartCoeff (I := I) x W l x))) =
         (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-          partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
         + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
           (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
               chartCoeff (I := I) x W l x))
@@ -373,7 +373,7 @@ theorem cartan_formula_chart_algebra
   rw [show
     (∑ k : Fin (Module.finrank ℝ E),
       chartCoeff (I := I) x W k x *
-        partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) (extChartAt I x x))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) (extChartAt I x x))
     = (∑ k, chartCoeff (I := I) x W k x *
       (∑ l, chartChristoffel (I := I) g x k i l (extChartAt I x x) *
           chartGramOnE (I := I) g x l j (extChartAt I x x)))
@@ -502,12 +502,12 @@ theorem cartan_formula_for_lie_deriv_metric
     (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
       ((∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-          ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                 chartCoeff (I := I) x W l x)))
         + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-          ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                 chartCoeff (I := I) x W l x)))))
@@ -516,9 +516,9 @@ theorem cartan_formula_for_lie_deriv_metric
         rw [cartan_formula_chart_algebra (I := I) g W i j x]))]
   have hcoll : ∀ (a : Fin (Module.finrank ℝ E)) (k : Fin (Module.finrank ℝ E)),
       (∑ l : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) a (chartCoeffOnE (I := I) x W k) (extChartAt I x x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartCoeffOnE (I := I) x W k) (extChartAt I x x) *
           (if l = k then (1 : ℝ) else 0)) =
-        partialDeriv (E := E) a (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
     intro a k
     rw [Finset.sum_eq_single k
       (fun l _ hl => by rw [if_neg hl]; ring)
@@ -528,19 +528,19 @@ theorem cartan_formula_for_lie_deriv_metric
     (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
       ((∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-          ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                 chartCoeff (I := I) x W l x)))
         + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-          ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                 chartCoeff (I := I) x W l x))))) =
     (∑ i, ∑ j, ∑ k,
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-        partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
     + (∑ i, ∑ j, ∑ k, ∑ l,
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
@@ -549,7 +549,7 @@ theorem cartan_formula_for_lie_deriv_metric
     + (∑ i, ∑ j, ∑ k,
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-        partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
     + (∑ i, ∑ j, ∑ k, ∑ l,
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
@@ -560,26 +560,26 @@ theorem cartan_formula_for_lie_deriv_metric
         (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           ((∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-              ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+              ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
                   (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
                 + (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                     chartCoeff (I := I) x W l x)))
             + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-              ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+              ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
                   (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
                 + (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                     chartCoeff (I := I) x W l x))))) =
         (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-            ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+            ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
                 (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
               + (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                   chartCoeff (I := I) x W l x))))
         + (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-            ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+            ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
                 (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
               + (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                   chartCoeff (I := I) x W l x))))
@@ -593,14 +593,14 @@ theorem cartan_formula_for_lie_deriv_metric
         (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-            ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
+            ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
                 (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
               + (∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                   chartCoeff (I := I) x W l x)))) =
         (∑ i, ∑ j, ∑ k,
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-            partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
         + (∑ i, ∑ j, ∑ k, ∑ l,
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
@@ -617,12 +617,12 @@ theorem cartan_formula_for_lie_deriv_metric
           rw [show
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                 (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-                  (partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
                     + ∑ l, chartChristoffel (I := I) g x i l k (extChartAt I x x) *
                         chartCoeff (I := I) x W l x)) =
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                 DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-                partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
               + ∑ l : Fin (Module.finrank ℝ E),
                   ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
@@ -637,14 +637,14 @@ theorem cartan_formula_for_lie_deriv_metric
         (∑ i, ∑ j, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-            ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
+            ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
                 (extChartAt I x x) * (if l = k then (1 : ℝ) else 0))
               + (∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                   chartCoeff (I := I) x W l x)))) =
         (∑ i, ∑ j, ∑ k,
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-            partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x))
         + (∑ i, ∑ j, ∑ k, ∑ l,
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
@@ -661,12 +661,12 @@ theorem cartan_formula_for_lie_deriv_metric
           rw [show
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                 (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-                  (partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
                     + ∑ l, chartChristoffel (I := I) g x j l k (extChartAt I x x) *
                         chartCoeff (I := I) x W l x)) =
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                 DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-                partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x)
               + ∑ l : Fin (Module.finrank ℝ E),
                   ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
@@ -750,7 +750,7 @@ theorem cartan_formula_for_lie_deriv_metric
     (∑ i, ∑ j,
       ((∑ j' : Fin (Module.finrank ℝ E),
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-            partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i)
               (extChartAt I x x))
         + (∑ j' : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
@@ -772,7 +772,7 @@ theorem cartan_formula_for_lie_deriv_metric
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
       ((∑ j' : Fin (Module.finrank ℝ E),
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j' *
-            partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j)
               (extChartAt I x x))
         + (∑ j' : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
@@ -787,7 +787,7 @@ theorem cartan_formula_for_lie_deriv_metric
     (∑ i, ∑ j,
       ((∑ j' : Fin (Module.finrank ℝ E),
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-            partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i)
               (extChartAt I x x))
         + (∑ j' : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
@@ -798,7 +798,7 @@ theorem cartan_formula_for_lie_deriv_metric
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) =
     (∑ i, ∑ j, ∑ j',
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-        partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j)
     + (∑ i, ∑ j, ∑ j', ∑ k,
@@ -812,7 +812,7 @@ theorem cartan_formula_for_lie_deriv_metric
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ((∑ j' : Fin (Module.finrank ℝ E),
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-                partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i)
                   (extChartAt I x x))
             + (∑ j' : Fin (Module.finrank ℝ E),
                 ∑ k : Fin (Module.finrank ℝ E),
@@ -823,7 +823,7 @@ theorem cartan_formula_for_lie_deriv_metric
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) =
         ∑ i, ∑ j,
           ((∑ j', ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-              partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j)
           + (∑ j', ∑ k,
@@ -847,7 +847,7 @@ theorem cartan_formula_for_lie_deriv_metric
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
       ((∑ j' : Fin (Module.finrank ℝ E),
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j' *
-            partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j)
               (extChartAt I x x))
         + (∑ j' : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
@@ -858,7 +858,7 @@ theorem cartan_formula_for_lie_deriv_metric
     (∑ i, ∑ j, ∑ j',
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
         (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j' *
-          partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j) (extChartAt I x x)) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j) (extChartAt I x x)) *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j)
     + (∑ i, ∑ j, ∑ j', ∑ k,
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
@@ -872,7 +872,7 @@ theorem cartan_formula_for_lie_deriv_metric
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((∑ j' : Fin (Module.finrank ℝ E),
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j' *
-                partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j)
                   (extChartAt I x x))
             + (∑ j' : Fin (Module.finrank ℝ E),
                 ∑ k : Fin (Module.finrank ℝ E),
@@ -883,7 +883,7 @@ theorem cartan_formula_for_lie_deriv_metric
         ∑ i, ∑ j,
           ((∑ j', ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
               (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j' *
-                partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j) (extChartAt I x x)) *
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j) (extChartAt I x x)) *
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j)
           + (∑ j', ∑ k,
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
@@ -905,32 +905,32 @@ theorem cartan_formula_for_lie_deriv_metric
       (∑ i, ∑ j, ∑ k,
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x)) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x)) =
       (∑ i, ∑ j, ∑ j',
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-          partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) := by
     rw [show
       (∑ i, ∑ j, ∑ j',
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-          partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) =
       (∑ j', ∑ j, ∑ i,
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-          partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) from by
       rw [show (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ j' : Fin (Module.finrank ℝ E),
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-              partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) =
           (∑ i, ∑ j', ∑ j,
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j' *
-              partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W i) (extChartAt I x x) *
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) from
         Finset.sum_congr rfl (fun _ _ => Finset.sum_comm)]
@@ -943,11 +943,11 @@ theorem cartan_formula_for_lie_deriv_metric
       (∑ i, ∑ j, ∑ k,
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-          partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x)) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x)) =
       (∑ i, ∑ j, ∑ j',
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j' *
-            partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j) (extChartAt I x x)) *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j' (chartCoeffOnE (I := I) x W j) (extChartAt I x x)) *
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j) := by
     refine Finset.sum_congr rfl (fun iL _ => ?_)
     conv_rhs => rw [Finset.sum_comm]

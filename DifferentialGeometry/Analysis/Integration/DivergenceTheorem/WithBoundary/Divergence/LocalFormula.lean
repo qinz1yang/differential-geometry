@@ -72,7 +72,7 @@ theorem localDivergenceWithin_eq_localDivergence_of_isInteriorPoint
                 chartDensityOnE (I := I) g α y)
             (extChartAt I α x))
         = ∑ i : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (fun y : E =>
                 chartCoeffOnE (I := I) α X i y *
                   chartDensityOnE (I := I) g α y)

@@ -574,7 +574,7 @@ private lemma localDivergenceWithin_mul_phi_pullback_eq_on_chartImage
       (localDivergenceWithin (I := I) g α X ((extChartAt I α).symm y) *
         φ ((extChartAt I α).symm y)) =
       (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
         phiOnE (I := I) α φ y := by
   classical
   have hyT : y ∈ (extChartAt I α).target :=
@@ -599,11 +599,11 @@ private lemma localDivergenceWithin_mul_phi_pullback_eq_on_chartImage
       partialDerivWithin (E := E) (extChartAt I α).target i
         (fun z : E =>
           chartCoeffOnE (I := I) α X i z * chartDensityOnE (I := I) g α z) y =
-      partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
     intro i
     rw [partialDerivWithin_extChartAt_target_eq_partialDeriv
           (I := I) (M := M) α i _ hy_int]
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     have htarget_nhd : (extChartAt I α).target ∈ 𝓝 y := by
       refine Filter.mem_of_superset (isOpen_interior.mem_nhds hy_int) ?_
       exact interior_subset

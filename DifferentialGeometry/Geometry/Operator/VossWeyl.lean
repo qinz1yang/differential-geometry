@@ -49,7 +49,7 @@ def gradChartCoeffOnE (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
   fun y =>
     ∑ j : Fin (Module.finrank ℝ E),
       chartInvGramOnE (I := I) g α i j y *
-        partialDeriv (E := E) j (scalarOnE (I := I) α f) y
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) y
 
 @[simp] lemma gradChartCoeffOnE_def
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
@@ -57,7 +57,7 @@ def gradChartCoeffOnE (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
     gradChartCoeffOnE (I := I) g α f i y =
       ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g α i j y *
-          partialDeriv (E := E) j (scalarOnE (I := I) α f) y := rfl
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) y := rfl
 
 def chartVossWeylIntegrand (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
     (i : Fin (Module.finrank ℝ E)) : E → ℝ :=
@@ -74,7 +74,7 @@ def chartVossWeylIntegrand (g : SmoothRiemannianMetric I M) (α : M) (f : M → 
 def chartVossWeylLaplacian (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
     (x : M) : ℝ :=
   (∑ i : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (chartVossWeylIntegrand (I := I) g α f i)
         (extChartAt I α x))
     / chartDensity (I := I) g α x
@@ -83,7 +83,7 @@ def chartVossWeylLaplacian (g : SmoothRiemannianMetric I M) (α : M) (f : M → 
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ) (x : M) :
     chartVossWeylLaplacian (I := I) g α f x =
       (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (chartVossWeylIntegrand (I := I) g α f i)
             (extChartAt I α x))
         / chartDensity (I := I) g α x := rfl
@@ -212,7 +212,7 @@ lemma localDivergence_grad_g_eq_chartVossWeylLaplacian [I.Boundaryless]
     filter_upwards [htarget_nhd] with y hy
     rw [chartVossWeylIntegrand_def,
         chartCoeffOnE_grad_g_eq_gradChartCoeffOnE (I := I) g α hf i hy]
-  unfold partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hev.fderiv_eq]
 
 theorem voss_weyl_laplacian_formula_of_closed

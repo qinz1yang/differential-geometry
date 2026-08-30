@@ -56,15 +56,15 @@ lemma sum_chartChristoffel_diag_eq_half_trace
         chartChristoffel (I := I) g α i k k y) =
       (1 / 2 : ℝ) * ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g α k l y *
-          partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y := by
   classical
   have hexpand : (∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i k k y) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         (1 / 2 : ℝ) * (chartInvGramOnE (I := I) g α k l y *
-          (partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y +
-           partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
-           partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y)) := by
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y +
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y)) := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartChristoffel_def, Finset.mul_sum]
     refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -74,10 +74,10 @@ lemma sum_chartChristoffel_diag_eq_half_trace
   rw [show (∑ k : Fin (Module.finrank ℝ E), (1 / 2 : ℝ) *
             ∑ l : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g α k l y *
-                partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y) =
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y) =
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           (1 / 2 : ℝ) * (chartInvGramOnE (I := I) g α k l y *
-            partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y) from by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y) from by
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [Finset.mul_sum]]
   rw [← sub_eq_zero]
@@ -85,17 +85,17 @@ lemma sum_chartChristoffel_diag_eq_half_trace
   rw [show (∑ k : Fin (Module.finrank ℝ E),
           ((∑ l : Fin (Module.finrank ℝ E),
               (1 / 2 : ℝ) * (chartInvGramOnE (I := I) g α k l y *
-                (partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y +
-                 partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
-                 partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y))) -
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y +
+                 DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
+                 DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y))) -
             ∑ l : Fin (Module.finrank ℝ E),
               (1 / 2 : ℝ) * (chartInvGramOnE (I := I) g α k l y *
-                partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y))) =
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y))) =
         (1 / 2 : ℝ) * (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           (chartInvGramOnE (I := I) g α k l y *
-              partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
             chartInvGramOnE (I := I) g α k l y *
-              partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y)) from by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y)) from by
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
@@ -105,15 +105,15 @@ lemma sum_chartChristoffel_diag_eq_half_trace
   right
   rw [show (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           (chartInvGramOnE (I := I) g α k l y *
-              partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y -
             chartInvGramOnE (I := I) g α k l y *
-              partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y)) =
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y)) =
         (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α k l y *
-              partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y) -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α l i) y) -
           ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α k l y *
-              partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y from by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y from by
       rw [← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [← Finset.sum_sub_distrib]]
@@ -123,8 +123,8 @@ lemma sum_chartChristoffel_diag_eq_half_trace
   refine Finset.sum_congr rfl (fun l _ => ?_)
   have hGUsym : chartInvGramOnE (I := I) g α l k y =
       chartInvGramOnE (I := I) g α k l y := chartInvGramOnE_symm (I := I) g α l k y
-  have hdGsym : partialDeriv (E := E) l (chartGramOnE (I := I) g α k i) y =
-      partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y := by
+  have hdGsym : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α k i) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i k) y := by
     congr 1
     funext z
     exact chartGramOnE_symm (I := I) g α k i z
@@ -136,17 +136,17 @@ lemma partialDeriv_chartDensityOnE_eq_sum_chartChristoffel_diag
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) i (chartDensityOnE (I := I) g α) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDensityOnE (I := I) g α) y =
       (∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i k k y) * chartDensityOnE (I := I) g α y := by
   classical
   have htrace : Matrix.trace
         ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y))⁻¹ *
-          Matrix.of (fun a b => partialDeriv (E := E) i
+          Matrix.of (fun a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (chartGramOnE (I := I) g α a b) y)) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g α k l y *
-          partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l k) y := by
     rw [Matrix.trace]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [Matrix.diag_apply, Matrix.mul_apply]
@@ -196,7 +196,7 @@ lemma chartCoord_leviCivita_chartBasis
         (trivToE (I := I) α b
           ((LeviCivita (I := I) g).toFun Z.toFun b
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))) k =
-      partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) (extChartAt I α b) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) (extChartAt I α b) +
         ∑ j : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α m j k (extChartAt I α b) *
             chartCoeffOnE (I := I) α Z j (extChartAt I α b) := by
@@ -237,7 +237,7 @@ lemma chartCoord_leviCivita_chartBasis
         rw [fderiv_comp y₀ (coordProjE (E := E) k).differentiableAt hF_diff,
             ContinuousLinearMap.fderiv]]
     change (fderiv ℝ ((coordProjE (E := E) k : E → ℝ) ∘ F) y₀) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) =
-        partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) y₀
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) y₀
     have htgt_nhd : (extChartAt I α).target ∈ 𝓝 y₀ :=
       (isOpen_extChartAt_target (I := I) α).mem_nhds (interior_subset hb_int)
     have hev : ((coordProjE (E := E) k : E → ℝ) ∘ F) =ᶠ[𝓝 y₀]
@@ -348,7 +348,7 @@ lemma inner_leviCivita_chartBasis_eq
         ((LeviCivita (I := I) g).toFun Z.toFun b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n b) =
       ∑ k : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) (extChartAt I α b) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) (extChartAt I α b) +
           ∑ j : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α m j k (extChartAt I α b) *
               chartCoeffOnE (I := I) α Z j (extChartAt I α b)) *
@@ -446,7 +446,7 @@ lemma metricTrace_eq_coord_covariant_divergence
               (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n b)) =
       ∑ m : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z m) (extChartAt I α b) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z m) (extChartAt I α b) +
           ∑ j : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α m j m (extChartAt I α b) *
               chartCoeffOnE (I := I) α Z j (extChartAt I α b)) := by
@@ -455,7 +455,7 @@ lemma metricTrace_eq_coord_covariant_divergence
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
   set A : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun m k =>
-      partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) (extChartAt I α b) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) (extChartAt I α b) +
         ∑ j : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α m j k (extChartAt I α b) *
             chartCoeffOnE (I := I) α Z j (extChartAt I α b) with hA_def
@@ -539,7 +539,7 @@ lemma localDivergence_eq_coord_covariant_divergence
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     localDivergence (I := I) g α Z b =
       (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) (extChartAt I α b)) +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) (extChartAt I α b)) +
         ∑ i : Fin (Module.finrank ℝ E),
           chartCoeffOnE (I := I) α Z i (extChartAt I α b) *
             (∑ k : Fin (Module.finrank ℝ E),
@@ -574,26 +574,26 @@ lemma localDivergence_eq_coord_covariant_divergence
   rw [localDivergence_def]
   rw [hD_eq]
   have hnum : (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y => chartCoeffOnE (I := I) α Z i y * chartDensityOnE (I := I) g α y) y₀) =
       ∑ i : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) y₀ *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) y₀ *
             chartDensityOnE (I := I) g α y₀ +
           chartCoeffOnE (I := I) α Z i y₀ *
-            partialDeriv (E := E) i (chartDensityOnE (I := I) g α) y₀) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDensityOnE (I := I) g α) y₀) := by
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [fderiv_fun_mul (hcoeff_diff i) hdens_diff]
     simp only [add_apply, smul_apply, smul_eq_mul]
     ring
   rw [hnum]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) y₀ *
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) y₀ *
               chartDensityOnE (I := I) g α y₀ +
             chartCoeffOnE (I := I) α Z i y₀ *
-              partialDeriv (E := E) i (chartDensityOnE (I := I) g α) y₀)) =
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDensityOnE (I := I) g α) y₀)) =
         ∑ i : Fin (Module.finrank ℝ E),
-          ((partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) y₀ +
+          ((DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α Z i) y₀ +
               chartCoeffOnE (I := I) α Z i y₀ *
                 (∑ k : Fin (Module.finrank ℝ E),
                   chartChristoffel (I := I) g α i k k y₀)) *

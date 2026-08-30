@@ -32,54 +32,54 @@ variable {i : Fin (Module.finrank ℝ E)} {y : E}
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_add (u v : E → ℝ)
     (hu : DifferentiableAt ℝ u y) (hv : DifferentiableAt ℝ v y) :
-    partialDeriv (E := E) i (fun y => u y + v y) y =
-      partialDeriv (E := E) i u y + partialDeriv (E := E) i v y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => u y + v y) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i v y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_fun_add hu hv]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_sub (u v : E → ℝ)
     (hu : DifferentiableAt ℝ u y) (hv : DifferentiableAt ℝ v y) :
-    partialDeriv (E := E) i (fun y => u y - v y) y =
-      partialDeriv (E := E) i u y - partialDeriv (E := E) i v y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => u y - v y) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i v y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_fun_sub hu hv]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_smul (c u : E → ℝ)
     (hc : DifferentiableAt ℝ c y) (hu : DifferentiableAt ℝ u y) :
-    partialDeriv (E := E) i (fun y => c y • u y) y =
-      c y • partialDeriv (E := E) i u y + partialDeriv (E := E) i c y • u y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => c y • u y) y =
+      c y • DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y + DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i c y • u y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_fun_smul hc hu]
   simp [ContinuousLinearMap.smulRight_apply, smul_eq_mul, mul_comm]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_const_smul (c : ℝ) (u : E → ℝ)
     (hu : DifferentiableAt ℝ u y) :
-    partialDeriv (E := E) i (fun y => c • u y) y =
-      c • partialDeriv (E := E) i u y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => c • u y) y =
+      c • DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_fun_const_smul hu c]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_const_mul (c : ℝ) (u : E → ℝ)
     (hu : DifferentiableAt ℝ u y) :
-    partialDeriv (E := E) i (fun y => c * u y) y =
-      c * partialDeriv (E := E) i u y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => c * u y) y =
+      c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_const_mul hu c]
   simp [smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_mul (u v : E → ℝ)
     (hu : DifferentiableAt ℝ u y) (hv : DifferentiableAt ℝ v y) :
-    partialDeriv (E := E) i (fun y => u y * v y) y =
-      partialDeriv (E := E) i u y * v y + u y * partialDeriv (E := E) i v y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => u y * v y) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y * v y + u y * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i v y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_fun_mul hu hv]
   simp only [add_apply, smul_apply, smul_eq_mul]
   ring
@@ -87,16 +87,16 @@ lemma partialDeriv_mul (u v : E → ℝ)
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_sum {ι : Type*} (s : Finset ι) (A : ι → E → ℝ)
     (hA : ∀ k ∈ s, DifferentiableAt ℝ (A k) y) :
-    partialDeriv (E := E) i (fun y => ∑ k ∈ s, A k y) y =
-      ∑ k ∈ s, partialDeriv (E := E) i (A k) y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => ∑ k ∈ s, A k y) y =
+      ∑ k ∈ s, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (A k) y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_fun_sum hA]
   rw [sum_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma partialDeriv_const (c : ℝ) :
-    partialDeriv (E := E) i (fun _ : E => c) y = 0 := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun _ : E => c) y = 0 := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [show (fun _ : E => c) = Function.const E c from rfl, fderiv_const]
   rfl
 

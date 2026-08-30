@@ -37,7 +37,7 @@ private theorem chartLaplacianValue_jointContDiffAt
     ∀ α : M, x₀ ∈ (chartAt H α).source →
       ContDiffAt ℝ ∞ (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
         (t₀, (extChartAt I α) x₀) := by
   classical
@@ -54,7 +54,7 @@ private theorem chartLaplacianValue_jointContDiffAt
   have hpd : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, y) := by
     intro i y hy
@@ -71,7 +71,7 @@ private theorem chartLaplacianValue_jointContDiffAt
     have hcomp :=
       (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).contDiff.contDiffAt.comp
         (t₀, y) hfd
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     refine hcomp.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun _ => rfl
   have hgram : ∀ (i j : Fin (Module.finrank ℝ E)) (y : E),
@@ -92,14 +92,14 @@ private theorem chartLaplacianValue_jointContDiffAt
     have hsum_cd : ContDiffAt ℝ ∞
         (fun p : ℝ × E => ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α i j p.2 *
-            partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, y) := by
       exact ContDiffAt.sum (s := Finset.univ) (fun j _ => (hgram i j y hy).mul (hpd j y hy))
     refine hsum_cd.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun p => by
       change gradChartCoeffOnE (I := I) g α (f p.1) i p.2 =
         ∑ j, chartInvGramOnE (I := I) g α i j p.2 *
-          partialDeriv (E := E) j (scalarOnE (I := I) α (f p.1)) p.2
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f p.1)) p.2
       exact gradChartCoeffOnE_def (I := I) g α (f p.1) i p.2
   have hρ : ∀ y : E, y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞ (fun p : ℝ × E => chartDensityOnE (I := I) g α p.2) (t₀, y) := by
@@ -119,7 +119,7 @@ private theorem chartLaplacianValue_jointContDiffAt
   have hpdI : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => chartVossWeylIntegrand (I := I) g α (f p.1) i z) p.2) (t₀, y) := by
     intro i y hy
     have hproj : ContDiffAt ℝ ∞ (fun q : (ℝ × E) × E => (q.1.1, q.2)) ((t₀, y), y) := by
@@ -135,19 +135,19 @@ private theorem chartLaplacianValue_jointContDiffAt
     have hcomp :=
       (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).contDiff.contDiffAt.comp
         (t₀, y) hfd
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     refine hcomp.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun _ => rfl
   have hsum : ContDiffAt ℝ ∞
       (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
       (t₀, (extChartAt I α) x₀) := by
     have hsum0 : ContDiffAt ℝ ∞
         (fun p : ℝ × E =>
           ∑ i : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2)
         (t₀, (extChartAt I α) x₀) := by
       exact ContDiffAt.sum (s := Finset.univ) (fun i _ => hpdI i ((extChartAt I α) x₀) hxtarget)
     have hdens : ContDiffAt ℝ ∞
@@ -187,21 +187,21 @@ private theorem laplacianAt_time_contDiffAt_on
   have hcd : ContDiffAt ℝ ∞
       (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u p.1) i) p.2) /
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
       (t₀, (extChartAt I α) x) :=
     chartLaplacianValue_jointContDiffAt (I := I) (M := M) (D := D) g u hu ht₀ x α hxsrc
   have hsliceAt : ContDiffAt ℝ ∞
       (fun t : ℝ =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
             ((extChartAt I α) x)) /
           chartDensityOnE (I := I) g α ((extChartAt I α) x)) t₀ := by
     exact hcd.comp (x := t₀) (contDiffAt_id.prodMk contDiffAt_const)
   have hbridge : ∀ᶠ t in 𝓝 t₀,
       laplacianAt (I := I) G t (u t) x =
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
             ((extChartAt I α) x)) /
           chartDensityOnE (I := I) g α ((extChartAt I α) x) := by
     filter_upwards [IsOpen.mem_nhds D.regular_isOpen ht₀] with t ht
@@ -212,7 +212,7 @@ private theorem laplacianAt_time_contDiffAt_on
       rw [hGmetric t (D.regular_subset ht)]
     have hvw : ΔG (I := I) g ⟨u t, hslice t (D.regular_subset ht)⟩ x =
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
             ((extChartAt I α) x)) /
           chartDensityOnE (I := I) g α ((extChartAt I α) x) := by
       have hvw0 : ΔG (I := I) g ⟨u t, hslice t (D.regular_subset ht)⟩ x =

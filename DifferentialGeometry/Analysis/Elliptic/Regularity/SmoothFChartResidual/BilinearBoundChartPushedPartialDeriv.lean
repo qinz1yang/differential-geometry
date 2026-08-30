@@ -237,7 +237,7 @@ private lemma partialDerivOnEuclid_eq_fderiv_chartPushedRaw_apply_single
   have h_basis : (toEuclidean (E := E)).symm (EuclideanSpace.single i (1 : ℝ))
       = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
     rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]
-  change partialDeriv (E := E) i (scalarOnE (I := I) α u)
+  change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α u)
       ((toEuclidean (E := E)).symm y) =
     (fderiv ℝ (scalarOnE (I := I) α u)
         ((toEuclidean (E := E)).symm y))

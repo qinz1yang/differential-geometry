@@ -215,7 +215,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
   have h_mfderiv_apply : ∀ i : Fin (Module.finrank ℝ E),
       mfderiv I 𝓘(ℝ, ℝ) (etaTimesV (I := I) (M := M) α v.toFun) x
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (scalarOnE (I := I) α (etaTimesV (I := I) (M := M) α v.toFun))
         (extChartAt I α x) := fun i =>
     mfderiv_chartBasisVecFiber (I := I) (α := α) hηv_smooth hx_src hx_int i
@@ -257,7 +257,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
     rw [h_mfderiv_sum]
   have h_mfderiv_apply_L : ∀ i : Fin (Module.finrank ℝ E),
       L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (scalarOnE (I := I) α (etaTimesV (I := I) (M := M) α v.toFun))
         (extChartAt I α x) := by
     intro i
@@ -277,7 +277,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
   have h_partialDerivOnEuclid_apply : ∀ i : Fin (Module.finrank ℝ E),
       partialDerivOnEuclid (I := I) (M := M) α i
           (etaTimesV (I := I) (M := M) α v.toFun) y =
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
             (etaTimesV (I := I) (M := M) α v.toFun))
           (extChartAt I α x) := by
@@ -290,7 +290,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
       ∑ i : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (scalarOnE (I := I) α
               (etaTimesV (I := I) (M := M) α v.toFun))
             (extChartAt I α x) =
@@ -298,7 +298,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
         (chartStrictCutoff (I := I) (M := M) α x *
           gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x) *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (scalarOnE (I := I) α
               (etaTimesV (I := I) (M := M) α v.toFun))
             (extChartAt I α x) := by
@@ -354,10 +354,10 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
             filter_upwards [h_pre] with z hz using hz
           filter_upwards [h_ev_through_symm] with z hz using hz
         have h_partial_zero :
-            partialDeriv (E := E) j (scalarOnE (I := I) α
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
               ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))
               (extChartAt I α x) = 0 := by
-          unfold partialDeriv
+          unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
           rw [Filter.EventuallyEq.fderiv_eq h_scalar_ev]
           simp
         rw [h_partial_zero]; ring

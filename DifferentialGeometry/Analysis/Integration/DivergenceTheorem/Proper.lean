@@ -94,15 +94,15 @@ private lemma localDivergence_zero_of_eventuallyEq_zero [I.Boundaryless]
     rw [hcoeffZero, zero_mul]
   rw [localDivergence_def]
   have hsum_zero : ∀ i : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun z => chartCoeffOnE (I := I) α X i z * chartDensityOnE (I := I) g α z) y = 0 := by
     intro i
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [Filter.EventuallyEq.fderiv_eq (hev_pre i)]
     rw [show (fun _ : E => (0 : ℝ)) = Function.const E 0 from rfl, fderiv_const]
     rfl
   rw [show (∑ i : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun z => chartCoeffOnE (I := I) α X i z * chartDensityOnE (I := I) g α z)
         (extChartAt I α x)) = 0 from by
     refine Finset.sum_eq_zero (fun i _ => ?_)

@@ -132,9 +132,9 @@ private lemma hasDerivAt_partialDeriv_comm_at'
     (Φ : ℝ × E → ℝ) (p : Fin (Module.finrank ℝ E)) (s₀ : ℝ) (y₀ : E)
     (hΦ : ContDiffAt ℝ ∞ Φ (s₀, y₀)) :
     HasDerivAt
-      (fun s => partialDeriv (E := E) p (fun y => Φ (s, y)) y₀)
-      (partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) s₀) y₀) s₀ := by
-  unfold partialDeriv
+      (fun s => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (fun y => Φ (s, y)) y₀)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) s₀) y₀) s₀ := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   exact hasDerivAt_fderiv_comm_at' Φ s₀ y₀ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) hΦ
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -181,11 +181,11 @@ theorem hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (g₀ : SmoothRiema
                       chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x q l y)) *
                   chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x a b l y +
                 chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k l y *
-                  (partialDeriv (E := E) a
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
                       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) y +
-                    partialDeriv (E := E) b
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
                       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) y -
-                    partialDeriv (E := E) l
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) y)))))
       s₀ := by
     refine HasDerivAt.fun_sum (fun a _ => ?_)
@@ -222,10 +222,10 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartDeTurckVFComp (g₀ : Smo
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
     (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     HasDerivAt
-      (fun s : ℝ => partialDeriv (E := E) m
+      (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (fun y' => chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y')
           y)
-      (partialDeriv (E := E) m
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (deTurckVFDerivRaw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) k) y) s₀ := by
   have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
@@ -243,13 +243,13 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartDeTurckVFComp (g₀ : Smo
     filter_upwards [isOpen_interior.mem_nhds hy] with y' hy'
     exact (hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       g_bg x k hy' hs₀).deriv
-  have hval : partialDeriv (E := E) m
+  have hval : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (fun y' => deriv (fun s : ℝ =>
         chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y') s₀) y =
-      partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (deTurckVFDerivRaw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) k) y := by
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [Filter.EventuallyEq.fderiv_eq hderiv_eq]
   exact hcomm.congr_deriv hval
 
@@ -285,17 +285,17 @@ theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (g₀ :
       (fun s : ℝ =>
         (∑ k : Fin (Module.finrank ℝ E),
             chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y *
-              partialDeriv (E := E) k
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
                 (chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) y)
         + (∑ k : Fin (Module.finrank ℝ E),
             chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k j y *
-              partialDeriv (E := E) i
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (fun y' =>
                   chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y')
                     y)
         + (∑ k : Fin (Module.finrank ℝ E),
             chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k y *
-              partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (fun y' =>
                   chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y')
                     y)) := by
@@ -304,15 +304,15 @@ theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (g₀ :
   have hT1 : HasDerivAt
       (fun s : ℝ => ∑ k : Fin (Module.finrank ℝ E),
         chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y *
-          partialDeriv (E := E) k
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
             (chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) y)
       (∑ k : Fin (Module.finrank ℝ E),
         (deTurckVFDerivRaw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) k y *
-            partialDeriv (E := E) k
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
               (chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j) y +
           chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x k y *
-            partialDeriv (E := E) k
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
               (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y)) s₀ := by
     refine HasDerivAt.fun_sum (fun k _ => ?_)
     have hW := hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
@@ -323,17 +323,17 @@ theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (g₀ :
   have hT2 : HasDerivAt
       (fun s : ℝ => ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k j y *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y' =>
               chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y') y)
       (∑ k : Fin (Module.finrank ℝ E),
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x k j y *
-            partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (fun y' =>
                 chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x k y') y
                   +
           chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k j y *
-            partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (deTurckVFDerivRaw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) k) y)) s₀ := by
     refine HasDerivAt.fun_sum (fun k _ => ?_)
@@ -345,17 +345,17 @@ theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (g₀ :
   have hT3 : HasDerivAt
       (fun s : ℝ => ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k y *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' =>
               chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k y') y)
       (∑ k : Fin (Module.finrank ℝ E),
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i k y *
-            partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (fun y' =>
                 chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x k y') y
                   +
           chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i k y *
-            partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (deTurckVFDerivRaw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) k) y)) s₀ := by
     refine HasDerivAt.fun_sum (fun k _ => ?_)
@@ -427,7 +427,7 @@ private lemma partial_realizedGramDeriv_differentiableAt' (g₀ : SmoothRiemanni
     (x : M) (m p q : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) :
     DifferentiableAt ℝ
-      (partialDeriv (E := E)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E)
         m (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q)) y := by
   have hcd : ContDiffOn ℝ ∞ (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q)
       (extChartAt I x).target := by
@@ -443,9 +443,9 @@ private lemma partial_realizedGramDeriv_differentiableAt' (g₀ : SmoothRiemanni
       (interior (extChartAt I x).target) :=
     hcd_int.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
   have hpd : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) m (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q))
       (interior (extChartAt I x).target) := by
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     exact hfderiv.clm_apply contDiffOn_const
   exact (hpd.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 

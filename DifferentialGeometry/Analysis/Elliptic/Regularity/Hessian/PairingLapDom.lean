@@ -115,7 +115,7 @@ lemma chartHessianPhiOnEuclid_continuousOn
           ((toEuclidean (E := E)).symm y) -
         ∑ k : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α i j k ((toEuclidean (E := E)).symm y) *
-            partialDeriv (E := E) k (scalarOnE (I := I) α (φ : M → ℝ))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α (φ : M → ℝ))
               ((toEuclidean (E := E)).symm y) := by
     intro y hy
     have hy_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
@@ -137,7 +137,7 @@ lemma chartHessianPhiOnEuclid_continuousOn
     have h_smooth_iter : ContDiffOn ℝ ∞
         (chartIteratedPartialDeriv (I := I) α (φ : M → ℝ) i j)
         (extChartAt I α).target := by
-      unfold chartIteratedPartialDeriv partialDeriv
+      unfold chartIteratedPartialDeriv DifferentialGeometry.Tensor.Coordinates.partialDeriv
       have h_fder1 : ContDiffOn ℝ ∞
           (fderiv ℝ (scalarOnE (I := I) α (φ : M → ℝ)))
           (extChartAt I α).target :=
@@ -173,9 +173,9 @@ lemma chartHessianPhiOnEuclid_continuousOn
         (extChartAt I α).target :=
       scalarOnE_contDiffOn (I := I) α φ.contMDiff
     have h_pd_cont : ContinuousOn
-        (partialDeriv (E := E) k (scalarOnE (I := I) α (φ : M → ℝ)))
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α (φ : M → ℝ)))
         (extChartAt I α).target := by
-      unfold partialDeriv
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       rw [← h_int_eq_target]
       have h_smooth_int : ContDiffOn ℝ ∞ (scalarOnE (I := I) α (φ : M → ℝ))
           (interior (extChartAt I α).target) := h_smooth_target.mono interior_subset
@@ -194,7 +194,7 @@ lemma chartHessianPhiOnEuclid_continuousOn
         (chartTargetEuclid (I := I) (M := M) α) :=
       h_chris_cont.comp h_toE_cont.continuousOn h_maps
     have h_pd_comp : ContinuousOn
-        (fun y : EuclN => partialDeriv (E := E) k (scalarOnE (I := I) α (φ : M → ℝ))
+        (fun y : EuclN => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α (φ : M → ℝ))
           ((toEuclidean (E := E)).symm y))
         (chartTargetEuclid (I := I) (M := M) α) :=
       h_pd_cont.comp h_toE_cont.continuousOn h_maps

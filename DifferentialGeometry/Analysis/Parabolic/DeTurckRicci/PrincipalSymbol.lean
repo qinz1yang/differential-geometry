@@ -52,15 +52,15 @@ def IsMetricPerturbationFamily
     (∀ (i j p : Fin (Module.finrank ℝ E)) {y : E},
         y ∈ interior (extChartAt I α).target →
         HasDerivAt
-          (fun s : ℝ => partialDeriv (E := E) p (chartGramOnE (I := I) (gfam s) α i j) y)
-          (partialDeriv (E := E) p (h i j) y) 0) ∧
+          (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartGramOnE (I := I) (gfam s) α i j) y)
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h i j) y) 0) ∧
     (∀ (i j p q : Fin (Module.finrank ℝ E)) {y : E},
         y ∈ interior (extChartAt I α).target →
         HasDerivAt
           (fun s : ℝ =>
-            partialDeriv (E := E) p
-              (partialDeriv (E := E) q (chartGramOnE (I := I) (gfam s) α i j)) y)
-          (partialDeriv (E := E) p (partialDeriv (E := E) q (h i j)) y) 0)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) (gfam s) α i j)) y)
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h i j)) y) 0)
 
 def IsFirstOrderInPerturbation
     (R : ChartMetricPerturbation E → M → Fin (Module.finrank ℝ E) →
@@ -68,7 +68,7 @@ def IsFirstOrderInPerturbation
   ∀ (α : M) (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E))
       {y : E}, y ∈ interior (extChartAt I α).target →
       (∀ a b, h a b y = 0) →
-      (∀ p a b, partialDeriv (E := E) p (h a b) y = 0) →
+      (∀ p a b, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h a b) y = 0) →
       R h α i j y = 0
 
 def IsChartLinearizationSecondOrderPart
@@ -157,7 +157,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 lemma partialDeriv_symbolTestPerturbation_self (x α : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
     (p c d : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) p
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (symbolTestPerturbation (I := I) x α ξ t ht c d) (extChartAt I α x) = 0 := by
   have hfun : (symbolTestPerturbation (I := I) x α ξ t ht c d) =
       fun y => ((1 / 2 : ℝ) * formComp (I := I) x t c d) *

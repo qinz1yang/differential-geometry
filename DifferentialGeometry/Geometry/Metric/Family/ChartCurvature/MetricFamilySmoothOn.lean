@@ -157,7 +157,7 @@ theorem chartGramPartialOnE_contDiffOn
     (α : M) (m i j : Fin (Module.finrank Real E)) :
     ContDiffOn Real ∞
       (fun p : Real × E =>
-        partialDeriv (E := E) m (chartGramOnE (I := I) (g_fam p.1) α i j) p.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (g_fam p.1) α i j) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   have hF := chartGramOnE_contDiffOn (I := I) hG hJreg α i j
   have hfd := DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
@@ -276,11 +276,11 @@ theorem chartChristoffelOnE_contDiffOn
       fun p : Real × E => (1 / 2 : Real) *
         ∑ l : Fin (Module.finrank Real E),
           chartInvGramOnE (I := I) (g_fam p.1) α k l p.2 *
-            (partialDeriv (E := E) i
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (chartGramOnE (I := I) (g_fam p.1) α l j) p.2 +
-              partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartGramOnE (I := I) (g_fam p.1) α l i) p.2 -
-              partialDeriv (E := E) l
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                 (chartGramOnE (I := I) (g_fam p.1) α i j) p.2) by
     funext p
     rw [chartChristoffel_def]

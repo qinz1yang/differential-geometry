@@ -100,7 +100,7 @@ lemma mfderiv_chart_diff (α : M)
     (hf : DifferentiableAt ℝ (scalarOnE (I := I) α f) (extChartAt I α x))
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ) f x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
-      partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
   set φ := extChartAt I α
   have hxsrc : x ∈ φ.source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
@@ -155,7 +155,7 @@ lemma mfderiv_chartBasisVecFiber (α : M)
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ) f x
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
-      = partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
   classical
   set φ := extChartAt I α
   have hxsrc : x ∈ φ.source := by
@@ -219,7 +219,7 @@ lemma mfderiv_chartBasisVecFiber (α : M)
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
         (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
-      = partialDeriv (E := E) i (scalarOnE (I := I) α f) (φ x)
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (φ x)
   rw [hmfderiv_chartBasis]
   rfl
 
@@ -232,7 +232,7 @@ theorem tangentSectionAction_chartLocal
     tangentSectionAction (I := I) X f x =
       ∑ i : Fin (Module.finrank ℝ E),
         chartCoeff (I := I) α X i x *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
   classical
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx
@@ -286,7 +286,7 @@ theorem tangent_chart_diff [I.Boundaryless]
   refine Finset.sum_congr rfl ?_
   intro i _
   rw [map_smul, mfderiv_chart_diff (I := I) α hx hscalar i]
-  unfold partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [← heq.fderiv_eq, ← hf.lineDeriv_eq_fderiv]
   exact smul_eq_mul ..
 
@@ -298,7 +298,7 @@ theorem tangentSectionAction_chartLocal_of_boundaryless [I.Boundaryless]
     tangentSectionAction (I := I) X f x =
       ∑ i : Fin (Module.finrank ℝ E),
         chartCoeff (I := I) α X i x *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx
   have hx_target : extChartAt I α x ∈ (extChartAt I α).target :=
@@ -311,7 +311,7 @@ private lemma partialDeriv_scalarOnE_contDiffOn_interior
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (i : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
-      (partialDeriv (E := E) i (scalarOnE (I := I) α f))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f))
       (interior (extChartAt I α).target) := by
   have hbase : ContDiffOn ℝ ∞
       (scalarOnE (I := I) α f) (extChartAt I α).target :=
@@ -330,16 +330,16 @@ private lemma partialDeriv_scalarOnE_comp_extChartAt_contMDiffOn
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
-        partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x))
       ((extChartAt I α).source ∩
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) := by
   classical
   have hpartial : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) i (scalarOnE (I := I) α f))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f))
       (interior (extChartAt I α).target) :=
     partialDeriv_scalarOnE_contDiffOn_interior (I := I) α hf i
   have hpartialM : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      (partialDeriv (E := E) i (scalarOnE (I := I) α f))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f))
       (interior (extChartAt I α).target) := hpartial.contMDiffOn
   have hchart : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α : M → E)
       (chartAt H α).source := contMDiffOn_extChartAt
@@ -370,7 +370,7 @@ theorem tangentSectionAction_contMDiffOn
       tangentSectionAction (I := I) X f x =
         ∑ i : Fin (Module.finrank ℝ E),
           chartCoeff (I := I) α X i x *
-            partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
     intro x hx
     have hx_chart : x ∈ (chartAt H α).source := by
       have := hx.1

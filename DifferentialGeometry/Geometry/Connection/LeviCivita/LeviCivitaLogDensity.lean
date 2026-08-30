@@ -78,7 +78,7 @@ theorem lcTrace_halfTrace
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x i j *
-            partialDeriv (E := E) p
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
               (fun y : E =>
                 DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
               (extChartAt I x x) := by
@@ -93,7 +93,7 @@ theorem lcTrace_halfTrace
       Fin (Module.finrank ℝ E) →
         Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun r i j =>
-      partialDeriv (E := E) r (chartGramOnE (I := I) g x i j) y₀
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartGramOnE (I := I) g x i j) y₀
   have hsym : ∀ i j : Fin (Module.finrank ℝ E), gInv i j = gInv j i := by
     intro i j
     exact (chartInvGramMatrix_symm (I := I) g x x j i)
@@ -128,7 +128,7 @@ theorem lcTrace_halfTrace
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x i j *
-              partialDeriv (E := E) p
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
                 (fun y : E =>
                   DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
                 y₀ := rfl
@@ -139,7 +139,7 @@ theorem lcTrace_logDensity
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (x : M)
     (p : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) p
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (chartDensityOnE (I := I) g x) (extChartAt I x x) /
       chartDensity (I := I) g x x
       =
@@ -152,11 +152,11 @@ theorem lcTrace_logDensity
       chartDensity (I := I) g x x
     rw [(extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)]
   calc
-    partialDeriv (E := E) p
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (chartDensityOnE (I := I) g x) (extChartAt I x x) /
       chartDensity (I := I) g x x
         =
-      partialDeriv (E := E) p
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (chartDensityOnE (I := I) g x) (extChartAt I x x) /
       chartDensityOnE (I := I) g x (extChartAt I x x) := by
           rw [hρ]
@@ -165,7 +165,7 @@ theorem lcTrace_logDensity
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x i j *
-              partialDeriv (E := E) p
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
                 (fun y : E =>
                   DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
                 (extChartAt I x x) := by

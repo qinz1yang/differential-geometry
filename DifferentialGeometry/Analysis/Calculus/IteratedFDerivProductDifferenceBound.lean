@@ -12,7 +12,6 @@ open scoped Topology BigOperators ContDiff
 namespace DifferentialGeometry
 namespace Analysis
 namespace Calculus
-namespace DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -127,7 +126,6 @@ theorem norm_iteratedFDerivWithin_mul_le_uniformBound
   rw [hsum_choose]
   exact le_of_eq (by ring)
 
-end DeTurckCoefficients
 end Calculus
 end Analysis
 end DifferentialGeometry

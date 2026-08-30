@@ -251,8 +251,8 @@ theorem gradInner_eq_invGramMatrix_partials_smooth
     g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x i j *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          partialDeriv (E := E) j (scalarOnE (I := I) α h) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α h) (extChartAt I α x) := by
   classical
   have hf_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ) f x :=
     hf.mdifferentiable (by simp) x
@@ -284,7 +284,7 @@ theorem gradInner_eq_invGramMatrix_partials_smooth
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α h k x *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k]
@@ -292,12 +292,12 @@ theorem gradInner_eq_invGramMatrix_partials_smooth
   have h_substitute :
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α h k x *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) =
       ∑ k : Fin (Module.finrank ℝ E),
         (∑ q : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x k q *
-            partialDeriv (E := E) q (scalarOnE (I := I) α h) (extChartAt I α x)) *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (scalarOnE (I := I) α h) (extChartAt I α x)) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
     refine Finset.sum_congr rfl ?_
     intro k _
     rfl
@@ -306,12 +306,12 @@ theorem gradInner_eq_invGramMatrix_partials_smooth
       ∑ k : Fin (Module.finrank ℝ E),
         (∑ q : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x k q *
-            partialDeriv (E := E) q (scalarOnE (I := I) α h) (extChartAt I α x)) *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (scalarOnE (I := I) α h) (extChartAt I α x)) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x i j *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          partialDeriv (E := E) j (scalarOnE (I := I) α h) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α h) (extChartAt I α x) := by
     refine Finset.sum_congr rfl ?_
     intro i _
     rw [Finset.sum_mul]
@@ -326,7 +326,7 @@ private lemma fderiv_chartPullback_eq_partialDeriv_scalarOnE
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α)
     (i : Fin (Module.finrank ℝ E)) :
     fderiv ℝ (chartPullback (I := I) α f) y (EuclideanSpace.single i (1 : ℝ)) =
-      partialDeriv (E := E) i (scalarOnE (I := I) α f)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f)
         ((toEuclidean (E := E)).symm y) := by
   classical
   have h_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
@@ -397,15 +397,15 @@ private theorem densityOnEuclid_inner_grad_eq_principalIntegrand
   rw [h_step1]
   rw [show densityOnEuclid (I := I) g α y *
         ∑ i, ∑ j, chartInvGramMatrix (I := I) g α x i j *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (scalarOnE (I := I) α (chartTestPullback (I := I) (M := M) α ψ))
             (extChartAt I α x)
         =
       ∑ i, ∑ j, (densityOnEuclid (I := I) g α y *
             chartInvGramMatrix (I := I) g α x i j) *
-          partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (scalarOnE (I := I) α (chartTestPullback (I := I) (M := M) α ψ))
             (extChartAt I α x) from ?_]
   swap
@@ -423,14 +423,14 @@ private theorem densityOnEuclid_inner_grad_eq_principalIntegrand
   have hφx_eq : extChartAt I α x = (toEuclidean (E := E)).symm y := by
     rw [hx_def]; exact (extChartAt I α).right_inv h_target
   have h_partial_f : ∀ i : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) =
         fderiv ℝ (chartPullback (I := I) α f) y (EuclideanSpace.single i (1 : ℝ)) := by
     intro i
     rw [hφx_eq]
     rw [fderiv_chartPullback_eq_partialDeriv_scalarOnE
       (I := I) α f hy i]
   have h_partial_psi : ∀ j : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (scalarOnE (I := I) α (chartTestPullback (I := I) (M := M) α ψ))
         (extChartAt I α x) =
       fderiv ℝ ψ y (EuclideanSpace.single j (1 : ℝ)) := by
@@ -438,7 +438,7 @@ private theorem densityOnEuclid_inner_grad_eq_principalIntegrand
     have h1 : fderiv ℝ (chartPullback (I := I) α
             (chartTestPullback (I := I) (M := M) α ψ)) y
           (EuclideanSpace.single j (1 : ℝ)) =
-        partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (scalarOnE (I := I) α (chartTestPullback (I := I) (M := M) α ψ))
           ((toEuclidean (E := E)).symm y) :=
       fderiv_chartPullback_eq_partialDeriv_scalarOnE

@@ -47,7 +47,7 @@ omit hI in
 def chartCovariantDerivativeOfNormal
     (g : SmoothRiemannianMetric I M) (α : M)
     (νChart : E → E) (i k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  partialDeriv (E := E) i (normalFieldComp (E := E) νChart k) y +
+  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (normalFieldComp (E := E) νChart k) y +
     chartChristoffelNormalCorrection (I := I) g α νChart i k y
 
 omit hI in
@@ -55,7 +55,7 @@ omit hI in
     (g : SmoothRiemannianMetric I M) (α : M)
     (νChart : E → E) (i k : Fin (Module.finrank ℝ E)) (y : E) :
     chartCovariantDerivativeOfNormal (I := I) g α νChart i k y =
-      partialDeriv (E := E) i (normalFieldComp (E := E) νChart k) y +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (normalFieldComp (E := E) νChart k) y +
         chartChristoffelNormalCorrection (I := I) g α νChart i k y := rfl
 
 def chartSecondFundamentalFormEntry

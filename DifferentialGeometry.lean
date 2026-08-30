@@ -25,7 +25,7 @@ import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
 import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
-import DifferentialGeometry.Analysis.Calculus.PartialDerivIteratedFDerivOrderBridge
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative
 import DifferentialGeometry.Analysis.Calculus.PiDeriv
 import DifferentialGeometry.Analysis.Calculus.RatioMonotonicity
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
@@ -2189,6 +2189,7 @@ import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.ModelBasis
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
+import DifferentialGeometry.Geometry.Coordinates.PartialDerivative
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.CoordFrameStep
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Basic
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.ConnectionProduct
@@ -3407,8 +3408,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSZeroDecomposi
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DecompositionPairingCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciTopOrderCoefficientBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SelfActionBounds
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.IteratedFDerivSeminormCalculus
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.PartialDerivIteratedFDerivOrderBridge
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSLowCoeff
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.EigenProjDuhamel
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.EigenProjPartialSol

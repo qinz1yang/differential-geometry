@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.IteratedFDerivProductDifferenceBound
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Geometry.Coordinates.PartialDerivative
 
 noncomputable section
 
@@ -7,42 +7,60 @@ open Set
 open scoped Topology BigOperators ContDiff
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
-namespace DeTurckCoefficients
+namespace Analysis
+namespace Calculus
 
-open DifferentialGeometry.Analysis.Calculus
-open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 
-omit [InnerProductSpace ℝ E] in
+theorem partialDeriv_eq_iteratedFDeriv_one
+    (u : E → ℝ) (i : Fin (Module.finrank ℝ E)) (y : E) :
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y =
+      iteratedFDeriv ℝ 1 u y ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
+  rw [iteratedFDeriv_one_apply]
+  rfl
+
+theorem partialDeriv_partialDeriv_eq_iteratedFDeriv_two
+    (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
+    (i j : Fin (Module.finrank ℝ E)) :
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j u) y =
+      iteratedFDeriv ℝ 2 u y
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
+  have hfderiv_diff : DifferentiableAt ℝ (fun z : E => fderiv ℝ u z) y := by
+    have hderiv := hu.fderiv_right (m := ∞) le_rfl
+    exact hderiv.differentiableAt (by simp)
+  have hj : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j u =
+      fun z : E => fderiv ℝ u z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
+    funext z
+    rfl
+  rw [show DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j u) y =
+      fderiv ℝ (fun z : E => fderiv ℝ u z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) y
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) from by rw [hj]; rfl]
+  rw [iteratedFDeriv_two_apply]
+  rw [fderiv_clm_apply hfderiv_diff (differentiableAt_const _)]
+  simp [ContinuousLinearMap.flip_apply]
+
 lemma partialDeriv_contDiffOn_of_isOpen
     {u : E → ℝ} {s : Set E} (hs : IsOpen s) (hu : ContDiffOn ℝ ∞ u s)
     (i : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞ (partialDeriv (E := E) i u) s := by
+    ContDiffOn ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) s := by
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ u) s :=
     hu.fderiv_of_isOpen hs (by rw [ENat.coe_top_add_one])
-  unfold partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   exact hfderiv.clm_apply contDiffOn_const
 
-omit [InnerProductSpace ℝ E] in
 lemma partialDeriv_sub_eqOn
     {u v : E → ℝ} {s : Set E} (hs : IsOpen s)
     (hu : ContDiffOn ℝ ∞ u s) (hv : ContDiffOn ℝ ∞ v s)
     (i : Fin (Module.finrank ℝ E)) :
-    EqOn (fun z => partialDeriv (E := E) i u z - partialDeriv (E := E) i v z)
-      (partialDeriv (E := E) i (fun z => u z - v z)) s := by
+    EqOn (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u z - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i v z)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z => u z - v z)) s := by
   intro y hy
   have hdu : DifferentiableAt ℝ u y :=
     (hu.contDiffAt (hs.mem_nhds hy)).differentiableAt (by simp)
   have hdv : DifferentiableAt ℝ v y :=
     (hv.contDiffAt (hs.mem_nhds hy)).differentiableAt (by simp)
-  simp only [partialDeriv]
+  simp only [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
   have hfd : fderiv ℝ (fun z => u z - v z) y = fderiv ℝ u y - fderiv ℝ v y := by
     have hfun : (fun z => u z - v z) = u - v := by
       funext z
@@ -51,61 +69,35 @@ lemma partialDeriv_sub_eqOn
     exact fderiv_sub (𝕜 := ℝ) hdu hdv
   rw [hfd, sub_apply]
 
-omit [InnerProductSpace ℝ E] in
-theorem partial_eq_iter1 (u : E → ℝ) (i : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) i u y =
-      iteratedFDeriv ℝ 1 u y ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
-  rw [iteratedFDeriv_one_apply]
-  rfl
-
-omit [InnerProductSpace ℝ E] in
-theorem partial2_eq_iter2 (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
-    (m l : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (partialDeriv (E := E) l u) y =
-      iteratedFDeriv ℝ 2 u y ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l] := by
-  have hfderiv_diff : DifferentiableAt ℝ (fun z : E => fderiv ℝ u z) y := by
-    have hderiv := hu.fderiv_right (m := ∞) le_rfl
-    exact hderiv.differentiableAt (by simp)
-  have hl : partialDeriv (E := E) l u =
-      fun z : E => fderiv ℝ u z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
-    funext z
-    rfl
-  rw [show partialDeriv (E := E) m (partialDeriv (E := E) l u) y =
-      fderiv ℝ (fun z : E => fderiv ℝ u z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)) y
-        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) from by rw [hl]; rfl]
-  rw [iteratedFDeriv_two_apply]
-  rw [fderiv_clm_apply hfderiv_diff (differentiableAt_const _)]
-  simp [ContinuousLinearMap.flip_apply]
-
-omit [InnerProductSpace ℝ E] in
 lemma partialDeriv_eqOn_fderivWithin_apply
     {u : E → ℝ} {s : Set E} (hs : IsOpen s) (i : Fin (Module.finrank ℝ E)) :
-    EqOn (partialDeriv (E := E) i u)
+    EqOn (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u)
       (fun y => fderivWithin ℝ u s y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) s := by
   intro y hy
-  simp only [partialDeriv, fderivWithin_of_isOpen hs hy]
+  simp only [DifferentialGeometry.Tensor.Coordinates.partialDeriv, fderivWithin_of_isOpen hs hy]
 
-omit [InnerProductSpace ℝ E] in
-theorem partial3_eq_iter3 (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
+theorem partialDeriv_partialDeriv_partialDeriv_eq_iteratedFDeriv_three
+    (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
     (n m l : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) n (partialDeriv (E := E) m (partialDeriv (E := E) l u)) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) n (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l u)) y =
       iteratedFDeriv ℝ 3 u y
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) n, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l] := by
   obtain ⟨t, ht_nhds, hut⟩ := hu.contDiffOn (m := 3)
     (ENat.natCast_le_of_coe_top_le_withTop le_rfl 3) (by simp)
   obtain ⟨s, hst, hs_open, hys⟩ := mem_nhds_iff.mp ht_nhds
   have hu_s : ContDiffOn ℝ 3 u s := hut.mono hst
-  have hpartial_at : ContDiffAt ℝ ∞ (partialDeriv (E := E) l u) y := by
-    unfold partialDeriv
+  have hpartial_at : ContDiffAt ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l u) y := by
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     exact (hu.fderiv_right (m := ∞) le_rfl).clm_apply contDiffAt_const
   have hfderiv_s : ContDiffOn ℝ 2 (fderivWithin ℝ u s) s :=
     hu_s.fderivWithin hs_open.uniqueDiffOn (by norm_num)
   calc
-    partialDeriv (E := E) n (partialDeriv (E := E) m (partialDeriv (E := E) l u)) y =
-        iteratedFDeriv ℝ 2 (partialDeriv (E := E) l u) y
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) n (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l u)) y =
+        iteratedFDeriv ℝ 2 (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l u) y
           ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) n, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] :=
-      partial2_eq_iter2 (partialDeriv (E := E) l u) hpartial_at n m
-    _ = iteratedFDerivWithin ℝ 2 (partialDeriv (E := E) l u) s y
+      partialDeriv_partialDeriv_eq_iteratedFDeriv_two
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l u) hpartial_at n m
+    _ = iteratedFDerivWithin ℝ 2 (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l u) s y
           ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) n, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] := by
       rw [iteratedFDerivWithin_of_isOpen 2 hs_open hys]
     _ = iteratedFDerivWithin ℝ 2
@@ -136,15 +128,14 @@ theorem partial3_eq_iter3 (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
           ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) n, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l] := by
       rw [iteratedFDerivWithin_of_isOpen 3 hs_open hys]
 
-omit [InnerProductSpace ℝ E] in
 theorem norm_iteratedFDerivWithin_partialDeriv_le
     {u : E → ℝ} {s : Set E} (hs : IsOpen s)
     (hu : ContDiffOn ℝ ∞ u s) (i : Fin (Module.finrank ℝ E))
     (N : ℕ) {y : E} (hy : y ∈ s) :
-    ‖iteratedFDerivWithin ℝ N (partialDeriv (E := E) i u) s y‖ ≤
+    ‖iteratedFDerivWithin ℝ N (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) s y‖ ≤
       ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * ‖iteratedFDerivWithin ℝ (N + 1) u s y‖ := by
   have hcongr :
-      iteratedFDerivWithin ℝ N (partialDeriv (E := E) i u) s y =
+      iteratedFDerivWithin ℝ N (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) s y =
         iteratedFDerivWithin ℝ N
           (fun z => fderivWithin ℝ u s z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) s y :=
     iteratedFDerivWithin_congr (partialDeriv_eqOn_fderivWithin_apply hs i) hy N
@@ -161,16 +152,15 @@ theorem norm_iteratedFDerivWithin_partialDeriv_le
     norm_iteratedFDerivWithin_fderivWithin hs.uniqueDiffOn hy
   rw [heq]
 
-omit [InnerProductSpace ℝ E] in
 theorem iteratedFDerivSeminorm_partialDeriv_le
     {u : E → ℝ} {s : Set E} (hs : IsOpen s)
     (hu : ContDiffOn ℝ ∞ u s) (i : Fin (Module.finrank ℝ E))
     (N : ℕ) {y : E} (hy : y ∈ s) :
-    iteratedFDerivSeminorm N (partialDeriv (E := E) i u) s y ≤
+    iteratedFDerivSeminorm N (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) s y ≤
       ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * iteratedFDerivSeminorm (N + 1) u s y := by
   classical
   have hstep :
-      iteratedFDerivSeminorm N (partialDeriv (E := E) i u) s y ≤
+      iteratedFDerivSeminorm N (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) s y ≤
         ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ *
           ∑ l ∈ Finset.range (N + 1), ‖iteratedFDerivWithin ℝ (l + 1) u s y‖ := by
     unfold iteratedFDerivSeminorm
@@ -195,10 +185,8 @@ theorem iteratedFDerivSeminorm_partialDeriv_le
   rw [Finset.mem_range] at hl ⊢
   omega
 
-end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Calculus
+end Analysis
 end DifferentialGeometry
 
 end

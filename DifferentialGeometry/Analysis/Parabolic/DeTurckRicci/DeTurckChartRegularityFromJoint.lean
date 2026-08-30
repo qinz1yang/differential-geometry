@@ -342,7 +342,7 @@ private lemma gramOnE_partialDeriv_joint_contDiffOn
     (hJ : JointChartGramSmooth (I := I) T g_DT) (α : M)
     (m l j : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × E =>
-      Integral.DivergenceTheorem.partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α l j) q.2)
       (Set.Icc 0 T ×ˢ interior (extChartAt I α).target) := by
   classical
@@ -359,7 +359,7 @@ private lemma gramOnE_partialDeriv_joint_contDiffOn
         G]
   suffices h : ContDiffOn ℝ ∞
       (fun q : ℝ × E => fderiv ℝ (fun y' => G (q.1, y')) q.2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) S from
-    h.congr (fun ⟨t, y⟩ _ => by rw [Integral.DivergenceTheorem.partialDeriv, hfun t])
+    h.congr (fun ⟨t, y⟩ _ => by rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, hfun t])
   rcases lt_trichotomy T 0 with hT | rfl | hT_pos
   · have hSempty : S = ∅ := by
       rw [hS_def, Set.Icc_eq_empty (not_le.mpr hT), Set.empty_prod]
@@ -425,11 +425,11 @@ private lemma jointChristoffel_contDiffOn
   have hexp : (fun q : ℝ × E => chartChristoffel (I := I) (g_DT q.1) α i j k q.2) =
       fun q : ℝ × E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I) (g_DT q.1) α k l q.2 *
-          (Integral.DivergenceTheorem.partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α l j) q.2 +
-           Integral.DivergenceTheorem.partialDeriv (E := E) j
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α l i) q.2 -
-           Integral.DivergenceTheorem.partialDeriv (E := E) l
+           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
               (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (g_DT q.1) α i j) q.2) := by
     funext q
@@ -662,14 +662,14 @@ private lemma param_spatial_partialDeriv_contDiffOn
     (G : ℝ × E → ℝ) (T : ℝ) (V : Set E) (hVopen : IsOpen V)
     (hG : ContDiffOn ℝ ∞ G (Set.Icc 0 T ×ˢ V)) (m : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
-      (fun q : ℝ × E => Integral.DivergenceTheorem.partialDeriv (E := E) m
+      (fun q : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (fun y => G (q.1, y)) q.2)
       (Set.Icc 0 T ×ˢ V) := by
   classical
   set S := Set.Icc (0 : ℝ) T ×ˢ V with hS_def
   suffices h : ContDiffOn ℝ ∞
       (fun q : ℝ × E => fderiv ℝ (fun y' => G (q.1, y')) q.2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) S from
-    h.congr (fun ⟨t, y⟩ _ => by rw [Integral.DivergenceTheorem.partialDeriv])
+    h.congr (fun ⟨t, y⟩ _ => by rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv])
   rcases lt_trichotomy T 0 with hT | rfl | hT_pos
   · have hSempty : S = ∅ := by
       rw [hS_def, Set.Icc_eq_empty (not_le.mpr hT), Set.empty_prod]
@@ -699,7 +699,7 @@ private lemma jointChartChristoffel_partialDeriv_contDiffOn
     (hJ : JointChartGramSmooth (I := I) T g_DT) (α : M)
     (m i j k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × E =>
-      Integral.DivergenceTheorem.partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (chartChristoffel (I := I) (g_DT q.1) α i j k) q.2)
       (Set.Icc 0 T ×ˢ interior (extChartAt I α).target) := by
   have hbase := jointChristoffel_contDiffOn T g_DT hJ α i j k
@@ -722,9 +722,9 @@ private lemma jointChartRiemann_contDiffOn
   have hexp : (fun q : ℝ × E =>
         Integral.DivergenceTheorem.chartRiemannTensor (I := I) (g_DT q.1) α i j k l q.2) =
       fun q : ℝ × E =>
-        Integral.DivergenceTheorem.partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (chartChristoffel (I := I) (g_DT q.1) α i k l) q.2 -
-        Integral.DivergenceTheorem.partialDeriv (E := E) k
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
           (chartChristoffel (I := I) (g_DT q.1) α i j l) q.2 +
         (∑ m : Fin (Module.finrank ℝ E),
           (chartChristoffel (I := I) (g_DT q.1) α j m l q.2 *
@@ -780,7 +780,7 @@ private lemma jointChartDeTurckVFComp_partialDeriv_contDiffOn
     (hJ : JointChartGramSmooth (I := I) T g_DT) (α : M)
     (m k : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × E =>
-      Integral.DivergenceTheorem.partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k) q.2)
       (Set.Icc 0 T ×ˢ interior (extChartAt I α).target) := by
   have hbase := jointDeTurckVFComp_contDiffOn g_bg T g_DT hJ α k
@@ -796,7 +796,7 @@ private lemma jointChartGramOnE_partialDeriv_contDiffOn
     (hJ : JointChartGramSmooth (I := I) T g_DT) (α : M)
     (m i j : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × E =>
-      Integral.DivergenceTheorem.partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j) q.2)
       (Set.Icc 0 T ×ˢ interior (extChartAt I α).target) :=
   gramOnE_partialDeriv_joint_contDiffOn T g_DT hJ α m i j
@@ -821,15 +821,15 @@ private lemma jointChartLieDeTurckComp_contDiffOn
       fun q : ℝ × E =>
         (∑ k : Fin (Module.finrank ℝ E),
             DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k q.2 *
-              Integral.DivergenceTheorem.partialDeriv (E := E) k
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
                 (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j) q.2)
         + (∑ k : Fin (Module.finrank ℝ E),
             DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α k j q.2 *
-              Integral.DivergenceTheorem.partialDeriv (E := E) i
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k) q.2)
         + (∑ k : Fin (Module.finrank ℝ E),
             DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i k q.2 *
-              Integral.DivergenceTheorem.partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT q.1) g_bg α k) q.2) := by
     funext q
     rw [DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.chartLieDeTurckComp_def]

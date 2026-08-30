@@ -1087,7 +1087,7 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
     (i : Fin (Module.finrank ℝ E)) :
     (LeviCivita (I := I) g₁).toFun σ x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) i (c p) (extChartAt I x x) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (c p) (extChartAt I x x) +
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g₁ x i m p (extChartAt I x x) *
               c m (extChartAt I x x)) •
@@ -1148,7 +1148,7 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
   have hfder : fderiv ℝ (chartESectionRepr (I := I) x σ ∘ (extChartAt I x).symm)
       (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
       ∑ p : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (c p) (extChartAt I x x) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (c p) (extChartAt I x x) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p := by
     rw [hev.fderiv_eq]
     have hhas : HasFDerivAt
         (fun y : E => ∑ p : Fin (Module.finrank ℝ E), c p y • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p)
@@ -1207,7 +1207,7 @@ theorem deTurckLieCovariantDerivativeW_chartBasis_eq (g₁ g_bg : SmoothRiemanni
     deTurckVFCovDeriv (I := I) g₁ g_bg
         (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)) x =
       ∑ p : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y => chartDeTurckVFComp (I := I) g₁ g_bg x p y) (extChartAt I x x) +
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g₁ x i m p (extChartAt I x x) *
@@ -1242,7 +1242,7 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
         (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j))
         (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)) x =
       ∑ p : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y => chartChristoffel (I := I) g₁ x k j p y -
               chartChristoffel (I := I) g_bg x k j p y) (extChartAt I x x) +
           ∑ m : Fin (Module.finrank ℝ E),
@@ -1305,7 +1305,7 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k b)) x
       (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y => chartChristoffel (I := I) g₁ x k j p y -
               chartChristoffel (I := I) g_bg x k j p y) (extChartAt I x x) +
           ∑ m : Fin (Module.finrank ℝ E),

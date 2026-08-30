@@ -33,7 +33,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 def nablaChartRiemannCoeff (g : SmoothRiemannianMetric I M) (α : M)
     (p q r s l : Fin (Module.finrank ℝ E)) : E → ℝ :=
   fun y =>
-    partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l) y
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l) y
       + (∑ m : Fin (Module.finrank ℝ E),
           chartRiemannTensor (I := I) g α s q r m y *
             chartChristoffel (I := I) g α p m l y)
@@ -54,12 +54,12 @@ private lemma partialDeriv_contDiffOn_interior_of_contDiffOn
     (α : M) {f : E → ℝ}
     (hf : ContDiffOn ℝ ∞ f (interior ((extChartAt I α).target : Set E)))
     (a : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞ (partialDeriv (E := E) a f)
+    ContDiffOn ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f)
       (interior ((extChartAt I α).target : Set E)) := by
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ f)
       (interior ((extChartAt I α).target : Set E)) :=
     hf.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hrw : (partialDeriv (E := E) a f) =
+  have hrw : (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f) =
       fun y => fderiv ℝ f y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) := rfl
   rw [hrw]
   exact hfderiv.clm_apply contDiffOn_const
@@ -78,10 +78,10 @@ private lemma chartRiemannTensor_contDiffOn_interior
       ContDiffOn ℝ ∞ (chartChristoffel (I := I) g α a b c) U :=
     fun a b c => chartChristoffel_contDiffOn_interior (I := I) g α a b c
   have hdΓ1 : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l)) U :=
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l)) U :=
     partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α (hΓ i k l) j
   have hdΓ2 : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l)) U :=
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l)) U :=
     partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α (hΓ i j l) k
   have hΓΓ : ContDiffOn ℝ ∞
       (fun y : E => ∑ m : Fin (Module.finrank ℝ E),
@@ -93,8 +93,8 @@ private lemma chartRiemannTensor_contDiffOn_interior
     exact ((hΓ j m l).mul (hΓ i k m)).sub ((hΓ k m l).mul (hΓ i j m))
   have hrw : (chartRiemannTensor (I := I) g α i j k l) =
       fun y : E =>
-        (partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
-          partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y) +
         (∑ m : Fin (Module.finrank ℝ E),
           (chartChristoffel (I := I) g α j m l y *
               chartChristoffel (I := I) g α i k m y -
@@ -135,7 +135,7 @@ theorem nablaChartRiemannCoeff_contDiffOn_interior
       ContDiffOn ℝ ∞ (chartRiemannTensor (I := I) g α a b c d) U :=
     fun a b c d => chartRiemannTensor_contDiffOn_interior (I := I) g α a b c d
   have hdR : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l)) U :=
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l)) U :=
     partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α (hR s q r l) p
   have hsum1 : ContDiffOn ℝ ∞
       (fun y : E => ∑ m : Fin (Module.finrank ℝ E),
@@ -159,7 +159,7 @@ theorem nablaChartRiemannCoeff_contDiffOn_interior
     ContDiffOn.sum (fun m _ => (hΓ p s m).mul (hR m q r l))
   have hrw : (nablaChartRiemannCoeff (I := I) g α p q r s l) =
       fun y : E =>
-        partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l) y
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l) y
           + (∑ m : Fin (Module.finrank ℝ E),
               chartRiemannTensor (I := I) g α s q r m y *
                 chartChristoffel (I := I) g α p m l y)
@@ -195,7 +195,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
     (LeviCivita (I := I) g).toFun
         (fun b => riemannSec (LeviCivita (I := I) g) Xq Xr Xs b) x (Xp x) =
       ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l) (extChartAt I α x) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r l) (extChartAt I α x) +
           ∑ m : Fin (Module.finrank ℝ E),
             chartRiemannTensor (I := I) g α s q r m (extChartAt I α x) *
               chartChristoffel (I := I) g α p m l (extChartAt I α x)) •
@@ -290,7 +290,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
   rw [Finset.sum_congr rfl (fun m _ => hleib m)]
   have hder : ∀ m : Fin (Module.finrank ℝ E),
       mvfderiv (I := I) (Rc m) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x) =
-        partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x) := by
     intro m
     have hR_cda : ContDiffAt ℝ ∞ (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x) := by
       have hxint : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
@@ -312,7 +312,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun l => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x with he_def
   set D : Fin (Module.finrank ℝ E) → ℝ :=
-    fun m => partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x)
+    fun m => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x)
     with hD_def
   set Rr : Fin (Module.finrank ℝ E) → ℝ :=
     fun m => chartRiemannTensor (I := I) g α s q r m (extChartAt I α x) with hRr_def

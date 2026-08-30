@@ -96,47 +96,47 @@ theorem deTurckVFD2_sub
     (hMb_nn : 0 ≤ M_b) (hD_nn : 0 ≤ D) (hT_nn : 0 ≤ T)
     (hC₀_nn : 0 ≤ C₀) (hC₁_nn : 0 ≤ C₁) (hC₂_nn : 0 ≤ C₂)
     (hMb₂ : ∀ a b, |chartInvGramOnE (I := I) g₂ α a b y| ≤ M_b)
-    (hD₂ : ∀ e a b, |partialDeriv (E := E) e
+    (hD₂ : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
       (chartInvGramOnE (I := I) g₂ α a b) y| ≤ D)
-    (hT₂ : ∀ e r a b, |partialDeriv (E := E) e
-      (partialDeriv (E := E) r (chartInvGramOnE (I := I) g₂ α a b)) y| ≤ T)
+    (hT₂ : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartInvGramOnE (I := I) g₂ α a b)) y| ≤ T)
     (hP₁ : ∀ a b, |chartChristoffel (I := I) g₁ α a b k y -
       chartChristoffel (I := I) g_bg α a b k y| ≤ P)
-    (hR₁ : ∀ e a b, |partialDeriv (E := E) e
+    (hR₁ : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b k) y -
-      partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y| ≤ R)
-    (hS₁ : ∀ e r a b, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b k)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g_bg α a b k)) y| ≤ S)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y| ≤ R)
+    (hS₁ : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b k)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g_bg α a b k)) y| ≤ S)
     (hInv : ∀ a b, |chartInvGramOnE (I := I) g₁ α a b y -
       chartInvGramOnE (I := I) g₂ α a b y| ≤
         C₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hInvD : ∀ e a b, |partialDeriv (E := E) e
+    (hInvD : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartInvGramOnE (I := I) g₁ α a b) y -
-      partialDeriv (E := E) e (chartInvGramOnE (I := I) g₂ α a b) y| ≤
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartInvGramOnE (I := I) g₂ α a b) y| ≤
         C₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hInvD2 : ∀ e r a b, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartInvGramOnE (I := I) g₁ α a b)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartInvGramOnE (I := I) g₂ α a b)) y| ≤
+    (hInvD2 : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartInvGramOnE (I := I) g₁ α a b)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartInvGramOnE (I := I) g₂ α a b)) y| ≤
         C₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
     (hΓ : ∀ a b q, |chartChristoffel (I := I) g₁ α a b q y -
       chartChristoffel (I := I) g₂ α a b q y| ≤
         G₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hΓD : ∀ e a b q, |partialDeriv (E := E) e
+    (hΓD : ∀ e a b q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b q) y -
-      partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b q) y| ≤
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b q) y| ≤
         G₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hΓD2 : ∀ e r a b q, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b q)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b q)) y| ≤
+    (hΓD2 : ∀ e r a b q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b q)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b q)) y| ≤
         G₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
-    |partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₁ g_bg α k)) y -
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₂ g_bg α k)) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₁ g_bg α k)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₂ g_bg α k)) y| ≤
       (Module.finrank ℝ E : ℝ) ^ 2 *
         ((C₂ * P + T * G₀) + 2 * (C₁ * R + D * G₁) + (C₀ * S + M_b * G₂)) *
         metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
@@ -149,70 +149,70 @@ theorem deTurckVFD2_sub
     ← Finset.sum_sub_distrib]
   simp_rw [← Finset.sum_sub_distrib]
   let F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
-    (partialDeriv (E := E) d
-          (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b)) y *
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b)) y *
         (chartChristoffel (I := I) g₁ α a b k y -
           chartChristoffel (I := I) g_bg α a b k y) +
-      partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b) y *
-        (partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α a b k) y -
-          partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y) +
-      partialDeriv (E := E) d (chartInvGramOnE (I := I) g₁ α a b) y *
-        (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k) y -
-          partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g₁ α a b) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y) +
       chartInvGramOnE (I := I) g₁ α a b y *
-        (partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)) -
-    (partialDeriv (E := E) d
-          (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b)) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)) -
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b)) y *
         (chartChristoffel (I := I) g₂ α a b k y -
           chartChristoffel (I := I) g_bg α a b k y) +
-      partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b) y *
-        (partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α a b k) y -
-          partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y) +
-      partialDeriv (E := E) d (chartInvGramOnE (I := I) g₂ α a b) y *
-        (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k) y -
-          partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y) +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g₂ α a b) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y) +
       chartInvGramOnE (I := I) g₂ α a b y *
-        (partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y))
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y))
   change |∑ a, ∑ b, F a b| ≤ (Module.finrank ℝ E : ℝ) ^ 2 * K * J
   refine (abs_sum2_bnd F (C := K * J) ?_).trans_eq ?_
   · intro a b
     dsimp only [F]
-    let A₁ : ℝ := partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b)) y *
+    let A₁ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b)) y *
       (chartChristoffel (I := I) g₁ α a b k y -
         chartChristoffel (I := I) g_bg α a b k y)
-    let A₂ : ℝ := partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b)) y *
+    let A₂ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b)) y *
       (chartChristoffel (I := I) g₂ α a b k y -
         chartChristoffel (I := I) g_bg α a b k y)
-    let B₁ : ℝ := partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b) y *
-      (partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α a b k) y -
-        partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y)
-    let B₂ : ℝ := partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b) y *
-      (partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α a b k) y -
-        partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y)
-    let C₁' : ℝ := partialDeriv (E := E) d (chartInvGramOnE (I := I) g₁ α a b) y *
-      (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k) y -
-        partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y)
-    let C₂' : ℝ := partialDeriv (E := E) d (chartInvGramOnE (I := I) g₂ α a b) y *
-      (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k) y -
-        partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y)
+    let B₁ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α a b) y *
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α a b k) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y)
+    let B₂ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α a b) y *
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α a b k) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g_bg α a b k) y)
+    let C₁' : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g₁ α a b) y *
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y)
+    let C₂' : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g₂ α a b) y *
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y)
     let L₁ : ℝ := chartInvGramOnE (I := I) g₁ α a b y *
-      (partialDeriv (E := E) d
-          (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)
     let L₂ : ℝ := chartInvGramOnE (I := I) g₂ α a b y *
-      (partialDeriv (E := E) d
-          (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)
     change |(A₁ + B₁ + C₁' + L₁) - (A₂ + B₂ + C₂' + L₂)| ≤ K * J
     have hΓ0 : |(chartChristoffel (I := I) g₁ α a b k y -
           chartChristoffel (I := I) g_bg α a b k y) -
@@ -225,41 +225,41 @@ theorem deTurckVFD2_sub
         chartChristoffel (I := I) g₁ α a b k y -
           chartChristoffel (I := I) g₂ α a b k y by ring]
       exact hΓ a b k
-    have hΓ1 : ∀ e, |(partialDeriv (E := E) e
+    have hΓ1 : ∀ e, |(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
             (chartChristoffel (I := I) g₁ α a b k) y -
-          partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y) -
-        (partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b k) y -
-          partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y)| ≤
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y) -
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y)| ≤
         G₁ * J := by
       intro e
-      rw [show (partialDeriv (E := E) e (chartChristoffel (I := I) g₁ α a b k) y -
-          partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y) -
-        (partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b k) y -
-          partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y) =
-        partialDeriv (E := E) e (chartChristoffel (I := I) g₁ α a b k) y -
-          partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b k) y by ring]
+      rw [show (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₁ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y) -
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g_bg α a b k) y) =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₁ α a b k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b k) y by ring]
       exact hΓD e a b k
-    have hΓ2 : |(partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y) -
-        (partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)| ≤
+    have hΓ2 : |(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y) -
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y)| ≤
         G₂ * J := by
-      rw [show (partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y) -
-        (partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y) =
-        partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
-          partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y by ring]
+      rw [show (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y) -
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k)) y) =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α a b k)) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α a b k)) y by ring]
       exact hΓD2 d m a b k
     have hA : |A₁ - A₂| ≤ (C₂ * P + T * G₀) * J := by
       dsimp only [A₁, A₂]
@@ -298,22 +298,22 @@ theorem chartRiemannD_sub
     (d i j k l : Fin (Module.finrank ℝ E))
     {CΓ CdΓ G₀ G₁ G₂ : ℝ} (hCdΓ_nn : 0 ≤ CdΓ) (hG₁_nn : 0 ≤ G₁)
     (hΓ₁ : ∀ a b c, |chartChristoffel (I := I) g₁ α a b c y| ≤ CΓ)
-    (hΓD₂ : ∀ e a b c, |partialDeriv (E := E) e
+    (hΓD₂ : ∀ e a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
       (chartChristoffel (I := I) g₂ α a b c) y| ≤ CdΓ)
     (hΓ : ∀ a b c, |chartChristoffel (I := I) g₁ α a b c y -
       chartChristoffel (I := I) g₂ α a b c y| ≤
         G₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hΓD : ∀ e a b c, |partialDeriv (E := E) e
+    (hΓD : ∀ e a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b c) y -
-      partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b c) y| ≤
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b c) y| ≤
         G₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hΓD2 : ∀ e r a b c, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b c)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b c)) y| ≤
+    (hΓD2 : ∀ e r a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b c)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b c)) y| ≤
         G₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
-    |partialDeriv (E := E) d (chartRiemannTensor (I := I) g₁ α i j k l) y -
-      partialDeriv (E := E) d (chartRiemannTensor (I := I) g₂ α i j k l) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₁ α i j k l) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₂ α i j k l) y| ≤
       (2 * G₂ + 4 * (Module.finrank ℝ E : ℝ) * (G₁ * CΓ + CdΓ * G₀)) *
         metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
   classical
@@ -322,77 +322,77 @@ theorem chartRiemannD_sub
   let K : ℝ := G₁ * CΓ + CdΓ * G₀
   rw [partial_chartRiemann (I := I) g₁ α d i j k l hy,
     partial_chartRiemann (I := I) g₂ α d i j k l hy]
-  let A₁ : ℝ := partialDeriv (E := E) d
-    (partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k l)) y
-  let A₂ : ℝ := partialDeriv (E := E) d
-    (partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k l)) y
-  let B₁ : ℝ := partialDeriv (E := E) d
-    (partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j l)) y
-  let B₂ : ℝ := partialDeriv (E := E) d
-    (partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j l)) y
+  let A₁ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k l)) y
+  let A₂ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k l)) y
+  let B₁ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j l)) y
+  let B₂ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j l)) y
   let Q₁ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α j q l) y *
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α j q l) y *
           chartChristoffel (I := I) g₁ α i k q y +
         chartChristoffel (I := I) g₁ α j q l y *
-          partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y -
-      (partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α k q l) y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y -
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α k q l) y *
           chartChristoffel (I := I) g₁ α i j q y +
         chartChristoffel (I := I) g₁ α k q l y *
-          partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y))
   let Q₂ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α j q l) y *
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α j q l) y *
           chartChristoffel (I := I) g₂ α i k q y +
         chartChristoffel (I := I) g₂ α j q l y *
-          partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y -
-      (partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α k q l) y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y -
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α k q l) y *
           chartChristoffel (I := I) g₂ α i j q y +
         chartChristoffel (I := I) g₂ α k q l y *
-          partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y))
   change |(A₁ - B₁ + Q₁) - (A₂ - B₂ + Q₂)| ≤ _
   have hQ : |Q₁ - Q₂| ≤ 4 * (Module.finrank ℝ E : ℝ) * K * J := by
     dsimp only [Q₁, Q₂]
     rw [← Finset.sum_sub_distrib]
     let F : Fin (Module.finrank ℝ E) → ℝ := fun q =>
-      (partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α j q l) y *
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α j q l) y *
             chartChristoffel (I := I) g₁ α i k q y +
           chartChristoffel (I := I) g₁ α j q l y *
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y -
-        (partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α k q l) y *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y -
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α k q l) y *
             chartChristoffel (I := I) g₁ α i j q y +
           chartChristoffel (I := I) g₁ α k q l y *
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y)) -
-      (partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α j q l) y *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y)) -
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α j q l) y *
             chartChristoffel (I := I) g₂ α i k q y +
           chartChristoffel (I := I) g₂ α j q l y *
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y -
-        (partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α k q l) y *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y -
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α k q l) y *
             chartChristoffel (I := I) g₂ α i j q y +
           chartChristoffel (I := I) g₂ α k q l y *
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y))
     change |∑ q, F q| ≤ 4 * (Module.finrank ℝ E : ℝ) * K * J
     refine (abs_sum_bnd F (C := 4 * K * J) ?_).trans_eq ?_
     · intro q
       dsimp only [F]
-      let U₁ : ℝ := partialDeriv (E := E) d
+      let U₁ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartChristoffel (I := I) g₁ α j q l) y *
         chartChristoffel (I := I) g₁ α i k q y
-      let U₂ : ℝ := partialDeriv (E := E) d
+      let U₂ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartChristoffel (I := I) g₂ α j q l) y *
         chartChristoffel (I := I) g₂ α i k q y
       let V₁ : ℝ := chartChristoffel (I := I) g₁ α j q l y *
-        partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y
       let V₂ : ℝ := chartChristoffel (I := I) g₂ α j q l y *
-        partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y
-      let W₁ : ℝ := partialDeriv (E := E) d
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y
+      let W₁ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartChristoffel (I := I) g₁ α k q l) y *
         chartChristoffel (I := I) g₁ α i j q y
-      let W₂ : ℝ := partialDeriv (E := E) d
+      let W₂ : ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartChristoffel (I := I) g₂ α k q l) y *
         chartChristoffel (I := I) g₂ α i j q y
       let Z₁ : ℝ := chartChristoffel (I := I) g₁ α k q l y *
-        partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y
       let Z₂ : ℝ := chartChristoffel (I := I) g₂ α k q l y *
-        partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y
       change |(U₁ + V₁ - (W₁ + Z₁)) - (U₂ + V₂ - (W₂ + Z₂))| ≤ 4 * K * J
       have hU : |U₁ - U₂| ≤ K * J := by
         dsimp only [U₁, U₂]
@@ -401,12 +401,12 @@ theorem chartRiemannD_sub
       have hV : |V₁ - V₂| ≤ K * J := by
         dsimp only [V₁, V₂]
         rw [show chartChristoffel (I := I) g₁ α j q l y *
-              partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y -
             chartChristoffel (I := I) g₂ α j q l y *
-              partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y =
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i k q) y *
               chartChristoffel (I := I) g₁ α j q l y -
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i k q) y *
               chartChristoffel (I := I) g₂ α j q l y by ring]
         refine (prod_sub_bnd hCdΓ_nn hG₁_nn hJ_nn
           (hΓD₂ d i k q) (hΓ₁ j q l) (hΓD d i k q) (hΓ j q l)).trans_eq ?_
@@ -418,12 +418,12 @@ theorem chartRiemannD_sub
       have hZ : |Z₁ - Z₂| ≤ K * J := by
         dsimp only [Z₁, Z₂]
         rw [show chartChristoffel (I := I) g₁ α k q l y *
-              partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y -
             chartChristoffel (I := I) g₂ α k q l y *
-              partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y =
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₁ α i j q) y *
               chartChristoffel (I := I) g₁ α k q l y -
-            partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g₂ α i j q) y *
               chartChristoffel (I := I) g₂ α k q l y by ring]
         refine (prod_sub_bnd hCdΓ_nn hG₁_nn hJ_nn
           (hΓD₂ d i j q) (hΓ₁ k q l) (hΓD d i j q) (hΓ k q l)).trans_eq ?_
@@ -459,22 +459,22 @@ theorem chartRicciD_sub
     (d i k : Fin (Module.finrank ℝ E))
     {CΓ CdΓ G₀ G₁ G₂ : ℝ} (hCdΓ_nn : 0 ≤ CdΓ) (hG₁_nn : 0 ≤ G₁)
     (hΓ₁ : ∀ a b c, |chartChristoffel (I := I) g₁ α a b c y| ≤ CΓ)
-    (hΓD₂ : ∀ e a b c, |partialDeriv (E := E) e
+    (hΓD₂ : ∀ e a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
       (chartChristoffel (I := I) g₂ α a b c) y| ≤ CdΓ)
     (hΓ : ∀ a b c, |chartChristoffel (I := I) g₁ α a b c y -
       chartChristoffel (I := I) g₂ α a b c y| ≤
         G₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hΓD : ∀ e a b c, |partialDeriv (E := E) e
+    (hΓD : ∀ e a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b c) y -
-      partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b c) y| ≤
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b c) y| ≤
         G₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hΓD2 : ∀ e r a b c, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b c)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b c)) y| ≤
+    (hΓD2 : ∀ e r a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b c)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b c)) y| ≤
         G₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
-    |partialDeriv (E := E) d (chartRicciTensor (I := I) g₁ α i k) y -
-      partialDeriv (E := E) d (chartRicciTensor (I := I) g₂ α i k) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRicciTensor (I := I) g₁ α i k) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRicciTensor (I := I) g₂ α i k) y| ≤
       (Module.finrank ℝ E : ℝ) *
         (2 * G₂ + 4 * (Module.finrank ℝ E : ℝ) * (G₁ * CΓ + CdΓ * G₀)) *
         metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
@@ -485,8 +485,8 @@ theorem chartRicciD_sub
   set J : ℝ := metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y with hJ_def
   let K : ℝ := 2 * G₂ + 4 * (Module.finrank ℝ E : ℝ) * (G₁ * CΓ + CdΓ * G₀)
   let F : Fin (Module.finrank ℝ E) → ℝ := fun j =>
-    partialDeriv (E := E) d (chartRiemannTensor (I := I) g₁ α i j k j) y -
-      partialDeriv (E := E) d (chartRiemannTensor (I := I) g₂ α i j k j) y
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₁ α i j k j) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₂ α i j k j) y
   change |∑ j, F j| ≤ (Module.finrank ℝ E : ℝ) * K * J
   refine (abs_sum_bnd F (C := K * J) ?_).trans_eq ?_
   · intro j
@@ -504,29 +504,29 @@ theorem chartLieD_sub
     (hV_nn : 0 ≤ V) (hDV_nn : 0 ≤ DV) (hD2V_nn : 0 ≤ D2V)
     (hW₀_nn : 0 ≤ W₀) (hW₁_nn : 0 ≤ W₁) (hW₂_nn : 0 ≤ W₂)
     (hG₁ : ∀ a b, |chartGramOnE (I := I) g₁ α a b y| ≤ Q₀)
-    (hGD₁ : ∀ e a b, |partialDeriv (E := E) e
+    (hGD₁ : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
       (chartGramOnE (I := I) g₁ α a b) y| ≤ Q₁)
-    (hGD2₁ : ∀ e r a b, |partialDeriv (E := E) e
-      (partialDeriv (E := E) r (chartGramOnE (I := I) g₁ α a b)) y| ≤ Q₂)
+    (hGD2₁ : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartGramOnE (I := I) g₁ α a b)) y| ≤ Q₂)
     (hV₂ : ∀ q, |chartDeTurckVFComp (I := I) g₂ g_bg α q y| ≤ V)
-    (hVD₂ : ∀ e q, |partialDeriv (E := E) e
+    (hVD₂ : ∀ e q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
       (chartDeTurckVFComp (I := I) g₂ g_bg α q) y| ≤ DV)
-    (hVD2₂ : ∀ e r q, |partialDeriv (E := E) e
-      (partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y| ≤ D2V)
+    (hVD2₂ : ∀ e r q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y| ≤ D2V)
     (hVsub : ∀ q, |chartDeTurckVFComp (I := I) g₁ g_bg α q y -
       chartDeTurckVFComp (I := I) g₂ g_bg α q y| ≤
         W₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hVDsub : ∀ e q, |partialDeriv (E := E) e
+    (hVDsub : ∀ e q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartDeTurckVFComp (I := I) g₁ g_bg α q) y -
-      partialDeriv (E := E) e (chartDeTurckVFComp (I := I) g₂ g_bg α q) y| ≤
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartDeTurckVFComp (I := I) g₂ g_bg α q) y| ≤
         W₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
-    (hVD2sub : ∀ e r q, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y| ≤
+    (hVD2sub : ∀ e r q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y| ≤
         W₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
-    |partialDeriv (E := E) d (chartLieDeTurckComp (I := I) g₁ g_bg α i j) y -
-      partialDeriv (E := E) d (chartLieDeTurckComp (I := I) g₂ g_bg α i j) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartLieDeTurckComp (I := I) g₁ g_bg α i j) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartLieDeTurckComp (I := I) g₂ g_bg α i j) y| ≤
       (Module.finrank ℝ E : ℝ) *
         (((W₁ * Q₁ + DV) + (W₀ * Q₂ + V)) +
           2 * ((W₁ * Q₁ + DV) + (W₂ * Q₀ + D2V))) *
@@ -545,18 +545,18 @@ theorem chartLieD_sub
     exact (chartGramMatrix_sub_entry_abs_le_gramDiffSup (I := I) (M := M)
       g₁ g₂ α ((extChartAt I α).symm y) a b).trans
         ((chartGramDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans hJ₁_le)
-  have hGramD : ∀ e a b, |partialDeriv (E := E) e
+  have hGramD : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartGramOnE (I := I) g₁ α a b) y -
-      partialDeriv (E := E) e (chartGramOnE (I := I) g₂ α a b) y| ≤ 1 * J := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartGramOnE (I := I) g₂ α a b) y| ≤ 1 * J := by
     intro e a b
     rw [one_mul]
     exact (partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup
       (I := I) (M := M) g₁ g₂ α y e a b).trans
         ((chartGramPartialDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans hJ₁_le)
-  have hGramD2 : ∀ e r a b, |partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartGramOnE (I := I) g₁ α a b)) y -
-      partialDeriv (E := E) e
-        (partialDeriv (E := E) r (chartGramOnE (I := I) g₂ α a b)) y| ≤ 1 * J := by
+  have hGramD2 : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartGramOnE (I := I) g₁ α a b)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartGramOnE (I := I) g₂ α a b)) y| ≤ 1 * J := by
     intro e r a b
     rw [one_mul]
     exact (partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup
@@ -567,58 +567,58 @@ theorem chartLieD_sub
   rw [partial_chartLie (I := I) g₁ g_bg α d i j hy,
     partial_chartLie (I := I) g₂ g_bg α d i j hy]
   let A₁ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartDeTurckVFComp (I := I) g₁ g_bg α q) y *
-        partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j) y +
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartDeTurckVFComp (I := I) g₁ g_bg α q) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j) y +
       chartDeTurckVFComp (I := I) g₁ g_bg α q y *
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j)) y)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j)) y)
   let A₂ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartDeTurckVFComp (I := I) g₂ g_bg α q) y *
-        partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j) y +
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartDeTurckVFComp (I := I) g₂ g_bg α q) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j) y +
       chartDeTurckVFComp (I := I) g₂ g_bg α q y *
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j)) y)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j)) y)
   let B₁ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y *
-        partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
       chartGramOnE (I := I) g₁ α q j y *
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
   let B₂ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y *
-        partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
       chartGramOnE (I := I) g₂ α q j y *
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
   let C₁ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y *
-        partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
       chartGramOnE (I := I) g₁ α i q y *
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
   let C₂ : ℝ := ∑ q : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y *
-        partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
       chartGramOnE (I := I) g₂ α i q y *
-        partialDeriv (E := E) d
-          (partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
   change |(A₁ + B₁ + C₁) - (A₂ + B₂ + C₂)| ≤
     (Module.finrank ℝ E : ℝ) * (K_A + 2 * K_B) * J
   have hA : |A₁ - A₂| ≤ (Module.finrank ℝ E : ℝ) * K_A * J := by
     dsimp only [A₁, A₂]
     refine (sum_pair_sub_bnd
-      (A₁ := fun q => partialDeriv (E := E) d
+      (A₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (chartDeTurckVFComp (I := I) g₁ g_bg α q) y)
-      (A₂ := fun q => partialDeriv (E := E) d
+      (A₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (chartDeTurckVFComp (I := I) g₂ g_bg α q) y)
-      (B₁ := fun q => partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j) y)
-      (B₂ := fun q => partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j) y)
+      (B₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j) y)
+      (B₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j) y)
       (C₁ := fun q => chartDeTurckVFComp (I := I) g₁ g_bg α q y)
       (C₂ := fun q => chartDeTurckVFComp (I := I) g₂ g_bg α q y)
-      (D₁ := fun q => partialDeriv (E := E) d
-        (partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j)) y)
-      (D₂ := fun q => partialDeriv (E := E) d
-        (partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j)) y)
+      (D₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₁ α i j)) y)
+      (D₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) g₂ α i j)) y)
       hDV_nn hW₁_nn hV_nn hW₀_nn hJ_nn
       (fun q => hVD₂ d q) (fun q => hGD₁ q i j) hV₂ (fun q => hGD2₁ d q i j)
       (fun q => hVDsub d q) (fun q => hGramD q i j) hVsub
@@ -628,48 +628,48 @@ theorem chartLieD_sub
   have hB : |B₁ - B₂| ≤ (Module.finrank ℝ E : ℝ) * K_B * J := by
     dsimp only [B₁, B₂]
     rw [show (∑ q : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y *
-              partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
-            chartGramOnE (I := I) g₁ α q j y * partialDeriv (E := E) d
-              (partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
+            chartGramOnE (I := I) g₁ α q j y * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)) =
-        ∑ q, (partialDeriv (E := E) i
+        ∑ q, (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (chartDeTurckVFComp (I := I) g₁ g_bg α q) y *
-            partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y +
-          partialDeriv (E := E) d
-              (partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y *
             chartGramOnE (I := I) g₁ α q j y) by
           apply Finset.sum_congr rfl
           intro q _
           ring,
       show (∑ q : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y *
-              partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
-            chartGramOnE (I := I) g₂ α q j y * partialDeriv (E := E) d
-              (partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
+            chartGramOnE (I := I) g₂ α q j y * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)) =
-        ∑ q, (partialDeriv (E := E) i
+        ∑ q, (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (chartDeTurckVFComp (I := I) g₂ g_bg α q) y *
-            partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y +
-          partialDeriv (E := E) d
-              (partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y *
             chartGramOnE (I := I) g₂ α q j y) by
           apply Finset.sum_congr rfl
           intro q _
           ring]
     refine (sum_pair_sub_bnd
-      (A₁ := fun q => partialDeriv (E := E) i
+      (A₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (chartDeTurckVFComp (I := I) g₁ g_bg α q) y)
-      (A₂ := fun q => partialDeriv (E := E) i
+      (A₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (chartDeTurckVFComp (I := I) g₂ g_bg α q) y)
-      (B₁ := fun q => partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y)
-      (B₂ := fun q => partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y)
-      (C₁ := fun q => partialDeriv (E := E) d
-        (partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
-      (C₂ := fun q => partialDeriv (E := E) d
-        (partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
+      (B₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α q j) y)
+      (B₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α q j) y)
+      (C₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
+      (C₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
       (D₁ := fun q => chartGramOnE (I := I) g₁ α q j y)
       (D₂ := fun q => chartGramOnE (I := I) g₂ α q j y)
       hDV_nn hW₁_nn hD2V_nn hW₂_nn hJ_nn
@@ -681,48 +681,48 @@ theorem chartLieD_sub
   have hC : |C₁ - C₂| ≤ (Module.finrank ℝ E : ℝ) * K_B * J := by
     dsimp only [C₁, C₂]
     rw [show (∑ q : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y *
-              partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
-            chartGramOnE (I := I) g₁ α i q y * partialDeriv (E := E) d
-              (partialDeriv (E := E) j
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q) y +
+            chartGramOnE (I := I) g₁ α i q y * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)) =
-        ∑ q, (partialDeriv (E := E) j
+        ∑ q, (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (chartDeTurckVFComp (I := I) g₁ g_bg α q) y *
-            partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y +
-          partialDeriv (E := E) d
-              (partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y *
             chartGramOnE (I := I) g₁ α i q y) by
           apply Finset.sum_congr rfl
           intro q _
           ring,
       show (∑ q : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y *
-              partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
-            chartGramOnE (I := I) g₂ α i q y * partialDeriv (E := E) d
-              (partialDeriv (E := E) j
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q) y +
+            chartGramOnE (I := I) g₂ α i q y * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)) =
-        ∑ q, (partialDeriv (E := E) j
+        ∑ q, (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (chartDeTurckVFComp (I := I) g₂ g_bg α q) y *
-            partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y +
-          partialDeriv (E := E) d
-              (partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y *
             chartGramOnE (I := I) g₂ α i q y) by
           apply Finset.sum_congr rfl
           intro q _
           ring]
     refine (sum_pair_sub_bnd
-      (A₁ := fun q => partialDeriv (E := E) j
+      (A₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (chartDeTurckVFComp (I := I) g₁ g_bg α q) y)
-      (A₂ := fun q => partialDeriv (E := E) j
+      (A₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (chartDeTurckVFComp (I := I) g₂ g_bg α q) y)
-      (B₁ := fun q => partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y)
-      (B₂ := fun q => partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y)
-      (C₁ := fun q => partialDeriv (E := E) d
-        (partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
-      (C₂ := fun q => partialDeriv (E := E) d
-        (partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
+      (B₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α i q) y)
+      (B₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α i q) y)
+      (C₁ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y)
+      (C₂ := fun q => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y)
       (D₁ := fun q => chartGramOnE (I := I) g₁ α i q y)
       (D₂ := fun q => chartGramOnE (I := I) g₂ α i q y)
       hDV_nn hW₁_nn hD2V_nn hW₂_nn hJ_nn

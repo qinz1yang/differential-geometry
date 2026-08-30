@@ -56,7 +56,7 @@ private lemma raw_fderiv_eq
     fderiv ℝ
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α f) y
         (EuclideanSpace.single i 1) =
-      partialDeriv (E := E) i (scalarOnE (I := I) α f)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f)
         ((toEuclidean (E := E)).symm y) := by
   classical
   have hopen : IsOpen
@@ -298,7 +298,7 @@ theorem grad_sub_chart_le
             (gradFun (I := I) g (fun y ↦
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)) x) ≤
           C * ∑ i : Fin (Module.finrank ℝ E),
-            (partialDeriv (E := E) i
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (scalarOnE (I := I) α (fun y ↦
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)))
               (extChartAt I α x)) ^ 2 := by
@@ -323,7 +323,7 @@ theorem grad_sub_chart_le
       (fun β _ ↦ gramSup_nonneg (I := I) (M := M) g β)
       (by simpa only [S] using hα)
   have hsum : 0 ≤ ∑ i : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) i
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (scalarOnE (I := I) α (fun y ↦
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)))
         (extChartAt I α x)) ^ 2 :=
@@ -415,7 +415,7 @@ private lemma local_grad_l2_le
       have hcoordx : coord x = toEuclidean (E := E) (extChartAt I α x) := by
         simp only [coord, extChartAtExt_apply_of_mem (I := I) (α := α) hxsrc]
       have hpartx (i : Fin (Module.finrank ℝ E)) :
-          part i x = partialDeriv (E := E) i (scalarOnE (I := I) α f)
+          part i x = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f)
             (extChartAt I α x) := by
         simp only [part]
         rw [hcoordx, raw_fderiv_eq (I := I) (M := M) α f]

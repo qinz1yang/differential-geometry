@@ -151,7 +151,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
           (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b) ≤
       chartInvGramMatrixL1Sum (I := I) (M := M) g α b *
         ∑ k : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) k (scalarOnE (I := I) α
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S α Idx Jdx)) z) ^ 2 := by
     have := g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
@@ -163,13 +163,13 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
   have h_l1Sum_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
     hM_Ginv_le b hb
   have h_leibniz : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (scalarOnE (I := I) α
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx)) z =
-        partialDeriv (E := E) k (scalarOnE (I := I) α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
             (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z *
           raw_z +
         ρ_z *
-          partialDeriv (E := E) k (scalarOnE (I := I) α
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentRaw (I := I) (M := M)
               g r s S α Idx Jdx)) z := by
     intro k
@@ -178,48 +178,48 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     rw [hraw_z_def, hρ_z_def, hz_def]
     exact h
   have h_sq_le : ∀ k : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) k (scalarOnE (I := I) α
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentScalar (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 ≤
-        2 * ((partialDeriv (E := E) k (scalarOnE (I := I) α
+        2 * ((DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
               (fun x : M =>
                 ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z) ^ 2 *
             raw_z ^ 2) +
         2 * (ρ_z ^ 2 *
-            (partialDeriv (E := E) k (scalarOnE (I := I) α
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
               (tensorChartComponentRaw (I := I) (M := M)
                 g r s S α Idx Jdx)) z) ^ 2) := by
     intro k
     rw [h_leibniz k]
     have h_tri := sq_add_le_two_mul_sq_add_sq_pou
-      (partialDeriv (E := E) k (scalarOnE (I := I) α
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
         (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z *
           raw_z)
       (ρ_z *
-        partialDeriv (E := E) k (scalarOnE (I := I) α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentRaw (I := I) (M := M)
             g r s S α Idx Jdx)) z)
-    have h_eq1 : (partialDeriv (E := E) k (scalarOnE (I := I) α
+    have h_eq1 : (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
         (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z *
           raw_z) ^ 2 =
-        (partialDeriv (E := E) k (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z) ^ 2
         * raw_z ^ 2 := by ring
     have h_eq2 : (ρ_z *
-        partialDeriv (E := E) k (scalarOnE (I := I) α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentRaw (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 =
         ρ_z ^ 2 *
-        (partialDeriv (E := E) k (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentRaw (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 := by ring
     linarith [h_tri, h_eq1.le, h_eq1.symm.le, h_eq2.le, h_eq2.symm.le]
   set Sρ : ℝ := ∑ k : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) k (scalarOnE (I := I) α
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z) ^ 2
     with hSρ_def
   set Sraw : ℝ := ∑ k : Fin (Module.finrank ℝ E),
-    (partialDeriv (E := E) k (scalarOnE (I := I) α
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
       (tensorChartComponentRaw (I := I) (M := M)
         g r s S α Idx Jdx)) z) ^ 2
     with hSraw_def
@@ -230,19 +230,19 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     exact hM_dρ_le b hb
   have h_sum_sq_le :
       ∑ k : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) k (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentScalar (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 ≤
       2 * raw_z ^ 2 * Sρ + 2 * ρ_z ^ 2 * Sraw := by
     have hRHS_eq :
         2 * raw_z ^ 2 * Sρ + 2 * ρ_z ^ 2 * Sraw =
         ∑ k : Fin (Module.finrank ℝ E),
-          (2 * ((partialDeriv (E := E) k (scalarOnE (I := I) α
+          (2 * ((DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
                 (fun x : M =>
                   ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) z) ^ 2 *
               raw_z ^ 2) +
           2 * (ρ_z ^ 2 *
-              (partialDeriv (E := E) k (scalarOnE (I := I) α
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
                 (tensorChartComponentRaw (I := I) (M := M)
                   g r s S α Idx Jdx)) z) ^ 2)) := by
       rw [hSρ_def, hSraw_def]
@@ -255,7 +255,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     exact Finset.sum_le_sum (fun k _ => h_sq_le k)
   have h_sum_sq_le' :
       ∑ k : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) k (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentScalar (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 ≤
       2 * raw_z ^ 2 * M_dρ + 2 * ρ_z ^ 2 * Sraw := by
@@ -264,7 +264,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
       exact mul_le_mul_of_nonneg_left hSρ_le_M_dρ hcoef_nn
     linarith
   have h_twoTerm_per_k : ∀ k : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) k (scalarOnE (I := I) α
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentRaw (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 ≤
         2 * ‖tensorChartComponentProjection (E := E) r s Idx Jdx‖ ^ 2 *
@@ -273,7 +273,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
           Tchr k := by
     intro k
     have h_lhs_eq :
-        partialDeriv (E := E) k (scalarOnE (I := I) α
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentRaw (I := I) (M := M)
             g r s S α Idx Jdx)) z =
         fderiv ℝ
@@ -342,7 +342,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     linarith [h_step, h_arith.le, h_arith.symm.le]
   have h_sum_sq_final :
       ∑ k : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) k (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentScalar (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 ≤
       2 * raw_z ^ 2 * M_dρ +
@@ -353,7 +353,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     unfold chartInvGramMatrixL1Sum
     exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
   have h_sum_sq_nn : 0 ≤ ∑ k : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) k (scalarOnE (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
           (tensorChartComponentScalar (I := I) (M := M)
             g r s S α Idx Jdx)) z) ^ 2 :=
     Finset.sum_nonneg (fun _ _ => sq_nonneg _)
@@ -369,18 +369,18 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     refine h_step_grad3.trans ?_
     have h1 : chartInvGramMatrixL1Sum (I := I) (M := M) g α b *
         ∑ k : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) k (scalarOnE (I := I) α
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S α Idx Jdx)) z) ^ 2 ≤
         M_Ginv *
         ∑ k : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) k (scalarOnE (I := I) α
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S α Idx Jdx)) z) ^ 2 :=
       mul_le_mul_of_nonneg_right h_l1Sum_le h_sum_sq_nn
     have h2 : M_Ginv *
         ∑ k : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) k (scalarOnE (I := I) α
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S α Idx Jdx)) z) ^ 2 ≤
         M_Ginv * (2 * raw_z ^ 2 * M_dρ +

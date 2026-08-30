@@ -284,20 +284,20 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j *
-          partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ := by
   classical
   have h_outer_inner : ∀ i j : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ =
         (fderiv ℝ (fderiv ℝ ftilde) y₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     intros i j
     set L_j : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
       ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) with hLj_def
-    have heq : partialDeriv (E := E) j ftilde = L_j ∘ (fderiv ℝ ftilde) := by
+    have heq : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde = L_j ∘ (fderiv ℝ ftilde) := by
       funext y
       rfl
-    rw [partialDeriv]
-    rw [show (partialDeriv (E := E) j ftilde) = L_j ∘ (fderiv ℝ ftilde) from heq]
+    rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
+    rw [show (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) = L_j ∘ (fderiv ℝ ftilde) from heq]
     have hcomp_fderiv : fderiv ℝ (L_j ∘ (fderiv ℝ ftilde)) y₀ =
         (fderiv ℝ (L_j) (fderiv ℝ ftilde y₀)).comp
           (fderiv ℝ (fderiv ℝ ftilde) y₀) :=
@@ -396,10 +396,10 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     rw [h1]
     exact h_max _
   have h_partial_zero : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k ftilde y₀ = 0 := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k ftilde y₀ = 0 := by
     intro k
     have hfderiv_zero : fderiv ℝ ftilde y₀ = 0 := hftilde_max.fderiv_eq_zero
-    rw [partialDeriv, hfderiv_zero]
+    rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, hfderiv_zero]
     rfl
   have h_hessian_at_max : ∀ i j : Fin (Module.finrank ℝ E),
       chartHessianTensor (I := I) g α f i j x_max =
@@ -409,7 +409,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     have h_christ_term :
         ∑ k : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α i j k (extChartAt I α x_max) *
-            partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x_max) =
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x_max) =
           0 := by
       apply Finset.sum_eq_zero
       intro k _
@@ -437,7 +437,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
   have h1 : ∑ i, ∑ j, c i * c j *
       chartHessianTensor (I := I) g α f i j x_max =
       ∑ i, ∑ j, (b.repr v) i * (b.repr v) j *
-        partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ := by
     refine Finset.sum_congr rfl ?_
     intros i _
     refine Finset.sum_congr rfl ?_
@@ -451,7 +451,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     exact h1.differentiableAt one_ne_zero
   have h2 : ∑ i, ∑ j,
       (b.repr v) i * (b.repr v) j *
-        partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j ftilde) y₀ =
       (fderiv ℝ (fderiv ℝ ftilde) y₀ v) v :=
     (sndFDeriv_apply_self_eq_sum_of_basis hftilde_fderiv_diff v).symm
   rw [h2]

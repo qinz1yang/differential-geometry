@@ -433,7 +433,7 @@ theorem partialDerivWithin_interiorHalfSpace_eq_partialDeriv
     (hy : y ∈ interiorHalfSpace Ω) :
     DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.partialDerivWithin
         (interiorHalfSpace Ω) i u y =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv
         i u y :=
   Integral.DivergenceTheorem.WithBoundary.partialDerivWithin_eq_partialDeriv_of_isOpen
     (interiorHalfSpace_isOpen hΩ) hy

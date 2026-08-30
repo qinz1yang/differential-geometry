@@ -117,14 +117,14 @@ private lemma jet2GramD2Local
     (m i l j : Fin (Module.finrank Real E)) :
     (jet2 (chartGramPi (I := I) g x0) y).2.2
         (chartModelBasis E m) (chartModelBasis E i) l j =
-      partialDeriv (E := E) m
-        (partialDeriv (E := E) i (chartGramOnE (I := I) g x0 l j)) y := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g x0 l j)) y := by
   simp only [jet2]
   rw [fderiv2_matEntry hG2 (chartModelBasis E m) (chartModelBasis E i) l j]
   have heq :
       (fun z => (fderiv Real (chartGramPi (I := I) g x0) z)
         (chartModelBasis E i) l j) =ᶠ[nhds y]
-      partialDeriv (E := E) i (chartGramOnE (I := I) g x0 l j) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g x0 l j) := by
     filter_upwards [hG1] with z hz
     rw [fderiv_matEntry hz (chartModelBasis E i) l j]
     rfl
@@ -143,7 +143,7 @@ private lemma chartChrDerivJet
     (hG2 : DifferentiableAt Real
       (fun z => fderiv Real (chartGramPi (I := I) g x0) z) y)
     (m i j k : Fin (Module.finrank Real E)) :
-    partialDeriv (E := E) m (chartChristoffel (I := I) g x0 i j k) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g x0 i j k) y =
       jetChristoffelDeriv (chartModelBasis E)
         (jet2 (chartGramPi (I := I) g x0) y) m i j k := by
   rw [partialDeriv_chartChristoffel_eq g x0 m i j k hy]

@@ -58,7 +58,7 @@ private lemma hasDerivAt_comp_jacobiLine
     {y₀ : E} {l : Fin (Module.finrank ℝ E)} {F : E → ℝ}
     (hF : DifferentiableAt ℝ F y₀) :
     HasDerivAt (fun s : ℝ => F (basisDirectionLine (E := E) y₀ l s))
-      (partialDeriv (E := E) l F y₀) 0 := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l F y₀) 0 := by
   have hy : (basisDirectionLine (E := E) y₀ l 0) = y₀ := by
     unfold basisDirectionLine; rw [zero_smul, add_zero]
   have hF' : HasFDerivAt F (fderiv ℝ F y₀) y₀ := hF.hasFDerivAt
@@ -100,7 +100,7 @@ private lemma hasDerivAt_gramJacobiFamily_entry
     (i j : Fin (Module.finrank ℝ E))
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     HasDerivAt (fun s : ℝ => gramJacobiFamily (I := I) g α y₀ l s i j)
-      (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀) 0 := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀) 0 := by
   have hG : DifferentiableAt ℝ (chartGramOnE (I := I) g α i j) y₀ :=
     chartGramOnE_differentiableAt_interior (I := I) g α i j hy
   have h := hasDerivAt_comp_jacobiLine (E := E) (l := l) (F := chartGramOnE (I := I) g α i j) hG
@@ -129,18 +129,18 @@ private lemma partialDeriv_det_chartGramOnE
     (g : SmoothRiemannianMetric I M) (α : M)
     (y₀ : E) (l : Fin (Module.finrank ℝ E))
     (hy : y₀ ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) l
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
         (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) y₀ =
       (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀)).det *
         Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀))⁻¹ *
-          Matrix.of (fun i j => partialDeriv (E := E) l
+          Matrix.of (fun i j => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (chartGramOnE (I := I) g α i j) y₀)) := by
   classical
   have hytgt : y₀ ∈ (extChartAt I α).target := interior_subset hy
   set Gf := gramJacobiFamily (I := I) g α y₀ l with hGf
   have hentries : ∀ i j : Fin (Module.finrank ℝ E),
       HasDerivAt (fun s => Gf s i j)
-        (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀) 0 :=
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀) 0 :=
     fun i j => hasDerivAt_gramJacobiFamily_entry (I := I) g α y₀ l i j hy
   have hpos : 0 < (Gf 0).det := gramJacobiFamily_det_pos (I := I) g α y₀ l hytgt
   have hunit : IsUnit (Gf 0).det := (ne_of_gt hpos).isUnit
@@ -149,7 +149,7 @@ private lemma partialDeriv_det_chartGramOnE
       (n := Fin (Module.finrank ℝ E))
       Gf
       (Matrix.of (fun i j =>
-        partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀))
       0 (fun i j => by simpa [Matrix.of_apply] using hentries i j) hunit
   have hfun_eq : (fun s : ℝ => (Gf s).det) =
       fun s : ℝ => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
@@ -203,10 +203,10 @@ lemma partialDeriv_chartDensityOnE
     (g : SmoothRiemannianMetric I M) (α : M)
     (y₀ : E) (l : Fin (Module.finrank ℝ E))
     (hy : y₀ ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) l (chartDensityOnE (I := I) g α) y₀ =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartDensityOnE (I := I) g α) y₀ =
       (1 / 2) *
         Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀))⁻¹ *
-          Matrix.of (fun i j => partialDeriv (E := E) l
+          Matrix.of (fun i j => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (chartGramOnE (I := I) g α i j) y₀)) *
         chartDensityOnE (I := I) g α y₀ := by
   classical
@@ -214,7 +214,7 @@ lemma partialDeriv_chartDensityOnE
   set Gf := gramJacobiFamily (I := I) g α y₀ l with hGf
   have hentries : ∀ i j : Fin (Module.finrank ℝ E),
       HasDerivAt (fun s => Gf s i j)
-        (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀) 0 :=
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀) 0 :=
     fun i j => hasDerivAt_gramJacobiFamily_entry (I := I) g α y₀ l i j hy
   have hpos : 0 < (Gf 0).det := gramJacobiFamily_det_pos (I := I) g α y₀ l hytgt
   have hjac :=
@@ -222,7 +222,7 @@ lemma partialDeriv_chartDensityOnE
       (n := Fin (Module.finrank ℝ E))
       Gf
       (Matrix.of (fun i j =>
-        partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀))
       0 (fun i j => by simpa [Matrix.of_apply] using hentries i j) hpos
   have hfun_eq : (fun s : ℝ => Real.sqrt (Gf s).det) =
       fun s : ℝ => chartDensityOnE (I := I) g α (basisDirectionLine (E := E) y₀ l s) := by

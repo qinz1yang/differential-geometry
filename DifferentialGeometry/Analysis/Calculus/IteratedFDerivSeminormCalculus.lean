@@ -8,7 +8,6 @@ open scoped Topology BigOperators ContDiff
 namespace DifferentialGeometry
 namespace Analysis
 namespace Calculus
-namespace DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -80,7 +79,6 @@ theorem norm_iteratedFDerivWithin_two_prod_sub_le
   refine (add_le_add hbound1 hbound2).trans ?_
   rw [mul_add]
 
-end DeTurckCoefficients
 end Calculus
 end Analysis
 end DifferentialGeometry

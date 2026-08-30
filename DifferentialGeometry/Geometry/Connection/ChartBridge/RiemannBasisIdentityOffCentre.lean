@@ -32,7 +32,7 @@ lemma mvfderiv_comp_extChartAt_apply_basis_alpha
     (a : Fin (Module.finrank ℝ E)) :
     mvfderiv (I := I) (fun b : M => gE (extChartAt I α b)) x
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a x) =
-      partialDeriv (E := E) a gE (extChartAt I α x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a gE (extChartAt I α x) := by
   classical
   have hxchart : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx
@@ -128,7 +128,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
     (LeviCivita (I := I) g).toFun
         (covApply (LeviCivita (I := I) g) Xb Xi) x (Xa x) =
       ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) a (chartChristoffel (I := I) g α b i l) (extChartAt I α x) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g α b i l) (extChartAt I α x) +
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α a m l (extChartAt I α x) *
               chartChristoffel (I := I) g α b i m (extChartAt I α x)) •
@@ -232,7 +232,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
   rw [Finset.sum_congr rfl (fun m _ => hleib m)]
   have hder : ∀ m : Fin (Module.finrank ℝ E),
       mvfderiv (I := I) (Γc m) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a x) =
-        partialDeriv (E := E) a (chartChristoffel (I := I) g α b i m) (extChartAt I α x) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g α b i m) (extChartAt I α x) := by
     intro m
     exact mvfderiv_comp_extChartAt_apply_basis_alpha (I := I) α hx
       (chartChristoffel_contDiffAt_alpha (I := I) g α b i m hx) a
@@ -251,7 +251,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv_alpha [I.Boundaryless]
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun l => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x with he_def
   set D : Fin (Module.finrank ℝ E) → ℝ :=
-    fun m => partialDeriv (E := E) a (chartChristoffel (I := I) g α b i m) (extChartAt I α x)
+    fun m => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g α b i m) (extChartAt I α x)
     with hD_def
   set Γq : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun m l => chartChristoffel (I := I) g α a m l (extChartAt I α x) with hΓq_def
@@ -399,11 +399,11 @@ lemma riemannOp_chartBasisVec_alpha_eq [I.Boundaryless]
   rw [LeviCivita_chartBasisVec_secondCovDeriv_alpha (I := I) g α k j i hx
     hXj_sm hXi_sm hU_open hxU hU_good hXk_eqU hXj_eqU hXi_eqU]
   have hcoeff : ∀ l : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) j (chartChristoffel (I := I) g α k i l) (extChartAt I α x) +
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α k i l) (extChartAt I α x) +
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α j m l (extChartAt I α x) *
               chartChristoffel (I := I) g α k i m (extChartAt I α x)) -
-        (partialDeriv (E := E) k (chartChristoffel (I := I) g α j i l) (extChartAt I α x) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α j i l) (extChartAt I α x) +
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α k m l (extChartAt I α x) *
               chartChristoffel (I := I) g α j i m (extChartAt I α x)) =

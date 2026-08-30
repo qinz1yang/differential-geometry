@@ -74,24 +74,24 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ D.gram1
   gram2_bound :
     ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) c
-            (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α i j)) (extChartAt I α b)| ≤ D.gram2
   gram3_bound :
     ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d c m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
-            (partialDeriv (E := E) c
-              (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α i j))) (extChartAt I α b)| ≤ D.gram3
   rhs_bound :
     ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
@@ -105,7 +105,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (chartDeTurckRHSComp (I := I) gBase (gSeq k) α i j)
               (extChartAt I α b)| ≤ D.rhsD1Bound
   rhs_lipschitz :
@@ -122,10 +122,10 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
       ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α i j)
                 (extChartAt I α b) -
-            partialDeriv (E := E) d
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j)
                 (extChartAt I α b)| ≤
               D.rhsD1Lip * metricJet3DiffSup (I := I) (M := M)
@@ -206,7 +206,7 @@ theorem exists_low_reg_coeff {ι : Type*}
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ Q₁ := by
     intro α hα k b hb m i j
     simpa [gAll] using hQ₁ α hα (some k) b hb m i j
@@ -214,7 +214,7 @@ theorem exists_low_reg_coeff {ι : Type*}
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m (chartGramOnE (I := I) gBase α i j)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) gBase α i j)
               (extChartAt I α b)| ≤ Q₁ := by
     intro α hα b hb m i j
     simpa [gAll] using hQ₁ α hα none b hb m i j
@@ -222,8 +222,8 @@ theorem exists_low_reg_coeff {ι : Type*}
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) c
-            (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α i j)) (extChartAt I α b)| ≤ Q₂ := by
     intro α hα k b hb c m i j
     simpa [gAll] using hQ₂ α hα (some k) b hb c m i j
@@ -231,8 +231,8 @@ theorem exists_low_reg_coeff {ι : Type*}
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ c m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) c
-            (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
               (chartGramOnE (I := I) gBase α i j)) (extChartAt I α b)| ≤ Q₂ := by
     intro α hα b hb c m i j
     simpa [gAll] using hQ₂ α hα none b hb c m i j
@@ -240,9 +240,9 @@ theorem exists_low_reg_coeff {ι : Type*}
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d c m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
-            (partialDeriv (E := E) c
-              (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α i j))) (extChartAt I α b)| ≤ Q₃ := by
     intro α hα k b hb d c m i j
     simpa [gAll] using hQ₃ α hα (some k) b hb d c m i j
@@ -250,9 +250,9 @@ theorem exists_low_reg_coeff {ι : Type*}
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d c m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
-            (partialDeriv (E := E) c
-              (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                 (chartGramOnE (I := I) gBase α i j))) (extChartAt I α b)| ≤ Q₃ := by
     intro α hα b hb d c m i j
     simpa [gAll] using hQ₃ α hα none b hb d c m i j

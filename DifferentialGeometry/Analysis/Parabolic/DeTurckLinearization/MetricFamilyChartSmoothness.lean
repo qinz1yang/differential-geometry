@@ -61,7 +61,7 @@ lemma partial_chartDeTurckVFComp_joint_contDiffAt {S : Set ℝ}
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun r : ℝ × E =>
-        partialDeriv (E := E) m (fun y => chartDeTurckVFComp (I := I) (gfam r.1) g_bg α k y) r.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun y => chartDeTurckVFComp (I := I) (gfam r.1) g_bg α k y) r.2)
       (s₀, y₀) :=
   partialDeriv_joint_contDiffAt (fun s y => chartDeTurckVFComp (I := I) (gfam s) g_bg α k y) m
     (chartDeTurckVFComp_joint_contDiffAt (I := I) gfam α hG g_bg k hs hy)
@@ -78,14 +78,14 @@ lemma chartLieDeTurckComp_joint_contDiffAt {S : Set ℝ}
       (fun r : ℝ × E =>
         (∑ k : Fin (Module.finrank ℝ E),
             chartDeTurckVFComp (I := I) (gfam r.1) g_bg α k r.2 *
-              partialDeriv (E := E) k (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2)
         + (∑ k : Fin (Module.finrank ℝ E),
             chartGramOnE (I := I) (gfam r.1) α k j r.2 *
-              partialDeriv (E := E) i
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                 (fun y => chartDeTurckVFComp (I := I) (gfam r.1) g_bg α k y) r.2)
         + (∑ k : Fin (Module.finrank ℝ E),
             chartGramOnE (I := I) (gfam r.1) α i k r.2 *
-              partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                 (fun y => chartDeTurckVFComp (I := I) (gfam r.1) g_bg α k y) r.2)) := by
     funext r; rw [chartLieDeTurckComp_def]
   rw [heq]

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.PartialDerivIteratedFDerivOrderBridge
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.LowerOrder
 import DifferentialGeometry.Analysis.Schauder.ParabolicChart
 import DifferentialGeometry.Analysis.Schauder.Scaling
@@ -34,7 +34,7 @@ theorem parabolicGradientComponent_euclideanChartRepresentation
     (k : Fin (Module.finrank Real E)) (p : ParabolicPoint (EuclN E)) :
     parabolicGradientComponent
         (parabolicEuclideanChartRepresentation I alpha u) k p =
-      partialDeriv (E := E) k (scalarOnE (I := I) alpha (u p.time))
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) alpha (u p.time))
         ((toEuclidean (E := E)).symm p.space) := by
   let w : Real → E → Real := fun t y ↦ scalarOnE (I := I) alpha (u t) y
   have hjet := parabolicSpatialJet_linearEquiv
@@ -80,8 +80,8 @@ theorem parabolicHessianComponent_euclideanChartRepresentation
       ((toEuclidean (E := E)).symm p.space)) :
     parabolicHessianComponent
         (parabolicEuclideanChartRepresentation I alpha u) i j p =
-      partialDeriv (E := E) i
-        (partialDeriv (E := E) j (scalarOnE (I := I) alpha (u p.time)))
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) alpha (u p.time)))
         ((toEuclidean (E := E)).symm p.space) := by
   let w : Real → E → Real := fun t y ↦ scalarOnE (I := I) alpha (u t) y
   have hjet := parabolicSpatialJet_linearEquiv
@@ -254,8 +254,8 @@ theorem parabolicVariableMatrixLap_euclideanChartRepresentation
     parabolicVariableMatrixLap (parabolicChartPrincipalCoefficient (I := I) g alpha)
         (parabolicEuclideanChartRepresentation I alpha u) p =
       ∑ i, ∑ j, parabolicChartPrincipalCoefficient (I := I) g alpha i j p *
-        partialDeriv (E := E) i
-          (partialDeriv (E := E) j (scalarOnE (I := I) alpha (u p.time)))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) alpha (u p.time)))
           ((toEuclidean (E := E)).symm p.space) := by
   classical
   unfold parabolicVariableMatrixLap matrixLap
@@ -277,7 +277,7 @@ theorem parabolicDriftTerm_euclideanChartRepresentation
       -∑ i, ∑ j,
         parabolicChartPrincipalCoefficient (I := I) g alpha i j p *
           (∑ k, parabolicChartChristoffelCoefficient (I := I) g alpha i j k p *
-            partialDeriv (E := E) k (scalarOnE (I := I) alpha (u p.time))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) alpha (u p.time))
               ((toEuclidean (E := E)).symm p.space)) := by
   classical
   unfold parabolicDriftTerm parabolicChartDriftCoefficient

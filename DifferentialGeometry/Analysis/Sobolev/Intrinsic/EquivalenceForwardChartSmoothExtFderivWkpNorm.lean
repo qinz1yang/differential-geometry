@@ -45,7 +45,7 @@ private lemma sq_partials_scalarOnE_le_norm_fderiv_scalarOnE_sq
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (f : M → ℝ) (y : E) :
     (∑ k : Fin (Module.finrank ℝ E),
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) k
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f) y)^2) ≤
@@ -57,7 +57,7 @@ private lemma sq_partials_scalarOnE_le_norm_fderiv_scalarOnE_sq
   classical
   let _ := g
   have h_each : ∀ k,
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv
           (E := E) k
           (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
             (I := I) α f) y)^2 ≤
@@ -69,14 +69,14 @@ private lemma sq_partials_scalarOnE_le_norm_fderiv_scalarOnE_sq
     have hop_le := (fderiv ℝ
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
           (I := I) α f) y).le_opNorm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
-    have hsq_le : (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+    have hsq_le : (DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) k
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f) y)^2 ≤
           (‖fderiv ℝ
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f) y‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖)^2 := by
-      unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       have habs : |(fderiv ℝ
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f) y) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)| ≤
@@ -149,7 +149,7 @@ lemma sq_partials_scalarOnE_le_chartSmoothExt_fderiv
           (I := I) (M := M) α f)) {y : E}
     (hy : y ∈ (extChartAt I α).target) :
     (∑ k : Fin (Module.finrank ℝ E),
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) k
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f) y)^2) ≤
@@ -204,7 +204,7 @@ lemma sq_partials_scalarOnE_le_chartSmoothExt_fderiv
     (toEuclidean (E := E) : E ≃L[ℝ] EuclN_E).fderiv
   rw [h_TE_fderiv] at h_fderiv_comp
   have h_each : ∀ k,
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv
           (E := E) k
           (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
             (I := I) α f) y)^2 ≤
@@ -215,7 +215,7 @@ lemma sq_partials_scalarOnE_le_chartSmoothExt_fderiv
         ‖(toEuclidean (E := E) : E ≃L[ℝ] EuclN_E) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)‖^2 := by
     intro k
     have h_partial_eq :
-        DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) k
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f) y =
@@ -225,7 +225,7 @@ lemma sq_partials_scalarOnE_le_chartSmoothExt_fderiv
             ((toEuclidean (E := E) : E ≃L[ℝ] EuclN_E) y))
               ((toEuclidean (E := E) : E ≃L[ℝ] EuclN_E)
                 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) := by
-      unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       rw [h_fderiv_eq, h_fderiv_comp]
       rfl
     rw [h_partial_eq]

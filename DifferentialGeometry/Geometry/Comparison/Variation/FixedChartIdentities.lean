@@ -666,7 +666,7 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma fderiv_eq_sum_partialDeriv (u : E → ℝ) (y v : E) :
     fderiv ℝ u y v =
       ∑ k : Fin (Module.finrank ℝ E),
-        chartCoord (E := E) k v * partialDeriv (E := E) k u y := by
+        chartCoord (E := E) k v * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k u y := by
   classical
   have hv : v = ∑ k : Fin (Module.finrank ℝ E),
       chartCoord (E := E) k v • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
@@ -725,8 +725,8 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
     [SigmaCompactSpace M] [BoundarylessManifold I M] in
 lemma partialDeriv_chartChristoffel_symm
     (g : SmoothRiemannianMetric I M) (x : M) (i j l d : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) d (chartChristoffel (I := I) g x i j l) y
-      = partialDeriv (E := E) d (chartChristoffel (I := I) g x j i l) y := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j l) y
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x j i l) y := by
   have hfun : chartChristoffel (I := I) g x i j l = chartChristoffel (I := I) g x j i l := by
     funext y'; exact chartChristoffel_symm (I := I) g x i j l y'
   rw [hfun]
@@ -759,10 +759,10 @@ lemma curvPart_eq_chartRiemannCLM
   set d₂ : Fin (Module.finrank ℝ E) → ℝ := fun i => chartCoord (E := E) i D₂ with hd₂
   set yc : Fin (Module.finrank ℝ E) → ℝ := fun i => chartCoord (E := E) i Yv with hyc
   have hfd₁ : ∀ i j k, fderiv ℝ (chartChristoffel (I := I) g x i j k) y₀ D₁
-      = ∑ d, d₁ d * partialDeriv (E := E) d (chartChristoffel (I := I) g x i j k) y₀ :=
+      = ∑ d, d₁ d * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j k) y₀ :=
     fun i j k => Aux5.fderiv_eq_sum_partialDeriv _ y₀ D₁
   have hfd₂ : ∀ i j k, fderiv ℝ (chartChristoffel (I := I) g x i j k) y₀ D₂
-      = ∑ d, d₂ d * partialDeriv (E := E) d (chartChristoffel (I := I) g x i j k) y₀ :=
+      = ∑ d, d₂ d * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j k) y₀ :=
     fun i j k => Aux5.fderiv_eq_sum_partialDeriv _ y₀ D₂
   have hAA₁ : chartChristoffelContraction (I := I) g x D₁
         (chartChristoffelContraction (I := I) g x D₂ Yv y₀) y₀
@@ -839,8 +839,8 @@ lemma curvPart_eq_chartRiemannCLM
   have hR_split : (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
         chartRiemannTensor (I := I) g x i j k l y₀)
       = (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
-            (partialDeriv (E := E) j (chartChristoffel (I := I) g x i k l) y₀
-              - partialDeriv (E := E) k (chartChristoffel (I := I) g x i j l) y₀))
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x i k l) y₀
+              - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g x i j l) y₀))
         + (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
             (∑ m, (chartChristoffel (I := I) g x j m l y₀ *
                   chartChristoffel (I := I) g x i k m y₀
@@ -859,9 +859,9 @@ lemma curvPart_eq_chartRiemannCLM
           ((fderiv ℝ (chartChristoffel (I := I) g x i j l) y₀ D₁) * d₂ i * yc j
             - (fderiv ℝ (chartChristoffel (I := I) g x i j l) y₀ D₂) * d₁ i * yc j))
         = (∑ i, ∑ j, ∑ d,
-            d₁ d * partialDeriv (E := E) d (chartChristoffel (I := I) g x i j l) y₀ * d₂ i * yc j)
+            d₁ d * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j l) y₀ * d₂ i * yc j)
           - (∑ i, ∑ j, ∑ d,
-            d₂ d * partialDeriv (E := E) d (chartChristoffel (I := I) g x i j l) y₀ * d₁ i * yc
+            d₂ d * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartChristoffel (I := I) g x i j l) y₀ * d₁ i * yc
               j) := by
       rw [← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl fun i _ => ?_
@@ -871,12 +871,12 @@ lemma curvPart_eq_chartRiemannCLM
         Finset.sum_mul, ← Finset.sum_sub_distrib]
     rw [hLHS]
     have hRHS' : (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
-          (partialDeriv (E := E) j (chartChristoffel (I := I) g x i k l) y₀
-            - partialDeriv (E := E) k (chartChristoffel (I := I) g x i j l) y₀))
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x i k l) y₀
+            - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g x i j l) y₀))
         = (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
-              partialDeriv (E := E) j (chartChristoffel (I := I) g x i k l) y₀)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x i k l) y₀)
           - (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
-              partialDeriv (E := E) k (chartChristoffel (I := I) g x i j l) y₀) := by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g x i j l) y₀) := by
       rw [← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [← Finset.sum_sub_distrib]

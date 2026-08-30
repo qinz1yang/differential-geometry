@@ -154,7 +154,7 @@ private lemma chartCoord_fderiv_chartTransitionAt [I.Boundaryless]
         ((fderiv ℝ (fun z => chartTransitionAt (I := I) p.proj α z)
           (extChartAt I p.proj p.proj) v) v) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z => chartTransitionJacEntry (I := I) p.proj α z c j)
           (extChartAt I p.proj p.proj) *
           chartCoord (E := E) i v * chartCoord (E := E) j v := by
@@ -210,7 +210,7 @@ private lemma chartCoord_fderiv_chartTransitionAt [I.Boundaryless]
           fderiv ℝ (fun z => chartTransitionJacEntry (I := I) p.proj α z c i *
             chartCoord (E := E) i v) x₀ v) =
         ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) k
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
             (fun z => chartTransitionJacEntry (I := I) p.proj α z c i) x₀ *
             chartCoord (E := E) k v * chartCoord (E := E) i v := by
     refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -338,7 +338,7 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
               chartTransitionJacEntry (I := I) α p.proj
                 (chartTransitionMap (I := I) p.proj α x₀) k' c *
                 (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-                  partialDeriv (E := E) i
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                     (fun z => chartTransitionJacEntry (I := I) p.proj α z c j) x₀ *
                     chartCoord (E := E) i pModel * chartCoord (E := E) j pModel)) •
               DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k') =
@@ -346,7 +346,7 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
               chartTransitionJacEntry (I := I) α p.proj
                 (chartTransitionMap (I := I) p.proj α x₀) k c *
                 (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-                  partialDeriv (E := E) i
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                     (fun z => chartTransitionJacEntry (I := I) p.proj α z c j) x₀ *
                     chartCoord (E := E) i pModel * chartCoord (E := E) j pModel) from ?_]
       · rw [hTx₀]

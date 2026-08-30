@@ -387,7 +387,7 @@ private lemma fderiv_christoffelSum_apply
             chartChristoffel (I := I) g x k i m y • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
         (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
       ∑ m : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) j (chartChristoffel (I := I) g x k i m)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x k i m)
             (extChartAt I x x) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   rw [fderiv_fun_sum (fun m _ =>
@@ -414,7 +414,7 @@ private lemma LeviCivita_covApply_secondLayer
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X k) (X i)) x
         ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) =
       ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l)
               (extChartAt I x x) +
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x j m l (extChartAt I x x) *
@@ -509,14 +509,14 @@ private lemma LeviCivita_covApply_secondLayer
   rw [hcorr]
   have hmerge :
       (∑ m : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) j (chartChristoffel (I := I) g x k i m)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x k i m)
             (extChartAt I x x) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) +
         (∑ r : Fin (Module.finrank ℝ E),
           (∑ q : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g x j q r (extChartAt I x x) * c q) •
             (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) r) =
       ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l)
               (extChartAt I x x) +
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x j m l (extChartAt I x x) *
@@ -573,14 +573,14 @@ theorem chartRiemannBasisIdentity_LeviCivita [I.Boundaryless]
     rw [LeviCivita_covApply_secondLayer (I := I) g x i k j hX hXnhds]
     refine Eq.trans (Finset.sum_sub_distrib (s := Finset.univ)
       (f := fun l' : Fin (Module.finrank ℝ E) =>
-        (partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l')
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g x k i l')
               (extChartAt I x x) +
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x j m l' (extChartAt I x x) *
                 chartChristoffel (I := I) g x k i m (extChartAt I x x)) •
           (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l')
       (g := fun l' : Fin (Module.finrank ℝ E) =>
-        (partialDeriv (E := E) k (chartChristoffel (I := I) g x j i l')
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g x j i l')
               (extChartAt I x x) +
             ∑ m : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g x k m l' (extChartAt I x x) *

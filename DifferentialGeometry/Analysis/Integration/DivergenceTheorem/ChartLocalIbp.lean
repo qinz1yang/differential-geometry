@@ -586,13 +586,13 @@ private theorem ibp_lip_index [I.Boundaryless]
     (hφ_compactSupp : HasCompactSupport φ)
     (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
-    (∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+    (∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
         -∫ y, vwIntegrandOnE (I := I) g α X i y *
             lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E))) ∧
       Integrable (fun y =>
-        partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
           phiOnE (I := I) α φ y) (modelHaar (E := E)) ∧
       Integrable (fun y => vwIntegrandOnE (I := I) g α X i y *
         lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
@@ -654,7 +654,7 @@ private theorem ibp_lip_index [I.Boundaryless]
   have hright_ae :
       (fun y => lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y) =ᵐ[
         modelHaar (E := E)]
-      (fun y => -(partialDeriv (E := E) i
+      (fun y => -(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y)) :=
     Filter.Eventually.of_forall fun y => by
       by_cases hy : y ∈ tsupport (phiOnE (I := I) α φ)
@@ -665,26 +665,26 @@ private theorem ibp_lip_index [I.Boundaryless]
             (vwIntegrandOnE (I := I) g α X i) y :=
           vwIntegrandOnE_differentiableOn_target (I := I) g α X i y (hKU hyK)
         have hline : lineDeriv ℝ q y (-v) =
-            -partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
+            -DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
           rw [(hq_vw_nhds hyK).lineDeriv_eq]
           rw [hvw_diff.lineDeriv_eq_fderiv]
-          simp only [v, partialDeriv, map_neg]
+          simp only [v, DifferentialGeometry.Tensor.Coordinates.partialDeriv, map_neg]
         change lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y =
-          -(partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+          -(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y)
         rw [hline]
         ring
       · have hφ_zero : phiOnE (I := I) α φ y = 0 :=
           image_eq_zero_of_notMem_tsupport hy
         change lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y =
-          -(partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+          -(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y)
         rw [hφ_zero]
         simp only [mul_zero, neg_zero]
   have hright :
       ∫ y, lineDeriv ℝ q y (-v) * phiOnE (I := I) α φ y
           ∂(modelHaar (E := E)) =
-        -∫ y, partialDeriv (E := E) i
+        -∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y
           ∂(modelHaar (E := E)) := by
@@ -694,13 +694,13 @@ private theorem ibp_lip_index [I.Boundaryless]
     (μ := modelHaar (E := E)) hφ_lip hq_lip hq_compact v
   rw [hleft, hright] at hibp
   have heq :
-      ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+      ∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
         -∫ y, vwIntegrandOnE (I := I) g α X i y *
             lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E)) := by
     simpa only [v] using (show
-      ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+      ∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
         -∫ y, vwIntegrandOnE (I := I) g α X i y *
             lineDeriv ℝ (phiOnE (I := I) α φ) y v
@@ -732,12 +732,12 @@ private theorem ibp_lip_index [I.Boundaryless]
       change phiOnE (I := I) α φ y * lineDeriv ℝ q y (-v) = _
       exact mul_comm _ _
   have hneg_lhs : Integrable
-      (fun y => -(partialDeriv (E := E) i
+      (fun y => -(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y))
       (modelHaar (E := E)) :=
     hright0.congr hright_ae
   have hlhs : Integrable
-      (fun y => partialDeriv (E := E) i
+      (fun y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (vwIntegrandOnE (I := I) g α X i) y * phiOnE (I := I) α φ y)
       (modelHaar (E := E)) :=
     integrable_neg_iff.mp (hneg_lhs.congr <|
@@ -750,10 +750,10 @@ private lemma partialDeriv_vwIntegrandOnE_eq_on_target [I.Boundaryless]
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ (extChartAt I α).target) :
-    partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y =
-      partialDeriv (E := E) i
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun z : E => chartCoeffOnE (I := I) α X i z * chartDensityOnE (I := I) g α z) y := by
-  unfold partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   have hOpen : IsOpen (extChartAt I α).target := isOpen_extChartAt_target (I := I) α
   have h_eq : vwIntegrandOnE (I := I) g α X i =ᶠ[𝓝 y]
       (fun z : E => chartCoeffOnE (I := I) α X i z * chartDensityOnE (I := I) g α z) := by
@@ -765,9 +765,9 @@ omit [IsManifold I ∞ M] in
 private lemma partialDeriv_phiOnE_eq_on_target [I.Boundaryless]
     (α : M) (φ : M → ℝ) (i : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ (extChartAt I α).target) :
-    partialDeriv (E := E) i (phiOnE (I := I) α φ) y =
-      partialDeriv (E := E) i (scalarOnE (I := I) α φ) y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α φ) y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [fderiv_phiOnE_eq_fderiv_scalarOnE (I := I) α φ hy]
 
 private lemma localDivergence_mul_chartDensity_chart_target_apply [I.Boundaryless]
@@ -777,7 +777,7 @@ private lemma localDivergence_mul_chartDensity_chart_target_apply [I.Boundaryles
     chartDensity (I := I) g α ((extChartAt I α).symm y) *
       localDivergence (I := I) g α X ((extChartAt I α).symm y) =
       ∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y := by
   classical
   have hsymm : (extChartAt I α) ((extChartAt I α).symm y) = y :=
     (extChartAt I α).right_inv hy
@@ -804,7 +804,7 @@ private lemma tangentSectionAction_chart_target_apply [I.Boundaryless]
     tangentSectionAction (I := I) X φ ((extChartAt I α).symm y) =
       ∑ i : Fin (Module.finrank ℝ E),
         chartCoeff (I := I) α X i ((extChartAt I α).symm y) *
-          partialDeriv (E := E) i (scalarOnE (I := I) α φ) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α φ) y := by
   classical
   have hsymmsrc : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
     (extChartAt I α).map_target hy
@@ -889,7 +889,7 @@ private lemma lhs_chart_target [I.Boundaryless]
     ∫ x, localDivergence (I := I) g α X x * φ x ∂(chartLocalMeasure (I := I) g α) =
       ∫ y in (extChartAt I α).target,
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) := by
   classical
@@ -922,7 +922,7 @@ private lemma rhs_chart_target [I.Boundaryless]
         chartDensityOnE (I := I) g α y *
           (∑ i : Fin (Module.finrank ℝ E),
             chartCoeffOnE (I := I) α X i y *
-              partialDeriv (E := E) i (scalarOnE (I := I) α φ) y)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α φ) y)
         ∂(modelHaar (E := E)) := by
   classical
   have htsa_cont : Continuous (tangentSectionAction (I := I) X φ) :=
@@ -1085,14 +1085,14 @@ private lemma summand_int [I.Boundaryless]
     (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     Integrable (fun y =>
-      partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
         phiOnE (I := I) α φ y) (modelHaar (E := E)) := by
   have hphi_smooth : ContDiff ℝ ∞ (phiOnE (I := I) α φ) :=
     phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp
   have hphi_compactSupp : HasCompactSupport (phiOnE (I := I) α φ) :=
     phiOnE_hasCompactSupport (I := I) α hφ_compactSupp hφ_supp
   have hI_smooth : ContDiff ℝ ∞
-      (fun y => partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+      (fun y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
         phiOnE (I := I) α φ y) := by
     refine contDiff_of_smooth_on_open_zero_outside (U := (extChartAt I α).target)
       (isOpen_extChartAt_target (I := I) α)
@@ -1107,7 +1107,7 @@ private lemma summand_int [I.Boundaryless]
       have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (extChartAt I α).target := contDiffOn_const
       have hpartial : ContDiffOn ℝ ∞
-          (partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i))
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i))
           (extChartAt I α).target := hvw_fderiv.clm_apply hbasis_const
       exact hpartial.mul hphi_smooth.contDiffOn
     · intro y hy
@@ -1120,7 +1120,7 @@ private lemma summand_int [I.Boundaryless]
         · exact phiOnE_apply_of_notMem (I := I) α φ hyT
       rw [hphi_zero, mul_zero]
   have hI_compactSupp : HasCompactSupport
-      (fun y => partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+      (fun y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
           phiOnE (I := I) α φ y) :=
     hphi_compactSupp.mul_left
   exact hI_smooth.continuous.integrable_of_hasCompactSupport hI_compactSupp
@@ -1134,12 +1134,12 @@ private lemma summand_int' [I.Boundaryless]
     (i : Fin (Module.finrank ℝ E)) :
     Integrable (fun y =>
       vwIntegrandOnE (I := I) g α X i y *
-        partialDeriv (E := E) i (phiOnE (I := I) α φ) y) (modelHaar (E := E)) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y) (modelHaar (E := E)) := by
   have hphi_smooth : ContDiff ℝ ∞ (phiOnE (I := I) α φ) :=
     phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp
   have hI_smooth : ContDiff ℝ ∞
       (fun y => vwIntegrandOnE (I := I) g α X i y *
-          partialDeriv (E := E) i (phiOnE (I := I) α φ) y) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y) := by
     refine contDiff_of_smooth_on_open_zero_outside (U := (extChartAt I α).target)
       (isOpen_extChartAt_target (I := I) α)
       (K := chartImageOfTsupport (I := I) α φ)
@@ -1151,7 +1151,7 @@ private lemma summand_int' [I.Boundaryless]
       have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (extChartAt I α).target := contDiffOn_const
       have hpartial : ContDiffOn ℝ ∞
-          (partialDeriv (E := E) i (phiOnE (I := I) α φ))
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ))
           (extChartAt I α).target := hphi_fderiv.clm_apply hbasis_const
       exact (vwIntegrandOnE_contDiffOn_target (I := I) g α X i).mul hpartial
     · intro y hy
@@ -1165,8 +1165,8 @@ private lemma summand_int' [I.Boundaryless]
           have : (extChartAt I α).symm z ∈ tsupport φ := subset_tsupport _ hne
           exact hz ⟨(extChartAt I α).symm z, this, (extChartAt I α).right_inv hzT⟩
         · exact phiOnE_apply_of_notMem (I := I) α φ hzT
-      have hpartial_zero : partialDeriv (E := E) i (phiOnE (I := I) α φ) y = 0 := by
-        unfold partialDeriv
+      have hpartial_zero : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y = 0 := by
+        unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
         have hfderiv_eq : fderiv ℝ (phiOnE (I := I) α φ) y =
             fderiv ℝ (fun _ : E => (0 : ℝ)) y :=
           hphi_zero_on_nhd.fderiv_eq
@@ -1176,7 +1176,7 @@ private lemma summand_int' [I.Boundaryless]
       rw [hpartial_zero, mul_zero]
   have hI_compactSupp : HasCompactSupport
       (fun y => vwIntegrandOnE (I := I) g α X i y *
-          partialDeriv (E := E) i (phiOnE (I := I) α φ) y) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y) := by
     refine HasCompactSupport.intro
       (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp) ?_
     intro y hy
@@ -1190,8 +1190,8 @@ private lemma summand_int' [I.Boundaryless]
         have : (extChartAt I α).symm z ∈ tsupport φ := subset_tsupport _ hne
         exact hz ⟨(extChartAt I α).symm z, this, (extChartAt I α).right_inv hzT⟩
       · exact phiOnE_apply_of_notMem (I := I) α φ hzT
-    have hpartial_zero : partialDeriv (E := E) i (phiOnE (I := I) α φ) y = 0 := by
-      unfold partialDeriv
+    have hpartial_zero : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y = 0 := by
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       have hfderiv_eq : fderiv ℝ (phiOnE (I := I) α φ) y =
           fderiv ℝ (fun _ : E => (0 : ℝ)) y :=
         hphi_zero_on_nhd.fderiv_eq
@@ -1215,17 +1215,17 @@ theorem chart_local_ibp [I.Boundaryless]
   have hLHS_to_E :
       ∫ y in (extChartAt I α).target,
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) =
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) := by
     refine setIntegral_eq_integral_of_forall_compl_eq_zero (μ := modelHaar (E := E))
       (s := (extChartAt I α).target)
       (f := fun y => (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y) ?_
     intro y hy
     have hphi_zero : phiOnE (I := I) α φ y = 0 :=
@@ -1234,18 +1234,18 @@ theorem chart_local_ibp [I.Boundaryless]
   rw [hLHS_to_E]
   have h_sum_int :
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) =
       ∑ i : Fin (Module.finrank ℝ E),
-        ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+        ∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) := by
     rw [show (fun y => (∑ i : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
               phiOnE (I := I) α φ y)
           = (fun y => ∑ i : Fin (Module.finrank ℝ E),
-              partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
               phiOnE (I := I) α φ y) from
       by funext y; rw [Finset.sum_mul]]
     rw [integral_finsetSum]
@@ -1253,11 +1253,11 @@ theorem chart_local_ibp [I.Boundaryless]
     exact summand_int (I := I) g α X hφ hφ_compactSupp hφ_supp i
   rw [h_sum_int]
   have h_each : ∀ i : Fin (Module.finrank ℝ E),
-      ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+      ∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
           phiOnE (I := I) α φ y
         ∂(modelHaar (E := E))
       = -∫ y, vwIntegrandOnE (I := I) g α X i y *
-            partialDeriv (E := E) i (phiOnE (I := I) α φ) y
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y
           ∂(modelHaar (E := E)) := by
     intro i
     have h_ibp := ibp_per_index (I := I) g α X hφ hφ_compactSupp hφ_supp i
@@ -1271,21 +1271,21 @@ theorem chart_local_ibp [I.Boundaryless]
   rw [Finset.sum_congr rfl (fun i _ => h_each i)]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
           -∫ y, vwIntegrandOnE (I := I) g α X i y *
-              partialDeriv (E := E) i (phiOnE (I := I) α φ) y
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y
             ∂(modelHaar (E := E))) =
         - ∑ i : Fin (Module.finrank ℝ E),
           ∫ y, vwIntegrandOnE (I := I) g α X i y *
-              partialDeriv (E := E) i (phiOnE (I := I) α φ) y
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y
             ∂(modelHaar (E := E)) from by
       rw [← Finset.sum_neg_distrib]]
   have h_sum_back :
       ∑ i : Fin (Module.finrank ℝ E),
         ∫ y, vwIntegrandOnE (I := I) g α X i y *
-            partialDeriv (E := E) i (phiOnE (I := I) α φ) y
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y
           ∂(modelHaar (E := E)) =
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
         ∂(modelHaar (E := E)) := by
     rw [← integral_finsetSum]
     intro i _
@@ -1294,18 +1294,18 @@ theorem chart_local_ibp [I.Boundaryless]
   have hE_to_target :
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
         ∂(modelHaar (E := E)) =
       ∫ y in (extChartAt I α).target,
         (∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y)
         ∂(modelHaar (E := E)) := by
     rw [setIntegral_eq_integral_of_forall_compl_eq_zero (μ := modelHaar (E := E))
       (s := (extChartAt I α).target)
       (f := fun y => ∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            partialDeriv (E := E) i (phiOnE (I := I) α φ) y) ?_]
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y) ?_]
     intro y hy
     refine Finset.sum_eq_zero ?_
     intro i _
@@ -1316,11 +1316,11 @@ theorem chart_local_ibp [I.Boundaryless]
   intro y hy
   change (∑ i : Fin (Module.finrank ℝ E),
       vwIntegrandOnE (I := I) g α X i y *
-          partialDeriv (E := E) i (phiOnE (I := I) α φ) y) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (phiOnE (I := I) α φ) y) =
       chartDensityOnE (I := I) g α y *
         ∑ i : Fin (Module.finrank ℝ E),
           chartCoeffOnE (I := I) α X i y *
-            partialDeriv (E := E) i (scalarOnE (I := I) α φ) y
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α φ) y
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro i _
@@ -1349,38 +1349,38 @@ theorem chart_local_ibp_lip [I.Boundaryless]
   have hLHS_to_E :
       ∫ y in (extChartAt I α).target,
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) =
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) := by
     refine setIntegral_eq_integral_of_forall_compl_eq_zero
       (μ := modelHaar (E := E)) (s := (extChartAt I α).target)
       (f := fun y => (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
           phiOnE (I := I) α φ y) ?_
     intro y hy
     change (∑ i : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
         phiOnE (I := I) α φ y = 0
     rw [phiOnE_apply_of_notMem (I := I) α φ hy, mul_zero]
   rw [hLHS_to_E]
   have h_sum_int :
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) =
       ∑ i : Fin (Module.finrank ℝ E),
-        ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+        ∫ y, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y
           ∂(modelHaar (E := E)) := by
     rw [show (fun y => (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y) *
             phiOnE (I := I) α φ y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y) from by
       funext y
       rw [Finset.sum_mul]]

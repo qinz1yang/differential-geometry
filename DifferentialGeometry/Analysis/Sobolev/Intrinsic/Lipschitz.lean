@@ -293,7 +293,7 @@ theorem grad_norm_aesm
     fun α i j => (source α).piecewise
       (fun x => chartInvGramMatrix (I := I) g α x i j) (fun _ => 0)
   let part : M → Fin (Module.finrank ℝ E) → M → ℝ := fun α i x =>
-    partialDeriv (E := E) i (scalarOnE (I := I) α u)
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α u)
       (extChartAtExt (I := I) α x)
   let q : M → M → ℝ := fun α x =>
     ∑ i, ∑ j, gram α i j x * part α j x * part α i x
@@ -313,7 +313,7 @@ theorem grad_norm_aesm
       (hsource α)
   have hpart (α : M) (i : Fin (Module.finrank ℝ E)) :
       Measurable (part α i) := by
-    unfold part partialDeriv
+    unfold part DifferentialGeometry.Tensor.Coordinates.partialDeriv
     exact (measurable_fderiv_apply_const ℝ
       (scalarOnE (I := I) α u) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)).comp
         (extChartAtExt_measurable (I := I) (α := α))

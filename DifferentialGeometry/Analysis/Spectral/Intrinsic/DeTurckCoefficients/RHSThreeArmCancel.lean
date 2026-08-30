@@ -182,29 +182,29 @@ private theorem chartLie_symm
       chartLieDeTurckComp (I := I) g g_bg x j i y := by
   have hA : (∑ k : Fin (Module.finrank ℝ E),
         chartDeTurckVFComp (I := I) g g_bg x k y *
-          partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) y) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartDeTurckVFComp (I := I) g g_bg x k y *
-          partialDeriv (E := E) k (chartGramOnE (I := I) g x j i) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x j i) y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     congr 1
-    apply congrArg (fun f : E → ℝ => partialDeriv (E := E) k f y)
+    apply congrArg (fun f : E → ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k f y)
     funext z
     exact chartGramOnE_symm (I := I) g x i j z
   have hB : (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x k j y *
-          partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g g_bg x k) y) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g g_bg x k) y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x j k y *
-          partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g g_bg x k) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g g_bg x k) y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x k j y]
   have hC : (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x i k y *
-          partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg x k) y) =
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg x k) y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x k i y *
-          partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg x k) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartDeTurckVFComp (I := I) g g_bg x k) y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x i k y]
   rw [chartLieDeTurckComp_def, chartLieDeTurckComp_def, hA, hB, hC]

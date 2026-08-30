@@ -48,9 +48,9 @@ private theorem chartInvGram_scale
 private theorem partialDeriv_const_mul_ne
     (c : Real) (hc : c ≠ 0) (u : E → Real)
     (i : Fin (Module.finrank Real E)) (y : E) :
-    partialDeriv (E := E) i (fun z => c * u z) y =
-      c * partialDeriv (E := E) i u y := by
-  unfold partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun z => c * u z) y =
+      c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y := by
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   by_cases hu : DifferentiableAt Real u y
   · rw [fderiv_const_mul hu c]
     simp

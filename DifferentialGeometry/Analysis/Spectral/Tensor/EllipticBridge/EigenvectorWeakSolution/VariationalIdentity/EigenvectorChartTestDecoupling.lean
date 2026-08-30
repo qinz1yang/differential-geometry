@@ -129,7 +129,7 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Sp
 private lemma partialDeriv_scalarOnE_eq_euclidPartial
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    partialDeriv (E := E) m (scalarOnE (I := I) α f)
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α f)
         (extChartAt I α ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
       euclidPartial (E := E) m (chartPushedRaw I α f) y := by
   classical
@@ -155,7 +155,7 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial
   rw [show (toEuclidean (E := E)).symm.toContinuousLinearMap
       (EuclideanSpace.single m (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from by
     rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]; rfl]
-  rw [partialDeriv]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in

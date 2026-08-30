@@ -42,7 +42,7 @@ theorem nablaRicChartComp
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     metricNabla0S (I := I) g Ric x
         (fun a : Fin 3 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (K a) x) =
-      partialDeriv (E := E) (K 0)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) (K 0)
           (chartRicciTensor (I := I) g α (K 1) (K 2))
           (extChartAt I α x) -
         ∑ m : Fin (Module.finrank Real E),
@@ -164,7 +164,7 @@ theorem nablaRicChartComp
   have hderiv :
       mvfderiv (I := I) f x
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (K 0) x) =
-        partialDeriv (E := E) (K 0) gE y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) (K 0) gE y₀ := by
     change
       (mfderiv I 𝓘(Real) f x : TangentSpace I x →L[Real] Real)
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (K 0) x) =
@@ -178,7 +178,7 @@ theorem nablaRicChartComp
     rw [hscalar.fderiv_eq (𝕜 := Real)]
   have hderivX :
       mvfderiv (I := I) f x (X x) =
-        partialDeriv (E := E) (K 0) gE y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) (K 0) gE y₀ := by
     rw [hXx, hderiv]
   have hcov : ∀ q : Fin 2,
       ((metricCov (I := I) g) (V q) x) (X x) =

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.IteratedInvGramJetLipschitz
-open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -315,7 +315,7 @@ theorem HasChartJetLip.partialDeriv
     {F : SmoothRiemannianMetric I M → E → ℝ} {d : ℕ}
     (hF : HasChartJetLip g₁ g₂ α K F d) (i : Fin (Module.finrank ℝ E)) :
     HasChartJetLip g₁ g₂ α K
-      (fun g => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i (F g))
+      (fun g => DifferentialGeometry.Tensor.Coordinates.partialDeriv i (F g))
       (d + 1) := by
   classical
   set s : Set E := interior (extChartAt I α).target with hs_def
@@ -336,9 +336,9 @@ theorem HasChartJetLip.partialDeriv
     refine ⟨‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * C + 1, by positivity, fun y hy => ?_⟩
     have hyS : y ∈ s := hKsub hy
     have hEqOn : EqOn
-        (fun z => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i (F g₁) z -
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i (F g₂) z)
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i
+        (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv i (F g₁) z -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv i (F g₂) z)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv i
           (fun z => F g₁ z - F g₂ z)) s :=
       partialDeriv_sub_eqOn hs_open (hF.contDiff g₁) (hF.contDiff g₂) i
     rw [iteratedFDerivWithin_congr hEqOn hyS N]

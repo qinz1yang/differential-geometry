@@ -97,11 +97,11 @@ def chartDeTurckCorrSecondOrderPart (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α k j y *
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y) +
   (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i k y *
-        partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -111,11 +111,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     chartDeTurckCorrSecondOrderPart (I := I) g α h i j y =
       (∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g α k j y *
-            partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y) +
       (∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g α i k y *
-            partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y) :=
   rfl
 
@@ -125,13 +125,13 @@ lemma partialDeriv_chartLinearizedDeTurckVFPrincipal
     (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (k d : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) d
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) d (chartInvGramOnE (I := I) g α a b) y *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g α a b) y *
             chartLinearizedChristoffelPrincipal (I := I) g α h a b k y +
           chartInvGramOnE (I := I) g α a b y *
-            partialDeriv (E := E) d
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (fun y' => chartLinearizedChristoffelPrincipal (I := I) g α h a b k y')
               y) := by
   classical
@@ -175,7 +175,7 @@ theorem chartDeTurckCorrSecondOrderPart_zero
   classical
   rw [chartDeTurckCorrSecondOrderPart_def]
   have hpd : ∀ (d k : Fin (Module.finrank ℝ E)),
-      partialDeriv (E := E) d
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α
           (0 : ChartMetricPerturbation E) k y') y = 0 := by
     intro d k
@@ -185,14 +185,14 @@ theorem chartDeTurckCorrSecondOrderPart_zero
     rw [heq, partialDeriv_const]
   have hsum1 : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α k j y *
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α
             (0 : ChartMetricPerturbation E) k y') y) = 0 := by
     refine Finset.sum_eq_zero (fun k _ => ?_)
     rw [hpd i k, mul_zero]
   have hsum2 : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i k y *
-        partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α
             (0 : ChartMetricPerturbation E) k y') y) = 0 := by
     refine Finset.sum_eq_zero (fun k _ => ?_)
@@ -212,12 +212,12 @@ theorem chartDeTurckCorrSecondOrderPart_add
   rw [chartDeTurckCorrSecondOrderPart_def, chartDeTurckCorrSecondOrderPart_def,
     chartDeTurckCorrSecondOrderPart_def]
   have hadd : ∀ (d k : Fin (Module.finrank ℝ E)),
-      partialDeriv (E := E) d
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (h₁ + h₂) k y')
           y =
-        partialDeriv (E := E) d
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h₁ k y') y +
-          partialDeriv (E := E) d
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h₂ k y') y := by
     intro d k
     have heq : (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α
@@ -232,32 +232,32 @@ theorem chartDeTurckCorrSecondOrderPart_add
           (chartLinearizedDeTurckVFPrincipal_differentiableAt (I := I) g α h₂ k hy)]
   have hsum1 : (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α k j y *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (h₁ + h₂) k y')
             y) =
       (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α k j y *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h₁ k y') y) +
       (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α k j y *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h₂ k y') y) := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [hadd i k]; ring
   have hsum2 : (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α i k y *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (h₁ + h₂) k y')
             y) =
       (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α i k y *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h₁ k y') y) +
       (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α i k y *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h₂ k y') y) := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -277,9 +277,9 @@ theorem chartDeTurckCorrSecondOrderPart_smul
   rw [chartDeTurckCorrSecondOrderPart_def, chartDeTurckCorrSecondOrderPart_def,
     smul_eq_mul]
   have hsmul : ∀ (d k : Fin (Module.finrank ℝ E)),
-      partialDeriv (E := E) d
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (c • h) k y') y =
-        c * partialDeriv (E := E) d
+        c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y := by
     intro d k
     have heq : (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α
@@ -292,24 +292,24 @@ theorem chartDeTurckCorrSecondOrderPart_smul
       smul_eq_mul]
   have hsum1 : (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α k j y *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (c • h) k y')
             y) =
       c * ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α k j y *
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [hsmul i k]; ring
   have hsum2 : (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α i k y *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (c • h) k y')
             y) =
       c * ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g α i k y *
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)

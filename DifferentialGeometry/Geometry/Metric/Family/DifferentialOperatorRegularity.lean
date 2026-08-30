@@ -32,7 +32,7 @@ omit [CompleteSpace E] in
 private theorem partialDeriv_contDiffOn
     {f : E → Real} {V : Set E} (hV : IsOpen V)
     (hf : ContDiffOn Real ∞ f V) (i : Fin (Module.finrank Real E)) :
-    ContDiffOn Real ∞ (partialDeriv (E := E) i f) V := by
+    ContDiffOn Real ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i f) V := by
   have hfd : ContDiffOn Real ∞ (fderiv Real f) V :=
     hf.fderiv_of_isOpen hV (by rw [ENat.coe_top_add_one])
   exact hfd.clm_apply contDiffOn_const
@@ -43,7 +43,7 @@ private theorem scalarPartialOnE_continuousOn
     (J : Set Real) (i : Fin (Module.finrank Real E)) :
     ContinuousOn
       (fun p : Real × E =>
-        partialDeriv (E := E) i (scalarOnE (I := I) α ρ) p.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α ρ) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   have hρE : ContDiffOn Real ∞ (scalarOnE (I := I) α ρ)
       (interior (extChartAt I α).target) :=
@@ -57,8 +57,8 @@ private theorem scalarSecondPartialOnE_continuousOn
     (J : Set Real) (i j : Fin (Module.finrank Real E)) :
     ContinuousOn
       (fun p : Real × E =>
-        partialDeriv (E := E) i
-          (partialDeriv (E := E) j (scalarOnE (I := I) α ρ)) p.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α ρ)) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   have hρE : ContDiffOn Real ∞ (scalarOnE (I := I) α ρ)
       (interior (extChartAt I α).target) :=
@@ -80,7 +80,7 @@ private theorem gradientCoeffOnE_continuousOn
       (fun p : Real × E =>
         ∑ j : Fin (Module.finrank Real E),
           chartInvGramOnE (I := I) (g_fam p.1) α i j p.2 *
-            partialDeriv (E := E) j (scalarOnE (I := I) α ρ) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α ρ) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
   refine continuousOn_finsetSum _ fun j _ => ?_
@@ -127,7 +127,7 @@ theorem gradient_continuousOn [I.Boundaryless]
   let coeff : Fin (Module.finrank Real E) → Real × M → Real := fun i q =>
     ∑ j : Fin (Module.finrank Real E),
       chartInvGramOnE (I := I) (g_fam q.1) α i j (extChartAt I α q.2) *
-        partialDeriv (E := E) j (scalarOnE (I := I) α ρ) (extChartAt I α q.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α ρ) (extChartAt I α q.2)
   have hcoeff : ∀ i, ContinuousOn (coeff i) S := by
     intro i
     have h := (gradientCoeffOnE_continuousOn (I := I) hG hJreg α hρ i).comp hψ hmapsψ
@@ -187,8 +187,8 @@ private theorem gradientNormSqOnE_continuousOn
       (fun p : Real × E =>
         ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
           chartInvGramOnE (I := I) (g_fam p.1) α i j p.2 *
-            partialDeriv (E := E) j (scalarOnE (I := I) α ρ) p.2 *
-            partialDeriv (E := E) i (scalarOnE (I := I) α ρ) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α ρ) p.2 *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α ρ) p.2)
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
   refine continuousOn_finsetSum _ fun i _ =>
@@ -208,11 +208,11 @@ private theorem leviCivitaLaplacianOnE_continuousOn
       (fun p : Real × E =>
         ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
           chartInvGramOnE (I := I) (g_fam p.1) α i j p.2 *
-            (partialDeriv (E := E) i
-                (partialDeriv (E := E) j (scalarOnE (I := I) α ρ)) p.2 -
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α ρ)) p.2 -
               ∑ k : Fin (Module.finrank Real E),
                 chartChristoffel (I := I) (g_fam p.1) α i j k p.2 *
-                  partialDeriv (E := E) k (scalarOnE (I := I) α ρ) p.2))
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α ρ) p.2))
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
   refine continuousOn_finsetSum _ fun i _ =>

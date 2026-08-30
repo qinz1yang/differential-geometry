@@ -171,7 +171,6 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
   (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -413,16 +412,16 @@ private lemma lieArm_partialDeriv_symmS_scalar_eventuallyEq
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m c d : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE (I := I) x
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])) =ᶠ[𝓝 (extChartAt I x x)]
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d) := by
   have hev := (lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d).eventuallyEq_nhds
   filter_upwards [hev] with y hy
-  unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hy.fderiv_eq]
 
 omit [SigmaCompactSpace M] in
@@ -438,8 +437,8 @@ private lemma lieArm_U4_readout
     unitModel (I := I) (M := M) g₀ 4
         (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
         ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
           (extChartAt I x x)
         + arm2ReadoutCovDerivPair (I := I) (M := M) g₀
@@ -457,12 +456,12 @@ private lemma lieArm_U4_readout
   have hev1 := lieArm_partialDeriv_symmS_scalar_eventuallyEq (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c d
   change fderiv ℝ
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE (I := I) x
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])))
       (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) = fderiv ℝ
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
       (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)
   rw [hev1.fderiv_eq]
@@ -480,7 +479,7 @@ private lemma lieArm_U3_readout
     unitModel (I := I) (M := M) g₀ 3
         (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
         ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c] =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c)
           (extChartAt I x x)
         + arm1ReadoutCovDeriv (I := I) (M := M) g₀
@@ -512,7 +511,7 @@ private lemma lieArm_U3_readout
   rw [← h]
   have hev1 := lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c
-  unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hev1.fderiv_eq]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -588,12 +587,12 @@ private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m₁ m₂ a b : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₂
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₁
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₁
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₂
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) := by
   rw [partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2 (I := I) g₀ T T'
@@ -603,7 +602,6 @@ private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
   rw [euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw (I := I) g₀ (T - T') x m₂ m₁ a b,
     euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw (I := I) g₀ (T - T') x m₂ m₁ b a]
 
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
@@ -625,20 +623,20 @@ private lemma lieArm_P2_halfCollapse
                 (extChartAt I x x)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ l *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
-              (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x e k₁))
               (extChartAt I x x)
             - (1 / 2 : ℝ) *
-              DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
-                (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) e
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l k₁))
                 (extChartAt I x x)) := by
   classical
   set pd2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun d' a' l' b' =>
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d'
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a'
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d'
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a'
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l' b'))
       (extChartAt I x x) with hpd2
   set CIM : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
@@ -788,8 +786,8 @@ theorem lieTop_cov_eq_raw
   rw [lieTopTail]
   set pd2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun d' a' l' b' =>
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d'
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a'
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d'
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a'
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l' b'))
       (extChartAt I x x) with hpd2
   set R4 : (Fin 4 → Fin (Module.finrank ℝ E)) → ℝ := fun Jdx =>

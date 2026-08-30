@@ -20,8 +20,8 @@ open DifferentialGeometry.Integral.Measure
 
 def chartRiemannTensor (g : SmoothRiemannianMetric I M) (α : M)
     (i j k l : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
-    partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y +
+  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y +
     (∑ m : Fin (Module.finrank ℝ E),
       (chartChristoffel (I := I) g α j m l y *
           chartChristoffel (I := I) g α i k m y -
@@ -33,8 +33,8 @@ omit [NeZero (Module.finrank ℝ E)] in
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j k l : Fin (Module.finrank ℝ E)) (y : E) :
     chartRiemannTensor (I := I) g α i j k l y =
-      partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
-        partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y +
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y +
         (∑ m : Fin (Module.finrank ℝ E),
           (chartChristoffel (I := I) g α j m l y *
               chartChristoffel (I := I) g α i k m y -

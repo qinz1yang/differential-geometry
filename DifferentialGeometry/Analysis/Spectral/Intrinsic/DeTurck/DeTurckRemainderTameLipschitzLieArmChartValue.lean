@@ -259,7 +259,6 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
   (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -507,16 +506,16 @@ private lemma lieArm_partialDeriv_symmS_scalar_eventuallyEq
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m c d : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE (I := I) x
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])) =ᶠ[𝓝 (extChartAt I x x)]
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d) := by
   have hev := (lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d).eventuallyEq_nhds
   filter_upwards [hev] with y hy
-  unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hy.fderiv_eq]
 
 omit [SigmaCompactSpace M] in
@@ -532,8 +531,8 @@ private lemma lieArm_U4_readout
     unitModel (I := I) (M := M) g₀ 4
         (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
         ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
           (extChartAt I x x)
         + arm2ReadoutCovDerivPair (I := I) (M := M) g₀
@@ -551,12 +550,12 @@ private lemma lieArm_U4_readout
   have hev1 := lieArm_partialDeriv_symmS_scalar_eventuallyEq (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c d
   change fderiv ℝ
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE (I := I) x
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])))
       (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) = fderiv ℝ
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
       (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)
   rw [hev1.fderiv_eq]
@@ -574,7 +573,7 @@ private lemma lieArm_U3_readout
     unitModel (I := I) (M := M) g₀ 3
         (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
         ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c] =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c)
           (extChartAt I x x)
         + arm1ReadoutCovDeriv (I := I) (M := M) g₀
@@ -606,7 +605,7 @@ private lemma lieArm_U3_readout
   rw [← h]
   have hev1 := lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c
-  unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+  unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hev1.fderiv_eq]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -684,12 +683,12 @@ private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m₁ m₂ a b : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₂
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₁
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₁
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m₂
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) := by
   rw [partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2 (I := I) g₀ T T'
@@ -700,7 +699,6 @@ private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
     euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw (I := I) g₀ (T - T') x m₂ m₁ b a]
 
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [BoundarylessManifold I M] in
@@ -723,20 +721,20 @@ private lemma lieArm_P2_halfCollapse
                 (extChartAt I x x)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ l *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
-              (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x e k₁))
               (extChartAt I x x)
             - (1 / 2 : ℝ) *
-              DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
-                (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) e
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l k₁))
                 (extChartAt I x x)) := by
   classical
   set pd2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun d' a' l' b' =>
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d'
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a'
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d'
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a'
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l' b'))
       (extChartAt I x x) with hpd2
   set CIM : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
@@ -879,8 +877,8 @@ private lemma lieArm_arm2_value_eq_principal_add_tail
   classical
   set pd2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun d' a' l' b' =>
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d'
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a'
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d'
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a'
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l' b'))
       (extChartAt I x x) with hpd2
   set R4 : (Fin 4 → Fin (Module.finrank ℝ E)) → ℝ := fun Jdx =>
@@ -3422,12 +3420,12 @@ omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_partial_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (m a b : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I) g x a b)
         (extChartAt I x x)
     = -(∑ x' : Fin (Module.finrank ℝ E), ∑ y' : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x a x' * chartInvGramMatrix (I := I) g x x y' b *
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g x x' y')
               (extChartAt I x x)) := by
   rw [DifferentialGeometry.Geometry.Operator.partialDeriv_chartInvGramOnE_eq (I := I) g x
@@ -3471,79 +3469,79 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
     = ((∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k j *
         ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x) * ((1 / 2 : ℝ) *
           ∑ l : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k l *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) (extChartAt I x x) +
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x))))
          + ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
            (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b * ((1 / 2 : ℝ) *
           ∑ l : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k l) (extChartAt I x x) *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) (extChartAt I x x) +
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x)))))
       + ∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i k *
         ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x) * ((1 / 2 : ℝ) *
           ∑ l : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k l *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) (extChartAt I x x) +
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x))))
          + ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
            (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b * ((1 / 2 : ℝ) *
           ∑ l : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k l) (extChartAt I x x) *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) (extChartAt I x x) +
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x)))))
     + ((∑ k : Fin (Module.finrank ℝ E),
       (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b * ((1 / 2 : ℝ) *
           ∑ l : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k l *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) (extChartAt I x x) +
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x)))) *
-            DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) k
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
             (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) (extChartAt I x x))
       + (∑ k : Fin (Module.finrank ℝ E), PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k (extChartAt I x x) *
-        DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) k
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) (extChartAt I x x))
       + (∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k j *
         (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), chartInvGramMatrix
           (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a p *
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q) (extChartAt I x x) *
           chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q b)) *
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -3554,7 +3552,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
            ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), chartInvGramMatrix
               (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k p *
-              DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q) (extChartAt I x x) *
               chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l)) *
               DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
@@ -3565,7 +3563,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
         (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), chartInvGramMatrix
           (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a p *
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q) (extChartAt I x x) *
           chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q b)) *
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -3576,7 +3574,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
            ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), chartInvGramMatrix
               (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k p *
-              DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q) (extChartAt I x x) *
               chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l)) *
               DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
@@ -3753,64 +3751,64 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ l *
         ((-(∑ r : Fin (Module.finrank ℝ E),
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l j r
-          (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E)
+          (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E)
           i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁) (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i l r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
             (extChartAt I x x))))
          + (-(∑ r : Fin (Module.finrank ℝ E),
            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l i r
-           (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+           (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
            (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
            (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j l r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
             (extChartAt I x x))))
          - (-(∑ r : Fin (Module.finrank ℝ E),
            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j l r
-           (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+           (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
            (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
            (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i l r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
             (extChartAt I x x))))))) := by
   classical
@@ -3822,7 +3820,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]) =
     (∑ w : Fin (Module.finrank ℝ E), PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) *
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) w
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) w
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) (extChartAt I x x)) +
     (∑ w : Fin (Module.finrank ℝ E), PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) * arm1ReadoutCovDeriv
@@ -3834,7 +3832,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]) = ∑ w : Fin
       (Module.finrank ℝ E), (PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) *
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) w
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) w
       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) (extChartAt I x x) +
       PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) * arm1ReadoutCovDeriv
@@ -3860,7 +3858,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -3897,7 +3895,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -3937,7 +3935,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -3974,7 +3972,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4007,7 +4005,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
     DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
-    (extChartAt I x x))) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+    (extChartAt I x x))) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j w) (extChartAt I x x)) +
     (∑ w : Fin (Module.finrank ℝ E),
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
@@ -4027,7 +4025,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
       DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
-      (extChartAt I x x))) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
+      (extChartAt I x x))) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j w) (extChartAt I x x) +
       (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b *
@@ -4058,7 +4056,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4095,7 +4093,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4133,7 +4131,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
-          (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+          (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
           (E := E) p (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x q k₁)
           (extChartAt I x x))) + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -4158,7 +4156,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) p (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x q k₁)
             (extChartAt I x x))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -4180,7 +4178,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
               ((DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
               DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
-              (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+              (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
               (E := E) p (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x q k₁)
               (extChartAt I x x) + (DifferentialGeometry.Geometry.Operator.chartChristoffel
               (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
@@ -4209,7 +4207,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4246,7 +4244,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4286,7 +4284,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4323,7 +4321,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4363,7 +4361,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4400,7 +4398,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x m p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4433,7 +4431,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
     DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
-    (extChartAt I x x))) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+    (extChartAt I x x))) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i w) (extChartAt I x x)) +
     (∑ w : Fin (Module.finrank ℝ E),
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
@@ -4453,7 +4451,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
       DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
-      (extChartAt I x x))) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
+      (extChartAt I x x))) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i w) (extChartAt I x x) +
       (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b *
@@ -4484,7 +4482,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4521,7 +4519,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4559,7 +4557,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
-          (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+          (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
           (E := E) p (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x q k₁)
           (extChartAt I x x))) + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -4584,7 +4582,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) p (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x q k₁)
             (extChartAt I x x))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -4606,7 +4604,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
               ((DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
               DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
-              (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+              (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
               (E := E) p (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x q k₁)
               (extChartAt I x x) + (DifferentialGeometry.Geometry.Operator.chartChristoffel
               (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
@@ -4635,7 +4633,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i p) (extChartAt I x x) *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4672,7 +4670,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i p) (extChartAt I x x) *
             (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4710,7 +4708,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
-          (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+          (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
           (E := E) q (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p k₁)
           (extChartAt I x x))) + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -4735,7 +4733,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) q (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p k₁)
             (extChartAt I x x))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -4757,7 +4755,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
               ((DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
               DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
-              (extChartAt I x x)) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+              (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
               (E := E) q (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p k₁)
               (extChartAt I x x) + (DifferentialGeometry.Geometry.Operator.chartChristoffel
               (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
@@ -4788,12 +4786,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x b a :=
     fun a b => lieArm_chartGramMatrix_symm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
   have hf3s' : ∀ d a b : Fin (Module.finrank ℝ E),
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x) =
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
     (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b a) (extChartAt I x x) :=
     fun d a b => congrArg
-      (fun F => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d F
+      (fun F => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d F
         (extChartAt I x x))
       (lieArm_realizedGramDeriv_symm (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b)
   have hg1s' : ∀ a b k : Fin (Module.finrank ℝ E),
@@ -4812,25 +4810,25 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
   have hgbdef' : ∀ a b l : Fin (Module.finrank ℝ E),
     DifferentialGeometry.Geometry.Connection.chartChristoffelBracket (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b l (extChartAt I x x)
-      = DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l b) (extChartAt I x x) +
-        DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l a) (extChartAt I x x) -
-        DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x) :=
     fun a b l => rfl
   have hdgs' : ∀ m a b : Fin (Module.finrank ℝ E),
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
     (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x) =
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
     (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x b a) (extChartAt I x x) :=
     fun m a b => congrArg
-      (fun F => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m F
+      (fun F => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m F
         (extChartAt I x x))
       (funext (fun y => DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b y))
@@ -4844,13 +4842,13 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     fun a b k => lieArm_chartChristoffel_center (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a
                    b k
   have hdig' : ∀ m a b : Fin (Module.finrank ℝ E),
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
     (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x)
       = -(∑ x' : Fin (Module.finrank ℝ E), ∑ y' : Fin (Module.finrank ℝ E), chartInvGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a x' * chartInvGramMatrix (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x y' b *
-        DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x' y') (extChartAt I x x)) :=
     fun m a b => lieArm_partial_chartInvGramOnE_center (I := I)
@@ -4859,13 +4857,13 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (fun a b => chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b)
     (fun a b => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b)
-    (fun m a b => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    (fun m a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x))
     (fun a b l => DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
       a b l (extChartAt I x x))
-    (fun m a b => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
+    (fun m a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x))
     (fun a b k => DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4874,7 +4872,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       k (extChartAt I x x))
     (fun a b k => DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x a
       b k (extChartAt I x x))
-    (fun d a b => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) d
+    (fun d a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x))
     (fun k => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k (extChartAt I x x))

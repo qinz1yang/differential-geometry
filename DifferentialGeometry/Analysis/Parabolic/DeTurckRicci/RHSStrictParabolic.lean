@@ -61,7 +61,7 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] 
     [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma partialDeriv_testLinearForm (x : M) (ξ : E)
     (p : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) p
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
       (fun z : E => ∑ a : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (z - extChartAt I x x) a) y =
@@ -80,7 +80,7 @@ private lemma partialDeriv_testLinearForm (x : M) (ξ : E)
       ((differentiableAt_id).sub (differentiableAt_const _))
   rw [partialDeriv_sum Finset.univ _ (fun a _ => hdiff a)]
   have hterm : ∀ a : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) p (fun z : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (fun z : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (z - extChartAt I x x) a) y =
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a * (if p = a then (1 : ℝ) else 0) := by
     intro a
@@ -97,7 +97,7 @@ private lemma partialDeriv_testLinearForm (x : M) (ξ : E)
         fun z : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a (z - extChartAt I x x) := by
       funext z; rw [Module.Basis.coord_apply]
     rw [hlin]
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     have hfd : HasFDerivAt (fun z : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a (z - extChartAt I x x))
         (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a).toContinuousLinearMap) y := by
       have h1 : HasFDerivAt (fun z : E => z - extChartAt I x x)
@@ -128,8 +128,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 private lemma partialDeriv_partialDeriv_symbolTestPerturbation_self (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
     (p q c d : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) p
-        (partialDeriv (E := E) q
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q
           (symbolTestPerturbation (I := I) x x ξ t ht c d)) (extChartAt I x x) =
       (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ p * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ q *
         formComp (I := I) x t c d := by
@@ -155,20 +155,20 @@ private lemma partialDeriv_partialDeriv_symbolTestPerturbation_self (x : M) (ξ 
     rw [hlin]
     exact (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a).toContinuousLinearMap.differentiableAt).comp z
       ((differentiableAt_id).sub (differentiableAt_const _))
-  have hinner : partialDeriv (E := E) q
+  have hinner : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q
         (symbolTestPerturbation (I := I) x x ξ t ht c d) =
-      fun z : E => ((1 / 2 : ℝ) * K) * (partialDeriv (E := E) q L z * L z +
-        L z * partialDeriv (E := E) q L z) := by
+      fun z : E => ((1 / 2 : ℝ) * K) * (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q L z * L z +
+        L z * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q L z) := by
     funext z
     rw [hfun]
     rw [partialDeriv_const_mul (E := E) ((1 / 2 : ℝ) * K) (fun z => L z * L z)
       ((hL_diff z).mul (hL_diff z))]
     rw [partialDeriv_mul (E := E) L L (hL_diff z) (hL_diff z)]
   rw [hinner]
-  have hLq : ∀ z : E, partialDeriv (E := E) q L z = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ q := by
+  have hLq : ∀ z : E, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q L z = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ q := by
     intro z; rw [hL]; exact partialDeriv_testLinearForm x ξ q z
-  have hgoal_fun : (fun z : E => ((1 / 2 : ℝ) * K) * (partialDeriv (E := E) q L z * L z +
-        L z * partialDeriv (E := E) q L z)) =
+  have hgoal_fun : (fun z : E => ((1 / 2 : ℝ) * K) * (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q L z * L z +
+        L z * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q L z)) =
       fun z : E => ((1 / 2 : ℝ) * K) *
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ q * L z + L z * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ q) := by
     funext z; rw [hLq z]
@@ -248,7 +248,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
   have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
   have hval : ∀ a b, hh a b (extChartAt I x x) = 0 :=
     fun a b => symbolTestPerturbation_apply_self (I := I) x x ξ t ht a b
-  have hjet : ∀ p a b, partialDeriv (E := E) p (hh a b) (extChartAt I x x) = 0 :=
+  have hjet : ∀ p a b, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (hh a b) (extChartAt I x x) = 0 :=
     fun p a b => partialDeriv_symbolTestPerturbation_self (I := I) x x ξ t ht p a b
   have hRicci :
       chartRicciSecondOrderPart (I := I) g₀ x hh i j (extChartAt I x x) =
@@ -258,24 +258,24 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
     rw [chartRicciSecondOrderPrincipalSymbol_symbolTestPerturbation g₀ x ξ t ht i j]
     rw [chartRicciFirstOrderRemainder_eq_first_order_sum]
     have hrem : (∑ jj : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-        (((1 / 2 : ℝ) * partialDeriv (E := E) jj
+        (((1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) jj
               (chartInvGramOnE (I := I) g₀ x jj l) (extChartAt I x x)) *
-            partialDeriv (E := E) i (hh l j) (extChartAt I x x) +
-          ((1 / 2 : ℝ) * partialDeriv (E := E) jj
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (hh l j) (extChartAt I x x) +
+          ((1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) jj
               (chartInvGramOnE (I := I) g₀ x jj l) (extChartAt I x x)) *
-            partialDeriv (E := E) j (hh l i) (extChartAt I x x) +
-          (-(1 / 2 : ℝ) * partialDeriv (E := E) jj
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (hh l i) (extChartAt I x x) +
+          (-(1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) jj
               (chartInvGramOnE (I := I) g₀ x jj l) (extChartAt I x x)) *
-            partialDeriv (E := E) l (hh i j) (extChartAt I x x) +
-          (-(1 / 2 : ℝ) * partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (hh i j) (extChartAt I x x) +
+          (-(1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (chartInvGramOnE (I := I) g₀ x jj l) (extChartAt I x x)) *
-            partialDeriv (E := E) i (hh l jj) (extChartAt I x x) +
-          (-(1 / 2 : ℝ) * partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (hh l jj) (extChartAt I x x) +
+          (-(1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (chartInvGramOnE (I := I) g₀ x jj l) (extChartAt I x x)) *
-            partialDeriv (E := E) jj (hh l i) (extChartAt I x x) +
-          ((1 / 2 : ℝ) * partialDeriv (E := E) j
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) jj (hh l i) (extChartAt I x x) +
+          ((1 / 2 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (chartInvGramOnE (I := I) g₀ x jj l) (extChartAt I x x)) *
-            partialDeriv (E := E) l (hh i jj) (extChartAt I x x))) = 0 := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (hh i jj) (extChartAt I x x))) = 0 := by
       refine Finset.sum_eq_zero (fun jj _ => Finset.sum_eq_zero (fun l _ => ?_))
       rw [hjet i l j, hjet j l i, hjet l i j, hjet i l jj, hjet jj l i, hjet l i jj]
       ring
@@ -302,7 +302,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
         (∑ k : Fin (Module.finrank ℝ E),
           gf k *
             ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-                partialDeriv (E := E) d (chartInvGramOnE (I := I) g₀ x a b) (extChartAt I x x) *
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g₀ x a b) (extChartAt I x x) *
                   chartLinearizedChristoffelPrincipal (I := I) g₀ x hh a b k
                     (extChartAt I x x)) +
               (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -312,7 +312,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
       intro gf d
       refine Finset.sum_eq_zero (fun k _ => mul_eq_zero_of_right _ ?_)
       rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) d (chartInvGramOnE (I := I) g₀ x a b) (extChartAt I x x) *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartInvGramOnE (I := I) g₀ x a b) (extChartAt I x x) *
               chartLinearizedChristoffelPrincipal (I := I) g₀ x hh a b k
                 (extChartAt I x x)) = 0 from
         Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by

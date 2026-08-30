@@ -166,7 +166,7 @@ theorem chartChristoffel_continuous_in_metric_at
       ContinuousOn (fun t : ℝ => chartGramOnE (I := I) (g_DT t) α i j y) s)
     (h_partial : ∀ l i j : Fin (Module.finrank ℝ E),
       ContinuousOn
-        (fun t : ℝ => partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s)
+        (fun t : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s)
     (hx : ((extChartAt I α).symm y) ∈
       (trivializationAt E (TangentSpace I) α).baseSet)
     (a b k : Fin (Module.finrank ℝ E)) :
@@ -176,9 +176,9 @@ theorem chartChristoffel_continuous_in_metric_at
       fun t : ℝ =>
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) (g_DT t) α ((extChartAt I α).symm y) k l *
-            (partialDeriv (E := E) a (chartGramOnE (I := I) (g_DT t) α l b) y +
-             partialDeriv (E := E) b (chartGramOnE (I := I) (g_DT t) α l a) y -
-             partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) := by
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) (g_DT t) α l b) y +
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (chartGramOnE (I := I) (g_DT t) α l a) y -
+             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) := by
     funext t
     rw [chartChristoffel_def]
   rw [hrewrite]
@@ -207,7 +207,7 @@ theorem chartDeTurckVFComp_continuous_in_metric_at
       ContinuousOn (fun t : ℝ => chartGramOnE (I := I) (g_DT t) α i j y) s)
     (h_partial : ∀ l i j : Fin (Module.finrank ℝ E),
       ContinuousOn
-        (fun t : ℝ => partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s)
+        (fun t : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s)
     (hx : ((extChartAt I α).symm y) ∈
       (trivializationAt E (TangentSpace I) α).baseSet)
     (k : Fin (Module.finrank ℝ E)) :

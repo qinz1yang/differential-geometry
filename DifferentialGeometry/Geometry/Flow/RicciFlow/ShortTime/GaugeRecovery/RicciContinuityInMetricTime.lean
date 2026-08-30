@@ -83,14 +83,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 private lemma partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
     (g : SmoothRiemannianMetric I M) (α : M) (i j m l : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) m (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y =
       iteratedFDeriv ℝ 2 (chartGramOnE (I := I) g α i j) y
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l] := by
-  have hl : (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j))
+  have hl : (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j))
       = fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
     funext z; rfl
-  rw [show partialDeriv (E := E) m
-        (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y
+  rw [show DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y
       = fderiv ℝ (fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) from by rw [hl]; rfl]
   rw [iteratedFDeriv_two_apply]
@@ -122,7 +122,7 @@ private lemma partialDeriv_chartGramOnE_continuous_of_hC2
     (h1 : ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 1
       (chartGramOnE (I := I) (g_DT t) α i j) y) s) :
     ContinuousOn (fun t : ℝ =>
-      partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => E) ℝ
     ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
   have hcomp := hL.comp_continuousOn h1
@@ -141,8 +141,8 @@ private lemma partialDeriv_partialDeriv_chartGramOnE_continuous_of_hC2
     (h2 : ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 2
       (chartGramOnE (I := I) (g_DT t) α i j) y) s) :
     ContinuousOn (fun t : ℝ =>
-      partialDeriv (E := E) m
-        (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j)) y) s := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j)) y) s := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => E) ℝ
     ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
   have hcomp := hL.comp_continuousOn h2
@@ -163,9 +163,9 @@ private lemma chartChristoffelBracket_continuous_of_hC2
     ContinuousOn (fun t : ℝ => chartChristoffelBracket (I := I) (g_DT t) α i j l y) s := by
   have heq : (fun t : ℝ => chartChristoffelBracket (I := I) (g_DT t) α i j l y)
       = fun t : ℝ =>
-          partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j) y +
-            partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT t) α l i) y -
-            partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j) y +
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT t) α l i) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y := by
     funext t; rfl
   rw [heq]
   refine ContinuousOn.sub (ContinuousOn.add ?_ ?_) ?_
@@ -185,12 +185,12 @@ private lemma chartChristoffelBracketDeriv_continuous_of_hC2
     ContinuousOn (fun t : ℝ => chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y) s := by
   have heq : (fun t : ℝ => chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y)
       = fun t : ℝ =>
-          partialDeriv (E := E) m
-              (partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j)) y +
-            partialDeriv (E := E) m
-              (partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT t) α l i)) y -
-            partialDeriv (E := E) m
-              (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j)) y := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j)) y +
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT t) α l i)) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j)) y := by
     funext t; rfl
   rw [heq]
   refine ContinuousOn.sub (ContinuousOn.add ?_ ?_) ?_
@@ -217,18 +217,18 @@ private lemma partialDeriv_chartInvGramOnE_continuous_of_hC2
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 1
         (chartGramOnE (I := I) (g_DT t) α a b) y) s) :
     ContinuousOn (fun t : ℝ =>
-      partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y) s := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y) s := by
   classical
   have hentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => chartGramOnE (I := I) (g_DT t) α a b y) s :=
     fun a b => chartGramOnE_continuous_of_hC2 (I := I) g_DT α a b y s (h0 a b)
   have heq : ∀ t ∈ s,
-      partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y =
         -∑ a : Fin (Module.finrank ℝ E),
           ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) (g_DT t) α k a y *
               chartInvGramOnE (I := I) (g_DT t) α b l y *
-              partialDeriv (E := E) m (chartGramOnE (I := I) (g_DT t) α a b) y := by
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (g_DT t) α a b) y := by
     intro t _
     exact partialDeriv_chartInvGramOnE_eq (I := I) (g_DT t) α y m k l hy
   refine ContinuousOn.congr ?_ heq
@@ -259,15 +259,15 @@ private lemma partialDeriv_chartChristoffel_continuous_of_hC2
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 2
         (chartGramOnE (I := I) (g_DT t) α a b) y) s) :
     ContinuousOn (fun t : ℝ =>
-      partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α i j k) y) s := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α i j k) y) s := by
   classical
   have hentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => chartGramOnE (I := I) (g_DT t) α a b y) s :=
     fun a b => chartGramOnE_continuous_of_hC2 (I := I) g_DT α a b y s (h0 a b)
   have heq : ∀ t ∈ s,
-      partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α i j k) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α i j k) y =
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y *
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y *
               chartChristoffelBracket (I := I) (g_DT t) α i j l y +
             chartInvGramOnE (I := I) (g_DT t) α k l y *
               chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y) := by
@@ -306,8 +306,8 @@ private lemma chartRiemannTensor_continuous_of_hC2
   classical
   have heq : (fun t : ℝ => chartRiemannTensor (I := I) (g_DT t) α i j k r y)
       = fun t : ℝ =>
-          partialDeriv (E := E) j (chartChristoffel (I := I) (g_DT t) α i k r) y -
-            partialDeriv (E := E) k (chartChristoffel (I := I) (g_DT t) α i j r) y +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) (g_DT t) α i k r) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) (g_DT t) α i j r) y +
             (∑ n : Fin (Module.finrank ℝ E),
               (chartChristoffel (I := I) (g_DT t) α j n r y *
                   chartChristoffel (I := I) (g_DT t) α i k n y -
@@ -383,7 +383,7 @@ private lemma chartDeTurckVFComp_continuous_of_hC2
     fun a b => chartGramOnE_continuous_of_hC2 (I := I) g_DT α a b y s (h0 a b)
   have h_partial : ∀ l a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ =>
-        partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) s :=
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) s :=
     fun l a b => partialDeriv_chartGramOnE_continuous_of_hC2 (I := I) g_DT α l a b y s (h1 a b)
   exact chartDeTurckVFComp_continuous_in_metric_at (I := I) g_bg α y s g_DT hentry h_partial hx k
 
@@ -406,7 +406,7 @@ private lemma partialDeriv_chartDeTurckVFComp_continuous_of_hC2
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 2
         (chartGramOnE (I := I) (g_DT t) α a b) y) s) :
     ContinuousOn (fun t : ℝ =>
-      partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg α k) y) s := by
   classical
   have hentry : ∀ a b : Fin (Module.finrank ℝ E),
@@ -414,22 +414,22 @@ private lemma partialDeriv_chartDeTurckVFComp_continuous_of_hC2
     fun a b => chartGramOnE_continuous_of_hC2 (I := I) g_DT α a b y s (h0 a b)
   have h_partial : ∀ l a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ =>
-        partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) s :=
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) s :=
     fun l a b => partialDeriv_chartGramOnE_continuous_of_hC2 (I := I) g_DT α l a b y s (h1 a b)
   have hΓ : ∀ a b c : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => chartChristoffel (I := I) (g_DT t) α a b c y) s :=
     fun a b c => chartChristoffel_continuous_in_metric_at (I := I) g_DT α y s hentry
       (fun l p q => h_partial l p q) hx a b c
   have heq : ∀ t ∈ s,
-      partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg α k) y =
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α a b) y *
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α a b) y *
               (chartChristoffel (I := I) (g_DT t) α a b k y -
                 chartChristoffel (I := I) g_bg α a b k y)
             + chartInvGramOnE (I := I) (g_DT t) α a b y *
-              (partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α a b k) y -
-                partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y)) := by
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α a b k) y -
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg α a b k) y)) := by
     intro t _
     exact partialDeriv_chartDeTurckVFComp_eq (I := I) (g_DT t) g_bg α m k hy
   refine ContinuousOn.congr ?_ heq
@@ -469,7 +469,7 @@ private lemma chartLieDeTurckComp_continuous_of_hC2
     fun k => chartDeTurckVFComp_continuous_of_hC2 (I := I) g_DT g_bg α k hy s hx h0 h1
   have hVFp : ∀ m k : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ =>
-        partialDeriv (E := E) m
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg α k) y) s :=
     fun m k => partialDeriv_chartDeTurckVFComp_continuous_of_hC2
       (I := I) g_DT g_bg α m k hy s hx h0 h1 h2
@@ -478,20 +478,20 @@ private lemma chartLieDeTurckComp_continuous_of_hC2
     fun a b => chartGramOnE_continuous_of_hC2 (I := I) g_DT α a b y s (h0 a b)
   have hgp : ∀ l a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ =>
-        partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) s :=
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α a b) y) s :=
     fun l a b => partialDeriv_chartGramOnE_continuous_of_hC2 (I := I) g_DT α l a b y s (h1 a b)
   have heq : (fun t : ℝ => chartLieDeTurckComp (I := I) (g_DT t) g_bg α i j y)
       = fun t : ℝ =>
           (∑ k : Fin (Module.finrank ℝ E),
               DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg α k y *
-                partialDeriv (E := E) k (chartGramOnE (I := I) (g_DT t) α i j) y)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) (g_DT t) α i j) y)
           + (∑ k : Fin (Module.finrank ℝ E),
               chartGramOnE (I := I) (g_DT t) α k j y *
-                partialDeriv (E := E) i
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                   (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg α k) y)
           + (∑ k : Fin (Module.finrank ℝ E),
               chartGramOnE (I := I) (g_DT t) α i k y *
-                partialDeriv (E := E) j
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                   (DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg α k) y) := by
     funext t; rw [chartLieDeTurckComp_def]
   rw [heq]
@@ -531,7 +531,7 @@ private lemma jointGramPartial_continuousOn
         (chartGramOnE (I := I) (g_DT q.1) α a b) (extChartAt I α q.2)) Sp)
     (l a b : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
-      partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α a b)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α a b)
         (extChartAt I α q.2)) Sp := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => E) ℝ
     ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
@@ -550,8 +550,8 @@ private lemma jointGramPartialPartial_continuousOn
         (chartGramOnE (I := I) (g_DT q.1) α a b) (extChartAt I α q.2)) Sp)
     (m l a b : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
-      partialDeriv (E := E) m
-        (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α a b))
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α a b))
         (extChartAt I α q.2)) Sp := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => E) ℝ
     ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
@@ -684,9 +684,9 @@ private lemma jointChartChristoffelBracket_continuousOn
       (extChartAt I α q.2)) Sp := by
   have heq : (fun q : ℝ × M => chartChristoffelBracket (I := I) (g_DT q.1) α i j l (extChartAt I α q.2))
       = fun q : ℝ × M =>
-          partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j) (extChartAt I α q.2) +
-            partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i) (extChartAt I α q.2) -
-            partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α i j)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j) (extChartAt I α q.2) +
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i) (extChartAt I α q.2) -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α i j)
               (extChartAt I α q.2) := by
     funext q; rfl
   rw [heq]
@@ -706,14 +706,14 @@ private lemma jointChartChristoffelBracketDeriv_continuousOn
       (extChartAt I α q.2)) Sp := by
   have heq : (fun q : ℝ × M => chartChristoffelBracketDeriv (I := I) (g_DT q.1) α m i j l (extChartAt I α q.2))
       = fun q : ℝ × M =>
-          partialDeriv (E := E) m
-              (partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j))
                 (extChartAt I α q.2) +
-            partialDeriv (E := E) m
-              (partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i))
                 (extChartAt I α q.2) -
-            partialDeriv (E := E) m
-              (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α i j))
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α i j))
                 (extChartAt I α q.2) := by
     funext q; rfl
   rw [heq]
@@ -733,7 +733,7 @@ private lemma jointInvGramPartial_continuousOn
         (chartGramOnE (I := I) (g_DT q.1) α a b) (extChartAt I α q.2)) Sp)
     (m k l : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
-      partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l)
         (extChartAt I α q.2)) Sp := by
   classical
   have hentry : ∀ a b : Fin (Module.finrank ℝ E),
@@ -741,11 +741,11 @@ private lemma jointInvGramPartial_continuousOn
         (extChartAt I α q.2)) Sp :=
     fun a b => jointGram_continuousOn g_DT α Sp h0 a b
   have heq : ∀ q ∈ Sp,
-      partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l) (extChartAt I α q.2) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l) (extChartAt I α q.2) =
         -∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) (g_DT q.1) α k a (extChartAt I α q.2) *
               chartInvGramOnE (I := I) (g_DT q.1) α b l (extChartAt I α q.2) *
-              partialDeriv (E := E) m (chartGramOnE (I := I) (g_DT q.1) α a b)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (g_DT q.1) α a b)
                 (extChartAt I α q.2) := by
     intro q hq
     exact partialDeriv_chartInvGramOnE_eq (I := I) (g_DT q.1) α (extChartAt I α q.2) m k l
@@ -781,11 +781,11 @@ private lemma jointChristoffel_continuousOn
           (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) (g_DT q.1) α
               ((extChartAt I α).symm (extChartAt I α q.2)) k l *
-              (partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j)
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j)
                   (extChartAt I α q.2) +
-               partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i)
+               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i)
                   (extChartAt I α q.2) -
-               partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α i j)
+               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α i j)
                   (extChartAt I α q.2)) := by
     funext q; rw [chartChristoffel_def]
   rw [heq]
@@ -817,13 +817,13 @@ private lemma jointChristoffelPartial_continuousOn
         (chartGramOnE (I := I) (g_DT q.1) α a b) (extChartAt I α q.2)) Sp)
     (m i j k : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
-      partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT q.1) α i j k)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT q.1) α i j k)
         (extChartAt I α q.2)) Sp := by
   classical
   have heq : ∀ q ∈ Sp,
-      partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT q.1) α i j k) (extChartAt I α q.2) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT q.1) α i j k) (extChartAt I α q.2) =
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l)
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l)
               (extChartAt I α q.2) *
             chartChristoffelBracket (I := I) (g_DT q.1) α i j l (extChartAt I α q.2) +
           chartInvGramOnE (I := I) (g_DT q.1) α k l (extChartAt I α q.2) *
@@ -864,9 +864,9 @@ private lemma jointRiemann_continuousOn
   have heq : (fun q : ℝ × M => chartRiemannTensor (I := I) (g_DT q.1) α i j k r
     (extChartAt I α q.2))
       = fun q : ℝ × M =>
-          partialDeriv (E := E) j (chartChristoffel (I := I) (g_DT q.1) α i k r)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) (g_DT q.1) α i k r)
               (extChartAt I α q.2) -
-            partialDeriv (E := E) k (chartChristoffel (I := I) (g_DT q.1) α i j r)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) (g_DT q.1) α i j r)
               (extChartAt I α q.2) +
             (∑ n : Fin (Module.finrank ℝ E),
               (chartChristoffel (I := I) (g_DT q.1) α j n r (extChartAt I α q.2) *

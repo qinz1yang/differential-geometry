@@ -144,7 +144,7 @@ lemma partialDeriv_scalarOnE_eq_euclidPartial_local
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    partialDeriv (E := E) m (scalarOnE (I := I) α f)
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α f)
         (extChartAt I α ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
       euclidPartial (E := E) m
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α f) y := by
@@ -173,7 +173,7 @@ lemma partialDeriv_scalarOnE_eq_euclidPartial_local
   rw [show (toEuclidean (E := E)).symm.toContinuousLinearMap
       (EuclideanSpace.single m (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from by
     rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]; rfl]
-  rw [partialDeriv]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
@@ -186,8 +186,8 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
           (chartPushedRaw I x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 S x ![] ![a, b]))
           y')
         (toEuclidean (E := E) (extChartAt I x x)) =
-      partialDeriv (E := E) m₂
-        (partialDeriv (E := E) m₁
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (scalarOnE (I := I) x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 S x ![] ![a, b])))
         (extChartAt I x x) := by
   classical
@@ -198,7 +198,7 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
       chartTargetEuclid (I := I) (M := M) x :=
     toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) x (mem_chart_source H x)
   set gm : M → ℝ := fun p =>
-    partialDeriv (E := E) m₁ (scalarOnE (I := I) x f) (extChartAt I x p) with hgm_def
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x f) (extChartAt I x p) with hgm_def
   have hinner_eqOn : Set.EqOn
       (fun y' => euclidPartial (E := E) m₁ (chartPushedRaw I x f) y')
       (chartPushedRaw I x gm)
@@ -207,7 +207,7 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
     rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_mem
       (I := I) (M := M) x gm hy']
     change euclidPartial (E := E) m₁ (chartPushedRaw I x f) y' =
-      partialDeriv (E := E) m₁ (scalarOnE (I := I) x f)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x f)
         (extChartAt I x ((extChartAt I x).symm ((toEuclidean (E := E)).symm y')))
     rw [partialDeriv_scalarOnE_eq_euclidPartial_local f x m₁ hy']
   have hinner_ev :
@@ -223,7 +223,7 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
     rw [euclidPartial_def, euclidPartial_def, hinner_ev.fderiv_eq] ]
   rw [← partialDeriv_scalarOnE_eq_euclidPartial_local gm x m₂ hYmem]
   have hscalarOnE_gm : scalarOnE (I := I) x gm =ᶠ[𝓝 (extChartAt I x x)]
-      partialDeriv (E := E) m₁ (scalarOnE (I := I) x f) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x f) := by
     have htarget : extChartAt I x x ∈ (extChartAt I x).target :=
       (extChartAt I x).map_source
         (by rw [extChartAt_source (I := I)]; exact mem_chart_source H x)
@@ -231,9 +231,9 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
       extChartAt_target_subset_interior_of_boundaryless (I := I) x htarget
     filter_upwards [isOpen_interior.mem_nhds hint] with z hz
     have hzt : z ∈ (extChartAt I x).target := interior_subset hz
-    change partialDeriv (E := E) m₁ (scalarOnE (I := I) x f)
+    change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x f)
         (extChartAt I x ((extChartAt I x).symm z)) =
-      partialDeriv (E := E) m₁ (scalarOnE (I := I) x f) z
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x f) z
     rw [(extChartAt I x).right_inv hzt]
   have hround : extChartAt I x ((extChartAt I x).symm
       ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x)))) =
@@ -244,7 +244,7 @@ lemma euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
         (by rw [extChartAt_source (I := I)]; exact mem_chart_source H x)
     rw [(extChartAt I x).right_inv htarget]
   rw [hround]
-  rw [partialDeriv, partialDeriv]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, DifferentialGeometry.Tensor.Coordinates.partialDeriv]
   rw [Filter.EventuallyEq.fderiv_eq hscalarOnE_gm]
 
 omit [BoundarylessManifold I M] in
@@ -315,7 +315,7 @@ private lemma partialDeriv_scalarOnE_tensorChartComponentRaw_differentiableAt
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (m : Fin (Module.finrank ℝ E)) (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     DifferentiableAt ℝ
-      (partialDeriv (E := E) m
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (scalarOnE (I := I) x
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 S x ![] Jdx)))
       (extChartAt I x x) := by
@@ -330,8 +330,8 @@ private lemma partialDeriv_scalarOnE_tensorChartComponentRaw_differentiableAt
   have hcd_int : ContDiffOn ℝ ∞ u (interior (extChartAt I x).target) := hcd.mono interior_subset
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ u) (interior (extChartAt I x).target) :=
     hcd_int.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hpd : ContDiffOn ℝ ∞ (partialDeriv (E := E) m u) (interior (extChartAt I x).target) := by
-    unfold partialDeriv
+  have hpd : ContDiffOn ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m u) (interior (extChartAt I x).target) := by
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     exact hfderiv.clm_apply contDiffOn_const
   exact (hpd.contDiffAt (isOpen_interior.mem_nhds hint)).differentiableAt (by simp)
 
@@ -346,8 +346,8 @@ lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m₁ m₂ a b : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m₂
-        (partialDeriv (E := E) m₁
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) =
       (1 / 2 : ℝ) * euclidPartial (E := E) m₂
@@ -367,11 +367,11 @@ lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
     with hfab_def
   set fba : M → ℝ := tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 (T - T') x ![] ![b, a]
     with hfba_def
-  set Pab : E → ℝ := partialDeriv (E := E) m₁ (scalarOnE (I := I) x fab) with hPab_def
-  set Pba : E → ℝ := partialDeriv (E := E) m₁ (scalarOnE (I := I) x fba) with hPba_def
+  set Pab : E → ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x fab) with hPab_def
+  set Pba : E → ℝ := DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁ (scalarOnE (I := I) x fba) with hPba_def
   have hev := realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x a b
-  have hev1 : partialDeriv (E := E) m₁
+  have hev1 : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) =ᶠ[𝓝 (extChartAt I x x)]
       (fun y => (1 / 2 : ℝ) * (Pab y + Pba y)) := by
     have hdab : ∀ᶠ y in 𝓝 (extChartAt I x x),
@@ -396,12 +396,12 @@ lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
       filter_upwards [isOpen_interior.mem_nhds hint] with z hz
       exact ((hcd.mono interior_subset).contDiffAt
         (isOpen_interior.mem_nhds hz)).differentiableAt (by simp)
-    have hpd_ev : partialDeriv (E := E) m₁
+    have hpd_ev : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) =ᶠ[𝓝 (extChartAt I x x)]
-        partialDeriv (E := E) m₁
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (fun y => (1 / 2 : ℝ) * (scalarOnE (I := I) x fab y + scalarOnE (I := I) x fba y)) := by
       filter_upwards [hev.eventuallyEq_nhds] with z hz
-      unfold partialDeriv
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       rw [hz.fderiv_eq]
     filter_upwards [hpd_ev, hdab, hdba] with z hz hdz_ab hdz_ba
     rw [hz]
@@ -409,13 +409,13 @@ lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
         (fun y => scalarOnE (I := I) x fab y + scalarOnE (I := I) x fba y)
         (hdz_ab.add hdz_ba)]
     rw [partialDeriv_add (scalarOnE (I := I) x fab) (scalarOnE (I := I) x fba) hdz_ab hdz_ba]
-  have hfinal : partialDeriv (E := E) m₂
-        (partialDeriv (E := E) m₁
+  have hfinal : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) =
-      partialDeriv (E := E) m₂ (fun y => (1 / 2 : ℝ) * (Pab y + Pba y)) (extChartAt I x x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₂ (fun y => (1 / 2 : ℝ) * (Pab y + Pba y)) (extChartAt I x x) := by
     change fderiv ℝ
-        (partialDeriv (E := E) m₁
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
         (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m₂) =
       fderiv ℝ (fun y => (1 / 2 : ℝ) * (Pab y + Pba y)) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m₂)
@@ -498,7 +498,7 @@ lemma partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m a b : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b)
         (extChartAt I x x) =
       (1 / 2 : ℝ) * euclidPartial (E := E) m
@@ -534,13 +534,13 @@ lemma partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
           (by rw [extChartAt_source (I := I)]; exact mem_chart_source H x))
     exact ((hcd.mono interior_subset).contDiffAt
       (isOpen_interior.mem_nhds hint)).differentiableAt (by simp)
-  have hpd_eq : partialDeriv (E := E) m
+  have hpd_eq : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b)
         (extChartAt I x x) =
-      partialDeriv (E := E) m
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (fun y => (1 / 2 : ℝ) * (scalarOnE (I := I) x fab y + scalarOnE (I := I) x fba y))
         (extChartAt I x x) := by
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [hev.fderiv_eq]
   rw [hpd_eq]
   rw [partialDeriv_const_mul (1 / 2 : ℝ)
@@ -558,13 +558,13 @@ lemma partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
   have hYmem : (toEuclidean (E := E)) (extChartAt I x x) ∈
       chartTargetEuclid (I := I) (M := M) x :=
     toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) x (mem_chart_source H x)
-  have hPab : partialDeriv (E := E) m (scalarOnE (I := I) x fab) (extChartAt I x x) =
+  have hPab : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) x fab) (extChartAt I x x) =
       euclidPartial (E := E) m (chartPushedRaw I x fab)
         (toEuclidean (E := E) (extChartAt I x x)) := by
     have h := partialDeriv_scalarOnE_eq_euclidPartial_local fab x m hYmem
     rw [hround] at h
     exact h
-  have hPba : partialDeriv (E := E) m (scalarOnE (I := I) x fba) (extChartAt I x x) =
+  have hPba : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) x fba) (extChartAt I x x) =
       euclidPartial (E := E) m (chartPushedRaw I x fba)
         (toEuclidean (E := E) (extChartAt I x x)) := by
     have h := partialDeriv_scalarOnE_eq_euclidPartial_local fba x m hYmem

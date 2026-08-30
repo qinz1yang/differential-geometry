@@ -40,7 +40,7 @@ theorem jet2_chartGram_d1 (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG : DifferentiableAt ℝ (chartGramPi (I := I) g α) y)
     (i l m : Fin (Module.finrank ℝ E)) :
     (jet2 (chartGramPi (I := I) g α) y).2.1 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l m
-      = partialDeriv (E := E) i (chartGramOnE (I := I) g α l m) y := by
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l m) y := by
   simp only [jet2]
   rw [fderiv_matEntry hG (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l m]
   rfl
@@ -51,11 +51,11 @@ theorem jet2_chartGram_d2 (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (m i l j : Fin (Module.finrank ℝ E)) :
     (jet2 (chartGramPi (I := I) g α) y).2.2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j
-      = partialDeriv (E := E) m (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j)) y := by
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l j)) y := by
   simp only [jet2]
   rw [fderiv2_matEntry hG2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j]
   have hinner : (fun w => (fderiv ℝ (chartGramPi (I := I) g α) w) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j)
-      =ᶠ[nhds y] partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) := by
+      =ᶠ[nhds y] DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) := by
     filter_upwards [hG1] with w hw
     rw [fderiv_matEntry hw (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j]
     rfl
@@ -93,7 +93,7 @@ theorem chartChristoffelDeriv_eq_jet (g : SmoothRiemannianMetric I M) (α : M) {
     (hG1 : ∀ᶠ w in nhds y, DifferentiableAt ℝ (chartGramPi (I := I) g α) w)
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (m i j k : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y
       = jetChristoffelDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) m i j k := by
   rw [partialDeriv_chartChristoffel_eq g α m i j k hy]
   simp only [jetChristoffelDeriv]

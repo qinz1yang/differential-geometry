@@ -277,7 +277,7 @@ private theorem scalarPart_joint
     (j : Fin (Module.finrank Real E)) :
     ContDiffOn Real ∞
       (fun p : Real × E =>
-        partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (scalarOnE (I := I) alpha (S.scalar p.1)) p.2)
       (D.regular ×ˢ interior (extChartAt I alpha).target) := by
   refine (chartScalarDeriv (I := I) S hS alpha j).congr ?_
@@ -290,7 +290,7 @@ private theorem scalarPart_joint
   have hright : extChartAt I alpha x = p.2 :=
     (extChartAt I alpha).right_inv (interior_subset hp.2)
   rw [mvfderiv_real_eq_mfderiv]
-  change partialDeriv (E := E) j
+  change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
       (scalarOnE (I := I) alpha (S.scalar p.1)) p.2 =
     mfderiv I 𝓘(Real, Real) (S.scalar p.1) x
       (chartBasisVecFiber (I := I) alpha j x)
@@ -313,14 +313,14 @@ theorem chartScalarHess
   classical
   let U := D.regular ×ˢ interior (extChartAt I alpha).target
   have hfirst (k : Fin (Module.finrank Real E)) : ContDiffOn Real ∞
-      (fun p : Real × E => partialDeriv (E := E) k
+      (fun p : Real × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
         (scalarOnE (I := I) alpha (S.scalar p.1)) p.2) U := by
     exact scalarPart_joint (I := I) S hS alpha k
   have hsecond : ContDiffOn Real ∞
       (fun p : Real × E => chartIteratedPartialDeriv (I := I) alpha
         (S.scalar p.1) i j p.2) U := by
     have hfd := DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
-      (G := fun t y => partialDeriv (E := E) j
+      (G := fun t y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
         (scalarOnE (I := I) alpha (S.scalar t)) y)
       D.regular_isOpen.uniqueDiffOn isOpen_interior
         (scalarPart_joint (I := I) S hS alpha j)
@@ -329,7 +329,7 @@ theorem chartScalarHess
     change ContDiffOn Real ∞
       (fun p : Real × E =>
         (Function.uncurry (fun t y => fderiv Real
-          (fun z => partialDeriv (E := E) j
+          (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (scalarOnE (I := I) alpha (S.scalar t)) z) y) p)
           (chartModelBasis E i)) U
     exact hraw
@@ -343,7 +343,7 @@ theorem chartScalarHess
       (fun p : Real × E =>
         chartIteratedPartialDeriv (I := I) alpha (S.scalar p.1) i j p.2 -
           ∑ k, chartChristoffel (I := I) (S.family.metric p.1)
-            alpha i j k p.2 * partialDeriv (E := E) k
+            alpha i j k p.2 * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
               (scalarOnE (I := I) alpha (S.scalar p.1)) p.2) U := by
     exact hsecond.sub (ContDiffOn.sum fun k _ => (hGamma k).mul (hfirst k))
   refine hchart.congr ?_

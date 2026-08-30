@@ -557,7 +557,7 @@ theorem nablaRicChartJoint (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ
     (mem_chart_source H x₀) J t
   have hΦ : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M =>
-        partialDeriv (E := E) (K 0)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) (K 0)
             (chartRicciTensor (I := I) (g p.1) x₀ (K 1) (K 2))
             (extChartAt I x₀ p.2) -
           ∑ m : Fin (Module.finrank ℝ E),
@@ -594,7 +594,7 @@ theorem nablaRicChartJoint (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ
           (fun a : Fin 3 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (K a) p.2)) =ᶠ[
         𝓝[J ×ˢ (Set.univ : Set M)] ((t, x₀) : ℝ × M)]
       fun p : ℝ × M =>
-        partialDeriv (E := E) (K 0)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) (K 0)
             (chartRicciTensor (I := I) (g p.1) x₀ (K 1) (K 2))
             (extChartAt I x₀ p.2) -
           ∑ m : Fin (Module.finrank ℝ E),

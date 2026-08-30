@@ -430,7 +430,7 @@ private lemma mvfderiv_chartBasisVec_apply_of_mem
     (hb_int : extChartAt I x b ∈ interior ((extChartAt I x).target : Set E)) :
     mvfderiv (I := I) f b
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b) =
-      partialDeriv (E := E) j (scalarOnE (I := I) x f) (extChartAt I x b) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) (extChartAt I x b) := by
   classical
   have hf_at : MDiffAt f b := (hf b).mdifferentiableAt (by simp)
   change (mfderiv I 𝓘(ℝ, ℝ) f b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b) = _
@@ -445,7 +445,7 @@ private lemma mvfderiv_chartBasisVec_eventuallyEq
     (fun b : M => mvfderiv (I := I) f b
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b)) =ᶠ[𝓝 x]
       (fun b : M =>
-        partialDeriv (E := E) j (scalarOnE (I := I) x f) (extChartAt I x b)) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) (extChartAt I x b)) := by
   classical
   set S : Set M :=
     (chartAt H x).source ∩
@@ -502,7 +502,7 @@ private lemma mvfderiv_pairing_chartBasisVec_apply_basis
   have hxint : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x hxtgt
   set g : M → ℝ :=
-    fun b => partialDeriv (E := E) j (scalarOnE (I := I) x f) (extChartAt I x b) with hg_def
+    fun b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) (extChartAt I x b) with hg_def
   have hev : scalarAlong =ᶠ[𝓝 x] g := by
     simpa [scalarAlong, g] using hev_raw
   have hu_smooth_at : ContDiffAt ℝ ∞ (scalarOnE (I := I) x f) (extChartAt I x x) :=
@@ -514,9 +514,9 @@ private lemma mvfderiv_pairing_chartBasisVec_apply_basis
       (extChartAt I x x) :=
     hfd_contDiffOn.contDiffAt (hopen_int.mem_nhds hxint)
   have hPD_contDiffAt : ContDiffAt ℝ ∞
-      (partialDeriv (E := E) j (scalarOnE (I := I) x f)) (extChartAt I x x) := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f)) (extChartAt I x x) := by
     have hcomp_eq :
-        partialDeriv (E := E) j (scalarOnE (I := I) x f) =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) =
           (ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) :
             (E →L[ℝ] ℝ) →L[ℝ] ℝ) ∘
           (fderiv ℝ (scalarOnE (I := I) x f)) := by
@@ -528,9 +528,9 @@ private lemma mvfderiv_pairing_chartBasisVec_apply_basis
   have hphi_mdiff : MDiffAt (extChartAt I x) x :=
     mdifferentiableAt_extChartAt (I := I) (x := x) hxsrc
   have hPD_mdiff_at : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ)
-      (partialDeriv (E := E) j (scalarOnE (I := I) x f)) (extChartAt I x x) := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f)) (extChartAt I x x) := by
     have hd : DifferentiableAt ℝ
-        (partialDeriv (E := E) j (scalarOnE (I := I) x f)) (extChartAt I x x) :=
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f)) (extChartAt I x x) :=
       hPD_contDiffAt.differentiableAt (by simp)
     rw [mdifferentiableAt_iff_differentiableAt]
     exact hd
@@ -541,11 +541,11 @@ private lemma mvfderiv_pairing_chartBasisVec_apply_basis
     refine ⟨interior ((extChartAt I x).target : Set E),
       interior_subset, hopen_int, hxint⟩
   have hcompose_eq : (g ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)]
-      (partialDeriv (E := E) j (scalarOnE (I := I) x f)) := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f)) := by
     filter_upwards [htgt_nhds] with y hy
-    change partialDeriv (E := E) j (scalarOnE (I := I) x f)
+    change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f)
         (extChartAt I x ((extChartAt I x).symm y)) =
-      partialDeriv (E := E) j (scalarOnE (I := I) x f) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) y
     rw [(extChartAt I x).right_inv hy]
   have hg_value :
       mvfderiv (I := I) g x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) =
@@ -721,7 +721,7 @@ private lemma mvfderiv_LeviCivita_chartBasisVec_self_basis
           (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g x i j k (extChartAt I x x) *
-          partialDeriv (E := E) k (scalarOnE (I := I) x f) (extChartAt I x x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) x f) (extChartAt I x x) := by
   classical
   rw [LeviCivita_chartBasisVec_self_basis_apply (I := I) g x i j]
   have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
@@ -755,7 +755,7 @@ private lemma mvfderiv_LeviCivita_chartBasisVec_self_basis
     rw [smul_eq_mul]
   have h_summand : ∀ (k : Fin (Module.finrank ℝ E)),
       mvfderiv (I := I) f x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) =
-        partialDeriv (E := E) k (scalarOnE (I := I) x f) (extChartAt I x x) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) x f) (extChartAt I x x) := by
     intro k
     rw [mfderiv_scalar_eq_chart_fderiv (I := I) x f hxsrc hxint hf_at
       (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)]
@@ -847,24 +847,24 @@ theorem hessFun_congr
     filter_upwards [htend.eventually h] with y hy
     exact hy
   have hpartial (j : Fin (Module.finrank ℝ E)) :
-      partialDeriv (E := E) j (scalarOnE (I := I) x f) =ᶠ[𝓝 y₀]
-        partialDeriv (E := E) j (scalarOnE (I := I) x f') := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) =ᶠ[𝓝 y₀]
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f') := by
     filter_upwards [hscalar.fderiv (𝕜 := ℝ)] with y hy
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [hy]
   have hfirst (j : Fin (Module.finrank ℝ E)) :
-      partialDeriv (E := E) j (scalarOnE (I := I) x f) y₀ =
-        partialDeriv (E := E) j (scalarOnE (I := I) x f') y₀ := by
-    unfold partialDeriv
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) y₀ =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f') y₀ := by
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [hscalar.fderiv_eq (𝕜 := ℝ)]
   have hiter (i j : Fin (Module.finrank ℝ E)) :
       chartIteratedPartialDeriv (I := I) x f i j y₀ =
         chartIteratedPartialDeriv (I := I) x f' i j y₀ := by
     change (fderiv ℝ
-        (partialDeriv (E := E) j (scalarOnE (I := I) x f)) y₀)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f)) y₀)
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
       (fderiv ℝ
-        (partialDeriv (E := E) j (scalarOnE (I := I) x f')) y₀)
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f')) y₀)
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
     rw [(hpartial j).fderiv_eq (𝕜 := ℝ)]
   have htensor (i j : Fin (Module.finrank ℝ E)) :
@@ -943,7 +943,7 @@ private lemma mvfderiv_chartBasisVec_alpha_apply_of_mem
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     mvfderiv (I := I) f b
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) =
-      partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α b) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α b) := by
   classical
   have hf_at : MDiffAt f b := (hf b).mdifferentiableAt (by simp)
   have hb_chart : b ∈ (chartAt H α).source :=
@@ -962,7 +962,7 @@ private lemma mvfderiv_chartBasisVec_alpha_eventuallyEq
     (fun b : M => mvfderiv (I := I) f b
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) =ᶠ[𝓝 x]
       (fun b : M =>
-        partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α b)) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α b)) := by
   classical
   have hopen : IsOpen (chartLeviCivitaGoodSet (I := I) α) :=
     chartLeviCivitaGoodSet_isOpen (I := I) α
@@ -996,7 +996,7 @@ private lemma mvfderiv_pairing_chartBasisVec_alpha_apply
   have hxint : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx
   set g : M → ℝ :=
-    fun b => partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α b) with hg_def
+    fun b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α b) with hg_def
   have hu_smooth_at : ContDiffAt ℝ ∞ (scalarOnE (I := I) α f) (extChartAt I α x) :=
     hf_smooth_int.contDiffAt (hopen_int.mem_nhds hxint)
   have hfd_contDiffOn : ContDiffOn ℝ ∞ (fderiv ℝ (scalarOnE (I := I) α f))
@@ -1006,9 +1006,9 @@ private lemma mvfderiv_pairing_chartBasisVec_alpha_apply
       (extChartAt I α x) :=
     hfd_contDiffOn.contDiffAt (hopen_int.mem_nhds hxint)
   have hPD_contDiffAt : ContDiffAt ℝ ∞
-      (partialDeriv (E := E) j (scalarOnE (I := I) α f)) (extChartAt I α x) := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)) (extChartAt I α x) := by
     have hcomp_eq :
-        partialDeriv (E := E) j (scalarOnE (I := I) α f) =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) =
           (ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) :
             (E →L[ℝ] ℝ) →L[ℝ] ℝ) ∘
           (fderiv ℝ (scalarOnE (I := I) α f)) := by
@@ -1019,9 +1019,9 @@ private lemma mvfderiv_pairing_chartBasisVec_alpha_apply
   have hphi_mdiff : MDiffAt (extChartAt I α) x :=
     mdifferentiableAt_extChartAt (I := I) (x := α) hxchart
   have hPD_mdiff_at : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ)
-      (partialDeriv (E := E) j (scalarOnE (I := I) α f)) (extChartAt I α x) := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)) (extChartAt I α x) := by
     have hd : DifferentiableAt ℝ
-        (partialDeriv (E := E) j (scalarOnE (I := I) α f)) (extChartAt I α x) :=
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)) (extChartAt I α x) :=
       hPD_contDiffAt.differentiableAt (by simp)
     rw [mdifferentiableAt_iff_differentiableAt]
     exact hd
@@ -1038,23 +1038,23 @@ private lemma mvfderiv_pairing_chartBasisVec_alpha_apply
     rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt (I := I) α
         hg_mdiff hxchart hxint i]
     have hscalar_eq : (scalarOnE (I := I) α g) =ᶠ[𝓝 (extChartAt I α x)]
-        (partialDeriv (E := E) j (scalarOnE (I := I) α f)) := by
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)) := by
       filter_upwards [htgt_nhds] with y hy
       change g ((extChartAt I α).symm y) =
-        partialDeriv (E := E) j (scalarOnE (I := I) α f) y
-      change partialDeriv (E := E) j (scalarOnE (I := I) α f)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) y
+      change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
           (extChartAt I α ((extChartAt I α).symm y)) =
-        partialDeriv (E := E) j (scalarOnE (I := I) α f) y
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) y
       rw [(extChartAt I α).right_inv hy]
-    change partialDeriv (E := E) i (scalarOnE (I := I) α g) (extChartAt I α x) =
+    change DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α g) (extChartAt I α x) =
         chartIteratedPartialDeriv (I := I) α f i j (extChartAt I α x)
-    have h_pd : partialDeriv (E := E) i (scalarOnE (I := I) α g) (extChartAt I α x) =
-        partialDeriv (E := E) i
-          (partialDeriv (E := E) j (scalarOnE (I := I) α f))
+    have h_pd : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α g) (extChartAt I α x) =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f))
           (extChartAt I α x) := by
       change (fderiv ℝ (scalarOnE (I := I) α g) (extChartAt I α x))
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
-        (fderiv ℝ (partialDeriv (E := E) j (scalarOnE (I := I) α f))
+        (fderiv ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f))
             (extChartAt I α x))
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
       congr 1
@@ -1258,7 +1258,7 @@ private lemma mvfderiv_LeviCivita_chartBasisVec_alpha_basis [I.Boundaryless]
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k (extChartAt I α x) *
-          partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
   classical
   rw [LeviCivita_chartBasisVec_alpha_basis_apply (I := I) g α i j hx]
   have h_distribute :
@@ -1282,7 +1282,7 @@ private lemma mvfderiv_LeviCivita_chartBasisVec_alpha_basis [I.Boundaryless]
     rw [smul_eq_mul]
   have h_summand : ∀ (k : Fin (Module.finrank ℝ E)),
       mvfderiv (I := I) f x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
-        partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
     intro k
     exact mvfderiv_chartBasisVec_alpha_apply_of_mem (I := I) hf α k hx
   refine h_distribute.trans ?_

@@ -36,11 +36,11 @@ theorem hasChartJetLip_chartChristoffelBracket
     HasChartJetLip g₁ g₂ α K (fun g => chartChristoffelBracket (I := I) g α i j l) 1 := by
   have hbr : HasChartJetLip g₁ g₂ α K
       (fun g => fun z =>
-        (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv i
             (chartGramOnE (I := I) g α l j) z +
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv j
             (chartGramOnE (I := I) g α l i) z) +
-        (-1 : ℝ) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv l
+        (-1 : ℝ) * DifferentialGeometry.Tensor.Coordinates.partialDeriv l
             (chartGramOnE (I := I) g α i j) z) 1 := by
     have h1 := (hasChartJetLip_chartGramOnE g₁ g₂ α hK hKsub l j).partialDeriv hKsub i
     have h2 := (hasChartJetLip_chartGramOnE g₁ g₂ α hK hKsub l i).partialDeriv hKsub j
@@ -146,13 +146,13 @@ theorem hasChartJetLip_chartRiemannTensor
     HasChartJetLip g₁ g₂ α K
       (fun g => fun z => chartRiemannTensor (I := I) g α i j k l z) 2 := by
   have hdΓ1 : HasChartJetLip g₁ g₂ α K
-      (fun g => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv j
+      (fun g => DifferentialGeometry.Tensor.Coordinates.partialDeriv j
         (chartChristoffel (I := I) g α i k l)) 2 := by
     have := (hasChartJetLip_chartChristoffel g₁ g₂ α hK hKsub i k l).partialDeriv hKsub j
     simpa using this
   have hdΓ2 : HasChartJetLip g₁ g₂ α K
       (fun g => fun z => (-1 : ℝ) *
-        DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv k
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv k
           (chartChristoffel (I := I) g α i j l) z) 2 := by
     have h := (hasChartJetLip_chartChristoffel g₁ g₂ α hK hKsub i j l).partialDeriv hKsub k
     have h' := h.const_smul hKsub (-1 : ℝ)
@@ -222,7 +222,7 @@ theorem hasChartJetLip_chartLieDeTurckComp
   have hgroup0 : ∀ k : Fin (Module.finrank ℝ E),
       HasChartJetLip g₁ g₂ α K
         (fun g => fun z => chartDeTurckVFComp (I := I) g g_bg α k z *
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv k
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv k
             (chartGramOnE (I := I) g α i j) z) 2 := by
     intro k
     have hW := hasChartJetLip_chartDeTurckVFComp g₁ g₂ g_bg α hK hKsub k
@@ -232,7 +232,7 @@ theorem hasChartJetLip_chartLieDeTurckComp
   have hgroup1 : ∀ k : Fin (Module.finrank ℝ E),
       HasChartJetLip g₁ g₂ α K
         (fun g => fun z => chartGramOnE (I := I) g α k j z *
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv i
             (fun w => chartDeTurckVFComp (I := I) g g_bg α k w) z) 2 := by
     intro k
     have hG := hasChartJetLip_chartGramOnE g₁ g₂ α hK hKsub k j
@@ -242,7 +242,7 @@ theorem hasChartJetLip_chartLieDeTurckComp
   have hgroup2 : ∀ k : Fin (Module.finrank ℝ E),
       HasChartJetLip g₁ g₂ α K
         (fun g => fun z => chartGramOnE (I := I) g α i k z *
-          DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv j
             (fun w => chartDeTurckVFComp (I := I) g g_bg α k w) z) 2 := by
     intro k
     have hG := hasChartJetLip_chartGramOnE g₁ g₂ α hK hKsub i k
@@ -251,15 +251,15 @@ theorem hasChartJetLip_chartLieDeTurckComp
     exact this.of_le (by norm_num)
   have hsum0 := HasChartJetLip.sum hKsub (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (F := fun k g => fun z => chartDeTurckVFComp (I := I) g g_bg α k z *
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv k
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv k
         (chartGramOnE (I := I) g α i j) z) (fun k _ => hgroup0 k)
   have hsum1 := HasChartJetLip.sum hKsub (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (F := fun k g => fun z => chartGramOnE (I := I) g α k j z *
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv i
         (fun w => chartDeTurckVFComp (I := I) g g_bg α k w) z) (fun k _ => hgroup1 k)
   have hsum2 := HasChartJetLip.sum hKsub (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (F := fun k g => fun z => chartGramOnE (I := I) g α i k z *
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv j
         (fun w => chartDeTurckVFComp (I := I) g g_bg α k w) z) (fun k _ => hgroup2 k)
   have htotal := ((hsum0.add hKsub hsum1).add hKsub hsum2)
   refine (htotal.of_le (by norm_num)).congr ?_

@@ -115,11 +115,11 @@ lemma gradInnerCoefI_M_smooth
         have h_target_open : IsOpen ((extChartAt I α).target) :=
           isOpen_extChartAt_target (I := I) α
         have h_partial_E_on : ContDiffOn ℝ ∞
-            (fun y : E => partialDeriv (E := E) j
+            (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (scalarOnE (I := I) α
                 ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y)
             (extChartAt I α).target := by
-          unfold partialDeriv
+          unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
           have h_fderiv_smooth :
               ContDiffOn ℝ ∞ (fun y : E => fderiv ℝ
                 (scalarOnE (I := I) α
@@ -130,7 +130,7 @@ lemma gradInnerCoefI_M_smooth
             exact h_scalar_target.fderiv_of_isOpen h_target_open h_le
           exact h_fderiv_smooth.clm_apply contDiffOn_const
         have h_partial_M_E : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
-            (fun y : E => partialDeriv (E := E) j
+            (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
               (scalarOnE (I := I) α
                 ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y)
             (extChartAt I α).target :=

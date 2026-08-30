@@ -49,7 +49,7 @@ private noncomputable def coefIJ_M
   fun x : M =>
     chartStrictCutoff (I := I) (M := M) α x *
       chartInvGramMatrix (I := I) g α x i j *
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (scalarOnE (I := I) α
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))
         (extChartAt I α x)
@@ -60,7 +60,7 @@ private lemma coefIJ_M_apply (g : SmoothRiemannianMetric I M) (α : M)
     coefIJ_M (I := I) (M := M) g α i j x =
       chartStrictCutoff (I := I) (M := M) α x *
         chartInvGramMatrix (I := I) g α x i j *
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))
           (extChartAt I α x) := rfl
@@ -113,11 +113,11 @@ private lemma coefIJ_M_smooth
     have h_target_open : IsOpen ((extChartAt I α).target) :=
       isOpen_extChartAt_target (I := I) α
     have h_partial_contDiffOn : ContDiffOn ℝ ∞
-        (fun y : E => partialDeriv (E := E) i
+        (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y)
         (extChartAt I α).target := by
-      unfold partialDeriv
+      unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
       have h_fderiv_smooth :
           ContDiffOn ℝ ∞ (fun y : E => fderiv ℝ
             (scalarOnE (I := I) α
@@ -132,7 +132,7 @@ private lemma coefIJ_M_smooth
         rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_src
       exact (extChartAt I α).map_source hx_ext_src
     have h_partial_at_E : ContDiffAt ℝ ∞
-        (fun y : E => partialDeriv (E := E) i
+        (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y)
         (extChartAt I α x₀) := by
@@ -145,12 +145,12 @@ private lemma coefIJ_M_smooth
         contMDiffOn_extChartAt (I := I) (x := α)
       exact (h_on x₀ hx_src).contMDiffAt (h_open_src.mem_nhds hx_src)
     have h_partial_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-        (fun x : M => partialDeriv (E := E) i
+        (fun x : M => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))
           (extChartAt I α x)) x₀ := by
       have h_partial_at_E_mDiff : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞
-          (fun y : E => partialDeriv (E := E) i
+          (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (scalarOnE (I := I) α
               ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) y)
           (extChartAt I α x₀) :=

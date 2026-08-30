@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
+import DifferentialGeometry.Geometry.Coordinates.PartialDerivative
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
@@ -106,14 +107,11 @@ def chartCoeffOnE (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)
 def chartDensityOnE (g : SmoothRiemannianMetric I M) (α : M) : E → ℝ :=
   fun y => chartDensity (I := I) g α ((extChartAt I α).symm y)
 
-def partialDeriv (i : Fin (Module.finrank ℝ E)) (u : E → ℝ) (y : E) : ℝ :=
-  fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
-
 def localDivergence (g : SmoothRiemannianMetric I M)
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     M → ℝ := fun x =>
   (∑ i : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun y => chartCoeffOnE (I := I) α X i y * chartDensityOnE (I := I) g α y)
         (extChartAt I α x))
     / chartDensity (I := I) g α x
@@ -123,7 +121,7 @@ def localDivergence (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     localDivergence (I := I) g α X x =
       (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y => chartCoeffOnE (I := I) α X i y *
                 chartDensityOnE (I := I) g α y)
             (extChartAt I α x))
@@ -188,7 +186,7 @@ lemma chartCoeffOnE_mul_chartDensityOnE_contDiffOn
 private lemma partialDeriv_contDiffOn_interior
     (i : Fin (Module.finrank ℝ E)) {u : E → ℝ} {s : Set E}
     (hu : ContDiffOn ℝ ∞ u s) :
-    ContDiffOn ℝ ∞ (partialDeriv (E := E) i u) (interior s) := by
+    ContDiffOn ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u) (interior s) := by
   have hu_int : ContDiffOn ℝ ∞ u (interior s) := hu.mono interior_subset
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ u) (interior s) :=
     hu_int.fderiv_of_isOpen isOpen_interior
@@ -203,7 +201,7 @@ lemma partialDeriv_chartCoeffOnE_mul_chartDensityOnE_contDiffOn
     (i : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
       (fun y : E =>
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E =>
             chartCoeffOnE (I := I) α X i z *
               chartDensityOnE (I := I) g α z) y)
@@ -230,7 +228,7 @@ private lemma localDivergence_summand_contMDiffOn
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y : E =>
             chartCoeffOnE (I := I) α X i y *
               chartDensityOnE (I := I) g α y)
@@ -238,7 +236,7 @@ private lemma localDivergence_summand_contMDiffOn
       (localDivergenceDomain (I := I) α) := by
   have hpartial : ContDiffOn ℝ ∞
       (fun y : E =>
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E =>
             chartCoeffOnE (I := I) α X i z *
               chartDensityOnE (I := I) g α z) y)
@@ -246,7 +244,7 @@ private lemma localDivergence_summand_contMDiffOn
     partialDeriv_chartCoeffOnE_mul_chartDensityOnE_contDiffOn (I := I) g α X i
   have hpartialM : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
       (fun y : E =>
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E =>
             chartCoeffOnE (I := I) α X i z *
               chartDensityOnE (I := I) g α z) y)
@@ -288,7 +286,7 @@ theorem localDivergence_contMDiffOn
   have hnum : ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
         ∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (fun y : E =>
               chartCoeffOnE (I := I) α X i y *
                 chartDensityOnE (I := I) g α y)
@@ -318,11 +316,11 @@ theorem divergence_g_chart_product
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     divergenceG (I := I) g X x =
       (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (chartCoeffOnE (I := I) x X i) (extChartAt I x x)) +
         (∑ i : Fin (Module.finrank ℝ E),
           chartCoeffOnE (I := I) x X i (extChartAt I x x) *
-            partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (chartDensityOnE (I := I) g x) (extChartAt I x x)) /
           chartDensity (I := I) g x x := by
   classical
@@ -365,16 +363,16 @@ theorem divergence_g_chart_product
       (by simp)
   have hprod :
       ∀ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y : E =>
             chartCoeffOnE (I := I) x X i y *
               chartDensityOnE (I := I) g x y) y₀ =
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
             chartDensityOnE (I := I) g x y₀ +
           chartCoeffOnE (I := I) x X i y₀ *
-            partialDeriv (E := E) i (chartDensityOnE (I := I) g x) y₀ := by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDensityOnE (I := I) g x) y₀ := by
     intro i
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     have hmul : fderiv ℝ
         (fun y : E =>
           chartCoeffOnE (I := I) x X i y *
@@ -392,32 +390,32 @@ theorem divergence_g_chart_product
   rw [divergence_g_def, localDivergence_def]
   change
     (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y : E =>
             chartCoeffOnE (I := I) x X i y *
               chartDensityOnE (I := I) g x y) y₀) /
       chartDensity (I := I) g x x = _
   rw [show
       (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y : E =>
             chartCoeffOnE (I := I) x X i y *
               chartDensityOnE (I := I) g x y) y₀) =
         ∑ i : Fin (Module.finrank ℝ E),
-          (partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
             chartDensityOnE (I := I) g x y₀ +
           chartCoeffOnE (I := I) x X i y₀ *
-            partialDeriv (E := E) i (chartDensityOnE (I := I) g x) y₀) by
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDensityOnE (I := I) g x) y₀) by
       refine Finset.sum_congr rfl ?_
       intro i _
       exact hprod i]
   rw [Finset.sum_add_distrib]
   rw [show
       (∑ i : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
           chartDensityOnE (I := I) g x y₀) =
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀) *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀) *
           chartDensityOnE (I := I) g x y₀ by
       rw [Finset.sum_mul]]
   rw [hρOnE]

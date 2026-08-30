@@ -76,7 +76,7 @@ private theorem chartScalCov_basis
   rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt
     (I := I) p (hf.mdifferentiableAt (by simp)) hxsrc
       (by simpa only [hright] using hz.2) i]
-  simp only [partialDeriv, hright, f, x]
+  simp only [DifferentialGeometry.Tensor.Coordinates.partialDeriv, hright, f, x]
   rfl
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]

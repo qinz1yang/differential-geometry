@@ -13,7 +13,7 @@ open Set Function Filter
 open scoped Topology ContDiff Manifold
 open DifferentialGeometry (SmoothRiemannianMetric)
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (partialDeriv chartRiemannTensor chartRicciTensor)
+  (chartRiemannTensor chartRicciTensor)
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartGramOnE chartChristoffel)
 
@@ -279,11 +279,11 @@ theorem chartChristoffel_lifted
       rfl
     rw [hProj_eq]
   have hP_ij_lj :
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (chartGramOnE
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' l j) y₀
-        = partialDeriv (E := E) i
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (chartGramOnE (M := M) g (proj α') l j) y₀ := by
     change fderiv ℝ
         (chartGramOnE
@@ -295,11 +295,11 @@ theorem chartChristoffel_lifted
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
     rw [Filter.EventuallyEq.fderiv_eq (hGramOnE_eventuallyEq l j)]
   have hP_ji_li :
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (chartGramOnE
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' l i) y₀
-        = partialDeriv (E := E) j
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (chartGramOnE (M := M) g (proj α') l i) y₀ := by
     change fderiv ℝ
         (chartGramOnE
@@ -311,11 +311,11 @@ theorem chartChristoffel_lifted
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
     rw [Filter.EventuallyEq.fderiv_eq (hGramOnE_eventuallyEq l i)]
   have hP_lij :
-      partialDeriv (E := E) l
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
           (chartGramOnE
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' i j) y₀
-        = partialDeriv (E := E) l
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (chartGramOnE (M := M) g (proj α') i j) y₀ := by
     change fderiv ℝ
         (chartGramOnE
@@ -457,11 +457,11 @@ theorem chartRiemannTensor_lifted
     have := chartChristoffel_lifted_eventuallyEq (I := I) (M := M) g α' x' hx' a b c
     exact this
   have hPartialDeriv : ∀ (n : Fin (Module.finrank ℝ E)) (a b c : Fin (Module.finrank ℝ E)),
-      partialDeriv (E := E) n
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) n
           (chartChristoffel
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
             (liftedMetric (I := I) g) α' a b c) y₀
-        = partialDeriv (E := E) n
+        = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) n
             (chartChristoffel (M := M) g (proj α') a b c) y₀ := by
     intro n a b c
     change fderiv ℝ

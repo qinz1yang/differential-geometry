@@ -91,8 +91,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_chartGramOnE_swap_indices
     (g : SmoothRiemannianMetric I M) (α : M)
     (k a b : Fin (Module.finrank ℝ E)) (y : E) :
-    partialDeriv (E := E) k (chartGramOnE (I := I) g α a b) y =
-      partialDeriv (E := E) k (chartGramOnE (I := I) g α b a) y := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α a b) y =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α b a) y := by
   congr 1
   funext y'
   exact chartGramOnE_symm (I := I) g α a b y'
@@ -102,7 +102,7 @@ theorem chartGramOnE_partialDeriv_eq_christoffel_sum_split
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y =
       (∑ l : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α k i l y *
             chartGramOnE (I := I) g α l j y) +
@@ -114,13 +114,13 @@ theorem chartGramOnE_partialDeriv_eq_christoffel_sum_split
   let S : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
           Fin (Module.finrank ℝ E) → ℝ :=
     fun a b c =>
-      partialDeriv (E := E) a (chartGramOnE (I := I) g α c b) y +
-        partialDeriv (E := E) b (chartGramOnE (I := I) g α c a) y -
-        partialDeriv (E := E) c (chartGramOnE (I := I) g α a b) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) g α c b) y +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (chartGramOnE (I := I) g α c a) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c (chartGramOnE (I := I) g α a b) y
   have hS : ∀ a b c, S a b c =
-      partialDeriv (E := E) a (chartGramOnE (I := I) g α c b) y +
-        partialDeriv (E := E) b (chartGramOnE (I := I) g α c a) y -
-        partialDeriv (E := E) c (chartGramOnE (I := I) g α a b) y := fun _ _ _ => rfl
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) g α c b) y +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (chartGramOnE (I := I) g α c a) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c (chartGramOnE (I := I) g α a b) y := fun _ _ _ => rfl
   have hsubst :
       (∑ l : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α k i l y *
@@ -265,7 +265,7 @@ theorem chartGramOnE_partialDeriv_eq_christoffel_sum
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y =
       ∑ l : Fin (Module.finrank ℝ E),
         (chartChristoffel (I := I) g α k i l y *
             chartGramOnE (I := I) g α l j y +

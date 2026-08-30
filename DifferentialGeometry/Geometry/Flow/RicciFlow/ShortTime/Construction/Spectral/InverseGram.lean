@@ -15,7 +15,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Calculus
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
@@ -89,7 +89,7 @@ theorem gramD_buffer_bnd
               (extChartAt I α b)‖ ≤ C) :
     ∀ k : ι, ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
       ∀ m i j : Fin (Module.finrank ℝ E),
-        |partialDeriv (E := E) m
+        |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α b)| ≤
           C * ∑ a : Fin (Module.finrank ℝ E),
@@ -102,7 +102,7 @@ theorem gramD_buffer_bnd
     Finset.single_le_sum
       (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
-  rw [partial_eq_iter1, ← Real.norm_eq_abs]
+  rw [partialDeriv_eq_iteratedFDeriv_one, ← Real.norm_eq_abs]
   change ‖iteratedFDeriv ℝ 1
       (chartGramOnE (I := I) (gSeq k) α i j)
         (extChartAt I α b) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖ ≤ C * CE
@@ -141,12 +141,12 @@ theorem invGramD_buffer_bnd
     (hQ : ∀ k : ι,
       ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ Q) :
     ∀ k : ι, ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
       ∀ m i j : Fin (Module.finrank ℝ E),
-        |partialDeriv (E := E) m
+        |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (chartInvGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α b)| ≤
           (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 * Q := by
@@ -171,7 +171,7 @@ theorem invGram_fderiv_bnd
     (hD : ∀ k : ι,
       ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (chartInvGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ D) :
     ∀ k : ι, ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
@@ -196,7 +196,7 @@ theorem invGram_fderiv_bnd
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖ * D := by
       refine Finset.sum_le_sum fun m _ => ?_
       apply mul_le_mul_of_nonneg_left
-      · simpa only [partialDeriv] using hD k b hb m i j
+      · simpa only [DifferentialGeometry.Tensor.Coordinates.partialDeriv] using hD k b hb m i j
       · exact norm_nonneg _
     _ = (∑ m : Fin (Module.finrank ℝ E),
           ‖LinearMap.toContinuousLinearMap

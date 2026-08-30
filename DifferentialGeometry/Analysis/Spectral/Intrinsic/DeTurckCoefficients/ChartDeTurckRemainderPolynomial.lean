@@ -80,10 +80,10 @@ theorem chartDeTurckRicciRHS_sub_eq
         chartDeTurckRicciRHS (I := I) g₂ g_bg α i k y =
       -2 *
           ((∑ j : Fin (Module.finrank ℝ E),
-              ((partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k j) y -
-                    partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k j) y) -
-                (partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j j) y -
-                  partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j j) y))) +
+              ((DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k j) y -
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k j) y) -
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j j) y -
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j j) y))) +
             (∑ j : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
               (((chartChristoffel (I := I) g₁ α j m j y -
                       chartChristoffel (I := I) g₂ α j m j y) *
@@ -100,22 +100,22 @@ theorem chartDeTurckRicciRHS_sub_eq
         ((∑ kk : Fin (Module.finrank ℝ E),
             ((chartDeTurckVFComp (I := I) g₁ g_bg α kk y -
                   chartDeTurckVFComp (I := I) g₂ g_bg α kk y) *
-                partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y +
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y +
               chartDeTurckVFComp (I := I) g₂ g_bg α kk y *
-                (partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y -
-                  partialDeriv (E := E) kk (chartGramOnE (I := I) g₂ α i k) y))) +
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y -
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) kk (chartGramOnE (I := I) g₂ α i k) y))) +
           (∑ kk : Fin (Module.finrank ℝ E),
               ((chartGramOnE (I := I) g₁ α kk k y - chartGramOnE (I := I) g₂ α kk k y) *
-                  partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
                 chartGramOnE (I := I) g₂ α kk k y *
-                  (partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
-                    partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α kk) y))) +
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α kk) y))) +
             (∑ kk : Fin (Module.finrank ℝ E),
               ((chartGramOnE (I := I) g₁ α i kk y - chartGramOnE (I := I) g₂ α i kk y) *
-                  partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
                 chartGramOnE (I := I) g₂ α i kk y *
-                  (partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
-                    partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₂ g_bg α kk) y)))) := by
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₂ g_bg α kk) y)))) := by
   classical
   rw [chartDeTurckRicciRHS_def, chartDeTurckRicciRHS_def]
   rw [show -2 * chartRicciTensor (I := I) g₁ α i k y +
@@ -144,22 +144,22 @@ theorem chartDeTurckRicciRHS_sub_eq_principalSymbol_add_lowerOrder
           ((∑ kk : Fin (Module.finrank ℝ E),
               ((chartDeTurckVFComp (I := I) g₁ g_bg α kk y -
                     chartDeTurckVFComp (I := I) g₂ g_bg α kk y) *
-                  partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y +
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y +
                 chartDeTurckVFComp (I := I) g₂ g_bg α kk y *
-                  (partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y -
-                    partialDeriv (E := E) kk (chartGramOnE (I := I) g₂ α i k) y))) +
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) kk (chartGramOnE (I := I) g₁ α i k) y -
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) kk (chartGramOnE (I := I) g₂ α i k) y))) +
             (∑ kk : Fin (Module.finrank ℝ E),
                 ((chartGramOnE (I := I) g₁ α kk k y - chartGramOnE (I := I) g₂ α kk k y) *
-                    partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
                   chartGramOnE (I := I) g₂ α kk k y *
-                    (partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
-                      partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α kk) y))) +
+                    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
+                      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartDeTurckVFComp (I := I) g₂ g_bg α kk) y))) +
               (∑ kk : Fin (Module.finrank ℝ E),
                 ((chartGramOnE (I := I) g₁ α i kk y - chartGramOnE (I := I) g₂ α i kk y) *
-                    partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y +
                   chartGramOnE (I := I) g₂ α i kk y *
-                    (partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
-                      partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₂ g_bg α kk)
+                    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₁ g_bg α kk) y -
+                      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartDeTurckVFComp (I := I) g₂ g_bg α kk)
                         y))))) := by
   classical
   rw [chartDeTurckRicciRHS_def, chartDeTurckRicciRHS_def]

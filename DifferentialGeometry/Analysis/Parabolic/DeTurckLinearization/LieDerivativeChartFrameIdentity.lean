@@ -83,7 +83,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
         (trivToE (I := I) α x
           ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)))) k =
-      partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x)
       + (∑ l : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α j l k (extChartAt I α x) *
             chartCoeff (I := I) α W l x) := by
@@ -132,7 +132,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
     rw [← fderiv_comp (x := extChartAt I α x)
           (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k).toContinuousLinearMap).differentiableAt
           (differentiableAt_chartE_pullback_W_alpha (I := I) W α hx)]
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     have hev := chartCoeffOnE_alpha_eq_basis_comp_pullback_eventuallyEq (I := I) W α hx k
     rw [hev.fderiv_eq]
   · rw [christoffelCorrection_apply (I := I) g α x
@@ -247,7 +247,7 @@ private lemma metric_compat_coord_identity_alpha
     (g : SmoothRiemannianMetric I M)
     (α : M) {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (i j k : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
       (∑ l : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α k i l (extChartAt I α x) *
             chartGramOnE (I := I) g α l j (extChartAt I α x))
@@ -270,7 +270,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
       (∑ k : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
             ((∑ l : Fin (Module.finrank ℝ E),
-                  partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
                     (extChartAt I α x) *
                     (if l = k then (1 : ℝ) else 0))
               + (∑ l : Fin (Module.finrank ℝ E),
@@ -279,7 +279,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
       + (∑ k : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k *
             ((∑ l : Fin (Module.finrank ℝ E),
-                  partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
                     (extChartAt I α x) *
                     (if l = k then (1 : ℝ) else 0))
               + (∑ l : Fin (Module.finrank ℝ E),
@@ -296,7 +296,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
     unfold chartGramOnE
     rw [(extChartAt I α).left_inv hx_src]
   have hmc : ∀ k : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
         (∑ l, chartChristoffel (I := I) g α k i l (extChartAt I α x) *
             chartGramOnE (I := I) g α l j (extChartAt I α x))
         + (∑ l, chartChristoffel (I := I) g α k j l (extChartAt I α x) *
@@ -304,9 +304,9 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
     metric_compat_coord_identity_alpha (I := I) g α hx i j k
   have hcoll1 : ∀ k : Fin (Module.finrank ℝ E),
       (∑ l : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
           (if l = k then (1 : ℝ) else 0)) =
-      partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
     intro k
     rw [Finset.sum_eq_single k
       (fun l _ hl => by rw [if_neg hl]; ring)
@@ -314,9 +314,9 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
     simp
   have hcoll2 : ∀ k : Fin (Module.finrank ℝ E),
       (∑ l : Fin (Module.finrank ℝ E),
-        partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
           (if l = k then (1 : ℝ) else 0)) =
-      partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
     intro k
     rw [Finset.sum_eq_single k
       (fun l _ hl => by rw [if_neg hl]; ring)
@@ -326,12 +326,12 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
     rw [show
       (∑ k : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
-          ((∑ l, partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
               (extChartAt I α x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g α i l k (extChartAt I α x) *
                   chartCoeff (I := I) α W l x))) =
         (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x))
         + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
           (∑ l, chartChristoffel (I := I) g α i l k (extChartAt I α x) *
               chartCoeff (I := I) α W l x))
@@ -342,12 +342,12 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
     rw [show
       (∑ k : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k *
-          ((∑ l, partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
+          ((∑ l, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
               (extChartAt I α x) * (if l = k then (1 : ℝ) else 0))
             + (∑ l, chartChristoffel (I := I) g α j l k (extChartAt I α x) *
                   chartCoeff (I := I) α W l x))) =
         (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k *
-          partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x))
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x))
         + (∑ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k *
           (∑ l, chartChristoffel (I := I) g α j l k (extChartAt I α x) *
               chartCoeff (I := I) α W l x))
@@ -358,7 +358,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
   rw [show
     (∑ k : Fin (Module.finrank ℝ E),
       chartCoeff (I := I) α W k x *
-        partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x))
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x))
     = (∑ k, chartCoeff (I := I) α W k x *
       (∑ l, chartChristoffel (I := I) g α k i l (extChartAt I α x) *
           chartGramOnE (I := I) g α l j (extChartAt I α x)))
@@ -557,7 +557,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (trivToE (I := I) α x
           ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x vα))) i' =
-        partialDeriv (E := E) i (chartCoeffOnE (I := I) α W i') (extChartAt I α x)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W i') (extChartAt I α x)
         + (∑ l : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α i l i' (extChartAt I α x) *
               chartCoeff (I := I) α W l x) := by
@@ -568,7 +568,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (trivToE (I := I) α x
           ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x wα))) j' =
-        partialDeriv (E := E) j (chartCoeffOnE (I := I) α W j') (extChartAt I α x)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W j') (extChartAt I α x)
         + (∑ l : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α j l j' (extChartAt I α x) *
               chartCoeff (I := I) α W l x) := by
@@ -584,7 +584,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
     (∑ k : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
         ((∑ l : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
               (extChartAt I α x) *
               (if l = k then (1 : ℝ) else 0))
           + (∑ l : Fin (Module.finrank ℝ E),
@@ -595,9 +595,9 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       rw [hLC_vα k]
       have hpd_collapse :
           (∑ l : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
               (if l = k then (1 : ℝ) else 0)) =
-          partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
         rw [Finset.sum_eq_single k
           (fun l _ hl => by rw [if_neg hl]; ring)
           (fun hm => (hm (Finset.mem_univ k)).elim)]
@@ -613,7 +613,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
     (∑ k : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k *
         ((∑ l : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
               (extChartAt I α x) *
               (if l = k then (1 : ℝ) else 0))
           + (∑ l : Fin (Module.finrank ℝ E),
@@ -624,9 +624,9 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       rw [hLC_wα k]
       have hpd_collapse :
           (∑ l : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) *
               (if l = k then (1 : ℝ) else 0)) =
-          partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
         rw [Finset.sum_eq_single k
           (fun l _ hl => by rw [if_neg hl]; ring)
           (fun hm => (hm (Finset.mem_univ k)).elim)]

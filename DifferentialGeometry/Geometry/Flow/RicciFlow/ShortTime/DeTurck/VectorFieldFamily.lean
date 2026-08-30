@@ -36,7 +36,7 @@ theorem deturck_vf_time_family_smoothness
       ∀ (x : M) (l i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun t : ℝ =>
-            partialDeriv (E := E) l
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
               (chartGramOnE (I := I) (g_DT t) x i j) (extChartAt I x x))
           (Set.Ico (0 : ℝ) T)) :
     ∀ x : M,
@@ -85,7 +85,7 @@ theorem deturck_vf_time_family_smoothness
   have h_partial : ∀ l i j : Fin (Module.finrank ℝ E),
       ContinuousOn
         (fun t : ℝ =>
-          partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) x i j)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) x i j)
             (extChartAt I x x))
         (Set.Ico (0 : ℝ) T) := h_metric_partial_cont x
   have hx_base : ((extChartAt I x).symm (extChartAt I x x)) ∈

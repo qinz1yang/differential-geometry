@@ -61,7 +61,7 @@ noncomputable def chartPushedChristoffelCorrection
     (k l : Fin (Module.finrank ℝ E)) (y : EuclN) : ℝ :=
   ∑ m : Fin (Module.finrank ℝ E),
     chartChristoffel (I := I) g α k l m ((toEuclidean (E := E)).symm y) *
-      partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun)
         ((toEuclidean (E := E)).symm y)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -72,7 +72,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     chartPushedChristoffelCorrection (I := I) (M := M) g α v k l y =
       ∑ m : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α k l m ((toEuclidean (E := E)).symm y) *
-          partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun)
             ((toEuclidean (E := E)).symm y) := rfl
 
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -118,9 +118,9 @@ theorem chartPushedChristoffelCorrection_continuousOn
       (extChartAt I α).target :=
     scalarOnE_contDiffOn (I := I) α v.smooth
   have h_pd_cont : ContinuousOn
-      (partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun))
       (extChartAt I α).target := by
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [← h_int_eq_target]
     have h_smooth_int : ContDiffOn ℝ ∞ (scalarOnE (I := I) α v.toFun)
         (interior (extChartAt I α).target) := h_smooth_target.mono interior_subset
@@ -139,7 +139,7 @@ theorem chartPushedChristoffelCorrection_continuousOn
       (chartTargetEuclid (I := I) (M := M) α) :=
     h_chris_cont.comp h_toE_cont.continuousOn h_maps
   have h_pd_comp : ContinuousOn
-      (fun y : EuclN => partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun)
+      (fun y : EuclN => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α v.toFun)
         ((toEuclidean (E := E)).symm y))
       (chartTargetEuclid (I := I) (M := M) α) :=
     h_pd_cont.comp h_toE_cont.continuousOn h_maps
@@ -171,7 +171,7 @@ theorem chartHessianVOnEuclid_continuousOn
     have h_smooth_iter : ContDiffOn ℝ ∞
         (chartIteratedPartialDeriv (I := I) α v.toFun k l)
         (extChartAt I α).target := by
-      unfold chartIteratedPartialDeriv partialDeriv
+      unfold chartIteratedPartialDeriv DifferentialGeometry.Tensor.Coordinates.partialDeriv
       have h_fder1 : ContDiffOn ℝ ∞
           (fderiv ℝ (scalarOnE (I := I) α v.toFun))
           (extChartAt I α).target :=

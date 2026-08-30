@@ -57,12 +57,12 @@ private lemma partialDeriv_contDiffOn_interior
     (α : M) {f : E → ℝ}
     (hf : ContDiffOn ℝ ∞ f (interior ((extChartAt I α).target : Set E)))
     (a : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞ (partialDeriv (E := E) a f)
+    ContDiffOn ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f)
       (interior ((extChartAt I α).target : Set E)) := by
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ f)
       (interior ((extChartAt I α).target : Set E)) :=
     hf.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hrw : (partialDeriv (E := E) a f) =
+  have hrw : (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f) =
       fun y => fderiv ℝ f y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) := rfl
   rw [hrw]
   exact hfderiv.clm_apply contDiffOn_const
@@ -73,12 +73,12 @@ private lemma partialDeriv_chartGramOnE_diffAt_interior
     (g : SmoothRiemannianMetric I M) (α : M) (a l b : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior ((extChartAt I α).target : Set E)) :
     DifferentiableAt ℝ
-      (partialDeriv (E := E) a (chartGramOnE (I := I) g α l b)) y := by
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) g α l b)) y := by
   have hcd_int : ContDiffOn ℝ ∞ (chartGramOnE (I := I) g α l b)
       (interior ((extChartAt I α).target : Set E)) :=
     (chartGramOnE_contDiffOn (I := I) g α l b).mono interior_subset
   have hcd_partial : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) a (chartGramOnE (I := I) g α l b))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) g α l b))
       (interior ((extChartAt I α).target : Set E)) :=
     partialDeriv_contDiffOn_interior (I := I) α hcd_int a
   exact (hcd_partial.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
@@ -133,14 +133,14 @@ theorem partialDeriv_chartGramOnE_realizeMetricAt_sub_eq
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (a l b : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior ((extChartAt I α).target : Set E)) :
-    partialDeriv (E := E) a
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
         (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b) y -
-      partialDeriv (E := E) a
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
         (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b) y =
-      partialDeriv (E := E) a
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
         (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y := by
   rw [← chartGramOnE_realizeMetricAt_sub_funext (I := I) g_bg hu₁ hu₂ α l b]
-  rw [partialDeriv, partialDeriv, partialDeriv, ← sub_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, DifferentialGeometry.Tensor.Coordinates.partialDeriv, DifferentialGeometry.Tensor.Coordinates.partialDeriv, ← sub_apply]
   congr 1
   exact (fderiv_sub
     (chartGramOnE_diffAt_interior (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b hy)
@@ -154,34 +154,34 @@ theorem partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (c a l b : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior ((extChartAt I α).target : Set E)) :
-    partialDeriv (E := E) c
-        (partialDeriv (E := E) a
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b)) y -
-      partialDeriv (E := E) c
-        (partialDeriv (E := E) a
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b)) y =
-      partialDeriv (E := E) c
-        (partialDeriv (E := E) a
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y := by
   have hop : IsOpen (interior ((extChartAt I α).target : Set E)) := isOpen_interior
   have h_eqOn : Set.EqOn
-      (fun z => partialDeriv (E := E) a
+      (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b) z -
-        partialDeriv (E := E) a
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b) z)
-      (partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b))
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b))
       (interior ((extChartAt I α).target : Set E)) := by
     intro z hz
     exact partialDeriv_chartGramOnE_realizeMetricAt_sub_eq (I := I) g_bg hu₁ hu₂ α a l b hz
-  rw [partialDeriv, partialDeriv, partialDeriv, ← sub_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, DifferentialGeometry.Tensor.Coordinates.partialDeriv, DifferentialGeometry.Tensor.Coordinates.partialDeriv, ← sub_apply]
   have hfd_sub :
-      fderiv ℝ (partialDeriv (E := E) a
+      fderiv ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b)) y -
-        fderiv ℝ (partialDeriv (E := E) a
+        fderiv ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b)) y =
-      fderiv ℝ (fun z => partialDeriv (E := E) a
+      fderiv ℝ (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b) z -
-          partialDeriv (E := E) a
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
             (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b) z) y :=
     (fderiv_sub
       (partialDeriv_chartGramOnE_diffAt_interior (I := I) (realizeMetricAt (I := I) g_bg u₁)
@@ -189,12 +189,12 @@ theorem partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq
       (partialDeriv_chartGramOnE_diffAt_interior (I := I) (realizeMetricAt (I := I) g_bg u₂)
         α a l b hy)).symm
   rw [hfd_sub]
-  have hev : (fun z => partialDeriv (E := E) a
+  have hev : (fun z => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b) z -
-        partialDeriv (E := E) a
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (chartGramOnE (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b) z)
       =ᶠ[nhds y]
-      partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) :=
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) :=
     Filter.eventuallyEq_iff_exists_mem.mpr
       ⟨interior ((extChartAt I α).target : Set E), hop.mem_nhds hy, h_eqOn⟩
   rw [hev.fderiv_eq]
@@ -256,14 +256,14 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
             (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
             ((extChartAt I α).symm y) ∧
         (∀ a : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) a
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
               (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y| ≤
             C₀ * iteratedCovGradJetSum (I := I) g_bg
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
               ((extChartAt I α).symm y)) ∧
         (∀ c a : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) c
-              (partialDeriv (E := E) a
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
                 (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y| ≤
             C₀ * iteratedCovGradJetSum (I := I) g_bg
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
@@ -315,7 +315,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
             gramPartialDiffEntry (I := I) (M := M)
               (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y p
         = ∑ p : (Fin n) × (Fin n) × (Fin n),
-            |partialDeriv (E := E) p.2.1
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
               (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α p.1 p.2.2) y| := by
           refine Finset.sum_congr rfl (fun p _ => ?_)
           rw [gramPartialDiffEntry,
@@ -333,8 +333,8 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
             gramPartial2DiffEntry (I := I) (M := M)
               (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y p
         = ∑ p : (Fin n) × (Fin n) × (Fin n) × (Fin n),
-            |partialDeriv (E := E) p.1
-              (partialDeriv (E := E) p.2.1
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
                 (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α p.2.2.1 p.2.2.2)) y| := by
           refine Finset.sum_congr rfl (fun p _ => ?_)
           rw [gramPartial2DiffEntry,
@@ -374,14 +374,14 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
             (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
             ((extChartAt I α).symm y) ∧
         (∀ a : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) a
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
               (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b) y| ≤
             C₀ * iteratedCovGradJetSum (I := I) g_bg
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
               ((extChartAt I α).symm y)) ∧
         (∀ c a : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) c
-              (partialDeriv (E := E) a
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
                 (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b)) y| ≤
             C₀ * iteratedCovGradJetSum (I := I) g_bg
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)

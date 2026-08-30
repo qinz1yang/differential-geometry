@@ -126,21 +126,21 @@ theorem traceFun_sq_div_dim_le_frobeniusSqFun
 
 def chartIteratedPartialDeriv
     (α : M) (f : M → ℝ) (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  partialDeriv (E := E) i (partialDeriv (E := E) j (scalarOnE (I := I) α f)) y
+  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)) y
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 @[simp] lemma chartIteratedPartialDeriv_def
     (α : M) (f : M → ℝ) (i j : Fin (Module.finrank ℝ E)) (y : E) :
     chartIteratedPartialDeriv (I := I) α f i j y =
-      partialDeriv (E := E) i
-        (partialDeriv (E := E) j (scalarOnE (I := I) α f)) y := rfl
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)) y := rfl
 
 def chartHessianTensor (g : SmoothRiemannianMetric I M)
     (α : M) (f : M → ℝ) (i j : Fin (Module.finrank ℝ E)) (x : M) : ℝ :=
   chartIteratedPartialDeriv (I := I) α f i j (extChartAt I α x) -
     ∑ k : Fin (Module.finrank ℝ E),
       chartChristoffel (I := I) g α i j k (extChartAt I α x) *
-        partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartHessianTensor_def
@@ -150,7 +150,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       chartIteratedPartialDeriv (I := I) α f i j (extChartAt I α x) -
         ∑ k : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α i j k (extChartAt I α x) *
-            partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := rfl
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartIteratedPartialDeriv_symm_of_contDiff
@@ -160,7 +160,7 @@ lemma chartIteratedPartialDeriv_symm_of_contDiff
     chartIteratedPartialDeriv (I := I) α f i j y =
       chartIteratedPartialDeriv (I := I) α f j i y := by
   classical
-  unfold chartIteratedPartialDeriv partialDeriv
+  unfold chartIteratedPartialDeriv DifferentialGeometry.Tensor.Coordinates.partialDeriv
   have hsmooth_target : ContDiffOn ℝ ∞ (scalarOnE (I := I) α f)
       (extChartAt I α).target :=
     scalarOnE_contDiffOn (I := I) α hf
@@ -316,8 +316,8 @@ theorem hessFun_smul (g : SmoothRiemannianMetric I M) (c : ℝ) (f : M → ℝ) 
     hessFun (I := I) g (c • f) = c • hessFun (I := I) g f := by
   classical
   have hpartial (i : Fin (Module.finrank ℝ E)) (u : E → ℝ) (y : E) :
-      partialDeriv (E := E) i (c • u) y = c * partialDeriv (E := E) i u y := by
-    unfold partialDeriv
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (c • u) y = c * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i u y := by
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [congrFun (fderiv_const_smul_field (𝕜 := ℝ) (f := u) c) y]
     rfl
   have hchart (x : M) (i j : Fin (Module.finrank ℝ E)) :
@@ -328,8 +328,8 @@ theorem hessFun_smul (g : SmoothRiemannianMetric I M) (c : ℝ) (f : M → ℝ) 
     have hscalar : scalarOnE (I := I) x (c • f) =
         c • scalarOnE (I := I) x f := rfl
     rw [hscalar]
-    have hj : partialDeriv (E := E) j (c • scalarOnE (I := I) x f) =
-        c • partialDeriv (E := E) j (scalarOnE (I := I) x f) := by
+    have hj : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (c • scalarOnE (I := I) x f) =
+        c • DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) x f) := by
       funext y
       exact hpartial j _ y
     rw [hj, hpartial]

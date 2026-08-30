@@ -106,7 +106,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
           (I := I) g f x)
       ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x *
           ∑ k : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv
               (E := E) k
               (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                 (I := I) α f)
@@ -146,7 +146,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
       (I := I) g α x c).symm
   rw [hG_form]
   set d : Fin (Module.finrank ℝ E) → ℝ := fun j =>
-    DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv
       (E := E) j
       (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
         (I := I) α f)
@@ -298,7 +298,7 @@ private lemma norm_gradFun_le_sqrt_chartInvGramMatrix_l1Sum_mul
       ≤ Real.sqrt (chartInvGramMatrixL1Sum (I := I) (M := M) g α x) *
           Real.sqrt
             (∑ k : Fin (Module.finrank ℝ E),
-              (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv
                 (E := E) k
                 (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                   (I := I) α f)
@@ -307,7 +307,7 @@ private lemma norm_gradFun_le_sqrt_chartInvGramMatrix_l1Sum_mul
     (I := I) (M := M) g α hf hx hx_int
   have h_M_nn := chartInvGramMatrix_l1Sum_nonneg (I := I) (M := M) g α x
   have h_D_nn : (0 : ℝ) ≤ ∑ k : Fin (Module.finrank ℝ E),
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv
         (E := E) k
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
           (I := I) α f)
@@ -533,7 +533,7 @@ private lemma gNormGrad_pou_mul_le_sqrt_partial_sum
         (gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α) *
         Real.sqrt
           (∑ k : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv
               (E := E) k
               (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                 (I := I) α
@@ -575,7 +575,7 @@ private lemma gNormGrad_pou_mul_le_sqrt_partial_sum
       Real.sqrt (gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α) :=
     Real.sqrt_le_sqrt h_M_le
   have h_partial_sum_nn : (0 : ℝ) ≤ ∑ k : Fin (Module.finrank ℝ E),
-      (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv
         (E := E) k
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
           (I := I) α f)
@@ -594,7 +594,7 @@ private lemma gNormGrad_pou_mul_le_indicator_sqrt
         (gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α) *
         Real.sqrt
           (∑ k : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv
               (E := E) k
               (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                 (I := I) α
@@ -624,7 +624,7 @@ private lemma gNormGrad_pou_mul_le_indicator_sqrt
       Real.sqrt_nonneg _
     have h2 : (0 : ℝ) ≤ Real.sqrt
         (∑ k : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) k
             (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
               (I := I) α f)
@@ -745,7 +745,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
             Real.sqrt M_g_α *
               Real.sqrt
                 (∑ k : Fin (Module.finrank ℝ E),
-                  (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv
                     (E := E) k
                     (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                       (I := I) α f)
@@ -757,7 +757,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
               Real.sqrt M_g_α := Real.sqrt_le_sqrt h_M_le
           have h_partial_sum_nn : (0 : ℝ) ≤ Real.sqrt
               (∑ k : Fin (Module.finrank ℝ E),
-                (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv
                   (E := E) k
                   (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                     (I := I) α f)
@@ -773,7 +773,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
         rw [h_TE_apply] at h_sq_le
         have h_sqrt_partial_le : Real.sqrt
             (∑ k : Fin (Module.finrank ℝ E),
-              (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv
                 (E := E) k
                 (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                   (I := I) α f)
@@ -791,7 +791,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
         calc Real.sqrt M_g_α *
               Real.sqrt
                 (∑ k : Fin (Module.finrank ℝ E),
-                  (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+                  (DifferentialGeometry.Tensor.Coordinates.partialDeriv
                     (E := E) k
                     (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
                       (I := I) α f)

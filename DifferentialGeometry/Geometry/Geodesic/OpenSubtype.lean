@@ -137,9 +137,9 @@ theorem christoffel_open [I.Boundaryless]
   rw [hInvGramEq]
   congr 1
   have hP_ij_lj :
-      partialDeriv (E := E) i
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a l j) y₀ =
-        partialDeriv (E := E) i (chartGramOnE (I := I) g (a : M) l j) y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g (a : M) l j) y₀ := by
     change fderiv Real
         (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a l j) y₀
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
@@ -147,9 +147,9 @@ theorem christoffel_open [I.Boundaryless]
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
     rw [(chartGramOnE_open (I := I) g U a l j).fderiv_eq]
   have hP_ji_li :
-      partialDeriv (E := E) j
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a l i) y₀ =
-        partialDeriv (E := E) j (chartGramOnE (I := I) g (a : M) l i) y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) g (a : M) l i) y₀ := by
     change fderiv Real
         (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a l i) y₀
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) =
@@ -157,9 +157,9 @@ theorem christoffel_open [I.Boundaryless]
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
     rw [(chartGramOnE_open (I := I) g U a l i).fderiv_eq]
   have hP_lij :
-      partialDeriv (E := E) l
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
           (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a i j) y₀ =
-        partialDeriv (E := E) l (chartGramOnE (I := I) g (a : M) i j) y₀ := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g (a : M) i j) y₀ := by
     change fderiv Real
         (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a i j) y₀
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l) =

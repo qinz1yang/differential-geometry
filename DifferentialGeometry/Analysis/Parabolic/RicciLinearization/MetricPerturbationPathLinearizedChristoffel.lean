@@ -38,11 +38,11 @@ def realizedLinearizedChristoffelPrincipal (g₀ : SmoothRiemannianMetric I M)
     (x : M) (i j k : Fin (Module.finrank ℝ E)) (y : E) (s₀ : ℝ) : ℝ :=
   (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
     chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k l y *
-      (partialDeriv (E := E) i
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j) y +
-        partialDeriv (E := E) j
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l i) y -
-        partialDeriv (E := E) l
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y)
 
 def realizedChristoffelNonPrincipal (g₀ : SmoothRiemannianMetric I M)
@@ -106,14 +106,14 @@ theorem realizedLinearizedChristoffelPrincipal_eq_chartLinearizedPrincipal
   refine congrArg (HMul.hMul (1 / 2 : ℝ)) (Finset.sum_congr rfl (fun l _ => ?_))
   have hopen : IsOpen (extChartAt I x).target := isOpen_extChartAt_target x
   have hpd : ∀ a b c : Fin (Module.finrank ℝ E),
-      partialDeriv (E := E) a (h b c) y =
-        partialDeriv (E := E) a (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (h b c) y =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c)
           y := by
     intro a b c
     have hEv : (h b c) =ᶠ[nhds y]
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c) :=
       Filter.eventuallyEq_of_mem (hopen.mem_nhds hy) (hh b c)
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     rw [hEv.fderiv_eq]
   rw [hpd i l j, hpd j l i, hpd l i j]
 
@@ -143,11 +143,11 @@ theorem realizedLinearizedChristoffelPrincipal_self_eq_zero
   rw [realizedLinearizedChristoffelPrincipal]
   have hzero : ∀ l : Fin (Module.finrank ℝ E),
       chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T hδ hδ s₀) x k l y *
-        (partialDeriv (E := E) i
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
             (realizedGramDeriv (I := I) g₀ T T hδ_lt hδ hδ_lt hδ x l j) y +
-          partialDeriv (E := E) j
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
             (realizedGramDeriv (I := I) g₀ T T hδ_lt hδ hδ_lt hδ x l i) y -
-          partialDeriv (E := E) l
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T hδ_lt hδ hδ_lt hδ x i j) y) = 0 := by
     intro l
     have h1 : (realizedGramDeriv (I := I) g₀ T T hδ_lt hδ hδ_lt hδ x l j) = fun _ : E

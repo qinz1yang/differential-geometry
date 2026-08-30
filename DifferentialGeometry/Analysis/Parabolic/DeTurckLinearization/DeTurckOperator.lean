@@ -105,16 +105,16 @@ theorem chartDeTurckOpMatrix_eq (g g' : SmoothRiemannianMetric I M)
       -2 * chartRicciTensor (I := I) g x i j (extChartAt I x x)
       + ((∑ k : Fin (Module.finrank ℝ E),
             chartCoeff (I := I) x (deTurckVF (I := I) g g') k x *
-              partialDeriv (E := E) k (chartGramOnE (I := I) g x i j)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x i j)
                 (extChartAt I x x))
           + (∑ k : Fin (Module.finrank ℝ E),
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
-                partialDeriv (E := E) i
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                   (chartCoeffOnE (I := I) x (deTurckVF (I := I) g g') k)
                   (extChartAt I x x))
           + (∑ k : Fin (Module.finrank ℝ E),
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
-                partialDeriv (E := E) j
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                   (chartCoeffOnE (I := I) x (deTurckVF (I := I) g g') k)
                   (extChartAt I x x))) := by
   rw [chartDeTurckOpMatrix_def, lieDerivMetricMatrix_def]

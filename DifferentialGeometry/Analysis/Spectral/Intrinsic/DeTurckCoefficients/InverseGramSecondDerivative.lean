@@ -140,30 +140,30 @@ theorem invGramD2_abs_le
     {M_b Q₁ Q₂ : ℝ} (hMb_nn : 0 ≤ M_b)
     (hQ₁_nn : 0 ≤ Q₁)
     (hMb : ∀ a c, |chartInvGramOnE (I := I) g α a c y| ≤ M_b)
-    (hQ₁ : ∀ m a c, |partialDeriv (E := E) m
+    (hQ₁ : ∀ m a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (chartGramOnE (I := I) g α a c) y| ≤ Q₁)
-    (hQ₂ : ∀ d m a c, |partialDeriv (E := E) d
-      (partialDeriv (E := E) m (chartGramOnE (I := I) g α a c)) y| ≤ Q₂)
+    (hQ₂ : ∀ d m a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c)) y| ≤ Q₂)
     (d m p q : Fin (Module.finrank ℝ E)) :
-    |partialDeriv (E := E) d
-      (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α p q)) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g α p q)) y| ≤
         2 * (Module.finrank ℝ E : ℝ) ^ 4 * (M_b ^ 3 * Q₁ ^ 2) +
           (Module.finrank ℝ E : ℝ) ^ 2 * (M_b ^ 2 * Q₂) := by
   classical
   let A : ℝ := ∑ a, ∑ c, ∑ r, ∑ s,
     chartInvGramOnE (I := I) g α p r y * chartInvGramOnE (I := I) g α a s y *
       chartInvGramOnE (I := I) g α c q y *
-      partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
-      partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y
   let B : ℝ := ∑ a, ∑ c, ∑ r, ∑ s,
     chartInvGramOnE (I := I) g α p a y * chartInvGramOnE (I := I) g α c r y *
       chartInvGramOnE (I := I) g α q s y *
-      partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
-      partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y
   let C : ℝ := ∑ a, ∑ c,
     chartInvGramOnE (I := I) g α p a y * chartInvGramOnE (I := I) g α c q y *
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartGramOnE (I := I) g α a c)) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c)) y
   have hA : |A| ≤ (Module.finrank ℝ E : ℝ) ^ 4 * (M_b ^ 3 * Q₁ ^ 2) := by
     dsimp only [A]
     simpa only [Fintype.card_fin] using
@@ -171,8 +171,8 @@ theorem invGramD2_abs_le
         (C := M_b ^ 3 * Q₁ ^ 2)
         (fun a c r s => chartInvGramOnE (I := I) g α p r y *
           chartInvGramOnE (I := I) g α a s y * chartInvGramOnE (I := I) g α c q y *
-          partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
-          partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y) (by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y) (by
             intro a c r s
             calc
               _ ≤ M_b * M_b * M_b * Q₁ * Q₁ :=
@@ -186,8 +186,8 @@ theorem invGramD2_abs_le
         (C := M_b ^ 3 * Q₁ ^ 2)
         (fun a c r s => chartInvGramOnE (I := I) g α p a y *
           chartInvGramOnE (I := I) g α c r y * chartInvGramOnE (I := I) g α q s y *
-          partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
-          partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y) (by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g α r s) y *
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c) y) (by
             intro a c r s
             calc
               _ ≤ M_b * M_b * M_b * Q₁ * Q₁ :=
@@ -199,8 +199,8 @@ theorem invGramD2_abs_le
     simpa only [Fintype.card_fin] using
       (abs_sum2_le (J := Fin (Module.finrank ℝ E)) (C := M_b ^ 2 * Q₂)
         (fun a c => chartInvGramOnE (I := I) g α p a y *
-          chartInvGramOnE (I := I) g α c q y * partialDeriv (E := E) d
-            (partialDeriv (E := E) m (chartGramOnE (I := I) g α a c)) y) (by
+          chartInvGramOnE (I := I) g α c q y * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g α a c)) y) (by
               intro a c
               calc
                 _ ≤ M_b * M_b * Q₂ :=
@@ -226,20 +226,20 @@ theorem invGramD2_sub_le
     (hQ₁_nn : 0 ≤ Q₁)
     (hMb1 : ∀ a c, |chartInvGramOnE (I := I) g₁ α a c y| ≤ M_b)
     (hMb2 : ∀ a c, |chartInvGramOnE (I := I) g₂ α a c y| ≤ M_b)
-    (hQ₁1 : ∀ m a c, |partialDeriv (E := E) m
+    (hQ₁1 : ∀ m a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (chartGramOnE (I := I) g₁ α a c) y| ≤ Q₁)
-    (hQ₁2 : ∀ m a c, |partialDeriv (E := E) m
+    (hQ₁2 : ∀ m a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
       (chartGramOnE (I := I) g₂ α a c) y| ≤ Q₁)
-    (hQ₂1 : ∀ d m a c, |partialDeriv (E := E) d
-      (partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c)) y| ≤ Q₂)
+    (hQ₂1 : ∀ d m a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c)) y| ≤ Q₂)
     (hCinv : ∀ a c, |chartInvGramOnE (I := I) g₁ α a c y -
       chartInvGramOnE (I := I) g₂ α a c y| ≤
         Cinv * chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y))
     (d m p q : Fin (Module.finrank ℝ E)) :
-    |partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α p q)) y -
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α p q)) y| ≤
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α p q)) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α p q)) y| ≤
       (2 * (Module.finrank ℝ E : ℝ) ^ 4 *
           (3 * Cinv * M_b ^ 2 * Q₁ ^ 2 + 2 * M_b ^ 3 * Q₁) +
         (Module.finrank ℝ E : ℝ) ^ 2 *
@@ -256,18 +256,18 @@ theorem invGramD2_sub_le
       chartInvGramOnE (I := I) g₂ α a c y| ≤ Cinv * J := by
     intro a c
     exact (hCinv a c).trans (mul_le_mul_of_nonneg_left hgd_le hCinv_nn)
-  have hD1 : ∀ e a c, |partialDeriv (E := E) e
+  have hD1 : ∀ e a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
       (chartGramOnE (I := I) g₁ α a c) y -
-        partialDeriv (E := E) e (chartGramOnE (I := I) g₂ α a c) y| ≤ J := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartGramOnE (I := I) g₂ α a c) y| ≤ J := by
     intro e a c
     exact (partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup
       (I := I) (M := M) g₁ g₂ α y e a c).trans
         ((chartGramPartialDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans
           (chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y))
-  have hD2 : ∀ e f a c, |partialDeriv (E := E) e
-      (partialDeriv (E := E) f (chartGramOnE (I := I) g₁ α a c)) y -
-        partialDeriv (E := E) e
-          (partialDeriv (E := E) f (chartGramOnE (I := I) g₂ α a c)) y| ≤ J := by
+  have hD2 : ∀ e f a c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) f (chartGramOnE (I := I) g₁ α a c)) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) f (chartGramOnE (I := I) g₂ α a c)) y| ≤ J := by
     intro e f a c
     exact (partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup
       (I := I) (M := M) g₁ g₂ α y e f a c).trans
@@ -275,31 +275,31 @@ theorem invGramD2_sub_le
   let A₁ : ℝ := ∑ a, ∑ c, ∑ r, ∑ s,
     chartInvGramOnE (I := I) g₁ α p r y * chartInvGramOnE (I := I) g₁ α a s y *
       chartInvGramOnE (I := I) g₁ α c q y *
-      partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
-      partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y
   let A₂ : ℝ := ∑ a, ∑ c, ∑ r, ∑ s,
     chartInvGramOnE (I := I) g₂ α p r y * chartInvGramOnE (I := I) g₂ α a s y *
       chartInvGramOnE (I := I) g₂ α c q y *
-      partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
-      partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y
   let B₁ : ℝ := ∑ a, ∑ c, ∑ r, ∑ s,
     chartInvGramOnE (I := I) g₁ α p a y * chartInvGramOnE (I := I) g₁ α c r y *
       chartInvGramOnE (I := I) g₁ α q s y *
-      partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
-      partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y
   let B₂ : ℝ := ∑ a, ∑ c, ∑ r, ∑ s,
     chartInvGramOnE (I := I) g₂ α p a y * chartInvGramOnE (I := I) g₂ α c r y *
       chartInvGramOnE (I := I) g₂ α q s y *
-      partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
-      partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y
   let C₁ : ℝ := ∑ a, ∑ c,
     chartInvGramOnE (I := I) g₁ α p a y * chartInvGramOnE (I := I) g₁ α c q y *
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c)) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c)) y
   let C₂ : ℝ := ∑ a, ∑ c,
     chartInvGramOnE (I := I) g₂ α p a y * chartInvGramOnE (I := I) g₂ α c q y *
-      partialDeriv (E := E) d
-        (partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c)) y
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c)) y
   let K₅ : ℝ := 3 * Cinv * M_b ^ 2 * Q₁ ^ 2 + 2 * M_b ^ 3 * Q₁
   let K₃ : ℝ := 2 * Cinv * M_b * Q₂ + M_b ^ 2
   have hA : |A₁ - A₂| ≤ (Module.finrank ℝ E : ℝ) ^ 4 * (K₅ * J) := by
@@ -310,12 +310,12 @@ theorem invGramD2_sub_le
         (fun a c r s =>
           chartInvGramOnE (I := I) g₁ α p r y * chartInvGramOnE (I := I) g₁ α a s y *
               chartInvGramOnE (I := I) g₁ α c q y *
-              partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
-              partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y -
             chartInvGramOnE (I := I) g₂ α p r y * chartInvGramOnE (I := I) g₂ α a s y *
               chartInvGramOnE (I := I) g₂ α c q y *
-              partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
-              partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y)
         (fun a c r s => abs_prod5_lip hMb_nn hQ₁_nn hCinv_nn hJ_nn
           (hMb2 p r) (hMb1 a s) (hMb2 a s) (hMb1 c q) (hMb2 c q)
           (hQ₁1 d r s) (hQ₁2 d r s) (hQ₁1 m a c)
@@ -328,12 +328,12 @@ theorem invGramD2_sub_le
         (fun a c r s =>
           chartInvGramOnE (I := I) g₁ α p a y * chartInvGramOnE (I := I) g₁ α c r y *
               chartInvGramOnE (I := I) g₁ α q s y *
-              partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
-              partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₁ α r s) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c) y -
             chartInvGramOnE (I := I) g₂ α p a y * chartInvGramOnE (I := I) g₂ α c r y *
               chartInvGramOnE (I := I) g₂ α q s y *
-              partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
-              partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartGramOnE (I := I) g₂ α r s) y *
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c) y)
         (fun a c r s => abs_prod5_lip hMb_nn hQ₁_nn hCinv_nn hJ_nn
           (hMb2 p a) (hMb1 c r) (hMb2 c r) (hMb1 q s) (hMb2 q s)
           (hQ₁1 d r s) (hQ₁2 d r s) (hQ₁1 m a c)
@@ -345,11 +345,11 @@ theorem invGramD2_sub_le
       (abs_sum2_le (J := Fin (Module.finrank ℝ E)) (C := K₃ * J)
         (fun a c =>
           chartInvGramOnE (I := I) g₁ α p a y * chartInvGramOnE (I := I) g₁ α c q y *
-              partialDeriv (E := E) d
-                (partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c)) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a c)) y -
             chartInvGramOnE (I := I) g₂ α p a y * chartInvGramOnE (I := I) g₂ α c q y *
-              partialDeriv (E := E) d
-                (partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c)) y)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a c)) y)
         (fun a c => abs_prod3_lip hMb_nn hCinv_nn hJ_nn
           (hMb2 p a) (hMb1 c q) (hMb2 c q)
           (hQ₂1 d m a c) (hinv p a) (hinv c q) (hD2 d m a c)))
@@ -387,22 +387,22 @@ theorem invGramD2_pou_bnd
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
     (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
-            (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a c)) (extChartAt I α b)| ≤ Q₂) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d m p q : Fin (Module.finrank ℝ E),
-            |partialDeriv (E := E) d
-              (partialDeriv (E := E) m
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                 (chartInvGramOnE (I := I) (gSeq k) α p q)) (extChartAt I α b)| ≤ C := by
   classical
   obtain ⟨M_b, hM_b, hMb⟩ :=
@@ -447,25 +447,25 @@ theorem invGramD2_pou_lip
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
     (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) d
-            (partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a c)) (extChartAt I α b)| ≤ Q₂) :
     ∃ C : ℝ, 0 < C ∧
       ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d m p q : Fin (Module.finrank ℝ E),
-            |partialDeriv (E := E) d
-                (partialDeriv (E := E) m
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                   (chartInvGramOnE (I := I) (gSeq k₁) α p q)) (extChartAt I α b) -
-              partialDeriv (E := E) d
-                (partialDeriv (E := E) m
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
                   (chartInvGramOnE (I := I) (gSeq k₂) α p q)) (extChartAt I α b)| ≤
               C * chartMetricJet2DiffSup (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by

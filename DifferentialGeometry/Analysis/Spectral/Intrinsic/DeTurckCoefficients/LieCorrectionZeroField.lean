@@ -231,8 +231,6 @@ private lemma lieArm_realizedGramDeriv_symm (g₀ : SmoothRiemannianMetric I M)
   rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) _ x a b,
     DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) _ x a b]
 section LieCorrectionZeroEval
-open DifferentialGeometry.Integral.DivergenceTheorem
-  (partialDeriv)
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartChristoffel)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieCovariantDerivativeW_chartBasis_eq)
@@ -247,7 +245,7 @@ private noncomputable def lieCorrectionZeroNScalar (x : M) (i p : Fin (Module.fi
             (extChartAt I x x) *
           (chartChristoffel (I := I) g₁ x i m p (extChartAt I x x) -
             chartChristoffel (I := I) g₀ x i m p (extChartAt I x x)))
-    - (partialDeriv (E := E) i
+    - (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) g₁ g₀ x p y)
         (extChartAt I x x) +
       ∑ m : Fin (Module.finrank ℝ E),
@@ -338,7 +336,7 @@ private lemma lieCorrectionZeroNEndo_chartBasis (x : M) (i : Fin (Module.finrank
     (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)]
   rw [deTurckLieCovariantDerivativeW_chartBasis_eq (I := I) g₁ g₀ x i]
   rw [show (∑ p : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) i
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) g₁ g₀ x p y)
           (extChartAt I x x) +
         ∑ m : Fin (Module.finrank ℝ E),
@@ -347,7 +345,7 @@ private lemma lieCorrectionZeroNEndo_chartBasis (x : M) (i : Fin (Module.finrank
               (extChartAt I x x)) •
         DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x p x) =
     ∑ p : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) i
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) g₁ g₀ x p y)
           (extChartAt I x x) +
         ∑ m : Fin (Module.finrank ℝ E),
@@ -1327,8 +1325,6 @@ private lemma lieCorrectionZeroRiemFib_basis_value (x : M) (D : Tensor0SSpace 2 
 end LieCorrectionZeroMixedConnectionEval
 end LieCorrectionZeroEval
 section LieCorrectionZeroValue
-open DifferentialGeometry.Integral.DivergenceTheorem
-  (partialDeriv)
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartChristoffel)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -1367,7 +1363,7 @@ private lemma lieCorrectionZero_f_readout (hδ_lt : δ < 1)
   exact hpt
 private noncomputable def lieCorrectionZeroCovASc (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (a m k p : Fin (Module.finrank ℝ E)) : ℝ :=
-  partialDeriv (E := E) a
+  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
       (fun y => chartChristoffel (I := I) g₁ x k m p y -
         chartChristoffel (I := I) g_bg x k m p y) (extChartAt I x x) +
     ∑ c : Fin (Module.finrank ℝ E),
@@ -1402,7 +1398,7 @@ private lemma lieCorrectionZero_deTurckLieConnectionDifferenceDerivative_inner_b
     (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)]
   rw [deTurckLieCovariantDerivativeA_chartBasis_eq (I := I) g₁ g_bg x a m k]
   rw [show (∑ p : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) a
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
           (fun y => chartChristoffel (I := I) g₁ x k m p y -
             chartChristoffel (I := I) g_bg x k m p y) (extChartAt I x x) +
         ∑ c : Fin (Module.finrank ℝ E),
@@ -1430,7 +1426,7 @@ private lemma lieCorrectionZero_deTurckLieConnectionDifferenceDerivative_inner_b
     lieArm_inner_chartBasis_center (I := I) g₁ x p b]
 private noncomputable def lieCorrectionZeroCovWSc (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (a p : Fin (Module.finrank ℝ E)) : ℝ :=
-  partialDeriv (E := E) a
+  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a
       (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) g₁ g_bg x p y)
       (extChartAt I x x) +
     ∑ c : Fin (Module.finrank ℝ E),
@@ -1797,10 +1793,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_pd_christoffel_sub (gA gB : SmoothRiemannianMetric I M) (x : M)
     (m a b k : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (fun y => chartChristoffel (I := I) gA x a b k y -
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun y => chartChristoffel (I := I) gA x a b k y -
       chartChristoffel (I := I) gB x a b k y) (extChartAt I x x) =
-    partialDeriv (E := E) m (chartChristoffel (I := I) gA x a b k) (extChartAt I x x) -
-      partialDeriv (E := E) m (chartChristoffel (I := I) gB x a b k) (extChartAt I x x) := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) gA x a b k) (extChartAt I x x) -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) gB x a b k) (extChartAt I x x) := by
   have hy := extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have hA := ((chartChristoffel_contDiffOn_interior (I := I) gA x a b k).contDiffAt
     (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
@@ -1811,15 +1807,15 @@ omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZero_pd_vfcomp_center (gA gB : SmoothRiemannianMetric I M) (x : M)
     (m k : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp
       (I := I) gA gB x k y) (extChartAt I x x) =
     ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-      (partialDeriv (E := E) m (chartInvGramOnE (I := I) gA x a b) (extChartAt I x x) *
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) gA x a b) (extChartAt I x x) *
         (chartChristoffel (I := I) gA x a b k (extChartAt I x x) -
           chartChristoffel (I := I) gB x a b k (extChartAt I x x)) +
       chartInvGramMatrix (I := I) gA x x a b *
-        (partialDeriv (E := E) m (chartChristoffel (I := I) gA x a b k) (extChartAt I x x) -
-          partialDeriv (E := E) m (chartChristoffel (I := I) gB x a b k) (extChartAt I x x))) := by
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) gA x a b k) (extChartAt I x x) -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) gB x a b k) (extChartAt I x x))) := by
   have hy := extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   rw [show (fun y => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) gA gB x k y) =
     PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) gA gB x k from rfl,
@@ -1828,7 +1824,7 @@ private lemma lieCorrectionZero_pd_vfcomp_center (gA gB : SmoothRiemannianMetric
     rw [lieArm_chartInvGramOnE_center (I := I) gA x a b]))
 section LieCorrectionZeroMasterValue
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (partialDeriv chartRiemannTensor chartInvGramOnE_symm
+  (chartRiemannTensor chartInvGramOnE_symm
   extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartChristoffel chartGramOnE chartInvGramOnE
@@ -1855,25 +1851,25 @@ private noncomputable def lieCorrectionZeroEv (x : M)
 private noncomputable def lieCorrectionZeroPd (x : M)
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
-  fun m a b => partialDeriv (E := E) m (F a b) (extChartAt I x x)
+  fun m a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (F a b) (extChartAt I x x)
 private noncomputable def lieCorrectionZeroDg (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
-  fun m a b => partialDeriv (E := E) m (chartGramOnE (I := I) g₁ x a b) (extChartAt I x x)
+  fun m a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ x a b) (extChartAt I x x)
 private noncomputable def lieCorrectionZeroDDg (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ :=
-  fun m k a b => partialDeriv (E := E) m
-    (partialDeriv (E := E) k (chartGramOnE (I := I) g₁ x a b)) (extChartAt I x x)
+  fun m k a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g₁ x a b)) (extChartAt I x x)
 private noncomputable def lieCorrectionZeroDig (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
-  fun m a b => partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a b) (extChartAt I x x)
+  fun m a b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a b) (extChartAt I x x)
 private noncomputable def lieCorrectionZeroGa (g : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
   fun a b k => chartChristoffel (I := I) g x a b k (extChartAt I x x)
 private noncomputable def lieCorrectionZeroDGa (g : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ :=
-  fun m a b k => partialDeriv (E := E) m (chartChristoffel (I := I) g x a b k)
+  fun m a b k => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g x a b k)
     (extChartAt I x x)
 private noncomputable def lieCorrectionZeroGb (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
@@ -1881,7 +1877,7 @@ private noncomputable def lieCorrectionZeroGb (g₁ : SmoothRiemannianMetric I M
 private noncomputable def lieCorrectionZeroDGb (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ :=
-  fun m a b l => partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
+  fun m a b l => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
     (extChartAt I x x)
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1929,12 +1925,12 @@ omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZero_hdga1e (g₁ : SmoothRiemannianMetric I M) (x : M)
     (m a b k : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (chartChristoffel (I := I) g₁ x a b k) (extChartAt I x x) =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ x a b k) (extChartAt I x x) =
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x k l) (extChartAt I x x) *
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x k l) (extChartAt I x x) *
             chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) +
           chartInvGramMatrix (I := I) g₁ x x k l *
-            partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
               (extChartAt I x x)) := by
   rw [partialDeriv_chartChristoffel_eq (I := I) g₁ x m a b k (lieCorrectionZero_center_interior (I := I) x)]
   refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t)
@@ -1945,10 +1941,10 @@ omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZero_hdige (g₁ : SmoothRiemannianMetric I M) (x : M)
     (m a b : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a b) (extChartAt I x x) =
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a b) (extChartAt I x x) =
       -∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x a p * chartInvGramMatrix (I := I) g₁ x x q b *
-          partialDeriv (E := E) m (chartGramOnE (I := I) g₁ x p q) (extChartAt I x x) := by
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ x p q) (extChartAt I x x) := by
   rw [partialDeriv_chartInvGramOnE_eq (I := I) g₁ x (extChartAt I x x) m a b
     (lieCorrectionZero_center_interior (I := I) x)]
   refine congrArg Neg.neg ?_
@@ -1959,13 +1955,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_hdgbe (g₁ : SmoothRiemannianMetric I M) (x : M)
     (m a b l : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l) (extChartAt I x x) =
-      partialDeriv (E := E) m
-          (partialDeriv (E := E) a (chartGramOnE (I := I) g₁ x l b)) (extChartAt I x x) +
-        partialDeriv (E := E) m
-          (partialDeriv (E := E) b (chartGramOnE (I := I) g₁ x l a)) (extChartAt I x x) -
-        partialDeriv (E := E) m
-          (partialDeriv (E := E) l (chartGramOnE (I := I) g₁ x a b)) (extChartAt I x x) := by
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l) (extChartAt I x x) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) g₁ x l b)) (extChartAt I x x) +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b (chartGramOnE (I := I) g₁ x l a)) (extChartAt I x x) -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g₁ x a b)) (extChartAt I x x) := by
   rw [partialDeriv_chartChristoffelBracket_eq (I := I) g₁ x m a b l (lieCorrectionZero_center_interior (I := I) x)]
   rfl
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -1975,8 +1971,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 private lemma lieCorrectionZero_covASc_raw (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (a m k p : Fin (Module.finrank ℝ E)) :
     lieCorrectionZeroCovASc (I := I) (M := M) g₁ g_bg x a m k p =
-      (partialDeriv (E := E) a (chartChristoffel (I := I) g₁ x k m p) (extChartAt I x x) -
-          partialDeriv (E := E) a (chartChristoffel (I := I) g_bg x k m p)
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g₁ x k m p) (extChartAt I x x) -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g_bg x k m p)
             (extChartAt I x x)) +
         (∑ c : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g₁ x a c p (extChartAt I x x) *
@@ -1998,14 +1994,14 @@ private lemma lieCorrectionZero_covWSc_raw (g₁ g_bg : SmoothRiemannianMetric I
     (a p : Fin (Module.finrank ℝ E)) :
     lieCorrectionZeroCovWSc (I := I) (M := M) g₁ g_bg x a p =
       (∑ a' : Fin (Module.finrank ℝ E), ∑ b' : Fin (Module.finrank ℝ E),
-        (partialDeriv (E := E) a (chartInvGramOnE (I := I) g₁ x a' b')
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartInvGramOnE (I := I) g₁ x a' b')
               (extChartAt I x x) *
             (chartChristoffel (I := I) g₁ x a' b' p (extChartAt I x x) -
               chartChristoffel (I := I) g_bg x a' b' p (extChartAt I x x)) +
           chartInvGramMatrix (I := I) g₁ x x a' b' *
-            (partialDeriv (E := E) a (chartChristoffel (I := I) g₁ x a' b' p)
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g₁ x a' b' p)
                 (extChartAt I x x) -
-              partialDeriv (E := E) a (chartChristoffel (I := I) g_bg x a' b' p)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartChristoffel (I := I) g_bg x a' b' p)
                 (extChartAt I x x)))) +
       ∑ c : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g₁ x a c p (extChartAt I x x) *
@@ -2112,22 +2108,22 @@ private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I 
         F m k (extChartAt I x x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
-            (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a p)
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a p)
                   (extChartAt I x x) * F p q (extChartAt I x x) *
                 chartInvGramMatrix (I := I) g₁ x x q b +
               chartInvGramMatrix (I := I) g₁ x x a p * F p q (extChartAt I x x) *
-                partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x q b)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x q b)
                   (extChartAt I x x)))) *
           (chartChristoffel (I := I) g₁ x a b k (extChartAt I x x) -
             chartChristoffel (I := I) g_bg x a b k (extChartAt I x x)) +
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x a p * F p q (extChartAt I x x) *
               chartInvGramMatrix (I := I) g₁ x x q b)) *
-          (partialDeriv (E := E) m (chartChristoffel (I := I) g₁ x a b k)
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ x a b k)
               (extChartAt I x x) -
-            partialDeriv (E := E) m (chartChristoffel (I := I) g_bg x a b k)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g_bg x a b k)
               (extChartAt I x x)) +
-        partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a b) (extChartAt I x x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x a b) (extChartAt I x x) *
           ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
@@ -2136,17 +2132,17 @@ private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I 
         chartInvGramMatrix (I := I) g₁ x x a b *
           ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
-                (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x k p)
+                (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x k p)
                       (extChartAt I x x) * F p q (extChartAt I x x) *
                     chartInvGramMatrix (I := I) g₁ x x q l +
                   chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
-                    partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x q l)
+                    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x q l)
                       (extChartAt I x x)))) *
               chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) +
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
                   chartInvGramMatrix (I := I) g₁ x x q l)) *
-              partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
                 (extChartAt I x x)))) := by
   simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrDeriv0Raw]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
@@ -2252,65 +2248,65 @@ private lemma lieCorrectionZero_tailpf (hδ_lt : δ < 1)
         chartInvGramMatrix (I := I) gA x x k₁ l *
         ((-(∑ r : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) g₀ x l j r (extChartAt I x x) *
-                partialDeriv (E := E) i
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x l k₁ r (extChartAt I x x) *
-                partialDeriv (E := E) i
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x i l r (extChartAt I x x) *
-                partialDeriv (E := E) r
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x i j r (extChartAt I x x) *
-                partialDeriv (E := E) l
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x i k₁ r (extChartAt I x x) *
-                partialDeriv (E := E) l
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
                   (extChartAt I x x))))
          + (-(∑ r : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) g₀ x l i r (extChartAt I x x) *
-                partialDeriv (E := E) j
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x l k₁ r (extChartAt I x x) *
-                partialDeriv (E := E) j
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x j l r (extChartAt I x x) *
-                partialDeriv (E := E) r
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x j i r (extChartAt I x x) *
-                partialDeriv (E := E) l
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x j k₁ r (extChartAt I x x) *
-                partialDeriv (E := E) l
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
                   (extChartAt I x x))))
          - (-(∑ r : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) g₀ x j l r (extChartAt I x x) *
-                partialDeriv (E := E) i
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x j k₁ r (extChartAt I x x) *
-                partialDeriv (E := E) i
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x i j r (extChartAt I x x) *
-                partialDeriv (E := E) r
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x i l r (extChartAt I x x) *
-                partialDeriv (E := E) j
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
                   (extChartAt I x x)
               + chartChristoffel (I := I) g₀ x i k₁ r (extChartAt I x x) *
-                partialDeriv (E := E) j
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
                   (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
                   (extChartAt I x x)))))) =
       DeTurckCoefficients.LieCorrectionZeroNormalForm.tpfF (lieCorrectionZeroIg (I := I) gA x) (lieCorrectionZeroGa (I := I) g₀ x)
@@ -2361,27 +2357,27 @@ private lemma lieCorrectionZero_master_inst (g₁ g_bg : SmoothRiemannianMetric 
     (fun a b => lieArm_chartInvGramMatrix_symm (I := I) g₁ x a b)
     (fun a b => lieArm_chartGramMatrix_symm (I := I) g₁ x a b)
     (fun a b => congrFun (hFsym a b) (extChartAt I x x))
-    (fun m a b => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => chartGramOnE_symm (I := I) g₁ x a b y))
     (fun a b k => chartChristoffel_symm (I := I) g₀ x a b k (extChartAt I x x))
     (fun a b k => chartChristoffel_symm (I := I) g₁ x a b k (extChartAt I x x))
     (fun a b k => chartChristoffel_symm (I := I) g_bg x a b k (extChartAt I x x))
-    (fun m a b k => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b k => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => chartChristoffel_symm (I := I) g₀ x a b k y))
-    (fun m a b k => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b k => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => chartChristoffel_symm (I := I) g₁ x a b k y))
-    (fun m a b k => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b k => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => chartChristoffel_symm (I := I) g_bg x a b k y))
     (fun m k a b => congrArg
-      (fun G => partialDeriv (E := E) m (partialDeriv (E := E) k G) (extChartAt I x x))
+      (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k G) (extChartAt I x x))
       (funext fun y => chartGramOnE_symm (I := I) g₁ x a b y))
-    (fun m a b => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (hFsym a b))
     (fun a b l => lieCorrectionZero_chartChristoffelBracket_symm
       (I := I) g₁ x a b l (extChartAt I x x))
-    (fun m a b l => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b l => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => lieCorrectionZero_chartChristoffelBracket_symm (I := I) g₁ x a b l y))
-    (fun m a b => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
+    (fun m a b => congrArg (fun G => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramOnE_symm (I := I)
         g₁ x a b y))
     (fun l e => lieArm_gram_invGram_collapse (I := I) g₁ x l e)
@@ -3007,64 +3003,64 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
             (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ l *
         ((-(∑ r : Fin (Module.finrank ℝ E),
           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l j r
-          (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E)
+          (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E)
           i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁) (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i l r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
             (extChartAt I x x))))
          + (-(∑ r : Fin (Module.finrank ℝ E),
            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l i r
-           (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+           (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
            (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
            (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j l r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
             (extChartAt I x x))))
          - (-(∑ r : Fin (Module.finrank ℝ E),
            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j l r
-           (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+           (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
            (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
            (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i l r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
           + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i k₁ r
-            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+            (extChartAt I x x) * DifferentialGeometry.Tensor.Coordinates.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
             (extChartAt I x x))))))) := by
   refine (lieCorrectionZero_phi0b_value_split (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg s x

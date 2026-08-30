@@ -111,7 +111,7 @@ private theorem rhs_partial_eq
           (tensorChartComponentRaw (I := I) (M := M) gBase 0 2
             (deTurckRHSSectionBackground (I := I) gBase g) α
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx)) y =
-      partialDeriv (E := E) d
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (chartDeTurckRHSComp (I := I) gBase g α (Jdx 0) (Jdx 1))
         ((toEuclidean (E := E)).symm y) := by
   have hderiv := euclidPartial_congr_of_eqOn_isOpen (E := E) d
@@ -126,7 +126,7 @@ private theorem rhs_partial_eq
         = euclidPartial (E := E) d
             (chartDeTurckRHSComp (I := I) gBase g α (Jdx 0) (Jdx 1) ∘
               (toEuclidean (E := E)).symm) y := hderiv
-    _ = ((partialDeriv (E := E) d
+    _ = ((DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartDeTurckRHSComp (I := I) gBase g α (Jdx 0) (Jdx 1))) ∘
             (toEuclidean (E := E)).symm) y :=
       (congrFun (partialDeriv_comp_toEuclidean_symm_eq_euclidPartial
@@ -175,7 +175,7 @@ private theorem rhs_cov_raw_eq
         (covGrad (I := I) (M := M) gBase 0 2
           (deTurckRHSSectionBackground (I := I) gBase g)) α
         (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Kdx b =
-      partialDeriv (E := E) (Kdx 0)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) (Kdx 0)
           (chartDeTurckRHSComp (I := I) gBase g α
             ((Matrix.vecTail Kdx) 0) ((Matrix.vecTail Kdx) 1))
           (extChartAt I α b) +
@@ -452,10 +452,10 @@ theorem rhs_cov_lip {ι : Type*}
             (deTurckRHSSectionBackground (I := I) gBase (gSeq k₁) -
               deTurckRHSSectionBackground (I := I) gBase (gSeq k₂))) α
           (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Kdx b =
-        (partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α (Jdx 0) (Jdx 1))
               (extChartAt I α b) -
-          partialDeriv (E := E) d
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α (Jdx 0) (Jdx 1))
               (extChartAt I α b)) +
         covDerivLowerOrderTerm (I := I) (M := M) gBase 0 2
@@ -466,30 +466,30 @@ theorem rhs_cov_lip {ι : Type*}
     dsimp [d, Jdx, y]
     ring
   have hderiv :
-      |partialDeriv (E := E) d
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α (Jdx 0) (Jdx 1))
             (extChartAt I α b) -
-        partialDeriv (E := E) d
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α (Jdx 0) (Jdx 1))
             (extChartAt I α b)| ≤ D.rhsD1Lip * (CjetAll * A) :=
     (hD.rhs_d1_lipschitz α hα k₁ k₂ b hb d (Jdx 0) (Jdx 1)).trans
       (mul_le_mul_of_nonneg_left hjetAll hD.rhsD1Lip_pos.le)
   rw [hcov]
   calc
-    |(partialDeriv (E := E) d
+    |(DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α (Jdx 0) (Jdx 1))
             (extChartAt I α b) -
-        partialDeriv (E := E) d
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α (Jdx 0) (Jdx 1))
             (extChartAt I α b)) +
       covDerivLowerOrderTerm (I := I) (M := M) gBase 0 2
         (deTurckRHSSectionBackground (I := I) gBase (gSeq k₁) -
           deTurckRHSSectionBackground (I := I) gBase (gSeq k₂)) α d
         (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx y|
-        ≤ |partialDeriv (E := E) d
+        ≤ |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α (Jdx 0) (Jdx 1))
                 (extChartAt I α b) -
-            partialDeriv (E := E) d
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α (Jdx 0) (Jdx 1))
                 (extChartAt I α b)| +
           |covDerivLowerOrderTerm (I := I) (M := M) gBase 0 2
@@ -705,7 +705,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
         tensorChartComponentRaw (I := I) (M := M) gBase 0 3
             (covGrad (I := I) (M := M) gBase 0 2 (S k)) α
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Kdx b =
-          partialDeriv (E := E) d
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k) α
                 (Jdx 0) (Jdx 1)) (extChartAt I α b) +
             covDerivLowerOrderTerm (I := I) (M := M) gBase 0 2
@@ -713,12 +713,12 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
       linarith
     rw [hcov]
     calc
-      |partialDeriv (E := E) d
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
             (chartDeTurckRHSComp (I := I) gBase (gSeq k) α
               (Jdx 0) (Jdx 1)) (extChartAt I α b) +
           covDerivLowerOrderTerm (I := I) (M := M) gBase 0 2
             (S k) α d (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx y|
-          ≤ |partialDeriv (E := E) d
+          ≤ |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k) α
                 (Jdx 0) (Jdx 1)) (extChartAt I α b)| +
             |covDerivLowerOrderTerm (I := I) (M := M) gBase 0 2

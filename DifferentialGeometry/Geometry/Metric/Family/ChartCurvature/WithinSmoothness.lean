@@ -22,8 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv_eq_fderivWithin_of_isOpen {U : Set E} (hU : IsOpen U) (u : E → ℝ)
     (q : Fin (Module.finrank ℝ E)) {y : E} (hy : y ∈ U) :
-    partialDeriv (E := E) q u y = fderivWithin ℝ u U y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q) := by
-  rw [partialDeriv, fderivWithin_of_isOpen hU hy]
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q u y = fderivWithin ℝ u U y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q) := by
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv, fderivWithin_of_isOpen hU hy]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv_joint_contDiffWithinAt
@@ -32,7 +32,7 @@ theorem partialDeriv_joint_contDiffWithinAt
     (hs : s₀ ∈ S) (hy : y₀ ∈ U)
     (hΨ : ContDiffWithinAt ℝ ∞ (fun r : ℝ × E => Ψ r.1 r.2) (S ×ˢ U) (s₀, y₀)) :
     ContDiffWithinAt ℝ ∞
-      (fun p : ℝ × E => partialDeriv (E := E) q (fun y => Ψ p.1 y) p.2) (S ×ˢ U) (s₀, y₀) := by
+      (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (fun y => Ψ p.1 y) p.2) (S ×ˢ U) (s₀, y₀) := by
   have hmem : ((s₀, y₀) : ℝ × E) ∈ S ×ˢ U := ⟨hs, hy⟩
   have hst : S ×ˢ U ⊆ (fun p : ℝ × E => p.2) ⁻¹' U := fun p hp => hp.2
   have hf : ContDiffWithinAt ℝ ∞
@@ -165,9 +165,9 @@ theorem chartChristoffelBracket_contDiffWithinAt {S : Set ℝ}
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
   have heq : (fun r : ℝ × E => chartChristoffelBracket (I := I) (gfam r.1) α i j l r.2) =
       (fun r : ℝ × E =>
-        partialDeriv (E := E) i (fun y => chartGramOnE (I := I) (gfam r.1) α l j y) r.2 +
-          partialDeriv (E := E) j (fun y => chartGramOnE (I := I) (gfam r.1) α l i y) r.2 -
-          partialDeriv (E := E) l (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (fun y => chartGramOnE (I := I) (gfam r.1) α l j y) r.2 +
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun y => chartGramOnE (I := I) (gfam r.1) α l i y) r.2 -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2) := by
     funext r; rw [chartChristoffelBracket]
   rw [heq]
   exact ((partialDeriv_joint_contDiffWithinAt (fun s y => chartGramOnE (I := I) (gfam s) α l j y) i
@@ -200,7 +200,7 @@ theorem partial_chartChristoffel_contDiffWithinAt {S : Set ℝ} (hG : chartGramF
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E =>
-        partialDeriv (E := E) m (fun y => chartChristoffel (I := I) (gfam r.1) α i j k y) r.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun y => chartChristoffel (I := I) (gfam r.1) α i j k y) r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) :=
   partialDeriv_joint_contDiffWithinAt (fun s y => chartChristoffel (I := I) (gfam s) α i j k y) m
     isOpen_interior hs hy (chartChristoffel_contDiffWithinAt (I := I) gfam α hG i j k hs hy)
@@ -214,8 +214,8 @@ theorem chartRiemannTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilyS
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
   have heq : (fun r : ℝ × E => chartRiemannTensor (I := I) (gfam r.1) α i j k l r.2) =
       (fun r : ℝ × E =>
-        partialDeriv (E := E) j (fun y => chartChristoffel (I := I) (gfam r.1) α i k l y) r.2 -
-          partialDeriv (E := E) k (fun y => chartChristoffel (I := I) (gfam r.1) α i j l y) r.2 +
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun y => chartChristoffel (I := I) (gfam r.1) α i k l y) r.2 -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (fun y => chartChristoffel (I := I) (gfam r.1) α i j l y) r.2 +
           (∑ m : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) (gfam r.1) α j m l r.2 *
                 chartChristoffel (I := I) (gfam r.1) α i k m r.2 -
@@ -251,7 +251,7 @@ theorem partial_chartRiemannTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGra
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E =>
-        partialDeriv (E := E) m
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (fun y => chartRiemannTensor (I := I) (gfam r.1) α i j k l y) r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) :=
   partialDeriv_joint_contDiffWithinAt (fun s y => chartRiemannTensor (I := I) (gfam s) α i j k l y) m
@@ -263,7 +263,7 @@ theorem partial_chartRicciTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGramF
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E =>
-        partialDeriv (E := E) m (fun y => chartRicciTensor (I := I) (gfam r.1) α i k y) r.2)
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun y => chartRicciTensor (I := I) (gfam r.1) α i k y) r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) :=
   partialDeriv_joint_contDiffWithinAt (fun s y => chartRicciTensor (I := I) (gfam s) α i k y) m
     isOpen_interior hs hy (chartRicciTensor_contDiffWithinAt (I := I) gfam α hG i k hs hy)
@@ -417,12 +417,12 @@ theorem partial_chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (g : ℝ �
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M =>
-        partialDeriv (E := E) m
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (fun y => chartRiemannTensor (I := I) (g p.1) α i j k l y) (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
   joint_chart_comp_contMDiffWithinAt (I := I) α
     (fun s y =>
-      partialDeriv (E := E) m (fun z => chartRiemannTensor (I := I) (g s) α i j k l z) y)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun z => chartRiemannTensor (I := I) (g s) α i j k l z) y)
     (partial_chartRiemannTensor_contDiffWithinAt (I := I) g α hG m i j k l ht (chart_mem_interior (I := I) α hx)) hx
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -431,11 +431,11 @@ theorem partial_chartRicciTensor_comp_extChartAt_contMDiffWithinAt (g : ℝ → 
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M =>
-        partialDeriv (E := E) m
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (fun y => chartRicciTensor (I := I) (g p.1) α i k y) (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
   joint_chart_comp_contMDiffWithinAt (I := I) α
-    (fun s y => partialDeriv (E := E) m (fun z => chartRicciTensor (I := I) (g s) α i k z) y)
+    (fun s y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (fun z => chartRicciTensor (I := I) (g s) α i k z) y)
     (partial_chartRicciTensor_contDiffWithinAt (I := I) g α hG m i k ht (chart_mem_interior (I := I) α hx)) hx
 
 private theorem icc_subset_ico {a b c : ℝ} (hcb : c < b) : Icc a c ⊆ Ico a b :=

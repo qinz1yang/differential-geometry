@@ -46,12 +46,12 @@ private lemma partialDeriv_contDiffOn_interior_of_contDiffOn
     (α : M) {f : E → ℝ}
     (hf : ContDiffOn ℝ ∞ f (interior ((extChartAt I α).target : Set E)))
     (a : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞ (partialDeriv (E := E) a f)
+    ContDiffOn ℝ ∞ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f)
       (interior ((extChartAt I α).target : Set E)) := by
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ f)
       (interior ((extChartAt I α).target : Set E)) :=
     hf.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hrw : (partialDeriv (E := E) a f) =
+  have hrw : (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a f) =
       fun y => fderiv ℝ f y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) := rfl
   rw [hrw]
   exact hfderiv.clm_apply contDiffOn_const
@@ -68,10 +68,10 @@ theorem chartRiemannTensor_contDiffOn_interior
       ContDiffOn ℝ ∞ (chartChristoffel (I := I) g α p q r) U :=
     fun p q r => chartChristoffel_contDiffOn_interior (I := I) g α p q r
   have hdΓ1 : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l)) U :=
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l)) U :=
     partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α (hΓ i k l) j
   have hdΓ2 : ContDiffOn ℝ ∞
-      (partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l)) U :=
+      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l)) U :=
     partialDeriv_contDiffOn_interior_of_contDiffOn (I := I) α (hΓ i j l) k
   have hΓΓ : ContDiffOn ℝ ∞
       (fun y : E => ∑ m : Fin (Module.finrank ℝ E),
@@ -83,8 +83,8 @@ theorem chartRiemannTensor_contDiffOn_interior
     exact ((hΓ j m l).mul (hΓ i k m)).sub ((hΓ k m l).mul (hΓ i j m))
   have hrw : (chartRiemannTensor (I := I) g α i j k l) =
       fun y : E =>
-        (partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
-          partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y) +
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y) +
         (∑ m : Fin (Module.finrank ℝ E),
           (chartChristoffel (I := I) g α j m l y *
               chartChristoffel (I := I) g α i k m y -
