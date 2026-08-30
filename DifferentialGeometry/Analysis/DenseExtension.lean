@@ -1,8 +1,10 @@
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.Normed.Group.Continuity
+import Mathlib.Analysis.Normed.Operator.Basic
 import Mathlib.Topology.DenseEmbedding
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.UniformSpace.CompleteSeparated
+import Mathlib.Topology.UniformSpace.UniformApproximation
 
 noncomputable section
 
@@ -143,6 +145,36 @@ theorem exists_extend_le {ι X Y : Type*} [SeminormedAddCommGroup X]
       ∀ x : X, ‖F x‖ ≤ Φ ‖x‖ := by
   obtain ⟨F, hFc, hFv⟩ := exists_extend_pair hj f hpair
   exact ⟨F, hFc, hFv, fun x => norm_extend_le hj hFc hΦ hFv hbd x⟩
+
+theorem ContinuousOn.clm_apply_of_denseRange
+    {𝕜 ι P X Y : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup X] [NormedSpace 𝕜 X]
+    [SeminormedAddCommGroup Y] [NormedSpace 𝕜 Y]
+    [TopologicalSpace P] {j : ι → X} (hj : DenseRange j)
+    {F : P → X →L[𝕜] Y} {K : Set P}
+    (hFj : ∀ i, ContinuousOn (fun p => F p (j i)) K)
+    {C : ℝ} (hbound : ∀ p ∈ K, ‖F p‖ ≤ C)
+    (x : X) :
+    ContinuousOn (fun p => F p x) K := by
+  apply continuousOn_of_uniform_approx_of_continuousOn
+  intro u hu
+  obtain ⟨ε, hε, hεu⟩ := Metric.uniformity_basis_dist.mem_iff.mp hu
+  let D : ℝ := max C 0
+  have hD : 0 < D + 1 :=
+    add_pos_of_nonneg_of_pos (le_max_right C 0) zero_lt_one
+  obtain ⟨i, hi⟩ := hj.exists_dist_lt x (div_pos hε hD)
+  refine ⟨fun p => F p (j i), hFj i, ?_⟩
+  intro p hp
+  apply hεu
+  calc
+    dist (F p x) (F p (j i)) ≤ ‖F p‖ * dist x (j i) :=
+      (F p).dist_le_opNorm x (j i)
+    _ ≤ D * dist x (j i) :=
+      mul_le_mul_of_nonneg_right ((hbound p hp).trans (le_max_left C 0)) dist_nonneg
+    _ ≤ (D + 1) * dist x (j i) :=
+      mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) dist_nonneg
+    _ < (D + 1) * (ε / (D + 1)) := mul_lt_mul_of_pos_left hi hD
+    _ = ε := by field_simp
 
 end DifferentialGeometry.Analysis
 
