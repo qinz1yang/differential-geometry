@@ -221,6 +221,42 @@ theorem Diffeomorph.pullbackMetricCross_inner
       = g.inner (Φ x) (mfderiv I J Φ x v) (mfderiv I J Φ x w) :=
   pullbackInnerCross_eval g Φ x v w
 
+theorem Diffeomorph.pullbackMetricCross_refl
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    Diffeomorph.pullbackMetricCross g (_root_.Diffeomorph.refl I M ∞) = g := by
+  rcases g with ⟨inner_g, symm_g, pos_g, isVonN_g, contMDiff_g⟩
+  have hinner :
+      (fun x => Diffeomorph.pullbackInnerCross
+          ⟨inner_g, symm_g, pos_g, isVonN_g, contMDiff_g⟩
+          (_root_.Diffeomorph.refl I M ∞) x) = inner_g := by
+    funext x
+    apply ContinuousLinearMap.ext
+    intro v
+    apply ContinuousLinearMap.ext
+    intro w
+    rw [pullbackInnerCross_eval]
+    have hmfd : mfderiv I I
+        (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x =
+        ContinuousLinearMap.id Real (TangentSpace I x) := by
+      have h : mfderiv I I
+          (fun y : M => (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) y) x =
+          mfderiv I I (id : M → M) x := rfl
+      rw [h]
+      exact mfderiv_id
+    have hv : mfderiv I I
+        (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x v = v := by
+      rw [hmfd]
+      rfl
+    have hw : mfderiv I I
+        (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x w = w := by
+      rw [hmfd]
+      rfl
+    rw [hv, hw]
+    rfl
+  unfold Diffeomorph.pullbackMetricCross
+  congr 1
+
 omit [FiniteDimensional ℝ F] in
 theorem Diffeomorph.pullbackInnerCross_contMDiff
     [T2Space M]
