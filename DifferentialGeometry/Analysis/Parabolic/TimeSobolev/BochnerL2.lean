@@ -169,7 +169,7 @@ variable {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
 private theorem dualRepresentative_aestronglyMeasurable_of_hilbertBasis
     {ι : Type*} [Encodable ι] (b : HilbertBasis ι ℝ Y)
     (F : ℝ → Y →L[ℝ] ℝ)
-    (hF : ∀ y, ContinuousOn (fun t => F t y) (Set.Icc (0 : ℝ) T)) :
+    (hF : ∀ y, AEStronglyMeasurable (fun t => F t y) (timeMeasure T)) :
     AEStronglyMeasurable (fun t => (InnerProductSpace.toDual ℝ Y).symm (F t))
       (timeMeasure T) := by
   classical
@@ -180,14 +180,12 @@ private theorem dualRepresentative_aestronglyMeasurable_of_hilbertBasis
   have hs : Tendsto s atTop atTop :=
     (tendsto_finset_preimage_atTop_atTop Encodable.encode_injective).comp
       tendsto_finset_range
-  have hp_cont : ∀ m, ContinuousOn (p m) (Set.Icc (0 : ℝ) T) := by
-    intro m
-    exact continuousOn_finsetSum (s m) fun i _ =>
-      (hF (b i)).smul continuousOn_const
   have hp_meas : ∀ m, AEStronglyMeasurable (p m) (timeMeasure T) := by
     intro m
-    unfold timeMeasure
-    exact (hp_cont m).aestronglyMeasurable measurableSet_Icc
+    convert Finset.aestronglyMeasurable_sum (s m) (fun i _ =>
+      (hF (b i)).smul_const (b i)) using 1
+    funext t
+    simp only [p, Finset.sum_apply]
   have hp_tendsto : ∀ t, Tendsto (fun m => p m t) atTop (𝓝 (z t)) := by
     intro t
     have hsum := (b.hasSum_repr (z t)).comp hs
@@ -224,16 +222,39 @@ private theorem hilbertBasisIndex_countable
   exact hdisj.countable_of_isOpen_disjoint
     (fun i => Metric.isOpen_ball) (fun i => Metric.nonempty_ball.2 (by norm_num))
 
-theorem dualRepresentative_aestronglyMeasurable_of_apply_continuousOn
+theorem dualRepresentative_aestronglyMeasurable_of_apply_aestronglyMeasurable
     [TopologicalSpace.SeparableSpace Y]
     (F : ℝ → Y →L[ℝ] ℝ)
-    (hF : ∀ y, ContinuousOn (fun t => F t y) (Set.Icc (0 : ℝ) T)) :
+    (hF : ∀ y, AEStronglyMeasurable (fun t => F t y) (timeMeasure T)) :
     AEStronglyMeasurable (fun t => (InnerProductSpace.toDual ℝ Y).symm (F t))
       (timeMeasure T) := by
   obtain ⟨ι, b, _⟩ := exists_hilbertBasis ℝ Y
   let _ : Countable ι := hilbertBasisIndex_countable b
   let _ : Encodable ι := Encodable.ofCountable ι
   exact dualRepresentative_aestronglyMeasurable_of_hilbertBasis b F hF
+
+theorem dualRepresentative_aestronglyMeasurable_of_apply_continuousOn
+    [TopologicalSpace.SeparableSpace Y]
+    (F : ℝ → Y →L[ℝ] ℝ)
+    (hF : ∀ y, ContinuousOn (fun t => F t y) (Set.Icc (0 : ℝ) T)) :
+    AEStronglyMeasurable (fun t => (InnerProductSpace.toDual ℝ Y).symm (F t))
+      (timeMeasure T) := by
+  apply dualRepresentative_aestronglyMeasurable_of_apply_aestronglyMeasurable F
+  intro y
+  unfold timeMeasure
+  exact (hF y).aestronglyMeasurable measurableSet_Icc
+
+theorem dualRepresentative_memLp_of_apply_aestronglyMeasurable_of_bound
+    [TopologicalSpace.SeparableSpace Y]
+    (F : ℝ → Y →L[ℝ] ℝ)
+    (hF : ∀ y, AEStronglyMeasurable (fun t => F t y) (timeMeasure T))
+    {C : ℝ} (hC : ∀ᵐ t ∂(timeMeasure T), ‖F t‖ ≤ C) :
+    MemLp (fun t => (InnerProductSpace.toDual ℝ Y).symm (F t)) 2
+      (timeMeasure T) := by
+  refine MemLp.of_bound
+    (dualRepresentative_aestronglyMeasurable_of_apply_aestronglyMeasurable F hF) C ?_
+  filter_upwards [hC] with t ht
+  simpa using ht
 
 theorem dualRepresentative_memLp_of_apply_continuousOn_of_bound
     [TopologicalSpace.SeparableSpace Y]
@@ -242,12 +263,14 @@ theorem dualRepresentative_memLp_of_apply_continuousOn_of_bound
     {C : ℝ} (hC : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖F t‖ ≤ C) :
     MemLp (fun t => (InnerProductSpace.toDual ℝ Y).symm (F t)) 2
       (timeMeasure T) := by
-  refine MemLp.of_bound
-    (dualRepresentative_aestronglyMeasurable_of_apply_continuousOn F hF) C ?_
-  unfold timeMeasure
-  refine (ae_restrict_iff' measurableSet_Icc).2
-    (Eventually.of_forall fun t ht => ?_)
-  simpa using hC t ht
+  apply dualRepresentative_memLp_of_apply_aestronglyMeasurable_of_bound F
+  · intro y
+    unfold timeMeasure
+    exact (hF y).aestronglyMeasurable measurableSet_Icc
+  · unfold timeMeasure
+    refine (ae_restrict_iff' measurableSet_Icc).2
+      (Eventually.of_forall fun t ht => ?_)
+    exact hC t ht
 
 theorem inner_ofContinuousOn_dualRepresentative
     (F : ℝ → Y →L[ℝ] ℝ) (hF : ContinuousOn F (Set.Icc (0 : ℝ) T))
@@ -273,17 +296,17 @@ theorem tendsto_integral_apply_of_weakly_tendsto
     (((InnerProductSpace.toDual ℝ Y).symm.continuous.comp_continuousOn hF))
   simpa only [z, inner_ofContinuousOn_dualRepresentative F hF] using hU z
 
-theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_continuousOn
+theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_aestronglyMeasurable
     [TopologicalSpace.SeparableSpace Y]
     {U : ℕ → timeL2 Y T} {u : timeL2 Y T}
     (hU : ∀ z, Tendsto (fun m => inner ℝ (U m) z) atTop
       (𝓝 (inner ℝ u z)))
     (F : ℝ → Y →L[ℝ] ℝ)
-    (hF : ∀ y, ContinuousOn (fun t => F t y) (Set.Icc (0 : ℝ) T))
-    {C : ℝ} (hC : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖F t‖ ≤ C) :
+    (hF : ∀ y, AEStronglyMeasurable (fun t => F t y) (timeMeasure T))
+    {C : ℝ} (hC : ∀ᵐ t ∂(timeMeasure T), ‖F t‖ ≤ C) :
     Tendsto (fun m => ∫ t in Set.Icc (0 : ℝ) T, F t (U m t)) atTop
       (𝓝 (∫ t in Set.Icc (0 : ℝ) T, F t (u t))) := by
-  let hz := dualRepresentative_memLp_of_apply_continuousOn_of_bound F hF hC
+  let hz := dualRepresentative_memLp_of_apply_aestronglyMeasurable_of_bound F hF hC
   let z : timeL2 Y T := hz.toLp
     (fun t => (InnerProductSpace.toDual ℝ Y).symm (F t))
   have hinner : ∀ v : timeL2 Y T,
@@ -296,6 +319,24 @@ theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_continuousOn
       real_inner_comm]
     exact InnerProductSpace.toDual_symm_apply
   simpa only [hinner] using hU z
+
+theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_continuousOn
+    [TopologicalSpace.SeparableSpace Y]
+    {U : ℕ → timeL2 Y T} {u : timeL2 Y T}
+    (hU : ∀ z, Tendsto (fun m => inner ℝ (U m) z) atTop
+      (nhds (inner ℝ u z)))
+    (F : ℝ → Y →L[ℝ] ℝ)
+    (hF : ∀ y, ContinuousOn (fun t => F t y) (Set.Icc (0 : ℝ) T))
+    {C : ℝ} (hC : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖F t‖ ≤ C) :
+    Tendsto (fun m => ∫ t in Set.Icc (0 : ℝ) T, F t (U m t)) atTop
+      (nhds (∫ t in Set.Icc (0 : ℝ) T, F t (u t))) := by
+  apply tendsto_integral_apply_of_weakly_tendsto_of_apply_aestronglyMeasurable hU F
+  · intro y
+    unfold timeMeasure
+    exact (hF y).aestronglyMeasurable measurableSet_Icc
+  · unfold timeMeasure
+    exact (ae_restrict_iff' measurableSet_Icc).2
+      (Eventually.of_forall fun t ht => hC t ht)
 
 end HilbertDuality
 

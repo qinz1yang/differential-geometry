@@ -3,15 +3,17 @@ import Mathlib.Analysis.Normed.Group.Continuity
 import Mathlib.Analysis.Normed.Module.Completion
 import Mathlib.Analysis.Normed.Operator.Basic
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
+import Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable
 import Mathlib.Topology.DenseEmbedding
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Algebra.LinearMapCompletion
+import Mathlib.Topology.Sequences
 import Mathlib.Topology.UniformSpace.CompleteSeparated
 import Mathlib.Topology.UniformSpace.UniformApproximation
 
 noncomputable section
 
-open Filter Set
+open Filter MeasureTheory Set
 open scoped NNReal Topology
 
 namespace DifferentialGeometry.Analysis
@@ -226,6 +228,24 @@ theorem ContinuousOn.clm_apply_of_denseRange
       mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) dist_nonneg
     _ < (D + 1) * (ε / (D + 1)) := mul_lt_mul_of_pos_left hi hD
     _ = ε := by field_simp
+
+theorem AEStronglyMeasurable.clm_apply_of_denseRange
+    {𝕜 ι P X Y : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup X] [NormedSpace 𝕜 X]
+    [SeminormedAddCommGroup Y] [NormedSpace 𝕜 Y]
+    [MeasurableSpace P] {j : ι → X} (hj : DenseRange j)
+    {F : P → X →L[𝕜] Y} {μ : Measure P}
+    (hFj : ∀ i, AEStronglyMeasurable (fun p => F p (j i)) μ)
+    (x : X) :
+    AEStronglyMeasurable (fun p => F p x) μ := by
+  obtain ⟨u, hu, hux⟩ := mem_closure_iff_seq_limit.mp (hj x)
+  choose i hi using hu
+  have hji : Tendsto (fun m => j (i m)) atTop (nhds x) := by
+    convert hux using 1
+    funext m
+    exact hi m
+  exact aestronglyMeasurable_of_tendsto_ae atTop (fun m => hFj (i m))
+    (Eventually.of_forall fun p => (F p).continuous.continuousAt.tendsto.comp hji)
 
 end DifferentialGeometry.Analysis
 
