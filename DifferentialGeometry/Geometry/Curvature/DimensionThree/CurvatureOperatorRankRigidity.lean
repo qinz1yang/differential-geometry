@@ -228,4 +228,16 @@ theorem curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two
     rw [hvzero]
     simp
 
+theorem curvatureOperatorReaction3_kernel_annihilation_iff_rank_ne_two
+    {A : Matrix (Fin 3) (Fin 3) Real} (hA : A.PosSemidef) :
+    (∀ v : Fin 3 → Real,
+      Matrix.mulVec A v = 0 →
+        Matrix.mulVec (curvatureOperatorReaction3 A) v = 0) ↔
+      A.rank ≠ 2 := by
+  constructor
+  · intro hnull htwo
+    exact curvatureOperator_rank_two_reaction_annihilation_impossible hA htwo hnull
+  · intro hrank v hv
+    exact curvatureOperatorReaction3_mulVec_eq_zero_of_rank_ne_two hA hrank hv
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
