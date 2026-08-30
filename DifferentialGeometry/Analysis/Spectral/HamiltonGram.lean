@@ -82,6 +82,36 @@ def hamiltonReactionPolynomial {ι : Type*} [Fintype ι]
     4 * ∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
       K a e c f * K b e d f * U a b * U c d
 
+theorem hamiltonGramSigma_eq_block
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real) (a b : ι) :
+    hamiltonGramSigma Y X U W a b =
+      (∑ c, hamiltonGramP Y X a b c * W c) +
+        ∑ c, ∑ d, hamiltonGramK Y a b c d * U c d := by
+  unfold hamiltonGramSigma hamiltonGramLinearTerm hamiltonGramP hamiltonGramK
+  simp_rw [Finset.sum_mul]
+  simp_rw [mul_add, Finset.mul_sum]
+  rw [Finset.sum_add_distrib]
+  have hX :
+      (∑ x, ∑ i, Y x a b * (X x i * W i)) =
+        ∑ x, ∑ i, Y i a b * X i x * W x := by
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  have hU :
+      (∑ x, ∑ x_1, ∑ i, Y x a b * (Y x x_1 i * U x_1 i)) =
+        ∑ x, ∑ x_1, ∑ i, Y i a b * Y i x x_1 * U x x_1 := by
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun x_1 _ => ?_
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  rw [hX, hU]
+  ring
+
 theorem hamiltonGram_quadratic_nonneg
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real)
