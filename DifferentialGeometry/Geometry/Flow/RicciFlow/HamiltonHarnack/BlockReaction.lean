@@ -33,6 +33,72 @@ def hamiltonBlockPreSquare
   hamiltonBlockJ K P M U W +
     hamiltonBlockSigmaSquareExpanded K P U W
 
+def hamiltonBlockPreSquareK
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) : Real :=
+  4 * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
+    K a e c f * K b e d f * U a b * U c d) +
+    ∑ a, ∑ b, (∑ c, ∑ d, K a b c d * U c d) ^ 2
+
+def hamiltonBlockPreSquareP
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real) : Real :=
+  8 * (∑ a, ∑ b, ∑ c, ∑ d, ∑ e,
+    K a d c e * P d b e * U a b * W c) +
+    2 * (∑ a, ∑ b,
+      (∑ c, P a b c * W c) * (∑ d, ∑ e, K a b d e * U d e))
+
+def hamiltonBlockPreSquareM
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (W : Idx -> Real) : Real :=
+  2 * (∑ a, ∑ b, ∑ c, ∑ d,
+    K a c b d * M c d * W a * W b) -
+  2 * (∑ a, ∑ b, ∑ c, ∑ d,
+    P a c d * P b d c * W a * W b) +
+  ∑ a, ∑ b, (∑ c, P a b c * W c) ^ 2
+
+theorem hamiltonBlockPreSquare_eq_split
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real) :
+    hamiltonBlockPreSquare K P M U W =
+      hamiltonBlockPreSquareK K U +
+        hamiltonBlockPreSquareP K P U W +
+        hamiltonBlockPreSquareM K P M W := by
+  unfold hamiltonBlockPreSquare hamiltonBlockJ
+    hamiltonBlockSigmaSquareExpanded hamiltonBlockPreSquareK
+    hamiltonBlockPreSquareP hamiltonBlockPreSquareM
+  simp only [Finset.sum_add_distrib]
+  have hmix :
+      (∑ a, ∑ b,
+        (2 * ∑ c, P a b c * W c) *
+            (∑ d, ∑ e, K a b d e * U d e)) =
+        2 * (∑ a, ∑ b,
+          (∑ c, P a b c * W c) *
+            (∑ d, ∑ e, K a b d e * U d e)) := by
+    calc
+      (∑ a, ∑ b,
+          (2 * ∑ c, P a b c * W c) *
+              (∑ d, ∑ e, K a b d e * U d e)) =
+          ∑ a, ∑ b, 2 *
+            ((∑ c, P a b c * W c) *
+              (∑ d, ∑ e, K a b d e * U d e)) := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        refine Finset.sum_congr rfl fun b _ => ?_
+        ring
+      _ = 2 * (∑ a, ∑ b,
+          (∑ c, P a b c * W c) *
+            (∑ d, ∑ e, K a b d e * U d e)) := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [Finset.mul_sum]
+  rw [hmix]
+  ring
+
 theorem hamiltonBlock_pre_square_eq_j_add_sigma_square
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
