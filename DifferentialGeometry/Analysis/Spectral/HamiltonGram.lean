@@ -270,6 +270,17 @@ theorem hamiltonGram_quadratic_nonneg
   unfold hamiltonGramQuadratic
   exact Finset.sum_nonneg fun r _ => sq_nonneg _
 
+theorem hamiltonGram_linearTerm_eq_zero_of_quadratic_eq_zero
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real)
+    (hzero : hamiltonGramQuadratic Y X U W = 0) :
+    ∀ r, hamiltonGramLinearTerm Y X U W r = 0 := by
+  intro r
+  have hterms := (Finset.sum_eq_zero_iff_of_nonneg
+    (fun s _ => sq_nonneg (hamiltonGramLinearTerm Y X U W s))).mp hzero
+  exact sq_eq_zero_iff.mp (hterms r (Finset.mem_univ r))
+
 theorem hamiltonGram_reaction_nonneg
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real)
@@ -287,17 +298,23 @@ theorem hamiltonGram_reaction_tangent_nonneg
   exact add_nonneg (hamiltonGram_quadratic_nonneg Y X U W)
     (hamiltonGram_reaction_nonneg Y X U W)
 
+theorem hamiltonGram_reaction_tangent_nonneg_of_quadratic_eq_zero
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real)
+    (hzero : hamiltonGramQuadratic Y X U W = 0) :
+    0 ≤ hamiltonGramReaction Y X U W := by
+  have h := hamiltonGram_reaction_tangent_nonneg Y X U W
+  rw [hzero, zero_add] at h
+  exact h
+
 theorem hamiltonGram_sigma_eq_zero_of_quadratic_eq_zero
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real)
     (U : ι → ι → Real) (W : ι → Real)
     (hzero : hamiltonGramQuadratic Y X U W = 0) (a b : ι) :
     hamiltonGramSigma Y X U W a b = 0 := by
-  have hterm : ∀ r : κ, hamiltonGramLinearTerm Y X U W r = 0 := by
-    intro r
-    have hterms := (Finset.sum_eq_zero_iff_of_nonneg
-      (fun s _ => sq_nonneg (hamiltonGramLinearTerm Y X U W s))).mp hzero
-    exact (sq_eq_zero_iff.mp (hterms r (Finset.mem_univ r)))
+  have hterm := hamiltonGram_linearTerm_eq_zero_of_quadratic_eq_zero Y X U W hzero
   unfold hamiltonGramSigma
   simp [hterm]
 
