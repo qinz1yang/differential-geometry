@@ -374,6 +374,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.Weak
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionGlobal
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionHeadline
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothBridge
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothScalarPreH1
@@ -407,6 +408,7 @@ import DifferentialGeometry.Analysis.InnerProductSpace.IsometryTransitive
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeFace
+import DifferentialGeometry.Analysis.InnerProductSpace.WeakCompactness
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartInvariance
@@ -3938,6 +3940,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MetricComparison
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinSequence
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GalerkinTimeL2
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakCompactness
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Counterexamples
 import DifferentialGeometry.Bundle.SmoothSubbundle.Defs
 import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
