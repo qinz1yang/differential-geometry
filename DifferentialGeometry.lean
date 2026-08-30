@@ -384,6 +384,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullSmoothBri
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.FullSmoothScalarPreH1
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.H1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.Neumann.Reilly
+import DifferentialGeometry.Analysis.FiniteDimensional.Rank
 import DifferentialGeometry.Analysis.Heat.MaximumPrinciple
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
 import DifferentialGeometry.Analysis.Heat.Semigroup.Duhamel
@@ -813,6 +814,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelDualCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTensorNullDistribution
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
