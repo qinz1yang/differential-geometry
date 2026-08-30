@@ -1517,6 +1517,7 @@ import DifferentialGeometry.Analysis.Spectral.Scalar.Enumeration
 import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Scalar.Spectrum
 import DifferentialGeometry.Analysis.Spectral.HamiltonGram
+import DifferentialGeometry.Analysis.Spectral.HamiltonTraceContractions
 import DifferentialGeometry.Analysis.Spectral.HamiltonGramReaction
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartLeviCivitaParallelCLMOpNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
