@@ -50,6 +50,16 @@ def hamiltonBlockPSD
   ∀ (U : Idx -> Idx -> Real) (W : Idx -> Real),
     0 ≤ hamiltonBlockQuadratic K P M U W
 
+theorem hamiltonBlockPSD_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real) :
+    hamiltonBlockPSD
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) := by
+  intro U W
+  exact hamiltonBlockQuadratic_nonneg_of_gram Y X U W
+
 theorem hamiltonBlockPSD_iff_hamiltonQuadratic_nonneg
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
@@ -99,6 +109,19 @@ def hamiltonBlockExactEvolution
     (U : Idx -> Idx -> Real) (W : Idx -> Real) : Real :=
   hamiltonBlockPreSquare K P M U W
 
+theorem hamiltonBlockPSD_reaction_nonneg_of_gram
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hY : ∀ r a b, Y r a b = -Y r b a)
+    (hU : ∀ a b, U a b = -U b a) :
+    0 ≤ hamiltonBlockExactEvolution
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
+  unfold hamiltonBlockExactEvolution
+  exact hamiltonBlock_pre_square_nonneg_of_gram Y X U W hY hU
+
 theorem hamiltonBlock_exact_evolution_eq_pre_square
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
@@ -130,6 +153,44 @@ theorem hamiltonBlock_exact_evolution_nonneg_of_gram
       (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
   unfold hamiltonBlockExactEvolution
   exact hamiltonBlock_pre_square_nonneg_of_gram Y X U W hY hU
+
+def hamiltonShiftedM
+    (clock : HarnackClock) (M Ric : Idx -> Idx -> Real) : Idx -> Idx -> Real :=
+  fun a b => M a b + (1 / (2 * clock.elapsed) : Real) * Ric a b
+
+def hamiltonShiftedBlockQuadratic
+    (clock : HarnackClock)
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M Ric : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real) : Real :=
+  hamiltonBlockQuadratic K P (hamiltonShiftedM clock M Ric) U W
+
+theorem hamiltonShiftedBlockQuadratic_expand
+    (clock : HarnackClock)
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M Ric : Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) (W : Idx -> Real) :
+    hamiltonShiftedBlockQuadratic clock K P M Ric U W =
+      hamiltonBlockQuadratic K P M U W +
+        (1 / (2 * clock.elapsed) : Real) *
+          (∑ a, ∑ b, Ric a b * W a * W b) := by
+  unfold hamiltonShiftedBlockQuadratic hamiltonBlockQuadratic hamiltonShiftedM
+    hamiltonBlockPolarized
+  simp only [add_mul, mul_add, Finset.sum_add_distrib]
+  have hscale :
+      (∑ a, ∑ b,
+          (1 / (2 * clock.elapsed) : Real) * Ric a b * W a * W b) =
+        (1 / (2 * clock.elapsed) : Real) *
+          (∑ a, ∑ b, Ric a b * W a * W b) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    ring
+  rw [hscale]
+  ring_nf
 
 def hamiltonCoordinateCurvature
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
