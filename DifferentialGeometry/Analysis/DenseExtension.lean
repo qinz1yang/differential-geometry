@@ -196,6 +196,73 @@ theorem exists_extend_le {ι X Y : Type*} [SeminormedAddCommGroup X]
   obtain ⟨F, hFc, hFv⟩ := exists_extend_pair hj f hpair
   exact ⟨F, hFc, hFv, fun x => norm_extend_le hj hFc hΦ hFv hbd x⟩
 
+theorem ContinuousOn.clm_apply_of_denseRange
+    {𝕜 ι P X Y : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup X] [NormedSpace 𝕜 X]
+    [SeminormedAddCommGroup Y] [NormedSpace 𝕜 Y]
+    [TopologicalSpace P] {j : ι → X} (hj : DenseRange j)
+    {F : P → X →L[𝕜] Y} {K : Set P}
+    (hFj : ∀ i, ContinuousOn (fun p => F p (j i)) K)
+    {C : ℝ} (hbound : ∀ p ∈ K, ‖F p‖ ≤ C)
+    (x : X) :
+    ContinuousOn (fun p => F p x) K := by
+  apply continuousOn_of_uniform_approx_of_continuousOn
+  intro u hu
+  obtain ⟨ε, hε, hεu⟩ := Metric.uniformity_basis_dist.mem_iff.mp hu
+  let D : ℝ := max C 0
+  have hD : 0 < D + 1 :=
+    add_pos_of_nonneg_of_pos (le_max_right C 0) zero_lt_one
+  obtain ⟨i, hi⟩ := hj.exists_dist_lt x (div_pos hε hD)
+  refine ⟨fun p => F p (j i), hFj i, ?_⟩
+  intro p hp
+  apply hεu
+  calc
+    dist (F p x) (F p (j i)) ≤ ‖F p‖ * dist x (j i) :=
+      (F p).dist_le_opNorm x (j i)
+    _ ≤ D * dist x (j i) :=
+      mul_le_mul_of_nonneg_right ((hbound p hp).trans (le_max_left C 0)) dist_nonneg
+    _ ≤ (D + 1) * dist x (j i) :=
+      mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) dist_nonneg
+    _ < (D + 1) * (ε / (D + 1)) := mul_lt_mul_of_pos_left hi hD
+    _ = ε := by field_simp
+
+theorem AEStronglyMeasurable.clm_apply_of_denseRange
+    {𝕜 ι P X Y : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup X] [NormedSpace 𝕜 X]
+    [SeminormedAddCommGroup Y] [NormedSpace 𝕜 Y]
+    [MeasurableSpace P] {j : ι → X} (hj : DenseRange j)
+    {F : P → X →L[𝕜] Y} {μ : Measure P}
+    (hFj : ∀ i, AEStronglyMeasurable (fun p => F p (j i)) μ)
+    (x : X) :
+    AEStronglyMeasurable (fun p => F p x) μ := by
+  obtain ⟨u, hu, hux⟩ := mem_closure_iff_seq_limit.mp (hj x)
+  choose i hi using hu
+  have hji : Tendsto (fun m => j (i m)) atTop (nhds x) := by
+    convert hux using 1
+    funext m
+    exact hi m
+  exact aestronglyMeasurable_of_tendsto_ae atTop (fun m => hFj (i m))
+    (Eventually.of_forall fun p => (F p).continuous.continuousAt.tendsto.comp hji)
+
+theorem AEStronglyMeasurable.clm_apply₂_of_denseRange
+    {𝕜 ι κ P X Y Z : Type*} [NontriviallyNormedField 𝕜]
+    [SeminormedAddCommGroup X] [NormedSpace 𝕜 X]
+    [SeminormedAddCommGroup Y] [NormedSpace 𝕜 Y]
+    [SeminormedAddCommGroup Z] [NormedSpace 𝕜 Z]
+    [MeasurableSpace P] {j : ι → X} {k : κ → Z}
+    (hj : DenseRange j) (hk : DenseRange k)
+    {F : P → X →L[𝕜] Z →L[𝕜] Y} {μ : Measure P}
+    (hFj : ∀ i l, AEStronglyMeasurable (fun p ↦ F p (j i) (k l)) μ)
+    (x : X) (z : Z) :
+    AEStronglyMeasurable (fun p ↦ F p x z) μ := by
+  have hleft (i : ι) :
+      AEStronglyMeasurable (fun p ↦ F p (j i) z) μ :=
+    AEStronglyMeasurable.clm_apply_of_denseRange hk (hFj i) z
+  have hright :
+      AEStronglyMeasurable (fun p ↦ (F p).flip z x) μ :=
+    AEStronglyMeasurable.clm_apply_of_denseRange hj hleft x
+  simpa only [ContinuousLinearMap.flip_apply] using hright
+
 end DifferentialGeometry.Analysis
 
 end
