@@ -161,6 +161,49 @@ theorem norm_ofContinuousOn_le_of_bound (hf : ContinuousOn f (Set.Icc (0 : ℝ) 
 
 end ContinuousEmbedding
 
+theorem AEStronglyMeasurable.clm_apply_of_apply_aestronglyMeasurable
+    {P X Y : Type*} [MeasurableSpace P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    {μ : Measure P} (A : P → X →L[ℝ] Y)
+    (hA : ∀ x, AEStronglyMeasurable (fun p => A p x) μ)
+    (u : P → X) (hu : AEStronglyMeasurable u μ) :
+    AEStronglyMeasurable (fun p => A p (u p)) μ := by
+  classical
+  let u' : P → X := hu.mk u
+  have hu' : StronglyMeasurable u' := hu.stronglyMeasurable_mk
+  let s : ℕ → SimpleFunc P X := hu'.approx
+  have hs (m : ℕ) : AEStronglyMeasurable (fun p => A p (s m p)) μ := by
+    let F : P → Y := fun p =>
+      ∑ x ∈ (s m).range, (s m ⁻¹' {x}).indicator (fun r => A r x) p
+    have hF : AEStronglyMeasurable F μ := by
+      let F' : P → Y :=
+        ∑ x ∈ (s m).range, (s m ⁻¹' {x}).indicator (fun r => A r x)
+      have hF' : AEStronglyMeasurable F' μ :=
+        Finset.aestronglyMeasurable_sum (s m).range (fun x _ =>
+          (hA x).indicator ((s m).measurableSet_fiber x))
+      have hFF' : F = F' := by
+        funext p
+        simp only [F, F', Finset.sum_apply]
+      exact hFF' ▸ hF'
+    refine hF.congr (Eventually.of_forall fun p => ?_)
+    dsimp only [F]
+    rw [Finset.sum_eq_single (s m p)]
+    · apply Set.indicator_of_mem
+      change (s m p) ∈ ({s m p} : Set X)
+      exact Set.mem_singleton _
+    · intro x hx hne
+      rw [Set.indicator_of_notMem]
+      exact fun hmem => hne hmem.symm
+    · exact fun hmem => (hmem ((s m).mem_range_self p)).elim
+  refine aestronglyMeasurable_of_tendsto_ae atTop hs ?_
+  filter_upwards [hu.ae_eq_mk] with p hup
+  have hs_tendsto : Tendsto (fun m => s m p) atTop (nhds (u' p)) :=
+    hu'.tendsto_approx p
+  have happly : Tendsto (fun m => A p (s m p)) atTop (nhds (A p (u' p))) :=
+    (A p).continuous.continuousAt.tendsto.comp hs_tendsto
+  simpa only [u', hup] using happly
+
 section HilbertDuality
 
 variable {Y : Type*} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
@@ -271,6 +314,40 @@ theorem dualRepresentative_memLp_of_apply_continuousOn_of_bound
     refine (ae_restrict_iff' measurableSet_Icc).2
       (Eventually.of_forall fun t ht => ?_)
     exact hC t ht
+
+theorem bilinear_left_representative_memLp
+    {X : Type*}
+    [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [TopologicalSpace.SeparableSpace Y]
+    (u : timeL2 X T)
+    (B : ℝ → X →L[ℝ] Y →L[ℝ] ℝ)
+    (hB : ∀ x y, AEStronglyMeasurable (fun t => B t x y) (timeMeasure T))
+    {C : ℝ} (hC : ∀ᵐ t ∂(timeMeasure T), ‖B t‖ ≤ C) :
+    MemLp (fun t => (InnerProductSpace.toDual ℝ Y).symm (B t (u t))) 2
+      (timeMeasure T) := by
+  let A : ℝ → X →L[ℝ] Y := fun t =>
+    (InnerProductSpace.toDual ℝ Y).symm.toContinuousLinearEquiv.toContinuousLinearMap.comp
+      (B t)
+  have hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T) := by
+    intro x
+    exact dualRepresentative_aestronglyMeasurable_of_apply_aestronglyMeasurable
+      (fun t => B t x) (hB x)
+  have hmeas : AEStronglyMeasurable (fun t => A t (u t)) (timeMeasure T) :=
+    AEStronglyMeasurable.clm_apply_of_apply_aestronglyMeasurable
+      A hA u (Lp.aestronglyMeasurable u)
+  refine MemLp.of_le_mul (c := max 0 C) (Lp.memLp u) ?_ ?_
+  · refine hmeas.congr (Eventually.of_forall fun t => ?_)
+    rfl
+  · filter_upwards [hC] with t ht
+    change ‖(InnerProductSpace.toDual ℝ Y).symm (B t (u t))‖ ≤
+      max 0 C * ‖u t‖
+    calc
+      ‖(InnerProductSpace.toDual ℝ Y).symm (B t (u t))‖ = ‖B t (u t)‖ := by
+        exact (InnerProductSpace.toDual ℝ Y).symm.norm_map _
+      _ ≤ ‖B t‖ * ‖u t‖ := (B t).le_opNorm (u t)
+      _ ≤ max 0 C * ‖u t‖ := by
+        gcongr
+        exact ht.trans (le_max_right 0 C)
 
 theorem inner_ofContinuousOn_dualRepresentative
     (F : ℝ → Y →L[ℝ] ℝ) (hF : ContinuousOn F (Set.Icc (0 : ℝ) T))
