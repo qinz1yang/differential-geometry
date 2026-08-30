@@ -139,6 +139,81 @@ private theorem ricciBilinear_range_exists_of_kernel_annihilation
       rw [hsym]
     _ = dR a := hYa
 
+private theorem ricci_quadratic_eq_pairing_of_preimage
+    (Ric : Idx -> Idx -> Real) (dR Y : Idx -> Real)
+    (hY : ∀ a, ∑ b, Ric a b * Y b = dR a) :
+    ricciQuadratic Ric Y = ricciCovectorPairing dR Y := by
+  unfold ricciQuadratic ricciCovectorPairing
+  symm
+  calc
+    ∑ a, dR a * Y a = ∑ a, (∑ b, Ric a b * Y b) * Y a := by
+      apply Finset.sum_congr rfl
+      intro a ha
+      rw [hY]
+    _ = ∑ a, ∑ b, Ric a b * Y b * Y a := by
+      apply Finset.sum_congr rfl
+      intro a ha
+      rw [Finset.sum_mul]
+    _ = ∑ a, ∑ b, Ric a b * Y a * Y b := by
+      apply Finset.sum_congr rfl
+      intro a ha
+      apply Finset.sum_congr rfl
+      intro b hb
+      ring
+
+private theorem ricci_quadratic_eq_of_preimages
+    (Ric : Idx -> Idx -> Real) (dR Y Z : Idx -> Real)
+    (hsym : ∀ a b, Ric a b = Ric b a)
+    (hY : ∀ a, ∑ b, Ric a b * Y b = dR a)
+    (hZ : ∀ a, ∑ b, Ric a b * Z b = dR a) :
+    ricciQuadratic Ric Y = ricciQuadratic Ric Z := by
+  have hdiff : ricciKernelDirection Ric (fun a => Y a - Z a) := by
+    intro b
+    calc
+      ∑ a, Ric a b * (Y a - Z a) =
+          ∑ a, Ric b a * (Y a - Z a) := by
+        apply Finset.sum_congr rfl
+        intro a ha
+        rw [hsym]
+      _ = (∑ a, Ric b a * Y a) - ∑ a, Ric b a * Z a := by
+        simp [mul_sub, Finset.sum_sub_distrib]
+      _ = 0 := by rw [hY, hZ, sub_self]
+  have hzero : ricciCovectorPairing dR (fun a => Y a - Z a) = 0 := by
+    unfold ricciCovectorPairing
+    calc
+      ∑ a, dR a * (Y a - Z a) =
+          ∑ a, (∑ b, Ric a b * Y b) * (Y a - Z a) := by
+        apply Finset.sum_congr rfl
+        intro a ha
+        rw [hY]
+      _ = ∑ a, ∑ b, Ric a b * Y b * (Y a - Z a) := by
+        apply Finset.sum_congr rfl
+        intro a ha
+        rw [Finset.sum_mul]
+      _ = ∑ b, ∑ a, Ric a b * Y b * (Y a - Z a) := by
+        rw [Finset.sum_comm]
+      _ = ∑ b, Y b * (∑ a, Ric a b * (Y a - Z a)) := by
+        apply Finset.sum_congr rfl
+        intro b hb
+        calc
+          ∑ a, Ric a b * Y b * (Y a - Z a) =
+              ∑ a, Y b * (Ric a b * (Y a - Z a)) := by
+            apply Finset.sum_congr rfl
+            intro a ha
+            ring
+          _ = Y b * (∑ a, Ric a b * (Y a - Z a)) := by
+            rw [Finset.mul_sum]
+      _ = 0 := by
+        unfold ricciKernelDirection at hdiff
+        simp [hdiff]
+  rw [show ricciCovectorPairing dR (fun a => Y a - Z a) =
+      ricciCovectorPairing dR Y - ricciCovectorPairing dR Z by
+        unfold ricciCovectorPairing
+        simp [mul_sub, Finset.sum_sub_distrib]] at hzero
+  rw [ricci_quadratic_eq_pairing_of_preimage Ric dR Y hY,
+    ricci_quadratic_eq_pairing_of_preimage Ric dR Z hZ]
+  linarith
+
 theorem ricci_quadratic_eq_zero_of_kernel
     (Ric : Idx -> Idx -> Real) (z : Idx -> Real)
     (hker : ricciKernelDirection Ric z) :
@@ -253,11 +328,15 @@ theorem hamilton_trace_semidefinite_optimized_of_symmetric
       2 * ricciQuadratic Ric z) :
     ∃ Y : Idx -> Real,
       (∀ a, ∑ b, Ric a b * Y b = dR a) ∧
-        0 ≤ c - (1 / 2 : Real) * ricciQuadratic Ric Y := by
+      (∀ Z, (∀ a, ∑ b, Ric a b * Z b = dR a) →
+        ricciQuadratic Ric Z = ricciQuadratic Ric Y) ∧
+      0 ≤ c - (1 / 2 : Real) * ricciQuadratic Ric Y := by
   have hkernel := hamilton_trace_ricci_kernel_annihilation c Ric dR htrace
   obtain ⟨Y, hY⟩ := ricciBilinear_range_exists_of_kernel_annihilation
     Ric dR hsym hkernel
-  refine ⟨Y, hY, ?_⟩
-  exact hamilton_trace_semidefinite_optimized_of_preimage c Ric dR Y htrace hY
+  refine ⟨Y, hY, ?_, ?_⟩
+  · intro Z hZ
+    exact (ricci_quadratic_eq_of_preimages Ric dR Y Z hsym hY hZ).symm
+  · exact hamilton_trace_semidefinite_optimized_of_preimage c Ric dR Y htrace hY
 
 end DifferentialGeometry.PDE.RicciFlow
