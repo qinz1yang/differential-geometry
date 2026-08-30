@@ -1,9 +1,10 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletEigenBasis
 import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
+import Mathlib.Order.Filter.AtTopBot.Finset
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set
+open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
@@ -241,6 +242,47 @@ noncomputable def smoothDirichletHilbertBasis
     (HilbertBasis.coe_mkOfOrthogonalEqBot
       (smoothDirichletBasisFunction_orthonormal g)
       (span_smoothDirichletBasisFunction_orthogonal_eq_bot g)) i
+
+noncomputable def smoothDirichletBasisFinset
+    (g : SmoothRiemannianMetric (I_half n) M) (m : ℕ) :
+    Finset (SmoothDirichletBasisIndex g) :=
+  (Finset.range m).preimage
+    ((↑) : SmoothDirichletBasisIndex g → ℕ) Subtype.val_injective.injOn
+
+@[simp] theorem mem_smoothDirichletBasisFinset_iff
+    (g : SmoothRiemannianMetric (I_half n) M) (m : ℕ)
+    (i : SmoothDirichletBasisIndex g) :
+    i ∈ smoothDirichletBasisFinset g m ↔ i.1 < m := by
+  simp only [smoothDirichletBasisFinset, Finset.mem_preimage, Finset.mem_range]
+
+theorem tendsto_smoothDirichletBasisFinset_atTop
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Tendsto (smoothDirichletBasisFinset g) atTop atTop := by
+  unfold smoothDirichletBasisFinset
+  exact (tendsto_finset_preimage_atTop_atTop
+      (α := SmoothDirichletBasisIndex g) (β := ℕ)
+      (f := ((↑) : SmoothDirichletBasisIndex g → ℕ))
+      Subtype.val_injective).comp tendsto_finset_range
+
+noncomputable def smoothDirichletBasisApproximation
+    (g : SmoothRiemannianMetric (I_half n) M) (m : ℕ)
+    (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) :
+    SmoothScalarDirichlet g :=
+  ∑ i ∈ smoothDirichletBasisFinset g m,
+    (smoothDirichletHilbertBasis g).repr f i • smoothDirichletBasisFunction g i
+
+theorem tendsto_smoothToLpDirichlet_smoothDirichletBasisApproximation
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) :
+    Tendsto (fun m =>
+      smoothToLpDirichlet g (smoothDirichletBasisApproximation g m f))
+      atTop (𝓝 f) := by
+  have hsum := (smoothDirichletHilbertBasis g).hasSum_repr f
+  have hpartial := hsum.comp (tendsto_smoothDirichletBasisFinset_atTop g)
+  convert hpartial using 1
+  funext m
+  simp only [Function.comp_apply, smoothDirichletBasisApproximation,
+    map_sum, map_smul, smoothDirichletHilbertBasis_apply]
 
 end Dirichlet
 end WithBoundary
