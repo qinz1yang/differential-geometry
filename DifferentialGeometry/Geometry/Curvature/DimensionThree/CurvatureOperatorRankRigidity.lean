@@ -50,6 +50,15 @@ theorem curvatureOperator_rank_trichotomy_of_reaction_annihilation
     exact curvatureOperator_rank_two_reaction_annihilation_impossible hA htwo hnull
   omega
 
+theorem curvatureOperatorReaction3_preserves_kernel
+    {A : Matrix (Fin 3) (Fin 3) Real} {v : Fin 3 → Real}
+    (hv : Matrix.mulVec A v = 0) :
+    Matrix.mulVec A (Matrix.mulVec (curvatureOperatorReaction3 A) v) = 0 := by
+  have hcomm := curvatureOperatorReaction3_commute A
+  have hvec := congrArg (fun B : Matrix (Fin 3) (Fin 3) Real => Matrix.mulVec B v) hcomm.eq
+  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hv, Matrix.mulVec_zero] at hvec
+  exact hvec
+
 theorem curvatureOperator_rank_zero_iff
     {A : Matrix (Fin 3) (Fin 3) Real} :
     A.rank = 0 ↔ A = 0 := by
