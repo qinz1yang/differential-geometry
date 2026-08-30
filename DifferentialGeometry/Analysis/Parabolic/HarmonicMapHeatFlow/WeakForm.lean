@@ -11,7 +11,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffSmallC
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
-import DifferentialGeometry.Geometry.Exponential.LocalAddition
+import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

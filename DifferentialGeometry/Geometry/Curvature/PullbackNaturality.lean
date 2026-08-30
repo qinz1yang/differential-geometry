@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Metric
-import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 

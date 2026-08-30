@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
-import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S

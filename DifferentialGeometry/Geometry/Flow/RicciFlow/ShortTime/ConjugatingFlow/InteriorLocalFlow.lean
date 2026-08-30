@@ -8,9 +8,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
 open DifferentialGeometry.Geometry.Curvature
 

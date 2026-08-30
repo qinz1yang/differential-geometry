@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate

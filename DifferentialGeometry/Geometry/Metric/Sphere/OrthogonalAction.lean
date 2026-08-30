@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundMetric
-import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 

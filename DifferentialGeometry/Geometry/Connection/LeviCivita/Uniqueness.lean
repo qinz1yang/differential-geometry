@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 open DifferentialGeometry.Geometry.Curvature

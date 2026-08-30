@@ -545,10 +545,7 @@ import DifferentialGeometry.Analysis.ODE.SecondOrderBootstrap
 import DifferentialGeometry.Analysis.ODE.SecondOrderGronwall
 import DifferentialGeometry.Analysis.ODE.SecondOrderLinearExistence
 import DifferentialGeometry.Analysis.ODE.StateCoerciveMass
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ComposeIsId
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ReversedFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.FullIntervalFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
@@ -567,7 +564,6 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.FromZeroManifoldOrbit
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.FromZeroManifoldOrbitUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.GlobalFlowOnClosed
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.InteriorBareFlowFullHorizon
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.ChartLocalPicardRegular
@@ -583,7 +579,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Mani
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.MovingMfderivContinuity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Parameter
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.VariationalEquation
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ChartDictionary
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ConventionBridge
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.FactorProducers
@@ -2121,7 +2117,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Uniqueness
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.RicciCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.ScalarHessian
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartGramChristoffel
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartTransition
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
@@ -2392,7 +2388,7 @@ import DifferentialGeometry.Geometry.Exponential.IntrinsicGauss
 import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
-import DifferentialGeometry.Geometry.Exponential.LocalAddition
+import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.NormalConvergence
@@ -3019,7 +3015,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Metric.Polarization
-import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationDerivative
 import DifferentialGeometry.Geometry.Metric.PullbackCross

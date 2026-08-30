@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback

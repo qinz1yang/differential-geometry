@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DeTurck.Naturality
-import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Bundle.VectorField.Pushforward
 
 open DifferentialGeometry.Geometry.Curvature

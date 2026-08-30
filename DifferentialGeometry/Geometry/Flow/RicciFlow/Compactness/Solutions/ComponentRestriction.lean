@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.LocalAddition
+import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 
