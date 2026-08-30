@@ -78,6 +78,10 @@ theorem riemannianVolumeDensity_contMDiff
       (chartDensity_contMDiffOn (I := I) q α)
       (fun x hx => ne_of_gt (chartDensity_pos (I := I) q α hx))
 
+def riemannianVolumeDensitySmoothMap
+    (q h : SmoothRiemannianMetric I M) : C^∞⟮I, M; ℝ⟯ :=
+  ⟨riemannianVolumeDensity q h, riemannianVolumeDensity_contMDiff q h⟩
+
 theorem riemannianVolumeDensity_pos
     (q h : SmoothRiemannianMetric I M) (x : M) :
     0 < riemannianVolumeDensity q h x := by
@@ -189,6 +193,27 @@ theorem riemannianVolumeMeasure_eq_withDensity
     ENNReal.ofReal ((chartAtlasPOU I M) α x) *
       ENNReal.ofReal (riemannianVolumeDensity q h x)
   exact mul_comm _ _
+
+theorem integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (q h : SmoothRiemannianMetric I M) (f : M → F) :
+    (∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) h)) =
+      ∫ x, riemannianVolumeDensity q h x • f x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
+  rw [riemannianVolumeMeasure_eq_withDensity (I := I) q h]
+  have hρ : AEMeasurable
+      (fun x : M => ENNReal.ofReal (riemannianVolumeDensity q h x))
+      (riemannianVolumeMeasure (I := I) (M := M) q) :=
+    (ENNReal.measurable_ofReal.comp
+      (riemannianVolumeDensity_contMDiff (I := I) q h).continuous.measurable).aemeasurable
+  have hρtop : ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) q),
+      ENNReal.ofReal (riemannianVolumeDensity q h x) < ⊤ :=
+    Filter.Eventually.of_forall fun _ => by simp
+  rw [integral_withDensity_eq_integral_toReal_smul₀ hρ hρtop]
+  apply integral_congr_ae
+  filter_upwards [] with x
+  rw [ENNReal.toReal_ofReal
+    (le_of_lt (riemannianVolumeDensity_pos (I := I) q h x))]
 
 end Measure
 end Integral
