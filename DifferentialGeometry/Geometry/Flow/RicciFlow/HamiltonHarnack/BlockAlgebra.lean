@@ -54,6 +54,77 @@ theorem hamiltonBlockPolarized_diag
   simp only [mul_add, Finset.sum_add_distrib]
   ring_nf
 
+private theorem hamiltonBlock_sum_swap_four
+    (F : Idx -> Idx -> Idx -> Idx -> Real) :
+    (∑ a, ∑ b, ∑ c, ∑ d, F a b c d) =
+      ∑ c, ∑ d, ∑ a, ∑ b, F a b c d := by
+  calc
+    (∑ a, ∑ b, ∑ c, ∑ d, F a b c d) =
+        ∑ b, ∑ a, ∑ c, ∑ d, F a b c d := by rw [Finset.sum_comm]
+    _ = ∑ b, ∑ c, ∑ a, ∑ d, F a b c d := by
+      refine Finset.sum_congr rfl fun b _ => ?_
+      rw [Finset.sum_comm]
+    _ = ∑ b, ∑ c, ∑ d, ∑ a, F a b c d := by
+      refine Finset.sum_congr rfl fun b _ => ?_
+      refine Finset.sum_congr rfl fun c _ => ?_
+      rw [Finset.sum_comm]
+    _ = ∑ c, ∑ b, ∑ d, ∑ a, F a b c d := by
+      rw [Finset.sum_comm]
+    _ = ∑ c, ∑ d, ∑ b, ∑ a, F a b c d := by
+      refine Finset.sum_congr rfl fun c _ => ?_
+      rw [Finset.sum_comm]
+    _ = ∑ c, ∑ d, ∑ a, ∑ b, F a b c d := by
+      refine Finset.sum_congr rfl fun c _ => ?_
+      refine Finset.sum_congr rfl fun d _ => ?_
+      rw [Finset.sum_comm]
+
+theorem hamiltonBlockPolarized_comm
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (hK : ∀ a b c d, K a b c d = K c d a b)
+    (hM : ∀ a b, M a b = M b a)
+    (U V : Idx -> Idx -> Real) (W Z : Idx -> Real) :
+    hamiltonBlockPolarized K P M U V W Z =
+      hamiltonBlockPolarized K P M V U Z W := by
+  unfold hamiltonBlockPolarized
+  have hKsum :
+      (∑ a, ∑ b, ∑ c, ∑ d, K a b c d * U a b * V c d) =
+        ∑ a, ∑ b, ∑ c, ∑ d, K a b c d * V a b * U c d := by
+    calc
+      (∑ a, ∑ b, ∑ c, ∑ d, K a b c d * U a b * V c d) =
+          ∑ c, ∑ d, ∑ a, ∑ b, K a b c d * U a b * V c d :=
+        hamiltonBlock_sum_swap_four _
+      _ = ∑ c, ∑ d, ∑ a, ∑ b, K c d a b * V c d * U a b := by
+        refine Finset.sum_congr rfl fun c _ => ?_
+        refine Finset.sum_congr rfl fun d _ => ?_
+        refine Finset.sum_congr rfl fun a _ => ?_
+        refine Finset.sum_congr rfl fun b _ => ?_
+        rw [hK c d a b]
+        ring
+      _ = ∑ a, ∑ b, ∑ c, ∑ d, K a b c d * V a b * U c d := by
+        rw [hamiltonBlock_sum_swap_four]
+  have hMsum :
+      (∑ a, ∑ b, M a b * W a * Z b) =
+        ∑ a, ∑ b, M a b * Z a * W b := by
+    calc
+      (∑ a, ∑ b, M a b * W a * Z b) =
+          ∑ b, ∑ a, M a b * W a * Z b := Finset.sum_comm
+      _ = ∑ b, ∑ a, M b a * Z b * W a := by
+        refine Finset.sum_congr rfl fun b _ => ?_
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [hM b a]
+        ring
+      _ = ∑ a, ∑ b, M a b * Z a * W b := by rw [Finset.sum_comm]
+  have hPsum :
+      (∑ a, ∑ b, ∑ c, P a b c * (U a b * Z c + V a b * W c)) =
+        ∑ a, ∑ b, ∑ c, P a b c * (V a b * W c + U a b * Z c) := by
+    refine Finset.sum_congr rfl fun a _ => ?_
+    refine Finset.sum_congr rfl fun b _ => ?_
+    refine Finset.sum_congr rfl fun c _ => ?_
+    rw [add_comm]
+  rw [hKsum, hMsum, hPsum]
+
 theorem hamiltonGramSigma_eq_hamiltonBlockSigma
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
