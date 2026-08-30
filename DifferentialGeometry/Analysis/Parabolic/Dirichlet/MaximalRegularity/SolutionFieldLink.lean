@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.OperatorEquation
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.SolutionSpace
 
 noncomputable section
 
@@ -222,6 +222,269 @@ theorem maximalRegularitySolFieldHa1_toFun_ae
   funext i
   rw [dirichletHs.dirichletHsInclusion_coeff]
   exact ht i
+
+private theorem homogeneousModeCoeff_eq_init_add_integral
+    (u₀ : dirichletHs g (a + 1))
+    (i : DirichletLaplacianEigenindex g) :
+    (fun t => homogeneousModeCoeff (a := a) (T := T) u₀ i t)
+      =ᵐ[timeMeasure T] fun t => u₀.coeff i +
+        ∫ s in (0 : ℝ)..t,
+          homogeneousDerivModeCoeff (a := a) (T := T) u₀ i s := by
+  set lam := dirichletLaplacianEigenvalue i with hlam_def
+  set c := u₀.coeff i with hc_def
+  have hmode : homogeneousModeCoeff (a := a) (T := T) u₀ i
+      =ᵐ[timeMeasure T] fun t => Real.exp (-lam * t) * c :=
+    TimeSobolev.coeFn_ofContinuousOn _
+  have hderiv : homogeneousDerivModeCoeff (a := a) (T := T) u₀ i
+      =ᵐ[timeMeasure T] fun t =>
+        -lam * (Real.exp (-lam * t) * c) :=
+    TimeSobolev.coeFn_ofContinuousOn _
+  filter_upwards [hmode,
+    ae_restrict_mem (μ := volume) measurableSet_Icc] with t ht htmem
+  rw [ht]
+  have hint_congr :
+      (∫ s in (0 : ℝ)..t,
+          homogeneousDerivModeCoeff (a := a) (T := T) u₀ i s) =
+        ∫ s in (0 : ℝ)..t,
+          -lam * (Real.exp (-lam * s) * c) := by
+    refine intervalIntegral.integral_congr_ae ?_
+    have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
+      (Set.uIoc_subset_uIcc).trans
+        (uIcc_subset_Icc ⟨le_rfl, htmem.1.trans htmem.2⟩ htmem)
+    have hae := ae_restrict_of_ae_restrict_of_subset
+      (μ := volume) hsub hderiv
+    rw [ae_restrict_iff' measurableSet_uIoc] at hae
+    filter_upwards [hae] with s hs using hs
+  rw [hint_congr]
+  have hF : ∀ s : ℝ, HasDerivAt (fun s => Real.exp (-lam * s) * c)
+      (Real.exp (-lam * s) * (-lam) * c) s := by
+    intro s
+    have hlin : HasDerivAt (fun s : ℝ => -lam * s) (-lam) s := by
+      simpa using (hasDerivAt_id s).const_mul (-lam)
+    exact hlin.exp.mul_const c
+  have hderivFun : (fun s : ℝ => -lam * (Real.exp (-lam * s) * c)) =
+      fun s => Real.exp (-lam * s) * (-lam) * c := by
+    funext s
+    ring
+  rw [hderivFun,
+    intervalIntegral.integral_eq_sub_of_hasDerivAt
+      (fun s _ => hF s) (by apply Continuous.intervalIntegrable; fun_prop)]
+  simp only [mul_zero, Real.exp_zero, one_mul]
+  ring
+
+private theorem maximalRegularityHomogeneousDerivField_coeff_ae
+    (hT : 0 ≤ T)
+    (u₀ : dirichletHs g (a + 1))
+    (i : DirichletLaplacianEigenindex g) :
+    (fun s =>
+      ((maximalRegularityHomogeneous a T u₀).deriv s).coeff i)
+      =ᵐ[timeMeasure T] fun s =>
+        homogeneousDerivModeCoeff (a := a) (T := T) u₀ i s := by
+  have hcoe := timeModeCoeff_coeFn
+    (maximalRegularityHomogeneous a T u₀).deriv i
+  have hmode : timeModeCoeff
+      (maximalRegularityHomogeneous a T u₀).deriv i =
+        homogeneousDerivModeCoeff (a := a) (T := T) u₀ i := by
+    rw [maximalRegularityHomogeneous_deriv,
+      maximalRegularityHomogeneousDerivField_timeModeCoeff hT u₀ i]
+  filter_upwards [hcoe] with s hs
+  rw [← hs, hmode]
+
+private theorem maximalRegularityHomogeneousSolField_coeff_ae
+    (hT : 0 < T)
+    (u₀ : dirichletHs g (a + 1))
+    (i : DirichletLaplacianEigenindex g) :
+    (fun t => (maximalRegularityHomogeneousSolField a T u₀ t).coeff i)
+      =ᵐ[timeMeasure T] fun t => u₀.coeff i +
+        ∫ s in (0 : ℝ)..t,
+          ((maximalRegularityHomogeneous a T u₀).deriv s).coeff i := by
+  have hfield := timeModeCoeff_coeFn
+    (maximalRegularityHomogeneousSolField a T u₀) i
+  have hsol := homogeneousModeCoeff_eq_init_add_integral
+    (a := a) (T := T) u₀ i
+  have hderiv := maximalRegularityHomogeneousDerivField_coeff_ae
+    (a := a) (T := T) hT.le u₀ i
+  filter_upwards [hfield, hsol,
+    ae_restrict_mem (μ := volume) measurableSet_Icc]
+      with t htfield htsol htmem
+  rw [← htfield,
+    maximalRegularityHomogeneousSolField_timeModeCoeff hT.le u₀ i,
+    htsol]
+  refine congrArg (fun z => u₀.coeff i + z)
+    (intervalIntegral.integral_congr_ae ?_)
+  have h0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T :=
+    ⟨le_rfl, htmem.1.trans htmem.2⟩
+  have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
+    (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc h0 htmem)
+  have hae := ae_restrict_of_ae_restrict_of_subset
+    (μ := volume) hsub hderiv
+  rw [ae_restrict_iff' measurableSet_uIoc] at hae
+  filter_upwards [hae] with s hs hsmem
+  rw [hs hsmem]
+
+private theorem maximalRegularityHomogeneousSolFieldHa1_coeff_ae
+    (hT : 0 < T)
+    (u₀ : dirichletHs g (a + 1))
+    (i : DirichletLaplacianEigenindex g) :
+    (fun t => (maximalRegularityHomogeneousSolFieldHa1 a T u₀ t).coeff i)
+      =ᵐ[timeMeasure T] fun t => u₀.coeff i +
+        ∫ s in (0 : ℝ)..t,
+          ((maximalRegularityHomogeneous a T u₀).deriv s).coeff i := by
+  have hfield := timeModeCoeff_coeFn
+    (maximalRegularityHomogeneousSolFieldHa1 a T u₀) i
+  have hsol := homogeneousModeCoeff_eq_init_add_integral
+    (a := a) (T := T) u₀ i
+  have hderiv := maximalRegularityHomogeneousDerivField_coeff_ae
+    (a := a) (T := T) hT.le u₀ i
+  filter_upwards [hfield, hsol,
+    ae_restrict_mem (μ := volume) measurableSet_Icc]
+      with t htfield htsol htmem
+  rw [← htfield,
+    maximalRegularityHomogeneousSolFieldHa1_timeModeCoeff hT.le u₀ i,
+    htsol]
+  refine congrArg (fun z => u₀.coeff i + z)
+    (intervalIntegral.integral_congr_ae ?_)
+  have h0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T :=
+    ⟨le_rfl, htmem.1.trans htmem.2⟩
+  have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
+    (Set.uIoc_subset_uIcc).trans (uIcc_subset_Icc h0 htmem)
+  have hae := ae_restrict_of_ae_restrict_of_subset
+    (μ := volume) hsub hderiv
+  rw [ae_restrict_iff' measurableSet_uIoc] at hae
+  filter_upwards [hae] with s hs hsmem
+  rw [hs hsmem]
+
+theorem maximalRegularityHomogeneousSolField_toFun_ae
+    (hT : 0 < T)
+    (u₀ : dirichletHs g (a + 1)) :
+    (fun t => dirichletHsInclusion
+        (show a ≤ a + 2 by linarith)
+        (maximalRegularityHomogeneousSolField a T u₀ t))
+      =ᵐ[timeMeasure T]
+        (maximalRegularityHomogeneous a T u₀).toFun := by
+  set u := maximalRegularityHomogeneous a T u₀ with hu_def
+  have hper : ∀ i : DirichletLaplacianEigenindex g,
+      ∀ᵐ t ∂(timeMeasure T),
+        (maximalRegularityHomogeneousSolField a T u₀ t).coeff i =
+          (u.toFun t).coeff i := by
+    intro i
+    have hfield := maximalRegularityHomogeneousSolField_coeff_ae
+      (a := a) hT u₀ i
+    filter_upwards [hfield,
+      ae_restrict_mem (μ := volume) measurableSet_Icc]
+        with t htfield htmem
+    have h0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T :=
+      ⟨le_rfl, htmem.1.trans htmem.2⟩
+    have hcomm :
+        dirichletHsCoeffL i (∫ τ in (0 : ℝ)..t, u.deriv τ) =
+          ∫ τ in (0 : ℝ)..t, (u.deriv τ).coeff i := by
+      rw [← ContinuousLinearMap.intervalIntegral_comp_comm
+        (dirichletHsCoeffL i) (u.intervalIntegrable_deriv h0 htmem)]
+      rfl
+    have hval : (u.toFun t).coeff i =
+        u.init.coeff i + ∫ τ in (0 : ℝ)..t, (u.deriv τ).coeff i := by
+      have he : (u.toFun t).coeff i = dirichletHsCoeffL i (u.toFun t) := rfl
+      rw [he, TimeSobolev.timeH1.toFun_apply, map_add, hcomm]
+      rfl
+    have hinit : u.init.coeff i = u₀.coeff i := by
+      rw [hu_def, maximalRegularityHomogeneous_init]
+      rfl
+    rw [htfield, hval, hinit]
+  rw [← MeasureTheory.ae_all_iff] at hper
+  filter_upwards [hper] with t ht
+  refine dirichletHs.ext ?_
+  funext i
+  rw [dirichletHs.dirichletHsInclusion_coeff]
+  exact ht i
+
+theorem maximalRegularityHomogeneousSolFieldHa1_toFun_ae
+    (hT : 0 < T)
+    (u₀ : dirichletHs g (a + 1)) :
+    (fun t => dirichletHsInclusion
+        (show a ≤ a + 1 by linarith)
+        (maximalRegularityHomogeneousSolFieldHa1 a T u₀ t))
+      =ᵐ[timeMeasure T]
+        (maximalRegularityHomogeneous a T u₀).toFun := by
+  set u := maximalRegularityHomogeneous a T u₀ with hu_def
+  have hper : ∀ i : DirichletLaplacianEigenindex g,
+      ∀ᵐ t ∂(timeMeasure T),
+        (maximalRegularityHomogeneousSolFieldHa1 a T u₀ t).coeff i =
+          (u.toFun t).coeff i := by
+    intro i
+    have hfield := maximalRegularityHomogeneousSolFieldHa1_coeff_ae
+      (a := a) hT u₀ i
+    filter_upwards [hfield,
+      ae_restrict_mem (μ := volume) measurableSet_Icc]
+        with t htfield htmem
+    have h0 : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T :=
+      ⟨le_rfl, htmem.1.trans htmem.2⟩
+    have hcomm :
+        dirichletHsCoeffL i (∫ τ in (0 : ℝ)..t, u.deriv τ) =
+          ∫ τ in (0 : ℝ)..t, (u.deriv τ).coeff i := by
+      rw [← ContinuousLinearMap.intervalIntegral_comp_comm
+        (dirichletHsCoeffL i) (u.intervalIntegrable_deriv h0 htmem)]
+      rfl
+    have hval : (u.toFun t).coeff i =
+        u.init.coeff i + ∫ τ in (0 : ℝ)..t, (u.deriv τ).coeff i := by
+      have he : (u.toFun t).coeff i = dirichletHsCoeffL i (u.toFun t) := rfl
+      rw [he, TimeSobolev.timeH1.toFun_apply, map_add, hcomm]
+      rfl
+    have hinit : u.init.coeff i = u₀.coeff i := by
+      rw [hu_def, maximalRegularityHomogeneous_init]
+      rfl
+    rw [htfield, hval, hinit]
+  rw [← MeasureTheory.ae_all_iff] at hper
+  filter_upwards [hper] with t ht
+  refine dirichletHs.ext ?_
+  funext i
+  rw [dirichletHs.dirichletHsInclusion_coeff]
+  exact ht i
+
+theorem maximalRegularityDuhamelSolField_toFun_ae
+    (hT : 0 < T)
+    (u₀ : dirichletHs g (a + 1))
+    (f : timeL2 (dirichletHs g a) T) :
+    (fun t => dirichletHsInclusion
+        (show a ≤ a + 2 by linarith)
+        (maximalRegularityDuhamelSolField a hT u₀ f t))
+      =ᵐ[timeMeasure T]
+        (maximalRegularityDuhamelMap a hT u₀ f).toFun := by
+  have hhom := maximalRegularityHomogeneousSolField_toFun_ae
+    (a := a) hT u₀
+  have hforce := maximalRegularitySolField_toFun_ae
+    (a := a) hT f
+  have hadd := Lp.coeFn_add
+    (maximalRegularityHomogeneousSolField a T u₀)
+    (maximalRegularitySolField a hT.le f)
+  filter_upwards [hhom, hforce, hadd,
+    ae_restrict_mem (μ := volume) measurableSet_Icc]
+      with t hhomt hforcet haddt htmem
+  rw [maximalRegularityDuhamelSolField, haddt, Pi.add_apply, map_add,
+    maximalRegularityDuhamelMap,
+    TimeSobolev.timeH1.toFun_add _ _ htmem, hhomt, hforcet]
+
+theorem maximalRegularityDuhamelSolFieldHa1_toFun_ae
+    (hT : 0 < T) (hT1 : T ≤ 1)
+    (u₀ : dirichletHs g (a + 1))
+    (f : timeL2 (dirichletHs g a) T) :
+    (fun t => dirichletHsInclusion
+        (show a ≤ a + 1 by linarith)
+        (maximalRegularityDuhamelSolFieldHa1 a hT u₀ f t))
+      =ᵐ[timeMeasure T]
+        (maximalRegularityDuhamelMap a hT u₀ f).toFun := by
+  have hhom := maximalRegularityHomogeneousSolFieldHa1_toFun_ae
+    (a := a) hT u₀
+  have hforce := maximalRegularitySolFieldHa1_toFun_ae
+    (a := a) hT hT1 f
+  have hadd := Lp.coeFn_add
+    (maximalRegularityHomogeneousSolFieldHa1 a T u₀)
+    (maximalRegularitySolFieldHa1 a hT f)
+  filter_upwards [hhom, hforce, hadd,
+    ae_restrict_mem (μ := volume) measurableSet_Icc]
+      with t hhomt hforcet haddt htmem
+  rw [maximalRegularityDuhamelSolFieldHa1, haddt, Pi.add_apply, map_add,
+    maximalRegularityDuhamelMap,
+    TimeSobolev.timeH1.toFun_add _ _ htmem, hhomt, hforcet]
 
 end MaximalRegularity
 end Dirichlet
