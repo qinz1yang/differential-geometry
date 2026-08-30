@@ -1088,39 +1088,42 @@ theorem scalar_hopf_boundary_point_of_defining_function
   exact inner_levelSetOutwardNormal_neg
     (I := I) (G.metric T) rho (u T) p hgrad_boundary hgradient
 
-theorem scalar_strong_maximum_principle_of_barrier
-    [I.Boundaryless]
+theorem scalar_strong_maximum_principle_of_barrier_interior_region
     [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
     (X : Real → (x : M) → TangentSpace I x)
     (u : Real → M → Real)
+    (U : Set M)
+    (hUopen : IsOpen U)
+    (hUint : U ⊆ I.interior M)
     (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
       (spacetimeSlab (M := M) T))
     (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
-    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
     (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       MDifferentiableAt I 𝓘(Real, Real) (u t) x)
-    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (u t) y) x)
-    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
     (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
     {r R delta eta m B kappa alpha : Real}
     (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
-    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+    (hsublevel : ∀ x : M, rho x < R → x ∈ U)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x ∈ U,
       rho x < r → eta ≤ u t x)
-    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       r ≤ rho x → rho x ≤ R →
       m ≤ (G.metric t).inner x
         (gradientFun (I := I) (G.metric t) rho x)
         (gradientFun (I := I) (G.metric t) rho x))
-    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       r ≤ rho x → rho x ≤ R →
       heatOperatorWithDrift (I := I) G t (X t) rho x ≤ B)
     (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
@@ -1189,9 +1192,9 @@ theorem scalar_strong_maximum_principle_of_barrier
         (sub_nonpos.mpr hexp_le)
     dsimp [w]
     linarith [hu_nonneg 0 ⟨le_rfl, hT.le⟩ x]
-  have hv_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hv_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => v s x) (Set.Icc 0 T) t := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     exact (strongBarrier_time_differentiable
       rho epsilon alpha R kappa T x t).differentiableWithinAt
   have hv_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
@@ -1199,24 +1202,24 @@ theorem scalar_strong_maximum_principle_of_barrier
     intro t ht htpos x
     exact (strongBarrier_slice_contMDiff hrho
       epsilon alpha R kappa T t).mdifferentiable (by simp) x
-  have hv_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hv_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (v t) y) x := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     exact gradientFun_mdiffAt (I := I) (G.metric t)
       (strongBarrier_slice_contMDiff hrho epsilon alpha R kappa T t) x
-  have hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hw_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       DifferentiableWithinAt Real (fun s => w s x) (Set.Icc 0 T) t := by
-    intro t ht htpos x
-    exact (hu_time t ht htpos x).sub (hv_time t ht htpos x)
-  have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+    intro t ht htpos x hx
+    exact (hu_time t ht htpos x hx).sub (hv_time t ht htpos x hx)
+  have hw_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDifferentiableAt I 𝓘(Real, Real) (w t) x := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     exact (hu_mdiff t ht htpos x).sub (hv_mdiff t ht htpos x)
-  have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+  have hw_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G.metric t) (w t) y) x := by
-    intro t ht htpos x
+    intro t ht htpos x hx
     have heq :
         (T% fun y : M => gradientFun (I := I) (G.metric t) (w t) y) =
           (T% fun y : M =>
@@ -1229,11 +1232,11 @@ theorem scalar_strong_maximum_principle_of_barrier
         (hu_mdiff t ht htpos z) (hv_mdiff t ht htpos z)
     rw [heq]
     exact mdifferentiableAt_sub_section
-      (hu_grad t ht htpos x) (hv_grad t ht htpos x)
-  have hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)
+  have hnegative : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ U,
       w t x < 0 → 0 ≤
         parabolicOperatorWithDrift (I := I) G T X w t x := by
-    intro t ht htpos x hwneg
+    intro t ht htpos x hx hwneg
     have hvpos : 0 < v t x := by
       dsimp [w] at hwneg
       linarith [hu_nonneg t ht x]
@@ -1252,13 +1255,13 @@ theorem scalar_strong_maximum_principle_of_barrier
       nlinarith [sq_nonneg (t - T + delta)]
     have hrho_lower : r ≤ rho x := by
       by_contra hnot
-      have hu_eta := hlocal t ht htime_close x (lt_of_not_ge hnot)
+      have hu_eta := hlocal t ht htime_close x hx (lt_of_not_ge hnot)
       have hv_eps := hv_lt_epsilon t ht x
       dsimp [w] at hwneg
       dsimp [epsilon] at hv_eps
       linarith
-    have hheat := hheat_upper t ht htpos x hrho_lower hrho_lt.le
-    have hgrad := hgrad_lower t ht htpos x hrho_lower hrho_lt.le
+    have hheat := hheat_upper t ht htpos x hx hrho_lower hrho_lt.le
+    have hgrad := hgrad_lower t ht htpos x hx hrho_lower hrho_lt.le
     have hformula := strongBarrier_parabolicOperator (I := I)
       G T hT X hrho epsilon alpha R (kappa := kappa) (tau := T) ht x
     have hkt : 0 ≤ kappa * t := mul_nonneg hkappa_nonneg ht.1
@@ -1304,14 +1307,28 @@ theorem scalar_strong_maximum_principle_of_barrier
       exact mul_nonpos_of_nonneg_of_nonpos
         (mul_nonneg hepsilon.le (Real.exp_pos _).le) hbracket
     have hsub := parabolic_sub (I := I) G T X u v t x
-      (hu_time t ht htpos x) (hv_time t ht htpos x)
+      (hu_time t ht htpos x hx) (hv_time t ht htpos x hx)
       (hu_mdiff t ht htpos) (hv_mdiff t ht htpos)
-      (hu_grad t ht htpos x) (hv_grad t ht htpos x)
+      (hu_grad t ht htpos x hx) (hv_grad t ht htpos x hx)
     change parabolicOperatorWithDrift (I := I) G T X w t x = _ at hsub
     rw [hsub]
-    linarith [hu_super t ht htpos x]
-  have hw_nonneg := strict_barrier_positive_region (I := I)
-    G T X w hw_cont hw0 hw_time hw_mdiff hw_grad hnegative
+    linarith [hu_super t ht htpos x hx]
+  have hw_outside : ∀ t ∈ Set.Icc 0 T, ∀ x : M, x ∉ U → 0 ≤ w t x := by
+    intro t ht x hx
+    have hv_nonpos : v t x ≤ 0 := by
+      by_contra hvnot
+      have hphase_lt := hv_pos_imp_phase_lt t x (lt_of_not_ge hvnot)
+      have hrho_lt : rho x < R := by
+        have htime_nonneg : 0 ≤ kappa * (t - T) ^ 2 :=
+          mul_nonneg hkappa_nonneg (sq_nonneg _)
+        unfold strongBarrierPhase at hphase_lt
+        linarith
+      exact hx (hsublevel x hrho_lt)
+    dsimp [w]
+    linarith [hu_nonneg t ht x]
+  have hw_nonneg := strict_barrier_on_compact_manifold_interior_region (I := I)
+    G T X w U hUopen hUint hw_cont hw0 hw_outside
+    hw_time hw_mdiff hw_grad hnegative
     T ⟨hT.le, le_rfl⟩ y
   have hphaseT : strongBarrierPhase rho kappa T T y = rho y := by
     simp [strongBarrierPhase]
@@ -1325,6 +1342,61 @@ theorem scalar_strong_maximum_principle_of_barrier
     exact mul_pos hepsilon (sub_pos.mpr hexp_lt)
   dsimp [w] at hw_nonneg
   linarith
+
+theorem scalar_strong_maximum_principle_of_barrier
+    [I.Boundaryless]
+    [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x)
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hu_super : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      0 ≤ parabolicOperatorWithDrift (I := I) G T X u t x)
+    {rho : M → Real}
+    (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
+    {r R delta eta m B kappa alpha : Real}
+    (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
+    (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
+      rho x < r → eta ≤ u t x)
+    (hgrad_lower : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      m ≤ (G.metric t).inner x
+        (gradientFun (I := I) (G.metric t) rho x)
+        (gradientFun (I := I) (G.metric t) rho x))
+    (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      heatOperatorWithDrift (I := I) G t (X t) rho x ≤ B)
+    (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
+    (htime : R ≤ kappa * delta ^ 2)
+    (halpha : 0 < alpha) (hdom : 2 * kappa * T + B ≤ alpha * m)
+    {y : M} (hy : rho y < R) :
+    0 < u T y := by
+  exact scalar_strong_maximum_principle_of_barrier_interior_region
+    (I := I) G hT X u Set.univ isOpen_univ
+    (fun _ _ => BoundarylessManifold.isInteriorPoint)
+    hu_cont hu_nonneg
+    (fun t ht htpos x hx => hu_time t ht htpos x)
+    hu_mdiff
+    (fun t ht htpos x hx => hu_grad t ht htpos x)
+    (fun t ht htpos x hx => hu_super t ht htpos x)
+    hrho hrho_nonneg hR hdelta heta
+    (fun x hx => Set.mem_univ x)
+    (fun t ht htclose x hx => hlocal t ht htclose x)
+    (fun t ht htpos x hx => hgrad_lower t ht htpos x)
+    (fun t ht htpos x hx => hheat_upper t ht htpos x)
+    hkappa hinit htime halpha hdom hy
 
 theorem scalar_strong_maximum_principle_time_dependent_metric_of_barrier
     [I.Boundaryless]
