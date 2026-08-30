@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCompactness
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDensity
 import Mathlib.Analysis.InnerProductSpace.Spectrum
 import Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative
 
@@ -58,6 +59,21 @@ theorem resolventDirichletL2_isSelfAdjoint
   rw [ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric]
   exact resolventDirichletL2_symm g
 
+theorem resolventDirichletL2_injective
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Function.Injective (resolventDirichletL2 g) := by
+  rw [injective_iff_map_eq_zero]
+  intro f hf
+  have hvar := resolventDirichlet_inner_eq_lpFunctional g f
+    (resolventDirichlet g f)
+  rw [show H1ComplDirichletToLp g (resolventDirichlet g f) =
+      resolventDirichletL2 g f from (resolventDirichletL2_apply g f).symm,
+    hf, inner_zero_left] at hvar
+  have hres : resolventDirichlet g f = 0 := inner_self_eq_zero.mp hvar
+  apply resolventDirichlet_injective g
+  rw [(resolventDirichlet g).map_zero]
+  exact hres
+
 noncomputable def resolventEigenspace
     (g : SmoothRiemannianMetric (I_half n) M) (μ : ℝ) :
     Submodule ℝ
@@ -71,6 +87,14 @@ lemma mem_resolventEigenspace_iff
   unfold resolventEigenspace
   rw [Module.End.mem_eigenspace_iff]
   rfl
+
+theorem resolventEigenspace_zero_eq_bot
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    resolventEigenspace g 0 = ⊥ := by
+  unfold resolventEigenspace
+  rw [Module.End.eigenspace_zero]
+  rw [LinearMap.ker_eq_bot]
+  exact resolventDirichletL2_injective g
 
 theorem resolventEigenspace_finiteDim
     (g : SmoothRiemannianMetric (I_half n) M)
