@@ -622,6 +622,46 @@ theorem hamiltonMAt_apply
   simpa only [Tensor0SSpace.add_apply, Tensor0SSpace.smul_apply, smul_eq_mul] using hAB
 
 omit [SigmaCompactSpace M] in
+theorem hamiltonMAt_apply_basis
+    {D : RealTimeInterval}
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx -> Idx -> Real)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M)
+      (S.family.metric clock.time) x basis gInv)
+    (a b : Idx) :
+    hamiltonMAt (I := I) clock (S.family.metric clock.time) x
+        (vec2 (basis a) (basis b)) =
+      (∑ i : Idx, ∑ j : Idx,
+        gInv i j * metricNabla2Ric (I := I) (M := M)
+          (S.family.metric clock.time) x
+          (vec4 (basis i) (basis j) (basis a) (basis b))) -
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j * metricNabla2Ric (I := I) (M := M)
+          (S.family.metric clock.time) x
+          (vec4 (basis i) (basis a) (basis b) (basis j)) +
+      ∑ i : Idx, ∑ j : Idx,
+        gInv i j *
+          (∑ k : Idx, ∑ l : Idx,
+            gInv k l *
+              (metricRm04 (I := I) (M := M) (S.family.metric clock.time) x
+                  (vec4 (basis a) (basis k) (basis i) (basis b)) *
+                metricRicci (I := I) (M := M) (S.family.metric clock.time) x
+                  (vec2 (basis l) (basis j)))) +
+      (1 / (2 * clock.elapsed) : Real) *
+        metricRicci (I := I) (M := M) (S.family.metric clock.time) x
+          (vec2 (basis a) (basis b)) := by
+  rw [hamiltonMAt_apply (I := I) S hS clock ht x
+      (basis a) (basis b),
+    hamiltonDivPAt_apply (I := I) (S.family.metric clock.time)
+      basis gInv hinv (basis a) (basis b),
+    hamiltonCurvatureRicciAt_apply (I := I)
+      (S.family.metric clock.time) basis gInv hinv (basis a) (basis b)]
+
+omit [SigmaCompactSpace M] in
 private theorem hamiltonRicciSquareAt_symm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
