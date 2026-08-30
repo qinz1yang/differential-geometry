@@ -647,6 +647,66 @@ theorem dirichletFin_exists
       (mass := mass) (resid := resid) hT (inv_pos.mpr hCr)
       hA hmass hcoer hlip hres_cont haff v₀)
 
+theorem dirichletFinWeakForm_exists
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (g : ℝ → SmoothRiemannianMetric (I_half n) M)
+    {T : ℝ} (hT : 0 < T)
+    (hcont : ∀ (x₀ : M)
+      (i j : Fin (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))), ContinuousOn
+      (fun p : ℝ × M => chartGramMatrix (I := I_half n) (g p.1) x₀ p.2 i j)
+      (Icc (0 : ℝ) T ×ˢ (trivializationAt (EuclideanSpace ℝ (Fin n))
+        (TangentSpace (I_half n)) x₀).baseSet))
+    (C : ℝ≥0∞) (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_half n) (M := M) q ≤
+        C • riemannianVolumeMeasure (I := I_half n) (M := M) (g t))
+    (J : V →ₗ[ℝ] SmoothScalarDirichlet q)
+    (horth : ∀ u : V, dirichletMass q (J u) (J u) = ‖u‖ ^ 2)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (a : ℝ → ℝ)
+    (hweak : ContinuousOn
+      (fun t => dirichletFinWeakForm (g t) (X t) (a t) J)
+      (Icc (0 : ℝ) T))
+    (v₀ : V) :
+    ∃ γ : ℝ → V, γ 0 = v₀ ∧ ContinuousOn γ (Icc (0 : ℝ) T) ∧
+      ∀ t, (ht : t ∈ Ico (0 : ℝ) T) →
+        HasDerivWithinAt γ
+          ((dirichletFinMass_coercive (g t) C hC0 hCtop
+              (hvol t ⟨ht.1, le_of_lt ht.2⟩) J horth).sharpCLM
+          (dirichletFinWeakForm (g t) (X t) (a t) J (γ t)))
+          (Ici (0 : ℝ)) t := by
+  let _ : SeminormedAddCommGroup (V →L[ℝ] V →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toSeminormedAddCommGroup
+  let B : ℝ → V →L[ℝ] V →L[ℝ] ℝ :=
+    fun t => dirichletFinWeakForm (g t) (X t) (a t) J
+  let resid : ℝ → V → (V →L[ℝ] ℝ) := fun t v => B t v
+  have hB : ContinuousOn B (Icc (0 : ℝ) T) := hweak
+  have hnorm : ContinuousOn (fun t => ‖B t‖) (Icc (0 : ℝ) T) := hB.norm
+  obtain ⟨C₀, hC₀⟩ := isCompact_Icc.bddAbove_image hnorm
+  let L : ℝ≥0 := ⟨max C₀ 0, le_max_right C₀ 0⟩
+  have hbound : ∀ t ∈ Icc (0 : ℝ) T, ‖B t‖ ≤ (L : ℝ) := by
+    intro t ht
+    exact (hC₀ ⟨t, ht, rfl⟩).trans (le_max_left C₀ 0)
+  have hlip : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith L (resid t) := by
+    intro t ht
+    exact (B t).lipschitz.weaken (by
+      exact_mod_cast hbound t ht)
+  have htime : ∀ v : V, ContinuousOn (fun t => resid t v) (Icc (0 : ℝ) T) := by
+    intro v
+    exact hB.clm_apply continuousOn_const
+  have haff : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
+      ‖resid t v‖ ≤ (L : ℝ) * ‖v‖ := by
+    intro t ht v
+    exact (B t).le_opNorm v |>.trans
+      (mul_le_mul_of_nonneg_right (hbound t ht) (norm_nonneg v))
+  have haff' : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
+      ‖resid t v‖ ≤ 0 + (L : ℝ) * ‖v‖ := by
+    simpa only [zero_add] using haff
+  simpa only [resid, B, zero_add] using
+    (dirichletFin_exists g hT hcont C hC0 hCtop hvol J horth resid
+      (A := 0) (L := L) le_rfl hlip htime haff' v₀)
+
 end FiniteHilbert
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
