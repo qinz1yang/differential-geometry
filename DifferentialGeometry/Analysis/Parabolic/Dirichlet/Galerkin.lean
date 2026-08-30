@@ -732,6 +732,12 @@ noncomputable def smoothDirichletBasisFinIncl
     EuclideanSpace ℝ s →ₗ[ℝ] SmoothScalarDirichlet q :=
   dirichletFinIncl (fun i : s => smoothDirichletBasisFunction q i)
 
+noncomputable def smoothDirichletBasisCoordinates
+    (s : Finset (SmoothDirichletBasisIndex q))
+    (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    EuclideanSpace ℝ s :=
+  WithLp.toLp 2 (fun i : s => (smoothDirichletHilbertBasis q).repr f i)
+
 @[simp] theorem smoothDirichletBasisFinIncl_apply
     (s : Finset (SmoothDirichletBasisIndex q)) (u : EuclideanSpace ℝ s) :
     smoothDirichletBasisFinIncl s u =
@@ -747,6 +753,19 @@ theorem dirichletMass_smoothDirichletBasisFinIncl
       ((↑) : s → SmoothDirichletBasisIndex q))
   exact (smoothDirichletBasisFunction_orthonormal q).comp
     ((↑) : s → SmoothDirichletBasisIndex q) Subtype.val_injective
+
+theorem smoothDirichletBasisFinIncl_coordinates
+    (m : ℕ)
+    (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    smoothDirichletBasisFinIncl (smoothDirichletBasisFinset q m)
+        (smoothDirichletBasisCoordinates (smoothDirichletBasisFinset q m) f) =
+      smoothDirichletBasisApproximation q m f := by
+  rw [smoothDirichletBasisFinIncl_apply]
+  unfold smoothDirichletBasisApproximation
+  simp only [smoothDirichletBasisCoordinates, PiLp.toLp_apply]
+  exact Finset.sum_attach (smoothDirichletBasisFinset q m)
+    (fun i => (smoothDirichletHilbertBasis q).repr f i •
+      smoothDirichletBasisFunction q i)
 
 end SmoothBasisFiniteFamily
 
