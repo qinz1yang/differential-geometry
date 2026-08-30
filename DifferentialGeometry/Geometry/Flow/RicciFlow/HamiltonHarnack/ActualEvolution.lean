@@ -5122,4 +5122,48 @@ theorem hamiltonP_time_derivative_component_eq_field
   simp only [ricciFlowConnectionVariationOrthonormal]
   simp_rw [ricciFlowConnectionVariationField_apply]
 
+theorem hamiltonMComponent_eq_hamiltonMAt_orthonormal
+    [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.family.metric clock.time).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b : Idx) :
+    hamiltonMComponent clock
+      (fun i j k l => metricRm04 (I := I) (M := M)
+        (S.family.metric clock.time) x
+        (vec4 (basis i) (basis j) (basis k) (basis l)))
+      (fun i j => metricRicci (I := I) (M := M)
+        (S.family.metric clock.time) x (vec2 (basis i) (basis j)))
+      (fun i j => hamiltonDivPAt (I := I) (S.family.metric clock.time) x
+        (vec2 (basis i) (basis j))) a b =
+      hamiltonMAt (I := I) clock (S.family.metric clock.time) x
+        (vec2 (basis a) (basis b)) := by
+  have hinv := metricInverseInBasis_of_orthonormal
+    (I := I) (S.family.metric clock.time) basis horth
+  rw [hamiltonMAt_apply (I := I) S hS clock ht x
+      (basis a) (basis b)]
+  unfold hamiltonMComponent hamiltonCurvatureRicciComponent
+  dsimp
+  have hcurv :
+      (∑ c : Idx, ∑ d : Idx,
+          metricRm04 (I := I) (M := M) (S.family.metric clock.time) x
+              (vec4 (basis a) (basis c) (basis d) (basis b)) *
+            metricRicci (I := I) (M := M) (S.family.metric clock.time) x
+              (vec2 (basis c) (basis d))) =
+        hamiltonCurvatureRicciAt (I := I) (S.family.metric clock.time) x
+          (vec2 (basis a) (basis b)) := by
+    rw [hamiltonCurvatureRicciAt_apply (I := I)
+      (S.family.metric clock.time) basis
+      (fun i j => if i = j then (1 : Real) else 0) hinv]
+    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
+      Finset.mem_univ, if_true]
+    rw [Finset.sum_comm]
+  rw [hcurv]
+
 end DifferentialGeometry.PDE.RicciFlow
