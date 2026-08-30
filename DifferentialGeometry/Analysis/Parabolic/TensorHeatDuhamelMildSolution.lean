@@ -35,16 +35,16 @@ namespace TensorHeatEquation
 
 def tensorHeatMildSolutionHs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ) (t : ℝ) :
-    tensorHs (I := I) (M := M) g r s σ :=
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ) (t : ℝ) :
+    TensorHs (I := I) (M := M) g r s σ :=
   duhamel (tensorHsBoundedC0Semigroup (I := I) (M := M) g r s σ) T₀ F t
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ) (t : ℝ) :
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ) (t : ℝ) :
     tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F t =
       tensorHeatSemigroupHsExt (I := I) (M := M) g r s σ t T₀ +
         ∫ τ in (0 : ℝ)..t,
@@ -54,8 +54,8 @@ theorem tensorHeatMildSolutionHs_apply
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_eq_abstractSpectralDuhamel
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ)
     {t : ℝ} (ht : 0 ≤ t) :
     tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F t =
       abstractSpectralDuhamel
@@ -78,8 +78,8 @@ theorem tensorHeatMildSolutionHs_eq_abstractSpectralDuhamel
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHeatMildSolutionHs_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ) :
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ) :
     tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F 0 = T₀ :=
   duhamel_zero
     (tensorHsBoundedC0Semigroup (I := I) (M := M) g r s σ) T₀ F
@@ -87,7 +87,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_integrable
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s σ} (hF : Continuous F)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s σ} (hF : Continuous F)
     {t : ℝ} (ht : 0 ≤ t) :
     IntervalIntegrable (fun τ : ℝ =>
       tensorHeatSemigroupHsExt (I := I) (M := M) g r s σ (t - τ) (F τ))
@@ -99,8 +99,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_tensorHeatMildSolutionHs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {τ σ : ℝ}
     (hτσ : τ ≤ σ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s σ} (hF : Continuous F)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s σ} (hF : Continuous F)
     {t : ℝ} (ht : 0 ≤ t) :
     tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s) hτσ
@@ -127,8 +127,8 @@ theorem tensorHsInclusion_tensorHeatMildSolutionHs
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s σ} (hF : Continuous F) :
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s σ} (hF : Continuous F) :
     ContinuousOn
       (tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F)
       (Set.Ici 0) :=
@@ -138,8 +138,8 @@ theorem tensorHeatMildSolutionHs_continuousOn
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_hasDerivAt_of_strong_data
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s (σ + 2))
-    {F : ℝ → tensorHs (I := I) (M := M) g r s (σ + 2)}
+    (T₀ : TensorHs (I := I) (M := M) g r s (σ + 2))
+    {F : ℝ → TensorHs (I := I) (M := M) g r s (σ + 2)}
     (hF : Continuous F) {t : ℝ} (ht : 0 < t) :
     HasDerivAt
       (fun q : ℝ =>
@@ -202,15 +202,15 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_strong_data
   rw [tensorHsHilbertBasis_repr_apply_apply,
     tensorHsHilbertBasis_repr_apply_apply,
     tensorHsHilbertBasis_repr_apply_apply]
-  simp only [J, A, tensorHs.add_coeff,
+  simp only [J, A, TensorHs.add_coeff,
     tensorHsInclusion_coeff_apply, tensorScaleLaplacian_coeff]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deriv_tensorHeatMildSolutionHs_eq_tensorScaleLaplacian_add_of_strong_data
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s (σ + 2))
-    {F : ℝ → tensorHs (I := I) (M := M) g r s (σ + 2)}
+    (T₀ : TensorHs (I := I) (M := M) g r s (σ + 2))
+    {F : ℝ → TensorHs (I := I) (M := M) g r s (σ + 2)}
     (hF : Continuous F) {t : ℝ} (ht : 0 < t) :
     deriv
         (fun q : ℝ =>
@@ -230,8 +230,8 @@ theorem deriv_tensorHeatMildSolutionHs_eq_tensorScaleLaplacian_add_of_strong_dat
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_differentiableOn_of_strong_data
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s (σ + 2))
-    {F : ℝ → tensorHs (I := I) (M := M) g r s (σ + 2)}
+    (T₀ : TensorHs (I := I) (M := M) g r s (σ + 2))
+    {F : ℝ → TensorHs (I := I) (M := M) g r s (σ + 2)}
     (hF : Continuous F) :
     DifferentiableOn ℝ
       (fun q : ℝ =>
@@ -247,14 +247,14 @@ theorem tensorHeatMildSolutionHs_differentiableOn_of_strong_data
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_zero_forcing
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ t : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ) :
+    (T₀ : TensorHs (I := I) (M := M) g r s σ) :
     tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ (fun _ => 0) t =
       tensorHeatSemigroupHsExt (I := I) (M := M) g r s σ t T₀ := by
   rw [tensorHeatMildSolutionHs_apply]
   have hzero : (fun τ : ℝ =>
       tensorHeatSemigroupHsExt (I := I) (M := M) g r s σ (t - τ)
         ((fun _ => 0) τ)) =
-      (fun _ => (0 : tensorHs (I := I) (M := M) g r s σ)) := by
+      (fun _ => (0 : TensorHs (I := I) (M := M) g r s σ)) := by
     funext τ
     exact (tensorHeatSemigroupHsExt (I := I) (M := M)
       g r s σ (t - τ)).map_zero

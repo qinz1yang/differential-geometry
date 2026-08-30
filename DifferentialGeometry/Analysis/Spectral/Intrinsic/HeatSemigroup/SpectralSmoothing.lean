@@ -48,7 +48,7 @@ theorem tensorHeatSemigroup_intrinsic_tensorL2Coeff_ofCompact
 
 private def baseHZero (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u₀ : TensorL2 r s g) :
-    tensorHs (I := I) (M := M) g r s 0 :=
+    TensorHs (I := I) (M := M) g r s 0 :=
   (tensorHsZeroEquivL2 (I := I) (M := M)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)).symm u₀
 
@@ -62,8 +62,8 @@ private lemma baseHZero_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 def heatHsWitness (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
-    tensorHs (I := I) (M := M) g r s σ :=
-  tensorHs.heatHsFun (I := I) (M := M) σ ht
+    TensorHs (I := I) (M := M) g r s σ :=
+  TensorHs.heatHsFun (I := I) (M := M) σ ht
     (baseHZero (I := I) (M := M) g r s u₀)
 
 @[simp] theorem heatHsWitness_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -75,7 +75,7 @@ def heatHsWitness (g : SmoothRiemannianMetric I M) (r s : ℕ)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           u₀ i := by
   unfold heatHsWitness
-  rw [tensorHs.heatHsFun_coeff, baseHZero_coeff]
+  rw [TensorHs.heatHsFun_coeff, baseHZero_coeff]
 
 theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {σ : ℝ} (hσ : 0 ≤ σ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
@@ -115,7 +115,7 @@ theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ
 theorem heat_semigroup_into_all_tensorHs (g : SmoothRiemannianMetric I M)
     (r s : ℕ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
     ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g r s σ,
+      ∃ v : TensorHs (I := I) (M := M) g r s σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
             (tensorResolventL2_isCompactOperator
               (I := I) (M := M) g r s) hσ v =
@@ -128,7 +128,7 @@ def SpectralSmoothRealizesAsSmooth (g : SmoothRiemannianMetric I M)
     (r s : ℕ) : Prop :=
   ∀ u : TensorL2 r s g,
     (∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g r s σ,
+      ∃ v : TensorHs (I := I) (M := M) g r s σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
             (tensorResolventL2_isCompactOperator
               (I := I) (M := M) g r s) hσ v = u) →

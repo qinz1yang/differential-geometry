@@ -37,7 +37,7 @@ theorem norm_tensorHsBasisVec {σ : ℝ}
     ‖tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i‖ =
       Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) := by
   classical
-  rw [tensorHs.norm_eq_sqrt_tsum]
+  rw [TensorHs.norm_eq_sqrt_tsum]
   congr 1
   have hfun : (fun j => tensorSobolevWeight (I := I) (M := M) j σ *
         ((tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i).coeff j) ^ 2)
@@ -51,7 +51,7 @@ theorem norm_tensorHsBasisVec {σ : ℝ}
 
 def singleModeCLM {σ : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    ℝ →L[ℝ] tensorHs (I := I) (M := M) g r s σ :=
+    ℝ →L[ℝ] TensorHs (I := I) (M := M) g r s σ :=
   LinearMap.mkContinuous
     { toFun := fun c => c • tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i
       map_add' := fun c d => by rw [add_smul]
@@ -76,7 +76,7 @@ theorem singleModeCLM_coeff {σ : ℝ}
       (if j = i then c else 0) := by
   classical
   rw [singleModeCLM_apply]
-  simp only [tensorHs.smul_coeff, tensorHsBasisVec_coeff]
+  simp only [TensorHs.smul_coeff, tensorHsBasisVec_coeff]
   by_cases hj : j = i
   · rw [if_pos hj, if_pos hj, mul_one]
   · rw [if_neg hj, if_neg hj, mul_zero]
@@ -85,7 +85,7 @@ variable {σ : ℝ} {T : ℝ}
 
 def singleModeTimeL2 {σ : ℝ}
     {T : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    timeL2 ℝ T →L[ℝ] timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
+    timeL2 ℝ T →L[ℝ] timeL2 (TensorHs (I := I) (M := M) g r s σ) T :=
   (singleModeCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) i).compLpL 2 (timeMeasure T)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -114,7 +114,7 @@ theorem timeModeCoeff_singleModeTimeL2
       (((gf t) • tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i).coeff j)
         = (if j = i then gf t else 0) := by
     intro t
-    simp only [tensorHs.smul_coeff, tensorHsBasisVec_coeff]
+    simp only [TensorHs.smul_coeff, tensorHsBasisVec_coeff]
     by_cases hj : j = i
     · rw [if_pos hj, if_pos hj, mul_one]
     · rw [if_neg hj, if_neg hj, mul_zero]
@@ -163,7 +163,7 @@ theorem inner_tensorHsBasisVec_eq_zero {i j : TensorEigenIdx (I := I) (M := M) g
     (inner ℝ (tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i)
       (tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ j) : ℝ) = 0 := by
   classical
-  rw [tensorHs.inner_def]
+  rw [TensorHs.inner_def]
   have hterm : (fun k => tensorSobolevWeight (I := I) (M := M) k σ *
         ((tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i).coeff k *
           (tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ j).coeff k))
@@ -197,7 +197,7 @@ theorem inner_singleModeTimeL2_eq_zero
 def singleModeScaledCLM {σ : ℝ}
     {T : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeL2 ℝ T →L[ℝ]
-      timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
+      timeL2 (TensorHs (I := I) (M := M) g r s σ) T :=
   (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ))⁻¹ •
     singleModeTimeL2 (I := I) (M := M) (σ := σ) (T := T) i
 
@@ -212,7 +212,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 def singleModeIsometry {σ : ℝ}
     {T : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeL2 ℝ T →ₗᵢ[ℝ]
-      timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
+      timeL2 (TensorHs (I := I) (M := M) g r s σ) T :=
   { (singleModeScaledCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) i).toLinearMap with
     norm_map' := fun gf => by
       have hsqrt_pos : 0 < Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) :=
@@ -278,7 +278,7 @@ theorem summable_singleModeTimeL2
 
 def timeL2OfModes
     (gFam : TensorEigenIdx (I := I) (M := M) g r s → timeL2 ℝ T) :
-    timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s σ) T :=
   ∑' i, singleModeTimeL2 (I := I) (M := M) (σ := σ) i (gFam i)
 
 omit [NeZero (Module.finrank ℝ E)] in

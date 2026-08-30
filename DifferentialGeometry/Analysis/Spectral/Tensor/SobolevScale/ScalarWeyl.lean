@@ -83,7 +83,7 @@ private lemma basis_sum_coeff
       simp
   | @insert j F hj ih =>
       rw [Finset.sum_insert hj]
-      simp only [tensorHs.add_coeff, tensorHs.smul_coeff,
+      simp only [TensorHs.add_coeff, TensorHs.smul_coeff,
         tensorHsBasisVec_coeff]
       by_cases hij : i = j
       · subst i
@@ -100,7 +100,7 @@ private lemma combo_norm_sq
         (scalarCombo (I := I) (M := M) g F c)‖ ^ 2 =
       ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2 := by
   rw [combo_hs (I := I) (M := M) g F c σ hσ,
-    tensorHs.norm_sq_eq_tsum]
+    TensorHs.norm_sq_eq_tsum]
   rw [tsum_eq_sum (s := F) (f := fun i =>
     tensorSobolevWeight (I := I) (M := M) i σ *
       ((∑ j ∈ F, c j •

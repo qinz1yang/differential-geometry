@@ -36,19 +36,19 @@ variable
 omit [BoundarylessManifold I M] in
 theorem deturck_nemytskii_operator_hs_lipschitz_of_l2coeff_lipschitz
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
-    (N_cont : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
-      tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
-    (Nsec : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
+    (u₀ : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
+    (N_cont : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
+      TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
+    (Nsec : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
       DifferentialGeometry.Integral.L2.SmoothCcTensor g_bg 0 2)
-    (hN_coeff : ∀ (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
+    (hN_coeff : ∀ (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
         (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
           (I := I) (M := M) g_bg 0 2),
       (N_cont u).coeff i =
         tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2)
           (DifferentialGeometry.Integral.L2.SmoothCcTensor.toL2 (Nsec u)) i)
-    (hNsec_lip : ∃ K : ℝ≥0, ∀ u u' : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1),
+    (hNsec_lip : ∃ K : ℝ≥0, ∀ u u' : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1),
       Summable (fun i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
             (I := I) (M := M) g_bg 0 2 =>
           tensorSobolevWeight (I := I) (M := M) i (a : ℝ) *
@@ -97,11 +97,11 @@ theorem deturck_nemytskii_operator_hs_lipschitz_of_l2coeff_lipschitz
     have hcoeff_sub :
         (N_cont u - N_cont u').coeff i
           = (N_cont u).coeff i - (N_cont u').coeff i := by
-      rw [sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff, sub_eq_add_neg]
+      rw [sub_eq_add_neg, TensorHs.add_coeff, TensorHs.neg_coeff, sub_eq_add_neg]
     rw [hcoeff_sub, hN_coeff u i, hN_coeff u' i, ← hsub]
   have hnorm_sq :
       ‖N_cont u - N_cont u'‖ ^ 2 ≤ ((K : ℝ) * dist u u') ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     have hcongr :
         (fun i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
             (I := I) (M := M) g_bg 0 2 =>

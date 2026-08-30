@@ -110,7 +110,7 @@ private theorem weight_sum_high
       _ = D ^ 2 *
           tensorSobolevWeight (I := I) (M := M) i ((m : ℝ) - (a : ℝ)) := by
         rw [hwm_def, hwa_def,
-          tensorHs.tensorSobolevWeight_sub (I := I) (M := M)]
+          TensorHs.tensorSobolevWeight_sub (I := I) (M := M)]
       _ ≤ D ^ 2 * tensorSobolevWeight (I := I) (M := M) i (-(sW : ℝ)) :=
         mul_le_mul_of_nonneg_left hweight_le (sq_nonneg D)
 
@@ -131,18 +131,18 @@ private theorem eval_hasSum_high
     fun i => tensorL2Coeff (I := I) (M := M) hc (SmoothCcTensor.toL2 T) i
   let e : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ :=
     fun i => eigenBilinScalar (I := I) g x v w i
-  let wrep : tensorHs (I := I) (M := M) g 0 2 (a : ℝ) :=
+  let wrep : TensorHs (I := I) (M := M) g 0 2 (a : ℝ) :=
     { coeff := fun i => e i *
           (tensorSobolevWeight (I := I) (M := M) i (a : ℝ))⁻¹
       weighted_summable :=
         weight_sum_high (I := I) (M := M) g a ha x v w }
-  let zrep : tensorHs (I := I) (M := M) g 0 2 (a : ℝ) :=
+  let zrep : TensorHs (I := I) (M := M) g 0 2 (a : ℝ) :=
     { coeff := c
       weighted_summable :=
         smoothCcTensor_tensorL2Coeff_weighted_summable
           (I := I) (M := M) g (a : ℝ) T hc }
   have hsum : Summable (fun i => c i * e i) := by
-    have hprod := tensorHs.weightedProd_summable
+    have hprod := TensorHs.weightedProd_summable
       (I := I) (M := M) wrep zrep
     refine hprod.congr (fun i => ?_)
     change tensorSobolevWeight (I := I) (M := M) i (a : ℝ) *
@@ -158,7 +158,7 @@ private theorem eval_hasSum_high
             ring
       _ = c i * e i := by rw [mul_inv_cancel₀ hw_pos.ne', one_mul]
   have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ vH : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ vH : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             hc hσ vH = SmoothCcTensor.toL2 T := by
     intro σ hσ

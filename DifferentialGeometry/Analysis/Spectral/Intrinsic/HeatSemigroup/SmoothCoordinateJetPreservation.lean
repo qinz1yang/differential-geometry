@@ -189,7 +189,7 @@ theorem deTurckRemainder_path_timeJet_section
   have hNsq_le : N ^ 2 ≤ ∑' i, B i := by
     have heq : N ^ 2 = ∑' i, tensorSobolevWeight (I := I) (M := M) i σ' *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ σ' (Rjet j t)).coeff i) ^ 2 := by
-      rw [hN_def, tensorHs.norm_sq_eq_tsum]
+      rw [hN_def, TensorHs.norm_sq_eq_tsum]
     rw [heq]
     refine Summable.tsum_le_tsum (fun i => ?_)
       ((smoothCcToTensorHs (I := I) (M := M) g₀ σ' (Rjet j t)).weighted_summable) hB_sum
@@ -299,7 +299,7 @@ private theorem deTurckSmoothN_path_coeff_jetSpectralMass
       have hterm_le : tensorSobolevWeight (I := I) (M := M) i σ' * u ^ 2 ≤ K ^ 2 := by
         have hmass : tensorSobolevWeight (I := I) (M := M) i σ' * u ^ 2 ≤
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ' (Rjet j t)‖ ^ 2 := by
-          rw [tensorHs.norm_sq_eq_tsum]
+          rw [TensorHs.norm_sq_eq_tsum]
           have hsummable := (smoothCcToTensorHs (I := I) (M := M) g₀ σ'
             (Rjet j t)).weighted_summable
           have hle := hsummable.le_tsum i (fun i' _ =>
@@ -324,7 +324,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
     {d₂ : ℝ} (hd₂_pos : 0 < d₂)
-    (w : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+    (w : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
     (hw_ball : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)),
       ‖w t‖ ≤ deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super)
     (φ : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ)
@@ -368,7 +368,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
             (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S) i = φ i t := by
     intro t ht
     obtain ⟨B0, hB0s, hB0le⟩ := hmass0 0 le_rfl
-    set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
+    set v0 : TensorHs (I := I) (M := M) g₀ 0 2 0 :=
       tensorHsOfSpectralMassMajorant (I := I) (M := M) (ct t) B0 hB0s
         (fun i => by
           have := hB0le i t ht
@@ -386,7 +386,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
       refine (hsum_pt t ht σ hσ).congr (fun i => ?_)
       rw [hu_coeff i]
     have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-        ∃ vσ : tensorHs (I := I) (M := M) g₀ 0 2 σ,
+        ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
           tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
       allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
     obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
@@ -434,7 +434,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
         t ∈ Set.Icc (0 : ℝ) d₂ := MeasureTheory.ae_restrict_mem measurableSet_Icc
     filter_upwards [hw_ball, hae_all, hae_mem] with t hwball_t htall htmem
     have heq : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t) = w t := by
-      refine tensorHs.ext (funext fun i => ?_)
+      refine TensorHs.ext (funext fun i => ?_)
       rw [hF_smoothCc_coeff t htmem i, ← htall i]
     rw [heq]; exact hwball_t
   have hcont_norm : ContinuousOn
@@ -493,7 +493,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
       t ∈ Set.Icc (0 : ℝ) d₂ := MeasureTheory.ae_restrict_mem measurableSet_Icc
   filter_upwards [hae_all, hae_mem] with t htall htmem
   have hwF : w t = smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t) := by
-    refine tensorHs.ext (funext fun j => ?_)
+    refine TensorHs.ext (funext fun j => ?_)
     rw [htall j, ← hF_smoothCc_coeff t htmem j]
   rw [hwF,
     deTurckSobolevNHa2_eq_smoothN (I := I) (M := M) g₀ g_bg a ha_super

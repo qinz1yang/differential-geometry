@@ -30,7 +30,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 noncomputable def ccToHsLin
     (g : SmoothRiemannianMetric I M) (s : ℕ) (σ : ℝ) :
-    SmoothCcTensor g 0 s →ₗ[ℝ] tensorHs (I := I) (M := M) g 0 s σ where
+    SmoothCcTensor g 0 s →ₗ[ℝ] TensorHs (I := I) (M := M) g 0 s σ where
   toFun := ccTensorToHs (I := I) (M := M) g s σ
   map_add' := ccTensorToHs_add (I := I) (M := M) g s σ
   map_smul' := ccTensorToHs_smul (I := I) (M := M) g s σ
@@ -45,11 +45,11 @@ noncomputable def ccToHsLin
 
 theorem ccToHsLin_repr
     (g : SmoothRiemannianMetric I M) (s : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
-    (v : tensorHs (I := I) (M := M) g 0 s σ)
+    (v : TensorHs (I := I) (M := M) g 0 s σ)
     (hv : (Function.support v.coeff).Finite) :
     ccToHsLin (I := I) (M := M) g s σ
         (tensorHsSmoothRepr (I := I) (M := M) v hv) = v := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   simp only [ccToHsLin_apply, ccTensorToHs_coeff]
   rw [SmoothCcTensor.toL2_apply,
@@ -93,7 +93,7 @@ theorem ccToHsLin_dense
     (I := I) (M := M) (g := g) (r := 0) (s := s) (σ := σ)).mono ?_
   intro v hv
   have hvfs : (Function.support v.coeff).Finite :=
-    (tensorHs.mem_finiteSupportSubmodule (I := I) (M := M) v).mp hv
+    (TensorHs.mem_finiteSupportSubmodule (I := I) (M := M) v).mp hv
   exact ⟨tensorHsSmoothRepr (I := I) (M := M) v hvfs,
     ccToHsLin_repr (I := I) (M := M) g s hσ v hvfs⟩
 

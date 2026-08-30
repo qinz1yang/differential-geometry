@@ -266,7 +266,7 @@ open scoped Classical in
 def finiteEigenComboHs
     (F : Finset (Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2))
     (c : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) (σ : ℝ) :
-    tensorHs (I := I) (M := M) g 0 2 σ where
+    TensorHs (I := I) (M := M) g 0 2 σ where
   coeff i := if i ∈ F then c i else 0
   weighted_summable := by
     classical
@@ -305,7 +305,7 @@ theorem finiteEigenCombo_spectral_normSq
       ∑ i ∈ F,
         (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ σ * (c i) ^ 2 := by
   classical
-  rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+  rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
   rw [tsum_eq_sum (s := F) (f := fun i =>
       tensorSobolevWeight (I := I) (M := M) i σ *
         ((finiteEigenComboHs (I := I) (M := M) g F c σ).coeff i) ^ 2) ?_]

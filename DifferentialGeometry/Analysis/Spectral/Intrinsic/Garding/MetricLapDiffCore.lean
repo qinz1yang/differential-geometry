@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 
 abbrev ScalarH2Core (g : SmoothRiemannianMetric I M) :=
-  tensorHs.finiteSupportSubmodule
+  TensorHs.finiteSupportSubmodule
     (I := I) (M := M) (g := g) (r := 0) (s := 0) 2
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
@@ -207,7 +207,7 @@ theorem lapDiffCore_norm
 
 noncomputable def lapDiffOp
     (g h : SmoothRiemannianMetric I M) :
-    tensorHs (I := I) (M := M) g 0 0 2 →L[Real] TensorL2 0 0 g :=
+    TensorHs (I := I) (M := M) g 0 0 2 →L[Real] TensorL2 0 0 g :=
   (lapDiffCore (I := I) (M := M) g h).extendOfNorm
     (ScalarH2Core (I := I) (M := M) g).subtype
 

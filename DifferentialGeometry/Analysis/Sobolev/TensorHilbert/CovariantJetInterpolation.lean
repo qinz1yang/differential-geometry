@@ -104,7 +104,7 @@ private theorem ccTensorToHs_norm_three_sq_le_weighted_average_two_four
   have hn : ∀ σ : ℝ, ‖ccTensorToHs (I := I) (M := M) g s σ S‖ ^ 2 =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2 := by
     intro σ
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     rfl
   have hsm : ∀ σ : ℝ, Summable (fun i =>
       tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2) := by

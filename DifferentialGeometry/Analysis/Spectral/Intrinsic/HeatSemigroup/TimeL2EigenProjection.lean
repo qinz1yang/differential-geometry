@@ -31,14 +31,14 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_finiteEigenComboHs_self_le (σ : ℝ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
-    (W : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (W : TensorHs (I := I) (M := M) g 0 2 σ) :
     ‖finiteEigenComboHs (I := I) (M := M) g F W.coeff σ‖ ≤ ‖W‖ := by
   classical
   have hle_sq :
       ‖finiteEigenComboHs (I := I) (M := M) g F W.coeff σ‖ ^ 2 ≤ ‖W‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)
         (finiteEigenComboHs (I := I) (M := M) g F W.coeff σ),
-      tensorHs.norm_sq_eq_tsum (I := I) (M := M) W]
+      TensorHs.norm_sq_eq_tsum (I := I) (M := M) W]
     refine Summable.tsum_le_tsum (fun i => ?_)
       (finiteEigenComboHs (I := I) (M := M) g F W.coeff σ).weighted_summable
       W.weighted_summable
@@ -54,27 +54,27 @@ lemma norm_finiteEigenComboHs_self_le (σ : ℝ)
     _ = ‖W‖ := Real.sqrt_sq (norm_nonneg _)
 
 def spatialEigenProjLM (σ : ℝ) (N : ℕ) :
-    tensorHs (I := I) (M := M) g 0 2 σ →ₗ[ℝ] tensorHs (I := I) (M := M) g 0 2 σ where
+    TensorHs (I := I) (M := M) g 0 2 σ →ₗ[ℝ] TensorHs (I := I) (M := M) g 0 2 σ where
   toFun W :=
     finiteEigenComboHs (I := I) (M := M) g (eigenIdxFinset (I := I) (M := M) g N) W.coeff σ
   map_add' W₁ W₂ := by
-    refine tensorHs.ext (funext fun i => ?_)
-    simp only [tensorHs.add_coeff, finiteEigenComboHs_coeff]
+    refine TensorHs.ext (funext fun i => ?_)
+    simp only [TensorHs.add_coeff, finiteEigenComboHs_coeff]
     by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N <;> simp [hi]
   map_smul' c W := by
-    refine tensorHs.ext (funext fun i => ?_)
-    simp only [tensorHs.smul_coeff, finiteEigenComboHs_coeff, RingHom.id_apply]
+    refine TensorHs.ext (funext fun i => ?_)
+    simp only [TensorHs.smul_coeff, finiteEigenComboHs_coeff, RingHom.id_apply]
     by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N <;> simp [hi]
 
 def spatialEigenProj (σ : ℝ) (N : ℕ) :
-    tensorHs (I := I) (M := M) g 0 2 σ →L[ℝ] tensorHs (I := I) (M := M) g 0 2 σ :=
+    TensorHs (I := I) (M := M) g 0 2 σ →L[ℝ] TensorHs (I := I) (M := M) g 0 2 σ :=
   LinearMap.mkContinuous (spatialEigenProjLM (I := I) (M := M) g σ N) 1 (fun W => by
     rw [one_mul]
     exact norm_finiteEigenComboHs_self_le (I := I) (M := M) g σ
       (eigenIdxFinset (I := I) (M := M) g N) W)
 
 omit [BoundarylessManifold I M] in
-@[simp] lemma spatialEigenProj_apply (σ : ℝ) (N : ℕ) (W : tensorHs (I := I) (M := M) g 0 2 σ) :
+@[simp] lemma spatialEigenProj_apply (σ : ℝ) (N : ℕ) (W : TensorHs (I := I) (M := M) g 0 2 σ) :
     spatialEigenProj (I := I) (M := M) g σ N W =
       finiteEigenComboHs (I := I) (M := M) g (eigenIdxFinset (I := I) (M := M) g N) W.coeff σ :=
   rfl
@@ -87,7 +87,7 @@ lemma norm_spatialEigenProj_le_one (σ : ℝ) (N : ℕ) :
 
 omit [BoundarylessManifold I M] in
 lemma norm_spatialEigenProj_apply_le (σ : ℝ) (N : ℕ)
-    (W : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (W : TensorHs (I := I) (M := M) g 0 2 σ) :
     ‖spatialEigenProj (I := I) (M := M) g σ N W‖ ≤ ‖W‖ := by
   rw [spatialEigenProj_apply]
   exact norm_finiteEigenComboHs_self_le (I := I) (M := M) g σ
@@ -95,7 +95,7 @@ lemma norm_spatialEigenProj_apply_le (σ : ℝ) (N : ℕ)
 
 omit [BoundarylessManifold I M] in
 private lemma normSq_spatialEigenProj_sub_add (σ : ℝ) (N : ℕ)
-    (W : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (W : TensorHs (I := I) (M := M) g 0 2 σ) :
     (∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
         tensorSobolevWeight (I := I) (M := M) i σ * (W.coeff i) ^ 2)
       + ‖spatialEigenProj (I := I) (M := M) g σ N W - W‖ ^ 2 = ‖W‖ ^ 2 := by
@@ -110,12 +110,12 @@ private lemma normSq_spatialEigenProj_sub_add (σ : ℝ) (N : ℕ)
   have hdiff :
       ‖spatialEigenProj (I := I) (M := M) g σ N W - W‖ ^ 2 =
         ∑' i, (if i ∈ eigenIdxFinset (I := I) (M := M) g N then 0 else w i) := by
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
     refine tsum_congr (fun i => ?_)
     have hco : (spatialEigenProj (I := I) (M := M) g σ N W - W).coeff i =
         (if i ∈ eigenIdxFinset (I := I) (M := M) g N then W.coeff i else 0) - W.coeff i := by
       rw [sub_eq_add_neg]
-      simp only [tensorHs.add_coeff, tensorHs.neg_coeff, spatialEigenProj_apply,
+      simp only [TensorHs.add_coeff, TensorHs.neg_coeff, spatialEigenProj_apply,
         finiteEigenComboHs_coeff]
       ring
     rw [hco]
@@ -158,16 +158,16 @@ private lemma normSq_spatialEigenProj_sub_add (σ : ℝ) (N : ℕ)
     _ = ∑' i, w i := by
         refine tsum_congr (fun i => ?_)
         by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N <;> simp [hi]
-    _ = ‖W‖ ^ 2 := (tensorHs.norm_sq_eq_tsum (I := I) (M := M) W).symm
+    _ = ‖W‖ ^ 2 := (TensorHs.norm_sq_eq_tsum (I := I) (M := M) W).symm
 
 omit [BoundarylessManifold I M] in
-lemma spatialEigenProj_tendsto (σ : ℝ) (W : tensorHs (I := I) (M := M) g 0 2 σ) :
+lemma spatialEigenProj_tendsto (σ : ℝ) (W : TensorHs (I := I) (M := M) g 0 2 σ) :
     Tendsto (fun N => spatialEigenProj (I := I) (M := M) g σ N W) atTop (𝓝 W) := by
   classical
   set w : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ :=
     fun i => tensorSobolevWeight (I := I) (M := M) i σ * (W.coeff i) ^ 2 with hwdef
   have hwsum : Summable w := W.weighted_summable
-  have htotW : ∑' i, w i = ‖W‖ ^ 2 := (tensorHs.norm_sq_eq_tsum (I := I) (M := M) W).symm
+  have htotW : ∑' i, w i = ‖W‖ ^ 2 := (TensorHs.norm_sq_eq_tsum (I := I) (M := M) W).symm
   have hHS :
       Tendsto (fun s : Finset (TensorEigenIdx (I := I) (M := M) g 0 2) => ∑ i ∈ s, w i)
         atTop (𝓝 (∑' i, w i)) := hwsum.hasSum
@@ -195,8 +195,8 @@ lemma spatialEigenProj_tendsto (σ : ℝ) (W : tensorHs (I := I) (M := M) g 0 2 
   exact tendsto_sub_nhds_zero_iff.mp (tendsto_zero_iff_norm_tendsto_zero.mpr hnorm0)
 
 def timeL2EigenProj (σ T : ℝ) (N : ℕ) :
-    timeL2 (tensorHs (I := I) (M := M) g 0 2 σ) T →L[ℝ]
-      timeL2 (tensorHs (I := I) (M := M) g 0 2 σ) T :=
+    timeL2 (TensorHs (I := I) (M := M) g 0 2 σ) T →L[ℝ]
+      timeL2 (TensorHs (I := I) (M := M) g 0 2 σ) T :=
   (spatialEigenProj (I := I) (M := M) g σ N).compLpL 2 (timeMeasure T)
 
 omit [BoundarylessManifold I M] in
@@ -206,7 +206,7 @@ lemma norm_timeL2EigenProj_le_one (σ T : ℝ) (N : ℕ) :
   exact ContinuousLinearMap.norm_compLpL_le (spatialEigenProj (I := I) (M := M) g σ N)
 
 omit [BoundarylessManifold I M] in
-lemma timeL2EigenProj_tendsto (σ T : ℝ) (x : timeL2 (tensorHs (I := I) (M := M) g 0 2 σ) T) :
+lemma timeL2EigenProj_tendsto (σ T : ℝ) (x : timeL2 (TensorHs (I := I) (M := M) g 0 2 σ) T) :
     Tendsto (fun N => timeL2EigenProj (I := I) (M := M) g σ T N x) atTop (𝓝 x) := by
   classical
   have hcoeFn : ∀ N, ⇑(timeL2EigenProj (I := I) (M := M) g σ T N x - x)
@@ -276,8 +276,8 @@ lemma timeL2EigenProj_tendsto (σ T : ℝ) (x : timeL2 (tensorHs (I := I) (M := 
 
 omit [BoundarylessManifold I M] in
 theorem exists_timeL2EigenProjection (σ T : ℝ) :
-    ∃ P : ℕ → (timeL2 (tensorHs (I := I) (M := M) g 0 2 σ) T →L[ℝ]
-        timeL2 (tensorHs (I := I) (M := M) g 0 2 σ) T),
+    ∃ P : ℕ → (timeL2 (TensorHs (I := I) (M := M) g 0 2 σ) T →L[ℝ]
+        timeL2 (TensorHs (I := I) (M := M) g 0 2 σ) T),
       (∀ N, ‖P N‖ ≤ 1) ∧ (∀ x, Tendsto (fun N => P N x) atTop (𝓝 x)) :=
   ⟨timeL2EigenProj (I := I) (M := M) g σ T,
     fun N => norm_timeL2EigenProj_le_one (I := I) (M := M) g σ T N,

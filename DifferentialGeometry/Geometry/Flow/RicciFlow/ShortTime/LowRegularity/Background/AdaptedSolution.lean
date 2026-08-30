@@ -31,7 +31,7 @@ def IsAdaptedBackgroundLowRegularitySolution (g₀ g_bg : SmoothRiemannianMetric
     (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ) : Prop :=
   IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 u gforce Rcap ∧
     HasGalerkinEnergyThreeBoundBackground (I := I) (M := M) g₀ g_bg Ctop₂ Kr2 Kr1 Kcap ∧
@@ -48,7 +48,7 @@ variable {g₀ g_bg : SmoothRiemannianMetric I M} {K : LowRegularityBoundParamet
   {u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
     ((1 : ℕ) : ℝ) T}
   {gforce : timeL2
-    (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
 
 theorem toIsBackgroundLowRegularitySolutionAt
     (h : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g₀ g_bg K hT hT1
@@ -101,7 +101,7 @@ theorem adaptedBackground_of_given
     {u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T}
     {gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (hsolve : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1
       u gforce Rcap)
     {A B : ℝ} (hgate : HasEnergyLadderAbsorptionConstantsBackground (I := I) (M := M) g₀ g_bg A B)

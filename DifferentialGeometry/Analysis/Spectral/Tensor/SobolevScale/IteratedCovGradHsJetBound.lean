@@ -98,7 +98,7 @@ private theorem ccWeight_sum
 
 def ccTensorToHs (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (σ : ℝ)
     (S : SmoothCcTensor g₀ 0 s) :
-    tensorHs (I := I) (M := M) g₀ 0 s σ where
+    TensorHs (I := I) (M := M) g₀ 0 s σ where
   coeff m := tensorL2Coeff (I := I) (M := M)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 s)
     (SmoothCcTensor.toL2 S) m
@@ -122,9 +122,9 @@ def ccTensorToHs (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (σ : ℝ)
     ccTensorToHs (I := I) (M := M) g₀ s sigma (S + T) =
       ccTensorToHs (I := I) (M := M) g₀ s sigma S +
         ccTensorToHs (I := I) (M := M) g₀ s sigma T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext m
-  rw [tensorHs.add_coeff]
+  rw [TensorHs.add_coeff]
   simp only [ccTensorToHs_coeff]
   rw [show SmoothCcTensor.toL2 (S + T) =
       SmoothCcTensor.toL2 S + SmoothCcTensor.toL2 T from map_add _ _ _,
@@ -135,9 +135,9 @@ def ccTensorToHs (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (σ : ℝ)
     (S : SmoothCcTensor g₀ 0 s) :
     ccTensorToHs (I := I) (M := M) g₀ s sigma (c • S) =
       c • ccTensorToHs (I := I) (M := M) g₀ s sigma S := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext m
-  rw [tensorHs.smul_coeff]
+  rw [TensorHs.smul_coeff]
   simp only [ccTensorToHs_coeff]
   rw [show SmoothCcTensor.toL2 (c • S) = c • SmoothCcTensor.toL2 S from map_smul _ _ _,
     tensorL2Coeff_smul]
@@ -152,7 +152,7 @@ theorem ccToHs_norm_sq
           (tensorL2Coeff (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 s)
             (SmoothCcTensor.toL2 S) m) ^ 2 := by
-  rw [tensorHs.norm_sq_eq_tsum]
+  rw [TensorHs.norm_sq_eq_tsum]
   exact tsum_congr (fun m => by rw [ccTensorToHs_coeff])
 
 theorem cc_partial_le_norm
@@ -1014,7 +1014,7 @@ theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
   refine ⟨C, hC_nn, fun S => ?_⟩
   have heq : ccTensorToHs (I := I) (M := M) g₀ 2 (n : ℝ) S =
       smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) S :=
-    tensorHs.ext (funext (fun _ => rfl))
+    TensorHs.ext (funext (fun _ => rfl))
   rw [← heq]
   exact hC S
 

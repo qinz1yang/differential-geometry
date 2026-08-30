@@ -36,17 +36,17 @@ variable {a : ℝ} {T : ℝ}
 section Nemytskii
 
 variable {L : ℝ≥0}
-  {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-    tensorHs (I := I) (M := M) g r s a}
+  {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+    TensorHs (I := I) (M := M) g r s a}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem memLp_comp_nemytskiiHa1 (hN : LipschitzWith L N)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T) :
     MemLp (fun t => N (f t)) 2 (timeMeasure T) := by
   have hshift : LipschitzWith L (fun x => N x - N 0) := by
     have hsubL := hN.sub (LipschitzWith.const (N 0))
     rwa [add_zero] at hsubL
-  have hshift0 : (fun x => N x - N 0) (0 : tensorHs (I := I) (M := M) g r s
+  have hshift0 : (fun x => N x - N 0) (0 : TensorHs (I := I) (M := M) g r s
       (a + 1)) = 0 := by simp
   have hcomp : MemLp ((fun x => N x - N 0) ∘ fun t => f t) 2 (timeMeasure T) :=
     hshift.comp_memLp hshift0 (Lp.memLp f)
@@ -61,19 +61,19 @@ theorem memLp_comp_nemytskiiHa1 (hN : LipschitzWith L N)
   exact hsum
 
 def nemytskiiHa1 (hN : LipschitzWith L N) :
-    timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun f => (memLp_comp_nemytskiiHa1 (I := I) (M := M) hN f).toLp (fun t => N (f t))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiHa1_coeFn (hN : LipschitzWith L N)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T) :
     nemytskiiHa1 (I := I) (M := M) hN f =ᵐ[timeMeasure T] fun t => N (f t) :=
   (memLp_comp_nemytskiiHa1 (I := I) (M := M) hN f).coeFn_toLp
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiHa1_dist_sq_le (hN : LipschitzWith L N)
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T) :
     ‖nemytskiiHa1 (I := I) (M := M) hN f -
         nemytskiiHa1 (I := I) (M := M) hN f'‖ ^ 2 ≤
       (L : ℝ) ^ 2 * ‖f - f'‖ ^ 2 := by
@@ -134,8 +134,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce gforce' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce gforce' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
         maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce' =
       maximalRegularitySolFieldHa1 (I := I) (M := M) a hT
@@ -149,8 +149,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce gforce' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce gforce' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
         maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce'‖ ≤
       2 * Real.sqrt T * ‖gforce - gforce'‖ := by
@@ -162,24 +162,24 @@ theorem maxRegDuhamelSolFieldHa1_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
 section FixedPoint
 
 def quasilinearDuhamelMapHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     {L : ℝ≥0}
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N) :
-    timeL2 (tensorHs (I := I) (M := M) g r s a) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s a) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun gforce => nemytskiiHa1 (I := I) (M := M) hN
     (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem quasilinearDuhamelMapHa1_apply (hT : 0 < T)
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     {L : ℝ≥0}
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce =
       nemytskiiHa1 (I := I) (M := M) hN
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) :=
@@ -189,12 +189,12 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinearDuhamelMapHa1_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     {L : ℝ≥0}
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N)
-    (gforce gforce' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (gforce gforce' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     dist (quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce)
         (quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce') ≤
       (L : ℝ) * (2 * Real.sqrt T) * dist gforce gforce' := by
@@ -263,9 +263,9 @@ theorem quasilinearDuhamelMapHa1_contracting (hT : 0 < T)
     {L : ℝ≥0} (hTL : T ≤ smallTimeHorizon L)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     (hN : LipschitzWith L N) :
     ContractingWith
       (NNReal.mk ((L : ℝ) * (2 * Real.sqrt T))
@@ -286,15 +286,15 @@ end FixedPoint
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinear_strong_existence_smallTime {L : ℝ≥0}
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (hN : LipschitzWith L N) :
     ∃ T_L : ℝ, 0 < T_L ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTL : T ≤ T_L),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
         u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce = nemytskiiHa1 (I := I) (M := M) hN
               (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) ∧

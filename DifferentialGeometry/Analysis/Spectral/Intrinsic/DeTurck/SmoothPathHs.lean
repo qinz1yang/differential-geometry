@@ -81,7 +81,7 @@ theorem ccHs_eq_smoothHs (g : SmoothRiemannianMetric I M) (sigma : ℝ)
     (Phi : SmoothCcTensor g 0 2) :
     ccTensorToHs (I := I) (M := M) g 2 sigma Phi =
       smoothCcToTensorHs (I := I) (M := M) g sigma Phi := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rfl
 
@@ -96,7 +96,7 @@ theorem smoothHs_path_cd
       ((Set.univ : Set M) ×ˢ S)) :
     ContDiffOn ℝ ∞
       (fun t => smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi t)) S := by
-  let U : tensorHs (I := I) (M := M) g 0 0 (n : ℝ) :=
+  let U : TensorHs (I := I) (M := M) g 0 0 (n : ℝ) :=
     ccTensorToHs (I := I) (M := M) g 0 (n : ℝ)
       (oneCc (I := I) (M := M) g)
   have h := appHs_path_cd (I := I) (M := M) g 0 2 n Phi hS hPhi U
@@ -136,7 +136,7 @@ theorem smoothHs_deriv
     exists_appHsFull (I := I) (M := M) g 0 2 Phi hS hPhi
   refine ⟨dPhi, hdPhi, hcomp, ?_⟩
   intro n t ht
-  let U : tensorHs (I := I) (M := M) g 0 0 (n : ℝ) :=
+  let U : TensorHs (I := I) (M := M) g 0 0 (n : ℝ) :=
     ccTensorToHs (I := I) (M := M) g 0 (n : ℝ)
       (oneCc (I := I) (M := M) g)
   have happ := hderiv n t ht U

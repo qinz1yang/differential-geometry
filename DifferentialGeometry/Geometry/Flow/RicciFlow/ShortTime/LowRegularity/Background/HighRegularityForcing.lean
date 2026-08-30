@@ -41,11 +41,11 @@ noncomputable def liftHiNBackground
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FHi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
-    (v : tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+    (FHi : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
+    (v : TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
   staticForce (I := I) (M := M) g gB (2 : ℝ) +
     lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB hρ hδ0 hδ_le hreal
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -66,11 +66,11 @@ noncomputable def lowerScaleNBackgroundWith
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
-    (u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) :
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) :
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
   lowerScaleForceBackground (I := I) (M := M) g gB +
     lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB hρ hδ0 hδ_le hreal
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -88,26 +88,26 @@ theorem hiNBackground_incl
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FHi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
-    (hA2sq : ∀ w : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    (FHi : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (hA2sq : ∀ w : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
           (lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB hρ.le hδ0 hδ_le hreal w) =
         (lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB hρ.le hδ0 hδ_le hreal w).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ 4 by norm_num)))
-    (hFComm : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    (hFComm : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
         (FLo x).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)))
-    (v : tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)
         (liftHiNBackground (I := I) (M := M) g gB hρ.le hδ0 hδ_le hreal FHi v) =
@@ -115,10 +115,10 @@ theorem hiNBackground_incl
         g gB hρ.le hδ0 hδ_le hreal FLo
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ (4 : ℝ) by norm_num) v) := by
-  set u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) :=
+  set u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) :=
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (3 : ℝ) ≤ (4 : ℝ) by norm_num) v with hudef
-  set w : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+  set w : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (2 : ℝ) ≤ (4 : ℝ) by norm_num) v with hwdef
   have hwu : tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)

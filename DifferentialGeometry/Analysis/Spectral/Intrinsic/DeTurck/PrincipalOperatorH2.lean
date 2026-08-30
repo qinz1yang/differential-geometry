@@ -29,24 +29,24 @@ variable
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev rank2H4 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
 private abbrev rank2H2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev rank4H2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 4 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 4 (2 : ℝ)
 
 noncomputable def secondCovariantDerivativeH4ToH2
     (g : SmoothRiemannianMetric I M) :
     rank2H4 (I := I) (M := M) g →L[ℝ]
       rank4H2 (I := I) (M := M) g := by
   let J : rank2H4 (I := I) (M := M) g →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + (2 : ℝ)) :=
-    (tensorHs.castEquiv (I := I) (M := M)
+      TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + (2 : ℝ)) :=
+    (TensorHs.castEquiv (I := I) (M := M)
       (by norm_num : (4 : ℝ) = (2 : ℝ) + (2 : ℝ))).toContinuousLinearEquiv.toContinuousLinearMap
   exact (iterCovGradHs (I := I) (M := M) g 2 2 2).comp J
 
@@ -65,19 +65,19 @@ theorem hessianH2_core
         (iteratedCovGrad (I := I) g 0 2 2 U) := by
   have hcast :
       (ContinuousLinearEquiv.toContinuousLinearMap
-        (tensorHs.castEquiv (I := I) (M := M)
+        (TensorHs.castEquiv (I := I) (M := M)
           (by norm_num : (4 : ℝ) = (2 : ℝ) + (2 : ℝ))).toContinuousLinearEquiv)
           (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) U) =
         ccTensorToHs (I := I) (M := M) g 2
           ((2 : ℝ) + (2 : ℝ)) U := by
     change
-      tensorHs.castEquiv (I := I) (M := M)
+      TensorHs.castEquiv (I := I) (M := M)
           (by norm_num : (4 : ℝ) = (2 : ℝ) + (2 : ℝ))
           (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) U) =
         ccTensorToHs (I := I) (M := M) g 2
           ((2 : ℝ) + (2 : ℝ)) U
     ext i
-    simp only [tensorHs.castEquiv_coeff, ccTensorToHs_coeff]
+    simp only [TensorHs.castEquiv_coeff, ccTensorToHs_coeff]
   rw [secondCovariantDerivativeH4ToH2, ContinuousLinearMap.comp_apply, hcast]
   exact iterCovGradHs_core (I := I) (M := M) g 2 2 2 U
 

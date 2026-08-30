@@ -37,39 +37,39 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH1 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev metricH4 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
 private abbrev solH3 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)
+  TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)
 
 private abbrev opH3 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private abbrev a1Op (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev a2Op (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev a1LoOp (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private abbrev a2LoOp (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private abbrev pLoOp (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
 
 private abbrev solToOpH3 (g : SmoothRiemannianMetric I M) :
     solH3 (I := I) (M := M) g ≃ₗᵢ[ℝ] opH3 (I := I) (M := M) g :=
@@ -85,8 +85,8 @@ def lowRegularityFirstOrderActionTime
           (ccTensorBilinSymm (I := I) g S) δ)
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t => lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
     (solToOpH3 (I := I) (M := M) g
       (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
@@ -185,8 +185,8 @@ private theorem highCorePair {Y : Type*} [SeminormedAddCommGroup Y]
         C * ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) (T - U)‖)
     (x y : LowerScaleTimeInternal.HighCore (I := I) (M := M) g) :
     ‖F x - F y‖ ≤
-      C * ‖(x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) -
-        (y : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))‖ := by
+      C * ‖(x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) -
+        (y : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))‖ := by
   obtain ⟨T, hT⟩ := x.property
   obtain ⟨U, hU⟩ := y.property
   have hx : x = ⟨ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T, ⟨T, rfl⟩⟩ :=
@@ -231,7 +231,7 @@ theorem lowerScaleFirstOrderAction_lipschitz
             (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T) =
           (lowCoreActionCoefficients (I := I) (M := M) g hρ.le hδ0 hδ_le hreal T).firstOrderActionSecondToFirstOrder
             (I := I) (M := M)) ∧
-      (∀ v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+      (∀ v : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) ≤ 2 by norm_num)).comp
               (lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal v) =
@@ -295,23 +295,23 @@ theorem lowerScaleFirstOrderAction_lipschitz
   refine ⟨hlipHi, hlipLo, hcoreHi, hcoreLo, ?_⟩
   obtain ⟨CP, K, hCP, hK, hpair⟩ :=
     radialFirstOrderAction_pairing_bound (I := I) (M := M) hDim g hρ hδ0 hδ_le hreal
-  have hleft : Continuous fun v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have hleft : Continuous fun v : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ 2 by norm_num)).comp
         (lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal v) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (continuous_const.prodMk hlipHi.continuous)
-  have hright : Continuous fun v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have hright : Continuous fun v : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal v).comp
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (2 : ℝ) ≤ 3 by norm_num)) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (hlipLo.continuous.prodMk continuous_const)
   intro v
   refine hdense.induction_on v (isClosed_eq hleft hright) ?_
@@ -340,7 +340,7 @@ theorem lowerScaleFirstOrderAction_extensions_commute
           (lowCoreActionCoefficients (I := I) (M := M) g hρ.le hδ0 hδ_le hreal U).firstOrderActionSecondToFirstOrder
             (I := I) (M := M)‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) (T - U)‖)
-    (v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) :
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) ≤ 2 by norm_num)).comp
           (lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal v) =
@@ -359,8 +359,8 @@ def lowRegularityFirstOrderActionLowerScaleTime
           (ccTensorBilinSymm (I := I) g S) δ)
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
   fun t => lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
     (solToOpH3 (I := I) (M := M) g
       (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
@@ -476,8 +476,8 @@ def lowRegularitySecondOrderActionTotal
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
     lowRegularityPrincipalSecondOrderActionTime (I := I) (M := M) g hT f hR hball t +
       lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
@@ -746,8 +746,8 @@ def lowRegularitySecondOrderActionLowerScaleTime
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
   fun t =>
     (tensorHsCongrL (I := I) (M := M) g 0 2
         (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)).comp
@@ -800,7 +800,7 @@ theorem lowRegularitySecondOrderActionLowerScaleTime_data
     simpa only [principalOperatorDomainBall, Set.mem_ofPred_eq] using
       lowRegularityState_ae_le (I := I) (M := M) g hT f hR hball
   have hsub : principalOperatorDomainBall (I := I) (M := M) g R ⊆
-      {S : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) | ‖S‖ ≤ ρk} :=
+      {S : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) | ‖S‖ ≤ ρk} :=
     fun _ hS => le_trans hS hRk
   have hres : Continuous
       (Set.domRestrict (principalOperatorDomainBall (I := I) (M := M) g R)
@@ -811,9 +811,9 @@ theorem lowRegularitySecondOrderActionLowerScaleTime_data
           (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)).comp
         (lowRegularityPrincipalOperatorH1 (I := I) (M := M) g x.1) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (continuous_const.prodMk hres)
   refine ⟨hΦ.comp_aestronglyMeasurable
       (aeSetLift_aesm (principalOperatorDomainBall_zero (I := I) (M := M) g hR)
@@ -841,8 +841,8 @@ theorem lowRegularitySecondOrderActionLowerScaleTime_data
         (lowRegularityStateL2 (I := I) (M := M) g hT f hR hball) t).2
     have hsq := hcomm _ (hxR.trans hRc)
     have hstep := congrArg
-      (fun L : tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-          tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) =>
+      (fun L : TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+          TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) =>
         (tensorHsCongrL (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)).comp L) hsq
     simp only [← ContinuousLinearMap.comp_assoc] at hstep
@@ -870,8 +870,8 @@ def lowRegularitySecondOrderActionTotalLowerScale
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
   fun t =>
     lowRegularitySecondOrderActionLowerScaleTime (I := I) (M := M) g hT f hR hball t +
       lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal

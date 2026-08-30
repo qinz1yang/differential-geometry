@@ -34,16 +34,16 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private abbrev loH1 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private abbrev loH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev loH3 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private abbrev loH4 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
 private noncomputable abbrev incl32 (g : SmoothRiemannianMetric I M) :
     loH3 (I := I) (M := M) g →L[ℝ] loH2 (I := I) (M := M) g :=
@@ -65,7 +65,7 @@ def stateField
     (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
     timeL2
-      (tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) T :=
+      (TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) T :=
   (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).compLpL
       2 (timeMeasure T)
@@ -99,7 +99,7 @@ def duhH3
       2 (timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M)
         (1 : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
+        (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -114,12 +114,12 @@ private theorem duhH3_ae
       (p := 2) (μ := timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M)
         (1 : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
+        (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_congrLp (g : SmoothRiemannianMetric I M) {a b T : ℝ} (h : a = b)
-    (u : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
+    (u : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T) :
     ‖(tensorHsCongrL (I := I) (M := M) g 0 2 h).compLpL 2 (timeMeasure T) u‖ =
       ‖u‖ := by
   rw [MeasureTheory.Lp.norm_def, MeasureTheory.Lp.norm_def]
@@ -150,7 +150,7 @@ private theorem affState_aemeas
   have hfield : AEStronglyMeasurable
       (fun t => maxRegDuhamelSolField (I := I) (M := M)
         (1 : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
+        (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
     Lp.aestronglyMeasurable _
   have hraw :=
@@ -166,7 +166,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem hsCongr_trans
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {a b c : ℝ} (hab : a = b) (hbc : b = c) (hac : a = c)
-    (u : tensorHs (I := I) (M := M) g r s a) :
+    (u : TensorHs (I := I) (M := M) g r s a) :
     tensorHsCongr (I := I) (M := M) g r s hbc
         (tensorHsCongr (I := I) (M := M) g r s hab u) =
       tensorHsCongr (I := I) (M := M) g r s hac u := by
@@ -183,7 +183,7 @@ def lowAffineSecondOrderAction
           (ccTensorBilinSymm (I := I) g S) δ)
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2) →L[ℝ]
+    ℝ → TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2) →L[ℝ]
       loH1 (I := I) (M := M) g :=
   fun t =>
     (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
@@ -260,7 +260,7 @@ theorem lowAffineSecondOrderAction_data
   have hfield : AEStronglyMeasurable
       (fun t => maxRegDuhamelSolField (I := I) (M := M)
         (1 : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
+        (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
     Lp.aestronglyMeasurable _
   have hu : AEStronglyMeasurable u (timeMeasure T) := by
@@ -295,7 +295,7 @@ theorem lowAffineSecondOrderAction_data
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (1 : ℝ) + 2 = 3 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
       (loH3 (I := I) (M := M) g)
       (loH3 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR3 hQ
@@ -304,13 +304,13 @@ theorem lowAffineSecondOrderAction_data
         g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) := by
     have hraw :=
       (ContinuousLinearMap.compL ℝ
-        (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
+        (TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
         (loH3 (I := I) (M := M) g)
         (loH1 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hA2 hR3Q
     with_unfolding_all
       change @AEStronglyMeasurable ℝ
-        (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2) →L[ℝ]
+        (TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2) →L[ℝ]
           loH1 (I := I) (M := M) g)
         PseudoMetricSpace.toUniformSpace.toTopologicalSpace
         Real.measurableSpace Real.measurableSpace
@@ -337,7 +337,7 @@ def lowAffineSecondOrderActionHigh
           (ccTensorBilinSymm (I := I) g S) δ)
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    ℝ → tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
+    ℝ → TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
       loH2 (I := I) (M := M) g :=
   fun t =>
     (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
@@ -438,7 +438,7 @@ theorem lowAffineSecondOrderActionHigh_data
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (2 : ℝ) + 2 = 4 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2))
+      (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2))
       (loH4 (I := I) (M := M) g)
       (loH4 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR4 hQ
@@ -447,13 +447,13 @@ theorem lowAffineSecondOrderActionHigh_data
         g hρ hδ0 hδ_le hreal hT f) (timeMeasure T) := by
     have hraw :=
       (ContinuousLinearMap.compL ℝ
-        (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2))
+        (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2))
         (loH4 (I := I) (M := M) g)
         (loH2 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hA2 hR4Q
     with_unfolding_all
       change @AEStronglyMeasurable ℝ
-        (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
+        (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
           loH2 (I := I) (M := M) g)
         PseudoMetricSpace.toUniformSpace.toTopologicalSpace
         Real.measurableSpace Real.measurableSpace
@@ -524,7 +524,7 @@ def lowFirstOrderAffineOperator
       (loH2 (I := I) (M := M) g →L[ℝ] loH1 (I := I) (M := M) g))
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
+    ℝ → TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
       loH1 (I := I) (M := M) g :=
   fun t =>
     (FLo (affState (I := I) (M := M) g hT f t)).comp
@@ -602,19 +602,19 @@ theorem lowFirstOrderAffineOperator_aestronglyMeasurable
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (1 : ℝ) + 1 = 2 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
       (loH2 (I := I) (M := M) g)
       (loH2 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR2 hQ
   have hraw :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
       (loH2 (I := I) (M := M) g)
       (loH1 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA1 hR2Q
   with_unfolding_all
     change @AEStronglyMeasurable ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
         loH1 (I := I) (M := M) g)
       PseudoMetricSpace.toUniformSpace.toTopologicalSpace
       Real.measurableSpace Real.measurableSpace
@@ -648,7 +648,7 @@ def highFirstOrderAffineOperator
       (loH3 (I := I) (M := M) g →L[ℝ] loH2 (I := I) (M := M) g))
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    ℝ → tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
+    ℝ → TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
       loH2 (I := I) (M := M) g :=
   fun t =>
     (FHi (affState (I := I) (M := M) g hT f t)).comp
@@ -726,19 +726,19 @@ theorem highFirstOrderAffineOperator_aestronglyMeasurable
           (tensorHsCongrL (I := I) (M := M) g 0 2
             (show (2 : ℝ) + 1 = 3 by norm_num))) (timeMeasure T) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1))
+      (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1))
       (loH3 (I := I) (M := M) g)
       (loH3 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR3 hQ
   have hraw :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1))
+      (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1))
       (loH3 (I := I) (M := M) g)
       (loH2 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA1 hR3Q
   with_unfolding_all
     change @AEStronglyMeasurable ℝ
-      (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
+      (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
         loH2 (I := I) (M := M) g)
       PseudoMetricSpace.toUniformSpace.toTopologicalSpace
       Real.measurableSpace Real.measurableSpace
@@ -842,7 +842,7 @@ private theorem firstOrderAffineOperator_self
       (loH2 (I := I) (M := M) g →L[ℝ] loH1 (I := I) (M := M) g))
     {T : ℝ} (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) (t : ℝ)
-    (v : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
+    (v : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1))
     (hv : tensorHsCongr (I := I) (M := M) g 0 2
         (show (1 : ℝ) + 1 = 2 by norm_num) v =
       incl32 (I := I) (M := M) g
@@ -947,7 +947,7 @@ theorem low_order_forcing_eq_affine_fixed_point
   let field :=
     maxRegDuhamelSolField (I := I) (M := M)
       (1 : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f
+      (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f
   let state := stateField (I := I) (M := M) g hT f
   let A2 :=
     lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' hT f
@@ -968,7 +968,7 @@ theorem low_order_forcing_eq_affine_fixed_point
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) f)
   have hduh := duhamel_incl (I := I) (M := M) hT hT1
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
-    (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f
+    (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f
   have hzero := zeroRepr_ae (I := I) (M := M) hT hT1
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) f
   rw [← hduh] at hzero

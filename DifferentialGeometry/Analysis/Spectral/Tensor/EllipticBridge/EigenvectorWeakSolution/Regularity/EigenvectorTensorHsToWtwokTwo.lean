@@ -42,7 +42,7 @@ omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum_basisVec_coeff_apply
     (σ : ℝ) (S : Finset (TensorEigenIdx (I := I) (M := M) g r s))
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (j : TensorEigenIdx (I := I) (M := M) g r s) :
     (∑ i ∈ S, T.coeff i •
         tensorHsBasisVec (I := I) (M := M)
@@ -53,8 +53,8 @@ private lemma sum_basisVec_coeff_apply
   | empty => simp
   | insert i A hi ih =>
       rw [Finset.sum_insert hi, Finset.sum_insert hi, ← ih,
-        tensorHs.add_coeff]
-      simp only [tensorHs.smul_coeff, tensorHsBasisVec_coeff,
+        TensorHs.add_coeff]
+      simp only [TensorHs.smul_coeff, tensorHsBasisVec_coeff,
         mul_ite, mul_one, mul_zero]
 
 end TensorHsSmoothReprAux
@@ -63,13 +63,13 @@ omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHs_eq_finset_sum_of_finite_support
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    {σ : ℝ} (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) :
     T = ∑ i ∈ hT_fs.toFinset, T.coeff i •
       tensorHsBasisVec (I := I) (M := M)
         (g := g) (r := r) (s := s) σ i := by
   classical
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext j
   rw [TensorHsSmoothReprAux.sum_basisVec_coeff_apply
     (I := I) (M := M) g r s σ hT_fs.toFinset T j]
@@ -148,7 +148,7 @@ end TensorHsSmoothReprAux
 
 noncomputable def tensorHsSmoothRepr
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    {σ : ℝ} (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) :
     SmoothCcTensor g r s :=
   TensorHsSmoothReprAux.partialSum_unconditional (I := I) (M := M) g r s
@@ -157,7 +157,7 @@ noncomputable def tensorHsSmoothRepr
 omit [CompleteSpace E] in
 theorem tensorHsSmoothRepr_eq
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    {σ : ℝ} (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) :
     tensorHsSmoothRepr (I := I) (M := M) T hT_fs =
       ∑ i ∈ hT_fs.toFinset,
@@ -167,7 +167,7 @@ theorem tensorHsSmoothRepr_eq
 omit [CompleteSpace E] in
 theorem tensorHsSmoothRepr_memWtwokTwo
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+    {σ : ℝ} (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) (k : ℕ) :
     MemWtwokTwo (I := I) (M := M) g k
       (tensorHsSmoothRepr (I := I) (M := M) T hT_fs) :=
@@ -177,7 +177,7 @@ theorem tensorHsSmoothRepr_memWtwokTwo
 omit [CompleteSpace E] in
 theorem tensorHsSmoothRepr_toL2
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    {σ : ℝ} (hσ : 0 ≤ σ) (T : tensorHs (I := I) (M := M) g r s σ)
+    {σ : ℝ} (hσ : 0 ≤ σ) (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) :
     (tensorHsSmoothRepr (I := I) (M := M) T hT_fs :
         TensorL2 r s g) =
@@ -344,7 +344,7 @@ theorem tensorHsSmoothRepr_wtwokTwoNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ {σ : ℝ} (T : tensorHs (I := I) (M := M) g r s σ)
+      ∀ {σ : ℝ} (T : TensorHs (I := I) (M := M) g r s σ)
         (hT_fs : (Function.support T.coeff).Finite),
         wtwokTwoNorm (I := I) (M := M) g k
             (tensorHsSmoothRepr (I := I) (M := M) T hT_fs)

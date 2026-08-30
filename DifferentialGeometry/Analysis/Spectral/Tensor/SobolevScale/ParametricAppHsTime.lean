@@ -513,12 +513,12 @@ private theorem coeffRem0_apply
         ((dΦ p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S))
     {a : ℝ} (ha : a ∈ S)
-    (U : tensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
+    (U : TensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
     Tendsto
       (fun h => appHs g b c n
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint a h) U)
       (𝓝 (0 : ℝ))
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
   rw [Metric.tendsto_nhds]
   intro ε hε
@@ -556,13 +556,13 @@ private theorem coeffRem0_move
         ((dΦ p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S))
     {a : ℝ} (ha : a ∈ S)
-    (U : ℝ → tensorHs (I := I) (M := M) g 0 b (n : ℝ))
+    (U : ℝ → TensorHs (I := I) (M := M) g 0 b (n : ℝ))
     (hU : ContinuousAt U a) :
     Tendsto
       (fun h => appHs g b c n
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint a h) (U (a + h)))
       (𝓝 (0 : ℝ))
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
   rw [Metric.tendsto_nhds]
   intro ε hε
@@ -624,7 +624,7 @@ theorem exists_appHsDeriv
           ((dΦ p.2).toSection p.1))
         ((Set.univ : Set M) ×ˢ S) ∧
       ∀ n : ℕ, ∀ t ∈ S,
-        ∀ U : tensorHs (I := I) (M := M) g 0 b (n : ℝ),
+        ∀ U : TensorHs (I := I) (M := M) g 0 b (n : ℝ),
         HasDerivAt
           (fun τ => appHs g b c n (Φ τ) U)
           (appHs g b c n (dΦ t) U) t := by
@@ -640,7 +640,7 @@ theorem exists_appHsDeriv
       (fun h => appHs g b c n
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h) U)
       (𝓝[≠] (0 : ℝ))
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
     hrem.mono_left inf_le_left
   have htarget : Tendsto
       (fun h => appHs g b c n (dΦ t) U +
@@ -718,7 +718,7 @@ theorem exists_appHsFull
             (fun τ => Tensor0SSpace.toModel (((Φ τ).toSection x) A) slots)
             (Tensor0SSpace.toModel (((dΦ t).toSection x) A) slots) t) ∧
       ∀ n : ℕ, ∀ t ∈ S,
-        ∀ U : tensorHs (I := I) (M := M) g 0 b (n : ℝ),
+        ∀ U : TensorHs (I := I) (M := M) g 0 b (n : ℝ),
         HasDerivAt
           (fun τ => appHs g b c n (Φ τ) U)
           (appHs g b c n (dΦ t) U) t := by
@@ -734,7 +734,7 @@ theorem exists_appHsFull
       (fun h => appHs g b c n
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h) U)
       (𝓝[≠] (0 : ℝ))
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
     hrem.mono_left inf_le_left
   have htarget : Tendsto
       (fun h => appHs g b c n (dΦ t) U +
@@ -807,8 +807,8 @@ theorem exists_appHsDyn
           ((dΦ p.2).toSection p.1))
         ((Set.univ : Set M) ×ˢ S) ∧
       ∀ n : ℕ, ∀ t ∈ S,
-        ∀ (U : ℝ → tensorHs (I := I) (M := M) g 0 b (n : ℝ))
-          (U' : tensorHs (I := I) (M := M) g 0 b (n : ℝ)),
+        ∀ (U : ℝ → TensorHs (I := I) (M := M) g 0 b (n : ℝ))
+          (U' : TensorHs (I := I) (M := M) g 0 b (n : ℝ)),
           HasDerivAt U U' t →
           HasDerivAt
             (fun τ => appHs g b c n (Φ τ) (U τ))
@@ -843,7 +843,7 @@ theorem exists_appHsDyn
       (fun h : ℝ => appHs g b c n
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h) (U (t + h)))
       (𝓝[≠] (0 : ℝ))
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
     hrem.mono_left inf_le_left
   have htarget : Tendsto
       (fun h : ℝ =>
@@ -954,7 +954,7 @@ theorem appHs_dyn_cont
         (E := fun x : M => TensorRSSpace b c I x) p.1
         ((Φ p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S))
-    (U : ℝ → tensorHs (I := I) (M := M) g 0 b (n : ℝ))
+    (U : ℝ → TensorHs (I := I) (M := M) g 0 b (n : ℝ))
     (hU : ContinuousOn U S) :
     ContinuousOn (fun t => appHs g b c n (Φ t) (U t)) S := by
   classical
@@ -970,13 +970,13 @@ theorem appHs_dyn_cont
   have hUt : Tendsto (fun h : ℝ => U (t + h)) (𝓝 0) (𝓝 (U t)) :=
     hUAt.tendsto.comp harg
   have hdiffU : Tendsto (fun h : ℝ => U (t + h) - U t)
-      (𝓝 0) (𝓝 (0 : tensorHs (I := I) (M := M) g 0 b (n : ℝ))) := by
+      (𝓝 0) (𝓝 (0 : TensorHs (I := I) (M := M) g 0 b (n : ℝ))) := by
     simpa only [sub_self] using hUt.sub
       (tendsto_const_nhds : Tendsto (fun _ : ℝ => U t) (𝓝 0) (𝓝 (U t)))
   have hfixed : Tendsto
       (fun h : ℝ => appHs g b c n (Φ t) (U (t + h) - U t))
       (𝓝 0)
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
     by
       have h := ((appHs g b c n (Φ t)).continuous.tendsto 0).comp hdiffU
       have hfun : (↑(appHs g b c n (Φ t)) ∘
@@ -992,7 +992,7 @@ theorem appHs_dyn_cont
   have hdsmall : Tendsto
       (fun h : ℝ => h • appHs g b c n (dΦ t) (U (t + h)))
       (𝓝 0)
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
     have h := tendsto_id.smul hdapp
     have hfun : (fun x : ℝ => id x • appHs g b c n (dΦ t) (U (t + x))) =
         fun h : ℝ => h • appHs g b c n (dΦ t) (U (t + h)) := by
@@ -1006,7 +1006,7 @@ theorem appHs_dyn_cont
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h)
         (U (t + h)))
       (𝓝 0)
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
     have h := tendsto_id.smul hrem
     have hfun : (fun x : ℝ => id x • appHs g b c n
         (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t x) (U (t + x))) =
@@ -1023,7 +1023,7 @@ theorem appHs_dyn_cont
           h • appHs g b c n (dΦ t) (U (t + h)) +
           appHs g b c n (Φ t) (U (t + h) - U t))
       (𝓝 0)
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
     simpa only [zero_add] using (hrsmall.add hdsmall).add hfixed
   have hseg : ∀ᶠ h in 𝓝 (0 : ℝ), Set.uIcc t (t + h) ⊆ S :=
     segment_eventually (hS.mem_nhds ht)
@@ -1085,7 +1085,7 @@ theorem appHs_dyn_cont
         appHs g b c n (Φ (t + h)) (U (t + h)) -
           appHs g b c n (Φ t) (U t))
       (𝓝 0)
-      (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
+      (𝓝 (0 : TensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
     htarget.congr' (hdelta.mono fun _ hh => hh.symm)
   have hshift : Tendsto
       (fun h : ℝ => appHs g b c n (Φ (t + h)) (U (t + h)))
@@ -1123,7 +1123,7 @@ theorem appHs_dyn_fin
         (E := fun x : M => TensorRSSpace b c I x) p.1
         ((Φ p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S))
-    (U : ℝ → tensorHs (I := I) (M := M) g 0 b (n : ℝ))
+    (U : ℝ → TensorHs (I := I) (M := M) g 0 b (n : ℝ))
     (hU : ContDiffOn ℝ k U S) :
     ContDiffOn ℝ k (fun t => appHs g b c n (Φ t) (U t)) S := by
   revert Φ U
@@ -1172,7 +1172,7 @@ theorem appHs_dyn_cd
         (E := fun x : M => TensorRSSpace b c I x) p.1
         ((Φ p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S))
-    (U : ℝ → tensorHs (I := I) (M := M) g 0 b (n : ℝ))
+    (U : ℝ → TensorHs (I := I) (M := M) g 0 b (n : ℝ))
     (hU : ContDiffOn ℝ ∞ U S) :
     ContDiffOn ℝ ∞ (fun t => appHs g b c n (Φ t) (U t)) S := by
   rw [contDiffOn_infty] at hU ⊢
@@ -1188,7 +1188,7 @@ theorem appHs_path_cd
         (E := fun x : M => TensorRSSpace b c I x) p.1
         ((Φ p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S))
-    (U : tensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
+    (U : TensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
     ContDiffOn ℝ ∞ (fun t => appHs g b c n (Φ t) U) S := by
   rw [contDiffOn_infty]
   intro k

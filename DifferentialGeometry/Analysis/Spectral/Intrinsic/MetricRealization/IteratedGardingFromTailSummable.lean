@@ -51,7 +51,7 @@ private lemma garding_l1_sum_le
       Summable (fun i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s =>
         tensorSobolevWeight (I := I) (M := M) i (-p)))
     {σ : ℝ} (hσ_def : σ = 2 * (2 * k + 1 : ℕ) + p)
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (hT_fs : (Function.support T.coeff).Finite) :
     (∑ i ∈ hT_fs.toFinset,
         |T.coeff i| * (i.fst.val)⁻¹ ^ (2 * k + 1)) ≤
@@ -74,10 +74,10 @@ private lemma garding_l1_sum_le
           Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) *
             Real.sqrt (tensorSobolevWeight (I := I) (M := M) i (-p)) := by
       rw [← Real.sqrt_mul (tensorSobolevWeight_nonneg (I := I) (M := M) i σ),
-        ← tensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ (-p)]
+        ← TensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ (-p)]
       have hexp : σ + (-p) = ((2 * k + 1 : ℕ) : ℝ) + ((2 * k + 1 : ℕ) : ℝ) := by
         rw [hσ_def]; push_cast; ring
-      rw [hexp, tensorHs.tensorSobolevWeight_add (I := I) (M := M) i
+      rw [hexp, TensorHs.tensorSobolevWeight_add (I := I) (M := M) i
         ((2 * k + 1 : ℕ) : ℝ) ((2 * k + 1 : ℕ) : ℝ),
         Real.sqrt_mul_self (tensorSobolevWeight_nonneg (I := I) (M := M) i _)]
     rw [hweight_eq]; ring
@@ -91,7 +91,7 @@ private lemma garding_l1_sum_le
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hf_def, mul_pow,
         Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i σ), sq_abs]
-    rw [heq, tensorHs.norm_sq_eq_tsum]
+    rw [heq, TensorHs.norm_sq_eq_tsum]
     refine Summable.sum_le_tsum S (fun i _ => ?_) T.weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i σ) (sq_nonneg _)
   have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤

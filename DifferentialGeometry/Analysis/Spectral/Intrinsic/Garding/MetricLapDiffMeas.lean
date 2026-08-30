@@ -46,7 +46,7 @@ theorem lapDiffA2_cont
     ContinuousOn
       (fun s : Real => lapDiffA2 (I := I) (M := M) g_fam T s) S := by
   let : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
         TensorL2 0 0 (g_fam (T : Real))) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   intro s0 hs0
@@ -120,8 +120,8 @@ theorem lapDiffA20_short
       ∀ᵐ s ∂timeMeasure tau,
         ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
   let : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
-        tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+        TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   let q : SmoothRiemannianMetric I M := g_fam (T : Real)
   let rhoQ : Real → Real := fun s =>

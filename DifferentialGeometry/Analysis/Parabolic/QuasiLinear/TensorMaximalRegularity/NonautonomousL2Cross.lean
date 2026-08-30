@@ -88,8 +88,8 @@ theorem duhamel_incl
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)

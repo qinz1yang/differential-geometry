@@ -45,7 +45,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
             ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
               IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g gBase K hT hT1
                   u gforce (lowRegularityStateRadius K.top K.slope K.outer K.realize) ∧
                 ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,

@@ -76,7 +76,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem hom_integral_eq
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
-    (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g 0 2 (a + 2))
     (i : TensorEigenIdx (I := I) (M := M) g 0 2)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) T) :
     (∫ τ in (0:ℝ)..s, (homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) τ)
@@ -116,8 +116,8 @@ private theorem hom_integral_eq
 omit [BoundarylessManifold I M] in
 private theorem coeffFun_u_eq
     {g_bg : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
-    (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g_bg 0 2 a) T)
+    (u₀ : TensorHs (I := I) (M := M) g_bg 0 2 (a + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g_bg 0 2 a) T)
     (hT : 0 < T)
     (i : TensorEigenIdx (I := I) (M := M) g_bg 0 2)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) T) :
@@ -173,7 +173,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem duhamel_integral_abs_le
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ} (hT : 0 ≤ T)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) T) :
     |∫ τ in (0:ℝ)..s, (derivModeCoeff (I := I) (M := M) (a := a) hT gforce i) τ|
@@ -193,7 +193,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem u0_coeff_sq_summable
     {g : SmoothRiemannianMetric I M} {a : ℝ} (ha2 : 0 ≤ a + 2)
-    (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2)) :
+    (u₀ : TensorHs (I := I) (M := M) g 0 2 (a + 2)) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g 0 2 => (u₀.coeff i) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) (fun i => ?_) u₀.weighted_summable
   have hw : (1:ℝ) ≤ tensorSobolevWeight (I := I) (M := M) i (a + 2) := by
@@ -207,7 +207,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem hom_majorant_summable
     {g : SmoothRiemannianMetric I M} {a : ℝ} (ha2 : 0 ≤ a + 2)
-    (u₀ : tensorHs (I := I) (M := M) g 0 2 (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g 0 2 (a + 2))
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 2)
     {σ : ℝ} (hσ : 0 ≤ σ) {ε : ℝ} (hε : 0 < ε) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g 0 2 =>
@@ -245,7 +245,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem norm_derivModeCoeff_le
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ} (hT : 0 ≤ T)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2) :
     ‖derivModeCoeff (I := I) (M := M) (a := a) hT gforce i‖
       ≤ 2 * ‖timeModeCoeff (I := I) (M := M) gforce i‖ := by
@@ -256,7 +256,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem duhamel_majorant_summable
     {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T)
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 2)
     (hforce : ∀ d : ℝ, Summable (forcingMass (I := I) (M := M) gforce d))
     {σ : ℝ} :
@@ -365,8 +365,8 @@ private theorem norm_singleModeCLM_eq
 omit [BoundarylessManifold I M] in
 theorem interior_allscale_time_continuity
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
-    (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)) T)
+    (u₀ : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)) T)
     (hT : 0 < T)
     (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
     (hu : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT u₀ gforce)
@@ -376,7 +376,7 @@ theorem interior_allscale_time_continuity
     (hbase : Summable (solFieldMass (I := I) (M := M) hT.le gforce (a : ℝ)))
     (σ : ℝ) (haσ : (a : ℝ) ≤ σ) :
     ∀ ε : ℝ, 0 < ε →
-      ∃ uσ : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 σ,
+      ∃ uσ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 σ,
         ContinuousOn uσ (Set.Icc ε T) ∧
           ∀ s ∈ Set.Icc ε T,
             tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2) haσ
@@ -461,7 +461,7 @@ theorem interior_allscale_time_continuity
     exact (singleModeCLM (I := I) (M := M) (g := g_bg) (r := 0) (s := 2) (σ := σ)
       i).continuous.comp_continuousOn hcfcont
   · intro s hs
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     rw [tensorHsInclusion_coeff_apply,
       tsum_singleModeCLM_coeff (I := I) (M := M) (fun j => cfun j s) (hsummable s hs) i]

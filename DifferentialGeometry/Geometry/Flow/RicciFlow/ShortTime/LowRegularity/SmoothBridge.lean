@@ -113,12 +113,12 @@ theorem exists_zero_state_deTurck_remainder_spectral_bound
           Cseed n ^ 2 := by
   classical
   have hzero_embed :
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) =
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) =
         smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2)
           (0 : SmoothCcTensor g₀ 0 2) := by
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
-    rw [tensorHs.zero_coeff, smoothCcToTensorHs_coeff,
+    rw [TensorHs.zero_coeff, smoothCcToTensorHs_coeff,
       show SmoothCcTensor.toL2 (0 : SmoothCcTensor g₀ 0 2) = 0 from map_zero _,
       tensorL2Coeff_eq_inner, inner_zero_right]
   have hS : ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
@@ -159,7 +159,7 @@ theorem exists_zero_state_deTurck_remainder_spectral_bound
           (ccTensor02Symm (I := I) (M := M) g₀ (0 : SmoothCcTensor g₀ 0 2)) hδ
           (hreal _ (symm_h2_of_state (I := I) (M := M) g₀
             (0 : SmoothCcTensor g₀ 0 2) hS))) :=
-    tensorHs.ext (funext (fun _ => rfl))
+    TensorHs.ext (funext (fun _ => rfl))
   calc ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (n : ℝ) *
         ((deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal
           ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩).coeff i) ^ 2
@@ -191,9 +191,9 @@ theorem deTurck_remainder_forcing_eq_smooth_remainder_ae
         metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ P) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
-    (field : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2
+    (field : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2
       (((1 : ℕ) : ℝ) + 2)) T)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2
       ((1 : ℕ) : ℝ)) T)
     (hstate : ∀ᵐ t ∂(timeMeasure T),
       field t ∈ lowerState (I := I) (M := M) g₀ 1 R)

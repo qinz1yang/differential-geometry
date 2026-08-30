@@ -31,10 +31,10 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -103,8 +103,8 @@ theorem lowCoreBackground_split
   simpa only [S] using hs'
 
 private abbrev lowA2LoBackgroundOp (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private noncomputable def lowBackgroundRep
     (g : SmoothRiemannianMetric I M)
@@ -266,7 +266,7 @@ private theorem inclCc32_bg
         (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff,
     ccTensorToHs_coeff]
@@ -1210,16 +1210,16 @@ theorem lowerScaleFirstOrderActionBackground_extensions_commute
     g g hρ.le hδ0 hδ_le hreal
   have hleft : Continuous (fun w => J12.comp (AHi w)) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (continuous_const.prodMk
           (lowerScaleFirstOrderActionThirdToSecondOrderBackground_continuous (I := I) (M := M) g g hHi))
   have hright : Continuous (fun w => (ALo w).comp J23) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         ((lowerScaleFirstOrderActionSecondToFirstOrderBackground_continuous (I := I) (M := M) g g hLo).prodMk
           continuous_const)
   have hdense : DenseRange
@@ -1264,16 +1264,16 @@ theorem lowerScaleFirstOrderActionBackground_extensions_commute_background
     g gB hρ.le hδ0 hδ_le hreal
   have hleft : Continuous (fun w => J12.comp (AHi w)) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (continuous_const.prodMk
           (lowerScaleFirstOrderActionThirdToSecondOrderBackground_continuous (I := I) (M := M) g gB hHi))
   have hright : Continuous (fun w => (ALo w).comp J23) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         ((lowerScaleFirstOrderActionSecondToFirstOrderBackground_continuous (I := I) (M := M) g gB hLo).prodMk
           continuous_const)
   have hdense : DenseRange
@@ -1634,15 +1634,15 @@ theorem radialSecondOrderActionBackground_lipschitz
     g gB hr0 hδ0 hδ_le hreal'
   have hleft : Continuous (fun v => J12.comp (AHi v)) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (continuous_const.prodMk hHiLip.continuous)
   have hright : Continuous (fun v => (ALo v).comp J34) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (hLoLip.continuous.prodMk continuous_const)
   intro v
   have hdense : DenseRange

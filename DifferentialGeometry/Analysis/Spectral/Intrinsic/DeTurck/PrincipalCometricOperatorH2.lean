@@ -26,8 +26,8 @@ variable
 
 noncomputable def principalCometricOperatorH2
     (g₀ g₁ : SmoothRiemannianMetric I M) :
-    tensorHs (I := I) (M := M) g₀ 0 2 (4 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 (4 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) :=
   secondCovariantDerivativeApplication (I := I) (M := M) g₀ 2 2
     (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)
 

@@ -89,24 +89,24 @@ theorem eq_zero_of_nonnegative_gronwall_derivative_bound {T K : ℝ} (hT : 0 < T
 
 structure StrongSpectralSolution
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
-    (Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+    (Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (hLip : LipschitzWith L Nfun) {T : ℝ}
     (Phi : ℝ → SmoothCcTensor g₀ 0 2) where
-  force : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
-  lo : timeH1 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
-  hi : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T
+  force : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
+  lo : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T
+  hi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T
   trace_zero : timeH1.trace0 _ T lo = 0
   scale_link :
     timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) hi =
       timeH1.toTimeL2
-        (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo
+        (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo
   heat_eq : timeH1.timeDeriv _ T lo =
     timeScaleLaplacian (I := I) (M := M) (a : ℝ) hi + force
   force_eq : force = nemytskii (I := I) (M := M) hLip hi
   hi_rep :
-    (hi : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+    (hi : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
       =ᵐ[timeMeasure T] fun t =>
         smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (Phi t)
   path_rep : ∀ t ∈ Icc (0 : ℝ) T,
@@ -116,11 +116,11 @@ attribute [-simp] StrongSpectralSolution.mk.sizeOf_spec
 
 noncomputable def strongSpectralSolutionOfSmoothPath
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
-    {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+    {Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun) {T : ℝ} (hT : 0 < T)
     (Phi : ℝ → SmoothCcTensor g₀ 0 2)
-    (D : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+    (D : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (hhi : MemLp
       (fun t => smoothCcToTensorHs (I := I) (M := M) g₀
         ((a : ℝ) + 2) (Phi t)) 2 (timeMeasure T))
@@ -141,24 +141,24 @@ noncomputable def strongSpectralSolutionOfSmoothPath
         Nfun (smoothCcToTensorHs (I := I) (M := M) g₀
           ((a : ℝ) + 2) (Phi t))) :
     StrongSpectralSolution (I := I) (M := M) (T := T) g₀ a Nfun hLip Phi := by
-  let Fhi : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) := fun t =>
+  let Fhi : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) := fun t =>
     smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (Phi t)
-  let Flow : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) := fun t =>
+  let Flow : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) := fun t =>
     smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (Phi t)
-  let hi : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
+  let hi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
     hhi.toLp Fhi
-  let derivL2 : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
+  let derivL2 : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
     hD.toLp D
-  let lo : timeH1 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
+  let lo : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
     timeH1.mk 0 derivL2
-  let force : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
+  let force : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
     nemytskii (I := I) (M := M) hLip hi
   have hhiRep :
-      (hi : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (hi : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
         =ᵐ[timeMeasure T] Fhi := by
     simpa only [hi, Fhi] using hhi.coeFn_toLp
   have hDRep :
-      (derivL2 : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      (derivL2 : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
         =ᵐ[timeMeasure T] D := by
     simpa only [derivL2] using hD.coeFn_toLp
   have hmem : ∀ᵐ t ∂(timeMeasure T), t ∈ Ioo (0 : ℝ) T := by
@@ -213,7 +213,7 @@ noncomputable def strongSpectralSolutionOfSmoothPath
         (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith)).coeFn_compLpL
           (p := 2) (μ := timeMeasure T) hi
     have hloAE :
-        ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo)
+        ⇑(timeH1.toTimeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo)
             =ᵐ[timeMeasure T] lo.toFun := by
       rw [timeH1.toTimeL2_apply, timeH1.toFunL2]
       exact DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn
@@ -224,7 +224,7 @@ noncomputable def strongSpectralSolutionOfSmoothPath
       (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) (Phi t)
   · refine Lp.ext ?_
     have hderivAE :
-        ⇑(timeH1.timeDeriv (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo)
+        ⇑(timeH1.timeDeriv (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T lo)
             =ᵐ[timeMeasure T] D := by
       simpa only [lo, derivL2, timeH1.timeDeriv_mk] using hD.coeFn_toLp
     have hLap := timeScaleLaplacian_coeFn (I := I) (M := M) (τ := (a : ℝ)) hi
@@ -239,11 +239,11 @@ noncomputable def strongSpectralSolutionOfSmoothPath
 
 theorem smooth_paths_eq_of_strong_spectral_solutions
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
-    {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+    {Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun) {C₁ C₂ : ℝ≥0}
     (hsingle : ∀ (v v' :
-      tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+      TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun v - Nfun v'‖ ≤
         (C₁ : ℝ) * max
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
@@ -268,7 +268,7 @@ theorem smooth_paths_eq_of_strong_spectral_solutions
     d₁.heat_eq d₂.heat_eq d₁.force_eq d₂.force_eq hball₁ hball₂
   intro t ht
   have hu := congrArg
-    (fun u : timeH1 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T =>
+    (fun u : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T =>
       u.toFun t) huniq.2.2
   change d₁.lo.toFun t = d₂.lo.toFun t at hu
   rw [d₁.path_rep t ht, d₂.path_rep t ht] at hu

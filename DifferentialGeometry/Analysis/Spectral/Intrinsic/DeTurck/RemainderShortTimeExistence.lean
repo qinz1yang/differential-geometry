@@ -31,44 +31,44 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 def DuhamelMildSolutionData (g : SmoothRiemannianMetric I M) (a : ℝ) (T : ℝ)
-    (u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2))
-    (N_cont : tensorHs (I := I) (M := M) g 0 2 (a + 1) →
-      tensorHs (I := I) (M := M) g 0 2 a)
+    (u₂ : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2))
+    (N_cont : TensorHs (I := I) (M := M) g 0 2 (a + 1) →
+      TensorHs (I := I) (M := M) g 0 2 a)
     (R : ℝ)
-    (gtraj : ℝ → tensorHs (I := I) (M := M) g 0 2 a) : Prop :=
+    (gtraj : ℝ → TensorHs (I := I) (M := M) g 0 2 a) : Prop :=
   ∃ (Te : ℝ) (hT : 0 < T) (hTe : T ≤ Te) (hTe1 : Te ≤ 1)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) Te),
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) Te),
     ContinuousOn N_cont
       (Metric.closedBall
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (a + 1) ≤ a + 2 by linarith)
-          (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2))) R) ∧
+          (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2))) R) ∧
     (∀ s ∈ Set.Icc (0 : ℝ) T,
       tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show a ≤ a + 2 by linarith) (u₂ s)
         = timeH1.toFun
             (maxRegDuhamelMap (I := I) (M := M) a (lt_of_lt_of_le hT hTe)
-              (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce) s) ∧
+              (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce) s) ∧
     (gforce =ᵐ[timeMeasure Te]
       (fun t => N_cont (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a
         (lt_of_lt_of_le hT hTe)
-        (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce t))) ∧
+        (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce t))) ∧
     (∀ᵐ t ∂(timeMeasure Te),
       maxRegDuhamelSolFieldHa1 (I := I) (M := M) a (lt_of_lt_of_le hT hTe)
-          (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce t ∈
+          (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) gforce t ∈
         Metric.closedBall
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (a + 1) ≤ a + 2 by linarith)
-            (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2))) R) ∧
-    ((gforce : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
+            (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2))) R) ∧
+    ((gforce : ℝ → TensorHs (I := I) (M := M) g 0 2 a)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] gtraj)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} {T T' : ℝ}
-    {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
-    {N_cont : tensorHs (I := I) (M := M) g 0 2 (a + 1) →
-      tensorHs (I := I) (M := M) g 0 2 a}
-    {R : ℝ} {gtraj : ℝ → tensorHs (I := I) (M := M) g 0 2 a}
+    {u₂ : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2)}
+    {N_cont : TensorHs (I := I) (M := M) g 0 2 (a + 1) →
+      TensorHs (I := I) (M := M) g 0 2 a}
+    {R : ℝ} {gtraj : ℝ → TensorHs (I := I) (M := M) g 0 2 a}
     (hTT' : T' ≤ T) (hT' : 0 < T')
     (h : DuhamelMildSolutionData (I := I) (M := M) g a T u₂ N_cont R gtraj) :
     DuhamelMildSolutionData (I := I) (M := M) g a T' u₂ N_cont R gtraj := by
@@ -79,10 +79,10 @@ theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} 
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DuhamelMildSolutionData.congr_gtraj {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
-    {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
-    {N_cont : tensorHs (I := I) (M := M) g 0 2 (a + 1) →
-      tensorHs (I := I) (M := M) g 0 2 a}
-    {R : ℝ} {gtraj gtraj' : ℝ → tensorHs (I := I) (M := M) g 0 2 a}
+    {u₂ : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2)}
+    {N_cont : TensorHs (I := I) (M := M) g 0 2 (a + 1) →
+      TensorHs (I := I) (M := M) g 0 2 a}
+    {R : ℝ} {gtraj gtraj' : ℝ → TensorHs (I := I) (M := M) g 0 2 a}
     (hg : gtraj =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] gtraj')
     (h : DuhamelMildSolutionData (I := I) (M := M) g a T u₂ N_cont R gtraj) :
     DuhamelMildSolutionData (I := I) (M := M) g a T u₂ N_cont R gtraj' := by
@@ -91,16 +91,16 @@ theorem DuhamelMildSolutionData.congr_gtraj {g : SmoothRiemannianMetric I M} {a 
 
 theorem deTurckRemainder_strong_shortTime_exists
     (g_bg : SmoothRiemannianMetric I M) {a : ℝ}
-    {N : tensorHs (I := I) (M := M) g_bg 0 2 (a + 1) →
-      tensorHs (I := I) (M := M) g_bg 0 2 a}
+    {N : TensorHs (I := I) (M := M) g_bg 0 2 (a + 1) →
+      TensorHs (I := I) (M := M) g_bg 0 2 a}
     {L_R : ℝ≥0} {R : ℝ} (hR : 0 < R)
-    (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g_bg 0 2 (a + 2))
     (hN : LipschitzOnWith L_R N (Metric.closedBall
       (tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
         (show (a + 1) ≤ a + 2 by linarith) u₀) R)) :
     ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g_bg 0 2 a) T),
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g_bg 0 2 a) T),
         u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce =ᵐ[timeMeasure T]
             (fun t => N (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
@@ -127,12 +127,12 @@ theorem deTurckRemainder_strong_shortTime_exists
 
 theorem firstOrderRemainderCLM_strong_shortTime_exists
     (g_bg : SmoothRiemannianMetric I M) {a : ℝ}
-    (R : tensorHs (I := I) (M := M) g_bg 0 2 (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g_bg 0 2 a)
-    (u₀ : tensorHs (I := I) (M := M) g_bg 0 2 (a + 2)) :
+    (R : TensorHs (I := I) (M := M) g_bg 0 2 (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g_bg 0 2 a)
+    (u₀ : TensorHs (I := I) (M := M) g_bg 0 2 (a + 2)) :
     ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g_bg 0 2 a) T),
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g_bg 0 2 a) T),
         u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce =ᵐ[timeMeasure T]
             (fun t => R (maxRegDuhamelSolFieldHa1 (I := I) (M := M)

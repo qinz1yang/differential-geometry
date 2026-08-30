@@ -114,13 +114,13 @@ private theorem allHs_of_weighted_summable
           (tensorL2Coeff (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i) ^ 2)) :
     ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ v : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ v = u := by
   intro σ hσ
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  set v : tensorHs (I := I) (M := M) g 0 2 σ :=
+  set v : TensorHs (I := I) (M := M) g 0 2 σ :=
     { coeff := fun i => tensorL2Coeff (I := I) (M := M) hc u i
       weighted_summable := hsum σ hσ } with hv
   refine ⟨v, ?_⟩
@@ -321,7 +321,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart in
 private theorem spectralPartialSum_ccTensorBilinSymm_tendsto
     (g : SmoothRiemannianMetric I M) (u : TensorL2 0 2 g)
     (hu : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ v : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ v = u)
     (Trep : SmoothCcTensor g 0 2)
@@ -428,7 +428,7 @@ private theorem realizedChartGramIncrement_eigenSeries_eq
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i = φ i t :=
     fun i => hcoeff t hqt i
   have hu : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ vH : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ vH : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ vH = u := by
     refine allHs_of_weighted_summable (I := I) (M := M) g u (fun σ hσ => ?_)

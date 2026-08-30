@@ -43,11 +43,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 noncomputable def scalarScaleLap (g : SmoothRiemannianMetric I M) :
-    tensorHs (I := I) (M := M) g 0 0 2 →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 0 0 :=
+    TensorHs (I := I) (M := M) g 0 0 2 →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 0 0 :=
   (tensorScaleLaplacian (I := I) (M := M)
     (g := g) (r := 0) (s := 0) 0).comp
-      (tensorHs.castEquiv (I := I) (M := M)
+      (TensorHs.castEquiv (I := I) (M := M)
         (g := g) (r := 0) (s := 0)
         (by norm_num : (2 : ℝ) = 0 + 2)).toContinuousLinearEquiv.toContinuousLinearMap
 
@@ -55,7 +55,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarScaleLap_coeff
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g 0 0) :
     (scalarScaleLap (I := I) (M := M) g v).coeff i =
@@ -63,10 +63,10 @@ omit [NeZero (Module.finrank ℝ E)] in
   simp only [scalarScaleLap, ContinuousLinearMap.comp_apply,
     tensorScaleLaplacian_coeff]
   change -TensorEigenIdx.lambda (I := I) (M := M) i *
-      (tensorHs.castEquiv (I := I) (M := M)
+      (TensorHs.castEquiv (I := I) (M := M)
         (g := g) (r := 0) (s := 0) _ v).coeff i =
     -TensorEigenIdx.lambda (I := I) (M := M) i * v.coeff i
-  rw [tensorHs.castEquiv_coeff]
+  rw [TensorHs.castEquiv_coeff]
 
 theorem scalarLapHs_core
     (g : SmoothRiemannianMetric I M)
@@ -76,7 +76,7 @@ theorem scalarLapHs_core
         (ccTensorToHs (I := I) (M := M) g 0 (m + 2) S) =
       ccTensorToHs (I := I) (M := M) g 0 m
         (rawTensorConnLapSmooth (I := I) g 0 0 S) := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorScaleLaplacian_coeff, ccTensorToHs_coeff,
     ccTensorToHs_coeff,
@@ -125,21 +125,21 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_scalarLap_le
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2) :
+    (v : TensorHs (I := I) (M := M) g 0 0 2) :
     ‖scalarScaleLap (I := I) (M := M) g v‖ ≤ ‖v‖ := by
   change ‖scaleLaplacianFun (I := I) (M := M)
-      (tensorHs.castEquiv (I := I) (M := M)
+      (TensorHs.castEquiv (I := I) (M := M)
         (g := g) (r := 0) (s := 0) _ v)‖ ≤ ‖v‖
   calc
-    _ ≤ ‖tensorHs.castEquiv (I := I) (M := M)
+    _ ≤ ‖TensorHs.castEquiv (I := I) (M := M)
         (g := g) (r := 0) (s := 0) _ v‖ :=
       norm_scaleLaplacianFun_le (I := I) (M := M) _
-    _ = ‖v‖ := (tensorHs.castEquiv (I := I) (M := M)
+    _ = ‖v‖ := (TensorHs.castEquiv (I := I) (M := M)
       (g := g) (r := 0) (s := 0) _).norm_map v
 
 noncomputable def reprScalar0
     {g : SmoothRiemannianMetric I M}
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) : M → ℝ :=
   TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
     (tensorHsSmoothRepr (I := I) (M := M) v hv).toSection
@@ -147,7 +147,7 @@ noncomputable def reprScalar0
 omit [BoundarylessManifold I M] in
 theorem reprScalar0_smooth
     {g : SmoothRiemannianMetric I M}
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ContMDiff I 𝓘(ℝ) ∞ (reprScalar0 (I := I) (M := M) v hv) :=
   TensorRSField.scalar0_smooth (n := (∞ : WithTop ℕ∞))
@@ -156,7 +156,7 @@ theorem reprScalar0_smooth
 omit [BoundarylessManifold I M] in
 theorem repr_eq_lift
     {g : SmoothRiemannianMetric I M}
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     (Tensor0SField.fromScalarField ∞
       (reprScalar0 (I := I) (M := M) v hv)
@@ -168,7 +168,7 @@ theorem repr_eq_lift
 
 theorem grad_repr_apply
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) (x : M)
     (X : TangentSpace I x) :
     Tensor0SSpace.eval
@@ -226,7 +226,7 @@ theorem grad_repr_apply
 
 theorem grad2_repr_diag
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite)
     (B : ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) (x : M) :
     Tensor0SSpace.eval
@@ -302,7 +302,7 @@ theorem grad2_repr_diag
 
 theorem rawLap_repr_scalar
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) (x : M) :
     rawTensorConnLap (I := I) g 0 0
         (tensorHsSmoothRepr (I := I) (M := M) v hv).toSection x =
@@ -316,7 +316,7 @@ theorem rawLap_repr_scalar
 
 theorem rawLap_repr_toL2
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     SmoothCcTensor.toL2
         (rawTensorConnLapSmooth (I := I) g 0 0
@@ -345,14 +345,14 @@ theorem rawLap_repr_toL2
 
 theorem rawLap_repr_norm
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ‖SmoothCcTensor.toL2
         (rawTensorConnLapSmooth (I := I) g 0 0
           (tensorHsSmoothRepr (I := I) (M := M) v hv))‖ ≤ ‖v‖ := by
   rw [rawLap_repr_toL2 (I := I) (M := M) g v hv,
     tensorHsToL2_apply]
-  exact (tensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M)
+  exact (TensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
     (show (0 : ℝ) ≤ 0 by norm_num)
     (scalarScaleLap (I := I) (M := M) g v)).trans
@@ -360,7 +360,7 @@ theorem rawLap_repr_norm
 
 theorem grad_repr_norm
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ‖SmoothCcTensor.toL2
         (covGrad (I := I) (M := M) g 0 0
@@ -389,7 +389,7 @@ theorem grad_repr_norm
       tensorHsSmoothRepr_toL2 (I := I) (M := M)
         (show (0 : ℝ) ≤ 2 by norm_num) v hv,
       tensorHsToL2_apply]
-    exact tensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M)
+    exact TensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
       (show (0 : ℝ) ≤ 2 by norm_num) v
   have hprod :

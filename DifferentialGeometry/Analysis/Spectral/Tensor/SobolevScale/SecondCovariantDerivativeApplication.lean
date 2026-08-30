@@ -44,8 +44,8 @@ private noncomputable def secondCovariantDerivativeApplicationLinearMap
 noncomputable def secondCovariantDerivativeApplication
     (g : SmoothRiemannianMetric I M) (s c : ℕ)
     (Φ : SmoothCcTensor g (s + 2) c) :
-    tensorHs (I := I) (M := M) g 0 s (4 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 c (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 s (4 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 c (2 : ℝ) :=
   ((ccToHsLin (I := I) (M := M) g c (2 : ℝ)).comp
       (secondCovariantDerivativeApplicationLinearMap (I := I) (M := M) g s c Φ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g s (4 : ℝ))

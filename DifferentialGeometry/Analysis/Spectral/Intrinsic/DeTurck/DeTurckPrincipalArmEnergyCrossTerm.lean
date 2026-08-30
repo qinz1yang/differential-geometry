@@ -546,8 +546,8 @@ private lemma smoothCcToTensorHs_subCross (g₀ : SmoothRiemannianMetric I M) (�
     smoothCcToTensorHs (I := I) (M := M) g₀ σ (u - v) =
       smoothCcToTensorHs (I := I) (M := M) g₀ σ u - smoothCcToTensorHs (I := I) (M := M) g₀ σ
         v := by
-  refine tensorHs.ext (funext fun i => ?_)
-  simp only [sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff, smoothCcToTensorHs_coeff,
+  refine TensorHs.ext (funext fun i => ?_)
+  simp only [sub_eq_add_neg, TensorHs.add_coeff, TensorHs.neg_coeff, smoothCcToTensorHs_coeff,
     map_add, map_neg, tensorL2Coeff_eq_inner, inner_add_right, inner_neg_right]
 
 omit [SigmaCompactSpace M] in

@@ -39,7 +39,7 @@ theorem lapDiff_energy_le
     (g : SmoothRiemannianMetric I M) :
     exists C : Real, 0 <= C ∧
       forall (h : SmoothRiemannianMetric I M)
-        (v : tensorHs (I := I) (M := M) g 0 0 2)
+        (v : TensorHs (I := I) (M := M) g 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         (Module.finrank Real E : Real) *
             DifferentialGeometry.HCGCompactness.metricDerivNormSupOn

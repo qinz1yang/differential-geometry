@@ -95,7 +95,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
   have hcoeff_u : ∀ i, tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i = d i := hd
   have hu : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ vH : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ vH : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ vH = u := by
     refine allHs_of_weighted_summable_pub (I := I) (M := M) g u (fun σ hσ => ?_)

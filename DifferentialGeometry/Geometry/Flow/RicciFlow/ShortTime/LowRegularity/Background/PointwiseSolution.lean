@@ -36,7 +36,7 @@ structure IsBackgroundLowRegularitySolutionAt (g₀ g_bg : SmoothRiemannianMetri
     (K : LowRegularityBoundParameters) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (Rcap : ℝ) : Prop where
 
   bounds : HasLowRegularityBoundsAt (I := I) (M := M) g₀ g_bg K
@@ -52,7 +52,7 @@ namespace IsBackgroundLowRegularitySolutionAt
 variable {g₀ g_bg : SmoothRiemannianMetric I M} {K : LowRegularityBoundParameters}
   {T : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
   {u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T}
-  {gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+  {gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
   {Rcap : ℝ}
 
 theorem hδ :
@@ -124,21 +124,21 @@ theorem htame
         boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg K.threshold_lt K.top_nonneg
           K.slope_nonneg K.outer_pos K.realize_pos h.hreal w‖ ≤
       K.top * lowRegularityOuterRadius K.top K.outer K.realize *
-          ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) - w.1‖ +
         K.base *
           ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-            ((v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ((v.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - w.1)‖ +
         K.slope *
-            (‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            (‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2))‖ +
-              ‖(w.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(w.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
           ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-            ((v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ((v.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - w.1)‖ :=
   h.bounds.htame
 
@@ -165,7 +165,7 @@ theorem hforce
             (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos
               K.realize_pos).le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t)) :=
   h.solve.force_eq
 

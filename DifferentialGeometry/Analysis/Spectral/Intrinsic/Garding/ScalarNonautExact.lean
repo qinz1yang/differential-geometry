@@ -117,13 +117,13 @@ theorem lapHs_A20_on
           lapDiffCore (I := I) (M := M) (g_fam (T : ℝ))
             (g_fam ((T : ℝ) - s)) v) :
     ∀ s ∈ Set.Icc (0 : ℝ) tau,
-      ∀ u : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 2,
-        tensorHs.castEquiv (I := I) (M := M)
+      ∀ u : TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 2,
+        TensorHs.castEquiv (I := I) (M := M)
             (g := g_fam (T : ℝ)) (r := 0) (s := 0)
             (by norm_num : ((0 : ℕ) : ℝ) = 0)
             (lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
               (g_fam ((T : ℝ) - s)) 0
-              (tensorHs.castEquiv (I := I) (M := M)
+              (TensorHs.castEquiv (I := I) (M := M)
                 (g := g_fam (T : ℝ)) (r := 0) (s := 0)
                 (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2) u)) =
           lapDiffA20 (I := I) (M := M) g_fam T s u := by
@@ -131,14 +131,14 @@ theorem lapHs_A20_on
   intro s hs u
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let h : SmoothRiemannianMetric I M := g_fam ((T : ℝ) - s)
-  let J : tensorHs (I := I) (M := M) q 0 0 2 →L[ℝ]
-      tensorHs (I := I) (M := M) q 0 0 (((0 : ℕ) : ℝ) + 2) :=
-    (tensorHs.castEquiv (I := I) (M := M)
+  let J : TensorHs (I := I) (M := M) q 0 0 2 →L[ℝ]
+      TensorHs (I := I) (M := M) q 0 0 (((0 : ℕ) : ℝ) + 2) :=
+    (TensorHs.castEquiv (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2)).toContinuousLinearEquiv.toContinuousLinearMap
-  let K : tensorHs (I := I) (M := M) q 0 0 ((0 : ℕ) : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) q 0 0 0 :=
-    (tensorHs.castEquiv (I := I) (M := M)
+  let K : TensorHs (I := I) (M := M) q 0 0 ((0 : ℕ) : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) q 0 0 0 :=
+    (TensorHs.castEquiv (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((0 : ℕ) : ℝ) = 0)).toContinuousLinearEquiv.toContinuousLinearMap
   let L := K.comp ((lapDiffHs (I := I) (M := M) q h 0).comp J)
@@ -164,7 +164,7 @@ theorem lapHs_A20_on
     have hJ :
         J (ccTensorToHs (I := I) (M := M) q 0 2 U) =
           ccTensorToHs (I := I) (M := M) q 0 (((0 : ℕ) : ℝ) + 2) U := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       rfl
     rw [show L (ccTensorToHs (I := I) (M := M) q 0 2 U) =
@@ -173,10 +173,10 @@ theorem lapHs_A20_on
       change K (lapDiffHs (I := I) (M := M) q h 0
           (J (ccTensorToHs (I := I) (M := M) q 0 2 U))) = _
       rw [hJ, lapHs_core (I := I) (M := M)]
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       rfl]
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     rw [ccTensorToHs_coeff]
     have hc := congrArg
@@ -198,7 +198,7 @@ theorem lapHs_dyn_on
     (T : D.RegularTime) {tau : ℝ}
     (hreg : ∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular)
     (m k : ℕ)
-    (U : ℝ → tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
+    (U : ℝ → TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
       ((m : ℝ) + 2))
     (hU : ContDiffOn ℝ k U (Set.Ioo (0 : ℝ) tau)) :
     ContDiffOn ℝ k
@@ -212,9 +212,9 @@ theorem lapHs_dyn_on
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
   let D₂ := iterCovGradHs (I := I) (M := M) q 0 2 m
   let D₁ := (iterCovGradHs (I := I) (M := M) q 0 1 m).comp J
-  let V₂ : ℝ → tensorHs (I := I) (M := M) q 0 (0 + 2) (m : ℝ) :=
+  let V₂ : ℝ → TensorHs (I := I) (M := M) q 0 (0 + 2) (m : ℝ) :=
     fun s => D₂ (U s)
-  let V₁ : ℝ → tensorHs (I := I) (M := M) q 0 (0 + 1) (m : ℝ) :=
+  let V₁ : ℝ → TensorHs (I := I) (M := M) q 0 (0 + 1) (m : ℝ) :=
     fun s => D₁ (U s)
   have hV₂ : ContDiffOn ℝ k V₂ (Set.Ioo (0 : ℝ) tau) := by
     have hc := D₂.contDiff.comp_contDiffOn hU

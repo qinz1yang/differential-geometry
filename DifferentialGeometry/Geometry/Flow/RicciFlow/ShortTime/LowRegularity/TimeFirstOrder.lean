@@ -30,10 +30,10 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private noncomputable abbrev incl32 (g : SmoothRiemannianMetric I M) :
     metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ]

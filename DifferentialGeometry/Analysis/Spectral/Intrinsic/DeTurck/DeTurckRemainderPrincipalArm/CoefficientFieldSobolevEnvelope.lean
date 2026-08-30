@@ -58,9 +58,9 @@ private lemma smoothCcToTensorHs_norm_mono_local (g₀ : SmoothRiemannianMetric 
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ w‖ ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ τ w‖ := by
   have hbσ : smoothCcToTensorHs (I := I) (M := M) g₀ σ w =
-      ccSpectralEmbed (I := I) (M := M) g₀ σ w := tensorHs.ext (funext fun i => rfl)
+      ccSpectralEmbed (I := I) (M := M) g₀ σ w := TensorHs.ext (funext fun i => rfl)
   have hbτ : smoothCcToTensorHs (I := I) (M := M) g₀ τ w =
-      ccSpectralEmbed (I := I) (M := M) g₀ τ w := tensorHs.ext (funext fun i => rfl)
+      ccSpectralEmbed (I := I) (M := M) g₀ τ w := TensorHs.ext (funext fun i => rfl)
   rw [hbσ, hbτ]
   exact ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ hστ w
 

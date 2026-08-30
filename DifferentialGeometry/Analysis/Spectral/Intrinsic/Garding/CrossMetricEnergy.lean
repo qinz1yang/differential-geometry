@@ -255,7 +255,7 @@ private theorem cross_point_le
 theorem cross_energy_le
     (q k : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 <= C ∧
-      ∀ (v : tensorHs (I := I) (M := M) q 0 0 2)
+      ∀ (v : TensorHs (I := I) (M := M) q 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         ∫ x, (normSq0S (I := I) k x 2
               (leviHessSec (I := I) k

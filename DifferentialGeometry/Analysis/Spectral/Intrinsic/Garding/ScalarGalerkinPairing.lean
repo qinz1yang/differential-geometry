@@ -37,7 +37,7 @@ theorem cc_finite_diss
       MetricRealization.metricCauchySchwarzBound
         (I := I) q k ((1 : ℝ) / 4)) (n : ℕ) :
     ∃ Cmid : ℝ, 0 ≤ Cmid ∧
-      ∀ (T : tensorHs (I := I) (M := M) q 0 0 0)
+      ∀ (T : TensorHs (I := I) (M := M) q 0 0 0)
         (hT : (Function.support T.coeff).Finite),
         2 * ∑ i ∈ hT.toFinset,
             tensorSobolevWeight (I := I) (M := M) i (n : ℝ) *
@@ -146,7 +146,7 @@ theorem cc_finite_diss
   have hhs (m : ℕ) :
       ccTensorToHs (I := I) (M := M) q 0 (m : ℝ) U =
         tensorHsOfFiniteSupport (I := I) (M := M) (m : ℝ) T.coeff hT := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     rw [ccTensorToHs_coeff, tensorHsOfFiniteSupport_coeff]
     exact hrepr i
@@ -154,7 +154,7 @@ theorem cc_finite_diss
       ‖tensorHsOfFiniteSupport (I := I) (M := M) (m : ℝ) T.coeff hT‖ ^ 2 =
         ∑ i ∈ hT.toFinset,
           tensorSobolevWeight (I := I) (M := M) i (m : ℝ) * (T.coeff i) ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     simp only [tensorHsOfFiniteSupport_coeff]
     rw [tsum_eq_sum (s := hT.toFinset)]
     intro i hi
@@ -192,7 +192,7 @@ theorem cc_a2_closure
       ∀ (S : Finset
           (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
             (I := I) (M := M) q 0 0))
-        (T : tensorHs (I := I) (M := M) q 0 0 0)
+        (T : TensorHs (I := I) (M := M) q 0 0 0)
         (hT : (Function.support T.coeff).Finite),
         hT.toFinset ⊆ S →
           2 * ∑ i ∈ S,

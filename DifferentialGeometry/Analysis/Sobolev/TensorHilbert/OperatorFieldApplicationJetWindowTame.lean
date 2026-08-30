@@ -170,7 +170,7 @@ theorem exists_iteratedCovGrad_fiberNormSq_le_smoothCcToTensorHs_sq
   have hNm_nn : 0 ≤ Nm := norm_nonneg _
   have hbridge : ∀ σ : ℝ, smoothCcToTensorHs (I := I) (M := M) g₀ σ T₀ =
       ccSpectralEmbed (I := I) (M := M) g₀ σ T₀ :=
-    fun σ => DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.tensorHs.ext
+    fun σ => DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs.ext
       (funext (fun i => rfl))
   have hspecmono : ‖smoothCcToTensorHs (I := I) (M := M) g₀ (N : ℝ) T₀‖ ≤ Nm := by
     rw [hNm_def, hbridge (N : ℝ), hbridge (m : ℝ)]
@@ -1001,7 +1001,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_tame_generic
       (Finset.sum_nonneg (fun j _ => mul_nonneg (hKslot_nn j) (by positivity)))
   have hbridge : ∀ σ : ℝ, smoothCcToTensorHs (I := I) (M := M) g₀ σ P =
       ccSpectralEmbed (I := I) (M := M) g₀ σ P :=
-    fun σ => DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.tensorHs.ext
+    fun σ => DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs.ext
       (funext (fun i => rfl))
   have hHmono : ∀ j : ℕ, j ≤ i →
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (j : ℝ) P‖ ≤ H := by

@@ -29,7 +29,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private noncomputable def finiteCoeffLin
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    tensorHs.finiteSupportSubmodule
+    TensorHs.finiteSupportSubmodule
         (I := I) (M := M) (g := g) (r := r) (s := s) σ →ₗ[ℝ]
       (TensorEigenIdx (I := I) (M := M) g r s →₀ ℝ) where
   toFun v := Finsupp.ofSupportFinite v.1.coeff v.2
@@ -42,7 +42,7 @@ private noncomputable def finiteCoeffLin
 
 noncomputable def finiteReprLin
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    tensorHs.finiteSupportSubmodule
+    TensorHs.finiteSupportSubmodule
         (I := I) (M := M) (g := g) (r := r) (s := s) σ →ₗ[ℝ]
       SmoothCcTensor g r s :=
   (Finsupp.linearCombination ℝ
@@ -53,7 +53,7 @@ noncomputable def finiteReprLin
 omit [CompleteSpace E] in
 @[simp] theorem finiteReprLin_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (v : tensorHs.finiteSupportSubmodule
+    (v : TensorHs.finiteSupportSubmodule
       (I := I) (M := M) (g := g) (r := r) (s := s) σ) :
     finiteReprLin (I := I) (M := M) g r s σ v =
       tensorHsSmoothRepr (I := I) (M := M) v.1 v.2 := by

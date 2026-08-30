@@ -251,24 +251,24 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def nemytskiiTame (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 ≤ R)
     {A B C : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun)
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖)
     {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
     (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ lowerState (I := I) (M := M) g₀ a R) :
-    timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
+    timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
   nemytskiiTameOn (zero_mem_lowerState (I := I) (M := M) g₀ a hR) hR
     (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith))
@@ -283,22 +283,22 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiTame_coeFn (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R) {A B C : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun)
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖)
     {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
     (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ lowerState (I := I) (M := M) g₀ a R) :
     nemytskiiTame (I := I) (M := M) g₀ a hR hcont hsingle f hf
         =ᵐ[timeMeasure T]
@@ -492,7 +492,7 @@ private theorem memLp_tame
 theorem partial_sol_tame
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (hcont : Continuous Nfun)
     (A B C : ℝ≥0) (D : ℝ) (hD : 0 ≤ D)
     (hzero : ‖Nfun ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ a hR.le⟩‖ ≤ D)
@@ -501,13 +501,13 @@ theorem partial_sol_tame
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖) :
     ∃ T₀ : ℝ,
@@ -515,11 +515,11 @@ theorem partial_sol_tame
         ((((R / 4) / (2 * (D + 1))) ^ 2))) ∧
       0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
         let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce
         u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             field t ∈ lowerState (I := I) (M := M) g₀ a R) ∧
           gforce =ᵐ[timeMeasure T]
@@ -539,7 +539,7 @@ theorem partial_sol_tame
     intro u
     have hu := u.property
     change ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2) ha12
-      (u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ ≤ R at hu
+      (u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ ≤ R at hu
     exact hu
   set ρ : ℝ := R / 4 with hρdef
   have hρ : 0 < ρ := by rw [hρdef]; positivity
@@ -609,7 +609,7 @@ theorem partial_sol_tame
       _ = 1 / 8 := by norm_num
   have hΛle : Λ ≤ 1 / 2 := by rw [hΛdef]; linarith
   have hΛlt : Λ < 1 := by linarith
-  set z₀ : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T := 0 with hz₀
+  set z₀ : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T := 0 with hz₀
   set ρt := recenteredBallRetraction z₀ ρ with hρtdef
   have hρt_mem : ∀ F, ρt F ∈ Metric.closedBall z₀ ρ := fun F =>
     recenteredBallRetraction_mapsTo (X := _) hρ.le z₀ (Set.mem_univ F)
@@ -620,10 +620,10 @@ theorem partial_sol_tame
     exact h
   have hρt_lip : LipschitzWith 1 ρt :=
     recenteredBallRetraction_lipschitzWith_one hρ.le z₀
-  set field : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
-      timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
+  set field : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
+      timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
     fun F => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F)
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F)
     with hfielddef
   have hstate : ∀ F, ∀ᵐ t ∂(timeMeasure T),
       field F t ∈ lowerState (I := I) (M := M) g₀ a R := by
@@ -631,19 +631,19 @@ theorem partial_sol_tame
     exact field_mem_lower (I := I) (M := M) g₀ a hT hT1 h2ρR
       (ρt F) (hρt_norm F)
   let liftN : ∀ (f : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T),
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T),
       (∀ᵐ t ∂(timeMeasure T), f t ∈ lowerState (I := I) (M := M) g₀ a R) →
-      timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
+      timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
     fun f hf => (memLp_tame hz hR.le J hstateJ Nfun hcont A B C hsingle f hf).toLp
       (fun t => Nfun (aeSetLift hz f t))
   have liftN_coe : ∀ (f : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
       (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ lowerState (I := I) (M := M) g₀ a R),
       liftN f hf =ᵐ[timeMeasure T] fun t => Nfun (aeSetLift hz f t) := by
     intro f hf
     exact (memLp_tame hz hR.le J hstateJ Nfun hcont A B C hsingle f hf).coeFn_toLp
-  set Ψ : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
-      timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
+  set Ψ : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
+      timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T :=
     fun F => liftN (field F) (hstate F) with hΨdef
   have hΨ_retr : ∀ F F', ‖Ψ F - Ψ F'‖ ≤ Λ * ‖ρt F - ρt F'‖ := by
     intro F F'
@@ -651,7 +651,7 @@ theorem partial_sol_tame
         (1 + T) * ‖ρt F - ρt F'‖ := by
       exact maxRegDuhamelSolField_dist_le (I := I) (M := M) (h_compact := h_compact)
         (a := (a : ℝ)) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
     have hincl_dist :
         ‖timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             ha12 (field F - field F')‖ ≤
@@ -660,18 +660,18 @@ theorem partial_sol_tame
         ‖timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             ha12
             (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-                (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) -
+                (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) -
               maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-                (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F'))‖ ≤
+                (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F'))‖ ≤
           2 * Real.sqrt T * ‖ρt F - ρt F'‖
       rw [map_sub,
         timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F),
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F),
         timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F')]
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F')]
       exact maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M) (h_compact := h_compact)
         (a := (a : ℝ)) hT hT1
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
     have hfield_norm : ∀ G, ‖field G‖ ≤ (1 + T) * ρ := by
       intro G
       calc
@@ -683,22 +683,22 @@ theorem partial_sol_tame
           mul_le_mul_of_nonneg_left (hρt_norm G) (by linarith)
     have hfield_sub : field F - field F' =
         maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
           (ρt F - ρt F') := by
       change
         maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) -
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) -
             maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F') =
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F') =
           maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
             (ρt F - ρt F')
       have hsub := maxRegDuhamelSolField_sub (I := I) (M := M)
         (h_compact := h_compact) (a := (a : ℝ)) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
       have hdiffzero := maxRegDuhamelSolField_sub (I := I) (M := M)
         (h_compact := h_compact) (a := (a : ℝ)) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
         (ρt F - ρt F') 0
       rw [sub_zero,
         maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT,
@@ -821,11 +821,11 @@ theorem partial_sol_tame
               ((C : ℝ) * S) * ‖field F' t‖ := by ac_rfl
     have hmain := l2_four
       (T := T)
-      (X := tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
-      (Y := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-      (Z := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1))
-      (W := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-      (V := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (X := TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      (Y := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (Z := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1))
+      (W := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (V := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
       (A := (A : ℝ) * R) (B := (B : ℝ))
       (C := (C : ℝ) * S) (D := (C : ℝ) * S)
       (Ψ F - Ψ F') (field F - field F')
@@ -876,7 +876,7 @@ theorem partial_sol_tame
     recenteredBallRetraction_eq_self_of_mem (Metric.mem_closedBall_self hρ.le)
   have hfield0 : field z₀ = 0 := by
     change maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt z₀) = 0
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt z₀) = 0
     rw [hρt0, hz₀]
     exact maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT
   have hΨ0 : ‖Ψ z₀‖ ≤ Real.sqrt T *
@@ -886,10 +886,10 @@ theorem partial_sol_tame
         fun t => Nfun (aeSetLift hz (field z₀) t) := by
       simpa only [hΨdef] using liftN_coe (field z₀) (hstate z₀)
     have hzeroFn := Lp.coeFn_zero
-      (E := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (E := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
       (p := 2) (μ := timeMeasure T)
     have hfieldFn : ⇑(field z₀) =ᵐ[timeMeasure T]
-        fun _ => (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) := by
+        fun _ => (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) := by
       rw [hfield0]
       exact hzeroFn
     filter_upwards [hcoe, hfieldFn, hstate z₀] with t ht htfield htstate
@@ -936,10 +936,10 @@ theorem partial_sol_tame
       rw [Metric.mem_closedBall, hz₀, dist_zero_right]
       exact hFstar)
   set trueField := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-    (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar with htrueField
+    (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar with htrueField
   have hfieldstar : field Fstar = trueField := by
     change maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt Fstar) = trueField
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt Fstar) = trueField
     rw [hρtstar, htrueField]
   have hstateStar : ∀ᵐ t ∂(timeMeasure T),
       trueField t ∈ lowerState (I := I) (M := M) g₀ a R := by
@@ -953,72 +953,72 @@ theorem partial_sol_tame
       fun t => Nfun (aeSetLift hz (field Fstar) t) := by
     have heq : ⇑Fstar =ᵐ[timeMeasure T] ⇑(liftN (field Fstar) (hstate Fstar)) := by
       exact Filter.Eventually.of_forall (fun t =>
-        congrArg (fun F : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T => F t)
+        congrArg (fun F : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T => F t)
           hforceEq)
     exact heq.trans (liftN_coe (field Fstar) (hstate Fstar))
   have hforceAe : ⇑Fstar =ᵐ[timeMeasure T]
       fun t => Nfun (aeSetLift hz trueField t) := by
     simpa only [hfieldstar] using hforceAe₀
   refine ⟨maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar,
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar,
     Fstar, ?_⟩
   dsimp only
   refine ⟨rfl, hstateStar, hforceAe, ?_, ?_, ?_⟩
   · rw [maxRegDuhamelMap_trace0 (I := I) (M := M) (a := (a : ℝ)) (T := T) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar, map_zero]
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar, map_zero]
   · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M) (h_compact := h_compact)
       (a := (a : ℝ)) (T := T) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
   · simpa only [hρdef] using hFstar
 
 theorem tameMap_dist_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 ≤ R)
     {A B C : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun)
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖)
     {T ρ : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (F F' : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+    (F F' : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hFb : ‖F‖ ≤ ρ) (hFb' : ‖F'‖ ≤ ρ)
     (hF : ∀ᵐ t ∂(timeMeasure T),
       maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F t ∈
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F t ∈
         lowerState (I := I) (M := M) g₀ a R)
     (hF' : ∀ᵐ t ∂(timeMeasure T),
       maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F' t ∈
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F' t ∈
         lowerState (I := I) (M := M) g₀ a R) :
     ‖nemytskiiTame (I := I) (M := M) g₀ a hR hcont hsingle
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F) hF -
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F) hF -
         nemytskiiTame (I := I) (M := M) g₀ a hR hcont hsingle
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F') hF'‖ ≤
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F') hF'‖ ≤
       ((A : ℝ) * R * (1 + T) + (B : ℝ) * (2 * Real.sqrt T) +
           2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * (1 + T)) * ‖F - F'‖ := by
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
   have ha12 : (a : ℝ) + 1 ≤ (a : ℝ) + 2 := by linarith
   set hz := zero_mem_lowerState (I := I) (M := M) g₀ a hR with hzdef
-  set fld : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
-      timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
+  set fld : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
+      timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
     fun G => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) G with hflddef
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) G with hflddef
   have hfield_dist : ‖fld F - fld F'‖ ≤ (1 + T) * ‖F - F'‖ :=
     maxRegDuhamelSolField_dist_le (I := I) (M := M) (h_compact := h_compact)
       (a := (a : ℝ)) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
   have hincl_dist :
       ‖timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           ha12 (fld F - fld F')‖ ≤ 2 * Real.sqrt T * ‖F - F'‖ := by
@@ -1026,12 +1026,12 @@ theorem tameMap_dist_le
     dsimp only
     rw [map_sub,
       timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F,
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F,
       timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F']
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F']
     exact maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := (a : ℝ)) hT hT1
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
   have hfield_norm : ∀ G, ‖G‖ ≤ ρ → ‖fld G‖ ≤ (1 + T) * ρ := by
     intro G hG
     calc
@@ -1043,10 +1043,10 @@ theorem tameMap_dist_le
     dsimp only
     have hsub := maxRegDuhamelSolField_sub (I := I) (M := M)
       (h_compact := h_compact) (a := (a : ℝ)) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
     have hdiffzero := maxRegDuhamelSolField_sub (I := I) (M := M)
       (h_compact := h_compact) (a := (a : ℝ)) hT
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (F - F') 0
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (F - F') 0
     rw [sub_zero,
       maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT,
       sub_zero] at hdiffzero
@@ -1150,11 +1150,11 @@ theorem tameMap_dist_le
             ((C : ℝ) * Sq) * ‖fld F' t‖ := by ac_rfl
   have hmain := timeL2_norm_le_four
     (T := T)
-    (X := tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
-    (Y := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-    (Z := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1))
-    (W := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-    (V := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+    (X := TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+    (Y := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+    (Z := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1))
+    (W := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+    (V := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
     (A := (A : ℝ) * R) (B := (B : ℝ))
     (C := (C : ℝ) * Sq) (D := (C : ℝ) * Sq)
     (Ψ₁ - Ψ₂) (fld F - fld F')

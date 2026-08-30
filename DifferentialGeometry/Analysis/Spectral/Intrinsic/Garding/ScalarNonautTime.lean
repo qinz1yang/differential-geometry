@@ -37,7 +37,7 @@ theorem lapDiffHs_decomp
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ (m : ℕ) s, s ∈ Set.Icc (0 : ℝ) tau →
-        ∀ U : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
+        ∀ U : TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2),
           lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
               (g_fam ((T : ℝ) - s)) m U =
@@ -105,7 +105,7 @@ theorem lapDiffHs_decomp
         J (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) W) =
           ccTensorToHs (I := I) (M := M) q 0
             ((m : ℝ) + ((1 : ℕ) : ℝ)) W := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       simp only [J, tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
     rw [hJ]
@@ -139,7 +139,7 @@ theorem lapDiffHs_path_cd
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ (m : ℕ)
-        (U : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
+        (U : TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2)),
         ContDiffOn ℝ ∞
           (fun s => lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
@@ -188,7 +188,7 @@ theorem lapDiffHs_dyn_fin
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ a, 0 < a → a ≤ tau → ∀ (m k : ℕ)
-        (U : ℝ → tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
+        (U : ℝ → TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2)),
         ContDiffOn ℝ k U (Set.Ioo (0 : ℝ) a) →
         ContDiffOn ℝ k
@@ -206,9 +206,9 @@ theorem lapDiffHs_dyn_fin
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
   let D₂ := iterCovGradHs (I := I) (M := M) q 0 2 m
   let D₁ := (iterCovGradHs (I := I) (M := M) q 0 1 m).comp J
-  let V₂ : ℝ → tensorHs (I := I) (M := M) q 0 2 (m : ℝ) :=
+  let V₂ : ℝ → TensorHs (I := I) (M := M) q 0 2 (m : ℝ) :=
     fun s => D₂ (U s)
-  let V₁ : ℝ → tensorHs (I := I) (M := M) q 0 1 (m : ℝ) :=
+  let V₁ : ℝ → TensorHs (I := I) (M := M) q 0 1 (m : ℝ) :=
     fun s => D₁ (U s)
   have hV₂ : ContDiffOn ℝ k V₂ (Set.Ioo (0 : ℝ) a) := by
     with_unfolding_all
@@ -242,7 +242,7 @@ theorem lapDiffHs_dyn_cd
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ a, 0 < a → a ≤ tau → ∀ (m : ℕ)
-        (U : ℝ → tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
+        (U : ℝ → TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2)),
         ContDiffOn ℝ ∞ U (Set.Ioo (0 : ℝ) a) →
         ContDiffOn ℝ ∞

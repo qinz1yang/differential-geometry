@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private theorem rawLap_repr_delta
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) (x : M) :
     rawTensorConnLap (I := I) g 0 0
         (tensorHsSmoothRepr (I := I) (M := M) v hv).toSection x =
@@ -53,7 +53,7 @@ private theorem rawLap_repr_delta
 
 theorem lap_energy_eq
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ∫ x, (ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
@@ -81,7 +81,7 @@ theorem lap_energy_eq
 
 private theorem repr_lap_inner
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     tensorL2Inner (I := I) (M := M) g 0 0
         (rawTensorConnLapSmooth (I := I) g 0 0
@@ -127,7 +127,7 @@ private theorem repr_lap_inner
 
 theorem grad_energy_eq
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ∫ x, normGradSqFun (I := I) g
         (reprScalar0 (I := I) (M := M) v hv) x
@@ -185,7 +185,7 @@ theorem grad_energy_eq
 
 theorem lap_energy_le
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ∫ x, (ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤ ‖v‖ ^ 2 := by
@@ -198,7 +198,7 @@ theorem lap_energy_le
 
 theorem grad_energy_le
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ∫ x, normGradSqFun (I := I) g
         (reprScalar0 (I := I) (M := M) v hv) x
@@ -223,7 +223,7 @@ private theorem du_normSq
 
 theorem du_energy_le
     (g : SmoothRiemannianMetric I M)
-    (v : tensorHs (I := I) (M := M) g 0 0 2)
+    (v : TensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
     ∫ x, normSq0S (I := I) g x 1
         (duSec (I := I)
@@ -235,7 +235,7 @@ theorem du_energy_le
 theorem hess_energy_le
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (v : tensorHs (I := I) (M := M) g 0 0 2)
+      ∀ (v : TensorHs (I := I) (M := M) g 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         ∫ x, chartHessFrobeniusSq (I := I) g
             (reprScalar0 (I := I) (M := M) v hv) x
@@ -267,7 +267,7 @@ theorem hess_energy_le
 theorem hessSec_energy_le
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (v : tensorHs (I := I) (M := M) g 0 0 2)
+      ∀ (v : TensorHs (I := I) (M := M) g 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         ∫ x, normSq0S (I := I) g x 2
             (leviHessSec (I := I) g

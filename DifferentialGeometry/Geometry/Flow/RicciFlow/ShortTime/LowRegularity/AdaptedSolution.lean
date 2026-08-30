@@ -29,7 +29,7 @@ variable
 
 def IsAdaptedLowRegularitySolution (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ) : Prop :=
   IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop) (B0 := B0)
       (B1 := B1) (D := D) (ρ := ρ) (P := P) g₀ hT hT1 fLo Rcap ∧
@@ -43,7 +43,7 @@ def IsAdaptedLowRegularitySolution (g₀ : SmoothRiemannianMetric I M)
 theorem IsAdaptedLowRegularitySolution.toIsLowRegularitySolutionAt {g₀ : SmoothRiemannianMetric I M}
     {δ Ctop B0 B1 D ρ P T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     {hT : 0 < T} {hT1 : T ≤ 1}
-    {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -54,7 +54,7 @@ theorem IsAdaptedLowRegularitySolution.toIsLowRegularitySolutionAt {g₀ : Smoot
 theorem IsAdaptedLowRegularitySolution.toIsLowRegularitySolution {g₀ : SmoothRiemannianMetric I M}
     {δ Ctop B0 B1 D ρ P T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     {hT : 0 < T} {hT1 : T ≤ 1}
-    {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -64,7 +64,7 @@ theorem IsAdaptedLowRegularitySolution.toIsLowRegularitySolution {g₀ : SmoothR
 theorem IsAdaptedLowRegularitySolution.toHasGalerkinEnergyThreeBound {g₀ : SmoothRiemannianMetric I M}
     {δ Ctop B0 B1 D ρ P T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     {hT : 0 < T} {hT1 : T ≤ 1}
-    {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -74,7 +74,7 @@ theorem IsAdaptedLowRegularitySolution.toHasGalerkinEnergyThreeBound {g₀ : Smo
 theorem IsAdaptedLowRegularitySolution.exists_absorption_constants_and_margin {g₀ : SmoothRiemannianMetric I M}
     {δ Ctop B0 B1 D ρ P T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     {hT : 0 < T} {hT1 : T ≤ 1}
-    {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -88,7 +88,7 @@ theorem IsAdaptedLowRegularitySolution.exists_absorption_constants_and_margin {g
 theorem IsAdaptedLowRegularitySolution.absorb {g₀ : SmoothRiemannianMetric I M}
     {δ Ctop B0 B1 D ρ P T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     {hT : 0 < T} {hT1 : T ≤ 1}
-    {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -188,8 +188,8 @@ theorem exists_adapted_lowRegularity_solution_parameters_with_contraction_thresh
       ∀ {c : ℝ}, B2 ≤ c → c < 1 →
         ∃ T₀ : ℝ, 0 < T₀ ∧
           ∀ {T : ℝ} (hT : 0 < T) (_ : T ≤ T₀) (hT1 : T ≤ 1),
-            ∃ (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
-              (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+            ∃ (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+              (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (Ctop B0 B1 D ρout P : ℝ),
               HasCompatibleSecondOrderSolution (I := I) (M := M) g hρ hδ.le hδ3 hreal' hT hT1 f
                   Rcap ∧
@@ -235,8 +235,8 @@ theorem exists_adapted_lowRegularity_solution_parameters
       ∀ {c : ℝ}, B2 ≤ c → c < 1 →
         ∃ T₀ : ℝ, 0 < T₀ ∧
           ∀ {T : ℝ} (hT : 0 < T) (_ : T ≤ T₀) (hT1 : T ≤ 1),
-            ∃ (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
-              (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+            ∃ (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+              (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (Ctop B0 B1 D ρout P : ℝ),
               HasCompatibleSecondOrderSolution (I := I) (M := M) g hρ hδ.le hδ3 hreal' hT hT1 f
                   Rcap ∧

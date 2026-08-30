@@ -156,8 +156,8 @@ private noncomputable def lapDiffCcLin
 
 noncomputable def lapDiffHs
     (q h : SmoothRiemannianMetric I M) (m : ℕ) :
-    tensorHs (I := I) (M := M) q 0 0 ((m : ℝ) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) q 0 0 (m : ℝ) :=
+    TensorHs (I := I) (M := M) q 0 0 ((m : ℝ) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) q 0 0 (m : ℝ) :=
   ((ccToHsLin (I := I) (M := M) q 0 (m : ℝ)).comp
       (lapDiffCcLin (I := I) (M := M) q h)).extendOfNorm
     (ccToHsLin (I := I) (M := M) q 0 ((m : ℝ) + 2))
@@ -192,7 +192,7 @@ theorem lapHs_core
         J (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) W) =
           ccTensorToHs (I := I) (M := M) q 0
             ((m : ℝ) + ((1 : ℕ) : ℝ)) W := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       simp only [J, tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
     have hD₁ :
@@ -277,7 +277,7 @@ theorem lapHs_eq
       J (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U) =
         ccTensorToHs (I := I) (M := M) q 0
           ((m : ℝ) + ((1 : ℕ) : ℝ)) U := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     simp only [J, tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
   have hD₁ :
@@ -582,11 +582,11 @@ theorem lapHs_inc
             (g := q) (r := 0) (s := 0) hnmR2
             (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U) =
           ccTensorToHs (I := I) (M := M) q 0 ((n : ℝ) + 2) U := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
     rw [hin, lapHs_core (I := I) (M := M)]
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
   have hfun := hdense.equalizer L.continuous R.continuous heq

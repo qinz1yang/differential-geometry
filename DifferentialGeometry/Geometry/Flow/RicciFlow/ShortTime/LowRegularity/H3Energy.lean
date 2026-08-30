@@ -461,7 +461,7 @@ def galerkinActionVector (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 
           (ccTensorBilinSymm (I := I) g₀ T) δ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
   smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
     ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (symmS (I := I) (M := M) g₀

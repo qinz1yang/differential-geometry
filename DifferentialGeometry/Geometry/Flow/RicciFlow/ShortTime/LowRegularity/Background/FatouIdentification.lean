@@ -47,24 +47,24 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal v‖ ≤
         Ctop * lowRegularityOuterRadius Ctop ρ P *
-            ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
           B0 *
             ‖galLowView (I := I) (M := M) g₀ 1
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 *
-              (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖galLowView (I := I) (M := M) g₀ 1
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
-    (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t ∈
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) (fseq N) t ∈
         lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P))
     (hnem : ∀ N : ℕ, ⇑(fseq N) =ᵐ[timeMeasure T]
       fun t => projNfun (I := I) (M := M) g₀ 1 N
@@ -72,7 +72,7 @@ theorem exists_uniform_galerkin_energy_three_bound_of_integral_bound_background
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hL2H3 : ∀ N : ℕ, ∫ t, galerkinEnergy (I := I) (M := M)
         (eigenIdxFinset (I := I) (M := M) g₀ N)

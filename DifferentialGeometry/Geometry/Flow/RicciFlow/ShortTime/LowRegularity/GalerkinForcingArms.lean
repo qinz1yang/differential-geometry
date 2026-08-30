@@ -406,7 +406,7 @@ theorem galForceArm (g₀ : SmoothRiemannianMetric I M)
     sub_eq_iff_eq_add'.mp harm
   rw [galTameForce_apply]
   by_cases hi : i ∈ S
-  · rw [if_pos hi, if_pos hi, hval, tensorHs.add_coeff]
+  · rw [if_pos hi, if_pos hi, hval, TensorHs.add_coeff]
   · rw [if_neg hi, if_neg hi]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

@@ -40,31 +40,31 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem homModeCoeff_zero (hT : 0 ≤ T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
   have hsq := norm_homModeCoeff_sq_le (I := I) (M := M) (a := a) (T := T) hT
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i
-  rw [tensorHs.zero_coeff] at hsq
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i
+  rw [TensorHs.zero_coeff] at hsq
   have hnorm : ‖homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i‖ = 0 := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i‖ = 0 := by
     nlinarith [norm_nonneg (homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i), hsq]
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i), hsq]
   exact norm_eq_zero.mp hnorm
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem homDerivModeCoeff_zero (hT : 0 ≤ T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     homDerivModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
   rw [homDerivModeCoeff_eq_smul (I := I) (M := M) (a := a) (T := T),
     homModeCoeff_zero (I := I) (M := M) (a := a) (T := T) hT i, smul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem maxRegDuhamelMap_zero_eq_recentredCarrier (hT : 0 < T)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     maxRegDuhamelMap (I := I) (M := M) a hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce =
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce =
       recentredCarrier (I := I) (M := M) hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce := by
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce := by
   refine TimeSobolev.timeH1.ext ?_ ?_
   · rw [maxRegDuhamelMap_init (I := I) (M := M) (a := a) (T := T) hT, map_zero,
       recentredCarrier, TimeSobolev.timeH1.init_mk]
@@ -73,10 +73,10 @@ private theorem maxRegDuhamelMap_zero_eq_recentredCarrier (hT : 0 < T)
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem carrier_coeff_ae_perModeConv (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun t => ((maxRegDuhamelMap (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i)
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i)
         =ᵐ[timeMeasure T]
       fun t => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t := by
@@ -92,10 +92,10 @@ private theorem carrier_coeff_ae_perModeConv (hT : 0 < T)
         (timeModeCoeff (I := I) (M := M) gforce i) := rfl
   have hderiv := maxRegDuhamelMap_deriv_coeff_ae (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce i
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce i
   have hhd0 := homDerivModeCoeff_zero (I := I) (M := M) (a := a) (T := T) hT.le i
   have hhd0coe : ⇑(homDerivModeCoeff (I := I) (M := M) (a := a) (T := T)
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i) =ᵐ[timeMeasure T]
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i) =ᵐ[timeMeasure T]
       fun _ => (0 : ℝ) := by
     rw [hhd0]
     filter_upwards [Lp.coeFn_zero (E := ℝ) (p := 2) (μ := timeMeasure T)] with τ hτ
@@ -105,16 +105,16 @@ private theorem carrier_coeff_ae_perModeConv (hT : 0 < T)
   have htmem' : t ∈ Set.Icc (0 : ℝ) T := htmem
   have h0mem : (0 : ℝ) ∈ Set.Icc (0 : ℝ) T := ⟨le_rfl, le_trans htmem.1 htmem.2⟩
   have hLHS : ((maxRegDuhamelMap (I := I) (M := M) a hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
       ∫ τ in (0 : ℝ)..t,
         ((maxRegDuhamelMap (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).deriv τ).coeff i := by
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).deriv τ).coeff i := by
     rw [hcarr]
     exact recentredCarrier_toFun_coeff (I := I) (M := M) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce i htmem'
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce i htmem'
   have hint_eq : (∫ τ in (0 : ℝ)..t,
         ((maxRegDuhamelMap (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).deriv τ).coeff i) =
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).deriv τ).coeff i) =
       ∫ τ in (0 : ℝ)..t, (derivModeCoeff (I := I) (M := M) (a := a) hT.le gforce i) τ := by
     refine intervalIntegral.integral_congr_ae ?_
     have hsub : Set.uIoc (0 : ℝ) t ⊆ Set.Icc (0 : ℝ) T :=
@@ -129,19 +129,19 @@ private theorem carrier_coeff_ae_perModeConv (hT : 0 < T)
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem carrier_toFun_coeff_eq_perModeConv_IccExtend (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s a}
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s a}
     (hcoord : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ContinuousOn (fun t => (F t).coeff i) (Set.Icc (0 : ℝ) T))
     (hF_rep : ⇑gforce =ᵐ[timeMeasure T] F)
     (i : TensorEigenIdx (I := I) (M := M) g r s) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ((maxRegDuhamelMap (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
       perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i)) t := by
   set lam := TensorEigenIdx.lambda (I := I) (M := M) i with hlam_def
   set u := maxRegDuhamelMap (I := I) (M := M) a hT
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce with hu_def
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce with hu_def
   set φi : ℝ → ℝ :=
     Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i) with hφi_def
   have hφi_cont : Continuous φi := by
@@ -198,19 +198,19 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (hT : 0 < T)
     {d₂ : ℝ} (hd₂_pos : 0 < d₂) (hd₂_le : d₂ ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s a}
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s a}
     (hcoord : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ContinuousOn (fun t => (F t).coeff i) (Set.Icc (0 : ℝ) d₂))
     (hF_rep : ⇑gforce =ᵐ[volume.restrict (Set.Icc (0 : ℝ) d₂)] F)
     (i : TensorEigenIdx (I := I) (M := M) g r s) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) d₂) :
     ((maxRegDuhamelMap (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
       perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (Set.IccExtend hd₂_pos.le (fun p : ↑(Set.Icc (0 : ℝ) d₂) => (F p.1).coeff i)) t := by
   set lam := TensorEigenIdx.lambda (I := I) (M := M) i with hlam_def
   set u := maxRegDuhamelMap (I := I) (M := M) a hT
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce with hu_def
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce with hu_def
   set φi : ℝ → ℝ :=
     Set.IccExtend hd₂_pos.le (fun p : ↑(Set.Icc (0 : ℝ) d₂) => (F p.1).coeff i) with hφi_def
   have hφi_cont : Continuous φi := by
@@ -271,8 +271,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id_restrict (hT : 0 < T)
     (ha : 0 ≤ a) {d₂ : ℝ} (hd₂_pos : 0 < d₂) (hd₂_le : d₂ ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s a}
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s a}
     (hcoord : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ContinuousOn (fun t => (F t).coeff i) (Set.Icc (0 : ℝ) d₂))
     (hF_rep : ⇑gforce =ᵐ[volume.restrict (Set.Icc (0 : ℝ) d₂)] F) :
@@ -282,7 +282,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id_restrict (hT : 0 < T
         tensorL2Coeff (I := I) (M := M) h_compact
             ((tensorHsToL2 (I := I) (M := M) h_compact ha)
               ((maxRegDuhamelMap (I := I) (M := M) a hT
-                (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t)) i =
+                (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t)) i =
           perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) := by
   refine ⟨fun i => Set.IccExtend hd₂_pos.le
       (fun p : ↑(Set.Icc (0 : ℝ) d₂) => (F p.1).coeff i), ?_, ?_⟩
@@ -297,16 +297,16 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id_restrict (hT : 0 < T
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_eq_perModeConv_forcing (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun t => (maxRegDuhamelSolField (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce t).coeff i)
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce t).coeff i)
         =ᵐ[timeMeasure T]
       fun t => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t := by
   have hfield := maxRegDuhamelSolField_coeff_ae (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce i
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce i
   have hcarr := carrier_coeff_ae_perModeConv (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT gforce i
   have hrec := maxRegDuhamelMap_zero_eq_recentredCarrier (I := I) (M := M)
@@ -315,23 +315,23 @@ theorem timeModeCoeff_eq_perModeConv_forcing (hT : 0 < T)
     with t htfield htcarr htmem
   have htmem' : t ∈ Set.Icc (0 : ℝ) T := htmem
   have hcarr_int : ((maxRegDuhamelMap (I := I) (M := M) a hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t).coeff i =
       ∫ τ in (0 : ℝ)..t,
         ((maxRegDuhamelMap (I := I) (M := M) a hT
-          (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).deriv τ).coeff i := by
+          (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).deriv τ).coeff i := by
     rw [hrec]
     exact recentredCarrier_toFun_coeff (I := I) (M := M) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce i htmem'
-  have hzero : (0 : tensorHs (I := I) (M := M) g r s (a + 2)).coeff i = 0 := by
-    rw [tensorHs.zero_coeff]
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce i htmem'
+  have hzero : (0 : TensorHs (I := I) (M := M) g r s (a + 2)).coeff i = 0 := by
+    rw [TensorHs.zero_coeff]
   rw [htfield, hzero, zero_add, ← hcarr_int, htcarr]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T)
     (ha : 0 ≤ a)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s a}
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s a}
     (hcoord : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ContinuousOn (fun t => (F t).coeff i) (Set.Icc (0 : ℝ) T))
     (hF_rep : ⇑gforce =ᵐ[timeMeasure T] F)
@@ -345,7 +345,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T)
         tensorL2Coeff (I := I) (M := M) h_compact
             ((tensorHsToL2 (I := I) (M := M) h_compact ha)
               ((maxRegDuhamelMap (I := I) (M := M) a hT
-                (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t)) i =
+                (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t)) i =
           perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
             (Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i)) t) := by
   refine ⟨fun i => Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i),
@@ -405,8 +405,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id (hT : 0 < T)
     (ha : 0 ≤ a)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s a}
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s a}
     (hcoord : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       ContinuousOn (fun t => (F t).coeff i) (Set.Icc (0 : ℝ) T))
     (hF_rep : ⇑gforce =ᵐ[timeMeasure T] F) :
@@ -416,7 +416,7 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id (hT : 0 < T)
         tensorL2Coeff (I := I) (M := M) h_compact
             ((tensorHsToL2 (I := I) (M := M) h_compact ha)
               ((maxRegDuhamelMap (I := I) (M := M) a hT
-                (0 : tensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t)) i =
+                (0 : TensorHs (I := I) (M := M) g r s (a + 2)) gforce).toFun t)) i =
           perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) := by
   refine ⟨fun i => Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) => (F p.1).coeff i),
     ?_, ?_⟩

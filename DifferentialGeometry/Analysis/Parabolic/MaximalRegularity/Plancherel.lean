@@ -52,10 +52,10 @@ lemma ae_all_coeff_eq {ι : Type*} [Countable ι] {μ : Measure ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorHsWeightMulCoeffSqLeNormSq {a : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s a)
+    (T : TensorHs (I := I) (M := M) g r s a)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i a * (T.coeff i) ^ 2 ≤ ‖T‖ ^ 2 := by
-  rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M) T]
+  rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M) T]
   refine Summable.le_tsum T.weighted_summable i (fun j _ => ?_)
   have hw : 0 ≤ tensorSobolevWeight (I := I) (M := M) j a :=
     tensorSobolevWeight_nonneg (I := I) (M := M) j a
@@ -63,7 +63,7 @@ lemma tensorHsWeightMulCoeffSqLeNormSq {a : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorHsAbsCoeffLe {a : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s a)
+    (T : TensorHs (I := I) (M := M) g r s a)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     |T.coeff i| ≤
       (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a))⁻¹ * ‖T‖ := by
@@ -89,13 +89,13 @@ lemma tensorHsAbsCoeffLe {a : ℝ}
 
 def tensorHsCoeffL {a : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    tensorHs (I := I) (M := M) g r s a →L[ℝ] ℝ :=
+    TensorHs (I := I) (M := M) g r s a →L[ℝ] ℝ :=
   LinearMap.mkContinuous
     { toFun := fun T => T.coeff i
       map_add' := fun S T => by
-        simp only [tensorHs.add_coeff]
+        simp only [TensorHs.add_coeff]
       map_smul' := fun c T => by
-        simp only [tensorHs.smul_coeff, smul_eq_mul, RingHom.id_apply] }
+        simp only [TensorHs.smul_coeff, smul_eq_mul, RingHom.id_apply] }
     (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a))⁻¹
     (fun T => by
       change ‖T.coeff i‖ ≤
@@ -106,7 +106,7 @@ def tensorHsCoeffL {a : ℝ}
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorHsCoeffL_apply {a : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s)
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     tensorHsCoeffL (I := I) (M := M) i T = T.coeff i := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -119,14 +119,14 @@ lemma tensorHsCoeffL_opNorm_le {a : ℝ}
       (tensorSobolevWeight_pos (I := I) (M := M) i a)))) _
 
 def timeModeCoeff {a : ℝ} {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeL2 ℝ T :=
   (tensorHsCoeffL (I := I) (M := M) i).compLpL 2 (timeMeasure T) f
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_coeFn {a : ℝ} {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M) f i =ᵐ[timeMeasure T]
       fun t => (f t).coeff i := by
@@ -137,7 +137,7 @@ theorem timeModeCoeff_coeFn {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_add {a : ℝ} {T : ℝ}
-    (f₁ f₂ : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f₁ f₂ : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M) (f₁ + f₂) i =
       timeModeCoeff (I := I) (M := M) f₁ i +
@@ -147,7 +147,7 @@ theorem timeModeCoeff_add {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_smul {a : ℝ} {T : ℝ} (c : ℝ)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M) (c • f) i =
       c • timeModeCoeff (I := I) (M := M) f i := by
@@ -156,7 +156,7 @@ theorem timeModeCoeff_smul {a : ℝ} {T : ℝ} (c : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_timeModeCoeff_le {a : ℝ} {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ‖timeModeCoeff (I := I) (M := M) f i‖ ≤
       (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i a))⁻¹ * ‖f‖ := by
@@ -171,7 +171,7 @@ theorem norm_timeModeCoeff_le {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem integrable_timeModeCoeff_sq {a : ℝ} {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     Integrable (fun t => (timeModeCoeff (I := I) (M := M) f i t) ^ 2)
       (timeMeasure T) :=
@@ -179,7 +179,7 @@ theorem integrable_timeModeCoeff_sq {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_timeModeCoeff_sq_eq_integral {a : ℝ} {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2 =
       ∫ t in Set.Icc (0 : ℝ) T,
@@ -190,7 +190,7 @@ theorem norm_timeModeCoeff_sq_eq_integral {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem integrable_weight_mul_coeff_sq {a : ℝ} {T : ℝ}
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     Integrable (fun t => tensorSobolevWeight (I := I) (M := M) i a *
       ((f t).coeff i) ^ 2) (timeMeasure T) := by
@@ -202,7 +202,7 @@ theorem integrable_weight_mul_coeff_sq {a : ℝ} {T : ℝ}
 section PlancherelFubini
 
 variable {a : ℝ} {T : ℝ}
-  (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+  (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
 
 private def planIntegrand (i : TensorEigenIdx (I := I) (M := M) g r s)
     (t : ℝ) : ℝ≥0∞ :=
@@ -269,7 +269,7 @@ private theorem ennreal_tsum_weight_mul_norm_sq_ne_top
       ENNReal.ofReal (‖f t‖ ^ 2) =
         ∑' i, planIntegrand (I := I) (M := M) f i t := by
     intro t
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M) (f t)]
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M) (f t)]
     have hnn : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         0 ≤ tensorSobolevWeight (I := I) (M := M) i a *
           ((f t).coeff i) ^ 2 :=
@@ -329,7 +329,7 @@ theorem norm_sq_eq_tsum_timeModeCoeff
       ENNReal.ofReal (‖f t‖ ^ 2) =
         ∑' i, planIntegrand (I := I) (M := M) f i t := by
     intro t
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M) (f t)]
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M) (f t)]
     have hnn : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         0 ≤ tensorSobolevWeight (I := I) (M := M) i a *
           ((f t).coeff i) ^ 2 :=
@@ -380,8 +380,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_sq_le_of_weighted_perMode_le {a b : ℝ} {T : ℝ} {C : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (gT : timeL2 (tensorHs (I := I) (M := M) g r s b) T)
-    (fT : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (gT : timeL2 (TensorHs (I := I) (M := M) g r s b) T)
+    (fT : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hbound : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       tensorSobolevWeight (I := I) (M := M) i b *
           ‖timeModeCoeff (I := I) (M := M) gT i‖ ^ 2 ≤
@@ -406,8 +406,8 @@ theorem norm_le_of_weighted_perMode_le {a b : ℝ} {T : ℝ} {C : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hC : 0 ≤ C)
-    (gT : timeL2 (tensorHs (I := I) (M := M) g r s b) T)
-    (fT : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (gT : timeL2 (TensorHs (I := I) (M := M) g r s b) T)
+    (fT : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hbound : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       tensorSobolevWeight (I := I) (M := M) i b *
           ‖timeModeCoeff (I := I) (M := M) gT i‖ ^ 2 ≤
@@ -426,7 +426,7 @@ def timeModeSynthesisPointwise {b : ℝ}
     (cFam : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
     (hsum : Summable (fun i => tensorSobolevWeight (I := I) (M := M) i b *
       (cFam i) ^ 2)) :
-    tensorHs (I := I) (M := M) g r s b where
+    TensorHs (I := I) (M := M) g r s b where
   coeff := cFam
   weighted_summable := hsum
 
@@ -443,7 +443,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_injective {b : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    {f₁ f₂ : timeL2 (tensorHs (I := I) (M := M) g r s b) T}
+    {f₁ f₂ : timeL2 (TensorHs (I := I) (M := M) g r s b) T}
     (h : ∀ i, timeModeCoeff (I := I) (M := M) f₁ i =
       timeModeCoeff (I := I) (M := M) f₂ i) :
     f₁ = f₂ := by
@@ -460,7 +460,7 @@ theorem timeModeCoeff_injective {b : ℝ} {T : ℝ}
         timeModeCoeff (I := I) (M := M) f₂ i := by rw [h i]
     exact (h1.symm.trans heq).trans h2
   filter_upwards [ae_all_iff.mpr hcoord] with t ht
-  exact tensorHs.ext (funext ht)
+  exact TensorHs.ext (funext ht)
 
 end MaximalRegularity
 end Parabolic

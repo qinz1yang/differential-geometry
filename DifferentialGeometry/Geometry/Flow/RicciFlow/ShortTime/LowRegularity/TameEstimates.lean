@@ -36,7 +36,7 @@ private theorem smoothHs_eq_ccHs
     (T : SmoothCcTensor g₀ 0 2) :
     smoothCcToTensorHs (I := I) (M := M) g₀ sigma T =
       ccTensorToHs (I := I) (M := M) g₀ 2 sigma T := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [smoothCcToTensorHs_coeff, ccTensorToHs_coeff]
 
@@ -262,21 +262,21 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
         ‖deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ₀_lt hreal x -
             deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ₀_lt hreal y‖ ≤
           Ctop * R *
-              ‖(x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - y.1.1‖ +
             B0 R *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ +
             B1 R *
-                (‖(x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                (‖(x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2))‖ +
-                  ‖(y.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                  ‖(y.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2))‖) *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ := by
   obtain ⟨ρ, Ctop, B0, B1, hρ, hCtop, hB0, hB1, hsmooth⟩ :=
     deTurckSmoothRemainder_h1_tame_bound (I := I) (M := M) hDim g₀ g_bg hδ₀_nonneg hδ₀_lt
@@ -300,7 +300,7 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
     hδS hδS' R hR hRρ hS2 hS2'
   have hS3 :
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) S‖ ≤
-        ‖(x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))‖ := by
+        ‖(x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))‖ := by
     calc
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) X‖ := by
         simpa only [S] using
@@ -309,7 +309,7 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
       _ = _ := by simp only [X, coreRep_spec]
   have hS3' :
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) S'‖ ≤
-        ‖(y.1.1 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))‖ := by
+        ‖(y.1.1 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))‖ := by
     calc
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) Y‖ := by
         simpa only [S'] using
@@ -318,7 +318,7 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
       _ = _ := by simp only [Y, coreRep_spec]
   have hdiff3 :
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) (S - S')‖ ≤
-        ‖(x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+        ‖(x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
           (((1 : ℕ) : ℝ) + 2)) - y.1.1‖ := by
     calc
       _ = ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2)
@@ -334,7 +334,7 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) (S - S')‖ ≤
         ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-          ((x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          ((x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ := by
     calc
       _ = ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1)
@@ -376,13 +376,13 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
         ‖smoothCcToTensorHs (I := I) (M := M) g₀
           (((1 : ℕ) : ℝ) + 1) (S - S')‖ ≤
       B1 R *
-          (‖(x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          (‖(x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2))‖ +
-            ‖(y.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(y.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2))‖) *
         ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-          ((x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          ((x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ := by
     calc
       _ = B1 R *
@@ -393,13 +393,13 @@ theorem deTurckRemainderOnSmoothCore_tame_bound
             ‖smoothCcToTensorHs (I := I) (M := M) g₀
               (((1 : ℕ) : ℝ) + 1) (S - S')‖) := by ring
       _ ≤ B1 R *
-          ((‖(x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          ((‖(x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-              ‖(y.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(y.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖) :=
         mul_le_mul_of_nonneg_left hprod (hB1 R hR)
       _ = _ := by ring

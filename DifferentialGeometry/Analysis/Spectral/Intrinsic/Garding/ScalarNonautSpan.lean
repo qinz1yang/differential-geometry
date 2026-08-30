@@ -510,7 +510,7 @@ theorem cc_a2_span
               ∀ (F : Finset
                   (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
                     (I := I) (M := M) (g_fam (T : ℝ)) 0 0))
-                (v : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 0)
+                (v : TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 0)
                 (hv : (Function.support v.coeff).Finite),
                 hv.toFinset ⊆ F →
                   2 * ∑ i ∈ F,

@@ -69,12 +69,12 @@ theorem lapA20_span
   refine ⟨ρ, hρ, hρone, ?_⟩
   intro T hT h hh hhρ hleft
   let : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
         TensorL2 0 0 (g_fam (T : Real))) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   let : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
-        tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+        TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   have hvar (s : Real) (hs : s ∈ Set.Icc (0 : Real) h) :
       (T : Real) - s ∈ Set.Icc a b := by

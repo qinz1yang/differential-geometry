@@ -104,7 +104,7 @@ lemma ae_finset_abs_energyIntegrand_le :
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hf_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)),
         sq_abs, hτ i]
-    rw [heq, tensorHs.norm_sq_eq_tsum]
+    rw [heq, TensorHs.norm_sq_eq_tsum]
     refine Summable.sum_le_tsum S (fun i _ => ?_) (u.hiL2 τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)) (sq_nonneg _)
   have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤ ‖u.lo.deriv τ‖ ^ 2 := by
@@ -112,7 +112,7 @@ lemma ae_finset_abs_energyIntegrand_le :
         ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i a * ((u.lo.deriv τ).coeff i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hd_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i a), sq_abs]
-    rw [heq, tensorHs.norm_sq_eq_tsum]
+    rw [heq, TensorHs.norm_sq_eq_tsum]
     refine Summable.sum_le_tsum S (fun i _ => ?_) (u.lo.deriv τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i a) (sq_nonneg _)
   have hsumfd_nonneg : 0 ≤ ∑ i ∈ S, f i * d i :=

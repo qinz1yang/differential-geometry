@@ -39,11 +39,11 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
     (u : MaxRegSolutionSpace (I := I) (M := M) (g := g) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g gBase K hT hT1
       u gforce Rcap)
     {fseq : ℕ → timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T}
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T}
     (hUcont : ∀ N, ∀ i ∈ eigenIdxFinset (I := I) (M := M) g N,
       ContinuousOn
         (fun t => galerkinSolutionMode (I := I) (M := M) g fseq N t i)

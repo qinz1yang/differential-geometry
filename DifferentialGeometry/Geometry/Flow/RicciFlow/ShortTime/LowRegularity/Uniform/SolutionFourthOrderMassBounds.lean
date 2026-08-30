@@ -37,9 +37,9 @@ omit [BoundarylessManifold I M] in
 theorem weighted_mode_mass_four_bound_of_uniform_galerkin_energy
     (g : SmoothRiemannianMetric I M) {T : ℝ}
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (fseq : ℕ → timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (Φ : ℝ)
     (hconv : ∀ (i : TensorEigenIdx (I := I) (M := M) g 0 2),
       ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -78,9 +78,9 @@ omit [BoundarylessManifold I M] in
 theorem summable_solution_mode_mass_five_of_integrated_galerkin_energy
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 ≤ T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (fseq : ℕ → timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (Φ : ℝ)
     (hconv : ∀ (i : TensorEigenIdx (I := I) (M := M) g 0 2),
       ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -127,7 +127,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_weighted_mode_mass
             ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
               IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g gBase K
                   hT hT1
                   u gforce (lowRegularityStateRadius K.top K.slope K.outer K.realize) ∧

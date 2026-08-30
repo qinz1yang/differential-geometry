@@ -147,7 +147,7 @@ private noncomputable def firstOrderActionCore
     (g : SmoothRiemannianMetric I M) (A : LowerScaleActionCoefficients g)
     (σ : ℝ) :
     SmoothCcTensor g 0 2 →ₗ[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 σ where
+      TensorHs (I := I) (M := M) g 0 2 σ where
   toFun := fun W =>
     ccTensorToHs (I := I) (M := M) g 2 σ
       (A.firstOrderAction (I := I) (M := M) W)
@@ -162,15 +162,15 @@ private noncomputable def firstOrderActionCore
 
 noncomputable def LowerScaleActionCoefficients.firstOrderActionThirdToSecondOrder
     {g : SmoothRiemannianMetric I M} (A : LowerScaleActionCoefficients g) :
-    tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
   (firstOrderActionCore (I := I) (M := M) g A (2 : ℝ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ))
 
 noncomputable def LowerScaleActionCoefficients.firstOrderActionSecondToFirstOrder
     {g : SmoothRiemannianMetric I M} (A : LowerScaleActionCoefficients g) :
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
   (firstOrderActionCore (I := I) (M := M) g A (1 : ℝ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ))
 
@@ -282,11 +282,11 @@ theorem exists_firstOrderAction_spectralSobolev_extensions
               (r := 0) (s := 2) (show (2 : ℝ) ≤ 3 by norm_num)
               (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W) =
             ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) W := by
-        apply tensorHs.ext
+        apply TensorHs.ext
         funext i
         simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
       rw [hin, hLoCore]
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff])
   apply ContinuousLinearMap.ext

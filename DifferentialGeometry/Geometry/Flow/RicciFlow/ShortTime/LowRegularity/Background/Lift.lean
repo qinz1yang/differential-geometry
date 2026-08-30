@@ -27,12 +27,12 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 structure BackgroundLiftOps (g : SmoothRiemannianMetric I M) where
-  firstOrderActionThirdToSecondOrder : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-    (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-  firstOrderActionSecondToFirstOrder : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-    (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
+  firstOrderActionThirdToSecondOrder : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+    (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+  firstOrderActionSecondToFirstOrder : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+    (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
 
 theorem HasLowRegularityBoundsAt.realizeCc
     {g gB : SmoothRiemannianMetric I M}
@@ -47,7 +47,7 @@ theorem HasLowRegularityBoundsAt.realizeCc
   have heq :
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S =
         smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) S :=
-    tensorHs.ext (funext fun _ => rfl)
+    TensorHs.ext (funext fun _ => rfl)
   rw [← heq]
   exact hS
 
@@ -77,10 +77,10 @@ structure IsBackgroundSecondOrderActionAt
   secondOrderActionThirdToFirstOrder_continuous : Continuous
     (lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK))
-  secondOrderActionFourthToSecondOrder_norm_le : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+  secondOrderActionFourthToSecondOrder_norm_le : ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
     ‖lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK) v‖ ≤ D.contract
-  secondOrderActionThirdToFirstOrder_norm_le : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+  secondOrderActionThirdToFirstOrder_norm_le : ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
     ‖lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK) v‖ ≤ D.contract
   secondOrderActionFourthToSecondOrder_ccTensorToHs : ∀ S : SmoothCcTensor g 0 2,
@@ -97,7 +97,7 @@ structure IsBackgroundSecondOrderActionAt
       (lowCoreActionCoefficientsBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
         hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).secondOrderActionThirdToFirstOrder
           (I := I) (M := M)
-  secondOrderAction_extensions_commute : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+  secondOrderAction_extensions_commute : ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (1 : ℝ) ≤ 2 by norm_num)).comp
         (lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
@@ -114,9 +114,9 @@ structure IsBackgroundFirstOrderActionAt
     (D : BackgroundLiftParameters K) (F : BackgroundLiftOps (I := I) (M := M) g) : Prop where
   firstOrderActionThirdToSecondOrder_continuous : Continuous F.firstOrderActionThirdToSecondOrder
   firstOrderActionSecondToFirstOrder_continuous : Continuous F.firstOrderActionSecondToFirstOrder
-  firstOrderActionThirdToSecondOrder_norm_le : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+  firstOrderActionThirdToSecondOrder_norm_le : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
     ‖F.firstOrderActionThirdToSecondOrder x‖ ≤ D.zero + D.slope * ‖x‖
-  firstOrderActionSecondToFirstOrder_norm_le : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+  firstOrderActionSecondToFirstOrder_norm_le : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
     ‖F.firstOrderActionSecondToFirstOrder x‖ ≤ D.zero + D.slope * ‖x‖
   firstOrderActionThirdToSecondOrder_ccTensorToHs : ∀ S : SmoothCcTensor g 0 2,
     F.firstOrderActionThirdToSecondOrder (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) =
@@ -128,7 +128,7 @@ structure IsBackgroundFirstOrderActionAt
       (combinedLowerScaleActionCoefficientsBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
         hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).firstOrderActionSecondToFirstOrder
           (I := I) (M := M)
-  firstOrderAction_extensions_commute : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+  firstOrderAction_extensions_commute : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (1 : ℝ) ≤ 2 by norm_num)).comp (F.firstOrderActionThirdToSecondOrder x) =
       (F.firstOrderActionSecondToFirstOrder x).comp

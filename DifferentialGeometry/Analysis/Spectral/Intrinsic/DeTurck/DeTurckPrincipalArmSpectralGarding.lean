@@ -83,8 +83,8 @@ theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_principal_le
           DifferentialGeometry.Integral.L2.tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
       have hL2 : SmoothCcTensor.toL2 X = 0 := norm_eq_zero.mp hL2norm
-      refine tensorHs.ext (funext fun i => ?_)
-      rw [smoothCcToTensorHs_coeff, tensorHs.zero_coeff,
+      refine TensorHs.ext (funext fun i => ?_)
+      rw [smoothCcToTensorHs_coeff, TensorHs.zero_coeff,
         hL2, tensorL2Coeff_eq_inner, inner_zero_right]
     rw [hzero, hzero, hzero]
     simp

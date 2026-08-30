@@ -61,21 +61,21 @@ theorem coreN_outer_uniform
               deTurckRemainderOnSmoothCore (I := I) (M := M) g gBase hδ₀_lt
                 (realizeOfLE (I := I) (M := M) g hRQ hrealQ) y‖ ≤
             Ctop * Q *
-                ‖(x.1.1 : tensorHs (I := I) (M := M) g 0 2
+                ‖(x.1.1 : TensorHs (I := I) (M := M) g 0 2
                   (((1 : ℕ) : ℝ) + 2)) - y.1.1‖ +
               B0 Q *
                 ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
                   (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                  ((x.1.1 : tensorHs (I := I) (M := M) g 0 2
+                  ((x.1.1 : TensorHs (I := I) (M := M) g 0 2
                     (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ +
               B1 Q *
-                  (‖(x.1.1 : tensorHs (I := I) (M := M) g 0 2
+                  (‖(x.1.1 : TensorHs (I := I) (M := M) g 0 2
                     (((1 : ℕ) : ℝ) + 2))‖ +
-                    ‖(y.1.1 : tensorHs (I := I) (M := M) g 0 2
+                    ‖(y.1.1 : TensorHs (I := I) (M := M) g 0 2
                       (((1 : ℕ) : ℝ) + 2))‖) *
                 ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
                   (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                  ((x.1.1 : tensorHs (I := I) (M := M) g 0 2
+                  ((x.1.1 : TensorHs (I := I) (M := M) g 0 2
                     (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ := by
   obtain ⟨ρ, Ctop, B0, B1, hρ, hCtop, hB0, hB1, hcore⟩ :=
     deTurckRemainderOnSmoothCore_tame_uniform_bound (I := I) (M := M) hDim gBase hΛ
@@ -141,21 +141,21 @@ theorem deTurckRemainderOnLowerState_outer_uniform_bound
                 deTurckRemainderOnLowerState (I := I) (M := M) g gBase hR hδ₀_lt
                   (realizeOfLE (I := I) (M := M) g hRQ hrealQ) v‖ ≤
               Ctop * Q *
-                  ‖(u.1 : tensorHs (I := I) (M := M) g 0 2
+                  ‖(u.1 : TensorHs (I := I) (M := M) g 0 2
                     (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
                 B0 Q *
                   ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
                     (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                    ((u.1 : tensorHs (I := I) (M := M) g 0 2
+                    ((u.1 : TensorHs (I := I) (M := M) g 0 2
                       (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
                 B1 Q *
-                    (‖(u.1 : tensorHs (I := I) (M := M) g 0 2
+                    (‖(u.1 : TensorHs (I := I) (M := M) g 0 2
                       (((1 : ℕ) : ℝ) + 2))‖ +
-                      ‖(v.1 : tensorHs (I := I) (M := M) g 0 2
+                      ‖(v.1 : TensorHs (I := I) (M := M) g 0 2
                         (((1 : ℕ) : ℝ) + 2))‖) *
                   ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
                     (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                    ((u.1 : tensorHs (I := I) (M := M) g 0 2
+                    ((u.1 : TensorHs (I := I) (M := M) g 0 2
                       (((1 : ℕ) : ℝ) + 2)) - v.1)‖ := by
   obtain ⟨ρ, Ctop, B0, B1, hρ, hCtop, hB0, hB1, hcore⟩ :=
     coreN_outer_uniform (I := I) (M := M) hDim gBase hΛ
@@ -165,10 +165,10 @@ theorem deTurckRemainderOnLowerState_outer_uniform_bound
   let hrealR := realizeOfLE (I := I) (M := M) g hRQ hrealQ
   let D : Set (lowerState (I := I) (M := M) g 1 R) :=
     smoothCore (I := I) (M := M) g R
-  let F : D → tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
+  let F : D → TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
     deTurckRemainderOnSmoothCore (I := I) (M := M) g gBase hδ₀_lt hrealR
   let e : lowerState (I := I) (M := M) g 1 R →
-      tensorHs (I := I) (M := M) g 0 2
+      TensorHs (I := I) (M := M) g 0 2
         (((1 : ℕ) : ℝ) + 2) := fun u => u.1
   let J := tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
     (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)

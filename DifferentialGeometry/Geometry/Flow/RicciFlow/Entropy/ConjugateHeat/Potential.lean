@@ -97,8 +97,8 @@ theorem conjCoeff_rev
 noncomputable def conjA1
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (s : Real) :
-    tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
-      tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
+    TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
+      TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
   scalarPotH0 (I := I) (M := M) (S.family.metric (T : Real))
     (conjCoeff (I := I) (M := M) S ((T : Real) - s))
 
@@ -109,8 +109,8 @@ theorem conjA1_cont
     (hreg : ∀ s ∈ A, (T : Real) - s ∈ D.regular) :
     ContinuousOn (fun s : Real => conjA1 (I := I) (M := M) S T s) A := by
   let : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
-        tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
+      (TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
+        TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   intro s0 hs0
   let K : D.RegularTime := ⟨(T : Real) - s0, hreg s0 hs0⟩
@@ -169,8 +169,8 @@ theorem conjA1_short
         ∀ᵐ s ∂timeMeasure tau,
           ‖conjA1 (I := I) (M := M) S T s‖ ≤ (C1 : Real) := by
   let : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
-        tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
+      (TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
+        TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)

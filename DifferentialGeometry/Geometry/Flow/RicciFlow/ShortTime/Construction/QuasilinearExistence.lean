@@ -32,12 +32,12 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
     (F : SmoothRiemannianMetric I M → (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_eq : a = 4 * Module.finrank ℝ E + 10)
-    (Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a:ℝ)+2) → tensorHs (I := I) (M := M) g₀ 0 2 (a:ℝ))
+    (Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a:ℝ)+2) → TensorHs (I := I) (M := M) g₀ 0 2 (a:ℝ))
     (Nsec : ∀ (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (_hδ_lt : δ < 1)
         (_hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ),
           SmoothCcTensor g₀ 0 2)
     {L : ℝ≥0} (hLipN : LipschitzWith L Nfun)
-    (H2 : ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    (H2 : ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun u - Nfun u'‖ ≤
         (C₁ : ℝ) * max ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) u‖
@@ -55,12 +55,12 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
     (hForce : ∀ {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
         (hTT₀ : T ≤ (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose)
         (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
         (hduh : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce)
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce)
         (hforce : gforce =ᵐ[timeMeasure T]
           (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
         (hgforce : ‖gforce‖ ≤ 1 / (16 * ((H2.choose : ℝ) + 1)))
         (htrace : timeH1.trace0 _ T u = 0),
       ∃ (d₂F : ℝ), 0 < d₂F ∧ d₂F ≤ T ∧

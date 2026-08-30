@@ -65,8 +65,8 @@ theorem gal_span
   obtain ⟨_C1, hcont1, _hbound1⟩ :=
     conjA1_on (I := I) (M := M) S hS T hreg
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
-  let Inc : tensorHs (I := I) (M := M) q 0 0 2 →L[Real]
-      tensorHs (I := I) (M := M) q 0 0 1 :=
+  let Inc : TensorHs (I := I) (M := M) q 0 0 2 →L[Real]
+      TensorHs (I := I) (M := M) q 0 0 1 :=
     tensorHsInclusion (I := I) (M := M)
       (g := q) (r := 0) (s := 0) (show (1 : Real) ≤ 2 by norm_num)
   have hPot := hcont1.clm_comp

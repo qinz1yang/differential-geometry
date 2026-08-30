@@ -338,7 +338,7 @@ theorem finite_symm_scale
 
 theorem finite_repr_norm
     (g : SmoothRiemannianMetric I M) (s m : ℕ)
-    (T : tensorHs (I := I) (M := M) g 0 s 0)
+    (T : TensorHs (I := I) (M := M) g 0 s 0)
     (hT : (Function.support T.coeff).Finite) :
     ‖ccTensorToHs (I := I) (M := M) g s (m : ℝ)
         (tensorHsSmoothRepr (I := I) (M := M) T hT)‖ ^ 2 =
@@ -357,7 +357,7 @@ theorem finite_repr_norm
     dsimp only [U]
     rw [tensorHsSmoothRepr_toL2 (I := I) (M := M) (le_refl (0 : ℝ)) T hT,
       tensorHsToL2_tensorL2Coeff (I := I) (M := M) (le_refl (0 : ℝ))]
-  rw [tensorHs.norm_sq_eq_tsum]
+  rw [TensorHs.norm_sq_eq_tsum]
   change
     (∑' i,
       tensorSobolevWeight (I := I) (M := M) i (m : ℝ) *
@@ -379,7 +379,7 @@ theorem finite_repr_norm
 
 theorem finite_cc_pair
     (g : SmoothRiemannianMetric I M) (s n : ℕ)
-    (T : tensorHs (I := I) (M := M) g 0 s 0)
+    (T : TensorHs (I := I) (M := M) g 0 s 0)
     (hT : (Function.support T.coeff).Finite)
     (A : SmoothCcTensor g 0 s) :
     ∑ i ∈ hT.toFinset,

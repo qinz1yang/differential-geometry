@@ -91,18 +91,18 @@ theorem connection_laplacian_l2_maximal_regularity
       (∀ f : timeL2 (TensorL2 r s g) T,
         (SolOp f).init = (0 : TensorL2 r s g)) ∧
       ∃ SolField : timeL2 (TensorL2 r s g) T →L[ℝ]
-          timeL2 (tensorHs (I := I) (M := M) g r s 2) T,
+          timeL2 (TensorHs (I := I) (M := M) g r s 2) T,
         ‖SolField‖ ≤ 1 + T ∧
-        ∃ LapField : timeL2 (tensorHs (I := I) (M := M) g r s 2) T →L[ℝ]
+        ∃ LapField : timeL2 (TensorHs (I := I) (M := M) g r s 2) T →L[ℝ]
             timeL2 (TensorL2 r s g) T,
           ∀ f : timeL2 (TensorL2 r s g) T,
             (SolOp f).deriv = LapField (SolField f) + f := by
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g r s
   let ψ := tensorHsZeroEquivL2 (I := I) (M := M) h_compact
-  let Φ : timeL2 (tensorHs (I := I) (M := M) g r s 0) T →L[ℝ] timeL2 (TensorL2 r s g) T :=
+  let Φ : timeL2 (TensorHs (I := I) (M := M) g r s 0) T →L[ℝ] timeL2 (TensorL2 r s g) T :=
     (ψ.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T)
   have hΦ : Φ = (ψ.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T) := rfl
-  let Φsymm : timeL2 (TensorL2 r s g) T →L[ℝ] timeL2 (tensorHs (I := I) (M := M) g r s 0) T :=
+  let Φsymm : timeL2 (TensorL2 r s g) T →L[ℝ] timeL2 (TensorHs (I := I) (M := M) g r s 0) T :=
     (ψ.symm.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T)
   have hΦsymm : Φsymm =
       (ψ.symm.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T) := rfl
@@ -135,18 +135,18 @@ theorem connection_laplacian_l2_maximal_regularity
       (p := 2) (μ := timeMeasure T) f
     have h1' : (Φ (Φsymm f) : ℝ → TensorL2 r s g) =ᵐ[timeMeasure T]
         fun t => ψ ((Φsymm f) t) := by rw [hΦ]; exact h1
-    have h2' : (Φsymm f : ℝ → tensorHs (I := I) (M := M) g r s 0) =ᵐ[timeMeasure T]
+    have h2' : (Φsymm f : ℝ → TensorHs (I := I) (M := M) g r s 0) =ᵐ[timeMeasure T]
         fun t => ψ.symm (f t) := by rw [hΦsymm]; exact h2
     filter_upwards [h1', h2'] with t ht1 ht2
     rw [ht1, ht2, ψ.apply_symm_apply]
-  let c22 : timeL2 (tensorHs (I := I) (M := M) g r s (0 + 2)) T ≃ₗᵢ[ℝ]
-      timeL2 (tensorHs (I := I) (M := M) g r s 2) T :=
+  let c22 : timeL2 (TensorHs (I := I) (M := M) g r s (0 + 2)) T ≃ₗᵢ[ℝ]
+      timeL2 (TensorHs (I := I) (M := M) g r s 2) T :=
     (by rw [show (0:ℝ) + 2 = 2 from by norm_num];
         exact LinearIsometryEquiv.refl ℝ _ :
-      timeL2 (tensorHs (I := I) (M := M) g r s (0 + 2)) T ≃ₗᵢ[ℝ]
-        timeL2 (tensorHs (I := I) (M := M) g r s 2) T)
-  let Aop : timeL2 (tensorHs (I := I) (M := M) g r s 0) T →L[ℝ]
-      timeH1 (tensorHs (I := I) (M := M) g r s 0) T :=
+      timeL2 (TensorHs (I := I) (M := M) g r s (0 + 2)) T ≃ₗᵢ[ℝ]
+        timeL2 (TensorHs (I := I) (M := M) g r s 2) T)
+  let Aop : timeL2 (TensorHs (I := I) (M := M) g r s 0) T →L[ℝ]
+      timeH1 (TensorHs (I := I) (M := M) g r s 0) T :=
     LinearMap.mkContinuous
       { toFun := fun w => maximalRegularityOp (I := I) (M := M) 0 _hT w
         map_add' := fun w w' =>
@@ -170,7 +170,7 @@ theorem connection_laplacian_l2_maximal_regularity
     rw [e1]
     have hinit0 : (Aop (Φsymm f)).init = 0 := by
       rw [hAop_apply]
-      change (timeH1.mk (0 : tensorHs (I := I) (M := M) g r s 0) _).init = 0
+      change (timeH1.mk (0 : TensorHs (I := I) (M := M) g r s 0) _).init = 0
       rw [timeH1.init_mk]
     have hnorm_eq : ‖H1t (Aop (Φsymm f))‖ = ‖Φ (Aop (Φsymm f)).deriv‖ := by
       rw [← Real.sqrt_sq (norm_nonneg (H1t (Aop (Φsymm f)))), timeH1.norm_sq_eq,
@@ -187,9 +187,9 @@ theorem connection_laplacian_l2_maximal_regularity
   · intro f
     have e1 : (H1t ∘L Aop ∘L Φsymm) f = H1t (Aop (Φsymm f)) := rfl
     rw [e1, hH1t_init, hAop_apply]
-    change ψ (timeH1.mk (0 : tensorHs (I := I) (M := M) g r s 0) _).init = 0
+    change ψ (timeH1.mk (0 : TensorHs (I := I) (M := M) g r s 0) _).init = 0
     rw [timeH1.init_mk, map_zero]
-  · have hcoeff : ∀ (u : timeL2 (tensorHs (I := I) (M := M) g r s 0) T)
+  · have hcoeff : ∀ (u : timeL2 (TensorHs (I := I) (M := M) g r s 0) T)
         (i : TensorEigenIdx (I := I) (M := M) g r s),
         timeModeCoeff (I := I) (M := M)
             (maximalRegularitySolField (I := I) (M := M) 0 _hT.le u) i =
@@ -202,7 +202,7 @@ theorem connection_laplacian_l2_maximal_regularity
         (h_compact := h_compact) _hT (Φsymm f))
         (mul_le_mul_of_nonneg_left (hΦsymm_apply f) (by linarith [_hT.le]))
     let SolField : timeL2 (TensorL2 r s g) T →L[ℝ]
-        timeL2 (tensorHs (I := I) (M := M) g r s 2) T :=
+        timeL2 (TensorHs (I := I) (M := M) g r s 2) T :=
       (c22.toLinearIsometry.toContinuousLinearMap) ∘L
         (LinearMap.mkContinuous
           { toFun := fun f => maximalRegularitySolField (I := I) (M := M) 0 _hT.le (Φsymm f)
@@ -229,7 +229,7 @@ theorem connection_laplacian_l2_maximal_regularity
     · refine ContinuousLinearMap.opNorm_le_bound _ (by linarith [_hT.le]) (fun f => ?_)
       rw [hSolField_apply, c22.norm_map]
       exact hSolBound f
-    · let LapField : timeL2 (tensorHs (I := I) (M := M) g r s 2) T →L[ℝ]
+    · let LapField : timeL2 (TensorHs (I := I) (M := M) g r s 2) T →L[ℝ]
           timeL2 (TensorL2 r s g) T :=
         Φ ∘L (timeScaleLaplacian (I := I) (M := M) 0) ∘L
           (c22.symm.toLinearIsometry.toContinuousLinearMap)

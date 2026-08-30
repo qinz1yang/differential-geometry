@@ -41,7 +41,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 
 abbrev ScalarH1Core (q : SmoothRiemannianMetric I M) :=
-  tensorHs.finiteSupportSubmodule
+  TensorHs.finiteSupportSubmodule
     (I := I) (M := M) (g := q) (r := 0) (s := 0) 1
 
 private noncomputable def scalarSmulLin
@@ -150,7 +150,7 @@ private theorem finiteRepr_norm
     tensorHsSmoothRepr_toL2 (I := I) (M := M)
       (show (0 : Real) ≤ 1 by norm_num) v.1 v.2,
     tensorHsToL2_apply]
-  exact tensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M)
+  exact TensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) q 0 0)
     (show (0 : Real) ≤ 1 by norm_num) v.1
 
@@ -183,7 +183,7 @@ private theorem exists_pot_bound
 
 noncomputable def scalarPotOp
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) :
-    tensorHs (I := I) (M := M) q 0 0 1 →L[Real] TensorL2 0 0 q :=
+    TensorHs (I := I) (M := M) q 0 0 1 →L[Real] TensorL2 0 0 q :=
   (scalarPotCore (I := I) (M := M) q ζ).extendOfNorm
     (ScalarH1Core (I := I) (M := M) q).subtype
 
@@ -218,22 +218,22 @@ theorem scalarPotOp_norm
 
 private noncomputable def scalarL2ToH0
     (q : SmoothRiemannianMetric I M) :
-    TensorL2 0 0 q →ₗᵢ[Real] tensorHs (I := I) (M := M) q 0 0 0 :=
+    TensorL2 0 0 q →ₗᵢ[Real] TensorHs (I := I) (M := M) q 0 0 0 :=
   (tensorHsZeroEquivL2 (I := I) (M := M)
     (tensorResolventL2_isCompactOperator
       (I := I) (M := M) q 0 0)).symm.toLinearIsometry
 
 noncomputable def scalarPotH0
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) :
-    tensorHs (I := I) (M := M) q 0 0 1 →L[Real]
-      tensorHs (I := I) (M := M) q 0 0 0 :=
+    TensorHs (I := I) (M := M) q 0 0 1 →L[Real]
+      TensorHs (I := I) (M := M) q 0 0 0 :=
   (scalarL2ToH0 (I := I) (M := M) q).toContinuousLinearMap.comp
     (scalarPotOp (I := I) (M := M) q ζ)
 
 omit [BoundarylessManifold I M] in
 @[simp] theorem scalarPotH0_apply
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
-    (v : tensorHs (I := I) (M := M) q 0 0 1) :
+    (v : TensorHs (I := I) (M := M) q 0 0 1) :
     scalarPotH0 (I := I) (M := M) q ζ v =
       (tensorHsZeroEquivL2 (I := I) (M := M)
         (tensorResolventL2_isCompactOperator
@@ -243,7 +243,7 @@ omit [BoundarylessManifold I M] in
 omit [BoundarylessManifold I M] in
 theorem scalarPotH0_test
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
-    (u : tensorHs (I := I) (M := M) q 0 0 1)
+    (u : TensorHs (I := I) (M := M) q 0 0 1)
     (v : ScalarH1Core (I := I) (M := M) q) :
     inner Real
         (tensorHsZeroEquivL2 (I := I) (M := M)
@@ -427,8 +427,8 @@ private theorem smulHs_bound
 
 noncomputable def scalarPotHs
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ) :
-    tensorHs (I := I) (M := M) q 0 0 (m : Real) →L[Real]
-      tensorHs (I := I) (M := M) q 0 0 (m : Real) :=
+    TensorHs (I := I) (M := M) q 0 0 (m : Real) →L[Real]
+      TensorHs (I := I) (M := M) q 0 0 (m : Real) :=
   ((ccToHsLin (I := I) (M := M) q 0 (m : Real)).comp
       (scalarSmulLin (I := I) (M := M) q ζ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) q 0 (m : Real))
@@ -461,7 +461,7 @@ theorem scalarPotHs_core
 
 theorem scalarPotHs_app
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ)
-    (U : tensorHs (I := I) (M := M) q 0 0 (m : Real)) :
+    (U : TensorHs (I := I) (M := M) q 0 0 (m : Real)) :
     scalarPotHs (I := I) (M := M) q ζ m U =
       appHs q 0 0 m (scalarCc (I := I) (M := M) q ζ) U := by
   have hdense : DenseRange
@@ -480,7 +480,7 @@ private theorem ccHs_inc
     tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0) hτσ
         (ccTensorToHs (I := I) (M := M) q 0 σ U) =
       ccTensorToHs (I := I) (M := M) q 0 τ U := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
 
@@ -496,7 +496,7 @@ private theorem scalarPotH0_cc
   have hdense : DenseRange (ScalarH1Core (I := I) (M := M) q).subtype :=
     (tensorHsFiniteSupportSubmodule_dense
       (I := I) (M := M) (g := q) (r := 0) (s := 0) (σ := 1)).denseRange_val
-  have hcompat (u : tensorHs (I := I) (M := M) q 0 0 1) :
+  have hcompat (u : TensorHs (I := I) (M := M) q 0 0 1) :
       scalarPotH0 (I := I) (M := M) q ζ u =
         tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
           h0n
@@ -535,7 +535,7 @@ private theorem scalarPotH0_cc
               (SmoothCcTensor.toL2 W) := by
           rw [scalarPotH0_apply, scalarPotOp_core, scalarPotCore_apply]
         _ = ccTensorToHs (I := I) (M := M) q 0 0 W := by
-          apply tensorHs.ext
+          apply TensorHs.ext
           funext i
           rw [tensorHsZeroEquivL2_symm_coeff, ccTensorToHs_coeff]
         _ = tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
@@ -576,7 +576,7 @@ private theorem scalarPotH0_cc
 theorem scalarPotHs_inc
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
     (m : ℕ) (hm : (1 : Real) ≤ (m : Real))
-    (u : tensorHs (I := I) (M := M) q 0 0 (m : Real)) :
+    (u : TensorHs (I := I) (M := M) q 0 0 (m : Real)) :
     tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
         (zero_le_one.trans hm)
         (scalarPotHs (I := I) (M := M) q ζ m u) =

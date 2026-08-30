@@ -44,7 +44,7 @@ theorem gFibreOpBound_ccTensorBilinSymm_zero
   simp only [abs_zero, zero_mul, le_refl]
 
 def zeroStateDeTurckRemainderH2 (g₀ g_bg : SmoothRiemannianMetric I M) :
-    tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) :=
   ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ)
     (deTurckSmoothRemainder (I := I) g₀ g_bg
       (0 : SmoothCcTensor g₀ 0 2) (by norm_num)

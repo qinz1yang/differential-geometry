@@ -41,11 +41,11 @@ private theorem tensorSobolevWeight_mul_one_add_lambda_sq
   norm_num
 
 def tensorHsAddTwoOfOneAddLambdaMul (τ : ℝ)
-    (u z : tensorHs (I := I) (M := M) g r s τ)
+    (u z : TensorHs (I := I) (M := M) g r s τ)
     (hz : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       z.coeff i =
         (1 + TensorEigenIdx.lambda (I := I) (M := M) i) * u.coeff i) :
-    tensorHs (I := I) (M := M) g r s (τ + 2) where
+    TensorHs (I := I) (M := M) g r s (τ + 2) where
   coeff := u.coeff
   weighted_summable := by
     have hmass :
@@ -62,7 +62,7 @@ def tensorHsAddTwoOfOneAddLambdaMul (τ : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHsAddTwoOfOneAddLambdaMul_coeff (τ : ℝ)
-    (u z : tensorHs (I := I) (M := M) g r s τ)
+    (u z : TensorHs (I := I) (M := M) g r s τ)
     (hz : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       z.coeff i =
         (1 + TensorEigenIdx.lambda (I := I) (M := M) i) * u.coeff i)

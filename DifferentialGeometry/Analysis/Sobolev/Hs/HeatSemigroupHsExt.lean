@@ -27,18 +27,18 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 def heatSemigroupHsExt (g : SmoothRiemannianMetric I M) (σ : ℝ) (t : ℝ) :
-    scalarHs (I := I) (M := M) g σ →L[ℝ] scalarHs (I := I) (M := M) g σ :=
+    ScalarHs (I := I) (M := M) g σ →L[ℝ] ScalarHs (I := I) (M := M) g σ :=
   if h : 0 < t then
     heatSemigroupHs (I := I) (M := M) (g := g) h (a := σ) (b := σ)
   else
-    ContinuousLinearMap.id ℝ (scalarHs (I := I) (M := M) g σ)
+    ContinuousLinearMap.id ℝ (ScalarHs (I := I) (M := M) g σ)
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem heatSemigroupHsExt_zero (g : SmoothRiemannianMetric I M)
     (σ : ℝ) :
     heatSemigroupHsExt (I := I) (M := M) g σ 0 =
-      ContinuousLinearMap.id ℝ (scalarHs (I := I) (M := M) g σ) := by
+      ContinuousLinearMap.id ℝ (ScalarHs (I := I) (M := M) g σ) := by
   unfold heatSemigroupHsExt
   simp
 
@@ -56,7 +56,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_of_neg {g : SmoothRiemannianMetric I M}
     {σ : ℝ} {t : ℝ} (ht : t < 0) :
     heatSemigroupHsExt (I := I) (M := M) g σ t =
-      ContinuousLinearMap.id ℝ (scalarHs (I := I) (M := M) g σ) := by
+      ContinuousLinearMap.id ℝ (ScalarHs (I := I) (M := M) g σ) := by
   unfold heatSemigroupHsExt
   have : ¬ 0 < t := not_lt.mpr ht.le
   simp [this]
@@ -66,7 +66,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_of_nonpos {g : SmoothRiemannianMetric I M}
     {σ : ℝ} {t : ℝ} (ht : t ≤ 0) :
     heatSemigroupHsExt (I := I) (M := M) g σ t =
-      ContinuousLinearMap.id ℝ (scalarHs (I := I) (M := M) g σ) := by
+      ContinuousLinearMap.id ℝ (ScalarHs (I := I) (M := M) g σ) := by
   unfold heatSemigroupHsExt
   have : ¬ 0 < t := not_lt.mpr ht
   simp [this]
@@ -105,7 +105,7 @@ theorem heatSemigroupHsExt_opNorm_le_one {g : SmoothRiemannianMetric I M}
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_coeff {g : SmoothRiemannianMetric I M} {σ : ℝ}
-    {t : ℝ} (ht : 0 ≤ t) (T : scalarHs (I := I) (M := M) g σ)
+    {t : ℝ} (ht : 0 ≤ t) (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     (heatSemigroupHsExt (I := I) (M := M) g σ t T).coeff i =
       Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) * T.coeff i := by

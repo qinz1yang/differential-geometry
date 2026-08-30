@@ -52,14 +52,14 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrder_ball_bound
       g hρ hδ0 hδ_le hreal)
     {R : ℝ} (hR : 0 ≤ R) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ), ‖v‖ ≤ R →
+      ∀ v : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ), ‖v‖ ≤ R →
         ‖lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ C := by
   let j : SmoothCcTensor g 0 2 →ₗ[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) :=
+      TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) :=
     ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)
-  let F : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
+  let F : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
     lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
   obtain ⟨K, hK⟩ := hpair (R + 1)
   let K₀ : ℝ := max K 0
@@ -71,21 +71,21 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrder_ball_bound
   have hF : Continuous F :=
     lowerScaleFirstOrderActionSecondToFirstOrder_continuous (I := I) (M := M) hpair
   have hright : Continuous
-      (fun w : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+      (fun w : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
         K₀ * ‖w‖ + ‖F 0‖) :=
     (continuous_const.mul continuous_norm).add continuous_const
   have hFnorm : Continuous
-      (fun w : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+      (fun w : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
         ‖show
-          tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-            tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+          TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+            TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
           from F w‖) :=
     Continuous.comp
       (continuous_norm (E :=
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-          tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))) hF
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+          TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))) hF
   have hclosed :
-      IsClosed {w : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) |
+      IsClosed {w : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) |
         R + 1 ≤ ‖w‖ ∨ ‖F w‖ ≤ K₀ * ‖w‖ + ‖F 0‖} := by
     simpa only [Set.ofPred_or] using
       (isClosed_le continuous_const continuous_norm).union

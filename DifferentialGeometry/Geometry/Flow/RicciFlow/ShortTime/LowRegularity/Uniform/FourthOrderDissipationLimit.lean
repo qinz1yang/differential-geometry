@@ -51,17 +51,17 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal v‖ ≤
         Ctop * lowRegularityOuterRadius Ctop ρ P *
-            ‖(u.1 : tensorHs (I := I) (M := M) g 0 2
+            ‖(u.1 : TensorHs (I := I) (M := M) g 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
           B0 * ‖galLowView (I := I) (M := M) g 1
-            ((u.1 : tensorHs (I := I) (M := M) g 0 2
+            ((u.1 : TensorHs (I := I) (M := M) g 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
-          B1 * (‖(u.1 : tensorHs (I := I) (M := M) g 0 2
+          B1 * (‖(u.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-              ‖(v.1 : tensorHs (I := I) (M := M) g 0 2
+              ‖(v.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
             ‖galLowView (I := I) (M := M) g 1
-              ((u.1 : tensorHs (I := I) (M := M) g 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (hG : 0 ≤ G)
     (hpair : ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
@@ -84,10 +84,10 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
               tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) * (c i) ^ 2) +
           (∑ i ∈ F,
             tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2) ^ 2))
-    (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           (fseq N) t ∈ lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius Ctop B1 ρ P))
     (hnem : ∀ N : ℕ, ⇑(fseq N) =ᵐ[timeMeasure T]
@@ -96,7 +96,7 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hE3 : ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       galerkinEnergy (I := I) (M := M)
@@ -148,7 +148,7 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
       fseq (fun t => aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1
         (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
         (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           (fseq N)) t) (hball N) (hnem N) t ht
   have hΦ3 : 0 ≤ Φ3 := le_trans
     (galerkinEnergy_nonneg (I := I) (M := M)

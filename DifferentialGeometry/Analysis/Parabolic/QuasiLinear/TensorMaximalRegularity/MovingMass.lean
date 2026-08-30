@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a T : ℝ}
-private abbrev Ha (a : ℝ) := tensorHs (I := I) (M := M) g r s a
+private abbrev Ha (a : ℝ) := TensorHs (I := I) (M := M) g r s a
 private abbrev ET (a T : ℝ) :=
   MaxRegSolutionSpace (I := I) (M := M) (g := g) (r := r) (s := s) a T
 noncomputable def massForce
@@ -52,7 +52,7 @@ noncomputable def massDuh
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
     (C : ℝ≥0) (hC : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (C : ℝ))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (u : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T) :
     ET (I := I) (M := M) (g := g) (r := r) (s := s) a T :=
@@ -111,7 +111,7 @@ theorem massDuh_diff
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
     (C : ℝ≥0) (hC : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (C : ℝ))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (u v : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T) :
     ‖massDuh hT B hB C hC u₀ f u -
@@ -137,7 +137,7 @@ theorem massDuh_contract
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
     (C : ℝ≥0) (hC : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (C : ℝ))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (hsmall : 2 * (C : ℝ) < 1) :
     ContractingWith (2 * C)
@@ -159,7 +159,7 @@ theorem massDuh_exists
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
     (C : ℝ≥0) (hC : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (C : ℝ))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (hsmall : 2 * (C : ℝ) < 1) :
     ∃! u : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T,
@@ -179,7 +179,7 @@ theorem massDuh_trace
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
     (hB : AEStronglyMeasurable B (timeMeasure T))
     (C : ℝ≥0) (hC : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (C : ℝ))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T)
     (u : ET (I := I) (M := M) (g := g) (r := r) (s := s) a T)
     (hu : massDuh hT B hB C hC u₀ f u = u) :

@@ -180,7 +180,7 @@ def galerkinActionVectorBackground (g₀ g_bg : SmoothRiemannianMetric I M) {R �
           (ccTensorBilinSymm (I := I) g₀ T) δ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
   smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
     ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g_bg
           (symmS (I := I) (M := M) g₀
@@ -301,7 +301,7 @@ theorem galForceArmBackground (g₀ g_bg : SmoothRiemannianMetric I M)
     sub_eq_iff_eq_add'.mp harm
   rw [galTameForce_apply]
   by_cases hi : i ∈ S
-  · rw [if_pos hi, if_pos hi, hval, tensorHs.add_coeff]
+  · rw [if_pos hi, if_pos hi, hval, TensorHs.add_coeff]
   · rw [if_neg hi, if_neg hi]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

@@ -43,8 +43,8 @@ private noncomputable def firstCovariantDerivativeApplicationLinearMap
 noncomputable def firstCovariantDerivativeApplication
     (g : SmoothRiemannianMetric I M) (s c : ℕ)
     (Φ : SmoothCcTensor g (s + 1) c) :
-    tensorHs (I := I) (M := M) g 0 s (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 c (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 s (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 c (2 : ℝ) :=
   ((ccToHsLin (I := I) (M := M) g c (2 : ℝ)).comp
       (firstCovariantDerivativeApplicationLinearMap (I := I) (M := M) g s c Φ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g s (3 : ℝ))

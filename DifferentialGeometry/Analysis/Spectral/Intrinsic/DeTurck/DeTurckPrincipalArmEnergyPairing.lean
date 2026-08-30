@@ -3627,7 +3627,7 @@ theorem two_mul_inner_smoothCcToTensorHs_deTurckPrincipalCometricArm_le
               ((smoothCcToTensorHs (I := I) (M := M) g₀ ((n : ℕ) : ℝ) u₀).coeff i *
                 (smoothCcToTensorHs (I := I) (M := M) g₀ ((n : ℕ) : ℝ)
                   (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ u₀)).coeff i) :=
-    tensorHs.inner_def (I := I) (M := M)
+    TensorHs.inner_def (I := I) (M := M)
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((n : ℕ) : ℝ) u₀)
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((n : ℕ) : ℝ)
         (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ u₀))

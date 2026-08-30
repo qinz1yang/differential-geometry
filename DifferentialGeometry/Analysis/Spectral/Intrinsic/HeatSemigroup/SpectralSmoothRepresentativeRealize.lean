@@ -220,12 +220,12 @@ private lemma toHs_spectralPartialSum_sub (u : TensorL2 0 2 g) (k : ℕ) {m n : 
 
 omit [BoundarylessManifold I M] in
 private lemma weightedPartial_le_tsum (u : TensorL2 0 2 g) (k n : ℕ)
-    (v : tensorHs (I := I) (M := M) g 0 2 ((2 * k : ℕ) : ℝ))
+    (v : TensorHs (I := I) (M := M) g 0 2 ((2 * k : ℕ) : ℝ))
     (hv : ∀ i, v.coeff i = tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i) :
     weightedPartial (I := I) (M := M) g u k n ≤ ‖v‖ ^ 2 := by
   classical
-  rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M) v]
+  rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M) v]
   unfold weightedPartial
   have hterm : ∀ i,
       (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ ((2 * k : ℕ) : ℝ) *
@@ -242,7 +242,7 @@ private lemma weightedPartial_le_tsum (u : TensorL2 0 2 g) (k n : ℕ)
 
 omit [BoundarylessManifold I M] in
 private lemma weightedPartial_cauchySeq (u : TensorL2 0 2 g) (k : ℕ)
-    (v : tensorHs (I := I) (M := M) g 0 2 ((2 * k : ℕ) : ℝ))
+    (v : TensorHs (I := I) (M := M) g 0 2 ((2 * k : ℕ) : ℝ))
     (hv : ∀ i, v.coeff i = tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i) :
     CauchySeq (fun n => weightedPartial (I := I) (M := M) g u k n) := by
@@ -310,7 +310,7 @@ private lemma dist_toHs_spectralPartialSum_le (u : TensorL2 0 2 g) (k : ℕ)
 
 theorem spectralPartialSum_toHs_cauchy (u : TensorL2 0 2 g)
     (hu : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ v : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ v = u)
     (k : ℕ) :

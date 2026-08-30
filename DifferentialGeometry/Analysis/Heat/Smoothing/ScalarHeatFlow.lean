@@ -978,7 +978,7 @@ private lemma eigenvectorSmooth_hs_norm
   classical
   have hsq : ‖ccTensorToHs (I := I) (M := M) g 0 σ (eigenvectorSmooth g 0 0 i)‖ ^ 2 =
       tensorSobolevWeight (I := I) (M := M) i σ := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     have hcoeff (j : TensorEigenIdx00 g) :
         (ccTensorToHs (I := I) (M := M) g 0 σ (eigenvectorSmooth g 0 0 i)).coeff j =
           if j = i then (1 : ℝ) else 0 := by
@@ -2533,7 +2533,7 @@ private lemma summable_abs_tensorL2Coeff_mul_hsWeight_of_smooth
   have hsmooth : Summable (fun i : TensorEigenIdx00 g =>
       tensorSobolevWeight (I := I) (M := M) i (σ + p) * (d i) ^ 2) := by
     let S : SmoothCcTensor g 0 0 := scalarCcLift g u₀
-    let V : tensorHs (I := I) (M := M) g 0 0 (σ + p) :=
+    let V : TensorHs (I := I) (M := M) g 0 0 (σ + p) :=
       ccTensorToHs (I := I) (M := M) g 0 (σ + p) S
     have hcoeff (i : TensorEigenIdx00 g) : (V.coeff i) = d i := by
       dsimp [V, S, d]
@@ -8008,7 +8008,7 @@ private lemma summable_tensorSobolevWeight_mul_coeff_sq_of_smooth
           (SmoothCcTensor.toL2 (scalarCcLift g u₀)) i) ^ 2) := by
   classical
   let S : SmoothCcTensor g 0 0 := scalarCcLift g u₀
-  let V : tensorHs (I := I) (M := M) g 0 0 σ :=
+  let V : TensorHs (I := I) (M := M) g 0 0 σ :=
     ccTensorToHs (I := I) (M := M) g 0 σ S
   have hcoeff (i : TensorEigenIdx00 g) : (V.coeff i) =
       tensorL2Coeff (I := I) (M := M)

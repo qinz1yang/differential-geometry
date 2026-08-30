@@ -282,13 +282,13 @@ private lemma tensorHeat_weight_term_le {g : SmoothRiemannianMetric I M}
           positivity
     _ = K * (tensorSobolevWeight (I := I) (M := M) i a * c ^ 2) := by ring
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma heatHs_weighted_summable {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i b *
         (Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
@@ -304,15 +304,15 @@ lemma heatHs_weighted_summable {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
     exact tensorHeat_weight_term_le (I := I) (M := M) i a b ht (T.coeff i)
 
 def heatHsFun {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (T : tensorHs (I := I) (M := M) g r s a) :
-    tensorHs (I := I) (M := M) g r s b where
+    (T : TensorHs (I := I) (M := M) g r s a) :
+    TensorHs (I := I) (M := M) g r s b where
   coeff i := Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
     T.coeff i
   weighted_summable := heatHs_weighted_summable (I := I) (M := M) b ht T
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma heatHsFun_coeff {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (T : tensorHs (I := I) (M := M) g r s a)
+    (T : TensorHs (I := I) (M := M) g r s a)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (heatHsFun (I := I) (M := M) b ht T).coeff i =
       Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
@@ -320,7 +320,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma heatHsFun_add {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (S T : tensorHs (I := I) (M := M) g r s a) :
+    (S T : TensorHs (I := I) (M := M) g r s a) :
     heatHsFun (I := I) (M := M) b ht (S + T) =
       heatHsFun (I := I) (M := M) b ht S +
         heatHsFun (I := I) (M := M) b ht T := by
@@ -330,7 +330,7 @@ lemma heatHsFun_add {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma heatHsFun_smul {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t) (c : ℝ)
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     heatHsFun (I := I) (M := M) b ht (c • T) =
       c • heatHsFun (I := I) (M := M) b ht T := by
   ext i
@@ -340,7 +340,7 @@ lemma heatHsFun_smul {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t) (c : ℝ)
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_heatHsFun_le_smoothing {a b : ℝ} (hab : a ≤ b) {t : ℝ}
     (ht : 0 < t) (ht1 : t ≤ 1)
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     ‖heatHsFun (I := I) (M := M) b ht T‖ ≤
       Real.sqrt (tensorSmoothingConst (b - a)) *
         t ^ (-((b - a) / 2)) * ‖T‖ := by
@@ -488,7 +488,7 @@ lemma norm_heatHsFun_le_smoothing {a b : ℝ} (hab : a ≤ b) {t : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_heatHsFun_le_self {a : ℝ} {t : ℝ} (ht : 0 < t)
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     ‖heatHsFun (I := I) (M := M) a ht T‖ ≤ ‖T‖ := by
   have h_a_sq_heat : ‖heatHsFun (I := I) (M := M) a ht T‖ ^ 2 =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i a *
@@ -546,37 +546,37 @@ lemma norm_heatHsFun_le_self {a : ℝ} {t : ℝ} (ht : 0 < t)
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
 
-end tensorHs
+end TensorHs
 
 def tensorHeatSemigroupHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {t : ℝ} (ht : 0 < t)
     {a b : ℝ} :
-    tensorHs (I := I) (M := M) g r s a →L[ℝ]
-      tensorHs (I := I) (M := M) g r s b :=
+    TensorHs (I := I) (M := M) g r s a →L[ℝ]
+      TensorHs (I := I) (M := M) g r s b :=
   LinearMap.mkContinuous
-    { toFun := tensorHs.heatHsFun (I := I) (M := M) b ht
-      map_add' := tensorHs.heatHsFun_add (I := I) (M := M) b ht
+    { toFun := TensorHs.heatHsFun (I := I) (M := M) b ht
+      map_add' := TensorHs.heatHsFun_add (I := I) (M := M) b ht
       map_smul' := fun c T =>
-        tensorHs.heatHsFun_smul (I := I) (M := M) b ht c T }
+        TensorHs.heatHsFun_smul (I := I) (M := M) b ht c T }
     (max 1 (tensorSmoothingConst (b - a) * (min t 1) ^ (-(b - a))))
     (fun T => by
-      change ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ ≤ _
+      change ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ ≤ _
       set K : ℝ :=
         max 1 (tensorSmoothingConst (b - a) * (min t 1) ^ (-(b - a)))
         with hK_def
       have hK_ge_one : (1 : ℝ) ≤ K := le_max_left _ _
       have hK_nn : 0 ≤ K := le_trans zero_le_one hK_ge_one
-      have h_b_sq : ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ ^ 2 =
+      have h_b_sq : ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ ^ 2 =
           ∑' i, tensorSobolevWeight (I := I) (M := M) i b *
             (Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
               T.coeff i) ^ 2 := by
-        have h := tensorHs.norm_sq_eq_tsum (I := I) (M := M)
-          (tensorHs.heatHsFun (I := I) (M := M) b ht T)
-        simpa only [tensorHs.heatHsFun_coeff] using h
+        have h := TensorHs.norm_sq_eq_tsum (I := I) (M := M)
+          (TensorHs.heatHsFun (I := I) (M := M) b ht T)
+        simpa only [TensorHs.heatHsFun_coeff] using h
       have h_a_sq : ‖T‖ ^ 2 =
           ∑' i, tensorSobolevWeight (I := I) (M := M) i a *
             (T.coeff i) ^ 2 :=
-        tensorHs.norm_sq_eq_tsum (I := I) (M := M) T
+        TensorHs.norm_sq_eq_tsum (I := I) (M := M) T
       have h_term_le : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
           tensorSobolevWeight (I := I) (M := M) i b *
               (Real.exp
@@ -593,7 +593,7 @@ def tensorHeatSemigroupHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
               (Real.exp
                   (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
                 T.coeff i) ^ 2) :=
-        tensorHs.heatHs_weighted_summable (I := I) (M := M) b ht T
+        TensorHs.heatHs_weighted_summable (I := I) (M := M) b ht T
       have h_summ_dom :
           Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
             K * (tensorSobolevWeight (I := I) (M := M) i a *
@@ -614,25 +614,25 @@ def tensorHeatSemigroupHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
               (T.coeff i) ^ 2) :=
         tsum_mul_left
       have h_sq_le :
-          ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ ^ 2 ≤
+          ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ ^ 2 ≤
             K * ‖T‖ ^ 2 := by
         rw [h_b_sq, h_a_sq]
         rw [← h_tsum_factor]
         exact h_tsum_le
       have h_sqrtK_sq : Real.sqrt K ^ 2 = K := Real.sq_sqrt hK_nn
       have h_final_sq :
-          ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ ^ 2 ≤
+          ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ ^ 2 ≤
             (Real.sqrt K * ‖T‖) ^ 2 := by
         have h_expand : (Real.sqrt K * ‖T‖) ^ 2 = K * ‖T‖ ^ 2 := by
           rw [mul_pow, h_sqrtK_sq]
         rw [h_expand]
         exact h_sq_le
-      have h1 : 0 ≤ ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ :=
+      have h1 : 0 ≤ ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ :=
         norm_nonneg _
       have h2 : 0 ≤ ‖T‖ := norm_nonneg T
       have h_sqrtK_nn : 0 ≤ Real.sqrt K := Real.sqrt_nonneg _
       have h_norm_le_sqrt :
-          ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ ≤
+          ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ ≤
             Real.sqrt K * ‖T‖ := by
         nlinarith [h_final_sq, h1, mul_nonneg h_sqrtK_nn h2]
       have h_sqrtK_le_K : Real.sqrt K ≤ K := by
@@ -641,7 +641,7 @@ def tensorHeatSemigroupHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
               Real.sqrt_le_sqrt h_K_le_sq
           _ = K := Real.sqrt_sq hK_nn
       calc
-        ‖tensorHs.heatHsFun (I := I) (M := M) b ht T‖ ≤ Real.sqrt K * ‖T‖ :=
+        ‖TensorHs.heatHsFun (I := I) (M := M) b ht T‖ ≤ Real.sqrt K * ‖T‖ :=
           h_norm_le_sqrt
         _ ≤ K * ‖T‖ := mul_le_mul_of_nonneg_right h_sqrtK_le_K h2)
 
@@ -649,15 +649,15 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorHeatSemigroupHs_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {t : ℝ}
     (ht : 0 < t) {a b : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) ht (a := a) (b := b) T =
-      tensorHs.heatHsFun (I := I) (M := M) b ht T := rfl
+      TensorHs.heatHsFun (I := I) (M := M) b ht T := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHeatSemigroupHs_coeff {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {t : ℝ}
     (ht : 0 < t) {a b : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s a)
+    (T : TensorHs (I := I) (M := M) g r s a)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) ht (a := a) (b := b)
         T).coeff i =
@@ -680,7 +680,7 @@ theorem tensorHeatSemigroupHs_opNorm_le {g : SmoothRiemannianMetric I M}
     positivity
   refine ContinuousLinearMap.opNorm_le_bound _ h_bound_nn (fun T => ?_)
   rw [tensorHeatSemigroupHs_apply]
-  exact tensorHs.norm_heatHsFun_le_smoothing (I := I) (M := M) hab ht ht1 T
+  exact TensorHs.norm_heatHsFun_le_smoothing (I := I) (M := M) hab ht ht1 T
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatSemigroupHs_opNorm_le_one {g : SmoothRiemannianMetric I M}
@@ -690,19 +690,19 @@ theorem tensorHeatSemigroupHs_opNorm_le_one {g : SmoothRiemannianMetric I M}
       1 := by
   refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun T => ?_)
   rw [tensorHeatSemigroupHs_apply, one_mul]
-  exact tensorHs.norm_heatHsFun_le_self (I := I) (M := M) ht T
+  exact TensorHs.norm_heatHsFun_le_self (I := I) (M := M) ht T
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatSemigroupHs_add {g : SmoothRiemannianMetric I M}
     {r s : ℕ}
     {t u : ℝ} (ht : 0 < t) (hu : 0 < u) {a b c : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s a) :
+    (T : TensorHs (I := I) (M := M) g r s a) :
     tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) (show (0:ℝ) < t + u by
         linarith) (a := a) (b := b) T =
       tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) ht (a := c) (b := b)
         (tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) hu (a := a) (b := c)
           T) := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHeatSemigroupHs_coeff, tensorHeatSemigroupHs_coeff,
     tensorHeatSemigroupHs_coeff]
@@ -734,8 +734,8 @@ theorem tensorHeatSemigroupHs_add_comp {g : SmoothRiemannianMetric I M}
 example {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {t : ℝ} (ht : 0 < t)
     (a b : ℝ) :
-    tensorHs (I := I) (M := M) g r s a →L[ℝ]
-      tensorHs (I := I) (M := M) g r s b :=
+    TensorHs (I := I) (M := M) g r s a →L[ℝ]
+      TensorHs (I := I) (M := M) g r s b :=
   tensorHeatSemigroupHs (I := I) (M := M) (g := g) (r := r) (s := s) ht (a := a) (b := b)
 
 example {μ : ℝ} (hμ : 0 ≤ μ) {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1)

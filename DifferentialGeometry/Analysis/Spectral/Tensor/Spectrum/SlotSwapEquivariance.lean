@@ -1028,9 +1028,9 @@ theorem norm_smoothCcToTensorHs_symmS_le (g₀ : SmoothRiemannianMetric I M) (σ
     (X : SmoothCcTensor g₀ 0 2) :
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ (ccTensor02Symm (I := I) (M := M) g₀ X)‖ ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ X‖ := by
-  rw [tensorHs.norm_eq_sqrt_tsum
+  rw [TensorHs.norm_eq_sqrt_tsum
       (smoothCcToTensorHs (I := I) (M := M) g₀ σ (ccTensor02Symm (I := I) (M := M) g₀ X)),
-    tensorHs.norm_eq_sqrt_tsum (smoothCcToTensorHs (I := I) (M := M) g₀ σ X)]
+    TensorHs.norm_eq_sqrt_tsum (smoothCcToTensorHs (I := I) (M := M) g₀ σ X)]
   apply Real.sqrt_le_sqrt
   simp only [smoothCcToTensorHs_coeff]
   exact tsum_weighted_symmS_le (I := I) (M := M) g₀ X σ

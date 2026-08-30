@@ -36,7 +36,7 @@ theorem scalar_crit_tame
               (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
                 (I := I) (M := M)
                 (S.family.metric (T : Real)) 0 0))
-            (v : tensorHs (I := I) (M := M)
+            (v : TensorHs (I := I) (M := M)
               (S.family.metric (T : Real)) 0 0 0)
             (hv : (Function.support v.coeff).Finite),
             hv.toFinset ⊆ F →

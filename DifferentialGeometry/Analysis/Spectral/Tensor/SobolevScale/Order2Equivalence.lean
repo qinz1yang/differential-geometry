@@ -51,7 +51,7 @@ theorem tensorPouSobolevHs_order2_equiv_pouSobolev
 
 def tensorHsOrder2IsometryEquivTensorL2
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    tensorHs (I := I) (M := M) g r s 2 ≃ₗᵢ[ℝ] TensorL2 r s g :=
+    TensorHs (I := I) (M := M) g r s 2 ≃ₗᵢ[ℝ] TensorL2 r s g :=
   (tensorHsEquivOfFractionalPower (I := I) (M := M)
       (g := g) (r := r) (s := s) 2 0).trans
     (tensorHsZeroEquivL2 (I := I) (M := M)

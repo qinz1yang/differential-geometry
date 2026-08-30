@@ -36,14 +36,14 @@ lemma scalarSobolevWeight_mono {g : SmoothRiemannianMetric I M}
   exact Real.rpow_le_rpow_of_exponent_le
     (one_le_one_add_lambda (I := I) (M := M) i) hτσ
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weighted_summable_of_le {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     Summable (fun i : EigenIdx (I := I) (M := M) g =>
       scalarSobolevWeight (I := I) (M := M) i τ * (T.coeff i) ^ 2) := by
   refine Summable.of_nonneg_of_le ?_ ?_ T.weighted_summable
@@ -58,21 +58,21 @@ lemma weighted_summable_of_le {τ σ : ℝ} (hτσ : τ ≤ σ)
     exact mul_le_mul_of_nonneg_right hmono (sq_nonneg _)
 
 def inclusionFun {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
-    scalarHs (I := I) (M := M) g τ where
+    (T : ScalarHs (I := I) (M := M) g σ) :
+    ScalarHs (I := I) (M := M) g τ where
   coeff := T.coeff
   weighted_summable := weighted_summable_of_le (I := I) (M := M) hτσ T
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma inclusionFun_coeff {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     (inclusionFun (I := I) (M := M) hτσ T).coeff = T.coeff := rfl
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inclusionFun_add {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (S T : scalarHs (I := I) (M := M) g σ) :
+    (S T : ScalarHs (I := I) (M := M) g σ) :
     inclusionFun (I := I) (M := M) hτσ (S + T) =
       inclusionFun (I := I) (M := M) hτσ S +
         inclusionFun (I := I) (M := M) hτσ T := by
@@ -82,7 +82,7 @@ lemma inclusionFun_add {τ σ : ℝ} (hτσ : τ ≤ σ)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inclusionFun_smul {τ σ : ℝ} (hτσ : τ ≤ σ) (c : ℝ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     inclusionFun (I := I) (M := M) hτσ (c • T) =
       c • inclusionFun (I := I) (M := M) hτσ T := by
   ext i
@@ -91,7 +91,7 @@ lemma inclusionFun_smul {τ σ : ℝ} (hτσ : τ ≤ σ) (c : ℝ)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_inclusionFun_le {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     ‖inclusionFun (I := I) (M := M) hτσ T‖ ≤ ‖T‖ := by
   have h_t_sq : ‖inclusionFun (I := I) (M := M) hτσ T‖ ^ 2 =
       ∑' i, scalarSobolevWeight (I := I) (M := M) i τ * (T.coeff i) ^ 2 := by
@@ -119,45 +119,45 @@ lemma norm_inclusionFun_le {τ σ : ℝ} (hτσ : τ ≤ σ)
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
 
-end scalarHs
+end ScalarHs
 
 def scalarHsInclusion {g : SmoothRiemannianMetric I M} {τ σ : ℝ}
     (hτσ : τ ≤ σ) :
-    scalarHs (I := I) (M := M) g σ →L[ℝ]
-      scalarHs (I := I) (M := M) g τ :=
+    ScalarHs (I := I) (M := M) g σ →L[ℝ]
+      ScalarHs (I := I) (M := M) g τ :=
   LinearMap.mkContinuous
-    { toFun := scalarHs.inclusionFun (I := I) (M := M) hτσ
-      map_add' := scalarHs.inclusionFun_add (I := I) (M := M) hτσ
+    { toFun := ScalarHs.inclusionFun (I := I) (M := M) hτσ
+      map_add' := ScalarHs.inclusionFun_add (I := I) (M := M) hτσ
       map_smul' := fun c T =>
-        scalarHs.inclusionFun_smul (I := I) (M := M) hτσ c T }
+        ScalarHs.inclusionFun_smul (I := I) (M := M) hτσ c T }
     1
     (fun T => by
-      change ‖scalarHs.inclusionFun (I := I) (M := M) hτσ T‖ ≤ 1 * ‖T‖
+      change ‖ScalarHs.inclusionFun (I := I) (M := M) hτσ T‖ ≤ 1 * ‖T‖
       rw [one_mul]
-      exact scalarHs.norm_inclusionFun_le (I := I) (M := M) hτσ T)
+      exact ScalarHs.norm_inclusionFun_le (I := I) (M := M) hτσ T)
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma scalarHsInclusion_apply {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     scalarHsInclusion (I := I) (M := M) (g := g) hτσ T =
       inclusionFun (I := I) (M := M) hτσ T := rfl
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_coeff_fun {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T).coeff =
       T.coeff := rfl
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_coeff {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T).coeff i =
       T.coeff i := rfl
@@ -171,7 +171,7 @@ theorem scalarHsInclusion_opNorm_le_one {τ σ : ℝ} (hτσ : τ ≤ σ) :
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_norm_le {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     ‖scalarHsInclusion (I := I) (M := M) (g := g) hτσ T‖ ≤ ‖T‖ :=
   norm_inclusionFun_le (I := I) (M := M) hτσ T
 
@@ -182,7 +182,7 @@ theorem scalarHsInclusion_injective {τ σ : ℝ} (hτσ : τ ≤ σ) :
       (scalarHsInclusion (I := I) (M := M) (g := g) hτσ) := by
   intro S T hST
   ext i
-  have h := congrArg (fun U => scalarHs.coeff U i) hST
+  have h := congrArg (fun U => ScalarHs.coeff U i) hST
   simpa only [scalarHsInclusion_coeff] using h
 
 omit [SigmaCompactSpace M] in
@@ -190,16 +190,16 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_refl {σ : ℝ} :
     scalarHsInclusion (I := I) (M := M) (g := g) (le_refl σ) =
       ContinuousLinearMap.id ℝ
-        (scalarHs (I := I) (M := M) g σ) := by
+        (ScalarHs (I := I) (M := M) g σ) := by
   refine ContinuousLinearMap.ext (fun T => ?_)
-  refine scalarHs.ext ?_
+  refine ScalarHs.ext ?_
   funext i
   rw [scalarHsInclusion_coeff, ContinuousLinearMap.id_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_refl_apply {σ : ℝ}
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     scalarHsInclusion (I := I) (M := M) (g := g) (le_refl σ) T = T := by
   ext i
   simp only [scalarHsInclusion_coeff]
@@ -219,7 +219,7 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_trans_apply {τ₁ σ τ₂ : ℝ}
     (h₁ : τ₁ ≤ σ) (h₂ : σ ≤ τ₂)
-    (T : scalarHs (I := I) (M := M) g τ₂) :
+    (T : ScalarHs (I := I) (M := M) g τ₂) :
     scalarHsInclusion (I := I) (M := M) (g := g) (h₁.trans h₂) T =
       scalarHsInclusion (I := I) (M := M) (g := g) h₁
         (scalarHsInclusion (I := I) (M := M) (g := g) h₂ T) := by
@@ -229,7 +229,7 @@ theorem scalarHsInclusion_trans_apply {τ₁ σ τ₂ : ℝ}
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma coeff_summable_sq_of_nonneg {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     Summable (fun i : EigenIdx (I := I) (M := M) g =>
       (T.coeff i) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) ?_
@@ -241,7 +241,7 @@ lemma coeff_summable_sq_of_nonneg {σ : ℝ} (hσ : 0 ≤ σ)
   nlinarith [hw, hsq]
 
 def toL2Seq {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     lp (fun _ : EigenIdx (I := I) (M := M) g => ℝ) 2 :=
   ⟨T.coeff, by
     apply memℓp_gen
@@ -259,18 +259,18 @@ def toL2Seq {σ : ℝ} (hσ : 0 ≤ σ)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma toL2Seq_apply {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     (toL2Seq (I := I) (M := M) hσ T : _ → ℝ) i = T.coeff i := rfl
 
 def toL2Fun {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
   (resolventHilbertEigenbasisSigma (I := I) (M := M) g).repr.symm
     (toL2Seq (I := I) (M := M) hσ T)
 
 @[simp] lemma scalarL2Coeff_toL2Fun {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     scalarL2Coeff (I := I) (M := M)
         (toL2Fun (I := I) (M := M) hσ T) i = T.coeff i := by
@@ -281,7 +281,7 @@ def toL2Fun {σ : ℝ} (hσ : 0 ≤ σ)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma toL2Seq_add {σ : ℝ} (hσ : 0 ≤ σ)
-    (S T : scalarHs (I := I) (M := M) g σ) :
+    (S T : ScalarHs (I := I) (M := M) g σ) :
     toL2Seq (I := I) (M := M) hσ (S + T) =
       toL2Seq (I := I) (M := M) hσ S + toL2Seq (I := I) (M := M) hσ T := by
   apply lp.ext
@@ -291,7 +291,7 @@ lemma toL2Seq_add {σ : ℝ} (hσ : 0 ≤ σ)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma toL2Seq_smul {σ : ℝ} (hσ : 0 ≤ σ) (c : ℝ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     toL2Seq (I := I) (M := M) hσ (c • T) =
       c • toL2Seq (I := I) (M := M) hσ T := by
   apply lp.ext
@@ -300,7 +300,7 @@ lemma toL2Seq_smul {σ : ℝ} (hσ : 0 ≤ σ) (c : ℝ)
     smul_eq_mul]
 
 lemma toL2Fun_add {σ : ℝ} (hσ : 0 ≤ σ)
-    (S T : scalarHs (I := I) (M := M) g σ) :
+    (S T : ScalarHs (I := I) (M := M) g σ) :
     toL2Fun (I := I) (M := M) hσ (S + T) =
       toL2Fun (I := I) (M := M) hσ S + toL2Fun (I := I) (M := M) hσ T := by
   set b := resolventHilbertEigenbasisSigma (I := I) (M := M) g
@@ -324,7 +324,7 @@ lemma toL2Fun_add {σ : ℝ} (hσ : 0 ≤ σ)
           toL2Fun (I := I) (M := M) hσ T := rfl
 
 lemma toL2Fun_smul {σ : ℝ} (hσ : 0 ≤ σ) (c : ℝ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     toL2Fun (I := I) (M := M) hσ (c • T) =
       c • toL2Fun (I := I) (M := M) hσ T := by
   set b := resolventHilbertEigenbasisSigma (I := I) (M := M) g
@@ -361,7 +361,7 @@ private lemma scalarParseval_norm_sq
   linarith [h_par, h_sq]
 
 lemma norm_toL2Fun_le {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     ‖toL2Fun (I := I) (M := M) hσ T‖ ≤ ‖T‖ := by
   have h_l2_sq : ‖toL2Fun (I := I) (M := M) hσ T‖ ^ 2 =
       ∑' i, (T.coeff i) ^ 2 := by
@@ -411,27 +411,27 @@ lemma norm_toL2Fun_le {σ : ℝ} (hσ : 0 ≤ σ)
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
 
-end scalarHs
+end ScalarHs
 
 def scalarHsToL2 {g : SmoothRiemannianMetric I M} {σ : ℝ} (hσ : 0 ≤ σ) :
-    scalarHs (I := I) (M := M) g σ →L[ℝ]
+    ScalarHs (I := I) (M := M) g σ →L[ℝ]
       Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
   LinearMap.mkContinuous
-    { toFun := scalarHs.toL2Fun (I := I) (M := M) hσ
-      map_add' := scalarHs.toL2Fun_add (I := I) (M := M) hσ
-      map_smul' := fun c T => scalarHs.toL2Fun_smul (I := I) (M := M) hσ c T }
+    { toFun := ScalarHs.toL2Fun (I := I) (M := M) hσ
+      map_add' := ScalarHs.toL2Fun_add (I := I) (M := M) hσ
+      map_smul' := fun c T => ScalarHs.toL2Fun_smul (I := I) (M := M) hσ c T }
     1
     (fun T => by
-      change ‖scalarHs.toL2Fun (I := I) (M := M) hσ T‖ ≤ 1 * ‖T‖
+      change ‖ScalarHs.toL2Fun (I := I) (M := M) hσ T‖ ≤ 1 * ‖T‖
       rw [one_mul]
-      exact scalarHs.norm_toL2Fun_le (I := I) (M := M) hσ T)
+      exact ScalarHs.norm_toL2Fun_le (I := I) (M := M) hσ T)
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
 @[simp] lemma scalarHsToL2_apply {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     scalarHsToL2 (I := I) (M := M) (g := g) hσ T =
       toL2Fun (I := I) (M := M) hσ T := rfl
 
@@ -440,7 +440,7 @@ theorem scalarHsToL2_opNorm_le_one {σ : ℝ} (hσ : 0 ≤ σ) :
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
 theorem scalarL2Coeff_scalarHsToL2 {σ : ℝ} (hσ : 0 ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     scalarL2Coeff (I := I) (M := M)
         (scalarHsToL2 (I := I) (M := M) (g := g) hσ T) i = T.coeff i := by
@@ -456,21 +456,21 @@ theorem scalarHsToL2_injective {σ : ℝ} (hσ : 0 ≤ σ) :
   have hT := scalarL2Coeff_scalarHsToL2 (I := I) (M := M) hσ T i
   rw [← hS, ← hT, hST]
 
-end scalarHs
+end ScalarHs
 
 def scalarHsZeroEquivL2 (g : SmoothRiemannianMetric I M) :
-    scalarHs (I := I) (M := M) g 0 ≃ₗᵢ[ℝ]
+    ScalarHs (I := I) (M := M) g 0 ≃ₗᵢ[ℝ]
       Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
-  (scalarHs.rescaleEquivL2 (I := I) (M := M)
+  (ScalarHs.rescaleEquivL2 (I := I) (M := M)
     (g := g) (σ := 0)).trans
     (resolventHilbertEigenbasisSigma (I := I) (M := M) g).repr.symm
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
 theorem scalarHsZeroEquivL2_scalarL2Coeff
-    (T : scalarHs (I := I) (M := M) g 0)
+    (T : ScalarHs (I := I) (M := M) g 0)
     (i : EigenIdx (I := I) (M := M) g) :
     scalarL2Coeff (I := I) (M := M)
         (scalarHsZeroEquivL2 (I := I) (M := M) g T) i =
@@ -478,8 +478,8 @@ theorem scalarHsZeroEquivL2_scalarL2Coeff
   unfold scalarHsZeroEquivL2 scalarL2Coeff
   rw [LinearIsometryEquiv.trans_apply,
     LinearIsometryEquiv.apply_symm_apply]
-  change (scalarHs.rescaleEquivL2 (I := I) (M := M) T : _ → ℝ) i = T.coeff i
-  rw [scalarHs.rescaleEquivL2_apply]
+  change (ScalarHs.rescaleEquivL2 (I := I) (M := M) T : _ → ℝ) i = T.coeff i
+  rw [ScalarHs.rescaleEquivL2_apply]
   simp only [scalarSobolevWeight_zero, Real.sqrt_one, one_mul]
 
 @[simp] theorem scalarHsZeroEquivL2_symm_coeff
@@ -492,7 +492,7 @@ theorem scalarHsZeroEquivL2_scalarL2Coeff
   rw [LinearIsometryEquiv.apply_symm_apply] at h
   exact h.symm
 
-end scalarHs
+end ScalarHs
 
 theorem scalarHsToL2_comp_scalarHsInclusion
     {g : SmoothRiemannianMetric I M} {τ σ : ℝ}
@@ -509,16 +509,16 @@ theorem scalarHsToL2_comp_scalarHsInclusion
       ((scalarHsToL2 (I := I) (M := M) (g := g) hτ).comp
         (scalarHsInclusion (I := I) (M := M) (g := g) hτσ) T)) i =
       T.coeff i := by
-    have h := scalarHs.scalarL2Coeff_scalarHsToL2 (I := I) (M := M) hτ
+    have h := ScalarHs.scalarL2Coeff_scalarHsToL2 (I := I) (M := M) hτ
       (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T) i
-    rw [scalarHs.scalarHsInclusion_coeff] at h
+    rw [ScalarHs.scalarHsInclusion_coeff] at h
     simpa only [ContinuousLinearMap.coe_comp, Function.comp_apply,
       scalarL2Coeff] using h
   have hrhs : ((resolventHilbertEigenbasisSigma
         (I := I) (M := M) g).repr
       (scalarHsToL2 (I := I) (M := M) (g := g) (hτ.trans hτσ) T)) i =
       T.coeff i := by
-    have h := scalarHs.scalarL2Coeff_scalarHsToL2 (I := I) (M := M)
+    have h := ScalarHs.scalarL2Coeff_scalarHsToL2 (I := I) (M := M)
       (hτ.trans hτσ) T i
     simpa only [scalarL2Coeff] using h
   rw [hlhs, hrhs]
@@ -526,7 +526,7 @@ theorem scalarHsToL2_comp_scalarHsInclusion
 theorem scalarHsToL2_scalarHsInclusion
     {g : SmoothRiemannianMetric I M} {τ σ : ℝ}
     (hτ : 0 ≤ τ) (hτσ : τ ≤ σ)
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     scalarHsToL2 (I := I) (M := M) (g := g) hτ
         (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T) =
       scalarHsToL2 (I := I) (M := M) (g := g) (hτ.trans hτσ) T := by

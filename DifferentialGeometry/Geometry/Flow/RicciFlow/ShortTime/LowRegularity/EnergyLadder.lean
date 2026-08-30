@@ -29,11 +29,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def HasGalerkinApproximationEnergyFiveBound (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap T : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap)
-    (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
+    (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
   (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
       Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
         (𝓝 (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -65,11 +65,11 @@ theorem exists_galerkin_approximation_energy_five_bound
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    ∃ (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+    ∃ (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       HasGalerkinApproximationEnergyFiveBound (I := I) (M := M) g₀ fLo hlo.toIsLowRegularitySolutionAt fseq := by
   classical
   have hsol := hlo.toIsLowRegularitySolutionAt
@@ -164,11 +164,11 @@ theorem exists_galerkin_approximation_converging_with_energy_five_bound
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    ∃ (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+    ∃ (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
         Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
           (𝓝 (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -185,7 +185,7 @@ theorem per_mode_limit_weighted_energy_five_bound
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :

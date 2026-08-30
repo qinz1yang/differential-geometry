@@ -2914,7 +2914,7 @@ theorem smoothCcToTensorHs_rawTensorConnLapSmooth_le
       tensorSobolevWeight (I := I) (M := M) i (σ + 2) * (c i) ^ 2 =
         tensorSobolevWeight (I := I) (M := M) i σ * (1 + lam i) ^ 2 * (c i) ^ 2 := by
     intro i
-    rw [tensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ 2]
+    rw [TensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ 2]
     have hw2 : tensorSobolevWeight (I := I) (M := M) i (2 : ℝ) = (1 + lam i) ^ 2 := by
       unfold tensorSobolevWeight
       rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
@@ -2942,7 +2942,7 @@ theorem smoothCcToTensorHs_rawTensorConnLapSmooth_le
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 T)‖ ^ 2 ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (σ + 2) T‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     rw [show (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
           ((smoothCcToTensorHs (I := I) (M := M) g₀ σ
             (rawTensorConnLapSmooth (I := I) g₀ 0 2 T)).coeff i) ^ 2) =
@@ -2999,8 +2999,8 @@ theorem exists_smoothCcToTensorHs_deTurckPrincipalCometricArm_opNorm_le
           DifferentialGeometry.Integral.L2.tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
       have hL2 : SmoothCcTensor.toL2 X = 0 := norm_eq_zero.mp hL2norm
-      refine tensorHs.ext (funext fun i => ?_)
-      rw [smoothCcToTensorHs_coeff, tensorHs.zero_coeff,
+      refine TensorHs.ext (funext fun i => ?_)
+      rw [smoothCcToTensorHs_coeff, TensorHs.zero_coeff,
         hL2, tensorL2Coeff_eq_inner, inner_zero_right]
     rw [hzero, hzero, hzero]
     simp
@@ -7093,8 +7093,8 @@ private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_gFibreOpBo
           DifferentialGeometry.Integral.L2.tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
       have hL2 : SmoothCcTensor.toL2 X = 0 := norm_eq_zero.mp hL2norm
-      refine tensorHs.ext (funext fun i => ?_)
-      rw [smoothCcToTensorHs_coeff, tensorHs.zero_coeff,
+      refine TensorHs.ext (funext fun i => ?_)
+      rw [smoothCcToTensorHs_coeff, TensorHs.zero_coeff,
         hL2, tensorL2Coeff_eq_inner, inner_zero_right]
     rw [hzero, hzero, hzero]
     simp
@@ -7167,8 +7167,8 @@ private theorem exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
             DifferentialGeometry.Integral.L2.tensorL2Inner,
             MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
         have hL2 : SmoothCcTensor.toL2 X = 0 := norm_eq_zero.mp hL2norm
-        refine tensorHs.ext (funext fun i => ?_)
-        rw [smoothCcToTensorHs_coeff, tensorHs.zero_coeff,
+        refine TensorHs.ext (funext fun i => ?_)
+        rw [smoothCcToTensorHs_coeff, TensorHs.zero_coeff,
           hL2, tensorL2Coeff_eq_inner, inner_zero_right]
       rw [hzero, hzero, hzero]
       simp
@@ -7572,8 +7572,8 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
           DifferentialGeometry.Integral.L2.tensorL2Inner,
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
       have hL2 : SmoothCcTensor.toL2 X = 0 := norm_eq_zero.mp hL2norm
-      refine tensorHs.ext (funext fun i => ?_)
-      rw [smoothCcToTensorHs_coeff, tensorHs.zero_coeff,
+      refine TensorHs.ext (funext fun i => ?_)
+      rw [smoothCcToTensorHs_coeff, TensorHs.zero_coeff,
         hL2, tensorL2Coeff_eq_inner, inner_zero_right]
     rw [hzero, hzero, hzero]
     simp only [norm_zero, mul_zero, add_zero]

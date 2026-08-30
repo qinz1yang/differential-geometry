@@ -35,8 +35,8 @@ variable
 theorem deturck_interior_time_regularity
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
     (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-    (u₂ : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
-    (hderiv_ae : (u.deriv : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
+    (u₂ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
+    (hderiv_ae : (u.deriv : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
         =ᵐ[timeMeasure T]
       (fun s => scaleLaplacianFun (I := I) (M := M) (u₂ s) +
         deTurckGeometricN (I := I) g_bg a
@@ -48,7 +48,7 @@ theorem deturck_interior_time_regularity
           (tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
             (show ((a : ℝ) + 1) ≤ (a : ℝ) + 2 by linarith) (u₂ s))) (Set.Ioo (0 : ℝ) T)) :
     ∀ s ∈ Set.Ioo (0 : ℝ) T,
-      HasDerivAt (fun r => (timeH1.toFun u r : tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
+      HasDerivAt (fun r => (timeH1.toFun u r : TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
         (scaleLaplacianFun (I := I) (M := M) (u₂ s) +
           deTurckGeometricN (I := I) g_bg a
             (tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)

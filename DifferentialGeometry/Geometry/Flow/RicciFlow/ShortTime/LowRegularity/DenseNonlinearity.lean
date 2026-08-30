@@ -33,7 +33,7 @@ theorem smoothHs_inj (g : SmoothRiemannianMetric I M) (σ : ℝ) :
     Function.Injective (smoothCcToTensorHs (I := I) (M := M) g σ) := by
   intro S T hST
   apply ccToHs_injective (I := I) (M := M) g 2 σ
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   have hi := congrArg (fun u => u.coeff i) hST
   simpa only [ccTensorToHs_coeff, smoothCcToTensorHs_coeff] using hi
@@ -72,7 +72,7 @@ theorem smoothN_wd
           (tensorSectionRealizeMetric (I := I) g₀ T hδ'_lt hδ')).toSection -
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 T).toSection
     rw [hg]
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [deTurckSmoothN_coeff, deTurckSmoothN_coeff, hrem]
 
@@ -97,7 +97,7 @@ def coreRep (g₀ : SmoothRiemannianMetric I M) {R : ℝ}
 theorem coreRep_spec (g₀ : SmoothRiemannianMetric I M) {R : ℝ}
     (x : smoothCore (I := I) (M := M) g₀ R) :
     smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2) (coreRep g₀ x) =
-      (x.1.1 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) :=
+      (x.1.1 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) :=
   Classical.choose_spec x.property
 
 theorem coreSymm_h2 (g₀ : SmoothRiemannianMetric I M) {R : ℝ}
@@ -134,7 +134,7 @@ def deTurckRemainderOnSmoothCore (g₀ g_bg : SmoothRiemannianMetric I M) {R δ 
         metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ T) δ) :
     smoothCore (I := I) (M := M) g₀ R →
-      tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
   fun x => deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg (1 : ℕ)
     (ccTensor02Symm (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
     (hreal _ (coreSymm_h2 (I := I) (M := M) g₀ x))

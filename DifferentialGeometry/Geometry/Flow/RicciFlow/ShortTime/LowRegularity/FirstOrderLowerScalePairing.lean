@@ -32,7 +32,7 @@ private theorem inclCc32
         (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff,
     ccTensorToHs_coeff]

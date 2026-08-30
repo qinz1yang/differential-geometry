@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [BoundarylessManifold I M] in
 theorem projN_cont (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (N : ℕ)
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun) :
     Continuous (projNfun (I := I) (M := M) g₀ a N Nfun) := by
   have h := (spatialProj_lip (I := I) (M := M) g₀ (a : ℝ) N).continuous.comp hcont
@@ -39,30 +39,30 @@ omit [BoundarylessManifold I M] in
 theorem projN_tame (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (N : ℕ)
     {A B C : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖) :
     ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖projNfun (I := I) (M := M) g₀ a N Nfun u -
           projNfun (I := I) (M := M) g₀ a N Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ := by
   intro u u'
@@ -78,7 +78,7 @@ omit [BoundarylessManifold I M] in
 theorem exists_tame_projected_partial_solution
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R) (N : ℕ)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (hcont : Continuous Nfun)
     (A B C : ℝ≥0) (D : ℝ) (hD : 0 ≤ D)
     (hzero : ‖Nfun ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ a hR.le⟩‖ ≤ D)
@@ -87,13 +87,13 @@ theorem exists_tame_projected_partial_solution
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖) :
     ∃ T₀ : ℝ,
@@ -101,11 +101,11 @@ theorem exists_tame_projected_partial_solution
         (((R / 4) / (2 * (D + 1))) ^ 2)) ∧
       0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
         let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce
         u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             field t ∈ lowerState (I := I) (M := M) g₀ a R) ∧
           gforce =ᵐ[timeMeasure T]
@@ -125,21 +125,21 @@ omit [BoundarylessManifold I M] in
 theorem projN_nemytskiiTame (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R) (N : ℕ) {A B C : ℝ≥0} {T : ℝ}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun)
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖)
-    (f : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
     (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ lowerState (I := I) (M := M) g₀ a R) :
     nemytskiiTame (I := I) (M := M) g₀ a hR
         (projN_cont (I := I) (M := M) g₀ a N hcont)
@@ -217,34 +217,34 @@ theorem projFixTame_dist_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R) (N : ℕ)
     {A B C : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun)
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖)
     (hsmallA : (A : ℝ) * R ≤ 1 / 16) (hsmallC : (C : ℝ) * R ≤ 1 / 16)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2))
-    (fstar fN : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+    (fstar fN : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hsB : ‖fstar‖ ≤ R / 4) (hNB : ‖fN‖ ≤ R / 4)
     (hsE : ⇑fstar =ᵐ[timeMeasure T] fun t =>
       Nfun (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
         (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) t))
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) t))
     (hNE : ⇑fN =ᵐ[timeMeasure T] fun t =>
       projNfun (I := I) (M := M) g₀ a N Nfun
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) t)) :
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) t)) :
     ‖fN - fstar‖ ≤
       (1 - ((A : ℝ) * R * (1 + T) + (B : ℝ) * (2 * Real.sqrt T) +
           2 * (C : ℝ) * (R / 4) * Real.sqrt (1 + T) * (1 + T)))⁻¹ *
@@ -255,7 +255,7 @@ theorem projFixTame_dist_le
   have hstarFix :
       nemytskiiTame (I := I) (M := M) g₀ a hR.le hcont hsingle
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) hSs =
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) hSs =
         fstar :=
     MeasureTheory.Lp.ext
       ((nemytskiiTame_coeFn (I := I) (M := M) g₀ a hR.le hcont hsingle _ hSs).trans
@@ -265,7 +265,7 @@ theorem projFixTame_dist_le
           (projN_cont (I := I) (M := M) g₀ a N hcont)
           (projN_tame (I := I) (M := M) g₀ a N hsingle)
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) hSN =
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) hSN =
         fN :=
     MeasureTheory.Lp.ext
       ((nemytskiiTame_coeFn (I := I) (M := M) g₀ a hR.le
@@ -276,7 +276,7 @@ theorem projFixTame_dist_le
           (projN_cont (I := I) (M := M) g₀ a N hcont)
           (projN_tame (I := I) (M := M) g₀ a N hsingle)
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) hSs =
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) hSs =
         timeL2EigenProj (I := I) (M := M) g₀ (a : ℝ) T N fstar := by
     rw [projN_nemytskiiTame (I := I) (M := M) g₀ a hR.le N hcont hsingle _ hSs,
       hstarFix]
@@ -318,34 +318,34 @@ theorem projFixTame_le_two
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R) (N : ℕ)
     {A B C : ℝ≥0}
     {Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hcont : Continuous Nfun)
     (hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖)
     (hsmallA : (A : ℝ) * R ≤ 1 / 16) (hsmallC : (C : ℝ) * R ≤ 1 / 16)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2))
-    (fstar fN : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+    (fstar fN : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hsB : ‖fstar‖ ≤ R / 4) (hNB : ‖fN‖ ≤ R / 4)
     (hsE : ⇑fstar =ᵐ[timeMeasure T] fun t =>
       Nfun (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
         (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) t))
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) t))
     (hNE : ⇑fN =ᵐ[timeMeasure T] fun t =>
       projNfun (I := I) (M := M) g₀ a N Nfun
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) t)) :
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) t)) :
     ‖fN - fstar‖ ≤
       2 * ‖timeL2EigenProj (I := I) (M := M) g₀ (a : ℝ) T N fstar - fstar‖ := by
   refine (projFixTame_dist_le (I := I) (M := M) g₀ a hR N hcont hsingle hsmallA

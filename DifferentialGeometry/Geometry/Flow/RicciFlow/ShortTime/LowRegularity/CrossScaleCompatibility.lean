@@ -39,8 +39,8 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem congrOp_aemeas {g : SmoothRiemannianMetric I M} {p q b T : ℝ}
     (hpq : p = q)
-    (A : ℝ → tensorHs (I := I) (M := M) g 0 2 q →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 b)
+    (A : ℝ → TensorHs (I := I) (M := M) g 0 2 q →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 b)
     (hA : AEStronglyMeasurable A (timeMeasure T)) :
     AEStronglyMeasurable
       (fun t => (A t).comp (tensorHsCongrL (I := I) (M := M) g 0 2 hpq))
@@ -52,8 +52,8 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem congrOp_memLp {g : SmoothRiemannianMetric I M} {p q b T : ℝ}
     (hpq : p = q)
-    (A : ℝ → tensorHs (I := I) (M := M) g 0 2 q →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 b)
+    (A : ℝ → TensorHs (I := I) (M := M) g 0 2 q →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 b)
     (hA : MemLp A 2 (timeMeasure T)) :
     MemLp (fun t => (A t).comp (tensorHsCongrL (I := I) (M := M) g 0 2 hpq)) 2
       (timeMeasure T) := by
@@ -64,8 +64,8 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem congrOp_norm_le {g : SmoothRiemannianMetric I M} {p q b T C : ℝ}
     (hpq : p = q)
-    (A : ℝ → tensorHs (I := I) (M := M) g 0 2 q →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 b)
+    (A : ℝ → TensorHs (I := I) (M := M) g 0 2 q →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 b)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ C) :
     ∀ᵐ t ∂timeMeasure T,
       ‖(A t).comp (tensorHsCongrL (I := I) (M := M) g 0 2 hpq)‖ ≤ C := by
@@ -79,15 +79,15 @@ def liftSecondOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     {T R : ℝ} (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
     (hR : 0 ≤ R)
     (hball : ∀ᵐ t ∂timeMeasure T,
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)‖ ≤ R) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+          (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)‖ ≤ R) :
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
     (lowRegularitySecondOrderActionTotal (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f hR hball
       t).comp
@@ -110,12 +110,12 @@ theorem liftSecondOrderActionToH2_data
               (ccTensorBilinSymm (I := I) g S) δ)
         {R : ℝ} (hR : 0 ≤ R), R ≤ ρ →
         ∀ {T : ℝ} (hT : 0 < T)
-          (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+          (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
           (hball : ∀ᵐ t ∂timeMeasure T,
             ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
               (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-                (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
+                (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
                 f t)‖ ≤ R),
           AEStronglyMeasurable
               (liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT f hR
@@ -139,9 +139,9 @@ def liftFirstOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     {T : ℝ} (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
-    ℝ → (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+    (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
+    ℝ → (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
     (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t).comp
       (tensorHsCongrL (I := I) (M := M) g 0 2
@@ -156,12 +156,12 @@ theorem liftFirstOrderActionToH2_data
           (ccTensorBilinSymm (I := I) g S) δ)
     (hcont : Continuous (lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal))
     {Φ : ℝ} (hΦ : 0 ≤ Φ)
-    (hlin : ∀ v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
-      ‖show tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-          tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) from
+    (hlin : ∀ v : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+      ‖show TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+          TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) from
         lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ Φ * (1 + ‖v‖))
     {T : ℝ} (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
     AEStronglyMeasurable
         (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f)
         (timeMeasure T) ∧
@@ -179,24 +179,24 @@ theorem exists_compatible_cross_scale_field_realization
     (hOrdA1 : aLo + 1 ≤ aHi + 1) (hOrdSt : aLo + 2 ≤ aHi + 2)
     (hOrdUp : aHi ≤ aHi + 1) (hOrdRp : aLo + 2 ≤ aHi + 1)
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (A2Hi : ℝ → tensorHs (I := I) (M := M) g 0 2 (aHi + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aHi)
+    (A2Hi : ℝ → TensorHs (I := I) (M := M) g 0 2 (aHi + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aHi)
     (hA2Hi : AEStronglyMeasurable A2Hi (timeMeasure T))
     (C2Hi : NNReal) (hC2Hi : ∀ᵐ t ∂timeMeasure T, ‖A2Hi t‖ ≤ (C2Hi : ℝ))
-    (A1Hi : ℝ → tensorHs (I := I) (M := M) g 0 2 (aHi + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aHi)
+    (A1Hi : ℝ → TensorHs (I := I) (M := M) g 0 2 (aHi + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aHi)
     (hA1Hi : MemLp A1Hi 2 (timeMeasure T))
-    (f0Hi : timeL2 (tensorHs (I := I) (M := M) g 0 2 aHi) T)
+    (f0Hi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T)
     (hsmallHi : (C2Hi : ℝ) * (1 + T) +
       2 * Real.sqrt (1 + T) * ‖hA1Hi.toLp A1Hi‖ < 1)
-    (A2Lo : ℝ → tensorHs (I := I) (M := M) g 0 2 (aLo + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aLo)
+    (A2Lo : ℝ → TensorHs (I := I) (M := M) g 0 2 (aLo + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aLo)
     (hA2Lo : AEStronglyMeasurable A2Lo (timeMeasure T))
     (C2Lo : NNReal) (hC2Lo : ∀ᵐ t ∂timeMeasure T, ‖A2Lo t‖ ≤ (C2Lo : ℝ))
-    (A1Lo : ℝ → tensorHs (I := I) (M := M) g 0 2 (aLo + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aLo)
+    (A1Lo : ℝ → TensorHs (I := I) (M := M) g 0 2 (aLo + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aLo)
     (hA1Lo : MemLp A1Lo 2 (timeMeasure T))
-    (f0Lo : timeL2 (tensorHs (I := I) (M := M) g 0 2 aLo) T)
+    (f0Lo : timeL2 (TensorHs (I := I) (M := M) g 0 2 aLo) T)
     (hsmallLo : (C2Lo : ℝ) * (1 + T) +
       2 * Real.sqrt (1 + T) * ‖hA1Lo.toLp A1Lo‖ < 1)
     (hA2compat : ∀ᵐ t ∂timeMeasure T,
@@ -213,14 +213,14 @@ theorem exists_compatible_cross_scale_field_realization
             hOrdA1))
     (hf0 : timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         hOrd f0Hi = f0Lo)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 aLo) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 aLo) T)
     (hfLo : fLo =
       nonautL2Map (I := I) (M := M) hT hT1
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo fLo + f0Lo) :
     ∃ (uHi : MaxRegSolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) aHi T)
-      (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 aHi) T)
+      (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T)
       (u : CrossScaleField (I := I) (M := M) g 0 2 aHi T),
       u.lo = uHi ∧
         u.hiL2 = maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi ∧
@@ -230,7 +230,7 @@ theorem exists_compatible_cross_scale_field_realization
               A2Hi hA2Hi C2Hi hC2Hi A1Hi hA1Hi fHi +
             f0Hi ∧
         timeH1.trace0 _ T u.lo =
-          (0 : tensorHs (I := I) (M := M) g 0 2 aHi) ∧
+          (0 : TensorHs (I := I) (M := M) g 0 2 aHi) ∧
         timeH1.timeDeriv _ T u.lo =
           timeScaleLaplacian (I := I) (M := M) aHi u.hiL2 + fHi ∧
         timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -242,7 +242,7 @@ theorem exists_compatible_cross_scale_field_realization
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrd (u.lo.toFun t) =
             (maxRegDuhamelMap (I := I) (M := M) aLo hT 0 fLo).toFun t) ∧
-        u.repr 0 = (0 : tensorHs (I := I) (M := M) g 0 2 (aHi + 1)) ∧
+        u.repr 0 = (0 : TensorHs (I := I) (M := M) g 0 2 (aHi + 1)) ∧
         ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
         (∀ t ∈ Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -271,7 +271,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_incl_congr (g : SmoothRiemannianMetric I M)
     {a b c d : ℝ} (hac : a = c) (hbd : b = d) (hab : a ≤ b) (hcd : c ≤ d)
-    (u : tensorHs (I := I) (M := M) g 0 2 b) :
+    (u : TensorHs (I := I) (M := M) g 0 2 b) :
     ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2) hcd
         (tensorHsCongr (I := I) (M := M) g 0 2 hbd u)‖ =
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2) hab u‖ := by
@@ -290,24 +290,24 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
     (hρ : 0 < ρ) (hRρ : R ≤ ρ) (hT : 0 < T)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t))
     (hball : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
         lowerState (I := I) (M := M) g₀ 1 R) :
     (∀ᵐ t ∂timeMeasure T,
         lowRadialH3 (I := I) (M := M) g₀ ρ
             (tensorHsCongr (I := I) (M := M) g₀ 0 2
               (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
               (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                (0 : tensorHs (I := I) (M := M) g₀ 0 2
+                (0 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t)) =
           tensorHsCongr (I := I) (M := M) g₀ 0 2
             (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
             (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) gforce t)) ∧
       (∀ᵐ t ∂timeMeasure T,
         lowRadialHs (I := I) (M := M) g₀ ρ
@@ -316,14 +316,14 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
               (tensorHsCongr (I := I) (M := M) g₀ 0 2
                 (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2)) gforce t))) =
           tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
             (tensorHsCongr (I := I) (M := M) g₀ 0 2
               (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
               (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                (0 : tensorHs (I := I) (M := M) g₀ 0 2
+                (0 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t))) := by
   have hsymm := duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (I := I) (M := M) g₀ g_bg hR hδ hreal
     hcont hcore (by norm_num) (by norm_num) (by norm_num) (by norm_num)
@@ -334,7 +334,7 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
           (tensorHsCongr (I := I) (M := M) g₀ 0 2
             (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
             (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) gforce t))‖ ≤ R := by
     filter_upwards [hball] with t ht
     rw [norm_incl_congr (I := I) (M := M) g₀
@@ -353,7 +353,7 @@ def deTurckRemainderOnSmoothCoreAt (g₀ g_bg : SmoothRiemannianMetric I M) (a :
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ S) δ) :
     smoothCore (I := I) (M := M) g₀ R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun x => deTurckSmoothN (I := I) (M := M) g₀ g_bg a
     (symmS (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
     (hreal _ (coreSymm_h2 (I := I) (M := M) g₀ x))
@@ -402,8 +402,8 @@ theorem included_high_order_forcing_eq_deTurck_remainder_ae
           (ccTensorBilinSymm (I := I) g₀ S) δ)
     (hOrd : ((1 : ℕ) : ℝ) ≤ σ)
     (state : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 σ) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 σ) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hincl : ∀ᵐ t ∂timeMeasure T,
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         hOrd (fHi t) = fLo t)
@@ -426,10 +426,10 @@ theorem high_order_forcing_eq_lifted_deTurck_remainder_ae
           (ccTensorBilinSymm (I := I) g₀ S) δ)
     (hOrd : ((1 : ℕ) : ℝ) ≤ σ)
     (state : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 σ) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 σ) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (N2 : lowerState (I := I) (M := M) g₀ 1 R →
-      tensorHs (I := I) (M := M) g₀ 0 2 σ)
+      TensorHs (I := I) (M := M) g₀ 0 2 σ)
     (hN2 : ∀ v : lowerState (I := I) (M := M) g₀ 1 R,
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           hOrd (N2 v) =

@@ -103,11 +103,11 @@ theorem exists_smooth_heatOutput_representative (g : SmoothRiemannianMetric I M)
 theorem spectralSmooth_realizesAsSmooth_of_finite_support
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (u : TensorL2 r s g)
     (h_mem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g r s σ,
+      ∃ v : TensorHs (I := I) (M := M) g r s σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
             (tensorResolventL2_isCompactOperator
               (I := I) (M := M) g r s) hσ v = u)
-    (hu_fs : ∀ v : tensorHs (I := I) (M := M) g r s 0,
+    (hu_fs : ∀ v : TensorHs (I := I) (M := M) g r s 0,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
             (tensorResolventL2_isCompactOperator
               (I := I) (M := M) g r s) (le_refl (0 : ℝ)) v = u →

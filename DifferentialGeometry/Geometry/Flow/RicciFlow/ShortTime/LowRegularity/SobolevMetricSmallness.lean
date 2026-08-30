@@ -32,7 +32,7 @@ theorem realize_at_delta
   rw [Nat.cast_one, show (1 : ℝ) + 1 = 2 by norm_num] at hT
   have htwo : ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T =
       smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T :=
-    tensorHs.ext (funext (fun _ ↦ rfl))
+    TensorHs.ext (funext (fun _ ↦ rfl))
   have hT' : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ δ / C := by
     simpa only [htwo] using hT
   have hdelta : C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ δ := by
@@ -62,7 +62,7 @@ theorem exists_h2_metric_perturbation_radius
   intro T hT
   have htwo : ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T =
       smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T :=
-    tensorHs.ext (funext (fun _ ↦ rfl))
+    TensorHs.ext (funext (fun _ ↦ rfl))
   have hT' : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ θ / C := by
     simpa only [htwo] using hT
   have hdelta : C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ θ := by
@@ -92,10 +92,10 @@ theorem exists_h3_metric_perturbation_radius
   intro T hT
   have htwo : ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T =
       smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T :=
-    tensorHs.ext (funext (fun _ ↦ rfl))
+    TensorHs.ext (funext (fun _ ↦ rfl))
   have hthree : ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T =
       smoothCcToTensorHs (I := I) (M := M) g (3 : ℝ) T :=
-    tensorHs.ext (funext (fun _ ↦ rfl))
+    TensorHs.ext (funext (fun _ ↦ rfl))
   have hmono :
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤
         ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ :=

@@ -39,7 +39,7 @@ private noncomputable def secondOrderActionCore
     (g : SmoothRiemannianMetric I M) (A : LowerScaleActionCoefficients g)
     (σ : ℝ) :
     SmoothCcTensor g 0 2 →ₗ[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 σ where
+      TensorHs (I := I) (M := M) g 0 2 σ where
   toFun := fun W =>
     ccTensorToHs (I := I) (M := M) g 2 σ
       (A.secondOrderAction (I := I) (M := M) W)
@@ -52,14 +52,14 @@ private noncomputable def secondOrderActionCore
 
 noncomputable def LowerScaleActionCoefficients.secondOrderActionFourthToSecondOrder
     {g : SmoothRiemannianMetric I M} (A : LowerScaleActionCoefficients g) :
-    tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
   secondCovariantDerivativeApplication (I := I) (M := M) g 2 2 A.secondOrderCoefficient
 
 noncomputable def LowerScaleActionCoefficients.secondOrderActionThirdToFirstOrder
     {g : SmoothRiemannianMetric I M} (A : LowerScaleActionCoefficients g) :
-    tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
   (secondOrderActionCore (I := I) (M := M) g A (1 : ℝ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ))
 
@@ -172,11 +172,11 @@ theorem secondOrderAction_sobolev_extension_bounds
               (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num)
               (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) W) =
             ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W := by
-        apply tensorHs.ext
+        apply TensorHs.ext
         funext i
         simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
       rw [hin, hLoCore]
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff])
   apply ContinuousLinearMap.ext
@@ -264,11 +264,11 @@ theorem secondOrderAction_sobolev_extensions_commute
               (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num)
               (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) W) =
             ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W := by
-        apply tensorHs.ext
+        apply TensorHs.ext
         funext i
         simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
       rw [hin, secondOrderActionThirdToFirstOrder_ccTensorToHs (I := I) (M := M) hDim g A]
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff])
   apply ContinuousLinearMap.ext

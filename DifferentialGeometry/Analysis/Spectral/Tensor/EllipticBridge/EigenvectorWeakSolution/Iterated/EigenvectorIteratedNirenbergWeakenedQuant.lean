@@ -186,7 +186,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
-    (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
     (h_dir : D_m.directions = directions)
     (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -847,7 +847,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
     ∃ C : ℝ, 0 < C ∧
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
         (directions : Fin m → Fin (Module.finrank ℝ E))
-        (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+        (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
           g r s i α P₀ m)
         (_h_dir : D_m.directions = directions)
         (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

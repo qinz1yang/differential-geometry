@@ -100,7 +100,7 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (uLo : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M)
       g g_bg K hK hT hT1 uLo gforce)
     (hmass : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -123,7 +123,7 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR K.threshold_lt hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t) := by
     simpa only [R, hreal, boundedDeTurckRemainderOnLowerState] using hsol.force_eq
   obtain ⟨carrier, _fHi, modePath, radius, htrace, _hmap, _hpin,
@@ -217,7 +217,7 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hK hT hT1 u gforce) :
     ∃ v : CrossScaleField (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) T,
       v.lo = u ∧
@@ -259,7 +259,7 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_adapted_solution
     (hT : 0 < T) (hT1 : T ≤ 1)
     (uLo : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hT hT1
       uLo gforce Rcap Ctop₂ Kr2 Kr1 Kcap) :
     Nonempty (BackgroundSmoothRicciDeTurckSolution (I := I) (M := M) g g_bg K T) := by

@@ -39,7 +39,7 @@ private theorem timeIncl_trans
     {ρ τ σ : ℝ} (hρτ : ρ ≤ τ) (hτσ : τ ≤ σ)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s σ) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s σ) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (hρτ.trans hτσ) f =
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -55,22 +55,22 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem homMode_zero (hT : 0 < T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
   have hsq := norm_homModeCoeff_sq_le (I := I) (M := M)
     (a := a) (T := T) hT.le
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i
-  rw [tensorHs.zero_coeff] at hsq
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i
+  rw [TensorHs.zero_coeff] at hsq
   apply norm_eq_zero.mp
   nlinarith [norm_nonneg
     (homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i)]
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem ha1_down
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 1 by linarith)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
@@ -105,7 +105,7 @@ private theorem duhamel_down
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
@@ -119,10 +119,10 @@ private theorem duhamel_down
   let heq : (a - 1) + 2 ≤ a + 1 := by linarith
   have htrans := timeIncl_trans (I := I) (M := M) heq hmid hcompact
     (maxRegDuhamelSolField (I := I) (M := M)
-      a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)
+      a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f)
   have hduh := duhamel_incl (I := I) (M := M)
     hT hT1 hcompact
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
   calc
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
@@ -150,7 +150,7 @@ private theorem duhamel_mid_down
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 1 ≤ a + 1 by linarith)
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
@@ -185,7 +185,7 @@ private theorem zeroRepr_down_ae
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (fun t =>
       tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
@@ -205,10 +205,10 @@ private theorem zeroRepr_down_ae
     (g := g) (r := r) (s := s)
     (show a - 1 ≤ a by linarith) f
   let uHi := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-    a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
   let uLo := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
     (a - 1) hT
-      (0 : tensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
+      (0 : TensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
   have hcoe :
       timeL2Inclusion (I := I) (M := M)
           (g := g) (r := r) (s := s) hmid uHi =ᵐ[timeMeasure T]
@@ -236,12 +236,12 @@ private theorem zeroRepr_down_ae
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem timeOp_down
-    (AHi : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (AHi : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hAHi : AEStronglyMeasurable AHi (timeMeasure T))
     (CHi : NNReal) (hCHi : ∀ᵐ t ∂timeMeasure T, ‖AHi t‖ ≤ (CHi : ℝ))
-    (ALo : ℝ → tensorHs (I := I) (M := M) g r s ((a - 1) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s (a - 1))
+    (ALo : ℝ → TensorHs (I := I) (M := M) g r s ((a - 1) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s (a - 1))
     (hALo : AEStronglyMeasurable ALo (timeMeasure T))
     (CLo : NNReal) (hCLo : ∀ᵐ t ∂timeMeasure T, ‖ALo t‖ ≤ (CLo : ℝ))
     (hcompat : ∀ᵐ t ∂timeMeasure T,
@@ -252,7 +252,7 @@ private theorem timeOp_down
           (tensorHsInclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show (a - 1) + 2 ≤ a + 2 by linarith)))
-    (u : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T) :
+    (u : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T) :
     timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ a by linarith)
@@ -298,11 +298,11 @@ private theorem a1L2_down
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (AHi : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (AHi : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hAHi : MemLp AHi 2 (timeMeasure T))
-    (ALo : ℝ → tensorHs (I := I) (M := M) g r s ((a - 1) + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s (a - 1))
+    (ALo : ℝ → TensorHs (I := I) (M := M) g r s ((a - 1) + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s (a - 1))
     (hALo : MemLp ALo 2 (timeMeasure T))
     (hcompat : ∀ᵐ t ∂timeMeasure T,
       (tensorHsInclusion (I := I) (M := M)
@@ -312,7 +312,7 @@ private theorem a1L2_down
           (tensorHsInclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show (a - 1) + 1 ≤ a + 1 by linarith)))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ a by linarith)
@@ -409,19 +409,19 @@ private theorem nonautL2_down
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2Hi : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2Hi : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2Hi : AEStronglyMeasurable A2Hi (timeMeasure T))
     (C2Hi : NNReal) (hC2Hi : ∀ᵐ t ∂timeMeasure T, ‖A2Hi t‖ ≤ (C2Hi : ℝ))
-    (A1Hi : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1Hi : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1Hi : MemLp A1Hi 2 (timeMeasure T))
-    (A2Lo : ℝ → tensorHs (I := I) (M := M) g r s ((a - 1) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s (a - 1))
+    (A2Lo : ℝ → TensorHs (I := I) (M := M) g r s ((a - 1) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s (a - 1))
     (hA2Lo : AEStronglyMeasurable A2Lo (timeMeasure T))
     (C2Lo : NNReal) (hC2Lo : ∀ᵐ t ∂timeMeasure T, ‖A2Lo t‖ ≤ (C2Lo : ℝ))
-    (A1Lo : ℝ → tensorHs (I := I) (M := M) g r s ((a - 1) + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s (a - 1))
+    (A1Lo : ℝ → TensorHs (I := I) (M := M) g r s ((a - 1) + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s (a - 1))
     (hA1Lo : MemLp A1Lo 2 (timeMeasure T))
     (hA2compat : ∀ᵐ t ∂timeMeasure T,
       (tensorHsInclusion (I := I) (M := M)
@@ -439,7 +439,7 @@ private theorem nonautL2_down
           (tensorHsInclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show (a - 1) + 1 ≤ a + 1 by linarith)))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ a by linarith)
@@ -456,7 +456,7 @@ private theorem nonautL2_down
   have htop := timeOp_down (I := I) (M := M)
     A2Hi hA2Hi C2Hi hC2Hi A2Lo hA2Lo C2Lo hC2Lo hA2compat
     (maxRegDuhamelSolField (I := I) (M := M)
-      a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)
+      a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f)
   rw [htop, duhamel_down (I := I) (M := M) hT hT1 hcompact f,
     a1L2_down (I := I) (M := M)
       hT hT1 hcompact A1Hi hA1Hi A1Lo hA1Lo hA1compat f]
@@ -466,18 +466,18 @@ private theorem affine_unique
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2 : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2 : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : ℝ))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f0 : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f0 : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hsmall :
       (C2 : ℝ) * (1 + T) +
         2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖ < 1)
-    {f q : timeL2 (tensorHs (I := I) (M := M) g r s a) T}
+    {f q : timeL2 (TensorHs (I := I) (M := M) g r s a) T}
     (hf : f =
       nonautL2Map (I := I) (M := M)
         hT hT1 hcompact A2 hA2 C2 hC2 A1 hA1 f + f0)
@@ -491,8 +491,8 @@ private theorem affine_unique
       add_nonneg
         (mul_nonneg C2.coe_nonneg (by linarith [hT.le]))
         (by positivity)⟩
-  let F : timeL2 (tensorHs (I := I) (M := M) g r s a) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+  let F : timeL2 (TensorHs (I := I) (M := M) g r s a) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
     fun z =>
       nonautL2Map (I := I) (M := M)
         hT hT1 hcompact A2 hA2 C2 hC2 A1 hA1 z + f0
@@ -524,25 +524,25 @@ theorem nonautL2_lift
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2Hi : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2Hi : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2Hi : AEStronglyMeasurable A2Hi (timeMeasure T))
     (C2Hi : NNReal) (hC2Hi : ∀ᵐ t ∂timeMeasure T, ‖A2Hi t‖ ≤ (C2Hi : ℝ))
-    (A1Hi : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1Hi : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1Hi : MemLp A1Hi 2 (timeMeasure T))
-    (f0Hi : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f0Hi : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hsmallHi :
       (C2Hi : ℝ) * (1 + T) +
         2 * Real.sqrt (1 + T) * ‖hA1Hi.toLp A1Hi‖ < 1)
-    (A2Lo : ℝ → tensorHs (I := I) (M := M) g r s ((a - 1) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s (a - 1))
+    (A2Lo : ℝ → TensorHs (I := I) (M := M) g r s ((a - 1) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s (a - 1))
     (hA2Lo : AEStronglyMeasurable A2Lo (timeMeasure T))
     (C2Lo : NNReal) (hC2Lo : ∀ᵐ t ∂timeMeasure T, ‖A2Lo t‖ ≤ (C2Lo : ℝ))
-    (A1Lo : ℝ → tensorHs (I := I) (M := M) g r s ((a - 1) + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s (a - 1))
+    (A1Lo : ℝ → TensorHs (I := I) (M := M) g r s ((a - 1) + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s (a - 1))
     (hA1Lo : MemLp A1Lo 2 (timeMeasure T))
-    (f0Lo : timeL2 (tensorHs (I := I) (M := M) g r s (a - 1)) T)
+    (f0Lo : timeL2 (TensorHs (I := I) (M := M) g r s (a - 1)) T)
     (hsmallLo :
       (C2Lo : ℝ) * (1 + T) +
         2 * Real.sqrt (1 + T) * ‖hA1Lo.toLp A1Lo‖ < 1)
@@ -566,14 +566,14 @@ theorem nonautL2_lift
       timeL2Inclusion (I := I) (M := M)
           (g := g) (r := r) (s := s)
           (show a - 1 ≤ a by linarith) f0Hi = f0Lo)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g r s (a - 1)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g r s (a - 1)) T)
     (hfLo : fLo =
       nonautL2Map (I := I) (M := M)
         (a := a - 1) hT hT1 hcompact
           A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo fLo + f0Lo) :
     ∃ (uHi : MaxRegSolutionSpace (I := I) (M := M)
         (g := g) (r := r) (s := s) a T)
-      (fHi : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+      (fHi : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
       uHi = maxRegDuhamelMap (I := I) (M := M)
           a hT 0 fHi ∧
         fHi =
@@ -582,7 +582,7 @@ theorem nonautL2_lift
                 A2Hi hA2Hi C2Hi hC2Hi A1Hi hA1Hi fHi +
             f0Hi ∧
         TimeSobolev.timeH1.trace0 _ T uHi =
-          (0 : tensorHs (I := I) (M := M) g r s a) ∧
+          (0 : TensorHs (I := I) (M := M) g r s a) ∧
         TimeSobolev.timeH1.timeDeriv _ T uHi =
           timeScaleLaplacian (I := I) (M := M) a
               (maxRegDuhamelSolField (I := I) (M := M)
@@ -623,8 +623,8 @@ theorem nonautL2_lift
                 (g := g) (r := r) (s := s)
                 (show a - 1 ≤ a by linarith) fHi) +
           f0Lo := by
-    let J : timeL2 (tensorHs (I := I) (M := M) g r s a) T →L[ℝ]
-        timeL2 (tensorHs (I := I) (M := M) g r s (a - 1)) T :=
+    let J : timeL2 (TensorHs (I := I) (M := M) g r s a) T →L[ℝ]
+        timeL2 (TensorHs (I := I) (M := M) g r s (a - 1)) T :=
       timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a - 1 ≤ a by linarith)

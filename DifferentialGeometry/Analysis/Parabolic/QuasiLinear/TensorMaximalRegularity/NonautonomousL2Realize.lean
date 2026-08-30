@@ -41,7 +41,7 @@ private theorem crossRepr_lo
     (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 1 by linarith) (u.repr t) = u.lo.toFun t := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, u.repr_coeff hT ht]
   rfl
@@ -56,7 +56,7 @@ private theorem crossRepr_hi_ae
         (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t) := by
   filter_upwards [u.ae_coeffFun_eq_hiL2,
     ae_restrict_mem (μ := volume) measurableSet_Icc] with t hcoeff ht
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [u.repr_coeff hT ht, tensorHsInclusion_coeff_apply]
   exact hcoeff i
@@ -66,25 +66,25 @@ theorem nonautL2_realize
     (hT : 0 < T) (hT1 : T ≤ 1)
     (hcompact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2 : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2 : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : ℝ))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f0 : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g r s (a - 1)) T)
+    (f0 : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g r s (a - 1)) T)
     (uHi : MaxRegSolutionSpace (I := I) (M := M)
       (g := g) (r := r) (s := s) a T)
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hduh : uHi = maxRegDuhamelMap (I := I) (M := M)
       a hT 0 fHi)
     (hfixed : fHi =
       nonautL2Map (I := I) (M := M)
           hT hT1 hcompact A2 hA2 C2 hC2 A1 hA1 fHi + f0)
     (htrace : timeH1.trace0 _ T uHi =
-      (0 : tensorHs (I := I) (M := M) g r s a))
+      (0 : TensorHs (I := I) (M := M) g r s a))
     (hpde : timeH1.timeDeriv _ T uHi =
       timeScaleLaplacian (I := I) (M := M) a
           (maxRegDuhamelSolField (I := I) (M := M)
@@ -110,7 +110,7 @@ theorem nonautL2_realize
       u.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
         a hT 0 fHi ∧
       timeH1.trace0 _ T u.lo =
-        (0 : tensorHs (I := I) (M := M) g r s a) ∧
+        (0 : TensorHs (I := I) (M := M) g r s a) ∧
       timeH1.timeDeriv _ T u.lo =
         timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi ∧
       timeL2Inclusion (I := I) (M := M)
@@ -122,7 +122,7 @@ theorem nonautL2_realize
             (show a - 1 ≤ a by linarith) (u.lo.toFun t) =
           (maxRegDuhamelMap (I := I) (M := M)
             (a - 1) hT 0 fLo).toFun t) ∧
-      u.repr 0 = (0 : tensorHs (I := I) (M := M) g r s (a + 1)) ∧
+      u.repr 0 = (0 : TensorHs (I := I) (M := M) g r s (a + 1)) ∧
       ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
       (∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M)
@@ -139,10 +139,10 @@ theorem nonautL2_realize
           (show a ≤ a + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M)
             a hT 0 fHi) =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T uHi := by
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T uHi := by
     have h := duhField_pin (I := I) (M := M)
       hT hcompact
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) fHi
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) fHi
     rwa [← hduh] at h
   let u : CrossScaleField (I := I) (M := M) g r s a T :=
     strongCross (I := I) (M := M)
@@ -152,7 +152,7 @@ theorem nonautL2_realize
   have hhi : u.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
       a hT 0 fHi := rfl
   have htrace' : timeH1.trace0 _ T u.lo =
-      (0 : tensorHs (I := I) (M := M) g r s a) := by
+      (0 : TensorHs (I := I) (M := M) g r s a) := by
     simpa only [hlo] using htrace
   have hpde' : timeH1.timeDeriv _ T u.lo =
       timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi := by
@@ -179,15 +179,15 @@ theorem nonautL2_realize
       _ = timeScaleLaplacian (I := I) (M := M) a u.hiL2 + fHi := by
         rw [hhi]
   have hzero : u.repr 0 =
-      (0 : tensorHs (I := I) (M := M) g r s (a + 1)) := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 1)) := by
     have hinit : u.lo.init =
-        (0 : tensorHs (I := I) (M := M) g r s a) := by
+        (0 : TensorHs (I := I) (M := M) g r s a) := by
       simpa only [timeH1.trace0_apply] using htrace'
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     rw [u.repr_coeff hT ⟨le_rfl, hT.le⟩,
       CrossScaleField.coeffFun, timeH1.toFun_zero, hinit,
-      tensorHs.zero_coeff, tensorHs.zero_coeff]
+      TensorHs.zero_coeff, TensorHs.zero_coeff]
   have hrepr_hi := crossRepr_hi_ae (I := I) (M := M) u hT
   have hincl :
       ⇑(timeL2Inclusion (I := I) (M := M)
@@ -218,7 +218,7 @@ theorem nonautL2_realize
     rw [hfield]
   have hlow_link := solField_toFun_ae (I := I) (M := M)
     (a := a - 1) hT hcompact
-      (0 : tensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
+      (0 : TensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
   have hcarrier_ae :
       (fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
@@ -226,7 +226,7 @@ theorem nonautL2_realize
           fun t => (maxRegDuhamelMap (I := I) (M := M)
             (a - 1) hT 0 fLo).toFun t := by
     filter_upwards [u.link, hfield_coe, hlow_link] with t hu hf hl
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     rw [tensorHsInclusion_coeff_apply]
     have huc := congrArg (fun z => z.coeff i) hu
@@ -289,7 +289,7 @@ theorem nonautL2_realize
           fun t => maxRegDuhamelSolField (I := I) (M := M)
             (a - 1) hT 0 fLo t := by
     filter_upwards [hrepr_hi, hfield_coe] with t hrepr hlow
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     rw [tensorHsInclusion_coeff_apply, hrepr,
       tensorHsInclusion_coeff_apply]

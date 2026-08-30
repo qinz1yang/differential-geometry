@@ -95,7 +95,7 @@ theorem galerkin_action_all_order_tame_bound_background (g₀ g_bg : SmoothRiema
       _root_.DifferentialGeometry.Analysis.Spectral.ccTensorToHs
           (I := I) (M := M) g₀ 2 (m : ℝ) W =
         smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) W := by
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     simp only [_root_.DifferentialGeometry.Analysis.Spectral.ccTensorToHs_coeff,
       _root_.DifferentialGeometry.Analysis.Spectral.smoothCcToTensorHs_coeff]
@@ -145,12 +145,12 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five_background
     (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (Rcap : ℝ)
     (hsol : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1
       u gforce Rcap)
     {fseq : ℕ → timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (hpath : HasGalerkinApproximationEnergyFiveBoundBackground (I := I) (M := M) g₀ g_bg K
       u gforce hsol fseq)
     (hhm : HasDeTurckRemainderAllOrderLadderBoundBackground (I := I) (M := M) g₀ g_bg κ)

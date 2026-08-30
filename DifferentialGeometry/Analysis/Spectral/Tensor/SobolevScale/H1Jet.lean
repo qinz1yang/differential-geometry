@@ -32,7 +32,7 @@ private theorem cc_toHs_eq_smooth
     (T : SmoothCcTensor g 0 2) :
     ccTensorToHs (I := I) (M := M) g 2 σ T =
       smoothCcToTensorHs (I := I) (M := M) g σ T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   simp only [ccTensorToHs_coeff, smoothCcToTensorHs_coeff]
 

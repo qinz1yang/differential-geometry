@@ -230,7 +230,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
-    (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
     (h_fChartEff : D_m.diffChartForcing =
       eigenvectorChartRHSDiff (I := I) (M := M)
@@ -318,7 +318,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
-        (D_m : eigenvectorIteratedTensorChartBilinearData
+        (D_m : EigenvectorIteratedTensorChartBilinearData
           (I := I) (M := M) g r s i α P₀ m)
         (_h_fChartEff : D_m.diffChartForcing =
           eigenvectorChartRHSDiff (I := I) (M := M)

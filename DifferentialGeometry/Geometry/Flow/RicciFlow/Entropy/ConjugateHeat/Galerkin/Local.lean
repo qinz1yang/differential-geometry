@@ -59,7 +59,7 @@ theorem galVel_lift_on
           lapDiffCore (I := I) (M := M) (S.family.metric (T : Real))
             (S.family.metric ((T : Real) - s)) v) :
     ∀ m : Nat, ∃ w : Icc (0 : Real) tau →
-        tensorHs (I := I) (M := M)
+        TensorHs (I := I) (M := M)
           (S.family.metric (T : Real)) 0 0 (m : Real),
       Continuous w ∧
         (∀ t, tensorHsInclusion (I := I) (M := M)
@@ -100,29 +100,29 @@ theorem galVel_lift_on
   have hC_nn : 0 ≤ C := by
     exact mul_nonneg hfac (Real.sqrt_nonneg B)
   let W : Icc (0 : Real) tau →
-      tensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real) :=
+      TensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real) :=
     fun t => galLimVelHs hτ.le hlim (m + 1) t
   have hW_bound (t : Icc (0 : Real) tau) : ‖W t‖ ≤ C := by
-    let U : tensorHs (I := I) (M := M) q 0 0
+    let U : TensorHs (I := I) (M := M) q 0 0
         (((m + 1 : Nat) : Real) + 2) :=
-      tensorHs.castEquiv (I := I) (M := M)
+      TensorHs.castEquiv (I := I) (M := M)
         (g := q) (r := 0) (s := 0)
         (by norm_num : ((m + 1 + 2 : Nat) : Real) =
           ((m + 1 : Nat) : Real) + 2)
         (galLimExt hτ.le hlim (m + 1 + 2) t)
     have hincU : ((m + 1 : Nat) : Real) ≤
         ((m + 1 : Nat) : Real) + 2 := by norm_num
-    let Um : tensorHs (I := I) (M := M) q 0 0
+    let Um : TensorHs (I := I) (M := M) q 0 0
         ((m + 1 : Nat) : Real) :=
       tensorHsInclusion (I := I) (M := M)
         (g := q) (r := 0) (s := 0) hincU U
     have hExtSq : ‖galLimExt hτ.le hlim (m + 1 + 2) t‖ ^ 2 ≤ B := by
       rw [galLimExt_mem hτ.le hlim (m + 1 + 2) t.2,
-        tensorHs.norm_sq_eq_tsum]
+        TensorHs.norm_sq_eq_tsum]
       simpa only [galLimHs] using (hB t t.2).2
     have hUnorm : ‖U‖ = ‖galLimExt hτ.le hlim (m + 1 + 2) t‖ := by
       dsimp only [U]
-      exact (tensorHs.castEquiv (I := I) (M := M)
+      exact (TensorHs.castEquiv (I := I) (M := M)
         (g := q) (r := 0) (s := 0)
         (by norm_num : ((m + 1 + 2 : Nat) : Real) =
           ((m + 1 : Nat) : Real) + 2)).norm_map _
@@ -207,40 +207,40 @@ theorem galVel_lift_on
       simpa only [Nat.cast_zero, zero_add] using h2k2
     have h20 : (2 : Real) = ((0 : Nat) : Real) + 2 := by norm_num
     have hzero : ((0 : Nat) : Real) = 0 := by norm_num
-    let U₂ : tensorHs (I := I) (M := M) q 0 0 2 :=
+    let U₂ : TensorHs (I := I) (M := M) q 0 0 2 :=
       galLimExt hτ.le hlim 2 t
-    let U : tensorHs (I := I) (M := M) q 0 0
+    let U : TensorHs (I := I) (M := M) q 0 0
         (((m + 1 : Nat) : Real) + 2) :=
-      tensorHs.castEquiv (I := I) (M := M)
+      TensorHs.castEquiv (I := I) (M := M)
         (g := q) (r := 0) (s := 0)
         (by norm_num : ((m + 1 + 2 : Nat) : Real) =
           ((m + 1 : Nat) : Real) + 2)
         (galLimExt hτ.le hlim (m + 1 + 2) t)
-    let Um : tensorHs (I := I) (M := M) q 0 0
+    let Um : TensorHs (I := I) (M := M) q 0 0
         ((m + 1 : Nat) : Real) :=
       tensorHsInclusion (I := I) (M := M)
         (g := q) (r := 0) (s := 0) hk2 U
     have hU2 :
         tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) h2k2 U = U₂ := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       have hi := congrArg
-        (fun v : tensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
+        (fun v : TensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
           v.coeff i)
         (galLimExt_inc hτ.le hlim
           (show 2 ≤ m + 1 + 2 by omega) t.2)
       simpa only [U, U₂, tensorHsInclusion_coeff_apply,
-        tensorHs.castEquiv_coeff] using hi
+        TensorHs.castEquiv_coeff] using hi
     have hUm1 :
         tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hk Um =
           tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) h12 U₂ := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       have hi := congrArg
-        (fun v : tensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
+        (fun v : TensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
           v.coeff i) hU2
       simpa only [Um, tensorHsInclusion_coeff_apply] using hi
     have hLap :
@@ -250,10 +250,10 @@ theorem galVel_lift_on
               (g := q) (r := 0) (s := 0)
               ((m + 1 : Nat) : Real) U) =
           scalarScaleLap (I := I) (M := M) q U₂ := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       have hi := congrArg
-        (fun v : tensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
+        (fun v : TensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
           v.coeff i) hU2
       simp only [tensorHsInclusion_coeff_apply] at hi
       simp only [tensorHsInclusion_coeff_apply,
@@ -262,15 +262,15 @@ theorem galVel_lift_on
     have hU0 :
         tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) h02k U =
-          tensorHs.castEquiv (I := I) (M := M)
+          TensorHs.castEquiv (I := I) (M := M)
             (g := q) (r := 0) (s := 0) h20 U₂ := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       have hi := congrArg
-        (fun v : tensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
+        (fun v : TensorHs (I := I) (M := M) q 0 0 (2 : Real) =>
           v.coeff i) hU2
       simpa only [tensorHsInclusion_coeff_apply,
-        tensorHs.castEquiv_coeff] using hi
+        TensorHs.castEquiv_coeff] using hi
     have hinc0 := lapHs_inc (I := I) (M := M) q
       (S.family.metric ((T : Real) - t)) (Nat.zero_le (m + 1))
     have happ := congrArg (fun L => L U) hinc0
@@ -280,19 +280,19 @@ theorem galVel_lift_on
             (g := q) (r := 0) (s := 0) h0k
             (lapDiffHs (I := I) (M := M) q
               (S.family.metric ((T : Real) - t)) (m + 1) U) =
-          tensorHs.castEquiv (I := I) (M := M)
+          TensorHs.castEquiv (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hzero
             (lapDiffHs (I := I) (M := M) q
               (S.family.metric ((T : Real) - t)) 0
               (tensorHsInclusion (I := I) (M := M)
                 (g := q) (r := 0) (s := 0) h02k U)) := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       have hi := congrArg
-        (fun v : tensorHs (I := I) (M := M) q 0 0
+        (fun v : TensorHs (I := I) (M := M) q 0 0
           ((0 : Nat) : Real) => v.coeff i) happ
       simpa only [tensorHsInclusion_coeff_apply,
-        tensorHs.castEquiv_coeff] using hi
+        TensorHs.castEquiv_coeff] using hi
     have hDiff :
         tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) h0k
@@ -300,17 +300,17 @@ theorem galVel_lift_on
               (S.family.metric ((T : Real) - t)) (m + 1) U) =
           lapDiffA20 (I := I) (M := M) S.family.metric T t U₂ := by
       calc
-        _ = tensorHs.castEquiv (I := I) (M := M)
+        _ = TensorHs.castEquiv (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hzero
             (lapDiffHs (I := I) (M := M) q
               (S.family.metric ((T : Real) - t)) 0
               (tensorHsInclusion (I := I) (M := M)
                 (g := q) (r := 0) (s := 0) h02k U)) := hleft
-        _ = tensorHs.castEquiv (I := I) (M := M)
+        _ = TensorHs.castEquiv (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hzero
             (lapDiffHs (I := I) (M := M) q
               (S.family.metric ((T : Real) - t)) 0
-              (tensorHs.castEquiv (I := I) (M := M)
+              (TensorHs.castEquiv (I := I) (M := M)
                 (g := q) (r := 0) (s := 0) h20 U₂)) := by rw [hU0]
         _ = lapDiffA20 (I := I) (M := M) S.family.metric T t U₂ :=
           hEq t t.2 U₂
@@ -361,21 +361,21 @@ theorem galVel_lift_on
     refine (hvelCoeff i).congr ?_
     intro t
     have hi := congrArg
-      (fun v : tensorHs (I := I) (M := M) q 0 0 0 => v.coeff i)
+      (fun v : TensorHs (I := I) (M := M) q 0 0 0 => v.coeff i)
       (hW0 t)
     simpa only [tensorHsInclusion_coeff_apply] using hi.symm
   have hdown := cont_of_coeff (I := I) (M := M) hm W hC_nn hW_bound hcoeff
   let w : Icc (0 : Real) tau →
-      tensorHs (I := I) (M := M) q 0 0 (m : Real) := fun t =>
+      TensorHs (I := I) (M := M) q 0 0 (m : Real) := fun t =>
     tensorHsInclusion (I := I) (M := M)
       (g := q) (r := 0) (s := 0) hm.le (W t)
   refine ⟨w, ?_, ?_, ?_⟩
   · simpa only [w] using hdown
   · intro t
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     have hi := congrArg
-      (fun v : tensorHs (I := I) (M := M) q 0 0 0 => v.coeff i)
+      (fun v : TensorHs (I := I) (M := M) q 0 0 0 => v.coeff i)
       (hW0 t)
     simpa only [w, tensorHsInclusion_coeff_apply] using hi
   · intro t
@@ -404,7 +404,7 @@ theorem galExt_deriv_on
           lapDiffCore (I := I) (M := M) (S.family.metric (T : Real))
             (S.family.metric ((T : Real) - s)) v) :
     ∀ m : Nat, ∃ w : Real →
-        tensorHs (I := I) (M := M)
+        TensorHs (I := I) (M := M)
           (S.family.metric (T : Real)) 0 0 (m : Real),
       Continuous w ∧
         (∀ t ∈ Icc (0 : Real) tau,
@@ -421,7 +421,7 @@ theorem galExt_deriv_on
     hS hτ hlim hreg hcore
   intro m
   obtain ⟨w₀, hw₀, hw₀_eq, hw₀_can⟩ := hlift m
-  let w : Real → tensorHs (I := I) (M := M)
+  let w : Real → TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (m : Real) :=
     Set.IccExtend hτ.le w₀
   have hw : Continuous w := by
@@ -445,7 +445,7 @@ theorem galExt_deriv_on
   have hftc (r : Real) (hr : r ∈ Icc (0 : Real) tau) :
       galLimExt hτ.le hlim m r =
         galLimExt hτ.le hlim m 0 + ∫ s in (0 : Real)..r, w s := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     have hInt : IntervalIntegrable w volume 0 r :=
       hw.intervalIntegrable _ _
@@ -462,12 +462,12 @@ theorem galExt_deriv_on
       have hsI : s ∈ Icc (0 : Real) tau :=
         (uIcc_subset_Icc h0 hr) hs
       have hi := congrArg
-        (fun v : tensorHs (I := I) (M := M)
+        (fun v : TensorHs (I := I) (M := M)
           (S.family.metric (T : Real)) 0 0 0 => v.coeff i)
         (hw_eq s hsI)
       simpa only [tensorHsInclusion_coeff_apply] using hi
     simp only [galLimExt_mem hτ.le hlim m hr,
-      galLimExt_mem hτ.le hlim m h0, galLimHs, tensorHs.add_coeff]
+      galLimExt_mem hτ.le hlim m h0, galLimHs, TensorHs.add_coeff]
     rw [galLim_mode_ftc hτ hlim r hr i, hlim.lim_init i, ← hmap, hIntEq]
   intro t ht
   have hwIoo : ContinuousOn w (Ioo (0 : Real) tau) := hw.continuousOn
@@ -571,11 +571,11 @@ theorem galExt_smooth_on
     | succ k ih =>
         have hvel (m : Nat) : ContDiffOn Real k
             (galLimVelCan hτ.le hlim m) (Ioo (0 : Real) tau) := by
-          let e := tensorHs.castEquiv (I := I) (M := M)
+          let e := TensorHs.castEquiv (I := I) (M := M)
             (g := q) (r := 0) (s := 0)
             (by norm_num : (((m + 1) + 2 : Nat) : Real) =
               ((m + 1 : Nat) : Real) + 2)
-          let U : Real → tensorHs (I := I) (M := M) q 0 0
+          let U : Real → TensorHs (I := I) (M := M) q 0 0
               (((m + 1 : Nat) : Real) + 2) := fun t =>
             e (galLimExt hτ.le hlim ((m + 1) + 2) t)
           have hU : ContDiffOn Real k U (Ioo (0 : Real) tau) := by
@@ -585,7 +585,7 @@ theorem galExt_smooth_on
             (g := q) (r := 0) (s := 0)
             (by norm_num : ((m + 1 : Nat) : Real) ≤
               ((m + 1 : Nat) : Real) + 2)
-          let Um : Real → tensorHs (I := I) (M := M) q 0 0
+          let Um : Real → TensorHs (I := I) (M := M) q 0 0
               ((m + 1 : Nat) : Real) := fun t => Jm (U t)
           have hUm : ContDiffOn Real k Um (Ioo (0 : Real) tau) := by
             simpa only [Um, Function.comp_def] using
@@ -713,12 +713,12 @@ theorem galJet_mass_on
     nlinarith
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0) hmp
-  let U : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
+  let U : Real → TensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => J (galLimExt hτ.le hlim (m + k) t)
   have hU : ContDiffOn Real ∞ U (Ioo (0 : Real) tau) := by
     simpa only [U, Function.comp_def] using
       J.contDiff.comp_contDiffOn (hsmooth (m + k))
-  let W : Real → tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
+  let W : Real → TensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
     fun t => iteratedDeriv j U t
   have hWopen : ContinuousOn W (Ioo (0 : Real) tau) := by
     have hF : ContinuousOn (iteratedFDeriv Real j U)
@@ -727,7 +727,7 @@ theorem galJet_mass_on
         (by exact_mod_cast le_top)
     have hE :=
       (ContinuousMultilinearMap.piFieldEquiv Real (Fin j)
-        (tensorHs (I := I) (M := M) q 0 0 ((m : Real) + p))).symm.continuous
+        (TensorHs (I := I) (M := M) q 0 0 ((m : Real) + p))).symm.continuous
         |>.comp_continuousOn hF
     simpa only [W, iteratedDeriv_eq_equiv_comp, Function.comp_apply] using hE
   have hW : ContinuousOn W (Icc a b) := hWopen.mono hKsub
@@ -956,32 +956,32 @@ theorem galPde_on
       scalarLapDiffCc (I := I) q h U +
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.scalarSmul
           (I := I) (M := M) q 0 0 zeta U
-  let U3 : tensorHs (I := I) (M := M) q 0 0
+  let U3 : TensorHs (I := I) (M := M) q 0 0
       (((1 : Nat) : Real) + 2) :=
     ccTensorToHs (I := I) (M := M) q 0 (((1 : Nat) : Real) + 2) U
-  let U1 : tensorHs (I := I) (M := M) q 0 0 ((1 : Nat) : Real) :=
+  let U1 : TensorHs (I := I) (M := M) q 0 0 ((1 : Nat) : Real) :=
     ccTensorToHs (I := I) (M := M) q 0 ((1 : Nat) : Real) U
-  let Ubar : tensorHs (I := I) (M := M) q 0 0
+  let Ubar : TensorHs (I := I) (M := M) q 0 0
       (((1 : Nat) : Real) + 2) :=
-    tensorHs.castEquiv (I := I) (M := M)
+    TensorHs.castEquiv (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((1 + 2 : Nat) : Real) = ((1 : Nat) : Real) + 2)
       (galLimExt hτ.le hlim (1 + 2) t)
-  let U1bar : tensorHs (I := I) (M := M) q 0 0 ((1 : Nat) : Real) :=
+  let U1bar : TensorHs (I := I) (M := M) q 0 0 ((1 : Nat) : Real) :=
     tensorHsInclusion (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((1 : Nat) : Real) ≤ ((1 : Nat) : Real) + 2) Ubar
   have hUbar : Ubar = U3 := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
-    simp only [Ubar, tensorHs.castEquiv_coeff]
+    simp only [Ubar, TensorHs.castEquiv_coeff]
     have hi := congrArg
-      (fun v : tensorHs (I := I) (M := M) q 0 0
+      (fun v : TensorHs (I := I) (M := M) q 0 0
           (((1 + 2 : Nat) : Real)) => v.coeff i)
       (hUall (1 + 2))
     simpa only [U3, q, ccTensorToHs_coeff] using hi.symm
   have hU1bar : U1bar = U1 := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     simp only [U1bar, tensorHsInclusion_coeff_apply]
     rw [hUbar]
@@ -1047,13 +1047,13 @@ theorem galPde_on
           (SmoothCcTensor.toL2 W) i =
         (galLimVel hτ.le hlim t).coeff i := by
     have h1 := congrArg
-      (fun z : tensorHs (I := I) (M := M) q 0 0 ((0 : Nat) : Real) =>
+      (fun z : TensorHs (I := I) (M := M) q 0 0 ((0 : Nat) : Real) =>
         z.coeff i) hcan
     have h2 := congrArg
-      (fun z : tensorHs (I := I) (M := M) q 0 0 ((0 : Nat) : Real) =>
+      (fun z : TensorHs (I := I) (M := M) q 0 0 ((0 : Nat) : Real) =>
         z.coeff i) (hwcan tt)
     have h3 := congrArg
-      (fun z : tensorHs (I := I) (M := M) q 0 0 (0 : Real) =>
+      (fun z : TensorHs (I := I) (M := M) q 0 0 (0 : Real) =>
         z.coeff i) (hw0 tt)
     calc
       _ = (ccTensorToHs (I := I) (M := M) q 0

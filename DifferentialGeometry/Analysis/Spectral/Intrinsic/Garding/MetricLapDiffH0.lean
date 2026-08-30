@@ -36,7 +36,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private noncomputable def scalarL2ToH0
     (g : SmoothRiemannianMetric I M) :
     TensorL2 0 0 g →ₗᵢ[Real]
-      tensorHs (I := I) (M := M) g 0 0 0 :=
+      TensorHs (I := I) (M := M) g 0 0 0 :=
   (tensorHsZeroEquivL2 (I := I) (M := M)
     (tensorResolventL2_isCompactOperator
       (I := I) (M := M) g 0 0)).symm.toLinearIsometry
@@ -45,8 +45,8 @@ noncomputable def lapDiffA20
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (T : D.RegularTime) (s : Real) :
-    tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
-      tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0 :=
+    TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+      TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0 :=
   (scalarL2ToH0 (I := I) (M := M)
     (g_fam (T : Real))).toContinuousLinearMap.comp
       (lapDiffA2 (I := I) (M := M) g_fam T s)
@@ -56,7 +56,7 @@ noncomputable def lapDiffA20
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (T : D.RegularTime) (s : Real)
-    (v : tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2) :
+    (v : TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2) :
     lapDiffA20 (I := I) (M := M) g_fam T s v =
       (tensorHsZeroEquivL2 (I := I) (M := M)
         (tensorResolventL2_isCompactOperator
@@ -88,14 +88,14 @@ theorem lapDiffA20_cont_of
         (g_fam (T : Real))).toContinuousLinearMap.comp
           (lapDiffA2 (I := I) (M := M) g_fam T s)) S
   let post :
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
           TensorL2 0 0 (g_fam (T : Real))) →L[Real]
-        (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
-          tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
+        (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+          TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     (ContinuousLinearMap.compL Real
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2)
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2)
       (TensorL2 0 0 (g_fam (T : Real)))
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0))
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0))
       (scalarL2ToH0 (I := I) (M := M)
         (g_fam (T : Real))).toContinuousLinearMap
   exact post.continuous.comp_continuousOn hcont
@@ -123,7 +123,7 @@ theorem lapDiffA20_graph
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∀ᶠ s in nhds (0 : Real),
-      ∀ u : tensorHs (I := I) (M := M)
+      ∀ u : TensorHs (I := I) (M := M)
           (g_fam (T : Real)) 0 0 2,
         (u,
             tensorHsZeroEquivL2 (I := I) (M := M)
@@ -134,7 +134,7 @@ theorem lapDiffA20_graph
             (Set.range fun
               v : ScalarH2Core (I := I) (M := M)
                   (g_fam (T : Real)) =>
-                ((v.1 : tensorHs (I := I) (M := M)
+                ((v.1 : TensorHs (I := I) (M := M)
                     (g_fam (T : Real)) 0 0 2),
                   lapDiffCore (I := I) (M := M)
                     (g_fam (T : Real))
@@ -145,8 +145,8 @@ theorem lapDiffA20_graph
     (tensorResolventL2_isCompactOperator
       (I := I) (M := M) (g_fam (T : Real)) 0 0)
   let graph :
-      tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →
-        tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 ×
+      TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →
+        TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 ×
           TensorL2 0 0 (g_fam (T : Real)) :=
     fun w => (w, J (lapDiffA20 (I := I) (M := M) g_fam T s w))
   have hgraph : Continuous graph :=
@@ -156,15 +156,15 @@ theorem lapDiffA20_graph
   have hu :
       u ∈ closure
         (ScalarH2Core (I := I) (M := M) (g_fam (T : Real)) :
-          Set (tensorHs (I := I) (M := M)
+          Set (TensorHs (I := I) (M := M)
             (g_fam (T : Real)) 0 0 2)) :=
-    tensorHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) u
+    TensorHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) u
   have hmem := mem_closure_image hgraph.continuousAt hu
   rw [Set.image_eq_range] at hmem
   change graph u ∈ closure
     (Set.range fun
       v : ScalarH2Core (I := I) (M := M) (g_fam (T : Real)) =>
-        ((v.1 : tensorHs (I := I) (M := M)
+        ((v.1 : TensorHs (I := I) (M := M)
             (g_fam (T : Real)) 0 0 2),
           lapDiffCore (I := I) (M := M) (g_fam (T : Real))
             (g_fam ((T : Real) - s)) v))
@@ -179,7 +179,7 @@ theorem lapDiffA20_test
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (T : D.RegularTime) (s : Real)
-    (u : tensorHs (I := I) (M := M)
+    (u : TensorHs (I := I) (M := M)
       (g_fam (T : Real)) 0 0 2)
     (w : ScalarH2Core (I := I) (M := M) (g_fam (T : Real)))
     (hgraph :
@@ -192,7 +192,7 @@ theorem lapDiffA20_test
           (Set.range fun
             v : ScalarH2Core (I := I) (M := M)
                 (g_fam (T : Real)) =>
-              ((v.1 : tensorHs (I := I) (M := M)
+              ((v.1 : TensorHs (I := I) (M := M)
                   (g_fam (T : Real)) 0 0 2),
                 lapDiffCore (I := I) (M := M)
                   (g_fam (T : Real))
@@ -209,7 +209,7 @@ theorem lapDiffA20_test
         (Set.range fun
           v : ScalarH2Core (I := I) (M := M)
               (g_fam (T : Real)) =>
-            ((v.1 : tensorHs (I := I) (M := M)
+            ((v.1 : TensorHs (I := I) (M := M)
                 (g_fam (T : Real)) 0 0 2),
               ∫ x, (ΔG (I := I) (g_fam ((T : Real) - s))
                       ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
@@ -227,9 +227,9 @@ theorem lapDiffA20_test
     SmoothCcTensor.toL2
       (tensorHsSmoothRepr (I := I) (M := M) w.1 w.2)
   let eval :
-      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 ×
+      (TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 ×
           TensorL2 0 0 (g_fam (T : Real))) →
-        tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 × Real :=
+        TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 × Real :=
     fun p => (p.1, inner Real p.2 test)
   have heval : Continuous eval :=
     continuous_fst.prodMk
@@ -239,7 +239,7 @@ theorem lapDiffA20_test
     closure
       (Set.range fun
         v : ScalarH2Core (I := I) (M := M) (g_fam (T : Real)) =>
-          ((v.1 : tensorHs (I := I) (M := M)
+          ((v.1 : TensorHs (I := I) (M := M)
               (g_fam (T : Real)) 0 0 2),
             ∫ x, (ΔG (I := I) (g_fam ((T : Real) - s))
                     ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
@@ -265,7 +265,7 @@ theorem lapDiffA20_bound
     ∃ omega : Real → Real,
       Tendsto omega (nhds 0) (nhds 0) ∧
       ∀ᶠ s in nhds (0 : Real),
-        ∀ v : tensorHs (I := I) (M := M)
+        ∀ v : TensorHs (I := I) (M := M)
             (g_fam (T : Real)) 0 0 2,
           (Function.support v.coeff).Finite →
             ‖lapDiffA20 (I := I) (M := M) g_fam T s v‖ ≤

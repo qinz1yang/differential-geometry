@@ -31,11 +31,11 @@ theorem exists_galerkin_approximation_with_uniform_all_order_energy_bounds_backg
     (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g₀ g_bg K hT hT1
       u gforce Rcap Ctop₂ Kr2 Kr1 Kcap) :
     ∃ (fseq : ℕ → timeL2
-        (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+        (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       HasUniformGalerkinEnergyBounds (I := I) (M := M) g₀ gforce fseq := by
   classical
   have hsol := hlo.toIsBackgroundLowRegularitySolutionAt
@@ -80,7 +80,7 @@ theorem per_mode_limit_weighted_energy_bound_all_orders_background
     (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g₀ g_bg K hT hT1
       u gforce Rcap Ctop₂ Kr2 Kr1 Kcap) :
     ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,

@@ -35,7 +35,7 @@ variable {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem homModeCoeff_eq_init_add_integral
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun t => (homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i) t) =ᵐ[timeMeasure T]
       fun t => u₀.coeff i + ∫ s in (0 : ℝ)..t,
@@ -82,7 +82,7 @@ theorem homModeCoeff_eq_init_add_integral
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun t => (solModeCoeff (I := I) (M := M) (a := a) hT f i) t) =ᵐ[timeMeasure T]
       fun t => ∫ s in (0 : ℝ)..t,
@@ -107,8 +107,8 @@ theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun s => ((maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv s).coeff i)
         =ᵐ[timeMeasure T]
@@ -140,8 +140,8 @@ theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T)
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun t => (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce t).coeff i)
         =ᵐ[timeMeasure T]
@@ -202,8 +202,8 @@ theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T)
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (fun t => (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t).coeff i)
         =ᵐ[timeMeasure T]
@@ -258,8 +258,8 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solField_toFun_ae (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (fun t =>
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith)
@@ -300,7 +300,7 @@ theorem solField_toFun_ae (hT : 0 < T)
     rw [htfield, hval, hinit]
   rw [← MeasureTheory.ae_all_iff] at hper
   filter_upwards [hper] with t ht
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply]
   exact ht i
@@ -308,8 +308,8 @@ theorem solField_toFun_ae (hT : 0 < T)
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldHa1_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (fun t =>
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 1 by linarith)
@@ -350,7 +350,7 @@ theorem solFieldHa1_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     rw [htfield, hval, hinit]
   rw [← MeasureTheory.ae_all_iff] at hper
   filter_upwards [hper] with t ht
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply]
   exact ht i

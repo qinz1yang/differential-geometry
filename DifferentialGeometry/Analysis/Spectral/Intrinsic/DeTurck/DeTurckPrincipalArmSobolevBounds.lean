@@ -57,7 +57,7 @@ theorem smoothCcToTensorHs_zero_norm_eq (g₀ : SmoothRiemannianMetric I M)
   have hnn_rhs : 0 ≤ ‖SmoothCcTensor.toL2 X‖ := norm_nonneg _
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ 0 X‖ ^ 2 =
       ‖SmoothCcTensor.toL2 X‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     rw [show (fun i => tensorSobolevWeight (I := I) (M := M) i (0 : ℝ) *
           ((smoothCcToTensorHs (I := I) (M := M) g₀ 0 X).coeff i) ^ 2) =
         fun i => (tensorL2Coeff (I := I) (M := M)
@@ -144,7 +144,7 @@ private lemma smoothCcToTensorHs_two_le_connLap_add (g₀ : SmoothRiemannianMetr
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (0 : ℝ)
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ ^ 2 +
         2 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) T₀‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     have hterm : ∀ i, tensorSobolevWeight (I := I) (M := M) i ((2 : ℕ) : ℝ) *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) T₀).coeff i) ^ 2 ≤
         tensorSobolevWeight (I := I) (M := M) i (0 : ℝ) *
@@ -199,8 +199,8 @@ lemma delta_nonneg_of_ball_gFibreOpBound [Nonempty M] (g₀ : SmoothRiemannianMe
       (0 : SmoothCcTensor g₀ 0 2)‖ ≤ R₀ := by
     have h0 : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (0 : SmoothCcTensor g₀ 0 2) = 0 := by
-      refine tensorHs.ext (funext fun i => ?_)
-      rw [smoothCcToTensorHs_coeff, tensorHs.zero_coeff,
+      refine TensorHs.ext (funext fun i => ?_)
+      rw [smoothCcToTensorHs_coeff, TensorHs.zero_coeff,
         show SmoothCcTensor.toL2 (0 : SmoothCcTensor g₀ 0 2) =
           (0 : TensorL2 0 2 g₀) from map_zero _,
         tensorL2Coeff_eq_inner, inner_zero_right]
@@ -391,7 +391,7 @@ private lemma smoothCcToTensorHs_connLap_shift_le (g₀ : SmoothRiemannianMetric
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ)
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 u)‖ ^ 2 +
         2 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 1 : ℕ) : ℝ) u‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     have hterm : ∀ i, tensorSobolevWeight (I := I) (M := M) i ((k + 2 : ℕ) : ℝ) *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 2 : ℕ) : ℝ) u).coeff i) ^ 2 ≤
         tensorSobolevWeight (I := I) (M := M) i ((k : ℕ) : ℝ) *
@@ -450,7 +450,7 @@ lemma smoothCcToTensorHs_rawConnLap_order_le (g₀ : SmoothRiemannianMetric I M)
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ)
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 u)‖ ^ 2 ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 2 : ℕ) : ℝ) u‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     refine Summable.tsum_le_tsum (fun i => ?_)
       ((smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ)
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 u)).weighted_summable)
@@ -474,9 +474,9 @@ lemma smoothCcToTensorHs_norm_mono (g₀ : SmoothRiemannianMetric I M)
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ w‖ ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ τ w‖ := by
   have hbσ : smoothCcToTensorHs (I := I) (M := M) g₀ σ w =
-      ccSpectralEmbed (I := I) (M := M) g₀ σ w := tensorHs.ext (funext fun i => rfl)
+      ccSpectralEmbed (I := I) (M := M) g₀ σ w := TensorHs.ext (funext fun i => rfl)
   have hbτ : smoothCcToTensorHs (I := I) (M := M) g₀ τ w =
-      ccSpectralEmbed (I := I) (M := M) g₀ τ w := tensorHs.ext (funext fun i => rfl)
+      ccSpectralEmbed (I := I) (M := M) g₀ τ w := TensorHs.ext (funext fun i => rfl)
   rw [hbσ, hbτ]
   exact ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ hστ w
 

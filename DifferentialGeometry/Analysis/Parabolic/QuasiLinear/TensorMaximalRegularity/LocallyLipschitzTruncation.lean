@@ -103,27 +103,27 @@ end RecentreNormed
 
 section Truncation
 
-variable {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-    tensorHs (I := I) (M := M) g r s a}
+variable {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+    TensorHs (I := I) (M := M) g r s a}
 
-def truncatedNonlin (N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
-    (u₀' : tensorHs (I := I) (M := M) g r s (a + 1)) (R : ℝ) :
-    tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a :=
+def truncatedNonlin (N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
+    (u₀' : TensorHs (I := I) (M := M) g r s (a + 1)) (R : ℝ) :
+    TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a :=
   fun v => N (recenteredBallRetraction u₀' R v)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem truncatedNonlin_eq_of_mem
-    {u₀' : tensorHs (I := I) (M := M) g r s (a + 1)} {R : ℝ}
-    {v : tensorHs (I := I) (M := M) g r s (a + 1)}
+    {u₀' : TensorHs (I := I) (M := M) g r s (a + 1)} {R : ℝ}
+    {v : TensorHs (I := I) (M := M) g r s (a + 1)}
     (hv : v ∈ Metric.closedBall u₀' R) :
     truncatedNonlin (I := I) (M := M) N u₀' R v = N v := by
   rw [truncatedNonlin, recenteredBallRetraction_eq_self_of_mem hv]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem truncatedNonlin_lipschitzWith {L_R : ℝ≥0}
-    {u₀' : tensorHs (I := I) (M := M) g r s (a + 1)} {R : ℝ} (hR : 0 ≤ R)
+    {u₀' : TensorHs (I := I) (M := M) g r s (a + 1)} {R : ℝ} (hR : 0 ≤ R)
     (hN : LipschitzOnWith L_R N (Metric.closedBall u₀' R)) :
     LipschitzWith L_R (truncatedNonlin (I := I) (M := M) N u₀' R) := by
   have hρ : LipschitzOnWith 1 (recenteredBallRetraction u₀' R) Set.univ :=
@@ -142,18 +142,18 @@ end Truncation
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinear_strong_existence_truncated_smallTime_ofCompact
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (hN : LipschitzOnWith L_R N (Metric.closedBall
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a + 1) ≤ a + 2 by linarith) u₀) R)) :
     ∃ T_R : ℝ, 0 < T_R ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTR : T ≤ T_R),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
         u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce = nemytskiiHa1 (I := I) (M := M)
               (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
@@ -174,12 +174,12 @@ theorem quasilinear_strong_existence_truncated_smallTime_ofCompact
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiHa1_truncated_eqOn_ball
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
-    {u₀' : tensorHs (I := I) (M := M) g r s (a + 1)}
+    {u₀' : TensorHs (I := I) (M := M) g r s (a + 1)}
     (hN : LipschitzOnWith L_R N (Metric.closedBall u₀' R))
-    (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T)
+    (field : timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T)
     (hball : ∀ᵐ t ∂(timeMeasure T), field t ∈ Metric.closedBall u₀' R) :
     nemytskiiHa1 (I := I) (M := M)
         (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN) field =ᵐ[timeMeasure T]
@@ -191,17 +191,17 @@ theorem nemytskiiHa1_truncated_eqOn_ball
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem de_simon_quasilinear_tensor_heat_short_time_existence_locally_lipschitz_of_compact_resolvent
-    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a}
     {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (hN : LipschitzOnWith L_R N (Metric.closedBall
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a + 1) ≤ a + 2 by linarith) u₀) R)) :
     ∃ T_R : ℝ, 0 < T_R ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTR : T ≤ T_R)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
         (_hfix : gforce = nemytskiiHa1 (I := I) (M := M)
             (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
             (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce))

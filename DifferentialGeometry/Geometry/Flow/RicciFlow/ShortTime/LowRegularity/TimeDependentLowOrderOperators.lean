@@ -40,7 +40,7 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -84,13 +84,13 @@ private theorem symmRep_spec
     (x : symmCore (I := I) (M := M) g σ) :
     ccToHsLin (I := I) (M := M) g 2 σ
         (symmRep (I := I) (M := M) g σ x) =
-      (x : tensorHs (I := I) (M := M) g 0 2 σ) :=
+      (x : TensorHs (I := I) (M := M) g 0 2 σ) :=
   Classical.choose_spec x.property
 
 private noncomputable def symmCoreMap
     (g : SmoothRiemannianMetric I M) (σ : ℝ) :
     symmCore (I := I) (M := M) g σ →
-      tensorHs (I := I) (M := M) g 0 2 σ :=
+      TensorHs (I := I) (M := M) g 0 2 σ :=
   fun x =>
     ccToHsLin (I := I) (M := M) g 2 σ
       (symmS (I := I) (M := M) g
@@ -105,13 +105,13 @@ private theorem symmCore_lip
   have hx :
       ccTensorToHs (I := I) (M := M) g 2 σ
           (symmRep (I := I) (M := M) g σ x) =
-        (x : tensorHs (I := I) (M := M) g 0 2 σ) := by
+        (x : TensorHs (I := I) (M := M) g 0 2 σ) := by
     simpa only [ccToHsLin_apply] using
       symmRep_spec (I := I) (M := M) g σ x
   have hy :
       ccTensorToHs (I := I) (M := M) g 2 σ
           (symmRep (I := I) (M := M) g σ y) =
-        (y : tensorHs (I := I) (M := M) g 0 2 σ) := by
+        (y : TensorHs (I := I) (M := M) g 0 2 σ) := by
     simpa only [ccToHsLin_apply] using
       symmRep_spec (I := I) (M := M) g σ y
   change
@@ -121,8 +121,8 @@ private theorem symmCore_lip
         ccTensorToHs (I := I) (M := M) g 2 σ
           (symmS (I := I) (M := M) g
             (symmRep (I := I) (M := M) g σ y))‖ ≤
-      ‖(x : tensorHs (I := I) (M := M) g 0 2 σ) -
-        (y : tensorHs (I := I) (M := M) g 0 2 σ)‖
+      ‖(x : TensorHs (I := I) (M := M) g 0 2 σ) -
+        (y : TensorHs (I := I) (M := M) g 0 2 σ)‖
   rw [← ccToHs_sub, ← symmS_sub, ← hx, ← hy, ← ccToHs_sub]
   exact norm_smoothCcToTensorHs_symmS_le
     (I := I) (M := M) g σ
@@ -131,8 +131,8 @@ private theorem symmCore_lip
 
 private noncomputable def symmFun
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ) :
-    tensorHs (I := I) (M := M) g 0 2 σ →
-      tensorHs (I := I) (M := M) g 0 2 σ :=
+    TensorHs (I := I) (M := M) g 0 2 σ →
+      TensorHs (I := I) (M := M) g 0 2 σ :=
   Dense.extend
     (ccToHsLin_dense (I := I) (M := M) g 2 hσ)
     (symmCoreMap (I := I) (M := M) g σ)
@@ -179,15 +179,15 @@ private theorem symmFun_zero
 
 private theorem symmFun_add
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ)
-    (u v : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (u v : TensorHs (I := I) (M := M) g 0 2 σ) :
     symmFun (I := I) (M := M) g hσ (u + v) =
       symmFun (I := I) (M := M) g hσ u +
         symmFun (I := I) (M := M) g hσ v := by
-  let D : Set (tensorHs (I := I) (M := M) g 0 2 σ) :=
+  let D : Set (TensorHs (I := I) (M := M) g 0 2 σ) :=
     Set.range (ccToHsLin (I := I) (M := M) g 2 σ)
   let C : Set
-      (tensorHs (I := I) (M := M) g 0 2 σ ×
-        tensorHs (I := I) (M := M) g 0 2 σ) :=
+      (TensorHs (I := I) (M := M) g 0 2 σ ×
+        TensorHs (I := I) (M := M) g 0 2 σ) :=
     {p | symmFun (I := I) (M := M) g hσ (p.1 + p.2) =
       symmFun (I := I) (M := M) g hσ p.1 +
         symmFun (I := I) (M := M) g hσ p.2}
@@ -224,12 +224,12 @@ private theorem symmFun_add
 
 private theorem symmFun_smul
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ)
-    (c : ℝ) (u : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (c : ℝ) (u : TensorHs (I := I) (M := M) g 0 2 σ) :
     symmFun (I := I) (M := M) g hσ (c • u) =
       c • symmFun (I := I) (M := M) g hσ u := by
-  let D : Set (tensorHs (I := I) (M := M) g 0 2 σ) :=
+  let D : Set (TensorHs (I := I) (M := M) g 0 2 σ) :=
     Set.range (ccToHsLin (I := I) (M := M) g 2 σ)
-  let C : Set (tensorHs (I := I) (M := M) g 0 2 σ) :=
+  let C : Set (TensorHs (I := I) (M := M) g 0 2 σ) :=
     {v | symmFun (I := I) (M := M) g hσ (c • v) =
       c • symmFun (I := I) (M := M) g hσ v}
   have hf : Continuous (symmFun (I := I) (M := M) g hσ) :=
@@ -261,10 +261,10 @@ private theorem symmFun_smul
 
 noncomputable def symmHs
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ) :
-    tensorHs (I := I) (M := M) g 0 2 σ →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 σ :=
-  let L : tensorHs (I := I) (M := M) g 0 2 σ →ₗ[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 σ :=
+    TensorHs (I := I) (M := M) g 0 2 σ →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 σ :=
+  let L : TensorHs (I := I) (M := M) g 0 2 σ →ₗ[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 σ :=
     { toFun := symmFun (I := I) (M := M) g hσ
       map_add' := symmFun_add (I := I) (M := M) g hσ
       map_smul' := symmFun_smul (I := I) (M := M) g hσ }
@@ -289,7 +289,7 @@ theorem symmHs_core
 
 theorem symmHs_le
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ)
-    (u : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (u : TensorHs (I := I) (M := M) g 0 2 σ) :
     ‖symmHs (I := I) (M := M) g hσ u‖ ≤ ‖u‖ := by
   have h := (symmFun_lip (I := I) (M := M) g hσ).dist_le_mul u 0
   rw [NNReal.coe_one, one_mul, symmFun_zero (I := I) (M := M) g hσ,
@@ -303,7 +303,7 @@ private theorem hsIncl_core
         (r := 0) (s := 2) hτσ
         (ccToHsLin (I := I) (M := M) g 2 σ T) =
       ccToHsLin (I := I) (M := M) g 2 τ T := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   simp only [tensorHsInclusion_coeff_apply, ccToHsLin_apply,
     ccTensorToHs_coeff]
@@ -338,36 +338,36 @@ theorem symmHs_incl
 
 noncomputable def radialScale
     (g : SmoothRiemannianMetric I M) (ρ : ℝ)
-    (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) : ℝ :=
+    (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) : ℝ :=
   min 1
     (ρ / ‖symmHs (I := I) (M := M) g (by norm_num) v‖)
 
 private theorem radialScale_nonneg
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)
-    (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
     0 ≤ radialScale (I := I) (M := M) g ρ v := by
   unfold radialScale
   exact le_min zero_le_one (div_nonneg hρ (norm_nonneg _))
 
 private theorem radialScale_le
     (g : SmoothRiemannianMetric I M) (ρ : ℝ)
-    (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
     radialScale (I := I) (M := M) g ρ v ≤ 1 := by
   exact min_le_left _ _
 
 noncomputable def radialCLM
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ)
-    (ρ : ℝ) (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
-    tensorHs (I := I) (M := M) g 0 2 σ →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 σ :=
+    (ρ : ℝ) (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
+    TensorHs (I := I) (M := M) g 0 2 σ →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 σ :=
   radialScale (I := I) (M := M) g ρ v •
     symmHs (I := I) (M := M) g hσ
 
 theorem radialCLM_le
     (g : SmoothRiemannianMetric I M) {σ ρ : ℝ}
     (hσ : 0 ≤ σ) (hρ : 0 ≤ ρ)
-    (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-    (u : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+    (u : TensorHs (I := I) (M := M) g 0 2 σ) :
     ‖radialCLM (I := I) (M := M) g hσ ρ v u‖ ≤ ‖u‖ := by
   rw [radialCLM, smul_apply, norm_smul,
     Real.norm_eq_abs, abs_of_nonneg
@@ -385,7 +385,7 @@ theorem radialCLM_le
 theorem radialCLM_norm
     (g : SmoothRiemannianMetric I M) {σ ρ : ℝ}
     (hσ : 0 ≤ σ) (hρ : 0 ≤ ρ)
-    (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
     ‖radialCLM (I := I) (M := M) g hσ ρ v‖ ≤ 1 := by
   refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun u => ?_)
   simpa only [one_mul] using
@@ -394,7 +394,7 @@ theorem radialCLM_norm
 theorem radialCLM_aemeas
     {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
     (g : SmoothRiemannianMetric I M) {σ ρ : ℝ} (hσ : 0 ≤ σ)
-    {v : Ω → tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)}
+    {v : Ω → TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)}
     (hv : AEStronglyMeasurable v μ) :
     AEStronglyMeasurable
       (fun x => radialCLM (I := I) (M := M) g hσ ρ (v x)) μ := by
@@ -424,7 +424,7 @@ theorem radialCLM_aemeas
 theorem radialCLM_incl
     (g : SmoothRiemannianMetric I M) {τ σ : ℝ}
     (hτ : 0 ≤ τ) (hσ : 0 ≤ σ) (hτσ : τ ≤ σ)
-    (ρ : ℝ) (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
+    (ρ : ℝ) (v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :
     (tensorHsInclusion (I := I) (M := M) (g := g)
         (r := 0) (s := 2) hτσ).comp
         (radialCLM (I := I) (M := M) g hσ ρ v) =
@@ -555,7 +555,7 @@ theorem lowRadial_lip
       rw [ccToHs_sub]
 
 private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private abbrev incl32 (g : SmoothRiemannianMetric I M) :
     metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ]
@@ -568,7 +568,7 @@ private theorem incl32_ccToHs
     incl32 (I := I) (M := M) g
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   simp only [incl32, tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
 
@@ -1348,12 +1348,12 @@ noncomputable def lowCoreActionCoefficients
     (zeroBound (I := I) (M := M) g hδ0)
 
 abbrev lowerScaleSecondOrderActionFourthToSecondOrderSpace (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev lowerScaleSecondOrderActionThirdToFirstOrderSpace (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private noncomputable def lowerScaleSecondOrderActionFourthToSecondOrderCore
     (g : SmoothRiemannianMetric I M)
@@ -1507,12 +1507,12 @@ noncomputable def lowerScaleSecondOrderActionThirdToFirstOrder
     (lowerScaleSecondOrderActionThirdToFirstOrderCore (I := I) (M := M) g hρ hδ0 hδ_le hreal)
 
 abbrev lowerScaleFirstOrderActionThirdToSecondOrderSpace (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev lowerScaleFirstOrderActionSecondToFirstOrderSpace (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private noncomputable def lowerScaleFirstOrderActionThirdToSecondOrderCore
     (g : SmoothRiemannianMetric I M)

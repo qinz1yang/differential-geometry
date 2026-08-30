@@ -143,7 +143,7 @@ theorem ccTensorBilin_chartBasisVecFiber_eq_tensorChartComponentRaw
 omit [BoundarylessManifold I M] in
 theorem reprDiffChartCompOnE_eq_symm_tensorChartComponentRaw
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (l b : Fin (Module.finrank ℝ E)) {y : E}
@@ -203,7 +203,7 @@ theorem partialDeriv2_eq_euclidPartial2_comp_toEuclidean
 omit [BoundarylessManifold I M] in
 theorem reprDiffChartCompOnE_comp_toEuclidean_symm_eqOn
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (l b : Fin (Module.finrank ℝ E)) :
@@ -287,7 +287,7 @@ theorem toEuclidean_mem_chartTargetEuclid_of_mem_interior
 omit [BoundarylessManifold I M] in
 theorem partialDeriv_reprDiffChartCompOnE_eq_covGrad_sub_lowerOrder
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (a l b : Fin (Module.finrank ℝ E)) {y : E}
@@ -1008,7 +1008,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
 omit [BoundarylessManifold I M] in
 theorem reprDiffChartCompOnE_abs_le_riemannianFibreNorm
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hK : IsCompact K)
@@ -1065,7 +1065,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
 omit [BoundarylessManifold I M] in
 theorem partialDeriv_reprDiffChartCompOnE_abs_le
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hK : IsCompact K)
@@ -1175,7 +1175,7 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
 omit [BoundarylessManifold I M] in
 theorem partialDeriv2_reprDiffChartCompOnE_abs_le
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hK : IsCompact K)
@@ -1299,7 +1299,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
 omit [BoundarylessManifold I M] in
 theorem hcovgrad_jet_bound_holds
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hK : IsCompact K)
@@ -1361,7 +1361,7 @@ theorem hcovgrad_jet_bound_holds
 omit [BoundarylessManifold I M] in
 theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hK : IsCompact K)

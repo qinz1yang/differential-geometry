@@ -96,7 +96,7 @@ private lemma hs_zero_norm_eq (g₀ : SmoothRiemannianMetric I M)
   have hnn_rhs : 0 ≤ ‖SmoothCcTensor.toL2 X‖ := norm_nonneg _
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ 0 X‖ ^ 2 =
       ‖SmoothCcTensor.toL2 X‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     rw [show (fun i => tensorSobolevWeight (I := I) (M := M) i (0 : ℝ) *
           ((smoothCcToTensorHs (I := I) (M := M) g₀ 0 X).coeff i) ^ 2) =
         fun i => (tensorL2Coeff (I := I) (M := M)
@@ -121,9 +121,9 @@ private lemma hs_norm_mono (g₀ : SmoothRiemannianMetric I M)
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ w‖ ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ τ w‖ := by
   have hbσ : smoothCcToTensorHs (I := I) (M := M) g₀ σ w =
-      ccSpectralEmbed (I := I) (M := M) g₀ σ w := tensorHs.ext (funext fun i => rfl)
+      ccSpectralEmbed (I := I) (M := M) g₀ σ w := TensorHs.ext (funext fun i => rfl)
   have hbτ : smoothCcToTensorHs (I := I) (M := M) g₀ τ w =
-      ccSpectralEmbed (I := I) (M := M) g₀ τ w := tensorHs.ext (funext fun i => rfl)
+      ccSpectralEmbed (I := I) (M := M) g₀ τ w := TensorHs.ext (funext fun i => rfl)
   rw [hbσ, hbτ]
   exact ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ hστ w
 
@@ -149,7 +149,7 @@ private lemma hs_connLap_shift_le (g₀ : SmoothRiemannianMetric I M)
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ)
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 u)‖ ^ 2 +
         2 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 1 : ℕ) : ℝ) u‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     have hterm : ∀ i, tensorSobolevWeight (I := I) (M := M) i ((k + 2 : ℕ) : ℝ) *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 2 : ℕ) : ℝ) u).coeff i) ^ 2 ≤
         tensorSobolevWeight (I := I) (M := M) i ((k : ℕ) : ℝ) *
@@ -208,7 +208,7 @@ private lemma hs_rawConnLap_order_le (g₀ : SmoothRiemannianMetric I M)
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ)
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 u)‖ ^ 2 ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((k + 2 : ℕ) : ℝ) u‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     refine Summable.tsum_le_tsum (fun i => ?_)
       ((smoothCcToTensorHs (I := I) (M := M) g₀ ((k : ℕ) : ℝ)
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 u)).weighted_summable)

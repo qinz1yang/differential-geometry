@@ -35,7 +35,7 @@ variable {a T : ℝ}
 def zeroDuhamelCross (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     CrossScaleField (I := I) (M := M) g r s a T :=
   maxRegRecentredCrossScaleField (I := I) (M := M)
     (h_compact := h_compact) hT 0 f
@@ -44,26 +44,26 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem zeroRepr_zero (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (zeroDuhamelCross (I := I) (M := M) hT h_compact f).repr 0 =
-      (0 : tensorHs (I := I) (M := M) g r s (a + 1)) := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 1)) := by
   simpa only [zeroDuhamelCross] using
     recentred_repr_zero (I := I) (M := M)
       (h_compact := h_compact) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem zeroRepr_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (fun t => (zeroDuhamelCross (I := I) (M := M)
         hT h_compact f).repr t) =ᵐ[timeMeasure T]
       fun t => maxRegDuhamelSolFieldHa1 (I := I) (M := M)
         a hT 0 f t := by
   have h := recentred_repr_eq_field_sub (I := I) (M := M)
     (h_compact := h_compact) hT hT1
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
   filter_upwards [h] with t ht
   simpa only [zeroDuhamelCross, map_zero, sub_zero] using ht
 
@@ -71,36 +71,36 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem zeroRepr_meas (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     AEStronglyMeasurable
       (fun t => (zeroDuhamelCross (I := I) (M := M)
         hT h_compact f).repr t)
       (timeMeasure T) := by
   exact (Lp.aestronglyMeasurable
     (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
-      a hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f)).congr
+      a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f)).congr
         (zeroRepr_ae (I := I) (M := M) hT hT1 h_compact f).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem homMode_zero (hT : 0 < T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i = 0 := by
   have hsq := norm_homModeCoeff_sq_le (I := I) (M := M)
     (a := a) (T := T) hT.le
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i
-  rw [tensorHs.zero_coeff] at hsq
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i
+  rw [TensorHs.zero_coeff] at hsq
   apply norm_eq_zero.mp
   nlinarith [norm_nonneg
     (homModeCoeff (I := I) (M := M) (a := a) (T := T)
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i)]
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) i)]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem homField_zero (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) :
     maxRegHomogeneousSolFieldTraceScale (I := I) (M := M) a T
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) = 0 := by
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) = 0 := by
   refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
   rw [maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M)
     (a := a) (T := T) hT.le, homMode_zero (I := I) (M := M) hT i]
@@ -110,7 +110,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem duhField_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 f -
         maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 f' =
       maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 (f - f') := by
@@ -123,7 +123,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem zeroRepr_sub_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (fun t =>
       (zeroDuhamelCross (I := I) (M := M) hT h_compact f).repr t -
         (zeroDuhamelCross (I := I) (M := M) hT h_compact f').repr t)
@@ -147,7 +147,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem zeroRepr_norm_le (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ‖(zeroDuhamelCross (I := I) (M := M)
         hT h_compact f).repr t‖ ≤
@@ -156,26 +156,26 @@ theorem zeroRepr_norm_le (hT : 0 < T)
     hT h_compact f with hu
   have hsq := u.normSq_repr_le_init_add_integral hT ht
   have hzero : u.repr 0 =
-      (0 : tensorHs (I := I) (M := M) g r s (a + 1)) := by
+      (0 : TensorHs (I := I) (M := M) g r s (a + 1)) := by
     simpa only [hu] using
       zeroRepr_zero (I := I) (M := M) hT h_compact f
   rw [hzero, norm_zero, zero_pow (by norm_num), zero_add] at hsq
   have hhi : ‖u.hiL2‖ ≤ (1 + T) * ‖f‖ := by
     rw [hu]
     change ‖recentredHiL2 (I := I) (M := M) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f‖ ≤ (1 + T) * ‖f‖
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f‖ ≤ (1 + T) * ‖f‖
     have h := recentredHi_norm_le (I := I) (M := M)
       (h_compact := h_compact) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
     simpa only [norm_zero, mul_zero, zero_add] using h
   have hderiv : ‖u.lo.deriv‖ ≤ 2 * ‖f‖ := by
     rw [hu]
     change ‖(recentredCarrier (I := I) (M := M) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f).deriv‖ ≤ 2 * ‖f‖
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f).deriv‖ ≤ 2 * ‖f‖
     rw [recentredCarrier, TimeSobolev.timeH1.deriv_mk]
     have h := recentredCarrier_deriv_norm_le (I := I) (M := M)
       (h_compact := h_compact) hT
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+      (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
     simpa only [norm_zero, mul_zero, zero_add] using h
   have hmul :
       ‖u.hiL2‖ * ‖u.lo.deriv‖ ≤

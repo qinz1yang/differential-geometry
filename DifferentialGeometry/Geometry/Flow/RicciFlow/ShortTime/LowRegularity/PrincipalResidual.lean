@@ -54,7 +54,7 @@ noncomputable def principalResidualSobolev
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
   ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
       (deTurckSmoothRemainder (I := I) g g T hδ_lt hδ -
         deTurckSmoothRemainder (I := I) g g
@@ -86,7 +86,7 @@ noncomputable def lowerScaleResidualSobolev
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
   ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
     (lowerScaleResidual (I := I) (M := M) g T hδ_lt hδ hδZ)
 

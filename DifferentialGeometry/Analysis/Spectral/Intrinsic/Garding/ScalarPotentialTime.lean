@@ -34,7 +34,7 @@ theorem scalarPot_dyn_fin
       (fun p : M × Real => (zeta p.2 : M → Real) p.1)
       ((Set.univ : Set M) ×ˢ S))
     (m k : ℕ)
-    (U : Real → tensorHs (I := I) (M := M) q 0 0 (m : Real))
+    (U : Real → TensorHs (I := I) (M := M) q 0 0 (m : Real))
     (hU : ContDiffOn Real k U S) :
     ContDiffOn Real k
       (fun t => scalarPotHs (I := I) (M := M) q (zeta t) m (U t)) S := by
@@ -52,7 +52,7 @@ theorem scalarPot_dyn_cd
       (fun p : M × Real => (zeta p.2 : M → Real) p.1)
       ((Set.univ : Set M) ×ˢ S))
     (m : ℕ)
-    (U : Real → tensorHs (I := I) (M := M) q 0 0 (m : Real))
+    (U : Real → TensorHs (I := I) (M := M) q 0 0 (m : Real))
     (hU : ContDiffOn Real ∞ U S) :
     ContDiffOn Real ∞
       (fun t => scalarPotHs (I := I) (M := M) q (zeta t) m (U t)) S := by

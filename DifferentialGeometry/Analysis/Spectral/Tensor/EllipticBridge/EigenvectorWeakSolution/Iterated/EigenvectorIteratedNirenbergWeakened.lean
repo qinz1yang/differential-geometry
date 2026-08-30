@@ -37,7 +37,7 @@ private def eigenvectorIteratedChartBilinearH1ComplData
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
-    (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
     (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) (m + 1) 2
@@ -184,7 +184,7 @@ def eigenvectorIteratedTensorChartBilinearDataToData
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
-    (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
     (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) (m + 1) 2
@@ -201,7 +201,7 @@ theorem eigenvectorChartIteratedPartial_memWkp_two_two
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
-    (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
     (h_dir : D_m.directions = directions)
     (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

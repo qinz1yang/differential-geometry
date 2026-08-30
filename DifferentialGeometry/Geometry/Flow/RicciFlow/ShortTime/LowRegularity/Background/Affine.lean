@@ -30,13 +30,13 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH1 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private noncomputable abbrev incl21Background (g : SmoothRiemannianMetric I M) :
     metricH2 (I := I) (M := M) g →L[ℝ] metricH1 (I := I) (M := M) g :=
@@ -52,7 +52,7 @@ private theorem ccHs_eq
     (g : SmoothRiemannianMetric I M) (σ : ℝ) (S : SmoothCcTensor g 0 2) :
     smoothCcToTensorHs (I := I) (M := M) g σ S =
       ccTensorToHs (I := I) (M := M) g 2 σ S :=
-  tensorHs.ext (funext fun _ => rfl)
+  TensorHs.ext (funext fun _ => rfl)
 
 private theorem congr_cc
     (g : SmoothRiemannianMetric I M) {a b : ℝ} (hab : a = b)
@@ -69,7 +69,7 @@ private theorem incl_cc
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2) hτσ
         (ccTensorToHs (I := I) (M := M) g 2 σ S) =
       ccTensorToHs (I := I) (M := M) g 2 τ S := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff, ccTensorToHs_coeff]
 
@@ -116,7 +116,7 @@ theorem lowerScaleForceBackground_core
         (deTurckSmoothRemainder (I := I) g gB
           (0 : SmoothCcTensor g 0 2) (by norm_num)
           (gFibreOpBound_ccTensorBilinSymm_zero (I := I) (M := M) g)) := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   simp only [lowerScaleForceBackground, incl21Background, zeroStateDeTurckRemainderH2,
     tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
@@ -294,7 +294,7 @@ theorem deTurckRemainderOnLowerState_affine_background
         hsmoothN, congr_cc, ccHs_eq]
     have hu : tensorHsCongr (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-          (v.1 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) =
+          (v.1 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) =
         ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S := by
       rw [hveq, congr_cc, ccToHsLin_apply, ccHs_eq]
     have hsplit :

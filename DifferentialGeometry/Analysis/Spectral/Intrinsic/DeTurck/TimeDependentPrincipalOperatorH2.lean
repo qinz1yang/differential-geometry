@@ -24,13 +24,13 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev rank2H4 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
 private abbrev rank2H2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 def principalOperatorDomainBall (g : SmoothRiemannianMetric I M) (ρ : ℝ) :
     Set (metricH2 (I := I) (M := M) g) :=

@@ -33,25 +33,25 @@ variable
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev rank2H4 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
 private abbrev rank2H3 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private abbrev rank2H2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev rank2H1 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
 
 private abbrev rank4H2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 4 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 4 (2 : ℝ)
 
 private abbrev rank4H1 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 4 ((1 : ℕ) : ℝ)
+  TensorHs (I := I) (M := M) g 0 4 ((1 : ℕ) : ℝ)
 
 private abbrev rank4End1 (g : SmoothRiemannianMetric I M) :=
   rank4H1 (I := I) (M := M) g →L[ℝ]
@@ -88,7 +88,7 @@ private theorem incl_core
         (r := 0) (s := s) hτσ
         (ccTensorToHs (I := I) (M := M) g s σ W) =
       ccTensorToHs (I := I) (M := M) g s τ W := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
 
@@ -97,9 +97,9 @@ private noncomputable def secondCovariantDerivativeH3ToH1
     rank2H3 (I := I) (M := M) g →L[ℝ]
       rank4H1 (I := I) (M := M) g := by
   let J : rank2H3 (I := I) (M := M) g →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2
+      TensorHs (I := I) (M := M) g 0 2
         (((1 : ℕ) : ℝ) + (2 : ℝ)) :=
-    (tensorHs.castEquiv (I := I) (M := M)
+    (TensorHs.castEquiv (I := I) (M := M)
       (by norm_num : (3 : ℝ) =
         ((1 : ℕ) : ℝ) + (2 : ℝ))).toContinuousLinearEquiv.toContinuousLinearMap
   exact (iterCovGradHs (I := I) (M := M) g 2 2 1).comp J
@@ -689,7 +689,7 @@ theorem lowRegularityPrincipalOperatorH1_continuousOn
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, 0 < ρ ∧
       ContinuousOn (lowRegularityPrincipalOperatorH1 (I := I) (M := M) g)
-        {T : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) | ‖T‖ ≤ ρ} := by
+        {T : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) | ‖T‖ ≤ ρ} := by
   obtain ⟨ρ, C, hρ, hC, hinv⟩ :=
     invPerturbH1_norm (I := I) (M := M) hDim g
   refine ⟨ρ, hρ, ?_⟩

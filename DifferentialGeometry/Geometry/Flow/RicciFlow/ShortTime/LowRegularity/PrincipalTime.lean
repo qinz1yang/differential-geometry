@@ -22,19 +22,19 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH1 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)
+  TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)
 
 private abbrev metricH4 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
 def orderOneH2Iso (g : SmoothRiemannianMetric I M) :
-    tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) ≃ₗᵢ[ℝ]
+    TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) ≃ₗᵢ[ℝ]
       metricH2 (I := I) (M := M) g := by
   rw [show (1 : ℝ) + 1 = 2 by norm_num]
   exact LinearIsometryEquiv.refl ℝ _

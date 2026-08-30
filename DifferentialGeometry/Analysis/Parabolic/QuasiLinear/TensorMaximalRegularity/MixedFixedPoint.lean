@@ -83,17 +83,17 @@ theorem mixedHorizon_small {L2 L1 : NNReal}
   nlinarith
 
 def mixedMap (a : Real) {T : Real} (hT : 0 < T)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
-    (N2 : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N2 : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN2 : LipschitzWith L2 N2)
     {L1 : NNReal}
-    (N1 : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N1 : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN1 : LipschitzWith L1 N1) :
-    timeL2 (tensorHs (I := I) (M := M) g r s a) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s a) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun force =>
     nemytskii (I := I) (M := M) hN2
         (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
@@ -102,16 +102,16 @@ def mixedMap (a : Real) {T : Real} (hT : 0 < T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem mixedMap_apply (hT : 0 < T)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
-    (N2 : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N2 : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN2 : LipschitzWith L2 N2)
     {L1 : NNReal}
-    (N1 : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N1 : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN1 : LipschitzWith L1 N1)
-    (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     mixedMap (I := I) (M := M) a hT u0 N2 hN2 N1 hN1 force =
       nemytskii (I := I) (M := M) hN2
           (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
@@ -124,16 +124,16 @@ theorem mixedMap_dist_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
-    (N2 : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N2 : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN2 : LipschitzWith L2 N2)
     {L1 : NNReal}
-    (N1 : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N1 : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN1 : LipschitzWith L1 N1)
-    (force force' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (force force' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     dist (mixedMap (I := I) (M := M) a hT u0 N2 hN2 N1 hN1 force)
         (mixedMap (I := I) (M := M) a hT u0 N2 hN2 N1 hN1 force') ≤
       ((L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T)) *
@@ -207,14 +207,14 @@ theorem mixedMap_contract
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
-    (N2 : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N2 : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN2 : LipschitzWith L2 N2)
     {L1 : NNReal}
-    (N1 : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N1 : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN1 : LipschitzWith L1 N1)
     (hsmall :
       (L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T) < 1) :
@@ -238,19 +238,19 @@ theorem mixed_strong_exists
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
-    (N2 : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N2 : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN2 : LipschitzWith L2 N2)
     {L1 : NNReal}
-    (N1 : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N1 : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN1 : LipschitzWith L1 N1)
     (hsmall :
       (L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T) < 1) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-      (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+      (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
       u = maxRegDuhamelMap (I := I) (M := M) a hT u0 force ∧
         force =
           nemytskii (I := I) (M := M) hN2
@@ -297,18 +297,18 @@ theorem mixed_strong_unique
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
-    (N2 : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N2 : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN2 : LipschitzWith L2 N2)
     {L1 : NNReal}
-    (N1 : tensorHs (I := I) (M := M) g r s (a + 1) →
-      tensorHs (I := I) (M := M) g r s a)
+    (N1 : TensorHs (I := I) (M := M) g r s (a + 1) →
+      TensorHs (I := I) (M := M) g r s a)
     (hN1 : LipschitzWith L1 N1)
     (hsmall :
       (L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T) < 1)
-    {force₁ force₂ : timeL2 (tensorHs (I := I) (M := M) g r s a) T}
+    {force₁ force₂ : timeL2 (TensorHs (I := I) (M := M) g r s a) T}
     (hfix₁ : force₁ =
       nemytskii (I := I) (M := M) hN2
           (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force₁) +

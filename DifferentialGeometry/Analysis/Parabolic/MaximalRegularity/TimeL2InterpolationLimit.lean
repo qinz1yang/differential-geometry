@@ -33,14 +33,14 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 def timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ) :
-    timeL2 (tensorHs (I := I) (M := M) g r s σ) T →L[ℝ]
-      timeL2 (tensorHs (I := I) (M := M) g r s τ) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s σ) T →L[ℝ]
+      timeL2 (TensorHs (I := I) (M := M) g r s τ) T :=
   (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ).compLpL 2
     (timeMeasure T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s σ) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s σ) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
         (timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ f) i =
@@ -65,7 +65,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2 ≤ ‖f‖ ^ 2 := by
@@ -80,7 +80,7 @@ private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_timeModeCoeff_tendsto_zero_of_norm_tendsto_zero
     {a : ℝ} {T : ℝ}
-    (d : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (d : ℕ → timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hd : Tendsto (fun n => ‖d n‖) atTop (𝓝 0))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     Tendsto (fun n => ‖timeModeCoeff (I := I) (M := M) (d n) i‖) atTop (𝓝 0) := by
@@ -101,7 +101,7 @@ theorem timeL2_norm_tendsto_zero_of_low_tendsto_of_uniform
     (hσσ' : σ ≤ σ') (hσ'σ'' : σ' < σ'')
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (d : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s σ'') T)
+    (d : ℕ → timeL2 (TensorHs (I := I) (M := M) g r s σ'') T)
     {C : ℝ} (hC : 0 ≤ C) (hCbd : ∀ n, ‖d n‖ ≤ C)
     (hlow : Tendsto (fun n =>
       ‖timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -199,7 +199,7 @@ theorem timeL2_norm_tendsto_zero_of_low_tendsto_of_uniform
     have hsplit : tensorSobolevWeight (I := I) (M := M) i σ' =
         tensorSobolevWeight (I := I) (M := M) i (σ' - σ'') *
           tensorSobolevWeight (I := I) (M := M) i σ'' := by
-      rw [← tensorHs.tensorSobolevWeight_add (I := I) (M := M)]
+      rw [← TensorHs.tensorSobolevWeight_add (I := I) (M := M)]
       congr 1; ring
     have hratio : tensorSobolevWeight (I := I) (M := M) i (σ' - σ'') ≤
         Λ ^ (σ' - σ'') := by
@@ -328,7 +328,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_le_sqrt_of_weightedMass_le {σ'' : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s σ'') T) {B : ℝ}
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s σ'') T) {B : ℝ}
     (hB : ∑' i : TensorEigenIdx (I := I) (M := M) g r s,
       tensorSobolevWeight (I := I) (M := M) i σ'' *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2 ≤ B) :
@@ -344,8 +344,8 @@ theorem timeL2_tendsto_of_tendsto_of_uniform_weightedMass
     (hσσ' : σ ≤ σ') (hσ'σ'' : σ' < σ'')
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s σ'') T)
-    (ulim : timeL2 (tensorHs (I := I) (M := M) g r s σ'') T) {B : ℝ}
+    (u : ℕ → timeL2 (TensorHs (I := I) (M := M) g r s σ'') T)
+    (ulim : timeL2 (TensorHs (I := I) (M := M) g r s σ'') T) {B : ℝ}
     (hconv : Tendsto (fun n =>
         timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (hσσ'.trans hσ'σ''.le) (u n)) atTop
@@ -360,7 +360,7 @@ theorem timeL2_tendsto_of_tendsto_of_uniform_weightedMass
     Tendsto (fun n =>
       ‖timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         hσ'σ''.le (u n - ulim)‖) atTop (𝓝 0) := by
-  set d : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s σ'') T :=
+  set d : ℕ → timeL2 (TensorHs (I := I) (M := M) g r s σ'') T :=
     fun n => u n - ulim with hd_def
   have hBnn : 0 ≤ B :=
     le_trans (tsum_nonneg (fun i => by

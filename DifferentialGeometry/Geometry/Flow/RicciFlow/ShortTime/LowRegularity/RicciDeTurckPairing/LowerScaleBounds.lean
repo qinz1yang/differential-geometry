@@ -541,7 +541,7 @@ theorem tensorHsInclusion_ccTensorToHs_two_three
         (r := 0) (s := 2) (show (2 : ℝ) ≤ 3 by norm_num)
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
 

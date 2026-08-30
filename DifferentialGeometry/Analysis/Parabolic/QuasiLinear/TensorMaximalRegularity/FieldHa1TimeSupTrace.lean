@@ -155,7 +155,7 @@ variable {g₀ : SmoothRiemannianMetric I M}
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem weighted_perModeConv_forcing_sq_le
-    (F : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T)
+    (F : timeL2 (TensorHs (I := I) (M := M) g₀ r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g₀ r s)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     tensorSobolevWeight (I := I) (M := M) i (a + 1) *
@@ -189,12 +189,12 @@ private theorem weighted_perModeConv_forcing_sq_le
 
 theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
     {a : ℝ} {T : ℝ} (hT : 0 < T)
-    (F : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) :
+    (F : timeL2 (TensorHs (I := I) (M := M) g₀ r s a) T) :
     ∀ᵐ t ∂(timeMeasure T),
       ‖(timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
           (show a + 1 ≤ a + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M) a hT
-            (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F)) t‖ ≤
+            (0 : TensorHs (I := I) (M := M) g₀ r s (a + 2)) F)) t‖ ≤
         Real.sqrt (1 + T) * ‖F‖ := by
   classical
   have h_compact :=
@@ -203,7 +203,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
   have := countable_tensorEigenIdx (I := I) (M := M)
     (g := g₀) (r := r) (s := s) h_compact
   set field := maxRegDuhamelSolField (I := I) (M := M) a hT
-    (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F with hfield_def
+    (0 : TensorHs (I := I) (M := M) g₀ r s (a + 2)) F with hfield_def
   set inclField := timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
     (show a + 1 ≤ a + 2 by linarith) field with hinclField_def
   have hincl_coeFn :
@@ -233,7 +233,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
         tensorSobolevWeight (I := I) (M := M) i (a + 1) *
           (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2 := by
-    rw [htincl, tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+    rw [htincl, TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
     refine tsum_congr (fun i => ?_)
     rw [tensorHsInclusion_coeff_apply (I := I) (M := M), htcoeff i]
   have hsummable_rhs : Summable (fun i : TensorEigenIdx (I := I) (M := M) g₀ r s =>

@@ -45,7 +45,7 @@ private theorem norm_ccHs_eq_smoothHs_three
       ‖smoothCcToTensorHs (I := I) (M := M) g σ S‖ := by
   have h : ccTensorToHs (I := I) (M := M) g 2 σ S =
       smoothCcToTensorHs (I := I) (M := M) g σ S :=
-    tensorHs.ext (funext fun _ => rfl)
+    TensorHs.ext (funext fun _ => rfl)
   rw [h]
 
 theorem hs_three_le_jet

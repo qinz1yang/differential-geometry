@@ -261,8 +261,8 @@ private noncomputable def operatorFieldApplicationLin
 noncomputable def appHs
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ : SmoothCcTensor g b c) :
-    tensorHs (I := I) (M := M) g 0 b (n : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 c (n : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 b (n : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 c (n : ℝ) :=
   ((ccToHsLin (I := I) (M := M) g c (n : ℝ)).comp
       (operatorFieldApplicationLin g b c Φ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g b (n : ℝ))
@@ -348,7 +348,7 @@ theorem appHs_core
 theorem appHs_add
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g b c)
-    (U : tensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
+    (U : TensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
     appHs g b c n (Φ₁ + Φ₂) U =
       appHs g b c n Φ₁ U + appHs g b c n Φ₂ U := by
   let ι := ccToHsLin (I := I) (M := M) g b (n : ℝ)
@@ -367,7 +367,7 @@ theorem appHs_add
 theorem appHs_smul
     (g : SmoothRiemannianMetric I M) (b c n : ℕ) (a : ℝ)
     (Φ : SmoothCcTensor g b c)
-    (U : tensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
+    (U : TensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
     appHs g b c n (a • Φ) U = a • appHs g b c n Φ U := by
   let ι := ccToHsLin (I := I) (M := M) g b (n : ℝ)
   let L := appHs g b c n (a • Φ)
@@ -384,7 +384,7 @@ theorem appHs_smul
 theorem appHs_sub
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g b c)
-    (U : tensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
+    (U : TensorHs (I := I) (M := M) g 0 b (n : ℝ)) :
     appHs g b c n (Φ₁ - Φ₂) U =
       appHs g b c n Φ₁ U - appHs g b c n Φ₂ U := by
   rw [sub_eq_add_neg, appHs_add]

@@ -32,9 +32,9 @@ def HasGalerkinApproximationEnergyFiveBoundBackground (g₀ g_bg : SmoothRiemann
     (K : LowRegularityBoundParameters) {Rcap T : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
     (sol : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g₀ g_bg K hT hT1 sol fLo Rcap)
-    (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
+    (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
   (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
       Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
         (𝓝 (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -68,10 +68,10 @@ theorem exists_galerkin_approximation_energy_five_bound_background
     (hT : 0 < T) (hT1 : T ≤ 1)
     (sol : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g₀ g_bg K hT hT1
       sol fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    ∃ (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+    ∃ (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       HasGalerkinApproximationEnergyFiveBoundBackground (I := I) (M := M) g₀ g_bg K sol fLo
         hlo.toIsBackgroundLowRegularitySolutionAt fseq := by
   classical

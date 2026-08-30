@@ -75,13 +75,13 @@ theorem allHs_of_weighted_summable_pub
           (tensorL2Coeff (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i) ^ 2)) :
     ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ v : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ v : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ v = u := by
   intro σ hσ
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  set v : tensorHs (I := I) (M := M) g 0 2 σ :=
+  set v : TensorHs (I := I) (M := M) g 0 2 σ :=
     { coeff := fun i => tensorL2Coeff (I := I) (M := M) hc u i
       weighted_summable := hsum σ hσ } with hv
   refine ⟨v, ?_⟩
@@ -124,7 +124,7 @@ theorem norm_smoothCcToTensorHs_eigenSmooth (g : SmoothRiemannianMetric I M) (σ
   classical
   have heq : smoothCcToTensorHs (I := I) (M := M) g σ (eigenSmooth (I := I) (M := M) g i) =
       tensorHsBasisVec (I := I) (M := M) (g := g) (r := 0) (s := 2) σ i := by
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext j
     rw [smoothCcToTensorHs_coeff, tensorHsBasisVec_coeff,
       show SmoothCcTensor.toL2 (eigenSmooth (I := I) (M := M) g i) =
@@ -178,7 +178,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart in
 theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
     (g : SmoothRiemannianMetric I M) (u : TensorL2 0 2 g)
     (hu : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ vH : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ vH : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ vH = u)
     (Trep : SmoothCcTensor g 0 2)
@@ -256,7 +256,7 @@ theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
 theorem ccTensorBilinSymm_eigenSeries_eq
     (g : SmoothRiemannianMetric I M) (u : TensorL2 0 2 g)
     (hu : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ vH : tensorHs (I := I) (M := M) g 0 2 σ,
+      ∃ vH : TensorHs (I := I) (M := M) g 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) hσ vH = u)
     (Trep : SmoothCcTensor g 0 2) (hTrep : (Trep : TensorL2 0 2 g) = u)

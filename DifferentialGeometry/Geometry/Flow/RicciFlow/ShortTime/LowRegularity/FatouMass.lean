@@ -25,8 +25,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [BoundarylessManifold I M] in
 theorem weightedEnergyLimit_bound
     (g₀ : SmoothRiemannianMetric I M) {T σ τ Φ : ℝ}
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
-    (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hconv : ∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2),
       ∀ t ∈ Set.Icc (0 : ℝ) T,
         Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
@@ -72,7 +72,7 @@ theorem exists_weighted_energy_bound_up_to_three_of_adapted_solution
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -113,7 +113,7 @@ theorem exists_weighted_energy_bound_up_to_three_of_adapted_solution
 
 theorem exists_weighted_energy_bound_up_to_three (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo) :
     ∃ Ctop B1 ρ P Ctop₂ Kr2 Kr1 Cδ : ℝ,
       0 ≤ Ctop₂ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Cδ ∧

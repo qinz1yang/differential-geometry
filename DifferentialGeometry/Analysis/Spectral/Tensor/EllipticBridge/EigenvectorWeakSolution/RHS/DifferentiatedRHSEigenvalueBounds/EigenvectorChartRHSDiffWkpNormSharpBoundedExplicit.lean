@@ -96,7 +96,7 @@ private lemma rhsZeroAggregate_le_at_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K N target : ℕ)
     (hKN : K + 1 ≤ N)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (hEig_le : H.eEig K ≤ target)
     (hResH_le_K : H.eResH K ≤ target)
     (hResL_le : H.eResL K ≤ target)
@@ -713,7 +713,7 @@ private lemma sharpDiffBdd_level_zero_wkpNorm_at_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K N target : ℕ)
     (hKN : K + 1 ≤ N)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (hEig_le : H.eEig K ≤ target)
     (hResH_le_K : H.eResH K ≤ target)
     (hResL_le : H.eResL K ≤ target)
@@ -1200,7 +1200,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiffExplicit_diff_memWkp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N : ℕ)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (m K' : ℕ) (hN : m + 1 + K' ≤ N) (l : Fin m → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) K' 2
@@ -1214,7 +1214,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiffBdd_recursion_at_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N eAtomMax : ℕ)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (h_atom_bd : ∀ K', K' ≤ N →
       H.eEig K' ≤ eAtomMax ∧ H.eResH K' ≤ eAtomMax ∧
         H.eResL K' ≤ eAtomMax ∧ H.ePar K' ≤ eAtomMax ∧
@@ -1521,7 +1521,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp_bdd_explicit
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin m → Fin (Module.finrank ℝ E))
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ (K + m + 1))
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ (K + m + 1))
     (eAtomMax : ℕ)
     (h_eAtomMax_ge : ∀ K', K' ≤ K + m + 1 →
       H.eEig K' ≤ eAtomMax ∧ H.eResH K' ≤ eAtomMax ∧

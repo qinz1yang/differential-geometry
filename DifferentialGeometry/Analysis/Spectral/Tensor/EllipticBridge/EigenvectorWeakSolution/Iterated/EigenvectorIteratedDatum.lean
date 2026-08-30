@@ -44,7 +44,7 @@ private lemma one_div_densityOnEuclid_contDiffOn_chartTarget
   contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
     (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
 
-structure eigenvectorIteratedTensorChartBilinearData
+structure EigenvectorIteratedTensorChartBilinearData
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ) where
@@ -74,7 +74,7 @@ structure eigenvectorIteratedTensorChartBilinearData
         densityOnEuclid (I := I) g α y * diffChartForcing y * ψ y
         ∂(volume : Measure EuclN)
 
-namespace eigenvectorIteratedTensorChartBilinearData
+namespace EigenvectorIteratedTensorChartBilinearData
 
 def mkFromHypotheses
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -105,14 +105,14 @@ def mkFromHypotheses
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y * diffChartForcing y * ψ y
           ∂(volume : Measure EuclN)) :
-    eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m :=
   { directions := directions
     diffChartForcing := diffChartForcing
     fChartEff_memLp_weighted := fChartEff_memLp_weighted
     m_diff_variational_identity := m_diff_variational_identity }
 
-end eigenvectorIteratedTensorChartBilinearData
+end EigenvectorIteratedTensorChartBilinearData
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartIteratedPartial_memWkp_of_memWkp
@@ -505,14 +505,14 @@ private lemma eigenvectorChartWeakPartial_ae_eq_iteratedPartial_one
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ_open
     (h_wp_isWeak a) h_iter_isWeak h_wp_loc h_iter_loc
 
-namespace eigenvectorIteratedTensorChartBilinearData
+namespace EigenvectorIteratedTensorChartBilinearData
 
 open DifferentialGeometry.Analysis.Spectral in
 def ofBase
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ 0 where
   directions := Fin.elim0
   diffChartForcing := eigenvectorChartRHS (I := I) (M := M) g r s i α P₀
@@ -575,7 +575,7 @@ def ofBase
     rw [h_principal_eq, h_mass_eq]
     exact h_id
 
-end eigenvectorIteratedTensorChartBilinearData
+end EigenvectorIteratedTensorChartBilinearData
 
 section ElaborationTests
 
@@ -583,13 +583,13 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
 
 example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ) : Type _ :=
-  eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+  EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
     g r s i α P₀ m
 
 example (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ 0 :=
-  eigenvectorIteratedTensorChartBilinearData.ofBase
+  EigenvectorIteratedTensorChartBilinearData.ofBase
     (I := I) (M := M) g r s i α P₀
 
 example (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)

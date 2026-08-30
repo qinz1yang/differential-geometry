@@ -42,11 +42,11 @@ def HasCompatibleSecondOrderSolution
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
     (Rcap : ℝ) : Prop :=
-  ∃ (FHi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-        (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-          tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
+  ∃ (FHi : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+        (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+          TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
     (C2Hi : NNReal)
     (hA2Hi : AEStronglyMeasurable
       (lowAffineSecondOrderActionHigh (I := I) (M := M) g
@@ -59,11 +59,11 @@ def HasCompatibleSecondOrderSolution
         (timeMeasure T))
     (uHi : MaxRegSolutionSpace (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (2 : ℝ) T)
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
     (u : CrossScaleField (I := I) (M := M) g 0 2 (2 : ℝ) T)
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
     (R : ℝ) (hR : 0 < R)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g
@@ -82,7 +82,7 @@ def HasCompatibleSecondOrderSolution
             hA1Hi fHi +
           liftForceHi (I := I) (M := M) g g T ∧
       timeH1.trace0 _ T u.lo =
-        (0 : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) ∧
+        (0 : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) ∧
       timeH1.timeDeriv _ T u.lo =
         timeScaleLaplacian (I := I) (M := M) (2 : ℝ) u.hiL2 + fHi ∧
       timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -96,7 +96,7 @@ def HasCompatibleSecondOrderSolution
           (maxRegDuhamelMap (I := I) (M := M)
             (1 : ℝ) hT 0 f).toFun t) ∧
       u.repr 0 =
-        (0 : tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1)) ∧
+        (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1)) ∧
       ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
       (∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -132,14 +132,14 @@ def HasCompatibleSecondOrderSolution
               g hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M) +
             (firstOrderCoreActionCoefficients (I := I) (M := M)
               g hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M)) ∧
-      (∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+      (∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
             (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' v) =
           (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' v).comp
             (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show (3 : ℝ) ≤ 4 by norm_num))) ∧
-      (∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+      (∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
           (FLo x).comp
@@ -173,14 +173,14 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
         (combinedLowerScaleActionCoefficients (I := I) (M := M) g
           hρ.le hδ0 hδ_le hreal' S).secondOrderActionThirdToFirstOrder (I := I) (M := M))
     (hB2 : 0 ≤ B2)
-    (hA2bd : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    (hA2bd : ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
       ‖lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' v‖ ≤ B2)
     (hA2Hicont : Continuous
       (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal'))
     (hB2Hi : 0 ≤ B2Hi)
-    (hA2Hibd : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    (hA2Hibd : ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
       ‖lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' v‖ ≤ B2Hi)
-    (hA2sq : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    (hA2sq : ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
           (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' v) =
@@ -188,12 +188,12 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ 4 by norm_num)))
     (hZ : 0 ≤ Z) (hL : 0 ≤ L)
-    (FHi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (FHi : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
     (hFHi : Continuous FHi) (hFLo : Continuous FLo)
     (hFLoCore : ∀ S : SmoothCcTensor g 0 2,
       FLo (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) =
@@ -201,18 +201,18 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
             g hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M) +
           (firstOrderCoreActionCoefficients (I := I) (M := M)
             g hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M))
-    (hFHiBd : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    (hFHiBd : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
       ‖FHi x‖ ≤ Z + L * ‖x‖)
-    (hFLoBd : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    (hFLoBd : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
       ‖FLo x‖ ≤ Z + L * ‖x‖)
-    (hFComm : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    (hFComm : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
         (FLo x).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
     (hball : ∀ᵐ t ∂timeMeasure T,
       stateField (I := I) (M := M) g hT f t ∈
         lowerState (I := I) (M := M) g 1 R)
@@ -262,8 +262,8 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
   have hmarginLo : 6 * (2 * L * ‖f‖) < 1 - c := by linarith only [hmargin, hc1]
   have hsmallLo :=
     lift_small_aff
-      (Y := tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
+      (Y := TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 1) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
       (A1 := lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) hA1
       (show (C2 : ℝ) ≤ c from hC2eq.trans_le hB2c)
       hc0 hc1 hZ hmarginLo hT hTle hnormLo
@@ -292,7 +292,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
   obtain ⟨hlo, hhi, hfHieq, htr, hpde, hL2incl, hincl, hlopin, hrepr0,
     hreprcont, hreprpin, hreprae⟩ := hpacket
   have hctrans : ∀ {a b c : ℝ} (hab : a = b) (hbc : b = c)
-      (x : tensorHs (I := I) (M := M) g 0 2 a),
+      (x : TensorHs (I := I) (M := M) g 0 2 a),
       tensorHsCongr (I := I) (M := M) g 0 2 hbc
           (tensorHsCongr (I := I) (M := M) g 0 2 hab x) =
         tensorHsCongr (I := I) (M := M) g 0 2 (hab.trans hbc) x := by
@@ -312,7 +312,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
       (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)] with t ht
+        (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)] with t ht
     simpa only [stateField, tensorHsCongrL_apply] using ht
   have hballU : ∀ᵐ t ∂timeMeasure T, ‖u.lo.toFun t‖ ≤ R := by
     filter_upwards [hreprae, hsf, hball,
@@ -409,7 +409,7 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem congrLp_self (g : SmoothRiemannianMetric I M) {a T : ℝ}
-    (h : a = a) (u : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
+    (h : a = a) (u : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T) :
     (tensorHsCongrL (I := I) (M := M) g 0 2 h).compLpL 2 (timeMeasure T) u =
       u := by
   have hrfl : h = rfl := rfl
@@ -423,15 +423,15 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem duhamel_congr (g : SmoothRiemannianMetric I M) {a b : ℝ}
     (h : a = b) {T : ℝ} (hT : 0 < T)
-    (u : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T) :
+    (u : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T) :
     (tensorHsCongrL (I := I) (M := M) g 0 2
           (show b + 2 = a + 2 by rw [h])).compLpL 2 (timeMeasure T)
         (maxRegDuhamelSolField (I := I) (M := M) b hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (b + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (b + 2))
           ((tensorHsCongrL (I := I) (M := M) g 0 2 h).compLpL
             2 (timeMeasure T) u)) =
       maxRegDuhamelSolField (I := I) (M := M) a hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 (a + 2)) u := by
+        (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) u := by
   cases h
   rw [congrLp_self, congrLp_self]
 
@@ -465,8 +465,8 @@ theorem exists_compatible_second_order_solution_with_contraction
       ∀ {c : ℝ}, B2 ≤ c → c < 1 →
         ∃ T₀ : ℝ, 0 < T₀ ∧
           ∀ {T : ℝ} (hT : 0 < T) (_ : T ≤ T₀) (hT1 : T ≤ 1),
-            ∃ (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
-              (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+            ∃ (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+              (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (Ctop B0 B1 D ρout P : ℝ),
               HasCompatibleSecondOrderSolution (I := I) (M := M) g hρ hthr.le hthr3 hreal' hT hT1 f
                   Rcap ∧
@@ -560,13 +560,13 @@ theorem exists_compatible_second_order_solution_with_contraction
     exists_lowRegularity_solution_of_remainder_bounds (I := I) (M := M) g g hδ hCtop hB0 hB1 hρout
       hPpos hrealP hcont htame hzero hT
       (hTT₀.trans (min_le_left _ _))
-  set f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T :=
+  set f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T :=
     (tensorHsCongrL (I := I) (M := M) g 0 2
       (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)).compLpL 2 (timeMeasure T)
       gforce with hfdef
   have hstate : stateField (I := I) (M := M) g hT f =
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) gforce := by
+        (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) gforce := by
     rw [hfdef]
     exact duhamel_congr (I := I) (M := M) g
       (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num) hT gforce
@@ -634,8 +634,8 @@ theorem exists_compatible_second_order_solution_at_threshold
       ∀ {c : ℝ}, B2 ≤ c → c < 1 →
         ∃ T₀ : ℝ, 0 < T₀ ∧
           ∀ {T : ℝ} (hT : 0 < T) (_ : T ≤ T₀) (hT1 : T ≤ 1),
-            ∃ (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
-              (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+            ∃ (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+              (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (Ctop B0 B1 D ρout P : ℝ),
               HasCompatibleSecondOrderSolution (I := I) (M := M) g hρ hthr.le hthr3 hreal' hT hT1 f
                   Rcap ∧
@@ -662,8 +662,8 @@ theorem exists_compatible_second_order_solution
       ∀ {c : ℝ}, B2 ≤ c → c < 1 →
         ∃ T₀ : ℝ, 0 < T₀ ∧
           ∀ {T : ℝ} (hT : 0 < T) (_ : T ≤ T₀) (hT1 : T ≤ 1),
-            ∃ (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
-              (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
+            ∃ (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T)
+              (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
               HasCompatibleSecondOrderSolution (I := I) (M := M) g hρ hδ0 hδ_le hreal' hT hT1 f
                   Rcap ∧
                 (∀ᵐ t ∂timeMeasure T, f t =

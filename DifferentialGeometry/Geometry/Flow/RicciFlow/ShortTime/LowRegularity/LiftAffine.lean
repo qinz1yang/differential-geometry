@@ -36,7 +36,7 @@ theorem smoothCcToTensorHs_eq_ccToHs (g : SmoothRiemannianMetric I M) (σ : ℝ)
     (S : SmoothCcTensor g 0 2) :
     smoothCcToTensorHs (I := I) (M := M) g σ S =
       ccTensorToHs (I := I) (M := M) g 2 σ S :=
-  tensorHs.ext (funext fun _ => rfl)
+  TensorHs.ext (funext fun _ => rfl)
 
 theorem tensorHsCongr_smoothCc (g : SmoothRiemannianMetric I M) {a b : ℝ}
     (hab : a = b) (S : SmoothCcTensor g 0 2) :
@@ -51,13 +51,13 @@ theorem tensorHsInclusion_ccToHs (g : SmoothRiemannianMetric I M) {τ σ : ℝ}
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2) hτσ
         (ccTensorToHs (I := I) (M := M) g 2 σ S) =
       ccTensorToHs (I := I) (M := M) g 2 τ S := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff, ccTensorToHs_coeff]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem tensorHsCongr_symm_self (g : SmoothRiemannianMetric I M) {a b : ℝ}
-    (hab : a = b) (u : tensorHs (I := I) (M := M) g 0 2 a) :
+    (hab : a = b) (u : TensorHs (I := I) (M := M) g 0 2 a) :
     tensorHsCongr (I := I) (M := M) g 0 2 hab.symm
         (tensorHsCongr (I := I) (M := M) g 0 2 hab u) = u := by
   cases hab
@@ -159,11 +159,11 @@ noncomputable def lowerScaleNonlinearityWithFirstOrderOperator
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
-    (u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) :
-    tensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)) :
+    TensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
   lowerScaleForce (I := I) (M := M) g +
     lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -184,19 +184,19 @@ theorem lowerScaleN_cont
     (hA2 : Continuous (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal))
     (hA1 : Continuous (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal)) :
     Continuous (lowerScaleN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal) := by
-  have hincl : Continuous fun u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have hincl : Continuous fun u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (2 : ℝ) ≤ (3 : ℝ) by norm_num) u :=
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)).continuous
-  have h2 : Continuous fun u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have h2 : Continuous fun u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (2 : ℝ) ≤ (3 : ℝ) by norm_num) u)
         (lowRadialH3 (I := I) (M := M) g ρ u) :=
     isBoundedBilinearMap_apply.continuous.comp
       ((hA2.comp hincl).prodMk (lowRadialH3_cont (I := I) (M := M) g hρ))
-  have h1 : Continuous fun u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have h1 : Continuous fun u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u
         (lowRadialHs (I := I) (M := M) g ρ
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -213,27 +213,27 @@ theorem lowerScaleNonlinearityWithFirstOrderOperator_continuous
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
     (hA2 : Continuous (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M)
       g hρ.le hδ0 hδ_le hreal))
     (hFLo : Continuous FLo) :
     Continuous (lowerScaleNonlinearityWithFirstOrderOperator (I := I) (M := M)
       g hρ.le hδ0 hδ_le hreal FLo) := by
-  have hincl : Continuous fun u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have hincl : Continuous fun u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (2 : ℝ) ≤ (3 : ℝ) by norm_num) u :=
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)).continuous
-  have h2 : Continuous fun u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have h2 : Continuous fun u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (2 : ℝ) ≤ (3 : ℝ) by norm_num) u)
         (lowRadialH3 (I := I) (M := M) g ρ u) :=
     isBoundedBilinearMap_apply.continuous.comp
       ((hA2.comp hincl).prodMk (lowRadialH3_cont (I := I) (M := M) g hρ))
-  have h1 : Continuous fun u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
+  have h1 : Continuous fun u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) =>
       FLo u
         (lowRadialHs (I := I) (M := M) g ρ
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -264,9 +264,9 @@ theorem deTurckRemainderOnLowerState_affine
           (ccToHsLin (I := I) (M := M) g₀ 2 (2 : ℝ) S) =
         (combinedLowerScaleActionCoefficients (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' S).secondOrderActionThirdToFirstOrder
           (I := I) (M := M))
-    (FLo : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)))
     (hFLo : Continuous FLo)
     (hFcore : ∀ S : SmoothCcTensor g₀ 0 2,
       FLo (ccToHsLin (I := I) (M := M) g₀ 2 (3 : ℝ) S) =
@@ -373,7 +373,7 @@ theorem deTurckRemainderOnLowerState_affine
         smoothCcToTensorHs_eq_ccToHs]
     have hu : tensorHsCongr (I := I) (M := M) g₀ 0 2
           (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-          (v.1 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) =
+          (v.1 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) =
         ccToHsLin (I := I) (M := M) g₀ 2 (3 : ℝ) S := by
       rw [hveq, tensorHsCongr_smoothCc, ccToHsLin_apply,
         smoothCcToTensorHs_eq_ccToHs]

@@ -32,7 +32,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 theorem tensorHs_continuousOn_of_coeff_of_higher_mass
     (g : SmoothRiemannianMetric I M) {σ σ' : ℝ}
     (hσσ' : ((weylSobolevExp (E := E) : ℕ) : ℝ) < σ' - σ)
-    {s : Set ℝ} (W : ℝ → tensorHs (I := I) (M := M) g 0 2 σ)
+    {s : Set ℝ} (W : ℝ → TensorHs (I := I) (M := M) g 0 2 σ)
     (φ : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
     (hcoeff : ∀ t ∈ s, ∀ i, (W t).coeff i = φ i t)
     (hφ_cont : ∀ i, ContinuousOn (φ i) s)
@@ -49,7 +49,7 @@ theorem tensorHs_continuousOn_of_coeff_of_higher_mass
     fun i => (negWeight i + Cmaj i) / 2 with hU
   have hU_sum : Summable U :=
     ((hnegWeight_sum.add hCmaj).div_const 2)
-  set f : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → tensorHs (I := I) (M := M) g 0 2 σ :=
+  set f : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → TensorHs (I := I) (M := M) g 0 2 σ :=
     fun i t => φ i t •
       tensorHsBasisVec (I := I) (M := M) (g := g) (r := 0) (s := 2) σ i with hf
   have hf_cont : ∀ i, ContinuousOn (f i) s := by
@@ -98,7 +98,7 @@ theorem tensorHs_continuousOn_of_coeff_of_higher_mass
   have hsum : HasSum
       (fun i => (W t).coeff i •
         tensorHsBasisVec (I := I) (M := M) (g := g) (r := 0) (s := 2) σ i) (W t) :=
-    tensorHs.hasSum_smul_basisVec (W t)
+    TensorHs.hasSum_smul_basisVec (W t)
   have hsum' : HasSum (fun i => f i t) (W t) := by
     refine hsum.congr_fun ?_
     intro i
@@ -112,7 +112,7 @@ theorem mass_le_of_compact
         tensorSobolevWeight (I := I) (M := M) i (-(σ' - σ))))
     {K : Set ℝ}
     (hK : IsCompact K)
-    (W : ℝ → tensorHs (I := I) (M := M) g r s σ')
+    (W : ℝ → TensorHs (I := I) (M := M) g r s σ')
     (hW : ContinuousOn W K)
     (φ : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hcoeff : ∀ t ∈ K, ∀ i, (W t).coeff i = φ i t) :
@@ -143,7 +143,7 @@ theorem mass_le_of_compact
   have hterm :
       tensorSobolevWeight (I := I) (M := M) i σ' *
           ((W t).coeff i) ^ 2 ≤ ‖W t‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     refine Summable.le_tsum (W t).weighted_summable i (fun j _ => ?_)
     exact mul_nonneg
       (tensorSobolevWeight_nonneg (I := I) (M := M) j σ')

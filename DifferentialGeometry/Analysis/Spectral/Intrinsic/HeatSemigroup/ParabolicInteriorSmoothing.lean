@@ -33,33 +33,33 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a : ℝ} {T : ℝ}
 
-def forcingMass (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
+def forcingMass (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) : ℝ :=
   tensorSobolevWeight (I := I) (M := M) i c *
     ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2
 
 def solFieldMass (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) : ℝ :=
   tensorSobolevWeight (I := I) (M := M) i c *
     ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma forcingMass_nonneg (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+lemma forcingMass_nonneg (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (c : ℝ) (i : TensorEigenIdx (I := I) (M := M) g r s) :
     0 ≤ forcingMass (I := I) (M := M) f c i :=
   mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i c) (sq_nonneg _)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma solFieldMass_nonneg (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     0 ≤ solFieldMass (I := I) (M := M) hT f c i :=
   mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i c) (sq_nonneg _)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_le_forcingMass (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     solFieldMass (I := I) (M := M) hT f (c + 2) i ≤
       (1 + T) ^ 2 * forcingMass (I := I) (M := M) f c i := by
@@ -108,7 +108,7 @@ theorem solFieldMass_le_forcingMass (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_of_forcingMass_summable (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
     (hf : Summable (forcingMass (I := I) (M := M) f c)) :
     Summable (solFieldMass (I := I) (M := M) hT f (c + 2)) := by
   refine Summable.of_nonneg_of_le
@@ -118,7 +118,7 @@ theorem solFieldMass_summable_of_forcingMass_summable (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_succ (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT f (d + 1)) →
         Summable (forcingMass (I := I) (M := M) f d))
@@ -129,7 +129,7 @@ theorem solFieldMass_summable_succ (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_bootstrap (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT f (d + 1)) →
         Summable (forcingMass (I := I) (M := M) f d))
@@ -149,7 +149,7 @@ theorem solFieldMass_summable_bootstrap (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_all (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT f (d + 1)) →
         Summable (forcingMass (I := I) (M := M) f d))
@@ -172,15 +172,15 @@ theorem solFieldMass_summable_all (hT : 0 ≤ T)
     mul_le_mul_of_nonneg_right hwle (sq_nonneg _)
 
 def solFieldAtOrder (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
     :
-    timeL2 (tensorHs (I := I) (M := M) g r s σ) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s σ) T :=
   timeL2OfModes (I := I) (M := M) (σ := σ)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldAtOrder_timeModeCoeff (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
     (hσ : Summable (solFieldMass (I := I) (M := M) hT f σ))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
@@ -191,13 +191,13 @@ theorem solFieldAtOrder_timeModeCoeff (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solField_into_all_tensorHs_interior (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT f (d + 1)) →
         Summable (forcingMass (I := I) (M := M) f d))
     (hbase : Summable (solFieldMass (I := I) (M := M) hT f b)) :
     ∀ σ : ℝ,
-      ∃ v : timeL2 (tensorHs (I := I) (M := M) g r s σ) T,
+      ∃ v : timeL2 (TensorHs (I := I) (M := M) g r s σ) T,
         ∀ i, timeModeCoeff (I := I) (M := M) v i =
           solModeCoeff (I := I) (M := M) (a := a) hT f i :=
   fun σ =>

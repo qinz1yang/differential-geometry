@@ -55,7 +55,7 @@ private theorem scaleLaplacianWeightMulTwo
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem weightLambdaMulSqLe
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2))
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i τ *
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) * v.coeff i) ^ 2 ≤
@@ -76,7 +76,7 @@ private theorem weightLambdaMulSqLe
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem scaleLaplacianWeightedSummable
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2)) :
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2)) :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i τ *
       (-(TensorEigenIdx.lambda (I := I) (M := M) i) * v.coeff i) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) v.weighted_summable
@@ -84,43 +84,43 @@ private theorem scaleLaplacianWeightedSummable
       (sq_nonneg _)
   · exact weightLambdaMulSqLe (I := I) (M := M) v i
 
-def scaleLaplacianFun (v : tensorHs (I := I) (M := M) g r s (τ + 2)) :
-    tensorHs (I := I) (M := M) g r s τ where
+def scaleLaplacianFun (v : TensorHs (I := I) (M := M) g r s (τ + 2)) :
+    TensorHs (I := I) (M := M) g r s τ where
   coeff i := -(TensorEigenIdx.lambda (I := I) (M := M) i) * v.coeff i
   weighted_summable := scaleLaplacianWeightedSummable (I := I) (M := M) v
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scaleLaplacianFun_coeff
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2))
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (scaleLaplacianFun (I := I) (M := M) v).coeff i =
       -(TensorEigenIdx.lambda (I := I) (M := M) i) * v.coeff i := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scaleLaplacianFun_add
-    (v w : tensorHs (I := I) (M := M) g r s (τ + 2)) :
+    (v w : TensorHs (I := I) (M := M) g r s (τ + 2)) :
     scaleLaplacianFun (I := I) (M := M) (v + w) =
       scaleLaplacianFun (I := I) (M := M) v + scaleLaplacianFun (I := I) (M := M) w := by
-  refine tensorHs.ext (funext (fun i => ?_))
-  simp only [scaleLaplacianFun_coeff, tensorHs.add_coeff]
+  refine TensorHs.ext (funext (fun i => ?_))
+  simp only [scaleLaplacianFun_coeff, TensorHs.add_coeff]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scaleLaplacianFun_smul (c : ℝ)
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2)) :
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2)) :
     scaleLaplacianFun (I := I) (M := M) (c • v) =
       c • scaleLaplacianFun (I := I) (M := M) v := by
-  refine tensorHs.ext (funext (fun i => ?_))
-  simp only [scaleLaplacianFun_coeff, tensorHs.smul_coeff]
+  refine TensorHs.ext (funext (fun i => ?_))
+  simp only [scaleLaplacianFun_coeff, TensorHs.smul_coeff]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_scaleLaplacianFun_le
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2)) :
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2)) :
     ‖scaleLaplacianFun (I := I) (M := M) v‖ ≤ ‖v‖ := by
   have hsq : ‖scaleLaplacianFun (I := I) (M := M) v‖ ^ 2 ≤ ‖v‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M),
-      tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M),
+      TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
     refine Summable.tsum_le_tsum (fun i => ?_)
       ((scaleLaplacianFun (I := I) (M := M) v).weighted_summable)
       v.weighted_summable
@@ -130,8 +130,8 @@ theorem norm_scaleLaplacianFun_le
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at h
 
 def tensorScaleLaplacian (τ : ℝ) :
-    tensorHs (I := I) (M := M) g r s (τ + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s τ :=
+    TensorHs (I := I) (M := M) g r s (τ + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s τ :=
   LinearMap.mkContinuous
     { toFun := scaleLaplacianFun (I := I) (M := M)
       map_add' := scaleLaplacianFun_add (I := I) (M := M)
@@ -144,13 +144,13 @@ def tensorScaleLaplacian (τ : ℝ) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorScaleLaplacian_apply (τ : ℝ)
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2)) :
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2)) :
     tensorScaleLaplacian (I := I) (M := M) τ v =
       scaleLaplacianFun (I := I) (M := M) v := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorScaleLaplacian_coeff (τ : ℝ)
-    (v : tensorHs (I := I) (M := M) g r s (τ + 2))
+    (v : TensorHs (I := I) (M := M) g r s (τ + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (tensorScaleLaplacian (I := I) (M := M) τ v).coeff i =
       -(TensorEigenIdx.lambda (I := I) (M := M) i) * v.coeff i := rfl
@@ -158,13 +158,13 @@ omit [NeZero (Module.finrank ℝ E)] in
 variable {τ : ℝ} {T : ℝ}
 
 def timeScaleLaplacian (τ : ℝ) {T : ℝ} :
-    timeL2 (tensorHs (I := I) (M := M) g r s (τ + 2)) T →L[ℝ]
-      timeL2 (tensorHs (I := I) (M := M) g r s τ) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s (τ + 2)) T →L[ℝ]
+      timeL2 (TensorHs (I := I) (M := M) g r s τ) T :=
   (tensorScaleLaplacian (I := I) (M := M) τ).compLpL 2 (timeMeasure T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeScaleLaplacian_coeFn
-    (v : timeL2 (tensorHs (I := I) (M := M) g r s (τ + 2)) T) :
+    (v : timeL2 (TensorHs (I := I) (M := M) g r s (τ + 2)) T) :
     timeScaleLaplacian (I := I) (M := M) τ v =ᵐ[timeMeasure T]
       fun t => tensorScaleLaplacian (I := I) (M := M) τ (v t) :=
   (tensorScaleLaplacian (I := I) (M := M) τ).coeFn_compLpL
@@ -172,7 +172,7 @@ theorem timeScaleLaplacian_coeFn
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_timeScaleLaplacian
-    (v : timeL2 (tensorHs (I := I) (M := M) g r s (τ + 2)) T)
+    (v : timeL2 (TensorHs (I := I) (M := M) g r s (τ + 2)) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
         (timeScaleLaplacian (I := I) (M := M) τ v) i =
@@ -193,7 +193,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_solves_perMode {a : ℝ} (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
         (maximalRegularityDerivField (I := I) (M := M) a hT f) i =
@@ -213,7 +213,7 @@ theorem maximalRegularityOp_solves {a : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.timeDeriv _ T
         (maximalRegularityOp (I := I) (M := M) a hT f) =
       timeScaleLaplacian (I := I) (M := M) a

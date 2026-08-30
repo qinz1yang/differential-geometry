@@ -67,7 +67,7 @@ theorem scalarSpec_cc
   have hσ : 0 ≤ σ := by
     dsimp only [σ]
     positivity
-  let V : tensorHs (I := I) (M := M) g 0 0 σ :=
+  let V : TensorHs (I := I) (M := M) g 0 0 σ :=
     ccTensorToHs (I := I) (M := M) g 0 σ S
   let P : Finset (TensorEigenIdx (I := I) (M := M) g 0 0) →
       SmoothCcTensor g 0 0 := fun F =>
@@ -92,7 +92,7 @@ theorem scalarSpec_cc
           (g := g) (r := 0) (s := 0) σ i by
       funext F
       exact hP_hs F]
-    exact tensorHs.hasSum_smul_basisVec (I := I) (M := M) V
+    exact TensorHs.hasSum_smul_basisVec (I := I) (M := M) V
   funext x
   obtain ⟨C, hC, heval⟩ := scalar0_abs_le_hs (I := I) (M := M) g
   have hscalar_tendsto : Tendsto

@@ -55,7 +55,7 @@ theorem smoothCcToTensorHs_even_norm_eq_toL2_iter (g₀ : SmoothRiemannianMetric
   classical
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * p : ℕ) : ℝ) w‖ ^ 2 =
       ‖SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p w)‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum,
+    rw [TensorHs.norm_sq_eq_tsum,
       ← tensorParseval_l2Coeff_ofCompact_sq (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
         (SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p w))]
@@ -113,7 +113,7 @@ theorem smoothCcToTensorHs_odd_norm_sq_eq_toL2_iter_add_covGrad
         (oneMinusConnLapSmooth (I := I) g₀ 0 2
           (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p w)).toFun
         (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p w).toFun := by
-    rw [tensorHs.norm_sq_eq_tsum, hcross]
+    rw [TensorHs.norm_sq_eq_tsum, hcross]
     exact tsum_congr hterm
   rw [heq, hadd,
     tensorL2Inner_self_eq_norm_toL2_sq (I := I) (M := M) g₀ 0 2
@@ -130,7 +130,7 @@ theorem smoothCcToTensorHs_add_two_norm_eq_oneMinusConnLap
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 2 : ℕ) : ℝ) w‖ ^ 2 =
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j : ℕ) : ℝ)
           (oneMinusConnLapSmooth (I := I) g₀ 0 2 w)‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     refine tsum_congr (fun i => ?_)
     rw [smoothCcToTensorHs_coeff, smoothCcToTensorHs_coeff,
       tensorL2Coeff_ofCompact_oneMinusConnLapSmooth (I := I) (M := M) g₀

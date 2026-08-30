@@ -69,7 +69,7 @@ theorem tensorHs_smallTime_norm_le_of_perModeConv
     {R₀ : ℝ} (hR₀ : 0 < R₀) :
     ∃ d₂ : ℝ, 0 < d₂ ∧ d₂ ≤ T ∧
       ∀ t ∈ Set.Icc (0 : ℝ) d₂,
-        ∀ W : tensorHs (I := I) (M := M) g r s (a + 2),
+        ∀ W : TensorHs (I := I) (M := M) g r s (a + 2),
           (∀ i, W.coeff i =
             perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (c i) t) →
           ‖W‖ ≤ R₀ := by
@@ -136,7 +136,7 @@ theorem tensorHs_smallTime_norm_le_of_perModeConv
   have hmaj_sum : Summable (fun i => t * (T * B i)) :=
     (hB_sum.mul_left T).mul_left t
   have hnorm_sq_le : ‖W‖ ^ 2 ≤ t * (T * Mass) := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     have htsum_le : (∑' i, tensorSobolevWeight (I := I) (M := M) i (a + 2) * (W.coeff i) ^ 2)
         ≤ ∑' i, t * (T * B i) :=
       Summable.tsum_le_tsum hper_mode hW_sum hmaj_sum

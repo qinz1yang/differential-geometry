@@ -33,7 +33,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_heatSemigroupHsExt_sub_le_diff
     {g : SmoothRiemannianMetric I M} {σ : ℝ}
     {t t₀ : ℝ} (ht : 0 ≤ t) (ht₀ : 0 ≤ t₀)
-    (u : scalarHs (I := I) (M := M) g σ) :
+    (u : ScalarHs (I := I) (M := M) g σ) :
     ‖heatSemigroupHsExt (I := I) (M := M) g σ t u -
         heatSemigroupHsExt (I := I) (M := M) g σ t₀ u‖ ≤
       ‖heatSemigroupHsExt (I := I) (M := M) g σ |t - t₀| u - u‖ := by
@@ -160,20 +160,20 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma sq_norm_heatSemigroupHsExt_sub_self_of_finite
     {g : SmoothRiemannianMetric I M} {σ : ℝ}
     {τ : ℝ} (hτ : 0 ≤ τ)
-    {u' : scalarHs (I := I) (M := M) g σ}
-    (hu' : u' ∈ scalarHs.finiteSupportSubmodule
+    {u' : ScalarHs (I := I) (M := M) g σ}
+    (hu' : u' ∈ ScalarHs.finiteSupportSubmodule
       (I := I) (M := M) g σ) :
     ‖heatSemigroupHsExt (I := I) (M := M) g σ τ u' - u'‖ ^ 2 =
-      ∑ i ∈ ((scalarHs.mem_finiteSupportSubmodule
+      ∑ i ∈ ((ScalarHs.mem_finiteSupportSubmodule
           (I := I) (M := M) u').mp hu').toFinset,
         scalarSobolevWeight (I := I) (M := M) i σ *
           ((Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * τ) - 1) *
             u'.coeff i) ^ 2 := by
   classical
-  set hu'fin := (scalarHs.mem_finiteSupportSubmodule
+  set hu'fin := (ScalarHs.mem_finiteSupportSubmodule
     (I := I) (M := M) u').mp hu'
   set F := hu'fin.toFinset
-  have h_norm_sq := scalarHs.norm_sq_eq_tsum
+  have h_norm_sq := ScalarHs.norm_sq_eq_tsum
     (I := I) (M := M)
     (heatSemigroupHsExt (I := I) (M := M) g σ τ u' - u')
   have h_diff_coeff : ∀ i,
@@ -210,14 +210,14 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tendsto_heatSemigroupHsExt_of_finite
     {g : SmoothRiemannianMetric I M} {σ : ℝ}
-    {u' : scalarHs (I := I) (M := M) g σ}
-    (hu' : u' ∈ scalarHs.finiteSupportSubmodule
+    {u' : ScalarHs (I := I) (M := M) g σ}
+    (hu' : u' ∈ ScalarHs.finiteSupportSubmodule
       (I := I) (M := M) g σ) :
     Tendsto (fun τ : ℝ =>
         heatSemigroupHsExt (I := I) (M := M) g σ τ u')
       (𝓝[Set.Ici (0 : ℝ)] 0) (𝓝 u') := by
   classical
-  set hu'fin := (scalarHs.mem_finiteSupportSubmodule
+  set hu'fin := (ScalarHs.mem_finiteSupportSubmodule
     (I := I) (M := M) u').mp hu'
   set F := hu'fin.toFinset with hF_def
   suffices h_norm_to_zero :
@@ -336,7 +336,7 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tendsto_heatSemigroupHsExt_at_zero
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
-    (u : scalarHs (I := I) (M := M) g σ) :
+    (u : ScalarHs (I := I) (M := M) g σ) :
     Tendsto (fun τ : ℝ =>
         heatSemigroupHsExt (I := I) (M := M) g σ τ u)
       (𝓝[Set.Ici (0 : ℝ)] 0) (𝓝 u) := by
@@ -360,7 +360,7 @@ private lemma tendsto_heatSemigroupHsExt_at_zero
   have h_eps3_pos : 0 < ε / 3 := by linarith
   have h_close :=
     Metric.mem_closure_iff.mp
-      (scalarHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) u)
+      (ScalarHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) u)
       (ε / 3) h_eps3_pos
   obtain ⟨u', hu'_mem, hu'_close⟩ := h_close
   have hu'_tendsto :=
@@ -453,7 +453,7 @@ private lemma tendsto_heatSemigroupHsExt_at_zero
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_continuousOn (g : SmoothRiemannianMetric I M)
-    (σ : ℝ) (u : scalarHs (I := I) (M := M) g σ) :
+    (σ : ℝ) (u : ScalarHs (I := I) (M := M) g σ) :
     ContinuousOn (fun t : ℝ =>
         heatSemigroupHsExt (I := I) (M := M) g σ t u) (Set.Ici 0) := by
   intro t₀ ht₀

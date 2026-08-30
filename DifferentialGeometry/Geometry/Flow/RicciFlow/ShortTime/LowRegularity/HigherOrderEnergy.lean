@@ -96,7 +96,7 @@ theorem galerkin_action_all_order_tame_bound (g₀ : SmoothRiemannianMetric I M)
       _root_.DifferentialGeometry.Analysis.Spectral.ccTensorToHs
           (I := I) (M := M) g₀ 2 (m : ℝ) W =
         smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) W := by
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     simp only [_root_.DifferentialGeometry.Analysis.Spectral.ccTensorToHs_coeff,
       _root_.DifferentialGeometry.Analysis.Spectral.smoothCcToTensorHs_coeff]
@@ -140,11 +140,11 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap T κ ε : ℝ}
     {hT : 0 < T} {hT1 : T ≤ 1}
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap)
-    {fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (hpath : HasGalerkinApproximationEnergyFiveBound (I := I) (M := M) g₀ fLo hsol fseq)
     (hhm : HasDeTurckRemainderAllOrderLadderBound (I := I) (M := M) g₀ κ)
     (hε : 0 < ε)
@@ -334,8 +334,8 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
   rw [hz]
 
 def HasUniformGalerkinEnergyBounds (g₀ : SmoothRiemannianMetric I M) {T : ℝ}
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
-    (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) :
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) :
     Prop :=
   (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
       Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
@@ -351,11 +351,11 @@ theorem exists_galerkin_approximation_with_uniform_all_order_energy_bounds
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    ∃ (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+    ∃ (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       HasUniformGalerkinEnergyBounds (I := I) (M := M) g₀ fLo fseq := by
   classical
   have hsol := hlo.toIsLowRegularitySolutionAt
@@ -396,7 +396,7 @@ theorem per_mode_limit_weighted_energy_bound_all_orders
     (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :

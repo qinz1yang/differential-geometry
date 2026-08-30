@@ -38,7 +38,7 @@ theorem cc_a1_unif
         ∀ (S : Finset
             (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
               (I := I) (M := M) q 0 0))
-          (T : tensorHs (I := I) (M := M) q 0 0 0)
+          (T : TensorHs (I := I) (M := M) q 0 0 0)
           (hT : (Function.support T.coeff).Finite),
           hT.toFinset ⊆ S →
             2 * ∑ i ∈ S,

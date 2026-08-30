@@ -310,7 +310,7 @@ theorem galerkin_background_action_sobolev_four_pairing_bound_of_low_view_norm_l
     have hc : ∀ i ∈ F, c i = 0 := by
       intro i hi
       have hcoeff := congrArg (fun u => u.coeff i) hcombo
-      simpa only [finiteEigenComboHs_coeff, if_pos hi, tensorHs.zero_coeff] using hcoeff
+      simpa only [finiteEigenComboHs_coeff, if_pos hi, TensorHs.zero_coeff] using hcoeff
     have hE3 : 0 ≤ ∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2 :=
       Finset.sum_nonneg fun i _ => mul_nonneg

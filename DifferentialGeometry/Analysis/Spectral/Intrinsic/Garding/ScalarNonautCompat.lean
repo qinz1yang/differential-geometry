@@ -31,13 +31,13 @@ theorem lapDiffHs_eq_A20
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∀ᶠ s in 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ),
-      ∀ u : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 2,
-        tensorHs.castEquiv (I := I) (M := M)
+      ∀ u : TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 2,
+        TensorHs.castEquiv (I := I) (M := M)
             (g := g_fam (T : ℝ)) (r := 0) (s := 0)
             (by norm_num : ((0 : ℕ) : ℝ) = 0)
             (lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
               (g_fam ((T : ℝ) - s)) 0
-              (tensorHs.castEquiv (I := I) (M := M)
+              (TensorHs.castEquiv (I := I) (M := M)
                 (g := g_fam (T : ℝ)) (r := 0) (s := 0)
                 (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2) u)) =
           lapDiffA20 (I := I) (M := M) g_fam T s u := by
@@ -54,14 +54,14 @@ theorem lapDiffHs_eq_A20
   filter_upwards [hIcc, hA20] with s hs hsA20
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let h : SmoothRiemannianMetric I M := g_fam ((T : ℝ) - s)
-  let J : tensorHs (I := I) (M := M) q 0 0 2 →L[ℝ]
-      tensorHs (I := I) (M := M) q 0 0 (((0 : ℕ) : ℝ) + 2) :=
-    (tensorHs.castEquiv (I := I) (M := M)
+  let J : TensorHs (I := I) (M := M) q 0 0 2 →L[ℝ]
+      TensorHs (I := I) (M := M) q 0 0 (((0 : ℕ) : ℝ) + 2) :=
+    (TensorHs.castEquiv (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2)).toContinuousLinearEquiv.toContinuousLinearMap
-  let K : tensorHs (I := I) (M := M) q 0 0 ((0 : ℕ) : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) q 0 0 0 :=
-    (tensorHs.castEquiv (I := I) (M := M)
+  let K : TensorHs (I := I) (M := M) q 0 0 ((0 : ℕ) : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) q 0 0 0 :=
+    (TensorHs.castEquiv (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((0 : ℕ) : ℝ) = 0)).toContinuousLinearEquiv.toContinuousLinearMap
   let L := K.comp ((lapDiffHs (I := I) (M := M) q h 0).comp J)
@@ -88,7 +88,7 @@ theorem lapDiffHs_eq_A20
     have hJ :
         J (ccTensorToHs (I := I) (M := M) q 0 2 U) =
           ccTensorToHs (I := I) (M := M) q 0 (((0 : ℕ) : ℝ) + 2) U := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       rfl
     rw [show L (ccTensorToHs (I := I) (M := M) q 0 2 U) =
@@ -98,10 +98,10 @@ theorem lapDiffHs_eq_A20
           (J (ccTensorToHs (I := I) (M := M) q 0 2 U))) = _
       rw [hJ]
       rw [hHs 0 s hs U]
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       rfl]
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     rw [ccTensorToHs_coeff]
     have hc := congrArg

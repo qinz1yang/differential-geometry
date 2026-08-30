@@ -96,7 +96,7 @@ theorem lapDiff_pair_energy
     (q k : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 <= C ∧
       ∀ (h : SmoothRiemannianMetric I M)
-        (v : tensorHs (I := I) (M := M) q 0 0 2)
+        (v : TensorHs (I := I) (M := M) q 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         (Module.finrank Real E : Real) *
             HCGCompactness.metricDerivNormSupOn

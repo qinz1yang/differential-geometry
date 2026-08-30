@@ -47,7 +47,7 @@ def galerkinFirstOrderActionFixedVectorBackground
           (ccTensorBilinSymm (I := I) g T) δ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) :
-    tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
   let T : SmoothCcTensor g 0 2 :=
     symmS (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
@@ -83,7 +83,7 @@ def galerkinFirstOrderActionRemainderVectorBackground
           (ccTensorBilinSymm (I := I) g T) δ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) :
-    tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
   let T : SmoothCcTensor g 0 2 :=
     symmS (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
@@ -149,7 +149,7 @@ theorem galArmPair3_split
         galerkinFirstOrderActionFixedPairingBackground (I := I) (M := M) g gBase
           hR hδ hreal F c 3 := by
   rw [galArmVecBackground_split (I := I) (M := M) g gBase hR hδ hreal F c]
-  simp only [tensorHs.add_coeff, mul_add, Finset.sum_add_distrib,
+  simp only [TensorHs.add_coeff, mul_add, Finset.sum_add_distrib,
     galerkinFirstOrderActionRemainderPairingBackground, galerkinFirstOrderActionFixedPairingBackground]
 
 private theorem lowArm_symm

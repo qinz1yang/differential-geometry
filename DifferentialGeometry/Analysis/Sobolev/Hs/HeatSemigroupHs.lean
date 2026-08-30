@@ -122,14 +122,14 @@ private lemma heatHk_weight_term_le {g : SmoothRiemannianMetric I M}
           positivity
     _ = K * (scalarSobolevWeight (I := I) (M := M) i a * c ^ 2) := by ring
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma heatHk_weighted_summable {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (T : scalarHs (I := I) (M := M) g a) :
+    (T : ScalarHs (I := I) (M := M) g a) :
     Summable (fun i : EigenIdx (I := I) (M := M) g =>
       scalarSobolevWeight (I := I) (M := M) i b *
         (Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
@@ -145,8 +145,8 @@ lemma heatHk_weighted_summable {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
     exact heatHk_weight_term_le (I := I) (M := M) i a b ht (T.coeff i)
 
 def heatHkFun {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (T : scalarHs (I := I) (M := M) g a) :
-    scalarHs (I := I) (M := M) g b where
+    (T : ScalarHs (I := I) (M := M) g a) :
+    ScalarHs (I := I) (M := M) g b where
   coeff i := Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
     T.coeff i
   weighted_summable := heatHk_weighted_summable (I := I) (M := M) b ht T
@@ -154,7 +154,7 @@ def heatHkFun {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma heatHkFun_coeff {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (T : scalarHs (I := I) (M := M) g a)
+    (T : ScalarHs (I := I) (M := M) g a)
     (i : EigenIdx (I := I) (M := M) g) :
     (heatHkFun (I := I) (M := M) b ht T).coeff i =
       Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
@@ -163,7 +163,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma heatHkFun_add {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
-    (S T : scalarHs (I := I) (M := M) g a) :
+    (S T : ScalarHs (I := I) (M := M) g a) :
     heatHkFun (I := I) (M := M) b ht (S + T) =
       heatHkFun (I := I) (M := M) b ht S +
         heatHkFun (I := I) (M := M) b ht T := by
@@ -174,7 +174,7 @@ lemma heatHkFun_add {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t)
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma heatHkFun_smul {a : ℝ} (b : ℝ) {t : ℝ} (ht : 0 < t) (c : ℝ)
-    (T : scalarHs (I := I) (M := M) g a) :
+    (T : ScalarHs (I := I) (M := M) g a) :
     heatHkFun (I := I) (M := M) b ht (c • T) =
       c • heatHkFun (I := I) (M := M) b ht T := by
   ext i
@@ -185,7 +185,7 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_heatHkFun_le_smoothing {a b : ℝ} (hab : a ≤ b) {t : ℝ}
     (ht : 0 < t) (ht1 : t ≤ 1)
-    (T : scalarHs (I := I) (M := M) g a) :
+    (T : ScalarHs (I := I) (M := M) g a) :
     ‖heatHkFun (I := I) (M := M) b ht T‖ ≤
       Real.sqrt (spectralSmoothingConst (b - a)) *
         t ^ (-((b - a) / 2)) * ‖T‖ := by
@@ -334,7 +334,7 @@ lemma norm_heatHkFun_le_smoothing {a b : ℝ} (hab : a ≤ b) {t : ℝ}
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_heatHkFun_le_self {a : ℝ} {t : ℝ} (ht : 0 < t)
-    (T : scalarHs (I := I) (M := M) g a) :
+    (T : ScalarHs (I := I) (M := M) g a) :
     ‖heatHkFun (I := I) (M := M) a ht T‖ ≤ ‖T‖ := by
   have h_a_sq_heat : ‖heatHkFun (I := I) (M := M) a ht T‖ ^ 2 =
       ∑' i, scalarSobolevWeight (I := I) (M := M) i a *
@@ -392,36 +392,36 @@ lemma norm_heatHkFun_le_self {a : ℝ} {t : ℝ} (ht : 0 < t)
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
 
-end scalarHs
+end ScalarHs
 
 def heatSemigroupHs {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) {a b : ℝ} :
-    scalarHs (I := I) (M := M) g a →L[ℝ]
-      scalarHs (I := I) (M := M) g b :=
+    ScalarHs (I := I) (M := M) g a →L[ℝ]
+      ScalarHs (I := I) (M := M) g b :=
   LinearMap.mkContinuous
-    { toFun := scalarHs.heatHkFun (I := I) (M := M) b ht
-      map_add' := scalarHs.heatHkFun_add (I := I) (M := M) b ht
+    { toFun := ScalarHs.heatHkFun (I := I) (M := M) b ht
+      map_add' := ScalarHs.heatHkFun_add (I := I) (M := M) b ht
       map_smul' := fun c T =>
-        scalarHs.heatHkFun_smul (I := I) (M := M) b ht c T }
+        ScalarHs.heatHkFun_smul (I := I) (M := M) b ht c T }
     (max 1 (spectralSmoothingConst (b - a) * (min t 1) ^ (-(b - a))))
     (fun T => by
-      change ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ ≤ _
+      change ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ ≤ _
       set K : ℝ :=
         max 1 (spectralSmoothingConst (b - a) * (min t 1) ^ (-(b - a)))
         with hK_def
       have hK_ge_one : (1 : ℝ) ≤ K := le_max_left _ _
       have hK_nn : 0 ≤ K := le_trans zero_le_one hK_ge_one
-      have h_b_sq : ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ ^ 2 =
+      have h_b_sq : ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ ^ 2 =
           ∑' i, scalarSobolevWeight (I := I) (M := M) i b *
             (Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
               T.coeff i) ^ 2 := by
-        have h := scalarHs.norm_sq_eq_tsum (I := I) (M := M)
-          (scalarHs.heatHkFun (I := I) (M := M) b ht T)
-        simpa only [scalarHs.heatHkFun_coeff] using h
+        have h := ScalarHs.norm_sq_eq_tsum (I := I) (M := M)
+          (ScalarHs.heatHkFun (I := I) (M := M) b ht T)
+        simpa only [ScalarHs.heatHkFun_coeff] using h
       have h_a_sq : ‖T‖ ^ 2 =
           ∑' i, scalarSobolevWeight (I := I) (M := M) i a *
             (T.coeff i) ^ 2 :=
-        scalarHs.norm_sq_eq_tsum (I := I) (M := M) T
+        ScalarHs.norm_sq_eq_tsum (I := I) (M := M) T
       have h_term_le : ∀ i : EigenIdx (I := I) (M := M) g,
           scalarSobolevWeight (I := I) (M := M) i b *
               (Real.exp
@@ -437,7 +437,7 @@ def heatSemigroupHs {g : SmoothRiemannianMetric I M}
               (Real.exp
                   (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
                 T.coeff i) ^ 2) :=
-        scalarHs.heatHk_weighted_summable (I := I) (M := M) b ht T
+        ScalarHs.heatHk_weighted_summable (I := I) (M := M) b ht T
       have h_summ_dom :
           Summable (fun i : EigenIdx (I := I) (M := M) g =>
             K * (scalarSobolevWeight (I := I) (M := M) i a *
@@ -458,25 +458,25 @@ def heatSemigroupHs {g : SmoothRiemannianMetric I M}
               (T.coeff i) ^ 2) :=
         tsum_mul_left
       have h_sq_le :
-          ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ ^ 2 ≤
+          ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ ^ 2 ≤
             K * ‖T‖ ^ 2 := by
         rw [h_b_sq, h_a_sq]
         rw [← h_tsum_factor]
         exact h_tsum_le
       have h_sqrtK_sq : Real.sqrt K ^ 2 = K := Real.sq_sqrt hK_nn
       have h_final_sq :
-          ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ ^ 2 ≤
+          ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ ^ 2 ≤
             (Real.sqrt K * ‖T‖) ^ 2 := by
         have h_expand : (Real.sqrt K * ‖T‖) ^ 2 = K * ‖T‖ ^ 2 := by
           rw [mul_pow, h_sqrtK_sq]
         rw [h_expand]
         exact h_sq_le
-      have h1 : 0 ≤ ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ :=
+      have h1 : 0 ≤ ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ :=
         norm_nonneg _
       have h2 : 0 ≤ ‖T‖ := norm_nonneg T
       have h_sqrtK_nn : 0 ≤ Real.sqrt K := Real.sqrt_nonneg _
       have h_norm_le_sqrt :
-          ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ ≤
+          ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ ≤
             Real.sqrt K * ‖T‖ := by
         nlinarith [h_final_sq, h1, mul_nonneg h_sqrtK_nn h2]
       have h_sqrtK_le_K : Real.sqrt K ≤ K := by
@@ -485,7 +485,7 @@ def heatSemigroupHs {g : SmoothRiemannianMetric I M}
               Real.sqrt_le_sqrt h_K_le_sq
           _ = K := Real.sqrt_sq hK_nn
       calc
-        ‖scalarHs.heatHkFun (I := I) (M := M) b ht T‖ ≤ Real.sqrt K * ‖T‖ :=
+        ‖ScalarHs.heatHkFun (I := I) (M := M) b ht T‖ ≤ Real.sqrt K * ‖T‖ :=
           h_norm_le_sqrt
         _ ≤ K * ‖T‖ := mul_le_mul_of_nonneg_right h_sqrtK_le_K h2)
 
@@ -493,15 +493,15 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma heatSemigroupHs_apply {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) {a b : ℝ}
-    (T : scalarHs (I := I) (M := M) g a) :
+    (T : ScalarHs (I := I) (M := M) g a) :
     heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := b) T =
-      scalarHs.heatHkFun (I := I) (M := M) b ht T := rfl
+      ScalarHs.heatHkFun (I := I) (M := M) b ht T := rfl
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem heatSemigroupHs_coeff {g : SmoothRiemannianMetric I M}
     {t : ℝ} (ht : 0 < t) {a b : ℝ}
-    (T : scalarHs (I := I) (M := M) g a)
+    (T : ScalarHs (I := I) (M := M) g a)
     (i : EigenIdx (I := I) (M := M) g) :
     (heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := b)
         T).coeff i =
@@ -524,7 +524,7 @@ theorem heatSemigroupHs_opNorm_le {g : SmoothRiemannianMetric I M}
     positivity
   refine ContinuousLinearMap.opNorm_le_bound _ h_bound_nn (fun T => ?_)
   rw [heatSemigroupHs_apply]
-  exact scalarHs.norm_heatHkFun_le_smoothing (I := I) (M := M) hab ht ht1 T
+  exact ScalarHs.norm_heatHkFun_le_smoothing (I := I) (M := M) hab ht ht1 T
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -533,7 +533,7 @@ theorem heatSemigroupHs_opNorm_le_one {g : SmoothRiemannianMetric I M}
     ‖heatSemigroupHs (I := I) (M := M) (g := g) ht (a := a) (b := a)‖ ≤ 1 := by
   refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun T => ?_)
   rw [heatSemigroupHs_apply, one_mul]
-  exact scalarHs.norm_heatHkFun_le_self (I := I) (M := M) ht T
+  exact ScalarHs.norm_heatHkFun_le_self (I := I) (M := M) ht T
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -545,7 +545,7 @@ theorem heatSemigroupHs_add {g : SmoothRiemannianMetric I M}
         (heatSemigroupHs (I := I) (M := M) (g := g) hs (a := a) (b := a)) := by
   refine ContinuousLinearMap.ext (fun T => ?_)
   rw [ContinuousLinearMap.comp_apply]
-  refine scalarHs.ext ?_
+  refine ScalarHs.ext ?_
   funext i
   rw [heatSemigroupHs_coeff, heatSemigroupHs_coeff, heatSemigroupHs_coeff]
   set lam := EigenIdx.lambda (I := I) (M := M) i with hlam_def
@@ -634,7 +634,7 @@ private theorem scalarL2Coeff_heatSemigroup
 
 theorem heatSemigroupHs_zeroEquivL2_apply
     {g : SmoothRiemannianMetric I M}
-    {t : ℝ} (ht : 0 < t) (T : scalarHs (I := I) (M := M) g 0) :
+    {t : ℝ} (ht : 0 < t) (T : ScalarHs (I := I) (M := M) g 0) :
     scalarHsZeroEquivL2 (I := I) (M := M) g
         (heatSemigroupHs (I := I) (M := M) (g := g) ht (a := 0) (b := 0) T) =
       DifferentialGeometry.Analysis.HeatEquation.heatSemigroup
@@ -651,7 +651,7 @@ theorem heatSemigroupHs_zeroEquivL2_apply
           (a := 0) (b := 0) T))) i =
       Real.exp (-(EigenIdx.lambda (I := I) (M := M) i) * t) *
         T.coeff i := by
-    have h := scalarHs.scalarHsZeroEquivL2_scalarL2Coeff (I := I) (M := M)
+    have h := ScalarHs.scalarHsZeroEquivL2_scalarL2Coeff (I := I) (M := M)
       (heatSemigroupHs (I := I) (M := M) (g := g) ht
         (a := 0) (b := 0) T) i
     rw [heatSemigroupHs_coeff] at h
@@ -665,7 +665,7 @@ theorem heatSemigroupHs_zeroEquivL2_apply
         T.coeff i := by
     have h := scalarL2Coeff_heatSemigroup (I := I) (M := M) ht.le
       (scalarHsZeroEquivL2 (I := I) (M := M) g T) i
-    rw [scalarHs.scalarHsZeroEquivL2_scalarL2Coeff] at h
+    rw [ScalarHs.scalarHsZeroEquivL2_scalarL2Coeff] at h
     simpa only [scalarL2Coeff] using h
   rw [hlhs, hrhs]
 

@@ -52,7 +52,7 @@ def deTurckSmoothRemainder (g₀ g_bg : SmoothRiemannianMetric I M)
 
 def smoothCcToTensorHs (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     (T : SmoothCcTensor g₀ 0 2) :
-    tensorHs (I := I) (M := M) g₀ 0 2 σ where
+    TensorHs (I := I) (M := M) g₀ 0 2 σ where
   coeff i :=
     tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
@@ -79,7 +79,7 @@ theorem finiteEigenComboHs_eq (g₀ : SmoothRiemannianMetric I M)
     finiteEigenComboHs (I := I) (M := M) g₀ F c σ =
       smoothCcToTensorHs (I := I) (M := M) g₀ σ
         (finiteEigenCombo (I := I) (M := M) g₀ F c) := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [finiteEigenComboHs_coeff_eq, smoothCcToTensorHs_coeff,
     ← SmoothCcTensor.toL2_apply]

@@ -449,7 +449,7 @@ theorem gFibreOpBound_ccTensorBilinSymm_smul (g : SmoothRiemannianMetric I M)
     _ = |c| * δ * Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) := by ring
 
 def tensorHsBilinFormSymm (g : SmoothRiemannianMetric I M) {σ : ℝ}
-    (u : tensorHs (I := I) (M := M) g 0 2 σ)
+    (u : TensorHs (I := I) (M := M) g 0 2 σ)
     (hu_fs : (Function.support u.coeff).Finite) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   ccTensorBilinSymm (I := I) g
@@ -458,7 +458,7 @@ def tensorHsBilinFormSymm (g : SmoothRiemannianMetric I M) {σ : ℝ}
 
 theorem exists_smooth_metric_of_tensorHs_small
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 σ)
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 σ)
     (hu_fs : (Function.support u.coeff).Finite)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g_bg
@@ -473,7 +473,7 @@ theorem exists_smooth_metric_of_tensorHs_small
 
 open scoped Classical in
 noncomputable def realizeMetricMap (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2)) :
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2)) :
     SmoothRiemannianMetric I M :=
   if h : ∃ (hu_fs : (Function.support u.coeff).Finite) (δ' : ℝ), δ' < 1 ∧
       metricCauchySchwarzBound (I := I) (M := M) g_bg
@@ -486,7 +486,7 @@ noncomputable def realizeMetricMap (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     g_bg
 
 theorem realizeMetricMap_eq_of_small (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (hu_fs : (Function.support u.coeff).Finite)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g_bg

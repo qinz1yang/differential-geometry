@@ -363,7 +363,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       (m + 1) h_IH_bd_at h_pou_resolv α P).choose K' with hC_cut_per_def
   set C_cut : ℕ → ℝ := fun K' =>
     ∑ P : TensorCompIdx (E := E) r s, C_cut_per P K' with hC_cut_def
-  set H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀
+  set H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀
       (0 + (m + 1) + 1) :=
     { h_pou_resolv := fun i K' β Q hK' => h_pou_resolv i K' β Q hK'
       Ceig := fun _ => C_IH

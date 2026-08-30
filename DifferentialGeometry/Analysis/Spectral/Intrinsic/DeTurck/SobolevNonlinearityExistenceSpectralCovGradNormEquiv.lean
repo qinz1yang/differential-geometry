@@ -136,7 +136,7 @@ theorem exists_smoothCcToTensorHs_even_le_iteratedCovGrad_sum
   refine ⟨Cl2 * Cdrop * Chebey, by positivity, fun S => ?_⟩
   have hembed_eq : smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S =
       ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S :=
-    tensorHs.ext (funext (fun i => rfl))
+    TensorHs.ext (funext (fun i => rfl))
   have hsq := ccSpectralEmbed_even_norm_sq_eq_oneMinusConnLap_l2 (I := I) (M := M) g₀ k S
   have hnorm_eq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S‖ =
       ‖SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k S)‖ := by
@@ -384,7 +384,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd
   have hNspec_nn : 0 ≤ Nspec := norm_nonneg _
   have hembed_eq : ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k + 1 : ℕ) : ℝ) S =
       smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k + 1 : ℕ) : ℝ) S :=
-    tensorHs.ext (funext (fun i => rfl))
+    TensorHs.ext (funext (fun i => rfl))
   have hccmono : ∀ (σ : ℕ), σ ≤ 2 * k + 1 →
       ‖ccSpectralEmbed (I := I) (M := M) g₀ ((σ : ℕ) : ℝ) S‖ ≤ Nspec := by
     intro σ hσ
@@ -395,7 +395,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd
   have hlow_le : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S‖ ≤ Nspec := by
     have hembed2k : smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S =
         ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     rw [hembed2k]
     exact hccmono (2 * k) (by omega)
   have hlowsum : ∑ j ∈ Finset.range (2 * k + 1),
@@ -670,7 +670,7 @@ theorem exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general
   have hSall_nn : 0 ≤ Sall := Finset.sum_nonneg (fun j _ => norm_nonneg _)
   have hembed_eq : smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) S =
       ccSpectralEmbed (I := I) (M := M) g₀ (n : ℝ) S :=
-    tensorHs.ext (funext (fun i => rfl))
+    TensorHs.ext (funext (fun i => rfl))
   set Nspec : ℝ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) S‖ with hNspec_def
   have hNspec_nn : 0 ≤ Nspec := norm_nonneg _
   have hweight_eq : ∀ m : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx

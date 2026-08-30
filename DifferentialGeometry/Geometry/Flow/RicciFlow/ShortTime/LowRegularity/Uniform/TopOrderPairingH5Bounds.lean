@@ -73,7 +73,7 @@ theorem oneMinusConnLapSmooth_pair_h5_h3
           (smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ) LY) : ℝ) := by
     rw [tensorL2Inner_eq_tsum_l2Coeff_cross_arm
       (I := I) (M := M) g L3T LY,
-      tensorHs.inner_def]
+      TensorHs.inner_def]
     refine tsum_congr (fun i => ?_)
     rw [smoothCcToTensorHs_coeff, smoothCcToTensorHs_coeff,
       hL2iter, hLYiter, hL3iter,

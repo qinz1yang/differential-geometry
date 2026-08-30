@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [SigmaCompactSpace M] in
 def scalarHsBoundedC0Semigroup
     (g : SmoothRiemannianMetric I M) (σ : ℝ) :
-    BoundedC0Semigroup (scalarHs (I := I) (M := M) g σ) where
+    BoundedC0Semigroup (ScalarHs (I := I) (M := M) g σ) where
   toFun := fun t => heatSemigroupHsExt (I := I) (M := M) g σ t
   apply_zero := heatSemigroupHsExt_zero (I := I) (M := M) g σ
   apply_add := fun _ _ ht hs =>

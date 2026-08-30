@@ -34,14 +34,14 @@ variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
 
 def solModeCoeff (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) : timeL2 ℝ T :=
   perModeConvL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
     (timeModeCoeff (I := I) (M := M) f i)
 
 def derivModeCoeff (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) : timeL2 ℝ T :=
   perModeConvDerivL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
@@ -49,7 +49,7 @@ def derivModeCoeff (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_solModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       T * ‖timeModeCoeff (I := I) (M := M) f i‖ := by
@@ -59,7 +59,7 @@ theorem norm_solModeCoeff_le (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     TensorEigenIdx.lambda (I := I) (M := M) i *
         ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
@@ -73,7 +73,7 @@ theorem lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem one_add_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (1 + TensorEigenIdx.lambda (I := I) (M := M) i) *
         ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
@@ -95,7 +95,7 @@ theorem one_add_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sqrt_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     Real.sqrt (TensorEigenIdx.lambda (I := I) (M := M) i) *
         ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
@@ -126,7 +126,7 @@ theorem sqrt_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem one_add_lambda_sqrt_mul_norm_solModeCoeff_le (hT : 0 < T) (hT1 : T ≤ 1)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (1 / 2 : ℝ) *
         ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ≤
@@ -167,7 +167,7 @@ theorem one_add_lambda_sqrt_mul_norm_solModeCoeff_le (hT : 0 < T) (hT1 : T ≤ 1
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_derivModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ‖derivModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       2 * ‖timeModeCoeff (I := I) (M := M) f i‖ :=
@@ -188,7 +188,7 @@ private theorem tensorSobolevWeight_add_two
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem weighted_solModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i (a + 2) *
         ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2 ≤
@@ -236,7 +236,7 @@ private theorem tensorSobolevWeight_add_one
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem weighted_solModeCoeff_Ha1_le (hT : 0 < T) (hT1 : T ≤ 1)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i (a + 1) *
         ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2 ≤
@@ -283,7 +283,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_solModeCoeff_Ha1 (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i (a + 1) *
       ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2) := by
   have hdom : Summable (fun i => (2 * Real.sqrt T) ^ 2 *
@@ -300,7 +300,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_solModeCoeff (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i (a + 2) *
       ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2) := by
   have hdom : Summable (fun i => (1 + T) ^ 2 *
@@ -315,7 +315,7 @@ theorem summable_solModeCoeff (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem weighted_derivModeCoeff_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i a *
         ‖derivModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2 ≤
@@ -340,7 +340,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_derivModeCoeff (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i a *
       ‖derivModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2) := by
   have hdom : Summable (fun i => 2 ^ 2 *
@@ -354,8 +354,8 @@ theorem summable_derivModeCoeff (hT : 0 ≤ T)
   · exact weighted_derivModeCoeff_le (I := I) (M := M) (a := a) hT f i
 
 def maximalRegularityDerivField (a : ℝ) {T : ℝ} (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
+    timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   timeL2OfModes (I := I) (M := M)
     (fun i => derivModeCoeff (I := I) (M := M) (a := a) hT f i)
 
@@ -363,7 +363,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityDerivField_timeModeCoeff (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
         (maximalRegularityDerivField (I := I) (M := M) a hT f) i =
@@ -372,8 +372,8 @@ theorem maximalRegularityDerivField_timeModeCoeff (hT : 0 ≤ T)
     (summable_derivModeCoeff (I := I) (M := M) (a := a) hT h_compact f) i
 
 def maximalRegularitySolField (a : ℝ) {T : ℝ} (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T :=
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
+    timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T :=
   timeL2OfModes (I := I) (M := M)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i)
 
@@ -381,7 +381,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularitySolField_timeModeCoeff (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
         (maximalRegularitySolField (I := I) (M := M) a hT f) i =
@@ -390,8 +390,8 @@ theorem maximalRegularitySolField_timeModeCoeff (hT : 0 ≤ T)
     (summable_solModeCoeff (I := I) (M := M) (a := a) hT h_compact f) i
 
 def maximalRegularitySolFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    timeL2 (tensorHs (I := I) (M := M) g r s (a + 1)) T :=
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
+    timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T :=
   timeL2OfModes (I := I) (M := M) (σ := a + 1)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT.le f i)
 
@@ -400,7 +400,7 @@ theorem maximalRegularitySolFieldHa1_timeModeCoeff (hT : 0 < T)
     (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
         (maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f) i =
@@ -414,7 +414,7 @@ theorem maximalRegularitySolFieldHa1_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ‖maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f‖ ≤
       2 * Real.sqrt T * ‖f‖ := by
   refine norm_le_of_weighted_perMode_le (I := I) (M := M) (b := a + 1)
@@ -428,7 +428,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularitySolFieldHa1_add (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     maximalRegularitySolFieldHa1 (I := I) (M := M) a hT (f + f') =
       maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f +
         maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f' := by
@@ -448,7 +448,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularitySolFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     maximalRegularitySolFieldHa1 (I := I) (M := M) a hT (f - f') =
       maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f -
         maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f' := by
@@ -458,15 +458,15 @@ theorem maximalRegularitySolFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
   rw [hadd, add_sub_cancel_right]
 
 def maximalRegularityOp (a : ℝ) {T : ℝ} (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    timeH1 (tensorHs (I := I) (M := M) g r s a) T :=
-  TimeSobolev.timeH1.mk (0 : tensorHs (I := I) (M := M) g r s a)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
+    timeH1 (TensorHs (I := I) (M := M) g r s a) T :=
+  TimeSobolev.timeH1.mk (0 : TensorHs (I := I) (M := M) g r s a)
     (maximalRegularityDerivField (I := I) (M := M) a hT.le f)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_trace0_eq
     (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.trace0 _ T
         (maximalRegularityOp (I := I) (M := M) a hT f) =
       0 :=
@@ -475,7 +475,7 @@ theorem maximalRegularityOp_trace0_eq
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_timeDeriv
     (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.timeDeriv _ T
         (maximalRegularityOp (I := I) (M := M) a hT f) =
       maximalRegularityDerivField (I := I) (M := M) a hT.le f :=
@@ -483,7 +483,7 @@ theorem maximalRegularityOp_timeDeriv
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_trace0 (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.trace0 _ T
         (maximalRegularityOp (I := I) (M := M) a hT f) = 0 :=
   rfl
@@ -493,7 +493,7 @@ theorem maximalRegularityOp_norm_Ha2_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ‖maximalRegularitySolField (I := I) (M := M) a hT.le f‖ ≤
       (1 + T) * ‖f‖ := by
   refine norm_le_of_weighted_perMode_le (I := I) (M := M) (b := a + 2)
@@ -507,7 +507,7 @@ theorem maximalRegularityOp_norm_deriv_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ‖maximalRegularityDerivField (I := I) (M := M) a hT.le f‖ ≤
       2 * ‖f‖ := by
   refine norm_le_of_weighted_perMode_le (I := I) (M := M) (b := a)
@@ -521,7 +521,7 @@ theorem maximalRegularityOp_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ‖maximalRegularityOp (I := I) (M := M) a hT f‖ ≤ 2 * ‖f‖ := by
   have hnormsq := TimeSobolev.timeH1.norm_sq_eq
     (maximalRegularityOp (I := I) (M := M) a hT f)

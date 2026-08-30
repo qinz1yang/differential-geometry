@@ -36,15 +36,15 @@ variable
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem forcing_continuous_interior
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
-    (u₁ : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
-    (N_cont : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
-      tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
+    (u₁ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
+    (N_cont : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
+      TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
     (hN_cont : Continuous N_cont)
     (hcont : ∀ ε : ℝ, 0 < ε → ContinuousOn u₁ (Set.Icc ε T))
     :
     ∀ ε : ℝ, 0 < ε →
       ContinuousOn (fun s => (N_cont (u₁ s) :
-        tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))) (Set.Icc ε T) := by
+        TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))) (Set.Icc ε T) := by
   intro ε hε
   exact hN_cont.comp_continuousOn (hcont ε hε)
 
@@ -52,9 +52,9 @@ open MeasureTheory in
 theorem permode_sum_hasderivat
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
     (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-    (u₂ : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
-    (u₁ : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
-    (hderiv_ae : (u.deriv : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
+    (u₂ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
+    (u₁ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
+    (hderiv_ae : (u.deriv : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
         =ᵐ[timeMeasure T]
       (fun s => scaleLaplacianFun (I := I) (M := M) (u₂ s) +
         deTurckGeometricN (I := I) g_bg a (u₁ s)))
@@ -62,11 +62,11 @@ theorem permode_sum_hasderivat
       (fun s => scaleLaplacianFun (I := I) (M := M) (u₂ s) +
         deTurckGeometricN (I := I) g_bg a (u₁ s)) (Set.Ioo (0 : ℝ) T)) :
     ∀ s ∈ Set.Ioo (0 : ℝ) T,
-      HasDerivAt (fun r => (timeH1.toFun u r : tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
+      HasDerivAt (fun r => (timeH1.toFun u r : TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
         (scaleLaplacianFun (I := I) (M := M) (u₂ s) +
           deTurckGeometricN (I := I) g_bg a (u₁ s)) s := by
   classical
-  set RHS : ℝ → tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) :=
+  set RHS : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) :=
     fun s => scaleLaplacianFun (I := I) (M := M) (u₂ s) +
       deTurckGeometricN (I := I) g_bg a (u₁ s) with hRHS_def
   intro s hs
@@ -102,7 +102,7 @@ theorem permode_sum_hasderivat
   have hftc_u : HasDerivAt (fun r => ∫ x in (0 : ℝ)..r, u.deriv x) (RHS s) s :=
     hftc_RHS.congr_of_eventuallyEq heq
   have hconst : HasDerivAt
-      (fun r => (timeH1.toFun u r : tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
+      (fun r => (timeH1.toFun u r : TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
       (RHS s) s := by
     have h := hftc_u.const_add u.init
     refine h.congr_of_eventuallyEq ?_

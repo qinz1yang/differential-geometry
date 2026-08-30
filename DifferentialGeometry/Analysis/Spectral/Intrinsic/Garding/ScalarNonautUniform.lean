@@ -672,7 +672,7 @@ theorem finite_lap_unif
             (∑ j ∈ Finset.range (n + 2),
               ‖iteratedCovGrad (I := I) q 0 0 j U‖))) :
     ∃ Cmid : ℝ, 0 ≤ Cmid ∧
-      ∀ t, t ∈ A → ∀ (v : tensorHs (I := I) (M := M) q 0 0 0)
+      ∀ t, t ∈ A → ∀ (v : TensorHs (I := I) (M := M) q 0 0 0)
         (hv : (Function.support v.coeff).Finite),
         2 * ∑ i ∈ hv.toFinset,
             tensorSobolevWeight (I := I) (M := M) i (n : ℝ) *
@@ -769,7 +769,7 @@ theorem finite_lap_unif
   have hhs (m : ℕ) :
       ccTensorToHs (I := I) (M := M) q 0 (m : ℝ) U =
         tensorHsOfFiniteSupport (I := I) (M := M) (m : ℝ) v.coeff hv := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     rw [ccTensorToHs_coeff, tensorHsOfFiniteSupport_coeff]
     exact hrepr i
@@ -777,7 +777,7 @@ theorem finite_lap_unif
       ‖tensorHsOfFiniteSupport (I := I) (M := M) (m : ℝ) v.coeff hv‖ ^ 2 =
         ∑ i ∈ hv.toFinset,
           tensorSobolevWeight (I := I) (M := M) i (m : ℝ) * (v.coeff i) ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     simp only [tensorHsOfFiniteSupport_coeff]
     rw [tsum_eq_sum (s := hv.toFinset)]
     intro i hi
@@ -815,7 +815,7 @@ theorem cc_a2_unif
           ∀ (F : Finset
               (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
                 (I := I) (M := M) (g_fam (T : ℝ)) 0 0))
-            (v : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 0)
+            (v : TensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 0)
             (hv : (Function.support v.coeff).Finite),
             hv.toFinset ⊆ F →
               2 * ∑ i ∈ F,

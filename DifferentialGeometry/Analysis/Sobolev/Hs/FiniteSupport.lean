@@ -28,14 +28,14 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M} {σ : ℝ}
 
 def ofFiniteSupport (g : SmoothRiemannianMetric I M) (σ : ℝ)
     (f : EigenIdx (I := I) (M := M) g → ℝ)
     (hf : (Function.support f).Finite) :
-    scalarHs (I := I) (M := M) g σ where
+    ScalarHs (I := I) (M := M) g σ where
   coeff := f
   weighted_summable := by
     apply summable_of_hasFiniteSupport
@@ -57,7 +57,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 open scoped Classical in
 def basisVec (g : SmoothRiemannianMetric I M) (σ : ℝ)
     (i : EigenIdx (I := I) (M := M) g) :
-    scalarHs (I := I) (M := M) g σ :=
+    ScalarHs (I := I) (M := M) g σ :=
   ofFiniteSupport (I := I) (M := M) g σ
     (fun j => if j = i then (1 : ℝ) else 0)
     (by
@@ -76,7 +76,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       (if j = i then (1 : ℝ) else 0) := rfl
 
 def finiteSupportSubmodule (g : SmoothRiemannianMetric I M) (σ : ℝ) :
-    Submodule ℝ (scalarHs (I := I) (M := M) g σ) where
+    Submodule ℝ (ScalarHs (I := I) (M := M) g σ) where
   carrier := {T | (Function.support T.coeff).Finite}
   add_mem' := by
     intro S T hS hT
@@ -104,20 +104,20 @@ def finiteSupportSubmodule (g : SmoothRiemannianMetric I M) (σ : ℝ) :
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma mem_finiteSupportSubmodule
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     T ∈ finiteSupportSubmodule (I := I) (M := M) g σ ↔
       (Function.support T.coeff).Finite := Iff.rfl
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasSum_smul_basisVec_of_finite
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (hT : T ∈ finiteSupportSubmodule (I := I) (M := M) g σ) :
     T = ∑ i ∈ ((mem_finiteSupportSubmodule (I := I) (M := M) T).mp hT).toFinset,
       T.coeff i • basisVec (I := I) (M := M) g σ i := by
   classical
   set hT' := (mem_finiteSupportSubmodule (I := I) (M := M) T).mp hT
-  refine scalarHs.ext ?_
+  refine ScalarHs.ext ?_
   funext j
   have h_sum : (∑ i ∈ hT'.toFinset,
         T.coeff i • basisVec (I := I) (M := M) g σ i).coeff j =
@@ -127,8 +127,8 @@ theorem hasSum_smul_basisVec_of_finite
     | empty => simp
     | insert a t ha ih =>
         rw [Finset.sum_insert ha, Finset.sum_insert ha, ← ih,
-          scalarHs.add_coeff]
-        simp only [scalarHs.smul_coeff, basisVec_coeff,
+          ScalarHs.add_coeff]
+        simp only [ScalarHs.smul_coeff, basisVec_coeff,
           mul_ite, mul_one, mul_zero]
   rw [h_sum]
   rw [Finset.sum_eq_single j]
@@ -145,7 +145,7 @@ open scoped Classical in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma rescaleEquivL2_smul_basisVec
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     rescaleEquivL2 (I := I) (M := M) (g := g) (σ := σ)
         (T.coeff i • basisVec (I := I) (M := M) g σ i) =
@@ -164,7 +164,7 @@ lemma rescaleEquivL2_smul_basisVec
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasSum_smul_basisVec
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     HasSum (fun i : EigenIdx (I := I) (M := M) g =>
       T.coeff i • basisVec (I := I) (M := M) g σ i) T := by
   classical
@@ -191,10 +191,10 @@ theorem hasSum_smul_basisVec
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mem_closure_finiteSupportSubmodule
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     T ∈ closure
       (finiteSupportSubmodule (I := I) (M := M) g σ :
-        Set (scalarHs (I := I) (M := M) g σ)) := by
+        Set (ScalarHs (I := I) (M := M) g σ)) := by
   classical
   refine mem_closure_of_tendsto
     (hasSum_smul_basisVec (I := I) (M := M) T) ?_
@@ -208,38 +208,38 @@ theorem mem_closure_finiteSupportSubmodule
     ite_eq_right_iff, one_ne_zero, imp_false, not_not] at hj
   simpa using hj
 
-end scalarHs
+end ScalarHs
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem scalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
+theorem ScalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
     {g : SmoothRiemannianMetric I M} {σ : ℝ} :
-    (scalarHs.finiteSupportSubmodule (I := I) (M := M)
+    (ScalarHs.finiteSupportSubmodule (I := I) (M := M)
         g σ).topologicalClosure = ⊤ := by
   rw [eq_top_iff]
   intro T _
   rw [← SetLike.mem_coe, Submodule.topologicalClosure_coe]
-  exact scalarHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) T
+  exact ScalarHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) T
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem scalarHs.finiteSupportSubmodule_dense
+theorem ScalarHs.finiteSupportSubmodule_dense
     {g : SmoothRiemannianMetric I M} {σ : ℝ} :
-    Dense (scalarHs.finiteSupportSubmodule (I := I) (M := M) g σ :
-      Set (scalarHs (I := I) (M := M) g σ)) := by
+    Dense (ScalarHs.finiteSupportSubmodule (I := I) (M := M) g σ :
+      Set (ScalarHs (I := I) (M := M) g σ)) := by
   rw [Submodule.dense_iff_topologicalClosure_eq_top]
-  exact scalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
+  exact ScalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
     (I := I) (M := M)
 
 example {g : SmoothRiemannianMetric I M} {σ : ℝ}
     (i : EigenIdx (I := I) (M := M) g) :
-    scalarHs (I := I) (M := M) g σ :=
-  scalarHs.basisVec (I := I) (M := M) g σ i
+    ScalarHs (I := I) (M := M) g σ :=
+  ScalarHs.basisVec (I := I) (M := M) g σ i
 
 example {g : SmoothRiemannianMetric I M} {σ : ℝ} :
-    Dense (scalarHs.finiteSupportSubmodule (I := I) (M := M) g σ :
-      Set (scalarHs (I := I) (M := M) g σ)) :=
-  scalarHs.finiteSupportSubmodule_dense (I := I) (M := M)
+    Dense (ScalarHs.finiteSupportSubmodule (I := I) (M := M) g σ :
+      Set (ScalarHs (I := I) (M := M) g σ)) :=
+  ScalarHs.finiteSupportSubmodule_dense (I := I) (M := M)
 
 end Hs
 end Sobolev

@@ -34,14 +34,14 @@ private local instance : BorelSpace M := ⟨rfl⟩
 def MemAllTensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) : Prop :=
   ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-    ∃ v : tensorHs (I := I) (M := M) g r s σ,
+    ∃ v : TensorHs (I := I) (M := M) g r s σ,
       tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
           (tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) hσ v = u
 
 theorem gateWitness_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) {σ : ℝ} (hσ : 0 ≤ σ)
-    (v : tensorHs (I := I) (M := M) g r s σ)
+    (v : TensorHs (I := I) (M := M) g r s σ)
     (hv : tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
         hσ v = u)
@@ -101,7 +101,7 @@ theorem spectral_smooth_realizes_as_smooth_of_mem_all_and_finite_support
 def IteratedGardingExtensionBound (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Prop :=
   ∀ k : ℕ, ∃ σ : ℝ, ∃ _hσ : 0 ≤ σ, ∃ C : ℝ, 0 ≤ C ∧
-    ∀ (T : tensorHs (I := I) (M := M) g r s σ)
+    ∀ (T : TensorHs (I := I) (M := M) g r s σ)
       (hT_fs : (Function.support T.coeff).Finite),
       (wtwokTwoNorm (I := I) (M := M) g k
           (tensorHsSmoothRepr (I := I) (M := M) T hT_fs)).toReal ≤
@@ -161,12 +161,12 @@ theorem spectralCoeff_weightedPow_summable
           wN * wN * tensorSobolevWeight (I := I) (M := M) i p := by
       rw [hwN_def]
       rw [show (2 * (N : ℝ) + p) = ((N : ℝ) + (N : ℝ)) + p by ring,
-        tensorHs.tensorSobolevWeight_add (I := I) (M := M) i ((N : ℝ) + (N : ℝ)) p,
-        tensorHs.tensorSobolevWeight_add (I := I) (M := M) i (N : ℝ) (N : ℝ)]
+        TensorHs.tensorSobolevWeight_add (I := I) (M := M) i ((N : ℝ) + (N : ℝ)) p,
+        TensorHs.tensorSobolevWeight_add (I := I) (M := M) i (N : ℝ) (N : ℝ)]
     have h_neg :
         tensorSobolevWeight (I := I) (M := M) i (-p) =
           (tensorSobolevWeight (I := I) (M := M) i p)⁻¹ :=
-      tensorHs.tensorSobolevWeight_neg (I := I) (M := M) i p
+      TensorHs.tensorSobolevWeight_neg (I := I) (M := M) i p
     set wp := tensorSobolevWeight (I := I) (M := M) i p with hwp_def
     rw [h_split, h_neg]
     have hwp_ne : wp ≠ 0 := ne_of_gt hwp_pos

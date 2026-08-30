@@ -33,18 +33,18 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 theorem exists_galerkin_projected_forcing_sequence (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap) :
-    ∃ (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+    ∃ (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       Tendsto fseq atTop (𝓝 fLo) ∧
       ∀ N : ℕ,
         timeL2EigenProj (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) T N (fseq N) =
             fseq N ∧
           (∀ᵐ t ∂(timeMeasure T),
             maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N) t ∈
               lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P)) ∧
           fseq N =ᵐ[timeMeasure T]
@@ -54,17 +54,17 @@ theorem exists_galerkin_projected_forcing_sequence (g₀ : SmoothRiemannianMetri
               (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
                   (lowRegularityStateRadius_pos hlo.hCtop hlo.hB1 hlo.hρ hlo.hP).le)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) t)) ∧
           timeH1.trace0 _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) = 0 ∧
           timeH1.timeDeriv _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) =
             timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) + fseq N ∧
           ‖fseq N‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4 := by
   classical
@@ -94,15 +94,15 @@ theorem exists_galerkin_projected_forcing_sequence (g₀ : SmoothRiemannianMetri
   have hsingle : ∀ u u' : lowerState (I := I) (M := M) g₀ 1 R,
       ‖Nfun u - Nfun u'‖ ≤
         (A : ℝ) * R *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) -
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) -
               (u' : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
               ((u : _) - (u' : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(u' : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))‖ +
+                ‖(u' : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
@@ -115,28 +115,28 @@ theorem exists_galerkin_projected_forcing_sequence (g₀ : SmoothRiemannianMetri
     rw [hBcoe]
     exact le_trans hTτ (le_trans (min_le_right _ _) (min_le_left _ _))
   have hex : ∀ N : ℕ,
-      ∃ gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T,
+      ∃ gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T,
         (timeL2EigenProj (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) T N gforce =
             gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               gforce t ∈ lowerState (I := I) (M := M) g₀ 1 R) ∧
           gforce =ᵐ[timeMeasure T]
             (fun t => projNfun (I := I) (M := M) g₀ 1 N Nfun
               (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   gforce) t)) ∧
           timeH1.trace0 _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               gforce) = 0 ∧
           timeH1.timeDeriv _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               gforce) =
             timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   gforce) + gforce ∧
           ‖gforce‖ ≤ R / 4) ∧
         ‖gforce - fLo‖ ≤
@@ -157,7 +157,7 @@ theorem exists_galerkin_projected_forcing_sequence (g₀ : SmoothRiemannianMetri
     · exact projForce_fixed (I := I) (M := M) g₀ 1 N gforce
         (fun t => aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce) t)
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce) t)
         hgE
     · exact projFixTame_le_two (I := I) (M := M) g₀ 1 hRpos N hcont hsingle
         hsmallA hsmallC hT hT1 hTB fLo gforce hball hgball hforce hgE
@@ -166,7 +166,7 @@ theorem exists_galerkin_projected_forcing_sequence (g₀ : SmoothRiemannianMetri
 
 theorem galerkin_projected_forcing_sequence_tendsto (g₀ : SmoothRiemannianMetric I M) {T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo) :
     ∃ (δ Ctop B1 ρ P : ℝ) (hδ : δ < 1) (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1)
       (hρ : 0 < ρ) (hP : 0 < P)
@@ -186,30 +186,30 @@ theorem galerkin_projected_forcing_sequence_tendsto (g₀ : SmoothRiemannianMetr
         ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal u -
             boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal v‖ ≤
           Ctop * lowRegularityOuterRadius Ctop ρ P *
-              ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
             B0 *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
             B1 *
-                (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖ +
-                  ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                  ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2))‖) *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
-      (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+      (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       Tendsto fseq atTop (𝓝 fLo) ∧
       ∀ N : ℕ,
         timeL2EigenProj (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) T N (fseq N) =
             fseq N ∧
           (∀ᵐ t ∂(timeMeasure T),
             maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N) t ∈
               lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P)) ∧
           fseq N =ᵐ[timeMeasure T]
@@ -218,17 +218,17 @@ theorem galerkin_projected_forcing_sequence_tendsto (g₀ : SmoothRiemannianMetr
               (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
                   (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) t)) ∧
           timeH1.trace0 _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) = 0 ∧
           timeH1.timeDeriv _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) =
             timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) + fseq N ∧
           ‖fseq N‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4 := by
   obtain ⟨δ, Ctop, B0, B1, D, ρ, P, hδ, hCtop, hB1, hρ, hP, hreal, hδ0, hδ3,
@@ -246,11 +246,11 @@ theorem galerkin_projected_forcing_sequence_tendsto (g₀ : SmoothRiemannianMetr
 theorem exists_galerkin_projected_forcing_sequence_with_mode_convergence (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g₀ hT hT1 fLo Rcap) :
-    ∃ (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+    ∃ (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       Tendsto fseq atTop (𝓝 fLo) ∧
       (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
         Tendsto (fun N => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -262,7 +262,7 @@ theorem exists_galerkin_projected_forcing_sequence_with_mode_convergence (g₀ :
             fseq N ∧
           (∀ᵐ t ∂(timeMeasure T),
             maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N) t ∈
               lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P)) ∧
           fseq N =ᵐ[timeMeasure T]
@@ -272,17 +272,17 @@ theorem exists_galerkin_projected_forcing_sequence_with_mode_convergence (g₀ :
               (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
                   (lowRegularityStateRadius_pos hlo.hCtop hlo.hB1 hlo.hρ hlo.hP).le)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) t)) ∧
           timeH1.trace0 _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) = 0 ∧
           timeH1.timeDeriv _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) =
             timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) + fseq N ∧
           ‖fseq N‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4 := by
   obtain ⟨fseq, hconv, hpack⟩ :=
@@ -299,7 +299,7 @@ theorem exists_galerkin_projected_forcing_sequence_with_mode_convergence (g₀ :
 
 theorem galerkin_projected_forcing_sequence_mode_tendsto (g₀ : SmoothRiemannianMetric I M) {T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo) :
     ∃ (δ Ctop B1 ρ P : ℝ) (hδ : δ < 1) (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1)
       (hρ : 0 < ρ) (hP : 0 < P)
@@ -319,23 +319,23 @@ theorem galerkin_projected_forcing_sequence_mode_tendsto (g₀ : SmoothRiemannia
         ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal u -
             boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal v‖ ≤
           Ctop * lowRegularityOuterRadius Ctop ρ P *
-              ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
             B0 *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
             B1 *
-                (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖ +
-                  ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                  ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2))‖) *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
-      (fseq : ℕ → timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+      (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
       Tendsto fseq atTop (𝓝 fLo) ∧
       (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
         Tendsto (fun N => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -347,7 +347,7 @@ theorem galerkin_projected_forcing_sequence_mode_tendsto (g₀ : SmoothRiemannia
             fseq N ∧
           (∀ᵐ t ∂(timeMeasure T),
             maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N) t ∈
               lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P)) ∧
           fseq N =ᵐ[timeMeasure T]
@@ -356,17 +356,17 @@ theorem galerkin_projected_forcing_sequence_mode_tendsto (g₀ : SmoothRiemannia
               (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
                   (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) t)) ∧
           timeH1.trace0 _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) = 0 ∧
           timeH1.timeDeriv _ T (maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
-              hT (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              hT (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               (fseq N)) =
             timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
                 (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-                  (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+                  (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
                   (fseq N)) + fseq N ∧
           ‖fseq N‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4 := by
   obtain ⟨δ, Ctop, B1, ρ, P, hδ, hCtop, hB1, hρ, hP, hreal, hδ0, hδ3, hcore,

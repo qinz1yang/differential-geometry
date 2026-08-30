@@ -132,7 +132,7 @@ theorem ccTensorBilinSymm_metricCauchySchwarzBound_le_sobolevHsNorm_lossy_order
       exact_mod_cast this
     have hembed_eq : ccSpectralEmbed (I := I) (M := M) g₀ (m : ℝ) T =
         smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     set Nm : ℝ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T‖ with hNm_def
     have hNm_nn : 0 ≤ Nm := norm_nonneg _
     have hspec_le : ‖ccSpectralEmbed (I := I) (M := M) g₀ ((2 * (2 * kE) : ℕ) : ℝ) T‖ ≤ Nm := by

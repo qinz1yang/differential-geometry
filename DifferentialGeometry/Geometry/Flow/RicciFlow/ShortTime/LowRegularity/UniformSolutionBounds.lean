@@ -170,7 +170,7 @@ theorem exists_low_regularity_solution_of_uniform_bounds
           (hT1 : T ≤ 1),
           ∃ (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
             (gforce : timeL2
-              (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
+              (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
             IsBackgroundLowRegularitySolution (I := I) (M := M) g gBase K
               (hK.bounds g hEq hjet) hT hT1 u gforce := by
   refine ⟨lowRegularityTimeHorizon_pos K.top_nonneg K.base_nonneg K.slope_nonneg
@@ -194,7 +194,7 @@ theorem exists_low_regularity_solution_of_uniform_caps
             (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gBase K)
             (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
             (gforce : timeL2
-              (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
+              (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
             IsLowRegularityBoundCap K U ∧
               IsBackgroundLowRegularitySolution (I := I) (M := M) g gBase K hK hT hT1 u gforce := by
   refine ⟨lowRegularityTimeHorizon_pos U.top_nonneg U.base_nonneg U.slope_nonneg
@@ -221,7 +221,7 @@ theorem exists_uniform_low_regularity_solution
               (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gBase K)
               (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
               IsLowRegularityBoundCap K U ∧
                 IsBackgroundLowRegularitySolution (I := I) (M := M) g gBase K hK hT hT1 u gforce := by
   obtain ⟨U, hU⟩ := exists_uniform_low_regularity_horizon_parameters (I := I) (M := M) hDim gBase hΛ

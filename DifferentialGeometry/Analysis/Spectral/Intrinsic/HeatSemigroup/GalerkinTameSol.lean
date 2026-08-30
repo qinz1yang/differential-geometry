@@ -32,8 +32,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 abbrev galLowView (g₀ : SmoothRiemannianMetric I M) (a : ℕ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1) :=
   tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
     (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)
 
@@ -45,7 +45,7 @@ theorem galEmbedCombo (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     galerkinCoordEmbed (I := I) (M := M) g₀ a S w =
       finiteEigenComboHs (I := I) (M := M) g₀ S
         (fun i => if h : i ∈ S then w ⟨i, h⟩ else 0) ((a : ℝ) + 2) := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [galerkinCoordEmbed_coeff, finiteEigenComboHs_coeff]
   by_cases hi : i ∈ S
@@ -59,7 +59,7 @@ theorem galViewComboC (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     galLowView (I := I) (M := M) g₀ a
         (finiteEigenComboHs (I := I) (M := M) g₀ S c ((a : ℝ) + 2)) =
       finiteEigenComboHs (I := I) (M := M) g₀ S c ((a : ℝ) + 1) := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [tensorHsInclusion_coeff_apply, finiteEigenComboHs_coeff,
     finiteEigenComboHs_coeff]
@@ -174,7 +174,7 @@ def galTameRetr (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ)
 def galTameStateC (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) :=
   (min 1 (R / ‖galLowView (I := I) (M := M) g₀ a
       (finiteEigenComboHs (I := I) (M := M) g₀ S c ((a : ℝ) + 2))‖)) •
     finiteEigenComboHs (I := I) (M := M) g₀ S c ((a : ℝ) + 2)
@@ -208,7 +208,7 @@ theorem galTameStateC_emb (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ
     intro c' hc'
     have hcombo : finiteEigenComboHs (I := I) (M := M) g₀ S c' ((a : ℝ) + 2) =
         finiteEigenComboHs (I := I) (M := M) g₀ S c ((a : ℝ) + 2) := by
-      apply tensorHs.ext
+      apply TensorHs.ext
       funext i
       rw [finiteEigenComboHs_coeff, finiteEigenComboHs_coeff]
       by_cases hi : i ∈ S
@@ -252,7 +252,7 @@ theorem galTameStateC_mem (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ
     (galTameStateC (I := I) (M := M) g₀ a R S c)‖ ≤ R
   rw [galTameStateC, map_smul]
   exact ballRetraction_mem_closedBall (X :=
-    tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1)) hR _
+    TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1)) hR _
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameRetr_eq (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
@@ -314,7 +314,7 @@ theorem galTameState_lip (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     rw [hLapp, hLapp, hv, map_sub, map_sub, galTameRetr_view, galTameRetr_view]
   rw [hview]
   have hlip := (lipschitzWith_one_ballRetraction
-    (X := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1)) hR).dist_le_mul
+    (X := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 1)) hR).dist_le_mul
       (L w) (L w')
   rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul] at hlip
   have hbound : ‖ballRetraction R (L w) - ballRetraction R (L w')‖ ≤
@@ -329,7 +329,7 @@ theorem galTameState_lip (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
 
 def galTameField (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2)) :
     EuclideanSpace ℝ {i // i ∈ S} → EuclideanSpace ℝ {i // i ∈ S} :=
   fun w => galerkinCoordDiag (I := I) (M := M) g₀ S w +
@@ -342,7 +342,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 @[simp] theorem galTameField_apply (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {R : ℝ} (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (w : EuclideanSpace ℝ {i // i ∈ S}) (j : {i // i ∈ S}) :
     (galTameField (I := I) (M := M) g₀ a hR Nfun S w) j =
@@ -357,8 +357,8 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 def galTameBall (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R κ : ℝ) :
     Set (lowerState (I := I) (M := M) g₀ a R) :=
   {x : lowerState (I := I) (M := M) g₀ a R |
-    dist (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ≤ Real.sqrt κ * R}
+    dist (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ≤ Real.sqrt κ * R}
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameRetr_ball (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
@@ -373,7 +373,7 @@ theorem galTameRetr_ball (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
       galTameBall (I := I) (M := M) g₀ a R κ := by
   change dist (galerkinCoordEmbed (I := I) (M := M) g₀ a S
       (galTameRetr (I := I) (M := M) g₀ a R S w))
-    (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ≤ Real.sqrt κ * R
+    (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ≤ Real.sqrt κ * R
   rw [dist_zero_right]
   exact galTameRetr_top (I := I) (M := M) g₀ a hR S hκ0 hκ w
 
@@ -381,7 +381,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameField_lip (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     {κ : ℝ} (hκ0 : 0 ≤ κ)
     (hκ : ∀ i ∈ S, 1 + TensorEigenIdx.lambda (I := I) (M := M) i ≤ κ)
@@ -438,7 +438,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameField_aff (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     {κ : ℝ} (hκ0 : 0 ≤ κ)
     (hκ : ∀ i ∈ S, 1 + TensorEigenIdx.lambda (I := I) (M := M) i ≤ κ)
@@ -451,14 +451,14 @@ theorem galTameField_aff (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
   set Emb := galerkinCoordEmbed (I := I) (M := M) g₀ a S with hEmb
   set Rst := galerkinCoordRestrict (I := I) (M := M) g₀ a S with hRst
   set Dg := galerkinCoordDiag (I := I) (M := M) g₀ S with hDg
-  set N0 : tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+  set N0 : TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
     Nfun ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ a hR⟩ with hN0
   have hsqR : 0 ≤ Real.sqrt κ * R := mul_nonneg (Real.sqrt_nonneg κ) hR
   have hzeroMem : (⟨0, zero_mem_lowerState (I := I) (M := M) g₀ a hR⟩ :
       lowerState (I := I) (M := M) g₀ a R) ∈
       galTameBall (I := I) (M := M) g₀ a R κ := by
-    change dist (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ≤ Real.sqrt κ * R
+    change dist (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ≤ Real.sqrt κ * R
     rw [dist_self]
     exact hsqR
   refine ⟨‖Rst‖ * (‖N0‖ + (K : ℝ) * (Real.sqrt κ * R)), ‖Dg‖₊, by positivity, ?_⟩
@@ -492,7 +492,7 @@ theorem galTameField_aff (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
 open scoped Classical in
 def galTameForce (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) : ℝ :=
@@ -530,7 +530,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameForce_eq (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     {c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ}
     (hc : ‖galLowView (I := I) (M := M) g₀ a
@@ -553,7 +553,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem galTameForce_apply (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {R : ℝ} (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
@@ -568,7 +568,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameForce_contOn (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2)) {κ : ℝ}
     (hκ0 : 0 ≤ κ)
     (hκ : ∀ i ∈ S, 1 + TensorEigenIdx.lambda (I := I) (M := M) i ≤ κ)
@@ -628,20 +628,20 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTameSolOne (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     {A B C Rt : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C) (hRt : 0 ≤ Rt)
     (htame : ∀ u v : lowerState (I := I) (M := M) g₀ a R,
       ‖Nfun u - Nfun v‖ ≤
-        A * Rt * ‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-            (v : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+        A * Rt * ‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+            (v : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
           B * ‖galLowView (I := I) (M := M) g₀ a
-            ((u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-              (v : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)))‖ +
-          C * (‖(u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
-              ‖(v : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
+            ((u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+              (v : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)))‖ +
+          C * (‖(u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ +
+              ‖(v : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖) *
             ‖galLowView (I := I) (M := M) g₀ a
-              ((u : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-                (v : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)))‖)
+              ((u : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+                (v : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)))‖)
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2)) {κ : ℝ}
     (hκ0 : 0 ≤ κ)
     (hκ : ∀ i ∈ S, 1 + TensorEigenIdx.lambda (I := I) (M := M) i ≤ κ)
@@ -657,9 +657,9 @@ theorem galTameSolOne (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
       (∀ t, ∀ i, i ∉ S → V t i = 0) := by
   classical
   obtain ⟨K, hK⟩ :=
-    tame_lip_balls (X := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+    tame_lip_balls (X := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
       (D := lowerState (I := I) (M := M) g₀ a R) Nfun
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) id isometry_id rfl
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) id isometry_id rfl
       (galLowView (I := I) (M := M) g₀ a) A B C Rt hA hB hC hRt htame
       (Real.sqrt κ * R)
   have hKball : LipschitzOnWith K Nfun
@@ -757,7 +757,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galTamePerMode (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
     (hR : 0 ≤ R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
     (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2)) {κ : ℝ}
     (hκ0 : 0 ≤ κ)
     (hκ : ∀ i ∈ S, 1 + TensorEigenIdx.lambda (I := I) (M := M) i ≤ κ)

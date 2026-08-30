@@ -25,10 +25,10 @@ variable
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev rank4H2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 4 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 4 (2 : ℝ)
 
 private abbrev rank4End (g : SmoothRiemannianMetric I M) :=
   rank4H2 (I := I) (M := M) g →L[ℝ] rank4H2 (I := I) (M := M) g

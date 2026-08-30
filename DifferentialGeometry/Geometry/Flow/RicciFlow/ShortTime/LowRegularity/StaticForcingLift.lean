@@ -69,7 +69,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeL2Inclusion_const {g : SmoothRiemannianMetric I M} {τ σ : ℝ}
-    (hτσ : τ ≤ σ) (T : ℝ) (x : tensorHs (I := I) (M := M) g 0 2 σ) :
+    (hτσ : τ ≤ σ) (T : ℝ) (x : TensorHs (I := I) (M := M) g 0 2 σ) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2) hτσ
         (timeConstL2 T x) =
       timeConstL2 T
@@ -78,7 +78,7 @@ theorem timeL2Inclusion_const {g : SmoothRiemannianMetric I M} {τ σ : ℝ}
   compLpL_timeConstL2 _ T x
 
 def staticForce (g₀ g_bg : SmoothRiemannianMetric I M) (σ : ℝ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 σ :=
+    TensorHs (I := I) (M := M) g₀ 0 2 σ :=
   smoothCcToTensorHs (I := I) (M := M) g₀ σ
     (deTurckRHSSection (I := I) g_bg g₀)
 
@@ -102,7 +102,7 @@ theorem staticForcing_eq_zeroStateDeTurckRemainderH2 (g₀ g_bg : SmoothRiemanni
       staticForce (I := I) (M := M) g₀ g_bg (2 : ℝ) := by
   refine Eq.trans (congrArg (ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ))
     (deTurckRem_zero (I := I) (M := M) g₀ g_bg _ _)) ?_
-  exact tensorHs.ext (funext fun _ => rfl)
+  exact TensorHs.ext (funext fun _ => rfl)
 
 theorem lowerScaleForce_eq_static (g : SmoothRiemannianMetric I M) :
     lowerScaleForce (I := I) (M := M) g =
@@ -144,11 +144,11 @@ theorem deTurckRemainderOnLowerState_zero_h1_eq_staticForce (g₀ g_bg : SmoothR
   exact staticForce_congr (I := I) (M := M) g₀ g_bg _
 
 def liftForceHi (g₀ g_bg : SmoothRiemannianMetric I M) (T : ℝ) :
-    timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)) T :=
+    timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)) T :=
   timeConstL2 T (staticForce (I := I) (M := M) g₀ g_bg (2 : ℝ))
 
 def liftForceLo (g₀ g_bg : SmoothRiemannianMetric I M) (T : ℝ) :
-    timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)) T :=
+    timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)) T :=
   timeConstL2 T (staticForce (I := I) (M := M) g₀ g_bg (1 : ℝ))
 
 theorem timeConst_static_incl (g₀ g_bg : SmoothRiemannianMetric I M) {τ σ : ℝ}

@@ -301,7 +301,7 @@ theorem deTurck_remainder_forcing_symmetric_ae (g₀ g_bg : SmoothRiemannianMetr
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
     (hσ : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t)) :
     ∀ᵐ t ∂timeMeasure T,
@@ -321,22 +321,22 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_ae (g₀ g_bg : SmoothRi
     (ha : (0 : ℝ) ≤ ((1 : ℕ) : ℝ)) (h2 : (0 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)
     (hT : 0 < T)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t)) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g₀ h2
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t) =
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t) =
         maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t :=
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t :=
   duhamel_solution_symmetric_ae (I := I) (M := M) g₀ ha h2 hT gforce
     (deTurck_remainder_forcing_symmetric_ae (I := I) (M := M) g₀ g_bg hR hδ hreal hcont hcore ha u
       gforce hforce)
 
 theorem symmHs_congr (g : SmoothRiemannianMetric I M) {a b : ℝ} (hab : a = b)
     (ha : (0 : ℝ) ≤ a) (hb : (0 : ℝ) ≤ b)
-    (u : tensorHs (I := I) (M := M) g 0 2 a) :
+    (u : TensorHs (I := I) (M := M) g 0 2 a) :
     symmHs (I := I) (M := M) g hb
         (tensorHsCongr (I := I) (M := M) g 0 2 hab u) =
       tensorHsCongr (I := I) (M := M) g 0 2 hab
@@ -356,18 +356,18 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (g₀ g_bg : Smoot
     (h3 : (0 : ℝ) ≤ (3 : ℝ)) (hex : ((1 : ℕ) : ℝ) + 2 = (3 : ℝ))
     (hT : 0 < T)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t)) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g₀ h3
           (tensorHsCongr (I := I) (M := M) g₀ 0 2 hex
             (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               gforce t)) =
         tensorHsCongr (I := I) (M := M) g₀ 0 2 hex
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce t) := by
   filter_upwards [duhamel_solution_of_deTurck_remainder_symmetric_ae (I := I) (M := M) g₀ g_bg hR hδ hreal
     hcont hcore ha h2 hT u gforce hforce] with t ht

@@ -77,7 +77,7 @@ theorem ccTensorBilinSymm_sub (g : SmoothRiemannianMetric I M)
   ring
 
 def realizableRepr (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu : isRealizableMetricPerturbationAt (I := I) g_bg u) :
     SmoothCcTensor g_bg 0 2 :=
   Analysis.Parabolic.TensorSpectral.tensorHsSmoothRepr
@@ -85,7 +85,7 @@ def realizableRepr (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
 
 omit [BoundarylessManifold I M] in
 theorem realizeMetricAt_inner_eq_repr (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu : isRealizableMetricPerturbationAt (I := I) g_bg u) (x : M) (v w : TangentSpace I x) :
     (realizeMetricAt (I := I) g_bg u).inner x v w =
       g_bg.inner x v w +
@@ -98,7 +98,7 @@ theorem realizeMetricAt_inner_eq_repr (g_bg : SmoothRiemannianMetric I M) {σ : 
 omit [BoundarylessManifold I M] in
 theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiff
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (x : M) (i j : Fin (Module.finrank ℝ E)) :
@@ -117,7 +117,7 @@ theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiff
 omit [BoundarylessManifold I M] in
 theorem chartGramOnE_realizeMetricAt_sub_eq_reprDiff
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (i j : Fin (Module.finrank ℝ E)) (y : E) :

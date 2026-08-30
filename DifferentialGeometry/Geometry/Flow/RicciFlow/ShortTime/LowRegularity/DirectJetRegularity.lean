@@ -44,9 +44,9 @@ private theorem force_step_one
           (ccTensorBilinSymm (I := I) g S) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g g_bg hδ hreal))
     {T : ℝ} (hT : 0 < T)
-    (field : timeL2 (tensorHs (I := I) (M := M) g 0 2
+    (field : timeL2 (TensorHs (I := I) (M := M) g 0 2
       (((1 : ℕ) : ℝ) + 2)) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hstate : ∀ᵐ t ∂timeMeasure T,
       field t ∈ lowerState (I := I) (M := M) g 1 R)
     (hforce : fLo =ᵐ[timeMeasure T]
@@ -133,7 +133,7 @@ private theorem force_step_one
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
           (field t) := by
-      refine tensorHs.ext (funext fun j => ?_)
+      refine TensorHs.ext (funext fun j => ?_)
       rw [hF_hs2 t htmem j, tensorHsInclusion_coeff_apply, htall j]
     rw [heq]
     change field t ∈ lowerState (I := I) (M := M) g 1 R
@@ -179,7 +179,7 @@ private theorem force_step_one
           (((1 : ℕ) : ℝ) + 2) (F t)) =
           smoothCcToTensorHs (I := I) (M := M) g
             (((1 : ℕ) : ℝ) + 1) (F t) := by
-      refine tensorHs.ext (funext fun i => ?_)
+      refine TensorHs.ext (funext fun i => ?_)
       rw [tensorHsInclusion_coeff_apply, smoothCcToTensorHs_coeff,
         smoothCcToTensorHs_coeff]
     rw [heq]
@@ -206,7 +206,7 @@ private theorem force_step_one
           (((1 : ℕ) : ℝ) + 2) (F t)) =
             smoothCcToTensorHs (I := I) (M := M) g
               (((1 : ℕ) : ℝ) + 1) (F t) from by
-          refine tensorHs.ext (funext fun i => ?_)
+          refine TensorHs.ext (funext fun i => ?_)
           rw [tensorHsInclusion_coeff_apply, smoothCcToTensorHs_coeff,
             smoothCcToTensorHs_coeff]]
       exact hball_all t)
@@ -244,7 +244,7 @@ private theorem force_step_one
         ∀ i, (field t).coeff i = φ i t := (MeasureTheory.ae_all_iff).2 hfield
     filter_upwards [hall, MeasureTheory.ae_restrict_mem
       (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t htall htmem
-    refine tensorHs.ext (funext fun i => ?_)
+    refine TensorHs.ext (funext fun i => ?_)
     rw [smoothCcToTensorHs_coeff, hF_coeff t htmem i, ← htall i]
   have hsmooth := deTurck_remainder_forcing_eq_smooth_remainder_ae (I := I) (M := M) g g_bg hR hδ hreal hcore
     field fLo hstate hforce F hpinF hball_all
@@ -263,16 +263,16 @@ private theorem force_driver_one
           (ccTensorBilinSymm (I := I) g S) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g g_bg hδ hreal))
     {T : ℝ} (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hstate : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo t ∈ lowerState (I := I) (M := M) g 1 R)
     (hforce : fLo =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR hδ hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t))
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -294,10 +294,10 @@ private theorem force_driver_one
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
   have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
-  set field : timeL2 (tensorHs (I := I) (M := M) g 0 2
+  set field : timeL2 (TensorHs (I := I) (M := M) g 0 2
       (((1 : ℕ) : ℝ) + 2)) T :=
     maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo
+      (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo
       with hfield_def
   set ρw : ℝ := ((weylSobolevExp (E := E) : ℕ) : ℝ) + 1 with hρw_def
   have hρw_gt : ((weylSobolevExp (E := E) : ℕ) : ℝ) < ρw := by
@@ -341,7 +341,7 @@ private theorem force_driver_one
     have hsplit : tensorSobolevWeight (I := I) (M := M) i τ =
         tensorSobolevWeight (I := I) (M := M) i (-ρw) *
           tensorSobolevWeight (I := I) (M := M) i (τ + ρw) := by
-      rw [← tensorHs.tensorSobolevWeight_add (I := I) (M := M) i (-ρw) (τ + ρw)]
+      rw [← TensorHs.tensorSobolevWeight_add (I := I) (M := M) i (-ρw) (τ + ρw)]
       congr 1
       ring
     calc tensorSobolevWeight (I := I) (M := M) i τ *
@@ -421,16 +421,16 @@ private theorem force_jet_of_mass
           (ccTensorBilinSymm (I := I) g S) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g g_bg hδ hreal))
     (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hstate : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo t ∈ lowerState (I := I) (M := M) g 1 R)
     (hforce : fLo =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR hδ hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t))
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -499,7 +499,7 @@ theorem exists_forcing_spectral_jet_mass_control_for_adapted_solution
     (g : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
@@ -511,7 +511,7 @@ theorem exists_forcing_spectral_jet_mass_control_for_adapted_solution
     lowRegularityStateRadius_pos hs.hCtop hs.hB1 hs.hρ hs.hP
   have hstate : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo t ∈ lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius Ctop B1 ρ P) := by
     exact field_mem_lower (I := I) (M := M) g 1 hT hT1
@@ -522,7 +522,7 @@ theorem exists_forcing_spectral_jet_mass_control_for_adapted_solution
           (Ctop := Ctop) (B1 := B1) (ρ := ρ) hs.hP.le hs.hreal)
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t) := by
     simpa only [boundedDeTurckRemainderOnLowerState] using hs.hforce
   exact force_jet_of_mass (I := I) (M := M) g g hR hs.hδ
@@ -538,9 +538,9 @@ private theorem force_promote_two
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
     (hfc : JetSpectralMassControl (I := I) (M := M) g fc T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hpin : ∀ i, (fun t => (fLo t).coeff i) =ᵐ[timeMeasure T] fc i) :
-    ∃ fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T,
+    ∃ fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T,
       (∀ i, (fun t => (fHi t).coeff i) =ᵐ[timeMeasure T] fc i) ∧
       ∀ᵐ t ∂timeMeasure T,
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -564,7 +564,7 @@ private theorem force_promote_two
     rw [hpr_def]
     simp only [Set.projIcc_of_mem hT.le ht]
   have hpr_cont : Continuous pr := continuous_subtype_val.comp continuous_projIcc
-  set W : ℝ → tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) := fun t =>
+  set W : ℝ → TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) := fun t =>
     tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B₂ hB₂_sum
       (fun i => hB₂_le i (pr t) (hpr_mem t)) with hW_def
@@ -590,7 +590,7 @@ private theorem force_promote_two
       exact ((hfc.1 i).continuous.comp hpr_cont).continuousOn
     · intro i t _
       exact hBh_le i t
-  let fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T :=
+  let fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T :=
     DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ofContinuousOn
       hW_cont.continuousOn
   have hrep : (fun t => fHi t) =ᵐ[timeMeasure T] W :=
@@ -607,14 +607,14 @@ private theorem force_promote_two
   refine ⟨fHi, hpin_hi, ?_⟩
   filter_upwards [hrep, hpin_all, MeasureTheory.ae_restrict_mem
     (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t ht htl htmem
-  refine tensorHs.ext (funext fun i => ?_)
+  refine TensorHs.ext (funext fun i => ?_)
   rw [tensorHsInclusion_coeff_apply, ht]
   simp only [W, tensorHs_of_spectralMass_majorant_coeff, hpr_id t htmem, htl i]
 
 omit [BoundarylessManifold I M] in
 private theorem carrier_one_coeff
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
     (hf_cont : ∀ i, Continuous (fc i))
     (hf_mass0 : ∃ B : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ,
@@ -624,7 +624,7 @@ private theorem carrier_one_coeff
     ∀ t ∈ Set.Icc (0 : ℝ) T,
       ∀ i : TensorEigenIdx (I := I) (M := M) g 0 2,
         ((maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).toFun t).coeff i =
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).toFun t).coeff i =
           perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
@@ -640,7 +640,7 @@ private theorem carrier_one_coeff
     rw [hpr_def]
     simp only [Set.projIcc_of_mem hT.le ht]
   have hpr_cont : Continuous pr := continuous_subtype_val.comp continuous_projIcc
-  set Frep : ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) := fun t =>
+  set Frep : ℝ → TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) := fun t =>
     tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B0 hB0_sum
       (fun i => hB0_le i (pr t) (hpr_mem t)) with hFrep_def
@@ -654,7 +654,7 @@ private theorem carrier_one_coeff
   have hF_rep : (⇑fLo) =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] Frep := by
     filter_upwards [hall, MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
       (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t ht htmem
-    refine tensorHs.ext (funext fun i => ?_)
+    refine TensorHs.ext (funext fun i => ?_)
     rw [ht i, hFrep_coeff t i, hpr_id t htmem]
   intro t ht i
   rw [carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (I := I) (M := M)
@@ -668,19 +668,19 @@ private theorem carrier_one_coeff
 omit [BoundarylessManifold I M] in
 private theorem duhamel_mode_pin
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
     (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
     (hfc : JetSpectralMassControl (I := I) (M := M) g fc T)
     (hpinLo : ∀ i, (fun t => (fLo t).coeff i) =ᵐ[timeMeasure T] fc i)
     (hpinHi : ∀ i, (fun t => (fHi t).coeff i) =ᵐ[timeMeasure T] fc i) :
     ∀ t ∈ Set.Icc (0 : ℝ) T,
       (maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi).toFun t =
+          (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi).toFun t =
         tensorHsCongr (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) + 1 = (2 : ℝ) by norm_num)
           ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr t) := by
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr t) := by
   classical
   obtain ⟨B1, hB1s, hB1⟩ := hfc.2 0 ((1 : ℕ) : ℝ) (by norm_num)
   obtain ⟨B2, hB2s, hB2⟩ := hfc.2 0 (2 : ℝ) (by norm_num)
@@ -697,12 +697,12 @@ private theorem duhamel_mode_pin
   have hlo := carrier_one_coeff (I := I) (M := M) g hT fLo fc
     (fun i => (hfc.1 i).continuous) hmass1 hpinLo
   intro t ht
-  refine tensorHs.ext (funext fun i => ?_)
+  refine TensorHs.ext (funext fun i => ?_)
   rw [tensorHsCongr_coeff]
   rw [(duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-    (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr_coeff hT ht i]
+    (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr_coeff hT ht i]
   change _ = ((maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-    (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).toFun t).coeff i
+    (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).toFun t).coeff i
   have hh := hhi t ht i
   rw [tensorHsToL2_tensorL2Coeff] at hh
   exact hh.trans (hlo t ht i).symm
@@ -711,7 +711,7 @@ omit [BoundarylessManifold I M] in
 private theorem direct_state_bound
     (g : SmoothRiemannianMetric I M) {R T : ℝ} (hR : 0 < R)
     (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (uHi : MaxRegSolutionSpace (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (2 : ℝ) T)
     (hmode : ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -719,26 +719,26 @@ private theorem direct_state_bound
         tensorHsCongr (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) + 1 = (2 : ℝ) by norm_num)
           ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr t))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr t))
     (hmem : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
         lowerState (I := I) (M := M) g 1 R) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun uHi t‖ ≤ R := by
   have hball : ∀ᵐ t ∂timeMeasure T,
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
         ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).hiL2 t)‖ ≤
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).hiL2 t)‖ ≤
           R := by
     filter_upwards [hmem] with t ht
     change maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
+        (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
       lowerState (I := I) (M := M) g 1 R
     exact ht
   have hrepr := crossRepr_ball (I := I) (M := M)
     (duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo)
+      (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo)
     hT hR.le hball
   intro t ht
   rw [hmode t ht, norm_tensorHsCongr]
@@ -754,16 +754,16 @@ private theorem direct_force_coeff
           (ccTensorBilinSymm (I := I) g S) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g g_bg hδ hreal))
     (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hfield_mem : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
         lowerState (I := I) (M := M) g 1 R)
     (hforce : fLo =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR hδ hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t))
     (uHi : MaxRegSolutionSpace (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (2 : ℝ) T)
@@ -775,7 +775,7 @@ private theorem direct_force_coeff
         tensorHsCongr (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) + 1 = (2 : ℝ) by norm_num)
           ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr t))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).repr t))
     (hstate : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun uHi t‖ ≤ R)
     (hf_id : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ i,
       tensorL2Coeff (I := I) (M := M)
@@ -802,17 +802,17 @@ private theorem direct_force_coeff
                 (hδ' t)))) i := by
   classical
   intro F δ' hδ'_lt hδ' hpin
-  let field : timeL2 (tensorHs (I := I) (M := M) g 0 2
+  let field : timeL2 (TensorHs (I := I) (M := M) g 0 2
       (((1 : ℕ) : ℝ) + 2)) T :=
     maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo
+      (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo
   have hF2 : ∀ t ∈ Set.Icc (0 : ℝ) T,
       smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) (F t) =
         tensorHsCongr (I := I) (M := M) g 0 2
           (show (2 : ℝ) = ((1 : ℕ) : ℝ) + 1 by norm_num)
           (timeH1.toFun uHi t) := by
     intro t ht
-    refine tensorHs.ext (funext fun i => ?_)
+    refine TensorHs.ext (funext fun i => ?_)
     rw [smoothCcToTensorHs_coeff, tensorHsCongr_coeff, hpin t ht,
       tensorHsToL2_tensorL2Coeff]
   set Fcut : ℝ → SmoothCcTensor g 0 2 :=
@@ -840,7 +840,7 @@ private theorem direct_force_coeff
           (((1 : ℕ) : ℝ) + 2) (Fcut t)) =
           smoothCcToTensorHs (I := I) (M := M) g
             (((1 : ℕ) : ℝ) + 1) (Fcut t) by
-      refine tensorHs.ext (funext fun i => ?_)
+      refine TensorHs.ext (funext fun i => ?_)
       rw [tensorHsInclusion_coeff_apply, smoothCcToTensorHs_coeff,
         smoothCcToTensorHs_coeff]]
     exact hball2 t
@@ -852,10 +852,10 @@ private theorem direct_force_coeff
         (((1 : ℕ) : ℝ) + 2) (Fcut t) = field t := by
     have hrepr := duhRepr_field_ae (I := I) (M := M)
       g 0 2 ((1 : ℕ) : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo
+      (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo
     filter_upwards [hrepr, MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
       (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t hrepr_t ht
-    refine tensorHs.ext (funext fun i => ?_)
+    refine TensorHs.ext (funext fun i => ?_)
     have hi := congrArg (fun x => x.coeff i) (hF2 t ht)
     change (smoothCcToTensorHs (I := I) (M := M) g
         (((1 : ℕ) : ℝ) + 1) (F t)).coeff i =
@@ -868,7 +868,7 @@ private theorem direct_force_coeff
       (tensorHsCongr (I := I) (M := M) g 0 2
         (show ((1 : ℕ) : ℝ) + 1 = (2 : ℝ) by norm_num)
         ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo).repr t)).coeff i at hm
     rw [tensorHsCongr_coeff] at hm
     have hr := congrArg (fun x => x.coeff i) hrepr_t
@@ -881,7 +881,7 @@ private theorem direct_force_coeff
                 smoothCcToTensorHs_coeff, smoothCcToTensorHs_coeff]
       _ = (timeH1.toFun uHi t).coeff i := hi
       _ = ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo).repr t).coeff i := hm
       _ = (field t).coeff i := by
           simpa only [tensorHsInclusion_coeff_apply, field] using hr
@@ -1020,7 +1020,7 @@ private theorem direct_radius
     rwa [iteratedDeriv_zero] at h
   have hsq_le : ‖smoothCcToTensorHs (I := I) (M := M) g
         ((2 : ℝ) + 2) S‖ ^ 2 ≤ ∑' i, Cmaj i := by
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
     exact Summable.tsum_le_tsum hptwise
       ((smoothCcToTensorHs (I := I) (M := M) g
         ((2 : ℝ) + 2) S).weighted_summable) hCmaj_sum
@@ -1042,16 +1042,16 @@ theorem direct_jet_of_mass
           (ccTensorBilinSymm (I := I) g S) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g g_bg hδ hreal))
     (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hfield_mem : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
         lowerState (I := I) (M := M) g 1 R)
     (hforce : fLo =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR hδ hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t))
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -1062,11 +1062,11 @@ theorem direct_jet_of_mass
               (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2 ≤ Cσ) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) (2 : ℝ) T)
-      (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
+      (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
       (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ) (R₀ : ℝ),
       timeH1.trace0 _ T u = 0 ∧
       u = maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi ∧
+            (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi ∧
       (∀ i, (fun t => (fHi t).coeff i) =ᵐ[timeMeasure T] fc i) ∧
       (∀ i, ContDiff ℝ ∞ (fc i)) ∧
       (∀ (j : ℕ) (τ : ℝ), 0 ≤ τ →
@@ -1114,7 +1114,7 @@ theorem direct_jet_of_mass
   let u : MaxRegSolutionSpace (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (2 : ℝ) T :=
     maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
-      (0 : tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi
+      (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi
   have hcross := duhamel_mode_pin (I := I) (M := M)
     g hT fLo fHi fc hfc hpinLo hpinHi
   have hcross' : ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -1122,7 +1122,7 @@ theorem direct_jet_of_mass
         tensorHsCongr (I := I) (M := M) g 0 2
           (show ((1 : ℕ) : ℝ) + 1 = (2 : ℝ) by norm_num)
           ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo).repr t) := by
     simpa only [u] using hcross
   have hstate := direct_state_bound (I := I) (M := M)
@@ -1159,17 +1159,17 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control
     (g : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρ) (P := P)
       g hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) (2 : ℝ) T)
-      (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
+      (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
       (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ) (R₀ : ℝ),
       timeH1.trace0 _ T u = 0 ∧
       u = maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi ∧
+            (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi ∧
       (∀ i, (fun t => (fHi t).coeff i) =ᵐ[timeMeasure T] fc i) ∧
       (∀ i, ContDiff ℝ ∞ (fc i)) ∧
       (∀ (j : ℕ) (τ : ℝ), 0 ≤ τ →
@@ -1216,7 +1216,7 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control
       hs.hP.le hs.hreal
   have hfield_mem : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
+          (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
         lowerState (I := I) (M := M) g 1 R := by
     exact field_mem_lower (I := I) (M := M) g 1 hT hT1
       (by nlinarith [hR.le]) fLo hs.hball
@@ -1224,7 +1224,7 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g hR hs.hδ hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t) := by
     simpa only [R, hreal, boundedDeTurckRemainderOnLowerState] using hs.hforce
   obtain ⟨u, fHi, fc, R₀, htrace, hu, hpin, hsmooth, hmass, hmode,

@@ -88,7 +88,7 @@ theorem connAdd_vert
   simp [unipotentCLE, DifferentialGeometry.PhaseFlow.freeDiagCLE_apply]
 
 abbrev hmfState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
-    Set (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.tensorHs
+    Set (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs
       (I := I) (M := M) g₀ 0 1 ((a : ℝ) + 2)) :=
   lowerStateRS (I := I) (M := M) g₀ 0 1 a R
 

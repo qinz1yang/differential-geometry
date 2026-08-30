@@ -84,7 +84,7 @@ private lemma partialDeriv_chartGramOnE_diffAt_interior
   exact (hcd_partial.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 
 def reprDiffChartCompOnE (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (l b : Fin (Module.finrank ℝ E)) : E → ℝ :=
@@ -98,7 +98,7 @@ def reprDiffChartCompOnE (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
 omit [BoundarylessManifold I M] in
 theorem chartGramOnE_realizeMetricAt_sub_funext
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (l b : Fin (Module.finrank ℝ E)) :
@@ -112,7 +112,7 @@ theorem chartGramOnE_realizeMetricAt_sub_funext
 omit [BoundarylessManifold I M] in
 theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiffComp
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (l b : Fin (Module.finrank ℝ E)) (y : E) :
@@ -128,7 +128,7 @@ theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiffComp
 omit [BoundarylessManifold I M] in
 theorem partialDeriv_chartGramOnE_realizeMetricAt_sub_eq
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (a l b : Fin (Module.finrank ℝ E)) {y : E}
@@ -149,7 +149,7 @@ theorem partialDeriv_chartGramOnE_realizeMetricAt_sub_eq
 omit [BoundarylessManifold I M] in
 theorem partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (c a l b : Fin (Module.finrank ℝ E)) {y : E}
@@ -245,7 +245,7 @@ theorem iteratedCovGradJetSum_le_toHs (g_bg : SmoothRiemannianMetric I M) (k : �
 omit [BoundarylessManifold I M] in
 theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hKsub : K ⊆ interior ((extChartAt I α).target : Set E))
@@ -362,7 +362,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
 omit [BoundarylessManifold I M] in
 theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
+    {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) {K : Set E} (hKsub : K ⊆ interior ((extChartAt I α).target : Set E))

@@ -125,7 +125,7 @@ theorem exists_eigenvectorIteratedCarrier
               (eigenvectorResolvent (I := I) (M := M) g r s i))
             β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
-    ∃ D : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    ∃ D : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
         g r s i α P₀ m,
       D.directions = directions ∧
       D.diffChartForcing =
@@ -134,7 +134,7 @@ theorem exists_eigenvectorIteratedCarrier
   classical
   induction m with
   | zero =>
-      refine ⟨eigenvectorIteratedTensorChartBilinearData.ofBase
+      refine ⟨EigenvectorIteratedTensorChartBilinearData.ofBase
         (I := I) (M := M) g r s i α P₀, ?_, ?_⟩
       · exact Subsingleton.elim _ _
       · rw [eigenvectorChartRHSDiff_zero]

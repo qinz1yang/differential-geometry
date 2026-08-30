@@ -36,8 +36,8 @@ private noncomputable def iterCovGradCcLin
 
 noncomputable def iterCovGradHs
     (g : SmoothRiemannianMetric I M) (s j k : ℕ) :
-    tensorHs (I := I) (M := M) g 0 s ((k : ℝ) + (j : ℝ)) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 (s + j) (k : ℝ) :=
+    TensorHs (I := I) (M := M) g 0 s ((k : ℝ) + (j : ℝ)) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 (s + j) (k : ℝ) :=
   ((ccToHsLin (I := I) (M := M) g (s + j) (k : ℝ)).comp
       (iterCovGradCcLin (I := I) (M := M) g s j)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g s ((k : ℝ) + (j : ℝ)))

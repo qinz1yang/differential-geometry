@@ -64,8 +64,8 @@ private theorem secondOrderActionFourthToSecondOrderCore_pairing
           g hρ hδ0 hδ_le hreal x -
         LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
           g hρ hδ0 hδ_le hreal y‖ ≤
-      C * ‖(x : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) -
-        (y : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))‖ := by
+      C * ‖(x : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) -
+        (y : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))‖ := by
   obtain ⟨T, hT⟩ := x.property
   obtain ⟨U, hU⟩ := y.property
   have hx : x =
@@ -100,8 +100,8 @@ private theorem secondOrderActionThirdToFirstOrderCore_pairing
           g hρ hδ0 hδ_le hreal x -
         LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
           g hρ hδ0 hδ_le hreal y‖ ≤
-      C * ‖(x : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) -
-        (y : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))‖ := by
+      C * ‖(x : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) -
+        (y : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))‖ := by
   obtain ⟨T, hT⟩ := x.property
   obtain ⟨U, hU⟩ := y.property
   have hx : x =
@@ -145,9 +145,9 @@ private theorem secondOrderActionFourthToSecondOrder_extension_lipschitz
       (LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
         g hρ hδ0 hδ_le hreal) ?_
   exact subtype_norm_lip
-    (X := tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-    (Y := tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+    (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+    (Y := TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
     hC _ <|
     secondOrderActionFourthToSecondOrderCore_pairing (I := I) (M := M)
       g hρ hδ0 hδ_le hreal hpair
@@ -179,9 +179,9 @@ private theorem secondOrderActionThirdToFirstOrder_extension_lipschitz
       (LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
         g hρ hδ0 hδ_le hreal) ?_
   exact subtype_norm_lip
-    (X := tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-    (Y := tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
+    (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+    (Y := TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
     hC _ <|
     secondOrderActionThirdToFirstOrderCore_pairing (I := I) (M := M)
       g hρ hδ0 hδ_le hreal hpair
@@ -205,18 +205,18 @@ private theorem secondOrderActionFourthToSecondOrder_extension_core
         (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T) =
       (lowCoreActionCoefficients (I := I) (M := M)
         g hρ hδ0 hδ_le hreal T).secondOrderActionFourthToSecondOrder (I := I) (M := M) := by
-  let D : Set (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+  let D : Set (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
     Set.range (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ))
   let F : D →
-      (tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+      (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
     LowerScaleTimeInternal.secondOrderActionFourthToSecondOrderCore (I := I) (M := M)
       g hρ hδ0 hδ_le hreal
   have hF : LipschitzWith ⟨C, hC⟩ F :=
     subtype_norm_lip
-      (X := tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (Y := tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (Y := TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
       hC F <| secondOrderActionFourthToSecondOrderCore_pairing (I := I) (M := M)
         g hρ hδ0 hδ_le hreal hpair
   let x : D :=
@@ -256,18 +256,18 @@ private theorem secondOrderActionThirdToFirstOrder_extension_core
         (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T) =
       (lowCoreActionCoefficients (I := I) (M := M)
         g hρ hδ0 hδ_le hreal T).secondOrderActionThirdToFirstOrder (I := I) (M := M) := by
-  let D : Set (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
+  let D : Set (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
     Set.range (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ))
   let F : D →
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
     LowerScaleTimeInternal.secondOrderActionThirdToFirstOrderCore (I := I) (M := M)
       g hρ hδ0 hδ_le hreal
   have hF : LipschitzWith ⟨C, hC⟩ F :=
     subtype_norm_lip
-      (X := tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (Y := tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
+      (X := TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (Y := TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
       hC F <| secondOrderActionThirdToFirstOrderCore_pairing (I := I) (M := M)
         g hρ hδ0 hδ_le hreal hpair
   let x : D :=
@@ -476,7 +476,7 @@ theorem radialSecondOrderAction_lipschitz
                 (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T) =
               (lowCoreActionCoefficients (I := I) (M := M)
                 g hr0 hδ0 hδ_le hreal' T).secondOrderActionThirdToFirstOrder (I := I) (M := M)) ∧
-          ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+          ∀ v : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
             (tensorHsInclusion (I := I) (M := M) (g := g)
                 (r := 0) (s := 2) (show (1 : ℝ) ≤ 2 by norm_num)).comp
                 (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M)
@@ -657,16 +657,16 @@ theorem radialSecondOrderAction_lipschitz
   have hleft : Continuous (fun v =>
       J12.comp (AHi v)) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (continuous_const.prodMk hHiLip.continuous)
   have hright : Continuous (fun v =>
       (ALo v).comp J34) :=
     (ContinuousLinearMap.compL ℝ
-      (tensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
-      (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
+      (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ))
+      (TensorHs (I := I) (M := M) g 0 2 (1 : ℝ))).continuous₂.comp
         (hLoLip.continuous.prodMk continuous_const)
   intro v
   have hdense : DenseRange

@@ -37,10 +37,10 @@ theorem force_hi_smooth
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ P) δ)
     (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
-    (field : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2
+    (field : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2
       (((1 : ℕ) : ℝ) + 2)) T)
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2
       ((1 : ℕ) : ℝ)) T)
     (hstate : ∀ᵐ t ∂timeMeasure T,
       field t ∈ lowerState (I := I) (M := M) g₀ 1 R)
@@ -91,11 +91,11 @@ noncomputable def liftHiN
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FHi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
-    (v : tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
-    tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+    (FHi : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
+    (v : TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
+    TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
   staticForce (I := I) (M := M) g g (2 : ℝ) +
     lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -116,36 +116,36 @@ theorem hiN_incl
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (FHi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
-    (FLo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
-    (hA2sq : ∀ w : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    (FHi : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)))
+    (hA2sq : ∀ w : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
           (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal w) =
         (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal w).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ (4 : ℝ) by norm_num)))
-    (hFComm : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    (hFComm : ∀ x : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
         (FLo x).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)))
-    (v : tensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
+    (v : TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)
         (liftHiN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal FHi v) =
       lowerScaleNonlinearityWithFirstOrderOperator (I := I) (M := M) g hρ.le hδ0 hδ_le hreal FLo
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (3 : ℝ) ≤ (4 : ℝ) by norm_num) v) := by
-  set u : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) :=
+  set u : TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) :=
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (3 : ℝ) ≤ (4 : ℝ) by norm_num) v with hudef
-  set w : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
+  set w : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
     tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (2 : ℝ) ≤ (4 : ℝ) by norm_num) v with hwdef
   have hwu : tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -250,12 +250,12 @@ theorem deTurck_remainder_lower_scale_eq_included_higher_order_forcing
           (ccToHsLin (I := I) (M := M) g₀ 2 (2 : ℝ) S) =
         (combinedLowerScaleActionCoefficients (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' S).secondOrderActionThirdToFirstOrder
           (I := I) (M := M))
-    (FHi : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)))
-    (FLo : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)))
+    (FHi : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)))
     (hFLo : Continuous FLo)
     (hFcore : ∀ S : SmoothCcTensor g₀ 0 2,
       FLo (ccToHsLin (I := I) (M := M) g₀ 2 (3 : ℝ) S) =
@@ -263,21 +263,21 @@ theorem deTurck_remainder_lower_scale_eq_included_higher_order_forcing
             g₀ hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M) +
           (firstOrderCoreActionCoefficients (I := I) (M := M)
             g₀ hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M))
-    (hA2sq : ∀ w : tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ),
+    (hA2sq : ∀ w : TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
           (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' w) =
         (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' w).comp
           (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ (4 : ℝ) by norm_num)))
-    (hFComm : ∀ x : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ),
+    (hFComm : ∀ x : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
         (FLo x).comp
           (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)))
     (w : lowerState (I := I) (M := M) g₀ 1 R)
-    (v : tensorHs (I := I) (M := M) g₀ 0 2 (4 : ℝ))
+    (v : TensorHs (I := I) (M := M) g₀ 0 2 (4 : ℝ))
     (hv : tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (show (3 : ℝ) ≤ (4 : ℝ) by norm_num) v =
       tensorHsCongr (I := I) (M := M) g₀ 0 2
@@ -315,12 +315,12 @@ theorem force_hi_id
           (ccToHsLin (I := I) (M := M) g₀ 2 (2 : ℝ) S) =
         (combinedLowerScaleActionCoefficients (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' S).secondOrderActionThirdToFirstOrder
           (I := I) (M := M))
-    (FHi : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)))
-    (FLo : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
-      (tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) →L[ℝ]
-        tensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)))
+    (FHi : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)))
+    (FLo : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ) →
+      (TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ) →L[ℝ]
+        TensorHs (I := I) (M := M) g₀ 0 2 (1 : ℝ)))
     (hFLo : Continuous FLo)
     (hFcore : ∀ S : SmoothCcTensor g₀ 0 2,
       FLo (ccToHsLin (I := I) (M := M) g₀ 2 (3 : ℝ) S) =
@@ -328,23 +328,23 @@ theorem force_hi_id
             g₀ hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M) +
           (firstOrderCoreActionCoefficients (I := I) (M := M)
             g₀ hρ.le hδ0 hδ_le hreal' S).firstOrderActionSecondToFirstOrder (I := I) (M := M))
-    (hA2sq : ∀ w : tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ),
+    (hA2sq : ∀ w : TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
           (lowerScaleSecondOrderActionFourthToSecondOrder (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' w) =
         (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g₀ hρ.le hδ0 hδ_le hreal' w).comp
           (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ (4 : ℝ) by norm_num)))
-    (hFComm : ∀ x : tensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ),
+    (hFComm : ∀ x : TensorHs (I := I) (M := M) g₀ 0 2 (3 : ℝ),
       (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp (FHi x) =
         (FLo x).comp
           (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)))
     (state : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
-    (hi : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 (4 : ℝ))
-    (fHi : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)) T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (hi : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 (4 : ℝ))
+    (fHi : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (2 : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hpin : ∀ᵐ t ∂timeMeasure T,
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (3 : ℝ) ≤ (4 : ℝ) by norm_num) (hi t) =

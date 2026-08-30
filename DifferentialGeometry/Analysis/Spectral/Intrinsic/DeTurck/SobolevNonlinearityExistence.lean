@@ -49,7 +49,7 @@ def deTurckSmoothRemainderTensorHs (g₀ g_bg : SmoothRiemannianMetric I M) (a :
     (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) where
+    TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) where
   coeff i :=
     tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
@@ -77,14 +77,14 @@ theorem smoothCcToTensorHs_denseRange (g₀ : SmoothRiemannianMetric I M) (σ : 
     DenseRange (smoothCcToTensorHs (I := I) (M := M) g₀ σ) := by
   classical
   have hsub :
-      (tensorHs.finiteSupportSubmodule (I := I) (M := M) (g := g₀) (r := 0) (s := 2) σ :
-          Set (tensorHs (I := I) (M := M) g₀ 0 2 σ)) ⊆
+      (TensorHs.finiteSupportSubmodule (I := I) (M := M) (g := g₀) (r := 0) (s := 2) σ :
+          Set (TensorHs (I := I) (M := M) g₀ 0 2 σ)) ⊆
         Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ σ) := by
     intro x hx
     have hxfin : (Function.support x.coeff).Finite :=
-      (tensorHs.mem_finiteSupportSubmodule (I := I) (M := M) x).1 hx
+      (TensorHs.mem_finiteSupportSubmodule (I := I) (M := M) x).1 hx
     refine ⟨finiteEigenCombo (I := I) (M := M) g₀ hxfin.toFinset x.coeff, ?_⟩
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     rw [smoothCcToTensorHs_coeff]
     have hcoeff :
@@ -108,9 +108,9 @@ theorem smoothCcToTensorHs_add (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     smoothCcToTensorHs (I := I) (M := M) g₀ σ (S + T) =
       smoothCcToTensorHs (I := I) (M := M) g₀ σ S +
         smoothCcToTensorHs (I := I) (M := M) g₀ σ T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
-  rw [tensorHs.add_coeff]
+  rw [TensorHs.add_coeff]
   simp only [smoothCcToTensorHs_coeff]
   rw [show SmoothCcTensor.toL2 (S + T) =
         SmoothCcTensor.toL2 S + SmoothCcTensor.toL2 T from map_add _ _ _,
@@ -120,9 +120,9 @@ theorem smoothCcToTensorHs_neg (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     (S : SmoothCcTensor g₀ 0 2) :
     smoothCcToTensorHs (I := I) (M := M) g₀ σ (-S) =
       -smoothCcToTensorHs (I := I) (M := M) g₀ σ S := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
-  rw [tensorHs.neg_coeff]
+  rw [TensorHs.neg_coeff]
   simp only [smoothCcToTensorHs_coeff]
   rw [show SmoothCcTensor.toL2 (-S) = -SmoothCcTensor.toL2 S from map_neg _ _]
   rw [show (-SmoothCcTensor.toL2 S : TensorL2 0 2 g₀) = (-1 : ℝ) • SmoothCcTensor.toL2 S by
@@ -149,14 +149,14 @@ theorem deTurckSmoothN_sub_eq_smoothCcToTensorHs_remainderSub
       smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ)
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ -
           deTurckSmoothRemainder (I := I) g₀ g_bg T' hδ'_lt hδ') := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   have hsub :
       (deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T hδ_lt hδ -
           deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T' hδ'_lt hδ').coeff i =
         (deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T hδ_lt hδ).coeff i -
           (deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T' hδ'_lt hδ').coeff i := by
-    rw [sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff]
+    rw [sub_eq_add_neg, TensorHs.add_coeff, TensorHs.neg_coeff]
     rfl
   have hcoeff_sub :
       tensorL2Coeff (I := I) (M := M)
@@ -517,7 +517,7 @@ theorem tensorHsInclusion_smoothCcToTensorHs (g₀ : SmoothRiemannianMetric I M)
     tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hτσ
         (smoothCcToTensorHs (I := I) (M := M) g₀ σ T) =
       smoothCcToTensorHs (I := I) (M := M) g₀ τ T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, smoothCcToTensorHs_coeff, smoothCcToTensorHs_coeff]
 
@@ -598,9 +598,9 @@ theorem smoothCcToTensorHs_smul (g₀ : SmoothRiemannianMetric I M) (σ : ℝ) (
     (T : SmoothCcTensor g₀ 0 2) :
     smoothCcToTensorHs (I := I) (M := M) g₀ σ (c • T) =
       c • smoothCcToTensorHs (I := I) (M := M) g₀ σ T := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
-  rw [tensorHs.smul_coeff]
+  rw [TensorHs.smul_coeff]
   simp only [smoothCcToTensorHs_coeff]
   rw [show SmoothCcTensor.toL2 (c • T) = c • SmoothCcTensor.toL2 T from map_smul _ _ _,
     tensorL2Coeff_smul]
@@ -608,16 +608,16 @@ theorem smoothCcToTensorHs_smul (g₀ : SmoothRiemannianMetric I M) (σ : ℝ) (
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHs_norm_smul (g₀ : SmoothRiemannianMetric I M) {σ : ℝ} (c : ℝ)
-    (x : tensorHs (I := I) (M := M) g₀ 0 2 σ) :
+    (x : TensorHs (I := I) (M := M) g₀ 0 2 σ) :
     ‖c • x‖ = |c| * ‖x‖ := by
   have h1 : ‖c • x‖ =
-      ‖tensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+      ‖TensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (σ := σ) (c • x)‖ :=
-    (tensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+    (TensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (σ := σ)).norm_map (c • x) |>.symm
-  have h2 : ‖tensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+  have h2 : ‖TensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (σ := σ) x‖ = ‖x‖ :=
-    (tensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+    (TensorHs.rescaleEquivL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (σ := σ)).norm_map x
   rw [h1, map_smul, norm_smul, Real.norm_eq_abs, h2]
 
@@ -639,10 +639,10 @@ theorem sobolevBall_smooth_fibreSmall (g₀ : SmoothRiemannianMetric I M) (a : �
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ := by
     have hembed_m : smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T =
         ccSpectralEmbed (I := I) (M := M) g₀ (m : ℝ) T :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     have hembed_a2 : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T =
         ccSpectralEmbed (I := I) (M := M) g₀ ((a : ℝ) + 2) T :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     rw [hembed_m, hembed_a2]
     refine ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ ?_ T
     have hcast : (m : ℝ) ≤ (a : ℝ) + 2 := by
@@ -689,10 +689,10 @@ theorem sobolevBall_smooth_fibreSmall_of_threshold (g₀ : SmoothRiemannianMetri
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ := by
     have hembed_m : smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T =
         ccSpectralEmbed (I := I) (M := M) g₀ (m : ℝ) T :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     have hembed_a2 : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T =
         ccSpectralEmbed (I := I) (M := M) g₀ ((a : ℝ) + 2) T :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     rw [hembed_m, hembed_a2]
     refine ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ ?_ T
     have hcast : (m : ℝ) ≤ (a : ℝ) + (2 : ℕ) := by exact_mod_cast hm_le
@@ -786,8 +786,8 @@ theorem smoothCcToTensorHs_radialScaleSmooth_eq_ballRetraction
 
 open Classical in
 def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun v =>
     if h : ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
         ∀ (T : SmoothCcTensor g₀ 0 2),
@@ -803,7 +803,7 @@ def deTurckSobolevNonlinearity (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ
             ((Classical.choose_spec h).2.2 _
               (norm_smoothCcToTensorHs_radialScaleSmooth_le (I := I) (M := M)
                 g₀ a (Classical.choose_spec h).1.le (Classical.choose x.2))))
-        (recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+        (recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
           (Classical.choose h).1 v)
     else 0
 
@@ -832,7 +832,7 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
     deTurckSmoothRemainderTensorHs_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super hR₀
       hδ₀_lt
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
     fun x =>
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose x.2))
@@ -843,12 +843,12 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
   have hembed : ∀ x : Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)),
       smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose x.2)) =
-          ballRetraction R₀ (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) := by
+          ballRetraction R₀ (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) := by
     intro x
     rw [smoothCcToTensorHs_radialScaleSmooth_eq_ballRetraction, Classical.choose_spec x.2]
   have hF_lip : ∀ x y : Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)),
       ‖F x - F y‖ ≤ (K : ℝ) *
-        ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (y : _)‖ := by
+        ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (y : _)‖ := by
     intro x y
     have hbound := hK
       (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose x.2))
@@ -867,15 +867,15 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
               smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose y.2))‖ := hbound
       _ = (K : ℝ) * ‖ballRetraction R₀
-              (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-            ballRetraction R₀ (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+              (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+            ballRetraction R₀ (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
             rw [hembed x, hembed y]
-      _ ≤ (K : ℝ) * ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-            (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
-            have hlip := (lipschitzWith_one_ballRetraction (X := tensorHs (I := I) (M := M)
+      _ ≤ (K : ℝ) * ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+            (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+            have hlip := (lipschitzWith_one_ballRetraction (X := TensorHs (I := I) (M := M)
               g₀ 0 2 ((a : ℝ) + 2)) hR₀.le).dist_le_mul
-              (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-              (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+              (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+              (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
             rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at hlip
             exact mul_le_mul_of_nonneg_left hlip K.coe_nonneg
   have hlipF : LipschitzWith K F := by
@@ -907,16 +907,16 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
     rwa [lipschitzOnWith_univ] at hcl
   refine ⟨K, ?_⟩
   have hretr : LipschitzWith 1 (recenteredBallRetraction
-      (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀) :=
+      (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀) :=
     recenteredBallRetraction_lipschitzWith_one hR₀.le _
   have hcomp : LipschitzWith (K * 1)
       ((Dense.extend hdense F) ∘ (recenteredBallRetraction
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀)) :=
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀)) :=
     hext_lip.comp hretr
   rw [mul_one] at hcomp
   have heq_fun : deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a =
       (Dense.extend hdense F) ∘ (recenteredBallRetraction
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀) := by
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀) := by
     funext v
     rw [deTurckSobolevNonlinearity]
     rw [dif_pos h]
@@ -926,7 +926,7 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
 
 theorem deTurckSobolevNHa2_lipschitzOnWith (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
-    (R : ℝ) (u₀ : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) :
+    (R : ℝ) (u₀ : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) :
     ∃ L_R : ℝ≥0, LipschitzOnWith L_R (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a)
       (Metric.closedBall u₀ R) := by
   obtain ⟨K, hK⟩ := deTurckSobolevNHa2_lipschitzWith (I := I) (M := M) g₀ g_bg a ha_super
@@ -951,7 +951,7 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
       (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   set hdense := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2) with hdense_def
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
     fun x =>
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose x.2))
@@ -966,7 +966,7 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
   have hembed : ∀ x : Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)),
       smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose x.2)) =
-          ballRetraction R₀ (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) := by
+          ballRetraction R₀ (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) := by
     intro x
     rw [smoothCcToTensorHs_radialScaleSmooth_eq_ballRetraction, Classical.choose_spec x.2]
   have hF_cont : Continuous F := by
@@ -989,15 +989,15 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
               smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (Classical.choose y.2))‖ := hbound
       _ = (K : ℝ) * ‖ballRetraction R₀
-              (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-            ballRetraction R₀ (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+              (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+            ballRetraction R₀ (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
             rw [hembed x, hembed y]
-      _ ≤ (K : ℝ) * ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-            (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
-            have hlip := (lipschitzWith_one_ballRetraction (X := tensorHs (I := I) (M := M)
+      _ ≤ (K : ℝ) * ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+            (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+            have hlip := (lipschitzWith_one_ballRetraction (X := TensorHs (I := I) (M := M)
               g₀ 0 2 ((a : ℝ) + 2)) hR₀.le).dist_le_mul
-              (x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
-              (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+              (x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+              (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
             rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at hlip
             exact mul_le_mul_of_nonneg_left hlip K.coe_nonneg
   have hmem : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T ∈
@@ -1005,10 +1005,10 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
   have hunfold : deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       Dense.extend hdense F
-        (recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
+        (recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T)) := by
     rw [deTurckSobolevNonlinearity, dif_pos h]
-  have hfix : recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
+  have hfix : recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T := by
     refine recenteredBallRetraction_eq_self_of_mem ?_
@@ -1058,16 +1058,16 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
         (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
       hSfibre hSball
   have hbr : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S =
-      recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
+      recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) := by
     rw [hS_def, smoothCcToTensorHs_radialScaleSmooth_eq_ballRetraction,
       recenteredBallRetraction, sub_zero, zero_add]
   have hSmem : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S ∈
-      Metric.closedBall (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀ := by
+      Metric.closedBall (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀ := by
     rw [Metric.mem_closedBall, dist_zero_right]; exact hSball
-  have hrecS : recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
+  have hrecS : recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S) =
-        recenteredBallRetraction (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
+        recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) := by
     rw [recenteredBallRetraction_eq_self_of_mem hSmem, hbr]
   have hNeq : deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
@@ -1136,8 +1136,8 @@ theorem symmS_eq_self_of_ccTensorBilin_symm (g₀ : SmoothRiemannianMetric I M)
 
 open Classical in
 def deTurckSobolevNonlinearitySymm (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
-    tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+    TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun v =>
     if h : ∃ p : ℝ × ℝ, 0 < p.1 ∧ p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
         ∀ (T : SmoothCcTensor g₀ 0 2),
@@ -1216,7 +1216,7 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
   obtain ⟨K, hK⟩ :=
     deTurckSmoothRemainderTensorHs_ballLipschitz (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ₀_lt
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
     fun x =>
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀
@@ -1236,7 +1236,7 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
     rw [smoothCcToTensorHs_radialScaleSmooth_eq_ballRetraction]
   have hF_lip : ∀ x y : Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)),
       ‖F x - F y‖ ≤ (K : ℝ) *
-        ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (y : _)‖ := by
+        ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) - (y : _)‖ := by
     intro x y
     have hbound := hK
       (radialScaleSmooth (I := I) (M := M) g₀ a R₀
@@ -1271,7 +1271,7 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)) -
               smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose y.2))‖ := by
-            have hlip := (lipschitzWith_one_ballRetraction (X := tensorHs (I := I) (M := M)
+            have hlip := (lipschitzWith_one_ballRetraction (X := TensorHs (I := I) (M := M)
               g₀ 0 2 ((a : ℝ) + 2)) hR₀.le).dist_le_mul
               (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)))
@@ -1297,8 +1297,8 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
                 (Classical.choose y.2)‖ := by
             rw [smoothCcToTensorHs_sub]
       _ = (K : ℝ) *
-            ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-              (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+            ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+              (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
             rw [Classical.choose_spec x.2, Classical.choose_spec y.2]
   have hlipF : LipschitzWith K F := by
     refine LipschitzWith.of_dist_le_mul (fun x y => ?_)
@@ -1361,7 +1361,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
   set hdense := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2)
     with hdense_def
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
     fun x =>
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀
@@ -1408,7 +1408,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)) -
               smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose y.2))‖ := by
-            have hlip := (lipschitzWith_one_ballRetraction (X := tensorHs (I := I) (M := M)
+            have hlip := (lipschitzWith_one_ballRetraction (X := TensorHs (I := I) (M := M)
               g₀ 0 2 ((a : ℝ) + 2)) hR₀.le).dist_le_mul
               (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)))
@@ -1434,8 +1434,8 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
                 (Classical.choose y.2)‖ := by
             rw [smoothCcToTensorHs_sub]
       _ = (K : ℝ) *
-            ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-              (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+            ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+              (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
             rw [Classical.choose_spec x.2, Classical.choose_spec y.2]
   have hmem : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T ∈
       Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)) := ⟨T, rfl⟩
@@ -1525,7 +1525,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
   set hdense := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2)
     with hdense_def
   set F : (Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2))) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
     fun x =>
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
         (radialScaleSmooth (I := I) (M := M) g₀ a R₀
@@ -1572,7 +1572,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)) -
               smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose y.2))‖ := by
-            have hlip := (lipschitzWith_one_ballRetraction (X := tensorHs (I := I) (M := M)
+            have hlip := (lipschitzWith_one_ballRetraction (X := TensorHs (I := I) (M := M)
               g₀ 0 2 ((a : ℝ) + 2)) hR₀.le).dist_le_mul
               (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose x.2)))
@@ -1598,8 +1598,8 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
                 (Classical.choose y.2)‖ := by
             rw [smoothCcToTensorHs_sub]
       _ = (K : ℝ) *
-            ‖(x : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
-              (y : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
+            ‖(x : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) -
+              (y : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ := by
             rw [Classical.choose_spec x.2, Classical.choose_spec y.2]
   have hmem : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T ∈
       Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)) := ⟨T, rfl⟩
@@ -1681,7 +1681,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN_of_symm (g₀ g_bg : SmoothRiemannianM
 theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
-    ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a u -
           deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a u'‖ ≤
         (C₁ : ℝ) * max ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
@@ -1744,12 +1744,12 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
   refine ⟨C₁, C₂, ?_⟩
   set D := Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)) with hD_def
   have hDdense : Dense D := smoothCcToTensorHs_denseRange (I := I) (M := M) g₀ ((a : ℝ) + 2)
-  set lhs : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) ×
-      tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) → ℝ :=
+  set lhs : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) ×
+      TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) → ℝ :=
     fun p => ‖deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a p.1 -
       deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a p.2‖ with hlhs_def
-  set rhs : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) ×
-      tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) → ℝ :=
+  set rhs : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) ×
+      TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) → ℝ :=
     fun p => (C₁ : ℝ) * max ‖J p.1‖ ‖J p.2‖ * ‖p.1 - p.2‖ +
       (C₂ : ℝ) * ‖J (p.1 - p.2)‖ with hrhs_def
   obtain ⟨KN, hKN⟩ := deTurckSobolevNHa2Symm_lipschitzWith (I := I) (M := M) g₀ g_bg a ha_super
@@ -1838,7 +1838,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
       intro W
       rw [hJ_def]
       exact tensorHsInclusion_smoothCcToTensorHs (I := I) (M := M) g₀ hτσ W
-    have hJscale : ∀ (q : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    have hJscale : ∀ (q : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
         ‖J (ballRetraction R₀ q)‖ ≤ ‖J q‖ := by
       intro q
       rw [ballRetraction, map_smul, norm_smul, Real.norm_eq_abs]
@@ -1912,7 +1912,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
               (ccTensor02Symm (I := I) (M := M) g₀ T) -
             smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
               (ccTensor02Symm (I := I) (M := M) g₀ T')‖ := by
-              have hlip := (lipschitzWith_one_ballRetraction (X := tensorHs (I := I) (M := M)
+              have hlip := (lipschitzWith_one_ballRetraction (X := TensorHs (I := I) (M := M)
                 g₀ 0 2 ((a : ℝ) + 2)) hR₀.le).dist_le_mul
                 (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                   (ccTensor02Symm (I := I) (M := M) g₀ T))
@@ -1954,7 +1954,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
       have hCsym1max_nn : 0 ≤ Csym1 * max ‖J p‖ ‖J p'‖ :=
         mul_nonneg hCsym1_nn (le_trans (norm_nonneg _) (le_max_left _ _))
       have hbr_diff := norm_map_ballRetraction_sub_le
-        (X := tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) hR₀ J
+        (X := TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) hR₀ J
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
           (ccTensor02Symm (I := I) (M := M) g₀ T))
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)

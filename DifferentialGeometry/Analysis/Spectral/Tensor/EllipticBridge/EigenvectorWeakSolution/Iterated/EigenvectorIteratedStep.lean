@@ -433,7 +433,7 @@ noncomputable def eigenvectorIteratedTensorChartBilinearDataStep
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
-    (D_m : eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
     (l : Fin (Module.finrank ℝ E))
     (h_chart_H_m_plus_1 :
@@ -454,9 +454,9 @@ noncomputable def eigenvectorIteratedTensorChartBilinearDataStep
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ))) :
-    eigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
+    EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ (m + 1) :=
-  eigenvectorIteratedTensorChartBilinearData.mkFromHypotheses
+  EigenvectorIteratedTensorChartBilinearData.mkFromHypotheses
     (Fin.snoc D_m.directions l)
     (eigenvectorChartIteratedStep (I := I) (M := M)
       g r s i α P₀ m D_m.directions D_m.diffChartForcing l)

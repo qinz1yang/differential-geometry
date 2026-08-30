@@ -46,21 +46,21 @@ theorem exists_galerkin_coordinate_solution (g₀ g_bg : SmoothRiemannianMetric 
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal v‖ ≤
         Ctop * lowRegularityOuterRadius Ctop ρ P *
-            ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
           B0 *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 *
-              (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     {T : ℝ} (hT : 0 < T) :
     ∃ U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ,

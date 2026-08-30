@@ -33,9 +33,9 @@ namespace TensorHeatEquation
 
 def tensorHeatMildSolutionHsDeriv
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F F' : ℝ → tensorHs (I := I) (M := M) g r s σ) (t : ℝ) :
-    tensorHs (I := I) (M := M) g r s σ :=
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F F' : ℝ → TensorHs (I := I) (M := M) g r s σ) (t : ℝ) :
+    TensorHs (I := I) (M := M) g r s σ :=
   abstractSpectralDuhamelDeriv
     (tensorHsHilbertBasis (I := I) (M := M)
       (g := g) (r := r) (s := s) σ)
@@ -44,8 +44,8 @@ def tensorHeatMildSolutionHsDeriv
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHsDeriv_coeff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F F' : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F F' : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     {t : ℝ} (ht : 0 < t) (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (tensorHeatMildSolutionHsDeriv (I := I) (M := M)
@@ -84,8 +84,8 @@ theorem tensorHeatMildSolutionHsDeriv_coeff
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt_aux
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F F' : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F F' : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     {t : ℝ} (ht : 0 < t) :
     HasDerivAt
@@ -108,11 +108,11 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt_aux
 
 def tensorHeatMildSolutionHsLiftOfHasDerivAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F F' : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F F' : ℝ → TensorHs (I := I) (M := M) g r s σ)
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     (t : ℝ) (ht : 0 < t) :
-    tensorHs (I := I) (M := M) g r s (σ + 2) := by
+    TensorHs (I := I) (M := M) g r s (σ + 2) := by
   let U := tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F t
   let D := tensorHeatMildSolutionHsDeriv (I := I) (M := M)
     g r s σ T₀ F F' t
@@ -121,7 +121,7 @@ def tensorHeatMildSolutionHsLiftOfHasDerivAt
       Z.coeff i =
         (1 + TensorEigenIdx.lambda (I := I) (M := M) i) * U.coeff i := by
     intro i
-    simp only [Z, sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff]
+    simp only [Z, sub_eq_add_neg, TensorHs.add_coeff, TensorHs.neg_coeff]
     rw [tensorHeatMildSolutionHsDeriv_coeff
       (I := I) (M := M) g r s σ T₀ hF hF' ht]
     ring
@@ -130,8 +130,8 @@ def tensorHeatMildSolutionHsLiftOfHasDerivAt
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHeatMildSolutionHsLiftOfHasDerivAt_coeff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F F' : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F F' : ℝ → TensorHs (I := I) (M := M) g r s σ)
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     (t : ℝ) (ht : 0 < t) (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (tensorHeatMildSolutionHsLiftOfHasDerivAt (I := I) (M := M)
@@ -143,8 +143,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_tensorHeatMildSolutionHsLiftOfHasDerivAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F F' : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F F' : ℝ → TensorHs (I := I) (M := M) g r s σ)
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     (t : ℝ) (ht : 0 < t) :
     tensorHsInclusion (I := I) (M := M)
@@ -152,7 +152,7 @@ theorem tensorHsInclusion_tensorHeatMildSolutionHsLiftOfHasDerivAt
         (tensorHeatMildSolutionHsLiftOfHasDerivAt (I := I) (M := M)
           g r s σ T₀ F F' hF hF' t ht) =
       tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F t := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [tensorHsInclusion_coeff_apply,
     tensorHeatMildSolutionHsLiftOfHasDerivAt_coeff]
@@ -160,8 +160,8 @@ theorem tensorHsInclusion_tensorHeatMildSolutionHsLiftOfHasDerivAt
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F F' : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F F' : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     {t : ℝ} (ht : 0 < t) :
     HasDerivAt
@@ -172,7 +172,7 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt
   have haux := tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt_aux
     (I := I) (M := M) g r s σ T₀ hF hF' ht
   apply haux.congr_deriv
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [tensorHeatMildSolutionHsDeriv_coeff
       (I := I) (M := M) g r s σ T₀ hF hF' ht]
@@ -186,8 +186,8 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_hasDerivAt
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deriv_tensorHeatMildSolutionHs_eq_tensorScaleLaplacian_add_of_hasDerivAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F F' : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F F' : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F')
     {t : ℝ} (ht : 0 < t) :
     deriv (tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F) t =
@@ -200,8 +200,8 @@ theorem deriv_tensorHeatMildSolutionHs_eq_tensorScaleLaplacian_add_of_hasDerivAt
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_differentiableOn_of_hasDerivAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F F' : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F F' : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ∀ q, HasDerivAt F (F' q) q) (hF' : Continuous F') :
     DifferentiableOn ℝ
       (tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F)
@@ -212,10 +212,10 @@ theorem tensorHeatMildSolutionHs_differentiableOn_of_hasDerivAt
 
 def tensorHeatMildSolutionHsLiftOfContDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ)
     (hF : ContDiff ℝ 1 F) (t : ℝ) (ht : 0 < t) :
-    tensorHs (I := I) (M := M) g r s (σ + 2) :=
+    TensorHs (I := I) (M := M) g r s (σ + 2) :=
   tensorHeatMildSolutionHsLiftOfHasDerivAt (I := I) (M := M)
     g r s σ T₀ F (deriv F)
       (fun q => (hF.differentiable one_ne_zero q).hasDerivAt)
@@ -224,8 +224,8 @@ def tensorHeatMildSolutionHsLiftOfContDiff
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHeatMildSolutionHsLiftOfContDiff_coeff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ)
     (hF : ContDiff ℝ 1 F) (t : ℝ) (ht : 0 < t)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (tensorHeatMildSolutionHsLiftOfContDiff (I := I) (M := M)
@@ -237,15 +237,15 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_tensorHeatMildSolutionHsLiftOfContDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    (F : ℝ → tensorHs (I := I) (M := M) g r s σ)
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    (F : ℝ → TensorHs (I := I) (M := M) g r s σ)
     (hF : ContDiff ℝ 1 F) (t : ℝ) (ht : 0 < t) :
     tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s) (show σ ≤ σ + 2 by linarith)
         (tensorHeatMildSolutionHsLiftOfContDiff (I := I) (M := M)
           g r s σ T₀ F hF t ht) =
       tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F t := by
-  apply tensorHs.ext
+  apply TensorHs.ext
   funext i
   rw [tensorHsInclusion_coeff_apply,
     tensorHeatMildSolutionHsLiftOfContDiff_coeff]
@@ -253,8 +253,8 @@ theorem tensorHsInclusion_tensorHeatMildSolutionHsLiftOfContDiff
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_hasDerivAt_of_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ContDiff ℝ 1 F) {t : ℝ} (ht : 0 < t) :
     HasDerivAt
       (tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F)
@@ -270,8 +270,8 @@ theorem tensorHeatMildSolutionHs_hasDerivAt_of_contDiff
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deriv_tensorHeatMildSolutionHs_eq_tensorScaleLaplacian_add_of_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ContDiff ℝ 1 F) {t : ℝ} (ht : 0 < t) :
     deriv (tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F) t =
       tensorScaleLaplacian (I := I) (M := M) σ
@@ -283,8 +283,8 @@ theorem deriv_tensorHeatMildSolutionHs_eq_tensorScaleLaplacian_add_of_contDiff
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_differentiableOn_of_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ)
-    (T₀ : tensorHs (I := I) (M := M) g r s σ)
-    {F : ℝ → tensorHs (I := I) (M := M) g r s σ}
+    (T₀ : TensorHs (I := I) (M := M) g r s σ)
+    {F : ℝ → TensorHs (I := I) (M := M) g r s σ}
     (hF : ContDiff ℝ 1 F) :
     DifferentiableOn ℝ
       (tensorHeatMildSolutionHs (I := I) (M := M) g r s σ T₀ F)

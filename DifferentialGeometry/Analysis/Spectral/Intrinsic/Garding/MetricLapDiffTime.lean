@@ -37,7 +37,7 @@ noncomputable def lapDiffA2
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (T : D.RegularTime) (s : Real) :
-    tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+    TensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
       TensorL2 0 0 (g_fam (T : Real)) :=
   lapDiffOp (I := I) (M := M) (g_fam (T : Real))
     (g_fam ((T : Real) - s))
@@ -228,7 +228,7 @@ theorem lapDiffA2_bound
     ∃ omega : Real → Real,
       Tendsto omega (𝓝 0) (𝓝 0) ∧
       ∀ᶠ s in 𝓝 (0 : Real),
-        ∀ v : tensorHs (I := I) (M := M)
+        ∀ v : TensorHs (I := I) (M := M)
             (g_fam (T : Real)) 0 0 2,
           (Function.support v.coeff).Finite →
             ‖lapDiffA2 (I := I) (M := M) g_fam T s v‖ <=

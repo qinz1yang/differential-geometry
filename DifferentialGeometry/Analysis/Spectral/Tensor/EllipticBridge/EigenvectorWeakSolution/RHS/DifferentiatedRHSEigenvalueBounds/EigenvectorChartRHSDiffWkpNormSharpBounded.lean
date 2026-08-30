@@ -40,7 +40,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 section Unconditional
 
 open DifferentialGeometry.Analysis.Spectral in
-structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
+structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N : ℕ) where
   h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
@@ -177,7 +177,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiffBdd_diff_memWkp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N : ℕ)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (m K' : ℕ) (hN : m + 1 + K' ≤ N) (l : Fin m → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) K' 2
@@ -192,7 +192,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K N : ℕ)
     (hKN : K + 1 ≤ N)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N) :
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         rhsZeroAggregate (I := I) (M := M) g r s i α P₀ K
@@ -885,7 +885,7 @@ private lemma sharpDiffBdd_level_zero_wkpNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K N : ℕ)
     (hKN : K + 1 ≤ N)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N) :
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -949,7 +949,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiffBdd_recursion
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N : ℕ)
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N) :
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M) g r s α P₀ N) :
     ∀ (m : ℕ) (K : ℕ) (_ : K + m + 1 ≤ N)
       (l : Fin m → Fin (Module.finrank ℝ E)),
       ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
@@ -1240,7 +1240,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp_bdd
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin m → Fin (Module.finrank ℝ E))
-    (H : eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M)
+    (H : EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder (I := I) (M := M)
       g r s α P₀ (K + m + 1)) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,

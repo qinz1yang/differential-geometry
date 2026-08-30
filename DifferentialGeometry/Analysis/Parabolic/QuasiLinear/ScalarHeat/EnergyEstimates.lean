@@ -30,10 +30,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mild_solution_norm_le
-    {g : SmoothRiemannianMetric I M} {σ : ℝ} (u₀ : scalarHs (I := I) (M := M) g σ)
-    {N : scalarHs (I := I) (M := M) g σ → scalarHs (I := I) (M := M) g σ}
+    {g : SmoothRiemannianMetric I M} {σ : ℝ} (u₀ : ScalarHs (I := I) (M := M) g σ)
+    {N : ScalarHs (I := I) (M := M) g σ → ScalarHs (I := I) (M := M) g σ}
     {L : NNReal} (hN : LipschitzWith L N)
-    {T : ℝ} (hT : 0 ≤ T) {u : ℝ → scalarHs (I := I) (M := M) g σ}
+    {T : ℝ} (hT : 0 ≤ T) {u : ℝ → ScalarHs (I := I) (M := M) g σ}
     (hu_cont : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = heatSemigroupHsExt (I := I) (M := M) g σ t u₀ +
@@ -47,13 +47,13 @@ theorem mild_solution_norm_le
   have hL_nn : (0 : ℝ) ≤ (L : ℝ) := L.coe_nonneg
   have hu₀_nn : (0 : ℝ) ≤ ‖u₀‖ := norm_nonneg _
   have hN0_nn : (0 : ℝ) ≤ ‖N 0‖ := norm_nonneg _
-  have hN_bound : ∀ x : scalarHs (I := I) (M := M) g σ,
+  have hN_bound : ∀ x : ScalarHs (I := I) (M := M) g σ,
       ‖N x‖ ≤ (L : ℝ) * ‖x‖ + ‖N 0‖ := by
     intro x
     have h_dist := hN.dist_le_mul x 0
     have h_normNxN0 : ‖N x - N 0‖ ≤ (L : ℝ) * ‖x‖ := by
       have hd : dist (N x) (N 0) = ‖N x - N 0‖ := dist_eq_norm _ _
-      have hxd : dist x (0 : scalarHs (I := I) (M := M) g σ) = ‖x‖ := by
+      have hxd : dist x (0 : ScalarHs (I := I) (M := M) g σ) = ‖x‖ := by
         rw [dist_zero_right]
       rw [hd, hxd] at h_dist
       exact h_dist
@@ -163,10 +163,10 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_quasilinear_local_existence_with_norm_bound
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
-    (u₀ : scalarHs (I := I) (M := M) g σ)
-    {N : scalarHs (I := I) (M := M) g σ → scalarHs (I := I) (M := M) g σ}
+    (u₀ : ScalarHs (I := I) (M := M) g σ)
+    {N : ScalarHs (I := I) (M := M) g σ → ScalarHs (I := I) (M := M) g σ}
     {L : ℝ≥0} (hN : LipschitzWith L N) :
-    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → scalarHs (I := I) (M := M) g σ,
+    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → ScalarHs (I := I) (M := M) g σ,
       ContinuousOn u (Set.Icc 0 T) ∧
       u 0 = u₀ ∧
       (∀ t ∈ Set.Icc (0:ℝ) T,

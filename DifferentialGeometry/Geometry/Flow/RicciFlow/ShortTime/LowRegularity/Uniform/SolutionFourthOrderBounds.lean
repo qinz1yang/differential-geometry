@@ -50,9 +50,9 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_fo
             ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (fseq : ℕ → timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (Φ3 Φ4 Φ5 : ℝ)
               (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gBase K),
               IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g gBase K
@@ -273,9 +273,9 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_fo
             ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (fseq : ℕ → timeL2
-                (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
+                (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
               (Φ3 Φ4 Φ5 : ℝ),
               IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g gBase K
                   hT hT1

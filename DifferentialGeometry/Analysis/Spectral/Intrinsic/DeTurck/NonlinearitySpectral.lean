@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def realizeToL2 (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (h_compact : IsCompactOperator
       (tensorResolventL2 (I := I) (M := M) g_bg 0 2)) :
-    tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2) →L[ℝ]
+    TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2) →L[ℝ]
       TensorL2 0 2 g_bg :=
   tensorHsToL2 (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
     h_compact (by have : (0 : ℝ) ≤ (a : ℝ) := Nat.cast_nonneg a; linarith)
@@ -46,7 +46,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (h_compact : IsCompactOperator
       (tensorResolventL2 (I := I) (M := M) g_bg 0 2))
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (i : TensorEigenIdx (I := I) (M := M) g_bg 0 2) :
     tensorL2Coeff (I := I) (M := M) h_compact
         (realizeToL2 (I := I) (M := M) g_bg a h_compact u) i = u.coeff i :=
@@ -61,8 +61,8 @@ omit [NeZero (Module.finrank ℝ E)] in
   map_zero _
 
 def firstOrderRemainderInclusion (g_bg : SmoothRiemannianMetric I M) (a : ℕ) :
-    tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) :=
+    TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) :=
   tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
     (by linarith : (a : ℝ) ≤ (a : ℝ) + 1)
 
@@ -76,7 +76,7 @@ theorem firstOrderRemainderInclusion_opNorm_le_one
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem firstOrderRemainderInclusion_coeff
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (v : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
+    (v : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
     (i : TensorEigenIdx (I := I) (M := M) g_bg 0 2) :
     (firstOrderRemainderInclusion (I := I) (M := M) g_bg a v).coeff i =
       v.coeff i :=
@@ -85,10 +85,10 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem firstOrderRemainder_lands_in_Ha
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (R : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1)) :
-    ∃ R' : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2) →L[ℝ]
-        tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ),
+    (R : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1)) :
+    ∃ R' : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2) →L[ℝ]
+        TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ),
       (∀ u, (R' u).coeff = (R u).coeff) ∧ ‖R'‖ ≤ ‖R‖ := by
   refine ⟨(firstOrderRemainderInclusion (I := I) (M := M) g_bg a).comp R,
     ?_, ?_⟩

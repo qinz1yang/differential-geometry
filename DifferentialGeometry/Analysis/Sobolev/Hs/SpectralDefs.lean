@@ -87,32 +87,32 @@ def scalarL2Coeff {g : SmoothRiemannianMetric I M}
     (i : EigenIdx (I := I) (M := M) g) : ℝ :=
   (resolventHilbertEigenbasisSigma (I := I) (M := M) g).repr u i
 
-structure scalarHs (g : SmoothRiemannianMetric I M) (σ : ℝ) where
+structure ScalarHs (g : SmoothRiemannianMetric I M) (σ : ℝ) where
   coeff : EigenIdx (I := I) (M := M) g → ℝ
   weighted_summable :
     Summable (fun i => scalarSobolevWeight (I := I) (M := M) i σ *
       (coeff i) ^ 2)
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M} {σ : ℝ}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[ext] lemma ext {S T : scalarHs (I := I) (M := M) g σ}
+@[ext] lemma ext {S T : ScalarHs (I := I) (M := M) g σ}
     (h : S.coeff = T.coeff) : S = T := by
   cases S; cases T; cases h; rfl
 
-instance : Zero (scalarHs (I := I) (M := M) g σ) where
+instance : Zero (ScalarHs (I := I) (M := M) g σ) where
   zero := ⟨fun _ => 0, by simp⟩
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma zero_coeff :
-    (0 : scalarHs (I := I) (M := M) g σ).coeff =
+    (0 : ScalarHs (I := I) (M := M) g σ).coeff =
       (fun _ => 0) := rfl
 
-instance : Add (scalarHs (I := I) (M := M) g σ) where
+instance : Add (ScalarHs (I := I) (M := M) g σ) where
   add S T :=
     { coeff := fun i => S.coeff i + T.coeff i
       weighted_summable := by
@@ -150,10 +150,10 @@ instance : Add (scalarHs (I := I) (M := M) g σ) where
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma add_coeff
-    (S T : scalarHs (I := I) (M := M) g σ) :
+    (S T : ScalarHs (I := I) (M := M) g σ) :
     (S + T).coeff = (fun i => S.coeff i + T.coeff i) := rfl
 
-instance : Neg (scalarHs (I := I) (M := M) g σ) where
+instance : Neg (ScalarHs (I := I) (M := M) g σ) where
   neg S :=
     { coeff := fun i => -S.coeff i
       weighted_summable := by
@@ -169,10 +169,10 @@ instance : Neg (scalarHs (I := I) (M := M) g σ) where
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma neg_coeff (S : scalarHs (I := I) (M := M) g σ) :
+@[simp] lemma neg_coeff (S : ScalarHs (I := I) (M := M) g σ) :
     (-S).coeff = (fun i => -S.coeff i) := rfl
 
-instance : Sub (scalarHs (I := I) (M := M) g σ) where
+instance : Sub (ScalarHs (I := I) (M := M) g σ) where
   sub S T :=
     { coeff := fun i => S.coeff i - T.coeff i
       weighted_summable := by
@@ -210,10 +210,10 @@ instance : Sub (scalarHs (I := I) (M := M) g σ) where
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma sub_coeff
-    (S T : scalarHs (I := I) (M := M) g σ) :
+    (S T : ScalarHs (I := I) (M := M) g σ) :
     (S - T).coeff = (fun i => S.coeff i - T.coeff i) := rfl
 
-instance : SMul ℝ (scalarHs (I := I) (M := M) g σ) where
+instance : SMul ℝ (ScalarHs (I := I) (M := M) g σ) where
   smul c S :=
     { coeff := fun i => c * S.coeff i
       weighted_summable := by
@@ -231,10 +231,10 @@ instance : SMul ℝ (scalarHs (I := I) (M := M) g σ) where
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma smul_coeff (c : ℝ)
-    (S : scalarHs (I := I) (M := M) g σ) :
+    (S : ScalarHs (I := I) (M := M) g σ) :
     (c • S).coeff = (fun i => c * S.coeff i) := rfl
 
-instance : AddCommGroup (scalarHs (I := I) (M := M) g σ) where
+instance : AddCommGroup (ScalarHs (I := I) (M := M) g σ) where
   add_assoc S T U := by ext i; simp [add_assoc]
   zero_add S := by ext i; simp
   add_zero S := by ext i; simp
@@ -244,7 +244,7 @@ instance : AddCommGroup (scalarHs (I := I) (M := M) g σ) where
   nsmul := nsmulRec
   zsmul := zsmulRec
 
-instance : Module ℝ (scalarHs (I := I) (M := M) g σ) where
+instance : Module ℝ (ScalarHs (I := I) (M := M) g σ) where
   one_smul S := by ext i; simp
   mul_smul a b S := by ext i; simp [mul_assoc]
   smul_zero c := by ext i; simp
@@ -255,7 +255,7 @@ instance : Module ℝ (scalarHs (I := I) (M := M) g σ) where
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weightedProd_summable
-    (S T : scalarHs (I := I) (M := M) g σ) :
+    (S T : ScalarHs (I := I) (M := M) g σ) :
     Summable (fun i : EigenIdx (I := I) (M := M) g =>
       scalarSobolevWeight (I := I) (M := M) i σ *
         (S.coeff i * T.coeff i)) := by
@@ -298,13 +298,13 @@ lemma weightedProd_summable
               (T.coeff i) ^ 2) := by ring
   simpa using h_amgm
 
-def innerFun (S T : scalarHs (I := I) (M := M) g σ) : ℝ :=
+def innerFun (S T : ScalarHs (I := I) (M := M) g σ) : ℝ :=
   ∑' i, scalarSobolevWeight (I := I) (M := M) i σ *
     (S.coeff i * T.coeff i)
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma innerFun_self (T : scalarHs (I := I) (M := M) g σ) :
+lemma innerFun_self (T : ScalarHs (I := I) (M := M) g σ) :
     innerFun (I := I) (M := M) T T =
       ∑' i, scalarSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2 := by
@@ -314,7 +314,7 @@ lemma innerFun_self (T : scalarHs (I := I) (M := M) g σ) :
 
 @[reducible] def innerCore :
     InnerProductSpace.Core ℝ
-      (scalarHs (I := I) (M := M) g σ) where
+      (ScalarHs (I := I) (M := M) g σ) where
   inner S T := innerFun (I := I) (M := M) S T
   conj_inner_symm S T := by
     simp only [conj_trivial]
@@ -379,25 +379,25 @@ lemma innerFun_self (T : scalarHs (I := I) (M := M) g σ) :
     simpa using this
 
 instance instNormedAddCommGroup :
-    NormedAddCommGroup (scalarHs (I := I) (M := M) g σ) :=
+    NormedAddCommGroup (ScalarHs (I := I) (M := M) g σ) :=
   InnerProductSpace.Core.toNormedAddCommGroup
     (cd := innerCore (I := I) (M := M) (g := g) (σ := σ))
 
 instance instInnerProductSpace :
-    InnerProductSpace ℝ (scalarHs (I := I) (M := M) g σ) :=
+    InnerProductSpace ℝ (ScalarHs (I := I) (M := M) g σ) :=
   InnerProductSpace.ofCore
     (innerCore (I := I) (M := M) (g := g) (σ := σ)).1
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma inner_def (S T : scalarHs (I := I) (M := M) g σ) :
+lemma inner_def (S T : ScalarHs (I := I) (M := M) g σ) :
     (inner ℝ S T : ℝ) =
       ∑' i, scalarSobolevWeight (I := I) (M := M) i σ *
         (S.coeff i * T.coeff i) := rfl
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma inner_self_eq (T : scalarHs (I := I) (M := M) g σ) :
+lemma inner_self_eq (T : ScalarHs (I := I) (M := M) g σ) :
     (inner ℝ T T : ℝ) =
       ∑' i, scalarSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2 :=
@@ -406,7 +406,7 @@ lemma inner_self_eq (T : scalarHs (I := I) (M := M) g σ) :
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_sq_eq_tsum
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     ‖T‖ ^ 2 =
       ∑' i, scalarSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2 := by
@@ -415,22 +415,22 @@ theorem norm_sq_eq_tsum
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_eq_sqrt_tsum
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     ‖T‖ =
       Real.sqrt (∑' i, scalarSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2) := by
   rw [← norm_sq_eq_tsum]
   exact (Real.sqrt_sq (norm_nonneg T)).symm
 
-end scalarHs
+end ScalarHs
 
-namespace scalarHs
+namespace ScalarHs
 
 variable {g : SmoothRiemannianMetric I M} {σ : ℝ}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma rescale_memℓp (T : scalarHs (I := I) (M := M) g σ) :
+lemma rescale_memℓp (T : ScalarHs (I := I) (M := M) g σ) :
     Memℓp (fun i : EigenIdx (I := I) (M := M) g =>
       Real.sqrt (scalarSobolevWeight (I := I) (M := M) i σ) *
         T.coeff i) 2 := by
@@ -455,7 +455,7 @@ lemma rescale_memℓp (T : scalarHs (I := I) (M := M) g σ) :
   rw [h_eq]
   exact T.weighted_summable
 
-def rescaleToL2 (T : scalarHs (I := I) (M := M) g σ) :
+def rescaleToL2 (T : ScalarHs (I := I) (M := M) g σ) :
     lp (fun _ : EigenIdx (I := I) (M := M) g => ℝ) 2 :=
   ⟨fun i => Real.sqrt (scalarSobolevWeight (I := I) (M := M) i σ) *
       T.coeff i, rescale_memℓp (I := I) (M := M) T⟩
@@ -463,7 +463,7 @@ def rescaleToL2 (T : scalarHs (I := I) (M := M) g σ) :
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma rescaleToL2_apply
-    (T : scalarHs (I := I) (M := M) g σ)
+    (T : ScalarHs (I := I) (M := M) g σ)
     (i : EigenIdx (I := I) (M := M) g) :
     (rescaleToL2 (I := I) (M := M) T : _ → ℝ) i =
       Real.sqrt (scalarSobolevWeight (I := I) (M := M) i σ) *
@@ -509,7 +509,7 @@ lemma rescaleFromL2_weighted_summable
 
 def rescaleFromL2
     (f : lp (fun _ : EigenIdx (I := I) (M := M) g => ℝ) 2) :
-    scalarHs (I := I) (M := M) g σ where
+    ScalarHs (I := I) (M := M) g σ where
   coeff i := (Real.sqrt (scalarSobolevWeight (I := I) (M := M) i σ))⁻¹ *
     (f : _ → ℝ) i
   weighted_summable := rescaleFromL2_weighted_summable (I := I) (M := M) f
@@ -524,7 +524,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (f : _ → ℝ) i := rfl
 
 def rescaleEquivL2 :
-    scalarHs (I := I) (M := M) g σ ≃ₗᵢ[ℝ]
+    ScalarHs (I := I) (M := M) g σ ≃ₗᵢ[ℝ]
       lp (fun _ : EigenIdx (I := I) (M := M) g => ℝ) 2 where
   toFun := rescaleToL2 (I := I) (M := M)
   invFun := rescaleFromL2 (I := I) (M := M)
@@ -594,20 +594,20 @@ def rescaleEquivL2 :
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma rescaleEquivL2_apply
-    (T : scalarHs (I := I) (M := M) g σ) :
+    (T : ScalarHs (I := I) (M := M) g σ) :
     (rescaleEquivL2 (I := I) (M := M) (g := g) (σ := σ) T : _ → ℝ) =
       (fun i => Real.sqrt (scalarSobolevWeight (I := I) (M := M) i σ) *
         T.coeff i) := rfl
 
 instance instCompleteSpace :
-    CompleteSpace (scalarHs (I := I) (M := M) g σ) :=
+    CompleteSpace (ScalarHs (I := I) (M := M) g σ) :=
   (rescaleEquivL2 (I := I) (M := M)
     (g := g) (σ := σ)).toIsometryEquiv.completeSpace
 
-end scalarHs
+end ScalarHs
 
 abbrev HkScalar (g : SmoothRiemannianMetric I M) (k : ℕ) : Type _ :=
-  scalarHs (I := I) (M := M) g (k : ℝ)
+  ScalarHs (I := I) (M := M) g (k : ℝ)
 
 end Hs
 end Sobolev

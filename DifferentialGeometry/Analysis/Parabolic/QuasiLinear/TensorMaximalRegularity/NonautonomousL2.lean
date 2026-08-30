@@ -36,13 +36,13 @@ variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a T : ℝ}
 
 def zeroReprNN (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) : NNReal :=
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) : NNReal :=
   ⟨2 * Real.sqrt (1 + T) * ‖f‖, by positivity⟩
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 @[simp]
 theorem zeroReprNN_coe (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (zeroReprNN (I := I) (M := M) hT f : ℝ) =
       2 * Real.sqrt (1 + T) * ‖f‖ :=
   rfl
@@ -51,7 +51,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem zeroRepr_ae_le (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ∀ᵐ t ∂timeMeasure T,
       ‖(zeroDuhamelCross (I := I) (M := M)
         hT h_compact f).repr t‖ ≤
@@ -63,11 +63,11 @@ theorem zeroRepr_ae_le (hT : 0 < T)
 def a1L2Term (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
-    timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
+    timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   timeOpL2 A1 hA1
     (fun t => (zeroDuhamelCross (I := I) (M := M)
       hT h_compact f).repr t)
@@ -79,20 +79,20 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem a1L2Term_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     a1L2Term (I := I) (M := M) hT hT1 h_compact A1 hA1 f -
         a1L2Term (I := I) (M := M) hT hT1 h_compact A1 hA1 f' =
       a1L2Term (I := I) (M := M) hT hT1 h_compact A1 hA1 (f - f') := by
-  let uf : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) :=
+  let uf : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) :=
     fun t => (zeroDuhamelCross (I := I) (M := M)
       hT h_compact f).repr t
-  let uf' : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) :=
+  let uf' : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) :=
     fun t => (zeroDuhamelCross (I := I) (M := M)
       hT h_compact f').repr t
-  let ud : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) :=
+  let ud : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) :=
     fun t => (zeroDuhamelCross (I := I) (M := M)
       hT h_compact (f - f')).repr t
   have huf : AEStronglyMeasurable uf (timeMeasure T) := by
@@ -147,10 +147,10 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem a1L2Term_norm (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     ‖a1L2Term (I := I) (M := M) hT hT1 h_compact A1 hA1 f‖ ≤
       (2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖) * ‖f‖ := by
   refine (timeOpL2_norm_le A1 hA1
@@ -166,10 +166,10 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem a1L2_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     dist (a1L2Term (I := I) (M := M) hT hT1 h_compact A1 hA1 f)
         (a1L2Term (I := I) (M := M) hT hT1 h_compact A1 hA1 f') ≤
       (2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖) * dist f f' := by
@@ -181,15 +181,15 @@ theorem a1L2_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
 def nonautL2Map (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2 : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2 : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : ℝ))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T)) :
-    timeL2 (tensorHs (I := I) (M := M) g r s a) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s a) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun f =>
     timeOp A2 hA2 C2 hC2
         (maxRegDuhamelSolField (I := I) (M := M) a hT 0 f) +
@@ -200,14 +200,14 @@ theorem nonautL2_dist_le
     (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2 : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2 : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : ℝ))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f f' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     dist (nonautL2Map (I := I) (M := M) hT hT1 h_compact
         A2 hA2 C2 hC2 A1 hA1 f)
       (nonautL2Map (I := I) (M := M) hT hT1 h_compact
@@ -216,7 +216,7 @@ theorem nonautL2_dist_le
         2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖) * dist f f' := by
   have hfield2 := maxRegDuhamelSolField_dist_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT
-    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f f'
+    (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f f'
   have h2 :
       ‖timeOp A2 hA2 C2 hC2
             (maxRegDuhamelSolField (I := I) (M := M) a hT 0 f) -
@@ -285,12 +285,12 @@ theorem nonautL2_contract
     (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2 : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2 : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : ℝ))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
     (hsmall :
       (C2 : ℝ) * (1 + T) +
@@ -325,20 +325,20 @@ theorem nonautL2_forced
     (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (A2 : ℝ → tensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A2 : ℝ → TensorHs (I := I) (M := M) g r s (a + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : ℝ))
-    (A1 : ℝ → tensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : ℝ → TensorHs (I := I) (M := M) g r s (a + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : MemLp A1 2 (timeMeasure T))
-    (f0 : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f0 : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hsmall :
       (C2 : ℝ) * (1 + T) +
         2 * Real.sqrt (1 + T) * ‖hA1.toLp A1‖ < 1) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
         (g := g) (r := r) (s := s) a T)
-      (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+      (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
       u = maxRegDuhamelMap (I := I) (M := M) a hT 0 force ∧
         force =
           timeOp A2 hA2 C2 hC2
@@ -348,7 +348,7 @@ theorem nonautL2_forced
               hT hT1 h_compact A1 hA1 force +
             f0 ∧
         TimeSobolev.timeH1.trace0 _ T u =
-          (0 : tensorHs (I := I) (M := M) g r s a) ∧
+          (0 : TensorHs (I := I) (M := M) g r s a) ∧
         TimeSobolev.timeH1.timeDeriv _ T u =
           timeScaleLaplacian (I := I) (M := M) a
               (maxRegDuhamelSolField (I := I) (M := M)
@@ -365,8 +365,8 @@ theorem nonautL2_forced
       add_nonneg
         (mul_nonneg C2.coe_nonneg (by linarith [hT.le]))
         (by positivity)⟩
-  let F : timeL2 (tensorHs (I := I) (M := M) g r s a) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+  let F : timeL2 (TensorHs (I := I) (M := M) g r s a) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
     fun force =>
       nonautL2Map (I := I) (M := M) hT hT1 h_compact
           A2 hA2 C2 hC2 A1 hA1 force + f0
@@ -399,10 +399,10 @@ theorem nonautL2_forced
   · simpa only [map_zero] using
       maxRegDuhamelMap_trace0 (I := I) (M := M)
         (a := a) (T := T) hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) forceStar
+        (0 : TensorHs (I := I) (M := M) g r s (a + 2)) forceStar
   · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (h_compact := h_compact) (a := a) (T := T)
-      hT (0 : tensorHs (I := I) (M := M) g r s (a + 2)) forceStar]
+      hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) forceStar]
     exact congrArg₂ (fun x y => x + y) rfl hforceStar_eq
 
 end QuasiLinear

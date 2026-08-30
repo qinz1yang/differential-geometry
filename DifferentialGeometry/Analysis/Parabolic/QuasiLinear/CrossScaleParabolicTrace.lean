@@ -56,8 +56,8 @@ lemma tensorSobolevWeight_mid_eq_sqrt_mul_sqrt
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossPairing_summable
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i (a + 1) * (v.coeff i * w.coeff i)) := by
   have hv := v.weighted_summable
@@ -85,111 +85,111 @@ lemma crossPairing_summable
     abs_nonneg (w.coeff i), sq_abs (v.coeff i), sq_abs (w.coeff i), hsqu, hsql]
 
 def crossPairing
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) : ℝ :=
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) : ℝ :=
   ∑' i, tensorSobolevWeight (I := I) (M := M) i (a + 1) * (v.coeff i * w.coeff i)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossPairing_add_left
-    (v v' : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) :
+    (v v' : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) :
     crossPairing (I := I) (M := M) (v + v') w =
       crossPairing (I := I) (M := M) v w + crossPairing (I := I) (M := M) v' w := by
   unfold crossPairing
   rw [← Summable.tsum_add (crossPairing_summable (I := I) (M := M) v w)
     (crossPairing_summable (I := I) (M := M) v' w)]
   refine tsum_congr (fun i => ?_)
-  simp only [tensorHs.add_coeff]; ring
+  simp only [TensorHs.add_coeff]; ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossPairing_add_right
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w w' : tensorHs (I := I) (M := M) g r s a) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w w' : TensorHs (I := I) (M := M) g r s a) :
     crossPairing (I := I) (M := M) v (w + w') =
       crossPairing (I := I) (M := M) v w + crossPairing (I := I) (M := M) v w' := by
   unfold crossPairing
   rw [← Summable.tsum_add (crossPairing_summable (I := I) (M := M) v w)
     (crossPairing_summable (I := I) (M := M) v w')]
   refine tsum_congr (fun i => ?_)
-  simp only [tensorHs.add_coeff]; ring
+  simp only [TensorHs.add_coeff]; ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossPairing_smul_left (c : ℝ)
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) :
     crossPairing (I := I) (M := M) (c • v) w =
       c * crossPairing (I := I) (M := M) v w := by
   unfold crossPairing
   rw [← tsum_mul_left]
   refine tsum_congr (fun i => ?_)
-  simp only [tensorHs.smul_coeff]; ring
+  simp only [TensorHs.smul_coeff]; ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossPairing_smul_right (c : ℝ)
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) :
     crossPairing (I := I) (M := M) v (c • w) =
       c * crossPairing (I := I) (M := M) v w := by
   unfold crossPairing
   rw [← tsum_mul_left]
   refine tsum_congr (fun i => ?_)
-  simp only [tensorHs.smul_coeff]; ring
+  simp only [TensorHs.smul_coeff]; ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma crossPairing_eq_inner_rescale
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) :
     crossPairing (I := I) (M := M) v w =
-      (inner ℝ (tensorHs.rescaleToL2 (I := I) (M := M) v)
-        (tensorHs.rescaleToL2 (I := I) (M := M) w) : ℝ) := by
+      (inner ℝ (TensorHs.rescaleToL2 (I := I) (M := M) v)
+        (TensorHs.rescaleToL2 (I := I) (M := M) w) : ℝ) := by
   rw [lp.inner_eq_tsum]
   unfold crossPairing
   refine tsum_congr (fun i => ?_)
-  rw [show (inner ℝ ((tensorHs.rescaleToL2 (I := I) (M := M) v : _ → ℝ) i)
-          ((tensorHs.rescaleToL2 (I := I) (M := M) w : _ → ℝ) i) : ℝ) =
-        (tensorHs.rescaleToL2 (I := I) (M := M) v : _ → ℝ) i *
-          (tensorHs.rescaleToL2 (I := I) (M := M) w : _ → ℝ) i by
+  rw [show (inner ℝ ((TensorHs.rescaleToL2 (I := I) (M := M) v : _ → ℝ) i)
+          ((TensorHs.rescaleToL2 (I := I) (M := M) w : _ → ℝ) i) : ℝ) =
+        (TensorHs.rescaleToL2 (I := I) (M := M) v : _ → ℝ) i *
+          (TensorHs.rescaleToL2 (I := I) (M := M) w : _ → ℝ) i by
       simp [RCLike.inner_apply, mul_comm]]
-  rw [tensorHs.rescaleToL2_apply, tensorHs.rescaleToL2_apply,
+  rw [TensorHs.rescaleToL2_apply, TensorHs.rescaleToL2_apply,
     tensorSobolevWeight_mid_eq_sqrt_mul_sqrt (I := I) (M := M) i a]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem abs_crossPairing_le
-    (v : tensorHs (I := I) (M := M) g r s (a + 2))
-    (w : tensorHs (I := I) (M := M) g r s a) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2))
+    (w : TensorHs (I := I) (M := M) g r s a) :
     |crossPairing (I := I) (M := M) v w| ≤ ‖v‖ * ‖w‖ := by
   rw [crossPairing_eq_inner_rescale]
   refine le_trans (abs_real_inner_le_norm _ _) ?_
-  have hv : ‖tensorHs.rescaleToL2 (I := I) (M := M) v‖ = ‖v‖ :=
-    (tensorHs.rescaleEquivL2 (I := I) (M := M)).norm_map v
-  have hw : ‖tensorHs.rescaleToL2 (I := I) (M := M) w‖ = ‖w‖ :=
-    (tensorHs.rescaleEquivL2 (I := I) (M := M)).norm_map w
+  have hv : ‖TensorHs.rescaleToL2 (I := I) (M := M) v‖ = ‖v‖ :=
+    (TensorHs.rescaleEquivL2 (I := I) (M := M)).norm_map v
+  have hw : ‖TensorHs.rescaleToL2 (I := I) (M := M) w‖ = ‖w‖ :=
+    (TensorHs.rescaleEquivL2 (I := I) (M := M)).norm_map w
   rw [hv, hw]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem crossPairing_self_eq_normSq
-    (v : tensorHs (I := I) (M := M) g r s (a + 2)) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2)) :
     crossPairing (I := I) (M := M) v
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) v) =
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a + 1 ≤ a + 2 by linarith) v‖ ^ 2 := by
-  rw [tensorHs.norm_sq_eq_tsum]
+  rw [TensorHs.norm_sq_eq_tsum]
   unfold crossPairing
   refine tsum_congr (fun i => ?_)
   rw [tensorHsInclusion_coeff_apply, tensorHsInclusion_coeff_apply, sq]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma abs_coeff_le_norm {σ : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     |T.coeff i| ≤ (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ))⁻¹ * ‖T‖ := by
   have hw_pos : 0 < tensorSobolevWeight (I := I) (M := M) i σ :=
     tensorSobolevWeight_pos (I := I) (M := M) i σ
   have hsqrt_pos : 0 < Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) :=
     Real.sqrt_pos.mpr hw_pos
   have h_term_le : tensorSobolevWeight (I := I) (M := M) i σ * (T.coeff i) ^ 2 ≤ ‖T‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum]
     refine Summable.le_tsum T.weighted_summable i (fun j _ => ?_)
     have hw : 0 ≤ tensorSobolevWeight (I := I) (M := M) j σ :=
       tensorSobolevWeight_nonneg (I := I) (M := M) j σ
@@ -205,11 +205,11 @@ lemma abs_coeff_le_norm {σ : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s)
   exact hle
 
 def coeffCLM {σ : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    tensorHs (I := I) (M := M) g r s σ →L[ℝ] ℝ :=
+    TensorHs (I := I) (M := M) g r s σ →L[ℝ] ℝ :=
   LinearMap.mkContinuous
     { toFun := fun T => T.coeff i
-      map_add' := fun S T => by simp only [tensorHs.add_coeff]
-      map_smul' := fun c T => by simp only [tensorHs.smul_coeff, RingHom.id_apply, smul_eq_mul] }
+      map_add' := fun S T => by simp only [TensorHs.add_coeff]
+      map_smul' := fun c T => by simp only [TensorHs.smul_coeff, RingHom.id_apply, smul_eq_mul] }
     (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ))⁻¹
     (fun T => by
       change ‖T.coeff i‖ ≤ _
@@ -218,7 +218,7 @@ def coeffCLM {σ : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma coeffCLM_apply {σ : ℝ} (i : TensorEigenIdx (I := I) (M := M) g r s)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) i T = T.coeff i := rfl
 
 theorem sq_eq_base_add_integral_of_indefinite
@@ -272,8 +272,8 @@ theorem sq_eq_base_add_integral_of_indefinite
 
 structure CrossScaleField (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (a : ℝ) (T : ℝ) where
-  hiL2 : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T
-  lo : timeH1 (tensorHs (I := I) (M := M) g r s a) T
+  hiL2 : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T
+  lo : timeH1 (TensorHs (I := I) (M := M) g r s a) T
   link : ∀ᵐ t ∂(timeMeasure T),
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) (hiL2 t) = lo.toFun t
@@ -319,7 +319,7 @@ lemma ae_coeffFun_eq_hiL2 :
     ∀ᵐ t ∂(timeMeasure T), ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
       u.coeffFun i t = (u.hiL2 t).coeff i := by
   filter_upwards [u.link] with t ht i
-  have := congrArg (fun T => tensorHs.coeff T i) ht
+  have := congrArg (fun T => TensorHs.coeff T i) ht
   simpa only [coeffFun, tensorHsInclusion_coeff_apply] using this.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -331,7 +331,7 @@ lemma ae_finset_top_sq_le (S : Finset (TensorEigenIdx (I := I) (M := M) g r s)) 
   have hsum_eq : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * (u.coeffFun i t) ^ 2 =
       ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (a + 2) * ((u.hiL2 t).coeff i) ^ 2 :=
     Finset.sum_congr rfl (fun i _ => by rw [ht i])
-  rw [hsum_eq, tensorHs.norm_sq_eq_tsum]
+  rw [hsum_eq, TensorHs.norm_sq_eq_tsum]
   refine Summable.sum_le_tsum S (fun i _ => ?_) (u.hiL2 t).weighted_summable
   exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)) (sq_nonneg _)
 
@@ -394,7 +394,7 @@ lemma ae_abs_finset_crossPairing_le :
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hf_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)),
         hs i]
-    rw [heq, tensorHs.norm_sq_eq_tsum]
+    rw [heq, TensorHs.norm_sq_eq_tsum]
     refine Summable.sum_le_tsum S (fun i _ => ?_) (u.hiL2 τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)) (sq_nonneg _)
   have hdsq : ∑ i ∈ S, (d i) ^ 2 ≤ ‖u.lo.deriv τ‖ ^ 2 := by
@@ -402,7 +402,7 @@ lemma ae_abs_finset_crossPairing_le :
         ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i a * ((u.lo.deriv τ).coeff i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hd_def, mul_pow, Real.sq_sqrt (tensorSobolevWeight_nonneg (I := I) (M := M) i a)]
-    rw [heq, tensorHs.norm_sq_eq_tsum]
+    rw [heq, TensorHs.norm_sq_eq_tsum]
     refine Summable.sum_le_tsum S (fun i _ => ?_) (u.lo.deriv τ).weighted_summable
     exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i a) (sq_nonneg _)
   have hsq_le : (∑ i ∈ S, f i * d i) ^ 2 ≤ (‖u.hiL2 τ‖ * ‖u.lo.deriv τ‖) ^ 2 := by
@@ -485,7 +485,7 @@ lemma exists_uniform_bound (hT : 0 < T) :
           ((u.hiL2 t₀).coeff i) ^ 2) =
         ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a + 1 ≤ a + 2 by linarith) (u.hiL2 t₀)‖ ^ 2 := by
-      rw [tensorHs.norm_sq_eq_tsum]
+      rw [TensorHs.norm_sq_eq_tsum]
       exact (tsum_congr (fun i => by rw [tensorHsInclusion_coeff_apply])).symm
     rw [hnormSq]
     have hle := tensorHsInclusion_norm_le (I := I) (M := M)
@@ -560,7 +560,7 @@ lemma summable_coeffFun_sq (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     (fun S => hB t ht S)
 
 open Classical in
-def repr (t : ℝ) : tensorHs (I := I) (M := M) g r s (a + 1) :=
+def repr (t : ℝ) : TensorHs (I := I) (M := M) g r s (a + 1) :=
   if h : Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t) ^ 2) then
     { coeff := fun i => u.coeffFun i t, weighted_summable := h }
@@ -584,7 +584,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma normSq_repr (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖u.repr t‖ ^ 2 =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t) ^ 2 := by
-  rw [tensorHs.norm_sq_eq_tsum]
+  rw [TensorHs.norm_sq_eq_tsum]
   exact tsum_congr (fun i => by rw [u.repr_coeff hT ht])
 
 end CrossScaleField
@@ -656,7 +656,7 @@ theorem logConvex_extreme_pair {f : ℕ → ℝ} (hnn : ∀ k, 0 ≤ f k)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHs_incl_norm_sq_le
-    (v : tensorHs (I := I) (M := M) g r s (a + 2)) :
+    (v : TensorHs (I := I) (M := M) g r s (a + 2)) :
     ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith) v‖ ^ 2 ≤
       ‖v‖ *

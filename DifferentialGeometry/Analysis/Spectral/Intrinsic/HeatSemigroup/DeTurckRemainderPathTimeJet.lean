@@ -53,7 +53,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc
   obtain ⟨B0, hB0s, hB0le⟩ := hmass 0 le_rfl
-  set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
+  set v0 : TensorHs (I := I) (M := M) g₀ 0 2 0 :=
     tensorHsOfSpectralMassMajorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
   set u : TensorL2 0 2 g₀ :=
     tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc le_rfl v0 with hu_def
@@ -71,7 +71,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass
     · exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i σ) (sq_nonneg _)
     · rw [hu_coeff i]; exact hBle i
   have hmem : ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-      ∃ vσ : tensorHs (I := I) (M := M) g₀ 0 2 σ,
+      ∃ vσ : TensorHs (I := I) (M := M) g₀ 0 2 σ,
         tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc hσ vσ = u :=
     allHs_of_weighted_summable_pub (I := I) (M := M) g₀ u hsum_u
   obtain ⟨S, hS⟩ := spectralSmoothRealizesAsSmooth_holds (I := I) (M := M) (g := g₀) u hmem
@@ -1335,7 +1335,7 @@ private theorem deTurckRHSReconCoeff_pathCoeff_timeJet_allOrderMass
   have hadd : tensorSobolevWeight (I := I) (M := M) i σ =
       tensorSobolevWeight (I := I) (M := M) i (-s) *
         tensorSobolevWeight (I := I) (M := M) i (σ + s) := by
-    rw [← tensorHs.tensorSobolevWeight_add (I := I) (M := M) i (-s) (σ + s)]
+    rw [← TensorHs.tensorSobolevWeight_add (I := I) (M := M) i (-s) (σ + s)]
     ring_nf
   calc tensorSobolevWeight (I := I) (M := M) i σ *
         (iteratedDerivWithin j (jet i) (Set.Icc (0 : ℝ) T) t) ^ 2
@@ -1495,7 +1495,7 @@ private theorem deTurckRemainder_pathCoeff_timeJet_allOrderMass
       have hsplitw : tensorSobolevWeight (I := I) (M := M) i (σ + 2) =
           tensorSobolevWeight (I := I) (M := M) i σ *
             tensorSobolevWeight (I := I) (M := M) i 2 :=
-        tensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ 2
+        TensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ 2
       have hdjsq_nn : 0 ≤ (iteratedDeriv j (φ i) t) ^ 2 := sq_nonneg _
       calc tensorSobolevWeight (I := I) (M := M) i σ * b ^ 2
           = tensorSobolevWeight (I := I) (M := M) i σ *

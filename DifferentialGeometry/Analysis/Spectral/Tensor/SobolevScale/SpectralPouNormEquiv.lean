@@ -31,7 +31,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def ccSpectralEmbed (g : SmoothRiemannianMetric I M) (σ : ℝ)
     (T : SmoothCcTensor g 0 2) :
-    tensorHs (I := I) (M := M) g 0 2 σ where
+    TensorHs (I := I) (M := M) g 0 2 σ where
   coeff i :=
     tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
@@ -57,7 +57,7 @@ theorem ccSpectralEmbed_norm_sq_eq_tsum (g : SmoothRiemannianMetric I M) (σ : �
           (tensorL2Coeff (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
             (SmoothCcTensor.toL2 T) i) ^ 2 := by
-  rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)
+  rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)
     (ccSpectralEmbed (I := I) (M := M) g σ T)]
   exact tsum_congr (fun i => by rw [ccSpectralEmbed_coeff])
 

@@ -34,10 +34,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
 private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
-  tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
+  TensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private abbrev incl32 (g : SmoothRiemannianMetric I M) :
     metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ] metricH2 (I := I) (M := M) g :=
@@ -99,10 +99,10 @@ theorem liftCompat_congr {g : SmoothRiemannianMetric I M}
     {aLo aHi pLo pHi qLo qHi : ℝ}
     (hLo : pLo = qLo) (hHi : pHi = qHi)
     (hOrd : aLo ≤ aHi) (hp : pLo ≤ pHi) (hq : qLo ≤ qHi)
-    (AHi : tensorHs (I := I) (M := M) g 0 2 qHi →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aHi)
-    (ALo : tensorHs (I := I) (M := M) g 0 2 qLo →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aLo)
+    (AHi : TensorHs (I := I) (M := M) g 0 2 qHi →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aHi)
+    (ALo : TensorHs (I := I) (M := M) g 0 2 qLo →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aLo)
     (hsq : (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           hOrd).comp AHi =
         ALo.comp
@@ -124,24 +124,24 @@ theorem exists_compatible_cross_scale_solution
     (hlo : aLo = aHi - 1) (hOrd : aLo ≤ aHi)
     (hOrdA1 : aLo + 1 ≤ aHi + 1) (hOrdSt : aLo + 2 ≤ aHi + 2)
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (A2Hi : ℝ → tensorHs (I := I) (M := M) g 0 2 (aHi + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aHi)
+    (A2Hi : ℝ → TensorHs (I := I) (M := M) g 0 2 (aHi + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aHi)
     (hA2Hi : AEStronglyMeasurable A2Hi (timeMeasure T))
     (C2Hi : NNReal) (hC2Hi : ∀ᵐ t ∂timeMeasure T, ‖A2Hi t‖ ≤ (C2Hi : ℝ))
-    (A1Hi : ℝ → tensorHs (I := I) (M := M) g 0 2 (aHi + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aHi)
+    (A1Hi : ℝ → TensorHs (I := I) (M := M) g 0 2 (aHi + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aHi)
     (hA1Hi : MemLp A1Hi 2 (timeMeasure T))
-    (f0Hi : timeL2 (tensorHs (I := I) (M := M) g 0 2 aHi) T)
+    (f0Hi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T)
     (hsmallHi : (C2Hi : ℝ) * (1 + T) +
       2 * Real.sqrt (1 + T) * ‖hA1Hi.toLp A1Hi‖ < 1)
-    (A2Lo : ℝ → tensorHs (I := I) (M := M) g 0 2 (aLo + 2) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aLo)
+    (A2Lo : ℝ → TensorHs (I := I) (M := M) g 0 2 (aLo + 2) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aLo)
     (hA2Lo : AEStronglyMeasurable A2Lo (timeMeasure T))
     (C2Lo : NNReal) (hC2Lo : ∀ᵐ t ∂timeMeasure T, ‖A2Lo t‖ ≤ (C2Lo : ℝ))
-    (A1Lo : ℝ → tensorHs (I := I) (M := M) g 0 2 (aLo + 1) →L[ℝ]
-      tensorHs (I := I) (M := M) g 0 2 aLo)
+    (A1Lo : ℝ → TensorHs (I := I) (M := M) g 0 2 (aLo + 1) →L[ℝ]
+      TensorHs (I := I) (M := M) g 0 2 aLo)
     (hA1Lo : MemLp A1Lo 2 (timeMeasure T))
-    (f0Lo : timeL2 (tensorHs (I := I) (M := M) g 0 2 aLo) T)
+    (f0Lo : timeL2 (TensorHs (I := I) (M := M) g 0 2 aLo) T)
     (hsmallLo : (C2Lo : ℝ) * (1 + T) +
       2 * Real.sqrt (1 + T) * ‖hA1Lo.toLp A1Lo‖ < 1)
     (hA2compat : ∀ᵐ t ∂timeMeasure T,
@@ -158,14 +158,14 @@ theorem exists_compatible_cross_scale_solution
             hOrdA1))
     (hf0 : timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         hOrd f0Hi = f0Lo)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g 0 2 aLo) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 aLo) T)
     (hfLo : fLo =
       nonautL2Map (I := I) (M := M) hT hT1
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo fLo + f0Lo) :
     ∃ (uHi : MaxRegSolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) aHi T)
-      (fHi : timeL2 (tensorHs (I := I) (M := M) g 0 2 aHi) T),
+      (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T),
       uHi = maxRegDuhamelMap (I := I) (M := M) aHi hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M) hT hT1

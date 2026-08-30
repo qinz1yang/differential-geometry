@@ -253,7 +253,7 @@ def boundedDeTurckRemainderOnLowerState (g₀ g_bg : SmoothRiemannianMetric I M)
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ T) δ) :
     lowerState (I := I) (M := M) g₀ 1 (lowRegularityStateRadius Ctop B1 ρ P) →
-      tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
+      TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
   deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg (lowRegularityStateRadius_pos hCtop hB1 hρ hP) hδ
     (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
       hP.le hreal)
@@ -272,21 +272,21 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal v‖ ≤
         Ctop * lowRegularityOuterRadius Ctop ρ P *
-            ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
           B0 *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 *
-              (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (hzero : ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
@@ -295,12 +295,12 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
       (_hTτ : T ≤ lowRegularityTimeHorizon Ctop B0 B1 D ρ P),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
         (gforce : timeL2
-          (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+          (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
         let field := maxRegDuhamelSolField (I := I) (M := M)
           ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
         u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce ∧
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             field t ∈ lowerState (I := I) (M := M) g₀ 1
               (lowRegularityStateRadius Ctop B1 ρ P)) ∧
@@ -344,16 +344,16 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal v‖ ≤
         (A : ℝ) * lowRegularityStateRadius Ctop B1 ρ P *
-            ‖(u : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(u : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - (v : _)‖ +
           (B : ℝ) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
               ((u : _) - (v : _))‖ +
           (C : ℝ) *
-              (‖(u : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(v : tensorHs (I := I) (M := M) g₀ 0 2
+                ‖(v : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
@@ -374,7 +374,7 @@ theorem exists_lowRegularity_solution_of_remainder_bounds (g₀ g_bg : SmoothRie
 
 structure IsLowRegularitySolutionAt (g₀ : SmoothRiemannianMetric I M)
     {δ Ctop B0 B1 D ρ P T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (Rcap : ℝ) : Prop where
   hδ : δ < 1
   hCtop : 0 ≤ Ctop
@@ -398,21 +398,21 @@ structure IsLowRegularitySolutionAt (g₀ : SmoothRiemannianMetric I M)
     ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal u -
         boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal v‖ ≤
       Ctop * lowRegularityOuterRadius Ctop ρ P *
-          ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
         B0 *
           ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-            ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
         B1 *
-            (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2))‖ +
-              ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
           ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-            ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖
   hzero : ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
       ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
@@ -424,12 +424,12 @@ structure IsLowRegularitySolutionAt (g₀ : SmoothRiemannianMetric I M)
       (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
           (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
         (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
           fLo) t))
   hcap : lowRegularityStateRadius Ctop B1 ρ P ≤ Rcap
 
 def IsLowRegularitySolution (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop :=
   ∃ (δ Ctop B0 B1 D ρ P : ℝ) (hδ : δ < 1)
     (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -448,21 +448,21 @@ def IsLowRegularitySolution (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 
         ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal u -
             boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal v‖ ≤
           Ctop * lowRegularityOuterRadius Ctop ρ P *
-              ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
             B0 *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
             B1 *
-                (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖ +
-                  ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                  ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2))‖) *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖) ∧
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
@@ -474,7 +474,7 @@ def IsLowRegularitySolution (g₀ : SmoothRiemannianMetric I M) {T : ℝ} (hT : 
           (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
               (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
             (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-              (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+              (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               fLo) t))
 
 theorem isLowRegularitySolution_of_remainder_bounds (g₀ : SmoothRiemannianMetric I M)
@@ -495,34 +495,34 @@ theorem isLowRegularitySolution_of_remainder_bounds (g₀ : SmoothRiemannianMetr
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal v‖ ≤
         Ctop * lowRegularityOuterRadius Ctop ρ P *
-            ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
           B0 *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 *
-              (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (hzero : ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
           (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le⟩‖ ≤ D)
     {T : ℝ} (hT : 0 < T) (hTτ : T ≤ lowRegularityTimeHorizon Ctop B0 B1 D ρ P)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ‖fLo‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4)
     (hforce : fLo =ᵐ[timeMeasure T]
       (fun t => boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t))) :
     IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo :=
   ⟨δ, Ctop, B0, B1, D, ρ, P, hδ, hCtop, hB1, hρ, hP, hreal, hδ0, hδ3, hcore,
@@ -546,35 +546,35 @@ theorem isLowRegularitySolutionAt_of_remainder_bounds (g₀ : SmoothRiemannianMe
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal u -
           boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal v‖ ≤
         Ctop * lowRegularityOuterRadius Ctop ρ P *
-            ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
           B0 *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 *
-              (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
-                ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-              ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (hzero : ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
           (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le⟩‖ ≤ D)
     {T : ℝ} (hT : 0 < T) (hTτ : T ≤ lowRegularityTimeHorizon Ctop B0 B1 D ρ P)
     (hT1 : T ≤ 1)
-    (fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
+    (fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ‖fLo‖ ≤ lowRegularityStateRadius Ctop B1 ρ P / 4)
     (hforce : fLo =ᵐ[timeMeasure T]
       (fun t => boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             fLo) t)))
     {Rcap : ℝ} (hcap : lowRegularityStateRadius Ctop B1 ρ P ≤ Rcap) :
     IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop) (B0 := B0)
@@ -584,7 +584,7 @@ theorem isLowRegularitySolutionAt_of_remainder_bounds (g₀ : SmoothRiemannianMe
 
 theorem IsLowRegularitySolutionAt.toIsLowRegularitySolution {g₀ : SmoothRiemannianMetric I M}
     {δ Ctop B0 B1 D ρ P T Rcap : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
-    {fLo : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
+    {fLo : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (h : IsLowRegularitySolutionAt (I := I) (M := M) (δ := δ) (Ctop := Ctop) (B0 := B0)
       (B1 := B1) (D := D) (ρ := ρ) (P := P) g₀ hT hT1 fLo Rcap) :
     IsLowRegularitySolution (I := I) (M := M) g₀ hT fLo :=
@@ -608,21 +608,21 @@ theorem exists_lowRegularity_remainder_bounds (hDim : Module.finrank ℝ E = 3)
         ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal u -
             boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal v‖ ≤
           Ctop * lowRegularityOuterRadius Ctop ρ P *
-              ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
             B0 *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
             B1 *
-                (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2))‖ +
-                  ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                  ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2))‖) *
               ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                 (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-                ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+                ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) - v.1)‖) ∧
       ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1
@@ -740,21 +740,21 @@ structure HasLowRegularityBoundsAt (g₀ g_bg : SmoothRiemannianMetric I M)
         boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg K.threshold_lt K.top_nonneg
           K.slope_nonneg K.outer_pos K.realize_pos hreal v‖ ≤
       K.top * lowRegularityOuterRadius K.top K.outer K.realize *
-          ‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+          ‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
         K.base *
           ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-            ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
         K.slope *
-            (‖(u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            (‖(u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2))‖ +
-              ‖(v.1 : tensorHs (I := I) (M := M) g₀ 0 2
+              ‖(v.1 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
           ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-            ((u.1 : tensorHs (I := I) (M := M) g₀ 0 2
+            ((u.1 : TensorHs (I := I) (M := M) g₀ 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖
   hzero : ‖boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg K.threshold_lt K.top_nonneg
       K.slope_nonneg K.outer_pos K.realize_pos hreal
@@ -772,12 +772,12 @@ structure IsBackgroundLowRegularitySolution (g₀ g_bg : SmoothRiemannianMetric 
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
-      (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop where
+      (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T) : Prop where
   map_eq : u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-    (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
+    (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
   field_mem : ∀ᵐ t ∂(timeMeasure T),
     maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
       lowerState (I := I) (M := M) g₀ 1
         (lowRegularityStateRadius K.top K.slope K.outer K.realize)
   force_eq : gforce =ᵐ[timeMeasure T]
@@ -787,13 +787,13 @@ structure IsBackgroundLowRegularitySolution (g₀ g_bg : SmoothRiemannianMetric 
         (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos
           K.realize_pos).le)
         (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
           gforce) t))
   trace_zero : timeH1.trace0 _ T u = 0
   pde : timeH1.timeDeriv _ T u =
     timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
       (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
         gforce) + gforce
   force_bound : ‖gforce‖ ≤
     lowRegularityStateRadius K.top K.slope K.outer K.realize / 4
@@ -805,7 +805,7 @@ theorem exists_background_lowRegularity_solution (g₀ g_bg : SmoothRiemannianMe
       (hT1 : T ≤ 1),
       ∃ (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
         (gforce : timeL2
-          (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
+          (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T),
         IsBackgroundLowRegularitySolution (I := I) (M := M) g₀ g_bg K hK hT hT1 u gforce := by
   intro T hT hTτ hT1
   obtain ⟨u, gforce, hmap, hmem, hforce, htrace, hpde, hbound⟩ :=

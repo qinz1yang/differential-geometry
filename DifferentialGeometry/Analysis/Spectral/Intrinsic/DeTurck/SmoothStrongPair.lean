@@ -40,11 +40,11 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 theorem smoothHs_zero (g : SmoothRiemannianMetric I M) (sigma : ℝ) :
     smoothCcToTensorHs (I := I) (M := M) g sigma
         (0 : SmoothCcTensor g 0 2) = 0 := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [smoothCcToTensorHs_coeff,
     show SmoothCcTensor.toL2 (0 : SmoothCcTensor g 0 2) = 0 from map_zero _,
-    tensorL2Coeff_eq_inner, inner_zero_right, tensorHs.zero_coeff]
+    tensorL2Coeff_eq_inner, inner_zero_right, TensorHs.zero_coeff]
 
 theorem exists_pathBall
     (g : SmoothRiemannianMetric I M) (n : ℕ)
@@ -60,7 +60,7 @@ theorem exists_pathBall
     ∃ T : ℝ, 0 < T ∧ Icc (0 : ℝ) T ⊆ S ∧
       ∀ t ∈ Icc (0 : ℝ) T,
         ‖smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi t)‖ ≤ R := by
-  let F : ℝ → tensorHs (I := I) (M := M) g 0 2 (n : ℝ) := fun t =>
+  let F : ℝ → TensorHs (I := I) (M := M) g 0 2 (n : ℝ) := fun t =>
     smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi t)
   have hFcont : ContinuousAt F 0 :=
     (smoothHs_path_cd (I := I) (M := M) g n Phi hS hPhi).continuousOn.continuousAt
@@ -97,11 +97,11 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
 theorem smoothPath_strong
     (g : SmoothRiemannianMetric I M) (a : ℝ) {L : ℝ≥0}
-    {Nfun : tensorHs (I := I) (M := M) g 0 2 (a + 2) →
-      tensorHs (I := I) (M := M) g 0 2 a}
+    {Nfun : TensorHs (I := I) (M := M) g 0 2 (a + 2) →
+      TensorHs (I := I) (M := M) g 0 2 a}
     (hLip : LipschitzWith L Nfun) {T : ℝ}
-    (Fhi : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2))
-    (Flow D : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
+    (Fhi : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2))
+    (Flow D : ℝ → TensorHs (I := I) (M := M) g 0 2 a)
     (hhi : ContinuousOn Fhi (Icc (0 : ℝ) T))
     (hD : ContinuousOn D (Icc (0 : ℝ) T))
     (hincl : ∀ t ∈ Icc (0 : ℝ) T,
@@ -111,36 +111,36 @@ theorem smoothPath_strong
     (hzero : Flow 0 = 0)
     (hpde : ∀ t ∈ Icc (0 : ℝ) T,
       D t = tensorScaleLaplacian (I := I) (M := M) a (Fhi t) + Nfun (Fhi t)) :
-    ∃ force : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T,
-      ∃ u : timeH1 (tensorHs (I := I) (M := M) g 0 2 a) T,
-        ∃ field : timeL2 (tensorHs (I := I) (M := M) g 0 2 (a + 2)) T,
+    ∃ force : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T,
+      ∃ u : timeH1 (TensorHs (I := I) (M := M) g 0 2 a) T,
+        ∃ field : timeL2 (TensorHs (I := I) (M := M) g 0 2 (a + 2)) T,
           timeH1.trace0 _ T u = 0 ∧
           timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show a ≤ a + 2 by linarith) field =
-            timeH1.toTimeL2 (tensorHs (I := I) (M := M) g 0 2 a) T u ∧
+            timeH1.toTimeL2 (TensorHs (I := I) (M := M) g 0 2 a) T u ∧
           timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) a field + force ∧
           force = nemytskii (I := I) (M := M) hLip field ∧
-          (field : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2))
+          (field : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2))
             =ᵐ[timeMeasure T] Fhi ∧
-          (force : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
+          (force : ℝ → TensorHs (I := I) (M := M) g 0 2 a)
             =ᵐ[timeMeasure T] (fun t => Nfun (Fhi t)) ∧
           ∀ t ∈ Icc (0 : ℝ) T, u.toFun t = Flow t := by
   have hNcont : ContinuousOn (fun t => Nfun (Fhi t)) (Icc (0 : ℝ) T) :=
     hLip.continuous.comp_continuousOn hhi
-  let field : timeL2 (tensorHs (I := I) (M := M) g 0 2 (a + 2)) T :=
+  let field : timeL2 (TensorHs (I := I) (M := M) g 0 2 (a + 2)) T :=
     DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ofContinuousOn hhi
-  let force : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T :=
+  let force : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T :=
     DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ofContinuousOn hNcont
-  let derivL2 : timeL2 (tensorHs (I := I) (M := M) g 0 2 a) T :=
+  let derivL2 : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T :=
     DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ofContinuousOn hD
-  let u : timeH1 (tensorHs (I := I) (M := M) g 0 2 a) T :=
+  let u : timeH1 (TensorHs (I := I) (M := M) g 0 2 a) T :=
     timeH1.mk (Flow 0) derivL2
   have htoFun : ∀ t ∈ Icc (0 : ℝ) T, u.toFun t = Flow t := by
     intro t ht
     have hzeroMem : (0 : ℝ) ∈ Icc (0 : ℝ) T :=
       ⟨le_rfl, le_trans ht.1 ht.2⟩
-    have hrep : (derivL2 : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
+    have hrep : (derivL2 : ℝ → TensorHs (I := I) (M := M) g 0 2 a)
         =ᵐ[timeMeasure T] D := by
       simpa only [derivL2] using
         DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn hD
@@ -163,11 +163,11 @@ theorem smoothPath_strong
     simp only [u, timeH1.toFun_apply, timeH1.init_mk, timeH1.deriv_mk]
     rw [hintEq, hFTC]
     abel
-  have hfieldRep : (field : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2))
+  have hfieldRep : (field : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2))
       =ᵐ[timeMeasure T] Fhi := by
     simpa only [field] using
       DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn hhi
-  have hforceRep : (force : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
+  have hforceRep : (force : ℝ → TensorHs (I := I) (M := M) g 0 2 a)
       =ᵐ[timeMeasure T] fun t => Nfun (Fhi t) := by
     simpa only [force] using
       DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn hNcont
@@ -183,7 +183,7 @@ theorem smoothPath_strong
         (show a ≤ a + 2 by linarith)).coeFn_compLpL
           (p := 2) (μ := timeMeasure T) field
     have huAE :
-        ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g 0 2 a) T u)
+        ⇑(timeH1.toTimeL2 (TensorHs (I := I) (M := M) g 0 2 a) T u)
             =ᵐ[timeMeasure T] u.toFun := by
       rw [timeH1.toTimeL2_apply, timeH1.toFunL2]
       exact DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn
@@ -194,7 +194,7 @@ theorem smoothPath_strong
     rw [hit, hft, hut, hincl t ht, htoFun t ht]
   · refine Lp.ext ?_
     have hderivAE :
-        ⇑(timeH1.timeDeriv (tensorHs (I := I) (M := M) g 0 2 a) T u)
+        ⇑(timeH1.timeDeriv (TensorHs (I := I) (M := M) g 0 2 a) T u)
             =ᵐ[timeMeasure T] D := by
       simpa only [u, derivL2, timeH1.timeDeriv_mk] using
         DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn hD
@@ -311,7 +311,7 @@ theorem smoothLap_eq_scale (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
         (smoothCcToTensorHs (I := I) (M := M) g₀ (σ + 2) T) =
       smoothCcToTensorHs (I := I) (M := M) g₀ σ
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 T) := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorScaleLaplacian_coeff, smoothLap_coeff]
   rfl
@@ -323,7 +323,7 @@ theorem smoothRem_eq_N (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ)
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T hδ_lt hδ := by
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rfl
 
@@ -359,22 +359,22 @@ theorem smoothGeom_strong
           (unitModel (I := I) (M := M) g₀ 2
             (deTurckRHSBase (I := I) (M := M) g₀ g_bg (Phi t) hδ_lt
               (hsmall t ht)) x slots) t) :
-    ∃ force : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T,
-      ∃ u : timeH1 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T,
+    ∃ force : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T,
+      ∃ u : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T,
         ∃ field : timeL2
-            (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T,
+            (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T,
           timeH1.trace0 _ T u = 0 ∧
           timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
               (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) field =
             timeH1.toTimeL2
-              (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T u ∧
+              (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T u ∧
           timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) (a : ℝ) field + force ∧
           force = nemytskii (I := I) (M := M) hLip field ∧
-          (field : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
+          (field : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
             =ᵐ[timeMeasure T] (fun t => smoothCcToTensorHs (I := I) (M := M)
               g₀ ((a : ℝ) + 2) (Phi t)) ∧
-          (force : ℝ → tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
+          (force : ℝ → TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
             =ᵐ[timeMeasure T] (fun t =>
               deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a
                 (smoothCcToTensorHs (I := I) (M := M) g₀
@@ -424,11 +424,11 @@ theorem smoothGeom_strong
     exact hHs a t (hIcc ht)
   have hzero : smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (Phi 0) = 0 := by
     rw [hPhi0]
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext i
     rw [smoothCcToTensorHs_coeff,
       show SmoothCcTensor.toL2 (0 : SmoothCcTensor g₀ 0 2) = 0 from map_zero _,
-      tensorL2Coeff_eq_inner, inner_zero_right, tensorHs.zero_coeff]
+      tensorL2Coeff_eq_inner, inner_zero_right, TensorHs.zero_coeff]
   have hpde : ∀ t ∈ Icc (0 : ℝ) T,
       smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (dPhi t) =
         tensorScaleLaplacian (I := I) (M := M) (a : ℝ)
@@ -478,10 +478,10 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
 theorem exists_pathNBound
     (g : SmoothRiemannianMetric I M) (a : ℝ) {L : ℝ≥0}
-    {Nfun : tensorHs (I := I) (M := M) g 0 2 (a + 2) →
-      tensorHs (I := I) (M := M) g 0 2 a}
+    {Nfun : TensorHs (I := I) (M := M) g 0 2 (a + 2) →
+      TensorHs (I := I) (M := M) g 0 2 a}
     (hLip : LipschitzWith L Nfun) {T : ℝ} (hT : 0 ≤ T)
-    (Fhi : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2))
+    (Fhi : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2))
     (hFhi : ContinuousOn Fhi (Icc (0 : ℝ) T)) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ t ∈ Icc (0 : ℝ) T, ‖Nfun (Fhi t)‖ ≤ B := by
   have hcont : ContinuousOn (fun t => ‖Nfun (Fhi t)‖) (Icc (0 : ℝ) T) :=
@@ -588,7 +588,7 @@ theorem smoothGeom_unique
     (hLip : LipschitzWith L
       (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a))
     (hsingle : ∀ (v v' :
-      tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+      TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a v -
           deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a v'‖ ≤
         (C₁ : ℝ) * max
@@ -691,7 +691,7 @@ theorem smoothGeom_unique
     hforceBall₁ hforceBall₂
   intro t ht
   have hu := congrArg
-    (fun v : timeH1 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T =>
+    (fun v : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T =>
       v.toFun t) huniq.2.2
   change u₁.toFun t = u₂.toFun t at hu
   rw [hpath₁ t ht, hpath₂ t ht] at hu
@@ -709,7 +709,7 @@ theorem metricRD_unique
     (hLip : LipschitzWith L
       (deTurckSobolevNonlinearitySymm (I := I) (M := M) q g_bg a))
     (hsingle : ∀ (v v' :
-      tensorHs (I := I) (M := M) q 0 2 ((a : ℝ) + 2)),
+      TensorHs (I := I) (M := M) q 0 2 ((a : ℝ) + 2)),
       ‖deTurckSobolevNonlinearitySymm (I := I) (M := M) q g_bg a v -
           deTurckSobolevNonlinearitySymm (I := I) (M := M) q g_bg a v'‖ ≤
         (C₁ : ℝ) * max

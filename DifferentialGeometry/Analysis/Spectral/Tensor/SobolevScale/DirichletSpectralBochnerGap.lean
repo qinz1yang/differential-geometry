@@ -179,7 +179,7 @@ private theorem smoothCcToTensorHs_rawTensorConnLapSmooth_le_self
       tensorSobolevWeight (I := I) (M := M) i (σ + 2) * (c i) ^ 2 =
         tensorSobolevWeight (I := I) (M := M) i σ * (1 + lam i) ^ 2 * (c i) ^ 2 := by
     intro i
-    rw [tensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ 2]
+    rw [TensorHs.tensorSobolevWeight_add (I := I) (M := M) i σ 2]
     have hw2 : tensorSobolevWeight (I := I) (M := M) i (2 : ℝ) = (1 + lam i) ^ 2 := by
       unfold tensorSobolevWeight
       rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
@@ -207,7 +207,7 @@ private theorem smoothCcToTensorHs_rawTensorConnLapSmooth_le_self
   have hsq : ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 T)‖ ^ 2 ≤
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (σ + 2) T‖ ^ 2 := by
-    rw [tensorHs.norm_sq_eq_tsum, tensorHs.norm_sq_eq_tsum]
+    rw [TensorHs.norm_sq_eq_tsum, TensorHs.norm_sq_eq_tsum]
     rw [show (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
           ((smoothCcToTensorHs (I := I) (M := M) g₀ σ
             (rawTensorConnLapSmooth (I := I) g₀ 0 2 T)).coeff i) ^ 2) =
@@ -245,7 +245,7 @@ private theorem spectralModeMass_succ_le_smoothCcToTensorHs_succ_normSq
     with hcomp
   have hembed_eq : smoothCcToTensorHs (I := I) (M := M) g₀ (((n : ℕ) : ℝ) + 1) u =
       ccSpectralEmbed (I := I) (M := M) g₀ (((n : ℕ) : ℝ) + 1) u :=
-    tensorHs.ext (funext (fun i => rfl))
+    TensorHs.ext (funext (fun i => rfl))
   rw [hembed_eq, ccSpectralEmbed_norm_sq_eq_tsum]
   have hweight_eq : ∀ m : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
         (I := I) (M := M) g₀ 0 2,
@@ -303,7 +303,7 @@ private theorem cc_raw_hs_le
     have hw : tensorSobolevWeight (I := I) (M := M) m (σ + 2) =
         tensorSobolevWeight (I := I) (M := M) m σ *
           (1 + TensorEigenIdx.lambda (I := I) (M := M) m) ^ 2 := by
-      rw [tensorHs.tensorSobolevWeight_add]
+      rw [TensorHs.tensorSobolevWeight_add]
       congr 1
       unfold tensorSobolevWeight
       rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
@@ -332,7 +332,7 @@ private theorem cc_raw_hs_le
       have hw : tensorSobolevWeight (I := I) (M := M) m (σ + 2) =
           tensorSobolevWeight (I := I) (M := M) m σ *
             (1 + TensorEigenIdx.lambda (I := I) (M := M) m) ^ 2 := by
-        rw [tensorHs.tensorSobolevWeight_add]
+        rw [TensorHs.tensorSobolevWeight_add]
         congr 1
         unfold tensorSobolevWeight
         rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
@@ -865,7 +865,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_even_local
   refine ⟨((2 * k + 1 : ℕ) : ℝ) * (Cg * (k + 1)), by positivity, fun S => ?_⟩
   have hembed_eq : ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S =
       smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S :=
-    tensorHs.ext (funext (fun i => rfl))
+    TensorHs.ext (funext (fun i => rfl))
   set Nspec : ℝ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S‖ with hNspec_def
   have hNspec_nn : 0 ≤ Nspec := norm_nonneg _
   have hlap_le : ∀ i ∈ Finset.range (k + 1),
@@ -951,7 +951,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd_local
   have hNspec_nn : 0 ≤ Nspec := norm_nonneg _
   have hembed_eq : ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k + 1 : ℕ) : ℝ) S =
       smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k + 1 : ℕ) : ℝ) S :=
-    tensorHs.ext (funext (fun i => rfl))
+    TensorHs.ext (funext (fun i => rfl))
   have hccmono : ∀ (σ : ℕ), σ ≤ 2 * k + 1 →
       ‖ccSpectralEmbed (I := I) (M := M) g₀ ((σ : ℕ) : ℝ) S‖ ≤ Nspec := by
     intro σ hσ
@@ -965,7 +965,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd_local
     refine mul_le_mul_of_nonneg_left ?_ hCeven_nn
     have hembed2k : smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S =
         ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     rw [hembed2k]
     exact hccmono (2 * k) (by omega)
   have hlowsum : ∑ j ∈ Finset.range (2 * k + 1),
@@ -974,7 +974,7 @@ private theorem exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_odd_local
     refine mul_le_mul_of_nonneg_left ?_ hClow_nn
     have hembed2k : smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S =
         ccSpectralEmbed (I := I) (M := M) g₀ ((2 * k : ℕ) : ℝ) S :=
-      tensorHs.ext (funext (fun i => rfl))
+      TensorHs.ext (funext (fun i => rfl))
     rw [hembed2k]
     exact hccmono (2 * k) (by omega)
   have hccoeff_le : ∀ i ∈ Finset.range (k + 1),
@@ -1617,11 +1617,11 @@ theorem exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
   have hhigh :
       ccTensorToHs (I := I) (M := M) g₀ 2 (((n : ℕ) : ℝ) + 1) u =
         smoothCcToTensorHs (I := I) (M := M) g₀ (((n : ℕ) : ℝ) + 1) u :=
-    tensorHs.ext (funext (fun _ => rfl))
+    TensorHs.ext (funext (fun _ => rfl))
   have hlow :
       ccTensorToHs (I := I) (M := M) g₀ 2 ((n : ℕ) : ℝ) u =
         smoothCcToTensorHs (I := I) (M := M) g₀ ((n : ℕ) : ℝ) u :=
-    tensorHs.ext (funext (fun _ => rfl))
+    TensorHs.ext (funext (fun _ => rfl))
   rw [hhigh, hlow] at h
   exact h
 

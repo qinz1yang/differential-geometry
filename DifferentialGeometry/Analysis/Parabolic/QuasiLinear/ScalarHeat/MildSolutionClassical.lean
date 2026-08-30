@@ -35,11 +35,11 @@ open DifferentialGeometry.Analysis.HeatEquation
 
 theorem scalarQuasilinearMildSolution_eq_mildSolution
     (g : SmoothRiemannianMetric I M)
-    (u₀ : scalarHs (I := I) (M := M) g 0)
-    {N : scalarHs (I := I) (M := M) g 0 → scalarHs (I := I) (M := M) g 0}
+    (u₀ : ScalarHs (I := I) (M := M) g 0)
+    {N : ScalarHs (I := I) (M := M) g 0 → ScalarHs (I := I) (M := M) g 0}
     {L : NNReal} (hN : LipschitzWith L N)
     {T : ℝ}
-    {u : ℝ → scalarHs (I := I) (M := M) g 0}
+    {u : ℝ → ScalarHs (I := I) (M := M) g 0}
     (hu_cont : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = heatSemigroupHsExt (I := I) (M := M) g 0 t u₀ +
@@ -51,18 +51,18 @@ theorem scalarQuasilinearMildSolution_eq_mildSolution
           (scalarHsZeroEquivL2 (I := I) (M := M) g u₀)
           (fun s : ℝ => scalarHsZeroEquivL2 (I := I) (M := M) g (N (u s))) t := by
   classical
-  let e : scalarHs (I := I) (M := M) g 0 →L[ℝ]
+  let e : ScalarHs (I := I) (M := M) g 0 →L[ℝ]
       Lp ℝ 2 (riemannianVolumeMeasure I M g) :=
     (scalarHsZeroEquivL2 (I := I) (M := M) g).toLinearIsometry.toContinuousLinearMap
   intro t ht
   have hsem_apply : ∀ {τ : ℝ} (hτ : 0 < τ)
-      (v : scalarHs (I := I) (M := M) g 0),
+      (v : ScalarHs (I := I) (M := M) g 0),
       e (heatSemigroupHsExt (I := I) (M := M) g 0 τ v) =
         heatSemigroup (I := I) (M := M) g τ (e v) := by
     intro τ hτ v
     rw [heatSemigroupHsExt_of_pos (I := I) (M := M) hτ]
     exact heatSemigroupHs_zeroEquivL2_apply (I := I) (M := M) hτ v
-  have hsem_zero : ∀ v : scalarHs (I := I) (M := M) g 0,
+  have hsem_zero : ∀ v : ScalarHs (I := I) (M := M) g 0,
       e (heatSemigroupHsExt (I := I) (M := M) g 0 0 v) =
         heatSemigroup (I := I) (M := M) g 0 (e v) := by
     intro v
@@ -93,7 +93,7 @@ theorem scalarQuasilinearMildSolution_eq_mildSolution
   have hφ : ContinuousOn (fun τ : ℝ => (t - τ, N (u τ))) (Set.Icc 0 t) := by
     exact ((continuous_const.sub continuous_id).continuousOn).prodMk hφ2
   have hS : ContinuousOn
-      (fun p : ℝ × scalarHs (I := I) (M := M) g 0 =>
+      (fun p : ℝ × ScalarHs (I := I) (M := M) g 0 =>
         scalarHsBoundedC0Semigroup (I := I) (M := M) g 0 p.1 p.2)
       (Set.Ici 0 ×ˢ Set.univ) :=
     (scalarHsBoundedC0Semigroup (I := I) (M := M) g 0).continuousOn_uncurry
@@ -136,10 +136,10 @@ theorem scalarQuasilinearMildSolution_eq_mildSolution
 
 theorem scalarQuasilinear_smooth_representative_of_forcingSpectralMass
     (g : SmoothRiemannianMetric I M)
-    (u₀ : scalarHs (I := I) (M := M) g 0)
-    {N : scalarHs (I := I) (M := M) g 0 → scalarHs (I := I) (M := M) g 0}
+    (u₀ : ScalarHs (I := I) (M := M) g 0)
+    {N : ScalarHs (I := I) (M := M) g 0 → ScalarHs (I := I) (M := M) g 0}
     {L : NNReal} (hN : LipschitzWith L N)
-    {T : ℝ} {u : ℝ → scalarHs (I := I) (M := M) g 0}
+    {T : ℝ} {u : ℝ → ScalarHs (I := I) (M := M) g 0}
     (hu_cont : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = heatSemigroupHsExt (I := I) (M := M) g 0 t u₀ +
@@ -169,10 +169,10 @@ theorem scalarQuasilinear_smooth_representative_of_forcingSpectralMass
 
 theorem scalarQuasilinear_satisfies_heat_equation_of_forcingSpectralMass
     (g : SmoothRiemannianMetric I M)
-    (u₀ : scalarHs (I := I) (M := M) g 0)
-    {N : scalarHs (I := I) (M := M) g 0 → scalarHs (I := I) (M := M) g 0}
+    (u₀ : ScalarHs (I := I) (M := M) g 0)
+    {N : ScalarHs (I := I) (M := M) g 0 → ScalarHs (I := I) (M := M) g 0}
     {L : NNReal} (hN : LipschitzWith L N)
-    {T : ℝ} {u : ℝ → scalarHs (I := I) (M := M) g 0}
+    {T : ℝ} {u : ℝ → ScalarHs (I := I) (M := M) g 0}
     (hu_cont : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = heatSemigroupHsExt (I := I) (M := M) g 0 t u₀ +
@@ -219,10 +219,10 @@ theorem scalarQuasilinear_satisfies_heat_equation_of_forcingSpectralMass
 
 theorem scalar_quasilinear_classical_solution_of_smooth_forcing
     (g : SmoothRiemannianMetric I M)
-    (u₀ : scalarHs (I := I) (M := M) g 0)
-    {N : scalarHs (I := I) (M := M) g 0 → scalarHs (I := I) (M := M) g 0}
+    (u₀ : ScalarHs (I := I) (M := M) g 0)
+    {N : ScalarHs (I := I) (M := M) g 0 → ScalarHs (I := I) (M := M) g 0}
     {L : NNReal} (hN : LipschitzWith L N)
-    {T : ℝ} {u : ℝ → scalarHs (I := I) (M := M) g 0}
+    {T : ℝ} {u : ℝ → ScalarHs (I := I) (M := M) g 0}
     (hu_cont : ContinuousOn u (Set.Icc 0 T))
     (hu_eq : ∀ t ∈ Set.Icc (0 : ℝ) T,
       u t = heatSemigroupHsExt (I := I) (M := M) g 0 t u₀ +
@@ -262,23 +262,23 @@ theorem scalar_quasilinear_classical_solution_of_smooth_forcing
 
 theorem scalar_quasilinear_local_classical_solution_of_smooth_forcing
     (g : SmoothRiemannianMetric I M)
-    (u₀ : scalarHs (I := I) (M := M) g 0)
-    {N : scalarHs (I := I) (M := M) g 0 → scalarHs (I := I) (M := M) g 0}
+    (u₀ : ScalarHs (I := I) (M := M) g 0)
+    {N : ScalarHs (I := I) (M := M) g 0 → ScalarHs (I := I) (M := M) g 0}
     {L : NNReal} (hN : LipschitzWith L N)
-    (hN_smooth : ∀ (u : ℝ → scalarHs (I := I) (M := M) g 0) (s : ℝ),
+    (hN_smooth : ∀ (u : ℝ → ScalarHs (I := I) (M := M) g 0) (s : ℝ),
       ∃ f_smooth : SmoothScalar g,
         smoothToLp (I := I) (M := M) g f_smooth =
           scalarHsZeroEquivL2 (I := I) (M := M) g (N (u s)))
-    (hf : ∀ u : ℝ → scalarHs (I := I) (M := M) g 0,
+    (hf : ∀ u : ℝ → ScalarHs (I := I) (M := M) g 0,
       ContDiff ℝ 1 (fun s : ℝ =>
         scalarHsZeroEquivL2 (I := I) (M := M) g (N (u s))))
-    (hmass : ∀ (u : ℝ → scalarHs (I := I) (M := M) g 0) (t : ℝ) (k : ℕ),
+    (hmass : ∀ (u : ℝ → ScalarHs (I := I) (M := M) g 0) (t : ℝ) (k : ℕ),
       Summable (forcingSpectralMass (I := I) (M := M) g
         (fun s : ℝ => scalarHsZeroEquivL2 (I := I) (M := M) g (N (u s))) t k))
-    (hmass_deriv : ∀ (u : ℝ → scalarHs (I := I) (M := M) g 0) (t : ℝ) (k : ℕ),
+    (hmass_deriv : ∀ (u : ℝ → ScalarHs (I := I) (M := M) g 0) (t : ℝ) (k : ℕ),
       Summable (forcingSpectralMass (I := I) (M := M) g
         (deriv (fun s : ℝ => scalarHsZeroEquivL2 (I := I) (M := M) g (N (u s)))) t k)) :
-    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → scalarHs (I := I) (M := M) g 0,
+    ∃ T : ℝ, 0 < T ∧ ∃ u : ℝ → ScalarHs (I := I) (M := M) g 0,
       ContinuousOn u (Set.Icc 0 T) ∧ u 0 = u₀ ∧
       ∀ t ∈ Set.Icc (0 : ℝ) T, 0 < t →
         ∃ u_smooth du_smooth f_smooth : SmoothScalar g,

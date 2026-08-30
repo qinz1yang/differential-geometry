@@ -139,7 +139,7 @@ lemma tensorL2Coeff_smul {g : SmoothRiemannianMetric I M} {r s : ℕ}
   rw [map_smul]
   rfl
 
-structure tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) where
+structure TensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) where
   coeff : TensorEigenIdx (I := I) (M := M) g r s → ℝ
   weighted_summable :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -150,7 +150,7 @@ def tensorHsOfSpectralMassMajorant {g : SmoothRiemannianMetric I M}
     (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
     (B : TensorEigenIdx (I := I) (M := M) g r s → ℝ) (hB : Summable B)
     (hle : ∀ i, tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2 ≤ B i) :
-    tensorHs (I := I) (M := M) g r s σ where
+    TensorHs (I := I) (M := M) g r s σ where
   coeff := c
   weighted_summable :=
     Summable.of_nonneg_of_le
@@ -167,16 +167,16 @@ omit [NeZero (Module.finrank ℝ E)] in
     (tensorHsOfSpectralMassMajorant (I := I) (M := M) c B hB hle).coeff = c :=
   rfl
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[ext] lemma ext {S T : tensorHs (I := I) (M := M) g r s σ}
+@[ext] lemma ext {S T : TensorHs (I := I) (M := M) g r s σ}
     (h : S.coeff = T.coeff) : S = T := by
   cases S; cases T; cases h; rfl
 
-instance : Zero (tensorHs (I := I) (M := M) g r s σ) where
+instance : Zero (TensorHs (I := I) (M := M) g r s σ) where
   zero := ⟨fun _ => 0, by
     have h : (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
         tensorSobolevWeight (I := I) (M := M) i σ * (0 : ℝ) ^ 2) = fun _ => (0 : ℝ) := by
@@ -187,10 +187,10 @@ instance : Zero (tensorHs (I := I) (M := M) g r s σ) where
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma zero_coeff :
-    (0 : tensorHs (I := I) (M := M) g r s σ).coeff =
+    (0 : TensorHs (I := I) (M := M) g r s σ).coeff =
       (fun _ => 0) := rfl
 
-instance : Add (tensorHs (I := I) (M := M) g r s σ) where
+instance : Add (TensorHs (I := I) (M := M) g r s σ) where
   add S T :=
     { coeff := fun i => S.coeff i + T.coeff i
       weighted_summable := by
@@ -227,10 +227,10 @@ instance : Add (tensorHs (I := I) (M := M) g r s σ) where
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma add_coeff
-    (S T : tensorHs (I := I) (M := M) g r s σ) :
+    (S T : TensorHs (I := I) (M := M) g r s σ) :
     (S + T).coeff = (fun i => S.coeff i + T.coeff i) := rfl
 
-instance : Neg (tensorHs (I := I) (M := M) g r s σ) where
+instance : Neg (TensorHs (I := I) (M := M) g r s σ) where
   neg S :=
     { coeff := fun i => -S.coeff i
       weighted_summable := by
@@ -245,10 +245,10 @@ instance : Neg (tensorHs (I := I) (M := M) g r s σ) where
         rwa [h_eq] }
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma neg_coeff (S : tensorHs (I := I) (M := M) g r s σ) :
+@[simp] lemma neg_coeff (S : TensorHs (I := I) (M := M) g r s σ) :
     (-S).coeff = (fun i => -S.coeff i) := rfl
 
-instance : SMul ℝ (tensorHs (I := I) (M := M) g r s σ) where
+instance : SMul ℝ (TensorHs (I := I) (M := M) g r s σ) where
   smul c S :=
     { coeff := fun i => c * S.coeff i
       weighted_summable := by
@@ -265,10 +265,10 @@ instance : SMul ℝ (tensorHs (I := I) (M := M) g r s σ) where
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma smul_coeff (c : ℝ)
-    (S : tensorHs (I := I) (M := M) g r s σ) :
+    (S : TensorHs (I := I) (M := M) g r s σ) :
     (c • S).coeff = (fun i => c * S.coeff i) := rfl
 
-instance : AddCommGroup (tensorHs (I := I) (M := M) g r s σ) where
+instance : AddCommGroup (TensorHs (I := I) (M := M) g r s σ) where
   add_assoc S T U := by ext i; simp [add_assoc]
   zero_add S := by ext i; simp
   add_zero S := by ext i; simp
@@ -277,7 +277,7 @@ instance : AddCommGroup (tensorHs (I := I) (M := M) g r s σ) where
   nsmul := nsmulRec
   zsmul := zsmulRec
 
-instance : Module ℝ (tensorHs (I := I) (M := M) g r s σ) where
+instance : Module ℝ (TensorHs (I := I) (M := M) g r s σ) where
   one_smul S := by ext i; simp
   mul_smul a b S := by ext i; simp [mul_assoc]
   smul_zero c := by ext i; simp
@@ -287,7 +287,7 @@ instance : Module ℝ (tensorHs (I := I) (M := M) g r s σ) where
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weightedProd_summable
-    (S T : tensorHs (I := I) (M := M) g r s σ) :
+    (S T : TensorHs (I := I) (M := M) g r s σ) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i σ *
         (S.coeff i * T.coeff i)) := by
@@ -330,12 +330,12 @@ lemma weightedProd_summable
               (T.coeff i) ^ 2) := by ring
   simpa using h_amgm
 
-def innerFun (S T : tensorHs (I := I) (M := M) g r s σ) : ℝ :=
+def innerFun (S T : TensorHs (I := I) (M := M) g r s σ) : ℝ :=
   ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
     (S.coeff i * T.coeff i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma innerFun_self (T : tensorHs (I := I) (M := M) g r s σ) :
+lemma innerFun_self (T : TensorHs (I := I) (M := M) g r s σ) :
     innerFun (I := I) (M := M) T T =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2 := by
@@ -345,7 +345,7 @@ lemma innerFun_self (T : tensorHs (I := I) (M := M) g r s σ) :
 
 @[reducible] def innerCore :
     InnerProductSpace.Core ℝ
-      (tensorHs (I := I) (M := M) g r s σ) where
+      (TensorHs (I := I) (M := M) g r s σ) where
   inner S T := innerFun (I := I) (M := M) S T
   conj_inner_symm S T := by
     simp only [conj_trivial]
@@ -410,25 +410,25 @@ lemma innerFun_self (T : tensorHs (I := I) (M := M) g r s σ) :
     simpa using this
 
 instance instNormedAddCommGroup :
-    NormedAddCommGroup (tensorHs (I := I) (M := M) g r s σ) :=
+    NormedAddCommGroup (TensorHs (I := I) (M := M) g r s σ) :=
   InnerProductSpace.Core.toNormedAddCommGroup
     (cd := innerCore (I := I) (M := M) (g := g) (r := r) (s := s)
       (σ := σ))
 
 instance instInnerProductSpace :
-    InnerProductSpace ℝ (tensorHs (I := I) (M := M) g r s σ) :=
+    InnerProductSpace ℝ (TensorHs (I := I) (M := M) g r s σ) :=
   InnerProductSpace.ofCore
     (innerCore (I := I) (M := M) (g := g) (r := r) (s := s)
       (σ := σ)).1
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma inner_def (S T : tensorHs (I := I) (M := M) g r s σ) :
+lemma inner_def (S T : TensorHs (I := I) (M := M) g r s σ) :
     (inner ℝ S T : ℝ) =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
         (S.coeff i * T.coeff i) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma inner_self_eq (T : tensorHs (I := I) (M := M) g r s σ) :
+lemma inner_self_eq (T : TensorHs (I := I) (M := M) g r s σ) :
     (inner ℝ T T : ℝ) =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2 :=
@@ -436,7 +436,7 @@ lemma inner_self_eq (T : tensorHs (I := I) (M := M) g r s σ) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_sq_eq_tsum
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     ‖T‖ ^ 2 =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2 := by
@@ -444,21 +444,21 @@ theorem norm_sq_eq_tsum
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_eq_sqrt_tsum
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     ‖T‖ =
       Real.sqrt (∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
         (T.coeff i) ^ 2) := by
   rw [← norm_sq_eq_tsum]
   exact (Real.sqrt_sq (norm_nonneg T)).symm
 
-end tensorHs
+end TensorHs
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma rescale_memℓp (T : tensorHs (I := I) (M := M) g r s σ) :
+lemma rescale_memℓp (T : TensorHs (I := I) (M := M) g r s σ) :
     Memℓp (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) *
         T.coeff i) 2 := by
@@ -483,14 +483,14 @@ lemma rescale_memℓp (T : tensorHs (I := I) (M := M) g r s σ) :
   rw [h_eq]
   exact T.weighted_summable
 
-def rescaleToL2 (T : tensorHs (I := I) (M := M) g r s σ) :
+def rescaleToL2 (T : TensorHs (I := I) (M := M) g r s σ) :
     lp (fun _ : TensorEigenIdx (I := I) (M := M) g r s => ℝ) 2 :=
   ⟨fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) *
       T.coeff i, rescale_memℓp (I := I) (M := M) T⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma rescaleToL2_apply
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (rescaleToL2 (I := I) (M := M) T : _ → ℝ) i =
       Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) *
@@ -535,7 +535,7 @@ lemma rescaleFromL2_weighted_summable
 
 def rescaleFromL2
     (f : lp (fun _ : TensorEigenIdx (I := I) (M := M) g r s => ℝ) 2) :
-    tensorHs (I := I) (M := M) g r s σ where
+    TensorHs (I := I) (M := M) g r s σ where
   coeff i := (Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ))⁻¹ *
     (f : _ → ℝ) i
   weighted_summable := rescaleFromL2_weighted_summable (I := I) (M := M) f
@@ -550,7 +550,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (f : _ → ℝ) i := rfl
 
 def rescaleEquivL2 :
-    tensorHs (I := I) (M := M) g r s σ ≃ₗᵢ[ℝ]
+    TensorHs (I := I) (M := M) g r s σ ≃ₗᵢ[ℝ]
       lp (fun _ : TensorEigenIdx (I := I) (M := M) g r s => ℝ) 2 where
   toFun := rescaleToL2 (I := I) (M := M)
   invFun := rescaleFromL2 (I := I) (M := M)
@@ -619,27 +619,27 @@ def rescaleEquivL2 :
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma rescaleEquivL2_apply
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     (rescaleEquivL2 (I := I) (M := M)
       (σ := σ) T : _ → ℝ) =
       (fun i => Real.sqrt (tensorSobolevWeight (I := I) (M := M) i σ) *
         T.coeff i) := rfl
 
 instance instCompleteSpace :
-    CompleteSpace (tensorHs (I := I) (M := M) g r s σ) :=
+    CompleteSpace (TensorHs (I := I) (M := M) g r s σ) :=
   (rescaleEquivL2 (I := I) (M := M)
     (g := g) (r := r) (s := s)
     (σ := σ)).toIsometryEquiv.completeSpace
 
-end tensorHs
+end TensorHs
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma coeff_summable_sq_of_nonneg (hσ : 0 ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       (T.coeff i) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) ?_
@@ -651,7 +651,7 @@ lemma coeff_summable_sq_of_nonneg (hσ : 0 ≤ σ)
   nlinarith [hw, hsq]
 
 def toL2Seq (hσ : 0 ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     lp (fun _ : TensorEigenIdx (I := I) (M := M) g r s => ℝ) 2 :=
   ⟨T.coeff, by
     apply memℓp_gen
@@ -668,13 +668,13 @@ def toL2Seq (hσ : 0 ≤ σ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma toL2Seq_apply (hσ : 0 ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (toL2Seq (I := I) (M := M) hσ T : _ → ℝ) i = T.coeff i := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma toL2Seq_add (hσ : 0 ≤ σ)
-    (S T : tensorHs (I := I) (M := M) g r s σ) :
+    (S T : TensorHs (I := I) (M := M) g r s σ) :
     toL2Seq (I := I) (M := M) hσ (S + T) =
       toL2Seq (I := I) (M := M) hσ S + toL2Seq (I := I) (M := M) hσ T := by
   apply lp.ext
@@ -683,7 +683,7 @@ lemma toL2Seq_add (hσ : 0 ≤ σ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma toL2Seq_smul (hσ : 0 ≤ σ) (c : ℝ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     toL2Seq (I := I) (M := M) hσ (c • T) =
       c • toL2Seq (I := I) (M := M) hσ T := by
   apply lp.ext
@@ -695,7 +695,7 @@ def toL2FunOfCompact
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     TensorL2 r s g :=
   (tensorResolventHilbertEigenbasisSigma
     (I := I) (M := M) h_compact).repr.symm
@@ -706,7 +706,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorL2Coeff (I := I) (M := M) h_compact
         (toL2FunOfCompact (I := I) (M := M) h_compact hσ T) i = T.coeff i := by
@@ -719,7 +719,7 @@ lemma toL2Fun_ofCompact_add
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
-    (S T : tensorHs (I := I) (M := M) g r s σ) :
+    (S T : TensorHs (I := I) (M := M) g r s σ) :
     toL2FunOfCompact (I := I) (M := M) h_compact hσ (S + T) =
       toL2FunOfCompact (I := I) (M := M) h_compact hσ S +
         toL2FunOfCompact (I := I) (M := M) h_compact hσ T := by
@@ -731,7 +731,7 @@ lemma toL2Fun_ofCompact_smul
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ) (c : ℝ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     toL2FunOfCompact (I := I) (M := M) h_compact hσ (c • T) =
       c • toL2FunOfCompact (I := I) (M := M) h_compact hσ T := by
   unfold toL2FunOfCompact
@@ -742,7 +742,7 @@ lemma norm_toL2Fun_ofCompact_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     ‖toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖ ≤ ‖T‖ := by
   have h_l2_sq : ‖toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖ ^ 2 =
       ∑' i, (T.coeff i) ^ 2 := by
@@ -787,35 +787,35 @@ lemma norm_toL2Fun_ofCompact_le
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
 
-end tensorHs
+end TensorHs
 
 def tensorHsToL2 {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) {σ : ℝ}
     (hσ : 0 ≤ σ) :
-    tensorHs (I := I) (M := M) g r s σ →L[ℝ]
+    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
       TensorL2 r s g :=
   LinearMap.mkContinuous
-    { toFun := tensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ
-      map_add' := tensorHs.toL2Fun_ofCompact_add (I := I) (M := M) h_compact hσ
+    { toFun := TensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ
+      map_add' := TensorHs.toL2Fun_ofCompact_add (I := I) (M := M) h_compact hσ
       map_smul' := fun c T =>
-        tensorHs.toL2Fun_ofCompact_smul (I := I) (M := M) h_compact hσ c T }
+        TensorHs.toL2Fun_ofCompact_smul (I := I) (M := M) h_compact hσ c T }
     1
     (fun T => by
-      change ‖tensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖
+      change ‖TensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖
           ≤ 1 * ‖T‖
       rw [one_mul]
-      exact tensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M) h_compact hσ T)
+      exact TensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M) h_compact hσ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorHsToL2_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ}
     {h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)} {σ : ℝ}
-    (hσ : 0 ≤ σ) (T : tensorHs (I := I) (M := M) g r s σ) :
+    (hσ : 0 ≤ σ) (T : TensorHs (I := I) (M := M) g r s σ) :
     tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
         h_compact hσ T =
-      tensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ T := rfl
+      TensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ T := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsToL2_opNorm_le_one {g : SmoothRiemannianMetric I M}
@@ -832,13 +832,13 @@ theorem tensorHsToL2_tensorL2Coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)} {σ : ℝ}
-    (hσ : 0 ≤ σ) (T : tensorHs (I := I) (M := M) g r s σ)
+    (hσ : 0 ≤ σ) (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorL2Coeff (I := I) (M := M) h_compact
         (tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
           h_compact hσ T) i = T.coeff i := by
   rw [tensorHsToL2_apply]
-  exact tensorHs.tensorL2Coeff_ofCompact_toL2Fun_ofCompact
+  exact TensorHs.tensorL2Coeff_ofCompact_toL2Fun_ofCompact
     (I := I) (M := M) h_compact hσ T i
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -861,9 +861,9 @@ theorem tensorHsToL2_injective {g : SmoothRiemannianMetric I M}
 def tensorHsZeroEquivL2 {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) :
-    tensorHs (I := I) (M := M) g r s 0 ≃ₗᵢ[ℝ]
+    TensorHs (I := I) (M := M) g r s 0 ≃ₗᵢ[ℝ]
       TensorL2 r s g :=
-  (tensorHs.rescaleEquivL2 (I := I) (M := M)
+  (TensorHs.rescaleEquivL2 (I := I) (M := M)
     (g := g) (r := r) (s := s) (σ := 0)).trans
     (tensorResolventHilbertEigenbasisSigma
       (I := I) (M := M) h_compact).repr.symm
@@ -873,7 +873,7 @@ theorem tensorHsZeroEquivL2_tensorL2Coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (T : tensorHs (I := I) (M := M) g r s 0)
+    (T : TensorHs (I := I) (M := M) g r s 0)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorL2Coeff (I := I) (M := M) h_compact
         (tensorHsZeroEquivL2 (I := I) (M := M) h_compact T) i =
@@ -881,8 +881,8 @@ theorem tensorHsZeroEquivL2_tensorL2Coeff
   unfold tensorHsZeroEquivL2 tensorL2Coeff
   rw [LinearIsometryEquiv.trans_apply,
     LinearIsometryEquiv.apply_symm_apply]
-  change (tensorHs.rescaleEquivL2 (I := I) (M := M) T : _ → ℝ) i = T.coeff i
-  rw [tensorHs.rescaleEquivL2_apply]
+  change (TensorHs.rescaleEquivL2 (I := I) (M := M) T : _ → ℝ) i = T.coeff i
+  rw [TensorHs.rescaleEquivL2_apply]
   simp only [tensorSobolevWeight_zero, Real.sqrt_one, one_mul]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -903,7 +903,7 @@ theorem tensorHsZeroEquivL2_symm_coeff
 def tensorHsOfFiniteSupport {g : SmoothRiemannianMetric I M} {r s : ℕ} (σ : ℝ)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
     (hf : (Function.support f).Finite) :
-    tensorHs (I := I) (M := M) g r s σ where
+    TensorHs (I := I) (M := M) g r s σ where
   coeff := f
   weighted_summable := by
     apply summable_of_hasFiniteSupport
@@ -926,7 +926,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 open scoped Classical in
 def tensorHsBasisVec {g : SmoothRiemannianMetric I M} {r s : ℕ} (σ : ℝ)
     (j : TensorEigenIdx (I := I) (M := M) g r s) :
-    tensorHs (I := I) (M := M) g r s σ :=
+    TensorHs (I := I) (M := M) g r s σ :=
   tensorHsOfFiniteSupport (I := I) (M := M) σ
     (fun i => if i = j then (1 : ℝ) else 0)
     (by
@@ -981,19 +981,19 @@ theorem tensorHsToL2_tensorHsBasisVec {g : SmoothRiemannianMetric I M}
 
 example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
     Type _ :=
-  tensorHs (I := I) (M := M) g r s σ
+  TensorHs (I := I) (M := M) g r s σ
 
 example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    NormedAddCommGroup (tensorHs (I := I) (M := M) g r s σ) :=
+    NormedAddCommGroup (TensorHs (I := I) (M := M) g r s σ) :=
   inferInstance
 
 example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
     InnerProductSpace ℝ
-      (tensorHs (I := I) (M := M) g r s σ) :=
+      (TensorHs (I := I) (M := M) g r s σ) :=
   inferInstance
 
 example (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
-    CompleteSpace (tensorHs (I := I) (M := M) g r s σ) :=
+    CompleteSpace (TensorHs (I := I) (M := M) g r s σ) :=
   inferInstance
 
 example {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -1006,7 +1006,7 @@ example {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) {σ : ℝ}
     (hσ : 0 ≤ σ) :
-    tensorHs (I := I) (M := M) g r s σ →L[ℝ]
+    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
       TensorL2 r s g :=
   tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
     h_compact hσ
@@ -1014,7 +1014,7 @@ example {g : SmoothRiemannianMetric I M} {r s : ℕ}
 example {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) :
-    tensorHs (I := I) (M := M) g r s 0 ≃ₗᵢ[ℝ]
+    TensorHs (I := I) (M := M) g r s 0 ≃ₗᵢ[ℝ]
       TensorL2 r s g :=
   tensorHsZeroEquivL2 (I := I) (M := M) h_compact
 

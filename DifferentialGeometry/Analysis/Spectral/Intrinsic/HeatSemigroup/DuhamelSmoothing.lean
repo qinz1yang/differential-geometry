@@ -123,7 +123,7 @@ def duhamelValueHs {g : SmoothRiemannianMetric I M} {r s : ℕ} (c : ℝ)
     (hmass : Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i c *
         ∫ s in (0 : ℝ)..t, (φ i s) ^ 2)) :
-    tensorHs (I := I) (M := M) g r s (c + 1) where
+    TensorHs (I := I) (M := M) g r s (c + 1) where
   coeff i := perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t
   weighted_summable :=
     duhamel_endpoint_value_weighted_summable (I := I) (M := M) c ht φ hφ hmass
@@ -151,7 +151,7 @@ theorem duhamel_endpoint_value_summable_sq
         ∫ s in (0 : ℝ)..t, (φ i s) ^ 2)) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) :=
-  tensorHs.coeff_summable_sq_of_nonneg (I := I) (M := M) (by linarith : 0 ≤ c + 1)
+  TensorHs.coeff_summable_sq_of_nonneg (I := I) (M := M) (by linarith : 0 ≤ c + 1)
     (duhamelValueHs (I := I) (M := M) c ht φ hφ hmass)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -169,7 +169,7 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
       (∀ i, tensorL2Coeff (I := I) (M := M) h_compact u i =
         perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ∧
       ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
-        ∃ v : tensorHs (I := I) (M := M) g r s σ,
+        ∃ v : TensorHs (I := I) (M := M) g r s σ,
           tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
               h_compact hσ v = u := by
   classical
@@ -205,7 +205,7 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
   have hc_nn : 0 ≤ c := le_max_right _ _
   have hσ_le : σ ≤ c + 1 := by
     have : σ - 1 ≤ c := le_max_left _ _; linarith
-  set vTop : tensorHs (I := I) (M := M) g r s (c + 1) :=
+  set vTop : TensorHs (I := I) (M := M) g r s (c + 1) :=
     duhamelValueHs (I := I) (M := M) (c := c) ht φ hφ (hsmooth c hc_nn) with hvTop_def
   have hv_summable :
       Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
@@ -219,7 +219,7 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
           tensorSobolevWeight (I := I) (M := M) i (c + 1) :=
         Real.rpow_le_rpow_of_exponent_le hbase hσ_le
       exact mul_le_mul_of_nonneg_right hwle (sq_nonneg _)
-  set v : tensorHs (I := I) (M := M) g r s σ :=
+  set v : TensorHs (I := I) (M := M) g r s σ :=
     { coeff := vTop.coeff, weighted_summable := hv_summable } with hv_def
   refine ⟨v, ?_⟩
   refine bsis.repr.injective ?_

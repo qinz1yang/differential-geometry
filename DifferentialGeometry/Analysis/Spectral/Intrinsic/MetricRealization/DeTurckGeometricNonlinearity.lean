@@ -41,14 +41,14 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 def isRealizableMetricPerturbationAt (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 σ) : Prop :=
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 σ) : Prop :=
   ∃ (hu_fs : (Function.support u.coeff).Finite) (δ' : ℝ), δ' < 1 ∧
     metricCauchySchwarzBound (I := I) (M := M) g_bg
       (tensorHsBilinFormSymm (I := I) g_bg u hu_fs) δ'
 
 open scoped Classical in
 def realizeMetricAt (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 σ) :
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 σ) :
     SmoothRiemannianMetric I M :=
   if h : isRealizableMetricPerturbationAt (I := I) g_bg u then
     tensorSectionRealizeMetric (I := I) g_bg
@@ -61,7 +61,7 @@ def realizeMetricAt (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
 
 omit [BoundarylessManifold I M] in
 theorem realizeMetricAt_inner_of_realizable (g_bg : SmoothRiemannianMetric I M)
-    {σ : ℝ} (u : tensorHs (I := I) (M := M) g_bg 0 2 σ)
+    {σ : ℝ} (u : TensorHs (I := I) (M := M) g_bg 0 2 σ)
     (hu_fs : (Function.support u.coeff).Finite)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g_bg
@@ -82,7 +82,7 @@ theorem realizeMetricAt_inner_of_realizable (g_bg : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 theorem realizeMetricAt_of_not_realizable (g_bg : SmoothRiemannianMetric I M)
-    {σ : ℝ} (u : tensorHs (I := I) (M := M) g_bg 0 2 σ)
+    {σ : ℝ} (u : TensorHs (I := I) (M := M) g_bg 0 2 σ)
     (hu : ¬ isRealizableMetricPerturbationAt (I := I) g_bg u) :
     realizeMetricAt (I := I) g_bg u = g_bg := by
   classical
@@ -90,7 +90,7 @@ theorem realizeMetricAt_of_not_realizable (g_bg : SmoothRiemannianMetric I M)
 
 open scoped Classical in
 def deTurckRemainderSection (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 σ) :
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 σ) :
     SmoothCcTensor g_bg 0 2 :=
   if h : isRealizableMetricPerturbationAt (I := I) g_bg u then
     { toSection :=
@@ -109,8 +109,8 @@ private lemma hCompact (g_bg : SmoothRiemannianMetric I M) :
   tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2
 
 def deTurckGeometricN (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
-    (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1)) :
-    tensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) where
+    (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1)) :
+    TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ) where
   coeff i :=
     tensorL2Coeff (I := I) (M := M) (hCompact (I := I) g_bg)
       (SmoothCcTensor.toL2 (deTurckRemainderSection (I := I) g_bg u)) i
@@ -119,7 +119,7 @@ def deTurckGeometricN (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
       (a : ℝ) (deTurckRemainderSection (I := I) g_bg u) (hCompact (I := I) g_bg)
 
 @[simp] theorem deTurckGeometricN_coeff (g_bg : SmoothRiemannianMetric I M)
-    (a : ℕ) (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
+    (a : ℕ) (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g_bg 0 2) :
     (deTurckGeometricN (I := I) g_bg a u).coeff i =
@@ -128,13 +128,13 @@ def deTurckGeometricN (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
   rfl
 
 theorem deTurckGeometricN_of_not_realizable (g_bg : SmoothRiemannianMetric I M)
-    (a : ℕ) (u : tensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
+    (a : ℕ) (u : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
     (hu : ¬ isRealizableMetricPerturbationAt (I := I) g_bg u) :
     deTurckGeometricN (I := I) g_bg a u = 0 := by
   classical
   have hsec : deTurckRemainderSection (I := I) g_bg u = 0 := by
     rw [deTurckRemainderSection, dif_neg hu]
-  apply tensorHs.ext (I := I) (M := M)
+  apply TensorHs.ext (I := I) (M := M)
   funext i
   rw [deTurckGeometricN_coeff, hsec,
     show SmoothCcTensor.toL2 (g := g_bg) (r := 0) (s := 2)

@@ -32,10 +32,10 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [BoundarylessManifold I M] in
 theorem mixForce_unique
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
-    {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+    {Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun) {C₁ C₂ : ℝ≥0}
-    (hsingle : ∀ (u u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    (hsingle : ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun u - Nfun u'‖ ≤
         (C₁ : ℝ) * max
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
@@ -49,14 +49,14 @@ theorem mixForce_unique
     (hsmall :
       (C₁ : ℝ) * Real.sqrt (1 + T) * ρ * (1 + T) +
           (C₂ : ℝ) * (2 * Real.sqrt T) < 1)
-    {force₁ force₂ : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T}
+    {force₁ force₂ : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T}
     (hball₁ : ‖force₁‖ ≤ ρ) (hball₂ : ‖force₂‖ ≤ ρ)
     (hfix₁ : force₁ = nemytskii (I := I) (M := M) hLip
       (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₁))
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₁))
     (hfix₂ : force₂ = nemytskii (I := I) (M := M) hLip
       (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-        (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₂)) :
+        (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₂)) :
     force₁ = force₂ := by
   have hdist := nemytskiiMixedForcingMap_dist_le (I := I) (M := M)
     g₀ a hLip hsingle hT hT1 hρ force₁ force₂ hball₁ hball₂
@@ -74,10 +74,10 @@ theorem mixForce_unique
 omit [BoundarylessManifold I M] in
 theorem deTurckStrong_unique
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
-    {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
-      tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
+    {Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
+      TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
     (hLip : LipschitzWith L Nfun) {C₁ C₂ : ℝ≥0}
-    (hsingle : ∀ (u u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    (hsingle : ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun u - Nfun u'‖ ≤
         (C₁ : ℝ) * max
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
@@ -91,20 +91,20 @@ theorem deTurckStrong_unique
     (hsmall :
       (C₁ : ℝ) * Real.sqrt (1 + T) * ρ * (1 + T) +
           (C₂ : ℝ) * (2 * Real.sqrt T) < 1)
-    (force₁ force₂ : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
-    (u₁ u₂ : timeH1 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+    (force₁ force₂ : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+    (u₁ u₂ : timeH1 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (field₁ field₂ :
-      timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
+      timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T)
     (htrace₁ : timeH1.trace0 _ T u₁ = 0)
     (htrace₂ : timeH1.trace0 _ T u₂ = 0)
     (hlink₁ :
       timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) field₁ =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T u₁)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T u₁)
     (hlink₂ :
       timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) field₂ =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T u₂)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T u₂)
     (heq₁ : timeH1.timeDeriv _ T u₁ =
       timeScaleLaplacian (I := I) (M := M) (a : ℝ) field₁ + force₁)
     (heq₂ : timeH1.timeDeriv _ T u₂ =
@@ -113,7 +113,7 @@ theorem deTurckStrong_unique
     (hforce₂ : force₂ = nemytskii (I := I) (M := M) hLip field₂)
     (hball₁ : ‖force₁‖ ≤ ρ) (hball₂ : ‖force₂‖ ≤ ρ) :
     force₁ = force₂ ∧ field₁ = field₂ ∧ u₁ = u₂ := by
-  let u₀ : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) := 0
+  let u₀ : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) := 0
   have hcompact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
   have htrace₁' : timeH1.trace0 _ T u₁ =
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)

@@ -33,7 +33,7 @@ variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a : ℝ} {T : ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem forcingMass_summable_of_couple (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT f (d + 1)) →
         Summable (forcingMass (I := I) (M := M) f d))
@@ -44,7 +44,7 @@ private theorem forcingMass_summable_of_couple (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem weighted_perModeConv_sq_le (hT : 0 ≤ T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) {t : ℝ}
     (ht : t ∈ Set.Icc (0 : ℝ) T) :
     tensorSobolevWeight (I := I) (M := M) i σ *
@@ -93,7 +93,7 @@ private theorem weighted_perModeConv_sq_le (hT : 0 ≤ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem spectralMass_sup_le_of_timeL2_allHs (hT : 0 < T)
-    (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
+    (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
     (hcouple : ∀ d : ℝ,
       Summable (solFieldMass (I := I) (M := M) hT.le f (d + 1)) →
         Summable (forcingMass (I := I) (M := M) f d))

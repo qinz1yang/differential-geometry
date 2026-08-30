@@ -121,10 +121,10 @@ private lemma hsMono (g₀ : SmoothRiemannianMetric I M)
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ τ w‖ := by
   have hbσ : smoothCcToTensorHs (I := I) (M := M) g₀ σ w =
       ccSpectralEmbed (I := I) (M := M) g₀ σ w :=
-    Analysis.Parabolic.TensorHeatEquation.tensorHs.ext (funext fun i => rfl)
+    Analysis.Parabolic.TensorHeatEquation.TensorHs.ext (funext fun i => rfl)
   have hbτ : smoothCcToTensorHs (I := I) (M := M) g₀ τ w =
       ccSpectralEmbed (I := I) (M := M) g₀ τ w :=
-    Analysis.Parabolic.TensorHeatEquation.tensorHs.ext (funext fun i => rfl)
+    Analysis.Parabolic.TensorHeatEquation.TensorHs.ext (funext fun i => rfl)
   rw [hbσ, hbτ]
   exact ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ hστ w
 

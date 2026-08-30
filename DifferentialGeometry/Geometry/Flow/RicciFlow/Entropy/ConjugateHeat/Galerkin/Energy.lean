@@ -38,7 +38,7 @@ theorem galVec_norm_sq
     ‖scalarGalVec (I := I) (M := M) q F c sigma‖ ^ 2 =
       ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i sigma * (c i) ^ 2 := by
   classical
-  rw [tensorHs.norm_sq_eq_tsum]
+  rw [TensorHs.norm_sq_eq_tsum]
   rw [tsum_eq_sum (s := F) (fun i hi => by
     rw [scalarGalVec_coeff, if_neg hi]
     ring)]
@@ -108,7 +108,7 @@ private def GalCriticalBound
   let q := S.family.metric (T : Real)
   ∀ (n : Nat) s, s ∈ Set.Icc (0 : Real) tau →
     ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
-      (v : tensorHs (I := I) (M := M) q 0 0 0)
+      (v : TensorHs (I := I) (M := M) q 0 0 0)
       (hv : (Function.support v.coeff).Finite),
       hv.toFinset ⊆ F →
         2 * ∑ i ∈ F,
@@ -174,7 +174,7 @@ private theorem gal_closure
   classical
   intro N k t ht
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
-  let v : tensorHs (I := I) (M := M) q 0 0 0 :=
+  let v : TensorHs (I := I) (M := M) q 0 0 0 :=
     scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 0
   let hv : (Function.support v.coeff).Finite :=
     scalarGalVec_finite (I := I) (M := M) q (Fs N) (V N t) 0
@@ -257,7 +257,7 @@ theorem gal_bound_on
     ∀ (Cmid : Nat → Real), (∀ n, 0 ≤ Cmid n) →
       (∀ (n : Nat) s, s ∈ Set.Icc (0 : Real) tau →
         ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
-          (v : tensorHs (I := I) (M := M) q 0 0 0)
+          (v : TensorHs (I := I) (M := M) q 0 0 0)
           (hv : (Function.support v.coeff).Finite),
           hv.toFinset ⊆ F →
             2 * ∑ i ∈ F,
@@ -320,7 +320,7 @@ theorem gal_bound_on
   intro Cmid hCmid hcrit hcore
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   intro u0 Fs
-  let uInit : tensorHs (I := I) (M := M) q 0 0 0 :=
+  let uInit : TensorHs (I := I) (M := M) q 0 0 0 :=
     ccTensorToHs (I := I) (M := M) q 0 0 u0
   choose V hV using fun N => hG.exists_solution uInit (Fs N)
   let Fseq : Nat → Real → TensorEigenIdx (I := I) (M := M) q 0 0 → Real :=

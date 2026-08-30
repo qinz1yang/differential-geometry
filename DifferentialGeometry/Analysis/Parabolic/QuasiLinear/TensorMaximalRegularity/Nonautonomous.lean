@@ -34,17 +34,17 @@ variable {g : SmoothRiemannianMetric I M} {r s : Nat}
 variable {a T : Real}
 
 def nonautMap (a : Real) {T : Real} (hT : 0 < T)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
-    (A2 : Real → tensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
+    (A2 : Real → TensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : Real))
-    (A1 : Real → tensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : Real → TensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : AEStronglyMeasurable A1 (timeMeasure T))
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real)) :
-    timeL2 (tensorHs (I := I) (M := M) g r s a) T ->
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+    timeL2 (TensorHs (I := I) (M := M) g r s a) T ->
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun force =>
     timeOp A2 hA2 C2 hC2
         (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
@@ -54,16 +54,16 @@ def nonautMap (a : Real) {T : Real} (hT : 0 < T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nonautMap_apply (hT : 0 < T)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
-    (A2 : Real → tensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
+    (A2 : Real → TensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : Real))
-    (A1 : Real → tensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : Real → TensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : AEStronglyMeasurable A1 (timeMeasure T))
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real))
-    (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     nonautMap (I := I) (M := M) a hT u0
         A2 hA2 C2 hC2 A1 hA1 C1 hC1 force =
       timeOp A2 hA2 C2 hC2
@@ -77,16 +77,16 @@ theorem nonautMap_dist_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
-    (A2 : Real → tensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
+    (A2 : Real → TensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : Real))
-    (A1 : Real → tensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : Real → TensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : AEStronglyMeasurable A1 (timeMeasure T))
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real))
-    (force force' : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (force force' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     dist (nonautMap (I := I) (M := M) a hT u0
         A2 hA2 C2 hC2 A1 hA1 C1 hC1 force)
       (nonautMap (I := I) (M := M) a hT u0
@@ -193,13 +193,13 @@ theorem nonautMap_contract
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
-    (A2 : Real → tensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
+    (A2 : Real → TensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : Real))
-    (A1 : Real → tensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : Real → TensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : AEStronglyMeasurable A1 (timeMeasure T))
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real))
     (hsmall :
@@ -225,19 +225,19 @@ theorem nonaut_strong_exists
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
-    (A2 : Real → tensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
+    (A2 : Real → TensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : Real))
-    (A1 : Real → tensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : Real → TensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : AEStronglyMeasurable A1 (timeMeasure T))
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real))
     (hsmall :
       (C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T) < 1) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-      (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+      (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
       u = maxRegDuhamelMap (I := I) (M := M) a hT u0 force ∧
         force =
           timeOp A2 hA2 C2 hC2
@@ -287,20 +287,20 @@ theorem nonaut_forced_exists
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
-    (A2 : Real → tensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (u0 : TensorHs (I := I) (M := M) g r s (a + 2))
+    (A2 : Real → TensorHs (I := I) (M := M) g r s (a + 2) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
     (C2 : NNReal) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ (C2 : Real))
-    (A1 : Real → tensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
-      tensorHs (I := I) (M := M) g r s a)
+    (A1 : Real → TensorHs (I := I) (M := M) g r s (a + 1) →L[Real]
+      TensorHs (I := I) (M := M) g r s a)
     (hA1 : AEStronglyMeasurable A1 (timeMeasure T))
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real))
-    (f0 : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
+    (f0 : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hsmall :
       (C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T) < 1) :
     ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
-      (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+      (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
       u = maxRegDuhamelMap (I := I) (M := M) a hT u0 force ∧
         force =
           timeOp A2 hA2 C2 hC2
@@ -326,8 +326,8 @@ theorem nonaut_forced_exists
       add_nonneg
         (mul_nonneg C2.coe_nonneg (by linarith [hT.le]))
         (mul_nonneg C1.coe_nonneg (by positivity))⟩
-  let F : timeL2 (tensorHs (I := I) (M := M) g r s a) T →
-      timeL2 (tensorHs (I := I) (M := M) g r s a) T :=
+  let F : timeL2 (TensorHs (I := I) (M := M) g r s a) T →
+      timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
     fun force =>
       nonautMap (I := I) (M := M) a hT u0
           A2 hA2 C2 hC2 A1 hA1 C1 hC1 force + f0

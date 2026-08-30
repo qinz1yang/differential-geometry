@@ -96,12 +96,12 @@ theorem eqOn_of_step {X : Type*} {f₁ f₂ : ℝ → X} {a₀ b δ : ℝ}
   exact hgrid_eq N le_rfl
 
 def strongCross
-    (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
-    (u : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
+    (field : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T)
+    (u : timeH1 (TensorHs (I := I) (M := M) g r s a) T)
     (hlink :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) field =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u) :
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u) :
     CrossScaleField (I := I) (M := M) g r s a T where
   hiL2 := field
   lo := u
@@ -117,10 +117,10 @@ def strongCross
     have heq :
         ⇑(timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
             (show a ≤ a + 2 by linarith) field) =ᵐ[timeMeasure T]
-          ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u) := by
+          ⇑(timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u) := by
       rw [hlink]
     have hfun :
-        ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u)
+        ⇑(timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u)
             =ᵐ[timeMeasure T] u.toFun := by
       rw [timeH1.toTimeL2_apply, timeH1.toFunL2]
       exact TimeSobolev.coeFn_ofContinuousOn u.continuousOn_toFun
@@ -128,13 +128,13 @@ def strongCross
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem strongPair_zero (hT : 0 < T)
-    (u : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
-    (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
+    (u : timeH1 (TensorHs (I := I) (M := M) g r s a) T)
+    (field : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T)
     (htrace : timeH1.trace0 _ T u = 0)
     (hlink :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) field =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u)
     (heq : timeH1.timeDeriv _ T u =
       timeScaleLaplacian (I := I) (M := M) a field) :
     u = 0 ∧ field = 0 := by
@@ -202,13 +202,13 @@ theorem strongPair_zero (hT : 0 < T)
   have hfield : field = 0 := by
     refine Lp.ext ?_
     have hzero := Lp.coeFn_zero
-      (E := tensorHs (I := I) (M := M) g r s (a + 2))
+      (E := TensorHs (I := I) (M := M) g r s (a + 2))
       (p := 2) (μ := timeMeasure T)
     have hmem : ∀ᵐ t ∂(timeMeasure T), t ∈ Icc (0 : ℝ) T :=
       ae_restrict_mem measurableSet_Icc
     filter_upwards [x.ae_coeffFun_eq_hiL2, hzero, hmem] with t hxt hzt ht
     rw [hzt]
-    refine tensorHs.ext (funext fun i => ?_)
+    refine TensorHs.ext (funext fun i => ?_)
     have hxi : x.coeffFun i t = (field t).coeff i := hxt i
     rw [← hxi, hcoeff i t ht]
     rfl
@@ -224,12 +224,12 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem duhField_pin (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force) =
-      timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T
+      timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T
         (maxRegDuhamelMap (I := I) (M := M) a hT u₀ force) := by
   rw [timeH1.toTimeL2_apply]
   refine Lp.ext ?_
@@ -260,17 +260,17 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem strongPair_eq_duh (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (u : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
-    (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    (u : timeH1 (TensorHs (I := I) (M := M) g r s a) T)
+    (field : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T)
     (htrace : timeH1.trace0 _ T u =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀)
     (hlink :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) field =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u)
     (heq : timeH1.timeDeriv _ T u =
       timeScaleLaplacian (I := I) (M := M) a field + force) :
     field = maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force ∧
@@ -285,7 +285,7 @@ theorem strongPair_eq_duh (hT : 0 < T)
   have hlinkD :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) fd =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T ud := by
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T ud := by
     exact duhField_pin (I := I) (M := M) hT h_compact u₀ force
   have heqD : timeH1.timeDeriv _ T ud =
       timeScaleLaplacian (I := I) (M := M) a fd + force := by
@@ -296,7 +296,7 @@ theorem strongPair_eq_duh (hT : 0 < T)
   have hzeroLink :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) (field - fd) =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T (u - ud) := by
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T (u - ud) := by
     rw [map_sub, map_sub, hlink, hlinkD]
   have hzeroEq : timeH1.timeDeriv _ T (u - ud) =
       timeScaleLaplacian (I := I) (M := M) a (field - fd) := by
@@ -308,15 +308,15 @@ theorem strongPair_eq_duh (hT : 0 < T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem strongNemy_fixed {L : ℝ≥0}
-    {N : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a}
     (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
-    (force : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (u : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
-    (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
+    (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    (u : timeH1 (TensorHs (I := I) (M := M) g r s a) T)
+    (field : timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T)
     (hN : LipschitzWith L N)
     (htrace : timeH1.trace0 _ T u =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -324,7 +324,7 @@ theorem strongNemy_fixed {L : ℝ≥0}
     (hlink :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) field =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u)
     (heq : timeH1.timeDeriv _ T u =
       timeScaleLaplacian (I := I) (M := M) a field + force)
     (hforce : force = nemytskii (I := I) (M := M) hN field) :
@@ -340,17 +340,17 @@ theorem strongNemy_fixed {L : ℝ≥0}
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem strongPair_unique {L : ℝ≥0}
-    {N : tensorHs (I := I) (M := M) g r s (a + 2) →
-      tensorHs (I := I) (M := M) g r s a}
+    {N : TensorHs (I := I) (M := M) g r s (a + 2) →
+      TensorHs (I := I) (M := M) g r s a}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
-    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (hN : LipschitzWith L N) (hL : 2 * (L : ℝ) < 1)
-    (force₁ force₂ : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
-    (u₁ u₂ : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
+    (force₁ force₂ : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
+    (u₁ u₂ : timeH1 (TensorHs (I := I) (M := M) g r s a) T)
     (field₁ field₂ :
-      timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
+      timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T)
     (htrace₁ : timeH1.trace0 _ T u₁ =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀)
@@ -360,11 +360,11 @@ theorem strongPair_unique {L : ℝ≥0}
     (hlink₁ :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) field₁ =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u₁)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u₁)
     (hlink₂ :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) field₂ =
-        timeH1.toTimeL2 (tensorHs (I := I) (M := M) g r s a) T u₂)
+        timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u₂)
     (heq₁ : timeH1.timeDeriv _ T u₁ =
       timeScaleLaplacian (I := I) (M := M) a field₁ + force₁)
     (heq₂ : timeH1.timeDeriv _ T u₂ =

@@ -751,7 +751,7 @@ lemma smoothCcToTensorHs_zero_norm_le_fw (g₀ : SmoothRiemannianMetric I M) (σ
     {R₀ : ℝ} (hR₀ : 0 ≤ R₀) :
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ (0 : SmoothCcTensor g₀ 0 2)‖ ≤ R₀ := by
   have hzero : smoothCcToTensorHs (I := I) (M := M) g₀ σ (0 : SmoothCcTensor g₀ 0 2) = 0 := by
-    refine DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.tensorHs.ext ?_
+    refine DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs.ext ?_
     funext i
     rw [smoothCcToTensorHs_coeff]
     rw [show SmoothCcTensor.toL2 (0 : SmoothCcTensor g₀ 0 2) = 0 from map_zero _]

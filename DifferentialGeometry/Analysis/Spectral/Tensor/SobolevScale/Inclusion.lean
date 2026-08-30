@@ -37,13 +37,13 @@ lemma tensorSobolevWeight_mono {g : SmoothRiemannianMetric I M} {r s : ℕ}
   exact Real.rpow_le_rpow_of_exponent_le
     (one_le_one_add_lambda (I := I) (M := M) i) hτσ
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weighted_summable_of_le {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i τ * (T.coeff i) ^ 2) := by
   refine Summable.of_nonneg_of_le ?_ ?_ T.weighted_summable
@@ -58,19 +58,19 @@ lemma weighted_summable_of_le {τ σ : ℝ} (hτσ : τ ≤ σ)
     exact mul_le_mul_of_nonneg_right hmono (sq_nonneg _)
 
 def inclusionFun {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
-    tensorHs (I := I) (M := M) g r s τ where
+    (T : TensorHs (I := I) (M := M) g r s σ) :
+    TensorHs (I := I) (M := M) g r s τ where
   coeff := T.coeff
   weighted_summable := weighted_summable_of_le (I := I) (M := M) hτσ T
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma inclusionFun_coeff {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     (inclusionFun (I := I) (M := M) hτσ T).coeff = T.coeff := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inclusionFun_add {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (S T : tensorHs (I := I) (M := M) g r s σ) :
+    (S T : TensorHs (I := I) (M := M) g r s σ) :
     inclusionFun (I := I) (M := M) hτσ (S + T) =
       inclusionFun (I := I) (M := M) hτσ S +
         inclusionFun (I := I) (M := M) hτσ T := by
@@ -79,7 +79,7 @@ lemma inclusionFun_add {τ σ : ℝ} (hτσ : τ ≤ σ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inclusionFun_smul {τ σ : ℝ} (hτσ : τ ≤ σ) (c : ℝ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     inclusionFun (I := I) (M := M) hτσ (c • T) =
       c • inclusionFun (I := I) (M := M) hτσ T := by
   ext i
@@ -87,7 +87,7 @@ lemma inclusionFun_smul {τ σ : ℝ} (hτσ : τ ≤ σ) (c : ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_inclusionFun_le {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     ‖inclusionFun (I := I) (M := M) hτσ T‖ ≤ ‖T‖ := by
   have h_t_sq : ‖inclusionFun (I := I) (M := M) hτσ T‖ ^ 2 =
       ∑' i, tensorSobolevWeight (I := I) (M := M) i τ * (T.coeff i) ^ 2 := by
@@ -115,41 +115,41 @@ lemma norm_inclusionFun_le {τ σ : ℝ} (hτσ : τ ≤ σ)
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
 
-end tensorHs
+end TensorHs
 
 def tensorHsInclusion {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {τ σ : ℝ} (hτσ : τ ≤ σ) :
-    tensorHs (I := I) (M := M) g r s σ →L[ℝ]
-      tensorHs (I := I) (M := M) g r s τ :=
+    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
+      TensorHs (I := I) (M := M) g r s τ :=
   LinearMap.mkContinuous
-    { toFun := tensorHs.inclusionFun (I := I) (M := M) hτσ
-      map_add' := tensorHs.inclusionFun_add (I := I) (M := M) hτσ
+    { toFun := TensorHs.inclusionFun (I := I) (M := M) hτσ
+      map_add' := TensorHs.inclusionFun_add (I := I) (M := M) hτσ
       map_smul' := fun c T =>
-        tensorHs.inclusionFun_smul (I := I) (M := M) hτσ c T }
+        TensorHs.inclusionFun_smul (I := I) (M := M) hτσ c T }
     1
     (fun T => by
-      change ‖tensorHs.inclusionFun (I := I) (M := M) hτσ T‖ ≤ 1 * ‖T‖
+      change ‖TensorHs.inclusionFun (I := I) (M := M) hτσ T‖ ≤ 1 * ‖T‖
       rw [one_mul]
-      exact tensorHs.norm_inclusionFun_le (I := I) (M := M) hτσ T)
+      exact TensorHs.norm_inclusionFun_le (I := I) (M := M) hτσ T)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorHsInclusion_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ T =
-      tensorHs.inclusionFun (I := I) (M := M) hτσ T := rfl
+      TensorHs.inclusionFun (I := I) (M := M) hτσ T := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHsInclusion_coeff {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ T).coeff =
       T.coeff := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHsInclusion_coeff_apply
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {τ σ : ℝ}
-    (hτσ : τ ≤ σ) (T : tensorHs (I := I) (M := M) g r s σ)
+    (hτσ : τ ≤ σ) (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ T).coeff i =
       T.coeff i := rfl
@@ -163,9 +163,9 @@ theorem tensorHsInclusion_opNorm_le_one {g : SmoothRiemannianMetric I M}
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_norm_le {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {τ σ : ℝ} (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ T‖ ≤ ‖T‖ :=
-  tensorHs.norm_inclusionFun_le (I := I) (M := M) hτσ T
+  TensorHs.norm_inclusionFun_le (I := I) (M := M) hτσ T
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_injective {g : SmoothRiemannianMetric I M}
@@ -174,7 +174,7 @@ theorem tensorHsInclusion_injective {g : SmoothRiemannianMetric I M}
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ) := by
   intro S T hST
   ext i
-  have h := congrArg (fun U => tensorHs.coeff U i) hST
+  have h := congrArg (fun U => TensorHs.coeff U i) hST
   simpa only [tensorHsInclusion_coeff] using h
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -182,16 +182,16 @@ omit [NeZero (Module.finrank ℝ E)] in
     {r s : ℕ} {σ : ℝ} :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) (le_refl σ) =
       ContinuousLinearMap.id ℝ
-        (tensorHs (I := I) (M := M) g r s σ) := by
+        (TensorHs (I := I) (M := M) g r s σ) := by
   refine ContinuousLinearMap.ext (fun T => ?_)
-  refine tensorHs.ext ?_
+  refine TensorHs.ext ?_
   funext i
   rw [tensorHsInclusion_coeff_apply, ContinuousLinearMap.id_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_refl_apply
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) (le_refl σ) T = T := by
   ext i
   simp only [tensorHsInclusion_coeff_apply]
@@ -209,19 +209,19 @@ theorem tensorHsInclusion_trans {g : SmoothRiemannianMetric I M}
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsInclusion_trans_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {ρ τ σ : ℝ} (hρτ : ρ ≤ τ) (hτσ : τ ≤ σ)
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) (hρτ.trans hτσ) T =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hρτ
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ T) := by
   ext i
   simp only [tensorHsInclusion_coeff_apply]
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
 
 def finiteSupportSubmodule (σ : ℝ) :
-    Submodule ℝ (tensorHs (I := I) (M := M) g r s σ) where
+    Submodule ℝ (TensorHs (I := I) (M := M) g r s σ) where
   carrier := {T | (Function.support T.coeff).Finite}
   add_mem' := by
     intro S T hS hT
@@ -248,20 +248,20 @@ def finiteSupportSubmodule (σ : ℝ) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma mem_finiteSupportSubmodule {σ : ℝ}
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     T ∈ finiteSupportSubmodule (I := I) (M := M) (g := g) (r := r) (s := s) σ ↔
       (Function.support T.coeff).Finite := Iff.rfl
 
-end tensorHs
+end TensorHs
 
-namespace tensorHs
+namespace TensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ}
 
 open scoped Classical in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma rescaleEquivL2_smul_basisVec
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     rescaleEquivL2 (I := I) (M := M) (σ := σ)
         (T.coeff i • tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i) =
@@ -279,7 +279,7 @@ lemma rescaleEquivL2_smul_basisVec
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasSum_smul_basisVec
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     HasSum (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       T.coeff i • tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i) T := by
   classical
@@ -305,10 +305,10 @@ theorem hasSum_smul_basisVec
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mem_closure_finiteSupportSubmodule
-    (T : tensorHs (I := I) (M := M) g r s σ) :
+    (T : TensorHs (I := I) (M := M) g r s σ) :
     T ∈ closure
       (finiteSupportSubmodule (I := I) (M := M) (g := g) (r := r) (s := s) σ :
-        Set (tensorHs (I := I) (M := M) g r s σ)) := by
+        Set (TensorHs (I := I) (M := M) g r s σ)) := by
   classical
   refine mem_closure_of_tendsto
     (hasSum_smul_basisVec (I := I) (M := M) T) ?_
@@ -322,24 +322,24 @@ theorem mem_closure_finiteSupportSubmodule
     ite_eq_right_iff, one_ne_zero, imp_false, not_not] at hj
   simpa using hj
 
-end tensorHs
+end TensorHs
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsFiniteSupportSubmodule_topologicalClosure
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ} :
-    (tensorHs.finiteSupportSubmodule (I := I) (M := M) (g := g) (r := r) (s := s)
+    (TensorHs.finiteSupportSubmodule (I := I) (M := M) (g := g) (r := r) (s := s)
         σ).topologicalClosure = ⊤ := by
   rw [eq_top_iff]
   intro T _
   rw [← SetLike.mem_coe, Submodule.topologicalClosure_coe]
-  exact tensorHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) T
+  exact TensorHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) T
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsFiniteSupportSubmodule_dense
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ} :
-    Dense (tensorHs.finiteSupportSubmodule (I := I) (M := M) (g := g) (r := r) (s := s)
+    Dense (TensorHs.finiteSupportSubmodule (I := I) (M := M) (g := g) (r := r) (s := s)
       σ :
-      Set (tensorHs (I := I) (M := M) g r s σ)) := by
+      Set (TensorHs (I := I) (M := M) g r s σ)) := by
   rw [Submodule.dense_iff_topologicalClosure_eq_top]
   exact tensorHsFiniteSupportSubmodule_topologicalClosure
     (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -347,7 +347,7 @@ theorem tensorHsFiniteSupportSubmodule_dense
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHs_dense_finiteSupport {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ} :
-    Dense {T : tensorHs (I := I) (M := M) g r s σ |
+    Dense {T : TensorHs (I := I) (M := M) g r s σ |
       (Function.support T.coeff).Finite} :=
   tensorHsFiniteSupportSubmodule_dense (I := I) (M := M) (g := g) (r := r) (s := s)
 
@@ -356,16 +356,16 @@ theorem tensorHsBasisVec_span_dense {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ} :
     Dense (Submodule.span ℝ
       (Set.range (tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ)) :
-      Set (tensorHs (I := I) (M := M) g r s σ)) := by
+      Set (TensorHs (I := I) (M := M) g r s σ)) := by
   classical
   refine tensorHsFiniteSupportSubmodule_dense (I := I) (M := M) (g := g) (r := r) (s := s)
     |>.mono ?_
   intro T hT
-  rw [SetLike.mem_coe, tensorHs.mem_finiteSupportSubmodule] at hT
+  rw [SetLike.mem_coe, TensorHs.mem_finiteSupportSubmodule] at hT
   classical
   have h_eq : T = ∑ i ∈ hT.toFinset,
       T.coeff i • tensorHsBasisVec (I := I) (M := M) (g := g) (r := r) (s := s) σ i := by
-    refine tensorHs.ext ?_
+    refine TensorHs.ext ?_
     funext j
     have h_sum : (∑ i ∈ hT.toFinset,
           T.coeff i • tensorHsBasisVec (I := I) (M := M) σ i).coeff j =
@@ -375,8 +375,8 @@ theorem tensorHsBasisVec_span_dense {g : SmoothRiemannianMetric I M}
       | empty => simp
       | insert a t ha ih =>
           rw [Finset.sum_insert ha, Finset.sum_insert ha, ← ih,
-            tensorHs.add_coeff]
-          simp only [tensorHs.smul_coeff, tensorHsBasisVec_coeff,
+            TensorHs.add_coeff]
+          simp only [TensorHs.smul_coeff, tensorHsBasisVec_coeff,
             mul_ite, mul_one, mul_zero]
     rw [h_sum]
     rw [Finset.sum_eq_single j]
@@ -394,15 +394,15 @@ theorem tensorHsBasisVec_span_dense {g : SmoothRiemannianMetric I M}
 
 def tensorHsHilbertBasis {g : SmoothRiemannianMetric I M} {r s : ℕ} (σ : ℝ) :
     HilbertBasis (TensorEigenIdx (I := I) (M := M) g r s) ℝ
-      (tensorHs (I := I) (M := M) g r s σ) :=
+      (TensorHs (I := I) (M := M) g r s σ) :=
   HilbertBasis.ofRepr
-    (tensorHs.rescaleEquivL2 (I := I) (M := M)
+    (TensorHs.rescaleEquivL2 (I := I) (M := M)
       (g := g) (r := r) (s := s) (σ := σ))
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHsHilbertBasis_repr_apply_apply
     {g : SmoothRiemannianMetric I M} {r s : ℕ} (σ : ℝ)
-    (T : tensorHs (I := I) (M := M) g r s σ)
+    (T : TensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ((tensorHsHilbertBasis (I := I) (M := M)
         (g := g) (r := r) (s := s) σ).repr T : _ → ℝ) i =
@@ -411,12 +411,12 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 example {g : SmoothRiemannianMetric I M} {r s : ℕ} {τ σ : ℝ}
     (hτσ : τ ≤ σ) :
-    tensorHs (I := I) (M := M) g r s σ →L[ℝ]
-      tensorHs (I := I) (M := M) g r s τ :=
+    TensorHs (I := I) (M := M) g r s σ →L[ℝ]
+      TensorHs (I := I) (M := M) g r s τ :=
   tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ
 
 example {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ : ℝ} :
-    Dense {T : tensorHs (I := I) (M := M) g r s σ |
+    Dense {T : TensorHs (I := I) (M := M) g r s σ |
       (Function.support T.coeff).Finite} :=
   tensorHs_dense_finiteSupport (I := I) (M := M)
 

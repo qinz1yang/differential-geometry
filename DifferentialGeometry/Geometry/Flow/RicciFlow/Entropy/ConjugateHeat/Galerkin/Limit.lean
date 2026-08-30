@@ -195,8 +195,8 @@ private lemma scalarGalPert_continuousOn_of_parts
       (Icc (0 : Real) tau)) :
     ContinuousOn (fun t => scalarGalPert (I := I) (M := M) S T t)
       (Icc (0 : Real) tau) := by
-  let Inc : tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 2 →L[Real]
-      tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 :=
+  let Inc : TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 2 →L[Real]
+      TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 :=
     tensorHsInclusion (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0)
       (show (1 : Real) ≤ 2 by norm_num)
@@ -315,7 +315,7 @@ theorem gal_subseq_on
     have hsqrt := Real.sqrt_le_sqrt hsq
     rwa [Real.sqrt_sq (norm_nonneg _)] at hsqrt
   have hpert_apply (t : Real) (ht : t ∈ Icc (0 : Real) tau)
-      (v : tensorHs (I := I) (M := M) q 0 0 2) :
+      (v : TensorHs (I := I) (M := M) q 0 0 2) :
       ‖scalarGalPert (I := I) (M := M) S T t v‖ ≤ Kpert * ‖v‖ := by
     exact ((scalarGalPert (I := I) (M := M) S T t).le_opNorm v).trans
       (mul_le_mul_of_nonneg_right (by
@@ -439,8 +439,8 @@ theorem scalar_gal_subseq
     fun _ ht => ⟨ht.1, ht.2.trans htau2'⟩
   have hIcc1 : Icc (0 : Real) tau ⊆ Icc (0 : Real) tau1 :=
     fun _ ht => ⟨ht.1, ht.2.trans htau1'⟩
-  let Inc : tensorHs (I := I) (M := M) q 0 0 2 →L[Real]
-      tensorHs (I := I) (M := M) q 0 0 1 :=
+  let Inc : TensorHs (I := I) (M := M) q 0 0 2 →L[Real]
+      TensorHs (I := I) (M := M) q 0 0 1 :=
     tensorHsInclusion (I := I) (M := M)
       (g := q) (r := 0) (s := 0) (show (1 : Real) ≤ 2 by norm_num)
   have hPot := (hcont1.mono hIcc1).clm_comp
@@ -485,7 +485,7 @@ noncomputable def galLimHs
     (hlim : IsConjGalSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     (m : Nat) (t : Real) (ht : t ∈ Icc (0 : Real) tau) :
-    tensorHs (I := I) (M := M)
+    TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (m : Real) where
   coeff := ulim t
   weighted_summable := ((hlim.lim_mass m).choose_spec t ht).1
@@ -502,7 +502,7 @@ noncomputable def galLimPath
       (S.family.metric (T : Real)) 0 0 → Real}
     (hlim : IsConjGalSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) (m : Nat) :
-    Icc (0 : Real) tau → tensorHs (I := I) (M := M)
+    Icc (0 : Real) tau → TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (m : Real) :=
   fun t => galLimHs hlim m t t.2
 
@@ -523,12 +523,12 @@ theorem galLimPath_cont
   have hm : (m : Real) < ((m + 1 : Nat) : Real) := by
     exact_mod_cast Nat.lt_succ_self m
   let W : Icc (0 : Real) tau →
-      tensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real) :=
+      TensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real) :=
     galLimPath hlim (m + 1)
   obtain ⟨B, hB⟩ := hlim.lim_mass (m + 1)
   have hW_bound (t : Icc (0 : Real) tau) : ‖W t‖ ≤ Real.sqrt B := by
     have hsq : ‖W t‖ ^ 2 ≤ B := by
-      rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+      rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
       simpa only [W, galLimPath, galLimHs, q] using (hB t t.2).2
     have hsqrt := Real.sqrt_le_sqrt hsq
     rwa [Real.sqrt_sq (norm_nonneg _)] at hsqrt
@@ -547,7 +547,7 @@ theorem galLimPath_cont
       tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
         hm.le (W t)) = galLimPath hlim m := by
     funext t
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     simp only [W, galLimPath, galLimHs, q, tensorHsInclusion_coeff_apply]
   rw [heq] at hcont
@@ -578,14 +578,14 @@ theorem galLim_tendsto
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   have hm : (m : Real) < ((m + 1 : Nat) : Real) := by
     exact_mod_cast Nat.lt_succ_self m
-  set u : Nat → tensorHs (I := I) (M := M) q 0 0
+  set u : Nat → TensorHs (I := I) (M := M) q 0 0
       ((m + 1 : Nat) : Real) := fun n =>
     scalarGalVec (I := I) (M := M) q
       (eigenFinset (I := I) (M := M) q 0 0 (phi n))
       (V (phi n) t) ((m + 1 : Nat) : Real) with hu_def
-  set W : tensorHs (I := I) (M := M) q 0 0
+  set W : TensorHs (I := I) (M := M) q 0 0
       ((m + 1 : Nat) : Real) := galLimHs hlim (m + 1) t ht with hW_def
-  set d : Nat → tensorHs (I := I) (M := M) q 0 0
+  set d : Nat → TensorHs (I := I) (M := M) q 0 0
       ((m + 1 : Nat) : Real) := fun n => u n - W with hd_def
   have hW_coeff (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       W.coeff i = ulim t i := by
@@ -597,7 +597,7 @@ theorem galLim_tendsto
     rw [hu_def, galVec_norm_sq (I := I) (M := M)]
     simpa only [q, galerkinEnergy] using hBu (phi n) t ht
   have hW_sq : ‖W‖ ^ 2 ≤ BW := by
-    rw [tensorHs.norm_sq_eq_tsum (I := I) (M := M)]
+    rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
     simpa only [hW_coeff] using (hBW t ht).2
   have hu_norm (n : Nat) : ‖u n‖ ≤ Real.sqrt Bu := by
     calc
@@ -629,10 +629,10 @@ theorem galLim_tendsto
     filter_upwards [hmem i] with n hn
     rw [hu_def, scalarGalVec_coeff, if_pos hn]
   have hsub_coeff
-      (a b : tensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real))
+      (a b : TensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real))
       (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       (a - b).coeff i = a.coeff i - b.coeff i := by
-    simp only [sub_eq_add_neg, tensorHs.add_coeff, tensorHs.neg_coeff]
+    simp only [sub_eq_add_neg, TensorHs.add_coeff, TensorHs.neg_coeff]
   have hd_coeff (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       Tendsto (fun n => (d n).coeff i) atTop (𝓝 0) := by
     have hc := (hu_coeff i).sub_const (W.coeff i)
@@ -667,7 +667,7 @@ theorem galLim_tendsto
       tensorHsInclusion (I := I) (M := M)
           (g := q) (r := 0) (s := 0) hm.le W =
         galLimHs hlim m t ht := by
-    apply tensorHs.ext
+    apply TensorHs.ext
     funext i
     rw [tensorHsInclusion_coeff_apply, hW_coeff i]
     rfl

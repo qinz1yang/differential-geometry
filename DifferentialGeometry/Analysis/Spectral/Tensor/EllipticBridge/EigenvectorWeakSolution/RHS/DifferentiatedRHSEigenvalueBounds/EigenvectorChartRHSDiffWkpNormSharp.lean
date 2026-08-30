@@ -303,7 +303,7 @@ lemma sharpDiff_ofReal_const_pow_eigen_inv_le
   exact sharpDiff_pow_eigen_inv_mono (I := I) (M := M) g r s i hke
 
 open DifferentialGeometry.Analysis.Spectral in
-structure eigenvectorChartRHSDiffSharpWkpBounds
+structure EigenvectorChartRHSDiffSharpWkpBounds
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) where
   h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
@@ -432,7 +432,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiff_diff_memWkp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    (H : eigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀)
+    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (m K' : ℕ) (l : Fin m → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) K' 2
@@ -447,7 +447,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiff_level_zero_wkpNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
-    (H : eigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
+    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -516,7 +516,7 @@ omit [CompleteSpace E] in
 private lemma sharpDiff_recursion
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    (H : eigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
+    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
     ∀ (m : ℕ) (K : ℕ) (l : Fin m → Fin (Module.finrank ℝ E)),
       ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
         ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -801,7 +801,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin m → Fin (Module.finrank ℝ E))
-    (H : eigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
+    (H : EigenvectorChartRHSDiffSharpWkpBounds (I := I) (M := M) g r s α P₀) :
     ∃ (C : ℝ) (e : ℕ), 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2

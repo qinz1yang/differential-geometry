@@ -99,7 +99,7 @@ theorem zero_mem_smoothCore (g₀ : SmoothRiemannianMetric I M) {R : ℝ} (hR : 
     (⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR⟩ :
         lowerState (I := I) (M := M) g₀ 1 R) ∈
       smoothCore (I := I) (M := M) g₀ R := by
-  change (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) ∈
+  change (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) ∈
     Set.range (smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2))
   exact ⟨0, smoothCcToTensorHs_zero (I := I) (M := M) g₀ _⟩
 
@@ -158,7 +158,7 @@ theorem deTurckSmoothN_zero (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) {
         (deTurckRHSSection (I := I) g_bg g₀) := by
     rw [deTurckRem_zero]
   refine Eq.trans ?_ hrem
-  exact tensorHs.ext (funext fun _ => rfl)
+  exact TensorHs.ext (funext fun _ => rfl)
 
 theorem deTurckRemainderOnLowerState_zero_eq_deTurckRHS (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 0 < R)
     (hδ : δ < 1)
