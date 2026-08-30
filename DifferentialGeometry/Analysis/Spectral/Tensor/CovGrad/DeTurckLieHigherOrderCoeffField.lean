@@ -347,7 +347,7 @@ theorem deTurckLieArm1Coeff_metricPerturbationPath_jointContMDiff (g₀ : Smooth
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 3 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -539,7 +539,7 @@ private theorem dLiePack0S_family_jointContMDiffOn {d : ℕ} {S : Set ℝ}
         ((dLiePack0S (I := I) g₀ (fun x : M => A (x, p.2)) (hslice p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ S) := by
   classical
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 0 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 0 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel d ℝ E)
@@ -1832,7 +1832,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphism_metricPerturbationPath
         (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ =>
@@ -2065,7 +2065,7 @@ theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturbationPat
         (Tensor0SBundle.TensorRSSpace.ofCLM
           (connectionDifferenceCovDerivBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -2114,7 +2114,7 @@ theorem deTurckLieCoeffField_metricPerturbationPath_jointContMDiff (g₀ : Smoot
         ((deTurckLieCoeffField (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)

@@ -165,7 +165,7 @@ theorem scalarTrace_joint
         (E := fun x : M => TensorRSSpace 2 0 I x) p.1
         ((scalarTraceCoeff (I := I) (M := M) q (g_fam p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 0 ℝ E) (V₂ := fun x : M => Tensor0SSpace 0 I x)
     (φ := fun p : M × ℝ =>
@@ -211,7 +211,7 @@ theorem connTrace_joint
         (E := fun x : M => TensorRSSpace 1 0 I x) p.1
         ((connTraceCoeff (I := I) (M := M) q (g_fam p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 1 ℝ E) (V₁ := fun x : M => Tensor0SSpace 1 I x)
     (F₂ := Tensor0SModel 0 ℝ E) (V₂ := fun x : M => Tensor0SSpace 0 I x)
     (φ := fun p : M × ℝ =>

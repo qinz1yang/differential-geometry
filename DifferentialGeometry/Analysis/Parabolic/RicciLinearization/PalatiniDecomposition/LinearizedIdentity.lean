@@ -381,7 +381,7 @@ private theorem lrFamily_threeArmHjoint (g₀ : SmoothRiemannianMetric I M)
       rfl
     rw [lrFamilyField_eq (I := I) (M := M) g₀ T hδ hδZ q.2]
     simp only [hsmulY, haddY, hPY]
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>

@@ -191,7 +191,7 @@ theorem metricDiff_joint
         ((metricDifferenceCcTensor (I := I) (M := M) q
           (g_fam p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 0 ℝ E) (V₁ := fun x : M => Tensor0SSpace 0 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
@@ -215,14 +215,14 @@ theorem metricDiff_joint
         p.1 ((Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
           ((g_fam p.2).inner p.1 - q.inner p.1)))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-    apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := E →L[ℝ] ℝ) (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
       (φ := fun p : M × ℝ =>
         (Tensor0SNabla.scalarFn I M (fun x : M => Y x) p.1) •
           ((g_fam p.2).inner p.1 - q.inner p.1))
     intro Z
-    apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := ℝ) (V₂ := fun _ : M => ℝ)
       (φ := fun p : M × ℝ =>

@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDiffer
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueJointChartCurvatureSmoothness
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueClmSectionJointSmoothness
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueJointTensorFieldSmoothness
 open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.Analysis.Spectral.DeTurck
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
@@ -760,7 +760,7 @@ theorem inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn
         (E := fun z : M => Tensor0SSpace 1 I z →L[ℝ] TangentSpace I z) p.1
         (inverseMetricSharpFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 1 ℝ E) (V₁ := fun x : M => Tensor0SSpace 1 I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ => inverseMetricSharpFib (I := I)
@@ -1136,7 +1136,7 @@ theorem cometricRaiseSlot0Fib_metricPerturbationPath_jointContMDiffOn (s : ℕ)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 1 (s + 1) I z) p.1
         (cometricRaiseSlot0Fib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) s p.1 (Y p)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 1 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
@@ -1235,7 +1235,7 @@ theorem ricciDeTurckPrincipalCoefficientFiber_metricPerturbationPath_jointContMD
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   let _ := (inferInstance : (BoundarylessManifold I M))
   classical
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1421,7 +1421,7 @@ theorem ricEndoRaisedFib_metricPerturbationPath_jointContMDiffOn [BoundarylessMa
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z) p.1
         (ricEndoRaisedFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ => ricEndoRaisedFib (I := I)
@@ -1474,7 +1474,7 @@ theorem ricciArmOrder0CurvCoeffFibSlot0_metricPerturbationPath_jointContMDiffOn 
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 0 p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1513,7 +1513,7 @@ theorem ricciArmOrder0CurvCoeffFibSlot1_metricPerturbationPath_jointContMDiffOn 
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) 1 p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1762,7 +1762,7 @@ theorem invSharp_of_family
         (E := fun z : M => Tensor0SSpace 1 I z →L[ℝ] TangentSpace I z) p.1
         (inverseMetricSharpFib (I := I) (g_fam p.2) p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 1 ℝ E) (V₁ := fun x : M => Tensor0SSpace 1 I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ => inverseMetricSharpFib (I := I) (g_fam p.2) p.1)
@@ -1820,7 +1820,7 @@ theorem comRaise_of_family (s : ℕ)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 1 (s + 1) I z) p.1
         (cometricRaiseSlot0Fib (I := I) (g_fam p.2) s p.1 (Y p)))
       ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 1 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)

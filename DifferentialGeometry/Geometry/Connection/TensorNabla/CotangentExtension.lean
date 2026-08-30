@@ -5,7 +5,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
-import DifferentialGeometry.Bundle.ContinuousLinearMapSection
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Bundle.Equiv
 import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs

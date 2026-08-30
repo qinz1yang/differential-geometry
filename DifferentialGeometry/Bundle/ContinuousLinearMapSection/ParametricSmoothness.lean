@@ -1,71 +1,19 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
-open DifferentialGeometry.Geometry.Curvature
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 
 noncomputable section
 
-
-open Set Function MeasureTheory intervalIntegral Bundle DifferentialGeometry.Tensor0SBundle
-open scoped Topology Manifold BigOperators ContDiff Matrix
+open Bundle Manifold Set
+open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace PDE
-namespace DeTurck
-namespace RicciLinearization
-
-
-open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Spectral.DeTurck
-open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
-lemma contMDiffAt_clm_of_pointwise_jointSource
-    {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [FiniteDimensional ℝ F₁]
-    {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace ℝ F₂] [FiniteDimensional ℝ F₂]
-    {EX : Type*} [NormedAddCommGroup EX] [NormedSpace ℝ EX]
-    {HX : Type*} [TopologicalSpace HX] {IX : ModelWithCorners ℝ EX HX}
-    {X : Type*} [TopologicalSpace X] [ChartedSpace HX X]
-    {n : WithTop ℕ∞}
-    {A : X → (F₁ →L[ℝ] F₂)} {x : X}
-    (h : ∀ v, ContMDiffAt IX 𝓘(ℝ, F₂) n (fun q => A q v) x) :
-    ContMDiffAt IX 𝓘(ℝ, F₁ →L[ℝ] F₂) n A x := by
-  have : FiniteDimensional ℝ (F₁ →L[ℝ] F₂) := ContinuousLinearMap.finiteDimensional
-  let bF₁ := Module.finBasis ℝ F₁
-  let evalBasis : (F₁ →L[ℝ] F₂) →L[ℝ] (Fin (Module.finrank ℝ F₁) → F₂) :=
-    ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply ℝ F₂ (bF₁ i))
-  have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
-    ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
-    congr 1; ext i; exact congrArg _ (congrFun heq i)
-  have : FiniteDimensional ℝ (Fin (Module.finrank ℝ F₁) → F₂) := inferInstance
-  obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
-    (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
-  let gCLM : (Fin (Module.finrank ℝ F₁) → F₂) →L[ℝ] (F₁ →L[ℝ] F₂) :=
-    ⟨gLM, LinearMap.continuous_of_finiteDimensional _⟩
-  have hg : ∀ y, gCLM (evalBasis y) = y := fun y => congr($(hgLM) y)
-  have hEA : ContMDiffAt IX 𝓘(ℝ, Fin _ → F₂) n (evalBasis ∘ A) x :=
-    contMDiffAt_pi_space.mpr fun i => h (bF₁ i)
-  have hcompose : A = gCLM ∘ evalBasis ∘ A := by funext q; exact (hg (A q)).symm
-  rw [hcompose]
-  exact gCLM.contDiff.contMDiff.contMDiffAt.comp _ hEA
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
+theorem contMDiff_clm_section_of_apply
     {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [FiniteDimensional ℝ F₁]
     {V₁ : M → Type*} [∀ x, AddCommGroup (V₁ x)] [∀ x, Module ℝ (V₁ x)]
     [TopologicalSpace (TotalSpace F₁ V₁)] [∀ x, TopologicalSpace (V₁ x)]
@@ -87,7 +35,7 @@ theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
   rw [contMDiffAt_hom_bundle]
   refine ⟨contMDiffAt_fst, ?_⟩
   set x₀ := p₀.1 with hx₀
-  apply contMDiffAt_clm_of_pointwise_jointSource (IX := I.prod 𝓘(ℝ, ℝ)) (X := M × ℝ)
+  apply contMDiffAt_clm_of_pointwise (IB := I.prod 𝓘(ℝ, ℝ)) (X := M × ℝ)
   intro v
   let e₁ := trivializationAt F₁ V₁ x₀
   let e₂ := trivializationAt F₂ V₂ x₀
@@ -142,37 +90,7 @@ theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
   rw [Trivialization.continuousLinearMapAt_apply]
   exact congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₂) hx₂) _
 
-lemma contMDiffWithinAt_clm_of_pointwise_jointSource
-    {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [FiniteDimensional ℝ F₁]
-    {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace ℝ F₂] [FiniteDimensional ℝ F₂]
-    {EX : Type*} [NormedAddCommGroup EX] [NormedSpace ℝ EX]
-    {HX : Type*} [TopologicalSpace HX] {IX : ModelWithCorners ℝ EX HX}
-    {X : Type*} [TopologicalSpace X] [ChartedSpace HX X]
-    {n : WithTop ℕ∞}
-    {A : X → (F₁ →L[ℝ] F₂)} {sX : Set X} {x : X}
-    (h : ∀ v, ContMDiffWithinAt IX 𝓘(ℝ, F₂) n (fun q => A q v) sX x) :
-    ContMDiffWithinAt IX 𝓘(ℝ, F₁ →L[ℝ] F₂) n A sX x := by
-  have : FiniteDimensional ℝ (F₁ →L[ℝ] F₂) := ContinuousLinearMap.finiteDimensional
-  let bF₁ := Module.finBasis ℝ F₁
-  let evalBasis : (F₁ →L[ℝ] F₂) →L[ℝ] (Fin (Module.finrank ℝ F₁) → F₂) :=
-    ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply ℝ F₂ (bF₁ i))
-  have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
-    ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
-    congr 1; ext i; exact congrArg _ (congrFun heq i)
-  have : FiniteDimensional ℝ (Fin (Module.finrank ℝ F₁) → F₂) := inferInstance
-  obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
-    (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
-  let gCLM : (Fin (Module.finrank ℝ F₁) → F₂) →L[ℝ] (F₁ →L[ℝ] F₂) :=
-    ⟨gLM, LinearMap.continuous_of_finiteDimensional _⟩
-  have hg : ∀ y, gCLM (evalBasis y) = y := fun y => congr($(hgLM) y)
-  have hEA : ContMDiffWithinAt IX 𝓘(ℝ, Fin _ → F₂) n (evalBasis ∘ A) sX x :=
-    contMDiffWithinAt_pi_space.mpr fun i => h (bF₁ i)
-  have hcompose : A = gCLM ∘ evalBasis ∘ A := by funext q; exact (hg (A q)).symm
-  rw [hcompose]
-  exact gCLM.contDiff.contMDiff.contMDiffAt.comp_contMDiffWithinAt _ hEA
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
+theorem contMDiffOn_clm_section_of_apply
     {F₁ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [FiniteDimensional ℝ F₁]
     {V₁ : M → Type*} [∀ x, AddCommGroup (V₁ x)] [∀ x, Module ℝ (V₁ x)]
     [TopologicalSpace (TotalSpace F₁ V₁)] [∀ x, TopologicalSpace (V₁ x)]
@@ -196,7 +114,7 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
   rw [contMDiffWithinAt_hom_bundle]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   set x₀ := p₀.1 with hx₀
-  apply contMDiffWithinAt_clm_of_pointwise_jointSource (IX := I.prod 𝓘(ℝ, ℝ)) (X := M × ℝ)
+  apply contMDiffWithinAt_clm_of_pointwise (IB := I.prod 𝓘(ℝ, ℝ)) (X := M × ℝ)
   intro v
   let e₁ := trivializationAt F₁ V₁ x₀
   let e₂ := trivializationAt F₂ V₂ x₀
@@ -284,10 +202,4 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
     rw [Trivialization.continuousLinearMapAt_apply]
     exact congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₂) hx₂) _
 
-alias contMDiffOn_clm_section_of_pointwise_jointMR :=
-  contMDiffOn_clm_section_of_pointwise_joint_manifold_time
-
-end RicciLinearization
-end DeTurck
-end PDE
 end DifferentialGeometry

@@ -116,7 +116,7 @@ section
 open DifferentialGeometry.Geometry.Operator (chartInvGramMatrix)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope
-  lieDeTurckChartSlope_eq_orderSplit contMDiffOn_clm_section_of_pointwise_joint_manifold_time)
+  lieDeTurckChartSlope_eq_orderSplit)
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (reindexCoeffGen reindexCoeffFibGen reindexCoeffFibGen_apply reindexCoeffGen_toSection
@@ -5004,7 +5004,7 @@ private theorem lieArm_hjoint_reindex (g₀ : SmoothRiemannianMetric I M) (r : �
     exact (reindexCoeffFibGen_apply (I := I) r 2 σ' p.1
       (show Tensor0SBundle.Tensor0SSpace r I p.1 →L[ℝ]
           Tensor0SBundle.Tensor0SSpace 2 I p.1 from (Φ p.2).toSection p.1) (Y p.1)).symm
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel r ℝ E)
     (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace r I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)

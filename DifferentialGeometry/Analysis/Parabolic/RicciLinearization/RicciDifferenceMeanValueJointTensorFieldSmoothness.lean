@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueClmSectionJointSmoothness
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -772,7 +772,7 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace d I z) p.1
         ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p)))
       ((Set.univ : Set M) ×ˢ S) := by
-    apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SBundle.Tensor0SModel d ℝ E)
         (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace d I x)
@@ -821,7 +821,7 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
         ((slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
           (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))))
       ((Set.univ : Set M) ×ˢ S) := by
-    apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace (d + 1) I x)

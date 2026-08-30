@@ -169,7 +169,7 @@ theorem deTurckLieTraceCoeff_metricPerturbationPath_jointContMDiff (g₀ : Smoot
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) σ).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)

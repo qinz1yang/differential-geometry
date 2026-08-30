@@ -955,7 +955,7 @@ theorem curvatureDecompositionMonomialCoeffField_metricPerturbationPath_jointCon
         ((curvatureActionMonomialCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) W hW σp).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 4 ℝ E) (V₁ := fun x : M => Tensor0SSpace 4 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ => curvatureActionMonomialTrace (I := I) (M := M)

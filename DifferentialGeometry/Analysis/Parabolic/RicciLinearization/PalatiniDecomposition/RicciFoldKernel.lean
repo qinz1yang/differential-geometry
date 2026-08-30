@@ -1552,7 +1552,7 @@ theorem ricciArmOrder0AACommCoeffField_metricPerturbationPath_threeArmHjoint
       (fun s => ricciArmOrder0AACommCoeffField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)) (δ := δ) (δ' := δ) := by
   classical
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ => connectionDifferenceAACommBiContrFib (I := I) g₀
@@ -1621,7 +1621,7 @@ theorem ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_threeArmH
               (backgroundRiemannCommWeightKernel (I := I) (M := M) g₀).toSection q.1) (Y q.1)) := by
           rw [operatorFieldComposition_toSection]
           rfl
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ => backgroundRiemannBiContrFib (I := I) g₀

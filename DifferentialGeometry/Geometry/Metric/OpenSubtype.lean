@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Bundle.ContinuousLinearMapSection
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 
 set_option autoImplicit false

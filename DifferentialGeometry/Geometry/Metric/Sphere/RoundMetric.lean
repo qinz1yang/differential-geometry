@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.MetricExistence
-import DifferentialGeometry.Bundle.ContinuousLinearMapSection
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.Riemannian.Basic

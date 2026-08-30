@@ -287,7 +287,7 @@ private theorem connContrField_jointContMDiffOn (m k : ℕ) {S : Set ℝ}
             (show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ]
                 Tensor0SBundle.Tensor0SSpace (k + 1) I p.1 from Bf p)))
       ((Set.univ : Set M) ×ˢ S) := by
-    apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
       (V₁ := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z)
       (F₂ := Tensor0SBundle.Tensor0SModel (m + 1 + k + 1) ℝ E)
@@ -384,7 +384,7 @@ private theorem connectionDifferenceSection_metricPerturbationPath_jointContMDif
       (corrField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflatom
     refine hkosom.congr (fun p _ => ?_)
     rfl
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
     (V₁ := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -415,7 +415,7 @@ theorem connIns_joint
             ((connectionDifferenceSection (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀).toSection p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
     (V₁ := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z)
     (F₂ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
@@ -647,7 +647,7 @@ theorem linearizedRicciConnectionDifferenceOrder1Fib_metricPerturbationPath_join
         (linearizedRicciConnectionDifferenceOrder1CometricTracedCLM (I := I) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
     (V₁ := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -704,7 +704,7 @@ theorem linearizedRicciConnectionDifferenceOrder0Fib_metricPerturbationPath_join
         (linearizedRicciConnectionDifferenceOrder0CometricTracedCLM (I := I) g₀
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (V₁ := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)

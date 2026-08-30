@@ -2,7 +2,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 
 
-import DifferentialGeometry.Bundle.ContinuousLinearMapSection
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv

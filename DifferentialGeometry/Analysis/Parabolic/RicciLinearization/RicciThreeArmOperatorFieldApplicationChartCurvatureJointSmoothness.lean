@@ -253,7 +253,7 @@ theorem traceHessianCoeff_metricPerturbationPath_jointContMDiff (g₀ : SmoothRi
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -318,7 +318,7 @@ theorem linearizedRicci_arm2Field_jointSmooth (g₀ : SmoothRiemannianMetric I M
       δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 4
       (linearizedRicciArm2Field (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1314,7 +1314,7 @@ theorem ricciArmOrder0RiemannCoeff_metricPerturbationPath_jointContMDiff (g₀ :
         ((ricciArmOrder0RiemannCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1365,7 +1365,7 @@ theorem raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (g₀ : SmoothRi
         ((show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I p.1 from
           raisedKoszulFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 1 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -1385,7 +1385,7 @@ theorem linearizedRicci_arm1BaseCoeff_jointSmooth (g₀ : SmoothRiemannianMetric
       δ') :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g₀ 3
       (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 3 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)

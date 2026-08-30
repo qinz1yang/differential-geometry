@@ -16,8 +16,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (covGrad covGrad_toS
   pathIntegralCoeffField pathIntegralFib pathIntegralCoeffField_toSection
   pathIntegralCoeffField_toModel pathIntegralFib_toModel tensorCovDerivAt tensorCovDerivAt_def)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (contMDiffOn_clm_section_of_pointwise_joint_manifold_time
-  jointContMDiff_toModel_continuous_slice)
+  (jointContMDiff_toModel_continuous_slice)
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorRSNabla
 
 namespace DifferentialGeometry
@@ -456,7 +455,7 @@ theorem covGrad_step_jointContMDiffOn
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] TensorRSModel r sIdx ℝ E)
         (E := fun x : M => TangentSpace I x →L[ℝ] TensorRSSpace r sIdx I x) p.1 (φfield p))
       ((Set.univ : Set M) ×ˢ S) := by
-    refine contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I)
+    refine contMDiffOn_clm_section_of_apply (I := I)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := TensorRSModel r sIdx ℝ E) (V₂ := fun x : M => TensorRSSpace r sIdx I x)
       (φ := φfield) (S := S) ?_

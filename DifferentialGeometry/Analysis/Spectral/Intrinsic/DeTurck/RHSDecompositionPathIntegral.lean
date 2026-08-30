@@ -125,7 +125,7 @@ private theorem threeArm_comp
       (fun t => ccOperatorFieldComp (I := I) (M := M) g a b 2 (A t) B)
       (δ := delta) (δ' := delta') := by
   rw [linearizedRicciThreeArmHjoint] at hA ⊢
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel a Real E)
     (V₁ := fun x : M => Tensor0SSpace a I x)
     (F₂ := Tensor0SModel 2 Real E)
@@ -170,7 +170,7 @@ private theorem secondMetricPairTraceOperator_joint
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
       (δ := delta) (δ' := delta) := by
   rw [linearizedRicciThreeArmHjoint]
-  have hCLM := contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 6 Real E)
     (V₁ := fun x : M => Tensor0SSpace 6 I x)
     (F₂ := Tensor0SModel 2 Real E)

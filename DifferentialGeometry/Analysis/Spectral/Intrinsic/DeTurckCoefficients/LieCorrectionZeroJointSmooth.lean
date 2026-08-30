@@ -46,8 +46,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (interiorProductField_jointContMDiffOn_vecJoint
   inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn domDomCongrField_jointContMDiffOn
   cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn slotInsertEndo0Field_apply_jointContMDiffOn
-  slotInsertEndo1Field_apply_jointContMDiffOn
-  contMDiffOn_clm_section_of_pointwise_joint_manifold_time)
+  slotInsertEndo1Field_apply_jointContMDiffOn)
 open DifferentialGeometry.Integral.L2 (SmoothCcTensor)
 
 section LieCorrectionZeroJoint
@@ -328,7 +327,7 @@ private theorem lieCorrectionZero_connectionDifferenceVFEndo_jointContMDiffOn
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) gP :
               Π b : M, TangentSpace I b) p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ =>
@@ -752,7 +751,7 @@ private theorem lieCorrectionZeroPathTotalFib_jointContMDiffOn
         (E := fun z : M => Tensor0SSpace 2 I z →L[ℝ] Tensor0SSpace 2 I z) pp.1
         (lieCorrectionZeroPathTotalFib (I := I) g₀ T T' hδ hδ' g_bg pp))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E)
     (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E)

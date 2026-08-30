@@ -69,7 +69,7 @@ theorem operatorFieldApplication_fixed_jointContMDiffOn
       ((Set.univ : Set M) ×ˢ S) :=
     (W.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono
       (Set.subset_univ _)
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 0 ℝ E) (V₁ := fun x : M => Tensor0SSpace 0 I x)
     (F₂ := Tensor0SModel c ℝ E) (V₂ := fun x : M => Tensor0SSpace c I x)
     (S := S)

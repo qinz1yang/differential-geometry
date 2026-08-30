@@ -20,8 +20,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (covGrad covGrad_toS
   pathIntegralCoeffField pathIntegralFib pathIntegralCoeffField_toSection
   pathIntegralCoeffField_toModel pathIntegralFib_toModel tensorCovDerivAt tensorCovDerivAt_def)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (contMDiffOn_clm_section_of_pointwise_joint_manifold_time
-  jointContMDiff_toModel_continuous_slice)
+  (jointContMDiff_toModel_continuous_slice)
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorRSNabla
 
 namespace DifferentialGeometry
@@ -188,4 +187,3 @@ end Analysis
 end DifferentialGeometry
 
 end
-

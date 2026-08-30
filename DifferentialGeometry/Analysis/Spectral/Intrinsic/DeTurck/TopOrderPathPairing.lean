@@ -157,7 +157,7 @@ private theorem joint_app
     (hB : JointRS (I := I) g a b S B) :
     JointRS (I := I) g a c S
       (fun t => ccOperatorFieldComp (I := I) (M := M) g a b c (A t) (B t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel a Real E) (V₁ := fun x : M => Tensor0SSpace a I x)
     (F₂ := Tensor0SModel c Real E) (V₂ := fun x : M => Tensor0SSpace c I x)
     (φ := fun p : M × Real =>
@@ -226,7 +226,7 @@ private theorem fullRaised_joint
         (metricComparisonEndomorphismField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := delta) (δ' := delta)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × Real =>
@@ -267,7 +267,7 @@ private theorem slotInsert_joint
       (fun t => slotInsertEndoCc (I := I) (M := M) g d
         (metricComparisonEndomorphismField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel (d + 1) Real E)
     (V₁ := fun x : M => Tensor0SSpace (d + 1) I x)
     (F₂ := Tensor0SModel (d + 1) Real E)

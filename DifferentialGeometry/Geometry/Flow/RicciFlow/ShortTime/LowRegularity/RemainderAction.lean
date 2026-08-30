@@ -1441,7 +1441,7 @@ private theorem joint_app
     (hB : JointRS (I := I) g a b S B) :
     JointRS (I := I) g a c S
       (fun t => ccOperatorFieldComp (I := I) (M := M) g a b c (A t) (B t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel a ℝ E) (V₁ := fun x : M => Tensor0SSpace a I x)
     (F₂ := Tensor0SModel c ℝ E) (V₂ := fun x : M => Tensor0SSpace c I x)
     (φ := fun p : M × ℝ =>
@@ -1741,7 +1741,7 @@ private theorem slotExtend_joint
     (hA : JointRS (I := I) g r s S A) :
     JointRS (I := I) g (r + 1) (s + 1) S
       (fun t => slotExtend (I := I) (M := M) g r s (A t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel (r + 1) ℝ E)
     (V₁ := fun x : M => Tensor0SSpace (r + 1) I x)
     (F₂ := Tensor0SModel (s + 1) ℝ E)
@@ -1770,7 +1770,7 @@ private theorem slotExtend_joint
           ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
             r p.1) (Y p.1))))
       ((Set.univ : Set M) ×ˢ S) := by
-    apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+    apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SModel s ℝ E)
       (V₂ := fun x : M => Tensor0SSpace s I x)
@@ -1921,7 +1921,7 @@ private theorem fullRaised_joint
         (metricComparisonEndomorphismField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
     (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
     (φ := fun p : M × ℝ =>
@@ -1966,7 +1966,7 @@ private theorem slotInsert_joint
       (fun t => slotInsertEndoCc (I := I) (M := M) g d
         (metricComparisonEndomorphismField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ t))) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel (d + 1) ℝ E)
     (V₁ := fun x : M => Tensor0SSpace (d + 1) I x)
     (F₂ := Tensor0SModel (d + 1) ℝ E)
@@ -2099,7 +2099,7 @@ private theorem daTrans_joint
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) W)
       (δ := δ) (δ' := δ) := by
   rw [linearizedRicciThreeArmHjoint]
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 4 ℝ E)
     (V₁ := fun x : M => Tensor0SSpace 4 I x)
     (F₂ := Tensor0SModel 2 ℝ E)
@@ -2181,7 +2181,7 @@ private theorem danger_joint
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) (t • T))
       (δ := δ) (δ' := δ) := by
   rw [linearizedRicciThreeArmHjoint]
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E)
     (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E)

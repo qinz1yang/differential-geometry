@@ -1828,7 +1828,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.FrameInvariance
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
 import DifferentialGeometry.Analysis.Time
-import DifferentialGeometry.Bundle.ContinuousLinearMapSection
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection.PointwiseSmoothness
 import DifferentialGeometry.Bundle.Dual
 import DifferentialGeometry.Bundle.Equiv
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
@@ -1837,7 +1839,6 @@ import DifferentialGeometry.Bundle.LocalFrameRegularity
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueClmSectionJointSmoothness
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Bundle.TangentCoordChange

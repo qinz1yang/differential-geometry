@@ -88,7 +88,7 @@ theorem jointlySmoothCcTensorFamily_ccOperatorFieldComp
     (hB : JointlySmoothCcTensorFamily (I := I) g a b S B) :
     JointlySmoothCcTensorFamily (I := I) g a c S
       (fun t => ccOperatorFieldComp (I := I) (M := M) g a b c (A t) (B t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel a ℝ E) (V₁ := fun x : M => Tensor0SSpace a I x)
     (F₂ := Tensor0SModel c ℝ E) (V₂ := fun x : M => Tensor0SSpace c I x)
     (φ := fun p : M × ℝ =>
@@ -208,7 +208,7 @@ theorem jointlySmoothCcTensorFamily_slotExtendIter_two
     (hK : JointlySmoothCcTensorFamily (I := I) g 0 4 S K) :
     JointlySmoothCcTensorFamily (I := I) g 2 6 S
       (fun t => slotExtendIter (I := I) (M := M) g 0 4 2 (K t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 6 ℝ E) (V₂ := fun x : M => Tensor0SSpace 6 I x)
     (φ := fun q : M × ℝ =>
@@ -286,7 +286,7 @@ theorem ricciCometricFourTraceCastG0_metricPerturbationPath_jointlySmooth
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => ricciCometricFourTraceCastG0 (I := I) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 4 ℝ E) (V₁ := fun x : M => Tensor0SSpace 4 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
@@ -429,7 +429,7 @@ theorem reindexedPureTrace_metricPerturbationPath_jointlySmooth
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => reindexedPureTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) p σ) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel (p + 2) ℝ E)
     (V₁ := fun x : M => Tensor0SSpace (p + 2) I x)
     (F₂ := Tensor0SModel p ℝ E) (V₂ := fun x : M => Tensor0SSpace p I x)
@@ -478,7 +478,7 @@ theorem pureTrace_metricPerturbationPath_jointlySmooth
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => pureTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) p) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel (p + 2) ℝ E)
     (V₁ := fun x : M => Tensor0SSpace (p + 2) I x)
     (F₂ := Tensor0SModel p ℝ E) (V₂ := fun x : M => Tensor0SSpace p I x)
@@ -531,7 +531,7 @@ theorem reindexedCometricDoubleTrace_metricPerturbationPath_jointlySmooth
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => reindexedCometricDoubleTrace (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 4 ℝ E) (V₁ := fun x : M => Tensor0SSpace 4 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun q : M × ℝ =>
@@ -569,7 +569,7 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 1 ℝ E) (V₁ := fun x : M => Tensor0SSpace 1 I x)
     (F₂ := Tensor0SModel 4 ℝ E) (V₂ := fun x : M => Tensor0SSpace 4 I x)
     (φ := fun q : M × ℝ =>
@@ -705,7 +705,7 @@ theorem slotExtendedMetricConnectionDifferenceLoweredCoefficient_metricPerturbat
       (fun t => slotExtendIter (I := I) (M := M) g 0 3 3
         (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ t) g)) := by
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 3 ℝ E) (V₁ := fun x : M => Tensor0SSpace 3 I x)
     (F₂ := Tensor0SModel 6 ℝ E) (V₂ := fun x : M => Tensor0SSpace 6 I x)
     (φ := fun q : M × ℝ =>
@@ -1452,7 +1452,7 @@ theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_metricPertu
       (fun t => lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) T) := by
   let S := metricPerturbationPathDomain (δ := δ) (δ' := δ)
-  apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
+  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 3 ℝ E) (V₁ := fun x : M => Tensor0SSpace 3 I x)
     (F₂ := Tensor0SModel 6 ℝ E) (V₂ := fun x : M => Tensor0SSpace 6 I x)
     (φ := fun q : M × ℝ =>

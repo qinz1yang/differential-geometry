@@ -1628,7 +1628,7 @@ theorem ricciArmSharpGradKoszulResidualField_metricPerturbationPath_threeArmHjoi
                 (koszulCovecCc (I := I) g₀ T))) from rfl]
       rw [operatorFieldComposition_toSection]
       rfl]
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ => sharpGradKoszulBiContrFib (I := I) g₀
@@ -1794,7 +1794,7 @@ theorem ricciArmRicciFoldRemainderField_metricPerturbationPath_threeArmHjoint
                       from by
       rw [operatorFieldComposition_toSection]
       rfl]
-  have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
+  have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)
     (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun x : M => Tensor0SSpace 2 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ => ricciFoldBiContrFib (I := I) g₀
