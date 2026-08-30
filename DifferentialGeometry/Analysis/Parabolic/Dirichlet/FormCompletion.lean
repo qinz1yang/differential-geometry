@@ -23,6 +23,47 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
+noncomputable def dirichletMassLp
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q) :
+    Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q) →L[ℝ]
+      Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q) →L[ℝ] ℝ :=
+  let L := Lp.LpToLpOfMeasureLeSMul (E := ℝ) (p := 2) hCvtop hvol
+  (innerSL ℝ).bilinearComp L L
+
+theorem dirichletMassLp_apply_smooth
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (h : SmoothRiemannianMetric (I_half n) M)
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) h ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u v : SmoothScalarDirichlet q) :
+    dirichletMassLp h Cv hCvtop hvol
+        (smoothToLpDirichlet q u) (smoothToLpDirichlet q v) =
+      dirichletMass h u v := by
+  let μq := riemannianVolumeMeasure (I := I_half n) (M := M) q
+  let μh := riemannianVolumeMeasure (I := I_half n) (M := M) h
+  let L := Lp.LpToLpOfMeasureLeSMul (E := ℝ) (p := 2) hCvtop hvol
+  change inner ℝ (L (smoothToLpDirichlet q u))
+      (L (smoothToLpDirichlet q v)) = dirichletMass h u v
+  rw [MeasureTheory.L2.inner_def]
+  unfold dirichletMass
+  refine integral_congr_ae ?_
+  have hac : μh ≪ μq := Measure.absolutelyContinuous_of_le_smul hvol
+  have huq : smoothToLpDirichlet q u =ᵐ[μq] u.toFun :=
+    MemLp.coeFn_toLp u.memLp_two
+  have hvq : smoothToLpDirichlet q v =ᵐ[μq] v.toFun :=
+    MemLp.coeFn_toLp v.memLp_two
+  filter_upwards [Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol
+      (smoothToLpDirichlet q u),
+    Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol
+      (smoothToLpDirichlet q v), hac.ae_eq huq, hac.ae_eq hvq] with x huL hvL hu hv
+  rw [huL, hvL, hu, hv]
+  simp only [RCLike.inner_apply, conj_trivial, mul_comm]
+
 private noncomputable def dirichletExtend
     (q : SmoothRiemannianMetric (I_half n) M)
     (F : SmoothScalarDirichlet q →L[ℝ] SmoothScalarDirichlet q →L[ℝ] ℝ) :
