@@ -781,6 +781,59 @@ def uhlenbeckNablaHeatPComponent
         nabla3P e f d (slots 0) (slots 1) (slots 2)) q
       (fun r : Fin 3 => if r = 0 then a else if r = 1 then b else c)
 
+section
+
+variable [DecidableEq Idx]
+
+theorem hamiltonP_heat_covariantDerivative_commutator_slots
+    (R : Idx -> Idx -> Idx -> Idx -> Real)
+    (nablaR : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (Ric : Idx -> Idx -> Real)
+    (nablaRic : Idx -> Idx -> Idx -> Real)
+    (nablaP : Idx -> Idx -> Idx -> Idx -> Real)
+    (nablaDtP : Idx -> Idx -> Idx -> Idx -> Real)
+    (nabla3P : Idx -> Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (hdiff : differentiatedTensorRicciIdentityComponents R nablaR
+      (fun slots : Fin 3 -> Idx =>
+        hamiltonPComponent nablaRic (slots 0) (slots 1) (slots 2))
+      (fun e (slots : Fin 3 -> Idx) =>
+        nablaP e (slots 0) (slots 1) (slots 2))
+      (fun e f d (slots : Fin 3 -> Idx) =>
+        nabla3P e f d (slots 0) (slots 1) (slots 2)))
+    (hgrad : tensorGradientRicciIdentityComponents R
+      (fun e (slots : Fin 3 -> Idx) =>
+        nablaP e (slots 0) (slots 1) (slots 2))
+      (fun e f d (slots : Fin 3 -> Idx) =>
+        nabla3P e f d (slots 0) (slots 1) (slots 2)))
+    (hcontract : contractedCurvatureDerivativeComponents nablaR nablaRic)
+    (hskewFirst : forall a e c d, R a e c d = -R e a c d)
+    (hskewLast : forall a e c d, R a e c d = -R a e d c)
+    (htrace : curvatureRicciTraceComponents R Ric)
+    (a : Idx) (slots : Fin 3 -> Idx) :
+    (uhlenbeckHeatNablaPComponent Ric nablaRic nablaP nablaDtP nabla3P a
+        (slots 0) (slots 1) (slots 2) -
+      uhlenbeckNablaHeatPComponent Ric nablaRic nablaP nablaDtP nabla3P a
+        (slots 0) (slots 1) (slots 2)) =
+      curvatureSlotActionContraction R
+        (fun e (s : Fin 3 -> Idx) => nablaP e (s 0) (s 1) (s 2)) a slots := by
+  have h := uhlenbeck_heat_covariantDerivative_commutator_slots
+    R nablaR Ric nablaRic
+    (fun s : Fin 3 -> Idx =>
+      hamiltonPComponent nablaRic (s 0) (s 1) (s 2))
+    (fun e (s : Fin 3 -> Idx) => nablaP e (s 0) (s 1) (s 2))
+    (fun e (s : Fin 3 -> Idx) => nablaDtP e (s 0) (s 1) (s 2))
+    (fun e f d (s : Fin 3 -> Idx) => nabla3P e f d (s 0) (s 1) (s 2))
+    hdiff hgrad hcontract hskewFirst hskewLast htrace a slots
+  have hslots :
+      (fun r : Fin 3 => if r = 0 then slots 0 else if r = 1 then slots 1 else slots 2) =
+        slots := by
+    funext r
+    fin_cases r <;> simp
+  simpa [uhlenbeckHeatNablaPComponent, uhlenbeckNablaHeatPComponent,
+    curvatureSlotActionContraction, Function.update_apply, hslots] using h
+
+end
+
 def hamiltonDivPHeatComponent
     (Ric : Idx -> Idx -> Real)
     (nablaRic : Idx -> Idx -> Idx -> Real)
