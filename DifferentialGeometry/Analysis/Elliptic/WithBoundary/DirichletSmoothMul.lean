@@ -335,6 +335,113 @@ private lemma norm_smoothScalarDirichletMulFun_sq_le
   have hC := dirichletSmoothMulBound_nonneg g φ
   nlinarith
 
+private lemma norm_smoothScalarDirichletMulFun_sq_le_of_bound
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (φ : C^∞⟮I_half n, M; ℝ⟯) {C : ℝ} (hC : 0 ≤ C)
+    (hφ : ∀ x : M, (φ : M → ℝ) x ^ 2 ≤ C)
+    (hgrad : ∀ x : M,
+      g.inner x (gradFun (I := I_half n) g (φ : M → ℝ) x)
+        (gradFun (I := I_half n) g (φ : M → ℝ) x) ≤ C)
+    (v : SmoothScalarDirichlet g) :
+    ‖smoothScalarDirichletMulFun g φ v‖ ^ 2 ≤
+      (3 * C) * ‖v‖ ^ 2 := by
+  have hsq (x : M) :
+      (smoothScalarDirichletMulFun g φ v).toFun x ^ 2 ≤
+        C * v.toFun x ^ 2 := by
+    change ((φ : M → ℝ) x * v.toFun x) ^ 2 ≤ _
+    rw [mul_pow]
+    exact mul_le_mul_of_nonneg_right (hφ x) (sq_nonneg _)
+  have hgradmul (x : M) :
+      g.inner x
+          (gradFun (I := I_half n) g (smoothScalarDirichletMulFun g φ v).toFun x)
+          (gradFun (I := I_half n) g (smoothScalarDirichletMulFun g φ v).toFun x) ≤
+        2 * C * g.inner x (gradFun (I := I_half n) g v.toFun x)
+            (gradFun (I := I_half n) g v.toFun x) +
+          2 * C * v.toFun x ^ 2 := by
+    rw [gradFun_smoothScalarDirichletMulFun]
+    have hmain := metric_inner_add_self_le g x
+      ((φ : M → ℝ) x • gradFun (I := I_half n) g v.toFun x)
+      (v.toFun x • gradFun (I := I_half n) g (φ : M → ℝ) x)
+    have hA : g.inner x
+        ((φ : M → ℝ) x • gradFun (I := I_half n) g v.toFun x)
+        ((φ : M → ℝ) x • gradFun (I := I_half n) g v.toFun x) =
+        (φ : M → ℝ) x ^ 2 *
+          g.inner x (gradFun (I := I_half n) g v.toFun x)
+            (gradFun (I := I_half n) g v.toFun x) := by
+      simp only [map_smul, smul_apply, smul_eq_mul]
+      ring
+    have hB : g.inner x
+        (v.toFun x • gradFun (I := I_half n) g (φ : M → ℝ) x)
+        (v.toFun x • gradFun (I := I_half n) g (φ : M → ℝ) x) =
+        v.toFun x ^ 2 *
+          g.inner x (gradFun (I := I_half n) g (φ : M → ℝ) x)
+            (gradFun (I := I_half n) g (φ : M → ℝ) x) := by
+      simp only [map_smul, smul_apply, smul_eq_mul]
+      ring
+    rw [hA, hB] at hmain
+    have hgradv : 0 ≤ g.inner x (gradFun (I := I_half n) g v.toFun x)
+        (gradFun (I := I_half n) g v.toFun x) :=
+      SmoothRiemannianMetric_inner_self_nonneg g x _
+    have hfirst : (φ : M → ℝ) x ^ 2 *
+        g.inner x (gradFun (I := I_half n) g v.toFun x)
+          (gradFun (I := I_half n) g v.toFun x) ≤
+        C * g.inner x (gradFun (I := I_half n) g v.toFun x)
+          (gradFun (I := I_half n) g v.toFun x) :=
+      mul_le_mul_of_nonneg_right (hφ x) hgradv
+    have hsecond : v.toFun x ^ 2 *
+        g.inner x (gradFun (I := I_half n) g (φ : M → ℝ) x)
+          (gradFun (I := I_half n) g (φ : M → ℝ) x) ≤
+        v.toFun x ^ 2 * C :=
+      mul_le_mul_of_nonneg_left (hgrad x) (sq_nonneg _)
+    nlinarith
+  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) g
+  have hl2 :
+      (∫ x, (smoothScalarDirichletMulFun g φ v).toFun x ^ 2 ∂μ) ≤
+        C * ∫ x, v.toFun x ^ 2 ∂μ := by
+    have hlhs := integrable_toFun_sq g (smoothScalarDirichletMulFun g φ v)
+    have hrhs := integrable_toFun_sq g v
+    have hmono := integral_mono_ae hlhs (hrhs.const_mul C)
+      (Filter.Eventually.of_forall hsq)
+    simpa only [integral_const_mul] using hmono
+  have hgradint :
+      (∫ x, g.inner x
+          (gradFun (I := I_half n) g (smoothScalarDirichletMulFun g φ v).toFun x)
+          (gradFun (I := I_half n) g (smoothScalarDirichletMulFun g φ v).toFun x) ∂μ) ≤
+        2 * C * (∫ x, g.inner x (gradFun (I := I_half n) g v.toFun x)
+            (gradFun (I := I_half n) g v.toFun x) ∂μ) +
+          2 * C * ∫ x, v.toFun x ^ 2 ∂μ := by
+    have hlhs := integrable_inner_grad_self g (smoothScalarDirichletMulFun g φ v)
+    have hgradv := integrable_inner_grad_self g v
+    have hl2v := integrable_toFun_sq g v
+    have hrhs := (hgradv.const_mul (2 * C)).add (hl2v.const_mul (2 * C))
+    have hmono := integral_mono_ae hlhs hrhs
+      (Filter.Eventually.of_forall hgradmul)
+    change _ ≤ ∫ x, 2 * C * g.inner x (gradFun (I := I_half n) g v.toFun x)
+        (gradFun (I := I_half n) g v.toFun x) + 2 * C * v.toFun x ^ 2 ∂μ at hmono
+    rw [integral_add (hgradv.const_mul (2 * C)) (hl2v.const_mul (2 * C)),
+      integral_const_mul, integral_const_mul] at hmono
+    exact hmono
+  rw [InteriorSmoothScalar.norm_sq_eq_inner_self,
+    InteriorSmoothScalar.norm_sq_eq_inner_self]
+  unfold interiorSmoothScalarH1Inner
+  simp only [grad_g_with_boundary_section_apply']
+  change (∫ x, (smoothScalarDirichletMulFun g φ v).toFun x *
+      (smoothScalarDirichletMulFun g φ v).toFun x ∂μ) +
+    (∫ x, g.inner x
+      (gradFun (I := I_half n) g (smoothScalarDirichletMulFun g φ v).toFun x)
+      (gradFun (I := I_half n) g (smoothScalarDirichletMulFun g φ v).toFun x) ∂μ) ≤
+    3 * C * ((∫ x, v.toFun x * v.toFun x ∂μ) +
+      ∫ x, g.inner x (gradFun (I := I_half n) g v.toFun x)
+        (gradFun (I := I_half n) g v.toFun x) ∂μ)
+  simp only [sq] at hl2 hgradint
+  have hl2nonneg : 0 ≤ ∫ x, v.toFun x * v.toFun x ∂μ :=
+    integral_nonneg fun _ => mul_self_nonneg _
+  have hgradnonneg : 0 ≤ ∫ x, g.inner x
+      (gradFun (I := I_half n) g v.toFun x)
+      (gradFun (I := I_half n) g v.toFun x) ∂μ :=
+    integral_nonneg fun x => SmoothRiemannianMetric_inner_self_nonneg g x _
+  nlinarith
+
 private noncomputable def smoothScalarDirichletMulNormBound
     (g : SmoothRiemannianMetric (I_half n) M)
     (φ : C^∞⟮I_half n, M; ℝ⟯) : ℝ :=
@@ -404,6 +511,34 @@ theorem smoothMulH1ComplDirichlet_smoothToH1ComplDirichlet
     (smoothMulH1ComplDirichletOnSmooth g φ)
     (denseRange_smoothToH1ComplDirichlet g)
     (UniformSpace.Completion.isUniformInducing_coe (SmoothScalarDirichlet g)) v
+
+theorem norm_smoothMulH1ComplDirichlet_le_of_bound
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (φ : C^∞⟮I_half n, M; ℝ⟯) {C : ℝ} (hC : 0 ≤ C)
+    (hφ : ∀ x : M, (φ : M → ℝ) x ^ 2 ≤ C)
+    (hgrad : ∀ x : M,
+      g.inner x (gradFun (I := I_half n) g (φ : M → ℝ) x)
+        (gradFun (I := I_half n) g (φ : M → ℝ) x) ≤ C) :
+    ‖smoothMulH1ComplDirichlet g φ‖ ≤ Real.sqrt (3 * C) := by
+  apply ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _)
+  intro u
+  refine (denseRange_smoothToH1ComplDirichlet g).induction_on u
+    (isClosed_le (smoothMulH1ComplDirichlet g φ).continuous.norm
+      (continuous_const.mul continuous_norm)) ?_
+  intro v
+  rw [smoothMulH1ComplDirichlet_smoothToH1ComplDirichlet]
+  have hnorm (w : SmoothScalarDirichlet g) :
+      ‖smoothToH1ComplDirichlet g w‖ = ‖w‖ := by
+    change ‖(w : UniformSpace.Completion (SmoothScalarDirichlet g))‖ = ‖w‖
+    exact UniformSpace.Completion.norm_coe w
+  rw [hnorm, hnorm]
+  change ‖smoothScalarDirichletMulFun g φ v‖ ≤ Real.sqrt (3 * C) * ‖v‖
+  have hsq := norm_smoothScalarDirichletMulFun_sq_le_of_bound g φ hC hφ hgrad v
+  have hrhs : 0 ≤ Real.sqrt (3 * C) * ‖v‖ :=
+    mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)
+  apply abs_le_of_sq_le_sq' _ hrhs |>.2
+  rw [mul_pow, Real.sq_sqrt (mul_nonneg (by norm_num) hC)]
+  exact hsq
 
 private lemma H1ComplDirichletToLp_smoothMulH1ComplDirichlet_on_smooth
     (g : SmoothRiemannianMetric (I_half n) M)
