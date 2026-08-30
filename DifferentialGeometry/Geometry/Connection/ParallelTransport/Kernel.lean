@@ -48,6 +48,20 @@ theorem finrank_ker_eq (h : LinearIsometryKernelIntertwining V W source target) 
   rw [← h.map_ker_eq_ker]
   exact (Submodule.equivMapOfInjective h.map.toLinearMap h.map.injective source.ker).finrank_eq
 
+theorem map_range_eq_range (h : LinearIsometryKernelIntertwining V W source target) :
+    Submodule.map h.map.toLinearMap source.range = target.range := by
+  apply le_antisymm
+  · rintro y ⟨v, ⟨z, rfl⟩, rfl⟩
+    refine ⟨h.map z, ?_⟩
+    have hz := congrArg (fun L : V →ₗ[ℝ] W => L z) h.intertwining
+    simpa [LinearMap.comp_apply] using hz.symm
+  · intro y hy
+    rcases hy with ⟨w, rfl⟩
+    let z : V := h.map.symm w
+    refine ⟨source z, ⟨z, rfl⟩, ?_⟩
+    have hz := congrArg (fun L : V →ₗ[ℝ] W => L z) h.intertwining
+    simpa [z, LinearMap.comp_apply] using hz
+
 end LinearIsometryKernelIntertwining
 
 universe uX uF
@@ -111,6 +125,20 @@ theorem physical_kernel_transport (h : UhlenbeckKernelTransfer V base fixedOpera
     Submodule.map (P.transport x y).toLinearMap (physicalOperator x).ker =
       (physicalOperator y).ker := by
   exact LinearIsometryKernelIntertwining.map_ker_eq_ker
+      { map := P.transport x y, intertwining := h.pathIntertwining x y }
+
+theorem fixed_range_transport (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x : X) :
+    Submodule.map (P.transport base x).toLinearMap fixedOperator.range =
+      (physicalOperator x).range := by
+  exact LinearIsometryKernelIntertwining.map_range_eq_range
+    { map := P.transport base x, intertwining := h.baseIntertwining x }
+
+theorem physical_range_transport (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x y : X) :
+    Submodule.map (P.transport x y).toLinearMap (physicalOperator x).range =
+      (physicalOperator y).range := by
+  exact LinearIsometryKernelIntertwining.map_range_eq_range
     { map := P.transport x y, intertwining := h.pathIntertwining x y }
 
 theorem physical_kernel_finrank_eq (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
@@ -118,6 +146,19 @@ theorem physical_kernel_finrank_eq (h : UhlenbeckKernelTransfer V base fixedOper
     Module.finrank ℝ fixedOperator.ker = Module.finrank ℝ (physicalOperator x).ker := by
   exact LinearIsometryKernelIntertwining.finrank_ker_eq
     { map := P.transport base x, intertwining := h.baseIntertwining x }
+
+theorem physical_range_finrank_eq (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x : X) :
+    Module.finrank ℝ fixedOperator.range =
+      Module.finrank ℝ (physicalOperator x).range := by
+  calc
+    Module.finrank ℝ fixedOperator.range =
+        Module.finrank ℝ (Submodule.map (P.transport base x).toLinearMap fixedOperator.range) := by
+      exact (Submodule.equivMapOfInjective (P.transport base x).toLinearMap
+        (P.transport base x).injective fixedOperator.range).finrank_eq
+    _ = Module.finrank ℝ (physicalOperator x).range := by
+      exact congrArg (fun S : Submodule ℝ (V x) => Module.finrank ℝ S)
+        (fixed_range_transport (V := V) h x)
 
 theorem physical_kernel_is_parallel
     (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P) :
