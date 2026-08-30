@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostRampBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionLocalMin
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
 
 set_option autoImplicit false
 

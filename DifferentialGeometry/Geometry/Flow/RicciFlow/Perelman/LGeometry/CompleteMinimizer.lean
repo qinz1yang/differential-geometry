@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionCapstone
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionAttain
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionExtend
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionMinC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionMinReg
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionRawMin
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.GlobalLowerSemicontinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Attainment
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Extension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MinimizerC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MinimizerRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.RawMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteFlowBound
 

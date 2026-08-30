@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinMaxCompact
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
 
 set_option autoImplicit false
 

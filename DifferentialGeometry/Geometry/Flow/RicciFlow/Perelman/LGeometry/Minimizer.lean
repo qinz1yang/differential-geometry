@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Comparison.Variation.FieldRealization
 

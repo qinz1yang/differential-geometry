@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionNodeSplice
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionRawMin
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.RawMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayActionLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayGlobalize
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Ramp

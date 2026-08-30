@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.NLCEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.NLCSourceTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.CurvatureBound

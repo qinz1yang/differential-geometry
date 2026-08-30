@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionRawMin
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionPrefix
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.RawMinimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.PrefixMinimum
 
 set_option autoImplicit false
 

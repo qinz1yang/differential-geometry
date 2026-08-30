@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Exp
 import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve

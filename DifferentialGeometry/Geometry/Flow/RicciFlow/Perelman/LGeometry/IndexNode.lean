@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FieldRealizationPair
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionNodeSplice
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Minimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegIndexSmooth
 
