@@ -60,6 +60,11 @@ def hamiltonGramReaction {ι κ : Type*} [Fintype ι] [Fintype κ]
       (∑ a, ∑ c, Y s a c * X r c * W a) -
       2 * (∑ a, ∑ b, ∑ c, Y r a c * Y s b c * U a b)) ^ 2
 
+def hamiltonGramSigma {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real) (a b : ι) : Real :=
+  ∑ r, Y r a b * hamiltonGramLinearTerm Y X U W r
+
 theorem hamiltonGram_quadratic_nonneg
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (Y : κ → ι → ι → Real) (X : κ → ι → Real)
@@ -76,5 +81,19 @@ theorem hamiltonGram_reaction_nonneg
   unfold hamiltonGramReaction
   exact Finset.sum_nonneg fun r _ =>
     Finset.sum_nonneg fun s _ => sq_nonneg _
+
+theorem hamiltonGram_sigma_eq_zero_of_quadratic_eq_zero
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real)
+    (hzero : hamiltonGramQuadratic Y X U W = 0) (a b : ι) :
+    hamiltonGramSigma Y X U W a b = 0 := by
+  have hterm : ∀ r : κ, hamiltonGramLinearTerm Y X U W r = 0 := by
+    intro r
+    have hterms := (Finset.sum_eq_zero_iff_of_nonneg
+      (fun s _ => sq_nonneg (hamiltonGramLinearTerm Y X U W s))).mp hzero
+    exact (sq_eq_zero_iff.mp (hterms r (Finset.mem_univ r)))
+  unfold hamiltonGramSigma
+  simp [hterm]
 
 end DifferentialGeometry.Analysis.Spectral
