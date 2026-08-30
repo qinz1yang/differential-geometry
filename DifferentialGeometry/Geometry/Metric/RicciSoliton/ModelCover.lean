@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
+import DifferentialGeometry.Geometry.Metric.PullbackCross
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homeomorph.Lemmas
 
@@ -89,6 +90,50 @@ theorem solitonModelCovering_potential
     (hπ : solitonModelCovering h Fpot g f cover) (x : N) :
     Fpot x = f (cover x) :=
   hπ.2.2.2.2.2.2 x
+
+theorem solitonModelCovering_deck_preserves
+    {h : SmoothRiemannianMetric I M} {Fpot : C^∞⟮I, M; Real⟯}
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    {cover : M → M}
+    (hπ : solitonModelCovering h Fpot g f cover)
+    (γ : M ≃ₘ⟮I, I⟯ M)
+    (hγ : ∀ x, cover (γ x) = cover x) :
+    Diffeomorph.pullbackMetricCross h γ = h ∧
+      Fpot.comp γ.toContMDiffMap = Fpot := by
+  have hcomp : cover ∘ (γ : M → M) = cover := by
+    funext x
+    exact hγ x
+  have hderiv (x : M) :
+      mfderiv I I cover (γ x) ∘L mfderiv I I (γ : M → M) x =
+        mfderiv I I cover x := by
+    have h' := mfderiv_comp x
+      ((solitonModelCovering_contMDiff hπ).mdifferentiableAt (by simp))
+      (γ.contMDiff.mdifferentiableAt (by simp))
+    rw [hcomp] at h'
+    exact h'.symm
+  constructor
+  · apply SmoothRiemannianMetric.ext_inner
+    intro x v w
+    rw [Diffeomorph.pullbackMetricCross_inner]
+    calc
+      h.inner (γ x) (mfderiv I I (γ : M → M) x v)
+          (mfderiv I I (γ : M → M) x w) =
+          g.inner (cover (γ x))
+            (mfderiv I I cover (γ x) (mfderiv I I (γ : M → M) x v))
+            (mfderiv I I cover (γ x) (mfderiv I I (γ : M → M) x w)) :=
+        solitonModelCovering_metric hπ (γ x) _ _
+      _ = g.inner (cover x) (mfderiv I I cover x v)
+            (mfderiv I I cover x w) := by
+        have hv := congrArg (fun L => L v) (hderiv x)
+        have hw := congrArg (fun L => L w) (hderiv x)
+        simp only [ContinuousLinearMap.comp_apply] at hv hw
+        rw [hv, hw, hγ x]
+      _ = h.inner x v w := (solitonModelCovering_metric hπ x v w).symm
+  · apply ContMDiffMap.ext
+    intro x
+    change Fpot (γ x) = Fpot x
+    rw [solitonModelCovering_potential hπ (γ x), hγ x,
+      solitonModelCovering_potential hπ x]
 
 private noncomputable def identityTrivialization :
     Trivialization Unit (id : M → M) :=
