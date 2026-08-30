@@ -95,4 +95,25 @@ theorem hamiltonTestJetDU_zero_of_zero_W
   unfold hamiltonTestJetDU
   simp
 
+theorem hamilton_test_jet_realization
+    (clock : HarnackClock)
+    (Ric h : Idx -> Idx -> Real) (W : Idx -> Real) :
+    ∃ (DU : Idx -> Idx -> Idx -> Real) (DW : Idx -> Idx -> Real),
+      (∀ a b c, DU a b c = hamiltonTestJetDU clock Ric h W a b c) ∧
+      (∀ a b, DW a b = 0) ∧
+      (∀ a b c,
+        hamiltonTriangularConnectionU
+          (fun i j => Ric i j + (1 / (2 * clock.elapsed) : Real) * h i j)
+          W DU a b c = 0) ∧
+      (∀ a b, hamiltonTriangularConnectionW DW a b = 0) := by
+  refine ⟨hamiltonTestJetDU clock Ric h W, (fun _ _ => 0), ?_, ?_, ?_, ?_⟩
+  · intro a b c
+    rfl
+  · intro a b
+    rfl
+  · intro a b c
+    exact hamiltonTriangularConnectionU_zero_of_testJet clock Ric h W a b c
+  · intro a b
+    exact hamiltonTriangularConnectionW_zero_of_testJet (fun _ _ => 0) a b rfl
+
 end DifferentialGeometry.PDE.RicciFlow

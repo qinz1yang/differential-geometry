@@ -14,6 +14,17 @@ def hamiltonPComponent
     (nablaRic : Idx -> Idx -> Idx -> Real) (a b c : Idx) : Real :=
   nablaRic a b c - nablaRic b a c
 
+def hamiltonPTimeDerivativeComponent
+    (Ric : Idx -> Idx -> Real)
+    (nablaRic : Idx -> Idx -> Idx -> Real)
+    (nablaDtRic : Idx -> Idx -> Idx -> Real)
+    (a b c : Idx) : Real :=
+  nablaDtRic a b c - nablaDtRic b a c -
+    ∑ p : Idx,
+      ricciFlowConnectionVariationOrthonormal nablaRic a c p * Ric p b +
+    ∑ p : Idx,
+      ricciFlowConnectionVariationOrthonormal nablaRic b c p * Ric p a
+
 def hamiltonRawRicciReactionComponent
     (R : Idx -> Idx -> Idx -> Idx -> Real)
     (Ric : Idx -> Idx -> Real) (b c : Idx) : Real :=
