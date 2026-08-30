@@ -6,12 +6,40 @@ set_option autoImplicit false
 
 noncomputable section
 
+open Filter
 open scoped InnerProductSpace
+open scoped Topology
 
 universe u v
 
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {F : Type v} [NormedAddCommGroup F] [NormedSpace Real F]
+
+theorem continuousLinearMap_kernel_eq_of_constant_on_left
+    [FiniteDimensional Real E]
+    {A : Real → E →L[Real] F} {K : Submodule Real E}
+    {a b : Real} (hab : a < b) (hA : ContinuousAt A b)
+    (hK : ∀ t ∈ Set.Ioo a b, (A t).ker = K)
+    (hfin : Module.finrank Real K = Module.finrank Real (A b).ker) :
+    K = (A b).ker := by
+  apply Submodule.eq_of_le_of_finrank_eq ?_ hfin
+  intro v hv
+  have hzero : ∀ t ∈ Set.Ioo a b, A t v = 0 := by
+    intro t ht
+    have hv' : v ∈ (A t).ker := by
+      rw [hK t ht]
+      exact hv
+    exact LinearMap.mem_ker.mp hv'
+  have hlim : Tendsto (fun t : Real => A t v)
+      (𝓝[Set.Ioo a b] b) (𝓝 (A b v)) :=
+    (hA.clm_apply continuousAt_const).continuousWithinAt.tendsto
+  have hev : ∀ᶠ t in 𝓝[Set.Ioo a b] b, A t v ∈ ({0} : Set F) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact Set.mem_singleton_iff.mpr (hzero t ht)
+  let _ : (𝓝[Set.Ioo a b] b).NeBot := right_nhdsWithin_Ioo_neBot hab
+  have hmem : A b v ∈ ({0} : Set F) :=
+    isClosed_singleton.mem_of_tendsto hlim hev
+  simpa using hmem
 
 theorem hasDerivAt_apply_eq_zero_of_continuousLinearMap
     {A : Real → E →L[Real] F} {w : Real → E}
