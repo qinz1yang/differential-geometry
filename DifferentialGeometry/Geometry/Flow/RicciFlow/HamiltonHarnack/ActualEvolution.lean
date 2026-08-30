@@ -5095,4 +5095,31 @@ theorem hamiltonP_evolution_of_ricci_flow
   exact hamiltonP_evolution_components_of_solution
     (I := I) S t x basis horth a b c
 
+theorem hamiltonP_time_derivative_component_eq_field
+    [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b c : Fin n) :
+    hamiltonPTimeDerivativeComponent
+        (fun i j => metricRicci (I := I) (M := M) (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M) (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k => metricNablaRicciTimeDerivativeField
+          (I := I) (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k))) a b c =
+      hamiltonPTimeDerivativeField (I := I) (S.base.metric (t : Real)) x
+        (vec3 (I := I) (basis a) (basis b) (basis c)) := by
+  rw [hamiltonPTimeDerivativeField_apply_orthonormal
+    (I := I) (S.base.metric (t : Real)) basis horth a b c]
+  unfold hamiltonPTimeDerivativeComponent
+  simp only [ricciFlowConnectionVariationOrthonormal]
+  simp_rw [ricciFlowConnectionVariationField_apply]
+
 end DifferentialGeometry.PDE.RicciFlow
