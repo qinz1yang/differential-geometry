@@ -1,6 +1,11 @@
+import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 
 set_option autoImplicit false
@@ -148,16 +153,203 @@ theorem rotatingKernelReaction_null_quadratic
     simpa [Matrix.transpose_apply] using h.symm
   have hv0 := congr_fun hv 0
   have hv1 := congr_fun hv 1
-  simp [Matrix.mulVec] at hv0 hv1
+  simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_two, Fin.isValue,
+    Pi.zero_apply] at hv0 hv1
   change dotProduct v (Matrix.mulVec
     (rotatingKernelSkew * B - B * rotatingKernelSkew) v) = 0
   simp only [Matrix.mulVec, dotProduct, Matrix.sub_apply, Matrix.mul_apply]
-  simp [rotatingKernelSkew, Fin.sum_univ_two, hB01]
+  simp only [rotatingKernelSkew, Matrix.cons_val_zero, Matrix.cons_val_one,
+    Matrix.cons_val_fin_one, Fin.sum_univ_two, Fin.isValue, hB01]
   rw [hB01] at hv0
   calc
     _ = 2 * v 1 * (B 0 0 * v 0 + B 1 0 * v 1) -
         2 * v 0 * (B 1 0 * v 0 + B 1 1 * v 1) := by ring
     _ = 0 := by rw [hv0, hv1]; ring
+
+def autonomousRotatingKernelMatrix (t : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  ![![Real.sin t * Real.sin t, -Real.sin t * Real.cos t],
+    ![-Real.sin t * Real.cos t, Real.cos t * Real.cos t]]
+
+def autonomousRotatingKernelGenerator (t : ℝ) : Fin 2 → ℝ :=
+  ![Real.cos t, Real.sin t]
+
+def autonomousRotatingKernelReaction
+    (B : Matrix (Fin 2) (Fin 2) ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  rotatingKernelSkew * B - B * rotatingKernelSkew
+
+theorem autonomousRotatingKernelMatrix_quadratic (t : ℝ) (v : Fin 2 → ℝ) :
+    dotProduct v (Matrix.mulVec (autonomousRotatingKernelMatrix t) v) =
+      (Real.sin t * v 0 - Real.cos t * v 1) ^ 2 := by
+  simp [autonomousRotatingKernelMatrix, Matrix.mulVec, dotProduct]
+  ring
+
+theorem autonomousRotatingKernelMatrix_posSemidef (t : ℝ) :
+    (autonomousRotatingKernelMatrix t).PosSemidef := by
+  apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+  · rw [Matrix.isHermitian_iff_isSymm]
+    apply Matrix.IsSymm.ext
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [autonomousRotatingKernelMatrix]
+  · intro v
+    rw [show star v = v by rfl, autonomousRotatingKernelMatrix_quadratic]
+    exact sq_nonneg _
+
+theorem autonomousRotatingKernelMatrix_generator_mem_ker (t : ℝ) :
+    Matrix.mulVec (autonomousRotatingKernelMatrix t)
+      (autonomousRotatingKernelGenerator t) = 0 := by
+  funext i
+  fin_cases i <;> simp [autonomousRotatingKernelMatrix,
+    autonomousRotatingKernelGenerator, Matrix.mulVec]
+  · ring
+  · ring
+
+theorem autonomousRotatingKernelGenerator_ne_zero (t : ℝ) :
+    autonomousRotatingKernelGenerator t ≠ 0 := by
+  intro h
+  have h0 := congr_fun h (0 : Fin 2)
+  have h1 := congr_fun h (1 : Fin 2)
+  simp only [autonomousRotatingKernelGenerator, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Fin.isValue] at h0 h1
+  have htrig := Real.sin_sq_add_cos_sq t
+  rw [h0, h1] at htrig
+  norm_num at htrig
+
+theorem autonomousRotatingKernelMatrix_kernel_eq_span (t : ℝ) :
+    (Matrix.mulVecLin (autonomousRotatingKernelMatrix t)).ker =
+      Submodule.span ℝ {autonomousRotatingKernelGenerator t} := by
+  apply le_antisymm
+  · intro v hv
+    have hq : Real.sin t * v 0 - Real.cos t * v 1 = 0 := by
+      have hzero : dotProduct v
+          (Matrix.mulVec (autonomousRotatingKernelMatrix t) v) = 0 := by
+        rw [show Matrix.mulVec (autonomousRotatingKernelMatrix t) v = 0 by
+          simpa using hv]
+        simp
+      rw [autonomousRotatingKernelMatrix_quadratic] at hzero
+      exact sq_eq_zero_iff.mp hzero
+    have htrig := Real.sin_sq_add_cos_sq t
+    have hrel : Real.cos t * v 1 = Real.sin t * v 0 := by
+      linarith [hq]
+    have hvform : v = (v 0 * Real.cos t + v 1 * Real.sin t) •
+        autonomousRotatingKernelGenerator t := by
+      funext i
+      fin_cases i
+      · simp only [Pi.smul_apply, autonomousRotatingKernelGenerator, Fin.isValue]
+        calc
+          v 0 = v 0 * (Real.sin t ^ 2 + Real.cos t ^ 2) := by rw [htrig]; ring
+          _ = v 0 * Real.cos t ^ 2 + (Real.cos t * v 1) * Real.sin t := by
+            rw [hrel]
+            ring
+          _ = (v 0 * Real.cos t + v 1 * Real.sin t) * Real.cos t := by ring
+      · simp only [Pi.smul_apply, autonomousRotatingKernelGenerator, Fin.isValue]
+        calc
+          v 1 = v 1 * (Real.sin t ^ 2 + Real.cos t ^ 2) := by rw [htrig]; ring
+          _ = v 1 * Real.sin t ^ 2 + (Real.sin t * v 0) * Real.cos t := by
+            rw [← hrel]
+            ring
+          _ = (v 0 * Real.cos t + v 1 * Real.sin t) * Real.sin t := by ring
+    rw [hvform]
+    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
+  · intro v hv
+    rw [Submodule.mem_span_singleton] at hv
+    rcases hv with ⟨c, rfl⟩
+    apply LinearMap.mem_ker.mpr
+    rw [Matrix.mulVecLin_apply, Matrix.mulVec_smul,
+      autonomousRotatingKernelMatrix_generator_mem_ker, smul_zero]
+
+theorem autonomousRotatingKernelMatrix_kernel_finrank (t : ℝ) :
+    Module.finrank ℝ (Matrix.mulVecLin (autonomousRotatingKernelMatrix t)).ker = 1 := by
+  rw [autonomousRotatingKernelMatrix_kernel_eq_span, finrank_span_singleton]
+  exact autonomousRotatingKernelGenerator_ne_zero t
+
+theorem autonomousRotatingKernelReaction_apply (t : ℝ) :
+    autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) =
+      ![![2 * Real.sin t * Real.cos t,
+          Real.sin t * Real.sin t - Real.cos t * Real.cos t],
+        ![Real.sin t * Real.sin t - Real.cos t * Real.cos t,
+          -2 * Real.sin t * Real.cos t]] := by
+  apply Matrix.ext
+  intro i j
+  change (rotatingKernelSkew * autonomousRotatingKernelMatrix t) i j -
+      (autonomousRotatingKernelMatrix t * rotatingKernelSkew) i j = _
+  simp only [Matrix.mul_apply]
+  fin_cases i <;> fin_cases j
+  all_goals simp [autonomousRotatingKernelMatrix, rotatingKernelSkew,
+    Fin.sum_univ_two]
+  all_goals ring
+
+theorem autonomousRotatingKernelMatrix_hasDerivAt (t : ℝ) :
+    HasDerivAt autonomousRotatingKernelMatrix
+      (autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t)) t := by
+  apply DifferentialGeometry.Analysis.hasDerivAt_matrix
+    autonomousRotatingKernelMatrix
+    (autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t)) t
+  have h00 : autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 0 0 =
+      Real.cos t * Real.sin t + Real.sin t * Real.cos t := by
+    have h := congrArg (fun B : Matrix (Fin 2) (Fin 2) ℝ => B 0 0)
+      (autonomousRotatingKernelReaction_apply t)
+    calc
+      _ = 2 * Real.sin t * Real.cos t := by simpa using h
+      _ = _ := by ring
+  have h01 : autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 0 1 =
+      -(Real.cos t * Real.cos t + Real.sin t * (-Real.sin t)) := by
+    have h := congrArg (fun B : Matrix (Fin 2) (Fin 2) ℝ => B 0 1)
+      (autonomousRotatingKernelReaction_apply t)
+    simpa [sub_eq_add_neg] using h
+  have h10 : autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 1 0 =
+      -(Real.cos t * Real.cos t + Real.sin t * (-Real.sin t)) := by
+    have h := congrArg (fun B : Matrix (Fin 2) (Fin 2) ℝ => B 1 0)
+      (autonomousRotatingKernelReaction_apply t)
+    simpa [sub_eq_add_neg] using h
+  have h11 : autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 1 1 =
+      -Real.sin t * Real.cos t + Real.cos t * (-Real.sin t) := by
+    have h := congrArg (fun B : Matrix (Fin 2) (Fin 2) ℝ => B 1 1)
+      (autonomousRotatingKernelReaction_apply t)
+    calc
+      _ = -(2 * Real.sin t * Real.cos t) := by simpa using h
+      _ = _ := by ring
+  intro i j
+  fin_cases i <;> fin_cases j
+  · change HasDerivAt (fun s => autonomousRotatingKernelMatrix s 0 0)
+      (autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 0 0) t
+    rw [h00]
+    change HasDerivAt (Real.sin * Real.sin)
+      (Real.cos t * Real.sin t + Real.sin t * Real.cos t) t
+    exact (Real.hasDerivAt_sin t).mul (Real.hasDerivAt_sin t)
+  · change HasDerivAt (fun s => autonomousRotatingKernelMatrix s 0 1)
+      (autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 0 1) t
+    rw [h01]
+    have hfun : (fun s => autonomousRotatingKernelMatrix s 0 1) =
+        -(Real.sin * Real.cos) := by
+      funext s
+      simp [autonomousRotatingKernelMatrix, Pi.neg_apply, Pi.mul_apply]
+    rw [hfun]
+    exact ((Real.hasDerivAt_sin t).mul (Real.hasDerivAt_cos t)).neg
+  · change HasDerivAt (fun s => autonomousRotatingKernelMatrix s 1 0)
+      (autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 1 0) t
+    rw [h10]
+    have hfun : (fun s => autonomousRotatingKernelMatrix s 1 0) =
+        -(Real.sin * Real.cos) := by
+      funext s
+      simp [autonomousRotatingKernelMatrix, Pi.neg_apply, Pi.mul_apply]
+    rw [hfun]
+    exact ((Real.hasDerivAt_sin t).mul (Real.hasDerivAt_cos t)).neg
+  · change HasDerivAt (fun s => autonomousRotatingKernelMatrix s 1 1)
+      (autonomousRotatingKernelReaction (autonomousRotatingKernelMatrix t) 1 1) t
+    rw [h11]
+    change HasDerivAt (Real.cos * Real.cos)
+      (-Real.sin t * Real.cos t + Real.cos t * (-Real.sin t)) t
+    exact (Real.hasDerivAt_cos t).mul (Real.hasDerivAt_cos t)
+
+theorem autonomousRotatingKernelMatrix_kernel_changes :
+    autonomousRotatingKernelGenerator (Real.pi / 2) ∉
+      (Matrix.mulVecLin (autonomousRotatingKernelMatrix 0)).ker := by
+  intro h
+  have h0 := congr_fun (show Matrix.mulVec (autonomousRotatingKernelMatrix 0)
+      (autonomousRotatingKernelGenerator (Real.pi / 2)) = 0 by simpa using h)
+    (1 : Fin 2)
+  norm_num [autonomousRotatingKernelMatrix,
+    autonomousRotatingKernelGenerator, Matrix.mulVec] at h0
 
 def nonLipschitzReaction (a : ℝ) : ℝ := -2 * Real.sqrt (max a 0)
 
