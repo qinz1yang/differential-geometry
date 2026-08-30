@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 
 set_option autoImplicit false
 
@@ -456,6 +457,27 @@ theorem canonicalMetric_scalar
   rw [canonicalMetric, DifferentialGeometry.HCGCompactness.metricScalarAt_pullback,
     metricScalarAt_scaleMetric,
     canonicalFlowDiffeomorph_apply]
+
+theorem canonicalMetric_metricRm04
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M)
+    (slots : Fin 4 → TangentSpace I x) :
+    metricRm04 (I := I)
+        (canonicalMetric (I := I) g f sigma hcomplete hsol ht) x slots =
+      (1 - sigma * t) • metricRm04 (I := I) g
+        (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+          (canonicalFlowParameter sigma t) x)
+        (fun i => mfderiv I I
+          (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) : M → M) x (slots i)) := by
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞)
+      (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  rw [canonicalMetric, DifferentialGeometry.PDE.RicciFlow.metricRm04_pullback_eval]
+  rw [metricRm_scale]
+  rfl
 
 theorem canonicalMetric_zero
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
