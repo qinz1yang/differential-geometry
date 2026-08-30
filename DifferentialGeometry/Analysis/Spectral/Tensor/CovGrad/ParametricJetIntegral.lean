@@ -19,8 +19,6 @@ open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (jointContMDiff_toModel_continuous_slice)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

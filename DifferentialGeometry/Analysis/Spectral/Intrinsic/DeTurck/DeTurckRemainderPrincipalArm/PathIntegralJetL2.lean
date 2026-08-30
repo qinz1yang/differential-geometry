@@ -248,7 +248,7 @@ theorem armField_pathIntegral_jetL2_perOrder_le
       (Set.Icc (0 : ℝ) 1) := by
     intro x
     exact
-      (DifferentialGeometry.PDE.DeTurck.RicciLinearization.jointContMDiff_toModel_continuous_slice
+      (DifferentialGeometry.jointContMDiff_toModel_continuous_slice
       (I := I) g₀ r (2 + i)
       (fun t => iteratedCovGrad (I := I) g₀ r 2 i (Φ t)) S hji x).mono
       (by rw [← Set.uIcc_of_le (zero_le_one (α := ℝ))]; exact hSI)

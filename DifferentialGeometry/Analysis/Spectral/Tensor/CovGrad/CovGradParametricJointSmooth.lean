@@ -15,8 +15,6 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (covGrad covGrad_toSection_apply
   pathIntegralCoeffField pathIntegralFib pathIntegralCoeffField_toSection
   pathIntegralCoeffField_toModel pathIntegralFib_toModel tensorCovDerivAt tensorCovDerivAt_def)
-open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (jointContMDiff_toModel_continuous_slice)
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorRSNabla
 
 namespace DifferentialGeometry

@@ -1201,7 +1201,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_sub_principalCometricCoe
     have hslice : ContinuousOn (fun t : ℝ =>
         Tensor0SBundle.TensorRSSpace.toModel ((Φ t).toSection x))
         (metricPerturbationPathDomain (δ := δ) (δ' := δ)) :=
-      DifferentialGeometry.PDE.DeTurck.RicciLinearization.jointContMDiff_toModel_continuous_slice
+      DifferentialGeometry.jointContMDiff_toModel_continuous_slice
         (I := I) g₀ 4 2 Φ (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hjointC x
     have hcontIcc : ContinuousOn (fun t : ℝ =>
         Tensor0SBundle.TensorRSSpace.toModel ((Φ t).toSection x)) (Set.Icc (0 : ℝ) 1) :=
