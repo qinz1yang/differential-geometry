@@ -1,7 +1,9 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
+import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import DifferentialGeometry.Analysis.ODE.StateCoerciveMass
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
+import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity
 import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
@@ -15,6 +17,7 @@ namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+open DifferentialGeometry.Integral.DivergenceTheorem (tangentSectionAction)
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Operator
 
@@ -380,6 +383,113 @@ theorem dirichletMass_time_cont
     continuousOn_snd (fun _ _ => Set.mem_univ _)
 
 omit [T2Space M] [CompactSpace M] in
+private lemma tangentSectionAction_family_continuousOn
+    {K : Set ℝ}
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hX : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (K ×ˢ (Set.univ : Set M)))
+    {f : M → ℝ} (hf : ContMDiff (I_half n) 𝓘(ℝ, ℝ) ∞ f) :
+    ContinuousOn
+      (fun p : ℝ × M => tangentSectionAction (I := I_half n) (X p.1) f p.2)
+      (K ×ˢ (Set.univ : Set M)) := by
+  have htan : Continuous
+      (tangentMap (I_half n) 𝓘(ℝ, ℝ) f) :=
+    hf.continuous_tangentMap (by simp)
+  have hcomp : ContinuousOn
+      (fun p : ℝ × M =>
+        tangentMap (I_half n) 𝓘(ℝ, ℝ) f
+          (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2)))
+      (K ×ˢ (Set.univ : Set M)) :=
+    htan.continuousOn.comp hX (fun _ _ => Set.mem_univ _)
+  have hsnd : Continuous
+      (fun p : TangentBundle 𝓘(ℝ, ℝ) ℝ => p.2) :=
+    (contMDiff_snd_tangentBundle_modelSpace ℝ 𝓘(ℝ, ℝ) (n := 0)).continuous
+  exact (hsnd.continuousOn.comp hcomp (fun _ _ => Set.mem_univ _)).congr
+    (fun _ _ => rfl)
+
+theorem dirichletEnergy_time_cont
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {K : Set ℝ} (hK : IsCompact K) (hKreg : K ⊆ D.regular)
+    (u v : SmoothScalarDirichlet q) :
+    ContinuousOn (fun t => dirichletEnergy (G.metric t) u v) K := by
+  unfold dirichletEnergy
+  apply integral_family_cont (I := I_half n) (M := M) hK
+  · exact fun x₀ i j => hG.chartGramMatrix_continuousOn hKreg x₀ i j
+  · exact WithBoundary.gradient_inner_continuousOn_of_tsupport_subset_interior
+      hG hKreg u.smooth v.smooth u.interior_support
+
+theorem dirichletDrift_time_cont
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {K : Set ℝ} (hK : IsCompact K) (hKreg : K ⊆ D.regular)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hX : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (K ×ˢ (Set.univ : Set M)))
+    (u v : SmoothScalarDirichlet q) :
+    ContinuousOn (fun t => dirichletDrift (G.metric t) (X t) u v) K := by
+  unfold dirichletDrift
+  apply integral_family_cont (I := I_half n) (M := M) hK
+  · exact fun x₀ i j => hG.chartGramMatrix_continuousOn hKreg x₀ i j
+  · have haction := tangentSectionAction_family_continuousOn X hX u.smooth
+    have hv : ContinuousOn (fun p : ℝ × M => v.toFun p.2)
+        (K ×ˢ (Set.univ : Set M)) :=
+      v.smooth.continuous.continuousOn.comp continuousOn_snd
+        (fun _ _ => Set.mem_univ _)
+    refine (haction.mul hv).congr ?_
+    intro p _
+    change (G.metric p.1).inner p.2 (X p.1 p.2)
+        (gradFun (I := I_half n) (G.metric p.1) u.toFun p.2) * v.toFun p.2 =
+      tangentSectionAction (I := I_half n) (X p.1) u.toFun p.2 * v.toFun p.2
+    rw [WithBoundary.tangentSectionAction_grad_g_with_boundary_eq_inner
+      (I := I_half n) (G.metric p.1) (X p.1) p.2]
+
+theorem dirichletWeakForm_time_cont
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {K : Set ℝ} (hK : IsCompact K) (hKreg : K ⊆ D.regular)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hX : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (K ×ˢ (Set.univ : Set M)))
+    (a : ℝ → ℝ) (ha : ContinuousOn a K)
+    (u v : SmoothScalarDirichlet q) :
+    ContinuousOn
+      (fun t => dirichletWeakForm (G.metric t) (X t) (a t) u v) K := by
+  have henergy := dirichletEnergy_time_cont hG hK hKreg u v
+  have hdrift := dirichletDrift_time_cont hG hK hKreg X hX u v
+  have hmass : ContinuousOn (fun t => dirichletMass (G.metric t) u v) K :=
+    dirichletMass_time_cont G.metric hK
+      (fun x₀ i j => hG.chartGramMatrix_continuousOn hKreg x₀ i j) u v
+  unfold dirichletWeakForm
+  refine ((henergy.neg.add hdrift).sub (ha.mul hmass)).congr ?_
+  intro t _
+  rfl
+
+omit [T2Space M] [CompactSpace M] in
 private lemma integral_le_smul_measure
     {μ ν : Measure M} {C : ℝ≥0∞}
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤) (hμν : μ ≤ C • ν)
@@ -502,6 +612,32 @@ def dirichletFinWeakForm
     (a : ℝ) (J : V →ₗ[ℝ] SmoothScalarDirichlet q) (u v : V) :
     dirichletFinWeakForm h X a J u v =
       dirichletWeakForm h X a (J u) (J v) := rfl
+
+theorem dirichletFinWeakForm_cont
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {K : Set ℝ} (hK : IsCompact K) (hKreg : K ⊆ D.regular)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hX : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (K ×ˢ (Set.univ : Set M)))
+    (a : ℝ → ℝ) (ha : ContinuousOn a K)
+    (J : V →ₗ[ℝ] SmoothScalarDirichlet q) :
+    ContinuousOn
+      (fun t => dirichletFinWeakForm (G.metric t) (X t) (a t) J) K := by
+  rw [continuousOn_clm_apply]
+  intro u
+  rw [continuousOn_clm_apply]
+  intro v
+  simpa only [dirichletFinWeakForm_apply] using
+    dirichletWeakForm_time_cont hG hK hKreg X hX a ha (J u) (J v)
 
 theorem dirichletFinMass_cont
     {q : SmoothRiemannianMetric (I_half n) M}
@@ -706,6 +842,51 @@ theorem dirichletFinWeakForm_exists
   simpa only [resid, B, zero_add] using
     (dirichletFin_exists g hT hcont C hC0 hCtop hvol J horth resid
       (A := 0) (L := L) le_rfl hlip htime haff' v₀)
+
+theorem dirichletGalerkin_solution_exists
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {T : ℝ} (hT : 0 < T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (J : V →ₗ[ℝ] SmoothScalarDirichlet q)
+    (horth : ∀ u : V, dirichletMass q (J u) (J u) = ‖u‖ ^ 2)
+    (X : ℝ → Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
+      (TangentSpace (I_half n) : M → Type _)⟯)
+    (hX : ContinuousOn
+      (fun p : ℝ × M =>
+        (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) p.2 (X p.1 p.2) :
+          TangentBundle (I_half n) M))
+      (Icc (0 : ℝ) T ×ˢ (Set.univ : Set M)))
+    (a : ℝ → ℝ) (ha : ContinuousOn a (Icc (0 : ℝ) T))
+    (v₀ : V) :
+    ∃ γ : ℝ → V, γ 0 = v₀ ∧ ContinuousOn γ (Icc (0 : ℝ) T) ∧
+      ∀ t, (ht : t ∈ Ico (0 : ℝ) T) →
+        ∃ v : V, HasDerivWithinAt γ v (Ici (0 : ℝ)) t ∧
+          dirichletFinMass (G.metric t) J v =
+            dirichletFinWeakForm (G.metric t) (X t) (a t) J (γ t) := by
+  let hgram := fun x₀ i j => hG.chartGramMatrix_continuousOn hreg x₀ i j
+  obtain ⟨C, hC0, hCtop, hvol⟩ :=
+    volume_uniform_equiv (I := I_half n) (M := M) q G.metric
+      isCompact_Icc hgram
+  have hweak := dirichletFinWeakForm_cont hG isCompact_Icc hreg X hX a ha J
+  obtain ⟨γ, hγ0, hγcont, hγderiv⟩ :=
+    dirichletFinWeakForm_exists G.metric hT hgram C hC0 hCtop
+      (fun t ht => (hvol t ht).2) J horth X a hweak v₀
+  refine ⟨γ, hγ0, hγcont, ?_⟩
+  intro t ht
+  have ht' : t ∈ Icc (0 : ℝ) T := ⟨ht.1, le_of_lt ht.2⟩
+  let hco := dirichletFinMass_coercive (G.metric t) C hC0 hCtop
+    (hvol t ht').2 J horth
+  let v := hco.sharpCLM
+    (dirichletFinWeakForm (G.metric t) (X t) (a t) J (γ t))
+  refine ⟨v, ?_, ?_⟩
+  · simpa only [v, hco] using hγderiv t ht
+  · simpa only [v, hco, IsCoercive.sharpCLM_apply] using
+      hco.apply_sharp
+        (dirichletFinWeakForm (G.metric t) (X t) (a t) J (γ t))
 
 end FiniteHilbert
 
