@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldDifferentiatedTowerNormalForm
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpHigherRankParseval
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
 
 
 open DifferentialGeometry.Geometry.Connection.Realization

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.Order2Defect.FrameComponentBound
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.CurvatureDefect
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpDualFrameParseval
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Tensor02FiberNormBound
 import DifferentialGeometry.Geometry.Operator.Gradient
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

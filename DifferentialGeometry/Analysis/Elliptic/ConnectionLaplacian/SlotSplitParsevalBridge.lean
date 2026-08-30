@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpHigherRankParseval
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 open DifferentialGeometry.Analysis.Elliptic
 
