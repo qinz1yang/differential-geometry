@@ -2632,6 +2632,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PIdentities
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ActualEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TestJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockAlgebra
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FullyPulledDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.HeatCommutator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
