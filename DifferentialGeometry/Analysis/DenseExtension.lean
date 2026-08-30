@@ -1,8 +1,13 @@
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.Normed.Group.Continuity
+import Mathlib.Analysis.Normed.Module.Completion
+import Mathlib.Analysis.Normed.Operator.Basic
+import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Topology.DenseEmbedding
 import Mathlib.Topology.MetricSpace.Lipschitz
+import Mathlib.Topology.Algebra.LinearMapCompletion
 import Mathlib.Topology.UniformSpace.CompleteSeparated
+import Mathlib.Topology.UniformSpace.UniformApproximation
 
 noncomputable section
 
@@ -11,6 +16,53 @@ open scoped NNReal Topology
 
 namespace DifferentialGeometry.Analysis
 
+theorem ContinuousLinearMap.norm_fromCompletion
+    {X Y : Type*} [SeminormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+    (f : X →L[ℝ] Y) : ‖f.fromCompletion‖ = ‖f‖ := by
+  apply le_antisymm
+  · apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg f)
+    intro x
+    refine UniformSpace.Completion.induction_on x
+      (isClosed_le f.fromCompletion.continuous.norm
+        (continuous_const.mul continuous_norm)) ?_
+    intro y
+    simpa using f.le_opNorm y
+  · apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg f.fromCompletion)
+    intro x
+    simpa using f.fromCompletion.le_opNorm
+      (x : UniformSpace.Completion X)
+
+noncomputable def bilinearFromCompletion
+    {X Y : Type*} [SeminormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (F : X →L[ℝ] Y →L[ℝ] ℝ) :
+    UniformSpace.Completion X →L[ℝ] UniformSpace.Completion Y →L[ℝ] ℝ :=
+  F.fromCompletion.flip.fromCompletion.flip
+
+@[simp] theorem bilinearFromCompletion_apply_coe
+    {X Y : Type*} [SeminormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (F : X →L[ℝ] Y →L[ℝ] ℝ) (x : X) (y : Y) :
+    bilinearFromCompletion F (x : UniformSpace.Completion X)
+        (y : UniformSpace.Completion Y) = F x y := by
+  simp [bilinearFromCompletion]
+
+theorem norm_bilinearFromCompletion_le
+    {X Y : Type*} [SeminormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (F : X →L[ℝ] Y →L[ℝ] ℝ) {C : ℝ} (hC : 0 ≤ C)
+    (hF : ∀ x y, ‖F x y‖ ≤ C * ‖x‖ * ‖y‖) :
+    ‖bilinearFromCompletion F‖ ≤ C := by
+  apply ContinuousLinearMap.opNorm_le_bound₂ _ hC
+  intro x y
+  induction x, y using UniformSpace.Completion.induction_on₂ with
+  | hp =>
+      exact isClosed_le
+        (bilinearFromCompletion F).continuous₂.norm
+        ((continuous_const.mul (continuous_norm.comp continuous_fst)).mul
+          (continuous_norm.comp continuous_snd))
+  | ih x y => simpa [bilinearFromCompletion] using hF x y
 theorem cont_of_lipBalls {X Y : Type*} [PseudoMetricSpace X] [PseudoMetricSpace Y]
     {D : Set X} (F : D → Y) (x₀ : X)
     (hball : ∀ R : ℝ, ∃ K : ℝ≥0,
