@@ -1099,18 +1099,6 @@ private lemma connectionDifferenceQuadraticMonomial_chartBasis_eq (g₀ g₁ : S
   rw [map_smul, smul_apply, map_smul, smul_apply,
     smul_eq_mul, houter c]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma palatiniDecompositionGenJointGram_const_g0
-    (g₀ : SmoothRiemannianMetric I M) (α : M) {S : Set ℝ} :
-    ChartGramFamilyJointSmoothNondegenerate (I := I) (fun _ : ℝ => g₀) α S := by
-  refine ⟨?_, ?_⟩
-  · intro a b s₀ y₀ _hs hy
-    have hsnd : ContDiffAt ℝ ∞ (Prod.snd : ℝ × E → E) (s₀, y₀) := contDiffAt_snd
-    exact (((chartGramOnE_contDiffOn (I := I) g₀ α a b).mono interior_subset).contDiffAt
-      (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
-  · intro s₀ _ x hx
-    exact chartGramMatrix_det_pos (I := I) g₀ α hx
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma bdChartChristoffel_g0_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (α : M) (i j k : Fin (Module.finrank ℝ E)) {S : Set ℝ} :
@@ -1118,7 +1106,7 @@ private lemma bdChartChristoffel_g0_jointContMDiffOn
       (fun p : M × ℝ => chartChristoffel (I := I) g₀ α i j k (extChartAt I α p.1))
       ((chartAt H α).source ×ˢ S) := by
   classical
-  have hG := palatiniDecompositionGenJointGram_const_g0 (I := I) g₀ α (S := S)
+  have hG := chartGramFamilyJointSmoothOn_const (I := I) g₀ α S
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ S) := by
@@ -1130,7 +1118,7 @@ private lemma bdChartChristoffel_g0_jointContMDiffOn
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := gen_joint_christoffel (I := I) (fun _ : ℝ => g₀) α hG i j k hs hy
+  have hentry := chartChristoffel_joint_contDiffAt (I := I) (fun _ : ℝ => g₀) α hG i j k hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartChristoffel (I := I) g₀ α i j k r.2) (p.2, extChartAt I α p.1) :=
     hentry.contMDiffAt
@@ -1154,7 +1142,7 @@ private lemma metricPerturbationPath_chartGramMatrix_jointContMDiffOn
       (fun p : M × ℝ => chartGramMatrix (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -1166,7 +1154,7 @@ private lemma metricPerturbationPath_chartGramMatrix_jointContMDiffOn
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := hG.1 i j hs hy
+  have hentry := hG i j hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartGramOnE (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) α i j r.2) (p.2, extChartAt I α p.1) :=

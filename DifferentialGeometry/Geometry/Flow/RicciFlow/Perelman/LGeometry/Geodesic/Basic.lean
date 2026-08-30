@@ -5,7 +5,7 @@ import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Comparison.Variation.ChartVariation
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
@@ -534,7 +534,7 @@ theorem lPhaseField_smoothAt
           chartInvGramOnE (I := I) (S.family.metric (T - p.1 ^ 2))
             x0 i j p.2.1) (s, z) := by
     have h := (MetricFamilySmoothOn.chartInvGramOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ h => h) x0 i j).contDiffAt
         (hUopen.mem_nhds hbase_mem)
     simpa only [base, Function.comp_def] using h.comp (s, z) hbase
@@ -544,7 +544,7 @@ theorem lPhaseField_smoothAt
           chartChristoffel (I := I) (S.family.metric (T - p.1 ^ 2))
             x0 i j k p.2.1) (s, z) := by
     have h := (MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ h => h) D.regular_isOpen.uniqueDiffOn
       x0 i j k).contDiffAt (hUopen.mem_nhds hbase_mem)
     simpa only [base, Function.comp_def] using h.comp (s, z) hbase

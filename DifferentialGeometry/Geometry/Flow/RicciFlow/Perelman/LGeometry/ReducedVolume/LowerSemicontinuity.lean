@@ -279,7 +279,7 @@ private theorem chartDensity_time_cont
       (fun r ↦ chartGramOnE (I := I) (S.base.metric r) alpha i j z) t := by
     have hjoint :=
       (MetricFamilySmoothOn.chartGramOnE_contDiffOn
-        (I := I) (G := S.family) hS.smoothMetric
+        (I := I) (g_fam := S.family.metric) hS.smoothMetric
         (J := D.regular) (fun _ hr ↦ hr) alpha i j).continuousOn
     have hat : ContinuousAt
         (fun q : Real × E ↦

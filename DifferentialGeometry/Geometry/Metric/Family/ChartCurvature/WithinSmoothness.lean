@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.JointSmoothness
 
 noncomputable section
 
@@ -7,16 +7,11 @@ set_option autoImplicit false
 open Set Function Bundle
 open scoped Topology Manifold BigOperators ContDiff Matrix
 
-namespace DifferentialGeometry
-namespace PDE
-namespace DeTurck
-namespace RicciLinearization
+namespace DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -25,13 +20,13 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partialDeriv_of_isOpen {U : Set E} (hU : IsOpen U) (u : E → ℝ)
+theorem partialDeriv_eq_fderivWithin_of_isOpen {U : Set E} (hU : IsOpen U) (u : E → ℝ)
     (q : Fin (Module.finrank ℝ E)) {y : E} (hy : y ∈ U) :
     partialDeriv (E := E) q u y = fderivWithin ℝ u U y ((chartModelBasis E) q) := by
   rw [partialDeriv, fderivWithin_of_isOpen hU hy]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partialDerivWithin
+theorem partialDeriv_joint_contDiffWithinAt
     (Ψ : ℝ → E → ℝ) (q : Fin (Module.finrank ℝ E))
     {S : Set ℝ} {U : Set E} (hU : IsOpen U) {s₀ : ℝ} {y₀ : E}
     (hs : s₀ ∈ S) (hy : y₀ ∈ U)
@@ -55,32 +50,27 @@ theorem partialDerivWithin
   have hk : ContDiffWithinAt ℝ ∞ (fun _ : ℝ × E => (chartModelBasis E) q) (S ×ˢ U) (s₀, y₀) :=
     contDiffWithinAt_const
   have hfd := hf.fderivWithin_apply hg hk hU.uniqueDiffOn (le_refl _) hmem hst
-  exact hfd.congr (fun p hp => partialDeriv_of_isOpen hU _ q hp.2)
-    (partialDeriv_of_isOpen hU _ q hy)
+  exact hfd.congr (fun p hp => partialDeriv_eq_fderivWithin_of_isOpen hU _ q hp.2)
+    (partialDeriv_eq_fderivWithin_of_isOpen hU _ q hy)
 
 section GenTower
 
 variable (gfam : ℝ → SmoothRiemannianMetric I M) (α : M)
 
-def GenJointGramOn (S : Set ℝ) : Prop :=
-  (∀ (i j : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E}, s₀ ∈ S →
-      y₀ ∈ interior (extChartAt I α).target →
-      ContDiffWithinAt ℝ ∞ (fun p : ℝ × E => chartGramOnE (I := I) (gfam p.1) α i j p.2)
-        (S ×ˢ interior (extChartAt I α).target) (s₀, y₀)) ∧
-  (∀ {s₀ : ℝ}, s₀ ∈ S →
-      ∀ {x : M}, x ∈ (trivializationAt E (TangentSpace I) α).baseSet →
-      0 < (chartGramMatrix (I := I) (gfam s₀) α x).det)
+def chartGramFamilySmoothWithinOn (S : Set ℝ) : Prop :=
+  ∀ (i j : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E}, s₀ ∈ S →
+    y₀ ∈ interior (extChartAt I α).target →
+    ContDiffWithinAt ℝ ∞ (fun p : ℝ × E => chartGramOnE (I := I) (gfam p.1) α i j p.2)
+      (S ×ˢ interior (extChartAt I α).target) (s₀, y₀)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem genJointGramOn_of_gen {S : Set ℝ}
-    (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S) :
-    GenJointGramOn (I := I) gfam α S := by
-  refine ⟨fun i j _ _ hs hy => (hG.1 i j hs hy).contDiffWithinAt, ?_⟩
-  intro s₀ hs x hx
-  exact hG.2 hs hx
+theorem chartGramFamilySmoothWithinOn_of_jointSmoothOn {S : Set ℝ}
+    (hG : chartGramFamilyJointSmoothOn (I := I) gfam α S) :
+    chartGramFamilySmoothWithinOn (I := I) gfam α S := by
+  exact fun i j _ _ hs hy => (hG i j hs hy).contDiffWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem invGramWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartInvGramOnE_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (k l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
@@ -93,7 +83,7 @@ theorem invGramWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
           ((extChartAt I α).symm p.2) a b)
         (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
     intro a b
-    have := hG.1 a b hs hy
+    have := hG a b hs hy
     simpa only [chartGramOnE_def] using this
   have hdet : ContDiffWithinAt ℝ ∞
       (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
@@ -117,7 +107,8 @@ theorem invGramWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     exact hsource
   have hdet_ne : (chartGramMatrix (I := I) (gfam (s₀, y₀).1) α
-      ((extChartAt I α).symm (s₀, y₀).2)).det ≠ 0 := ne_of_gt (hG.2 hs hx_base)
+      ((extChartAt I α).symm (s₀, y₀).2)).det ≠ 0 :=
+    ne_of_gt (chartGramMatrix_det_pos (I := I) (gfam s₀) α hx_base)
   have hadj : ∀ kk ll : Fin (Module.finrank ℝ E),
       ContDiffWithinAt ℝ ∞
         (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
@@ -165,28 +156,29 @@ theorem invGramWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
   exact ((contDiffAt_inv _ hdet_ne).comp_contDiffWithinAt (s₀, y₀) hdet).mul (hadj k l)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem bracketWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartChristoffelBracket_contDiffWithinAt {S : Set ℝ}
+    (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (i j l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
-      (fun r : ℝ × E => gramBracket (I := I) (gfam r.1) α i j l r.2)
+      (fun r : ℝ × E => chartChristoffelBracket (I := I) (gfam r.1) α i j l r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
-  have heq : (fun r : ℝ × E => gramBracket (I := I) (gfam r.1) α i j l r.2) =
+  have heq : (fun r : ℝ × E => chartChristoffelBracket (I := I) (gfam r.1) α i j l r.2) =
       (fun r : ℝ × E =>
         partialDeriv (E := E) i (fun y => chartGramOnE (I := I) (gfam r.1) α l j y) r.2 +
           partialDeriv (E := E) j (fun y => chartGramOnE (I := I) (gfam r.1) α l i y) r.2 -
           partialDeriv (E := E) l (fun y => chartGramOnE (I := I) (gfam r.1) α i j y) r.2) := by
-    funext r; rw [gramBracket]
+    funext r; rw [chartChristoffelBracket]
   rw [heq]
-  exact ((partialDerivWithin (fun s y => chartGramOnE (I := I) (gfam s) α l j y) i
-      isOpen_interior hs hy (hG.1 l j hs hy)).add
-    (partialDerivWithin (fun s y => chartGramOnE (I := I) (gfam s) α l i y) j
-      isOpen_interior hs hy (hG.1 l i hs hy))).sub
-    (partialDerivWithin (fun s y => chartGramOnE (I := I) (gfam s) α i j y) l
-      isOpen_interior hs hy (hG.1 i j hs hy))
+  exact ((partialDeriv_joint_contDiffWithinAt (fun s y => chartGramOnE (I := I) (gfam s) α l j y) i
+      isOpen_interior hs hy (hG l j hs hy)).add
+    (partialDeriv_joint_contDiffWithinAt (fun s y => chartGramOnE (I := I) (gfam s) α l i y) j
+      isOpen_interior hs hy (hG l i hs hy))).sub
+    (partialDeriv_joint_contDiffWithinAt (fun s y => chartGramOnE (I := I) (gfam s) α i j y) l
+      isOpen_interior hs hy (hG i j hs hy))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem christoffelWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartChristoffel_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (i j k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
@@ -195,26 +187,26 @@ theorem christoffelWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
   have heq : (fun r : ℝ × E => chartChristoffel (I := I) (gfam r.1) α i j k r.2) =
       (fun r : ℝ × E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) (gfam r.1) α k l r.2 *
-          gramBracket (I := I) (gfam r.1) α i j l r.2) := by
-    funext r; rw [chartChristoffel_eq_sum_invGramOnE_bracket]
+          chartChristoffelBracket (I := I) (gfam r.1) α i j l r.2) := by
+    funext r; rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket]
   rw [heq]
   refine contDiffWithinAt_const.mul (ContDiffWithinAt.sum (fun l _ => ?_))
-  exact (invGramWithin (I := I) gfam α hG k l hs hy).mul
-    (bracketWithin (I := I) gfam α hG i j l hs hy)
+  exact (chartInvGramOnE_contDiffWithinAt (I := I) gfam α hG k l hs hy).mul
+    (chartChristoffelBracket_contDiffWithinAt (I := I) gfam α hG i j l hs hy)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partChristWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem partial_chartChristoffel_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (m i j k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E =>
         partialDeriv (E := E) m (fun y => chartChristoffel (I := I) (gfam r.1) α i j k y) r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) :=
-  partialDerivWithin (fun s y => chartChristoffel (I := I) (gfam s) α i j k y) m
-    isOpen_interior hs hy (christoffelWithin (I := I) gfam α hG i j k hs hy)
+  partialDeriv_joint_contDiffWithinAt (fun s y => chartChristoffel (I := I) (gfam s) α i j k y) m
+    isOpen_interior hs hy (chartChristoffel_contDiffWithinAt (I := I) gfam α hG i j k hs hy)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemannWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartRiemannTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (i j k l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
@@ -231,16 +223,16 @@ theorem riemannWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
                 chartChristoffel (I := I) (gfam r.1) α i j m r.2))) := by
     funext r; rw [chartRiemannTensor_def]
   rw [heq]
-  refine ((partChristWithin (I := I) gfam α hG j i k l hs hy).sub
-    (partChristWithin (I := I) gfam α hG k i j l hs hy)).add ?_
+  refine ((partial_chartChristoffel_contDiffWithinAt (I := I) gfam α hG j i k l hs hy).sub
+    (partial_chartChristoffel_contDiffWithinAt (I := I) gfam α hG k i j l hs hy)).add ?_
   refine ContDiffWithinAt.sum (fun m _ => ?_)
-  exact ((christoffelWithin (I := I) gfam α hG j m l hs hy).mul
-      (christoffelWithin (I := I) gfam α hG i k m hs hy)).sub
-    ((christoffelWithin (I := I) gfam α hG k m l hs hy).mul
-      (christoffelWithin (I := I) gfam α hG i j m hs hy))
+  exact ((chartChristoffel_contDiffWithinAt (I := I) gfam α hG j m l hs hy).mul
+      (chartChristoffel_contDiffWithinAt (I := I) gfam α hG i k m hs hy)).sub
+    ((chartChristoffel_contDiffWithinAt (I := I) gfam α hG k m l hs hy).mul
+      (chartChristoffel_contDiffWithinAt (I := I) gfam α hG i j m hs hy))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricciWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartRicciTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (i k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
@@ -251,10 +243,10 @@ theorem ricciWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
         chartRiemannTensor (I := I) (gfam r.1) α i j k j r.2) := by
     funext r; rw [chartRicciTensor_def]
   rw [heq]
-  exact ContDiffWithinAt.sum (fun j _ => riemannWithin (I := I) gfam α hG i j k j hs hy)
+  exact ContDiffWithinAt.sum (fun j _ => chartRiemannTensor_contDiffWithinAt (I := I) gfam α hG i j k j hs hy)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partRiemWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem partial_chartRiemannTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (m i j k l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
@@ -262,36 +254,36 @@ theorem partRiemWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
         partialDeriv (E := E) m
           (fun y => chartRiemannTensor (I := I) (gfam r.1) α i j k l y) r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) :=
-  partialDerivWithin (fun s y => chartRiemannTensor (I := I) (gfam s) α i j k l y) m
-    isOpen_interior hs hy (riemannWithin (I := I) gfam α hG i j k l hs hy)
+  partialDeriv_joint_contDiffWithinAt (fun s y => chartRiemannTensor (I := I) (gfam s) α i j k l y) m
+    isOpen_interior hs hy (chartRiemannTensor_contDiffWithinAt (I := I) gfam α hG i j k l hs hy)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partRicciWithin {S : Set ℝ} (hG : GenJointGramOn (I := I) gfam α S)
+theorem partial_chartRicciTensor_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (m i k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
       (fun r : ℝ × E =>
         partialDeriv (E := E) m (fun y => chartRicciTensor (I := I) (gfam r.1) α i k y) r.2)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) :=
-  partialDerivWithin (fun s y => chartRicciTensor (I := I) (gfam s) α i k y) m
-    isOpen_interior hs hy (ricciWithin (I := I) gfam α hG i k hs hy)
+  partialDeriv_joint_contDiffWithinAt (fun s y => chartRicciTensor (I := I) (gfam s) α i k y) m
+    isOpen_interior hs hy (chartRicciTensor_contDiffWithinAt (I := I) gfam α hG i k hs hy)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem christWithin_of_open {S : Set ℝ} (hS : IsOpen S) (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartChristoffel_contDiffAt_of_isOpen {S : Set ℝ} (hS : IsOpen S) (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (i j k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun r : ℝ × E => chartChristoffel (I := I) (gfam r.1) α i j k r.2) (s₀, y₀) :=
-  (christoffelWithin (I := I) gfam α hG i j k hs hy).contDiffAt
+  (chartChristoffel_contDiffWithinAt (I := I) gfam α hG i j k hs hy).contDiffAt
     ((hS.prod isOpen_interior).mem_nhds ⟨hs, hy⟩)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemWithin_of_open {S : Set ℝ} (hS : IsOpen S) (hG : GenJointGramOn (I := I) gfam α S)
+theorem chartRiemannTensor_contDiffAt_of_isOpen {S : Set ℝ} (hS : IsOpen S) (hG : chartGramFamilySmoothWithinOn (I := I) gfam α S)
     (i j k l : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun r : ℝ × E => chartRiemannTensor (I := I) (gfam r.1) α i j k l r.2) (s₀, y₀) :=
-  (riemannWithin (I := I) gfam α hG i j k l hs hy).contDiffAt
+  (chartRiemannTensor_contDiffWithinAt (I := I) gfam α hG i j k l hs hy).contDiffAt
     ((hS.prod isOpen_interior).mem_nhds ⟨hs, hy⟩)
 
 end GenTower
@@ -301,55 +293,52 @@ section Consumer
 variable [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem genGramOn_of_field (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
+theorem chartGramFamilySmoothWithinOn_of_contMDiffOn (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
         (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)) :
-    GenJointGramOn (I := I) g α J := by
+    chartGramFamilySmoothWithinOn (I := I) g α J := by
   classical
-  refine ⟨?_, ?_⟩
-  · intro i j s₀ y₀ hs hy
-    set e := trivializationAt E (TangentSpace I) α with he
-    have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm (extChartAt I α).target :=
-      contMDiffOn_extChartAt_symm (I := I) α
-    have hsubset : (extChartAt I α).target ⊆ (extChartAt I α).symm ⁻¹' e.baseSet := by
-      intro y hy'
-      have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-        (extChartAt I α).map_target hy'
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
-      rw [he, trivializationAt_baseSet_eq_chartAt_source]
-      exact hsource
-    have hσ1 : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞
-        (fun p : ℝ × E => p.1) (J ×ˢ interior (extChartAt I α).target) :=
-      (contMDiff_iff_contDiff.mpr contDiff_fst).contMDiffOn
-    have hsnd : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞
-        (fun p : ℝ × E => p.2) (J ×ˢ interior (extChartAt I α).target) :=
-      (contMDiff_iff_contDiff.mpr contDiff_snd).contMDiffOn
-    have hmaps2 : Set.MapsTo (fun p : ℝ × E => p.2)
-        (J ×ˢ interior (extChartAt I α).target) (extChartAt I α).target :=
-      fun p hp => interior_subset hp.2
-    have hσ2 : ContMDiffOn 𝓘(ℝ, ℝ × E) I ∞
-        (fun p : ℝ × E => (extChartAt I α).symm p.2)
-        (J ×ˢ interior (extChartAt I α).target) :=
-      hsymm.comp hsnd hmaps2
-    have hσ : ContMDiffOn 𝓘(ℝ, ℝ × E) (𝓘(ℝ, ℝ).prod I) ∞
-        (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
-        (J ×ˢ interior (extChartAt I α).target) :=
-      hσ1.prodMk hσ2
-    have hcomp : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞
-        (fun p : ℝ × E => chartGramOnE (I := I) (g p.1) α i j p.2)
-        (J ×ˢ interior (extChartAt I α).target) := by
-      refine ((hgram i j).comp hσ (fun p hp => ⟨hp.1, hsubset (interior_subset hp.2)⟩)).congr ?_
-      intro p _
-      rfl
-    exact hcomp.contDiffOn (s₀, y₀) ⟨hs, hy⟩
-  · intro s₀ _ x hx
-    exact chartGramMatrix_det_pos (I := I) (g s₀) α hx
+  intro i j s₀ y₀ hs hy
+  set e := trivializationAt E (TangentSpace I) α with he
+  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm (extChartAt I α).target :=
+    contMDiffOn_extChartAt_symm (I := I) α
+  have hsubset : (extChartAt I α).target ⊆ (extChartAt I α).symm ⁻¹' e.baseSet := by
+    intro y hy'
+    have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+      (extChartAt I α).map_target hy'
+    rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
+    rw [he, trivializationAt_baseSet_eq_chartAt_source]
+    exact hsource
+  have hσ1 : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × E => p.1) (J ×ˢ interior (extChartAt I α).target) :=
+    (contMDiff_iff_contDiff.mpr contDiff_fst).contMDiffOn
+  have hsnd : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞
+      (fun p : ℝ × E => p.2) (J ×ˢ interior (extChartAt I α).target) :=
+    (contMDiff_iff_contDiff.mpr contDiff_snd).contMDiffOn
+  have hmaps2 : Set.MapsTo (fun p : ℝ × E => p.2)
+      (J ×ˢ interior (extChartAt I α).target) (extChartAt I α).target :=
+    fun p hp => interior_subset hp.2
+  have hσ2 : ContMDiffOn 𝓘(ℝ, ℝ × E) I ∞
+      (fun p : ℝ × E => (extChartAt I α).symm p.2)
+      (J ×ˢ interior (extChartAt I α).target) :=
+    hsymm.comp hsnd hmaps2
+  have hσ : ContMDiffOn 𝓘(ℝ, ℝ × E) (𝓘(ℝ, ℝ).prod I) ∞
+      (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
+      (J ×ˢ interior (extChartAt I α).target) :=
+    hσ1.prodMk hσ2
+  have hcomp : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × E => chartGramOnE (I := I) (g p.1) α i j p.2)
+      (J ×ˢ interior (extChartAt I α).target) := by
+    refine ((hgram i j).comp hσ (fun p hp => ⟨hp.1, hsubset (interior_subset hp.2)⟩)).congr ?_
+    intro p _
+    rfl
+  exact hcomp.contDiffOn (s₀, y₀) ⟨hs, hy⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [FiniteDimensional ℝ E] in
-theorem jointOnMWithin (α : M) (F : ℝ → E → ℝ) {J : Set ℝ} {t : ℝ} {x : M}
+theorem joint_chart_comp_contMDiffWithinAt (α : M) (F : ℝ → E → ℝ) {J : Set ℝ} {t : ℝ} {x : M}
     (hF : ContDiffWithinAt ℝ ∞ (fun r : ℝ × E => F r.1 r.2)
       (J ×ˢ interior (extChartAt I α).target) (t, extChartAt I α x))
     (hx : x ∈ (chartAt H α).source) :
@@ -393,61 +382,61 @@ private theorem chart_mem_interior (α : M) {x : M} (hx : x ∈ (chartAt H α).s
     ((extChartAt I α).map_source hsrc)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem christWithinM (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
-    (hG : GenJointGramOn (I := I) g α J) (i j k : Fin (Module.finrank ℝ E))
+theorem chartChristoffel_comp_extChartAt_contMDiffWithinAt (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
+    (hG : chartGramFamilySmoothWithinOn (I := I) g α J) (i j k : Fin (Module.finrank ℝ E))
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => chartChristoffel (I := I) (g p.1) α i j k (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
-  jointOnMWithin (I := I) α (fun s y => chartChristoffel (I := I) (g s) α i j k y)
-    (christoffelWithin (I := I) g α hG i j k ht (chart_mem_interior (I := I) α hx)) hx
+  joint_chart_comp_contMDiffWithinAt (I := I) α (fun s y => chartChristoffel (I := I) (g s) α i j k y)
+    (chartChristoffel_contDiffWithinAt (I := I) g α hG i j k ht (chart_mem_interior (I := I) α hx)) hx
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemWithinM (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
-    (hG : GenJointGramOn (I := I) g α J) (i j k l : Fin (Module.finrank ℝ E))
+theorem chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
+    (hG : chartGramFamilySmoothWithinOn (I := I) g α J) (i j k l : Fin (Module.finrank ℝ E))
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => chartRiemannTensor (I := I) (g p.1) α i j k l (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
-  jointOnMWithin (I := I) α (fun s y => chartRiemannTensor (I := I) (g s) α i j k l y)
-    (riemannWithin (I := I) g α hG i j k l ht (chart_mem_interior (I := I) α hx)) hx
+  joint_chart_comp_contMDiffWithinAt (I := I) α (fun s y => chartRiemannTensor (I := I) (g s) α i j k l y)
+    (chartRiemannTensor_contDiffWithinAt (I := I) g α hG i j k l ht (chart_mem_interior (I := I) α hx)) hx
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ricciWithinM (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
-    (hG : GenJointGramOn (I := I) g α J) (i k : Fin (Module.finrank ℝ E))
+theorem chartRicciTensor_comp_extChartAt_contMDiffWithinAt (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
+    (hG : chartGramFamilySmoothWithinOn (I := I) g α J) (i k : Fin (Module.finrank ℝ E))
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => chartRicciTensor (I := I) (g p.1) α i k (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
-  jointOnMWithin (I := I) α (fun s y => chartRicciTensor (I := I) (g s) α i k y)
-    (ricciWithin (I := I) g α hG i k ht (chart_mem_interior (I := I) α hx)) hx
+  joint_chart_comp_contMDiffWithinAt (I := I) α (fun s y => chartRicciTensor (I := I) (g s) α i k y)
+    (chartRicciTensor_contDiffWithinAt (I := I) g α hG i k ht (chart_mem_interior (I := I) α hx)) hx
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partRiemWithinM (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
-    (hG : GenJointGramOn (I := I) g α J) (m i j k l : Fin (Module.finrank ℝ E))
+theorem partial_chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
+    (hG : chartGramFamilySmoothWithinOn (I := I) g α J) (m i j k l : Fin (Module.finrank ℝ E))
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M =>
         partialDeriv (E := E) m
           (fun y => chartRiemannTensor (I := I) (g p.1) α i j k l y) (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
-  jointOnMWithin (I := I) α
+  joint_chart_comp_contMDiffWithinAt (I := I) α
     (fun s y =>
       partialDeriv (E := E) m (fun z => chartRiemannTensor (I := I) (g s) α i j k l z) y)
-    (partRiemWithin (I := I) g α hG m i j k l ht (chart_mem_interior (I := I) α hx)) hx
+    (partial_chartRiemannTensor_contDiffWithinAt (I := I) g α hG m i j k l ht (chart_mem_interior (I := I) α hx)) hx
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem partRicciWithinM (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
-    (hG : GenJointGramOn (I := I) g α J) (m i k : Fin (Module.finrank ℝ E))
+theorem partial_chartRicciTensor_comp_extChartAt_contMDiffWithinAt (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
+    (hG : chartGramFamilySmoothWithinOn (I := I) g α J) (m i k : Fin (Module.finrank ℝ E))
     {t : ℝ} (ht : t ∈ J) {x : M} (hx : x ∈ (chartAt H α).source) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M =>
         partialDeriv (E := E) m
           (fun y => chartRicciTensor (I := I) (g p.1) α i k y) (extChartAt I α p.2))
       (J ×ˢ (chartAt H α).source) (t, x) :=
-  jointOnMWithin (I := I) α
+  joint_chart_comp_contMDiffWithinAt (I := I) α
     (fun s y => partialDeriv (E := E) m (fun z => chartRicciTensor (I := I) (g s) α i k z) y)
-    (partRicciWithin (I := I) g α hG m i k ht (chart_mem_interior (I := I) α hx)) hx
+    (partial_chartRicciTensor_contDiffWithinAt (I := I) g α hG m i k ht (chart_mem_interior (I := I) α hx)) hx
 
 private theorem icc_subset_ico {a b c : ℝ} (hcb : c < b) : Icc a c ⊆ Ico a b :=
   fun _ hx => ⟨hx.1, lt_of_le_of_lt hx.2 hcb⟩
@@ -471,7 +460,7 @@ private theorem slabBase_nhdsWithin (x₀ : M) (a c t : ℝ) :
   rwa [hset] at this
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem christSlabCont (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
+theorem chartChristoffel_comp_extChartAt_continuousOn_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
@@ -480,17 +469,17 @@ theorem christSlabCont (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (h
     ContinuousOn
       (fun p : ℝ × M => chartChristoffel (I := I) (g p.1) x₀ i j k (extChartAt I x₀ p.2))
       (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  have hG := genGramOn_of_field (I := I) g x₀ hgram
+  have hG := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g x₀ hgram
   have hsub : Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet ⊆
       Ico a b ×ˢ (chartAt H x₀).source := by
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
     exact Set.prod_mono (icc_subset_ico hcb) (Set.Subset.refl _)
   intro p hp
-  exact ((christWithinM (I := I) g x₀ hG i j k (hsub hp).1
+  exact ((chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG i j k (hsub hp).1
     (hsub hp).2).continuousWithinAt).mono hsub
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemSlabCont (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
+theorem chartRiemannTensor_comp_extChartAt_continuousOn_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
@@ -499,17 +488,17 @@ theorem riemSlabCont (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb
     ContinuousOn
       (fun p : ℝ × M => chartRiemannTensor (I := I) (g p.1) x₀ i j k l (extChartAt I x₀ p.2))
       (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
-  have hG := genGramOn_of_field (I := I) g x₀ hgram
+  have hG := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g x₀ hgram
   have hsub : Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet ⊆
       Ico a b ×ˢ (chartAt H x₀).source := by
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
     exact Set.prod_mono (icc_subset_ico hcb) (Set.Subset.refl _)
   intro p hp
-  exact ((riemWithinM (I := I) g x₀ hG i j k l (hsub hp).1
+  exact ((chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG i j k l (hsub hp).1
     (hsub hp).2).continuousWithinAt).mono hsub
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem christSlabContAt (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
+theorem chartChristoffel_comp_extChartAt_continuousWithinAt_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
@@ -520,11 +509,11 @@ theorem christSlabContAt (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} 
       (Icc a c ×ˢ (univ : Set M)) (t, x₀) := by
   have hx₀ : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x₀
-  have hbase := christSlabCont (I := I) g hcb x₀ hgram i j k (t, x₀) ⟨ht, hx₀⟩
+  have hbase := chartChristoffel_comp_extChartAt_continuousOn_slab (I := I) g hcb x₀ hgram i j k (t, x₀) ⟨ht, hx₀⟩
   exact hbase.mono_of_mem_nhdsWithin (slabBase_nhdsWithin (I := I) x₀ a c t)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemSlabContAt (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
+theorem chartRiemannTensor_comp_extChartAt_continuousWithinAt_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
@@ -535,14 +524,11 @@ theorem riemSlabContAt (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (h
       (Icc a c ×ˢ (univ : Set M)) (t, x₀) := by
   have hx₀ : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x₀
-  have hbase := riemSlabCont (I := I) g hcb x₀ hgram i j k l (t, x₀) ⟨ht, hx₀⟩
+  have hbase := chartRiemannTensor_comp_extChartAt_continuousOn_slab (I := I) g hcb x₀ hgram i j k l (t, x₀) ⟨ht, hx₀⟩
   exact hbase.mono_of_mem_nhdsWithin (slabBase_nhdsWithin (I := I) x₀ a c t)
 
 end Consumer
 
-end RicciLinearization
-end DeTurck
-end PDE
-end DifferentialGeometry
+end DifferentialGeometry.Geometry.Curvature
 
 end

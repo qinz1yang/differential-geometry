@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
 
 
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -121,9 +122,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private lemma s_differentiableAt_metricPerturbationPath_chartInvGramOnE (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (k l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
@@ -131,8 +132,8 @@ private lemma s_differentiableAt_metricPerturbationPath_chartInvGramOnE (g₀ : 
     DifferentiableAt ℝ
       (fun s : ℝ => chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k l y)
         s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
-  have hjoint := chartInvGramOnE_contDiffAt_joint (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
+  have hjoint := chartInvGramOnE_joint_contDiffAt (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x
     hG k l hs₀ hy
   have hcomp : (fun s : ℝ => chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k l
     y)
@@ -223,7 +224,7 @@ theorem hasDerivAt_metricPerturbationPath_chartInvGramOnE (g₀ : SmoothRiemanni
     have hA_diff : DifferentiableAt ℝ
         (fun s : ℝ => chartInvGramOnE (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k p y) s₀ :=
-      s_differentiableAt_metricPerturbationPath_chartInvGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x k p hy
+      s_differentiableAt_metricPerturbationPath_chartInvGramOnE (I := I) g₀ T T' hδ hδ' x k p hy
         hs₀
     have hAB : HasDerivAt (fun s : ℝ =>
           chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k p y *
@@ -257,10 +258,10 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartGramOnE (g₀ : SmoothRie
         (chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) y)
       (partialDeriv (E := E) p
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) y) s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hjoint : ContDiffAt ℝ ∞
       (fun r : ℝ × E => chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) x i j r.2)
-      (s₀, y) := hG.1 i j hs₀ hy
+      (s₀, y) := hG i j hs₀ hy
   have hcomm := hasDerivAt_partialDeriv_comm_at
     (fun r : ℝ × E => chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) x i j r.2)
     p s₀ y hjoint
@@ -270,7 +271,7 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartGramOnE (g₀ : SmoothRie
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem hasDerivAt_metricPerturbationPath_gramBracket (g₀ : SmoothRiemannianMetric I M)
+theorem hasDerivAt_metricPerturbationPath_chartChristoffelBracket (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -279,7 +280,7 @@ theorem hasDerivAt_metricPerturbationPath_gramBracket (g₀ : SmoothRiemannianMe
     (x : M) (i j l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
     (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
-    HasDerivAt (fun s : ℝ => gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y)
+    HasDerivAt (fun s : ℝ => chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y)
       (partialDeriv (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j) y +
         partialDeriv (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l i) y -
         partialDeriv (E := E) l
@@ -294,7 +295,7 @@ theorem hasDerivAt_metricPerturbationPath_gramBracket (g₀ : SmoothRiemannianMe
     l
     hy hs₀
   have hsum := (h1.add h2).sub h3
-  have heq : (fun s : ℝ => gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y) =
+  have heq : (fun s : ℝ => chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y) =
       (fun s : ℝ =>
         partialDeriv (E := E) i (chartGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l j) y +
@@ -302,7 +303,7 @@ theorem hasDerivAt_metricPerturbationPath_gramBracket (g₀ : SmoothRiemannianMe
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l i) y -
           partialDeriv (E := E) l (chartGramOnE (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j) y) := by
-    funext s; rw [gramBracket]
+    funext s; rw [chartChristoffelBracket]
   rw [heq]; exact hsum
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -322,7 +323,7 @@ theorem hasDerivAt_metricPerturbationPath_chartChristoffel (g₀ : SmoothRiemann
               chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k p y *
                 realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q y *
                 chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x q l y)) *
-            gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j l y +
+            chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j l y +
           chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k l y *
             (partialDeriv (E := E) i
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l j) y +
@@ -335,14 +336,14 @@ theorem hasDerivAt_metricPerturbationPath_chartChristoffel (g₀ : SmoothRiemann
         chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k y) =
       (fun s : ℝ => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k l y *
-          gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y) := by
-    funext s; rw [chartChristoffel_eq_sum_invGramOnE_bracket]
+          chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j l y) := by
+    funext s; rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket]
   rw [heq]
   refine HasDerivAt.const_mul (1 / 2 : ℝ) ?_
   refine HasDerivAt.fun_sum (fun l _ => ?_)
   have hG := hasDerivAt_metricPerturbationPath_chartInvGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x k l hy
     hs₀
-  have hbr := hasDerivAt_metricPerturbationPath_gramBracket (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j l hy hs₀
+  have hbr := hasDerivAt_metricPerturbationPath_chartChristoffelBracket (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j l hy hs₀
   exact hG.mul hbr
 
 omit [CompactSpace M] in
@@ -350,9 +351,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_partial_chartChristoffel (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (m i j k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
@@ -364,11 +365,11 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartChristoffel (g₀ : Smoot
         (fun y' => deriv (fun s : ℝ =>
           chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k y') s₀) y)
             s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hjoint : ContDiffAt ℝ ∞
       (fun r : ℝ × E =>
         chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) x i j k r.2) (s₀, y) :=
-    gen_joint_christoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG i j k hs₀ hy
+    chartChristoffel_joint_contDiffAt (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG i j k hs₀ hy
   exact hasDerivAt_partialDeriv_comm_at
     (fun r : ℝ × E =>
       chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) x i j k r.2) m s₀ y hjoint
@@ -378,9 +379,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartRiemannTensor (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (i j k l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
@@ -390,12 +391,12 @@ theorem hasDerivAt_metricPerturbationPath_chartRiemannTensor (g₀ : SmoothRiema
       (deriv (fun s : ℝ =>
         chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k l y) s₀)
           s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hjoint : ContDiffAt ℝ ∞
       (fun r : ℝ × E =>
         chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) x i j k l r.2)
       (s₀, y) :=
-    gen_joint_riemann (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG i j k l hs₀ hy
+    chartRiemannTensor_joint_contDiffAt (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG i j k l hs₀ hy
   have hcomp : (fun s : ℝ =>
         chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k l y) =
       (fun r : ℝ × E =>
@@ -409,9 +410,9 @@ omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartRicciTensor (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (i k : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
@@ -429,7 +430,7 @@ theorem hasDerivAt_metricPerturbationPath_chartRicciTensor (g₀ : SmoothRiemann
     funext s; rw [chartRicciTensor_def]
   rw [heq]
   refine HasDerivAt.fun_sum (fun j _ => ?_)
-  exact hasDerivAt_metricPerturbationPath_chartRiemannTensor (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j k j hy
+  exact hasDerivAt_metricPerturbationPath_chartRiemannTensor (I := I) g₀ T T' hδ hδ' x i j k j hy
     hs₀
 
 omit [CompactSpace M] in
@@ -463,7 +464,7 @@ theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric 
   rw [hbody]
   refine HasDerivAt.fun_sum (fun i _ => ?_)
   refine HasDerivAt.fun_sum (fun k _ => ?_)
-  exact (hasDerivAt_metricPerturbationPath_chartRicciTensor (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i k hy
+  exact (hasDerivAt_metricPerturbationPath_chartRicciTensor (I := I) g₀ T T' hδ hδ' x i k hy
     hmem).const_mul _
 
 end RicciLinearization

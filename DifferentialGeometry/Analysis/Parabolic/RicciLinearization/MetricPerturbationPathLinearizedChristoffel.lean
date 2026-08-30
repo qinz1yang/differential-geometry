@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartRicciDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ChristoffelLinearization
+open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -56,7 +57,7 @@ def realizedChristoffelNonPrincipal (g₀ : SmoothRiemannianMetric I M)
         chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k p y *
           realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q y *
           chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x q l y)) *
-      gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j l y
+      chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x i j l y
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in

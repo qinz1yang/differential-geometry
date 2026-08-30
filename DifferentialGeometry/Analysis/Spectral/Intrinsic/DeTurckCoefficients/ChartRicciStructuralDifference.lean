@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chri
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RicciDiffAffine
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -89,24 +90,24 @@ theorem invGramOnE_sub_eq
     Matrix.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gramBracket_sub_eq
+theorem chartChristoffelBracket_sub_eq
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     (i j l : Fin (Module.finrank ℝ E)) (y : E) :
-    gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y =
+    chartChristoffelBracket (I := I) g₁ α i j l y - chartChristoffelBracket (I := I) g₂ α i j l y =
       (partialDeriv (E := E) i (chartGramOnE (I := I) g₁ α l j) y -
           partialDeriv (E := E) i (chartGramOnE (I := I) g₂ α l j) y) +
         (partialDeriv (E := E) j (chartGramOnE (I := I) g₁ α l i) y -
           partialDeriv (E := E) j (chartGramOnE (I := I) g₂ α l i) y) -
         (partialDeriv (E := E) l (chartGramOnE (I := I) g₁ α i j) y -
           partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j) y) := by
-  unfold gramBracket
+  unfold chartChristoffelBracket
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gramBracketDeriv_sub_eq
+theorem chartChristoffelBracketDeriv_sub_eq
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     (m i j l : Fin (Module.finrank ℝ E)) (y : E) :
-    gramBracketDeriv (I := I) g₁ α m i j l y - gramBracketDeriv (I := I) g₂ α m i j l y =
+    chartChristoffelBracketDeriv (I := I) g₁ α m i j l y - chartChristoffelBracketDeriv (I := I) g₂ α m i j l y =
       (partialDeriv (E := E) m (partialDeriv (E := E) i (chartGramOnE (I := I) g₁ α l j)) y -
           partialDeriv (E := E) m
             (partialDeriv (E := E) i (chartGramOnE (I := I) g₂ α l j)) y) +
@@ -116,7 +117,7 @@ theorem gramBracketDeriv_sub_eq
         (partialDeriv (E := E) m (partialDeriv (E := E) l (chartGramOnE (I := I) g₁ α i j)) y -
           partialDeriv (E := E) m
             (partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j)) y) := by
-  unfold gramBracketDeriv
+  unfold chartChristoffelBracketDeriv
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -126,11 +127,11 @@ theorem chartChristoffel_sub_eq
     chartChristoffel (I := I) g₁ α i j k y - chartChristoffel (I := I) g₂ α i j k y =
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         ((chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y) *
-            gramBracket (I := I) g₁ α i j l y +
+            chartChristoffelBracket (I := I) g₁ α i j l y +
           chartInvGramOnE (I := I) g₂ α k l y *
-            (gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y)) := by
+            (chartChristoffelBracket (I := I) g₁ α i j l y - chartChristoffelBracket (I := I) g₂ α i j l y)) := by
   classical
-  rw [chartChristoffel_eq_sum_invGramOnE_bracket, chartChristoffel_eq_sum_invGramOnE_bracket,
+  rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket, chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket,
     ← mul_sub, ← Finset.sum_sub_distrib]
   congr 1
   refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -146,14 +147,14 @@ theorem partialDeriv_chartChristoffel_sub_eq
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         ((partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y -
               partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y) *
-            gramBracket (I := I) g₁ α i j l y +
+            chartChristoffelBracket (I := I) g₁ α i j l y +
           partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y *
-            (gramBracket (I := I) g₁ α i j l y - gramBracket (I := I) g₂ α i j l y) +
+            (chartChristoffelBracket (I := I) g₁ α i j l y - chartChristoffelBracket (I := I) g₂ α i j l y) +
           ((chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y) *
-              gramBracketDeriv (I := I) g₁ α m i j l y +
+              chartChristoffelBracketDeriv (I := I) g₁ α m i j l y +
             chartInvGramOnE (I := I) g₂ α k l y *
-              (gramBracketDeriv (I := I) g₁ α m i j l y -
-                gramBracketDeriv (I := I) g₂ α m i j l y))) := by
+              (chartChristoffelBracketDeriv (I := I) g₁ α m i j l y -
+                chartChristoffelBracketDeriv (I := I) g₂ α m i j l y))) := by
   classical
   rw [partialDeriv_chartChristoffel_eq (I := I) g₁ α m i j k hy,
     partialDeriv_chartChristoffel_eq (I := I) g₂ α m i j k hy,

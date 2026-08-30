@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Operator.Laplacian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Christoffel
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
@@ -123,65 +123,6 @@ theorem traceFun_sq_div_dim_le_frobeniusSqFun
     exact_mod_cast this
   have hbound := traceFun_sq_le_dim_mul_frobeniusSqFun (I := I) (M := M) B x
   exact (div_le_iff₀ hpos).mpr (by linarith [hbound])
-
-def chartGramOnE (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) : E → ℝ :=
-  fun y => chartGramMatrix (I := I) g α ((extChartAt I α).symm y) i j
-
-omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma chartGramOnE_def
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartGramOnE (I := I) g α i j y =
-      chartGramMatrix (I := I) g α ((extChartAt I α).symm y) i j := rfl
-
-omit [NeZero (Module.finrank ℝ E)] in
-lemma chartGramOnE_symm
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartGramOnE (I := I) g α i j y = chartGramOnE (I := I) g α j i y := by
-  unfold chartGramOnE
-  rw [chartGramMatrix_apply, chartGramMatrix_apply]
-  exact g.symm _ _ _
-
-def chartChristoffel (g : SmoothRiemannianMetric I M) (α : M)
-    (i j k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-    chartInvGramMatrix (I := I) g α ((extChartAt I α).symm y) k l *
-      (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y +
-       partialDeriv (E := E) j (chartGramOnE (I := I) g α l i) y -
-       partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y)
-
-omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma chartChristoffel_def
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j k : Fin (Module.finrank ℝ E)) (y : E) :
-    chartChristoffel (I := I) g α i j k y =
-      (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g α ((extChartAt I α).symm y) k l *
-          (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y +
-           partialDeriv (E := E) j (chartGramOnE (I := I) g α l i) y -
-           partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y) := rfl
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem chartChristoffel_symm
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j k : Fin (Module.finrank ℝ E)) (y : E) :
-    chartChristoffel (I := I) g α i j k y =
-      chartChristoffel (I := I) g α j i k y := by
-  classical
-  rw [chartChristoffel_def, chartChristoffel_def]
-  congr 1
-  refine Finset.sum_congr rfl ?_
-  intro l _
-  congr 1
-  have hsym : chartGramOnE (I := I) g α i j =
-      chartGramOnE (I := I) g α j i :=
-    funext (fun y' => chartGramOnE_symm (I := I) g α i j y')
-  rw [show partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y =
-        partialDeriv (E := E) l (chartGramOnE (I := I) g α j i) y from by
-    rw [hsym]]
-  ring
 
 def chartIteratedPartialDeriv
     (α : M) (f : M → ℝ) (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=

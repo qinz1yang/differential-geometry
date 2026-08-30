@@ -157,7 +157,7 @@ theorem hasDerivAt_rhsPath
     funext t
     rw [chartDeTurckRicciRHS_def]]
   have hRic := hasDerivAt_metricPerturbationPath_chartRicciTensor (I := I)
-    g₀ T T' hδ_lt hδ hδ'_lt hδ' α i k hy hs
+    g₀ T T' hδ hδ' α i k hy hs
   have hLie := hasDerivAt_metricPerturbationPath_chartLieDeTurckComp_chartSlope (I := I)
     g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg α i k hy hs
   have hsum := (hRic.const_mul (-2 : ℝ)).add hLie
@@ -722,9 +722,9 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rhsSum_contDiffAt [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s : ℝ}
     (hs : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
@@ -745,7 +745,7 @@ theorem rhsSum_contDiffAt [BoundarylessManifold I M]
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) x i k hy]
   rw [heq]
   exact realizedDeTurckRicciChartSum_contDiffAt (I := I)
-    g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w hs
+    g₀ g_bg T T' hδ hδ' x v w hs
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem hasDerivAt_rhsSum
@@ -795,7 +795,7 @@ theorem rhsSum_continuous [BoundarylessManifold I M]
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (rhsChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) (Icc (0 : ℝ) 1) := by
   intro s hs
-  exact (rhsSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
+  exact (rhsSum_contDiffAt (I := I) g₀ g_bg T T' hδ hδ'
     x v w (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -812,7 +812,7 @@ theorem rhsSlope_integrable [BoundarylessManifold I M]
       volume 0 1 := by
   let f : ℝ → ℝ := rhsChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w
   have hcd : ContDiffOn ℝ ∞ f (metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
-    fun s hs => (rhsSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
+    fun s hs => (rhsSum_contDiffAt (I := I) g₀ g_bg T T' hδ hδ'
       x v w hs).contDiffWithinAt
   have hcont : ContinuousOn (deriv f) (Icc (0 : ℝ) 1) :=
     (hcd.continuousOn_deriv_of_isOpen metricPerturbationPathDomain_isOpen

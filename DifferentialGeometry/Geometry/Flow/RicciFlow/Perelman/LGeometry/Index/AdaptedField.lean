@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciSharpChart
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransportSmooth
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
 import DifferentialGeometry.Analysis.ODE.Flow.ParametricLinearODE
@@ -127,7 +127,7 @@ private theorem movingCov_smooth
         (D.regular ×ˢ interior (extChartAt I (alpha t)).target) :=
       D.regular_isOpen.prod isOpen_interior
     have hraw := (MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ hs ↦ hs) D.regular_isOpen.uniqueDiffOn
       (alpha t) i j k)
     have hpair : (tau t, u t) ∈
@@ -288,7 +288,7 @@ private theorem movingRicciPair_smooth
       (fun s ↦ chartInvGramOnE (I := I) (S.base.metric (tau s))
         (alpha t) i j (u s)) t := by
     have hraw := (MetricFamilySmoothOn.chartInvGramOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ hs ↦ hs) (alpha t) i j).contDiffAt
         (hopen.mem_nhds hpair)
     with_unfolding_all exact hraw.comp t hbase

@@ -100,7 +100,7 @@ theorem chartChristoffelDeriv_eq_jet (g : SmoothRiemannianMetric I M) (α : M) {
   congr 1
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [partialDeriv_chartInvGramOnE_eq g α y m k l hy]
-  simp only [gramBracket, gramBracketDeriv, jet2_chartGram_invGram g α y,
+  simp only [chartChristoffelBracket, chartChristoffelBracketDeriv, jet2_chartGram_invGram g α y,
     jet2_chartGram_d1 g α hG, jet2_chartGram_d2 g α hG1 hG2]
 
 omit [NeZero (Module.finrank ℝ E)] in

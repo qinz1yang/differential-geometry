@@ -35,9 +35,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (g_bg : SmoothRiemannianMetric I M) (x : M) (i j : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I x).target) {s₀ : ℝ}
@@ -48,12 +48,12 @@ theorem hasDerivAt_metricPerturbationPath_chartLieDeTurckComp (g₀ : SmoothRiem
       (deriv (fun s : ℝ =>
         chartLieDeTurckComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j y) s₀)
           s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hjoint : ContDiffAt ℝ ∞
       (fun r : ℝ × E =>
         chartLieDeTurckComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) g_bg x i j r.2)
       (s₀, y) :=
-    gen_joint_chartLieDeTurckComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG g_bg i j hs₀
+    chartLieDeTurckComp_joint_contDiffAt (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG g_bg i j hs₀
       hy
   have hcomp : (fun s : ℝ =>
         chartLieDeTurckComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j y) =
@@ -179,7 +179,7 @@ theorem hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (g₀ : SmoothRiema
                     chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k p y *
                       realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q y *
                       chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x q l y)) *
-                  gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x a b l y +
+                  chartChristoffelBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x a b l y +
                 chartInvGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x k l y *
                   (partialDeriv (E := E) a
                       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l b) y +
@@ -228,8 +228,8 @@ theorem hasDerivAt_metricPerturbationPath_partial_chartDeTurckVFComp (g₀ : Smo
       (partialDeriv (E := E) m
         (deTurckVFDerivRaw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) k) y) s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
-  have hjoint := gen_joint_chartDeTurckVFComp (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ')
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
+  have hjoint := chartDeTurckVFComp_joint_contDiffAt (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ')
     x hG g_bg k hs₀ hy
   have hcomm := hasDerivAt_partialDeriv_comm_at'
     (fun r : ℝ × E =>

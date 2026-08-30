@@ -6,7 +6,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueJointChartCurvatureSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.JointSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.ManifoldSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.InverseMetricRegularity
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartSmoothness
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ParametricSmoothness
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
@@ -378,43 +381,6 @@ theorem metricPerturbationPath_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
     ccTensorBilinSymm_convexPerturbation]
   ring
 
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
-theorem metricPerturbationPath_genJointGram (g₀ : SmoothRiemannianMetric I M)
-    (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
-    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
-    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
-    (α : M) :
-    ChartGramFamilyJointSmoothNondegenerate (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  refine ⟨?_, ?_⟩
-  · intro i j s₀ y₀ hs hy
-    have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := metricPerturbationPathDomain_isOpen
-    set F : E → ℝ :=
-      chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') α i j with hF
-    set G : E → ℝ :=
-      chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) α i j with hG
-    have heq : (fun p : ℝ × E =>
-          chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.1) α i j p.2)
-        =ᶠ[nhds (s₀, y₀)] (fun p : ℝ × E => (1 - p.1) * F p.2 + p.1 * G p.2) := by
-      have hmem : (metricPerturbationPathDomain (δ := δ) (δ' := δ')) ×ˢ (Set.univ : Set E) ∈ nhds (s₀, y₀) :=
-        (hSopen.prod isOpen_univ).mem_nhds ⟨hs, Set.mem_univ _⟩
-      filter_upwards [hmem] with p hp
-      exact metricPerturbationPath_chartGramOnE (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hp.1 α i j p.2
-    refine ContDiffAt.congr_of_eventuallyEq ?_ heq
-    have hFc : ContDiffAt ℝ ∞ (fun p : ℝ × E => F p.2) (s₀, y₀) :=
-      (((chartGramOnE_contDiffOn (I := I) _ α i j).mono interior_subset).contDiffAt
-        (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) contDiffAt_snd
-    have hGc : ContDiffAt ℝ ∞ (fun p : ℝ × E => G p.2) (s₀, y₀) :=
-      (((chartGramOnE_contDiffOn (I := I) _ α i j).mono interior_subset).contDiffAt
-        (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) contDiffAt_snd
-    exact ((contDiffAt_const.sub contDiffAt_fst).mul hFc).add (contDiffAt_fst.mul hGc)
-  · intro s₀ _ x hx
-    exact chartGramMatrix_det_pos (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) α hx
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [SigmaCompactSpace M] in
 private lemma chartBilinSymmEntry_contMDiffOn (g₀ : SmoothRiemannianMetric I M)
@@ -467,75 +433,72 @@ private lemma chartBilinSymmOnE_contDiffOn (g₀ : SmoothRiemannianMetric I M)
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem metricPerturbationPath_genJointGram_free (g₀ : SmoothRiemannianMetric I M)
+theorem metricPerturbationPath_chartGramFamilyJointSmoothOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (α : M) :
-    ChartGramFamilyJointSmoothNondegenerate (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α
+    chartGramFamilyJointSmoothOn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  refine ⟨?_, ?_⟩
-  · intro i j s₀ y₀ hs hy
-    have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := metricPerturbationPathDomain_isOpen
-    have heq : (fun p : ℝ × E =>
-          chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.1) α i j p.2)
-        =ᶠ[nhds (s₀, y₀)] (fun p : ℝ × E =>
-          chartGramOnE (I := I) g₀ α i j p.2 +
-            ((1 - p.1) * (fun y : E => ccTensorBilinSymm (I := I) g₀ T' ((extChartAt I α).symm y)
-                (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-                (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2 +
-              p.1 * (fun y : E => ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm y)
-                (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-                (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2)) := by
-      have hmem : (metricPerturbationPathDomain (δ := δ) (δ' := δ')) ×ˢ (Set.univ : Set E) ∈ nhds (s₀, y₀) :=
-        (hSopen.prod isOpen_univ).mem_nhds ⟨hs, Set.mem_univ _⟩
-      filter_upwards [hmem] with p hp
-      have hps : p.1 ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') := hp.1
-      rw [chartGramOnE_def, chartGramMatrix_apply,
-        metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hps,
-        ccTensorBilinSymm_convexPerturbation, chartGramOnE_def, chartGramMatrix_apply]
-    refine ContDiffAt.congr_of_eventuallyEq ?_ heq
-    have hsnd : ContDiffAt ℝ ∞ (Prod.snd : ℝ × E → E) (s₀, y₀) := contDiffAt_snd
-    have hG₀c : ContDiffAt ℝ ∞ (fun p : ℝ × E => chartGramOnE (I := I) g₀ α i j p.2) (s₀, y₀) := by
-      have h0 := (((chartGramOnE_contDiffOn (I := I) g₀ α i j).mono interior_subset).contDiffAt
-        (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
-      exact h0
-    have hBc : ContDiffAt ℝ ∞ (fun p : ℝ × E =>
-        ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm p.2)
-          (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
-          (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
-      have h0 := (((chartBilinSymmOnE_contDiffOn (I := I) g₀ T α i j).mono
-        interior_subset).contDiffAt
-        (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
-      exact h0
-    have hB'c : ContDiffAt ℝ ∞ (fun p : ℝ × E =>
-        ccTensorBilinSymm (I := I) g₀ T' ((extChartAt I α).symm p.2)
-          (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
-          (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
-      have h0 := (((chartBilinSymmOnE_contDiffOn (I := I) g₀ T' α i j).mono
-        interior_subset).contDiffAt
-        (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
-      exact h0
-    exact hG₀c.add (((contDiffAt_const.sub contDiffAt_fst).mul hB'c).add (contDiffAt_fst.mul hBc))
-  · intro s₀ _ x hx
-    exact chartGramMatrix_det_pos (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) α hx
+  intro i j s₀ y₀ hs hy
+  have hSopen : IsOpen (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := metricPerturbationPathDomain_isOpen
+  have heq : (fun p : ℝ × E =>
+        chartGramOnE (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.1) α i j p.2)
+      =ᶠ[nhds (s₀, y₀)] (fun p : ℝ × E =>
+        chartGramOnE (I := I) g₀ α i j p.2 +
+          ((1 - p.1) * (fun y : E => ccTensorBilinSymm (I := I) g₀ T' ((extChartAt I α).symm y)
+              (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+              (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2 +
+            p.1 * (fun y : E => ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm y)
+              (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+              (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2)) := by
+    have hmem : (metricPerturbationPathDomain (δ := δ) (δ' := δ')) ×ˢ (Set.univ : Set E) ∈ nhds (s₀, y₀) :=
+      (hSopen.prod isOpen_univ).mem_nhds ⟨hs, Set.mem_univ _⟩
+    filter_upwards [hmem] with p hp
+    have hps : p.1 ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') := hp.1
+    rw [chartGramOnE_def, chartGramMatrix_apply,
+      metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hps,
+      ccTensorBilinSymm_convexPerturbation, chartGramOnE_def, chartGramMatrix_apply]
+  refine ContDiffAt.congr_of_eventuallyEq ?_ heq
+  have hsnd : ContDiffAt ℝ ∞ (Prod.snd : ℝ × E → E) (s₀, y₀) := contDiffAt_snd
+  have hG₀c : ContDiffAt ℝ ∞ (fun p : ℝ × E => chartGramOnE (I := I) g₀ α i j p.2) (s₀, y₀) := by
+    have h0 := (((chartGramOnE_contDiffOn (I := I) g₀ α i j).mono interior_subset).contDiffAt
+      (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
+    exact h0
+  have hBc : ContDiffAt ℝ ∞ (fun p : ℝ × E =>
+      ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm p.2)
+        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
+        (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
+    have h0 := (((chartBilinSymmOnE_contDiffOn (I := I) g₀ T α i j).mono
+      interior_subset).contDiffAt
+      (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
+    exact h0
+  have hB'c : ContDiffAt ℝ ∞ (fun p : ℝ × E =>
+      ccTensorBilinSymm (I := I) g₀ T' ((extChartAt I α).symm p.2)
+        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
+        (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
+    have h0 := (((chartBilinSymmOnE_contDiffOn (I := I) g₀ T' α i j).mono
+      interior_subset).contDiffAt
+      (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
+    exact h0
+  exact hG₀c.add (((contDiffAt_const.sub contDiffAt_fst).mul hB'c).add (contDiffAt_fst.mul hBc))
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (α : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartInvGramMatrix (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' α
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -547,7 +510,7 @@ theorem metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := chartInvGramOnE_contDiffAt_joint (I := I)
+  have hentry := chartInvGramOnE_joint_contDiffAt (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG i j hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartInvGramOnE (I := I)
@@ -578,7 +541,7 @@ theorem metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free
       (fun p : M × ℝ => chartInvGramMatrix (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -590,7 +553,7 @@ theorem metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := chartInvGramOnE_contDiffAt_joint (I := I)
+  have hentry := chartInvGramOnE_joint_contDiffAt (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG i j hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartInvGramOnE (I := I)
@@ -609,149 +572,8 @@ theorem metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free
   · rw [Function.comp_apply, chartInvGramOnE_def, (extChartAt I α).left_inv hxsrc]
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [SigmaCompactSpace M] in
-theorem chartBasisVec_jointContMDiffOn (α : M) (i : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (chartBasisVecFiber (I := I) α i p.1))
-      ((chartAt H α).source ×ˢ (Set.univ : Set ℝ)) := by
-  have hbase := chartBasisVec_contMDiffOn (I := I) α i
-  have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
-    trivializationAt_baseSet_eq_chartAt_source (I := I) α
-  rw [hbase_eq] at hbase
-  exact hbase.comp contMDiffOn_fst (fun p hp => hp.1)
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem metricSharpChartCoeff_jointContMDiffOn
-    (gfam : ℝ → SmoothRiemannianMetric I M) (α : M)
-    (cv : ℝ → Π b : M, TangentSpace I b →ₗ[ℝ] ℝ) {S : Set ℝ}
-    (hinv : ∀ i j : Fin (Module.finrank ℝ E),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => chartInvGramMatrix (I := I) (gfam p.2) α p.1 i j)
-        ((chartAt H α).source ×ˢ S))
-    (hcv : ∀ j : Fin (Module.finrank ℝ E),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
-        ((chartAt H α).source ×ˢ S))
-    (i : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => metricSharpChartCoeff (I := I) (gfam p.2) α (cv p.2) i p.1)
-      ((chartAt H α).source ×ˢ S) := by
-  classical
-  have heq : (fun p : M × ℝ => metricSharpChartCoeff (I := I) (gfam p.2) α (cv p.2) i p.1) =
-      (fun p : M × ℝ => ∑ j : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) (gfam p.2) α p.1 i j *
-          cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1)) := by
-    funext p; rw [metricSharpChartCoeff_def]
-  rw [heq]
-  exact contMDiffOn_finsetSum (fun j _ => (hinv i j).mul (hcv j))
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem metricSharpChartLocal_jointContMDiffOn
-    (gfam : ℝ → SmoothRiemannianMetric I M) (α : M)
-    (cv : ℝ → Π b : M, TangentSpace I b →ₗ[ℝ] ℝ) {S : Set ℝ}
-    (hinv : ∀ i j : Fin (Module.finrank ℝ E),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => chartInvGramMatrix (I := I) (gfam p.2) α p.1 i j)
-        ((chartAt H α).source ×ˢ S))
-    (hcv : ∀ j : Fin (Module.finrank ℝ E),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
-        ((chartAt H α).source ×ˢ S)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (metricSharpChartLocal (I := I) (gfam p.2) α (cv p.2) p.1))
-      ((chartAt H α).source ×ˢ S) := by
-  classical
-  have hcoeff : ∀ i, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => metricSharpChartCoeff (I := I) (gfam p.2) α (cv p.2) i p.1)
-      ((chartAt H α).source ×ˢ S) :=
-    fun i => metricSharpChartCoeff_jointContMDiffOn (I := I) gfam α cv hinv hcv i
-  set e := trivializationAt E (TangentSpace I) α with he
-  have hcoord_eq : ∀ q ∈ (chartAt H α).source ×ˢ S,
-      (e ⟨q.1, metricSharpChartLocal (I := I) (gfam q.2) α (cv q.2) q.1⟩).2 =
-        ∑ i, metricSharpChartCoeff (I := I) (gfam q.2) α (cv q.2) i q.1 •
-          (chartModelBasis E) i := by
-    rintro q ⟨hqx, _⟩
-    have hqbase : q.1 ∈ e.baseSet := by
-      rw [he, trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hqx
-    have hclm : ∀ w : TangentSpace I q.1,
-        (e ⟨q.1, w⟩).2 = e.continuousLinearMapAt ℝ q.1 w := fun w => by
-      rw [Trivialization.continuousLinearMapAt_apply]
-      exact (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hqbase) w).symm
-    unfold metricSharpChartLocal
-    rw [hclm, map_sum]
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [map_smul, ← hclm]
-    congr 1
-    rw [trivializationAt_chartBasisVec_snd (I := I) α i hqbase]
-  have hcoordSmooth : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) ∞
-      (fun q : M × ℝ => (e ⟨q.1, metricSharpChartLocal (I := I) (gfam q.2) α (cv q.2) q.1⟩).2)
-      ((chartAt H α).source ×ˢ S) := by
-    refine ContMDiffOn.congr ?_ hcoord_eq
-    refine contMDiffOn_finsetSum (fun i _ => ?_)
-    exact (hcoeff i).smul contMDiffOn_const
-  have : MemTrivializationAtlas e := by rw [he]; infer_instance
-  rw [Bundle.Trivialization.contMDiffOn_iff (e := e) ?_]
-  · exact ⟨contMDiffOn_fst, hcoordSmooth⟩
-  · rintro q ⟨hqx, _⟩
-    rw [Trivialization.mem_source, he, trivializationAt_baseSet_eq_chartAt_source (I := I)]
-    exact hqx
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem metricSharp_jointContMDiffOn
-    (gfam : ℝ → SmoothRiemannianMetric I M)
-    (cv : ℝ → Π b : M, TangentSpace I b →ₗ[ℝ] ℝ) {S : Set ℝ} (hS : IsOpen S)
-    (hinv : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => chartInvGramMatrix (I := I) (gfam p.2) α p.1 i j)
-        ((chartAt H α).source ×ˢ S))
-    (hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
-        ((chartAt H α).source ×ˢ S)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (DifferentialGeometry.Geometry.Operator.metricSharp
-          (I := I) (gfam p.2) p.1 (cv p.2 p.1)))
-      (Set.univ ×ˢ S) := by
-  intro p hp
-  obtain ⟨_, hps⟩ := hp
-  have hlocal := metricSharpChartLocal_jointContMDiffOn (I := I) gfam p.1 cv
-    (hinv p.1) (hcv p.1)
-  have heqOn : ∀ q ∈ (chartAt H p.1).source ×ˢ S,
-      TotalSpace.mk' E (E := fun z : M => TangentSpace I z) q.1
-          (metricSharpChartLocal (I := I) (gfam q.2) p.1 (cv q.2) q.1) =
-        TotalSpace.mk' E (E := fun z : M => TangentSpace I z) q.1
-          (DifferentialGeometry.Geometry.Operator.metricSharp
-            (I := I) (gfam q.2) q.1 (cv q.2 q.1)) := by
-    rintro q ⟨hqx, _⟩
-    have hqbase : q.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet := by
-      rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hqx
-    rw [metricSharpChartLocal_eq_metricSharp (I := I) (gfam q.2) p.1 (cv q.2) hqbase]
-  have hpmem : p ∈ (chartAt H p.1).source ×ˢ S := ⟨mem_chart_source H p.1, hps⟩
-  have hnhd : (chartAt H p.1).source ×ˢ S ∈ nhdsWithin p (Set.univ ×ˢ S) := by
-    refine mem_nhdsWithin.mpr ⟨(chartAt H p.1).source ×ˢ S,
-      (chartAt H p.1).open_source.prod hS, hpmem, fun q hq => hq.1⟩
-  have hlocalAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
-      (fun q : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) q.1
-        (metricSharpChartLocal (I := I) (gfam q.2) p.1 (cv q.2) q.1))
-      (Set.univ ×ˢ S) p :=
-    (hlocal p hpmem).mono_of_mem_nhdsWithin hnhd
-  refine hlocalAt.congr_of_eventuallyEq ?_ (heqOn p hpmem).symm
-  filter_upwards [hnhd] with q hq using (heqOn q hq).symm
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -808,11 +630,11 @@ theorem inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gen_s_contDiffAt_ricci (gfam : ℝ → SmoothRiemannianMetric I M) (α : M)
-    {S : Set ℝ} (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
+    {S : Set ℝ} (hG : chartGramFamilyJointSmoothOn (I := I) gfam α S)
     (i k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞ (fun s : ℝ => chartRicciTensor (I := I) (gfam s) α i k y₀) s₀ := by
-  have hjoint := gen_joint_ricci (I := I) gfam α hG i k hs hy
+  have hjoint := chartRicciTensor_joint_contDiffAt (I := I) gfam α hG i k hs hy
   have hcomp : (fun s : ℝ => chartRicciTensor (I := I) (gfam s) α i k y₀) =
       (fun p : ℝ × E => chartRicciTensor (I := I) (gfam p.1) α i k p.2) ∘
         (fun s : ℝ => (s, y₀)) := by funext s; rfl
@@ -822,12 +644,12 @@ private lemma gen_s_contDiffAt_ricci (gfam : ℝ → SmoothRiemannianMetric I M)
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma gen_s_contDiffAt_deTurckRicciRHS (gfam : ℝ → SmoothRiemannianMetric I M) (α : M)
-    {S : Set ℝ} (hG : ChartGramFamilyJointSmoothNondegenerate (I := I) gfam α S)
+    {S : Set ℝ} (hG : chartGramFamilyJointSmoothOn (I := I) gfam α S)
       (g_bg : SmoothRiemannianMetric I M)
     (i k : Fin (Module.finrank ℝ E)) {s₀ : ℝ} {y₀ : E} (hs : s₀ ∈ S)
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞ (fun s : ℝ => chartDeTurckRicciRHS (I := I) (gfam s) g_bg α i k y₀) s₀ := by
-  have hjoint := gen_joint_chartDeTurckRicciRHS (I := I) gfam α hG g_bg i k hs hy
+  have hjoint := chartDeTurckRicciRHS_joint_contDiffAt (I := I) gfam α hG g_bg i k hs hy
   have hcomp : (fun s : ℝ => chartDeTurckRicciRHS (I := I) (gfam s) g_bg α i k y₀) =
       (fun p : ℝ × E => chartDeTurckRicciRHS (I := I) (gfam p.1) g_bg α i k p.2) ∘
         (fun s : ℝ => (s, y₀)) := by funext s; rfl
@@ -867,14 +689,14 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem realizedRicciChartSum_contDiffAt (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ}
     (hs : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     ContDiffAt ℝ ∞ (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w) s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   unfold realizedRicciChartSum
@@ -886,9 +708,9 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem realizedDeTurckRicciChartSum_contDiffAt (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ}
     (hs : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
@@ -899,7 +721,7 @@ theorem realizedDeTurckRicciChartSum_contDiffAt (g₀ g_bg : SmoothRiemannianMet
           DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
             (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k (extChartAt I x x)) s₀ := by
-  have hG := metricPerturbationPath_genJointGram (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' x
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have heq : (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
@@ -971,7 +793,7 @@ theorem realizedRicciPathValue_differentiableAt_Ioo (g₀ : SmoothRiemannianMetr
       (Set.mem_Icc_of_Ioo hs)
   have hmem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
     abs_convex_smallConstant_lt_one hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
-  exact ((realizedRicciChartSum_contDiffAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w
+  exact ((realizedRicciChartSum_contDiffAt (I := I) g₀ T T' hδ hδ' x v w
     hmem).differentiableAt (by simp)).congr_of_eventuallyEq heq
 
 omit [CompactSpace M] in
@@ -998,16 +820,16 @@ omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deriv_realizedRicciChartSum_continuousOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (deriv (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hcd : ContDiffOn ℝ ∞ (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun s hs =>
-    (realizedRicciChartSum_contDiffAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w
+    (realizedRicciChartSum_contDiffAt (I := I) g₀ T T' hδ hδ' x v w
       hs).contDiffWithinAt
   exact hcd.continuousOn_deriv_of_isOpen metricPerturbationPathDomain_isOpen (by exact_mod_cast le_top)
 
@@ -1025,7 +847,7 @@ theorem linearizedRicciAt_intervalIntegrable (g₀ : SmoothRiemannianMetric I M)
       MeasureTheory.volume 0 1 := by
   have hcont : ContinuousOn (deriv (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w))
       (Set.Icc (0:ℝ) 1) :=
-    (deriv_realizedRicciChartSum_continuousOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w).mono
+    (deriv_realizedRicciChartSum_continuousOn (I := I) g₀ T T' hδ hδ' x v w).mono
       (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
   have hii : IntervalIntegrable
       (deriv (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w))
@@ -1066,7 +888,7 @@ theorem realizedRicciPathValue_continuousOn_Icc (g₀ : SmoothRiemannianMetric I
   refine ContinuousOn.congr
     (f := realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w) ?_ ?_
   · exact fun s hs =>
-      (realizedRicciChartSum_contDiffAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w
+      (realizedRicciChartSum_contDiffAt (I := I) g₀ T T' hδ hδ' x v w
         (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
   · intro s hs
     exact realizedRicciPathValue_eq_chartSum_on_Icc (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
@@ -1336,7 +1158,7 @@ theorem metricPerturbationPath_chartRicciTensor_jointContMDiffOn
       (fun p : M × ℝ => chartRicciTensor (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α i k (extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -1348,7 +1170,7 @@ theorem metricPerturbationPath_chartRicciTensor_jointContMDiffOn
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := gen_joint_ricci (I := I)
+  have hentry := chartRicciTensor_joint_contDiffAt (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG i k hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartRicciTensor (I := I)
@@ -1598,315 +1420,6 @@ theorem ricciArmOrder0CurvCoeff_metricPerturbationPath_toModel_continuous [Bound
   exact jointContMDiff_toModel_continuous_slice (I := I) g₀ 2 2
     (fun t => ricciArmOrder0CurvCoeff (I := I) g₀
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t)) (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hjoint x
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-theorem genGram_of_family
-    {D : RealTimeInterval}
-    (g_fam : ℝ → SmoothRiemannianMetric I M)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
-    (α : M) :
-    ChartGramFamilyJointSmoothNondegenerate (I := I) (fun t => g_fam t) α D.regular := by
-  classical
-  refine ⟨?_, ?_⟩
-  · intro i j s₀ y₀ hs hy
-    set e := trivializationAt E (TangentSpace I) α with he
-    have hframe :
-        IsLocalFrameOn I E (∞ : WithTop ℕ∞) (e.localFrame (chartModelBasis E)) e.baseSet :=
-      e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) (chartModelBasis E)
-    have hbridge : ∀ {x : M}, x ∈ e.baseSet → ∀ k : Fin (Module.finrank ℝ E),
-        e.localFrame (chartModelBasis E) k x = chartBasisVecFiber (I := I) α k x := by
-      intro x hx k
-      rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-      change (e.linearEquivAt ℝ x hx).symm ((chartModelBasis E) k) =
-        e.symmL ℝ x ((chartModelBasis E) k)
-      rw [e.linearEquivAt_symm_apply, e.symmL_apply hx]
-    have hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g_fam p.1) α p.2 i j)
-        (D.regular ×ˢ e.baseSet) := by
-      have hcomp := hG.frameCompSmooth (e.localFrame (chartModelBasis E)) hframe i j
-      refine hcomp.congr ?_
-      intro p hp
-      simp only [chartGramMatrix_apply, hbridge hp.2 i, hbridge hp.2 j]
-    have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
-        (extChartAt I α).target :=
-      contMDiffOn_extChartAt_symm (I := I) α
-    have hsubset : (extChartAt I α).target ⊆ (extChartAt I α).symm ⁻¹' e.baseSet := by
-      intro y hy'
-      have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-        (extChartAt I α).map_target hy'
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
-      rw [he, trivializationAt_baseSet_eq_chartAt_source]
-      exact hsource
-    have hσ1 : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, ℝ) ∞
-        (fun p : ℝ × E => p.1) (D.regular ×ˢ interior (extChartAt I α).target) :=
-      (contMDiff_iff_contDiff.mpr contDiff_fst).contMDiffOn
-    have hsnd : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞
-        (fun p : ℝ × E => p.2) (D.regular ×ˢ interior (extChartAt I α).target) :=
-      (contMDiff_iff_contDiff.mpr contDiff_snd).contMDiffOn
-    have hmaps2 : Set.MapsTo (fun p : ℝ × E => p.2)
-        (D.regular ×ˢ interior (extChartAt I α).target) (extChartAt I α).target :=
-      fun p hp => interior_subset hp.2
-    have hσ2 : ContMDiffOn 𝓘(ℝ, ℝ × E) I ∞
-        (fun p : ℝ × E => (extChartAt I α).symm p.2)
-        (D.regular ×ˢ interior (extChartAt I α).target) :=
-      hsymm.comp hsnd hmaps2
-    have hσ : ContMDiffOn 𝓘(ℝ, ℝ × E) (𝓘(ℝ, ℝ).prod I) ∞
-        (fun p : ℝ × E => (p.1, (extChartAt I α).symm p.2))
-        (D.regular ×ˢ interior (extChartAt I α).target) :=
-      hσ1.prodMk hσ2
-    have hcomp : ContMDiffOn 𝓘(ℝ, ℝ × E) 𝓘(ℝ) ∞
-        (fun p : ℝ × E => chartGramOnE (I := I) (g_fam p.1) α i j p.2)
-        (D.regular ×ˢ interior (extChartAt I α).target) := by
-      refine (hsmooth.comp hσ (fun p hp => ⟨hp.1, hsubset (interior_subset hp.2)⟩)).congr ?_
-      intro p _
-      rfl
-    exact hcomp.contDiffOn.contDiffAt
-      (prod_mem_nhds (D.regular_isOpen.mem_nhds hs) (isOpen_interior.mem_nhds hy))
-  · intro s₀ _ x hx
-    exact chartGramMatrix_det_pos (I := I) (g_fam s₀) α hx
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem invGram_of_family
-    {D : RealTimeInterval}
-    (g_fam : ℝ → SmoothRiemannianMetric I M)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
-    (α : M) (i j : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => chartInvGramMatrix (I := I) (g_fam p.2) α p.1 i j)
-      ((chartAt H α).source ×ˢ D.regular) := by
-  have hGram := genGram_of_family (I := I) g_fam hG α
-  have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ D.regular) := by
-    refine ContMDiffOn.prodMk contMDiffOn_snd ?_
-    exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst
-      (fun p hp => hp.1)
-  intro p hp
-  obtain ⟨hx, ht⟩ := hp
-  have hxsrc : p.1 ∈ (extChartAt I α).source := by
-    rw [extChartAt_source (I := I)]
-    exact hx
-  have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α
-      ((extChartAt I α).map_source hxsrc)
-  have hentry := chartInvGramOnE_contDiffAt_joint (I := I) (fun t => g_fam t) α hGram i j ht hy
-  have hentryM : ContMDiffAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ) ∞
-      (fun r : ℝ × E => chartInvGramOnE (I := I) (g_fam r.1) α i j r.2)
-      (p.2, extChartAt I α p.1) :=
-    hentry.contMDiffAt
-  have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ × E) ∞
-      (fun q : M × ℝ => (q.2, extChartAt I α q.1))
-      ((chartAt H α).source ×ˢ D.regular) p := by
-    have hm := hmove p ⟨hx, ht⟩
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
-    exact hm
-  refine (hentryM.comp_contMDiffWithinAt p hmoveAt).congr ?_ ?_
-  · intro q hq
-    have hqx : q.1 ∈ (extChartAt I α).source := by
-      rw [extChartAt_source (I := I)]
-      exact hq.1
-    rw [Function.comp_apply, chartInvGramOnE_def, (extChartAt I α).left_inv hqx]
-  · rw [Function.comp_apply, chartInvGramOnE_def, (extChartAt I α).left_inv hxsrc]
-
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem christ_of_family
-    {D : RealTimeInterval}
-    (g_fam : ℝ → SmoothRiemannianMetric I M)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
-    (α : M) (i j k : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ =>
-        chartChristoffel (I := I) (g_fam p.2) α i j k (extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ D.regular) := by
-  have hGram := genGram_of_family (I := I) g_fam hG α
-  have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ D.regular) := by
-    refine ContMDiffOn.prodMk contMDiffOn_snd ?_
-    exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst
-      (fun p hp => hp.1)
-  intro p hp
-  obtain ⟨hx, ht⟩ := hp
-  have hxsrc : p.1 ∈ (extChartAt I α).source := by
-    rw [extChartAt_source (I := I)]
-    exact hx
-  have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α
-      ((extChartAt I α).map_source hxsrc)
-  have hentry := gen_joint_christoffel (I := I) (fun t => g_fam t) α hGram i j k ht hy
-  have hentryM : ContMDiffAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ) ∞
-      (fun r : ℝ × E => chartChristoffel (I := I) (g_fam r.1) α i j k r.2)
-      (p.2, extChartAt I α p.1) :=
-    hentry.contMDiffAt
-  have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ × E) ∞
-      (fun q : M × ℝ => (q.2, extChartAt I α q.1))
-      ((chartAt H α).source ×ˢ D.regular) p := by
-    have hm := hmove p ⟨hx, ht⟩
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
-    exact hm
-  have hcomp := hentryM.comp_contMDiffWithinAt p hmoveAt
-  change ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-    (fun q : M × ℝ =>
-      chartChristoffel (I := I) (g_fam q.2) α i j k (extChartAt I α q.1))
-    ((chartAt H α).source ×ˢ D.regular) p at hcomp
-  exact hcomp
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem invSharp_of_family
-    {D : RealTimeInterval}
-    (g_fam : ℝ → SmoothRiemannianMetric I M)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E →L[ℝ] E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 1 ℝ E →L[ℝ] E)
-        (E := fun z : M => Tensor0SSpace 1 I z →L[ℝ] TangentSpace I z) p.1
-        (inverseMetricSharpFib (I := I) (g_fam p.2) p.1))
-      ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
-    (F₁ := Tensor0SModel 1 ℝ E) (V₁ := fun x : M => Tensor0SSpace 1 I x)
-    (F₂ := E) (V₂ := fun x : M => TangentSpace I x)
-    (φ := fun p : M × ℝ => inverseMetricSharpFib (I := I) (g_fam p.2) p.1)
-    (S := D.regular)
-  intro Y
-  set cv : ℝ → Π b : M, TangentSpace I b →ₗ[ℝ] ℝ :=
-    fun _ b => cotangentToDualLinear (I := I) (x := b) (Y b) with hcvdef
-  have hinv : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => chartInvGramMatrix (I := I) (g_fam p.2) α p.1 i j)
-        ((chartAt H α).source ×ˢ D.regular) :=
-    fun α i j => invGram_of_family (I := I) g_fam hG α i j
-  have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
-        ((chartAt H α).source ×ˢ D.regular) := by
-    intro α j
-    have hbase := cotangentSection_chartComponent_contMDiffOn (I := I) Y α j
-    have heqfn : (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1)) =
-        (fun p : M × ℝ => (fun b : M => Tensor0SSpace.toModel (Y b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b)) p.1) := by
-      funext p
-      rw [hcvdef]
-      simp only
-      rw [cotangentToDualLinear_apply, cotangentToDual_apply]
-      rfl
-    rw [heqfn]
-    exact hbase.comp contMDiffOn_fst (fun p hp => hp.1)
-  have hjoint := metricSharp_jointContMDiffOn (I := I)
-    (gfam := fun t => g_fam t) (cv := cv) (S := D.regular)
-    D.regular_isOpen hinv hcv
-  refine hjoint.congr (fun p _ => ?_)
-  change TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-      (DifferentialGeometry.Geometry.Operator.metricSharp
-        (I := I) (g_fam p.2) p.1 (cv p.2 p.1)) =
-    TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-      (inverseMetricSharpFib (I := I) (g_fam p.2) p.1 (Y p.1))
-  rw [inverseMetricSharpFib_apply, hcvdef]
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem comRaise_of_family (s : ℕ)
-    {D : RealTimeInterval}
-    (g_fam : ℝ → SmoothRiemannianMetric I M)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
-    (Y : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace (s + 2) I p.1)
-    (hY : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
-      (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (s + 2) ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 2) ℝ E)
-        (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 2) I z) p.1 (Y p))
-      ((Set.univ : Set M) ×ˢ D.regular)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
-      (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 1 (s + 1) ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 1 (s + 1) ℝ E)
-        (E := fun z : M => Tensor0SBundle.TensorRSSpace 1 (s + 1) I z) p.1
-        (cometricRaiseSlot0Fib (I := I) (g_fam p.2) s p.1 (Y p)))
-      ((Set.univ : Set M) ×ˢ D.regular) := by
-  apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
-    (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
-    (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 1 I x)
-    (F₂ := Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
-    (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace (s + 1) I x)
-    (φ := fun p : M × ℝ => (show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ]
-        Tensor0SBundle.Tensor0SSpace (s + 1) I p.1 from
-      cometricRaiseSlot0Fib (I := I) (g_fam p.2) s p.1 (Y p)))
-    (S := D.regular)
-  intro β
-  have hsharp := invSharp_of_family (I := I) g_fam hG
-  have hβjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
-      (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 1 ℝ E)
-        (E := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z) p.1 (β p.1))
-      ((Set.univ : Set M) ×ˢ D.regular) := by
-    have hβM : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
-        (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 1 ℝ E)
-          (E := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z) x (β x)) := β.contMDiff
-    exact hβM.comp_contMDiffOn contMDiffOn_fst
-  have hsharpβ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
-      (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (inverseMetricSharpFib (I := I) (g_fam p.2) p.1 (β p.1)))
-      ((Set.univ : Set M) ×ˢ D.regular) :=
-    ContMDiffOn.clm_bundle_apply (b := Prod.fst) hsharp hβjoint
-  set sharpβ : ∀ p : M × ℝ, TangentSpace I p.1 :=
-    fun p => inverseMetricSharpFib (I := I) (g_fam p.2) p.1 (β p.1)
-  have hraise := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := s + 1)
-    (S := D.regular) (X := sharpβ) hsharpβ (α := fun p => Y p) hY
-  refine hraise.congr (fun p _ => ?_)
-  change TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
-      (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
-      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) p.1
-        (sharpβ p) (Y p)) =
-    TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
-      (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
-      ((show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ]
-          Tensor0SBundle.Tensor0SSpace (s + 1) I p.1 from
-        cometricRaiseSlot0Fib (I := I) (g_fam p.2) s p.1 (Y p)) (β p.1))
-  congr 1
-
-open DifferentialGeometry.Integral.DivergenceTheorem in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem comTrace_of_family (p : ℕ)
-    {D : RealTimeInterval}
-    (g_fam : ℝ → SmoothRiemannianMetric I M)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
-    (Y : ∀ q : M × ℝ, Tensor0SBundle.Tensor0SSpace (p + 2) I q.1)
-    (hY : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
-      (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (p + 2) ℝ E)) ∞
-      (fun q : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (p + 2) ℝ E)
-        (E := fun z : M => Tensor0SBundle.Tensor0SSpace (p + 2) I z) q.1 (Y q))
-      ((Set.univ : Set M) ×ˢ D.regular)) :
-    ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
-      (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel p ℝ E)) ∞
-      (fun q : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel p ℝ E)
-        (E := fun z : M => Tensor0SBundle.Tensor0SSpace p I z) q.1
-        (cometricDoubleTraceFib (I := I) (g_fam q.2) p q.1 (Y q)))
-      ((Set.univ : Set M) ×ˢ D.regular) := by
-  have hraise := comRaise_of_family (I := I) p g_fam hG Y hY
-  have htrace := contractTraceField_jointContMDiffOn (I := I) 0 p
-    (S := D.regular)
-    (fun q : M × ℝ => cometricRaiseSlot0Fib (I := I) (g_fam q.2) p q.1 (Y q))
-    hraise
-  have hunit : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
-      (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 0 ℝ E)) ∞
-      (fun q : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 0 ℝ E)
-        (E := fun z : M => Tensor0SBundle.Tensor0SSpace 0 I z) q.1
-        (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M) q.1))
-      ((Set.univ : Set M) ×ˢ D.regular) :=
-    (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I)
-      (M := M)).contMDiff.comp_contMDiffOn
-      contMDiffOn_fst
-  have htraceUnit := ContMDiffOn.clm_bundle_apply (b := Prod.fst) htrace hunit
-  refine htraceUnit.congr (fun q _ => ?_)
-  congr 1
-  apply Tensor0SBundle.Tensor0SSpace.toModel_injective
-  beta_reduce
-  rw [cometricDoubleTraceFib_toModel]
-  rw [← model_contract_trace_raiseSlot0ModelL (E := E) p
-    (cometricLmodel (I := I) (g_fam q.2) q.1)
-    (Tensor0SBundle.Tensor0SSpace.toModel (Y q))]
-  rw [contract_trace_unitZero_toModel (I := I) p q.1
-    (cometricRaiseSlot0Fib (I := I) (g_fam q.2) p q.1 (Y q))]
-  congr 1
 
 end RicciLinearization
 end DeTurck

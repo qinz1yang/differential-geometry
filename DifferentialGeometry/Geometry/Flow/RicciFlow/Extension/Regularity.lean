@@ -292,14 +292,14 @@ private lemma chartInvGramOnE_contDiff_in_metric_at
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-private lemma gramBracket_contDiff
+private lemma chartChristoffelBracket_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (i j l : Fin (Module.finrank ℝ E))
     (y : E) (s : Set ℝ)
     (hp1 : ∀ m a b : Fin (Module.finrank ℝ E),
       ContDiffOn ℝ ∞
         (fun t : ℝ => partialDeriv (E := E) m (chartGramOnE (I := I) (g_DT t) α a b) y) s) :
-    ContDiffOn ℝ ∞ (fun t : ℝ => gramBracket (I := I) (g_DT t) α i j l y) s := by
-  have heq : (fun t : ℝ => gramBracket (I := I) (g_DT t) α i j l y)
+    ContDiffOn ℝ ∞ (fun t : ℝ => chartChristoffelBracket (I := I) (g_DT t) α i j l y) s := by
+  have heq : (fun t : ℝ => chartChristoffelBracket (I := I) (g_DT t) α i j l y)
       = fun t : ℝ =>
           partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j) y +
             partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT t) α l i) y -
@@ -310,7 +310,7 @@ private lemma gramBracket_contDiff
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-private lemma gramBracketDeriv_contDiff
+private lemma chartChristoffelBracketDeriv_contDiff
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (m i j l : Fin (Module.finrank ℝ E))
     (y : E) (s : Set ℝ)
     (hp2 : ∀ m' l' a b : Fin (Module.finrank ℝ E),
@@ -318,8 +318,8 @@ private lemma gramBracketDeriv_contDiff
         partialDeriv (E := E) m' (partialDeriv (E := E) l' (chartGramOnE (I := I) (g_DT t) α a b))
           y)
         s) :
-    ContDiffOn ℝ ∞ (fun t : ℝ => gramBracketDeriv (I := I) (g_DT t) α m i j l y) s := by
-  have heq : (fun t : ℝ => gramBracketDeriv (I := I) (g_DT t) α m i j l y)
+    ContDiffOn ℝ ∞ (fun t : ℝ => chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y) s := by
+  have heq : (fun t : ℝ => chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y)
       = fun t : ℝ =>
           partialDeriv (E := E) m
               (partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j)) y +
@@ -411,9 +411,9 @@ private lemma partialDeriv_chartChristoffel_contDiff
       partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α i j k) y =
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y *
-              gramBracket (I := I) (g_DT t) α i j l y +
+              chartChristoffelBracket (I := I) (g_DT t) α i j l y +
             chartInvGramOnE (I := I) (g_DT t) α k l y *
-              gramBracketDeriv (I := I) (g_DT t) α m i j l y) := by
+              chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y) := by
     intro t _
     exact partialDeriv_chartChristoffel_eq (I := I) (g_DT t) α m i j k hy
   refine ContDiffOn.congr ?_ heq
@@ -421,9 +421,9 @@ private lemma partialDeriv_chartChristoffel_contDiff
   refine ContDiffOn.sum (fun l _ => ?_)
   refine ContDiffOn.add (ContDiffOn.mul ?_ ?_) (ContDiffOn.mul ?_ ?_)
   · exact partialDeriv_chartInvGramOnE_contDiff (I := I) g_DT α m k l hy s hx hp0 hp1
-  · exact gramBracket_contDiff (I := I) g_DT α i j l y s hp1
+  · exact chartChristoffelBracket_contDiff (I := I) g_DT α i j l y s hp1
   · exact chartInvGramOnE_contDiff_in_metric_at (I := I) g_DT α y s hp0 hx k l
-  · exact gramBracketDeriv_contDiff (I := I) g_DT α m i j l y s hp2
+  · exact chartChristoffelBracketDeriv_contDiff (I := I) g_DT α m i j l y s hp2
 
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in

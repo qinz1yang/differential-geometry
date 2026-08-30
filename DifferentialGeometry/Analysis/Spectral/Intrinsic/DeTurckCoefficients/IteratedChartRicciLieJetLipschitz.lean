@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartJetLipschitzClosure
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 
@@ -27,12 +28,12 @@ variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem hasChartJetLip_gramBracket
+theorem hasChartJetLip_chartChristoffelBracket
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     {K : Set E} (hK : IsCompact K)
     (hKsub : K ⊆ interior (extChartAt I α).target)
     (i j l : Fin (Module.finrank ℝ E)) :
-    HasChartJetLip g₁ g₂ α K (fun g => gramBracket (I := I) g α i j l) 1 := by
+    HasChartJetLip g₁ g₂ α K (fun g => chartChristoffelBracket (I := I) g α i j l) 1 := by
   have hbr : HasChartJetLip g₁ g₂ α K
       (fun g => fun z =>
         (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i
@@ -51,7 +52,7 @@ theorem hasChartJetLip_gramBracket
   refine hbr.congr ?_
   intro g
   funext z
-  simp only [gramBracket]
+  simp only [chartChristoffelBracket]
   ring
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
@@ -65,20 +66,20 @@ theorem hasChartJetLip_chartChristoffel
   have hprodL : ∀ l : Fin (Module.finrank ℝ E),
       HasChartJetLip g₁ g₂ α K
         (fun g => fun z => chartInvGramOnE (I := I) g α k l z *
-          gramBracket (I := I) g α i j l z) 1 := by
+          chartChristoffelBracket (I := I) g α i j l z) 1 := by
     intro l
     have hinv := hasChartJetLip_chartInvGramOnE g₁ g₂ α hK hKsub k l
-    have hbr := hasChartJetLip_gramBracket g₁ g₂ α hK hKsub i j l
+    have hbr := hasChartJetLip_chartChristoffelBracket g₁ g₂ α hK hKsub i j l
     have := hinv.mul hKsub hbr
     simpa only [max_eq_right (Nat.zero_le 1)] using this
   have hsum := HasChartJetLip.sum hKsub (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
     (F := fun l g => fun z => chartInvGramOnE (I := I) g α k l z *
-      gramBracket (I := I) g α i j l z) (fun l _ => hprodL l)
+      chartChristoffelBracket (I := I) g α i j l z) (fun l _ => hprodL l)
   have hsmul := hsum.const_smul hKsub (1 / 2 : ℝ)
   refine hsmul.congr ?_
   intro g
   funext z
-  rw [chartChristoffel_eq_sum_invGramOnE_bracket]
+  rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket]
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

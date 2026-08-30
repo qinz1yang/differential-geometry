@@ -247,7 +247,7 @@ private theorem lRegJacCLM_cont
       Continuous (fun z : P ↦
         chartInvGramMatrix (I := I) (S.base.metric (tau z)) x0 (b z) i j) := by
     have hraw := MetricFamilySmoothOn.chartInvGramOnE_continuousOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ ht ↦ ht) x0 i j
     have hcomp := hraw.comp_continuous (htau.prodMk hu)
       (fun z ↦ ⟨hreg z z.2, hu_mem z⟩)
@@ -290,7 +290,7 @@ private theorem lRegJacCLM_cont
       Continuous (fun z : P ↦ chartChristoffel (I := I)
         (S.base.metric (tau z)) x0 i j k (u z)) := by
     have hraw := MetricFamilySmoothOn.chartChristoffelOnE_continuousOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ ht ↦ ht) D.regular_isOpen.uniqueDiffOn x0 i j k
     have hcomp := hraw.comp_continuous (htau.prodMk hu)
       (fun z ↦ ⟨hreg z z.2, hu_mem z⟩)

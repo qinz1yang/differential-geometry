@@ -28,6 +28,7 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
+open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -240,7 +241,7 @@ private theorem metricPerturbationPath_chartDeTurckVFComp_jointContMDiffOn
       (fun p : M × ℝ => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α k (extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -252,7 +253,7 @@ private theorem metricPerturbationPath_chartDeTurckVFComp_jointContMDiffOn
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := gen_joint_chartDeTurckVFComp (I := I)
+  have hentry := chartDeTurckVFComp_joint_contDiffAt (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG g_bg k hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)

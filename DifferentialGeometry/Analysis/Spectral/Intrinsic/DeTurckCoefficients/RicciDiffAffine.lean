@@ -189,12 +189,12 @@ def ricciDiffPrincipalSymbol (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
   ∑ j : Fin (Module.finrank ℝ E),
     ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g₂ α j l y *
-          (gramBracketDeriv (I := I) g₁ α j i k l y -
-            gramBracketDeriv (I := I) g₂ α j i k l y) -
+          (chartChristoffelBracketDeriv (I := I) g₁ α j i k l y -
+            chartChristoffelBracketDeriv (I := I) g₂ α j i k l y) -
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g₂ α j l y *
-          (gramBracketDeriv (I := I) g₁ α k i j l y -
-            gramBracketDeriv (I := I) g₂ α k i j l y))
+          (chartChristoffelBracketDeriv (I := I) g₁ α k i j l y -
+            chartChristoffelBracketDeriv (I := I) g₂ α k i j l y))
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma ricciDiffPrincipalSymbol_def
@@ -204,12 +204,12 @@ omit [NeZero (Module.finrank ℝ E)] in
       ∑ j : Fin (Module.finrank ℝ E),
         ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₂ α j l y *
-              (gramBracketDeriv (I := I) g₁ α j i k l y -
-                gramBracketDeriv (I := I) g₂ α j i k l y) -
+              (chartChristoffelBracketDeriv (I := I) g₁ α j i k l y -
+                chartChristoffelBracketDeriv (I := I) g₂ α j i k l y) -
           (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₂ α j l y *
-              (gramBracketDeriv (I := I) g₁ α k i j l y -
-                gramBracketDeriv (I := I) g₂ α k i j l y)) := rfl
+              (chartChristoffelBracketDeriv (I := I) g₁ α k i j l y -
+                chartChristoffelBracketDeriv (I := I) g₂ α k i j l y)) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciDiffPrincipalSymbol_eq_invGram_weighted_d2_gram_diff
@@ -252,12 +252,12 @@ theorem ricciDiffPrincipalSymbol_eq_invGram_weighted_d2_gram_diff
   · congr 1
     refine Finset.sum_congr rfl (fun l _ => ?_)
     congr 1
-    simp only [gramBracketDeriv]
+    simp only [chartChristoffelBracketDeriv]
     ring
   · congr 1
     refine Finset.sum_congr rfl (fun l _ => ?_)
     congr 1
-    simp only [gramBracketDeriv]
+    simp only [chartChristoffelBracketDeriv]
     ring
 
 def chartRicciDiffFirstOrderRemainder (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
@@ -315,9 +315,9 @@ private lemma exists_chartChristoffel_bound_on_compact
     have heq : chartChristoffel (I := I) g α p.1.1 p.1.2 p.2 =
         fun y : E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α p.2 l y *
-            gramBracket (I := I) g α p.1.1 p.1.2 l y := by
+            chartChristoffelBracket (I := I) g α p.1.1 p.1.2 l y := by
       funext y
-      exact chartChristoffel_eq_sum_invGramOnE_bracket (I := I) g α p.1.1 p.1.2 p.2 y
+      exact chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket (I := I) g α p.1.1 p.1.2 p.2 y
     rw [heq]
     refine ContDiffOn.mul contDiffOn_const ?_
     refine ContDiffOn.sum (fun l _ => ?_)

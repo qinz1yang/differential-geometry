@@ -154,14 +154,14 @@ private lemma partialDeriv_partialDeriv_chartGramOnE_continuous_of_hC2
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma gramBracket_continuous_of_hC2
+private lemma chartChristoffelBracket_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
     (i j l : Fin (Module.finrank ℝ E)) (y : E) (s : Set ℝ)
     (h1 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 1
         (chartGramOnE (I := I) (g_DT t) α a b) y) s) :
-    ContinuousOn (fun t : ℝ => gramBracket (I := I) (g_DT t) α i j l y) s := by
-  have heq : (fun t : ℝ => gramBracket (I := I) (g_DT t) α i j l y)
+    ContinuousOn (fun t : ℝ => chartChristoffelBracket (I := I) (g_DT t) α i j l y) s := by
+  have heq : (fun t : ℝ => chartChristoffelBracket (I := I) (g_DT t) α i j l y)
       = fun t : ℝ =>
           partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j) y +
             partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT t) α l i) y -
@@ -175,15 +175,15 @@ private lemma gramBracket_continuous_of_hC2
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma gramBracketDeriv_continuous_of_hC2
+private lemma chartChristoffelBracketDeriv_continuous_of_hC2
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M)
     (m i j l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) (s : Set ℝ)
     (h2 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 2
         (chartGramOnE (I := I) (g_DT t) α a b) y) s) :
-    ContinuousOn (fun t : ℝ => gramBracketDeriv (I := I) (g_DT t) α m i j l y) s := by
-  have heq : (fun t : ℝ => gramBracketDeriv (I := I) (g_DT t) α m i j l y)
+    ContinuousOn (fun t : ℝ => chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y) s := by
+  have heq : (fun t : ℝ => chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y)
       = fun t : ℝ =>
           partialDeriv (E := E) m
               (partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT t) α l j)) y +
@@ -268,9 +268,9 @@ private lemma partialDeriv_chartChristoffel_continuous_of_hC2
       partialDeriv (E := E) m (chartChristoffel (I := I) (g_DT t) α i j k) y =
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT t) α k l) y *
-              gramBracket (I := I) (g_DT t) α i j l y +
+              chartChristoffelBracket (I := I) (g_DT t) α i j l y +
             chartInvGramOnE (I := I) (g_DT t) α k l y *
-              gramBracketDeriv (I := I) (g_DT t) α m i j l y) := by
+              chartChristoffelBracketDeriv (I := I) (g_DT t) α m i j l y) := by
     intro t _
     exact partialDeriv_chartChristoffel_eq (I := I) (g_DT t) α m i j k hy
   refine ContinuousOn.congr ?_ heq
@@ -279,9 +279,9 @@ private lemma partialDeriv_chartChristoffel_continuous_of_hC2
   refine ContinuousOn.add (ContinuousOn.mul ?_ ?_) (ContinuousOn.mul ?_ ?_)
   · exact partialDeriv_chartInvGramOnE_continuous_of_hC2
       (I := I) g_DT α m k l hy s hx h0 h1
-  · exact gramBracket_continuous_of_hC2 (I := I) g_DT α i j l y s h1
+  · exact chartChristoffelBracket_continuous_of_hC2 (I := I) g_DT α i j l y s h1
   · exact chartInvGramOnE_continuous_in_metric_at (I := I) g_DT α y s hentry hx k l
-  · exact gramBracketDeriv_continuous_of_hC2 (I := I) g_DT α m i j l hy s h2
+  · exact chartChristoffelBracketDeriv_continuous_of_hC2 (I := I) g_DT α m i j l hy s h2
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -675,14 +675,14 @@ private lemma jointInvGram_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private lemma jointGramBracket_continuousOn
+private lemma jointChartChristoffelBracket_continuousOn
     (h1 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => iteratedFDeriv ℝ 1
         (chartGramOnE (I := I) (g_DT q.1) α a b) (extChartAt I α q.2)) Sp)
     (i j l : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun q : ℝ × M => gramBracket (I := I) (g_DT q.1) α i j l
+    ContinuousOn (fun q : ℝ × M => chartChristoffelBracket (I := I) (g_DT q.1) α i j l
       (extChartAt I α q.2)) Sp := by
-  have heq : (fun q : ℝ × M => gramBracket (I := I) (g_DT q.1) α i j l (extChartAt I α q.2))
+  have heq : (fun q : ℝ × M => chartChristoffelBracket (I := I) (g_DT q.1) α i j l (extChartAt I α q.2))
       = fun q : ℝ × M =>
           partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j) (extChartAt I α q.2) +
             partialDeriv (E := E) j (chartGramOnE (I := I) (g_DT q.1) α l i) (extChartAt I α q.2) -
@@ -696,15 +696,15 @@ private lemma jointGramBracket_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private lemma jointGramBracketDeriv_continuousOn
+private lemma jointChartChristoffelBracketDeriv_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h2 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => iteratedFDeriv ℝ 2
         (chartGramOnE (I := I) (g_DT q.1) α a b) (extChartAt I α q.2)) Sp)
     (m i j l : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun q : ℝ × M => gramBracketDeriv (I := I) (g_DT q.1) α m i j l
+    ContinuousOn (fun q : ℝ × M => chartChristoffelBracketDeriv (I := I) (g_DT q.1) α m i j l
       (extChartAt I α q.2)) Sp := by
-  have heq : (fun q : ℝ × M => gramBracketDeriv (I := I) (g_DT q.1) α m i j l (extChartAt I α q.2))
+  have heq : (fun q : ℝ × M => chartChristoffelBracketDeriv (I := I) (g_DT q.1) α m i j l (extChartAt I α q.2))
       = fun q : ℝ × M =>
           partialDeriv (E := E) m
               (partialDeriv (E := E) i (chartGramOnE (I := I) (g_DT q.1) α l j))
@@ -825,9 +825,9 @@ private lemma jointChristoffelPartial_continuousOn
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) m (chartInvGramOnE (I := I) (g_DT q.1) α k l)
               (extChartAt I α q.2) *
-            gramBracket (I := I) (g_DT q.1) α i j l (extChartAt I α q.2) +
+            chartChristoffelBracket (I := I) (g_DT q.1) α i j l (extChartAt I α q.2) +
           chartInvGramOnE (I := I) (g_DT q.1) α k l (extChartAt I α q.2) *
-            gramBracketDeriv (I := I) (g_DT q.1) α m i j l (extChartAt I α q.2)) := by
+            chartChristoffelBracketDeriv (I := I) (g_DT q.1) α m i j l (extChartAt I α q.2)) := by
     intro q hq
     exact partialDeriv_chartChristoffel_eq (I := I) (g_DT q.1) α m i j k
       (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) (hgood q hq))
@@ -840,9 +840,9 @@ private lemma jointChristoffelPartial_continuousOn
     fun a b => jointGram_continuousOn g_DT α Sp h0 a b
   refine ContinuousOn.add (ContinuousOn.mul ?_ ?_) (ContinuousOn.mul ?_ ?_)
   · exact jointInvGramPartial_continuousOn g_DT α Sp hgood h0 h1 m k l
-  · exact jointGramBracket_continuousOn g_DT α Sp h1 i j l
+  · exact jointChartChristoffelBracket_continuousOn g_DT α Sp h1 i j l
   · exact jointInvGram_continuousOn g_DT α Sp hgood hentry k l
-  · exact jointGramBracketDeriv_continuousOn g_DT α Sp hgood h2 m i j l
+  · exact jointChartChristoffelBracketDeriv_continuousOn g_DT α Sp hgood h2 m i j l
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in

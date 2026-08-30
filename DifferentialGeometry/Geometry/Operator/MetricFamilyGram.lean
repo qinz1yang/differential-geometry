@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 import DifferentialGeometry.Bundle.TangentCoordChange
 import Mathlib.Analysis.InnerProductSpace.Adjoint

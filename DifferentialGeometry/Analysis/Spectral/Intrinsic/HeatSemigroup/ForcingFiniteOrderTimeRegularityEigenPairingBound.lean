@@ -643,7 +643,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
         (chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1))
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro j
-    have h := DifferentialGeometry.PDE.DeTurck.RicciLinearization.chartBasisVec_jointContMDiffOn
+    have h := DifferentialGeometry.Geometry.Operator.chartBasisVec_jointContMDiffOn
       (I := I) α (φ (Fin.natAdd 0 j))
     exact h.mono (Set.prod_mono (subset_refl _) (Set.subset_univ _))
   intro p hp

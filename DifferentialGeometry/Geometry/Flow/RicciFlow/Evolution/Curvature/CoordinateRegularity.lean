@@ -151,7 +151,7 @@ private lemma chartChrDerivJet
   congr 1
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [partialDeriv_chartInvGramOnE_eq g x0 y m k l hy]
-  simp only [gramBracket, gramBracketDeriv,
+  simp only [chartChristoffelBracket, chartChristoffelBracketDeriv,
     jet2_chartGram_invGram g x0 y,
     jet2_chartGram_d1 g x0 hG,
     jet2GramD2Local (I := I) g x0 hG1 hG2]

@@ -2,7 +2,7 @@ import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CovariantDerivativeCoordinates
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 
 set_option autoImplicit false
 
@@ -48,7 +48,7 @@ theorem chartRicci_joint
       (fun q : Real × E =>
         chartGramOnE (I := I) (S.family.metric q.1) α i j q.2) p :=
     (MetricFamilySmoothOn.chartGramOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ h => h) α i j).contDiffAt
         (hUopen.mem_nhds hp)
   have hmetricM : ContMDiffAt
@@ -144,7 +144,7 @@ theorem chartNablaRicci [I.Boundaryless]
       (fun p : Real × E => chartChristoffel (I := I)
         (S.family.metric p.1) alpha a b c p.2) U :=
     MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ ht => ht) D.regular_isOpen.uniqueDiffOn alpha a b c
   have hformula : ContDiffOn Real ∞
       (fun p : Real × E =>

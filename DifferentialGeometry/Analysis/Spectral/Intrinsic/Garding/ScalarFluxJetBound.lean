@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffTim
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricFamilyCometricRegularity
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
@@ -179,7 +180,8 @@ theorem scalarTrace_joint
         (E := fun x : M => Tensor0SSpace 2 I x) p.1 (W p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
     exact W.contMDiff.comp_contMDiffOn contMDiffOn_fst
-  have hmove := comTrace_of_family (I := I) 0 g_fam hG
+  have hmove := MetricFamilySmoothOn.cometricDoubleTraceFib_jointContMDiffOn
+    (I := I) 0 g_fam hG
     (fun p : M × ℝ => W p.1) hW
   have hfixedOp : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, TensorRSModel 2 0 ℝ E)) ∞
@@ -227,7 +229,8 @@ theorem connTrace_joint
     exact W.contMDiff.comp_contMDiffOn contMDiffOn_fst
   have hconn := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
     (connectionDifference_joint (I := I) g_fam hG q) hW
-  have htrace := comTrace_of_family (I := I) 0 g_fam hG
+  have htrace := MetricFamilySmoothOn.cometricDoubleTraceFib_jointContMDiffOn
+    (I := I) 0 g_fam hG
     (fun p : M × ℝ =>
       (show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
         connectionDifferenceFib (I := I) (g_fam p.2) q p.1) (W p.1)) hconn

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CovariantDerivativeCoordinates
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueWithin
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothness
 
 set_option autoImplicit false
 
@@ -448,8 +448,8 @@ theorem connChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set
         (fun a : Fin 3 => chartBasisVecFiber (I := I) x₀ (K a) p.2))
       (J ×ˢ (Set.univ : Set M)) (t, x₀) := by
   classical
-  have hG₁ := genGramOn_of_field (I := I) g₁ x₀ hgram₁
-  have hG₂ := genGramOn_of_field (I := I) g₂ x₀ hgram₂
+  have hG₁ := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g₁ x₀ hgram₁
+  have hG₂ := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g₂ x₀ hgram₂
   have hxs : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
   have hnhdS := prodOpen_nhdsWithin (chartAt H x₀).open_source
     (mem_chart_source H x₀) J t
@@ -465,9 +465,9 @@ theorem connChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set
       (J ×ˢ (Set.univ : Set M)) ((t, x₀) : ℝ × M) := by
     refine ContMDiffWithinAt.sum fun m _ => ?_
     exact
-      (((christWithinM (I := I) g₁ x₀ hG₁ (K 0) (K 1) m ht hxs).mono_of_mem_nhdsWithin
+      (((chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g₁ x₀ hG₁ (K 0) (K 1) m ht hxs).mono_of_mem_nhdsWithin
           hnhdS).sub
-        ((christWithinM (I := I) g₂ x₀ hG₂ (K 0) (K 1) m ht hxs).mono_of_mem_nhdsWithin
+        ((chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g₂ x₀ hG₂ (K 0) (K 1) m ht hxs).mono_of_mem_nhdsWithin
           hnhdS)).mul
       ((hgram₁ m (K 2) ((t, x₀) : ℝ × M)
         ⟨ht, FiberBundle.mem_baseSet_trivializationAt' x₀⟩).mono_of_mem_nhdsWithin hnhdB)
@@ -499,8 +499,8 @@ theorem rmChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set �
         (fun a : Fin 4 => chartBasisVecFiber (I := I) x₀ (K a) p.2))
       (J ×ˢ (Set.univ : Set M)) (t, x₀) := by
   classical
-  have hG₁ := genGramOn_of_field (I := I) g₁ x₀ hgram₁
-  have hG₂ := genGramOn_of_field (I := I) g₂ x₀ hgram₂
+  have hG₁ := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g₁ x₀ hgram₁
+  have hG₂ := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g₂ x₀ hgram₂
   have hxs : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
   have hnhdS := prodOpen_nhdsWithin (chartAt H x₀).open_source
     (mem_chart_source H x₀) J t
@@ -517,9 +517,9 @@ theorem rmChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set �
       (J ×ˢ (Set.univ : Set M)) ((t, x₀) : ℝ × M) := by
     refine ContMDiffWithinAt.sum fun l _ => ?_
     exact
-      (((riemWithinM (I := I) g₁ x₀ hG₁ (K 2) (K 0) (K 1) l ht hxs).mono_of_mem_nhdsWithin
+      (((chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (I := I) g₁ x₀ hG₁ (K 2) (K 0) (K 1) l ht hxs).mono_of_mem_nhdsWithin
           hnhdS).sub
-        ((riemWithinM (I := I) g₂ x₀ hG₂ (K 2) (K 0) (K 1) l ht hxs).mono_of_mem_nhdsWithin
+        ((chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (I := I) g₂ x₀ hG₂ (K 2) (K 0) (K 1) l ht hxs).mono_of_mem_nhdsWithin
           hnhdS)).mul
       ((hgram₁ (K 3) l ((t, x₀) : ℝ × M)
         ⟨ht, FiberBundle.mem_baseSet_trivializationAt' x₀⟩).mono_of_mem_nhdsWithin hnhdB)
@@ -551,7 +551,7 @@ theorem nablaRicChartJoint (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ
           (fun a : Fin 3 => chartBasisVecFiber (I := I) x₀ (K a) p.2))
       (J ×ˢ (Set.univ : Set M)) (t, x₀) := by
   classical
-  have hG := genGramOn_of_field (I := I) g x₀ hgram
+  have hG := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g x₀ hgram
   have hxs : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
   have hnhdS := prodOpen_nhdsWithin (chartAt H x₀).open_source
     (mem_chart_source H x₀) J t
@@ -572,19 +572,19 @@ theorem nablaRicChartJoint (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ
                 (extChartAt I x₀ p.2))
       (J ×ˢ (Set.univ : Set M)) ((t, x₀) : ℝ × M) := by
     refine
-      ((partRicciWithinM (I := I) g x₀ hG (K 0) (K 1) (K 2) ht hxs).mono_of_mem_nhdsWithin
+      ((partial_chartRicciTensor_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG (K 0) (K 1) (K 2) ht hxs).mono_of_mem_nhdsWithin
         hnhdS).sub ?_ |>.sub ?_
     · refine ContMDiffWithinAt.sum fun m _ => ?_
       exact
-        ((christWithinM (I := I) g x₀ hG (K 0) (K 1) m ht hxs).mono_of_mem_nhdsWithin
+        ((chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG (K 0) (K 1) m ht hxs).mono_of_mem_nhdsWithin
           hnhdS).mul
-        ((ricciWithinM (I := I) g x₀ hG m (K 2) ht hxs).mono_of_mem_nhdsWithin
+        ((chartRicciTensor_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG m (K 2) ht hxs).mono_of_mem_nhdsWithin
           hnhdS)
     · refine ContMDiffWithinAt.sum fun m _ => ?_
       exact
-        ((christWithinM (I := I) g x₀ hG (K 0) (K 2) m ht hxs).mono_of_mem_nhdsWithin
+        ((chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG (K 0) (K 2) m ht hxs).mono_of_mem_nhdsWithin
           hnhdS).mul
-        ((ricciWithinM (I := I) g x₀ hG (K 1) m ht hxs).mono_of_mem_nhdsWithin
+        ((chartRicciTensor_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG (K 1) m ht hxs).mono_of_mem_nhdsWithin
           hnhdS)
   have heq :
       (fun p : ℝ × M =>
@@ -659,7 +659,7 @@ theorem rm04ChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set
           (fun a : Fin 4 => chartBasisVecFiber (I := I) x₀ (K a) p.2))
       (J ×ˢ (Set.univ : Set M)) (t, x₀) := by
   classical
-  have hG₂ := genGramOn_of_field (I := I) g₂ x₀ hgram₂
+  have hG₂ := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g₂ x₀ hgram₂
   have hxs : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
   have hnhdS := prodOpen_nhdsWithin (chartAt H x₀).open_source
     (mem_chart_source H x₀) J t
@@ -673,7 +673,7 @@ theorem rm04ChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set
           chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 (K 3) l)
       (J ×ˢ (Set.univ : Set M)) ((t, x₀) : ℝ × M) := by
     refine ContMDiffWithinAt.sum fun l _ => ?_
-    exact ((riemWithinM (I := I) g₂ x₀ hG₂ (K 2) (K 0) (K 1) l ht hxs).mono_of_mem_nhdsWithin
+    exact ((chartRiemannTensor_comp_extChartAt_contMDiffWithinAt (I := I) g₂ x₀ hG₂ (K 2) (K 0) (K 1) l ht hxs).mono_of_mem_nhdsWithin
         hnhdS).mul
       ((hgram₁ (K 3) l ((t, x₀) : ℝ × M)
         ⟨ht, FiberBundle.mem_baseSet_trivializationAt' x₀⟩).mono_of_mem_nhdsWithin hnhdB)

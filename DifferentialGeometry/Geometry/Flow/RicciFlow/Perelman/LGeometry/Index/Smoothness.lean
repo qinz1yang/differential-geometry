@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 
 set_option autoImplicit false
 
@@ -189,7 +189,7 @@ private theorem movingCov_contOn
         (D.regular ×ˢ interior (extChartAt I (alpha t)).target) :=
       D.regular_isOpen.prod isOpen_interior
     have hraw := MetricFamilySmoothOn.chartChristoffelOnE_continuousOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ hs ↦ hs) D.regular_isOpen.uniqueDiffOn
       (alpha t) i j k
     have hrawAt : ContinuousAt

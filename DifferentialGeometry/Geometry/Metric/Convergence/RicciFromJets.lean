@@ -1444,13 +1444,13 @@ theorem chartRicci_sub_le
     rw [hCinvdef, hnR]
     exact h
   have hPu : ∀ i' j l : Fin (Module.finrank Real E),
-      |gramBracket (I := I) u x i' j l (extChartAt I x x)| ≤ P := by
+      |chartChristoffelBracket (I := I) u x i' j l (extChartAt I x x)| ≤ P := by
     intro i' j l
     have h := abs_add_sub_le
       (partialDeriv (E := E) i' (chartGramOnE (I := I) u x l j) (extChartAt I x x))
       (partialDeriv (E := E) j (chartGramOnE (I := I) u x l i') (extChartAt I x x))
       (partialDeriv (E := E) l (chartGramOnE (I := I) u x i' j) (extChartAt I x x))
-    have hg : gramBracket (I := I) u x i' j l (extChartAt I x x)
+    have hg : chartChristoffelBracket (I := I) u x i' j l (extChartAt I x x)
         = partialDeriv (E := E) i' (chartGramOnE (I := I) u x l j) (extChartAt I x x)
           + partialDeriv (E := E) j (chartGramOnE (I := I) u x l i') (extChartAt I x x)
           - partialDeriv (E := E) l (chartGramOnE (I := I) u x i' j) (extChartAt I x x) := rfl
@@ -1462,7 +1462,7 @@ theorem chartRicci_sub_le
     rw [hPdef]
     linarith
   have hRu : ∀ m i' j l : Fin (Module.finrank Real E),
-      |gramBracketDeriv (I := I) u x m i' j l (extChartAt I x x)| ≤ R := by
+      |chartChristoffelBracketDeriv (I := I) u x m i' j l (extChartAt I x x)| ≤ R := by
     intro m i' j l
     have h := abs_add_sub_le
       (partialDeriv (E := E) m
@@ -1471,7 +1471,7 @@ theorem chartRicci_sub_le
         (partialDeriv (E := E) j (chartGramOnE (I := I) u x l i')) (extChartAt I x x))
       (partialDeriv (E := E) m
         (partialDeriv (E := E) l (chartGramOnE (I := I) u x i' j)) (extChartAt I x x))
-    have hg : gramBracketDeriv (I := I) u x m i' j l (extChartAt I x x)
+    have hg : chartChristoffelBracketDeriv (I := I) u x m i' j l (extChartAt I x x)
         = partialDeriv (E := E) m
             (partialDeriv (E := E) i' (chartGramOnE (I := I) u x l j)) (extChartAt I x x)
           + partialDeriv (E := E) m
@@ -1533,21 +1533,21 @@ theorem chartRicci_sub_le
       (∀ k' l : Fin (Module.finrank Real E),
         |chartInvGramOnE (I := I) w x k' l (extChartAt I x x)| ≤ Mb) →
       (∀ i' j l : Fin (Module.finrank Real E),
-        |gramBracket (I := I) w x i' j l (extChartAt I x x)| ≤ P) →
+        |chartChristoffelBracket (I := I) w x i' j l (extChartAt I x x)| ≤ P) →
       ∀ i' j k' : Fin (Module.finrank Real E),
         |chartChristoffel (I := I) w x i' j k' (extChartAt I x x)| ≤ Mg := by
     intro w hMbw hPw i' j k'
-    rw [chartChristoffel_eq_sum_invGramOnE_bracket]
+    rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket]
     rw [abs_mul, abs_of_nonneg (by norm_num : (0 : Real) ≤ 1 / 2)]
     rw [hMgdef]
     rw [show (1 / 2 : Real) * nR * (Mb * P) = (1 / 2) * (nR * (Mb * P)) by ring]
     refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
     calc |∑ l : Fin (Module.finrank Real E),
           chartInvGramOnE (I := I) w x k' l (extChartAt I x x) *
-            gramBracket (I := I) w x i' j l (extChartAt I x x)|
+            chartChristoffelBracket (I := I) w x i' j l (extChartAt I x x)|
         ≤ ∑ l : Fin (Module.finrank Real E),
             |chartInvGramOnE (I := I) w x k' l (extChartAt I x x) *
-              gramBracket (I := I) w x i' j l (extChartAt I x x)| :=
+              chartChristoffelBracket (I := I) w x i' j l (extChartAt I x x)| :=
           Finset.abs_sum_le_sum_abs _ _
       _ ≤ ∑ _l : Fin (Module.finrank Real E), Mb * P := by
           refine Finset.sum_le_sum fun l _ => ?_
@@ -1556,13 +1556,13 @@ theorem chartRicci_sub_le
       _ = nR * (Mb * P) := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, hnR]
   have hPu' : ∀ i' j l : Fin (Module.finrank Real E),
-      |gramBracket (I := I) u' x i' j l (extChartAt I x x)| ≤ P := by
+      |chartChristoffelBracket (I := I) u' x i' j l (extChartAt I x x)| ≤ P := by
     intro i' j l
     have h := abs_add_sub_le
       (partialDeriv (E := E) i' (chartGramOnE (I := I) u' x l j) (extChartAt I x x))
       (partialDeriv (E := E) j (chartGramOnE (I := I) u' x l i') (extChartAt I x x))
       (partialDeriv (E := E) l (chartGramOnE (I := I) u' x i' j) (extChartAt I x x))
-    have hg : gramBracket (I := I) u' x i' j l (extChartAt I x x)
+    have hg : chartChristoffelBracket (I := I) u' x i' j l (extChartAt I x x)
         = partialDeriv (E := E) i' (chartGramOnE (I := I) u' x l j) (extChartAt I x x)
           + partialDeriv (E := E) j (chartGramOnE (I := I) u' x l i') (extChartAt I x x)
           - partialDeriv (E := E) l (chartGramOnE (I := I) u' x i' j) (extChartAt I x x) := rfl

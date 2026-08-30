@@ -174,7 +174,7 @@ theorem metricPerturbationPath_chartDeTurckRicciRHS_jointContMDiffOn
       (fun p : M × ℝ => chartDeTurckRicciRHS (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α i k (extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
-  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+  have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
@@ -186,7 +186,7 @@ theorem metricPerturbationPath_chartDeTurckRicciRHS_jointContMDiffOn
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := gen_joint_chartDeTurckRicciRHS (I := I)
+  have hentry := chartDeTurckRicciRHS_joint_contDiffAt (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG g_bg i k hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartDeTurckRicciRHS (I := I)

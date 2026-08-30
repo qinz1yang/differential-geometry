@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-import DifferentialGeometry.Geometry.Operator.MetricFamilyRegularity
+import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -337,7 +337,7 @@ theorem chartScalarHess
       (fun p : Real × E => chartChristoffel (I := I)
         (S.family.metric p.1) alpha i j k p.2) U :=
     MetricFamilySmoothOn.chartChristoffelOnE_contDiffOn
-      (I := I) (G := S.family) hS.smoothMetric
+      (I := I) (g_fam := S.family.metric) hS.smoothMetric
       (J := D.regular) (fun _ ht => ht) D.regular_isOpen.uniqueDiffOn alpha i j k
   have hchart : ContDiffOn Real ∞
       (fun p : Real × E =>

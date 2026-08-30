@@ -187,13 +187,13 @@ theorem nablaChartJoint
       frame hframe₁ y
   have hxbase : x₀ ∈ e.baseSet := by
     simp [e]
-  have hG := genGramOn_of_field (I := I) g x₀ hgram
+  have hG := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g x₀ hgram
   have hchr : ∀ i j l : Fin (Module.finrank Real E),
       ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M => chr p.1 p.2 i j l)
         (J ×ˢ e.baseSet) (t, x₀) := by
     intro i j l
-    have hchart := christWithinM (I := I) g x₀ hG i j l ht
+    have hchart := chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG i j l ht
       (mem_chart_source H x₀)
     have hchart' :
         ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
@@ -426,13 +426,13 @@ theorem nablaKRmChartJoint
     fun s => frameComp0S (I := I) (S.base.rm04 s) frame
   have hxbase : x₀ ∈ e.baseSet := by
     simp [e]
-  have hG := genGramOn_of_field (I := I) g x₀ hgram
+  have hG := chartGramFamilySmoothWithinOn_of_contMDiffOn (I := I) g x₀ hgram
   have hchr : ∀ i j l : Fin (Module.finrank Real E),
       ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M => chr p.1 p.2 i j l)
         (J ×ˢ e.baseSet) (t, x₀) := by
     intro i j l
-    have hchart := christWithinM (I := I) g x₀ hG i j l ht
+    have hchart := chartChristoffel_comp_extChartAt_contMDiffWithinAt (I := I) g x₀ hG i j l ht
       (mem_chart_source H x₀)
     have hchart' :
         ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞

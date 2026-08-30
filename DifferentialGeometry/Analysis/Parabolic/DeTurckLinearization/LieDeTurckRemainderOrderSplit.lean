@@ -52,13 +52,13 @@ private lemma chartChristoffel_differentiableAt'
   classical
   have heq : (fun y => chartChristoffel (I := I) g α i j k y) =
       (fun y => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramOnE (I := I) g α k l y * gramBracket (I := I) g α i j l y) := by
-    funext y; rw [chartChristoffel_eq_sum_invGramOnE_bracket]
+        chartInvGramOnE (I := I) g α k l y * chartChristoffelBracket (I := I) g α i j l y) := by
+    funext y; rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket]
   rw [heq]
   refine DifferentiableAt.const_mul ?_ _
   refine DifferentiableAt.fun_sum (fun l _ => ?_)
   refine DifferentiableAt.mul (chartInvGramOnE_differentiableAt_interior (I := I) g α k l hy) ?_
-  unfold gramBracket
+  unfold chartChristoffelBracket
   exact ((partial_chartGramOnE_differentiableAt' (I := I) g α i l j hy).add
     (partial_chartGramOnE_differentiableAt' (I := I) g α j l i hy)).sub
     (partial_chartGramOnE_differentiableAt' (I := I) g α l i j hy)
@@ -83,7 +83,7 @@ private lemma christoffelFirstOrderCorr_differentiableAt'
     · exact chartInvGramOnE_differentiableAt_interior (I := I) g₀ α k p hy
     · exact (h.differentiableAt p q y₀)
     · exact chartInvGramOnE_differentiableAt_interior (I := I) g₀ α q l hy
-  · unfold gramBracket
+  · unfold chartChristoffelBracket
     refine DifferentiableAt.sub (DifferentiableAt.add ?_ ?_) ?_
     · exact partial_chartGramOnE_differentiableAt' (I := I) g₀ α i l j hy
     · exact partial_chartGramOnE_differentiableAt' (I := I) g₀ α j l i hy
@@ -193,7 +193,7 @@ def deTurckVFFirstOrderCorrDeriv1 (g₀ g_bg : SmoothRiemannianMetric I M) (α :
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (h p q) y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            gramBracket (I := I) g₀ α a b l y))
+            chartChristoffelBracket (I := I) g₀ α a b l y))
 
 def deTurckVFFirstOrderCorrDeriv0 (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (m k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
@@ -218,11 +218,11 @@ def deTurckVFFirstOrderCorrDeriv0 (g₀ g_bg : SmoothRiemannianMetric I M) (α :
                     chartInvGramOnE (I := I) g₀ α q l y +
                   chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                     partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-              gramBracket (I := I) g₀ α a b l y +
+              chartChristoffelBracket (I := I) g₀ α a b l y +
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                   chartInvGramOnE (I := I) g₀ α q l y)) *
-              partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)))
+              partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)))
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -237,16 +237,16 @@ private lemma partialDeriv_christoffelFirstOrderCorr_split
                   chartInvGramOnE (I := I) g₀ α q l y +
                 chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                   partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-            gramBracket (I := I) g₀ α a b l y +
+            chartChristoffelBracket (I := I) g₀ α a b l y +
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y))
+            partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y))
       + ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (h p q) y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            gramBracket (I := I) g₀ α a b l y) := by
+            chartChristoffelBracket (I := I) g₀ α a b l y) := by
   classical
   have hCdiff : ∀ l : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (fun y' => -(∑ q : Fin (Module.finrank ℝ E),
@@ -260,9 +260,9 @@ private lemma partialDeriv_christoffelFirstOrderCorr_split
       (h.differentiableAt p q y)).mul
       (chartInvGramOnE_differentiableAt_interior (I := I) g₀ α q l hy)
   have hgBdiff : ∀ l : Fin (Module.finrank ℝ E),
-      DifferentiableAt ℝ (gramBracket (I := I) g₀ α a b l) y := by
+      DifferentiableAt ℝ (chartChristoffelBracket (I := I) g₀ α a b l) y := by
     intro l
-    unfold gramBracket
+    unfold chartChristoffelBracket
     exact ((partial_chartGramOnE_differentiableAt' (I := I) g₀ α a l b hy).add
       (partial_chartGramOnE_differentiableAt' (I := I) g₀ α b l a hy)).sub
       (partial_chartGramOnE_differentiableAt' (I := I) g₀ α l a b hy)
@@ -271,46 +271,46 @@ private lemma partialDeriv_christoffelFirstOrderCorr_split
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * h p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y') from by funext y'; rw [christoffelFirstOrderCorr]]
+          chartChristoffelBracket (I := I) g₀ α a b l y') from by funext y'; rw [christoffelFirstOrderCorr]]
   rw [partialDeriv_const_mul (E := E) (1 / 2 : ℝ)
         (fun y' => ∑ l : Fin (Module.finrank ℝ E),
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y' * h p q y' *
                 chartInvGramOnE (I := I) g₀ α q l y')) *
-            gramBracket (I := I) g₀ α a b l y')
+            chartChristoffelBracket (I := I) g₀ α a b l y')
         (DifferentiableAt.fun_sum (fun l _ => (hCdiff l).mul (hgBdiff l)))]
   rw [partialDeriv_sum Finset.univ
         (fun l y' => (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * h p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y')
+          chartChristoffelBracket (I := I) g₀ α a b l y')
         (fun l _ => (hCdiff l).mul (hgBdiff l))]
   have hl : ∀ l : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) m (fun y' =>
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * h p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y') y
+          chartChristoffelBracket (I := I) g₀ α a b l y') y
       = ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α k p) y * h p q y *
                   chartInvGramOnE (I := I) g₀ α q l y +
                 chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                   partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-            gramBracket (I := I) g₀ α a b l y +
+            chartChristoffelBracket (I := I) g₀ α a b l y +
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)
+            partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)
         + (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (h p q) y *
               chartInvGramOnE (I := I) g₀ α q l y)) *
-          gramBracket (I := I) g₀ α a b l y := by
+          chartChristoffelBracket (I := I) g₀ α a b l y := by
     intro l
     rw [partialDeriv_mul (E := E)
           (fun y' => -(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * h p q y' *
               chartInvGramOnE (I := I) g₀ α q l y'))
-          (gramBracket (I := I) g₀ α a b l) (hCdiff l) (hgBdiff l)]
+          (chartChristoffelBracket (I := I) g₀ α a b l) (hCdiff l) (hgBdiff l)]
     rw [partialDeriv_invGramCoeff_split (I := I) g₀ α h m k l hy]
     ring
   have hstep : ∑ l : Fin (Module.finrank ℝ E),
@@ -318,22 +318,22 @@ private lemma partialDeriv_christoffelFirstOrderCorr_split
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * h p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y') y
+          chartChristoffelBracket (I := I) g₀ α a b l y') y
       = ∑ l : Fin (Module.finrank ℝ E),
         (((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α k p) y * h p q y *
                     chartInvGramOnE (I := I) g₀ α q l y +
                   chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                     partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-              gramBracket (I := I) g₀ α a b l y +
+              chartChristoffelBracket (I := I) g₀ α a b l y +
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                   chartInvGramOnE (I := I) g₀ α q l y)) *
-              partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)
+              partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)
           + (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (h p q) y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            gramBracket (I := I) g₀ α a b l y) :=
+            chartChristoffelBracket (I := I) g₀ α a b l y) :=
     Finset.sum_congr rfl (fun l _ => hl l)
   rw [hstep, Finset.sum_add_distrib, mul_add]
 
@@ -371,11 +371,11 @@ private lemma partialDeriv_deTurckVFFirstOrderCorr_cell
                       chartInvGramOnE (I := I) g₀ α q l y +
                     chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                       partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-                gramBracket (I := I) g₀ α a b l y +
+                chartChristoffelBracket (I := I) g₀ α a b l y +
               (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                   chartInvGramOnE (I := I) g₀ α k p y * h p q y *
                     chartInvGramOnE (I := I) g₀ α q l y)) *
-                partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)))
+                partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)))
       + ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α a p y * partialDeriv (E := E) m (h p q) y *
               chartInvGramOnE (I := I) g₀ α q b y)) *
@@ -385,7 +385,7 @@ private lemma partialDeriv_deTurckVFFirstOrderCorr_cell
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (h p q) y *
                   chartInvGramOnE (I := I) g₀ α q l y)) *
-              gramBracket (I := I) g₀ α a b l y)) := by
+              chartChristoffelBracket (I := I) g₀ α a b l y)) := by
   classical
   have hCdiff : DifferentiableAt ℝ (fun y' => -(∑ q : Fin (Module.finrank ℝ E),
       ∑ p : Fin (Module.finrank ℝ E),
@@ -580,7 +580,7 @@ def christoffelFirstOrderCorrRaw (g₀ : SmoothRiemannianMetric I M) (α : M)
     (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) g₀ α k p y * f p q y *
           chartInvGramOnE (I := I) g₀ α q l y)) *
-      gramBracket (I := I) g₀ α i j l y
+      chartChristoffelBracket (I := I) g₀ α i j l y
 
 def chartLinearizedChristoffelPrincipalRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
@@ -629,7 +629,7 @@ def deTurckVFFirstOrderCorrDeriv1Raw (g₀ g_bg : SmoothRiemannianMetric I M) (�
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (f p q) y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            gramBracket (I := I) g₀ α a b l y))
+            chartChristoffelBracket (I := I) g₀ α a b l y))
 
 def deTurckVFFirstOrderCorrDeriv0Raw (g₀ g_bg : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
@@ -655,11 +655,11 @@ def deTurckVFFirstOrderCorrDeriv0Raw (g₀ g_bg : SmoothRiemannianMetric I M) (�
                     chartInvGramOnE (I := I) g₀ α q l y +
                   chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                     partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-              gramBracket (I := I) g₀ α a b l y +
+              chartChristoffelBracket (I := I) g₀ α a b l y +
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                   chartInvGramOnE (I := I) g₀ α q l y)) *
-              partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)))
+              partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)))
 
 def chartDeTurckCorrHessBlockRaw (g : SmoothRiemannianMetric I M) (α : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
@@ -787,7 +787,7 @@ private lemma christoffelFirstOrderCorrRaw_differentiableAt'
     refine DifferentiableAt.fun_sum (fun p _ => ?_)
     exact ((chartInvGramOnE_differentiableAt_interior (I := I) g₀ α k p hy).mul
       (hf p q)).mul (chartInvGramOnE_differentiableAt_interior (I := I) g₀ α q l hy)
-  · unfold gramBracket
+  · unfold chartChristoffelBracket
     exact ((partial_chartGramOnE_differentiableAt' (I := I) g₀ α a l b hy).add
       (partial_chartGramOnE_differentiableAt' (I := I) g₀ α b l a hy)).sub
       (partial_chartGramOnE_differentiableAt' (I := I) g₀ α l a b hy)
@@ -901,16 +901,16 @@ private lemma partialDeriv_christoffelFirstOrderCorrRaw_split
                   chartInvGramOnE (I := I) g₀ α q l y +
                 chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                   partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-            gramBracket (I := I) g₀ α a b l y +
+            chartChristoffelBracket (I := I) g₀ α a b l y +
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y))
+            partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y))
       + ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (f p q) y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            gramBracket (I := I) g₀ α a b l y) := by
+            chartChristoffelBracket (I := I) g₀ α a b l y) := by
   classical
   have hCdiff : ∀ l : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (fun y' => -(∑ q : Fin (Module.finrank ℝ E),
@@ -924,9 +924,9 @@ private lemma partialDeriv_christoffelFirstOrderCorrRaw_split
       (hf p q)).mul
       (chartInvGramOnE_differentiableAt_interior (I := I) g₀ α q l hy)
   have hgBdiff : ∀ l : Fin (Module.finrank ℝ E),
-      DifferentiableAt ℝ (gramBracket (I := I) g₀ α a b l) y := by
+      DifferentiableAt ℝ (chartChristoffelBracket (I := I) g₀ α a b l) y := by
     intro l
-    unfold gramBracket
+    unfold chartChristoffelBracket
     exact ((partial_chartGramOnE_differentiableAt' (I := I) g₀ α a l b hy).add
       (partial_chartGramOnE_differentiableAt' (I := I) g₀ α b l a hy)).sub
       (partial_chartGramOnE_differentiableAt' (I := I) g₀ α l a b hy)
@@ -935,47 +935,47 @@ private lemma partialDeriv_christoffelFirstOrderCorrRaw_split
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * f p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y') from by
+          chartChristoffelBracket (I := I) g₀ α a b l y') from by
         funext y'; rw [christoffelFirstOrderCorrRaw]]
   rw [partialDeriv_const_mul (E := E) (1 / 2 : ℝ)
         (fun y' => ∑ l : Fin (Module.finrank ℝ E),
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y' * f p q y' *
                 chartInvGramOnE (I := I) g₀ α q l y')) *
-            gramBracket (I := I) g₀ α a b l y')
+            chartChristoffelBracket (I := I) g₀ α a b l y')
         (DifferentiableAt.fun_sum (fun l _ => (hCdiff l).mul (hgBdiff l)))]
   rw [partialDeriv_sum Finset.univ
         (fun l y' => (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * f p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y')
+          chartChristoffelBracket (I := I) g₀ α a b l y')
         (fun l _ => (hCdiff l).mul (hgBdiff l))]
   have hl : ∀ l : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) m (fun y' =>
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * f p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y') y
+          chartChristoffelBracket (I := I) g₀ α a b l y') y
       = ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α k p) y * f p q y *
                   chartInvGramOnE (I := I) g₀ α q l y +
                 chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                   partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-            gramBracket (I := I) g₀ α a b l y +
+            chartChristoffelBracket (I := I) g₀ α a b l y +
           (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)
+            partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)
         + (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (f p q) y *
               chartInvGramOnE (I := I) g₀ α q l y)) *
-          gramBracket (I := I) g₀ α a b l y := by
+          chartChristoffelBracket (I := I) g₀ α a b l y := by
     intro l
     rw [partialDeriv_mul (E := E)
           (fun y' => -(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * f p q y' *
               chartInvGramOnE (I := I) g₀ α q l y'))
-          (gramBracket (I := I) g₀ α a b l) (hCdiff l) (hgBdiff l)]
+          (chartChristoffelBracket (I := I) g₀ α a b l) (hCdiff l) (hgBdiff l)]
     rw [partialDeriv_invGramCoeff_splitRaw (I := I) g₀ α f m k l hy hf]
     ring
   have hstep : ∑ l : Fin (Module.finrank ℝ E),
@@ -983,22 +983,22 @@ private lemma partialDeriv_christoffelFirstOrderCorrRaw_split
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α k p y' * f p q y' *
               chartInvGramOnE (I := I) g₀ α q l y')) *
-          gramBracket (I := I) g₀ α a b l y') y
+          chartChristoffelBracket (I := I) g₀ α a b l y') y
       = ∑ l : Fin (Module.finrank ℝ E),
         (((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α k p) y * f p q y *
                     chartInvGramOnE (I := I) g₀ α q l y +
                   chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                     partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-              gramBracket (I := I) g₀ α a b l y +
+              chartChristoffelBracket (I := I) g₀ α a b l y +
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                   chartInvGramOnE (I := I) g₀ α q l y)) *
-              partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)
+              partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)
           + (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (f p q) y *
                 chartInvGramOnE (I := I) g₀ α q l y)) *
-            gramBracket (I := I) g₀ α a b l y) :=
+            chartChristoffelBracket (I := I) g₀ α a b l y) :=
     Finset.sum_congr rfl (fun l _ => hl l)
   rw [hstep, Finset.sum_add_distrib, mul_add]
 
@@ -1038,11 +1038,11 @@ private lemma partialDeriv_deTurckVFFirstOrderCorrRaw_cell
                       chartInvGramOnE (I := I) g₀ α q l y +
                     chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                       partialDeriv (E := E) m (chartInvGramOnE (I := I) g₀ α q l) y))) *
-                gramBracket (I := I) g₀ α a b l y +
+                chartChristoffelBracket (I := I) g₀ α a b l y +
               (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                   chartInvGramOnE (I := I) g₀ α k p y * f p q y *
                     chartInvGramOnE (I := I) g₀ α q l y)) *
-                partialDeriv (E := E) m (gramBracket (I := I) g₀ α a b l) y)))
+                partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₀ α a b l) y)))
       + ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ α a p y * partialDeriv (E := E) m (f p q) y *
               chartInvGramOnE (I := I) g₀ α q b y)) *
@@ -1052,7 +1052,7 @@ private lemma partialDeriv_deTurckVFFirstOrderCorrRaw_cell
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ α k p y * partialDeriv (E := E) m (f p q) y *
                   chartInvGramOnE (I := I) g₀ α q l y)) *
-              gramBracket (I := I) g₀ α a b l y)) := by
+              chartChristoffelBracket (I := I) g₀ α a b l y)) := by
   classical
   have hCdiff : DifferentiableAt ℝ (fun y' => -(∑ q : Fin (Module.finrank ℝ E),
       ∑ p : Fin (Module.finrank ℝ E),

@@ -54,14 +54,11 @@ omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem const_gram_joint
     (q : SmoothRiemannianMetric I M) (α : M) {S : Set ℝ} :
-    ChartGramFamilyJointSmoothNondegenerate (I := I) (fun _ : ℝ => q) α S := by
-  refine ⟨?_, ?_⟩
-  · intro a b t₀ y₀ _ht hy
-    have hsnd : ContDiffAt ℝ ∞ (Prod.snd : ℝ × E → E) (t₀, y₀) := contDiffAt_snd
-    exact (((chartGramOnE_contDiffOn (I := I) q α a b).mono interior_subset).contDiffAt
-      (isOpen_interior.mem_nhds hy)).comp (t₀, y₀) hsnd
-  · intro _t _ht x hx
-    exact chartGramMatrix_det_pos (I := I) q α hx
+    chartGramFamilyJointSmoothOn (I := I) (fun _ : ℝ => q) α S := by
+  intro a b t₀ y₀ _ht hy
+  have hsnd : ContDiffAt ℝ ∞ (Prod.snd : ℝ × E → E) (t₀, y₀) := contDiffAt_snd
+  exact (((chartGramOnE_contDiffOn (I := I) q α a b).mono interior_subset).contDiffAt
+    (isOpen_interior.mem_nhds hy)).comp (t₀, y₀) hsnd
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -89,7 +86,7 @@ private theorem christ_const_joint
   have hy : extChartAt I α p.1 ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
-  have hentry := gen_joint_christoffel (I := I) (fun _ : ℝ => q) α hG i j k ht hy
+  have hentry := chartChristoffel_joint_contDiffAt (I := I) (fun _ : ℝ => q) α hG i j k ht hy
   have hentryM : ContMDiffAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartChristoffel (I := I) q α i j k r.2)
       (p.2, extChartAt I α p.1) := hentry.contMDiffAt
@@ -147,7 +144,8 @@ private theorem conn_pair_joint
         (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α a p.1))
       ((chartAt H α).source ×ˢ D.regular) := by
     refine contMDiffOn_finsetSum (fun a _ => ?_)
-    exact ((christ_of_family (I := I) g_fam hG α k j a).sub
+    exact ((MetricFamilySmoothOn.chartChristoffel_comp_extChartAt_jointContMDiffOn
+      (I := I) g_fam hG α k j a).sub
       (christ_const_joint (I := I) q α k j a)).mul
         (covComp_joint (I := I) om α a)
   refine hsum.congr (fun p hp => ?_)

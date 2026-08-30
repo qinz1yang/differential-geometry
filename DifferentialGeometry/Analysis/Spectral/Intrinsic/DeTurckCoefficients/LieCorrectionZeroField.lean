@@ -1840,9 +1840,11 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField arm2ReadoutCovDerivPair
   arm1ReadoutCovDeriv)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv metricPerturbationPath)
+open DifferentialGeometry.Geometry.Connection
+  (chartChristoffelBracket chartChristoffelBracketDeriv
+  chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket)
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
-  (gramBracket gramBracketDeriv chartChristoffel_eq_sum_invGramOnE_bracket
-  partialDeriv_chartChristoffel_eq partialDeriv_gramBracket_eq)
+  (partialDeriv_chartChristoffel_eq partialDeriv_chartChristoffelBracket_eq)
 private noncomputable def lieCorrectionZeroIg (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
   fun a b => chartInvGramMatrix (I := I) g₁ x x a b
@@ -1878,11 +1880,11 @@ private noncomputable def lieCorrectionZeroDGa (g : SmoothRiemannianMetric I M) 
     (extChartAt I x x)
 private noncomputable def lieCorrectionZeroGb (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
-  fun a b l => gramBracket (I := I) g₁ x a b l (extChartAt I x x)
+  fun a b l => chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x)
 private noncomputable def lieCorrectionZeroDGb (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ :=
-  fun m a b l => partialDeriv (E := E) m (gramBracket (I := I) g₁ x a b l)
+  fun m a b l => partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
     (extChartAt I x x)
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1905,10 +1907,11 @@ private lemma lieCorrectionZero_vfcomp_center (g₁ gP : SmoothRiemannianMetric 
     rw [lieArm_chartInvGramOnE_center (I := I) g₁ x a b]))
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma lieCorrectionZero_gramBracket_symm (g₁ : SmoothRiemannianMetric I M) (x : M)
+private lemma lieCorrectionZero_chartChristoffelBracket_symm
+    (g₁ : SmoothRiemannianMetric I M) (x : M)
     (a b l : Fin (Module.finrank ℝ E)) (y : E) :
-    gramBracket (I := I) g₁ x a b l y = gramBracket (I := I) g₁ x b a l y := by
-  unfold DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.gramBracket
+    chartChristoffelBracket (I := I) g₁ x a b l y = chartChristoffelBracket (I := I) g₁ x b a l y := by
+  unfold DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
   rw [show chartGramOnE (I := I) g₁ x a b = chartGramOnE (I := I) g₁ x b a from
     funext fun y' => chartGramOnE_symm (I := I) g₁ x a b y']
   ring
@@ -1920,8 +1923,8 @@ private lemma lieCorrectionZero_hga1e (g₁ : SmoothRiemannianMetric I M) (x : M
     chartChristoffel (I := I) g₁ x a b k (extChartAt I x x) =
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k l *
-          gramBracket (I := I) g₁ x a b l (extChartAt I x x) := by
-  rw [chartChristoffel_eq_sum_invGramOnE_bracket (I := I) g₁ x a b k (extChartAt I x x)]
+          chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) := by
+  rw [chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket (I := I) g₁ x a b k (extChartAt I x x)]
   refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t)
     (Finset.sum_congr rfl (fun l _ => ?_))
   rw [lieArm_chartInvGramOnE_center (I := I) g₁ x k l]
@@ -1932,15 +1935,15 @@ private lemma lieCorrectionZero_hdga1e (g₁ : SmoothRiemannianMetric I M) (x : 
     partialDeriv (E := E) m (chartChristoffel (I := I) g₁ x a b k) (extChartAt I x x) =
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x k l) (extChartAt I x x) *
-            gramBracket (I := I) g₁ x a b l (extChartAt I x x) +
+            chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) +
           chartInvGramMatrix (I := I) g₁ x x k l *
-            partialDeriv (E := E) m (gramBracket (I := I) g₁ x a b l)
+            partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
               (extChartAt I x x)) := by
   rw [partialDeriv_chartChristoffel_eq (I := I) g₁ x m a b k (lieCorrectionZero_center_interior (I := I) x)]
   refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t)
     (Finset.sum_congr rfl (fun l _ => ?_))
   rw [lieArm_chartInvGramOnE_center (I := I) g₁ x k l,
-    partialDeriv_gramBracket_eq (I := I) g₁ x m a b l (lieCorrectionZero_center_interior (I := I) x)]
+    partialDeriv_chartChristoffelBracket_eq (I := I) g₁ x m a b l (lieCorrectionZero_center_interior (I := I) x)]
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZero_hdige (g₁ : SmoothRiemannianMetric I M) (x : M)
@@ -1959,14 +1962,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_hdgbe (g₁ : SmoothRiemannianMetric I M) (x : M)
     (m a b l : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) m (gramBracket (I := I) g₁ x a b l) (extChartAt I x x) =
+    partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l) (extChartAt I x x) =
       partialDeriv (E := E) m
           (partialDeriv (E := E) a (chartGramOnE (I := I) g₁ x l b)) (extChartAt I x x) +
         partialDeriv (E := E) m
           (partialDeriv (E := E) b (chartGramOnE (I := I) g₁ x l a)) (extChartAt I x x) -
         partialDeriv (E := E) m
           (partialDeriv (E := E) l (chartGramOnE (I := I) g₁ x a b)) (extChartAt I x x) := by
-  rw [partialDeriv_gramBracket_eq (I := I) g₁ x m a b l (lieCorrectionZero_center_interior (I := I) x)]
+  rw [partialDeriv_chartChristoffelBracket_eq (I := I) g₁ x m a b l (lieCorrectionZero_center_interior (I := I) x)]
   rfl
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 variable {δ δ' : ℝ}
@@ -2065,7 +2068,7 @@ private lemma lieCorrectionZero_chrCorr_center (g₁ : SmoothRiemannianMetric I 
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
               chartInvGramMatrix (I := I) g₁ x x q l)) *
-          gramBracket (I := I) g₁ x a b l (extChartAt I x x) := by
+          chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) := by
   simp only [PDE.DeTurck.DeTurckLinearization.christoffelFirstOrderCorrRaw]
   refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t)
     (Finset.sum_congr rfl (fun l _ => ?_))
@@ -2092,7 +2095,7 @@ private lemma lieCorrectionZero_wc_center (g₁ g_bg : SmoothRiemannianMetric I 
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
                   chartInvGramMatrix (I := I) g₁ x x q l)) *
-              gramBracket (I := I) g₁ x a b l (extChartAt I x x))) := by
+              chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x))) := by
   simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrRaw]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ + t₂)
@@ -2132,7 +2135,7 @@ private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I 
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
                   chartInvGramMatrix (I := I) g₁ x x q l)) *
-              gramBracket (I := I) g₁ x a b l (extChartAt I x x)) +
+              chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x)) +
         chartInvGramMatrix (I := I) g₁ x x a b *
           ((1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
             ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
@@ -2142,11 +2145,11 @@ private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I 
                   chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
                     partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ x q l)
                       (extChartAt I x x)))) *
-              gramBracket (I := I) g₁ x a b l (extChartAt I x x) +
+              chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) +
             (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
                   chartInvGramMatrix (I := I) g₁ x x q l)) *
-              partialDeriv (E := E) m (gramBracket (I := I) g₁ x a b l)
+              partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
                 (extChartAt I x x)))) := by
   simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrDeriv0Raw]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
@@ -2377,9 +2380,10 @@ private lemma lieCorrectionZero_master_inst (g₁ g_bg : SmoothRiemannianMetric 
       (funext fun y => chartGramOnE_symm (I := I) g₁ x a b y))
     (fun m a b => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
       (hFsym a b))
-    (fun a b l => lieCorrectionZero_gramBracket_symm (I := I) g₁ x a b l (extChartAt I x x))
+    (fun a b l => lieCorrectionZero_chartChristoffelBracket_symm
+      (I := I) g₁ x a b l (extChartAt I x x))
     (fun m a b l => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
-      (funext fun y => lieCorrectionZero_gramBracket_symm (I := I) g₁ x a b l y))
+      (funext fun y => lieCorrectionZero_chartChristoffelBracket_symm (I := I) g₁ x a b l y))
     (fun m a b => congrArg (fun G => partialDeriv (E := E) m G (extChartAt I x x))
       (funext fun y => DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramOnE_symm (I := I)
         g₁ x a b y))

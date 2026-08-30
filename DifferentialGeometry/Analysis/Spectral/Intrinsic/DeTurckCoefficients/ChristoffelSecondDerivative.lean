@@ -22,27 +22,15 @@ variable
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 
-noncomputable def gramBracketDeriv2 (g : SmoothRiemannianMetric I M) (α : M)
-    (d m i j l : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  partialDeriv (E := E) d
-      (partialDeriv (E := E) m
-        (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j))) y +
-    partialDeriv (E := E) d
-      (partialDeriv (E := E) m
-        (partialDeriv (E := E) j (chartGramOnE (I := I) g α l i))) y -
-    partialDeriv (E := E) d
-      (partialDeriv (E := E) m
-        (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j))) y
-
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gramBracketD2_abs_le
+theorem chartChristoffelBracketSecondDeriv_abs_le
     (g : SmoothRiemannianMetric I M) (α : M) (y : E) {Q : ℝ}
     (hQ : ∀ d m c a b, |partialDeriv (E := E) d
       (partialDeriv (E := E) m
         (partialDeriv (E := E) c (chartGramOnE (I := I) g α a b))) y| ≤ Q)
     (d m i j l : Fin (Module.finrank ℝ E)) :
-    |gramBracketDeriv2 (I := I) g α d m i j l y| ≤ 3 * Q := by
-  unfold gramBracketDeriv2
+    |chartChristoffelBracketSecondDeriv (I := I) g α d m i j l y| ≤ 3 * Q := by
+  unfold chartChristoffelBracketSecondDeriv
   calc
     |_ + _ - _| ≤ |_| + |_| + |_| := by
       exact (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
@@ -51,11 +39,11 @@ theorem gramBracketD2_abs_le
     _ = 3 * Q := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gramBracketD2_sub
+theorem chartChristoffelBracketSecondDeriv_sub_abs_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
     (d m i j l : Fin (Module.finrank ℝ E)) :
-    |gramBracketDeriv2 (I := I) g₁ α d m i j l y -
-        gramBracketDeriv2 (I := I) g₂ α d m i j l y| ≤
+    |chartChristoffelBracketSecondDeriv (I := I) g₁ α d m i j l y -
+        chartChristoffelBracketSecondDeriv (I := I) g₂ α d m i j l y| ≤
       3 * gramD3DiffSup (I := I) (M := M) g₁ g₂ α y := by
   have h₁ := gramD3_sub_le (I := I) (M := M) g₁ g₂ α y d m i l j
   have h₂ := gramD3_sub_le (I := I) (M := M) g₁ g₂ α y d m j l i
@@ -78,9 +66,9 @@ theorem gramBracketD2_sub
     partialDeriv (E := E) d
       (partialDeriv (E := E) m
         (partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j))) y with he₃
-  have heq : gramBracketDeriv2 (I := I) g₁ α d m i j l y -
-      gramBracketDeriv2 (I := I) g₂ α d m i j l y = e₁ + e₂ - e₃ := by
-    simp only [he₁, he₂, he₃, gramBracketDeriv2]
+  have heq : chartChristoffelBracketSecondDeriv (I := I) g₁ α d m i j l y -
+      chartChristoffelBracketSecondDeriv (I := I) g₂ α d m i j l y = e₁ + e₂ - e₃ := by
+    simp only [he₁, he₂, he₃, chartChristoffelBracketSecondDeriv]
     ring
   rw [heq]
   calc
@@ -157,7 +145,7 @@ private lemma bracket_diffAt
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentiableAt ℝ (gramBracket (I := I) g α i j l) y := by
+    DifferentiableAt ℝ (chartChristoffelBracket (I := I) g α i j l) y := by
   exact ((gramD1_diffAt (I := I) g α i l j hy).add
     (gramD1_diffAt (I := I) g α j l i hy)).sub
       (gramD1_diffAt (I := I) g α l i j hy)
@@ -167,23 +155,23 @@ private lemma bracketD_diffAt
     (g : SmoothRiemannianMetric I M) (α : M)
     (m i j l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentiableAt ℝ (gramBracketDeriv (I := I) g α m i j l) y := by
+    DifferentiableAt ℝ (chartChristoffelBracketDeriv (I := I) g α m i j l) y := by
   exact ((gramD2_diffAt (I := I) g α m i l j hy).add
     (gramD2_diffAt (I := I) g α m j l i hy)).sub
       (gramD2_diffAt (I := I) g α m l i j hy)
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma partial_gramBracketD
+lemma partial_chartChristoffelBracketDeriv
     (g : SmoothRiemannianMetric I M) (α : M)
     (d m i j l : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    partialDeriv (E := E) d (gramBracketDeriv (I := I) g α m i j l) y =
-      gramBracketDeriv2 (I := I) g α d m i j l y := by
+    partialDeriv (E := E) d (chartChristoffelBracketDeriv (I := I) g α m i j l) y =
+      chartChristoffelBracketSecondDeriv (I := I) g α d m i j l y := by
   have h1 := gramD2_diffAt (I := I) g α m i l j hy
   have h2 := gramD2_diffAt (I := I) g α m j l i hy
   have h3 := gramD2_diffAt (I := I) g α m l i j hy
-  unfold gramBracketDeriv gramBracketDeriv2
+  unfold chartChristoffelBracketDeriv chartChristoffelBracketSecondDeriv
   rw [partialDeriv_sub (i := d)
       (fun z => partialDeriv (E := E) m
           (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j)) z +
@@ -208,13 +196,13 @@ theorem partial2_christ_eq
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) d
               (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l)) y *
-            gramBracket (I := I) g α i j l y +
+            chartChristoffelBracket (I := I) g α i j l y +
           partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) y *
-            gramBracketDeriv (I := I) g α d i j l y +
+            chartChristoffelBracketDeriv (I := I) g α d i j l y +
           partialDeriv (E := E) d (chartInvGramOnE (I := I) g α k l) y *
-            gramBracketDeriv (I := I) g α m i j l y +
+            chartChristoffelBracketDeriv (I := I) g α m i j l y +
           chartInvGramOnE (I := I) g α k l y *
-            gramBracketDeriv2 (I := I) g α d m i j l y) := by
+            chartChristoffelBracketSecondDeriv (I := I) g α d m i j l y) := by
   classical
   let s : Set E := interior (extChartAt I α).target
   have hs_open : IsOpen s := isOpen_interior
@@ -222,9 +210,9 @@ theorem partial2_christ_eq
       (partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k))
       (fun z => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) z *
-            gramBracket (I := I) g α i j l z +
+            chartChristoffelBracket (I := I) g α i j l z +
           chartInvGramOnE (I := I) g α k l z *
-            gramBracketDeriv (I := I) g α m i j l z)) s := by
+            chartChristoffelBracketDeriv (I := I) g α m i j l z)) s := by
     intro z hz
     exact partialDeriv_chartChristoffel_eq (I := I) g α m i j k hz
   have hCongr := partialDerivWithin_congr_of_eqOn_of_mem
@@ -234,9 +222,9 @@ theorem partial2_christ_eq
   rw [hCongr]
   have hSummand : ∀ l : Fin (Module.finrank ℝ E), DifferentiableAt ℝ
       (fun z => partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) z *
-          gramBracket (I := I) g α i j l z +
+          chartChristoffelBracket (I := I) g α i j l z +
         chartInvGramOnE (I := I) g α k l z *
-          gramBracketDeriv (I := I) g α m i j l z) y := by
+          chartChristoffelBracketDeriv (I := I) g α m i j l z) y := by
     intro l
     exact ((invD_diffAt (I := I) g α m k l hy).mul
       (bracket_diffAt (I := I) g α i j l hy)).add
@@ -247,9 +235,9 @@ theorem partial2_christ_eq
   congr 1
   rw [partialDeriv_sum (i := d) Finset.univ
     (fun l z => partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) z *
-        gramBracket (I := I) g α i j l z +
+        chartChristoffelBracket (I := I) g α i j l z +
       chartInvGramOnE (I := I) g α k l z *
-        gramBracketDeriv (I := I) g α m i j l z)
+        chartChristoffelBracketDeriv (I := I) g α m i j l z)
     (fun l _ => hSummand l)]
   refine Finset.sum_congr rfl fun l _ => ?_
   have hInvD := invD_diffAt (I := I) g α m k l hy
@@ -258,17 +246,17 @@ theorem partial2_christ_eq
   have hBracketD := bracketD_diffAt (I := I) g α m i j l hy
   rw [partialDeriv_add (i := d)
       (fun z => partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) z *
-        gramBracket (I := I) g α i j l z)
+        chartChristoffelBracket (I := I) g α i j l z)
       (fun z => chartInvGramOnE (I := I) g α k l z *
-        gramBracketDeriv (I := I) g α m i j l z)
+        chartChristoffelBracketDeriv (I := I) g α m i j l z)
       (hInvD.mul hBracket) (hInv.mul hBracketD),
     partialDeriv_mul (i := d)
       (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l))
-      (gramBracket (I := I) g α i j l) hInvD hBracket,
+      (chartChristoffelBracket (I := I) g α i j l) hInvD hBracket,
     partialDeriv_mul (i := d) (chartInvGramOnE (I := I) g α k l)
-      (gramBracketDeriv (I := I) g α m i j l) hInv hBracketD,
-    partialDeriv_gramBracket_eq (I := I) g α d i j l hy,
-    partial_gramBracketD (I := I) g α d m i j l hy]
+      (chartChristoffelBracketDeriv (I := I) g α m i j l) hInv hBracketD,
+    partialDeriv_chartChristoffelBracket_eq (I := I) g α d i j l hy,
+    partial_chartChristoffelBracketDeriv (I := I) g α d m i j l hy]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -347,22 +335,22 @@ theorem christD2_sub_le
   let F : Fin (Module.finrank ℝ E) → ℝ := fun l =>
     ((partialDeriv (E := E) d
           (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l)) y *
-        gramBracket (I := I) g₁ α i j l y +
+        chartChristoffelBracket (I := I) g₁ α i j l y +
       partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l) y *
-        gramBracketDeriv (I := I) g₁ α d i j l y +
+        chartChristoffelBracketDeriv (I := I) g₁ α d i j l y +
       partialDeriv (E := E) d (chartInvGramOnE (I := I) g₁ α k l) y *
-        gramBracketDeriv (I := I) g₁ α m i j l y +
+        chartChristoffelBracketDeriv (I := I) g₁ α m i j l y +
       chartInvGramOnE (I := I) g₁ α k l y *
-        gramBracketDeriv2 (I := I) g₁ α d m i j l y) -
+        chartChristoffelBracketSecondDeriv (I := I) g₁ α d m i j l y) -
      (partialDeriv (E := E) d
           (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l)) y *
-        gramBracket (I := I) g₂ α i j l y +
+        chartChristoffelBracket (I := I) g₂ α i j l y +
       partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l) y *
-        gramBracketDeriv (I := I) g₂ α d i j l y +
+        chartChristoffelBracketDeriv (I := I) g₂ α d i j l y +
       partialDeriv (E := E) d (chartInvGramOnE (I := I) g₂ α k l) y *
-        gramBracketDeriv (I := I) g₂ α m i j l y +
+        chartChristoffelBracketDeriv (I := I) g₂ α m i j l y +
       chartInvGramOnE (I := I) g₂ α k l y *
-        gramBracketDeriv2 (I := I) g₂ α d m i j l y))
+        chartChristoffelBracketSecondDeriv (I := I) g₂ α d m i j l y))
   change (1 / 2 : ℝ) * abs (∑ l, F l) ≤ _
   rw [show (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) *
       ((CT * (3 * Q₁) + 3 * T) + 2 * (CD * (3 * Q₂) + 3 * D) +
@@ -379,37 +367,37 @@ theorem christD2_sub_le
         dsimp only [F]
         let A₁ : ℝ := partialDeriv (E := E) d
             (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₁ α k l)) y *
-          gramBracket (I := I) g₁ α i j l y
+          chartChristoffelBracket (I := I) g₁ α i j l y
         let A₂ : ℝ := partialDeriv (E := E) d
             (partialDeriv (E := E) m (chartInvGramOnE (I := I) g₂ α k l)) y *
-          gramBracket (I := I) g₂ α i j l y
+          chartChristoffelBracket (I := I) g₂ α i j l y
         let B₁ : ℝ := partialDeriv (E := E) m
             (chartInvGramOnE (I := I) g₁ α k l) y *
-          gramBracketDeriv (I := I) g₁ α d i j l y
+          chartChristoffelBracketDeriv (I := I) g₁ α d i j l y
         let B₂ : ℝ := partialDeriv (E := E) m
             (chartInvGramOnE (I := I) g₂ α k l) y *
-          gramBracketDeriv (I := I) g₂ α d i j l y
+          chartChristoffelBracketDeriv (I := I) g₂ α d i j l y
         let C₁ : ℝ := partialDeriv (E := E) d
             (chartInvGramOnE (I := I) g₁ α k l) y *
-          gramBracketDeriv (I := I) g₁ α m i j l y
+          chartChristoffelBracketDeriv (I := I) g₁ α m i j l y
         let C₂ : ℝ := partialDeriv (E := E) d
             (chartInvGramOnE (I := I) g₂ α k l) y *
-          gramBracketDeriv (I := I) g₂ α m i j l y
+          chartChristoffelBracketDeriv (I := I) g₂ α m i j l y
         let L₁ : ℝ := chartInvGramOnE (I := I) g₁ α k l y *
-          gramBracketDeriv2 (I := I) g₁ α d m i j l y
+          chartChristoffelBracketSecondDeriv (I := I) g₁ α d m i j l y
         let L₂ : ℝ := chartInvGramOnE (I := I) g₂ α k l y *
-          gramBracketDeriv2 (I := I) g₂ α d m i j l y
+          chartChristoffelBracketSecondDeriv (I := I) g₂ α d m i j l y
         change |(A₁ + B₁ + C₁ + L₁) - (A₂ + B₂ + C₂ + L₂)| ≤ K * J₃
-        have hP : |gramBracket (I := I) g₁ α i j l y| ≤ 3 * Q₁ :=
-          gramBracket_abs_le (I := I) (M := M) g₁ α y hQ₁ i j l
-        have hRd : |gramBracketDeriv (I := I) g₁ α d i j l y| ≤ 3 * Q₂ :=
-          gramBracketD_abs_le (I := I) (M := M) g₁ α y hQ₂ d i j l
-        have hRm : |gramBracketDeriv (I := I) g₁ α m i j l y| ≤ 3 * Q₂ :=
-          gramBracketD_abs_le (I := I) (M := M) g₁ α y hQ₂ m i j l
-        have hU : |gramBracketDeriv2 (I := I) g₁ α d m i j l y| ≤ 3 * Q₃ :=
-          gramBracketD2_abs_le (I := I) (M := M) g₁ α y hQ₃ d m i j l
-        have hBr : |gramBracket (I := I) g₁ α i j l y -
-            gramBracket (I := I) g₂ α i j l y| ≤ 3 * J₃ := by
+        have hP : |chartChristoffelBracket (I := I) g₁ α i j l y| ≤ 3 * Q₁ :=
+          chartChristoffelBracket_abs_le (I := I) (M := M) g₁ α y hQ₁ i j l
+        have hRd : |chartChristoffelBracketDeriv (I := I) g₁ α d i j l y| ≤ 3 * Q₂ :=
+          chartChristoffelBracketDeriv_abs_le (I := I) (M := M) g₁ α y hQ₂ d i j l
+        have hRm : |chartChristoffelBracketDeriv (I := I) g₁ α m i j l y| ≤ 3 * Q₂ :=
+          chartChristoffelBracketDeriv_abs_le (I := I) (M := M) g₁ α y hQ₂ m i j l
+        have hU : |chartChristoffelBracketSecondDeriv (I := I) g₁ α d m i j l y| ≤ 3 * Q₃ :=
+          chartChristoffelBracketSecondDeriv_abs_le (I := I) (M := M) g₁ α y hQ₃ d m i j l
+        have hBr : |chartChristoffelBracket (I := I) g₁ α i j l y -
+            chartChristoffelBracket (I := I) g₂ α i j l y| ≤ 3 * J₃ := by
           have h₁ := (partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup
             (I := I) (M := M) g₁ g₂ α y i l j).trans hP₁_le
           have h₂ := (partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup
@@ -425,9 +413,9 @@ theorem christD2_sub_le
           set e₃ : ℝ := partialDeriv (E := E) l
               (chartGramOnE (I := I) g₁ α i j) y -
             partialDeriv (E := E) l (chartGramOnE (I := I) g₂ α i j) y with he₃
-          have heq : gramBracket (I := I) g₁ α i j l y -
-              gramBracket (I := I) g₂ α i j l y = e₁ + e₂ - e₃ := by
-            simp only [he₁, he₂, he₃, gramBracket]
+          have heq : chartChristoffelBracket (I := I) g₁ α i j l y -
+              chartChristoffelBracket (I := I) g₂ α i j l y = e₁ + e₂ - e₃ := by
+            simp only [he₁, he₂, he₃, chartChristoffelBracket]
             ring
           rw [heq]
           calc
@@ -435,17 +423,17 @@ theorem christD2_sub_le
               exact (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
             _ ≤ J₃ + J₃ + J₃ := add_le_add (add_le_add h₁ h₂) h₃
             _ = 3 * J₃ := by ring
-        have hBrd : |gramBracketDeriv (I := I) g₁ α d i j l y -
-            gramBracketDeriv (I := I) g₂ α d i j l y| ≤ 3 * J₃ :=
-          (gramBracketDeriv_sub_abs_le (I := I) (M := M) g₁ g₂ α y d i j l).trans
+        have hBrd : |chartChristoffelBracketDeriv (I := I) g₁ α d i j l y -
+            chartChristoffelBracketDeriv (I := I) g₂ α d i j l y| ≤ 3 * J₃ :=
+          (chartChristoffelBracketDeriv_sub_abs_le (I := I) (M := M) g₁ g₂ α y d i j l).trans
             (mul_le_mul_of_nonneg_left hP₂_le (by norm_num))
-        have hBrm : |gramBracketDeriv (I := I) g₁ α m i j l y -
-            gramBracketDeriv (I := I) g₂ α m i j l y| ≤ 3 * J₃ :=
-          (gramBracketDeriv_sub_abs_le (I := I) (M := M) g₁ g₂ α y m i j l).trans
+        have hBrm : |chartChristoffelBracketDeriv (I := I) g₁ α m i j l y -
+            chartChristoffelBracketDeriv (I := I) g₂ α m i j l y| ≤ 3 * J₃ :=
+          (chartChristoffelBracketDeriv_sub_abs_le (I := I) (M := M) g₁ g₂ α y m i j l).trans
             (mul_le_mul_of_nonneg_left hP₂_le (by norm_num))
-        have hBr2 : |gramBracketDeriv2 (I := I) g₁ α d m i j l y -
-            gramBracketDeriv2 (I := I) g₂ α d m i j l y| ≤ 3 * J₃ :=
-          (gramBracketD2_sub (I := I) (M := M) g₁ g₂ α y d m i j l).trans
+        have hBr2 : |chartChristoffelBracketSecondDeriv (I := I) g₁ α d m i j l y -
+            chartChristoffelBracketSecondDeriv (I := I) g₂ α d m i j l y| ≤ 3 * J₃ :=
+          (chartChristoffelBracketSecondDeriv_sub_abs_le (I := I) (M := M) g₁ g₂ α y d m i j l).trans
             (mul_le_mul_of_nonneg_left hP₃_le (by norm_num))
         have hA : |A₁ - A₂| ≤ (CT * (3 * Q₁) + T * 3) * J₃ := by
           dsimp only [A₁, A₂]
@@ -492,9 +480,9 @@ theorem christD2_abs_le
       (chartInvGramOnE (I := I) g α k l) y| ≤ D)
     (hT : ∀ e r l, |partialDeriv (E := E) e
       (partialDeriv (E := E) r (chartInvGramOnE (I := I) g α k l)) y| ≤ T)
-    (hP : ∀ l, |gramBracket (I := I) g α i j l y| ≤ P)
-    (hR : ∀ e l, |gramBracketDeriv (I := I) g α e i j l y| ≤ R)
-    (hU : ∀ e r l, |gramBracketDeriv2 (I := I) g α e r i j l y| ≤ U) :
+    (hP : ∀ l, |chartChristoffelBracket (I := I) g α i j l y| ≤ P)
+    (hR : ∀ e l, |chartChristoffelBracketDeriv (I := I) g α e i j l y| ≤ R)
+    (hU : ∀ e r l, |chartChristoffelBracketSecondDeriv (I := I) g α e r i j l y| ≤ U) :
     |partialDeriv (E := E) d
       (partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k)) y| ≤
         (1 / 2 : ℝ) * (Module.finrank ℝ E : ℝ) *
@@ -506,13 +494,13 @@ theorem christD2_abs_le
       |∑ l : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) d
               (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l)) y *
-            gramBracket (I := I) g α i j l y +
+            chartChristoffelBracket (I := I) g α i j l y +
           partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) y *
-            gramBracketDeriv (I := I) g α d i j l y +
+            chartChristoffelBracketDeriv (I := I) g α d i j l y +
           partialDeriv (E := E) d (chartInvGramOnE (I := I) g α k l) y *
-            gramBracketDeriv (I := I) g α m i j l y +
+            chartChristoffelBracketDeriv (I := I) g α m i j l y +
           chartInvGramOnE (I := I) g α k l y *
-            gramBracketDeriv2 (I := I) g α d m i j l y)| ≤
+            chartChristoffelBracketSecondDeriv (I := I) g α d m i j l y)| ≤
         ∑ _l : Fin (Module.finrank ℝ E), (T * P + 2 * D * R + M_b * U) := by
     refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
     refine Finset.sum_le_sum fun l _ => ?_
@@ -533,13 +521,13 @@ theorem christD2_abs_le
     (1 / 2 : ℝ) * |∑ l : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) d
               (partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l)) y *
-            gramBracket (I := I) g α i j l y +
+            chartChristoffelBracket (I := I) g α i j l y +
           partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) y *
-            gramBracketDeriv (I := I) g α d i j l y +
+            chartChristoffelBracketDeriv (I := I) g α d i j l y +
           partialDeriv (E := E) d (chartInvGramOnE (I := I) g α k l) y *
-            gramBracketDeriv (I := I) g α m i j l y +
+            chartChristoffelBracketDeriv (I := I) g α m i j l y +
           chartInvGramOnE (I := I) g α k l y *
-            gramBracketDeriv2 (I := I) g α d m i j l y)|
+            chartChristoffelBracketSecondDeriv (I := I) g α d m i j l y)|
       ≤ (1 / 2 : ℝ) * ∑ _l : Fin (Module.finrank ℝ E),
           (T * P + 2 * D * R + M_b * U) :=
         mul_le_mul_of_nonneg_left hsum (by norm_num)
@@ -635,19 +623,19 @@ theorem christD2_pou_bnd
     exact invGramD2_abs_le (I := I) (M := M) (gSeq k) α hy hM_b.le hQ₁_nn
       hMbOnE (hQ₁ α hα k b hb) (hQ₂ α hα k b hb) e r a c
   have hPOnE : ∀ r,
-      |gramBracket (I := I) (gSeq k) α i j r (extChartAt I α b)| ≤ P := by
+      |chartChristoffelBracket (I := I) (gSeq k) α i j r (extChartAt I α b)| ≤ P := by
     intro r
-    exact gramBracket_abs_le (I := I) (M := M) (gSeq k) α (extChartAt I α b)
+    exact chartChristoffelBracket_abs_le (I := I) (M := M) (gSeq k) α (extChartAt I α b)
       (hQ₁ α hα k b hb) i j r
   have hROnE : ∀ e r,
-      |gramBracketDeriv (I := I) (gSeq k) α e i j r (extChartAt I α b)| ≤ R := by
+      |chartChristoffelBracketDeriv (I := I) (gSeq k) α e i j r (extChartAt I α b)| ≤ R := by
     intro e r
-    exact gramBracketD_abs_le (I := I) (M := M) (gSeq k) α (extChartAt I α b)
+    exact chartChristoffelBracketDeriv_abs_le (I := I) (M := M) (gSeq k) α (extChartAt I α b)
       (hQ₂ α hα k b hb) e i j r
   have hUOnE : ∀ e r a,
-      |gramBracketDeriv2 (I := I) (gSeq k) α e r i j a (extChartAt I α b)| ≤ U := by
+      |chartChristoffelBracketSecondDeriv (I := I) (gSeq k) α e r i j a (extChartAt I α b)| ≤ U := by
     intro e r a
-    exact gramBracketD2_abs_le (I := I) (M := M) (gSeq k) α (extChartAt I α b)
+    exact chartChristoffelBracketSecondDeriv_abs_le (I := I) (M := M) (gSeq k) α (extChartAt I α b)
       (hQ₃ α hα k b hb) e r i j a
   exact christD2_abs_le (I := I) (M := M) (gSeq k) α hy d m i j l hM_b.le hD_nn hT_nn
     (fun a => hMbOnE l a) (fun e a => hDOnE e l a) (fun e r a => hTOnE e r l a)

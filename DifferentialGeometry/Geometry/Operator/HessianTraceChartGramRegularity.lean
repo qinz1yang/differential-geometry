@@ -163,47 +163,6 @@ lemma partialDeriv_gradChartCoeffOnE_expand
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartGramOnE_contDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞ (chartGramOnE (I := I) g α i j) (extChartAt I α).target := by
-  classical
-  have hbase : ContMDiffOn I 𝓘(ℝ) ∞
-      (fun x : M => chartGramMatrix (I := I) g α x i j)
-      (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartGramMatrix_entry_contMDiffOn (I := I) g α i j
-  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
-      (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
-  have hsubset : (extChartAt I α).target ⊆
-      (extChartAt I α).symm ⁻¹'
-        (trivializationAt E (TangentSpace I) α).baseSet := by
-    intro y hy
-    have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-      (extChartAt I α).map_target hy
-    rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
-    rw [trivializationAt_baseSet_eq_chartAt_source]
-    exact hsource
-  have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      ((fun x : M => chartGramMatrix (I := I) g α x i j) ∘
-        (extChartAt I α).symm)
-      (extChartAt I α).target := hbase.comp hsymm hsubset
-  exact hcomp.contDiffOn
-
-omit [NeZero (Module.finrank ℝ E)] in
-lemma chartGramOnE_differentiableAt_interior
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (i j : Fin (Module.finrank ℝ E))
-    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentiableAt ℝ (chartGramOnE (I := I) g α i j) y := by
-  have hcd_target : ContDiffOn ℝ ∞ (chartGramOnE (I := I) g α i j)
-      (extChartAt I α).target := chartGramOnE_contDiffOn (I := I) g α i j
-  have hcd_int : ContDiffOn ℝ ∞ (chartGramOnE (I := I) g α i j)
-      (interior (extChartAt I α).target) := hcd_target.mono interior_subset
-  have hop_int : IsOpen (interior (extChartAt I α).target) := isOpen_interior
-  have hy_nhd : interior (extChartAt I α).target ∈ 𝓝 y := hop_int.mem_nhds hy
-  exact (hcd_int.contDiffAt hy_nhd).differentiableAt (by simp)
-
-omit [NeZero (Module.finrank ℝ E)] in
 theorem chartChristoffel_contDiffOn_interior
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j k : Fin (Module.finrank ℝ E)) :

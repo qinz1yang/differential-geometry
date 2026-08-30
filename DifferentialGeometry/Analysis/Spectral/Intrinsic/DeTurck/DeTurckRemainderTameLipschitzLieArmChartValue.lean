@@ -3412,8 +3412,10 @@ private lemma lieArm_chartChristoffel_center (g : SmoothRiemannianMetric I M) (x
       (extChartAt I x x)
     = (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          DeTurckCoefficients.gramBracket (I := I) g x a b l (extChartAt I x x) := by
-  rw [DeTurckCoefficients.chartChristoffel_eq_sum_invGramOnE_bracket (I := I) g x a b k
+          DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
+            (I := I) g x a b l (extChartAt I x x) := by
+  rw [DifferentialGeometry.Geometry.Connection.chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket
+    (I := I) g x a b k
     (extChartAt I x x)]
   refine congrArg (HMul.hMul (1 / 2 : ℝ)) (Finset.sum_congr rfl (fun l _ => ?_))
   rw [lieArm_chartInvGramOnE_center (I := I) g x k l]
@@ -3557,7 +3559,8 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
               DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
               (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q) (extChartAt I x x) *
               chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l)) *
-              DeTurckCoefficients.gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
+              DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
+                (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
               l (extChartAt I x x)))))
       + (∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Integral.Measure.chartGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i k *
@@ -3578,7 +3581,8 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
               DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
               (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x p q) (extChartAt I x x) *
               chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l)) *
-              DeTurckCoefficients.gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
+              DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
+                (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
               l (extChartAt I x x)))))) := by
   unfold PDE.DeTurck.DeTurckLinearization.lieDeTurckOrder1Raw
     PDE.DeTurck.DeTurckLinearization.chartDeTurckCorrFirstOrderRemainderRaw
@@ -4807,7 +4811,8 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     g₀ x b a k (extChartAt I x x) :=
     fun a b k => DifferentialGeometry.Geometry.Operator.chartChristoffel_symm (I := I)
       g₀ x a b k (extChartAt I x x)
-  have hgbdef' : ∀ a b l : Fin (Module.finrank ℝ E), DeTurckCoefficients.gramBracket (I := I)
+  have hgbdef' : ∀ a b l : Fin (Module.finrank ℝ E),
+    DifferentialGeometry.Geometry.Connection.chartChristoffelBracket (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b l (extChartAt I x x)
       = DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
         (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
@@ -4835,7 +4840,8 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b k (extChartAt I x x)
       = (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
-        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k l * DeTurckCoefficients.gramBracket (I := I)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k l *
+          DifferentialGeometry.Geometry.Connection.chartChristoffelBracket (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b l (extChartAt I x x) :=
     fun a b k => lieArm_chartChristoffel_center (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a
                    b k
@@ -4858,7 +4864,8 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (fun m a b => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
       (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b) (extChartAt I x x))
-    (fun a b l => DeTurckCoefficients.gramBracket (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+    (fun a b l => DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
+      (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
       a b l (extChartAt I x x))
     (fun m a b => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
       (DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I)

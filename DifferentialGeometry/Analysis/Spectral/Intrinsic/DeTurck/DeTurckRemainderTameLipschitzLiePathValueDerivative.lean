@@ -74,6 +74,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
   hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
+open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
@@ -205,21 +206,21 @@ omit [SigmaCompactSpace M] in
 private theorem realizedDeTurckLieChartSum_contDiffAt
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ}
     (hs : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     ContDiffAt ℝ ∞ (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) s₀ := by
-  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_genJointGram
-    (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_chartGramFamilyJointSmoothOn
+    (I := I) g₀ T T' hδ hδ' x
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   unfold realizedDeTurckLieChartSum
   refine ContDiffAt.sum (fun i _ => ContDiffAt.sum (fun j _ => ?_))
   refine contDiffAt_const.mul ?_
-  have hjoint := DifferentialGeometry.PDE.DeTurck.RicciLinearization.gen_joint_chartLieDeTurckComp
+  have hjoint := DifferentialGeometry.PDE.DeTurck.DeTurckLinearization.chartLieDeTurckComp_joint_contDiffAt
     (I := I) (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
       (I := I) g₀ T T' hδ hδ') x hG g_bg i j hs hy
   have hcomp : (fun s : ℝ =>
@@ -296,7 +297,7 @@ private theorem realizedDeTurckLiePathValue_differentiableAt_Ioo
       x v w (Set.mem_Icc_of_Ioo hs)
   have hmem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
     Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
-  exact ((realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
+  exact ((realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ hδ' x v w
     hmem).differentiableAt (by simp)).congr_of_eventuallyEq heq
 
 omit [CompactSpace M] in
@@ -326,16 +327,16 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem deriv_realizedDeTurckLieChartSum_continuousOn
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
-    {δ : ℝ} (hδ_lt : δ < 1)
+    {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    {δ' : ℝ}
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (deriv (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w))
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hcd : ContDiffOn ℝ ∞ (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun s hs =>
-    (realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
+    (realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ hδ' x v w
       hs).contDiffWithinAt
   exact hcd.continuousOn_deriv_of_isOpen metricPerturbationPathDomain_isOpen (by exact_mod_cast le_top)
 
@@ -354,7 +355,7 @@ theorem linearizedDeTurckLieAt_intervalIntegrable
       MeasureTheory.volume 0 1 := by
   have hcont : ContinuousOn (deriv (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w))
       (Set.Icc (0:ℝ) 1) :=
-    (deriv_realizedDeTurckLieChartSum_continuousOn (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v
+    (deriv_realizedDeTurckLieChartSum_continuousOn (I := I) g₀ g_bg T T' hδ hδ' x v
       w).mono
       (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
   have hii : IntervalIntegrable
@@ -397,7 +398,7 @@ private theorem realizedDeTurckLiePathValue_continuousOn_Icc
   refine ContinuousOn.congr
     (f := realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) ?_ ?_
   · exact fun s hs =>
-      (realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w
+      (realizedDeTurckLieChartSum_contDiffAt (I := I) g₀ g_bg T T' hδ hδ' x v w
         (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
   · intro s hs
     exact realizedDeTurckLiePathValue_eq_chartSum_on_Icc (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
@@ -483,8 +484,8 @@ theorem hasDerivAt_realizedDeTurckLieChartSum_general
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀) s₀ := by
   have hmem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
     Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt ⟨hs₀.1.le, hs₀.2.le⟩
-  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_genJointGram
-    (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x
+  have hG := DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath_chartGramFamilyJointSmoothOn
+    (I := I) g₀ T T' hδ hδ' x
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have hbody : (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) =
@@ -500,7 +501,7 @@ theorem hasDerivAt_realizedDeTurckLieChartSum_general
   have hcontdiff : ContDiffAt ℝ ∞
       (fun s : ℝ => DeTurckCoefficients.chartLieDeTurckComp (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀ := by
-    have hjoint := DifferentialGeometry.PDE.DeTurck.RicciLinearization.gen_joint_chartLieDeTurckComp
+    have hjoint := DifferentialGeometry.PDE.DeTurck.DeTurckLinearization.chartLieDeTurckComp_joint_contDiffAt
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ') x hG g_bg i j hmem hy
     have hcomp : (fun s : ℝ =>
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
