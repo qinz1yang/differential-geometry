@@ -4,7 +4,9 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Real.Sqrt
 
 set_option autoImplicit false
 
@@ -283,6 +285,247 @@ theorem gaussian_hamiltonNormalized :
       (euclideanMetric (E := E)) (gaussianPotential (E := E)) 1 :=
   normalizedGradientRicciSoliton_hamilton_normalized
     (normalizedGradientRicciSoliton_gaussian (E := E))
+
+noncomputable def roundSphereShrinkerRadius (n : Nat) : Real :=
+  Real.sqrt (2 * ((n : Real) - 1))
+
+theorem roundSphereShrinkerRadius_pos {n : Nat} (hn : 2 ≤ n) :
+    0 < roundSphereShrinkerRadius n := by
+  rw [roundSphereShrinkerRadius, Real.sqrt_pos]
+  have h : (1 : Real) < n := by
+    exact_mod_cast (lt_of_lt_of_le Nat.one_lt_two hn)
+  positivity
+
+theorem roundSphereShrinkerRadius_sq {n : Nat} (hn : 2 ≤ n) :
+    roundSphereShrinkerRadius n ^ 2 = 2 * ((n : Real) - 1) := by
+  rw [roundSphereShrinkerRadius, Real.sq_sqrt]
+  exact le_of_lt (by
+    have h : (1 : Real) < n := by
+      exact_mod_cast (lt_of_lt_of_le Nat.one_lt_two hn)
+    positivity)
+
+@[simp] theorem roundSphereShrinkerRadius_two :
+    roundSphereShrinkerRadius 2 = Real.sqrt 2 := by
+  norm_num [roundSphereShrinkerRadius]
+
+@[simp] theorem roundSphereShrinkerRadius_three :
+    roundSphereShrinkerRadius 3 = 2 := by
+  norm_num [roundSphereShrinkerRadius]
+
+variable {A : Type*} [NormedAddCommGroup A] [InnerProductSpace Real A]
+  [FiniteDimensional Real A]
+variable {n : Nat} [Fact (Module.finrank Real A = n + 1)]
+
+noncomputable def roundSphereShrinkerMetric (hn : 2 ≤ n) :
+    SmoothRiemannianMetric (𝓡 n) (Metric.sphere (0 : A) 1) :=
+  scaleMetric (roundSphereShrinkerRadius n ^ 2)
+    (sq_pos_of_pos (roundSphereShrinkerRadius_pos hn))
+    (roundMetric (E := A) (n := n))
+
+noncomputable def roundSphereShrinkerPotential :
+    C^∞⟮𝓡 n, Metric.sphere (0 : A) 1; Real⟯ :=
+  ContMDiffMap.const ((n : Real) / 2)
+
+omit [FiniteDimensional Real A] in
+@[simp] theorem roundSphereShrinkerPotential_apply
+    (x : Metric.sphere (0 : A) 1) :
+    roundSphereShrinkerPotential (A := A) (n := n) x = (n : Real) / 2 := by
+  rfl
+
+omit [FiniteDimensional Real A] in
+theorem roundSphereShrinkerMetric_ricciTensor
+    (hn : 2 ≤ n) (x : Metric.sphere (0 : A) 1)
+    (v w : TangentSpace (𝓡 n) x) :
+    ricciTensor (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn) x v w =
+      (1 / 2 : Real) *
+        (roundSphereShrinkerMetric (A := A) hn).inner x v w := by
+  let : NeZero n :=
+    ⟨Nat.ne_of_gt (lt_of_lt_of_le (Nat.zero_lt_succ 1) hn)⟩
+  rw [roundSphereShrinkerMetric, Curvature.ricciTensor_scaleMetric,
+    roundMetric_ricciTensor, scaleMetric_inner,
+    roundSphereShrinkerRadius_sq hn]
+  ring
+
+omit [FiniteDimensional Real A] in
+theorem roundSphereShrinkerPotential_hessian
+    (hn : 2 ≤ n) (x : Metric.sphere (0 : A) 1)
+    (v w : TangentSpace (𝓡 n) x) :
+    hessFun (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn)
+        (roundSphereShrinkerPotential (A := A) (n := n)) x v w = 0 := by
+  change hessFun (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn)
+      (fun _ : Metric.sphere (0 : A) 1 => (n : Real) / 2) x v w = 0
+  rw [Connection.hessFun_eq_abstract
+    (roundSphereShrinkerMetric (A := A) hn) contMDiff_const x v w]
+  rw [Connection.abstractHessian_apply]
+  have hderiv : mvfderiv (I := 𝓡 n)
+      (fun _ : Metric.sphere (0 : A) 1 => (n : Real) / 2) =
+        fun _ => 0 := by
+    funext y
+    exact mvfderiv_const (I := 𝓡 n)
+      (M := Metric.sphere (0 : A) 1) ((n : Real) / 2) (x := y)
+  rw [hderiv]
+  let cov := Connection.cotangentCov
+    (Connection.LeviCivita (I := 𝓡 n)
+      (roundSphereShrinkerMetric (A := A) hn))
+  change ((cov.toFun
+    (fun y : Metric.sphere (0 : A) 1 =>
+      (0 : TangentSpace (𝓡 n) y →L[Real] Real)) x v) w) = 0
+  have hzero : cov.toFun
+      (fun y : Metric.sphere (0 : A) 1 =>
+        (0 : TangentSpace (𝓡 n) y →L[Real] Real)) x = 0 := by
+    exact congrArg (fun φ => φ x) cov.zero
+  rw [hzero]
+  rfl
+
+omit [FiniteDimensional Real A] in
+theorem gradientRicciSoliton_roundSphere (hn : 2 ≤ n) :
+    gradientRicciSoliton (I := 𝓡 n)
+      (roundSphereShrinkerMetric (A := A) hn)
+      (roundSphereShrinkerPotential (A := A) (n := n)) 1 := by
+  intro x v w
+  rw [roundSphereShrinkerMetric_ricciTensor hn,
+    roundSphereShrinkerPotential_hessian hn]
+  ring
+
+theorem roundSphereShrinkerMetric_complete (hn : 2 ≤ n) :
+    RiemannianMetricComplete (I := 𝓡 n)
+      (roundSphereShrinkerMetric (A := A) hn) := by
+  let : CompactSpace (Metric.sphere (0 : A) 1) :=
+    Metric.sphere.compactSpace 0 1
+  have hround : RiemannianMetricComplete (I := 𝓡 n)
+      (roundMetric (E := A) (n := n)) := by
+    refine ⟨?_⟩
+    infer_instance
+  exact RiemannianMetricComplete.scaleMetric
+    hround
+    (roundSphereShrinkerRadius n ^ 2)
+    (sq_pos_of_pos (roundSphereShrinkerRadius_pos hn))
+
+omit [FiniteDimensional Real A] in
+theorem roundSphereShrinkerMetric_scalarCurvature
+    (hn : 2 ≤ n) (x : Metric.sphere (0 : A) 1) :
+    metricScalarAt (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn) x =
+      (n : Real) / 2 := by
+  have h := gradientRicciSoliton_trace
+    (gradientRicciSoliton_roundSphere (A := A) hn) x
+  rw [show roundSphereShrinkerPotential (A := A) (n := n) =
+      ContMDiffMap.const ((n : Real) / 2) by rfl,
+    Operator.Δ_g_const] at h
+  simpa [finrank_euclideanSpace_fin] using h
+
+omit [FiniteDimensional Real A] in
+theorem roundSphereShrinkerPotential_normGradSqFun
+    (hn : 2 ≤ n) (x : Metric.sphere (0 : A) 1) :
+    normGradSqFun (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn)
+        (roundSphereShrinkerPotential (A := A) (n := n)) x = 0 := by
+  change normGradSqFun (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn)
+      (fun _ : Metric.sphere (0 : A) 1 => (n : Real) / 2) x = 0
+  rw [normGradSqFun_def, Operator.gradFun_const]
+  simp
+
+theorem normalizedGradientRicciSoliton_roundSphere (hn : 2 ≤ n) :
+    normalizedGradientRicciSoliton (I := 𝓡 n)
+      (roundSphereShrinkerMetric (A := A) hn)
+      (roundSphereShrinkerPotential (A := A) (n := n)) := by
+  refine ⟨roundSphereShrinkerMetric_complete (A := A) hn,
+    gradientRicciSoliton_roundSphere (A := A) hn, ?_⟩
+  intro x
+  rw [roundSphereShrinkerMetric_scalarCurvature hn,
+    roundSphereShrinkerPotential_normGradSqFun hn,
+    roundSphereShrinkerPotential_apply]
+  ring
+
+theorem roundSphere_hamiltonNormalized (hn : 2 ≤ n) :
+    hamiltonNormalized (I := 𝓡 n)
+      (roundSphereShrinkerMetric (A := A) hn)
+      (roundSphereShrinkerPotential (A := A) (n := n)) 1 :=
+  normalizedGradientRicciSoliton_hamilton_normalized
+    (normalizedGradientRicciSoliton_roundSphere (A := A) hn)
+
+noncomputable def roundTwoSphereShrinkerMetric :
+    SmoothRiemannianMetric (𝓡 2)
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) := by
+  let : Fact (Module.finrank Real (EuclideanSpace Real (Fin 3)) = 2 + 1) :=
+    ⟨by simp⟩
+  exact roundSphereShrinkerMetric
+    (A := EuclideanSpace Real (Fin 3)) (n := 2) (by decide)
+
+noncomputable def roundTwoSphereShrinkerPotential :
+    C^∞⟮𝓡 2, Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1; Real⟯ :=
+  ContMDiffMap.const 1
+
+@[simp] theorem roundTwoSphereShrinkerPotential_apply
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) :
+    roundTwoSphereShrinkerPotential x = 1 := by
+  rfl
+
+theorem normalizedGradientRicciSoliton_roundTwoSphere :
+    normalizedGradientRicciSoliton (I := 𝓡 2)
+      roundTwoSphereShrinkerMetric roundTwoSphereShrinkerPotential := by
+  let : Fact (Module.finrank Real (EuclideanSpace Real (Fin 3)) = 2 + 1) :=
+    ⟨by simp⟩
+  simpa [roundTwoSphereShrinkerMetric, roundTwoSphereShrinkerPotential,
+    roundSphereShrinkerPotential] using
+    (normalizedGradientRicciSoliton_roundSphere
+      (A := EuclideanSpace Real (Fin 3)) (n := 2) (by decide))
+
+theorem roundTwoSphereShrinkerMetric_scalarCurvature
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) :
+    metricScalarAt (I := 𝓡 2) roundTwoSphereShrinkerMetric x = 1 := by
+  let : Fact (Module.finrank Real (EuclideanSpace Real (Fin 3)) = 2 + 1) :=
+    ⟨by simp⟩
+  simpa [roundTwoSphereShrinkerMetric] using
+    (roundSphereShrinkerMetric_scalarCurvature
+      (A := EuclideanSpace Real (Fin 3)) (n := 2) (by decide) x)
+
+theorem roundTwoSphere_hamiltonNormalized :
+    hamiltonNormalized (I := 𝓡 2)
+      roundTwoSphereShrinkerMetric roundTwoSphereShrinkerPotential 1 :=
+  normalizedGradientRicciSoliton_hamilton_normalized
+    normalizedGradientRicciSoliton_roundTwoSphere
+
+noncomputable def roundThreeSphereShrinkerMetric :
+    SmoothRiemannianMetric (𝓡 3)
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1) := by
+  let : Fact (Module.finrank Real (EuclideanSpace Real (Fin 4)) = 3 + 1) :=
+    ⟨by simp⟩
+  exact roundSphereShrinkerMetric
+    (A := EuclideanSpace Real (Fin 4)) (n := 3) (by decide)
+
+noncomputable def roundThreeSphereShrinkerPotential :
+    C^∞⟮𝓡 3, Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1; Real⟯ :=
+  ContMDiffMap.const (3 / 2 : Real)
+
+@[simp] theorem roundThreeSphereShrinkerPotential_apply
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1) :
+    roundThreeSphereShrinkerPotential x = (3 / 2 : Real) := by
+  rfl
+
+theorem normalizedGradientRicciSoliton_roundThreeSphere :
+    normalizedGradientRicciSoliton (I := 𝓡 3)
+      roundThreeSphereShrinkerMetric roundThreeSphereShrinkerPotential := by
+  let : Fact (Module.finrank Real (EuclideanSpace Real (Fin 4)) = 3 + 1) :=
+    ⟨by simp⟩
+  simpa [roundThreeSphereShrinkerMetric, roundThreeSphereShrinkerPotential,
+    roundSphereShrinkerPotential] using
+    (normalizedGradientRicciSoliton_roundSphere
+      (A := EuclideanSpace Real (Fin 4)) (n := 3) (by decide))
+
+theorem roundThreeSphereShrinkerMetric_scalarCurvature
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 4)) 1) :
+    metricScalarAt (I := 𝓡 3) roundThreeSphereShrinkerMetric x =
+      (3 / 2 : Real) := by
+  let : Fact (Module.finrank Real (EuclideanSpace Real (Fin 4)) = 3 + 1) :=
+    ⟨by simp⟩
+  simpa [roundThreeSphereShrinkerMetric] using
+    (roundSphereShrinkerMetric_scalarCurvature
+      (A := EuclideanSpace Real (Fin 4)) (n := 3) (by decide) x)
+
+theorem roundThreeSphere_hamiltonNormalized :
+    hamiltonNormalized (I := 𝓡 3)
+      roundThreeSphereShrinkerMetric roundThreeSphereShrinkerPotential 1 :=
+  normalizedGradientRicciSoliton_hamilton_normalized
+    normalizedGradientRicciSoliton_roundThreeSphere
 
 def isGaussianGradientRicciSoliton
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯) (σ : Real) : Prop :=
