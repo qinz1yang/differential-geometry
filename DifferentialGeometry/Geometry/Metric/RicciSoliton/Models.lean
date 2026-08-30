@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.PullbackCross
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturalityCross
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import Mathlib.Analysis.InnerProductSpace.Calculus
@@ -655,5 +656,27 @@ theorem isGaussianGradientRicciSoliton_euclidean :
     intro x
     change gaussianPotential x + 0 = gaussianPotential x
     ring
+
+theorem isGaussianGradientRicciSoliton_ricciTensor_eq_zero
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {σ : Real}
+    (hGaussian : isGaussianGradientRicciSoliton (E := E) g f σ)
+    (x : M) (v w : TangentSpace I x) :
+    ricciTensor (I := I) g x v w = 0 := by
+  obtain ⟨hσ, Ψ, b, hmetric, hpotential⟩ := hGaussian
+  have hRicci := Curvature.ricciTensor_pullbackCross
+    (g := euclideanMetric (E := E)) Ψ x v w
+  rw [euclideanMetric_ricciTensor] at hRicci
+  rw [hmetric, Curvature.ricciTensor_scaleMetric] at hRicci
+  exact hRicci
+
+theorem isGaussianGradientRicciSoliton_scalarCurvature_eq_zero
+    [I.Boundaryless]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {σ : Real}
+    (hGaussian : isGaussianGradientRicciSoliton (E := E) g f σ)
+    (x : M) :
+    metricScalarAt (I := I) g x = 0 := by
+  apply metricScalarAt_eq_zero_of_ricciTensor_eq_zero
+  exact isGaussianGradientRicciSoliton_ricciTensor_eq_zero hGaussian x
 
 end DifferentialGeometry.Geometry

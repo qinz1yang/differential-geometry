@@ -139,6 +139,33 @@ theorem metricRicciAt_apply_eq_ricciTensor
   rw [metricRicciAt, ricciCurvatureAt_eq_trace, key, ← ricciCurvatureAt_eq_trace]
   exact ricciCurvatureAt_leviCivita_apply_eq_ricciTensor (I := I) g x v w
 
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+theorem metricScalarAt_eq_zero_of_ricciTensor_eq_zero
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hRic : ∀ v w : TangentSpace I x, ricciTensor (I := I) g x v w = 0) :
+    metricScalarAt (I := I) g x = 0 := by
+  have hRicci : metricRicciAt (I := I) g x = 0 := by
+    apply Tensor0SBundle.ext0S_basis (centeredChartTangentBasis (I := I) x)
+    intro slots
+    simp only [Tensor0SBundle.component0S_apply]
+    change metricRicciAt (I := I) g x
+      (fun a : Fin 2 => centeredChartTangentBasis (I := I) x (slots a)) = 0
+    have hslots :
+        (fun a : Fin 2 => centeredChartTangentBasis (I := I) x (slots a)) =
+          vec2 (I := I)
+            (centeredChartTangentBasis (I := I) x (slots 0))
+            (centeredChartTangentBasis (I := I) x (slots 1)) := by
+      funext a
+      fin_cases a <;> rfl
+    rw [hslots, metricRicciAt_apply_eq_ricciTensor]
+    exact hRic _ _
+  rw [metricScalarAt_def, hRicci]
+  rw [show (0 : Tensor0SBundle.Tensor0SSpace 2 I x) =
+      (0 : Real) • Geometry.Operator.metricTensor0S (I := I) g x by simp,
+    Geometry.Operator.metricTracePair0SAt_smul]
+  ring
+
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricRm13At_eq_riemannCurvatureAt
