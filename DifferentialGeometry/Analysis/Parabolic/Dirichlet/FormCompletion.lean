@@ -64,6 +64,39 @@ theorem dirichletMassLp_apply_smooth
   rw [huL, hvL, hu, hv]
   simp only [RCLike.inner_apply, conj_trivial, mul_comm]
 
+theorem dirichletMassLp_self_apply
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) q ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u v : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    dirichletMassLp q Cv hCvtop hvol u v = inner ℝ u v := by
+  let L := Lp.LpToLpOfMeasureLeSMul (E := ℝ) (p := 2) hCvtop hvol
+  change inner ℝ (L u) (L v) = inner ℝ u v
+  rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def]
+  apply integral_congr_ae
+  filter_upwards [Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol u,
+    Lp.coeFn_LpToLpOfMeasureLeSMul hCvtop hvol v] with x hu hv
+  rw [hu, hv]
+
+theorem dirichletMassLp_self_riesz_eq_resolventDirichlet
+    {q : SmoothRiemannianMetric (I_half n) M}
+    (Cv : ℝ≥0∞) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) q ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q)) :
+    (InnerProductSpace.toDual ℝ (H1ComplDirichlet q)).symm
+        ((dirichletMassLp q Cv hCvtop hvol u).comp
+          (H1ComplDirichletToLp q)) =
+      resolventDirichlet q u := by
+  apply ext_inner_right ℝ
+  intro v
+  rw [InnerProductSpace.toDual_symm_apply,
+    ContinuousLinearMap.comp_apply,
+    dirichletMassLp_self_apply,
+    resolventDirichlet_inner_eq_lpFunctional,
+    real_inner_comm u]
+
 private noncomputable def dirichletExtend
     (q : SmoothRiemannianMetric (I_half n) M)
     (F : SmoothScalarDirichlet q →L[ℝ] SmoothScalarDirichlet q →L[ℝ] ℝ) :
@@ -166,6 +199,72 @@ theorem dirichletMassCompl_apply_smooth
       dirichletMass h u v := by
   rw [dirichletMassCompl, dirichletExtend_apply_smooth,
     dirichletMassSmooth_apply]
+
+theorem dirichletMassCompl_self_apply
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ v : TangentSpace (I_half n) x,
+      Cg⁻¹ * q.inner x v v ≤ q.inner x v v ∧
+        q.inner x v v ≤ Cg * q.inner x v v)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) q ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u v : H1ComplDirichlet q) :
+    dirichletMassCompl q hCg hequiv Cv hCv0 hCvtop hvol u v =
+      inner ℝ (H1ComplDirichletToLp q u) (H1ComplDirichletToLp q v) := by
+  let mass := dirichletMassCompl q hCg hequiv Cv hCv0 hCvtop hvol
+  have hsmooth (u₀ : SmoothScalarDirichlet q) :
+      (fun v => mass (smoothToH1ComplDirichlet q u₀) v) =
+        fun v => inner ℝ (H1ComplDirichletToLp q
+          (smoothToH1ComplDirichlet q u₀))
+          (H1ComplDirichletToLp q v) := by
+    apply DenseRange.equalizer (denseRange_smoothToH1ComplDirichlet q)
+      (mass (smoothToH1ComplDirichlet q u₀)).continuous
+      (continuous_const.inner (H1ComplDirichletToLp q).continuous)
+    funext v₀
+    simp only [Function.comp_apply]
+    dsimp only [mass]
+    rw [H1ComplDirichletToLp_smoothToH1ComplDirichlet,
+      H1ComplDirichletToLp_smoothToH1ComplDirichlet,
+      dirichletMassCompl_apply_smooth, MeasureTheory.L2.inner_def]
+    unfold dirichletMass
+    apply integral_congr_ae
+    filter_upwards [MemLp.coeFn_toLp u₀.memLp_two,
+      MemLp.coeFn_toLp v₀.memLp_two] with x hu hv
+    rw [smoothToLpDirichlet,
+      DifferentialGeometry.Analysis.Laplacian.WithBoundary.smoothToLpInterior_apply q u₀,
+      DifferentialGeometry.Analysis.Laplacian.WithBoundary.smoothToLpInterior_apply q v₀,
+      hu, hv]
+    simp only [RCLike.inner_apply, conj_trivial, mul_comm]
+  have hall : (fun u => mass u v) =
+      fun u => inner ℝ (H1ComplDirichletToLp q u)
+        (H1ComplDirichletToLp q v) := by
+    apply DenseRange.equalizer (denseRange_smoothToH1ComplDirichlet q)
+      (mass.flip v).continuous
+      ((H1ComplDirichletToLp q).continuous.inner continuous_const)
+    funext u₀
+    exact congrFun (hsmooth u₀) v
+  exact congrFun hall u
+
+theorem dirichletMassCompl_self_riesz_eq_resolventDirichlet
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ v : TangentSpace (I_half n) x,
+      Cg⁻¹ * q.inner x v v ≤ q.inner x v v ∧
+        q.inner x v v ≤ Cg * q.inner x v v)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_half n) (M := M) q ≤
+      Cv • riemannianVolumeMeasure (I := I_half n) (M := M) q)
+    (u : H1ComplDirichlet q) :
+    (InnerProductSpace.toDual ℝ (H1ComplDirichlet q)).symm
+        (dirichletMassCompl q hCg hequiv Cv hCv0 hCvtop hvol u) =
+      resolventDirichlet q (H1ComplDirichletToLp q u) := by
+  apply ext_inner_right ℝ
+  intro v
+  rw [InnerProductSpace.toDual_symm_apply,
+    dirichletMassCompl_self_apply,
+    resolventDirichlet_inner_eq_lpFunctional,
+    real_inner_comm (H1ComplDirichletToLp q u)]
 
 theorem norm_dirichletMassCompl_le
     {q : SmoothRiemannianMetric (I_half n) M}
