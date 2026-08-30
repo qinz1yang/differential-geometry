@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothBasis
 import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import DifferentialGeometry.Analysis.ODE.StateCoerciveMass
@@ -722,6 +722,33 @@ theorem dirichletFinIncl_orth
   ring
 
 end FiniteFamily
+
+section SmoothBasisFiniteFamily
+
+variable {q : SmoothRiemannianMetric (I_half n) M}
+
+noncomputable def smoothDirichletBasisFinIncl
+    (s : Finset (SmoothDirichletBasisIndex q)) :
+    EuclideanSpace ℝ s →ₗ[ℝ] SmoothScalarDirichlet q :=
+  dirichletFinIncl (fun i : s => smoothDirichletBasisFunction q i)
+
+@[simp] theorem smoothDirichletBasisFinIncl_apply
+    (s : Finset (SmoothDirichletBasisIndex q)) (u : EuclideanSpace ℝ s) :
+    smoothDirichletBasisFinIncl s u =
+      ∑ i, u i • smoothDirichletBasisFunction q i := rfl
+
+theorem dirichletMass_smoothDirichletBasisFinIncl
+    (s : Finset (SmoothDirichletBasisIndex q)) (u : EuclideanSpace ℝ s) :
+    dirichletMass q (smoothDirichletBasisFinIncl s u)
+        (smoothDirichletBasisFinIncl s u) = ‖u‖ ^ 2 := by
+  apply dirichletFinIncl_orth
+  change Orthonormal ℝ
+    ((fun i => smoothToLpDirichlet q (smoothDirichletBasisFunction q i)) ∘
+      ((↑) : s → SmoothDirichletBasisIndex q))
+  exact (smoothDirichletBasisFunction_orthonormal q).comp
+    ((↑) : s → SmoothDirichletBasisIndex q) Subtype.val_injective
+
+end SmoothBasisFiniteFamily
 
 section FiniteHilbert
 
