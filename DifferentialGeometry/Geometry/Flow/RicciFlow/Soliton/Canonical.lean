@@ -470,6 +470,27 @@ theorem canonicalMetric_hamilton_constant
   exact gradientRicciSoliton_hamilton_constant
     (canonicalMetric_gradientRicciSoliton (I := I) g f sigma hcomplete hsol ht)
 
+theorem canonicalMetric_weightedLaplacian_potential
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M) :
+    ∃ C : Real,
+      weightedLaplacian (I := I)
+          (canonicalMetric (I := I) g f sigma hcomplete hsol ht)
+          (canonicalPotential (I := I) g f sigma hcomplete hsol t)
+          (canonicalPotential (I := I) g f sigma hcomplete hsol t) x =
+        (Module.finrank Real E : Real) * (sigma / (1 - sigma * t)) / 2 -
+          (sigma / (1 - sigma * t)) *
+            canonicalPotential (I := I) g f sigma hcomplete hsol t x - C := by
+  obtain ⟨C, hC⟩ := canonicalMetric_hamilton_constant
+    (I := I) g f sigma hcomplete hsol ht
+  refine ⟨C, ?_⟩
+  apply gradientRicciSoliton_weightedLaplacian_potential
+    (canonicalMetric_gradientRicciSoliton (I := I) g f sigma hcomplete hsol ht) _ x
+  intro y
+  simpa only [normGradSqFun_def] using hC y
+
 theorem canonicalTimeDomain_zero_eq_univ :
     canonicalTimeDomain 0 = (Set.univ : Set Real) := by
   ext t
