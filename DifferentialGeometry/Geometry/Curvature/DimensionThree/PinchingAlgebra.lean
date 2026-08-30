@@ -65,6 +65,17 @@ theorem curvatureReactionSumSquares3_nonneg
   positivity
 
 
+theorem four_mul_curvatureReactionSumSquares3
+    (lambda mu nu : Real) :
+    4 * curvatureReactionSumSquares3 lambda mu nu =
+      (1 / 2 : Real) *
+        (lambda ^ 2 * (mu - nu) ^ 2 +
+          mu ^ 2 * (lambda - nu) ^ 2 +
+          nu ^ 2 * (lambda - mu) ^ 2) := by
+  unfold curvatureReactionSumSquares3
+  ring
+
+
 theorem curvatureReactionPolynomial3_nonneg
     (lambda mu nu : Real) :
     0 ≤ curvatureReactionPolynomial3 lambda mu nu := by
