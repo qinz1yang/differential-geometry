@@ -72,28 +72,28 @@ def IsPointwiseSymm (B : pointwiseBilin (M := M) I) : Prop :=
 def frobeniusSqFun (B : pointwiseBilin (M := M) I) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
-      (B x (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j))^2
+      (B x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j))^2
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma frobeniusSqFun_def (B : pointwiseBilin (M := M) I) (x : M) :
     frobeniusSqFun (I := I) (M := M) B x =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          (B x (centeredChartTangentBasis (I := I) x i)
-            (centeredChartTangentBasis (I := I) x j))^2 := rfl
+          (B x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j))^2 := rfl
 
 def traceFun (B : pointwiseBilin (M := M) I) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
-    B x (centeredChartTangentBasis (I := I) x i)
-      (centeredChartTangentBasis (I := I) x i)
+    B x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma traceFun_def (B : pointwiseBilin (M := M) I) (x : M) :
     traceFun (I := I) (M := M) B x =
       ∑ i : Fin (Module.finrank ℝ E),
-        B x (centeredChartTangentBasis (I := I) x i)
-          (centeredChartTangentBasis (I := I) x i) := rfl
+        B x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma frobeniusSqFun_nonneg (B : pointwiseBilin (M := M) I) (x : M) :
@@ -109,7 +109,7 @@ theorem traceFun_sq_le_dim_mul_frobeniusSqFun
       (Module.finrank ℝ E : ℝ) * frobeniusSqFun (I := I) (M := M) B x := by
   have h := bilinForm_trace_sq_le_dim_mul_frobenius_sq
     (V := TangentSpace I x) (B := B x)
-      (b := centeredChartTangentBasis (I := I) x)
+      (b := DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x)
   simp only [traceFun_def, frobeniusSqFun_def]
   exact h
 
@@ -185,15 +185,15 @@ lemma chartIteratedPartialDeriv_symm_of_contDiff
     exact hcontDiff_at_fderiv.differentiableAt (by simp)
   have hkey : ∀ a b : Fin (Module.finrank ℝ E),
       fderiv ℝ
-          (fun z => fderiv ℝ (scalarOnE (I := I) α f) z ((chartModelBasis E) b))
-          y ((chartModelBasis E) a) =
+          (fun z => fderiv ℝ (scalarOnE (I := I) α f) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) b))
+          y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) =
         (fderiv ℝ (fderiv ℝ (scalarOnE (I := I) α f)) y
-          ((chartModelBasis E) a)) ((chartModelBasis E) b) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) b) := by
     intro a b
     set L : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
-      ContinuousLinearMap.apply ℝ ℝ ((chartModelBasis E) b)
+      ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) b)
     have hcomp_eq : (fun z : E =>
-          fderiv ℝ (scalarOnE (I := I) α f) z ((chartModelBasis E) b)) =
+          fderiv ℝ (scalarOnE (I := I) α f) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) b)) =
         L ∘ (fderiv ℝ (scalarOnE (I := I) α f)) := by
       funext z; rfl
     rw [hcomp_eq, fderiv_comp y L.differentiableAt hg_diff]
@@ -240,14 +240,14 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
     (fun v w =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) i *
-            ((centeredChartTangentBasis (I := I) x).repr w) j *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) j *
             chartHessianTensor (I := I) g x f i j x)
     (fun v₁ v₂ w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
-          (centeredChartTangentBasis (I := I) x).repr v₁ +
-            (centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl ?_
@@ -259,8 +259,8 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
       ring)
     (fun c v w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • v) =
-          c • (centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • v) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -272,9 +272,9 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
       ring)
     (fun v w₁ w₂ => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
-          (centeredChartTangentBasis (I := I) x).repr w₁ +
-            (centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl ?_
@@ -286,8 +286,8 @@ def hessFun (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
       ring)
     (fun c v w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • w) =
-          c • (centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • w) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -305,8 +305,8 @@ lemma hessFun_apply (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M)
     hessFun (I := I) g f x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) i *
-            ((centeredChartTangentBasis (I := I) x).repr w) j *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) j *
             chartHessianTensor (I := I) g x f i j x := by
   rfl
 
@@ -412,18 +412,18 @@ lemma hessFun_basis_apply
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     hessFun (I := I) g f x
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) =
       chartHessianTensor (I := I) g x f i j x := by
   classical
   rw [hessFun_apply]
   conv_lhs => rw [show
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr
-            (centeredChartTangentBasis (I := I) x i)) i' *
-            ((centeredChartTangentBasis (I := I) x).repr
-              (centeredChartTangentBasis (I := I) x j)) j' *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)) i' *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)) j' *
             chartHessianTensor (I := I) g x f i' j' x) =
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),

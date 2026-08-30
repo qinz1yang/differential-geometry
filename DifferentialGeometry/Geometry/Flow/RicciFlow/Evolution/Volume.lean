@@ -30,12 +30,12 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 abbrev volumeTraceFrame :
     Fin (Module.finrank Real E) → (x : M) → TangentSpace I x :=
-  fun i x => chartBasisVecFiber (I := I) x i x
+  fun i x => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x
 
 abbrev volumeTraceInvMetricComponents
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) :
     M → Fin (Module.finrank Real E) → Fin (Module.finrank Real E) → Real :=
-  fun x i j => ((chartGramMatrix (I := I) g x x)⁻¹) i j
+  fun x i j => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹) i j
 
 abbrev scalarCurvatureFromRicciInVolumeFrame
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
@@ -67,31 +67,31 @@ theorem traceTimeDerivMetricAt_eq_trace_metric_derivative
     (hdt : ∀ F : Real → Real, td.dtApply F t = deriv F t) :
     traceTimeDerivMetricAt (I := I) G t x =
       Matrix.trace
-        ((chartGramMatrix (I := I) (G.metric t) x x)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric t) x x)⁻¹ *
           Matrix.of fun i j =>
             DifferentialGeometry.Geometry.Curvature.metricTimeDerivative td G t x
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) := by
   rw [traceTimeDerivMetricAt_eq, traceTimeDerivMetric_eq]
   congr 2
   ext i j
   have h := hdt
     (fun s : Real =>
       (G.metric s).inner x
-        (chartBasisVecFiber (I := I) x i x)
-        (chartBasisVecFiber (I := I) x j x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))
   simpa [metricFamilyForMeasure, DifferentialGeometry.Geometry.Curvature.metricTimeDerivative,
-    chartGramMatrix_apply]
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     using h.symm
 
 private theorem chartGramMatrix_inv_symm
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank Real E)) :
-    ((chartGramMatrix (I := I) g x x)⁻¹) j i =
-      ((chartGramMatrix (I := I) g x x)⁻¹) i j := by
+    ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹) j i =
+      ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹) i j := by
   have hHerm :
-      ((chartGramMatrix (I := I) g x x)⁻¹).IsHermitian :=
-    (chartGramMatrix_isHermitian (I := I) g x x).inv
+      ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹).IsHermitian :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g x x).inv
   simpa [star_trivial] using hHerm.apply i j
 
 theorem scalar_trace_eq_volume_trace_components
@@ -105,10 +105,10 @@ theorem scalar_trace_eq_volume_trace_components
     scalar x =
       ∑ i : Fin (Module.finrank Real E),
         ∑ j : Fin (Module.finrank Real E),
-          ((chartGramMatrix (I := I) g x x)⁻¹) i j *
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹) i j *
             Ric x
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) := by
   simpa [volumeTraceInvMetricComponents, volumeTraceFrame] using
     DifferentialGeometry.Geometry.Curvature.scalar_eq_trace (I := I) scalar Ric
       (volumeTraceInvMetricComponents (I := I) (M := M) g)
@@ -126,19 +126,19 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar
       scalar t x =
         ∑ i : Fin (Module.finrank Real E),
           ∑ j : Fin (Module.finrank Real E),
-            ((chartGramMatrix (I := I) (G.metric t) x x)⁻¹) i j *
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric t) x x)⁻¹) i j *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x)) :
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) :
     traceTimeDerivMetricAt (I := I) G t x = (-2 : Real) * scalar t x := by
   classical
   let Gmat : Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
-    chartGramMatrix (I := I) (G.metric t) x x
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric t) x x
   let dG : Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
     Matrix.of fun i j =>
       DifferentialGeometry.Geometry.Curvature.metricTimeDerivative td G t x
-        (chartBasisVecFiber (I := I) x i x)
-        (chartBasisVecFiber (I := I) x j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
   have htrace :
       traceTimeDerivMetricAt (I := I) G t x =
         Matrix.trace (Gmat⁻¹ * dG) := by
@@ -150,12 +150,12 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar
         Matrix.of fun i j : Fin (Module.finrank Real E) =>
           (-2 : Real) *
             Ric t x
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) := by
     ext i j
     simpa [dG] using (hEq t x
-      (chartBasisVecFiber (I := I) x i x)
-      (chartBasisVecFiber (I := I) x j x))
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))
   have hInvSymm :
       ∀ i j : Fin (Module.finrank Real E), Gmat⁻¹ j i = Gmat⁻¹ i j := by
     intro i j
@@ -168,23 +168,23 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar
           Matrix.of fun i j : Fin (Module.finrank Real E) =>
             (-2 : Real) *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))
         =
         Matrix.trace
           ((Matrix.of fun i j : Fin (Module.finrank Real E) =>
             (-2 : Real) *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹) := by
           rw [Matrix.trace_mul_comm]
     _ =
         ∑ i : Fin (Module.finrank Real E),
           ∑ j : Fin (Module.finrank Real E),
             ((-2 : Real) *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹ j i := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹ j i := by
           simp [Matrix.trace, Matrix.mul_apply]
     _ =
         (-2 : Real) *
@@ -192,8 +192,8 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar
             ∑ j : Fin (Module.finrank Real E),
               Gmat⁻¹ i j *
                 Ric t x
-                  (chartBasisVecFiber (I := I) x i x)
-                  (chartBasisVecFiber (I := I) x j x)) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) := by
           simp_rw [hInvSymm]
           rw [Finset.mul_sum]
           refine Finset.sum_congr rfl ?_
@@ -238,31 +238,31 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar_of_metricDeriv
     traceTimeDerivMetricAt (I := I) G t x = (-2 : Real) * scalar t x := by
   classical
   let Gmat : Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
-    chartGramMatrix (I := I) (G.metric t) x x
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric t) x x
   let dG : Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
     Matrix.of fun i j =>
       deriv (fun s : Real =>
         (G.metric s).inner x
-          (chartBasisVecFiber (I := I) x i x)
-          (chartBasisVecFiber (I := I) x j x)) t
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) t
   have htrace :
       traceTimeDerivMetricAt (I := I) G t x =
         Matrix.trace (Gmat⁻¹ * dG) := by
     simp [traceTimeDerivMetric_eq, metricFamilyForMeasure,
-      chartGramMatrix_apply, Gmat, dG]
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, Gmat, dG]
   have hdG :
       dG =
         Matrix.of fun i j : Fin (Module.finrank Real E) =>
           (-2 : Real) *
             Ric t x
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) := by
     ext i j
     simpa [dG] using
       DifferentialGeometry.PDE.RicciFlow.metric_deriv_eq_neg_two_ricci_of_metricVariationEquationDerivAt
         (I := I) G Ric hEq x
-        (chartBasisVecFiber (I := I) x i x)
-        (chartBasisVecFiber (I := I) x j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
   have hInvSymm :
       ∀ i j : Fin (Module.finrank Real E), Gmat⁻¹ j i = Gmat⁻¹ i j := by
     intro i j
@@ -275,23 +275,23 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar_of_metricDeriv
           Matrix.of fun i j : Fin (Module.finrank Real E) =>
             (-2 : Real) *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))
         =
         Matrix.trace
           ((Matrix.of fun i j : Fin (Module.finrank Real E) =>
             (-2 : Real) *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹) := by
           rw [Matrix.trace_mul_comm]
     _ =
         ∑ i : Fin (Module.finrank Real E),
           ∑ j : Fin (Module.finrank Real E),
             ((-2 : Real) *
               Ric t x
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹ j i := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) * Gmat⁻¹ j i := by
           simp [Matrix.trace, Matrix.mul_apply]
     _ =
         (-2 : Real) *
@@ -299,8 +299,8 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar_of_metricDeriv
             ∑ j : Fin (Module.finrank Real E),
               Gmat⁻¹ i j *
                 Ric t x
-                  (chartBasisVecFiber (I := I) x i x)
-                  (chartBasisVecFiber (I := I) x j x)) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) := by
           simp_rw [hInvSymm]
           rw [Finset.mul_sum]
           refine Finset.sum_congr rfl ?_

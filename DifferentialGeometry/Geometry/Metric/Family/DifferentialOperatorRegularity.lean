@@ -135,7 +135,7 @@ theorem gradient_continuousOn [I.Boundaryless]
     intro q hq
     rfl
   let coord : Real × M → E := fun q =>
-    ∑ i : Fin (Module.finrank Real E), coeff i q • chartModelBasis E i
+    ∑ i : Fin (Module.finrank Real E), coeff i q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i
   have hcoord : ContinuousOn coord S := by
     refine continuousOn_finsetSum _ fun i _ => ?_
     exact (hcoeff i).smul continuousOn_const
@@ -154,7 +154,7 @@ theorem gradient_continuousOn [I.Boundaryless]
       simpa [e] using hbase
     have hcoord_eq : coord q =
         ∑ i : Fin (Module.finrank Real E),
-          gradChartCoeff (I := I) (g_fam q.1) α ρ i q.2 • chartModelBasis E i := by
+          gradChartCoeff (I := I) (g_fam q.1) α ρ i q.2 • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
       simp only [coord, coeff, gradChartCoeff_def, chartInvGramOnE_def]
       rw [(extChartAt I α).left_inv hsource]
     change (TotalSpace.mk' E q.2
@@ -172,7 +172,7 @@ theorem gradient_continuousOn [I.Boundaryless]
     unfold gradChartLocal
     apply Finset.sum_congr rfl
     intro i _
-    rw [chartBasisVecFiber, Trivialization.symmL_apply _ hbase]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, Trivialization.symmL_apply _ hbase]
   · intro q hq
     exact ⟨hq.1.1, hq.2.2⟩
 

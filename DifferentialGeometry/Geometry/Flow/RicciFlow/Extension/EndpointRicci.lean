@@ -49,10 +49,10 @@ theorem ricci_tendsto_left
     (hleft : forall x0 x : M,
       forall i j : Fin (Module.finrank Real E),
         Tendsto
-          (fun s : Real => Integral.Measure.chartGramMatrix (I := I)
+          (fun s : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (S.base.metric s) x0 x i j)
           (nhdsWithin omega (Set.Iio omega))
-          (nhds (Integral.Measure.chartGramMatrix (I := I) gInf x0 x i j)))
+          (nhds (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gInf x0 x i j)))
     (x : M) (v w : TangentSpace I x) :
     Tendsto (fun s : Real => ricciTensor (I := I) (S.base.metric s) x v w)
       (nhdsWithin omega (Set.Iio omega))
@@ -115,7 +115,7 @@ theorem ricci_tendsto_left
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) y
     let b : Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I y) :=
-      Integral.Measure.chartBasisFamily (I := I) y hy
+      DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) y hy
     have hb : forall i j : Fin (Module.finrank Real E),
         gLim.inner y (b i) (b j) = gInf.inner y (b i) (b j) := by
       intro i j
@@ -133,17 +133,17 @@ theorem ricci_tendsto_left
           (fun k => (gSeq (phi k)).inner y (b i) (b j)) atTop
           (nhds (gInf.inner y (b i) (b j))) := by
         have hend := (hleft y y i j).comp (hqShift.comp hPhi.tendsto_atTop)
-        have hlimit : Integral.Measure.chartGramMatrix (I := I) gInf y y i j =
+        have hlimit : DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gInf y y i j =
             gInf.inner y (b i) (b j) := by
-          simp only [b, Integral.Measure.chartGramMatrix_apply,
-            Integral.Measure.chartBasisFamily_apply]
+          simp only [b, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
+            DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
         rw [hlimit] at hend
         refine Filter.Tendsto.congr'
           (Filter.Eventually.of_forall fun k => ?_)
           hend
         simp only [Function.comp_apply, gSeq, qShift, qSeq, b,
-          Integral.Measure.chartGramMatrix_apply,
-          Integral.Measure.chartBasisFamily_apply]
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
+          DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
       exact tendsto_nhds_unique hLimSeq hEndSeq
     have hcoe : (gLim.inner y).toLinearMap = (gInf.inner y).toLinearMap := by
       apply Module.Basis.ext b

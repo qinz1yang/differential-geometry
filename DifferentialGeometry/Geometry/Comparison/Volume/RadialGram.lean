@@ -208,7 +208,7 @@ noncomputable def basisIndexEquiv
 
 noncomputable def modelBasisFor
     (B : Module.Basis (Option ι) ℝ E) : Module.Basis (Option ι) ℝ E :=
-  (chartModelBasis E).reindex (basisIndexEquiv B).symm
+  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).reindex (basisIndexEquiv B).symm
 
 private noncomputable def endpointGram
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -598,11 +598,11 @@ theorem normalChartDensity_zero_of_perpOrthonormal
     simp only [paramGramMatrix_apply, Matrix.reindex_apply, Matrix.submatrix_apply,
       basisGram, Matrix.of_apply]
     rw [hmfd0, expMapDiffeo_zero]
-    rw [show modelBasisFor B ((basisIndexEquiv B).symm i) = chartModelBasis E i by
+    rw [show modelBasisFor B ((basisIndexEquiv B).symm i) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i by
       dsimp [modelBasisFor]
       rw [Module.Basis.reindex_apply]
       simp]
-    rw [show modelBasisFor B ((basisIndexEquiv B).symm j) = chartModelBasis E j by
+    rw [show modelBasisFor B ((basisIndexEquiv B).symm j) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j by
       dsimp [modelBasisFor]
       rw [Module.Basis.reindex_apply]
       simp]

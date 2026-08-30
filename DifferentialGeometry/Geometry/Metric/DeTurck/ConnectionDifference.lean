@@ -52,14 +52,14 @@ theorem deTurckVF_sub_eq_connectionDifference_trace
       (∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g₁ x x j k •
             connectionDifference (I := I) g₁ g₀ x
-              (chartBasisVecFiber (I := I) x j x)
-              (chartBasisVecFiber (I := I) x k x)) +
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x)) +
         ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) g₁ x x j k -
               chartInvGramMatrix (I := I) g₀ x x j k) •
             connectionDifference (I := I) g₀ g_bg x
-              (chartBasisVecFiber (I := I) x j x)
-              (chartBasisVecFiber (I := I) x k x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x) := by
   classical
   rw [deTurckVF_apply_eq (I := I) g₁ g_bg x, deTurckVF_apply_eq (I := I) g₀ g_bg x]
   rw [← Finset.sum_sub_distrib]
@@ -69,7 +69,7 @@ theorem deTurckVF_sub_eq_connectionDifference_trace
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [connectionDifference_cocycle (I := I) g₀ g₁ g_bg x
-      (chartBasisVecFiber (I := I) x j x) (chartBasisVecFiber (I := I) x k x)]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x)]
   rw [smul_add]
   rw [sub_smul]
   abel
@@ -77,7 +77,7 @@ theorem deTurckVF_sub_eq_connectionDifference_trace
 private def famCoord (x : M) (F : Fin (Module.finrank ℝ E) → TangentSpace I x) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i m =>
-    ((chartModelBasis E).repr
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x (F i))) m
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -87,7 +87,7 @@ private theorem famCoord_gram_eq_one (g : SmoothRiemannianMetric I M) {x : M}
     (hxsrc : x ∈ (extChartAt I x).source)
     (F : Fin (Module.finrank ℝ E) → TangentSpace I x)
     (hF : ∀ i j, g.inner x (F i) (F j) = if i = j then 1 else 0) :
-    famCoord (I := I) x F * chartGramMatrix (I := I) g x x *
+    famCoord (I := I) x F * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x *
         (famCoord (I := I) x F)ᵀ = 1 := by
   classical
   ext i j
@@ -96,13 +96,13 @@ private theorem famCoord_gram_eq_one (g : SmoothRiemannianMetric I M) {x : M}
   rw [hF i j] at hexp
   have hchart : ∀ a b : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g x a b (extChartAt I x x) =
-        chartGramMatrix (I := I) g x x a b := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b := by
     intro a b; unfold chartGramOnE; rw [(extChartAt I x).left_inv hxsrc]
   rw [Matrix.mul_apply]
-  rw [show (∑ a, (famCoord (I := I) x F * chartGramMatrix (I := I) g x x) i a *
+  rw [show (∑ a, (famCoord (I := I) x F * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x) i a *
         (famCoord (I := I) x F)ᵀ a j) =
       ∑ a, ∑ b, famCoord (I := I) x F i a * famCoord (I := I) x F j b *
-        chartGramMatrix (I := I) g x x a b from by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b from by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [Matrix.mul_apply, Finset.sum_mul]
@@ -125,13 +125,13 @@ private theorem sum_famCoord_eq_chartInvGram (g : SmoothRiemannianMetric I M) {x
       chartInvGramMatrix (I := I) g x x m n := by
   classical
   have h1 := famCoord_gram_eq_one (I := I) g hx hxsrc F hF
-  have hC : famCoord (I := I) x F * (chartGramMatrix (I := I) g x x *
+  have hC : famCoord (I := I) x F * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x *
         (famCoord (I := I) x F)ᵀ) = 1 := by rw [← Matrix.mul_assoc]; exact h1
-  have h2 : (chartGramMatrix (I := I) g x x * (famCoord (I := I) x F)ᵀ) *
+  have h2 : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x * (famCoord (I := I) x F)ᵀ) *
         famCoord (I := I) x F = 1 := mul_eq_one_comm.mp hC
   rw [Matrix.mul_assoc] at h2
   have hinv : (famCoord (I := I) x F)ᵀ * famCoord (I := I) x F =
-      (chartGramMatrix (I := I) g x x)⁻¹ := (Matrix.inv_eq_right_inv h2).symm
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹ := (Matrix.inv_eq_right_inv h2).symm
   have hmn := congrFun (congrFun hinv m) n
   rw [Matrix.mul_apply] at hmn
   rw [chartInvGramMatrix, ← hmn]
@@ -150,18 +150,18 @@ private theorem bilin_ortho_family_diag_eq_chartGram_trace
     (∑ i : Fin (Module.finrank ℝ E), A (F i) (F i)) =
       ∑ m : Fin (Module.finrank ℝ E), ∑ n : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x m n •
-          A (chartBasisVecFiber (I := I) x m x) (chartBasisVecFiber (I := I) x n x) := by
+          A (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x n x) := by
   classical
   have hrec : ∀ i, F i =
-      ∑ m, famCoord (I := I) x F i m • chartBasisVecFiber (I := I) x m x :=
+      ∑ m, famCoord (I := I) x F i m • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x :=
     fun i => chartBasisVecFiber_recompose (I := I) x hx (F i)
   have hsummand : ∀ i, A (F i) (F i) =
       ∑ m, ∑ n, (famCoord (I := I) x F i m * famCoord (I := I) x F i n) •
-        A (chartBasisVecFiber (I := I) x m x) (chartBasisVecFiber (I := I) x n x) := by
+        A (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x n x) := by
     intro i
     conv_lhs => rw [hrec i]
-    have hfirst : A (∑ m, famCoord (I := I) x F i m • chartBasisVecFiber (I := I) x m x) =
-        ∑ m, famCoord (I := I) x F i m • A (chartBasisVecFiber (I := I) x m x) := by
+    have hfirst : A (∑ m, famCoord (I := I) x F i m • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) =
+        ∑ m, famCoord (I := I) x F i m • A (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x) := by
       rw [map_sum]; refine Finset.sum_congr rfl (fun m _ => ?_); rw [map_smul]
     rw [hfirst, sum_apply]
     refine Finset.sum_congr rfl (fun m _ => ?_)

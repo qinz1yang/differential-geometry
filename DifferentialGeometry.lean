@@ -2179,6 +2179,7 @@ import DifferentialGeometry.Geometry.Connection.Variation.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphAtlas
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.ChristoffelTensor
+import DifferentialGeometry.Geometry.Coordinates.ChartFrame
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
@@ -2186,6 +2187,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
+import DifferentialGeometry.Geometry.Coordinates.ModelBasis
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.CoordFrameStep
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Basic

@@ -162,30 +162,30 @@ private theorem chartGramEntry_le_of_equiv
     (gRef g : SmoothRiemannianMetric I M) {C M0 : ℝ} (hC0 : 0 ≤ C) (hM0 : 0 ≤ M0) (α₀ : M)
     {Q : Set M} (hequiv : MetricUniformEquivalentOn Q gRef g C)
     (hgRef : ∀ (a : Fin (Module.finrank ℝ E)) (b : M), b ∈ Q →
-      chartGramMatrix gRef α₀ b a a ≤ M0)
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ b a a ≤ M0)
     (i j : Fin (Module.finrank ℝ E)) {x : M} (hx : x ∈ Q) :
-    |chartGramMatrix g α₀ x i j| ≤ C * M0 := by
+    |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α₀ x i j| ≤ C * M0 := by
   have hdiag : ∀ a : Fin (Module.finrank ℝ E),
-      0 ≤ g.inner x (chartBasisVecFiber (I := I) α₀ a x) (chartBasisVecFiber (I := I) α₀ a x) ∧
-        g.inner x (chartBasisVecFiber (I := I) α₀ a x) (chartBasisVecFiber (I := I) α₀ a x) ≤ C *
+      0 ≤ g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ a x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ a x) ∧
+        g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ a x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ a x) ≤ C *
           M0 := by
     intro a
-    set e := chartBasisVecFiber (I := I) α₀ a x with he
+    set e := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ a x with he
     have hnn : 0 ≤ g.inner x e e := by
       rcases eq_or_ne e 0 with he0 | hne
       · rw [he0]; simp
       · exact (g.pos x e hne).le
     refine ⟨hnn, ?_⟩
     have hup : g.inner x e e ≤ C * gRef.inner x e e := (hequiv.2 x hx e).2
-    have hg : gRef.inner x e e = chartGramMatrix gRef α₀ x a a :=
-      (chartGramMatrix_apply gRef α₀ x a a).symm
+    have hg : gRef.inner x e e = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ x a a :=
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply gRef α₀ x a a).symm
     calc g.inner x e e ≤ C * gRef.inner x e e := hup
-      _ = C * chartGramMatrix gRef α₀ x a a := by rw [hg]
+      _ = C * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ x a a := by rw [hg]
       _ ≤ C * M0 := by
         apply mul_le_mul_of_nonneg_left (hgRef a x hx) hC0
-  rw [chartGramMatrix_apply]
-  set ei := chartBasisVecFiber (I := I) α₀ i x
-  set ej := chartBasisVecFiber (I := I) α₀ j x
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
+  set ei := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ i x
+  set ej := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α₀ j x
   have hcs : (g.inner x ei ej) ^ 2 ≤ (C * M0) * (C * M0) := by
     calc (g.inner x ei ej) ^ 2 ≤ g.inner x ei ei * g.inner x ej ej := metricInnerSq_le g x ei ej
       _ ≤ (C * M0) * (C * M0) :=
@@ -200,14 +200,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 private theorem exists_gRefDiag_bound (gRef : SmoothRiemannianMetric I M) (α₀ : M)
     {Q : Set M} (hQc : IsCompact Q) (hQs : Q ⊆ (chartAt H α₀).source) :
     ∃ M0 : ℝ, 0 ≤ M0 ∧ ∀ (a : Fin (Module.finrank ℝ E)) (b : M), b ∈ Q →
-      chartGramMatrix gRef α₀ b a a ≤ M0 := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ b a a ≤ M0 := by
   classical
   choose Ci hCi_pos hCi using fun a : Fin (Module.finrank ℝ E) =>
     chartGramMatrix_entry_isBounded_on_compact gRef α₀ a a hQc hQs
   refine ⟨∑ a : Fin (Module.finrank ℝ E), Ci a,
     Finset.sum_nonneg (fun a _ => (hCi_pos a).le), ?_⟩
   intro a b hb
-  calc chartGramMatrix gRef α₀ b a a ≤ |chartGramMatrix gRef α₀ b a a| := le_abs_self _
+  calc DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ b a a ≤ |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ b a a| := le_abs_self _
     _ ≤ Ci a := hCi a b hb
     _ ≤ ∑ a' : Fin (Module.finrank ℝ E), Ci a' :=
         Finset.single_le_sum (fun i _ => (hCi_pos i).le) (Finset.mem_univ a)
@@ -225,7 +225,7 @@ private theorem chartJet0_le_of_equiv
     {Q : Set M} (hQ : Q ⊆ chartLeviCivitaGoodSet (I := I) α₀)
     (hequiv : MetricUniformEquivalentOn Q gRef g C)
     (hgRef : ∀ (a : Fin (Module.finrank ℝ E)) (b : M), b ∈ Q →
-      chartGramMatrix gRef α₀ b a a ≤ M0)
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix gRef α₀ b a a ≤ M0)
     (i j : Fin (Module.finrank ℝ E)) {x : M} (hx : x ∈ Q) :
     |DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α₀ i j
       (extChartAt I α₀ x)| ≤ C * M0 := by
@@ -233,7 +233,7 @@ private theorem chartJet0_le_of_equiv
     rw [extChartAt_source]; exact goodSet_subset_chartSource α₀ (hQ hx)
   have hred : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α₀ i j
     (extChartAt I α₀ x)
-      = chartGramMatrix g α₀ x i j := by
+      = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α₀ x i j := by
     rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, (extChartAt I α₀).left_inv hxsrc]
   rw [hred]
   exact chartGramEntry_le_of_equiv gRef g hC0 hM0 α₀ hequiv hgRef i j hx
@@ -309,23 +309,23 @@ theorem chartGram_smooth_of_soln
     (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
       (fun p : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
       (Set.Ioo alpha omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   set e := trivializationAt E (TangentSpace I) x₀ with he
-  have hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) (e.localFrame (chartModelBasis E)) e.baseSet :=
-    e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) (chartModelBasis E)
+  have hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
   have hbridge : ∀ {x : M} (hx : x ∈ e.baseSet) (k : Fin (Module.finrank ℝ E)),
-      e.localFrame (chartModelBasis E) k x
-        = Integral.Measure.chartBasisVecFiber (I := I) x₀ k x := by
+      e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k x
+        = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x := by
     intro x hx k
-    rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-    unfold Bundle.Trivialization.basisAt Integral.Measure.chartBasisVecFiber
+    rw [e.localFrame_apply_of_mem_baseSet (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx]
+    unfold Bundle.Trivialization.basisAt DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
     rw [Module.Basis.map_apply]
-    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
-  have h := hS.smoothMetric.frameCompSmooth (e.localFrame (chartModelBasis E)) hframe i j
+    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
+  have h := hS.smoothMetric.frameCompSmooth (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) hframe i j
   refine h.congr fun p hp => ?_
   have hx : p.2 ∈ e.baseSet := hp.2
-  simp only [Integral.Measure.chartGramMatrix_apply, hbridge hx i, hbridge hx j,
+  simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, hbridge hx i, hbridge hx j,
     SolutionOn.family]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -337,7 +337,7 @@ theorem chartGram_cont_of_soln
     (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
     ContinuousOn
       (fun p : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
       (Set.Ico alpha omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   classical
   rw [continuousOn_iff_continuous_domRestrict]
@@ -354,23 +354,23 @@ theorem chartGram_cont_of_soln
       Continuous (fun q : ↥s =>
         TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
           ((q : ℝ × M)).2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀
             (if k = 0 then i else j) ((q : ℝ × M)).2)) := by
     intro k
     rw [continuous_iff_continuousAt]
     intro q
     have hframe :=
-      (Integral.Measure.chartBasisVec_contMDiffOn (I := I) x₀ (if k = 0 then i else j)).contMDiffAt
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ (if k = 0 then i else j)).contMDiffAt
         ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds q.2.2)
     exact ContinuousAt.comp
       (g := fun y : M => TotalSpace.mk' E (E := fun y : M => TangentSpace I y) y
-        (Integral.Measure.chartBasisVecFiber (I := I) x₀ (if k = 0 then i else j) y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (if k = 0 then i else j) y))
       hframe.continuousAt hb.continuousAt
   have heval :=
     (hS.smoothMetric.metricTensor_cont).eval_continuous (P := ↥s) hτ hτK hb hv
   refine heval.congr (fun q => ?_)
   rw [Tensor0SBundle.metricTensorField_apply]
-  simp [Integral.Measure.chartGramMatrix_apply, SolutionOn.family]
+  simp [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, SolutionOn.family]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ric_quad_le_of_soln

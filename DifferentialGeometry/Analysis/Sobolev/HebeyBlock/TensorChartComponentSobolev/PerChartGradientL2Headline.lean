@@ -75,7 +75,7 @@ private lemma chartTensorRSCovariantDerivative_totalSpace_continuousOn
           (E := fun y : M => TensorRSSpace r s I y) b
           (chartTensorRSCovariantDerivative (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
-            (chartBasisVecFiber (I := I) α k) b) :
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b) :
           TotalSpace (TensorRSModel r s ℝ E)
             (fun y : M => TensorRSSpace r s I y)))
       (chartAt H α).source := by
@@ -93,7 +93,7 @@ private lemma chartTensorRSCovariantDerivative_totalSpace_continuousOn
           (TotalSpace.mk' (TensorRSModel r s ℝ E)
             (E := fun y : M => TensorRSSpace r s I y) b
             (tensorCovDerivAt (I := I) (M := M) g r s S.toCcTensor b
-              (chartBasisVecFiber (I := I) α k b)) :
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) :
             TotalSpace (TensorRSModel r s ℝ E)
               (fun y : M => TensorRSSpace r s I y)))
         (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -103,7 +103,7 @@ private lemma chartTensorRSCovariantDerivative_totalSpace_continuousOn
   intro b hb
   have hcov_eq :=
     chartTensorRSCovariantDerivative_eq_tensorCovDerivAt_at
-      (I := I) (M := M) g r s α S.toCcTensor (chartBasisVecFiber (I := I) α k) hb
+      (I := I) (M := M) g r s α S.toCcTensor (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) hb
   simp only [hcov_eq]
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
@@ -124,7 +124,7 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
             (∑ k : Fin (Module.finrank ℝ E),
               ‖chartTensorRSCovariantDerivative (I := I) r s g α
                   (fun b' => S.toCcTensor.toSection b')
-                  (chartBasisVecFiber (I := I) α k) b‖ ^ 2))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
@@ -137,7 +137,7 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
         (∑ k : Fin (Module.finrank ℝ E),
           ‖chartTensorRSCovariantDerivative (I := I) r s g α
               (fun b' => S.toCcTensor.toSection b')
-              (chartBasisVecFiber (I := I) α k) b‖ ^ 2) with hf_def
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2) with hf_def
   have h_indicator_eq :
       f = (tsupport ρ).indicator f := by
     funext b
@@ -164,17 +164,17 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
         ∑ k : Fin (Module.finrank ℝ E),
           ‖chartTensorRSCovariantDerivative (I := I) r s g α
               (fun b' => S.toCcTensor.toSection b')
-              (chartBasisVecFiber (I := I) α k) b‖ ^ 2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2)
       (chartAt H α).source := by
     refine continuousOn_finsetSum _ (fun k _ => ?_)
     have h_inner : ContinuousOn
         (fun b : M =>
           (⟪chartTensorRSCovariantDerivative (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b,
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b,
             chartTensorRSCovariantDerivative (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b⟫_ℝ : ℝ))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b⟫_ℝ : ℝ))
         (chartAt H α).source :=
       ContinuousOn.inner_bundle
         (chartTensorRSCovariantDerivative_totalSpace_continuousOn (I := I) (M := M) g r s α S k)
@@ -188,7 +188,7 @@ private lemma chartTensorRSCovariantDerivative_pouWeightedNorm_aestronglyMeasura
           (∑ k : Fin (Module.finrank ℝ E),
             ‖chartTensorRSCovariantDerivative (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b‖ ^ 2))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2))
       (chartAt H α).source :=
     Real.continuous_sqrt.comp_continuousOn h_sumsq
   exact h_pou_on.mul (h_sqrt.mono hsub)
@@ -207,20 +207,20 @@ private lemma chartTensorRSSlotCorrection_norm_sq_le
     ‖- (∑ i : Fin r,
           chartTensorRSInputSlotCorrection (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
-            (chartBasisVecFiber (I := I) α k) b i)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
       + (∑ l : Fin s,
           chartTensorRSOutputSlotCorrection (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
-            (chartBasisVecFiber (I := I) α k) b l)‖ ^ 2 ≤
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l)‖ ^ 2 ≤
       (2 * ((r : ℝ) + (s : ℝ))) *
         ((∑ i : Fin r,
             ‖chartTensorRSInputSlotCorrection (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b i‖ ^ 2) +
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i‖ ^ 2) +
           (∑ l : Fin s,
             ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
@@ -228,11 +228,11 @@ private lemma chartTensorRSSlotCorrection_norm_sq_le
     tensorRSRiemannianNormedAddCommGroup r s b
   set a : Fin r → TensorRSSpace r s I b := fun i =>
     chartTensorRSInputSlotCorrection (I := I) r s g α
-      (fun b' => S.toCcTensor.toSection b') (chartBasisVecFiber (I := I) α k) b i
+      (fun b' => S.toCcTensor.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i
     with ha_def
   set c : Fin s → TensorRSSpace r s I b := fun l =>
     chartTensorRSOutputSlotCorrection (I := I) r s g α
-      (fun b' => S.toCcTensor.toSection b') (chartBasisVecFiber (I := I) α k) b l
+      (fun b' => S.toCcTensor.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l
     with hc_def
   have h_a_sum_nn : 0 ≤ ∑ i : Fin r, ‖a i‖ ^ 2 :=
     Finset.sum_nonneg (fun _ _ => sq_nonneg _)

@@ -213,7 +213,7 @@ private theorem lieArm_threeArm_coeffFields_perOrder_data
         (lt_of_le_of_lt hδ_le hδ₀) hδ (lt_of_le_of_lt hδ'_le hδ₀) hδ' x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) hs).deriv]
-      simpa only [centeredChartTangentEquiv_apply,
+      simpa only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
         ContinuousLinearEquiv.apply_symm_apply] using hident s hs x v
     · intro s hs x
       refine ⟨?_, ?_, ?_⟩

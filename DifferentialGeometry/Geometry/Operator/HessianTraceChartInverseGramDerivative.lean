@@ -58,7 +58,7 @@ lemma partialDeriv_chartInvGramOnE_eq
     have hprod_eq :
         ∑ b : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g α e b y * chartInvGramOnE (I := I) g α b p y =
-        (chartGramMatrix (I := I) g α ((extChartAt I α).symm y) *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y) *
           chartInvGramMatrix (I := I) g α ((extChartAt I α).symm y)) e p := by
       simp only [Matrix.mul_apply]
       rfl
@@ -262,7 +262,7 @@ lemma partialDeriv_chartInvGramOnE_eq
             chartInvGramOnE (I := I) g α j a y₀ *
               chartGramOnE (I := I) g α a b y₀) =
           (chartInvGramMatrix (I := I) g α z₀ *
-            chartGramMatrix (I := I) g α z₀) j b := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z₀) j b := by
         simp only [Matrix.mul_apply]
         rfl
       rw [hprod_eq]
@@ -364,8 +364,8 @@ lemma partialDeriv2_chartInvGramOnE_eq
       partialDeriv (E := E) i F y₀ := by
     change (fderiv ℝ (fun y' : E => partialDeriv (E := E) j
         (chartInvGramOnE (I := I) g α k l) y') y₀)
-        ((chartModelBasis E) i) =
-      (fderiv ℝ F y₀) ((chartModelBasis E) i)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+      (fderiv ℝ F y₀) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
     rw [hfderiv_eq]
   rw [hpartial_eq]
   have hG_diff_kp : ∀ p : Fin (Module.finrank ℝ E),
@@ -408,7 +408,7 @@ lemma partialDeriv2_chartInvGramOnE_eq
               partialDeriv (E := E) i
                 (fun y' : E => partialDeriv (E := E) j
                   (chartGramOnE (I := I) g α p q) y') y₀) := by
-    change (fderiv ℝ F y₀) ((chartModelBasis E) i) = _
+    change (fderiv ℝ F y₀) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) = _
     rw [hF_def]
     rw [show
       fderiv ℝ (fun y' : E =>
@@ -481,16 +481,16 @@ lemma partialDeriv2_chartInvGramOnE_eq
     intro a b
     unfold chartInvGramOnE
     set z := (extChartAt I α).symm y₀
-    have hG_hermit : (chartGramMatrix (I := I) g α z).IsHermitian :=
-      chartGramMatrix_isHermitian (I := I) g α z
-    have hGinv_hermit : (chartGramMatrix (I := I) g α z)⁻¹.IsHermitian :=
+    have hG_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z).IsHermitian :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α z
+    have hGinv_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹.IsHermitian :=
       hG_hermit.inv
     have hentry := hGinv_hermit.apply a b
     unfold chartInvGramMatrix
-    have hstar : star ((chartGramMatrix (I := I) g α z)⁻¹ b a) =
-        (chartGramMatrix (I := I) g α z)⁻¹ a b := hentry
-    rw [show star ((chartGramMatrix (I := I) g α z)⁻¹ b a) =
-        (chartGramMatrix (I := I) g α z)⁻¹ b a from rfl] at hstar
+    have hstar : star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ b a) =
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ a b := hentry
+    rw [show star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ b a) =
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ b a from rfl] at hstar
     exact hstar.symm
   refine (?_ : _ = _)
   have hpq : ∀ p q : Fin (Module.finrank ℝ E),
@@ -730,16 +730,16 @@ lemma chartInvGramOnE_symm_pointwise
     chartInvGramOnE (I := I) g α i j y = chartInvGramOnE (I := I) g α j i y := by
   unfold chartInvGramOnE
   set z := (extChartAt I α).symm y
-  have hG_hermit : (chartGramMatrix (I := I) g α z).IsHermitian :=
-    chartGramMatrix_isHermitian (I := I) g α z
-  have hGinv_hermit : (chartGramMatrix (I := I) g α z)⁻¹.IsHermitian :=
+  have hG_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z).IsHermitian :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α z
+  have hGinv_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹.IsHermitian :=
     hG_hermit.inv
   have hentry := hGinv_hermit.apply i j
   unfold chartInvGramMatrix
-  have hstar : star ((chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (chartGramMatrix (I := I) g α z)⁻¹ i j := hentry
-  rw [show star ((chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
+  have hstar : star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ i j := hentry
+  rw [show star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
   exact hstar.symm
 
 end Operator

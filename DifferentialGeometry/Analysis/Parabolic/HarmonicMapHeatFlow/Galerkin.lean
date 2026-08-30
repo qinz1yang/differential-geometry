@@ -272,7 +272,7 @@ theorem hmfFinMass_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
     ContinuousOn (fun t => hmfFinMass (I := I) (M := M) q (g t) J) K := by
@@ -336,7 +336,7 @@ theorem hmfFinSharp_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (C : ℝ≥0∞) (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : ∀ t ∈ K, riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -360,7 +360,7 @@ theorem hmfFin_exists
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Icc (0 : ℝ) T ×ˢ
         (trivializationAt E (TangentSpace I) x₀).baseSet))
     (C : ℝ≥0∞) (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -480,7 +480,7 @@ theorem hmfSpec_exists
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Icc (0 : ℝ) T ×ˢ
         (trivializationAt E (TangentSpace I) x₀).baseSet))
     (C : ℝ≥0∞) (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)

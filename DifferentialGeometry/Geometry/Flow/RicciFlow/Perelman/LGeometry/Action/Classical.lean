@@ -252,21 +252,21 @@ private theorem lPosRep_apply
             (T - (a + r) ^ 2, u.toFun r) w := by
   classical
   have hcoord (i : Fin (Module.finrank Real E)) :
-      chartCoordCLM E i w = (chartModelBasis E).repr w i := rfl
+      chartCoordCLM E i w = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w i := rfl
   have hkin :
       (∑ i : Fin (Module.finrank Real E),
         inner Real
             (((1 / 2 : Real) •
               (fderiv Real (chartGramOp (I := I) S.family p)
                 (T - (a + r) ^ 2, u.toFun r))
-                (0, chartModelBasis E i)) (q r)) (q r) *
+                (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (q r)) (q r) *
           chartCoordCLM E i w) =
         (1 / 2 : Real) *
           inner Real
             (((fderiv Real (chartGramOp (I := I) S.family p)
               (T - (a + r) ^ 2, u.toFun r)) (0, w)) (q r)) (q r) := by
     simp_rw [hcoord]
-    conv_rhs => rw [← (chartModelBasis E).sum_repr w]
+    conv_rhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr w]
     simp only [smul_apply, real_inner_smul_left]
     change (∑ i : Fin (Module.finrank Real E),
         (1 / 2 : Real) *
@@ -274,13 +274,13 @@ private theorem lPosRep_apply
             ((((fderiv Real (chartGramOp (I := I) S.family p)
               (T - (a + r) ^ 2, u.toFun r)).comp
                 (ContinuousLinearMap.inr Real Real E))
-              (chartModelBasis E i)) (q r)) (q r) *
-          (chartModelBasis E).repr w i) =
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (q r)) (q r) *
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w i) =
       (1 / 2 : Real) * inner Real
         ((((fderiv Real (chartGramOp (I := I) S.family p)
           (T - (a + r) ^ 2, u.toFun r)).comp
             (ContinuousLinearMap.inr Real Real E))
-          (∑ i, ((chartModelBasis E).repr w i) • chartModelBasis E i))
+          (∑ i, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w i) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
           (q r)) (q r)
     rw [map_sum, sum_apply, sum_inner]
     simp only [map_smul, smul_apply,
@@ -294,13 +294,13 @@ private theorem lPosRep_apply
       (∑ i : Fin (Module.finrank Real E),
         2 * (a + r) ^ 2 *
             chartScalCov (I := I) S p
-              (T - (a + r) ^ 2, u.toFun r) (chartModelBasis E i) *
+              (T - (a + r) ^ 2, u.toFun r) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) *
           chartCoordCLM E i w) =
         2 * (a + r) ^ 2 *
           chartScalCov (I := I) S p
             (T - (a + r) ^ 2, u.toFun r) w := by
     simp_rw [hcoord]
-    conv_rhs => rw [← (chartModelBasis E).sum_repr w]
+    conv_rhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr w]
     rw [map_sum]
     simp only [map_smul, smul_eq_mul, Finset.mul_sum]
     apply Finset.sum_congr rfl

@@ -110,7 +110,7 @@ def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => deTurckRHSModelFun (I := I) g_bg g x, by
     let d := Module.finrank ℝ E
-    let b : Module.Basis (Fin d) ℝ E := chartModelBasis E
+    let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord (TangentSpace I) ∞ b _).mpr
       fun σ x₀ => ?_
     have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞

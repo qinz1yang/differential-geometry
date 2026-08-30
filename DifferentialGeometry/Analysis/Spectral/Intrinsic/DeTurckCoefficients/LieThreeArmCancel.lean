@@ -78,7 +78,7 @@ theorem lieSlope_eq_arms
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-          ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+          ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
   classical
   have hy : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     extChartAt_target_subset_interior_of_boundaryless

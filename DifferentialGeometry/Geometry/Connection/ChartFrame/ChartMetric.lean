@@ -26,10 +26,10 @@ lemma g_inner_eq_chartGramMatrix_basis
     (g : SmoothRiemannianMetric I M) (α : M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     g.inner x
-        (chartBasisVecFiber (I := I) α i x)
-        (chartBasisVecFiber (I := I) α j x) =
-      chartGramMatrix (I := I) g α x i j :=
-  (chartGramMatrix_apply (I := I) g α x i j).symm
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j :=
+  (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply (I := I) g α x i j).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartBasisVecFiber_recompose
@@ -37,9 +37,9 @@ lemma chartBasisVecFiber_recompose
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v)) i •
-        chartBasisVecFiber (I := I) α i x := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
   classical
   set T : Bundle.Trivialization E
       (π E (TangentSpace I : M → Type _)) :=
@@ -48,13 +48,13 @@ lemma chartBasisVecFiber_recompose
       T.symmL ℝ x (T.continuousLinearMapAt ℝ x v) = v :=
     T.symmL_continuousLinearMapAt (R := ℝ) hx v
   set vE : E := T.continuousLinearMapAt ℝ x v with hvE_def
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   have hdecomp : vE = ∑ i, b.repr vE i • b i :=
     (Module.Basis.sum_repr b vE).symm
   have hsymm_sum := congrArg (T.symmL ℝ x) hdecomp
   rw [hsymm_apply] at hsymm_sum
   rw [map_sum] at hsymm_sum
-  have hbasis : ∀ i, T.symmL ℝ x (b i) = chartBasisVecFiber (I := I) α i x := by
+  have hbasis : ∀ i, T.symmL ℝ x (b i) = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
     intro i; rfl
   rw [hsymm_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -69,33 +69,33 @@ theorem g_inner_eq_chart_sum
     g.inner x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v)) i *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x w)) j *
             chartGramOnE (I := I) g α i j (extChartAt I α x) := by
   classical
   set T : Bundle.Trivialization E
       (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   set vE : E := T.continuousLinearMapAt ℝ x v
   set wE : E := T.continuousLinearMapAt ℝ x w
-  have hv : v = ∑ i, b.repr vE i • chartBasisVecFiber (I := I) α i x :=
+  have hv : v = ∑ i, b.repr vE i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartBasisVecFiber_recompose (I := I) α hx v
-  have hw : w = ∑ j, b.repr wE j • chartBasisVecFiber (I := I) α j x :=
+  have hw : w = ∑ j, b.repr wE j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x :=
     chartBasisVecFiber_recompose (I := I) α hx w
   have hchart : ∀ i j : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i j (extChartAt I α x) =
-        chartGramMatrix (I := I) g α x i j := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j := by
     intro i j
     unfold chartGramOnE
     rw [(extChartAt I α).left_inv hxsrc]
   rw [hv, hw]
   have hL :
-      g.inner x (∑ i, b.repr vE i • chartBasisVecFiber (I := I) α i x)
+      g.inner x (∑ i, b.repr vE i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
         = ∑ i, b.repr vE i •
-            g.inner x (chartBasisVecFiber (I := I) α i x) := by
+            g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) := by
     rw [map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_smul]
@@ -132,7 +132,7 @@ private lemma sum_chartInvGramOnE_chartGramOnE_left
           chartInvGramOnE (I := I) g α m l y *
             chartGramOnE (I := I) g α l j y =
         (chartInvGramMatrix (I := I) g α z *
-          chartGramMatrix (I := I) g α z) m j := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z) m j := by
     simp only [Matrix.mul_apply]
     rfl
   rw [hprod_eq, chartInvGramMatrix_mul_chartGramMatrix (I := I) g α hz_base]

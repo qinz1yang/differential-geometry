@@ -379,7 +379,7 @@ theorem chartFrame_isFrameTop (x₀ : M) :
     IsLocalFrameOn I E (∞ : WithTop ℕ∞) (chartFrame I x₀)
       (trivializationAt E (TangentSpace I) x₀).baseSet :=
   (trivializationAt E (TangentSpace I) x₀).isLocalFrameOn_localFrame_baseSet I ∞
-    (DifferentialGeometry.Integral.Measure.chartModelBasis E)
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
 
 private def refInterval : DifferentialGeometry.Geometry.Curvature.RealTimeInterval :=
   DifferentialGeometry.Geometry.Curvature.RealTimeInterval.univ 0
@@ -402,7 +402,7 @@ theorem chrEvo_of_gram [FiniteDimensional ℝ E] (g : Real -> SmoothRiemannianMe
     (hjoint : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hpde : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : Real => (g s).inner x v w)
@@ -427,12 +427,12 @@ theorem gamma_of_gram [FiniteDimensional ℝ E] (g₁ g₂ : Real -> SmoothRiema
     (hjoint₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hjoint₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hpde₁ : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : Real => (g₁ s).inner x v w)

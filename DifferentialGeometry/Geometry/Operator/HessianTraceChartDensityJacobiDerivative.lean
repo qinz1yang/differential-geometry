@@ -22,31 +22,31 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Integral.Measure
 
 private noncomputable def basisDirectionLine (y₀ : E) (l : Fin (Module.finrank ℝ E)) :
-    ℝ → E := fun s => y₀ + s • (chartModelBasis E) l
+    ℝ → E := fun s => y₀ + s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma hasDerivAt_jacobiLine (y₀ : E) (l : Fin (Module.finrank ℝ E))
     (s : ℝ) :
-    HasDerivAt (basisDirectionLine (E := E) y₀ l) ((chartModelBasis E) l) s := by
-  have h₁ : HasDerivAt (fun s : ℝ => s • (chartModelBasis E) l)
-      ((1 : ℝ) • (chartModelBasis E) l) s :=
-    (hasDerivAt_id s).smul_const ((chartModelBasis E) l)
-  have h₁' : HasDerivAt (fun s : ℝ => s • (chartModelBasis E) l)
-      ((chartModelBasis E) l) s := by
-    rw [show ((1 : ℝ) • (chartModelBasis E) l) = (chartModelBasis E) l from
+    HasDerivAt (basisDirectionLine (E := E) y₀ l) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) s := by
+  have h₁ : HasDerivAt (fun s : ℝ => s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)
+      ((1 : ℝ) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) s :=
+    (hasDerivAt_id s).smul_const ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)
+  have h₁' : HasDerivAt (fun s : ℝ => s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) s := by
+    rw [show ((1 : ℝ) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l from
       one_smul ℝ _] at h₁
     exact h₁
   have h₂ : HasDerivAt (fun _ : ℝ => y₀) (0 : E) s := hasDerivAt_const s y₀
   have h := h₂.add h₁'
-  have hcoerce : (0 : E) + (chartModelBasis E) l = (chartModelBasis E) l := zero_add _
+  have hcoerce : (0 : E) + (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l := zero_add _
   rw [hcoerce] at h
-  have hfun_eq : (fun s : ℝ => y₀ + s • (chartModelBasis E) l) =
+  have hfun_eq : (fun s : ℝ => y₀ + s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) =
       basisDirectionLine (E := E) y₀ l := by
     funext s; rfl
-  have h' : HasDerivAt (fun s : ℝ => y₀ + s • (chartModelBasis E) l)
-      ((chartModelBasis E) l) s := by
-    have hpoint : ((fun _ : ℝ => y₀) + fun s : ℝ => s • (chartModelBasis E) l) =
-        (fun s : ℝ => y₀ + s • (chartModelBasis E) l) := by
+  have h' : HasDerivAt (fun s : ℝ => y₀ + s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) s := by
+    have hpoint : ((fun _ : ℝ => y₀) + fun s : ℝ => s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) =
+        (fun s : ℝ => y₀ + s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
       funext s; simp [Pi.add_apply]
     rw [hpoint] at h
     exact h
@@ -89,7 +89,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma gramAtY_eq_chartGramMatrix
     (g : SmoothRiemannianMetric I M) (α : M) (y₀ : E) :
     (Matrix.of fun i j => chartGramOnE (I := I) g α i j y₀) =
-      chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀) := by
   ext i j
   rfl
 
@@ -122,7 +122,7 @@ private lemma gramJacobiFamily_det_pos
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hsource
-  exact chartGramMatrix_det_pos (I := I) g α hbase
+  exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g α hbase
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma partialDeriv_det_chartGramOnE
@@ -130,9 +130,9 @@ private lemma partialDeriv_det_chartGramOnE
     (y₀ : E) (l : Fin (Module.finrank ℝ E))
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     partialDeriv (E := E) l
-        (fun y : E => (chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) y₀ =
-      (chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀)).det *
-        Matrix.trace ((chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀))⁻¹ *
+        (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) y₀ =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀)).det *
+        Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀))⁻¹ *
           Matrix.of (fun i j => partialDeriv (E := E) l
             (chartGramOnE (I := I) g α i j) y₀)) := by
   classical
@@ -152,10 +152,10 @@ private lemma partialDeriv_det_chartGramOnE
         partialDeriv (E := E) l (chartGramOnE (I := I) g α i j) y₀))
       0 (fun i j => by simpa [Matrix.of_apply] using hentries i j) hunit
   have hfun_eq : (fun s : ℝ => (Gf s).det) =
-      fun s : ℝ => (chartGramMatrix (I := I) g α
+      fun s : ℝ => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
         ((extChartAt I α).symm (basisDirectionLine (E := E) y₀ l s))).det := by
     funext s
-    have hmat_eq : Gf s = chartGramMatrix (I := I) g α
+    have hmat_eq : Gf s = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
         ((extChartAt I α).symm (basisDirectionLine (E := E) y₀ l s)) := by
       rw [hGf]
       ext i j
@@ -163,12 +163,12 @@ private lemma partialDeriv_det_chartGramOnE
     rw [hmat_eq]
   rw [hfun_eq] at hjac
   have hDF : DifferentiableAt ℝ
-      (fun y : E => (chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) y₀ := by
+      (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) y₀ := by
     have hdet_smooth : ContDiffOn ℝ ∞
-        (fun y : E => (chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det)
+        (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det)
         (extChartAt I α).target := by
       have hexp : (fun y : E =>
-            (chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) =
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det) =
           (fun y : E =>
             ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
               ((Equiv.Perm.sign σ : ℤ) : ℝ) *
@@ -183,17 +183,17 @@ private lemma partialDeriv_det_chartGramOnE
       refine contDiffOn_prod (fun i _ => ?_)
       exact chartGramOnE_contDiffOn (I := I) g α (σ i) i
     have hcd_int : ContDiffOn ℝ ∞
-        (fun y : E => (chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det)
+        (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det)
         (interior (extChartAt I α).target) := hdet_smooth.mono interior_subset
     have hop_int : IsOpen (interior (extChartAt I α).target) := isOpen_interior
     have hy_nhd : interior (extChartAt I α).target ∈ 𝓝 y₀ := hop_int.mem_nhds hy
     exact (hcd_int.contDiffAt hy_nhd).differentiableAt (by simp)
   have hcomp := hasDerivAt_comp_jacobiLine (E := E) (l := l)
-    (F := fun y : E => (chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det)
+    (F := fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y)).det)
     hDF
   have heq := hjac.unique hcomp
   have hGf_zero_eq : Gf 0 =
-      chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀) := by
     rw [hGf, gramJacobiFamily_zero, gramAtY_eq_chartGramMatrix]
   rw [hGf_zero_eq] at heq
   exact heq.symm
@@ -205,7 +205,7 @@ lemma partialDeriv_chartDensityOnE
     (hy : y₀ ∈ interior (extChartAt I α).target) :
     partialDeriv (E := E) l (chartDensityOnE (I := I) g α) y₀ =
       (1 / 2) *
-        Matrix.trace ((chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀))⁻¹ *
+        Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀))⁻¹ *
           Matrix.of (fun i j => partialDeriv (E := E) l
             (chartGramOnE (I := I) g α i j) y₀)) *
         chartDensityOnE (I := I) g α y₀ := by
@@ -227,7 +227,7 @@ lemma partialDeriv_chartDensityOnE
   have hfun_eq : (fun s : ℝ => Real.sqrt (Gf s).det) =
       fun s : ℝ => chartDensityOnE (I := I) g α (basisDirectionLine (E := E) y₀ l s) := by
     funext s
-    have hmat_eq : Gf s = chartGramMatrix (I := I) g α
+    have hmat_eq : Gf s = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
         ((extChartAt I α).symm (basisDirectionLine (E := E) y₀ l s)) := by
       rw [hGf]
       ext i j
@@ -241,10 +241,10 @@ lemma partialDeriv_chartDensityOnE
     (F := chartDensityOnE (I := I) g α) hDF
   have heq := hjac.unique hcomp
   have hGf_zero_eq : Gf 0 =
-      chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀) := by
     rw [hGf, gramJacobiFamily_zero, gramAtY_eq_chartGramMatrix]
   have hsqrt_eq :
-      Real.sqrt (chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀)).det =
+      Real.sqrt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y₀)).det =
         chartDensityOnE (I := I) g α y₀ := rfl
   rw [hGf_zero_eq] at heq
   rw [hsqrt_eq] at heq

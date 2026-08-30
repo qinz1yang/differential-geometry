@@ -36,7 +36,7 @@ def metricCovectorNormSq (g : SmoothRiemannianMetric I M) (x : M) (ξ : E) : ℝ
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x i j *
-        ((chartModelBasis E).repr ξ i) * ((chartModelBasis E).repr ξ j)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma metricCovectorNormSq_def (g : SmoothRiemannianMetric I M) (x : M) (ξ : E) :
@@ -44,7 +44,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x i j *
-            ((chartModelBasis E).repr ξ i) * ((chartModelBasis E).repr ξ j) := rfl
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma metricCovectorNormSq_zero (g : SmoothRiemannianMetric I M) (x : M) :
@@ -57,8 +57,8 @@ private lemma chartInvGramMatrix_self_posDef (g : SmoothRiemannianMetric I M) (x
   have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact mem_chart_source H x
-  have hG : (chartGramMatrix (I := I) g x x).PosDef :=
-    chartGramMatrix_posDef (I := I) g x hx
+  have hG : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x).PosDef :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g x hx
   rw [chartInvGramMatrix]
   exact hG.inv
 
@@ -66,9 +66,9 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma metricCovectorNormSq_eq_dotProduct_mulVec
     (g : SmoothRiemannianMetric I M) (x : M) (ξ : E) :
     metricCovectorNormSq (I := I) g x ξ =
-      star (fun i => (chartModelBasis E).repr ξ i) ⬝ᵥ
+      star (fun i => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) ⬝ᵥ
         (chartInvGramMatrix (I := I) g x x) *ᵥ
-          (fun i => (chartModelBasis E).repr ξ i) := by
+          (fun i => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) := by
   classical
   rw [metricCovectorNormSq_def]
   simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_trivial]
@@ -90,13 +90,13 @@ theorem metricCovectorNormSq_pos (g : SmoothRiemannianMetric I M) (x : M)
     0 < metricCovectorNormSq (I := I) g x ξ := by
   classical
   rw [metricCovectorNormSq_eq_dotProduct_mulVec]
-  have hcoord : (fun i => (chartModelBasis E).repr ξ i) ≠ 0 := by
+  have hcoord : (fun i => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) ≠ 0 := by
     intro hzero
     apply hξ
-    have hrepr : (chartModelBasis E).repr ξ = 0 := by
+    have hrepr : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ = 0 := by
       ext i
       exact congrFun hzero i
-    have := congrArg (chartModelBasis E).repr.symm hrepr
+    have := congrArg (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr.symm hrepr
     simpa using this
   exact (chartInvGramMatrix_self_posDef (I := I) g x).dotProduct_mulVec_pos hcoord
 
@@ -156,7 +156,7 @@ def secondOrderSymbol (F : M → Type*)
   fun x ξ =>
     (-∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          a x i j * ((chartModelBasis E).repr ξ i) * ((chartModelBasis E).repr ξ j)) •
+          a x i j * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j)) •
       LinearMap.id
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] in
@@ -167,8 +167,8 @@ omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] in
     secondOrderSymbol (E := E) F a x ξ =
       (-∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            a x i j * ((chartModelBasis E).repr ξ i) *
-              ((chartModelBasis E).repr ξ j)) • LinearMap.id := rfl
+            a x i j * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j)) • LinearMap.id := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] in
 lemma secondOrderSymbol_apply_apply (F : M → Type*)
@@ -178,8 +178,8 @@ lemma secondOrderSymbol_apply_apply (F : M → Type*)
     secondOrderSymbol (E := E) F a x ξ v =
       (-∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            a x i j * ((chartModelBasis E).repr ξ i) *
-              ((chartModelBasis E).repr ξ j)) • v := by
+            a x i j * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j)) • v := by
   rw [secondOrderSymbol_apply]
   rfl
 
@@ -210,8 +210,8 @@ omit [NeZero (Module.finrank ℝ E)] in
       (-∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x i j *
-              ((chartModelBasis E).repr ξ i) *
-                ((chartModelBasis E).repr ξ j)) • LinearMap.id := rfl
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i) *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j)) • LinearMap.id := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianSymbol_eq_isotropic (g : SmoothRiemannianMetric I M) :

@@ -63,7 +63,7 @@ private lemma partialDeriv_contDiffOn_interior
       (interior ((extChartAt I α).target : Set E)) :=
     hf.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
   have hrw : (partialDeriv (E := E) a f) =
-      fun y => fderiv ℝ f y ((chartModelBasis E) a) := rfl
+      fun y => fderiv ℝ f y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) := rfl
   rw [hrw]
   exact hfderiv.clm_apply contDiffOn_const
 
@@ -92,8 +92,8 @@ def reprDiffChartCompOnE (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     ccTensorBilinSymm (I := I) g_bg
       (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
       ((extChartAt I α).symm y)
-      (chartBasisVecFiber (I := I) α l ((extChartAt I α).symm y))
-      (chartBasisVecFiber (I := I) α b ((extChartAt I α).symm y))
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l ((extChartAt I α).symm y))
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b ((extChartAt I α).symm y))
 
 omit [BoundarylessManifold I M] in
 theorem chartGramOnE_realizeMetricAt_sub_funext
@@ -116,9 +116,9 @@ theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiffComp
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (l b : Fin (Module.finrank ℝ E)) (y : E) :
-    chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α
           ((extChartAt I α).symm y) l b -
-        chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₂) α
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₂) α
           ((extChartAt I α).symm y) l b =
       reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b y := by
   rw [reprDiffChartCompOnE]
@@ -293,9 +293,9 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
       (Fintype.card ((Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
     rw [chartGramDiffSup, matrixEntryL1]
     calc ∑ pq : (Fin n) × (Fin n),
-            |(chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α
+            |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α
                   ((extChartAt I α).symm y) -
-                chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₂) α
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₂) α
                   ((extChartAt I α).symm y)) pq.1 pq.2|
         = ∑ pq : (Fin n) × (Fin n),
             |reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α pq.1 pq.2 y| := by

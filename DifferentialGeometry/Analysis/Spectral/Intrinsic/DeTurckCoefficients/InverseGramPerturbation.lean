@@ -90,7 +90,7 @@ lemma abs_entry_le_matrixEntryL1 {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ)
     (fun pq _ => abs_nonneg _) (Finset.mem_univ (p, q))
 
 def chartGramDiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M) : ℝ :=
-  matrixEntryL1 (chartGramMatrix g₁ α x - chartGramMatrix g₂ α x)
+  matrixEntryL1 (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x)
 
 lemma chartGramDiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M) :
     0 ≤ chartGramDiffSup (I := I) (M := M) g₁ g₂ α x :=
@@ -99,10 +99,10 @@ lemma chartGramDiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M
 lemma chartGramMatrix_sub_entry_abs_le_gramDiffSup
     (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M)
     (p q : Fin (Module.finrank ℝ E)) :
-    |chartGramMatrix g₁ α x p q - chartGramMatrix g₂ α x p q| ≤
+    |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x p q - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x p q| ≤
       chartGramDiffSup (I := I) (M := M) g₁ g₂ α x := by
   have h := abs_entry_le_matrixEntryL1
-    (chartGramMatrix g₁ α x - chartGramMatrix g₂ α x) p q
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x) p q
   rwa [Matrix.sub_apply] at h
 
 theorem chartInvGramMatrix_entry_sub_abs_le
@@ -112,35 +112,35 @@ theorem chartInvGramMatrix_entry_sub_abs_le
     (hM1 : ∀ p q, |chartInvGramMatrix (I := I) g₁ α x p q| ≤ M_b)
     (hM2 : ∀ p q, |chartInvGramMatrix (I := I) g₂ α x p q| ≤ M_b)
     (hD : ∀ p q,
-      |chartGramMatrix g₁ α x p q - chartGramMatrix g₂ α x p q| ≤ D)
+      |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x p q - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x p q| ≤ D)
     (k l : Fin (Module.finrank ℝ E)) :
     |chartInvGramMatrix (I := I) g₁ α x k l -
         chartInvGramMatrix (I := I) g₂ α x k l| ≤
       (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 * D := by
   classical
-  have hA_unit : IsUnit (chartGramMatrix g₁ α x) := by
+  have hA_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x) := by
     rw [Matrix.isUnit_iff_isUnit_det]
-    exact isUnit_iff_ne_zero.mpr (ne_of_gt (chartGramMatrix_det_pos (I := I) g₁ α hx))
-  have hB_unit : IsUnit (chartGramMatrix g₂ α x) := by
+    exact isUnit_iff_ne_zero.mpr (ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g₁ α hx))
+  have hB_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x) := by
     rw [Matrix.isUnit_iff_isUnit_det]
-    exact isUnit_iff_ne_zero.mpr (ne_of_gt (chartGramMatrix_det_pos (I := I) g₂ α hx))
+    exact isUnit_iff_ne_zero.mpr (ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g₂ α hx))
   have hD' : ∀ p q,
-      |(chartGramMatrix g₂ α x - chartGramMatrix g₁ α x) p q| ≤ D := by
+      |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x) p q| ≤ D := by
     intro p q
     rw [Matrix.sub_apply, abs_sub_comm]
     exact hD p q
-  have hinvA : ∀ p q, |(chartGramMatrix g₁ α x)⁻¹ p q| ≤ M_b := by
+  have hinvA : ∀ p q, |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x)⁻¹ p q| ≤ M_b := by
     intro p q
     have := hM1 p q
     unfold chartInvGramMatrix at this
     exact this
-  have hinvB : ∀ p q, |(chartGramMatrix g₂ α x)⁻¹ p q| ≤ M_b := by
+  have hinvB : ∀ p q, |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x)⁻¹ p q| ≤ M_b := by
     intro p q
     have := hM2 p q
     unfold chartInvGramMatrix at this
     exact this
   have h := Matrix.inv_entry_sub_abs_le_of_entry_bound
-    (A := chartGramMatrix g₁ α x) (B := chartGramMatrix g₂ α x)
+    (A := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x) (B := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x)
     hA_unit hB_unit hinvA hinvB hD' k l
   unfold chartInvGramMatrix
   exact h

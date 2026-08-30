@@ -205,7 +205,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
       ∑ i : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x •
-          chartBasisVecFiber (I := I) α i x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
     have hα_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ)
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x :=
       hα_smooth.mdifferentiableAt (by simp)
@@ -214,7 +214,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
     rw [← h]; rfl
   have h_mfderiv_apply : ∀ i : Fin (Module.finrank ℝ E),
       mfderiv I 𝓘(ℝ, ℝ) (etaTimesV (I := I) (M := M) α v.toFun) x
-          (chartBasisVecFiber (I := I) α i x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       partialDeriv (E := E) i
         (scalarOnE (I := I) α (etaTimesV (I := I) (M := M) α v.toFun))
         (extChartAt I α x) := fun i =>
@@ -236,11 +236,11 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
       (∑ i : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x •
-          chartBasisVecFiber (I := I) α i x) =
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       ∑ i : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x *
-          L (chartBasisVecFiber (I := I) α i x) := by
+          L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro i _
@@ -249,14 +249,14 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
       (∑ i : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x •
-          chartBasisVecFiber (I := I) α i x) =
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
     (2 : ℝ) * ∑ i : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x *
-          L (chartBasisVecFiber (I := I) α i x) := by
+          L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) := by
     rw [h_mfderiv_sum]
   have h_mfderiv_apply_L : ∀ i : Fin (Module.finrank ℝ E),
-      L (chartBasisVecFiber (I := I) α i x) =
+      L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       partialDeriv (E := E) i
         (scalarOnE (I := I) α (etaTimesV (I := I) (M := M) α v.toFun))
         (extChartAt I α x) := by

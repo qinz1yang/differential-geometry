@@ -295,7 +295,7 @@ private lemma euclidPartial_rawPushed_eq_covDerivComponent_sub
               (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-              (chartBasisVecFiber (I := I) α k)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))
         - covDerivLowerOrderTerm (I := I) (M := M) g r s S α k Idx Jdx y := by
   have h := covDerivComponent_eq_euclidPartial_add_lowerOrder
@@ -329,7 +329,7 @@ private def pouCovDerivComponent
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α k)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))
 
 private def pouLowerOrderTerm
@@ -453,7 +453,7 @@ private lemma pouCovDerivComponent_continuousOn
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α k)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))) =
       euclidPartial (E := E) k
           (chartPushedRaw (I := I) (M := M) α

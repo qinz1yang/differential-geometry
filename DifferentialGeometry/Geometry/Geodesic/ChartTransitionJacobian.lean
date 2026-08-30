@@ -26,16 +26,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def chartTransitionJacEntry (α β : M) (x : E)
     (i a : Fin (Module.finrank ℝ E)) : ℝ :=
-  (chartModelBasis E).repr
-    (chartTransitionAt (I := I) α β x ((chartModelBasis E) a)) i
+  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+    (chartTransitionAt (I := I) α β x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) i
 
 omit [IsManifold I ∞ M] in
 @[simp] lemma chartTransitionJacEntry_def (α β : M) (x : E)
     (i a : Fin (Module.finrank ℝ E)) :
     chartTransitionJacEntry (I := I) α β x i a =
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (chartTransitionAt (I := I) α β x
-          ((chartModelBasis E) a)) i := rfl
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) i := rfl
 
 theorem chartTransitionJacEntry_mul_sum [I.Boundaryless]
     (α β : M) {y : E} (hy : y ∈ chartTransitionSource (I := I) α β)
@@ -49,27 +49,27 @@ theorem chartTransitionJacEntry_mul_sum [I.Boundaryless]
   have hcomp := chartTransitionAt_comp_chartTransitionAt (I := I) α β hy
   have happly :
       (chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y))
-          (chartTransitionAt (I := I) α β y ((chartModelBasis E) i)) =
-        (chartModelBasis E) i := by
-    have := congrArg (fun L : E →L[ℝ] E => L ((chartModelBasis E) i)) hcomp
+          (chartTransitionAt (I := I) α β y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
+    have := congrArg (fun L : E →L[ℝ] E => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) hcomp
     simpa using this
   have hexpand :
-      chartTransitionAt (I := I) α β y ((chartModelBasis E) i) =
+      chartTransitionAt (I := I) α β y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         ∑ a : Fin (Module.finrank ℝ E),
-          chartTransitionJacEntry (I := I) α β y a i • (chartModelBasis E) a := by
-    conv_lhs => rw [← (chartModelBasis E).sum_repr
-      (chartTransitionAt (I := I) α β y ((chartModelBasis E) i))]
+          chartTransitionJacEntry (I := I) α β y a i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a := by
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
+      (chartTransitionAt (I := I) α β y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))]
     rfl
   rw [hexpand, map_sum] at happly
-  have hcoord : (chartModelBasis E).repr
+  have hcoord : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (∑ a, chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y)
-          (chartTransitionJacEntry (I := I) α β y a i • (chartModelBasis E) a)) c =
-      (chartModelBasis E).repr ((chartModelBasis E) i) c :=
-    congrArg (fun w => (chartModelBasis E).repr w c) happly
+          (chartTransitionJacEntry (I := I) α β y a i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) c =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) c :=
+    congrArg (fun w => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w c) happly
   have hlhs :
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (∑ a, chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y)
-            (chartTransitionJacEntry (I := I) α β y a i • (chartModelBasis E) a)) c =
+            (chartTransitionJacEntry (I := I) α β y a i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) c =
       ∑ a, chartTransitionJacEntry (I := I) α β y a i *
         chartTransitionJacEntry (I := I) β α
           (chartTransitionMap (I := I) α β y) c a := by
@@ -81,9 +81,9 @@ theorem chartTransitionJacEntry_mul_sum [I.Boundaryless]
     simp only [Finsupp.smul_apply, smul_eq_mul, chartTransitionJacEntry_def]
   rw [hlhs] at hcoord
   rw [hcoord]
-  have hrepr : (chartModelBasis E).repr ((chartModelBasis E) i) c =
+  have hrepr : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) c =
       (if c = i then (1 : ℝ) else 0) := by
-    rw [(chartModelBasis E).repr_self i, Finsupp.single_apply]
+    rw [(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self i, Finsupp.single_apply]
     by_cases h : c = i
     · subst h; simp
     · rw [if_neg (fun hh : i = c => h hh.symm), if_neg h]
@@ -102,32 +102,32 @@ theorem chartTransitionJacEntry_mul_sum' [I.Boundaryless]
   have happly :
       (chartTransitionAt (I := I) α β y)
           (chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y)
-            ((chartModelBasis E) i)) =
-        (chartModelBasis E) i := by
-    have := congrArg (fun L : E →L[ℝ] E => L ((chartModelBasis E) i)) hcomp
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
+    have := congrArg (fun L : E →L[ℝ] E => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) hcomp
     simpa using this
   have hexpand :
       chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y)
-          ((chartModelBasis E) i) =
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         ∑ m : Fin (Module.finrank ℝ E),
           chartTransitionJacEntry (I := I) β α
-            (chartTransitionMap (I := I) α β y) m i • (chartModelBasis E) m := by
-    conv_lhs => rw [← (chartModelBasis E).sum_repr
+            (chartTransitionMap (I := I) α β y) m i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
       (chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y)
-        ((chartModelBasis E) i))]
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))]
     rfl
   rw [hexpand, map_sum] at happly
-  have hcoord : (chartModelBasis E).repr
+  have hcoord : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (∑ m, chartTransitionAt (I := I) α β y
           (chartTransitionJacEntry (I := I) β α
-            (chartTransitionMap (I := I) α β y) m i • (chartModelBasis E) m)) b =
-      (chartModelBasis E).repr ((chartModelBasis E) i) b :=
-    congrArg (fun w => (chartModelBasis E).repr w b) happly
+            (chartTransitionMap (I := I) α β y) m i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) b =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) b :=
+    congrArg (fun w => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w b) happly
   have hlhs :
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (∑ m, chartTransitionAt (I := I) α β y
             (chartTransitionJacEntry (I := I) β α
-              (chartTransitionMap (I := I) α β y) m i • (chartModelBasis E) m)) b =
+              (chartTransitionMap (I := I) α β y) m i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) b =
       ∑ m, chartTransitionJacEntry (I := I) α β y b m *
         chartTransitionJacEntry (I := I) β α
           (chartTransitionMap (I := I) α β y) m i := by
@@ -139,7 +139,7 @@ theorem chartTransitionJacEntry_mul_sum' [I.Boundaryless]
     ring
   rw [hlhs] at hcoord
   rw [hcoord]
-  rw [(chartModelBasis E).repr_self i, Finsupp.single_apply]
+  rw [(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self i, Finsupp.single_apply]
   by_cases h : b = i
   · subst h; simp
   · rw [if_neg (fun hh : i = b => h hh.symm), if_neg h]

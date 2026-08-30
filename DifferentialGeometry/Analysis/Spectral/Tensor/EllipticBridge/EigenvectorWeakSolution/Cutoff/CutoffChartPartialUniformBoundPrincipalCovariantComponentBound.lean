@@ -54,7 +54,7 @@ def cutoffCovDerivComponent
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α k)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))
 
 noncomputable def cutoffCovNormSumFun
@@ -68,7 +68,7 @@ noncomputable def cutoffCovNormSumFun
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α i b))))‖ ^ 2)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -99,7 +99,7 @@ private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn'
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S b
               (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                (chartBasisVecFiber (I := I) α i b)))))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))))
       ((chartAt H α).source) := by
   classical
   have htriv := tensorCovDeriv_chartBasis_trivImage_contMDiffOn
@@ -111,7 +111,7 @@ private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn'
     r s α hb
     (tensorCovDerivAt (I := I) (M := M) g r s S b
       (tangentSpaceModelContinuousLinearEquiv (I := I) b
-        (chartBasisVecFiber (I := I) α i b)))]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))]
   have hb_base : b ∈ (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).baseSet := by
     rw [tensorRS_baseSet_eq_chart_source' (I := I) (M := M) α r s]
@@ -120,7 +120,7 @@ private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn'
       (fun y : M => TensorRSSpace r s I y) α).linearMapAt ℝ b
       (tensorCovDerivAt (I := I) (M := M) g r s S b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α i b))) = _
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))) = _
   rw [Bundle.Trivialization.linearMapAt_apply, if_pos hb_base]
 
 omit [CompleteSpace E] in
@@ -136,7 +136,7 @@ private lemma cutoffCovNormSqSum_continuousOn_chart_source
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α i b))))‖ ^ 2)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2)
       ((chartAt H α).source) := by
   refine continuousOn_finsetSum _ (fun i _ => ?_)
   have hcov : ContinuousOn
@@ -145,7 +145,7 @@ private lemma cutoffCovNormSqSum_continuousOn_chart_source
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S b
               (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                (chartBasisVecFiber (I := I) α i b)))))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))))
       ((chartAt H α).source) :=
     (chartRSTwistInv_tensorCovDeriv_contMDiffOn' (I := I) (M := M)
       g r s S α i).continuousOn
@@ -166,7 +166,7 @@ private lemma cutoffCovNormSumFun_continuous
             (TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s S b
                 (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                  (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) with hw_def
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2) with hw_def
   have hfun_eq : cutoffCovNormSumFun (I := I) (M := M) g r s S α =
       fun b : M => ((χ : C^∞⟮I, M; ℝ⟯) : M → ℝ) b • w b := by
     funext b
@@ -255,26 +255,26 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
             ((trivializationAt (TensorRSModel r s ℝ E)
                 (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ b
               (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-                (chartBasisVecFiber (I := I) α k) b)) =
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)) =
           tensorChartComponentProjection (E := E) r s Idx Jdx
             (chartRSTwistInv (I := I) (M := M) α b r s
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α k b))))) := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))))) := by
       rw [← tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
         g r s S α k hb_good]
       rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel (I := I) (M := M)
         r s α hb_src
         (tensorCovDerivAt (I := I) (M := M) g r s S b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α k b)))]
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))]
     set X : TensorRSModel r s ℝ E :=
       chartRSTwistInv (I := I) (M := M) α b r s
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s S b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α k b)))) with hX_def
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))) with hX_def
     have h_proj_le :
         ‖tensorChartComponentProjection (E := E) r s Idx Jdx X‖ ≤
           C_proj * ‖X‖ :=
@@ -290,7 +290,7 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S b
                       (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                        (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
+                        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
       have hsq_le :
           ‖X‖ ^ 2 ≤
             ∑ i : Fin (Module.finrank ℝ E),
@@ -298,14 +298,14 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S b
                       (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                        (chartBasisVecFiber (I := I) α i b))))‖ ^ 2 :=
+                        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2 :=
         Finset.single_le_sum
           (f := fun i : Fin (Module.finrank ℝ E) =>
             ‖chartRSTwistInv (I := I) (M := M) α b r s
                 (TensorRSSpace.toModel
                   (tensorCovDerivAt (I := I) (M := M) g r s S b
                     (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                      (chartBasisVecFiber (I := I) α i b))))‖ ^ 2)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2)
           (fun i _ => sq_nonneg _) (Finset.mem_univ k)
       have hX_eq : ‖X‖ = Real.sqrt (‖X‖ ^ 2) :=
         (Real.sqrt_sq (norm_nonneg _)).symm
@@ -332,7 +332,7 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
                       (TensorRSSpace.toModel
                         (tensorCovDerivAt (I := I) (M := M) g r s S b
                           (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                            (chartBasisVecFiber (I := I) α i b))))‖ ^ 2)) := by
+                            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2)) := by
       change C_proj * chartPushedRaw (I := I) (M := M) α
         (cutoffCovNormSumFun (I := I) (M := M) g r s S α) y = _
       rw [hcov_eval]
@@ -345,7 +345,7 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) with hw_def
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2) with hw_def
     have hw_nn : 0 ≤ w := Real.sqrt_nonneg _
     have h_proj_le_w :
         ‖tensorChartComponentProjection (E := E) r s Idx Jdx X‖ ≤

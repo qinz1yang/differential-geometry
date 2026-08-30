@@ -123,7 +123,7 @@ private theorem lRegJacCLM_cont
     trivFromE (I := I) x0 (b z) Z.2
   let Wv : Fin (Module.finrank Real E) →
       ((z : P) → TangentSpace I (b z)) := fun j z ↦
-    trivFromE (I := I) x0 (b z) (chartModelBasis E j)
+    trivFromE (I := I) x0 (b z) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
   have hAsec : Continuous (fun z : P ↦
       (TotalSpace.mk' E (b z) (A z) : TangentBundle I M)) := by
     simpa only [A] using hsec (fun z ↦ a z) (by simpa only [P] using ha)
@@ -135,7 +135,7 @@ private theorem lRegJacCLM_cont
     simpa only [Pv] using hsec (fun _ ↦ Z.2) continuous_const
   have hWsec (j : Fin (Module.finrank Real E)) : Continuous (fun z : P ↦
       (TotalSpace.mk' E (b z) (Wv j z) : TangentBundle I M)) := by
-    simpa only [Wv] using hsec (fun _ ↦ chartModelBasis E j) continuous_const
+    simpa only [Wv] using hsec (fun _ ↦ DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) continuous_const
   have hRm (Z : E × E) (j : Fin (Module.finrank Real E)) :
       Continuous (fun z : P ↦ S.base.rm04 (tau z) (b z)
         (vec4 (Yv Z z) (A z) (A z) (Wv j z))) := by
@@ -264,7 +264,7 @@ private theorem lRegJacCLM_cont
           (∑ j : Fin (Module.finrank Real E),
             chartInvGramMatrix (I := I) (S.base.metric (tau z)) x0 (b z) i j *
               lRegJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) •
-            chartModelBasis E i) := by
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
       refine continuous_finsetSum _ (fun i _ ↦ ?_)
       refine (continuous_finsetSum _ (fun j _ ↦
         (hInv i j).mul (hCov Z j))).smul continuous_const
@@ -284,7 +284,7 @@ private theorem lRegJacCLM_cont
   have haCoord (i : Fin (Module.finrank Real E)) :
       Continuous (fun z : P ↦
         Geometry.Riemannian.Geodesic.chartCoord (E := E) i (a z)) := by
-    exact (((chartModelBasis E).coord i).toContinuousLinearMap.continuous).comp
+    exact (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.continuous).comp
       (by simpa only [P] using ha)
   have hGamma (i j k : Fin (Module.finrank Real E)) :
       Continuous (fun z : P ↦ chartChristoffel (I := I)

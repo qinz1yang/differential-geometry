@@ -51,24 +51,24 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     [SigmaCompactSpace M] in
 private lemma chartInvGram_metricInverse (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    MetricInverseInBasisGen (I := I) g b (chartBasisFamily (I := I) α hb)
+    MetricInverseInBasisGen (I := I) g b (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb)
       (fun m n => chartInvGramMatrix (I := I) g α b m n) := by
   intro i j
   refine ⟨?_, ?_⟩
   · have hmul := chartInvGramMatrix_mul_chartGramMatrix (I := I) g α hb
-    have hentry : (chartInvGramMatrix (I := I) g α b * chartGramMatrix (I := I) g α b) i j
+    have hentry : (chartInvGramMatrix (I := I) g α b * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b) i j
         = (1 : Matrix _ _ ℝ) i j := by rw [hmul]
     rw [Matrix.mul_apply, Matrix.one_apply] at hentry
     rw [← hentry]
     exact Finset.sum_congr rfl fun k _ => by
-      rw [chartGramMatrix_apply, chartBasisFamily_apply, chartBasisFamily_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   · have hmul := chartGramMatrix_mul_chartInvGramMatrix (I := I) g α hb
-    have hentry : (chartGramMatrix (I := I) g α b * chartInvGramMatrix (I := I) g α b) i j
+    have hentry : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b * chartInvGramMatrix (I := I) g α b) i j
         = (1 : Matrix _ _ ℝ) i j := by rw [hmul]
     rw [Matrix.mul_apply, Matrix.one_apply] at hentry
     rw [← hentry]
     exact Finset.sum_congr rfl fun k _ => by
-      rw [chartGramMatrix_apply, chartBasisFamily_apply, chartBasisFamily_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -80,14 +80,14 @@ private lemma metricTracePair0SAt_nablaCov_eq_chartSum
       ∑ m : Fin (Module.finrank ℝ E), ∑ n : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α b m n *
           g.inner b
-            ((LeviCivita (I := I) g).toFun Z.toFun b (chartBasisVecFiber (I := I) α m b))
-            (chartBasisVecFiber (I := I) α n b) := by
-  rw [metricTracePair0SAt_eq_sum_basis (I := I) g (chartBasisFamily (I := I) α hb)
+            ((LeviCivita (I := I) g).toFun Z.toFun b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n b) := by
+  rw [metricTracePair0SAt_eq_sum_basis (I := I) g (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb)
     (fun m n => chartInvGramMatrix (I := I) g α b m n)
     (chartInvGram_metricInverse (I := I) g α hb)]
   refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => ?_
   rw [nablaCovTensor_apply]
-  rw [chartBasisFamily_apply, chartBasisFamily_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   simp only [vec2]
   norm_num
 

@@ -185,7 +185,7 @@ theorem extends_of_rmBounded
   have h2smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (rr (p.1 - t_star)) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr (p.1 - t_star)) x₀ p.2 i j)
         (Set.Ico t_star omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
     have hmaps : Set.MapsTo (fun q : ℝ × M => ((q.1 - t_star, q.2) : ℝ × M))
@@ -219,7 +219,7 @@ theorem extends_of_rmBounded
   have h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (Set.Ico t_star omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
     fun x₀ i j => (hsmooth_left x₀ i j).mono
       (Set.prod_mono (fun s hs => ⟨lt_of_lt_of_le ht0 hs.1, hs.2⟩) (le_refl _))

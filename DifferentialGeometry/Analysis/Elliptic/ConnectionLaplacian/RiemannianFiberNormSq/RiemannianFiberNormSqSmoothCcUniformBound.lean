@@ -130,18 +130,18 @@ theorem exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
     have hsummand_sum_le :
         (∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n,
             fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b) n
-              (fun i : Fin n => chartBasisVecFiber (I := I) α i b) Idx Jdx) ≤
+              (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) Idx Jdx) ≤
           Npair * (C₂ * rawSum) := by
       have hper : ∀ (Idx : Fin r → Fin n) (Jdx : Fin s → Fin n),
           fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b) n
-              (fun i : Fin n => chartBasisVecFiber (I := I) α i b) Idx Jdx ≤
+              (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) Idx Jdx ≤
             C₂ * rawSum := by
         intro Idx Jdx
         exact hC₂_bound S hb Idx Jdx
       calc
         (∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n,
             fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b) n
-              (fun i : Fin n => chartBasisVecFiber (I := I) α i b) Idx Jdx)
+              (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) Idx Jdx)
             ≤ ∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n, (C₂ * rawSum) := by
               refine Finset.sum_le_sum (fun Idx _ => ?_)
               refine Finset.sum_le_sum (fun Jdx _ => ?_)
@@ -162,7 +162,7 @@ theorem exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
           ≤ C₁ *
               (∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n,
                 fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b) n
-                  (fun i : Fin n => chartBasisVecFiber (I := I) α i b) Idx Jdx) := hA
+                  (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) Idx Jdx) := hA
       _ ≤ C₁ * (Npair * (C₂ * rawSum)) :=
             mul_le_mul_of_nonneg_left hsummand_sum_le hC₁_nonneg
       _ ≤ C₁ * (Npair * (C₂ * B)) := by

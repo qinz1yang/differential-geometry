@@ -85,14 +85,14 @@ private lemma partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
     partialDeriv (E := E) m (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y =
       iteratedFDeriv ℝ 2 (chartGramOnE (I := I) g α i j) y
-        ![(chartModelBasis E) m, (chartModelBasis E) l] := by
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l] := by
   have hl : (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j))
-      = fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z ((chartModelBasis E) l) := by
+      = fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
     funext z; rfl
   rw [show partialDeriv (E := E) m
         (partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) y
       = fderiv ℝ (fun z : E => fderiv ℝ (chartGramOnE (I := I) g α i j) z
-            ((chartModelBasis E) l)) y ((chartModelBasis E) m) from by rw [hl]; rfl]
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) from by rw [hl]; rfl]
   rw [iteratedFDeriv_two_apply]
   rw [fderiv_clm_apply (fderiv_chartGramOnE_diffAt_int (I := I) g α i j hy)
     (differentiableAt_const _)]
@@ -124,7 +124,7 @@ private lemma partialDeriv_chartGramOnE_continuous_of_hC2
     ContinuousOn (fun t : ℝ =>
       partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j) y) s := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => E) ℝ
-    ![(chartModelBasis E) l]).continuous
+    ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
   have hcomp := hL.comp_continuousOn h1
   refine hcomp.congr ?_
   intro t _
@@ -144,7 +144,7 @@ private lemma partialDeriv_partialDeriv_chartGramOnE_continuous_of_hC2
       partialDeriv (E := E) m
         (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT t) α i j)) y) s := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => E) ℝ
-    ![(chartModelBasis E) m, (chartModelBasis E) l]).continuous
+    ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
   have hcomp := hL.comp_continuousOn h2
   refine hcomp.congr ?_
   intro t _
@@ -534,7 +534,7 @@ private lemma jointGramPartial_continuousOn
       partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α a b)
         (extChartAt I α q.2)) Sp := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 1 => E) ℝ
-    ![(chartModelBasis E) l]).continuous
+    ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
   refine (hL.comp_continuousOn (h1 a b)).congr ?_
   intro q _
   simp only [Function.comp_apply, ContinuousMultilinearMap.apply_apply,
@@ -554,7 +554,7 @@ private lemma jointGramPartialPartial_continuousOn
         (partialDeriv (E := E) l (chartGramOnE (I := I) (g_DT q.1) α a b))
         (extChartAt I α q.2)) Sp := by
   have hL := (ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => E) ℝ
-    ![(chartModelBasis E) m, (chartModelBasis E) l]).continuous
+    ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l]).continuous
   refine (hL.comp_continuousOn (h2 a b)).congr ?_
   intro q hq
   have hy : extChartAt I α q.2 ∈ interior ((extChartAt I α).target : Set E) :=
@@ -639,7 +639,7 @@ private lemma jointInvGram_continuousOn
   set Gmat : ℝ × M → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     fun q => Matrix.of fun a b => chartGramOnE (I := I) (g_DT q.1) α a b (extChartAt I α q.2)
     with hGmat
-  have hGmat_eq : ∀ q : ℝ × M, Gmat q = chartGramMatrix (I := I) (g_DT q.1) α
+  have hGmat_eq : ∀ q : ℝ × M, Gmat q = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT q.1) α
       ((extChartAt I α).symm (extChartAt I α q.2)) := by
     intro q; ext a b; rw [hGmat]; simp only [Matrix.of_apply]; rw [chartGramOnE_def]
   have hbase : ∀ q ∈ Sp, ((extChartAt I α).symm (extChartAt I α q.2)) ∈
@@ -654,11 +654,11 @@ private lemma jointInvGram_continuousOn
     intro q hq
     rw [chartInvGramOnE_def]
     unfold chartInvGramMatrix
-    have hpos := chartGramMatrix_det_pos (I := I) (g_DT q.1) α (hbase q hq)
+    have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_DT q.1) α (hbase q hq)
     rw [Matrix.inv_def]
-    change (Ring.inverse (chartGramMatrix (I := I) (g_DT q.1) α
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT q.1) α
             ((extChartAt I α).symm (extChartAt I α q.2))).det •
-          (chartGramMatrix (I := I) (g_DT q.1) α
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT q.1) α
             ((extChartAt I α).symm (extChartAt I α q.2))).adjugate) i j =
       ((Gmat q).det)⁻¹ * (Gmat q).adjugate i j
     rw [Matrix.smul_apply, smul_eq_mul, hGmat_eq q]
@@ -668,8 +668,8 @@ private lemma jointInvGram_continuousOn
   refine ContinuousOn.mul ?_ (jointAdjugate_continuousOn g_DT α Sp hentry i j)
   refine (jointDet_continuousOn g_DT α Sp hentry).inv₀ ?_
   intro q hq
-  have hpos := chartGramMatrix_det_pos (I := I) (g_DT q.1) α (hbase q hq)
-  have : (Gmat q).det = (chartGramMatrix (I := I) (g_DT q.1) α
+  have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_DT q.1) α (hbase q hq)
+  have : (Gmat q).det = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT q.1) α
       ((extChartAt I α).symm (extChartAt I α q.2))).det := by rw [hGmat_eq q]
   rw [this]; exact ne_of_gt hpos
 
@@ -963,17 +963,17 @@ theorem moving_chartCoord_jointContinuousWithinAt
     (horbit : ContinuousWithinAt (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) S p₀)
     (htotal : ContinuousWithinAt
       (fun p : ℝ × M => (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
-        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
           : TangentBundle I M)) S p₀) :
     ContinuousWithinAt
       (fun p : ℝ × M => (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
         ((Φ_fam p.1 : M → M) p.2)
-        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))) S p₀ := by
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))) S p₀ := by
   classical
   set e := trivializationAt E (TangentSpace I) α with he
   set F : ℝ × M → TangentBundle I M := fun p : ℝ × M =>
     (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
-      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
         : TangentBundle I M) with hF
   have hsrc0 : F p₀ ∈ e.source := by
     rw [he, Bundle.Trivialization.mem_source]; exact hbase0
@@ -989,12 +989,12 @@ theorem moving_chartCoord_jointContinuousWithinAt
       horbit.preimage_mem_nhdsWithin hbnhds
     filter_upwards [hpb] with p hs
     change e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
-        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (chartBasisVecFiber (I := I) x₀ i p.2))
+        (mfderiv I I (Φ_fam p.1 : M → M) p.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
           = (e (F p)).2
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hs,
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hs]
   · change e.continuousLinearMapAt ℝ ((Φ_fam p₀.1 : M → M) p₀.2)
-        (mfderiv I I (Φ_fam p₀.1 : M → M) p₀.2 (chartBasisVecFiber (I := I) x₀ i p₀.2))
+        (mfderiv I I (Φ_fam p₀.1 : M → M) p₀.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p₀.2))
           = (e (F p₀)).2
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hbase0,
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hbase0]
@@ -1014,10 +1014,10 @@ private lemma cwa_finset_sum {ι : Type*} {N : Type*} [AddCommMonoid N] [Topolog
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma repr_continuousWithinAt {S : Set ℝ} {s₀ : ℝ} {f : ℝ → E}
     (hf : ContinuousWithinAt f S s₀) (p : Fin (Module.finrank ℝ E)) :
-    ContinuousWithinAt (fun s : ℝ => ((chartModelBasis E).repr (f s)) p) S s₀ := by
-  have hlin : Continuous (fun y : E => ((chartModelBasis E).repr y) p) :=
+    ContinuousWithinAt (fun s : ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (f s)) p) S s₀ := by
+  have hlin : Continuous (fun y : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr y) p) :=
     ((Finsupp.lapply (R := ℝ) (M := ℝ) (α := Fin (Module.finrank ℝ E)) p).comp
-      (chartModelBasis E).repr.toLinearMap).continuous_of_finiteDimensional
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr.toLinearMap).continuous_of_finiteDimensional
   exact hlin.continuousWithinAt.comp hf (Set.mapsTo_univ _ _)
 
 omit [CompactSpace M] in
@@ -1029,27 +1029,27 @@ private lemma ricci_moving_chart_sum
     (vy wy : TangentSpace I y) :
     ricciTensor (I := I) g y vy wy =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ y vy)) p *
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ y wy)) q *
         chartRicciTensor (I := I) g α p q (extChartAt I α y) := by
   classical
   have hbase : y ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hy
-  set bv : Fin (Module.finrank ℝ E) → ℝ := fun p => ((chartModelBasis E).repr
+  set bv : Fin (Module.finrank ℝ E) → ℝ := fun p => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
     ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ y vy)) p with hbv
-  set bw : Fin (Module.finrank ℝ E) → ℝ := fun q => ((chartModelBasis E).repr
+  set bw : Fin (Module.finrank ℝ E) → ℝ := fun q => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
     ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ y wy)) q with hbw
-  have hvy : vy = ∑ p : Fin (Module.finrank ℝ E), bv p • chartBasisVecFiber (I := I) α p y :=
+  have hvy : vy = ∑ p : Fin (Module.finrank ℝ E), bv p • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p y :=
     chartBasisVecFiber_recompose (I := I) α hbase vy
-  have hwy : wy = ∑ q : Fin (Module.finrank ℝ E), bw q • chartBasisVecFiber (I := I) α q y :=
+  have hwy : wy = ∑ q : Fin (Module.finrank ℝ E), bw q • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α q y :=
     chartBasisVecFiber_recompose (I := I) α hbase wy
   conv_lhs => rw [hvy, hwy]
   rw [map_sum (ricciTensor (I := I) g y), sum_apply]
   refine Finset.sum_congr rfl (fun p _ => ?_)
   rw [map_smul, smul_apply, smul_eq_mul]
-  rw [map_sum (ricciTensor (I := I) g y (chartBasisVecFiber (I := I) α p y)), Finset.mul_sum]
+  rw [map_sum (ricciTensor (I := I) g y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p y)), Finset.mul_sum]
   refine Finset.sum_congr rfl (fun q _ => ?_)
   rw [map_smul, smul_eq_mul]
   rw [ricciTensor_chartBasisVec_alpha_eq (I := I) g α p q hy]
@@ -1092,7 +1092,7 @@ theorem gfam_inner_continuous_on
     (hΦ_orbit x).continuousWithinAt hs₀
   have hcoordV : ∀ i : Fin (Module.finrank ℝ E),
       ContinuousWithinAt
-        (fun s : ℝ => ((chartModelBasis E).repr
+        (fun s : ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x v))) i) (Set.Ico 0 T) s₀ :=
     fun i => repr_continuousWithinAt
@@ -1100,7 +1100,7 @@ theorem gfam_inner_continuous_on
         hbase0 horbit ((hΦ_total x v).continuousWithinAt hs₀)) i
   have hcoordW : ∀ j : Fin (Module.finrank ℝ E),
       ContinuousWithinAt
-        (fun s : ℝ => ((chartModelBasis E).repr
+        (fun s : ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x w))) j) (Set.Ico 0 T) s₀ :=
     fun j => repr_continuousWithinAt
@@ -1137,10 +1137,10 @@ theorem gfam_inner_continuous_on
       (g_DT s).inner ((Φ_fam s : M → M) x)
           (mfderiv I I (Φ_fam s : M → M) x v) (mfderiv I I (Φ_fam s : M → M) x w)
         = ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
                 (mfderiv I I (Φ_fam s : M → M) x v))) i *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
                 (mfderiv I I (Φ_fam s : M → M) x w))) j *
             DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j
@@ -1150,10 +1150,10 @@ theorem gfam_inner_continuous_on
       (mfderiv I I (Φ_fam s : M → M) x v) (mfderiv I I (Φ_fam s : M → M) x w)
   have hsumcont : ContinuousWithinAt
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x v))) i *
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x w))) j *
         DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j
@@ -1216,7 +1216,7 @@ theorem ricci_gfam_continuous_on
     (hΦ0 x).continuousWithinAt hs₀
   have hcoordV : ∀ p : Fin (Module.finrank ℝ E),
       ContinuousWithinAt
-        (fun s : ℝ => ((chartModelBasis E).repr
+        (fun s : ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x v))) p) (Set.Ico 0 T) s₀ :=
     fun p => repr_continuousWithinAt
@@ -1224,7 +1224,7 @@ theorem ricci_gfam_continuous_on
         hbase0 horbit ((hΦ_total x v).continuousWithinAt hs₀)) p
   have hcoordW : ∀ q : Fin (Module.finrank ℝ E),
       ContinuousWithinAt
-        (fun s : ℝ => ((chartModelBasis E).repr
+        (fun s : ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x w))) q) (Set.Ico 0 T) s₀ :=
     fun q => repr_continuousWithinAt
@@ -1264,10 +1264,10 @@ theorem ricci_gfam_continuous_on
       ricciTensor (I := I) (g_DT s) ((Φ_fam s : M → M) x)
           (mfderiv I I (Φ_fam s : M → M) x v) (mfderiv I I (Φ_fam s : M → M) x w)
         = ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
                 (mfderiv I I (Φ_fam s : M → M) x v))) p *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
                 (mfderiv I I (Φ_fam s : M → M) x w))) q *
             chartRicciTensor (I := I) (g_DT s) α p q (extChartAt I α ((Φ_fam s : M → M) x)) := by
@@ -1276,10 +1276,10 @@ theorem ricci_gfam_continuous_on
       (mfderiv I I (Φ_fam s : M → M) x v) (mfderiv I I (Φ_fam s : M → M) x w)
   have hsumcont : ContinuousWithinAt
       (fun s : ℝ => ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x v))) p *
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x w))) q *
         chartRicciTensor (I := I) (g_DT s) α p q
@@ -1339,8 +1339,8 @@ theorem ricci_continuous_in_metric_time
       ricciTensor (I := I) (g_DT t) x v w =
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            ((centeredChartTangentBasis (I := I) x).repr v) k *
-              ((centeredChartTangentBasis (I := I) x).repr w) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
               chartRicciTensor (I := I) (g_DT t) x i k (extChartAt I x x) := by
     intro t
     exact ricciTensor_eq_chartRicciSwap_of_basis_identity (I := I) (g_DT t) x
@@ -1348,8 +1348,8 @@ theorem ricci_continuous_in_metric_time
   rw [show (fun s : ℝ => ricciTensor (I := I) (g_DT s) x v w)
         = fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr v) k *
-                ((centeredChartTangentBasis (I := I) x).repr w) i *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
                 chartRicciTensor (I := I) (g_DT s) x i k (extChartAt I x x) from by
     funext s; exact hbridge s]
   refine continuousOn_finsetSum _ (fun i _ => ?_)
@@ -1414,8 +1414,8 @@ theorem ricciChartFrameComp_jointContinuousOn [I.Boundaryless]
     (i j : Fin (Module.finrank ℝ E)) :
     ContinuousOn (fun q : ℝ × M =>
       ricciTensor (I := I) (g_DT q.1) q.2
-        (chartBasisVecFiber (I := I) α i q.2)
-        (chartBasisVecFiber (I := I) α j q.2)) Sp :=
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j q.2)) Sp :=
   (chartRicci_jointContinuousOn g_DT α Sp hgood h0 h1 h2 i j).congr
     (fun q hq => ricciTensor_chartBasisVec_alpha_eq (I := I) (g_DT q.1) α i j (hgood q hq))
 
@@ -1438,8 +1438,8 @@ theorem chartScalar_jointContinuousOn [I.Boundaryless]
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramOnE (I := I) (g_DT q.1) α i j (extChartAt I α q.2) *
           ricciTensor (I := I) (g_DT q.1) q.2
-            (chartBasisVecFiber (I := I) α i q.2)
-            (chartBasisVecFiber (I := I) α j q.2)) Sp).congr
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i q.2)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j q.2)) Sp).congr
     (fun q hq => metricScalar_chartTrace_eq (I := I) (g_DT q.1) α (hgood q hq))
   refine continuousOn_finsetSum _ (fun i _ => continuousOn_finsetSum _ (fun j _ => ?_))
   exact (RicciContJointAux.jointInvGram_continuousOn g_DT α Sp hgood
@@ -1493,8 +1493,8 @@ theorem lieDeriv_deTurckVF_continuous_in_metric_time
           (deTurckVF (I := I) (g_DT t) g_bg) x v w =
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            ((centeredChartTangentBasis (I := I) x).repr v) i *
-              ((centeredChartTangentBasis (I := I) x).repr w) j *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) j *
               chartLieDeTurckComp (I := I) (g_DT t) g_bg x i j (extChartAt I x x) := by
     intro t
     rw [lieDerivMetric_apply]
@@ -1507,8 +1507,8 @@ theorem lieDeriv_deTurckVF_continuous_in_metric_time
           (deTurckVF (I := I) (g_DT s) g_bg) x v w)
         = fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr v) i *
-                ((centeredChartTangentBasis (I := I) x).repr w) j *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) j *
                 chartLieDeTurckComp (I := I) (g_DT s) g_bg x i j (extChartAt I x x) from by
     funext s; exact hbridge s]
   refine continuousOn_finsetSum _ (fun i _ => ?_)

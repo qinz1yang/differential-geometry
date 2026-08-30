@@ -47,12 +47,12 @@ theorem lGrad_bound
       ContMDiffOn ((modelWithCornersSelf Real Real).prod I)
         (modelWithCornersSelf Real Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
         (D.regular ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
     let e := trivializationAt E (TangentSpace I : M → Type _) x₀
-    let b := chartModelBasis E
+    let b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     let frame : Fin (Module.finrank Real E) →
         (x : M) → TangentSpace I x := e.localFrame b
     have hframe : IsLocalFrameOn I E ∞ frame e.baseSet := by
@@ -61,14 +61,14 @@ theorem lGrad_bound
     refine hcomp.congr ?_
     intro p hp
     have hframe_eq (k : Fin (Module.finrank Real E)) :
-        frame k p.2 = chartBasisVecFiber (I := I) x₀ k p.2 := by
+        frame k p.2 = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k p.2 := by
       dsimp only [frame]
       rw [e.localFrame_apply_of_mem_baseSet b hp.2]
       change (e.linearEquivAt Real p.2 hp.2).symm (b k) =
-        e.symmL Real p.2 ((chartModelBasis E) k)
+        e.symmL Real p.2 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       dsimp only [b]
       rw [e.linearEquivAt_symm_apply, e.symmL_apply hp.2]
-    simp only [chartGramMatrix_apply, SolutionOn.family_metric]
+    simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, SolutionOn.family_metric]
     rw [hframe_eq i, hframe_eq j]
   have hq : ContMDiffOn ((modelWithCornersSelf Real Real).prod I)
       (modelWithCornersSelf Real Real) ∞

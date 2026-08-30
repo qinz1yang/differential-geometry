@@ -46,9 +46,9 @@ def IsSmoothQuasilinearMetricRHS
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞
         (fun x => F g x
           ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-            (DifferentialGeometry.Integral.Measure.chartModelBasis E i))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
           ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-            (DifferentialGeometry.Integral.Measure.chartModelBasis E j)))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)))
         (chartAt H α).source)
     ∧ ∀ g : SmoothRiemannianMetric I M, IsStrictlyParabolicMetricRHS F g
 

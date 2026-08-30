@@ -23,16 +23,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def chartTransitionAtEntry (α β : M) (x : E)
     (i a : Fin (Module.finrank ℝ E)) : ℝ :=
-  (chartModelBasis E).repr
-    (chartTransitionAt (I := I) α β x ((chartModelBasis E) a)) i
+  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+    (chartTransitionAt (I := I) α β x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) i
 
 omit [IsManifold I ∞ M] in
 @[simp] lemma chartTransitionAtEntry_def (α β : M) (x : E)
     (i a : Fin (Module.finrank ℝ E)) :
     chartTransitionAtEntry (I := I) α β x i a =
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (chartTransitionAt (I := I) α β x
-          ((chartModelBasis E) a)) i := rfl
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)) i := rfl
 
 omit [Module.Finite ℝ E] in
 private lemma fderivWithin_range_I_eq_fderiv [I.Boundaryless]
@@ -82,18 +82,18 @@ theorem chartGramOnE_eq_sum_chartTransition [I.Boundaryless]
     change p ∈ (chartAt H β).source; exact hp_β_src
   have h_lhs :
       chartGramOnE (I := I) g α i j x =
-        chartGramMatrix g α p i j := by
-    change chartGramMatrix g α ((extChartAt I α).symm x) i j =
-        chartGramMatrix g α p i j
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j := by
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α ((extChartAt I α).symm x) i j =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j
     rw [hp_symm]
   have h_rhs_inner : ∀ a b : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g β a b
         (chartTransitionMap (I := I) α β x) =
-      chartGramMatrix g β p a b := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b := by
     intro a b
-    change chartGramMatrix g β
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β
         ((extChartAt I β).symm (chartTransitionMap (I := I) α β x)) a b =
-      chartGramMatrix g β p a b
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b
     rw [h_tβ, (extChartAt I β).left_inv hp_ext_β]
   rw [h_lhs]
   rw [chartGramMatrix_pullback_eq_sum (I := I) g β α
@@ -143,17 +143,17 @@ theorem chartGramOnE_pullback_under_chartTransition [I.Boundaryless]
     change p ∈ (chartAt H β).source; exact hp_β_src
   have h_lhs :
       chartGramOnE (I := I) g β a b (chartTransitionMap (I := I) α β x) =
-        chartGramMatrix g β p a b := by
-    change chartGramMatrix g β
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b := by
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β
         ((extChartAt I β).symm (chartTransitionMap (I := I) α β x)) a b =
-      chartGramMatrix g β p a b
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b
     rw [h_tβ, (extChartAt I β).left_inv hp_ext_β]
   have h_rhs_inner : ∀ i j : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i j x =
-        chartGramMatrix g α p i j := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j := by
     intro i j
-    change chartGramMatrix g α ((extChartAt I α).symm x) i j =
-      chartGramMatrix g α p i j
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α ((extChartAt I α).symm x) i j =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j
     rw [hp_symm]
   rw [h_lhs]
   rw [chartGramMatrix_pullback_eq_sum (I := I) g α β

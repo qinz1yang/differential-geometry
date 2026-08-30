@@ -460,7 +460,7 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
         linearizedKoszulCovec (I := I) g₀ S b (Z b) (Y b)
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   classical
   set W₃ : ∀ b : M, Tensor0SSpace 3 I b := fun b =>
@@ -477,8 +477,8 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hb
   have hbasisAt : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun y => chartBasisVecFiber (I := I) α j y)) b := by
-    have h := chartBasisVec_contMDiffOn (I := I) α j
+      (T% (fun y => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y)) b := by
+    have h := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
     have hopen : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
       (trivializationAt E (TangentSpace I) α).open_baseSet
     exact (h b hb_base).contMDiffAt (hopen.mem_nhds hb_base)
@@ -488,21 +488,21 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
         (fun y : M => W₃ y (fun i : Fin 3 => v i y)) b :=
     fun v hv => TensorMultilinear.contMDiffAt_section_apply (n := 3) W₃
       (hW₃.contMDiffAt) v hv
-  have h1 := hEval ![fun y => Y y, fun y => Z y, fun y => chartBasisVecFiber (I := I) α j y]
+  have h1 := hEval ![fun y => Y y, fun y => Z y, fun y => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y]
     (by
       intro i
       fin_cases i
       · exact Y.contMDiff.contMDiffAt
       · exact Z.contMDiff.contMDiffAt
       · exact hbasisAt)
-  have h2 := hEval ![fun y => Z y, fun y => Y y, fun y => chartBasisVecFiber (I := I) α j y]
+  have h2 := hEval ![fun y => Z y, fun y => Y y, fun y => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y]
     (by
       intro i
       fin_cases i
       · exact Z.contMDiff.contMDiffAt
       · exact Y.contMDiff.contMDiffAt
       · exact hbasisAt)
-  have h3 := hEval ![fun y => chartBasisVecFiber (I := I) α j y, fun y => Y y, fun y => Z y]
+  have h3 := hEval ![fun y => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y, fun y => Y y, fun y => Z y]
     (by
       intro i
       fin_cases i
@@ -513,14 +513,14 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
       (fun y : M => (1 / 2 : ℝ) *
         (W₃ y
             (fun i : Fin 3 => (![fun y' => Y y', fun y' => Z y',
-              fun y' => chartBasisVecFiber (I := I) α j y'] : Fin 3 → ∀ y' : M,
+              fun y' => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y'] : Fin 3 → ∀ y' : M,
                 TangentSpace I y') i y)
           + W₃ y
               (fun i : Fin 3 => (![fun y' => Z y', fun y' => Y y',
-                fun y' => chartBasisVecFiber (I := I) α j y'] : Fin 3 → ∀ y' : M,
+                fun y' => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y'] : Fin 3 → ∀ y' : M,
                   TangentSpace I y') i y)
           - W₃ y
-              (fun i : Fin 3 => (![fun y' => chartBasisVecFiber (I := I) α j y',
+              (fun i : Fin 3 => (![fun y' => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y',
                 fun y' => Y y', fun y' => Z y'] : Fin 3 → ∀ y' : M,
                   TangentSpace I y') i y))) b :=
     ContMDiffAt.mul contMDiffAt_const ((h1.add h2).sub h3)
@@ -536,49 +536,49 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn_generic
         ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
           tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
           tangentSpaceModelContinuousLinearEquiv (I := I) y
-            (chartBasisVecFiber (I := I) α j y)] =
-      W₃ y ![Y y, Z y, chartBasisVecFiber (I := I) α j y] := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y)] =
+      W₃ y ![Y y, Z y, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y] := by
     rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
         tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
         tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (chartBasisVecFiber (I := I) α j y)] =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y)] =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (![Y y, Z y, chartBasisVecFiber (I := I) α j y] i)) by
+          (![Y y, Z y, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y] i)) by
       funext i
       fin_cases i <;> rfl]
-    exact hUM ![Y y, Z y, chartBasisVecFiber (I := I) α j y]
+    exact hUM ![Y y, Z y, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y]
   have hUM2 : unitModel (I := I) (M := M) g₀ 3
       (covGrad (I := I) (M := M) g₀ 0 2 S) y
         ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
           tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
           tangentSpaceModelContinuousLinearEquiv (I := I) y
-            (chartBasisVecFiber (I := I) α j y)] =
-      W₃ y ![Z y, Y y, chartBasisVecFiber (I := I) α j y] := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y)] =
+      W₃ y ![Z y, Y y, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y] := by
     rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y),
         tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
         tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (chartBasisVecFiber (I := I) α j y)] =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y)] =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (![Z y, Y y, chartBasisVecFiber (I := I) α j y] i)) by
+          (![Z y, Y y, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y] i)) by
       funext i
       fin_cases i <;> rfl]
-    exact hUM ![Z y, Y y, chartBasisVecFiber (I := I) α j y]
+    exact hUM ![Z y, Y y, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y]
   have hUM3 : unitModel (I := I) (M := M) g₀ 3
       (covGrad (I := I) (M := M) g₀ 0 2 S) y
         ![tangentSpaceModelContinuousLinearEquiv (I := I) y
-            (chartBasisVecFiber (I := I) α j y),
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y),
           tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
           tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y)] =
-      W₃ y ![chartBasisVecFiber (I := I) α j y, Y y, Z y] := by
+      W₃ y ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y, Y y, Z y] := by
     rw [show ![tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (chartBasisVecFiber (I := I) α j y),
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y),
         tangentSpaceModelContinuousLinearEquiv (I := I) y (Y y),
         tangentSpaceModelContinuousLinearEquiv (I := I) y (Z y)] =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (![chartBasisVecFiber (I := I) α j y, Y y, Z y] i)) by
+          (![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y, Y y, Z y] i)) by
       funext i
       fin_cases i <;> rfl]
-    exact hUM ![chartBasisVecFiber (I := I) α j y, Y y, Z y]
+    exact hUM ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y, Y y, Z y]
   rw [hUM1, hUM2, hUM3]
   congr 1
   congr 1

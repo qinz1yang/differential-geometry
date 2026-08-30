@@ -66,8 +66,8 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
                   (LeviCivita (I := I) g)).toFun
                 (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                   (LeviCivita (I := I) g))
-                  (chartBasisVecFiber (I := I) α k) T₀.toSection) b
-                (chartBasisVecFiber (I := I) α l b))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) =
         covDerivComponentEuclid (I := I) (M := M) g r s α
           (packageAsCc (I := I) (M := M) g r s S_k_ext) l Idx Jdx
           ((toEuclidean (E := E)) ((extChartAt I α) b)) := by
@@ -90,7 +90,7 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
   set cov := TensorRSNabla.tensorRSCovariantDerivative I M r s
     (LeviCivita (I := I) g) with hcov_def
   set σ : Π y : M, TensorRSSpace r s I y :=
-    covApply cov (chartBasisVecFiber (I := I) α k) T₀.toSection with hσ_def
+    covApply cov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection with hσ_def
   set σ' : Π y : M, TensorRSSpace r s I y :=
     fun y : M => (S_k_ext : Π y' : M, TensorRSSpace r s I y') y with hσ'_def
   set S_k_packed : SmoothCcTensor g r s :=
@@ -104,9 +104,9 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
     refine Filter.eventually_of_mem hU_nhds (fun y hy_U => ?_)
     have hSk_y :
         (S_k_ext : Π y' : M, TensorRSSpace r s I y') y =
-          covApply cov (chartBasisVecFiber (I := I) α k) T₀.toSection y :=
+          covApply cov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection y :=
       hU_eq y hy_U
-    change covApply cov (chartBasisVecFiber (I := I) α k) T₀.toSection y =
+    change covApply cov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection y =
         (S_k_ext : Π y' : M, TensorRSSpace r s I y') y
     exact hSk_y.symm
   have hσ'_total_smooth :
@@ -141,34 +141,34 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
       (I := I) (M := M) g r s
       (σ := σ) (σ' := σ') (x := b) hagree_σ_σ' hσ_total_mdiff hσ'_total_mdiff
   have hcov_loc_at_v :
-      cov.toFun σ b (chartBasisVecFiber (I := I) α l b) =
-      cov.toFun σ' b (chartBasisVecFiber (I := I) α l b) := by
+      cov.toFun σ b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
+      cov.toFun σ' b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
     rw [hcov_loc]
   have hcov_σ'_eq_packed :
-      cov.toFun σ' b (chartBasisVecFiber (I := I) α l b) =
+      cov.toFun σ' b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       cov.toFun (fun y : M => S_k_packed.toSection y) b
-        (chartBasisVecFiber (I := I) α l b) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
     rw [hσ'_eq_packed]
   have hcov_tensor :
       cov.toFun (fun y : M => S_k_packed.toSection y) b
-        (chartBasisVecFiber (I := I) α l b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       tensorCovDerivAt (I := I) (M := M) g r s S_k_packed b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α l b)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
     rw [hcov_def, tensorCovDerivAt_def]
     simp only [ContinuousLinearEquiv.symm_apply_apply]
   have hcov_chart :
       tensorCovDerivAt (I := I) (M := M) g r s S_k_packed b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α l b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
       chartTensorRSCovariantDerivative (I := I) r s g α S_k_packed.toSection
-        (chartBasisVecFiber (I := I) α l) b :=
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l) b :=
     tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
       (I := I) (M := M) g r s S_k_packed α l (b := b) hb_good
   have hinner :
-      cov.toFun σ b (chartBasisVecFiber (I := I) α l b) =
+      cov.toFun σ b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       chartTensorRSCovariantDerivative (I := I) r s g α S_k_packed.toSection
-        (chartBasisVecFiber (I := I) α l) b := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l) b := by
     rw [hcov_loc_at_v, hcov_σ'_eq_packed, hcov_tensor, hcov_chart]
   rw [hinner]
   rw [covDerivComponentEuclid_def]

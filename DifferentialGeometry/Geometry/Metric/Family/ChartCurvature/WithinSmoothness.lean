@@ -22,7 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [NeZero (Module.finrank ℝ E)] in
 theorem partialDeriv_eq_fderivWithin_of_isOpen {U : Set E} (hU : IsOpen U) (u : E → ℝ)
     (q : Fin (Module.finrank ℝ E)) {y : E} (hy : y ∈ U) :
-    partialDeriv (E := E) q u y = fderivWithin ℝ u U y ((chartModelBasis E) q) := by
+    partialDeriv (E := E) q u y = fderivWithin ℝ u U y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q) := by
   rw [partialDeriv, fderivWithin_of_isOpen hU hy]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -47,7 +47,7 @@ theorem partialDeriv_joint_contDiffWithinAt
     rintro z ⟨⟨hz1, -⟩, hz2⟩
     exact ⟨hz1, hz2⟩
   have hg : ContDiffWithinAt ℝ ∞ (fun p : ℝ × E => p.2) (S ×ˢ U) (s₀, y₀) := contDiffWithinAt_snd
-  have hk : ContDiffWithinAt ℝ ∞ (fun _ : ℝ × E => (chartModelBasis E) q) (S ×ˢ U) (s₀, y₀) :=
+  have hk : ContDiffWithinAt ℝ ∞ (fun _ : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q) (S ×ˢ U) (s₀, y₀) :=
     contDiffWithinAt_const
   have hfd := hf.fderivWithin_apply hg hk hU.uniqueDiffOn (le_refl _) hmem hst
   exact hfd.congr (fun p hp => partialDeriv_eq_fderivWithin_of_isOpen hU _ q hp.2)
@@ -79,21 +79,21 @@ theorem chartInvGramOnE_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoo
   classical
   have hGentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContDiffWithinAt ℝ ∞
-        (fun p : ℝ × E => chartGramMatrix (I := I) (gfam p.1) α
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2) a b)
         (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
     intro a b
     have := hG a b hs hy
     simpa only [chartGramOnE_def] using this
   have hdet : ContDiffWithinAt ℝ ∞
-      (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+      (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
         ((extChartAt I α).symm p.2)).det)
       (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
-    have hdet_eq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    have hdet_eq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).det) =
         (fun p : ℝ × E => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ kk, chartGramMatrix (I := I) (gfam p.1) α
+            ∏ kk, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
               ((extChartAt I α).symm p.2) (σ kk) kk) := by
       funext p; rw [Matrix.det_apply]; simp [Units.smul_def]
     rw [hdet_eq]
@@ -106,20 +106,20 @@ theorem chartInvGramOnE_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoo
       (extChartAt I α).map_target hy_t
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     exact hsource
-  have hdet_ne : (chartGramMatrix (I := I) (gfam (s₀, y₀).1) α
+  have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam (s₀, y₀).1) α
       ((extChartAt I α).symm (s₀, y₀).2)).det ≠ 0 :=
-    ne_of_gt (chartGramMatrix_det_pos (I := I) (gfam s₀) α hx_base)
+    ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (gfam s₀) α hx_base)
   have hadj : ∀ kk ll : Fin (Module.finrank ℝ E),
       ContDiffWithinAt ℝ ∞
-        (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+        (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).adjugate kk ll)
         (S ×ˢ interior (extChartAt I α).target) (s₀, y₀) := by
     intro kk ll
-    have hexp : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    have hexp : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).adjugate kk ll) =
         (fun p : ℝ × E => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ m, (chartGramMatrix (I := I) (gfam p.1) α
+            ∏ m, (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
                 ((extChartAt I α).symm p.2)).updateRow ll
                 (Pi.single kk (1 : ℝ)) (σ m) m) := by
       funext p; rw [Matrix.adjugate_apply, Matrix.det_apply]; simp [Units.smul_def]
@@ -128,29 +128,29 @@ theorem chartInvGramOnE_contDiffWithinAt {S : Set ℝ} (hG : chartGramFamilySmoo
     refine contDiffWithinAt_const.mul ?_
     refine contDiffWithinAt_prod (fun m _ => ?_)
     by_cases hσm : σ m = ll
-    · have heq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    · have heq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).updateRow ll (Pi.single kk (1 : ℝ)) (σ m) m) =
           (fun _ : ℝ × E => (Pi.single (M := fun _ : Fin (Module.finrank ℝ E) => ℝ) kk
             (1 : ℝ)) m) := by
         funext p; rw [hσm, Matrix.updateRow_self]
       rw [heq]; exact contDiffWithinAt_const
-    · have heq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    · have heq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).updateRow ll (Pi.single kk (1 : ℝ)) (σ m) m) =
-          (fun p : ℝ × E => chartGramMatrix (I := I) (gfam p.1) α
+          (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
             ((extChartAt I α).symm p.2) (σ m) m) := by
         funext p; rw [Matrix.updateRow_ne hσm]
       rw [heq]; exact hGentry (σ m) m
   have hcongr : (fun p : ℝ × E => chartInvGramOnE (I := I) (gfam p.1) α k l p.2) =
-      (fun p : ℝ × E => ((chartGramMatrix (I := I) (gfam p.1) α
+      (fun p : ℝ × E => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).det)⁻¹ *
-        (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate k l) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate k l) := by
     funext p
     rw [chartInvGramOnE_def]
-    change (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2))⁻¹ k l = _
+    change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2))⁻¹ k l = _
     rw [Matrix.inv_def]
-    change (Ring.inverse (chartGramMatrix (I := I) (gfam p.1) α
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
             ((extChartAt I α).symm p.2)).det •
-            (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate) k l = _
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate) k l = _
     rw [Matrix.smul_apply, smul_eq_mul, Ring.inverse_eq_inv]
   rw [hcongr]
   exact ((contDiffAt_inv _ hdet_ne).comp_contDiffWithinAt (s₀, y₀) hdet).mul (hadj k l)
@@ -296,7 +296,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartGramFamilySmoothWithinOn_of_contMDiffOn (g : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (α : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) α p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) α p.2 i j)
         (J ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)) :
     chartGramFamilySmoothWithinOn (I := I) g α J := by
   classical
@@ -463,7 +463,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartChristoffel_comp_extChartAt_continuousOn_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (i j k : Fin (Module.finrank ℝ E)) :
     ContinuousOn
@@ -482,7 +482,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRiemannTensor_comp_extChartAt_continuousOn_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (i j k l : Fin (Module.finrank ℝ E)) :
     ContinuousOn
@@ -501,7 +501,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartChristoffel_comp_extChartAt_continuousWithinAt_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (i j k : Fin (Module.finrank ℝ E)) {t : ℝ} (ht : t ∈ Icc a c) :
     ContinuousWithinAt
@@ -516,7 +516,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRiemannTensor_comp_extChartAt_continuousWithinAt_slab (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b) (x₀ : M)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (i j k l : Fin (Module.finrank ℝ E)) {t : ℝ} (ht : t ∈ Icc a c) :
     ContinuousWithinAt

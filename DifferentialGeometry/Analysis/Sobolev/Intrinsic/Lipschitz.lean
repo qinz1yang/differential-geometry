@@ -315,7 +315,7 @@ theorem grad_norm_aesm
       Measurable (part α i) := by
     unfold part partialDeriv
     exact (measurable_fderiv_apply_const ℝ
-      (scalarOnE (I := I) α u) ((chartModelBasis E) i)).comp
+      (scalarOnE (I := I) α u) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)).comp
         (extChartAtExt_measurable (I := I) (α := α))
   have hq (α : M) : Measurable (q α) := by
     unfold q

@@ -65,8 +65,8 @@ private lemma mfderiv_extChartAt_chartBasisVecFiber
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
-        (chartBasisVecFiber (I := I) α i x)
-      = (chartModelBasis E) i := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+      = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
   classical
   let T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α
@@ -83,10 +83,10 @@ private lemma mfderiv_extChartAt_chartBasisVecFiber
     exact (TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
       (x₀ := α) (x := x) hx).symm
   rw [hmfderiv_eq]
-  change T.continuousLinearMapAt ℝ x (T.symmL ℝ x ((chartModelBasis E) i))
-    = (chartModelBasis E) i
+  change T.continuousLinearMapAt ℝ x (T.symmL ℝ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+    = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
   exact Trivialization.continuousLinearMapAt_symmL (R := ℝ) T (b := x) hbase
-    ((chartModelBasis E) i)
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma mfderivWithin_extChartAt_chart_source
@@ -182,12 +182,12 @@ private lemma mfderiv_chartBasisVecFiber_within
     {x : M} (hx : x ∈ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ) f x
-        (chartBasisVecFiber (I := I) α i x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       partialDerivWithin (E := E) (extChartAt I α).target i
         (scalarOnE (I := I) α f) ((extChartAt I α) x) := by
   classical
   rw [mfderiv_factor_through_extChartAt (I := I) α hf hx
-        (chartBasisVecFiber (I := I) α i x)]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)]
   rw [mfderiv_extChartAt_chartBasisVecFiber (I := I) α hx i]
   rfl
 
@@ -205,7 +205,7 @@ theorem tangentSectionAction_chartLocal_within
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx
   have hXrecomp : X x = ∑ i, chartCoeff (I := I) α X i x •
-        chartBasisVecFiber (I := I) α i x :=
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartCoeff_recompose (I := I) α X hbase
   rw [tangentSectionAction_def, hXrecomp]
   rw [map_sum]

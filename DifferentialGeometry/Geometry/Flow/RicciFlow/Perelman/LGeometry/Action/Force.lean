@@ -29,14 +29,14 @@ private noncomputable def lGramDir
     (S : SolutionOn (I := I) (M := M) D) (p : M)
     (i : Fin (Module.finrank Real E)) (q : Real × E) : E →L[Real] E :=
   (1 / 2 : Real) •
-    (fderiv Real (chartGramOp (I := I) S.family p) q) (0, chartModelBasis E i)
+    (fderiv Real (chartGramOp (I := I) S.family p) q) (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
 
 private noncomputable def lScalarDir
     (S : SolutionOn (I := I) (M := M) D) (p : M)
     (i : Fin (Module.finrank Real E)) (q : Real × E) : Real :=
   let x := (extChartAt I p).symm q.2
   mvfderiv (I := I) (S.scalar q.1) x
-    (chartBasisVecFiber (I := I) p i x)
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i x)
 
 noncomputable def lChartPosDeriv
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)

@@ -393,7 +393,7 @@ theorem hmfMass_time_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (S T : SmoothCcTensor q 0 1) :
     ContinuousOn (fun t => hmfMass (I := I) (M := M) q (g t) S T) K := by
@@ -986,7 +986,7 @@ theorem hmfVolumeEquiv
     (h : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
       (fun p : ℝ × M =>
-        chartGramMatrix (I := I) (h p.1) x₀ p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (h p.1) x₀ p.2 i j)
       (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ C : ℝ≥0∞, C ≠ 0 ∧ C ≠ ⊤ ∧ ∀ t ∈ Icc a c,
       riemannianVolumeMeasure (I := I) (M := M) (h t) ≤
@@ -1580,7 +1580,7 @@ theorem hmfEdge_inputs
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hga : g a = q) :
     ∃ T : ℝ, ∃ C : ℝ≥0∞, 0 < T ∧ a + T < b ∧ C ≠ 0 ∧ C ≠ ⊤ ∧

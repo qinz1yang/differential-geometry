@@ -182,7 +182,7 @@ theorem early_localizedSpacetimeMeasure_centered_log_superlevel_tail_of_evolving
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ averagingCutoff)
     (hne : ∃ x, averagingCutoff x ≠ 0)
@@ -248,7 +248,7 @@ theorem late_localizedSpacetimeMeasure_centered_log_sublevel_tail_of_evolving_su
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ averagingCutoff)
     (hne : ∃ x, averagingCutoff x ≠ 0)
@@ -314,7 +314,7 @@ theorem early_localizedSpacetimeMeasure_log_superlevel_tail_of_exponentialTimeRe
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M ↦
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ averagingCutoff)
     (hne : ∃ x, averagingCutoff x ≠ 0)
@@ -378,7 +378,7 @@ theorem late_localizedSpacetimeMeasure_log_sublevel_tail_of_exponentialTimeResca
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M ↦
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ averagingCutoff)
     (hne : ∃ x, averagingCutoff x ≠ 0)

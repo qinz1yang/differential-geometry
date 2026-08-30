@@ -61,7 +61,7 @@ theorem evolvingLogCenterDrift_continuous
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hne : ∃ x, cutoff x ≠ 0) :
@@ -98,7 +98,7 @@ theorem exists_nonnegative_evolving_log_center_drift_upper_bound
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M ↦
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hne : ∃ x, cutoff x ≠ 0) :
@@ -129,7 +129,7 @@ theorem hasDerivAt_evolvingShiftedLogCenter
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hne : ∃ x, cutoff x ≠ 0) :
@@ -180,7 +180,7 @@ theorem contDiff_evolvingShiftedLogCenter
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hne : ∃ x, cutoff x ≠ 0) :
@@ -413,7 +413,7 @@ theorem quarter_evolving_log_dirichlet_energy_le_shifted_center_deriv_of_superso
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hne : ∃ x, cutoff x ≠ 0)
@@ -458,7 +458,7 @@ theorem evolvingShiftedLogCenter_monotoneOn_of_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hne : ∃ x, cutoff x ≠ 0)

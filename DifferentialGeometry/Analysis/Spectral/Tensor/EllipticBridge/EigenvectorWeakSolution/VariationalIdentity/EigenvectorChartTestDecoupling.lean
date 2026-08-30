@@ -71,7 +71,7 @@ theorem tensorChartComponentRaw_prependCovGradSlot
     tensorChartComponentRaw (I := I) (M := M) g r (s + 1)
         (prependCovGradSlot (I := I) (M := M) g r s ζ S) α Idx Jdx b =
       mvfderiv (I := I) (ζ : M → ℝ) b
-          (chartBasisVecFiber (I := I) α (Jdx 0) b) *
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b) *
         tensorChartComponentRaw (I := I) (M := M) g r s S α Idx
           (Matrix.vecTail Jdx) b := by
   classical
@@ -116,8 +116,8 @@ theorem tensorChartComponentRaw_prependCovGradSlot
   rw [covGradBundle_trivFibre_eq (I := I) (M := M) r s α b Φ]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   have hsymmL : (trivializationAt E (TangentSpace I) α).symmL ℝ b
-      ((chartModelBasis E) (Jdx 0)) =
-      chartBasisVecFiber (I := I) α (Jdx 0) b := rfl
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx 0)) =
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b := rfl
   rw [hsymmL]
   rw [hΦ_def, ContinuousLinearMap.smulRight_apply]
   rw [ContinuousLinearMap.map_smul, smul_apply,
@@ -153,8 +153,8 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial
     (f := scalarOnE (I := I) α f) (x := y)]
   rw [ContinuousLinearMap.comp_apply]
   rw [show (toEuclidean (E := E)).symm.toContinuousLinearMap
-      (EuclideanSpace.single m (1 : ℝ)) = (chartModelBasis E) m from by
-    rw [chartModelBasis_apply]; rfl]
+      (EuclideanSpace.single m (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]; rfl]
   rw [partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
@@ -165,7 +165,7 @@ private lemma mvfderiv_chartBasisVecFiber_eq_euclidPartial
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     mvfderiv (I := I) (ζ : M → ℝ)
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-        (chartBasisVecFiber (I := I) α m
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
       euclidPartial (E := E) m (chartPushedRaw I α (ζ : M → ℝ)) y := by
   classical
@@ -182,7 +182,7 @@ private lemma mvfderiv_chartBasisVecFiber_eq_euclidPartial
     rw [hphi_b, (isOpen_extChartAt_target (I := I) α).interior_eq]
     exact hy_pre
   rw [mvfderiv_apply_scalar (I := I) (ζ : M → ℝ) b
-    (chartBasisVecFiber (I := I) α m b)]
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)]
   rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt (I := I) α
     (ζ.contMDiff.mdifferentiable (by norm_num)).mdifferentiableAt
     hb_chart hb_int m]
@@ -293,7 +293,7 @@ theorem tensorChartComponentRaw_covDerivAlongGrad
   have hgrad : gradFun (I := I) g (ζ : M → ℝ) b =
       ∑ m : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α (ζ : M → ℝ) m b •
-          chartBasisVecFiber (I := I) α m b := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b := by
     rw [← gradChartLocal_eq_gradFun (I := I) g α
       (ζ.contMDiff.mdifferentiable (by norm_num)).mdifferentiableAt
       hb_base hb_int]
@@ -304,7 +304,7 @@ theorem tensorChartComponentRaw_covDerivAlongGrad
         ∑ m : Fin (Module.finrank ℝ E),
           gradChartCoeff (I := I) g α (ζ : M → ℝ) m b •
             tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α m b) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b) := by
     rw [hgrad, map_sum]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     rw [map_smul]
@@ -312,7 +312,7 @@ theorem tensorChartComponentRaw_covDerivAlongGrad
   rw [tensorCovDerivAt_sum_smul_dir (I := I) (M := M) g r s S b
     (fun m => gradChartCoeff (I := I) g α (ζ : M → ℝ) m b)
     (fun m => tangentSpaceModelContinuousLinearEquiv (I := I) b
-      (chartBasisVecFiber (I := I) α m b))]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))]
   rw [tensorTrivCLM_sum (I := I) (M := M), tensorChartComponentProjection_sum (E := E)]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul, smul_eq_mul]
@@ -693,7 +693,7 @@ example (Idx : Fin r → Fin (Module.finrank ℝ E))
     tensorChartComponentRaw (I := I) (M := M) g r (s + 1)
         (prependCovGradSlot (I := I) (M := M) g r s ζ S) α Idx Jdx b =
       mvfderiv (I := I) (ζ : M → ℝ) b
-          (chartBasisVecFiber (I := I) α (Jdx 0) b) *
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b) *
         tensorChartComponentRaw (I := I) (M := M) g r s S α Idx
           (Matrix.vecTail Jdx) b :=
   tensorChartComponentRaw_prependCovGradSlot (I := I) (M := M) g r s ζ S α

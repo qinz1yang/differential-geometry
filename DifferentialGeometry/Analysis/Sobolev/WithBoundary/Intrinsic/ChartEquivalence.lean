@@ -401,10 +401,10 @@ private lemma gradChartCoeffWithin_continuousOn_source
 private lemma chartGramMatrix_entry_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+    ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (chartAt H α).source := by
-  have h := chartGramMatrix_entry_contMDiffOn (I := I) g α i j
-  have hcont : ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+  have h := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+  have hcont : ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (trivializationAt E (TangentSpace I) α).baseSet := h.continuousOn
   refine hcont.mono ?_
   intro y hy
@@ -432,41 +432,41 @@ private lemma g_inner_gradFun_gradFun_continuousOn_chart_source
           ∑ j : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α u i y *
               gradChartCoeffWithin (I := I) g α u j y *
-                chartGramMatrix (I := I) g α y i j := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j := by
     intro y _hy
     unfold gradChartLocalWithin
     rw [show (g.inner y (∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y •
-                chartBasisVecFiber (I := I) α i y)
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
             (∑ j : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u j y •
-                chartBasisVecFiber (I := I) α j y))
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y))
         = ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y *
                 gradChartCoeffWithin (I := I) g α u j y *
-                  g.inner y (chartBasisVecFiber (I := I) α i y)
-                    (chartBasisVecFiber (I := I) α j y) from ?_]
+                  g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
     · refine Finset.sum_congr rfl (fun i _ => ?_)
       refine Finset.sum_congr rfl (fun j _ => ?_)
       rfl
     · rw [show (g.inner y (∑ i : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α u i y •
-              chartBasisVecFiber (I := I) α i y))
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
           = ∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u i y •
-                g.inner y (chartBasisVecFiber (I := I) α i y) from ?_]
+                g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y) from ?_]
       · rw [sum_apply]
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [smul_apply, smul_eq_mul]
-        rw [show (g.inner y (chartBasisVecFiber (I := I) α i y))
+        rw [show (g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
               (∑ j : Fin (Module.finrank ℝ E),
                 gradChartCoeffWithin (I := I) g α u j y •
-                  chartBasisVecFiber (I := I) α j y) =
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) =
             ∑ j : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α u j y *
-                g.inner y (chartBasisVecFiber (I := I) α i y)
-                  (chartBasisVecFiber (I := I) α j y) from ?_]
+                g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
         · rw [Finset.mul_sum]
           refine Finset.sum_congr rfl (fun j _ => ?_)
           ring
@@ -524,17 +524,17 @@ private lemma tangentSectionAction_chartLocal_within
   have hY_decomp : (Y : ∀ z, TangentSpace I z) x =
       ∑ i : Fin (Module.finrank ℝ E),
         chartCoeff (I := I) α Y i x •
-          chartBasisVecFiber (I := I) α i x :=
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartCoeff_recompose (I := I) α Y hbase
   change mfderiv I 𝓘(ℝ) u x ((Y : ∀ z, TangentSpace I z) x) = _
   rw [hY_decomp, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [show mfderiv I 𝓘(ℝ) u x (chartCoeff (I := I) α Y i x •
-        chartBasisVecFiber (I := I) α i x) =
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       chartCoeff (I := I) α Y i x •
-        mfderiv I 𝓘(ℝ) u x (chartBasisVecFiber (I := I) α i x) from
+        mfderiv I 𝓘(ℝ) u x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) from
     ContinuousLinearMap.map_smul (mfderiv I 𝓘(ℝ) u x)
-      (chartCoeff (I := I) α Y i x) (chartBasisVecFiber (I := I) α i x)]
+      (chartCoeff (I := I) α Y i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)]
   rw [mfderiv_chartBasisVecFiber_within_of_smooth (I := I) α hu hx i]
   rfl
 

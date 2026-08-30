@@ -211,7 +211,7 @@ private theorem tensorInnerPointwise_diag_section_jointContMDiffOn
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ =>
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((Sfam p.2).toFun p.1))
-            (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)))
+            (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
     fun φ => loweredCompose_zero_basis_eval_jointContMDiffOn (I := I) (M := M) g₀ α
       (fun p => (Sfam p.2).toSection p.1 (ContinuousMultilinearMap.constOfIsEmpty ℝ

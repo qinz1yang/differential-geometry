@@ -57,15 +57,15 @@ lemma chartLeviCivitaGoodSet_image_isOpen (α : M) :
   exact hsymm_cont.isOpen_inter_preimage hint_open hS_open
 
 def christoffelBlockCLM (i k : Fin (Module.finrank ℝ E)) : E →L[ℝ] E :=
-  (((chartModelBasis E).coord i).toContinuousLinearMap).smulRight
-    ((chartModelBasis E) k)
+  (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).smulRight
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
 
 def christoffelCorrectionCLM (g : SmoothRiemannianMetric I M)
     (α : M) (σ : Π x : M, TangentSpace I x) (x : M) : E →L[ℝ] E :=
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
       ∑ k : Fin (Module.finrank ℝ E),
-        (((chartModelBasis E).repr
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α σ x) j *
             chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
           christoffelBlockCLM (E := E) i k)
@@ -78,11 +78,11 @@ lemma christoffelCorrectionCLM_apply
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr w) i *
-                ((chartModelBasis E).repr
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                     (chartESectionRepr (I := I) α σ x)) j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
-              (chartModelBasis E) k := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
   classical
   unfold christoffelCorrectionCLM
   rw [sum_apply]
@@ -92,15 +92,15 @@ lemma christoffelCorrectionCLM_apply
   rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [smul_apply]
-  change ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x) j *
+  change ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (chartESectionRepr (I := I) α σ x) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
       christoffelBlockCLM (E := E) i k w =
     _
   unfold christoffelBlockCLM
   rw [ContinuousLinearMap.smulRight_apply]
-  change ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x) j *
+  change ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (chartESectionRepr (I := I) α σ x) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
-      (((chartModelBasis E).repr w) i • (chartModelBasis E) k) = _
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) = _
   rw [smul_smul]
   congr 1
   ring
@@ -198,7 +198,7 @@ lemma chartE_section_repr_basis_component_contMDiffOn
     (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
-        ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x)) j)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (chartESectionRepr (I := I) α σ x)) j)
       (chartLeviCivitaGoodSet (I := I) α) := by
   classical
   have hbase :
@@ -207,8 +207,8 @@ lemma chartE_section_repr_basis_component_contMDiffOn
         (chartLeviCivitaGoodSet (I := I) α) :=
     chartE_section_repr_contMDiffOn_goodSet (I := I) α hσ
   have hcoord_clm : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-    (((chartModelBasis E).coord j).toContinuousLinearMap).contMDiff
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).contMDiff
   intro x hx
   exact (hcoord_clm.contMDiffAt).comp_contMDiffWithinAt x (hbase x hx)
 
@@ -256,7 +256,7 @@ lemma christoffelCorrectionCLM_contMDiffOn
     chartChristoffel_contMDiffOn_goodSet (I := I) g α i j k
   have hscalar : ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
-        ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x)) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (chartESectionRepr (I := I) α σ x)) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x))
       (chartLeviCivitaGoodSet (I := I) α) :=
     hrepr_smooth.mul hΓ_smooth

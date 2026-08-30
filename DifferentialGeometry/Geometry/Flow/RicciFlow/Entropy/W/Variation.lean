@@ -121,7 +121,7 @@ theorem w_rev_hasDerivAt
   have hgram (x₀ : M) (i j : Fin (Module.finrank Real E)) :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     simpa only [G] using
       revGram_smooth (I := I) (M := M) (S := S) hS T hUmap x₀ i j
@@ -642,7 +642,7 @@ theorem gallim_w_cont
   have hgram (x₀ : M) (i j : Fin (Module.finrank Real E)) :
       ContinuousOn
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
         (Set.Icc (0 : Real) tau' ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     simpa only [G] using

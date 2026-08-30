@@ -74,7 +74,7 @@ theorem chartGramOnE_contDiffOn
       (J ×ˢ interior (extChartAt I α).target) := by
   classical
   let e := trivializationAt E (TangentSpace I : M → Type _) α
-  let b := chartModelBasis E
+  let b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   have hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) (e.localFrame b) e.baseSet :=
     e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
   have hsmooth := hG.frameCompSmooth (e.localFrame b) hframe i j
@@ -115,7 +115,7 @@ theorem chartGramOnE_contDiffOn
     e.localFrame_apply_of_mem_baseSet b (hmaps hp).2]
   have hbase : (extChartAt I α).symm y ∈
       (trivializationAt E (TangentSpace I) α).baseSet := (hmaps hp).2
-  simp only [chartGramOnE, chartGramMatrix, Matrix.of_apply, chartBasisVecFiber,
+  simp only [chartGramOnE, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix, Matrix.of_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber,
     Trivialization.basisAt, Module.Basis.map_apply, e, b,
     Trivialization.linearEquivAt_symm_apply]
   rw [Trivialization.symmL_apply _ hbase, Trivialization.symmL_apply _ hbase]
@@ -163,7 +163,7 @@ theorem chartGramPartialOnE_contDiffOn
   have hfd := DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
     (G := fun t y => chartGramOnE (I := I) (g_fam t) α i j y)
     hJ isOpen_interior hF
-  exact (hfd.clm_apply (contDiffOn_const (c := chartModelBasis E m))).congr fun _ _ => rfl
+  exact (hfd.clm_apply (contDiffOn_const (c := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m))).congr fun _ _ => rfl
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
@@ -236,11 +236,11 @@ theorem chartInvGramOnE_contDiffOn
       rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
       rwa [trivializationAt_baseSet_eq_chartAt_source]
     have hpos : 0 < (A p).det := by
-      rw [show A p = chartGramMatrix (I := I) (g_fam p.1) α
+      rw [show A p = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α
           ((extChartAt I α).symm p.2) by
         ext i j
         rfl]
-      exact chartGramMatrix_det_pos (I := I) (g_fam p.1) α hbase
+      exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_fam p.1) α hbase
     exact ne_of_gt hpos
   have hinv := matrixInv_entry_contDiffOn (A := A) hA hdet a b
   refine hinv.congr ?_

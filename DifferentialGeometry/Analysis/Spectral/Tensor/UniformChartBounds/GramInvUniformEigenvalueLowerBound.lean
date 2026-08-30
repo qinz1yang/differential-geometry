@@ -86,8 +86,8 @@ theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
               ∑ j : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) g α b i j * ξ i * ξ j := by
     intro b hb ξ hξ
-    have hG_pd : (chartGramMatrix (I := I) g α b).PosDef :=
-      chartGramMatrix_posDef (I := I) g α hb
+    have hG_pd : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b).PosDef :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hb
     have hGinv_pd : (chartInvGramMatrix (I := I) g α b).PosDef := by
       unfold chartInvGramMatrix
       exact hG_pd.inv
@@ -368,7 +368,7 @@ theorem chartInvGram_quad_le
         ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α b i j * ξ i * ξ j) := by
   classical
-  let basis := chartBasisFamily (I := I) α hb
+  let basis := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb
   let ξDual : Module.Dual ℝ (TangentSpace I b) :=
     ∑ i : Fin (Module.finrank ℝ E), ξ i • basis.coord i
   let A : Tensor0SSpace 1 I b := dualToCotangentGen (I := I) ξDual
@@ -385,9 +385,9 @@ theorem chartInvGram_quad_le
       MetricInverseInBasis (I := I) g' b basis
         (fun i j => chartInvGramMatrix (I := I) g' α b i j) := by
     have hgram : ∀ i j : Fin (Module.finrank ℝ E),
-        g'.inner b (basis i) (basis j) = chartGramMatrix (I := I) g' α b i j := by
+        g'.inner b (basis i) (basis j) = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g' α b i j := by
       intro i j
-      simp [basis, chartBasisFamily_apply, chartGramMatrix_apply]
+      simp [basis, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     intro i j
     constructor
     · simp only [hgram]
@@ -436,7 +436,7 @@ theorem chartInvGram_ent_le
   classical
   have hpos : (chartInvGramMatrix (I := I) g α b).PosSemidef := by
     unfold chartInvGramMatrix
-    exact (chartGramMatrix_posDef (I := I) g α hb).inv.posSemidef
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hb).inv.posSemidef
   have hdiag_nonneg (k : Fin (Module.finrank ℝ E)) :
       0 ≤ chartInvGramMatrix (I := I) g α b k k := hpos.diag_nonneg
   have hdiag_le (k : Fin (Module.finrank ℝ E)) :
@@ -576,7 +576,7 @@ theorem chartInvGram_unif_lb
   intro k b hb ξ
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     hKα_sub_baseSet hb
-  let basis := chartBasisFamily (I := I) α hb_base
+  let basis := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb_base
   let ξDual : Module.Dual ℝ (TangentSpace I b) :=
     ∑ i : Fin (Module.finrank ℝ E), ξ i • basis.coord i
   let A : Tensor0SSpace 1 I b := dualToCotangentGen (I := I) ξDual
@@ -593,9 +593,9 @@ theorem chartInvGram_unif_lb
       MetricInverseInBasis (I := I) g b basis
         (fun i j => chartInvGramMatrix (I := I) g α b i j) := by
     have hgram : ∀ i j : Fin (Module.finrank ℝ E),
-        g.inner b (basis i) (basis j) = chartGramMatrix (I := I) g α b i j := by
+        g.inner b (basis i) (basis j) = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j := by
       intro i j
-      simp [basis, chartBasisFamily_apply, chartGramMatrix_apply]
+      simp [basis, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     intro i j
     constructor
     · simp only [hgram]

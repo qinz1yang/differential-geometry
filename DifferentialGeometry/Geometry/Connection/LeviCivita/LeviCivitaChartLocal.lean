@@ -130,11 +130,11 @@ def christoffelCorrection (g : SmoothRiemannianMetric I M)
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
       ∑ k : Fin (Module.finrank ℝ E),
-        (((chartModelBasis E).coord i).toContinuousLinearMap.comp
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.comp
             (trivToE (I := I) α x)).smulRight
-          (((chartModelBasis E).repr Y j *
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j *
               chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
-            (chartModelBasis E) k)
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
 
 lemma christoffelCorrection_apply
     (g : SmoothRiemannianMetric I M) (α : M) (x : M) (Y : E)
@@ -143,10 +143,10 @@ lemma christoffelCorrection_apply
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr (trivToE (I := I) α x v)) i *
-                ((chartModelBasis E).repr Y) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
-              (chartModelBasis E) k := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
   classical
   unfold christoffelCorrection
   rw [sum_apply]
@@ -157,9 +157,9 @@ lemma christoffelCorrection_apply
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [ContinuousLinearMap.smulRight_apply]
   rw [ContinuousLinearMap.comp_apply]
-  have hcoord : ((chartModelBasis E).coord i).toContinuousLinearMap
+  have hcoord : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap
       (trivToE (I := I) α x v) =
-        ((chartModelBasis E).repr (trivToE (I := I) α x v)) i := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i := by
     rfl
   rw [hcoord]
   rw [smul_smul, ← mul_assoc]
@@ -179,19 +179,19 @@ lemma christoffelCorrection_add
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  have hrepr : ((chartModelBasis E).repr (Y + Y')) j =
-      ((chartModelBasis E).repr Y) j +
-        ((chartModelBasis E).repr Y') j := by
+  have hrepr : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (Y + Y')) j =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j +
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y') j := by
     rw [map_add]; rfl
   rw [hrepr]
-  rw [show ((chartModelBasis E).repr (trivToE (I := I) α x v)) i *
-        (((chartModelBasis E).repr Y) j + ((chartModelBasis E).repr Y') j) *
+  rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i *
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j + ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y') j) *
         chartChristoffel (I := I) g α i j k (extChartAt I α x) =
-      ((chartModelBasis E).repr (trivToE (I := I) α x v)) i *
-          ((chartModelBasis E).repr Y) j *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j *
           chartChristoffel (I := I) g α i j k (extChartAt I α x) +
-        ((chartModelBasis E).repr (trivToE (I := I) α x v)) i *
-          ((chartModelBasis E).repr Y') j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y') j *
           chartChristoffel (I := I) g α i j k (extChartAt I α x) by ring]
   rw [add_smul]
 
@@ -208,15 +208,15 @@ lemma christoffelCorrection_smul
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [Finset.smul_sum]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  have hrepr : ((chartModelBasis E).repr (c • Y)) j =
-      c * ((chartModelBasis E).repr Y) j := by
+  have hrepr : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (c • Y)) j =
+      c * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j := by
     rw [map_smul]; rfl
   rw [hrepr]
-  rw [show ((chartModelBasis E).repr (trivToE (I := I) α x v)) i *
-        (c * ((chartModelBasis E).repr Y) j) *
+  rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i *
+        (c * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j) *
         chartChristoffel (I := I) g α i j k (extChartAt I α x) =
-      c * (((chartModelBasis E).repr (trivToE (I := I) α x v)) i *
-          ((chartModelBasis E).repr Y) j *
+      c * (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j *
           chartChristoffel (I := I) g α i j k (extChartAt I α x)) by ring]
   rw [← smul_smul]
 

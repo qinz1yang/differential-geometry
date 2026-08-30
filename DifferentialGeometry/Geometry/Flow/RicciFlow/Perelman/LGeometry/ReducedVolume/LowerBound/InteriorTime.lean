@@ -60,28 +60,28 @@ private theorem exists_rm_bound
   have hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
         (Icc a T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
     let e := trivializationAt E (TangentSpace I) x₀
     have hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞)
-        (e.localFrame (chartModelBasis E)) e.baseSet :=
+        (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) e.baseSet :=
       e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞)
-        (chartModelBasis E)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     have hbridge : ∀ {x : M}, x ∈ e.baseSet →
         ∀ k : Fin (Module.finrank Real E),
-          e.localFrame (chartModelBasis E) k x =
-            chartBasisVecFiber (I := I) x₀ k x := by
+          e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k x =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x := by
       intro x hx k
-      rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-      unfold Bundle.Trivialization.basisAt chartBasisVecFiber
+      rw [e.localFrame_apply_of_mem_baseSet (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx]
+      unfold Bundle.Trivialization.basisAt DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
       rw [Module.Basis.map_apply]
-      exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
+      exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
     have h := hS.smoothMetric.frameCompSmooth
-      (e.localFrame (chartModelBasis E)) hframe i j
+      (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) hframe i j
     refine (h.mono (prod_mono hslab (Subset.refl _))).congr ?_
     intro p hp
-    simp only [chartGramMatrix_apply, hbridge hp.2 i, hbridge hp.2 j,
+    simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, hbridge hp.2 i, hbridge hp.2 j,
       SolutionOn.family]
   obtain ⟨K, _hK, hbound⟩ :=
     rm04SlabSup (I := I) S.base.metric S.base.metric S.base.metric

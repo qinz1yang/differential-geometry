@@ -118,7 +118,7 @@ theorem lInner_deriv_chart
   classical
   set alpha : M := gamma tau0 with halpha
   set e := trivializationAt E (TangentSpace I : M → Type _) alpha with he
-  set b := chartModelBasis E with hb
+  set b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E with hb
   set u : Real → E := chartCurve (I := I) alpha gamma with hu
   set Vrep : Real → E := chartRepAt (I := I) gamma V tau0 with hVrep
   set Wrep : Real → E := chartRepAt (I := I) gamma W tau0 with hWrep
@@ -203,11 +203,11 @@ theorem lInner_deriv_chart
         rw [he, TangentBundle.trivializationAt_baseSet]
         rw [← extChartAt_source_eq_chartAt_source (I := I)]
         exact hxsrc
-      rw [chartGramOnE_def, chartGramMatrix_apply,
+      rw [chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
         e.localFrame_apply_of_mem_baseSet b hxbase,
         e.localFrame_apply_of_mem_baseSet b hxbase]
       simp only [e, b, Bundle.Trivialization.basisAt, Module.Basis.map_apply,
-        Trivialization.linearEquivAt_symm_apply, chartBasisVecFiber,
+        Trivialization.linearEquivAt_symm_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber,
         Trivialization.symmL_apply _ hxbase]
     have hcd : ContDiffAt Real (∞ : WithTop ℕ∞)
         (fun q : Real × E =>

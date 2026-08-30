@@ -156,7 +156,7 @@ private theorem chartFrame_component_contMDiffOn_aux
   have h_frame_on : ∀ k : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
-        (chartAt H α).source := fun k => chartAlphaFrame_section_contMDiffOn (I := I) α k
+        (chartAt H α).source := fun k => DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α k
   obtain ⟨Sf, hSf_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
       (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
@@ -216,7 +216,7 @@ def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => metricDiff02ModelFun (I := I) g₁ g₂ x, by
     let d := Module.finrank ℝ E
-    let b : Module.Basis (Fin d) ℝ E := chartModelBasis E
+    let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord
       (𝕜 := ℝ) (F := E) (E := (TangentSpace I : M → Type _)) (IB := I)
       (n := (∞ : WithTop ℕ∞)) b _).mpr
@@ -292,7 +292,7 @@ private theorem chartFrame_component3_contMDiffOn_aux
   have h_frame_on : ∀ m : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun c : M => TotalSpace.mk' E c (chartFrameVec (I := I) α m c))
-        (chartAt H α).source := fun m => chartAlphaFrame_section_contMDiffOn (I := I) α m
+        (chartAt H α).source := fun m => DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α m
   obtain ⟨Sf, hSf_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
       (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => chartFrameVec (I := I) α m c)
@@ -335,7 +335,7 @@ def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x, by
     let d := Module.finrank ℝ E
-    let b : Module.Basis (Fin d) ℝ E := chartModelBasis E
+    let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord
       (𝕜 := ℝ) (F := E) (E := (TangentSpace I : M → Type _)) (IB := I)
       (n := (∞ : WithTop ℕ∞)) b _).mpr
@@ -416,7 +416,7 @@ private theorem chartFrame_component4_contMDiffOn_aux
   have h_frame_on : ∀ m : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun c : M => TotalSpace.mk' E c (chartFrameVec (I := I) α m c))
-        (chartAt H α).source := fun m => chartAlphaFrame_section_contMDiffOn (I := I) α m
+        (chartAt H α).source := fun m => DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α m
   obtain ⟨Sf, hSf_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
       (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => chartFrameVec (I := I) α m c)
@@ -459,7 +459,7 @@ def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x, by
     let d := Module.finrank ℝ E
-    let b : Module.Basis (Fin d) ℝ E := chartModelBasis E
+    let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
     refine (contMDiff_multilinearSection_iff_coord
       (𝕜 := ℝ) (F := E) (E := (TangentSpace I : M → Type _)) (IB := I)
       (n := (∞ : WithTop ℕ∞)) b _).mpr

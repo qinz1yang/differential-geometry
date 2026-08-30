@@ -193,8 +193,8 @@ noncomputable def realizedDeTurckLieChartSum
       δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i, ∑ j,
-    ((chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x v)) i *
-      ((chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x w)) j *
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x v)) i *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x w)) j *
       DeTurckCoefficients.chartLieDeTurckComp (I := I)
         (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
           (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)
@@ -276,7 +276,7 @@ private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
       (I := I)
       (DifferentialGeometry.PDE.DeTurck.RicciLinearization.metricPerturbationPath
         (I := I) g₀ T T' hδ hδ' s) g_bg x i j hxgood]
-  simp only [centeredChartTangentBasis_repr]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -477,8 +477,8 @@ theorem hasDerivAt_realizedDeTurckLieChartSum_general
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ} (hs₀ : s₀ ∈ Set.Ioo (0 : ℝ) 1) :
     HasDerivAt (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w)
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x v)) i *
-          ((chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x w)) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x v)) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x w)) j *
           deriv (fun s : ℝ =>
             DeTurckCoefficients.chartLieDeTurckComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s₀) s₀ := by
@@ -490,8 +490,8 @@ theorem hasDerivAt_realizedDeTurckLieChartSum_general
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have hbody : (realizedDeTurckLieChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w) =
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x v)) i *
-          ((chartModelBasis E).repr (centeredChartTangentEquiv (I := I) x w)) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x v)) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x w)) j *
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) := by
     funext s; rw [realizedDeTurckLieChartSum]

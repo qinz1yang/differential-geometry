@@ -48,14 +48,14 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
               (mvfderiv (I := I) (fun z : M =>
                   chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                     g α i k z) b
-                  (chartBasisVecFiber (I := I) α l b)) *
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) *
               tensorChartComponentProjection (E := E) r s Idx Jdx
                 ((trivializationAt (TensorRSModel r s ℝ E)
                     (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt
                   ℝ b
                   (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                     (LeviCivita (I := I) g))
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z) b)) := by
   classical
   set cov_RS := TensorRSNabla.tensorRSCovariantDerivative I M r s
@@ -83,20 +83,20 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
             (covApply cov_RS
               (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
               (fun z : M => T₀.toSection z)) b
-            (chartBasisVecFiber (I := I) α l b)) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
         (∑ k : Fin (Module.finrank ℝ E),
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b *
             proj ((cov_RS).toFun
                 (covApply cov_RS
-                  (fun z : M => chartBasisVecFiber (I := I) α k z)
+                  (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b))) +
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) +
         (∑ k : Fin (Module.finrank ℝ E),
           (mvfderiv (I := I) (fun z : M =>
               chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z)
-              b (chartBasisVecFiber (I := I) α l b)) *
+              b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) *
             proj (covApply cov_RS
-              (fun z : M => chartBasisVecFiber (I := I) α k z)
+              (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
               (fun z : M => T₀.toSection z) b)) := by
     have h := hExpand (i := i) (b := b) hb_good l
     have hprojH := congrArg proj h
@@ -106,16 +106,16 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
             chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b •
               (cov_RS).toFun
                 (covApply cov_RS
-                  (fun z : M => chartBasisVecFiber (I := I) α k z)
+                  (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) =
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
           ∑ k : Fin (Module.finrank ℝ E),
             chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b *
               proj ((cov_RS).toFun
                   (covApply cov_RS
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
       rw [map_sum proj]
       refine Finset.sum_congr rfl ?_
       intro k _
@@ -124,16 +124,16 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
         proj (∑ k : Fin (Module.finrank ℝ E),
             (mvfderiv (I := I) (fun z : M =>
                 chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
-                  g α i k z) b (chartBasisVecFiber (I := I) α l b)) •
+                  g α i k z) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) •
               covApply cov_RS
-                (fun z : M => chartBasisVecFiber (I := I) α k z)
+                (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                 (fun z : M => T₀.toSection z) b) =
           ∑ k : Fin (Module.finrank ℝ E),
             (mvfderiv (I := I) (fun z : M =>
                 chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
-                  g α i k z) b (chartBasisVecFiber (I := I) α l b)) *
+                  g α i k z) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) *
               proj (covApply cov_RS
-                (fun z : M => chartBasisVecFiber (I := I) α k z)
+                (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                 (fun z : M => T₀.toSection z) b) := by
       rw [map_sum proj]
       refine Finset.sum_congr rfl ?_
@@ -147,17 +147,17 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
       chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b *
       proj ((cov_RS).toFun
           (covApply cov_RS
-            (fun z : M => chartBasisVecFiber (I := I) α k z)
+            (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
             (fun z : M => T₀.toSection z)) b
-          (chartBasisVecFiber (I := I) α l b)) with hZ₁_def
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) with hZ₁_def
   set Z₂ : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ := fun i l k =>
     chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
       (mvfderiv (I := I) (fun z : M =>
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z) b
-          (chartBasisVecFiber (I := I) α l b)) *
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) *
       proj (covApply cov_RS
-        (fun z : M => chartBasisVecFiber (I := I) α k z)
+        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
         (fun z : M => T₀.toSection z) b) with hZ₂_def
   have hFrameDS_eq :
       ∑ i : Fin (Module.finrank ℝ E),
@@ -167,7 +167,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                 (covApply cov_RS
                   (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) =
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
         (∑ i, ∑ l, ∑ k, Z₁ i l k) + (∑ i, ∑ l, ∑ k, Z₂ i l k) := by
     have hper (i l : Fin (Module.finrank ℝ E)) :
         chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
@@ -175,7 +175,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
               (covApply cov_RS
                 (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                 (fun z : M => T₀.toSection z)) b
-              (chartBasisVecFiber (I := I) α l b)) =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
           (∑ k, Z₁ i l k) + (∑ k, Z₂ i l k) := by
       rw [hInner_rewrite i l]
       rw [mul_add]
@@ -198,7 +198,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                   (covApply cov_RS
                     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
           ∑ i, ∑ l, ((∑ k, Z₁ i l k) + (∑ k, Z₂ i l k)) := by
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -241,9 +241,9 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                       (LeviCivita (I := I) g)).toFun
                     (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                       (LeviCivita (I := I) g))
-                      (chartBasisVecFiber (I := I) α k)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
                       (fun z : M => T₀.toSection z)) b
-                    (chartBasisVecFiber (I := I) α l b))) := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) := by
     have hZ₁_factor (i l k : Fin (Module.finrank ℝ E)) :
         Z₁ i l k =
           (chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
@@ -251,9 +251,9 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
               g α i k b) *
             proj ((cov_RS).toFun
                 (covApply cov_RS
-                  (fun z : M => chartBasisVecFiber (I := I) α k z)
+                  (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
       simp only [hZ₁_def]
     rw [show (∑ i : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
@@ -303,9 +303,9 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                 g α i k b) *
             proj ((cov_RS).toFun
                 (covApply cov_RS
-                  (fun z : M => chartBasisVecFiber (I := I) α k z)
+                  (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
       rw [Finset.sum_mul]
     rw [hFactor]
     rw [hOrtho]
@@ -323,14 +323,14 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                 (mvfderiv (I := I) (fun z : M =>
                     chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                       g α i k z) b
-                    (chartBasisVecFiber (I := I) α l b)) *
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) *
                 tensorChartComponentProjection (E := E) r s Idx Jdx
                   ((trivializationAt (TensorRSModel r s ℝ E)
                       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt
                     ℝ b
                     (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                       (LeviCivita (I := I) g))
-                      (fun z : M => chartBasisVecFiber (I := I) α k z)
+                      (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                       (fun z : M => T₀.toSection z) b)) := by
     refine Finset.sum_congr rfl ?_
     intro i _
@@ -353,7 +353,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                     (LeviCivita (I := I) g))
                     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)))) -
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) -
       (∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α b k l *
@@ -365,9 +365,9 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                     (LeviCivita (I := I) g)).toFun
                   (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                     (LeviCivita (I := I) g))
-                    (chartBasisVecFiber (I := I) α k)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)))) = _
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) = _
   have hFrameDS_eq' :
       (∑ i : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
@@ -382,7 +382,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                       (LeviCivita (I := I) g))
                       (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                       (fun z : M => T₀.toSection z)) b
-                    (chartBasisVecFiber (I := I) α l b)))) =
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) =
         (∑ i, ∑ l, ∑ k, Z₁ i l k) + (∑ i, ∑ l, ∑ k, Z₂ i l k) := by
     have hRewrite :
         (∑ i : Fin (Module.finrank ℝ E),
@@ -400,7 +400,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                         (chartFrameNormGlobalSmooth (I := I) (M := M)
                           g α i).toFun
                         (fun z : M => T₀.toSection z)) b
-                      (chartBasisVecFiber (I := I) α l b)))) =
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) =
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
               chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
@@ -410,7 +410,7 @@ theorem chartLeibnizRemainder_eq_firstDerivOnly
                       (chartFrameNormGlobalSmooth (I := I) (M := M)
                         g α i).toFun
                       (fun z : M => T₀.toSection z)) b
-                    (chartBasisVecFiber (I := I) α l b))) := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) := by
       simp only [hproj_def, htriv_def, hcov_RS_def, ContinuousLinearMap.coe_comp,
         Function.comp_apply]
     rw [hRewrite]

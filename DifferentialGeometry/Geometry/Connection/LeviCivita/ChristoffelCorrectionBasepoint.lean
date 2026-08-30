@@ -40,11 +40,11 @@ theorem christoffelCorrection_basepoint_apply
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (tangentSpaceModelContinuousLinearEquiv (I := I) α w)) i *
-                ((chartModelBasis E).repr Y) j *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α α)) •
-              (chartModelBasis E) k := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
   classical
   rw [christoffelCorrection_apply]
   rw [trivToE_basepoint (I := I) α w]

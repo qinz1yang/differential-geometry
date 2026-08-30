@@ -23,11 +23,11 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 def chartCoord (i : Fin (Module.finrank ℝ E)) (v : E) : ℝ :=
-  (chartModelBasis E).repr v i
+  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v i
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartCoord_def (i : Fin (Module.finrank ℝ E)) (v : E) :
-    chartCoord (E := E) i v = (chartModelBasis E).repr v i := rfl
+    chartCoord (E := E) i v = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v i := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCoord_smul (i : Fin (Module.finrank ℝ E)) (a : ℝ) (v : E) :
@@ -45,7 +45,7 @@ def chartChristoffelContraction (g : SmoothRiemannianMetric I M) (α : M)
     (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α i j k y *
           chartCoord (E := E) i v * chartCoord (E := E) j w) •
-      chartModelBasis E k
+      DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartChristoffelContraction_def
@@ -55,7 +55,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α i j k y *
               chartCoord (E := E) i v * chartCoord (E := E) j w) •
-          chartModelBasis E k := rfl
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartChristoffelContraction_symm
@@ -612,11 +612,11 @@ lemma chartChristoffelContraction_scalarCoeff_contMDiffOn
       (chartFiberCoord (I := I) (α := α)) (geodesicChartDomain (I := I) α) :=
     chartFiberCoord_contMDiffOn (I := I) α
   have hCLM_i : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      (((chartModelBasis E).coord i).toContinuousLinearMap) :=
-    (((chartModelBasis E).coord i).toContinuousLinearMap).contMDiff
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap) :=
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).contMDiff
   have hCLM_j : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-    (((chartModelBasis E).coord j).toContinuousLinearMap).contMDiff
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).contMDiff
   have hci : ContMDiffOn I.tangent 𝓘(ℝ) ∞
       (fun p : TangentBundle I M => chartCoord (E := E) i (chartFiberCoord (I := I) α p))
       (geodesicChartDomain (I := I) α) := by
@@ -644,7 +644,7 @@ lemma chartChristoffelContraction_chartFiber_contMDiffOn
   refine contMDiffOn_finsetSum (fun k _ => ?_)
   have hscalar := chartChristoffelContraction_scalarCoeff_contMDiffOn (I := I) g α k
   have hconst : ContMDiffOn I.tangent 𝓘(ℝ, E) ∞
-      (fun _ : TangentBundle I M => (chartModelBasis E) k)
+      (fun _ : TangentBundle I M => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       (geodesicChartDomain (I := I) α) := contMDiffOn_const
   exact hscalar.smul hconst
 

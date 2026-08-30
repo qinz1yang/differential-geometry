@@ -678,16 +678,16 @@ theorem commute_ds_dt_curvature_innerS
   rw [hslotS, hslotT, hYft]
   rw [show (trivializationAt E (TangentSpace I) β).symmL ℝ β
         = (trivializationAt E (TangentSpace I) (f 0 t)).symmL ℝ (f 0 t) from by rw [hβ]]
-  simp only [centeredChartTangentEquiv_apply, tangentSpaceModelContinuousLinearEquiv_apply]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply, tangentSpaceModelContinuousLinearEquiv_apply]
   rw [hfoot_symmL, hβ]
   let S : E := mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)
   let T : E := mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ)
   change riemannOp (Connection.LeviCivita (I := I) g) (f 0 t)
-      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm S)
-      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm T)
-      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm S) =
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f 0 t)).symm S)
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f 0 t)).symm T)
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f 0 t)).symm S) =
     riemannOp (Connection.LeviCivita (I := I) g) (f 0 t) S T S
-  rw [centeredChartTangentEquiv_symm_apply, centeredChartTangentEquiv_symm_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -878,16 +878,16 @@ theorem commute_ds_dt_curvature
   rw [hslotS, hslotT, hYft]
   rw [show (trivializationAt E (TangentSpace I) β).symmL ℝ β
         = (trivializationAt E (TangentSpace I) (f 0 t)).symmL ℝ (f 0 t) from by rw [hβ]]
-  simp only [centeredChartTangentEquiv_apply, tangentSpaceModelContinuousLinearEquiv_apply]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply, tangentSpaceModelContinuousLinearEquiv_apply]
   rw [hfoot_symmL, hβ]
   let S : E := mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)
   let T : E := mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ)
   change riemannOp (Connection.LeviCivita (I := I) g) (f 0 t)
-      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm S)
-      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm T)
-      ((centeredChartTangentEquiv (I := I) (f 0 t)).symm T) =
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f 0 t)).symm S)
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f 0 t)).symm T)
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f 0 t)).symm T) =
     riemannOp (Connection.LeviCivita (I := I) g) (f 0 t) S T T
-  rw [centeredChartTangentEquiv_symm_apply, centeredChartTangentEquiv_symm_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in

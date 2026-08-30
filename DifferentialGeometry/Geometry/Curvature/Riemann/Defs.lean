@@ -86,14 +86,14 @@ def ricciFun (g : SmoothRiemannianMetric I M) :
     (fun v w =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) i *
-            ((centeredChartTangentBasis (I := I) x).repr w) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
             chartRicciTensor (I := I) g x i k (extChartAt I x x))
     (fun v₁ v₂ w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
-          (centeredChartTangentBasis (I := I) x).repr v₁ +
-            (centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl ?_
@@ -105,8 +105,8 @@ def ricciFun (g : SmoothRiemannianMetric I M) :
       ring)
     (fun c v w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • v) =
-          c • (centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • v) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -118,9 +118,9 @@ def ricciFun (g : SmoothRiemannianMetric I M) :
       ring)
     (fun v w₁ w₂ => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
-          (centeredChartTangentBasis (I := I) x).repr w₁ +
-            (centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl ?_
@@ -132,8 +132,8 @@ def ricciFun (g : SmoothRiemannianMetric I M) :
       ring)
     (fun c v w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • w) =
-          c • (centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • w) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -150,8 +150,8 @@ lemma ricciFun_apply (g : SmoothRiemannianMetric I M) (x : M)
     ricciFun (I := I) g x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) i *
-            ((centeredChartTangentBasis (I := I) x).repr w) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
             chartRicciTensor (I := I) g x i k (extChartAt I x x) := by
   rfl
 
@@ -160,18 +160,18 @@ lemma ricciFun_basis_apply
     (g : SmoothRiemannianMetric I M) (x : M)
     (i k : Fin (Module.finrank ℝ E)) :
     ricciFun (I := I) g x
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x k) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) =
       chartRicciTensor (I := I) g x i k (extChartAt I x x) := by
   classical
   rw [ricciFun_apply]
   conv_lhs => rw [show
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ k' : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr
-            (centeredChartTangentBasis (I := I) x i)) i' *
-            ((centeredChartTangentBasis (I := I) x).repr
-              (centeredChartTangentBasis (I := I) x k)) k' *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)) i' *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)) k' *
             chartRicciTensor (I := I) g x i' k' (extChartAt I x x)) =
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ k' : Fin (Module.finrank ℝ E),

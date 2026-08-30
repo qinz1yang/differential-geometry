@@ -197,40 +197,40 @@ theorem rhs_chart_sum_one
           tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
   classical
   rw [rhsChartSum, metricPerturbationPath_one (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ']
-  simp only [centeredChartTangentBasis_repr, centeredChartTangentEquiv_apply]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply]
   calc
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x
-            (chartBasisVecFiber (I := I) x i x)
-            (chartBasisVecFiber (I := I) x k x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS
         (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) g_bg x i k
         (self_mem_chartLeviCivitaGoodSet (I := I) x)]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x
-            (chartBasisVecFiber (I := I) x k x)
-            (chartBasisVecFiber (I := I) x i x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [deTurckRicciRHS_symm (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           unitModel (I := I) (M := M) g₀ 2
             (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x
-            ![(chartModelBasis E) k, (chartModelBasis E) i] := by
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T hδ_lt hδ
         (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) rfl]
       simp only [Matrix.cons_val_zero, Matrix.cons_val_one, chartBasisVecFiber_self,
-        tangent_model_equiv_symm_chart_basis]
+        DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_symm_chart_basis]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀
       (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x
       ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
@@ -252,40 +252,40 @@ theorem rhs_chart_sum_zero
           tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
   classical
   rw [rhsChartSum, metricPerturbationPath_zero (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ']
-  simp only [centeredChartTangentBasis_repr, centeredChartTangentEquiv_apply]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply]
   calc
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x
-            (chartBasisVecFiber (I := I) x i x)
-            (chartBasisVecFiber (I := I) x k x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS
         (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') g_bg x i k
         (self_mem_chartLeviCivitaGoodSet (I := I) x)]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x
-            (chartBasisVecFiber (I := I) x k x)
-            (chartBasisVecFiber (I := I) x i x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [deTurckRicciRHS_symm (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           unitModel (I := I) (M := M) g₀ 2
             (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x
-            ![(chartModelBasis E) k, (chartModelBasis E) i] := by
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T' hδ'_lt hδ'
         (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') rfl]
       simp only [Matrix.cons_val_zero, Matrix.cons_val_one, chartBasisVecFiber_self,
-        tangent_model_equiv_symm_chart_basis]
+        DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_symm_chart_basis]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀
       (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x
       ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,

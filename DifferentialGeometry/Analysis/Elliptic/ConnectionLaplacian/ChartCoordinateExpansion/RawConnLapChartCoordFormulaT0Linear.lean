@@ -114,8 +114,8 @@ private lemma secondCovDeriv_GlobalCorr_pointwise
               (LeviCivita (I := I) g)).toFun
             (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-              (chartBasisVecFiber (I := I) α k) T₀.toSection) b
-            (chartBasisVecFiber (I := I) α l b))) =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection) b
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) =
       euclidPartial (E := E) l
         (euclidPartial (E := E) k
           (chartPushedRaw I α
@@ -263,7 +263,7 @@ private noncomputable def chartFrameCoordDirDerivPull
   fun y => mvfderiv (I := I)
     (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k)
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-    (chartBasisVecFiber (I := I) α l
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
 
 omit [BoundarylessManifold I M] in
@@ -325,7 +325,7 @@ private lemma chartFrameCoordDirDerivPull_at_b_eq
         ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       mvfderiv (I := I)
         (chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k) b
-        (chartBasisVecFiber (I := I) α l b) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
   have hb_src : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hsymm : (toEuclidean (E := E)).symm
@@ -584,7 +584,7 @@ private theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
             mvfderiv (I := I)
                 (fun z : M =>
                   chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z) b
-                (chartBasisVecFiber (I := I) α l b) *
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
             (euclidPartial (E := E) k
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx)) y +
@@ -612,7 +612,7 @@ private theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
     rw [show mvfderiv (I := I)
           (fun z : M =>
             chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k z) b
-          (chartBasisVecFiber (I := I) α l b) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
         DCF i k l from
       (chartFrameCoordDirDerivPull_at_b_eq (I := I) (M := M) g α i k l hb_good).symm]
   rw [hLeibnizUnfold]

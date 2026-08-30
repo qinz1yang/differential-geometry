@@ -516,7 +516,7 @@ theorem linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw
     hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) hs]
   rw [(hasDerivAt_realizedDeTurckLieChartSum_general (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x (vt 0) (vt 1) hs).deriv]
-  simp only [vt, centeredChartTangentEquiv_apply,
+  simp only [vt, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
     ContinuousLinearEquiv.apply_symm_apply]
   have hcomp : ∀ i j : Fin (Module.finrank ℝ E),
       deriv (fun s : ℝ =>
@@ -537,7 +537,7 @@ theorem linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw
             (deTurckLieArm2PrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x
-        ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
     intro i j
     rw [deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I) g₀ T T'
       hδ_lt hδ hδ'_lt hδ' g_bg x i j hs]
@@ -561,20 +561,20 @@ theorem linearizedDeTurckLieAt_eq_threeArm_plain_of_symm_fw
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T')) with hWbase
   calc (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
         deriv (fun s : ℝ =>
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s)
       = ∑ j : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
             deriv (fun s : ℝ =>
               DeTurckCoefficients.chartLieDeTurckComp (I := I)
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s :=
         Finset.sum_comm
     _ = ∑ j : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
             unitModel (I := I) (M := M) g₀ 2 Wbase x
-              ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
         refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => ?_))
         rw [hcomp i j]
     _ = unitModel (I := I) (M := M) g₀ 2 Wbase x v :=

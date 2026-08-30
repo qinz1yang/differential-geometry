@@ -135,7 +135,7 @@ private lemma hasDerivAt_partialDeriv_comm_at'
       (fun s => partialDeriv (E := E) p (fun y => Φ (s, y)) y₀)
       (partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) s₀) y₀) s₀ := by
   unfold partialDeriv
-  exact hasDerivAt_fderiv_comm_at' Φ s₀ y₀ (chartModelBasis E p) hΦ
+  exact hasDerivAt_fderiv_comm_at' Φ s₀ y₀ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) hΦ
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (g₀ : SmoothRiemannianMetric I M)

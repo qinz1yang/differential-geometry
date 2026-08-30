@@ -38,12 +38,12 @@ open DifferentialGeometry.Tensor.TensorRSRiemannian
 
 private noncomputable def chartBasisModelAt (α b : M)
     (i : Fin (Module.finrank ℝ E)) : E :=
-  chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) i)
+  chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 private noncomputable def evalAtBasisLinear (n : ℕ) :
     Tensor0SModel n ℝ E →ₗ[ℝ]
       ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) where
-  toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
+  toFun := fun Φ φ => Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))
   map_add' Φ₁ Φ₂ := by
     funext φ
     simp
@@ -55,13 +55,13 @@ private noncomputable def evalAtBasisLinear (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     evalAtBasisLinear (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 private lemma evalAtBasisLinear_injective (n : ℕ) :
     Function.Injective (evalAtBasisLinear (E := E) n) := by
   intro Φ₁ Φ₂ h
   apply ContinuousMultilinearMap.toMultilinearMap_injective
-  refine Module.Basis.ext_multilinear (e := fun _ : Fin n => chartModelBasis E) ?_
+  refine Module.Basis.ext_multilinear (e := fun _ : Fin n => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ?_
   intro v
   exact congr_fun h v
 
@@ -113,13 +113,13 @@ private noncomputable def evalAtBasisCLE (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     evalAtBasisCLE (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 private lemma continuousOn_into_tensor0SModel_of_eval_basis
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContinuousOn (fun b : M =>
-        Φ b (fun k : Fin n => (chartModelBasis E) (φ k))) U) :
+        Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) U) :
     ContinuousOn Φ U := by
   have hpi : ContinuousOn
       (fun b : M => evalAtBasisCLE (E := E) n (Φ b)) U := by
@@ -136,7 +136,7 @@ private lemma contMDiffOn_into_tensor0SModel_of_eval_basis
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun b : M =>
-        Φ b (fun k : Fin n => (chartModelBasis E) (φ k))) U) :
+        Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) U) :
     ContMDiffOn I 𝓘(ℝ, Tensor0SModel n ℝ E) ∞ Φ U := by
   have hpi : ContMDiffOn I 𝓘(ℝ, (Fin n → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun b : M => evalAtBasisCLE (E := E) n (Φ b)) U := by
@@ -158,11 +158,11 @@ private lemma loweredCompose_at_basis_tuple
     (T : TensorRSModel r s ℝ E)
     (φ : Fin (r + s) → Fin (Module.finrank ℝ E)) :
     loweredCompose (I := I) (M := M) g r s α b T
-        (fun i : Fin (r + s) => (chartModelBasis E) (φ i)) =
+        (fun i : Fin (r + s) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ i)) =
       lowerAllUpperIndices (I := I) (M := M) g r s b T
         (fun i : Fin (r + s) =>
           chartTrivializationLinearMapSymm (I := I) (M := M) α b
-            ((chartModelBasis E) (φ i))) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ i))) := by
   rw [loweredCompose_apply]
 
 private theorem trivializationAt_lowered_section_eq
@@ -208,15 +208,15 @@ private theorem trivializationAt_separableFormBundleSection_eval_basis
     (trivializationAt (Tensor0SModel r ℝ E)
         (fun y : M => Tensor0SSpace r I y) α
         (separableFormBundleSection (I := I) (M := M) g r α φ_first b)).2
-        (fun k : Fin r => (chartModelBasis E) (ψ k)) =
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) =
       ∏ k : Fin r,
-        chartGramMatrix (I := I) g α b (φ_first k) (ψ k) := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b (φ_first k) (ψ k) := by
   rw [trivializationAt_separableFormBundleSection_eq (I := I) (M := M) g r α φ_first b]
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rw [separableFormAt_apply]
   refine Finset.prod_congr rfl ?_
   intro k _
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   rfl
 
 private lemma contMDiffOn_separableFormBundleSection
@@ -242,10 +242,10 @@ private lemma contMDiffOn_separableFormBundleSection
   intro ψ
   have h_prod_smooth : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun b : M => ∏ k : Fin r,
-        chartGramMatrix (I := I) g α b (φ_first k) (ψ k))
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b (φ_first k) (ψ k))
       (trivializationAt E (TangentSpace I) α).baseSet := by
     refine contMDiffOn_finsetProd (fun k _ => ?_)
-    exact chartGramMatrix_entry_contMDiffOn (I := I) g α (φ_first k) (ψ k)
+    exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α (φ_first k) (ψ k)
   refine h_prod_smooth.congr (fun b _hb => ?_)
   exact trivializationAt_separableFormBundleSection_eval_basis
     (I := I) (M := M) g r α φ_first ψ
@@ -307,9 +307,9 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
       ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M =>
           TotalSpace.mk' E (E := fun y : M => TangentSpace I y) b
-            (chartBasisVecFiber (I := I) α (φ (Fin.natAdd r j)) b)) x₀ := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd r j)) b)) x₀ := by
     intro j
-    have hcm := chartBasisVec_contMDiffOn (I := I) α (φ (Fin.natAdd r j))
+    have hcm := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α (φ (Fin.natAdd r j))
     exact hcm.contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx₀)
   have h_eval := TensorMultilinear.contMDiffAt_section_apply (I := I) (M := M)
@@ -321,7 +321,7 @@ private lemma contMDiffOn_lower_at_chartBasis_aux_general
               chartBasisModelAt (I := I) α b (φ (Fin.castAdd s k))))))
     h_applied
     (v := fun (j : Fin s) (b : M) =>
-      chartBasisVecFiber (I := I) α (φ (Fin.natAdd r j)) b)
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd r j)) b)
     h_tangent_smooth_at
   refine h_eval.congr_of_eventuallyEq ?_
   filter_upwards with b

@@ -496,7 +496,7 @@ theorem lPhaseField_smoothAt
           chartChristoffel (I := I) (S.family.metric (T - p.1 ^ 2))
               x0 i j k p.2.1 *
             chartCoord (E := E) i p.2.2 * chartCoord (E := E) j p.2.2) •
-        chartModelBasis E k
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k
   let gradC : Real × (E × E) → E := fun p =>
     ∑ i : Fin (Module.finrank Real E),
       (∑ j : Fin (Module.finrank Real E),
@@ -504,8 +504,8 @@ theorem lPhaseField_smoothAt
             x0 i j p.2.1 *
           (let x := (extChartAt I x0).symm p.2.1
            mvfderiv (I := I) (S.scalar (T - p.1 ^ 2)) x
-             (chartBasisVecFiber (I := I) x0 j x))) •
-        chartModelBasis E i
+             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x))) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i
   let ricC : Real × (E × E) → E := fun p =>
     ∑ i : Fin (Module.finrank Real E),
       (∑ j : Fin (Module.finrank Real E),
@@ -515,9 +515,9 @@ theorem lPhaseField_smoothAt
             chartCoord (E := E) k p.2.2 *
               (let x := (extChartAt I x0).symm p.2.1
                S.ricciAt (T - p.1 ^ 2) x
-                 (vec2 (chartBasisVecFiber (I := I) x0 k x)
-                   (chartBasisVecFiber (I := I) x0 j x)))) •
-        chartModelBasis E i
+                 (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 k x)
+                   (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x)))) •
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i
   let rhs : Real × (E × E) → E × E := fun p =>
     (p.2.2,
       -christ p +
@@ -561,7 +561,7 @@ theorem lPhaseField_smoothAt
         (fun p : Real × (E × E) =>
           let x := (extChartAt I x0).symm p.2.1
           mvfderiv (I := I) (S.scalar (T - p.1 ^ 2)) x
-            (chartBasisVecFiber (I := I) x0 j x)) (s, z) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x)) (s, z) := by
     have h := (chartScalarDeriv (I := I) S hS x0 j).contDiffAt
       (hUopen.mem_nhds hbase_mem)
     simpa only [base, Function.comp_def] using h.comp (s, z) hbase
@@ -570,8 +570,8 @@ theorem lPhaseField_smoothAt
         (fun p : Real × (E × E) =>
           let x := (extChartAt I x0).symm p.2.1
           S.ricciAt (T - p.1 ^ 2) x
-            (vec2 (chartBasisVecFiber (I := I) x0 k x)
-              (chartBasisVecFiber (I := I) x0 j x))) (s, z) := by
+            (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 k x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x))) (s, z) := by
     have h := (chartRicci_joint (I := I) S hS x0 k j).contDiffAt
       (hUopen.mem_nhds hbase_mem)
     simpa only [base, Function.comp_def] using h.comp (s, z) hbase
@@ -632,15 +632,15 @@ theorem lPhaseField_smoothAt
     congr 1
   have hric_comp (j : Fin (Module.finrank Real E)) :
       ricciTensor (I := I) g x A
-          (chartBasisVecFiber (I := I) x0 j x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x) =
         ∑ k : Fin (Module.finrank Real E),
           chartCoord (E := E) k p.2.2 *
             S.ricciAt t x
-              (vec2 (chartBasisVecFiber (I := I) x0 k x)
-                (chartBasisVecFiber (I := I) x0 j x)) := by
+              (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 k x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x)) := by
     have hA : A = ∑ k : Fin (Module.finrank Real E),
         chartCoord (E := E) k p.2.2 •
-          chartBasisVecFiber (I := I) x0 k x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 k x := by
       have hcoordA : trivToE (I := I) x0 x A = p.2.2 := by
         exact trivToE_trivFromE (I := I) x0 hxbase p.2.2
       have hrec := chartBasisVecFiber_recompose (I := I) x0 hxbase A
@@ -652,8 +652,8 @@ theorem lPhaseField_smoothAt
     rw [map_smul, smul_apply, smul_eq_mul]
     congr 1
     exact (metricRicciAt_apply_eq_ricciTensor (I := I) g x
-      (chartBasisVecFiber (I := I) x0 k x)
-      (chartBasisVecFiber (I := I) x0 j x)).symm
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 k x)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x)).symm
   have hric_eq :
       trivToE (I := I) x0 x
           (metricSharp (I := I) g x
@@ -672,13 +672,13 @@ theorem lPhaseField_smoothAt
     intro j _
     change chartInvGramMatrix (I := I) g x0 x i j *
         ricciTensor (I := I) g x A
-          (chartBasisVecFiber (I := I) x0 j x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x) =
       chartInvGramMatrix (I := I) g x0 x i j *
         ∑ k : Fin (Module.finrank Real E),
           chartCoord (E := E) k p.2.2 *
             S.ricciAt t x
-              (vec2 (chartBasisVecFiber (I := I) x0 k x)
-                (chartBasisVecFiber (I := I) x0 j x))
+              (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 k x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x))
     rw [hric_comp j]
   have haccel_eq :
       trivToE (I := I) x0 x (lRegAccel S T p.1 x A) =

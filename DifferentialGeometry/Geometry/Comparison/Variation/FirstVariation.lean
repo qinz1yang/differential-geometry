@@ -170,7 +170,7 @@ lemma metric_compat_hasDerivAt_inner_of_chartCurveDeriv
     rw [hu0_def, chartCurve_def, hα_def]
   have hGram_eq : ∀ l j : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0
-        = chartGramMatrix (I := I) g α α l j := by
+        = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α α l j := by
     intro l j
     rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, hu0_eq,
       (extChartAt I α).left_inv (mem_extChartAt_source α)]

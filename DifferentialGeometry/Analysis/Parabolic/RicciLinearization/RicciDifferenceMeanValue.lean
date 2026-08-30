@@ -374,8 +374,8 @@ theorem metricPerturbationPath_chartGramOnE (g₀ : SmoothRiemannianMetric I M)
       (1 - s) *
           chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') α i j y +
         s * chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) α i j y := by
-  rw [chartGramOnE_def, chartGramOnE_def, chartGramOnE_def, chartGramMatrix_apply,
-    chartGramMatrix_apply, chartGramMatrix_apply,
+  rw [chartGramOnE_def, chartGramOnE_def, chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hs,
     tensorSectionRealizeMetric_inner, tensorSectionRealizeMetric_inner,
     ccTensorBilinSymm_convexPerturbation]
@@ -387,17 +387,17 @@ private lemma chartBilinSymmEntry_contMDiffOn (g₀ : SmoothRiemannianMetric I M
     (T : SmoothCcTensor g₀ 0 2) (α : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun x => ccTensorBilinSymm (I := I) g₀ T x
-        (chartBasisVecFiber (I := I) α i x) (chartBasisVecFiber (I := I) α j x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have hB := ccTensorBilinSymm_contMDiff (I := I) g₀ T
-  have hv := chartBasisVec_contMDiffOn (I := I) α i
-  have hw := chartBasisVec_contMDiffOn (I := I) α j
+  have hv := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i
+  have hw := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
   have happ :
       ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
         (fun m : M => (⟨m,
             ccTensorBilinSymm (I := I) g₀ T m
-              (chartBasisVecFiber (I := I) α i m)
-              (chartBasisVecFiber (I := I) α j m)⟩ :
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i m)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j m)⟩ :
               TotalSpace ℝ (Bundle.Trivial M ℝ)))
         (trivializationAt E (TangentSpace I) α).baseSet :=
     ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
@@ -413,8 +413,8 @@ private lemma chartBilinSymmOnE_contDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (α : M) (i j : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
       (fun y : E => ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y)))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y)))
       (extChartAt I α).target := by
   have hbase := chartBilinSymmEntry_contMDiffOn (I := I) g₀ T α i j
   have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
@@ -448,18 +448,18 @@ theorem metricPerturbationPath_chartGramFamilyJointSmoothOn (g₀ : SmoothRieman
       =ᶠ[nhds (s₀, y₀)] (fun p : ℝ × E =>
         chartGramOnE (I := I) g₀ α i j p.2 +
           ((1 - p.1) * (fun y : E => ccTensorBilinSymm (I := I) g₀ T' ((extChartAt I α).symm y)
-              (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-              (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2 +
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2 +
             p.1 * (fun y : E => ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm y)
-              (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-              (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))) p.2)) := by
     have hmem : (metricPerturbationPathDomain (δ := δ) (δ' := δ')) ×ˢ (Set.univ : Set E) ∈ nhds (s₀, y₀) :=
       (hSopen.prod isOpen_univ).mem_nhds ⟨hs, Set.mem_univ _⟩
     filter_upwards [hmem] with p hp
     have hps : p.1 ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') := hp.1
-    rw [chartGramOnE_def, chartGramMatrix_apply,
+    rw [chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
       metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hps,
-      ccTensorBilinSymm_convexPerturbation, chartGramOnE_def, chartGramMatrix_apply]
+      ccTensorBilinSymm_convexPerturbation, chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   refine ContDiffAt.congr_of_eventuallyEq ?_ heq
   have hsnd : ContDiffAt ℝ ∞ (Prod.snd : ℝ × E → E) (s₀, y₀) := contDiffAt_snd
   have hG₀c : ContDiffAt ℝ ∞ (fun p : ℝ × E => chartGramOnE (I := I) g₀ α i j p.2) (s₀, y₀) := by
@@ -468,16 +468,16 @@ theorem metricPerturbationPath_chartGramFamilyJointSmoothOn (g₀ : SmoothRieman
     exact h0
   have hBc : ContDiffAt ℝ ∞ (fun p : ℝ × E =>
       ccTensorBilinSymm (I := I) g₀ T ((extChartAt I α).symm p.2)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
-        (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
     have h0 := (((chartBilinSymmOnE_contDiffOn (I := I) g₀ T α i j).mono
       interior_subset).contDiffAt
       (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
     exact h0
   have hB'c : ContDiffAt ℝ ∞ (fun p : ℝ × E =>
       ccTensorBilinSymm (I := I) g₀ T' ((extChartAt I α).symm p.2)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
-        (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm p.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm p.2))) (s₀, y₀) := by
     have h0 := (((chartBilinSymmOnE_contDiffOn (I := I) g₀ T' α i j).mono
       interior_subset).contDiffAt
       (isOpen_interior.mem_nhds hy)).comp (s₀, y₀) hsnd
@@ -602,13 +602,13 @@ theorem inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn
       (I := I) g₀ T T' hδ hδ' α i j
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
+        (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro α j
     have hbase := cotangentSection_chartComponent_contMDiffOn (I := I) Y α j
-    have heqfn : (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1)) =
+    have heqfn : (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1)) =
         (fun p : M × ℝ => (fun b : M => Tensor0SSpace.toModel (Y b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b)) p.1) := by
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) p.1) := by
       funext p
       rw [hcvdef]
       simp only
@@ -679,8 +679,8 @@ def realizedRicciChartSum (g₀ : SmoothRiemannianMetric I M)
       δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i, ∑ k,
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       chartRicciTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k
         (extChartAt I x x)
 
@@ -716,8 +716,8 @@ theorem realizedDeTurckRicciChartSum_contDiffAt (g₀ g_bg : SmoothRiemannianMet
     (hs : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :
     ContDiffAt ℝ ∞
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
             (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k (extChartAt I x x)) s₀ := by
@@ -725,14 +725,14 @@ theorem realizedDeTurckRicciChartSum_contDiffAt (g₀ g_bg : SmoothRiemannianMet
   have hy : (extChartAt I x x) ∈ interior (extChartAt I x).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have heq : (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
             (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k (extChartAt I x x)) =
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           chartDeTurckRicciRHS (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i k
             (extChartAt I x x)) := by
     funext s
@@ -1198,7 +1198,7 @@ theorem ricciTensorSection_chartComponent_metricPerturbationPath_jointContMDiffO
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => ricciTensor (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1)
-        (chartBasisVecFiber (I := I) α j p.1))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
@@ -1264,7 +1264,7 @@ theorem ricEndoRaisedFib_metricPerturbationPath_jointContMDiffOn [BoundarylessMa
       (I := I) g₀ T T' hδ hδ' α i j
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
+        (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro α j
     have hbase := ricciTensorSection_chartComponent_metricPerturbationPath_jointContMDiffOn

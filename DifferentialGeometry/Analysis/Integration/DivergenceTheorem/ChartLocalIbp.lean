@@ -137,7 +137,7 @@ private def chartActionE
     (φ : M → ℝ) : E → ℝ := fun y =>
   ∑ i : Fin (Module.finrank ℝ E),
     coeffZero (I := I) α X i y *
-      lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+      lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 private noncomputable def chartCoordZero (α : M) : M → E :=
   by
@@ -408,10 +408,10 @@ private theorem ibp_per_index [I.Boundaryless]
     (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     ∫ y, vwIntegrandOnE (I := I) g α X i y *
-        fderiv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+        fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         ∂(modelHaar (E := E)) =
       -∫ y, fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
-            ((chartModelBasis E) i) *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) *
           phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) := by
   have hphi_smooth : ContDiff ℝ ∞ (phiOnE (I := I) α φ) :=
@@ -466,7 +466,7 @@ private theorem ibp_per_index [I.Boundaryless]
     hI1_smooth.continuous.integrable_of_hasCompactSupport hI1_compactSupp
   have hI2_smooth : ContDiff ℝ ∞
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
-            ((chartModelBasis E) i) * phiOnE (I := I) α φ y) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y) := by
     refine contDiff_of_smooth_on_open_zero_outside (U := (extChartAt I α).target)
       (isOpen_extChartAt_target (I := I) α)
       (K := chartImageOfTsupport (I := I) α φ)
@@ -477,11 +477,11 @@ private theorem ibp_per_index [I.Boundaryless]
           (extChartAt I α).target :=
         (vwIntegrandOnE_contDiffOn_target (I := I) g α X i).fderiv_of_isOpen
           (isOpen_extChartAt_target (I := I) α) (by rw [ENat.coe_top_add_one])
-      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (extChartAt I α).target := contDiffOn_const
       have hpartial : ContDiffOn ℝ ∞
           (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
-              ((chartModelBasis E) i)) (extChartAt I α).target :=
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) (extChartAt I α).target :=
         hvw_fderiv.clm_apply hbasis_const
       exact hpartial.mul ((phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp).contDiffOn)
     · intro y hy
@@ -495,16 +495,16 @@ private theorem ibp_per_index [I.Boundaryless]
       rw [hphi_zero, mul_zero]
   have hI2_compactSupp : HasCompactSupport
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
-            ((chartModelBasis E) i) * phiOnE (I := I) α φ y) :=
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y) :=
     hphi_compactSupp.mul_left
   have hf'g_int : Integrable
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
-            ((chartModelBasis E) i) * phiOnE (I := I) α φ y)
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y)
       (modelHaar (E := E)) :=
     hI2_smooth.continuous.integrable_of_hasCompactSupport hI2_compactSupp
   have hI3_smooth : ContDiff ℝ ∞
       (fun y => vwIntegrandOnE (I := I) g α X i y *
-          fderiv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) := by
+          fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
     refine contDiff_of_smooth_on_open_zero_outside (U := (extChartAt I α).target)
       (isOpen_extChartAt_target (I := I) α)
       (K := chartImageOfTsupport (I := I) α φ)
@@ -516,10 +516,10 @@ private theorem ibp_per_index [I.Boundaryless]
         exact this
       have hphi_fderiv : ContDiffOn ℝ ∞ (fderiv ℝ (phiOnE (I := I) α φ))
           (extChartAt I α).target := hphi_fderiv_total.contDiffOn
-      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (extChartAt I α).target := contDiffOn_const
       have hpartial : ContDiffOn ℝ ∞
-          (fun y => fderiv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+          (fun y => fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           (extChartAt I α).target :=
         hphi_fderiv.clm_apply hbasis_const
       exact (vwIntegrandOnE_contDiffOn_target (I := I) g α X i).mul hpartial
@@ -546,7 +546,7 @@ private theorem ibp_per_index [I.Boundaryless]
       simp
   have hI3_compactSupp : HasCompactSupport
       (fun y => vwIntegrandOnE (I := I) g α X i y *
-          fderiv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) := by
+          fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
     refine HasCompactSupport.intro
       (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp) ?_
     intro y hy
@@ -572,7 +572,7 @@ private theorem ibp_per_index [I.Boundaryless]
     simp
   have hfg'_int : Integrable
       (fun y => vwIntegrandOnE (I := I) g α X i y *
-          fderiv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+          fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
       (modelHaar (E := E)) :=
     hI3_smooth.continuous.integrable_of_hasCompactSupport hI3_compactSupp
   exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable hf'g_int hfg'_int hfg_int
@@ -589,13 +589,13 @@ private theorem ibp_lip_index [I.Boundaryless]
     (∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
         -∫ y, vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E))) ∧
       Integrable (fun y =>
         partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
           phiOnE (I := I) α φ y) (modelHaar (E := E)) ∧
       Integrable (fun y => vwIntegrandOnE (I := I) g α X i y *
-        lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+        lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
         (modelHaar (E := E)) := by
   let K : Set E := chartImageOfTsupport (I := I) α φ
   let U : Set E := (extChartAt I α).target
@@ -620,7 +620,7 @@ private theorem ibp_lip_index [I.Boundaryless]
     exact hχ_compact.mul_right
   obtain ⟨D, hq_lip⟩ : ∃ D, LipschitzWith D q :=
     ContDiff.lipschitzWith_of_hasCompactSupport hq_compact hq_smooth (by simp)
-  let v : E := (chartModelBasis E) i
+  let v : E := (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
   have hq_vw_nhds {y : E} (hy : y ∈ K) :
       q =ᶠ[𝓝 y] vwIntegrandOnE (I := I) g α X i := by
     have hχ_one_y : χ =ᶠ[𝓝 y] (1 : E → ℝ) :=
@@ -697,7 +697,7 @@ private theorem ibp_lip_index [I.Boundaryless]
       ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
             phiOnE (I := I) α φ y ∂(modelHaar (E := E)) =
         -∫ y, vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E)) := by
     simpa only [v] using (show
       ∫ y, partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i) y *
@@ -947,7 +947,7 @@ private lemma rhs_lip_target [I.Boundaryless]
       ∫ y in (extChartAt I α).target,
         ∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         ∂(modelHaar (E := E)) := by
   classical
   calc
@@ -1018,17 +1018,17 @@ theorem tangent_lip_int [I.Boundaryless]
   have hsum : Integrable
       (fun y => ∑ i : Fin (Module.finrank ℝ E),
         vwIntegrandOnE (I := I) g α X i y *
-          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
       (modelHaar (E := E)) := by
     exact integrable_finsetSum _ fun i _ => (hidx i).2.2
   have hsum_on : Integrable
       (fun y => ∑ i : Fin (Module.finrank ℝ E),
         vwIntegrandOnE (I := I) g α X i y *
-          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) μ₀ := by
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) μ₀ := by
     change IntegrableOn
       (fun y => ∑ i : Fin (Module.finrank ℝ E),
         vwIntegrandOnE (I := I) g α X i y *
-          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i))
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
       (extChartAt I α).target (modelHaar (E := E))
     exact hsum.integrableOn
   have hweighted : Integrable
@@ -1104,7 +1104,7 @@ private lemma summand_int [I.Boundaryless]
           (extChartAt I α).target :=
         (vwIntegrandOnE_contDiffOn_target (I := I) g α X i).fderiv_of_isOpen
           (isOpen_extChartAt_target (I := I) α) (by rw [ENat.coe_top_add_one])
-      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (extChartAt I α).target := contDiffOn_const
       have hpartial : ContDiffOn ℝ ∞
           (partialDeriv (E := E) i (vwIntegrandOnE (I := I) g α X i))
@@ -1148,7 +1148,7 @@ private lemma summand_int' [I.Boundaryless]
     · have hphi_fderiv : ContDiffOn ℝ ∞ (fderiv ℝ (phiOnE (I := I) α φ))
           (extChartAt I α).target :=
         (hphi_smooth.fderiv_right (m := ∞) (by rw [ENat.coe_top_add_one])).contDiffOn
-      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+      have hbasis_const : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (extChartAt I α).target := contDiffOn_const
       have hpartial : ContDiffOn ℝ ∞
           (partialDeriv (E := E) i (phiOnE (I := I) α φ))
@@ -1261,11 +1261,11 @@ theorem chart_local_ibp [I.Boundaryless]
           ∂(modelHaar (E := E)) := by
     intro i
     have h_ibp := ibp_per_index (I := I) g α X hφ hφ_compactSupp hφ_supp i
-    change ∫ y, fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y ((chartModelBasis E) i)
+    change ∫ y, fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         * phiOnE (I := I) α φ y
       ∂(modelHaar (E := E))
       = -∫ y, vwIntegrandOnE (I := I) g α X i y *
-          fderiv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+          fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         ∂(modelHaar (E := E))
     linarith [h_ibp]
   rw [Finset.sum_congr rfl (fun i _ => h_each i)]
@@ -1391,21 +1391,21 @@ theorem chart_local_ibp_lip [I.Boundaryless]
   rw [Finset.sum_congr rfl (fun i _ => (hidx i).1)]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
         -∫ y, vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E))) =
       -∑ i : Fin (Module.finrank ℝ E),
         ∫ y, vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E)) from by
     rw [← Finset.sum_neg_distrib]]
   have h_sum_back :
       ∑ i : Fin (Module.finrank ℝ E),
         ∫ y, vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E)) =
       ∫ y, ∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         ∂(modelHaar (E := E)) := by
     rw [← integral_finsetSum]
     intro i _
@@ -1414,18 +1414,18 @@ theorem chart_local_ibp_lip [I.Boundaryless]
   have hE_to_target :
       ∫ y, ∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         ∂(modelHaar (E := E)) =
       ∫ y in (extChartAt I α).target,
         ∑ i : Fin (Module.finrank ℝ E),
           vwIntegrandOnE (I := I) g α X i y *
-            lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
+            lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         ∂(modelHaar (E := E)) := by
     rw [setIntegral_eq_integral_of_forall_compl_eq_zero
       (μ := modelHaar (E := E)) (s := (extChartAt I α).target)
       (f := fun y => ∑ i : Fin (Module.finrank ℝ E),
         vwIntegrandOnE (I := I) g α X i y *
-          lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)) ?_]
+          lineDeriv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) ?_]
     intro y hy
     refine Finset.sum_eq_zero ?_
     intro i _

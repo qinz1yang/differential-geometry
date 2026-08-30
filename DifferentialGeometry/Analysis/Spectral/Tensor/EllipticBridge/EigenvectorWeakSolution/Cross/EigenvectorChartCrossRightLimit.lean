@@ -68,9 +68,9 @@ private lemma gradFun_eq_gramInv_sum
           (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i))) •
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            ((chartModelBasis E) j)) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
   classical
   set Ginv := (gramMatrixAt (I := I) (M := M) g x)⁻¹ with hGinv
   set rhs : TangentSpace I x :=
@@ -78,13 +78,13 @@ private lemma gradFun_eq_gramInv_sum
       (∑ i : Fin (Module.finrank ℝ E),
         Ginv i j * mvfderiv (I := I) (ζ : M → ℝ) x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            ((chartModelBasis E) i))) •
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-          ((chartModelBasis E) j)) with hrhs
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) with hrhs
   refine (DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective
     (I := I) g x ?_).symm
   set tangentBasis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    (chartModelBasis E).map
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).map
       (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toLinearEquiv with
         htangentBasis
   refine tangentBasis.ext ?_
@@ -93,22 +93,22 @@ private lemma gradFun_eq_gramInv_sum
   have hgrad_k : DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x
       (gradFun (I := I) g (ζ : M → ℝ) x)
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-          ((chartModelBasis E) k)) =
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) =
         mvfderiv (I := I) (ζ : M → ℝ) x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            ((chartModelBasis E) k)) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) := by
     rw [DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply, mvfderiv_apply_scalar]
     exact inner_gradFun (I := I) g (ζ : M → ℝ) x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-        ((chartModelBasis E) k))
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
   have hrhs_k : DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x rhs
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-      ((chartModelBasis E) k)) =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) =
       ∑ j : Fin (Module.finrank ℝ E),
         (∑ i : Fin (Module.finrank ℝ E),
           Ginv i j * mvfderiv (I := I) (ζ : M → ℝ) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              ((chartModelBasis E) i))) *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) *
           gramMatrixAt (I := I) (M := M) g x j k := by
     rw [DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply, hrhs]
     rw [map_sum, sum_apply]
@@ -126,19 +126,19 @@ private lemma gradFun_eq_gramInv_sum
     exact hentry
   calc DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x rhs
          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-           ((chartModelBasis E) k))
+           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
       = ∑ j : Fin (Module.finrank ℝ E),
           (∑ i : Fin (Module.finrank ℝ E),
             Ginv i j *
               mvfderiv (I := I) (ζ : M → ℝ) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                  ((chartModelBasis E) i))) *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) *
             gramMatrixAt (I := I) (M := M) g x j k := hrhs_k
     _ = ∑ j : Fin (Module.finrank ℝ E),
           ∑ i : Fin (Module.finrank ℝ E),
             mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i)) *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
               (Ginv i j * gramMatrixAt (I := I) (M := M) g x j k) := by
         refine Finset.sum_congr rfl (fun j _ => ?_)
         rw [Finset.sum_mul]
@@ -147,7 +147,7 @@ private lemma gradFun_eq_gramInv_sum
     _ = ∑ i : Fin (Module.finrank ℝ E),
           mvfderiv (I := I) (ζ : M → ℝ) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              ((chartModelBasis E) i)) *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
             (∑ j : Fin (Module.finrank ℝ E),
               Ginv i j * gramMatrixAt (I := I) (M := M) g x j k) := by
         rw [Finset.sum_comm]
@@ -156,14 +156,14 @@ private lemma gradFun_eq_gramInv_sum
     _ = ∑ i : Fin (Module.finrank ℝ E),
           mvfderiv (I := I) (ζ : M → ℝ) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              ((chartModelBasis E) i)) *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
             (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ)
               i k := by
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [hgram i]
     _ = mvfderiv (I := I) (ζ : M → ℝ) x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-          ((chartModelBasis E) k)) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) := by
         rw [Finset.sum_eq_single k]
         · rw [Matrix.one_apply_eq, mul_one]
         · intro i _ hik
@@ -173,7 +173,7 @@ private lemma gradFun_eq_gramInv_sum
     _ = DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x
           (gradFun (I := I) g (ζ : M → ℝ) x)
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              ((chartModelBasis E) k)) :=
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) :=
         hgrad_k.symm
 
 private noncomputable def covDerivHomSection
@@ -447,10 +447,10 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i))) •
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
             TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s S x
-                ((chartModelBasis E) j)) =
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
       (covDerivAlongGrad (I := I) (M := M) g r s S ζ).toFun x := by
   classical
   set D : E →L[ℝ] TensorRSSpace r s I x :=
@@ -471,8 +471,8 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
   rw [hgoal_rhs]
   have htoModel_cov : ∀ j : Fin (Module.finrank ℝ E),
       TensorRSSpace.toModel
-        (tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) j)) =
-        toM (D ((chartModelBasis E) j)) := by
+        (tensorCovDerivAt (I := I) (M := M) g r s S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
+        toM (D ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
     intro j
     rw [hcov]
     rfl
@@ -482,33 +482,33 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
             ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
               mvfderiv (I := I) (ζ : M → ℝ) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                  ((chartModelBasis E) i))) •
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
               TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j)) =
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
         toM (D (∑ j : Fin (Module.finrank ℝ E),
           (∑ i : Fin (Module.finrank ℝ E),
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
               mvfderiv (I := I) (ζ : M → ℝ) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                  ((chartModelBasis E) i))) •
-            (chartModelBasis E) j)) := by
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
     calc ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
               mvfderiv (I := I) (ζ : M → ℝ) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                  ((chartModelBasis E) i))) •
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
               TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
         = ∑ j : Fin (Module.finrank ℝ E),
             ∑ i : Fin (Module.finrank ℝ E),
               ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
                 mvfderiv (I := I) (ζ : M → ℝ) x
                   ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                    ((chartModelBasis E) i))) •
-                toM (D ((chartModelBasis E) j)) := by
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
+                toM (D ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl (fun j _ => ?_)
           refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -518,8 +518,8 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
                 mvfderiv (I := I) (ζ : M → ℝ) x
                   ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                    ((chartModelBasis E) i))) •
-              (chartModelBasis E) j)) := by
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
           refine Finset.sum_congr rfl (fun j _ => ?_)
           rw [map_smul D, map_smul toM, Finset.sum_smul]
       _ = toM (D (∑ j : Fin (Module.finrank ℝ E),
@@ -527,8 +527,8 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
                 mvfderiv (I := I) (ζ : M → ℝ) x
                   ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                    ((chartModelBasis E) i))) •
-              (chartModelBasis E) j)) := by
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) •
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
           rw [map_sum D, map_sum toM]
   rw [hlhs]
   have hgradModel := congrArg

@@ -271,8 +271,8 @@ private def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
   LinearMap.toContinuousLinearMap
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         (chartInvGramMatrix (I := I) g x x k l *
-          K X (centeredChartTangentBasis (I := I) x k)) •
-          (ContinuousLinearMap.flip L (centeredChartTangentBasis (I := I) x l))
+          K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)) •
+          (ContinuousLinearMap.flip L (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l))
       map_add' := fun X X' => by
         ext Y'
         simp only [add_apply, FunLike.coe_sum,
@@ -283,9 +283,9 @@ private def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun l _ => ?_)
         let A : ℝ := chartInvGramMatrix (I := I) g x x k l
-        let P : ℝ := K X (centeredChartTangentBasis (I := I) x k)
-        let P' : ℝ := K X' (centeredChartTangentBasis (I := I) x k)
-        let Q : ℝ := L Y' (centeredChartTangentBasis (I := I) x l)
+        let P : ℝ := K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+        let P' : ℝ := K X' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+        let Q : ℝ := L Y' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
         change A * (P + P') * Q = A * P * Q + A * P' * Q
         ring
       map_smul' := fun c X => by
@@ -298,8 +298,8 @@ private def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun l _ => ?_)
         let A : ℝ := chartInvGramMatrix (I := I) g x x k l
-        let P : ℝ := K X (centeredChartTangentBasis (I := I) x k)
-        let Q : ℝ := L Y' (centeredChartTangentBasis (I := I) x l)
+        let P : ℝ := K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+        let Q : ℝ := L Y' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
         change A * (c * P) * Q = c * (A * P * Q)
         ring }
 
@@ -310,15 +310,15 @@ private lemma outerPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
     outerPairBilin (I := I) g x K L X X' =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          (K X (centeredChartTangentBasis (I := I) x k) *
-            L X' (centeredChartTangentBasis (I := I) x l)) := by
+          (K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) *
+            L X' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) := by
   rw [outerPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
   simp only [sum_apply, smul_apply, smul_eq_mul]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
   let A : ℝ := chartInvGramMatrix (I := I) g x x k l
-  let P : ℝ := K X (centeredChartTangentBasis (I := I) x k)
-  let Q : ℝ := L X' (centeredChartTangentBasis (I := I) x l)
+  let P : ℝ := K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+  let Q : ℝ := L X' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
   change A * P * Q = A * (P * Q)
   ring
 
@@ -332,10 +332,10 @@ private theorem double_frame_bilin_trace_eq_fixed
     ∑ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g x x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g x x k l *
-          (K (centeredChartTangentBasis (I := I) x m)
-              (centeredChartTangentBasis (I := I) x k) *
-            L (centeredChartTangentBasis (I := I) x n)
-              (centeredChartTangentBasis (I := I) x l))) := by
+          (K (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x m)
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) *
+            L (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x n)
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       outerPairBilin (I := I) g x K L (B a) (B a) := by

@@ -90,7 +90,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
                   (∑ k : Fin (Module.finrank ℝ E),
                     ‖chartTensorRSCovariantDerivative (I := I) r s g α
                         (fun b' => S.toCcTensor.toSection b')
-                        (chartBasisVecFiber (I := I) α k) b‖ ^ 2))
+                        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2))
             2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
@@ -120,7 +120,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
         (∑ k : Fin (Module.finrank ℝ E),
           ‖chartTensorRSCovariantDerivative (I := I) r s g α
               (fun b' => S.toCcTensor.toSection b')
-              (chartBasisVecFiber (I := I) α k) b‖ ^ 2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2)
     with hgF_def
   set gM : M → ℝ := fun b : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
@@ -130,7 +130,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
               (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
             (chartTensorRSCovariantDerivative (I := I) r s g α
               (fun b' => S.toCcTensor.toSection b')
-              (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
     with hgM_def
   have h_ptwise : ∀ b : M, gF b ≤ Cop * gM b := by
     intro b
@@ -145,18 +145,18 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
       have h_per_k : ∀ k : Fin (Module.finrank ℝ E),
           ‖chartTensorRSCovariantDerivative (I := I) r s g α
               (fun b' => S.toCcTensor.toSection b')
-              (chartBasisVecFiber (I := I) α k) b‖ ^ 2 ≤
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2 ≤
             Cop ^ 2 *
               ‖(trivializationAt (TensorRSModel r s ℝ E)
                   (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
                 (chartTensorRSCovariantDerivative (I := I) r s g α
                   (fun b' => S.toCcTensor.toSection b')
-                  (chartBasisVecFiber (I := I) α k) b)‖ ^ 2 := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2 := by
         intro k
         set X : TensorRSSpace r s I b :=
           chartTensorRSCovariantDerivative (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
-            (chartBasisVecFiber (I := I) α k) b with hX_def
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b with hX_def
         set v : TensorRSModel r s ℝ E :=
           (trivializationAt (TensorRSModel r s ℝ E)
               (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b X
@@ -184,21 +184,21 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
           (∑ k : Fin (Module.finrank ℝ E),
             ‖chartTensorRSCovariantDerivative (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b‖ ^ 2) ≤
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2) ≤
             Cop ^ 2 *
               (∑ k : Fin (Module.finrank ℝ E),
                 ‖(trivializationAt (TensorRSModel r s ℝ E)
                     (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
                   (chartTensorRSCovariantDerivative (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b)‖ ^ 2) := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2) := by
         rw [Finset.mul_sum]
         exact Finset.sum_le_sum (fun k _ => h_per_k k)
       have h_sumF_nn :
           0 ≤ ∑ k : Fin (Module.finrank ℝ E),
             ‖chartTensorRSCovariantDerivative (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b‖ ^ 2 :=
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2 :=
         Finset.sum_nonneg (fun k _ => sq_nonneg _)
       have h_sumM_nn :
           0 ≤ ∑ k : Fin (Module.finrank ℝ E),
@@ -206,14 +206,14 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
                 (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
               (chartTensorRSCovariantDerivative (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b)‖ ^ 2 :=
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2 :=
         Finset.sum_nonneg (fun k _ => sq_nonneg _)
       have h_sqrt_le :
           Real.sqrt
               (∑ k : Fin (Module.finrank ℝ E),
                 ‖chartTensorRSCovariantDerivative (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b‖ ^ 2) ≤
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2) ≤
             Cop *
               Real.sqrt
                 (∑ k : Fin (Module.finrank ℝ E),
@@ -221,7 +221,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
                       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
                     (chartTensorRSCovariantDerivative (I := I) r s g α
                       (fun b' => S.toCcTensor.toSection b')
-                      (chartBasisVecFiber (I := I) α k) b)‖ ^ 2) := by
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2) := by
         have h1 := Real.sqrt_le_sqrt h_sum_le
         rwa [Real.sqrt_mul (sq_nonneg Cop), Real.sqrt_sq hCop_nn] at h1
       have h_mul :=
@@ -232,7 +232,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
                 (∑ k : Fin (Module.finrank ℝ E),
                   ‖chartTensorRSCovariantDerivative (I := I) r s g α
                       (fun b' => S.toCcTensor.toSection b')
-                      (chartBasisVecFiber (I := I) α k) b‖ ^ 2)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2)
             ≤ ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
                 (Cop *
                   Real.sqrt
@@ -242,7 +242,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
                             ℝ b
                         (chartTensorRSCovariantDerivative (I := I) r s g α
                           (fun b' => S.toCcTensor.toSection b')
-                          (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) := h_mul
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) := h_mul
           _ = Cop *
                 (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
                   Real.sqrt
@@ -252,7 +252,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
                             ℝ b
                         (chartTensorRSCovariantDerivative (I := I) r s g α
                           (fun b' => S.toCcTensor.toSection b')
-                          (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) := by ring
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) := by ring
     · have hρ_zero : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b = 0 := by
         by_contra hne
         exact hb (subset_tsupport _ hne)

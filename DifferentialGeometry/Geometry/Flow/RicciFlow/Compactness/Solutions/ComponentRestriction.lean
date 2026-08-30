@@ -65,12 +65,12 @@ theorem compRestrict_smooth
     (g : ℝ → SmoothRiemannianMetric I M) (p : M) {a b : ℝ}
     (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∀ (x₀ : connCompOpen (I := I) p) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun q : ℝ × connCompOpen (I := I) p =>
-          chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let _ := compactSpace
   let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
@@ -101,12 +101,12 @@ theorem compRestrict_cont
     (g : ℝ → SmoothRiemannianMetric I M) (p : M) {a b : ℝ}
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∀ (x₀ : connCompOpen (I := I) p) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun q : ℝ × connCompOpen (I := I) p =>
-          chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (compRestrict (I := I) g p q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let _ := compactSpace
   let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
@@ -196,19 +196,19 @@ theorem forward_of_comp
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun q : ℝ × M => chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
+        (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ q.1) x₀ q.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1pde : ∀ t ∈ Set.Ico a b, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivWithinAt (fun s : ℝ => (g₁ s).inner x v w)
@@ -223,28 +223,28 @@ theorem forward_of_comp
           (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₁ p q.1) x₀ q.2 i j)
           (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       (∀ (x₀ : connCompOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₁ p q.1) x₀ q.2 i j)
           (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       (∀ (x₀ : connCompOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₂ p q.1) x₀ q.2 i j)
           (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       (∀ (x₀ : connCompOpen (I := I) p)
           (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun q : ℝ × connCompOpen (I := I) p =>
-            chartGramMatrix (I := I)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (compRestrict (I := I) g₂ p q.1) x₀ q.2 i j)
           (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       (∀ t ∈ Set.Ico a b,

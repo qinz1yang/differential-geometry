@@ -39,7 +39,7 @@ lemma partialDeriv_joint_contDiffAt
     exact (contDiffAt_fst.comp ((s₀, y₀), y₀) contDiffAt_fst).prodMk contDiffAt_snd
   have hg : ContDiffAt ℝ ∞ (fun p : ℝ × E => p.2) (s₀, y₀) := contDiffAt_snd
   have hfd := ContDiffAt.fderiv hf hg (le_refl _)
-  exact (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E q)).contDiff.contDiffAt.comp (s₀, y₀) hfd
+  exact (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q)).contDiff.contDiffAt.comp (s₀, y₀) hfd
 
 variable (gfam : ℝ → SmoothRiemannianMetric I M) (α : M)
 
@@ -67,19 +67,19 @@ lemma chartInvGramOnE_joint_contDiffAt {S : Set ℝ}
   classical
   have hGentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => chartGramMatrix (I := I) (gfam p.1) α
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2) a b) (s₀, y₀) := by
     intro a b
     have := hG a b hs hy
     simpa only [chartGramOnE_def] using this
   have hdet : ContDiffAt ℝ ∞
-      (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+      (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
         ((extChartAt I α).symm p.2)).det) (s₀, y₀) := by
-    have hdet_eq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    have hdet_eq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).det) =
         (fun p : ℝ × E => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ kk, chartGramMatrix (I := I) (gfam p.1) α
+            ∏ kk, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
               ((extChartAt I α).symm p.2) (σ kk) kk) := by
       funext p; rw [Matrix.det_apply]; simp [Units.smul_def]
     rw [hdet_eq]
@@ -92,19 +92,19 @@ lemma chartInvGramOnE_joint_contDiffAt {S : Set ℝ}
       (extChartAt I α).map_target hy_t
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     exact hsource
-  have hdet_ne : (chartGramMatrix (I := I) (gfam (s₀, y₀).1) α
+  have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam (s₀, y₀).1) α
       ((extChartAt I α).symm (s₀, y₀).2)).det ≠ 0 :=
-    ne_of_gt (chartGramMatrix_det_pos (I := I) (gfam s₀) α hx_base)
+    ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (gfam s₀) α hx_base)
   have hadj : ∀ kk ll : Fin (Module.finrank ℝ E),
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+        (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).adjugate kk ll) (s₀, y₀) := by
     intro kk ll
-    have hexp : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    have hexp : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).adjugate kk ll) =
         (fun p : ℝ × E => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ m, (chartGramMatrix (I := I) (gfam p.1) α
+            ∏ m, (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
                 ((extChartAt I α).symm p.2)).updateRow ll
                 (Pi.single kk (1 : ℝ)) (σ m) m) := by
       funext p; rw [Matrix.adjugate_apply, Matrix.det_apply]; simp [Units.smul_def]
@@ -113,29 +113,29 @@ lemma chartInvGramOnE_joint_contDiffAt {S : Set ℝ}
     refine contDiffAt_const.mul ?_
     refine contDiffAt_prod (fun m _ => ?_)
     by_cases hσm : σ m = ll
-    · have heq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    · have heq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).updateRow ll (Pi.single kk (1 : ℝ)) (σ m) m) =
           (fun _ : ℝ × E => (Pi.single (M := fun _ : Fin (Module.finrank ℝ E) => ℝ) kk
             (1 : ℝ)) m) := by
         funext p; rw [hσm, Matrix.updateRow_self]
       rw [heq]; exact contDiffAt_const
-    · have heq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    · have heq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).updateRow ll (Pi.single kk (1 : ℝ)) (σ m) m) =
-          (fun p : ℝ × E => chartGramMatrix (I := I) (gfam p.1) α
+          (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
             ((extChartAt I α).symm p.2) (σ m) m) := by
         funext p; rw [Matrix.updateRow_ne hσm]
       rw [heq]; exact hGentry (σ m) m
   have hcongr : (fun p : ℝ × E => chartInvGramOnE (I := I) (gfam p.1) α k l p.2) =
-      (fun p : ℝ × E => ((chartGramMatrix (I := I) (gfam p.1) α
+      (fun p : ℝ × E => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).det)⁻¹ *
-        (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate k l) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate k l) := by
     funext p
     rw [chartInvGramOnE_def]
-    change (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2))⁻¹ k l = _
+    change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2))⁻¹ k l = _
     rw [Matrix.inv_def]
-    change (Ring.inverse (chartGramMatrix (I := I) (gfam p.1) α
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
             ((extChartAt I α).symm p.2)).det •
-            (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate) k l = _
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate) k l = _
     rw [Matrix.smul_apply, smul_eq_mul, Ring.inverse_eq_inv]
   rw [hcongr]
   exact ((contDiffAt_inv _ hdet_ne).comp (s₀, y₀) hdet).mul (hadj k l)

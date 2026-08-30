@@ -36,7 +36,7 @@ theorem ricciEdgeMetric
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ Λ : Real, 1 ≤ Λ ∧
       ∀ t ∈ Set.Icc a c, ∀ x : M, ∀ v : TangentSpace I x,
@@ -52,7 +52,7 @@ theorem ricciEdgeMetric
       (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
     have hcomp : ContinuousOn
         ((fun p : Real × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j) ∘
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j) ∘
           (fun q : {t : Real // t ∈ Set.Ico a b} × M => ((q.1 : Real), q.2)))
         {q : {t : Real // t ∈ Set.Ico a b} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} :=
@@ -148,7 +148,7 @@ theorem ricciEdgeChartPDE
     (hy : y ∈ interior (extChartAt I α).target)
     (hgood : (extChartAt I α).symm y ∈ chartLeviCivitaGoodSet (I := I) α) :
     derivWithin (fun s => chartGramPi (I := I) (g s) α y) (Set.Ioo a b) t =
-      jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) (g t) α) y) := by
+      jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) (g t) α) y) := by
   have hStatic : ContDiffOn ℝ ∞ (chartGramPi (I := I) (g t) α)
       (interior (extChartAt I α).target) := by
     refine contDiffOn_pi.mpr fun i => contDiffOn_pi.mpr fun j => ?_
@@ -168,8 +168,8 @@ theorem ricciEdgeChartPDE
   apply chartGramEntryPDE_of_metricPDE g α hgood
     ((extChartAt I α).right_inv (interior_subset hy)) i k
   exact (hpde t (Set.Ioo_subset_Ico_self ht) ((extChartAt I α).symm y)
-    (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-    (chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y))).mono
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y))).mono
       (fun r hr => hr.1.le)
 
 omit [CompactSpace M]
@@ -180,7 +180,7 @@ theorem ricciEdgeIntegral
     (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hpde : ∀ r ∈ Set.Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun u : ℝ => (g u).inner x v w)
@@ -225,7 +225,7 @@ theorem ricciEdgeImproper
     (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hpde : ∀ r ∈ Set.Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun u : ℝ => (g u).inner x v w)

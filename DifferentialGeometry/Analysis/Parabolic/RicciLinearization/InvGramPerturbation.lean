@@ -153,14 +153,14 @@ section TraceAndRaising
 def raisedCovectorComp (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (m : Fin (Module.finrank ℝ E)) : ℝ :=
   ∑ n : Fin (Module.finrank ℝ E),
-    chartInvGramMatrix (I := I) g x x m n * (chartModelBasis E).repr ξ n
+    chartInvGramMatrix (I := I) g x x m n * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ n
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 @[simp] lemma raisedCovectorComp_def (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (m : Fin (Module.finrank ℝ E)) :
     raisedCovectorComp (I := I) g x ξ m =
       ∑ n : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g x x m n * (chartModelBasis E).repr ξ n := rfl
+        chartInvGramMatrix (I := I) g x x m n * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ n := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma raisedCovectorComp_zero (g : SmoothRiemannianMetric I M) (x : M)
@@ -172,7 +172,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 lemma sum_raisedCovectorComp_mul_repr
     (g : SmoothRiemannianMetric I M) (x : M) (ξ : E) :
     ∑ m : Fin (Module.finrank ℝ E),
-        raisedCovectorComp (I := I) g x ξ m * (chartModelBasis E).repr ξ m =
+        raisedCovectorComp (I := I) g x ξ m * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ m =
       metricCovectorNormSq (I := I) g x ξ := by
   rw [metricCovectorNormSq_def]
   refine Finset.sum_congr rfl (fun m _ => ?_)

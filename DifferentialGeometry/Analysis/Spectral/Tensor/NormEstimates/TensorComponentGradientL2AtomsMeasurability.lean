@@ -196,7 +196,7 @@ private def trivInput
   (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
     (chartTensorRSInputSlotCorrection (I := I) r s g α
-      (fun b' => T b') (chartBasisVecFiber (I := I) α j) b k)
+      (fun b' => T b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k)
 
 private def trivOutput
     (T : Π b' : M, TensorRSSpace r s I b') (b : M) (l : Fin s) :
@@ -204,7 +204,7 @@ private def trivOutput
   (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
     (chartTensorRSOutputSlotCorrection (I := I) r s g α
-      (fun b' => T b') (chartBasisVecFiber (I := I) α j) b l)
+      (fun b' => T b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l)
 
 private def christoffelAtomIntegrand
     (T : Π b' : M, TensorRSSpace r s I b') (b : M) : ℝ :=
@@ -255,7 +255,7 @@ private lemma trivInput_continuousOn_chartSource (S : SmoothCcTensor g r s)
   exact triv_continuousLinearMapAt_eq_triv_snd (I := I) (r := r) (s := s)
     (α := α) (b := b) hb
     (chartTensorRSInputSlotCorrection (I := I) r s g α
-      (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α j) b k)
+      (fun b' => S.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k)
 
 variable {g r s α j} in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -273,7 +273,7 @@ private lemma trivOutput_continuousOn_chartSource (S : SmoothCcTensor g r s)
   exact triv_continuousLinearMapAt_eq_triv_snd (I := I) (r := r) (s := s)
     (α := α) (b := b) hb
     (chartTensorRSOutputSlotCorrection (I := I) r s g α
-      (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α j) b l)
+      (fun b' => S.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l)
 
 variable {g r s α j} in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
@@ -373,14 +373,14 @@ theorem aestronglyMeasurable_pou_mul_sqrt_sum_christoffel_correction
                       ℝ b
                   (chartTensorRSInputSlotCorrection (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α j) b k)‖ ^ 2) +
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k)‖ ^ 2) +
               (∑ l : Fin s,
                 ‖(trivializationAt (TensorRSModel r s ℝ E)
                     (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt
                       ℝ b
                   (chartTensorRSOutputSlotCorrection (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α j) b l)‖ ^ 2)))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l)‖ ^ 2)))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   change AEStronglyMeasurable

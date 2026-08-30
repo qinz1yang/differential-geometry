@@ -51,13 +51,13 @@ theorem inverseMetricSharpFib_jointContMDiffOn
       (I := I) g_fam hG α i j
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
+        (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ D.regular) := by
     intro α j
     have hbase := cotangentSection_chartComponent_contMDiffOn (I := I) Y α j
-    have heqfn : (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1)) =
+    have heqfn : (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1)) =
         (fun p : M × ℝ => (fun b : M => Tensor0SSpace.toModel (Y b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b)) p.1) := by
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) p.1) := by
       funext p
       rw [hcvdef]
       simp only

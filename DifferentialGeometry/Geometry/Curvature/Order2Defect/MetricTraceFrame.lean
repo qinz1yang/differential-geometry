@@ -196,7 +196,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 private noncomputable def coBchangeChartα (α : M) {b : M}
     (B : Fin (Module.finrank ℝ E) → TangentSpace I b) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun i k => (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k
+  Matrix.of fun i k => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α b (B i)) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] in
@@ -205,22 +205,22 @@ private lemma decompose_in_chartBasisα (α : M) {b : M}
     (B : Fin (Module.finrank ℝ E) → TangentSpace I b) (i : Fin (Module.finrank ℝ E)) :
     B i = ∑ k : Fin (Module.finrank ℝ E),
       coBchangeChartα (I := I) α B i k •
-        chartBasisVecFiber (I := I) α k b := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b := by
   classical
   have hrepr : trivToE (I := I) α b (B i) =
       ∑ k : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k •
-          ((chartModelBasis E) k : E) :=
-    ((chartModelBasis E).sum_repr (trivToE (I := I) α b (B i))).symm
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α b (B i)) k •
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k : E) :=
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr (trivToE (I := I) α b (B i))).symm
   calc B i = trivFromE (I := I) α b (trivToE (I := I) α b (B i)) :=
             (trivFromE_trivToE (I := I) α hb (B i)).symm
     _ = trivFromE (I := I) α b
           (∑ k : Fin (Module.finrank ℝ E),
-            (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k •
-              ((chartModelBasis E) k : E)) := by rw [← hrepr]
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α b (B i)) k •
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k : E)) := by rw [← hrepr]
     _ = ∑ k : Fin (Module.finrank ℝ E),
           coBchangeChartα (I := I) α B i k •
-            chartBasisVecFiber (I := I) α k b := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b := by
           rw [map_sum]
           refine Finset.sum_congr rfl (fun k _ => ?_)
           rw [map_smul]
@@ -238,37 +238,37 @@ private lemma bilin_expand_chartBasisα {A : Type*} [AddCommGroup A] [Module ℝ
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         (coBchangeChartα (I := I) α B i k *
             coBchangeChartα (I := I) α B j l) •
-          Hb (chartBasisVecFiber (I := I) α k b)
-            (chartBasisVecFiber (I := I) α l b) := by
+          Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
   classical
   have hBi := decompose_in_chartBasisα (I := I) α hb B i
   have hBj := decompose_in_chartBasisα (I := I) α hb B j
   rw [show Hb (B i) = ∑ k : Fin (Module.finrank ℝ E),
         coBchangeChartα (I := I) α B i k •
-          Hb (chartBasisVecFiber (I := I) α k b) from by
+          Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) from by
     rw [show Hb (B i) = Hb (∑ k : Fin (Module.finrank ℝ E),
           coBchangeChartα (I := I) α B i k •
-            chartBasisVecFiber (I := I) α k b) from congrArg Hb hBi]
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) from congrArg Hb hBi]
     rw [map_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     exact Hb.map_smul _ _]
   rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [smul_apply]
-  rw [show Hb (chartBasisVecFiber (I := I) α k b) (B j) =
+  rw [show Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) (B j) =
         ∑ l : Fin (Module.finrank ℝ E),
           coBchangeChartα (I := I) α B j l •
-            Hb (chartBasisVecFiber (I := I) α k b)
-              (chartBasisVecFiber (I := I) α l b) from by
-    rw [show Hb (chartBasisVecFiber (I := I) α k b) (B j) =
-          Hb (chartBasisVecFiber (I := I) α k b)
+            Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) from by
+    rw [show Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) (B j) =
+          Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
             (∑ l : Fin (Module.finrank ℝ E),
               coBchangeChartα (I := I) α B j l •
-                chartBasisVecFiber (I := I) α l b) from
-      congrArg (Hb (chartBasisVecFiber (I := I) α k b)) hBj]
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) from
+      congrArg (Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) hBj]
     rw [map_sum]
     refine Finset.sum_congr rfl (fun l _ => ?_)
-    rw [(Hb (chartBasisVecFiber (I := I) α k b)).map_smul]]
+    rw [(Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)).map_smul]]
   rw [Finset.smul_sum]
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [smul_smul]
@@ -282,7 +282,7 @@ private lemma orthonormal_matrix_form_chartα
     (hB : ∀ i j : Fin (Module.finrank ℝ E),
       g.inner b (B i) (B j) = if i = j then (1 : ℝ) else 0) :
     coBchangeChartα (I := I) α B *
-        chartGramMatrix (I := I) g α b *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *
           (coBchangeChartα (I := I) α B).transpose =
       (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ) := by
   classical
@@ -291,19 +291,19 @@ private lemma orthonormal_matrix_form_chartα
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         coBchangeChartα (I := I) α B i k *
           coBchangeChartα (I := I) α B j l *
-            chartGramMatrix (I := I) g α b k l := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l := by
     rw [bilin_expand_chartBasisα (I := I) α hb (g.inner b) B i j]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
-    rw [smul_eq_mul, ← chartGramMatrix_apply (I := I) g α b k l, mul_assoc]
+    rw [smul_eq_mul, ← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply (I := I) g α b k l, mul_assoc]
   rw [hB i j] at hg
   rw [Matrix.mul_apply]
   rw [show (∑ k, (coBchangeChartα (I := I) α B *
-        chartGramMatrix (I := I) g α b) i k *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b) i k *
       (coBchangeChartα (I := I) α B).transpose k j) =
     ∑ k, ∑ l,
       coBchangeChartα (I := I) α B i l *
-          chartGramMatrix (I := I) g α b l k *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b l k *
           coBchangeChartα (I := I) α B j k from
     Finset.sum_congr rfl (fun k _ => by
       rw [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul])]
@@ -332,7 +332,7 @@ private lemma sum_coBchangeChartα_eq_invGram
   set A : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     coBchangeChartα (I := I) α B with hA_def
   set G : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    chartGramMatrix (I := I) g α b with hG_def
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b with hG_def
   have hAGA : A * G * A.transpose = 1 := by
     rw [hA_def, hG_def]; exact orthonormal_matrix_form_chartα (I := I) g α hb B hB
   have hAGA_right : A * (G * A.transpose) = 1 := by rw [← Matrix.mul_assoc]; exact hAGA
@@ -366,16 +366,16 @@ theorem orthonormal_basis_bilin_trace_chartα {A : Type*} [AddCommGroup A] [Modu
     ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I) g α b k l •
-          Hb (chartBasisVecFiber (I := I) α k b)
-            (chartBasisVecFiber (I := I) α l b) := by
+          Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
   classical
   rw [show ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           (coBchangeChartα (I := I) α B i k *
               coBchangeChartα (I := I) α B i l) •
-            Hb (chartBasisVecFiber (I := I) α k b)
-              (chartBasisVecFiber (I := I) α l b) from
+            Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) from
     Finset.sum_congr rfl (fun i _ =>
       bilin_expand_chartBasisα (I := I) α hb Hb B i i)]
   rw [Finset.sum_comm]
@@ -385,13 +385,13 @@ theorem orthonormal_basis_bilin_trace_chartα {A : Type*} [AddCommGroup A] [Modu
   rw [show (∑ i : Fin (Module.finrank ℝ E),
         (coBchangeChartα (I := I) α B i k *
             coBchangeChartα (I := I) α B i l) •
-          Hb (chartBasisVecFiber (I := I) α k b)
-            (chartBasisVecFiber (I := I) α l b)) =
+          Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
       (∑ i : Fin (Module.finrank ℝ E),
         coBchangeChartα (I := I) α B i k *
           coBchangeChartα (I := I) α B i l) •
-        Hb (chartBasisVecFiber (I := I) α k b)
-          (chartBasisVecFiber (I := I) α l b) from by rw [← Finset.sum_smul]]
+        Hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) from by rw [← Finset.sum_smul]]
   rw [sum_coBchangeChartα_eq_invGram (I := I) g α hb B hB k l]
 
 end ChartInvGramBilinearTrace

@@ -127,22 +127,22 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
       DifferentialGeometry.Geometry.Operator.gradChartLocal
         (I := I) g α f x =
         ∑ i, c i •
-          DifferentialGeometry.Integral.Measure.chartBasisVecFiber
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
             (I := I) α i x := by
     unfold DifferentialGeometry.Geometry.Operator.gradChartLocal
     rfl
   rw [hgcl_eq]
   set Gmat : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g α x with hGmat_def
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x with hGmat_def
   have hG_form : g.inner x
         (∑ i, c i •
-          DifferentialGeometry.Integral.Measure.chartBasisVecFiber
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
             (I := I) α i x)
         (∑ j, c j •
-          DifferentialGeometry.Integral.Measure.chartBasisVecFiber
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
             (I := I) α j x)
       = dotProduct (star c) (Matrix.mulVec Gmat c) :=
-    (DifferentialGeometry.Integral.Measure.chartGramMatrix_dotProduct_mulVec
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec
       (I := I) g α x c).symm
   rw [hG_form]
   set d : Fin (Module.finrank ℝ E) → ℝ := fun j =>

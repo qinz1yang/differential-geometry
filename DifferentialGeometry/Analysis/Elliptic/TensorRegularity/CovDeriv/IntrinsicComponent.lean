@@ -91,7 +91,7 @@ theorem tensorRSIntrinsicChartCLM_component_eq_euclidPartial
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (tensorRSIntrinsicChartCLM (I := I) r s α S.toSection
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-            (chartBasisVecFiber (I := I) α k
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))) =
       euclidPartial (E := E) k
         (chartPushedRaw I α
@@ -114,14 +114,14 @@ theorem tensorRSIntrinsicChartCLM_component_eq_euclidPartial
     rw [TangentBundle.trivializationAt_baseSet]
     exact hb_chart
   rw [tensorRSIntrinsicChartCLM_proj_eq_fderiv_component (I := I) (M := M)
-    g r s S α Idx Jdx hb_chart hb_int (chartBasisVecFiber (I := I) α k b)]
+    g r s S α Idx Jdx hb_chart hb_int (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)]
   have htriv_basis :
-      trivToE (I := I) α b (chartBasisVecFiber (I := I) α k b) =
-        chartModelBasis E k := by
+      trivToE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
     change trivToE (I := I) α b
-        (trivFromE (I := I) α b (chartModelBasis E k)) = _
-    exact trivToE_trivFromE (I := I) α hb_base (chartModelBasis E k)
-  rw [htriv_basis, chartModelBasis_apply, hphi_b]
+        (trivFromE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) = _
+    exact trivToE_trivFromE (I := I) α hb_base (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+  rw [htriv_basis, DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply, hphi_b]
   rw [euclidPartial_def]
   have hpushed_eq :
       chartPushedRaw I α

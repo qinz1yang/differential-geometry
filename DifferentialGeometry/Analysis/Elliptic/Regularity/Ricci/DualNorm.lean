@@ -36,7 +36,7 @@ noncomputable def ricciCovectorChartCoord
     (g : SmoothRiemannianMetric I M) (α : M) (φ : C^∞⟮I, M; ℝ⟯)
     (j : Fin (Module.finrank ℝ E)) (b : M) : ℝ :=
   ricciTensor (I := I) g b (gradFun (I := I) g φ b)
-    (chartBasisVecFiber (I := I) α j b)
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -45,7 +45,7 @@ omit [SigmaCompactSpace M] in
     (j : Fin (Module.finrank ℝ E)) (b : M) :
     ricciCovectorChartCoord (I := I) g α φ j b =
       ricciTensor (I := I) g b (gradFun (I := I) g φ b)
-        (chartBasisVecFiber (I := I) α j b) := rfl
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricciCovectorChartCoord_contMDiffOn
@@ -64,21 +64,21 @@ theorem ricciCovectorChartCoord_contMDiffOn
       (T% (fun b : M => gradFun (I := I) g φ b)) :=
     gradFun_contMDiff_total_section (I := I) g φ.contMDiff
   have hBasis : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (chartBasisVec (I := I) α j)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j)
       (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartBasisVec_contMDiffOn (I := I) α j
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
   have happ : ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
       (fun b : M => (⟨b,
           ricciTensor (I := I) g b
             (gradFun (I := I) g φ b)
-            (chartBasisVecFiber (I := I) α j b)⟩ :
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)⟩ :
           TotalSpace ℝ (Bundle.Trivial M ℝ)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
       (b := id) hRic.contMDiffOn hGrad.contMDiffOn hBasis
   change ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun b : M => ricciTensor (I := I) g b
-        (gradFun (I := I) g φ b) (chartBasisVecFiber (I := I) α j b))
+        (gradFun (I := I) g φ b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (trivializationAt E (TangentSpace I) α).baseSet
   intro b hb
   have hpb := happ b hb
@@ -198,7 +198,7 @@ noncomputable def ricciSharpChartLocal
     (φ : C^∞⟮I, M; ℝ⟯) (b : M) : TangentSpace I b :=
   ∑ k : Fin (Module.finrank ℝ E),
     ricciSharpChartCoeff (I := I) g α φ k b •
-      chartBasisVecFiber (I := I) α k b
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -207,21 +207,21 @@ lemma inner_ricciSharpChartLocal_chartBasis
     {b : M} (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (k : Fin (Module.finrank ℝ E)) :
     g.inner b (ricciSharpChartLocal (I := I) g α φ b)
-        (chartBasisVecFiber (I := I) α k b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
       ricciCovectorChartCoord (I := I) g α φ k b := by
   classical
   unfold ricciSharpChartLocal
   rw [show g.inner b (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
-              chartBasisVecFiber (I := I) α i b)
-            (chartBasisVecFiber (I := I) α k b) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
           ∑ i, ricciSharpChartCoeff (I := I) g α φ i b *
-            g.inner b (chartBasisVecFiber (I := I) α i b)
-              (chartBasisVecFiber (I := I) α k b) from ?_]
+            g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) from ?_]
   swap
   · rw [show (g.inner b (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
-                chartBasisVecFiber (I := I) α i b)) =
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) =
             (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
-                g.inner b (chartBasisVecFiber (I := I) α i b)) from ?_]
+                g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) from ?_]
     · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -234,11 +234,11 @@ lemma inner_ricciSharpChartLocal_chartBasis
       ∑ j, chartInvGramMatrix (I := I) g α b i j *
         ricciCovectorChartCoord (I := I) g α φ j b := fun i => rfl
   rw [show ∑ i, ricciSharpChartCoeff (I := I) g α φ i b *
-            g.inner b (chartBasisVecFiber (I := I) α i b)
-              (chartBasisVecFiber (I := I) α k b) =
+            g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
           ∑ i, (∑ j, chartInvGramMatrix (I := I) g α b i j *
               ricciCovectorChartCoord (I := I) g α φ j b) *
-              chartGramMatrix (I := I) g α b i k from ?_]
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k from ?_]
   swap
   · refine Finset.sum_congr rfl ?_
     intro i _
@@ -246,16 +246,16 @@ lemma inner_ricciSharpChartLocal_chartBasis
     rfl
   rw [show ∑ i, (∑ j, chartInvGramMatrix (I := I) g α b i j *
               ricciCovectorChartCoord (I := I) g α φ j b) *
-                chartGramMatrix (I := I) g α b i k =
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k =
           ∑ j, (∑ i, chartInvGramMatrix (I := I) g α b i j *
-              chartGramMatrix (I := I) g α b i k) *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k) *
             ricciCovectorChartCoord (I := I) g α φ j b from ?_]
   swap
   · rw [show ∑ i, (∑ j, chartInvGramMatrix (I := I) g α b i j *
                 ricciCovectorChartCoord (I := I) g α φ j b) *
-                  chartGramMatrix (I := I) g α b i k =
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k =
               ∑ i, ∑ j, (chartInvGramMatrix (I := I) g α b i j *
-                  chartGramMatrix (I := I) g α b i k) *
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k) *
                   ricciCovectorChartCoord (I := I) g α φ j b from ?_]
     · rw [Finset.sum_comm]
       refine Finset.sum_congr rfl ?_
@@ -267,22 +267,22 @@ lemma inner_ricciSharpChartLocal_chartBasis
       refine Finset.sum_congr rfl ?_
       intro j _
       ring
-  have hsym : ∀ i, chartGramMatrix (I := I) g α b i k =
-      chartGramMatrix (I := I) g α b k i := fun i => g.symm b _ _
+  have hsym : ∀ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k i := fun i => g.symm b _ _
   have hkron : ∀ j, (∑ i, chartInvGramMatrix (I := I) g α b i j *
-        chartGramMatrix (I := I) g α b i k) =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k) =
       if k = j then (1 : ℝ) else 0 := by
     intro j
     rw [show (∑ i, chartInvGramMatrix (I := I) g α b i j *
-              chartGramMatrix (I := I) g α b i k) =
-            (∑ i, chartGramMatrix (I := I) g α b k i *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k) =
+            (∑ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k i *
               chartInvGramMatrix (I := I) g α b i j) from ?_]
     swap
     · refine Finset.sum_congr rfl ?_
       intro i _
       rw [hsym i]
       ring
-    have hidentity : (chartGramMatrix (I := I) g α b *
+    have hidentity : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *
           chartInvGramMatrix (I := I) g α b) k j =
         if k = j then (1 : ℝ) else 0 := by
       rw [chartGramMatrix_mul_chartInvGramMatrix (I := I) g α hb]
@@ -290,7 +290,7 @@ lemma inner_ricciSharpChartLocal_chartBasis
     rw [← hidentity]
     rw [Matrix.mul_apply]
   rw [show ∑ j, (∑ i, chartInvGramMatrix (I := I) g α b i j *
-            chartGramMatrix (I := I) g α b i k) *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i k) *
               ricciCovectorChartCoord (I := I) g α φ j b =
           ∑ j, (if k = j then (1 : ℝ) else 0) *
             ricciCovectorChartCoord (I := I) g α φ j b from
@@ -316,29 +316,29 @@ lemma ricciSharpChartLocal_eq_ricciSharp
     g.inner b (ricciSharp (I := I) g φ b) v
   rw [inner_ricciSharp (I := I) g φ b v]
   set bs : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I b) :=
-    chartBasisFamily (I := I) α hb
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb
   set c : Fin (Module.finrank ℝ E) → ℝ := fun k => bs.repr v k
-  have hv_decomp : v = ∑ k, c k • chartBasisVecFiber (I := I) α k b := by
+  have hv_decomp : v = ∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b := by
     have h1 : v = ∑ k, bs.repr v k • bs k := (bs.sum_repr v).symm
     rw [h1]
     refine Finset.sum_congr rfl ?_
     intro k _
-    rw [chartBasisFamily_apply (I := I) α hb k]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hb k]
   rw [hv_decomp]
   rw [show g.inner b (ricciSharpChartLocal (I := I) g α φ b)
-        (∑ k, c k • chartBasisVecFiber (I := I) α k b) =
+        (∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
         ∑ k, c k * g.inner b (ricciSharpChartLocal (I := I) g α φ b)
-          (chartBasisVecFiber (I := I) α k b) from ?_]
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) from ?_]
   swap
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
   rw [show (ricciTensor (I := I) g b (gradFun (I := I) g φ b))
-        (∑ k, c k • chartBasisVecFiber (I := I) α k b) =
+        (∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
         ∑ k, c k *
           (ricciTensor (I := I) g b (gradFun (I := I) g φ b))
-            (chartBasisVecFiber (I := I) α k b) from ?_]
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) from ?_]
   swap
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_
@@ -359,26 +359,26 @@ private lemma inner_ricciSharpChartLocal_self_eq
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         ricciSharpChartCoeff (I := I) g α φ k b *
           ricciSharpChartCoeff (I := I) g α φ l b *
-          chartGramMatrix (I := I) g α b k l := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l := by
   classical
   unfold ricciSharpChartLocal
   have hexpand :
       g.inner b
           (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
-              chartBasisVecFiber (I := I) α i b)
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
           (∑ j, ricciSharpChartCoeff (I := I) g α φ j b •
-              chartBasisVecFiber (I := I) α j b)
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
         = ∑ i, ∑ j, (ricciSharpChartCoeff (I := I) g α φ i b *
             ricciSharpChartCoeff (I := I) g α φ j b) *
             g.inner b
-              (chartBasisVecFiber (I := I) α i b)
-              (chartBasisVecFiber (I := I) α j b) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) := by
     have hL :
         g.inner b
             (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
-                chartBasisVecFiber (I := I) α i b)
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
           = ∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
-              g.inner b (chartBasisVecFiber (I := I) α i b) := by
+              g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) := by
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -389,13 +389,13 @@ private lemma inner_ricciSharpChartLocal_self_eq
     intro i _
     rw [smul_apply]
     have hR :
-        g.inner b (chartBasisVecFiber (I := I) α i b)
+        g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
             (∑ j, ricciSharpChartCoeff (I := I) g α φ j b •
-                chartBasisVecFiber (I := I) α j b)
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
           = ∑ j, ricciSharpChartCoeff (I := I) g α φ j b *
               g.inner b
-                (chartBasisVecFiber (I := I) α i b)
-                (chartBasisVecFiber (I := I) α j b) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) := by
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro j _
@@ -419,7 +419,7 @@ private lemma sum_sharp_coeff_gram_eq_invGram
     ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         ricciSharpChartCoeff (I := I) g α φ k b *
           ricciSharpChartCoeff (I := I) g α φ l b *
-          chartGramMatrix (I := I) g α b k l =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l =
       chartRicciDualNormSq (I := I) g α φ b := by
   classical
   set N := Module.finrank ℝ E with hN_def
@@ -428,7 +428,7 @@ private lemma sum_sharp_coeff_gram_eq_invGram
   set Ginv : Fin N → Fin N → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g α b i j with hGinv_def
   set G : Fin N → Fin N → ℝ :=
-    fun i j => chartGramMatrix (I := I) g α b i j with hG_def
+    fun i j => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j with hG_def
   have hsym : ∀ k l, G k l = G l k := fun k l => by
     rw [hG_def]; exact g.symm b _ _
   have hinner : ∀ i l, (∑ k, Ginv k i * G k l) =
@@ -440,7 +440,7 @@ private lemma sum_sharp_coeff_gram_eq_invGram
     · refine Finset.sum_congr rfl ?_
       intro k _
       rw [hsym k l]; ring
-    have hid : (chartGramMatrix (I := I) g α b *
+    have hid : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *
             chartInvGramMatrix (I := I) g α b) l i =
         if l = i then (1 : ℝ) else 0 := by
       rw [chartGramMatrix_mul_chartInvGramMatrix (I := I) g α hb]
@@ -474,12 +474,12 @@ private lemma sum_sharp_coeff_gram_eq_invGram
       (∑ k, ∑ l,
         ricciSharpChartCoeff (I := I) g α φ k b *
           ricciSharpChartCoeff (I := I) g α φ l b *
-          chartGramMatrix (I := I) g α b k l) =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l) =
       ∑ i, ∑ j, α' i * α' j * Ginv i j := by
     have hstep1 :
         ∀ k l, ricciSharpChartCoeff (I := I) g α φ k b *
             ricciSharpChartCoeff (I := I) g α φ l b *
-            chartGramMatrix (I := I) g α b k l =
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l =
           ∑ i, ∑ j, α' i * α' j * (Ginv k i * Ginv l j * G k l) := by
       intro k l
       rw [ricciSharpChartCoeff_def, ricciSharpChartCoeff_def]
@@ -491,7 +491,7 @@ private lemma sum_sharp_coeff_gram_eq_invGram
                 ricciCovectorChartCoord (I := I) g α φ j b) =
               ∑ j, Ginv l j * α' j from
             Finset.sum_congr rfl (fun j _ => by rw [hα'_def, hGinv_def])]
-      rw [show chartGramMatrix (I := I) g α b k l = G k l from rfl]
+      rw [show DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l = G k l from rfl]
       rw [Finset.sum_mul_sum]
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl ?_
@@ -504,7 +504,7 @@ private lemma sum_sharp_coeff_gram_eq_invGram
         (∑ k, ∑ l,
           ricciSharpChartCoeff (I := I) g α φ k b *
             ricciSharpChartCoeff (I := I) g α φ l b *
-            chartGramMatrix (I := I) g α b k l) =
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l) =
         ∑ k, ∑ l, ∑ i, ∑ j,
           α' i * α' j * (Ginv k i * Ginv l j * G k l) :=
       Finset.sum_congr rfl (fun k _ =>

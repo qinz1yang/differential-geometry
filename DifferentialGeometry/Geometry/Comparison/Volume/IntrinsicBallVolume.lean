@@ -49,7 +49,7 @@ theorem modelCoeffMin_le
     (v : EuclideanSpace Real (Fin (Module.finrank Real E)))
     (hv : ‖v‖ = 1) :
     modelCoeffMin (E := E) ≤
-      ‖∑ i, v i • (chartModelBasis E) i‖ := by
+      ‖∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ := by
   let L : E →L[Real] EuclideanSpace Real (Fin (Module.finrank Real E)) :=
     (toEuclidean (E := E)).toContinuousLinearMap
   let K : Real := ‖L‖ + 1
@@ -70,7 +70,7 @@ theorem modelCoeffMin_le
       (div_le_iff₀ hK).2 (by simpa [mul_comm] using hone)
     simpa only [one_div] using hdiv
   have hw :
-      w = ∑ i, v i • (chartModelBasis E) i := by
+      w = ∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
     have hvsum :
         v = ∑ i, v i • EuclideanSpace.single i (1 : Real) := by
       let b :=
@@ -87,8 +87,8 @@ theorem modelCoeffMin_le
             (EuclideanSpace.single i (1 : Real)) := by
             rw [map_sum]
             simp only [map_smul]
-      _ = ∑ i, v i • (chartModelBasis E) i := by
-            simp only [chartModelBasis_apply]
+      _ = ∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
+            simp only [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]
   simpa [modelCoeffMin, K, L, hw] using hmin
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [SigmaCompactSpace M] in
@@ -114,7 +114,7 @@ theorem param_dens_ge
           (star (⇑v) ⬝ᵥ
             (paramGramMatrix (I := I) g c.hom z) *ᵥ (⇑v)) := by
     intro v hv
-    let w : E := ∑ i, v i • (chartModelBasis E) i
+    let w : E := ∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
     have hcoeff : modelCoeffMin (E := E) ≤ ‖w‖ :=
       modelCoeffMin_le (E := E) v hv
     have haw : a ≤ (1 / 2 : Real) * ‖w‖ ^ 2 := by
@@ -125,15 +125,15 @@ theorem param_dens_ge
           g.inner (c.hom z)
             (∑ i, v i •
               mfderiv (modelWithCornersSelf Real E) I c.hom z
-                ((chartModelBasis E) i))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
             (∑ i, v i •
               mfderiv (modelWithCornersSelf Real E) I c.hom z
-                ((chartModelBasis E) i)) := by
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
       have hD :
           mfderiv (modelWithCornersSelf Real E) I c.hom z w =
             ∑ i, v i •
               mfderiv (modelWithCornersSelf Real E) I c.hom z
-                ((chartModelBasis E) i) := by
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         have hD' :
             (mfderiv (modelWithCornersSelf Real E) I c.hom z)
                 ((tangentSpaceModelContinuousLinearEquiv
@@ -142,7 +142,7 @@ theorem param_dens_ge
                 (mfderiv (modelWithCornersSelf Real E) I c.hom z)
                   ((tangentSpaceModelContinuousLinearEquiv
                     (I := modelWithCornersSelf Real E) z).symm
-                    ((chartModelBasis E) i)) := by
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
           simp only [w, map_sum, map_smul]
         simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using hD'
       rw [NormalBallChart.metric_apply]
@@ -158,10 +158,10 @@ theorem param_dens_ge
       _ = g.inner (c.hom z)
           (∑ i, v i •
             mfderiv (modelWithCornersSelf Real E) I c.hom z
-              ((chartModelBasis E) i))
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           (∑ i, v i •
             mfderiv (modelWithCornersSelf Real E) I c.hom z
-              ((chartModelBasis E) i)) := hmetric
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := hmetric
       _ = star (⇑v) ⬝ᵥ
           (paramGramMatrix (I := I) g c.hom z) *ᵥ (⇑v) := hquad.symm
     simpa using hfinal

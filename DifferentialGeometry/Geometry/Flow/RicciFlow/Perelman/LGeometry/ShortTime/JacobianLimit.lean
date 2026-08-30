@@ -115,8 +115,8 @@ private noncomputable def lNormGram
     Matrix (Fin (Module.finrank Real F)) (Fin (Module.finrank Real F)) Real :=
   Matrix.of fun i j ↦
     (S.base.metric (T - s ^ 2)).inner (lRegCurve S T x Z s)
-      ((2 * s)⁻¹ • lRegJacobiField S T x Z ((chartModelBasis F) i) s)
-      ((2 * s)⁻¹ • lRegJacobiField S T x Z ((chartModelBasis F) j) s)
+      ((2 * s)⁻¹ • lRegJacobiField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i) s)
+      ((2 * s)⁻¹ • lRegJacobiField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j) s)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -206,8 +206,8 @@ private theorem lNormGram_lim
   intro i
   refine tendsto_pi_nhds.2 ?_
   intro j
-  let bi : TangentSpace J x := show F from (chartModelBasis F) i
-  let bj : TangentSpace J x := show F from (chartModelBasis F) j
+  let bi : TangentSpace J x := show F from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i
+  let bj : TangentSpace J x := show F from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j
   let q : Real → Real × N := fun s ↦ (T - s ^ 2, gamma s)
   have hq : ContinuousAt q 0 := by
     exact (continuousAt_const.sub (continuousAt_id.pow 2)).prodMk hgamma
@@ -263,7 +263,7 @@ private theorem lNormGram_lim
         bi bj)) := by
     change Tendsto _ (nhdsWithin (0 : Real) (Ioi 0))
       (nhds ((S.base.metric T).inner x
-        ((chartModelBasis F) i) ((chartModelBasis F) j)))
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j)))
     change Tendsto _ (nhdsWithin (0 : Real) (Ioi 0))
       (nhds ((S.base.metric (T - 0 ^ 2)).inner (gamma 0)
         (W bi 0) (W bj 0))) at hscalar
@@ -315,8 +315,8 @@ private theorem lNormGram_eq
   ext i j
   simp only [lNormGram, lExpGram, lGram, Matrix.of_apply,
     Matrix.smul_apply, lExpField]
-  let bi : TangentSpace J x := show F from (chartModelBasis F) i
-  let bj : TangentSpace J x := show F from (chartModelBasis F) j
+  let bi : TangentSpace J x := show F from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i
+  let bj : TangentSpace J x := show F from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j
   change (S.base.metric (T - s ^ 2)).inner (lRegCurve S T x Z s)
       ((2 * s)⁻¹ • lRegJacobiField S T x Z bi s)
       ((2 * s)⁻¹ • lRegJacobiField S T x Z bj s) =

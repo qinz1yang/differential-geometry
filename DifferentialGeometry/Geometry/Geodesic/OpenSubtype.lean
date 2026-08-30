@@ -32,8 +32,8 @@ private theorem chartBasisVec_open
     (a x : U)
     (hx : (x : M) ∈ (chartAt H (a : M)).source)
     (i : Fin (Module.finrank Real E)) :
-    chartBasisVecFiber (I := I) a i x =
-      chartBasisVecFiber (I := I) (a : M) i (x : M) := by
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) a i x =
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (a : M) i (x : M) := by
   let : Nonempty U := ⟨a⟩
   have hxU : x ∈ (chartAt H a).source := by
     rw [TopologicalSpace.Opens.chartAt_eq,
@@ -41,9 +41,9 @@ private theorem chartBasisVec_open
     exact hx
   change
     (trivializationAt E (TangentSpace I (M := U)) a).symmL Real x
-        (chartModelBasis E i) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
       (trivializationAt E (TangentSpace I (M := M)) (a : M)).symmL Real (x : M)
-        (chartModelBasis E i)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
   rw [TangentBundle.symmL_trivializationAt_eq_core (I := I) hxU,
     TangentBundle.symmL_trivializationAt_eq_core (I := I) hx,
     tangentCoordChange_opens (I := I) a x x hx]
@@ -56,9 +56,9 @@ theorem chartGram_open
     [T2Space U] (a x : U)
     (hx : (x : M) ∈ (chartAt H (a : M)).source)
     (i j : Fin (Module.finrank Real E)) :
-    chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a x i j =
-      chartGramMatrix (I := I) g (a : M) (x : M) i j := by
-  rw [chartGramMatrix_apply, chartGramMatrix_apply,
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a x i j =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g (a : M) (x : M) i j := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     SmoothRiemannianMetric.restrictOpen_inner,
     chartBasisVec_open (I := I) U a x hx i,
     chartBasisVec_open (I := I) U a x hx j]
@@ -74,9 +74,9 @@ private theorem chartGramOnE_open [I.Boundaryless]
       chartGramOnE (I := I) g (a : M) i j := by
   let : Nonempty U := ⟨a⟩
   filter_upwards [extChartAt_target_mem_nhds (I := I) a] with y hy
-  change chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a
+  change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a
       ((extChartAt I a).symm y) i j =
-    chartGramMatrix (I := I) g (a : M)
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g (a : M)
       ((extChartAt I (a : M)).symm y) i j
   have hzU : (extChartAt I a).symm y ∈ (extChartAt I a).source :=
     (extChartAt I a).map_target hy
@@ -124,15 +124,15 @@ theorem christoffel_open [I.Boundaryless]
     exact (extChartAt I (a : M)).left_inv (mem_extChartAt_source (a : M))
   rw [hsymmU, hsymmM]
   have hGramMatEq :
-      chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a a =
-        chartGramMatrix (I := I) g (a : M) (a : M) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a a =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g (a : M) (a : M) := by
     ext p q
     exact chartGram_open (I := I) g U a a (mem_chart_source H (a : M)) p q
   have hInvGramEq :
       chartInvGramMatrix (I := I) (g.restrictOpen (I := I) U) a a k l =
         chartInvGramMatrix (I := I) g (a : M) (a : M) k l := by
-    change (chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a a)⁻¹ k l =
-      (chartGramMatrix (I := I) g (a : M) (a : M))⁻¹ k l
+    change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g.restrictOpen (I := I) U) a a)⁻¹ k l =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g (a : M) (a : M))⁻¹ k l
     rw [hGramMatEq]
   rw [hInvGramEq]
   congr 1
@@ -142,9 +142,9 @@ theorem christoffel_open [I.Boundaryless]
         partialDeriv (E := E) i (chartGramOnE (I := I) g (a : M) l j) y₀ := by
     change fderiv Real
         (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a l j) y₀
-          (chartModelBasis E i) =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
       fderiv Real (chartGramOnE (I := I) g (a : M) l j) y₀
-        (chartModelBasis E i)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
     rw [(chartGramOnE_open (I := I) g U a l j).fderiv_eq]
   have hP_ji_li :
       partialDeriv (E := E) j
@@ -152,9 +152,9 @@ theorem christoffel_open [I.Boundaryless]
         partialDeriv (E := E) j (chartGramOnE (I := I) g (a : M) l i) y₀ := by
     change fderiv Real
         (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a l i) y₀
-          (chartModelBasis E j) =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) =
       fderiv Real (chartGramOnE (I := I) g (a : M) l i) y₀
-        (chartModelBasis E j)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
     rw [(chartGramOnE_open (I := I) g U a l i).fderiv_eq]
   have hP_lij :
       partialDeriv (E := E) l
@@ -162,9 +162,9 @@ theorem christoffel_open [I.Boundaryless]
         partialDeriv (E := E) l (chartGramOnE (I := I) g (a : M) i j) y₀ := by
     change fderiv Real
         (chartGramOnE (I := I) (g.restrictOpen (I := I) U) a i j) y₀
-          (chartModelBasis E l) =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l) =
       fderiv Real (chartGramOnE (I := I) g (a : M) i j) y₀
-        (chartModelBasis E l)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l)
     rw [(chartGramOnE_open (I := I) g U a i j).fderiv_eq]
   rw [hP_ij_lj, hP_ji_li, hP_lij]
 

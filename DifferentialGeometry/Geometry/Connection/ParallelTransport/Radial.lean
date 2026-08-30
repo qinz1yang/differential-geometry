@@ -1015,20 +1015,20 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
   [T2Space M] [T2Space (TangentBundle I M)] in
 private lemma chartBasisVecFiber_trivToE (p : M) (a : Fin (Module.finrank ℝ E)) {y : M}
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet) :
-    trivToE (I := I) p y (chartBasisVecFiber (I := I) p a y) = chartModelBasis E a := by
+    trivToE (I := I) p y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p a y) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a := by
   classical
   rw [trivToE]
   change ((trivializationAt E (TangentSpace I) p).linearMapAt ℝ y)
-      (chartBasisVecFiber (I := I) p a y) = chartModelBasis E a
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p a y) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a
   rw [Trivialization.coe_linearMapAt_of_mem
     (e := trivializationAt E (TangentSpace I) p) (R := ℝ) (b := y) hy]
-  exact trivializationAt_chartBasisVec_snd (I := I) p a hy
+  exact DifferentialGeometry.Tensor.Coordinates.trivializationAt_chartBasisVec_snd (I := I) p a hy
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
   [T2Space M] [T2Space (TangentBundle I M)] in
 private lemma chartBasisVecFiber_self_coe (p : M) (a : Fin (Module.finrank ℝ E)) :
-    (chartBasisVecFiber (I := I) p a p : E) = chartModelBasis E a := by
-  rw [← trivToE_self_eq p (chartBasisVecFiber (I := I) p a p)]
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p a p : E) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a := by
+  rw [← trivToE_self_eq p (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p a p)]
   exact chartBasisVecFiber_trivToE (I := I) p a
     (by rw [TangentBundle.trivializationAt_baseSet]; exact mem_chart_source H p)
 
@@ -1234,8 +1234,8 @@ private lemma chartChristoffelContraction_constArg_contDiffOn (g : SmoothRiemann
         (fun _ : E × E => chartCoord (E := E) i a)
         ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E)) :=
       contDiffOn_const
-    have hCLM_j : ContDiff ℝ 1 (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff.of_le
+    have hCLM_j : ContDiff ℝ 1 (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff.of_le
         (WithTop.coe_le_coe.2 (le_top : (1 : ℕ∞) ≤ (⊤ : ℕ∞)))
     have hsnd : ContDiff ℝ 1 (Prod.snd : E × E → E) :=
       contDiff_snd.of_le (WithTop.coe_le_coe.2 (le_top : (1 : ℕ∞) ≤ (⊤ : ℕ∞)))
@@ -1245,7 +1245,7 @@ private lemma chartChristoffelContraction_constArg_contDiffOn (g : SmoothRiemann
       (hCLM_j.comp hsnd).contDiffOn
     exact (hΓ.mul hconst).mul hcj
   have hconstk : ContDiffOn ℝ 1
-      (fun _ : E × E => (chartModelBasis E) k)
+      (fun _ : E × E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E)) :=
     contDiffOn_const
   exact hscalar.smul hconstk
@@ -1391,10 +1391,10 @@ private lemma chartChristoffelContraction_full_contDiffOn (g : SmoothRiemannianM
           ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E))
           (interior (extChartAt I α).target) := fun _ hp => hp.1
       exact (hbase.of_le hle).comp hfst.contDiffOn hmapsto
-    have hCLM_i : ContDiff ℝ 1 (((chartModelBasis E).coord i).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord i).toContinuousLinearMap.contDiff.of_le hle
-    have hCLM_j : ContDiff ℝ 1 (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff.of_le hle
+    have hCLM_i : ContDiff ℝ 1 (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff.of_le hle
+    have hCLM_j : ContDiff ℝ 1 (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff.of_le hle
     have hvi : ContDiffOn ℝ 1
         (fun z : E × E × E => chartCoord (E := E) i z.2.1)
         ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
@@ -1405,7 +1405,7 @@ private lemma chartChristoffelContraction_full_contDiffOn (g : SmoothRiemannianM
       (hCLM_j.comp hproj22).contDiffOn
     exact (hΓ.mul hvi).mul hwj
   have hconstk : ContDiffOn ℝ 1
-      (fun _ : E × E × E => (chartModelBasis E) k)
+      (fun _ : E × E × E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
     contDiffOn_const
   exact hscalar.smul hconstk
@@ -2311,10 +2311,10 @@ private lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiema
           ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E))
           (interior (extChartAt I α).target) := fun _ hp => hp.1
       exact hbase.comp hfst.contDiffOn hmapsto
-    have hCLM_i : ContDiff ℝ ∞ (((chartModelBasis E).coord i).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord i).toContinuousLinearMap.contDiff
-    have hCLM_j : ContDiff ℝ ∞ (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff
+    have hCLM_i : ContDiff ℝ ∞ (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff
+    have hCLM_j : ContDiff ℝ ∞ (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff
     have hvi : ContDiffOn ℝ ∞
         (fun z : E × E × E => chartCoord (E := E) i z.2.1)
         ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
@@ -2325,7 +2325,7 @@ private lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiema
       (hCLM_j.comp hproj22).contDiffOn
     exact (hΓ.mul hvi).mul hwj
   have hconstk : ContDiffOn ℝ ∞
-      (fun _ : E × E × E => (chartModelBasis E) k)
+      (fun _ : E × E × E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
     contDiffOn_const
   exact hscalar.smul hconstk

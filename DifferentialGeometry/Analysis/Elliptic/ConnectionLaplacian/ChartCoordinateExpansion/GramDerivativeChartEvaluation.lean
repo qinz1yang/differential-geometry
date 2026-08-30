@@ -45,10 +45,10 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
 lemma ccTensorBilin_chartBasis_eq_tensorChartComponent
     (g₀ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 2) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
-    smoothCcTensorBilinForm (I := I) g₀ W x (chartModelBasis E a) (chartModelBasis E b) =
+    smoothCcTensorBilinForm (I := I) g₀ W x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b) =
       tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 W x ![] ![a, b] x := by
   rw [← unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ W x
-    (chartModelBasis E a) (chartModelBasis E b)]
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b)]
   exact unitModel_basisChart_eq_tensorChartComponent (I := I) (M := M) g₀ W x a b
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -63,7 +63,7 @@ lemma cometricFinBasisTrace_eq_chartInvGram_bilin
           ((Module.finBasis ℝ E) k₁)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ l •
-          F (chartModelBasis E l) (chartModelBasis E k₁) := by
+          F (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁) := by
   classical
   set L₁ : (E →L[ℝ] ℝ) →L[ℝ] E :=
     (cometricLmodel (I := I) g₁ x).comp
@@ -74,7 +74,7 @@ lemma cometricFinBasisTrace_eq_chartInvGram_bilin
           (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) v := by
     intro φ v
     rfl
-  have htrace := (cDualBasis_trace_basis_indep (E := E) (chartModelBasis E) F').symm
+  have htrace := (cDualBasis_trace_basis_indep (E := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) F').symm
   rw [show (∑ k₁ : Fin (Module.finrank ℝ E),
         F (cometricLmodel (I := I) g₁ x
             (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
@@ -85,25 +85,25 @@ lemma cometricFinBasisTrace_eq_chartInvGram_bilin
     Finset.sum_congr rfl (fun k₁ _ => (hFapp _ _).symm)]
   rw [htrace]
   refine Finset.sum_congr rfl (fun k₁ _ => ?_)
-  rw [hFapp ((chartModelBasis E).cDualBasis k₁) (chartModelBasis E k₁)]
+  rw [hFapp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis k₁) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)]
   rw [cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum (I := I) g₁ x k₁]
   change F (tangentSpaceModelContinuousLinearEquiv (I := I) x
       (∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g₁ x x k₁ l • centeredChartTangentBasis (I := I) x l))
-      (chartModelBasis E k₁) = _
+        chartInvGramMatrix (I := I) g₁ x x k₁ l • DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l))
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁) = _
   rw [map_sum, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun l _ => ?_)
   rw [map_smul]
   have hbasis : tangentSpaceModelContinuousLinearEquiv (I := I) x
-      (centeredChartTangentBasis (I := I) x l) = chartModelBasis E l := by
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l := by
     calc
       tangentSpaceModelContinuousLinearEquiv (I := I) x
-          (centeredChartTangentBasis (I := I) x l) =
-        centeredChartTangentEquiv (I := I) x
-          (centeredChartTangentBasis (I := I) x l) :=
-            (centeredChartTangentEquiv_apply (I := I) x _).symm
-      _ = chartModelBasis E l := by
-        rw [centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) =
+        DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) :=
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply (I := I) x _).symm
+      _ = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l := by
+        rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
   rw [hbasis, map_smul, smul_apply]
 
 def quadrilinearMapSlotBilinearAt
@@ -171,8 +171,8 @@ lemma partialDeriv_scalarOnE_eq_euclidPartial_local
     (f := scalarOnE (I := I) α f) (x := y)]
   rw [ContinuousLinearMap.comp_apply]
   rw [show (toEuclidean (E := E)).symm.toContinuousLinearMap
-      (EuclideanSpace.single m (1 : ℝ)) = (chartModelBasis E) m from by
-    rw [chartModelBasis_apply]; rfl]
+      (EuclideanSpace.single m (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]; rfl]
   rw [partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
@@ -417,8 +417,8 @@ lemma partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
     change fderiv ℝ
         (partialDeriv (E := E) m₁
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b))
-        (extChartAt I x x) ((chartModelBasis E) m₂) =
-      fderiv ℝ (fun y => (1 / 2 : ℝ) * (Pab y + Pba y)) (extChartAt I x x) ((chartModelBasis E) m₂)
+        (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m₂) =
+      fderiv ℝ (fun y => (1 / 2 : ℝ) * (Pab y + Pba y)) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m₂)
     rw [hev1.fderiv_eq]
   rw [hfinal]
   have hPab_diff : DifferentiableAt ℝ Pab (extChartAt I x x) :=

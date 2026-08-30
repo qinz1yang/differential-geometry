@@ -114,9 +114,9 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap_of_basisIdentity
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
         (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (chartFrameVec (I := I) α i x)) q *
-          ((centeredChartTangentBasis (I := I) x).repr
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (chartFrameVec (I := I) α j x)) p *
           chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
             (extChartAt I x x) :=
@@ -143,8 +143,8 @@ theorem ricciTensor_eq_chartRicciSwap
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x v w =
       ∑ p : Fin (Module.finrank ℝ E),
         ∑ q : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) q *
-            ((centeredChartTangentBasis (I := I) x).repr w) p *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) q *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) p *
             chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
               (extChartAt I x x) :=
   ricciTensor_eq_chartRicciSwap_of_basis_identity (I := I)
@@ -187,9 +187,9 @@ theorem abstractRicciFrameComponent_eq_chartRicciSwap
     ricciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x
         (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) =
       ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (chartFrameVec (I := I) α i x)) q *
-          ((centeredChartTangentBasis (I := I) x).repr
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (chartFrameVec (I := I) α j x)) p *
           chartRicciTensor (I := I) (smoothRiemannianMetricToInfty (I := I) g) x p q
             (extChartAt I x x) :=

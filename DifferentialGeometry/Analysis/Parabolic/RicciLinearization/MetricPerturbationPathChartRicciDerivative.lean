@@ -50,7 +50,7 @@ private lemma hasDerivAt_partialDeriv_comm_at
       (partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) s₀) y₀) s₀ := by
   unfold partialDeriv
   exact DifferentialGeometry.Analysis.fderiv_deriv_hasDerivAt_comm Φ s₀ y₀
-    (chartModelBasis E p) hΦ
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) hΦ
 
 def realizedGramDeriv (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -444,8 +444,8 @@ theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric 
     (x : M) (v w : TangentSpace I x) {s₀ : ℝ} (hs₀ : s₀ ∈ Set.Ioo (0 : ℝ) 1) :
     HasDerivAt (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w)
       (∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           (∑ j : Fin (Module.finrank ℝ E),
             deriv (fun s : ℝ =>
               chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j k j
@@ -456,8 +456,8 @@ theorem hasDerivAt_realizedRicciChartSum_general (g₀ : SmoothRiemannianMetric 
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have hbody : (realizedRicciChartSum (I := I) g₀ T T' hδ hδ' x v w) =
       (fun s : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           chartRicciTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k
             (extChartAt I x x)) := by
     funext s; rw [realizedRicciChartSum]

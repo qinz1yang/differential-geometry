@@ -31,15 +31,15 @@ lemma chartInvGramOnE_symm
     chartInvGramOnE (I := I) g α i j y = chartInvGramOnE (I := I) g α j i y := by
   unfold chartInvGramOnE
   set z := (extChartAt I α).symm y
-  have hG_hermit : (chartGramMatrix (I := I) g α z).IsHermitian :=
-    chartGramMatrix_isHermitian (I := I) g α z
-  have hGinv_hermit : (chartGramMatrix (I := I) g α z)⁻¹.IsHermitian := hG_hermit.inv
+  have hG_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z).IsHermitian :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α z
+  have hGinv_hermit : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹.IsHermitian := hG_hermit.inv
   have hentry := hGinv_hermit.apply i j
   unfold chartInvGramMatrix
-  have hstar : star ((chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (chartGramMatrix (I := I) g α z)⁻¹ i j := hentry
-  rw [show star ((chartGramMatrix (I := I) g α z)⁻¹ j i) =
-      (chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
+  have hstar : star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ i j := hentry
+  rw [show star ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i) =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
   exact hstar.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -82,15 +82,15 @@ lemma partialDeriv_partialDeriv_chartGramOnE_swap
   have hkey : ∀ p q : Fin (Module.finrank ℝ E),
       fderiv ℝ
           (fun z =>
-            fderiv ℝ (chartGramOnE (I := I) g α l j) z ((chartModelBasis E) q))
-          y ((chartModelBasis E) p) =
+            fderiv ℝ (chartGramOnE (I := I) g α l j) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q))
+          y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p) =
         (fderiv ℝ (fderiv ℝ (chartGramOnE (I := I) g α l j)) y
-          ((chartModelBasis E) p)) ((chartModelBasis E) q) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q) := by
     intro p q
     set L : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
-      ContinuousLinearMap.apply ℝ ℝ ((chartModelBasis E) q)
+      ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q)
     have hcomp_eq : (fun z : E =>
-          fderiv ℝ (chartGramOnE (I := I) g α l j) z ((chartModelBasis E) q)) =
+          fderiv ℝ (chartGramOnE (I := I) g α l j) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q)) =
         L ∘ (fderiv ℝ (chartGramOnE (I := I) g α l j)) := by
       funext z; rfl
     rw [hcomp_eq, fderiv_comp y L.differentiableAt hg_diff]
@@ -457,13 +457,13 @@ private lemma partialDeriv_doubleSum_invGram_partialGram
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α j l y' *
               partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
-        ((chartModelBasis E) k) =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) =
       ∑ j : Fin (Module.finrank ℝ E),
         fderiv ℝ
           (fun y' : E => ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α j l y' *
               partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
-          ((chartModelBasis E) k)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
     rw [fderiv_fun_sum (fun j _ => hdiff_inner j)]
     rw [FunLike.coe_sum, Finset.sum_apply]
   rw [hsum_outer]
@@ -481,12 +481,12 @@ private lemma partialDeriv_doubleSum_invGram_partialGram
         (fun y' : E => ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α j l y' *
             partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
-        ((chartModelBasis E) k) =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) =
       ∑ l : Fin (Module.finrank ℝ E),
         fderiv ℝ
           (fun y' : E => chartInvGramOnE (I := I) g α j l y' *
             partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
-          ((chartModelBasis E) k)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
     rw [fderiv_fun_sum (fun l _ => hdiff_innermost j l)]
     rw [FunLike.coe_sum, Finset.sum_apply]
   rw [hsum_inner]
@@ -500,7 +500,7 @@ private lemma partialDeriv_doubleSum_invGram_partialGram
   change fderiv ℝ
       (fun y' : E => chartInvGramOnE (I := I) g α j l y' *
         partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y') y
-      ((chartModelBasis E) k) =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) =
     partialDeriv (E := E) k (chartInvGramOnE (I := I) g α j l) y *
         partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y +
       chartInvGramOnE (I := I) g α j l y *
@@ -586,14 +586,14 @@ theorem partialDeriv_contractedChristoffel_swap
             ∑ l : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g α j l y' *
                 partialDeriv (E := E) ν (chartGramOnE (I := I) g α l j) y') y
-        ((chartModelBasis E) μ) =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) μ) =
       (1 / 2 : ℝ) *
         fderiv ℝ
           (fun y' : E => ∑ j : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
               chartInvGramOnE (I := I) g α j l y' *
                 partialDeriv (E := E) ν (chartGramOnE (I := I) g α l j) y') y
-          ((chartModelBasis E) μ)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) μ)
     set F : E → ℝ := fun y' : E => ∑ j : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g α j l y' *
@@ -601,8 +601,8 @@ theorem partialDeriv_contractedChristoffel_swap
     have hfn_eq : (fun y' : E => (1 / 2 : ℝ) * F y') = (1 / 2 : ℝ) • F := by
       funext y'; rw [Pi.smul_apply, smul_eq_mul]
     change fderiv ℝ (fun y' : E => (1 / 2 : ℝ) * F y') y
-        ((chartModelBasis E) μ) =
-      (1 / 2 : ℝ) * fderiv ℝ F y ((chartModelBasis E) μ)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) μ) =
+      (1 / 2 : ℝ) * fderiv ℝ F y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) μ)
     rw [hfn_eq]
     rw [fderiv_const_smul hdiff]
     simp [smul_eq_mul]

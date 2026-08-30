@@ -70,8 +70,8 @@ theorem chartAlpha_swap_aux_holds
   have h_Gsymm : ∀ i k : Fin n, G i k = G k i := by
     intro i k
     change chartInvGramMatrix (I := I) g α x i k = chartInvGramMatrix (I := I) g α x k i
-    have hHerm : (chartGramMatrix (I := I) g α x).IsHermitian :=
-      chartGramMatrix_isHermitian (I := I) g α x
+    have hHerm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).IsHermitian :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α x
     have hHermInv : (chartInvGramMatrix (I := I) g α x).IsHermitian := by
       unfold chartInvGramMatrix
       exact hHerm.inv

@@ -27,7 +27,7 @@ theorem gradSq_joint
     (hG : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (f : Real -> M -> Real)
     (hf : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
@@ -43,7 +43,7 @@ theorem gradSq_joint
   let Idx := Fin (Module.finrank Real E)
   let x₀ : M := p.2
   let e := trivializationAt E (TangentSpace I) x₀
-  let b := chartModelBasis E
+  let b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   let frame : Idx -> (x : M) -> TangentSpace I x :=
     e.localFrame b
   have hframe : IsLocalFrameOn I E ∞ frame e.baseSet := by
@@ -52,7 +52,7 @@ theorem gradSq_joint
     simpa only [e] using
       mem_baseSet_trivializationAt E (TangentSpace I : M -> Type _) x₀
   let Gm : (Real × M) -> Matrix Idx Idx Real := fun q =>
-    chartGramMatrix (I := I) (g_fam q.1) x₀ q.2
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam q.1) x₀ q.2
   have hentry (i j : Idx) :
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q : Real × M => Gm q i j) p := by
@@ -107,7 +107,7 @@ theorem gradSq_joint
     · simp only [Matrix.updateRow_ne ha]
       exact hentry a b
   have hdetne (q : Real × M) (hq : q.2 ∈ e.baseSet) : (Gm q).det ≠ 0 := by
-    exact ne_of_gt (chartGramMatrix_det_pos (I := I) (g_fam q.1) x₀ hq)
+    exact ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_fam q.1) x₀ hq)
   have hGinv (i j : Idx) :
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q : Real × M => (Gm q)⁻¹ i j) p := by
@@ -130,19 +130,19 @@ theorem gradSq_joint
     have hunit : IsUnit (Gm q).det :=
       isUnit_iff_ne_zero.2 (hdetne q hq)
     have hbasis (k : Idx) :
-        hframe.toBasisAt hq k = chartBasisVecFiber (I := I) x₀ k q.2 := by
+        hframe.toBasisAt hq k = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k q.2 := by
       rw [hframe.toBasisAt_coe]
-      change e.localFrame b k q.2 = chartBasisVecFiber (I := I) x₀ k q.2
+      change e.localFrame b k q.2 = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k q.2
       rw [e.localFrame_apply_of_mem_baseSet b hq]
       change (e.linearEquivAt ℝ q.2 hq).symm (b k) =
-        e.symmL ℝ q.2 ((chartModelBasis E) k)
+        e.symmL ℝ q.2 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       rw [e.linearEquivAt_symm_apply, e.symmL_apply hq]
     have hGb (i' j' : Idx) :
         (g_fam q.1).inner q.2
             (hframe.toBasisAt hq i') (hframe.toBasisAt hq j') =
           Gm q i' j' := by
       rw [hbasis i', hbasis j']
-      simp only [Gm, chartGramMatrix_apply]
+      simp only [Gm, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     constructor
     · have hmul : (∑ k, (Gm q)⁻¹ i k * Gm q k j) =
           ((Gm q)⁻¹ * Gm q) i j := (Matrix.mul_apply).symm

@@ -872,9 +872,9 @@ private theorem lWeak_pos_pair
     simpa only [f] using scalarSmoothOfSol (I := I) S (T - (a + r) ^ 2)
   have hcovBasis (i : Fin (Module.finrank Real E)) :
       chartScalCov (I := I) S p (T - (a + r) ^ 2, u.toFun r)
-          (chartModelBasis E i) =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
         mvfderiv (I := I) f y
-          (chartBasisVecFiber (I := I) p i y) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i y) := by
     rw [chartScalCov_apply (I := I) S hS p ht hx]
     rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
     rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt
@@ -886,14 +886,14 @@ private theorem lWeak_pos_pair
       chartScalCov (I := I) S p (T - (a + r) ^ 2, u.toFun r) w =
         ∑ i : Fin (Module.finrank Real E),
           mvfderiv (I := I) f y
-              (chartBasisVecFiber (I := I) p i y) *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i y) *
             chartCoordCLM E i w := by
-    conv_lhs => rw [← (chartModelBasis E).sum_repr w]
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr w]
     rw [map_sum]
     apply Finset.sum_congr rfl
     intro i _
     rw [map_smul, smul_eq_mul, hcovBasis]
-    have hc : chartCoordCLM E i w = (chartModelBasis E).repr w i := rfl
+    have hc : chartCoordCLM E i w = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w i := rfl
     rw [hc, mul_comm]
   have hscal :
       lWeakScalCov (I := I) S T a p r (u.toFun r) w =
@@ -901,7 +901,7 @@ private theorem lWeak_pos_pair
           2 * (a + r) ^ 2 *
               mvfderiv (I := I) (S.scalar (T - (a + r) ^ 2))
                 ((extChartAt I p).symm (u.toFun r))
-                (chartBasisVecFiber (I := I) p i
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i
                   ((extChartAt I p).symm (u.toFun r))) *
             chartCoordCLM E i w := by
     rw [lWeakScalCov, smul_apply, smul_eq_mul, hcovDecomp]
@@ -926,7 +926,7 @@ private theorem lWeak_pos_pair
           2 * (a + r) ^ 2 *
               mvfderiv (I := I) (S.scalar (T - (a + r) ^ 2))
                 ((extChartAt I p).symm (u.toFun r))
-                (chartBasisVecFiber (I := I) p i
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i
                   ((extChartAt I p).symm (u.toFun r))) *
             chartCoordCLM E i w =
       ∑ i : Fin (Module.finrank Real E),
@@ -934,12 +934,12 @@ private theorem lWeak_pos_pair
             (((1 / 2 : Real) •
               (fderiv Real (chartGramOp (I := I) S.family p)
                 (T - (a + r) ^ 2, u.toFun r))
-                (0, chartModelBasis E i)) (u.deriv r))
+                (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (u.deriv r))
             (u.deriv r) +
           2 * (a + r) ^ 2 *
             mvfderiv (I := I) (S.scalar (T - (a + r) ^ 2))
               ((extChartAt I p).symm (u.toFun r))
-              (chartBasisVecFiber (I := I) p i
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i
                 ((extChartAt I p).symm (u.toFun r)))) *
           chartCoordCLM E i w
   have hsplit :
@@ -948,12 +948,12 @@ private theorem lWeak_pos_pair
             (((1 / 2 : Real) •
               (fderiv Real (chartGramOp (I := I) S.family p)
                 (T - (a + r) ^ 2, u.toFun r))
-                (0, chartModelBasis E i)) (u.deriv r))
+                (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (u.deriv r))
             (u.deriv r) +
           2 * (a + r) ^ 2 *
             mvfderiv (I := I) (S.scalar (T - (a + r) ^ 2))
               ((extChartAt I p).symm (u.toFun r))
-              (chartBasisVecFiber (I := I) p i
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i
                 ((extChartAt I p).symm (u.toFun r)))) *
           chartCoordCLM E i w) =
         (∑ i : Fin (Module.finrank Real E),
@@ -961,13 +961,13 @@ private theorem lWeak_pos_pair
               (((1 / 2 : Real) •
                 (fderiv Real (chartGramOp (I := I) S.family p)
                   (T - (a + r) ^ 2, u.toFun r))
-                  (0, chartModelBasis E i)) (u.deriv r))
+                  (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (u.deriv r))
               (u.deriv r) * chartCoordCLM E i w) +
         ∑ i : Fin (Module.finrank Real E),
           2 * (a + r) ^ 2 *
               mvfderiv (I := I) (S.scalar (T - (a + r) ^ 2))
                 ((extChartAt I p).symm (u.toFun r))
-                (chartBasisVecFiber (I := I) p i
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i
                   ((extChartAt I p).symm (u.toFun r))) *
             chartCoordCLM E i w := by
     rw [← Finset.sum_add_distrib]
@@ -977,15 +977,15 @@ private theorem lWeak_pos_pair
   rw [hsplit]
   congr 1
   · have hcoord (i : Fin (Module.finrank Real E)) :
-        chartCoordCLM E i w = (chartModelBasis E).repr w i := rfl
+        chartCoordCLM E i w = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w i := rfl
     simp_rw [hcoord]
-    conv_lhs => rw [← (chartModelBasis E).sum_repr w]
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr w]
     simp only [smul_apply, real_inner_smul_left]
     change (1 / 2 : Real) * inner Real
         (((fderiv Real (chartGramOp (I := I) S.family p)
           (T - (a + r) ^ 2, u.toFun r)).comp
             (ContinuousLinearMap.inr Real Real E))
-          (∑ i, ((chartModelBasis E).repr w i) • chartModelBasis E i) (u.deriv r))
+          (∑ i, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w i) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (u.deriv r))
         (u.deriv r) = _
     rw [map_sum, sum_apply, sum_inner]
     simp only [map_smul, smul_apply,

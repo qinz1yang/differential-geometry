@@ -88,7 +88,7 @@ theorem nablaKRmFrozenSlot_chartBasis_contMDiffOn
     ContMDiffOn I 𝓘(Real) ∞
       (fun b : M =>
         nablaKRmFrozenSlotField (I := I) S t k q Y b
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b))
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   intro x₀ hx₀
   refine ContMDiffAt.contMDiffWithinAt ?_
@@ -96,8 +96,8 @@ theorem nablaKRmFrozenSlot_chartBasis_contMDiffOn
       ContMDiffAt I (I.prod 𝓘(Real, E)) ∞
         (fun b : M =>
           TotalSpace.mk' E (E := fun y : M => TangentSpace I y) b
-            (chartBasisVecFiber (I := I) α j b)) x₀ :=
-    (chartBasisVec_contMDiffOn (I := I) α j).contMDiffAt
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) x₀ :=
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j).contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds
         (by
           rw [trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M)]
@@ -107,7 +107,7 @@ theorem nablaKRmFrozenSlot_chartBasis_contMDiffOn
     (T := fun b : M => (freezeAllBut0SField (I := I) (M := M) (nablaKRm04Field (I := I) S t k) q Y)
       b)
     ((freezeAllBut0SField (I := I) (M := M) (nablaKRm04Field (I := I) S t k) q Y).contMDiff x₀)
-    (v := fun _ : Fin 1 => fun b : M => chartBasisVecFiber (I := I) α j b)
+    (v := fun _ : Fin 1 => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
     (fun _ => hv_at)
   with_unfolding_all exact h_eval
 

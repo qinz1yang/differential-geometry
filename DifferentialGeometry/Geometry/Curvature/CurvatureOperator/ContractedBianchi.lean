@@ -174,29 +174,29 @@ theorem metric_scalar_at_eq_chart_ricci_sum
       ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
         chartInvGramMatrix (I := I) g x x i j *
           ricciTensor (I := I) g x
-            ((centeredChartTangentBasis (I := I) x) i)
-            ((centeredChartTangentBasis (I := I) x) j) := by
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) := by
   classical
   have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   have hgram : forall i j : Fin (Module.finrank Real E),
-      g.inner x ((chartModelBasis E) i) ((chartModelBasis E) j) =
-        chartGramMatrix (I := I) g x x i j := by
+      g.inner x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j := by
     intro i j
-    rw [chartGramMatrix_apply, chartBasisVecFiber_self, chartBasisVecFiber_self]
-    simp only [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, chartBasisVecFiber_self, chartBasisVecFiber_self]
+    simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x
-      (chartModelBasis E) (fun i j => chartInvGramMatrix (I := I) g x x i j) := by
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (fun i j => chartInvGramMatrix (I := I) g x x i j) := by
     intro i j
     constructor
     · change (∑ k : Fin (Module.finrank Real E),
           chartInvGramMatrix (I := I) g x x i k *
-            g.inner x ((chartModelBasis E) k) ((chartModelBasis E) j)) = _
+            g.inner x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) = _
       simp_rw [hgram]
       rw [← Matrix.mul_apply,
         chartInvGramMatrix_mul_chartGramMatrix (I := I) g x hbase, Matrix.one_apply]
     · change (∑ k : Fin (Module.finrank Real E),
-          g.inner x ((chartModelBasis E) i) ((chartModelBasis E) k) *
+          g.inner x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) *
             chartInvGramMatrix (I := I) g x x k j) = _
       simp_rw [hgram]
       rw [← Matrix.mul_apply,
@@ -209,20 +209,20 @@ theorem metric_scalar_at_eq_chart_ricci_sum
         ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
           chartInvGramMatrix (I := I) g x x i j *
             metricRicciAt (I := I) g x
-              (vec2 (I := I) ((chartModelBasis E) i) ((chartModelBasis E) j)) :=
-      metricTracePair0SAt_eq_sum_basis (I := I) g (chartModelBasis E)
+              (vec2 (I := I) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) :=
+      metricTracePair0SAt_eq_sum_basis (I := I) g (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
         (fun i j => chartInvGramMatrix (I := I) g x x i j) hinv
         (metricRicciAt (I := I) g x)
     _ = ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
           chartInvGramMatrix (I := I) g x x i j *
             ricciTensor (I := I) g x
-              ((centeredChartTangentBasis (I := I) x) i)
-              ((centeredChartTangentBasis (I := I) x) j) := by
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-      simp only [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply]
+      simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
       exact congrArg (fun r : ℝ => chartInvGramMatrix (I := I) g x x i j * r)
         (metricRicciAt_apply_eq_ricciTensor (I := I) g x
-          ((chartModelBasis E) i) ((chartModelBasis E) j))
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
 
 omit [SigmaCompactSpace M] in
 theorem chart_ricci_sum_eq_smooth_orthonormal_sum
@@ -230,8 +230,8 @@ theorem chart_ricci_sum_eq_smooth_orthonormal_sum
     (∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
       chartInvGramMatrix (I := I) g x x i j *
         ricciTensor (I := I) g x
-          ((centeredChartTangentBasis (I := I) x) i)
-          ((centeredChartTangentBasis (I := I) x) j)) =
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j)) =
       ∑ i : Fin (Module.finrank Real E),
         ricciTensor (I := I) g x
           (smoothOrthoFrame (I := I) g x i x)

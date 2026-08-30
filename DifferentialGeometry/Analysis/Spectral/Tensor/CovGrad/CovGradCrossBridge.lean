@@ -307,41 +307,41 @@ private lemma crossLeft_lower_covGrad_insertNth_basis
     lowerAllUpperIndices (I := I) (M := M) g r (s + 1) x
         (TensorRSSpace.toModel
           ((covGrad (I := I) (M := M) g r s w).toSection x))
-        (fun a : Fin (r + (s + 1)) => (chartModelBasis E)
+        (fun a : Fin (r + (s + 1)) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
           ((Fin.insertNth (crossDiffSlot r s) k i : Fin (r + (s + 1)) →
             Fin (Module.finrank ℝ E)) a)) =
       lowerAllUpperIndices (I := I) (M := M) g r s x
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s w x
-            ((chartModelBasis E) k)))
-        (fun a : Fin (r + s) => (chartModelBasis E) (i a)) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
+        (fun a : Fin (r + s) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a)) := by
   classical
   set I' : Fin (r + (s + 1)) → Fin (Module.finrank ℝ E) :=
     Fin.insertNth (crossDiffSlot r s) k i with hI'
   rw [lowerAllUpperIndices_apply, lowerAllUpperIndices_apply]
-  have hdir : (chartModelBasis E) (I' (Fin.natAdd r (0 : Fin (s + 1)))) =
-      (chartModelBasis E) k := by
+  have hdir : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.natAdd r (0 : Fin (s + 1)))) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
     rw [crossLeft_natAdd_zero_eq_diffSlot, hI', Fin.insertNth_apply_same]
   have hupper : (fun a : Fin r =>
-        (chartModelBasis E) (I' (Fin.castAdd (s + 1) a))) =
-      (fun a : Fin r => (chartModelBasis E) (i (Fin.castAdd s a))) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.castAdd (s + 1) a))) =
+      (fun a : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i (Fin.castAdd s a))) := by
     funext a
-    show (chartModelBasis E) (I' (Fin.castAdd (s + 1) a)) =
-      (chartModelBasis E) (i (Fin.castAdd s a))
+    show (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.castAdd (s + 1) a)) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i (Fin.castAdd s a))
     rw [← crossDiffSlot_succAbove_castAdd r s a, hI',
       Fin.insertNth_apply_succAbove]
   have hcov : Matrix.vecTail
-        (fun j : Fin (s + 1) => (chartModelBasis E) (I' (Fin.natAdd r j))) =
-      (fun a : Fin s => (chartModelBasis E) (i (Fin.natAdd r a))) := by
+        (fun j : Fin (s + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.natAdd r j))) =
+      (fun a : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i (Fin.natAdd r a))) := by
     funext a
-    change (chartModelBasis E) (I' (Fin.natAdd r (Fin.succ a))) =
-      (chartModelBasis E) (i (Fin.natAdd r a))
+    change (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.natAdd r (Fin.succ a))) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i (Fin.natAdd r a))
     rw [← crossDiffSlot_succAbove_natAdd r s a, hI',
       Fin.insertNth_apply_succAbove]
   rw [crossLeft_covGrad_toModel_apply (I := I) (M := M) g r s w x
         (separableFormAt (I := I) (M := M) g x r
-          (fun a : Fin r => (chartModelBasis E) (I' (Fin.castAdd (s + 1) a))))
-        (fun j : Fin (s + 1) => (chartModelBasis E) (I' (Fin.natAdd r j)))]
+          (fun a : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.castAdd (s + 1) a))))
+        (fun j : Fin (s + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (I' (Fin.natAdd r j)))]
   rw [hdir, hupper, hcov]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
@@ -353,42 +353,42 @@ private lemma crossLeft_lower_prependCovGradSlot_insertNth_basis
     lowerAllUpperIndices (I := I) (M := M) g r (s + 1) x
         (TensorRSSpace.toModel
           ((prependCovGradSlot (I := I) (M := M) g r s ζ S).toSection x))
-        (fun a : Fin (r + (s + 1)) => (chartModelBasis E)
+        (fun a : Fin (r + (s + 1)) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
           ((Fin.insertNth (crossDiffSlot r s) l j : Fin (r + (s + 1)) →
             Fin (Module.finrank ℝ E)) a)) =
       (mvfderiv (I := I) (ζ : M → ℝ) x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-          ((chartModelBasis E) l))) *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))) *
         lowerAllUpperIndices (I := I) (M := M) g r s x
           (TensorRSSpace.toModel (S.toSection x))
-          (fun a : Fin (r + s) => (chartModelBasis E) (j a)) := by
+          (fun a : Fin (r + s) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a)) := by
   classical
   set J' : Fin (r + (s + 1)) → Fin (Module.finrank ℝ E) :=
     Fin.insertNth (crossDiffSlot r s) l j with hJ'
   rw [lowerAllUpperIndices_apply, lowerAllUpperIndices_apply]
-  have hdir : (chartModelBasis E) (J' (Fin.natAdd r (0 : Fin (s + 1)))) =
-      (chartModelBasis E) l := by
+  have hdir : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.natAdd r (0 : Fin (s + 1)))) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l := by
     rw [crossLeft_natAdd_zero_eq_diffSlot, hJ', Fin.insertNth_apply_same]
   have hupper : (fun a : Fin r =>
-        (chartModelBasis E) (J' (Fin.castAdd (s + 1) a))) =
-      (fun a : Fin r => (chartModelBasis E) (j (Fin.castAdd s a))) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.castAdd (s + 1) a))) =
+      (fun a : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j (Fin.castAdd s a))) := by
     funext a
-    show (chartModelBasis E) (J' (Fin.castAdd (s + 1) a)) =
-      (chartModelBasis E) (j (Fin.castAdd s a))
+    show (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.castAdd (s + 1) a)) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j (Fin.castAdd s a))
     rw [← crossDiffSlot_succAbove_castAdd r s a, hJ',
       Fin.insertNth_apply_succAbove]
   have hcov : Matrix.vecTail
-        (fun a : Fin (s + 1) => (chartModelBasis E) (J' (Fin.natAdd r a))) =
-      (fun a : Fin s => (chartModelBasis E) (j (Fin.natAdd r a))) := by
+        (fun a : Fin (s + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.natAdd r a))) =
+      (fun a : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j (Fin.natAdd r a))) := by
     funext a
-    change (chartModelBasis E) (J' (Fin.natAdd r (Fin.succ a))) =
-      (chartModelBasis E) (j (Fin.natAdd r a))
+    change (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.natAdd r (Fin.succ a))) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j (Fin.natAdd r a))
     rw [← crossDiffSlot_succAbove_natAdd r s a, hJ',
       Fin.insertNth_apply_succAbove]
   rw [crossLeft_prependCovGradSlot_toModel_apply (I := I) (M := M) g r s ζ S x
         (separableFormAt (I := I) (M := M) g x r
-          (fun a : Fin r => (chartModelBasis E) (J' (Fin.castAdd (s + 1) a))))
-        (fun a : Fin (s + 1) => (chartModelBasis E) (J' (Fin.natAdd r a)))]
+          (fun a : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.castAdd (s + 1) a))))
+        (fun a : Fin (s + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J' (Fin.natAdd r a)))]
   rw [hdir, hupper, hcov, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -461,7 +461,7 @@ theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
       ContinuousMultilinearMap ℝ (fun _ : Fin (r + s) => E) ℝ :=
     fun k => lowerAllUpperIndices (I := I) (M := M) g r s x
       (TensorRSSpace.toModel
-        (tensorCovDerivAt (I := I) (M := M) g r s w x ((chartModelBasis E) k)))
+        (tensorCovDerivAt (I := I) (M := M) g r s w x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
     with hlowW_def
   set lowS : ContinuousMultilinearMap ℝ (fun _ : Fin (r + s) => E) ℝ :=
     lowerAllUpperIndices (I := I) (M := M) g r s x
@@ -474,11 +474,11 @@ theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
           ∑ j : Fin (r + s) → Fin (Module.finrank ℝ E),
             Ginv k l *
               ((∏ a : Fin (r + s), Ginv (i a) (j a)) *
-                (lowW k) (fun a => (chartModelBasis E) (i a)) *
+                (lowW k) (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a)) *
                   ((mvfderiv (I := I) (ζ : M → ℝ) x
                       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                        ((chartModelBasis E) l))) *
-                    lowS (fun a => (chartModelBasis E) (j a))))
+                        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))) *
+                    lowS (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a))))
     with hcommon_def
   have hLHS : tensorCovDerivCrossLeft (I := I) (M := M) g r s ζ w S x =
       common := by
@@ -487,26 +487,26 @@ theorem tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad
         Ginv k l *
             (mvfderiv (I := I) (ζ : M → ℝ) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                  ((chartModelBasis E) l)) *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)) *
               tensorInnerPointwise (I := I) (M := M) g r s x
                 (TensorRSSpace.toModel
                   (tensorCovDerivAt (I := I) (M := M) g r s w x
-                    ((chartModelBasis E) k)))
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
                 (S.toFun x)) =
           ∑ i : Fin (r + s) → Fin (Module.finrank ℝ E),
             ∑ j : Fin (r + s) → Fin (Module.finrank ℝ E),
               Ginv k l *
                 ((∏ a : Fin (r + s), Ginv (i a) (j a)) *
-                  (lowW k) (fun a => (chartModelBasis E) (i a)) *
+                  (lowW k) (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a)) *
                     ((mvfderiv (I := I) (ζ : M → ℝ) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) l))) *
-                      lowS (fun a => (chartModelBasis E) (j a)))) := by
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))) *
+                      lowS (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a)))) := by
       intro k l
       rw [show tensorInnerPointwise (I := I) (M := M) g r s x
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s w x
-                  ((chartModelBasis E) k)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
               (S.toFun x) =
             covariantTensorInnerPointwise (I := I) (M := M) (r + s) g x
               (lowW k) lowS from by

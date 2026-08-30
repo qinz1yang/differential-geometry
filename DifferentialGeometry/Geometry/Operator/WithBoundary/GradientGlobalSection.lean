@@ -103,17 +103,17 @@ lemma gradChartLocalWithin_contMDiffOn_total_full
       (chartAt H α).source :=
     fun i => gradChartCoeffWithin_contMDiffOn_full (I := I) g α hf i
   have hbasis : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => TotalSpace.mk' E x (chartBasisVecFiber (I := I) α i x))
+      (fun x : M => TotalSpace.mk' E x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       (chartAt H α).source := by
     intro i
-    refine (chartBasisVec_contMDiffOn (I := I) α i).mono ?_
+    refine (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i).mono ?_
     intro x hx
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hx
   have hsmul : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x
         (gradChartCoeffWithin (I := I) g α f i x •
-          chartBasisVecFiber (I := I) α i x))
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       (chartAt H α).source := by
     intro i
     exact (hcoeff i).smul_section (hbasis i)

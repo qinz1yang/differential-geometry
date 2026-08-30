@@ -127,7 +127,7 @@ lemma partialDeriv_gradChartCoeffOnE_expand
         partialDeriv (E := E) i
           (fun y' : E => chartInvGramOnE (I := I) g α i j y' *
             partialDeriv (E := E) j (scalarOnE (I := I) α f) y') y := by
-    change (fderiv ℝ (gradChartCoeffOnE (I := I) g α f i) y) ((chartModelBasis E) i) =
+    change (fderiv ℝ (gradChartCoeffOnE (I := I) g α f i) y) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         ∑ j : Fin (Module.finrank ℝ E),
           partialDeriv (E := E) i
             (fun y' : E => chartInvGramOnE (I := I) g α i j y' *
@@ -145,21 +145,21 @@ lemma partialDeriv_gradChartCoeffOnE_expand
   refine Finset.sum_congr rfl (fun j _ => ?_)
   unfold partialDeriv chartIteratedPartialDeriv
   have hF_unfolded : DifferentiableAt ℝ
-      (fun y' : E => fderiv ℝ (scalarOnE (I := I) α f) y' ((chartModelBasis E) j)) y :=
+      (fun y' : E => fderiv ℝ (scalarOnE (I := I) α f) y' ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) y :=
     hF j
   rw [fderiv_fun_mul (𝕜 := ℝ) (hG j) hF_unfolded]
   simp only [add_apply, smul_apply,
     smul_eq_mul]
   change chartInvGramOnE (I := I) g α i j y *
       ((fderiv ℝ (partialDeriv (E := E) j (scalarOnE (I := I) α f)) y)
-        ((chartModelBasis E) i)) +
-      (fderiv ℝ (scalarOnE (I := I) α f) y) ((chartModelBasis E) j) *
-        (fderiv ℝ (chartInvGramOnE (I := I) g α i j) y) ((chartModelBasis E) i) =
-    (fderiv ℝ (chartInvGramOnE (I := I) g α i j) y) ((chartModelBasis E) i) *
-        (fderiv ℝ (scalarOnE (I := I) α f) y) ((chartModelBasis E) j) +
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) +
+      (fderiv ℝ (scalarOnE (I := I) α f) y) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) *
+        (fderiv ℝ (chartInvGramOnE (I := I) g α i j) y) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+    (fderiv ℝ (chartInvGramOnE (I := I) g α i j) y) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) *
+        (fderiv ℝ (scalarOnE (I := I) α f) y) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) +
       chartInvGramOnE (I := I) g α i j y *
         ((fderiv ℝ (partialDeriv (E := E) j (scalarOnE (I := I) α f)) y)
-          ((chartModelBasis E) i))
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in

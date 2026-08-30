@@ -47,10 +47,10 @@ theorem exists_sum_tensorInner_cov_chartBasis_diagonal_le_const_mul_covDerivInne
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b)))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b))) ≤
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))) ≤
           C * tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S b := by
   classical
   obtain ⟨c, hc_pos, hc_bound⟩ :=
@@ -63,11 +63,11 @@ theorem exists_sum_tensorInner_cov_chartBasis_diagonal_le_const_mul_covDerivInne
     chartInvGramMatrix (I := I) g α b with hA_def
   have hA_herm : A.IsHermitian := by
     rw [hA_def]; unfold chartInvGramMatrix
-    exact (chartGramMatrix_isHermitian (I := I) g α b).inv
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α b).inv
   set cov : Fin n → TensorRSModel r s ℝ E := fun i =>
     TensorRSSpace.toModel
       (tensorCovDerivAt (I := I) (M := M) g r s S b
-        (chartBasisVecFiber (I := I) α i b)) with hcov_def
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) with hcov_def
   set U : Matrix (Fin n) (Fin n) ℝ :=
     (hA_herm.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℝ) with hU_def
   set μ : Fin n → ℝ := hA_herm.eigenvalues with hμ_def
@@ -270,10 +270,10 @@ theorem exists_sum_tensorInner_cov_chartBasis_diagonal_le_const_mul_covDerivInne
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b)))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b))) ≤
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))) ≤
           C * tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S b :=
   exists_sum_tensorInner_cov_chartBasis_diagonal_le_const_mul_covDerivInner_on_compact
     (I := I) (M := M) g r s α

@@ -30,7 +30,7 @@ structure FlowTo (g0 : SmoothRiemannianMetric I M) (T : Real) where
   joint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
       (fun p : Real × M =>
-        Integral.Measure.chartGramMatrix (I := I) (S.family.metric p.1) x0 p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.family.metric p.1) x0 p.2 i j)
       (Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x0).baseSet)
   pde : ∀ t ∈ Ico 0 T, ∀ x : M, ∀ v w : TangentSpace I x,
     HasDerivWithinAt (fun s : Real => (S.family.metric s).inner x v w)
@@ -103,7 +103,7 @@ theorem flow_to_extend
   have hjoint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (Shat.family.metric p.1) x0 p.2 i j)
         (Ico 0 (T + eps) ×ˢ
           (trivializationAt E (TangentSpace I) x0).baseSet) := by
@@ -226,7 +226,7 @@ theorem exists_max_flow
   have hjoint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          Integral.Measure.chartGramMatrix (I := I) (gmax p.1) x0 p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gmax p.1) x0 p.2 i j)
         (Ico 0 omega ×ˢ
           (trivializationAt E (TangentSpace I) x0).baseSet) := by
     intro x0 i j
@@ -277,7 +277,7 @@ theorem exists_max_flow
     simpa [Smax] using hstart
   have hjoint_max : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
-        (fun p : Real × M => Integral.Measure.chartGramMatrix (I := I)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
           (Smax.family.metric p.1) x0 p.2 i j)
         (Ico 0 omega ×ˢ
           (trivializationAt E (TangentSpace I) x0).baseSet) := by

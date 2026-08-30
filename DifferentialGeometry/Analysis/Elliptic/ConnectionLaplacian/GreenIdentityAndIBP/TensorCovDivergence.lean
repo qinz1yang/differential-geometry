@@ -486,7 +486,7 @@ lemma contract_chartBasis_contMDiffOn
     ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun y : M => TensorRSSpace 0 s I y) b
-        (contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b)))
+        (contractCovariant 0 s b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (V.toSection b)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
   let := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 (s + 1)
@@ -501,9 +501,9 @@ lemma contract_chartBasis_contMDiffOn
     V.toSection.contMDiff.contMDiffOn
   have hX_on : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E (E := fun y : M => TangentSpace I y) b
-        (chartBasisVecFiber (I := I) α j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartBasisVec_contMDiffOn (I := I) α j
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
   intro x₀ hx₀
   refine ContMDiffWithinAt.mono ?_ (Set.subset_univ _)
   refine ContMDiffAt.contMDiffWithinAt ?_
@@ -519,7 +519,7 @@ lemma contract_chartBasis_contMDiffOn
   have h_combine :
       ContMDiffAt I 𝓘(ℝ, TensorRSModel 0 s ℝ E) ∞
         (fun b : M => modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
-          ((trivializationAt E (TangentSpace I) x₀ ⟨b, chartBasisVecFiber (I := I) α j b⟩).2)
+          ((trivializationAt E (TangentSpace I) x₀ ⟨b, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b⟩).2)
           ((trivializationAt (TensorRSModel 0 (s + 1) ℝ E)
             (fun z : M => TensorRSSpace 0 (s + 1) I z) x₀ ⟨b, V.toSection b⟩).2)) x₀ :=
     modelContractCovariantBilinear_contMDiffAt (I := I) (M := M) s x₀ _ _ hX' hV'
@@ -531,7 +531,7 @@ lemma contract_chartBasis_contMDiffOn
   refine ContinuousMultilinearMap.ext fun w => ?_
   set sL := (trivializationAt E (TangentSpace I) x₀).symmL ℝ b with hsL
   set Xtilde : E := (trivializationAt E (TangentSpace I) x₀
-    ⟨b, chartBasisVecFiber (I := I) α j b⟩).2
+    ⟨b, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b⟩).2
     with hXtilde
   set gtilde : Tensor0SSpace 0 I b :=
     (trivializationAt (Tensor0SModel 0 ℝ E) (fun z : M => Tensor0SSpace 0 I z) x₀).symmL ℝ b γ
@@ -564,7 +564,7 @@ lemma contract_chartBasis_contMDiffOn
       (fun z : M => Tensor0SSpace s I z) x₀).continuousLinearMapAt ℝ b
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s b
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde)
-        (chartBasisVecFiber (I := I) α j b)) w =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) w =
     (trivializationAt (Tensor0SModel (s + 1) ℝ E)
       (fun z : M => Tensor0SSpace (s + 1) I z) x₀).continuousLinearMapAt ℝ b
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde)
@@ -574,13 +574,13 @@ lemma contract_chartBasis_contMDiffOn
   congr 1
   funext i
   refine Fin.cases ?_ ?_ i
-  · change (chartBasisVecFiber (I := I) α j b : E) = sL Xtilde
+  · change (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b : E) = sL Xtilde
     have h := (trivializationAt E (TangentSpace I) x₀).symmL_continuousLinearMapAt
-      (R := ℝ) hb (chartBasisVecFiber (I := I) α j b)
+      (R := ℝ) hb (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
     have hcl : (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt ℝ b
-        (chartBasisVecFiber (I := I) α j b) = Xtilde := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) = Xtilde := by
       change (trivializationAt E (TangentSpace I) x₀).linearMapAt ℝ b
-        (chartBasisVecFiber (I := I) α j b) = _
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) = _
       rw [(trivializationAt E (TangentSpace I) x₀).coe_linearMapAt_of_mem (R := ℝ) hb]
     rw [hcl] at h
     exact h.symm
@@ -594,7 +594,7 @@ lemma oneSidedDirichletForm_chartBasis_component_contMDiffOn
     (V : SmoothCcTensor g 0 (s + 1)) (α : M) (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => oneSidedDirichletForm (I := I) (M := M) g s T V b
-        (chartBasisVecFiber (I := I) α j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   classical
   have hT_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + s) ℝ E) ∞
@@ -605,23 +605,23 @@ lemma oneSidedDirichletForm_chartBasis_component_contMDiffOn
   have hcontract_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + s) ℝ E) ∞
       (fun b : M => loweredCompose (I := I) (M := M) g 0 s α b
         (TensorRSSpace.toModel
-          (contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))))
+          (contractCovariant 0 s b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (V.toSection b))))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     TensorMetricLowering.contMDiffOn_loweredCompose_of_section_contMDiffOn
       (I := I) (M := M) g 0 s
-      (fun b : M => contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))
+      (fun b : M => contractCovariant 0 s b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (V.toSection b))
       α (contract_chartBasis_contMDiffOn (I := I) (M := M) g s V α j)
   have hinner : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
         tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel (T.toSection b))
           (TensorRSSpace.toModel
-            (contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))))
+            (contractCovariant 0 s b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (V.toSection b))))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     DifferentialGeometry.Tensor.TensorRSRiemannian.chartLocal_contMDiff_inner_of_smooth_sections
       (I := I) (M := M) g 0 s
       (fun b : M => T.toSection b)
-      (fun b : M => contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))
+      (fun b : M => contractCovariant 0 s b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (V.toSection b))
       α hT_lowered hcontract_lowered
   have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet =
       (chartAt H α).source :=

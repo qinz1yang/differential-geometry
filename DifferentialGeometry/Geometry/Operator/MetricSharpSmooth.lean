@@ -24,7 +24,7 @@ def metricSharpChartCoeff (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) (x : M) : ℝ :=
   ∑ j : Fin (Module.finrank ℝ E),
     chartInvGramMatrix (I := I) g α x i j *
-      cv x (chartBasisVecFiber (I := I) α j x)
+      cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
 
 @[simp] lemma metricSharpChartCoeff_def
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -33,14 +33,14 @@ def metricSharpChartCoeff (g : SmoothRiemannianMetric I M) (α : M)
     metricSharpChartCoeff (I := I) g α cv i x =
       ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x i j *
-          cv x (chartBasisVecFiber (I := I) α j x) := rfl
+          cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := rfl
 
 def metricSharpChartLocal (g : SmoothRiemannianMetric I M) (α : M)
     (cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ) (x : M) :
     TangentSpace I x :=
   ∑ i : Fin (Module.finrank ℝ E),
     metricSharpChartCoeff (I := I) g α cv i x •
-      chartBasisVecFiber (I := I) α i x
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x
 
 lemma inner_metricSharpChartLocal_chartBasis
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -48,21 +48,21 @@ lemma inner_metricSharpChartLocal_chartBasis
     {x : M} (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (k : Fin (Module.finrank ℝ E)) :
     g.inner x (metricSharpChartLocal (I := I) g α cv x)
-        (chartBasisVecFiber (I := I) α k x)
-      = cv x (chartBasisVecFiber (I := I) α k x) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+      = cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) := by
   classical
   unfold metricSharpChartLocal
   rw [show g.inner x (∑ i, metricSharpChartCoeff (I := I) g α cv i x •
-              chartBasisVecFiber (I := I) α i x)
-            (chartBasisVecFiber (I := I) α k x) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
           ∑ i, metricSharpChartCoeff (I := I) g α cv i x *
-            g.inner x (chartBasisVecFiber (I := I) α i x)
-              (chartBasisVecFiber (I := I) α k x) from ?_]
+            g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) from ?_]
   swap
   · rw [show (g.inner x (∑ i, metricSharpChartCoeff (I := I) g α cv i x •
-                chartBasisVecFiber (I := I) α i x)) =
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) =
             (∑ i, metricSharpChartCoeff (I := I) g α cv i x •
-                g.inner x (chartBasisVecFiber (I := I) α i x)) from ?_]
+                g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) from ?_]
     · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -73,31 +73,31 @@ lemma inner_metricSharpChartLocal_chartBasis
       rw [map_smul]
   have ha : ∀ i, metricSharpChartCoeff (I := I) g α cv i x =
       ∑ j, chartInvGramMatrix (I := I) g α x i j *
-        cv x (chartBasisVecFiber (I := I) α j x) := fun i => rfl
+        cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := fun i => rfl
   rw [show ∑ i, metricSharpChartCoeff (I := I) g α cv i x *
-            g.inner x (chartBasisVecFiber (I := I) α i x)
-              (chartBasisVecFiber (I := I) α k x) =
+            g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
           ∑ i, (∑ j, chartInvGramMatrix (I := I) g α x i j *
-              cv x (chartBasisVecFiber (I := I) α j x)) *
-              chartGramMatrix (I := I) g α x i k from ?_]
+              cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k from ?_]
   swap
   · refine Finset.sum_congr rfl ?_
     intro i _
     rw [ha i]
     rfl
   rw [show ∑ i, (∑ j, chartInvGramMatrix (I := I) g α x i j *
-              cv x (chartBasisVecFiber (I := I) α j x)) *
-                chartGramMatrix (I := I) g α x i k =
+              cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) *
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k =
           ∑ j, (∑ i, chartInvGramMatrix (I := I) g α x i j *
-              chartGramMatrix (I := I) g α x i k) *
-            cv x (chartBasisVecFiber (I := I) α j x) from ?_]
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) *
+            cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) from ?_]
   swap
   · rw [show ∑ i, (∑ j, chartInvGramMatrix (I := I) g α x i j *
-                cv x (chartBasisVecFiber (I := I) α j x)) *
-                  chartGramMatrix (I := I) g α x i k =
+                cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) *
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k =
               ∑ i, ∑ j, (chartInvGramMatrix (I := I) g α x i j *
-                  chartGramMatrix (I := I) g α x i k) *
-                  cv x (chartBasisVecFiber (I := I) α j x) from ?_]
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) *
+                  cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) from ?_]
     · rw [Finset.sum_comm]
       refine Finset.sum_congr rfl ?_
       intro j _
@@ -108,22 +108,22 @@ lemma inner_metricSharpChartLocal_chartBasis
       refine Finset.sum_congr rfl ?_
       intro j _
       ring
-  have hsym : ∀ i, chartGramMatrix (I := I) g α x i k =
-      chartGramMatrix (I := I) g α x k i := fun i => g.symm x _ _
+  have hsym : ∀ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k i := fun i => g.symm x _ _
   have hkron : ∀ j, (∑ i, chartInvGramMatrix (I := I) g α x i j *
-        chartGramMatrix (I := I) g α x i k) =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) =
       if k = j then (1 : ℝ) else 0 := by
     intro j
     rw [show (∑ i, chartInvGramMatrix (I := I) g α x i j *
-              chartGramMatrix (I := I) g α x i k) =
-            (∑ i, chartGramMatrix (I := I) g α x k i *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) =
+            (∑ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k i *
               chartInvGramMatrix (I := I) g α x i j) from ?_]
     swap
     · refine Finset.sum_congr rfl ?_
       intro i _
       rw [hsym i]
       ring
-    have hidentity : (chartGramMatrix (I := I) g α x *
+    have hidentity : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x *
           chartInvGramMatrix (I := I) g α x) k j =
         if k = j then (1 : ℝ) else 0 := by
       rw [chartGramMatrix_mul_chartInvGramMatrix (I := I) g α hx]
@@ -131,10 +131,10 @@ lemma inner_metricSharpChartLocal_chartBasis
     rw [← hidentity]
     rw [Matrix.mul_apply]
   rw [show ∑ j, (∑ i, chartInvGramMatrix (I := I) g α x i j *
-            chartGramMatrix (I := I) g α x i k) *
-              cv x (chartBasisVecFiber (I := I) α j x) =
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) *
+              cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
           ∑ j, (if k = j then (1 : ℝ) else 0) *
-            cv x (chartBasisVecFiber (I := I) α j x) from
+            cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) from
       Finset.sum_congr rfl (fun j _ => by rw [hkron j])]
   rw [Finset.sum_eq_single k]
   · simp
@@ -156,26 +156,26 @@ lemma metricSharpChartLocal_eq_metricSharp
     g.inner x (metricSharp (I := I) g x (cv x)) v
   rw [inner_metricSharp (I := I) g x (cv x) v]
   set bs : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    chartBasisFamily (I := I) α hx
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx
   set c : Fin (Module.finrank ℝ E) → ℝ := fun k => bs.repr v k
-  have hv_decomp : v = ∑ k, c k • chartBasisVecFiber (I := I) α k x := by
+  have hv_decomp : v = ∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x := by
     have h1 : v = ∑ k, bs.repr v k • bs k := (bs.sum_repr v).symm
     rw [h1]
     refine Finset.sum_congr rfl ?_
     intro k _
-    rw [chartBasisFamily_apply (I := I) α hx k]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx k]
   rw [hv_decomp]
   rw [show g.inner x (metricSharpChartLocal (I := I) g α cv x)
-        (∑ k, c k • chartBasisVecFiber (I := I) α k x) =
+        (∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
         ∑ k, c k * g.inner x (metricSharpChartLocal (I := I) g α cv x)
-          (chartBasisVecFiber (I := I) α k x) from ?_]
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) from ?_]
   swap
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
-  rw [show (cv x) (∑ k, c k • chartBasisVecFiber (I := I) α k x) =
-        ∑ k, c k * (cv x) (chartBasisVecFiber (I := I) α k x) from ?_]
+  rw [show (cv x) (∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
+        ∑ k, c k * (cv x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) from ?_]
   swap
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_
@@ -194,8 +194,8 @@ lemma metricSharp_eq_chartBasis_sum
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x i j *
-            cvx (chartBasisVecFiber (I := I) α j x)) •
-          chartBasisVecFiber (I := I) α i x := by
+            cvx (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
   classical
   let cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ :=
     fun b => if h : b = x then h ▸ cvx else 0
@@ -211,8 +211,8 @@ lemma trivToE_metricSharp
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x i j *
-            cv x (chartBasisVecFiber (I := I) α j x)) •
-          chartModelBasis E i := by
+            cv x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) •
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
   classical
   rw [← metricSharpChartLocal_eq_metricSharp (I := I) g α cv hx]
   unfold metricSharpChartLocal metricSharpChartCoeff
@@ -223,7 +223,7 @@ lemma trivToE_metricSharp
   congr 1
   change DifferentialGeometry.Geometry.Connection.trivToE (I := I) α x
       (DifferentialGeometry.Geometry.Connection.trivFromE (I := I) α x
-        (chartModelBasis E i)) = chartModelBasis E i
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i
   exact DifferentialGeometry.Geometry.Connection.trivToE_trivFromE
     (I := I) α hx _
 
@@ -232,7 +232,7 @@ lemma metricSharpChartCoeff_contMDiffOn
     {cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ}
     (hcv : ∀ j : Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => cv b (chartBasisVecFiber (I := I) α j b))
+        (fun b : M => cv b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞ (metricSharpChartCoeff (I := I) g α cv i)
@@ -255,7 +255,7 @@ lemma metricSharpChartLocal_contMDiffOn_total
     {cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ}
     (hcv : ∀ j : Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => cv b (chartBasisVecFiber (I := I) α j b))
+        (fun b : M => cv b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x (metricSharpChartLocal (I := I) g α cv x))
@@ -265,10 +265,10 @@ lemma metricSharpChartLocal_contMDiffOn_total
       (chartAt H α).source :=
     fun i => metricSharpChartCoeff_contMDiffOn (I := I) g α hcv i
   have hbasis : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => TotalSpace.mk' E x (chartBasisVecFiber (I := I) α i x))
+      (fun x : M => TotalSpace.mk' E x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       (chartAt H α).source := by
     intro i
-    have h := chartBasisVec_contMDiffOn (I := I) α i
+    have h := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i
     have hbase_eq :
         (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
       trivializationAt_baseSet_eq_chartAt_source (I := I) α
@@ -276,13 +276,13 @@ lemma metricSharpChartLocal_contMDiffOn_total
     exact h
   have hsmul : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x
-        (metricSharpChartCoeff (I := I) g α cv i x • chartBasisVecFiber (I := I) α i x))
+        (metricSharpChartCoeff (I := I) g α cv i x • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       (chartAt H α).source :=
     fun i => (hcoeff i).smul_section (hbasis i)
   have hsum : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x
         (∑ i, metricSharpChartCoeff (I := I) g α cv i x •
-          chartBasisVecFiber (I := I) α i x))
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       (chartAt H α).source :=
     ContMDiffOn.sum_section (fun i _ => hsmul i)
   exact hsum
@@ -292,7 +292,7 @@ lemma metricSharp_contMDiff_total
     {cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ}
     (hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => cv b (chartBasisVecFiber (I := I) α j b))
+        (fun b : M => cv b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E b (metricSharp (I := I) g b (cv b))) := by

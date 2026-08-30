@@ -341,15 +341,15 @@ theorem metricFlat_chartComponent_contMDiffOn (g₀ : SmoothRiemannianMetric I M
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (γ : M) (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => (g₀.inner b (Y b)).toLinearMap (chartBasisVecFiber (I := I) γ j b))
+      (fun b : M => (g₀.inner b (Y b)).toLinearMap (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b))
       (chartAt H γ).source := by
   have h_total : ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
-      (fun b : M => (⟨b, g₀.inner b (Y b) (chartBasisVecFiber (I := I) γ j b)⟩ :
+      (fun b : M => (⟨b, g₀.inner b (Y b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b)⟩ :
         TotalSpace ℝ (Bundle.Trivial M ℝ)))
       (trivializationAt E (TangentSpace I) γ).baseSet :=
     ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ) (b := id)
       g₀.contMDiff.contMDiffOn Y.contMDiff.contMDiffOn
-      (chartBasisVec_contMDiffOn (I := I) γ j)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) γ j)
   have hbase_eq :
       (trivializationAt E (TangentSpace I) γ).baseSet = (chartAt H γ).source :=
     trivializationAt_baseSet_eq_chartAt_source (I := I) γ
@@ -390,7 +390,7 @@ theorem metricFlatDiff_chartComponent_contMDiffOn (g₀ g₁ : SmoothRiemannianM
     (γ : M) (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => ((g₀.inner b (Y b)).toLinearMap - (g₁.inner b (Y b)).toLinearMap)
-        (chartBasisVecFiber (I := I) γ j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b))
       (chartAt H γ).source := by
   have h0 := metricFlat_chartComponent_contMDiffOn (I := I) g₀ Y γ j
   have h1 := metricFlat_chartComponent_contMDiffOn (I := I) g₁ Y γ j

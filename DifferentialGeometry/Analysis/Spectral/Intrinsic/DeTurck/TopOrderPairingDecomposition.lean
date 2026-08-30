@@ -738,7 +738,7 @@ private lemma edgeFeedCLM_apply (s : Nat) (x : M)
     ContinuousLinearMap.compContinuousMultilinearMap_coe,
     Function.comp_apply,
     trivToE_self_apply,
-    DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_apply]
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply]
   change (ContinuousMultilinearMap.domDomCongr split (Tensor0SSpace.toModel G)).currySum
       (fun i : Fin 2 =>
         @Fin.cons 1 (fun _ : Fin 2 => E)

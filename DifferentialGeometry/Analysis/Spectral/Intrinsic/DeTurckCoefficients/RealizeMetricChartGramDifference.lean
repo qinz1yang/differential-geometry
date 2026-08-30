@@ -42,12 +42,12 @@ theorem chartGramMatrix_realize_apply
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)
     (α x : M) (a b : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix (I := I) (tensorSectionRealizeMetric (I := I) g_bg T hδ_lt hδ) α x a b =
-      chartGramMatrix (I := I) g_bg α x a b +
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (tensorSectionRealizeMetric (I := I) g_bg T hδ_lt hδ) α x a b =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g_bg α x a b +
         ccTensorBilinSymm (I := I) g_bg T x
-          (chartBasisVecFiber (I := I) α a x)
-          (chartBasisVecFiber (I := I) α b x) := by
-  rw [chartGramMatrix_apply, chartGramMatrix_apply,
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b x) := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     tensorSectionRealizeMetric_inner (I := I) g_bg T hδ_lt hδ x]
 
 omit [BoundarylessManifold I M] in
@@ -73,16 +73,16 @@ theorem chartGramOnE_realize_sub_eq_symm_rawComponent
   rw [chartGramOnE_def, chartGramOnE_def]
   rw [chartGramMatrix_realize_apply (I := I) g_bg T hδ_lt hδ α p a b,
     chartGramMatrix_realize_apply (I := I) g_bg T' hδ_lt hδ' α p a b]
-  rw [show (chartGramMatrix (I := I) g_bg α p a b +
+  rw [show (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g_bg α p a b +
         ccTensorBilinSymm (I := I) g_bg T p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p)) -
-      (chartGramMatrix (I := I) g_bg α p a b +
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p)) -
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g_bg α p a b +
         ccTensorBilinSymm (I := I) g_bg T' p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p)) =
       ccTensorBilinSymm (I := I) g_bg T p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p) -
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p) -
         ccTensorBilinSymm (I := I) g_bg T' p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p) by ring]
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p) by ring]
   rw [ccTensorBilinSymm_apply, ccTensorBilinSymm_apply]
   have hrawAB := tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g_bg 0 2
     (T - T') α hp (![] : Fin 0 → Fin (Module.finrank ℝ E))
@@ -108,22 +108,22 @@ theorem chartGramOnE_realize_sub_eq_symm_rawComponent
             (fun _ : Fin 0 => TangentSpace I p) (1 : ℝ)) :
         ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I p) ℝ)
           (fun k : Fin 2 =>
-            chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
         smoothCcTensorBilinForm (I := I) g_bg T p
-            (chartBasisVecFiber (I := I) α i p) (chartBasisVecFiber (I := I) α j p) -
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p) -
           smoothCcTensorBilinForm (I := I) g_bg T' p
-            (chartBasisVecFiber (I := I) α i p) (chartBasisVecFiber (I := I) α j p) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p) := by
     intro i j
     have hvecAB : (fun k : Fin 2 =>
-        chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
-        ![chartBasisVecFiber (I := I) α i p, chartBasisVecFiber (I := I) α j p] := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
+        ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p] := by
       funext k; fin_cases k <;> rfl
     rw [hvecAB, ccTensorBilin_apply, ccTensorBilin_apply]
     change Tensor0SSpace.toModel
         ((T - T').toSection p
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I p) (1 : ℝ)))
-        ![chartBasisVecFiber (I := I) α i p, chartBasisVecFiber (I := I) α j p] = _
+        ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p] = _
     rw [SmoothCcTensor.toSection_sub]
     simp only [ContMDiffSection.coe_sub, Pi.sub_apply]
     rfl
@@ -155,16 +155,16 @@ theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
   rw [chartGramOnE_def, chartGramOnE_def]
   rw [chartGramMatrix_realize_apply (I := I) g_bg T hδ_lt hδ α p a b,
     chartGramMatrix_realize_apply (I := I) g_bg T' hδ'_lt hδ' α p a b]
-  rw [show (chartGramMatrix (I := I) g_bg α p a b +
+  rw [show (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g_bg α p a b +
         ccTensorBilinSymm (I := I) g_bg T p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p)) -
-      (chartGramMatrix (I := I) g_bg α p a b +
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p)) -
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g_bg α p a b +
         ccTensorBilinSymm (I := I) g_bg T' p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p)) =
       ccTensorBilinSymm (I := I) g_bg T p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p) -
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p) -
         ccTensorBilinSymm (I := I) g_bg T' p
-          (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p) by ring]
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p) by ring]
   rw [ccTensorBilinSymm_apply, ccTensorBilinSymm_apply]
   have hrawAB := tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g_bg 0 2
     (T - T') α hp (![] : Fin 0 → Fin (Module.finrank ℝ E))
@@ -190,22 +190,22 @@ theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
             (fun _ : Fin 0 => TangentSpace I p) (1 : ℝ)) :
         ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I p) ℝ)
           (fun k : Fin 2 =>
-            chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
         smoothCcTensorBilinForm (I := I) g_bg T p
-            (chartBasisVecFiber (I := I) α i p) (chartBasisVecFiber (I := I) α j p) -
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p) -
           smoothCcTensorBilinForm (I := I) g_bg T' p
-            (chartBasisVecFiber (I := I) α i p) (chartBasisVecFiber (I := I) α j p) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p) := by
     intro i j
     have hvecAB : (fun k : Fin 2 =>
-        chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
-        ![chartBasisVecFiber (I := I) α i p, chartBasisVecFiber (I := I) α j p] := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
+        ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p] := by
       funext k; fin_cases k <;> rfl
     rw [hvecAB, ccTensorBilin_apply, ccTensorBilin_apply]
     change Tensor0SSpace.toModel
         ((T - T').toSection p
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I p) (1 : ℝ)))
-        ![chartBasisVecFiber (I := I) α i p, chartBasisVecFiber (I := I) α j p] = _
+        ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p] = _
     rw [SmoothCcTensor.toSection_sub]
     simp only [ContMDiffSection.coe_sub, Pi.sub_apply]
     rfl

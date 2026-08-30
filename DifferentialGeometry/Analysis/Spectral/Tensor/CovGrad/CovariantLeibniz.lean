@@ -116,10 +116,10 @@ noncomputable def tensorCovDerivCrossLeft
     (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
       (mvfderiv (I := I) (ζ : M → ℝ) x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            ((chartModelBasis E) j)) *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) *
         tensorInnerPointwise (I := I) (M := M) g r s x
           (TensorRSSpace.toModel
-            (tensorCovDerivAt (I := I) (M := M) g r s w x ((chartModelBasis E) i)))
+            (tensorCovDerivAt (I := I) (M := M) g r s w x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
           (S.toFun x))
 
 noncomputable def tensorCovDerivCrossRight
@@ -129,11 +129,11 @@ noncomputable def tensorCovDerivCrossRight
     (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
       (mvfderiv (I := I) (ζ : M → ℝ) x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            ((chartModelBasis E) i)) *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
         tensorInnerPointwise (I := I) (M := M) g r s x
           (w.toFun x)
           (TensorRSSpace.toModel
-            (tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) j))))
+            (tensorCovDerivAt (I := I) (M := M) g r s S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))))
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -146,11 +146,11 @@ lemma tensorCovDerivCrossLeft_def
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           (mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) j)) *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) *
             tensorInnerPointwise (I := I) (M := M) g r s x
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s w x
-                  ((chartModelBasis E) i)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
               (S.toFun x)) := rfl
 
 omit [CompactSpace M] in
@@ -164,12 +164,12 @@ lemma tensorCovDerivCrossRight_def
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           (mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i)) *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
             tensorInnerPointwise (I := I) (M := M) g r s x
               (w.toFun x)
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j)))) := rfl
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma tensorCovDerivPointwiseInner_scalarSmul_left_summand
@@ -180,30 +180,30 @@ private lemma tensorCovDerivPointwiseInner_scalarSmul_left_summand
         tensorInnerPointwise (I := I) (M := M) g r s x
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s
-              (scalarSmul (I := I) (M := M) g r s ζ w) x ((chartModelBasis E) i)))
+              (scalarSmul (I := I) (M := M) g r s ζ w) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S x
-              ((chartModelBasis E) j))) =
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) =
       (ζ : M → ℝ) x *
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             tensorInnerPointwise (I := I) (M := M) g r s x
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s w x
-                  ((chartModelBasis E) i)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j)))) +
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))) +
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           (mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i)) *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
             tensorInnerPointwise (I := I) (M := M) g r s x
               (w.toFun x)
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j)))) := by
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))) := by
   rw [tensorCovDerivAt_scalarSmul (I := I) (M := M) g r s ζ w x
-    ((chartModelBasis E) i)]
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)]
   simp only [TensorRSSpace.toModel_add, TensorRSSpace.toModel_smul]
   have hwx : TensorRSSpace.toModel (w.toSection x) = w.toFun x := rfl
   rw [hwx]
@@ -219,31 +219,31 @@ private lemma tensorCovDerivPointwiseInner_scalarSmul_right_summand
     (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
         tensorInnerPointwise (I := I) (M := M) g r s x
           (TensorRSSpace.toModel
-            (tensorCovDerivAt (I := I) (M := M) g r s w x ((chartModelBasis E) i)))
+            (tensorCovDerivAt (I := I) (M := M) g r s w x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s
               (scalarSmul (I := I) (M := M) g r s ζ S) x
-                ((chartModelBasis E) j))) =
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) =
       (ζ : M → ℝ) x *
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             tensorInnerPointwise (I := I) (M := M) g r s x
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s w x
-                  ((chartModelBasis E) i)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j)))) +
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))) +
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           (mvfderiv (I := I) (ζ : M → ℝ) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) j)) *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) *
             tensorInnerPointwise (I := I) (M := M) g r s x
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s w x
-                  ((chartModelBasis E) i)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
               (S.toFun x)) := by
   rw [tensorCovDerivAt_scalarSmul (I := I) (M := M) g r s ζ S x
-    ((chartModelBasis E) j)]
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
   simp only [TensorRSSpace.toModel_add, TensorRSSpace.toModel_smul]
   have hSx : TensorRSSpace.toModel (S.toSection x) = S.toFun x := rfl
   rw [hSx]
@@ -262,10 +262,10 @@ private lemma smul_const_tensorCovDerivPointwiseInner
             tensorInnerPointwise (I := I) (M := M) g r s x
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s w x
-                  ((chartModelBasis E) i)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
-                  ((chartModelBasis E) j)))) =
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))) =
       (ζ : M → ℝ) x *
         tensorCovDerivPointwiseInner (I := I) (M := M) g r s w S x := by
   rw [tensorCovDerivPointwiseInner_def, Finset.mul_sum]
@@ -293,10 +293,10 @@ theorem tensorCovDerivPointwiseInner_scalarSmul_left
                 tensorInnerPointwise (I := I) (M := M) g r s x
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s w x
-                      ((chartModelBasis E) i)))
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S x
-                      ((chartModelBasis E) j))))) +
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))))) +
           tensorCovDerivCrossRight (I := I) (M := M) g r s ζ w S x := by
     rw [tensorCovDerivPointwiseInner_def, tensorCovDerivCrossRight_def,
       ← Finset.sum_add_distrib]
@@ -316,10 +316,10 @@ theorem tensorCovDerivPointwiseInner_scalarSmul_left
                 tensorInnerPointwise (I := I) (M := M) g r s x
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s w x
-                      ((chartModelBasis E) i)))
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S x
-                      ((chartModelBasis E) j))))) +
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))))) +
           tensorCovDerivCrossLeft (I := I) (M := M) g r s ζ w S x := by
     rw [tensorCovDerivPointwiseInner_def, tensorCovDerivCrossLeft_def,
       ← Finset.sum_add_distrib]

@@ -23,18 +23,18 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private theorem chartGram_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x₀ x : M) :
-    chartGramMatrix (I := I) (scaleMetric (I := I) c hc g) x₀ x =
-      c • chartGramMatrix (I := I) g x₀ x := by
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (scaleMetric (I := I) c hc g) x₀ x =
+      c • DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x := by
   ext i j
-  simp [chartGramMatrix_apply, scaleMetric_inner]
+  simp [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, scaleMetric_inner]
 
 private theorem chartInvGram_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x₀ x : M) :
     chartInvGramMatrix (I := I) (scaleMetric (I := I) c hc g) x₀ x =
       c⁻¹ • chartInvGramMatrix (I := I) g x₀ x := by
-  let A := chartGramMatrix (I := I) g x₀ x
+  let A := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x
   have hc₀ : c ≠ 0 := ne_of_gt hc
-  change (chartGramMatrix (I := I) (scaleMetric (I := I) c hc g) x₀ x)⁻¹ =
+  change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (scaleMetric (I := I) c hc g) x₀ x)⁻¹ =
     c⁻¹ • A⁻¹
   rw [chartGram_scale (I := I) c hc g x₀ x]
   by_cases hA : IsUnit A.det
@@ -72,7 +72,7 @@ private theorem chartGramOnE_scale
     chartGramOnE (I := I) (scaleMetric (I := I) c hc g) x₀ i j =
       fun y => c * chartGramOnE (I := I) g x₀ i j y := by
   funext y
-  simp [chartGramOnE, chartGramMatrix_apply, scaleMetric_inner]
+  simp [chartGramOnE, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, scaleMetric_inner]
 
 private theorem chartChristoffel_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)

@@ -112,55 +112,55 @@ lemma continuousBilinearMap_basis_expand
     (v : Fin 2 → E) :
     f v =
       ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (v 0)) k * ((chartModelBasis E).repr (v 1)) i *
-          f ![(chartModelBasis E) k, (chartModelBasis E) i] := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) i *
+          f ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
   classical
   have hexpand : ∀ k : Fin 2,
       v k = ∑ i : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr (v k)) i • chartModelBasis E i := by
-    intro k; exact ((chartModelBasis E).sum_repr (v k)).symm
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) i • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
+    intro k; exact ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr (v k)).symm
   have h_v_eq : v =
       fun k : Fin 2 => ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (v k)) i • chartModelBasis E i := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) i • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
     funext k; exact hexpand k
   rw [show f v = f (fun k : Fin 2 =>
         ∑ i : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr (v k)) i • chartModelBasis E i) from
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) i • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) from
     congrArg f h_v_eq]
   rw [ContinuousMultilinearMap.map_sum
     (f := f)
     (g := fun (k : Fin 2) (i : Fin (Module.finrank ℝ E)) =>
-      ((chartModelBasis E).repr (v k)) i • chartModelBasis E i)]
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) i • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)]
   have h_pull : ∀ Jdx : Fin 2 → Fin (Module.finrank ℝ E),
       f (fun k : Fin 2 =>
-          ((chartModelBasis E).repr (v k)) (Jdx k) • chartModelBasis E (Jdx k)) =
-        (∏ k : Fin 2, ((chartModelBasis E).repr (v k)) (Jdx k)) *
-          f (fun k : Fin 2 => chartModelBasis E (Jdx k)) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) (Jdx k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
+        (∏ k : Fin 2, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) (Jdx k)) *
+          f (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) := by
     intro Jdx
     have hpull := f.toMultilinearMap.map_smul_univ
-      (c := fun k : Fin 2 => ((chartModelBasis E).repr (v k)) (Jdx k))
-      (m := fun k : Fin 2 => chartModelBasis E (Jdx k))
+      (c := fun k : Fin 2 => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) (Jdx k))
+      (m := fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k))
     have hpull' :
-        f (fun k : Fin 2 => ((chartModelBasis E).repr (v k)) (Jdx k) •
-            chartModelBasis E (Jdx k)) =
-        (∏ k : Fin 2, ((chartModelBasis E).repr (v k)) (Jdx k)) •
-          f (fun k : Fin 2 => chartModelBasis E (Jdx k)) := hpull
+        f (fun k : Fin 2 => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) (Jdx k) •
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
+        (∏ k : Fin 2, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) (Jdx k)) •
+          f (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) := hpull
     rw [hpull']; rfl
   rw [Finset.sum_congr rfl (fun Jdx _ => h_pull Jdx)]
   rw [← (finTwoArrowEquiv (Fin (Module.finrank ℝ E))).symm.sum_comp
     (fun Jdx : Fin 2 → Fin (Module.finrank ℝ E) =>
-      (∏ k : Fin 2, ((chartModelBasis E).repr (v k)) (Jdx k)) *
-        f (fun k : Fin 2 => chartModelBasis E (Jdx k)))]
+      (∏ k : Fin 2, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k)) (Jdx k)) *
+        f (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)))]
   rw [Fintype.sum_prod_type]
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun i _ => ?_))
   have hbasis : (fun j : Fin 2 =>
-        chartModelBasis E (((finTwoArrowEquiv (Fin (Module.finrank ℝ E))).symm (k, i)) j)) =
-      ![(chartModelBasis E) k, (chartModelBasis E) i] := by
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (((finTwoArrowEquiv (Fin (Module.finrank ℝ E))).symm (k, i)) j)) =
+      ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
     funext j; fin_cases j <;> rfl
   have hprod : (∏ k' : Fin 2,
-        ((chartModelBasis E).repr (v k'))
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v k'))
           (((finTwoArrowEquiv (Fin (Module.finrank ℝ E))).symm (k, i)) k')) =
-      ((chartModelBasis E).repr (v 0)) k * ((chartModelBasis E).repr (v 1)) i := by
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) i := by
     rw [Fin.prod_univ_two]; rfl
   rw [hbasis, hprod]
 
@@ -170,8 +170,8 @@ lemma cmm_two_basis_expand
     (v : Fin 2 → E) :
     f v =
       ∑ k : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (v 0)) k * ((chartModelBasis E).repr (v 1)) i *
-          f ![(chartModelBasis E) k, (chartModelBasis E) i] :=
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) i *
+          f ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] :=
   continuousBilinearMap_basis_expand f v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -179,9 +179,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma unitModel_basis_expand_two (g₀ : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
     (∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (v 0)) k * ((chartModelBasis E).repr (v 1)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) i *
           unitModel (I := I) (M := M) g₀ 2 W x
-            ![(chartModelBasis E) k, (chartModelBasis E) i]) =
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i]) =
       unitModel (I := I) (M := M) g₀ 2 W x v := by
   classical
   rw [Finset.sum_comm]
@@ -534,8 +534,8 @@ private noncomputable def outerPairBilinChartα (g : SmoothRiemannianMetric I M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-        (chartInvGramMatrix (I := I) g α x k l * K X (chartBasisVecFiber (I := I) α k x)) •
-          (ContinuousLinearMap.flip Dd (chartBasisVecFiber (I := I) α l x))
+        (chartInvGramMatrix (I := I) g α x k l * K X (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)) •
+          (ContinuousLinearMap.flip Dd (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x))
       map_add' := fun X X' => by
         ext Y'
         simp only [add_apply, FunLike.coe_sum,
@@ -564,8 +564,8 @@ private lemma outerPairBilinChartα_apply (g : SmoothRiemannianMetric I M) (α :
     outerPairBilinChartα (I := I) g α K Dd X X' =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x k l *
-          (K X (chartBasisVecFiber (I := I) α k x) *
-            Dd X' (chartBasisVecFiber (I := I) α l x)) := by
+          (K X (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) *
+            Dd X' (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)) := by
   rw [outerPairBilinChartα, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
   simp only [sum_apply, smul_apply, smul_eq_mul,
     ContinuousLinearMap.flip_apply]
@@ -584,8 +584,8 @@ private lemma double_frame_bilin_trace_chartα
     ∑ a, ∑ b, K (B a) (B b) * Dd (B a) (B b) =
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g α x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g α x k l *
-          (K (chartBasisVecFiber (I := I) α m x) (chartBasisVecFiber (I := I) α k x) *
-            Dd (chartBasisVecFiber (I := I) α n x) (chartBasisVecFiber (I := I) α l x))) := by
+          (K (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) *
+            Dd (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * Dd (B a) (B b) =
       outerPairBilinChartα (I := I) g α K Dd (B a) (B a) := by
@@ -614,11 +614,11 @@ private lemma riemannBiContrFib_toModel_chartα
       2 * ∑ m, ∑ n, chartInvGramMatrix (I := I) g α x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g α x k l *
           (g.inner x (riemannOp (LeviCivita (I := I) g) x (modelTangent (I := I) x (v 0))
-              (chartBasisVecFiber (I := I) α m x) (chartBasisVecFiber (I := I) α k x))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x))
               (modelTangent (I := I) x (v 1)) *
             Tensor0SSpace.toModel D
-              ![tangentModel (I := I) x (chartBasisVecFiber (I := I) α n x),
-                tangentModel (I := I) x (chartBasisVecFiber (I := I) α l x)])) := by
+              ![tangentModel (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n x),
+                tangentModel (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)])) := by
   classical
   set Bf : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun a => smoothOrthoFrame (I := I) g x a x with hBf
@@ -654,7 +654,7 @@ private lemma riemannBiContrFib_toModel_chartα
   rw [frameRiemannKernel_apply,
     bilinFormToModel_symm_apply (TangentSpace I x)
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x D)
-      (chartBasisVecFiber (I := I) α n x) (chartBasisVecFiber (I := I) α l x)]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)]
   rfl
 
 omit [BoundarylessManifold I M] in
@@ -668,7 +668,7 @@ private lemma metricPerturbationPath_chartGramMatrix_jointContMDiffOn
       δ')
     (α : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => chartGramMatrix (I := I)
+      (fun p : M × ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hG := metricPerturbationPath_chartGramFamilyJointSmoothOn (I := I) g₀ T T' hδ hδ' α
@@ -712,17 +712,17 @@ private lemma riemannChartLoweredScalar_metricPerturbationPath_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
         (riemannOp (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)) p.1
-          (chartBasisVecFiber (I := I) α i p.1)
-          (chartBasisVecFiber (I := I) α j p.1)
-          (chartBasisVecFiber (I := I) α k p.1))
-        (chartBasisVecFiber (I := I) α l p.1))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p.1)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k p.1))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hRm : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => ∑ m : Fin (Module.finrank ℝ E),
         chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α k i j m
             (extChartAt I α p.1) *
-          chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 m l)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 m l)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine contMDiffOn_finsetSum (fun m _ => ?_)
     have hriem := metricPerturbationPath_chartRiemannTensor_jointContMDiffOn (I := I) g₀ T T' hδ hδ' α k i j m
@@ -753,15 +753,15 @@ private lemma riemannBiContrFibAppY_chartCoord_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => Tensor0SSpace.toModel
         (riemannBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1))
-        ![tangentModel (I := I) p.1 (chartBasisVecFiber (I := I) α (σ 0) p.1),
-          tangentModel (I := I) p.1 (chartBasisVecFiber (I := I) α (σ 1) p.1)])
+        ![tangentModel (I := I) p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) p.1),
+          tangentModel (I := I) p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) p.1)])
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYbasis : ∀ n l : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Tensor0SSpace.toModel (Y p.1)
-          ![tangentModel (I := I) p.1 (chartBasisVecFiber (I := I) α n p.1),
-            tangentModel (I := I) p.1 (chartBasisVecFiber (I := I) α l p.1)])
+          ![tangentModel (I := I) p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n p.1),
+            tangentModel (I := I) p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l p.1)])
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro n l p₀ hp₀
     have hYon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -773,8 +773,8 @@ private lemma riemannBiContrFibAppY_chartCoord_jointContMDiffOn
     have hYmdiff := hYon p₀ hp₀
     have hvbasis : ∀ i : Fin 2, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-          (![fun b : M => chartBasisVecFiber (I := I) α n b,
-              fun b : M => chartBasisVecFiber (I := I) α l b] i p.1))
+          (![fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n b,
+              fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b] i p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p₀ := by
       intro i
       fin_cases i
@@ -787,8 +787,8 @@ private lemma riemannBiContrFibAppY_chartCoord_jointContMDiffOn
     have happly := TensorMultilinear.contMDiffWithinAt_section_apply_prod (I := I) 2
       (s := (chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) (p₀ := p₀)
       (fun b : M => Y b) hYmdiff
-      (![fun b : M => chartBasisVecFiber (I := I) α n b,
-          fun b : M => chartBasisVecFiber (I := I) α l b]) hvbasis
+      (![fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n b,
+          fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b]) hvbasis
     refine happly.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with q _
       congr 1
@@ -801,12 +801,12 @@ private lemma riemannBiContrFibAppY_chartCoord_jointContMDiffOn
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 k l *
           ((metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
               (riemannOp (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)) p.1
-                (chartBasisVecFiber (I := I) α (σ 0) p.1)
-                (chartBasisVecFiber (I := I) α m p.1) (chartBasisVecFiber (I := I) α k p.1))
-              (chartBasisVecFiber (I := I) α (σ 1) p.1) *
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) p.1)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m p.1) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k p.1))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) p.1) *
             Tensor0SSpace.toModel (Y p.1)
-              ![tangentModel (I := I) p.1 (chartBasisVecFiber (I := I) α n p.1),
-                tangentModel (I := I) p.1 (chartBasisVecFiber (I := I) α l p.1)])))
+              ![tangentModel (I := I) p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n p.1),
+                tangentModel (I := I) p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l p.1)])))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine (contMDiffOn_const (c := (2 : ℝ))).mul ?_
     refine contMDiffOn_finsetSum (fun m _ => contMDiffOn_finsetSum (fun n _ => ?_))
@@ -848,7 +848,7 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -870,8 +870,8 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     have hreadout : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)⟩).2 σ =
           Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
-            ![(chartBasisVecFiber (I := I) α (σ 0) q.1 : E),
-              (chartBasisVecFiber (I := I) α (σ 1) q.1 : E)] := by
+            ![(DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) q.1 : E),
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) q.1 : E)] := by
       intro q hqbase
       rw [continuousMultilinearMap_basis_repr]
       have hcoe : (e ⟨q.1,
@@ -888,11 +888,11 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
       rw [← hfiber]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1 hqbase
         (Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)))
-        (fun j => (chartModelBasis E) (σ j))
+        (fun j => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ j))
       rw [happly]
       change Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
           (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
-            ((chartModelBasis E) (σ j))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ j))) = _
       congr 1
       funext j
       fin_cases j <;> rfl
@@ -932,24 +932,24 @@ private lemma raisedKoszulVec_metricPerturbationPath_chartα
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k : Fin (Module.finrank ℝ E)) :
     raisedKoszulVec (I := I) g₀ g₁ x
-        (chartBasisVecFiber (I := I) α j x)
-        (chartBasisVecFiber (I := I) α k x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       ∑ p : Fin (Module.finrank ℝ E),
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g₀ α x p l *
             (∑ q : Fin (Module.finrank ℝ E),
               (chartChristoffel (I := I) g₁ α k j q (extChartAt I α x) -
                 chartChristoffel (I := I) g₀ α k j q (extChartAt I α x)) *
-                chartGramMatrix (I := I) g₁ α x q l)) •
-          chartBasisVecFiber (I := I) α p x := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x q l)) •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
   classical
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
   set W : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
-    (chartBasisVecFiber (I := I) α j x) (chartBasisVecFiber (I := I) α k x) with hW
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) with hW
   set cvx : TangentSpace I x →ₗ[ℝ] ℝ := (g₁.inner x W).toLinearMap with hcvx
   have hraisedeq : raisedKoszulVec (I := I) g₀ g₁ x
-        (chartBasisVecFiber (I := I) α j x) (chartBasisVecFiber (I := I) α k x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₀ x cvx := by
     rw [raisedKoszulVec_apply, inverseMetricSharpFib_apply]
     refine congrArg
@@ -978,9 +978,9 @@ private lemma raisedKoszulVec_metricPerturbationPath_chartα
   refine Finset.sum_congr rfl (fun l _ => ?_)
   congr 1
   rw [hcv_at]
-  show cvx (chartBasisVecFiber (I := I) α l x) = _
+  show cvx (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x) = _
   rw [hcvx]
-  change g₁.inner x W (chartBasisVecFiber (I := I) α l x) = _
+  change g₁.inner x W (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x) = _
   rw [hW, DifferentialGeometry.PDE.DeTurck.connectionDifference_chartBasis_pair_eq_sum (I := I) g₁ g₀ α hx j k]
   rw [map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun q _ => ?_)
@@ -1063,7 +1063,7 @@ private lemma omAppChartBasisVec_jointContMDiffOn
       x⟯)
     (α : M) (p : Fin (Module.finrank ℝ E)) {S : Set ℝ} :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun q : M × ℝ => (om q.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α p q.1))
+      (fun q : M × ℝ => (om q.1) (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p q.1))
       ((chartAt H α).source ×ˢ S) := by
   classical
   intro p₀ hp₀
@@ -1076,7 +1076,7 @@ private lemma omAppChartBasisVec_jointContMDiffOn
   have hOmAt := hOmon p₀ hp₀
   have hvbasis : ∀ i : Fin 1, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) q.1
-        (![fun b : M => chartBasisVecFiber (I := I) α p b] i q.1))
+        (![fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b] i q.1))
       ((chartAt H α).source ×ˢ S) p₀ := by
     intro i
     fin_cases i
@@ -1085,11 +1085,11 @@ private lemma omAppChartBasisVec_jointContMDiffOn
   have happly := TensorMultilinear.contMDiffWithinAt_section_apply_prod (I := I) 1
     (s := (chartAt H α).source ×ˢ S) (p₀ := p₀)
     (fun b : M => om b) hOmAt
-    (![fun b : M => chartBasisVecFiber (I := I) α p b]) hvbasis
+    (![fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b]) hvbasis
   have hcoe : ∀ q : M × ℝ,
       Tensor0SBundle.Tensor0SSpace.toModel (om q.1)
-          (fun i : Fin 1 => ![fun b : M => chartBasisVecFiber (I := I) α p b] i q.1) =
-        (om q.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α p q.1) := by
+          (fun i : Fin 1 => ![fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b] i q.1) =
+        (om q.1) (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p q.1) := by
     intro q
     rw [Tensor0SBundle.Tensor0SSpace.toModel]
     rw [tensor0SSpace_continuousLinearEquiv_apply]
@@ -1117,8 +1117,8 @@ private lemma raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => (om p.1) (fun _ : Fin 1 =>
         raisedKoszulVec (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1
-          (chartBasisVecFiber (I := I) α (σ 0) p.1)
-          (chartBasisVecFiber (I := I) α (σ 1) p.1)))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) p.1)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) p.1)))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hcomb : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
@@ -1129,8 +1129,8 @@ private lemma raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
               (chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α (σ 1) (σ 0) q
                   (extChartAt I α p.1) -
                 chartChristoffel (I := I) g₀ α (σ 1) (σ 0) q (extChartAt I α p.1)) *
-                chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 q l)) *
-          (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α r p.1))
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 q l)) *
+          (om p.1) (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α r p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine contMDiffOn_finsetSum (fun r _ => ?_)
     refine ContMDiffOn.mul ?_ (omAppChartBasisVec_jointContMDiffOn (I := I) om α r)
@@ -1190,7 +1190,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -1216,8 +1216,8 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
             Tensor0SBundle.Tensor0SSpace 2 I q.1 from
           raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)⟩).2 σ =
           (om q.1) (fun _ : Fin 1 => raisedKoszulVec (I := I) g₀ (gfam q.2) q.1
-            (chartBasisVecFiber (I := I) α (σ 0) q.1)
-            (chartBasisVecFiber (I := I) α (σ 1) q.1)) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) q.1)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) q.1)) := by
       intro q hqbase
       rw [continuousMultilinearMap_basis_repr]
       have hcoe : (e ⟨q.1, (show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
@@ -1244,17 +1244,17 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
           ((show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
               Tensor0SBundle.Tensor0SSpace 2 I q.1 from
             raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)))
-        (fun j => (chartModelBasis E) (σ j))
+        (fun j => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ j))
       rw [happly]
       rw [raisedKoszulFib_apply, Tensor0SSpace.toModel_apply_model_vector,
         raisedKoszulPairing_apply]
       simp only [ContinuousLinearEquiv.symm_apply_apply]
       have h0 : (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
-          ((chartModelBasis E) (σ 0)) =
-          chartBasisVecFiber (I := I) α (σ 0) q.1 := rfl
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ 0)) =
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) q.1 := rfl
       have h1 : (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
-          ((chartModelBasis E) (σ 1)) =
-          chartBasisVecFiber (I := I) α (σ 1) q.1 := rfl
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ 1)) =
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) q.1 := rfl
       rw [h0, h1]
     refine hscalAt.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [hnhd] with q hq

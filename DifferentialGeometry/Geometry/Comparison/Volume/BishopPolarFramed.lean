@@ -54,11 +54,11 @@ private lemma gram_det_change
 private noncomputable def frameBasis
     (g : SmoothRiemannianMetric I M) (p : M) :
     Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I p) :=
-  (chartModelBasis E).map (normalFrame (I := I) g p).toLinearEquiv
+  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).map (normalFrame (I := I) g p).toLinearEquiv
 
 private noncomputable def modelBasisAt (p : M) :
     Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I p) :=
-  chartModelBasis E
+  DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
 
 omit [Nontrivial E] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -142,14 +142,14 @@ theorem framedDens_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0 =
       Real.sqrt (Matrix.of fun i j =>
-        inner Real (chartModelBasis E i) (chartModelBasis E j)).det := by
+        inner Real (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)).det := by
   rw [paramDensity_apply]
   apply congrArg Real.sqrt
   apply congrArg Matrix.det
   ext i j
   rw [paramGramMatrix_apply]
-  change framedMetric (I := I) g p 0 (chartModelBasis E i)
-      (chartModelBasis E j) = _
+  change framedMetric (I := I) g p 0 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) = _
   rw [framedMetric_zero]
   rfl
 
@@ -165,7 +165,7 @@ theorem framedDens_haar
   let e : Module.Basis (Fin (Module.finrank Real E)) Real E :=
     (stdOrthonormalBasis Real E).toBasis
   let b : Module.Basis (Fin (Module.finrank Real E)) Real E :=
-    chartModelBasis E
+    DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   let L : E →L[Real] E := ContinuousLinearMap.id Real E
   have hchange :
       basisGram (innerSL Real) (fun i => L (b i)) =
@@ -217,7 +217,7 @@ theorem normalHaar_eq
       Measure.map (normalFrame (I := I) g p) (volume : Measure E) := by
   classical
   let b : Module.Basis (Fin (Module.finrank Real E)) Real E :=
-    chartModelBasis E
+    DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   let L : E ≃L[Real] E := normalFrame (I := I) g p
   let b' : Module.Basis (Fin (Module.finrank Real E)) Real E :=
     b.map L.toLinearEquiv

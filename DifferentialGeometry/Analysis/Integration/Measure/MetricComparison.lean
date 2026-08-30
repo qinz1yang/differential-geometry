@@ -129,31 +129,31 @@ theorem chartDensity_le
       h.inner x v v ≤ Q * g.inner x v v) :
     chartDensity (I := I) h x₀ x ≤
       Real.sqrt (Q ^ Module.finrank Real E) * chartDensity (I := I) g x₀ x := by
-  have hA : (chartGramMatrix (I := I) h x₀ x).PosSemidef :=
-    (chartGramMatrix_posDef (I := I) h x₀ hx).posSemidef
-  have hB : (Q • chartGramMatrix (I := I) g x₀ x).PosDef :=
-    (chartGramMatrix_posDef (I := I) g x₀ hx).smul hQ
+  have hA : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) h x₀ x).PosSemidef :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) h x₀ hx).posSemidef
+  have hB : (Q • DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x).PosDef :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g x₀ hx).smul hQ
   have hAB : ∀ v : Fin (Module.finrank Real E) → Real,
-      v ⬝ᵥ (chartGramMatrix (I := I) h x₀ x) *ᵥ v ≤
-        v ⬝ᵥ (Q • chartGramMatrix (I := I) g x₀ x) *ᵥ v := by
+      v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) h x₀ x) *ᵥ v ≤
+        v ⬝ᵥ (Q • DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x) *ᵥ v := by
     intro v
-    have hh : v ⬝ᵥ (chartGramMatrix (I := I) h x₀ x) *ᵥ v =
-        h.inner x (∑ i, v i • chartBasisVecFiber (I := I) x₀ i x)
-          (∑ j, v j • chartBasisVecFiber (I := I) x₀ j x) := by
-      rw [← chartGramMatrix_dotProduct_mulVec (I := I) h x₀ x v, star_trivial]
-    have hg : v ⬝ᵥ (chartGramMatrix (I := I) g x₀ x) *ᵥ v =
-        g.inner x (∑ i, v i • chartBasisVecFiber (I := I) x₀ i x)
-          (∑ j, v j • chartBasisVecFiber (I := I) x₀ j x) := by
-      rw [← chartGramMatrix_dotProduct_mulVec (I := I) g x₀ x v, star_trivial]
+    have hh : v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) h x₀ x) *ᵥ v =
+        h.inner x (∑ i, v i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+          (∑ j, v j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x) := by
+      rw [← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) h x₀ x v, star_trivial]
+    have hg : v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x) *ᵥ v =
+        g.inner x (∑ i, v i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+          (∑ j, v j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x) := by
+      rw [← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g x₀ x v, star_trivial]
     rw [Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul, hh, hg]
-    exact hcomp (∑ i, v i • chartBasisVecFiber (I := I) x₀ i x)
-  have hdet : (chartGramMatrix (I := I) h x₀ x).det ≤
-      Q ^ Module.finrank Real E * (chartGramMatrix (I := I) g x₀ x).det := by
+    exact hcomp (∑ i, v i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+  have hdet : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) h x₀ x).det ≤
+      Q ^ Module.finrank Real E * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x).det := by
     have hle := det_le_of_quad_le hA hB hAB
     rwa [Matrix.det_smul, Fintype.card_fin] at hle
-  change Real.sqrt ((chartGramMatrix (I := I) h x₀ x).det) ≤
+  change Real.sqrt ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) h x₀ x).det) ≤
     Real.sqrt (Q ^ Module.finrank Real E) *
-      Real.sqrt ((chartGramMatrix (I := I) g x₀ x).det)
+      Real.sqrt ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x).det)
   rw [← Real.sqrt_mul (pow_nonneg hQ.le _)]
   exact Real.sqrt_le_sqrt hdet
 

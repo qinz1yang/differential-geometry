@@ -158,13 +158,13 @@ theorem ricci_gauge_of_dt
         (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
           ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
             (fun p : ℝ × M =>
-              Integral.Measure.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
             (Set.Ico (0 : ℝ) T ×ˢ
               (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
         (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
           ContinuousOn
             (fun p : ℝ × M =>
-              Integral.Measure.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
             (Set.Ico (0 : ℝ) T ×ˢ
               (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
         ∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,

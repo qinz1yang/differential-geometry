@@ -62,7 +62,7 @@ def chartSecondFundamentalFormEntry
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (νChart : E → E) (i j : Fin (Module.finrank ℝ E)) : ℝ :=
   ∑ k : Fin (Module.finrank ℝ E),
-    chartGramMatrix (I := I) g (x : M) (x : M) k j *
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g (x : M) (x : M) k j *
       chartCovariantDerivativeOfNormal (I := I) g (x : M) νChart i k
         (extChartAt I (x : M) (x : M))
 
@@ -72,7 +72,7 @@ omit hI in
     (νChart : E → E) (i j : Fin (Module.finrank ℝ E)) :
     chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j =
       ∑ k : Fin (Module.finrank ℝ E),
-        chartGramMatrix (I := I) g (x : M) (x : M) k j *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g (x : M) (x : M) k j *
           chartCovariantDerivativeOfNormal (I := I) g (x : M) νChart i k
             (extChartAt I (x : M) (x : M)) := rfl
 
@@ -84,14 +84,14 @@ def secondFundamentalForm
     (fun X Y =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
-            ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j)
     (fun X₁ X₂ Y => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (X₁ + X₂) =
-          (centeredChartTangentBasis (I := I) (x : M)).repr X₁ +
-            (centeredChartTangentBasis (I := I) (x : M)).repr X₂ :=
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr (X₁ + X₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X₂ :=
         map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
@@ -104,8 +104,8 @@ def secondFundamentalForm
       ring)
     (fun c X Y => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (c • X) =
-          c • (centeredChartTangentBasis (I := I) (x : M)).repr X := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr (c • X) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -117,9 +117,9 @@ def secondFundamentalForm
       ring)
     (fun X Y₁ Y₂ => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (Y₁ + Y₂) =
-          (centeredChartTangentBasis (I := I) (x : M)).repr Y₁ +
-            (centeredChartTangentBasis (I := I) (x : M)).repr Y₂ :=
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr (Y₁ + Y₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y₂ :=
         map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
@@ -132,29 +132,29 @@ def secondFundamentalForm
       ring)
     (fun c X Y => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (c • Y) =
-          c • (centeredChartTangentBasis (I := I) (x : M)).repr Y := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr (c • Y) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
       have hpull : ∀ j : Fin (Module.finrank ℝ E),
-          (((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
-              (c * ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j) *
+          (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+              (c * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y) j) *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) =
-          c * (((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
-              ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
+          c * (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) := by
         intro j
         ring
       rw [show (∑ j : Fin (Module.finrank ℝ E),
-            ((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
-                (c * ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j) *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+                (c * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y) j) *
               chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) =
           ∑ j : Fin (Module.finrank ℝ E),
-            c * (((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
-                ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
+            c * (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
               chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) from
         Finset.sum_congr rfl (fun j _ => hpull j)]
       rw [← Finset.mul_sum])
@@ -167,8 +167,8 @@ omit hI in
     secondFundamentalForm (I := I) (M := M) g x νChart X Y =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
-            ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j := rfl
 
 omit hI in

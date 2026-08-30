@@ -39,10 +39,10 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem jet2_chartGram_d1 (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG : DifferentiableAt ℝ (chartGramPi (I := I) g α) y)
     (i l m : Fin (Module.finrank ℝ E)) :
-    (jet2 (chartGramPi (I := I) g α) y).2.1 (chartModelBasis E i) l m
+    (jet2 (chartGramPi (I := I) g α) y).2.1 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l m
       = partialDeriv (E := E) i (chartGramOnE (I := I) g α l m) y := by
   simp only [jet2]
-  rw [fderiv_matEntry hG (chartModelBasis E i) l m]
+  rw [fderiv_matEntry hG (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l m]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -50,14 +50,14 @@ theorem jet2_chartGram_d2 (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG1 : ∀ᶠ w in nhds y, DifferentiableAt ℝ (chartGramPi (I := I) g α) w)
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (m i l j : Fin (Module.finrank ℝ E)) :
-    (jet2 (chartGramPi (I := I) g α) y).2.2 (chartModelBasis E m) (chartModelBasis E i) l j
+    (jet2 (chartGramPi (I := I) g α) y).2.2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j
       = partialDeriv (E := E) m (partialDeriv (E := E) i (chartGramOnE (I := I) g α l j)) y := by
   simp only [jet2]
-  rw [fderiv2_matEntry hG2 (chartModelBasis E m) (chartModelBasis E i) l j]
-  have hinner : (fun w => (fderiv ℝ (chartGramPi (I := I) g α) w) (chartModelBasis E i) l j)
+  rw [fderiv2_matEntry hG2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j]
+  have hinner : (fun w => (fderiv ℝ (chartGramPi (I := I) g α) w) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j)
       =ᶠ[nhds y] partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) := by
     filter_upwards [hG1] with w hw
-    rw [fderiv_matEntry hw (chartModelBasis E i) l j]
+    rw [fderiv_matEntry hw (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) l j]
     rfl
   rw [hinner.fderiv_eq]
   rfl
@@ -68,7 +68,7 @@ theorem jet2_chartGram_invGram (g : SmoothRiemannianMetric I M) (α : M) (y : E)
     (Matrix.of (jet2 (chartGramPi (I := I) g α) y).1)⁻¹ k l = chartInvGramOnE (I := I) g α k l
       y := by
   have hmat : Matrix.of (jet2 (chartGramPi (I := I) g α) y).1
-      = chartGramMatrix (I := I) g α ((extChartAt I α).symm y) := by
+      = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y) := by
     ext a b
     simp only [jet2, chartGramPi, chartGramOnE_def, Matrix.of_apply]
   rw [hmat, chartInvGramOnE_def]
@@ -78,7 +78,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartChristoffel_eq_jet (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG : DifferentiableAt ℝ (chartGramPi (I := I) g α) y) (i j k : Fin (Module.finrank ℝ E)) :
     chartChristoffel (I := I) g α i j k y
-      = jetChristoffel (chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i j k := by
+      = jetChristoffel (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i j k := by
   rw [chartChristoffel_def]
   simp only [jetChristoffel]
   congr 1
@@ -94,7 +94,7 @@ theorem chartChristoffelDeriv_eq_jet (g : SmoothRiemannianMetric I M) (α : M) {
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (m i j k : Fin (Module.finrank ℝ E)) :
     partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y
-      = jetChristoffelDeriv (chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) m i j k := by
+      = jetChristoffelDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) m i j k := by
   rw [partialDeriv_chartChristoffel_eq g α m i j k hy]
   simp only [jetChristoffelDeriv]
   congr 1
@@ -111,7 +111,7 @@ theorem chartRiemann_eq_jet (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (i j k l : Fin (Module.finrank ℝ E)) :
     chartRiemannTensor (I := I) g α i j k l y
-      = jetRiemann (chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i j k l := by
+      = jetRiemann (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i j k l := by
   rw [chartRiemannTensor_def]
   simp only [jetRiemann]
   rw [chartChristoffelDeriv_eq_jet g α hy hG hG1 hG2 j i k l,
@@ -129,7 +129,7 @@ theorem chartRicci_eq_jet (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (i k : Fin (Module.finrank ℝ E)) :
     chartRicciTensor (I := I) g α i k y
-      = jetRicci (chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i k := by
+      = jetRicci (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i k := by
   rw [chartRicciTensor_def]
   simp only [jetRicci]
   exact Finset.sum_congr rfl (fun j _ => chartRiemann_eq_jet g α hy hG hG1 hG2 i j k j)
@@ -141,7 +141,7 @@ theorem jetRicciFlow_chartGram (g : SmoothRiemannianMetric I M) (α : M) {y : E}
     (hG1 : ∀ᶠ w in nhds y, DifferentiableAt ℝ (chartGramPi (I := I) g α) w)
     (hG2 : DifferentiableAt ℝ (fun w => fderiv ℝ (chartGramPi (I := I) g α) w) y)
     (i k : Fin (Module.finrank ℝ E)) :
-    jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i k
+    jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) g α) y) i k
       = -2 * chartRicciTensor (I := I) g α i k y := by
   rw [jetRicciFlow, chartRicci_eq_jet g α hy hG hG1 hG2 i k]
 
@@ -159,15 +159,15 @@ theorem ricciFlowChartGram_jetMatch (g₁ g₂ : ℝ → SmoothRiemannianMetric 
       ContDiffWithinAt ℝ ∞ (fun t => jet2 (chartGramPi (I := I) (g₂ t) α) w) sR 0)
     (hdet : ∀ w ∈ V, (Matrix.of (jet2 (chartGramPi (I := I) (g₁ 0) α) w).1).det ≠ 0)
     (hevolL : ∀ t ∈ sL, ∀ w ∈ V, derivWithin (fun s => chartGramPi (I := I) (g₁ s) α w) sL t
-      = jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) (g₁ t) α) w))
+      = jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) (g₁ t) α) w))
     (hevolR : ∀ t ∈ sR, ∀ w ∈ V, derivWithin (fun s => chartGramPi (I := I) (g₂ s) α w) sR t
-      = jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) (g₂ t) α) w))
+      = jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) (g₂ t) α) w))
     (hbdry : Set.EqOn (chartGramPi (I := I) (g₁ 0) α) (chartGramPi (I := I) (g₂ 0) α) V) :
     ∀ (n : ℕ), ∀ w ∈ V,
       iteratedDerivWithin n (fun s => chartGramPi (I := I) (g₁ s) α w) sL 0
         = iteratedDerivWithin n (fun s => chartGramPi (I := I) (g₂ s) α w) sR 0 :=
   jetMatch_of_evolution hsL haccL h0L hsR haccR h0R hV hGL hGR
-    (fun w hw => contDiffAt_jetRicciFlow (chartModelBasis E) (hdet w hw))
+    (fun w hw => contDiffAt_jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (hdet w hw))
     hcurveL hcurveR hevolL hevolR hbdry
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -181,7 +181,7 @@ theorem chartGramEvolution_of_pde (g : ℝ → SmoothRiemannianMetric I M) (α :
       HasDerivWithinAt (fun s => chartGramOnE (I := I) (g s) α i k y)
         (-2 * chartRicciTensor (I := I) (g t) α i k y) sL t) :
     derivWithin (fun s => chartGramPi (I := I) (g s) α y) sL t
-      = jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) (g t) α) y) := by
+      = jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) (g t) α) y) := by
   have hderiv : HasDerivWithinAt (fun s => chartGramPi (I := I) (g s) α y)
       (fun i k => -2 * chartRicciTensor (I := I) (g t) α i k y) sL t := by
     rw [hasDerivWithinAt_pi]
@@ -200,16 +200,16 @@ theorem chartGramEntryPDE_of_metricPDE [I.Boundaryless] [T2Space M]
     (hyt : extChartAt I α ((extChartAt I α).symm y) = y) (i k : Fin (Module.finrank ℝ E))
     (hmpde : HasDerivWithinAt
       (fun s => (g s).inner ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y)))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y)))
       (-2 * ricciTensor (I := I) (g t) ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y))) sL t) :
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y))) sL t) :
     HasDerivWithinAt (fun s => chartGramOnE (I := I) (g s) α i k y)
       (-2 * chartRicciTensor (I := I) (g t) α i k y) sL t := by
   have hbridge : ricciTensor (I := I) (g t) ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k ((extChartAt I α).symm y))
       = chartRicciTensor (I := I) (g t) α i k y := by
     rw [ricciTensor_chartBasisVec_alpha_eq (g t) α i k hgs, hyt]
   rw [← hbridge]
@@ -269,7 +269,7 @@ theorem metricPDE_of_gram [I.Boundaryless] [T2Space M]
     (extChartAt I x).left_inv
       (chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hxgood)
   let b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    chartBasisFamily (I := I) x hxbase
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hxbase
   let F : ℝ → TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
     fun s => (g s).inner x
   let F' : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
@@ -278,16 +278,16 @@ theorem metricPDE_of_gram [I.Boundaryless] [T2Space M]
       HasDerivAt (fun s => F s (b i) (b j)) (F' (b i) (b j)) t := by
     have hric :
         ricciTensor (I := I) (g t) x
-            (chartBasisVecFiber (I := I) x i x)
-            (chartBasisVecFiber (I := I) x j x) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) =
           chartRicciTensor (I := I) (g t) x i j (extChartAt I x x) := by
       exact ricciTensor_chartBasisVec_alpha_eq (I := I) (g t) x i j hxgood
-    rw [show b i = chartBasisVecFiber (I := I) x i x by
-      exact chartBasisFamily_apply (I := I) x hxbase i,
-      show b j = chartBasisVecFiber (I := I) x j x by
-        exact chartBasisFamily_apply (I := I) x hxbase j]
+    rw [show b i = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x by
+      exact DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) x hxbase i,
+      show b j = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x by
+        exact DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) x hxbase j]
     simpa only [F, F', smul_apply, smul_eq_mul,
-      chartGramOnE_def, hinv, chartGramMatrix_apply, hric] using hpde i j
+      chartGramOnE_def, hinv, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, hric] using hpde i j
   exact bilin_deriv_basis F F' b hbasis v w
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -304,10 +304,10 @@ theorem chartGramGlue_contDiffOn (g₁ g₂ : ℝ → SmoothRiemannianMetric I M
     (hdet : ∀ w ∈ V, (Matrix.of (jet2 (chartGramPi (I := I) (g₁ 0) α) w).1).det ≠ 0)
     (hevolL : ∀ t ∈ Set.Iic (0 : ℝ), ∀ w ∈ V,
       derivWithin (fun s => chartGramPi (I := I) (g₁ s) α w) (Set.Iic 0) t
-        = jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) (g₁ t) α) w))
+        = jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) (g₁ t) α) w))
     (hevolR : ∀ t ∈ Set.Ici (0 : ℝ), ∀ w ∈ V,
       derivWithin (fun s => chartGramPi (I := I) (g₂ s) α w) (Set.Ici 0) t
-        = jetRicciFlow (chartModelBasis E) (jet2 (chartGramPi (I := I) (g₂ t) α) w))
+        = jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jet2 (chartGramPi (I := I) (g₂ t) α) w))
     (hbdry : Set.EqOn (chartGramPi (I := I) (g₁ 0) α) (chartGramPi (I := I) (g₂ 0) α) V) :
     ContDiffOn ℝ ∞
       (fun q : ℝ × E => if q.1 ≤ 0 then Function.uncurry (fun t => chartGramPi (I := I) (g₁ t) α) q

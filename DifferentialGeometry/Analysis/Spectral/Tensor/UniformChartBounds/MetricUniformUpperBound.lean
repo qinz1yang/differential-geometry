@@ -80,15 +80,15 @@ private lemma chartGramBilin_continuousOn_chartSource
       chartGramBilin (I := I) (M := M) g b₀ b =
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            chartGramMatrix g b₀ b j k •
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g b₀ b j k •
               (chartCoordCLM E j).smulRight (chartCoordCLM E k) := by
     intro b; rfl
   refine ContinuousOn.congr ?_ (fun b _ => (h_eq b).symm)
   refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine continuousOn_finsetSum _ (fun k _ => ?_)
-  have h_entry : ContinuousOn (fun b : M => chartGramMatrix g b₀ b j k)
+  have h_entry : ContinuousOn (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g b₀ b j k)
       (chartAt H b₀).source := by
-    have hsmooth := chartGramMatrix_entry_contMDiffOn (I := I) g b₀ j k
+    have hsmooth := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g b₀ j k
     have h_set_eq : ((trivializationAt E (TangentSpace I) b₀).baseSet
         : Set M) = (chartAt H b₀).source :=
       trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M) b₀

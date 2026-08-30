@@ -224,7 +224,7 @@ private lemma cutoffCovDerivComponent_continuousOn
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α k)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))) =
       euclidPartial (E := E) k
           (chartPushedRaw (I := I) (M := M) α
@@ -821,7 +821,7 @@ private lemma cutoffCovNormSumFun_tsupport_subset
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S b
                       (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                        (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
+                        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
     funext b
     rw [cutoffCovNormSumFun]
     rfl
@@ -836,7 +836,7 @@ private lemma cutoffCovNormSumFun_tsupport_subset
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α i b))))‖ ^ 2))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2))
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -926,7 +926,7 @@ private lemma exists_const_eLpNorm_cutoffCovDerivComponent_le_uniform
                   (tensorCovDerivAt (I := I) (M := M) g r s
                     S.toCcTensor b
                     (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                      (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
     rw [hv_def]
     funext b
     rw [cutoffCovNormSumFun]

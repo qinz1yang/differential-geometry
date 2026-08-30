@@ -349,7 +349,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingEarlyBombieriGiustiRevers
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc A τ,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -866,7 +866,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiRev
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1076,7 +1076,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiRev
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1147,7 +1147,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc A τ,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1265,7 +1265,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1414,7 +1414,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1581,7 +1581,7 @@ theorem inv_le_evolvingBombieriGiustiLatePointwiseFactor_mul_localizedSpacetimeR
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1787,7 +1787,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞
       averagingCutoff)
@@ -1906,7 +1906,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞
       averagingCutoff)
@@ -2163,7 +2163,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCro
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞
       averagingCutoff)
@@ -2312,7 +2312,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnack
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (haveragingCutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞
       averagingCutoff)

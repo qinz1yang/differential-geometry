@@ -102,13 +102,13 @@ theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiff
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
       (hu₂ : isRealizableMetricPerturbationAt (I := I) g_bg u₂)
     (α : M) (x : M) (i j : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α x i j -
-        chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₂) α x i j =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α x i j -
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₂) α x i j =
       ccTensorBilinSymm (I := I) g_bg
         (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂) x
-        (chartBasisVecFiber (I := I) α i x)
-        (chartBasisVecFiber (I := I) α j x) := by
-  rw [chartGramMatrix_apply, chartGramMatrix_apply,
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     realizeMetricAt_inner_eq_repr (I := I) g_bg hu₁ x _ _,
     realizeMetricAt_inner_eq_repr (I := I) g_bg hu₂ x _ _,
     ccTensorBilinSymm_sub]
@@ -126,8 +126,8 @@ theorem chartGramOnE_realizeMetricAt_sub_eq_reprDiff
       ccTensorBilinSymm (I := I) g_bg
         (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
         ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y)) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y)) := by
   rw [chartGramOnE_def, chartGramOnE_def]
   exact chartGramMatrix_realizeMetricAt_sub_eq_reprDiff (I := I) g_bg hu₁ hu₂ α _ i j
 

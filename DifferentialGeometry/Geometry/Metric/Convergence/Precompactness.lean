@@ -906,9 +906,9 @@ theorem chartGram_germ
     (i j : Fin (Module.finrank Real E))
     (σi σj : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (hσi : ∀ᶠ z in 𝓝ˢ Kc,
-      σi z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((chartModelBasis E) i) z)
+      σi z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z)
     (hσj : ∀ᶠ z in 𝓝ˢ Kc,
-      σj z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((chartModelBasis E) j) z) :
+      σj z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) z) :
     chartGramOnE (I := I) g x₀ i j =ᶠ[𝓝 (extChartAt I x₀ y)]
       writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef
@@ -927,10 +927,10 @@ theorem chartGram_germ
     have h := (continuousAt_extChartAt_symm'' (I := I) (x := x₀) hytgt).tendsto
     rwa [hxy] at h
   have hσi0 : ∀ᶠ q in 𝓝 y,
-      σi q = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((chartModelBasis E) i) q :=
+      σi q = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q :=
     hσi.filter_mono (nhds_le_nhdsSet hy)
   have hσj0 : ∀ᶠ q in 𝓝 y,
-      σj q = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((chartModelBasis E) j) q :=
+      σj q = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) q :=
     hσj.filter_mono (nhds_le_nhdsSet hy)
   filter_upwards [htend.eventually hσi0, htend.eventually hσj0] with z hzi hzj
   simp only [writtenInExtChartAt_real_apply]
@@ -948,7 +948,7 @@ theorem chartGram_germ
             (TangentSpace I : M → Type _)) a q) := rfl
     rw [h0, Tensor0SBundle.metricTensorField_apply]
     simp
-  rw [hval, hzi, hzj, chartGramOnE, chartGramMatrix_apply]
+  rw [hval, hzi, hzj, chartGramOnE, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   congr 1
 
 omit [IsManifold I 2 M] in
@@ -968,8 +968,8 @@ theorem chartGram_iter_le
   have hσex : ∀ i : Fin (Module.finrank Real E),
       ∃ σ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
         ∀ᶠ z in 𝓝ˢ Kc,
-          σ z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((chartModelBasis E) i) z :=
-    fun i => exists_section_eqOn_compact (I := I) x₀ ((chartModelBasis E) i) hKc hKchart
+          σ z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z :=
+    fun i => exists_section_eqOn_compact (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) hKc hKchart
   choose σ hσ using hσex
   have hM : ∀ p : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
       ∃ C : Real, 0 ≤ C ∧ ∀ k : ι, ∀ y ∈ Kc,
@@ -1007,8 +1007,8 @@ theorem chartJet_sub_le
   have hσex : ∀ i : Fin (Module.finrank Real E),
       ∃ σ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
         ∀ᶠ z in 𝓝ˢ Kc,
-          σ z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((chartModelBasis E) i) z :=
-    fun i => exists_section_eqOn_compact (I := I) x₀ ((chartModelBasis E) i) hKc hKchart
+          σ z = tangentConstInChart (𝕜 := Real) (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z :=
+    fun i => exists_section_eqOn_compact (I := I) x₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) hKc hKchart
   choose σ hσ using hσex
   have hpair : ∀ p : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
       ∃ C : Real, 0 ≤ C ∧
@@ -1344,24 +1344,24 @@ theorem chartGram_pou_d1
               (extChartAt I α y)| ≤ Q := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := chartGram_pou_le (I := I) gRef gSeq 1 B hbdd
-  let C_E : Real := ∑ m : Fin (Module.finrank Real E), ‖(chartModelBasis E) m‖
+  let C_E : Real := ∑ m : Fin (Module.finrank Real E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖
   have hCE_nn : 0 ≤ C_E := Finset.sum_nonneg fun m _ => norm_nonneg _
   refine ⟨C * C_E, mul_nonneg hC_nn hCE_nn, ?_⟩
   intro α hα k y hy m i j
-  have hm_le : ‖(chartModelBasis E) m‖ ≤ C_E :=
-    Finset.single_le_sum (fun a _ => norm_nonneg ((chartModelBasis E) a))
+  have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ C_E :=
+    Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
   rw [partial_eq_iter1]
   rw [← Real.norm_eq_abs]
   calc
     ‖iteratedFDeriv Real 1 (chartGramOnE (I := I) (gSeq k) α i j)
-        (extChartAt I α y) ![(chartModelBasis E) m]‖
+        (extChartAt I α y) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖
         ≤ ‖iteratedFDeriv Real 1 (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α y)‖ *
-          ∏ a : Fin 1, ‖(![(chartModelBasis E) m] : Fin 1 → E) a‖ :=
+          ∏ a : Fin 1, ‖(![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] : Fin 1 → E) a‖ :=
         ContinuousMultilinearMap.le_opNorm _ _
     _ = ‖iteratedFDeriv Real 1 (chartGramOnE (I := I) (gSeq k) α i j)
-            (extChartAt I α y)‖ * ‖(chartModelBasis E) m‖ := by simp
+            (extChartAt I α y)‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ := by simp
     _ ≤ C * C_E := mul_le_mul (hC α hα k y hy i j) hm_le
       (norm_nonneg _) hC_nn
 
@@ -1384,7 +1384,7 @@ theorem chartGram_pou_d2
                 (chartGramOnE (I := I) (gSeq k) α i j)) (extChartAt I α y)| ≤ Q := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := chartGram_pou_le (I := I) gRef gSeq 2 B hbdd
-  let C_E : Real := ∑ a : Fin (Module.finrank Real E), ‖(chartModelBasis E) a‖
+  let C_E : Real := ∑ a : Fin (Module.finrank Real E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a‖
   have hCE_nn : 0 ≤ C_E := Finset.sum_nonneg fun a _ => norm_nonneg _
   refine ⟨C * (C_E * C_E), mul_nonneg hC_nn (mul_nonneg hCE_nn hCE_nn), ?_⟩
   intro α hα k y hy c m i j
@@ -1402,25 +1402,25 @@ theorem chartGram_pou_d2
       (extChartAt I α y) :=
     ((chartGramOnE_contDiffOn (I := I) (gSeq k) α i j).mono interior_subset).contDiffAt
       (isOpen_interior.mem_nhds hz_int)
-  have hc_le : ‖(chartModelBasis E) c‖ ≤ C_E :=
-    Finset.single_le_sum (fun a _ => norm_nonneg ((chartModelBasis E) a))
+  have hc_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c‖ ≤ C_E :=
+    Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ c)
-  have hm_le : ‖(chartModelBasis E) m‖ ≤ C_E :=
-    Finset.single_le_sum (fun a _ => norm_nonneg ((chartModelBasis E) a))
+  have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ C_E :=
+    Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
   rw [partial2_eq_iter2 _ hcont]
   rw [← Real.norm_eq_abs]
   calc
     ‖iteratedFDeriv Real 2 (chartGramOnE (I := I) (gSeq k) α i j)
-        (extChartAt I α y) ![(chartModelBasis E) c, (chartModelBasis E) m]‖
+        (extChartAt I α y) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖
         ≤ ‖iteratedFDeriv Real 2 (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α y)‖ *
           ∏ a : Fin 2,
-            ‖(![(chartModelBasis E) c, (chartModelBasis E) m] : Fin 2 → E) a‖ :=
+            ‖(![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] : Fin 2 → E) a‖ :=
         ContinuousMultilinearMap.le_opNorm _ _
     _ = ‖iteratedFDeriv Real 2 (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α y)‖ *
-          (‖(chartModelBasis E) c‖ * ‖(chartModelBasis E) m‖) := by simp
+          (‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖) := by simp
     _ ≤ C * (C_E * C_E) := mul_le_mul (hC α hα k y hy i j)
       (mul_le_mul hc_le hm_le (norm_nonneg _) hCE_nn) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
       hC_nn
@@ -1445,7 +1445,7 @@ theorem chartGram_pou_d3
                   (chartGramOnE (I := I) (gSeq k) α i j))) (extChartAt I α y)| ≤ Q := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := chartGram_pou_le (I := I) gRef gSeq 3 B hbdd
-  let C_E : Real := ∑ a : Fin (Module.finrank Real E), ‖(chartModelBasis E) a‖
+  let C_E : Real := ∑ a : Fin (Module.finrank Real E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a‖
   have hCE_nn : 0 ≤ C_E := Finset.sum_nonneg fun a _ => norm_nonneg _
   refine ⟨C * (C_E * (C_E * C_E)),
     mul_nonneg hC_nn (mul_nonneg hCE_nn (mul_nonneg hCE_nn hCE_nn)), ?_⟩
@@ -1464,35 +1464,35 @@ theorem chartGram_pou_d3
       (extChartAt I α y) :=
     ((chartGramOnE_contDiffOn (I := I) (gSeq k) α i j).mono interior_subset).contDiffAt
       (isOpen_interior.mem_nhds hz_int)
-  have hd_le : ‖(chartModelBasis E) d‖ ≤ C_E :=
-    Finset.single_le_sum (fun a _ => norm_nonneg ((chartModelBasis E) a))
+  have hd_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d‖ ≤ C_E :=
+    Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ d)
-  have hc_le : ‖(chartModelBasis E) c‖ ≤ C_E :=
-    Finset.single_le_sum (fun a _ => norm_nonneg ((chartModelBasis E) a))
+  have hc_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c‖ ≤ C_E :=
+    Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ c)
-  have hm_le : ‖(chartModelBasis E) m‖ ≤ C_E :=
-    Finset.single_le_sum (fun a _ => norm_nonneg ((chartModelBasis E) a))
+  have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ C_E :=
+    Finset.single_le_sum (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
   rw [partial3_eq_iter3 _ hcont]
   rw [← Real.norm_eq_abs]
   calc
     ‖iteratedFDeriv Real 3 (chartGramOnE (I := I) (gSeq k) α i j)
         (extChartAt I α y)
-        ![(chartModelBasis E) d, (chartModelBasis E) c, (chartModelBasis E) m]‖
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖
         ≤ ‖iteratedFDeriv Real 3 (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α y)‖ *
           ∏ a : Fin 3,
-            ‖(![(chartModelBasis E) d, (chartModelBasis E) c,
-              (chartModelBasis E) m] : Fin 3 → E) a‖ :=
+            ‖(![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c,
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] : Fin 3 → E) a‖ :=
         ContinuousMultilinearMap.le_opNorm _ _
     _ = ‖iteratedFDeriv Real 3 (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α y)‖ *
-          (‖(chartModelBasis E) d‖ *
-            (‖(chartModelBasis E) c‖ * ‖(chartModelBasis E) m‖)) := by
+          (‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d‖ *
+            (‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖)) := by
       simp [Fin.prod_univ_succ]
     _ ≤ C * (C_E * (C_E * C_E)) := by
-      have hprod : ‖(chartModelBasis E) d‖ *
-          (‖(chartModelBasis E) c‖ * ‖(chartModelBasis E) m‖) ≤
+      have hprod : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d‖ *
+          (‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖) ≤
             C_E * (C_E * C_E) :=
         mul_le_mul hd_le
           (mul_le_mul hc_le hm_le (norm_nonneg _) hCE_nn)

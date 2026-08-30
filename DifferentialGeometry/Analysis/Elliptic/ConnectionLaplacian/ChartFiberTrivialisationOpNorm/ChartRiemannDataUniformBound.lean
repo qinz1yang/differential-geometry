@@ -52,7 +52,7 @@ private lemma partialDeriv_contDiffOn_interior_of_contDiffOn
       (interior ((extChartAt I α).target : Set E)) :=
     hf.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
   have hrw : (partialDeriv (E := E) a f) =
-      fun y => fderiv ℝ f y ((chartModelBasis E) a) := rfl
+      fun y => fderiv ℝ f y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) := rfl
   rw [hrw]
   exact hfderiv.clm_apply contDiffOn_const
 

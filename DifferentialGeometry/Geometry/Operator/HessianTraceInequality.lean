@@ -166,7 +166,7 @@ private theorem hessianTrace_chart_norm_of_boundaryless
   let hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) x
   let cbasis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    chartBasisFamily (I := I) x hbase
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hbase
   let cgInv : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g x x i j
   have hcinv : MetricInverseInBasisGen (I := I) g x cbasis cgInv := by
@@ -175,16 +175,16 @@ private theorem hessianTrace_chart_norm_of_boundaryless
     · have hmatrix := congrArg (fun A => A i j)
         (chartInvGramMatrix_mul_chartGramMatrix (I := I) g x hbase)
       simpa [Matrix.mul_apply, Matrix.one_apply, cbasis, cgInv,
-        chartBasisFamily_apply] using hmatrix
+        DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply] using hmatrix
     · have hmatrix := congrArg (fun A => A i j)
         (chartGramMatrix_mul_chartInvGramMatrix (I := I) g x hbase)
       simpa [Matrix.mul_apply, Matrix.one_apply, cbasis, cgInv,
-        chartBasisFamily_apply] using hmatrix
+        DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply] using hmatrix
   have hcb : ∀ i : Fin (Module.finrank ℝ E),
-      cbasis i = (centeredChartTangentBasis (I := I) x) i := by
+      cbasis i = (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i := by
     intro i
-    rw [show cbasis i = chartBasisVecFiber (I := I) x i x by
-      exact chartBasisFamily_apply (I := I) x hbase i]
+    rw [show cbasis i = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x by
+      exact DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) x hbase i]
     exact chartBasisVecFiber_self (I := I) x i
   have hvecb : ∀ (i j : Fin (Module.finrank ℝ E)),
       (fun a : Fin 2 => cbasis (if a = 0 then i else j)) = vec2 (cbasis i) (cbasis j) := by
@@ -198,8 +198,8 @@ private theorem hessianTrace_chart_norm_of_boundaryless
     rw [hessTensorAt_apply]
     rw [hcb i, hcb j]
     rw [hessFun_eq_cov_grad (I := I) g hf x
-      (centeredChartTangentBasis (I := I) x i)
-      (centeredChartTangentBasis (I := I) x j)]
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)]
     rw [← chartHessianTensor_eq_inner_cov_gradFun_basis_of_matrix_identity
       (I := I) g hf x (chartHessianMatrixIdentity_holds (I := I) g hf x) i j]
   rw [normSq0S_eq_coord (I := I) g x 2 cbasis cgInv hcinv (hessTensorAt (I := I) g f x)]

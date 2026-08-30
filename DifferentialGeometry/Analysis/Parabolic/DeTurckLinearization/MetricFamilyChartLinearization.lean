@@ -102,7 +102,7 @@ private lemma hasDerivAt_partialDeriv_comm
       (fun s => partialDeriv (E := E) p (fun y => Φ (s, y)) y₀)
       (partialDeriv (E := E) p (fun y => deriv (fun s => Φ (s, y)) 0) y₀) 0 := by
   unfold partialDeriv
-  exact hasDerivAt_fderiv_comm Φ y₀ (chartModelBasis E p) hΦ
+  exact hasDerivAt_fderiv_comm Φ y₀ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) hΦ
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma joint_contDiffAt_partialDeriv
@@ -121,7 +121,7 @@ private lemma joint_contDiffAt_partialDeriv
     exact (contDiffAt_fst.comp ((0, y₀), y₀) contDiffAt_fst).prodMk contDiffAt_snd
   have hg : ContDiffAt ℝ ∞ (fun p : ℝ × E => p.2) (0, y₀) := contDiffAt_snd
   have hfd := ContDiffAt.fderiv hf hg (le_refl _)
-  exact (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E q)).contDiff.contDiffAt.comp (0, y₀) hfd
+  exact (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q)).contDiff.contDiffAt.comp (0, y₀) hfd
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [I.Boundaryless] in
@@ -172,18 +172,18 @@ private lemma s_contDiffAt_det_and_ne
     (hfam : IsMetricPerturbationFamily (I := I) g₀ α h gfam)
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞
-        (fun s : ℝ => (chartGramMatrix (I := I) (gfam s) α ((extChartAt I α).symm y)).det) 0 ∧
-      (chartGramMatrix (I := I) (gfam 0) α ((extChartAt I α).symm y)).det ≠ 0 := by
+        (fun s : ℝ => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α ((extChartAt I α).symm y)).det) 0 ∧
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam 0) α ((extChartAt I α).symm y)).det ≠ 0 := by
   classical
   set x : M := (extChartAt I α).symm y with hx_def
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     symm_mem_baseSet_of_interior (I := I) hy
   refine ⟨?_, ?_⟩
   · have hdet_eq : (fun s : ℝ =>
-        (chartGramMatrix (I := I) (gfam s) α x).det) =
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).det) =
         (fun s : ℝ => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ k, chartGramMatrix (I := I) (gfam s) α x (σ k) k) := by
+            ∏ k, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x (σ k) k) := by
       funext s
       rw [Matrix.det_apply]
       simp [Units.smul_def]
@@ -191,12 +191,12 @@ private lemma s_contDiffAt_det_and_ne
     refine ContDiffAt.sum (fun σ _ => ?_)
     refine contDiffAt_const.mul ?_
     refine contDiffAt_prod (fun k _ => ?_)
-    have hentry : (fun s : ℝ => chartGramMatrix (I := I) (gfam s) α x (σ k) k) =
+    have hentry : (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x (σ k) k) =
         (fun s : ℝ => chartGramOnE (I := I) (gfam s) α (σ k) k y) := by
       funext s; rw [chartGramOnE_def]
     rw [hentry]
     exact s_contDiffAt_chartGramOnE (I := I) hfam (σ k) k hy
-  · exact ne_of_gt (chartGramMatrix_det_pos (I := I) (gfam 0) α hx_base)
+  · exact ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (gfam 0) α hx_base)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [I.Boundaryless] in
@@ -208,13 +208,13 @@ private lemma s_contDiffAt_adjugate
     (hy : y ∈ interior (extChartAt I α).target) :
     ContDiffAt ℝ ∞
       (fun s : ℝ =>
-        (chartGramMatrix (I := I) (gfam s) α ((extChartAt I α).symm y)).adjugate i j) 0 := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α ((extChartAt I α).symm y)).adjugate i j) 0 := by
   classical
   set x : M := (extChartAt I α).symm y with hx_def
-  have hexp : (fun s : ℝ => (chartGramMatrix (I := I) (gfam s) α x).adjugate i j) =
+  have hexp : (fun s : ℝ => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).adjugate i j) =
       (fun s : ℝ => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
         (Equiv.Perm.sign σ : ℝ) *
-          ∏ k, (chartGramMatrix (I := I) (gfam s) α x).updateRow j
+          ∏ k, (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).updateRow j
               (Pi.single i (1 : ℝ)) (σ k) k) := by
     funext s
     rw [Matrix.adjugate_apply, Matrix.det_apply]
@@ -224,13 +224,13 @@ private lemma s_contDiffAt_adjugate
   refine contDiffAt_const.mul ?_
   refine contDiffAt_prod (fun k _ => ?_)
   by_cases hσk : σ k = j
-  · have heq : (fun s : ℝ => (chartGramMatrix (I := I) (gfam s) α x).updateRow j
+  · have heq : (fun s : ℝ => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
         (fun _ : ℝ => (Pi.single (M := fun _ : Fin (Module.finrank ℝ E) => ℝ) i
           (1 : ℝ)) k) := by
       funext s; rw [hσk, Matrix.updateRow_self]
     rw [heq]; exact contDiffAt_const
-  · have heq : (fun s : ℝ => (chartGramMatrix (I := I) (gfam s) α x).updateRow j
+  · have heq : (fun s : ℝ => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
         (fun s : ℝ => chartGramOnE (I := I) (gfam s) α (σ k) k y) := by
       funext s; rw [Matrix.updateRow_ne hσk, chartGramOnE_def]
@@ -250,14 +250,14 @@ private lemma s_contDiffAt_chartInvGramOnE
   set x : M := (extChartAt I α).symm y with hx_def
   obtain ⟨hdet_smooth, hdet_ne⟩ := s_contDiffAt_det_and_ne (I := I) hfam hy
   have hcongr : (fun s : ℝ => chartInvGramOnE (I := I) (gfam s) α k l y) =
-      (fun s : ℝ => ((chartGramMatrix (I := I) (gfam s) α x).det)⁻¹ *
-        (chartGramMatrix (I := I) (gfam s) α x).adjugate k l) := by
+      (fun s : ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).det)⁻¹ *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).adjugate k l) := by
     funext s
     rw [chartInvGramOnE_def]
-    change (chartGramMatrix (I := I) (gfam s) α x)⁻¹ k l = _
+    change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x)⁻¹ k l = _
     rw [Matrix.inv_def]
-    change (Ring.inverse (chartGramMatrix (I := I) (gfam s) α x).det •
-            (chartGramMatrix (I := I) (gfam s) α x).adjugate) k l = _
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).det •
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam s) α x).adjugate) k l = _
     rw [Matrix.smul_apply, smul_eq_mul, Ring.inverse_eq_inv]
   rw [hcongr]
   refine ContDiffAt.mul ?_ (s_contDiffAt_adjugate (I := I) hfam k l hy)
@@ -287,39 +287,39 @@ private lemma joint_contDiffAt_chartInvGramOnE
   classical
   have hGentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => chartGramMatrix (I := I) (gfam p.1) α
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2) a b) (0, y₀) := by
     intro a b
     have := joint_contDiffAt_chartGramOnE (I := I) hfam a b hy
     simpa only [chartGramOnE_def] using this
   have hdet : ContDiffAt ℝ ∞
-      (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+      (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
         ((extChartAt I α).symm p.2)).det) (0, y₀) := by
-    have hdet_eq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    have hdet_eq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).det) =
         (fun p : ℝ × E => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ kk, chartGramMatrix (I := I) (gfam p.1) α
+            ∏ kk, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
               ((extChartAt I α).symm p.2) (σ kk) kk) := by
       funext p; rw [Matrix.det_apply]; simp [Units.smul_def]
     rw [hdet_eq]
     refine ContDiffAt.sum (fun σ _ => ?_)
     refine contDiffAt_const.mul ?_
     exact contDiffAt_prod (fun kk _ => hGentry (σ kk) kk)
-  have hdet_ne : (chartGramMatrix (I := I) (gfam (0, y₀).1) α
+  have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam (0, y₀).1) α
       ((extChartAt I α).symm (0, y₀).2)).det ≠ 0 :=
-    ne_of_gt (chartGramMatrix_det_pos (I := I) (gfam 0) α
+    ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (gfam 0) α
       (symm_mem_baseSet_of_interior (I := I) hy))
   have hadj : ∀ kk ll : Fin (Module.finrank ℝ E),
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+        (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).adjugate kk ll) (0, y₀) := by
     intro kk ll
-    have hexp : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    have hexp : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).adjugate kk ll) =
         (fun p : ℝ × E => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
           (Equiv.Perm.sign σ : ℝ) *
-            ∏ m, (chartGramMatrix (I := I) (gfam p.1) α
+            ∏ m, (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
                 ((extChartAt I α).symm p.2)).updateRow ll
                 (Pi.single kk (1 : ℝ)) (σ m) m) := by
       funext p; rw [Matrix.adjugate_apply, Matrix.det_apply]; simp [Units.smul_def]
@@ -328,29 +328,29 @@ private lemma joint_contDiffAt_chartInvGramOnE
     refine contDiffAt_const.mul ?_
     refine contDiffAt_prod (fun m _ => ?_)
     by_cases hσm : σ m = ll
-    · have heq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    · have heq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).updateRow ll (Pi.single kk (1 : ℝ)) (σ m) m) =
           (fun _ : ℝ × E => (Pi.single (M := fun _ : Fin (Module.finrank ℝ E) => ℝ) kk
             (1 : ℝ)) m) := by
         funext p; rw [hσm, Matrix.updateRow_self]
       rw [heq]; exact contDiffAt_const
-    · have heq : (fun p : ℝ × E => (chartGramMatrix (I := I) (gfam p.1) α
+    · have heq : (fun p : ℝ × E => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).updateRow ll (Pi.single kk (1 : ℝ)) (σ m) m) =
-          (fun p : ℝ × E => chartGramMatrix (I := I) (gfam p.1) α
+          (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
             ((extChartAt I α).symm p.2) (σ m) m) := by
         funext p; rw [Matrix.updateRow_ne hσm]
       rw [heq]; exact hGentry (σ m) m
   have hcongr : (fun p : ℝ × E => chartInvGramOnE (I := I) (gfam p.1) α k l p.2) =
-      (fun p : ℝ × E => ((chartGramMatrix (I := I) (gfam p.1) α
+      (fun p : ℝ × E => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
           ((extChartAt I α).symm p.2)).det)⁻¹ *
-        (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate k l) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate k l) := by
     funext p
     rw [chartInvGramOnE_def]
-    change (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2))⁻¹ k l = _
+    change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2))⁻¹ k l = _
     rw [Matrix.inv_def]
-    change (Ring.inverse (chartGramMatrix (I := I) (gfam p.1) α
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α
             ((extChartAt I α).symm p.2)).det •
-            (chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate) k l = _
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gfam p.1) α ((extChartAt I α).symm p.2)).adjugate) k l = _
     rw [Matrix.smul_apply, smul_eq_mul, Ring.inverse_eq_inv]
   rw [hcongr]
   exact ((contDiffAt_inv _ hdet_ne).comp (0, y₀) hdet).mul (hadj k l)
@@ -1286,7 +1286,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 private lemma chartPushforwardFrameVec_eq_chartBasisVecFiber
     (α : M) (i : Fin (Module.finrank ℝ E)) (x : M) :
     DifferentialGeometry.PDE.RicciFlow.chartPushforwardFrameVec (I := I) α i x =
-      chartBasisVecFiber (I := I) α i x := rfl
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

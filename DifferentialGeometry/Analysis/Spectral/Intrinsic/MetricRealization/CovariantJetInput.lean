@@ -118,7 +118,7 @@ theorem ccTensorBilin_chartBasisVecFiber_eq_tensorChartComponentRaw
     (g_bg : SmoothRiemannianMetric I M) (S : SmoothCcTensor g_bg 0 2) (α : M) {x : M}
     (hx : x ∈ (chartAt H α).source) (l b : Fin (Module.finrank ℝ E)) :
     smoothCcTensorBilinForm (I := I) g_bg S x
-        (chartBasisVecFiber (I := I) α l x) (chartBasisVecFiber (I := I) α b x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b x) =
       tensorChartComponentRaw (I := I) (M := M) g_bg 0 2 S α
         (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E)))
         ![l, b] x := by
@@ -130,10 +130,10 @@ theorem ccTensorBilin_chartBasisVecFiber_eq_tensorChartComponentRaw
   change (Tensor0SBundle.Tensor0SSpace.toModel
       (S.toSection x (ContinuousMultilinearMap.constOfIsEmpty ℝ
         (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))))
-      ![chartBasisVecFiber (I := I) α l x, chartBasisVecFiber (I := I) α b x] =
+      ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b x] =
     (S.toSection x (ContinuousMultilinearMap.constOfIsEmpty ℝ
         (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)))
-      (fun j : Fin 2 => chartBasisVecFiber (I := I) α (![l, b] j) x)
+      (fun j : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (![l, b] j) x)
   rw [Tensor0SBundle.Tensor0SSpace.toModel,
     Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply]
   congr 1
@@ -175,8 +175,8 @@ theorem partialDeriv_eq_euclidPartial_comp_toEuclidean
     (f := f) (x := toEuclidean (E := E) y)]
   rw [ContinuousLinearMap.comp_apply]
   rw [show (toEuclidean (E := E)).symm.toContinuousLinearMap
-      (EuclideanSpace.single a (1 : ℝ)) = (chartModelBasis E) a from by
-    rw [chartModelBasis_apply]; rfl]
+      (EuclideanSpace.single a (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a from by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]; rfl]
   rw [show (toEuclidean (E := E)).symm (toEuclidean (E := E) y) = y from by simp]
 
 omit [NeZero (Module.finrank ℝ E)] in

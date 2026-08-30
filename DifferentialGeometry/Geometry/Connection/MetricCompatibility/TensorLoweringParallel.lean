@@ -309,7 +309,7 @@ private noncomputable def evalAtBasisCLE_loc (n : ℕ) :
     Tensor0SModel n ℝ E ≃L[ℝ]
       ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) := by
   set L : Tensor0SModel n ℝ E →ₗ[ℝ] ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) :=
-    { toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
+    { toFun := fun Φ φ => Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl } with hL
   have h_eq : Module.finrank ℝ (Tensor0SModel n ℝ E) =
@@ -319,7 +319,7 @@ private noncomputable def evalAtBasisCLE_loc (n : ℕ) :
   have hinj : Function.Injective L := by
     intro Φ₁ Φ₂ h
     apply ContinuousMultilinearMap.toMultilinearMap_injective
-    refine Module.Basis.ext_multilinear (e := fun _ : Fin n => chartModelBasis E) ?_
+    refine Module.Basis.ext_multilinear (e := fun _ : Fin n => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ?_
     intro v
     exact congrFun h v
   exact LinearEquiv.toContinuousLinearEquiv
@@ -331,7 +331,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     evalAtBasisCLE_loc (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -339,7 +339,7 @@ private lemma contMDiffOn_into_tensor0SModel_of_eval_basis_loc
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun b : M =>
-        Φ b (fun k : Fin n => (chartModelBasis E) (φ k))) U) :
+        Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) U) :
     ContMDiffOn I 𝓘(ℝ, Tensor0SModel n ℝ E) ∞ Φ U := by
   have hpi : ContMDiffOn I 𝓘(ℝ, (Fin n → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun b : M => evalAtBasisCLE_loc (E := E) n (Φ b)) U := by
@@ -383,9 +383,9 @@ private lemma contMDiffOn_metricFormFun_baseSet
       (e (TotalSpace.mk' (Tensor0SModel r ℝ E)
           (E := fun z : M => Tensor0SSpace r I z) b
           (metricFormFun (I := I) (M := M) g r Y b))).2
-        (fun k : Fin r => (chartModelBasis E) (ψ k)) =
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) =
         ∏ k : Fin r, g.inner b (Y k b)
-          ((trivializationAt E (TangentSpace I) α).symmL ℝ b ((chartModelBasis E) (ψ k))) := by
+          ((trivializationAt E (TangentSpace I) α).symmL ℝ b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k))) := by
     intro b _
     change ((separableFormAt (I := I) (M := M) g b r
           (fun k : Fin r ↦ tangentSpaceModelContinuousLinearEquiv (I := I) b (Y k b)))
@@ -393,7 +393,7 @@ private lemma contMDiffOn_metricFormFun_baseSet
           (fun _ : Fin r ↦
             (tangentSpaceModelContinuousLinearEquiv (I := I) b).toContinuousLinearMap.comp
               ((trivializationAt E (TangentSpace I) α).symmL ℝ b)))
-        (fun k : Fin r => (chartModelBasis E) (ψ k)) = _
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) = _
     rw [ContinuousMultilinearMap.compContinuousLinearMap_apply, separableFormAt_apply]
     refine Finset.prod_congr rfl (fun k _ ↦ ?_)
     rw [modelInnerAt_apply]
@@ -404,8 +404,8 @@ private lemma contMDiffOn_metricFormFun_baseSet
       (e (TotalSpace.mk' (Tensor0SModel r ℝ E)
           (E := fun z : M => Tensor0SSpace r I z) b
           (metricFormFun (I := I) (M := M) g r Y b))).2
-        (fun k : Fin r => (chartModelBasis E) (ψ k)) =
-        ∏ k : Fin r, g.inner b (Y k b) (chartBasisVecFiber (I := I) α (ψ k) b) := by
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) =
+        ∏ k : Fin r, g.inner b (Y k b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (ψ k) b) := by
     intro b hb
     rw [hfibre b hb]
     refine Finset.prod_congr rfl (fun k _ => ?_)
@@ -414,12 +414,12 @@ private lemma contMDiffOn_metricFormFun_baseSet
   refine contMDiffOn_finsetProd (fun k _ => ?_)
   have happ : ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
       (fun b : M => (⟨b, g.inner b (Y k b)
-          (chartBasisVecFiber (I := I) α (ψ k) b)⟩ :
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (ψ k) b)⟩ :
           TotalSpace ℝ (Bundle.Trivial M ℝ)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
       (b := id) g.contMDiff.contMDiffOn (Y k).contMDiff.contMDiffOn
-      (chartBasisVec_contMDiffOn (I := I) α (ψ k))
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α (ψ k))
   intro x hx
   have hpb := happ x hx
   rw [Bundle.contMDiffWithinAt_totalSpace] at hpb

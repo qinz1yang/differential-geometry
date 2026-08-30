@@ -39,15 +39,15 @@ theorem chartJ_apply_chartBasisVecFiber_continuousOn
     (α : M) (i : Fin (Module.finrank ℝ E)) :
     ContinuousOn
       (fun b : M => chartTrivializationLinearMap (I := I) (M := M) α b
-        (chartBasisVecFiber (I := I) α i b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have heq : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
       chartTrivializationLinearMap (I := I) (M := M) α b
-          (chartBasisVecFiber (I := I) α i b) = (chartModelBasis E) i := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
     intro b hb
-    unfold chartTrivializationLinearMap chartBasisVecFiber
+    unfold chartTrivializationLinearMap DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
     exact (trivializationAt E (TangentSpace I) α).continuousLinearMapAt_symmL hb
-      ((chartModelBasis E) i)
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
   refine ContinuousOn.congr ?_ (fun b hb => heq b hb)
   exact continuousOn_const
 
@@ -57,19 +57,19 @@ theorem metric_inner_chartBasisFibers_continuousOn
     ContinuousOn
       (fun b : M =>
         g.inner b
-          (chartBasisVecFiber (I := I) α i b)
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have hsmooth : ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => chartGramMatrix g α b i j)
+      (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b i j)
       (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartGramMatrix_entry_contMDiffOn (I := I) g α i j
-  have hcont : ContinuousOn (fun b : M => chartGramMatrix g α b i j)
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+  have hcont : ContinuousOn (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b i j)
       (trivializationAt E (TangentSpace I) α).baseSet :=
     hsmooth.continuousOn
   refine hcont.congr ?_
   intro b _
-  exact (chartGramMatrix_apply g α b i j).symm
+  exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply g α b i j).symm
 
 theorem separableFormAt_chartBasisFibers_eval_continuousOn
     (g : SmoothRiemannianMetric I M) (α : M) (r : ℕ)
@@ -78,19 +78,19 @@ theorem separableFormAt_chartBasisFibers_eval_continuousOn
       (fun b : M =>
         separableFormAt (I := I) (M := M) g b r
           (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α (Idx k) b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Idx k) b))
           (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α (Jdx k) b)))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx k) b)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have heq : ∀ b : M,
       separableFormAt (I := I) (M := M) g b r
           (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α (Idx k) b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Idx k) b))
           (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α (Jdx k) b)) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx k) b)) =
         ∏ k : Fin r, g.inner b
-          (chartBasisVecFiber (I := I) α (Idx k) b)
-          (chartBasisVecFiber (I := I) α (Jdx k) b) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Idx k) b)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx k) b) := by
     intro b
     rw [separableFormAt_apply]
     apply Finset.prod_congr rfl
@@ -126,18 +126,18 @@ theorem triv_symm_apply_const_continuousOn_baseSet
 
 theorem chartBasisVec_continuousOn_baseSet
     (α : M) (k : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (chartBasisVec (I := I) α k)
+    ContinuousOn (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α k)
       (trivializationAt E (TangentSpace I) α).baseSet := by
-  unfold chartBasisVec chartBasisVecFiber
+  unfold DifferentialGeometry.Tensor.Coordinates.chartBasisVec DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
   refine ContinuousOn.congr
     (triv_symm_apply_const_continuousOn_baseSet (I := I) (M := M) α
-      ((chartModelBasis E) k)) ?_
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ?_
   intro x hx
   change TotalSpace.mk' E x
       ((Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) α) x)
-        ((chartModelBasis E) k)) =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) =
     TotalSpace.mk' E x
-      ((trivializationAt E (TangentSpace I) α).symm x ((chartModelBasis E) k))
+      ((trivializationAt E (TangentSpace I) α).symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
   rw [Trivialization.symmL_apply _ hx]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -179,10 +179,10 @@ theorem metric_inner_chartBasisFiber_trivSymm_continuousOn
     ContinuousOn
       (fun b : M =>
         g.inner b
-          (chartBasisVecFiber (I := I) α k b)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
           ((trivializationAt E (TangentSpace I) α).symm b v))
       (trivializationAt E (TangentSpace I) α).baseSet := by
-  have hX : ContinuousOn (chartBasisVec (I := I) α k)
+  have hX : ContinuousOn (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α k)
       (trivializationAt E (TangentSpace I) α).baseSet :=
     chartBasisVec_continuousOn_baseSet (I := I) (M := M) α k
   have hY : ContinuousOn
@@ -191,7 +191,7 @@ theorem metric_inner_chartBasisFiber_trivSymm_continuousOn
       (trivializationAt E (TangentSpace I) α).baseSet :=
     triv_symm_apply_const_continuousOn_baseSet (I := I) (M := M) α v
   have h := metric_inner_sections_continuousOn (I := I) (M := M) (E := E) g
-    (v := fun b => chartBasisVecFiber (I := I) α k b)
+    (v := fun b => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
     (w := fun b => (trivializationAt E (TangentSpace I) α).symm b v)
     (s := (trivializationAt E (TangentSpace I) α).baseSet) hX hY
   exact h

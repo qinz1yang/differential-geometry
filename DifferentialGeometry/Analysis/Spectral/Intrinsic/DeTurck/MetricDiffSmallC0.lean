@@ -171,7 +171,7 @@ theorem metricDiff_smallC0
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hga : g a = q) (hδ : 0 < δ) :
@@ -190,7 +190,7 @@ theorem metricDiff_smallC0
       (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
     have hc : ContinuousOn
         ((fun p : Real × M =>
-            chartGramMatrix (I := I) (g p.1) x₀ p.2 i j) ∘
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j) ∘
           (fun p : {t : Real // t ∈ K} × M => ((p.1 : Real), p.2)))
         {p : {t : Real // t ∈ K} × M |
           p.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} :=
@@ -365,13 +365,13 @@ theorem metricPair_smallC0
     (hcont₀ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hg₀ : g₀ a = q) (hg₁ : g₁ a = q) (hδ : 0 < δ) :

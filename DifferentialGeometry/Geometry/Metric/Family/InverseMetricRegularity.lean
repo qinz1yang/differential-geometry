@@ -20,9 +20,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 theorem chartBasisVec_jointContMDiffOn (α : M) (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (chartBasisVecFiber (I := I) α i p.1))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p.1))
       ((chartAt H α).source ×ˢ (Set.univ : Set ℝ)) := by
-  have hbase := chartBasisVec_contMDiffOn (I := I) α i
+  have hbase := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i
   have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
     trivializationAt_baseSet_eq_chartAt_source (I := I) α
   rw [hbase_eq] at hbase
@@ -37,7 +37,7 @@ theorem metricSharpChartCoeff_jointContMDiffOn
         ((chartAt H α).source ×ˢ S))
     (hcv : ∀ j : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
+        (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ S))
     (i : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
@@ -47,7 +47,7 @@ theorem metricSharpChartCoeff_jointContMDiffOn
   have heq : (fun p : M × ℝ => metricSharpChartCoeff (I := I) (gfam p.2) α (cv p.2) i p.1) =
       (fun p : M × ℝ => ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (gfam p.2) α p.1 i j *
-          cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1)) := by
+          cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1)) := by
     funext p; rw [metricSharpChartCoeff_def]
   rw [heq]
   exact contMDiffOn_finsetSum (fun j _ => (hinv i j).mul (hcv j))
@@ -61,7 +61,7 @@ theorem metricSharpChartLocal_jointContMDiffOn
         ((chartAt H α).source ×ˢ S))
     (hcv : ∀ j : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
+        (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ S)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
@@ -76,7 +76,7 @@ theorem metricSharpChartLocal_jointContMDiffOn
   have hcoord_eq : ∀ q ∈ (chartAt H α).source ×ˢ S,
       (e ⟨q.1, metricSharpChartLocal (I := I) (gfam q.2) α (cv q.2) q.1⟩).2 =
         ∑ i, metricSharpChartCoeff (I := I) (gfam q.2) α (cv q.2) i q.1 •
-          (chartModelBasis E) i := by
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
     rintro q ⟨hqx, _⟩
     have hqbase : q.1 ∈ e.baseSet := by
       rw [he, trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hqx
@@ -89,7 +89,7 @@ theorem metricSharpChartLocal_jointContMDiffOn
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_smul, ← hclm]
     congr 1
-    rw [trivializationAt_chartBasisVec_snd (I := I) α i hqbase]
+    rw [DifferentialGeometry.Tensor.Coordinates.trivializationAt_chartBasisVec_snd (I := I) α i hqbase]
   have hcoordSmooth : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) ∞
       (fun q : M × ℝ => (e ⟨q.1, metricSharpChartLocal (I := I) (gfam q.2) α (cv q.2) q.1⟩).2)
       ((chartAt H α).source ×ˢ S) := by
@@ -112,7 +112,7 @@ theorem metricSharp_jointContMDiffOn
         ((chartAt H α).source ×ˢ S))
     (hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-        (fun p : M × ℝ => cv p.2 p.1 (chartBasisVecFiber (I := I) α j p.1))
+        (fun p : M × ℝ => cv p.2 p.1 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ S)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1

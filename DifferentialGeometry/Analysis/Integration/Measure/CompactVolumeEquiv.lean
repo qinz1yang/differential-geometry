@@ -25,18 +25,18 @@ lemma density_cont_of_gram
     (g : ℝ → SmoothRiemannianMetric I M) (alpha : M)
     {S : Set (ℝ × M)}
     (hG : ∀ i j : Fin (Module.finrank ℝ E), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) alpha p.2 i j) S) :
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2 i j) S) :
     ContinuousOn
       (fun p : ℝ × M => chartDensity (I := I) (g p.1) alpha p.2) S := by
   classical
   let n := Fin (Module.finrank ℝ E)
   have hdet : ContinuousOn
-      (fun p : ℝ × M => (chartGramMatrix (I := I) (g p.1) alpha p.2).det) S := by
+      (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2).det) S := by
     have hexp :
-        (fun p : ℝ × M => (chartGramMatrix (I := I) (g p.1) alpha p.2).det) =
+        (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2).det) =
           (fun p : ℝ × M =>
             ∑ sigma : Equiv.Perm n, ((Equiv.Perm.sign sigma : ℤ) : ℝ) *
-              ∏ i, chartGramMatrix (I := I) (g p.1) alpha p.2 (sigma i) i) := by
+              ∏ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2 (sigma i) i) := by
       funext p
       rw [Matrix.det_apply]
       simp [Units.smul_def]
@@ -53,7 +53,7 @@ lemma density_ratio_bdd
     (g : ℝ → SmoothRiemannianMetric I M) (alpha : M)
     {J : Set ℝ} (hJ : IsCompact J)
     (hgram : ∀ i j : Fin (Module.finrank ℝ E), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) alpha).baseSet)) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ t ∈ J, ∀ x ∈ tsupport
         (fun y : M => (chartAtlasPOU I M alpha : M → ℝ) y),
@@ -128,7 +128,7 @@ theorem volume_density_bdd
     (g : ℝ → SmoothRiemannianMetric I M)
     {J : Set ℝ} (hJ : IsCompact J)
     (hgram : ∀ alpha (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) alpha).baseSet)) :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ alpha ∈ chartAtlasPOUFinset (I := I) (M := M),
@@ -253,7 +253,7 @@ theorem volume_lintegral_le
     (g : ℝ → SmoothRiemannianMetric I M)
     {J : Set ℝ} (hJ : IsCompact J)
     (hgram : ∀ alpha (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) alpha).baseSet)) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ t ∈ J, ∀ (F : M → ℝ≥0∞), Measurable F →
       (∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) (g t))) ≤
@@ -317,7 +317,7 @@ theorem volume_uniform_equiv
     (g : ℝ → SmoothRiemannianMetric I M)
     {J : Set ℝ} (hJ : IsCompact J)
     (hgram : ∀ alpha (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) alpha p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) alpha).baseSet)) :
     ∃ C : ℝ≥0∞, C ≠ 0 ∧ C ≠ ⊤ ∧ ∀ t ∈ J,
       riemannianVolumeMeasure (I := I) (M := M) (g t) ≤

@@ -239,7 +239,7 @@ theorem deTurckRHSField_realizePath_jointContMDiffOn
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_snd, ?_⟩
   set α : M := p₀.2 with hα
-  set Bb := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBb
+  set Bb := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBb
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
   have hgood : Set.Icc (0 : ℝ) T ×ˢ chartLeviCivitaGoodSet (I := I) α ∈
@@ -274,13 +274,13 @@ theorem deTurckRHSField_realizePath_jointContMDiffOn
       change Tensor0SBundle.Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (gfam q.1) q.2)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ q.2
-            ((chartModelBasis E) (σ i))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ i))) = _
       rw [deTurckRHSField_eval]
       have hframe : ∀ i : Fin 2,
-          (trivializationAt E (TangentSpace I) α).symmL ℝ q.2 ((chartModelBasis E) (σ i)) =
-            chartBasisVecFiber (I := I) α (σ i) q.2 :=
+          (trivializationAt E (TangentSpace I) α).symmL ℝ q.2 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ i)) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ i) q.2 :=
         fun i => by
-          rw [chartBasisVecFiber, Trivialization.symmL_apply _
+          rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, Trivialization.symmL_apply _
             (chartLeviCivitaGoodSet_mem_baseSet (I := I) hqgood)]
       rw [hframe 0, hframe 1]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
@@ -293,13 +293,13 @@ theorem deTurckRHSField_realizePath_jointContMDiffOn
       change Tensor0SBundle.Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (gfam p₀.1) p₀.2)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.2
-            ((chartModelBasis E) (σ i))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ i))) = _
       rw [deTurckRHSField_eval]
       have hframe : ∀ i : Fin 2,
-          (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.2 ((chartModelBasis E) (σ i)) =
-            chartBasisVecFiber (I := I) α (σ i) p₀.2 :=
+          (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.2 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ i)) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ i) p₀.2 :=
         fun i => by
-          rw [chartBasisVecFiber, Trivialization.symmL_apply _
+          rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, Trivialization.symmL_apply _
             (chartLeviCivitaGoodSet_mem_baseSet (I := I) hp₀good)]
       rw [hframe 0, hframe 1]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
@@ -376,11 +376,11 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
     (TT SS : M × ℝ → ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ)
     (_hT : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-        (fun p : M × ℝ => (TT p) (fun k : Fin n => (chartModelBasis E) (φ k)))
+        (fun p : M × ℝ => (TT p) (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T))
     (_hS : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-        (fun p : M × ℝ => (SS p) (fun k : Fin n => (chartModelBasis E) (φ k)))
+        (fun p : M × ℝ => (SS p) (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ =>
@@ -400,7 +400,7 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
       have hT0 := hT (fun i : Fin 0 => Fin.elim0 i)
       have hS0 := hS (fun i : Fin 0 => Fin.elim0 i)
       have hempty :
-          (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))
+          (fun k : Fin 0 => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))
             = (fun i : Fin 0 => (Fin.elim0 i : E)) := by
         funext i; exact Fin.elim0 i
       have hT_smooth :
@@ -409,7 +409,7 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
             ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
         have : (fun p : M × ℝ => (TT p) (fun i : Fin 0 => Fin.elim0 i)) =
             (fun p : M × ℝ => (TT p)
-              (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
+              (fun k : Fin 0 => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
           funext p; congr 1; rw [hempty]
         rw [this]; exact hT0
       have hS_smooth :
@@ -418,7 +418,7 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
             ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
         have : (fun p : M × ℝ => (SS p) (fun i : Fin 0 => Fin.elim0 i)) =
             (fun p : M × ℝ => (SS p)
-              (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
+              (fun k : Fin 0 => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
           funext p; congr 1; rw [hempty]
         rw [this]; exact hS0
       exact hT_smooth.mul hS_smooth
@@ -429,10 +429,10 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
           fun p : M × ℝ =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                (chartGramMatrix (I := I) g α p.1)⁻¹ i j *
+                (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p.1)⁻¹ i j *
                   chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1
-                    ((TT p).curryLeft ((chartModelBasis E) i))
-                    ((SS p).curryLeft ((chartModelBasis E) j)) := by
+                    ((TT p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                    ((SS p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
         funext p
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
@@ -445,17 +445,17 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
         rw [hbase_eq] at hinv
         exact hinv.comp contMDiffOn_fst (fun p hp => hp.1)
       · refine ih
-            (fun p : M × ℝ => (TT p).curryLeft ((chartModelBasis E) i))
-            (fun p : M × ℝ => (SS p).curryLeft ((chartModelBasis E) j))
+            (fun p : M × ℝ => (TT p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (fun p : M × ℝ => (SS p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
             ?_ ?_
         · intro ψ
           set ψ' : Fin (n + 1) → Fin (Module.finrank ℝ E) :=
             Fin.cons (α := fun _ => Fin (Module.finrank ℝ E)) i ψ with hψ'
           have heq' :
-              (fun p : M × ℝ => ((TT p).curryLeft ((chartModelBasis E) i))
-                  (fun k : Fin n => (chartModelBasis E) (ψ k)))
+              (fun p : M × ℝ => ((TT p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
                 = fun p : M × ℝ =>
-                    (TT p) (fun k : Fin (n + 1) => (chartModelBasis E) (ψ' k)) := by
+                    (TT p) (fun k : Fin (n + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ' k)) := by
             funext p
             rw [ContinuousMultilinearMap.curryLeft_apply]
             congr 1
@@ -469,10 +469,10 @@ theorem chartTensorInnerPointwise_0s_jointContMDiffOn_smooth_args
           set ψ' : Fin (n + 1) → Fin (Module.finrank ℝ E) :=
             Fin.cons (α := fun _ => Fin (Module.finrank ℝ E)) j ψ with hψ'
           have heq' :
-              (fun p : M × ℝ => ((SS p).curryLeft ((chartModelBasis E) j))
-                  (fun k : Fin n => (chartModelBasis E) (ψ k)))
+              (fun p : M × ℝ => ((SS p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
+                  (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
                 = fun p : M × ℝ =>
-                    (SS p) (fun k : Fin (n + 1) => (chartModelBasis E) (ψ' k)) := by
+                    (SS p) (fun k : Fin (n + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ' k)) := by
             funext p
             rw [ContinuousMultilinearMap.curryLeft_apply]
             congr 1
@@ -501,13 +501,13 @@ theorem loweredCompose_zero_basis_eval_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
       (fun p : M × ℝ =>
         (loweredCompose (I := I) (M := M) g 0 2 α p.1 (arm p))
-          (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)))
+          (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
   have heval : ∀ p : M × ℝ,
       (loweredCompose (I := I) (M := M) g 0 2 α p.1 (arm p))
-          (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)) =
+          (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) =
         Tensor0SBundle.Tensor0SSpace.toModel (Tval p)
-          (fun j : Fin 2 => chartBasisVecFiber (I := I) α
+          (fun j : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
             (φ (Fin.natAdd 0 j)) p.1) := by
     intro p
     rw [loweredCompose_apply, lowerAllUpperIndices_apply, separableFormAt_zero, harm p]
@@ -515,7 +515,7 @@ theorem loweredCompose_zero_basis_eval_jointContMDiffOn
   refine ContMDiffOn.congr ?_ (fun p _ => heval p)
   have hv : ∀ j : Fin 2, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1))
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro j
     have h := DifferentialGeometry.Geometry.Operator.chartBasisVec_jointContMDiffOn
@@ -524,7 +524,7 @@ theorem loweredCompose_zero_basis_eval_jointContMDiffOn
   intro p hp
   exact contMDiffWithinAt_section_apply_prod_full 2 (s := (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)
     (p₀ := p) Tval (hTval p hp)
-    (fun j p => chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1)
+    (fun j p => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1)
     (fun j => hv j p hp)
 
 theorem deTurckRHSSection_realize_path_tensorInner_eigenSmooth_jointContMDiffOn
@@ -644,7 +644,7 @@ theorem deTurckRHSSection_realize_path_tensorInner_eigenSmooth_jointContMDiffOn
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ =>
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (eig.toFun p.1))
-            (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)))
+            (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
     fun φ => loweredCompose_zero_basis_eval_jointContMDiffOn (I := I) (M := M) g₀ α
       (fun p => eig.toSection p.1 (ContinuousMultilinearMap.constOfIsEmpty ℝ
@@ -682,7 +682,7 @@ theorem deTurckRHSSection_realize_path_tensorInner_eigenSmooth_jointContMDiffOn
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ =>
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((recon p.2).toFun p.1))
-            (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)))
+            (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro φ
     refine loweredCompose_zero_basis_eval_jointContMDiffOn (I := I) (M := M) g₀ α

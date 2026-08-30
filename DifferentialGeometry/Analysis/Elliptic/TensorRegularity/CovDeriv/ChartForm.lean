@@ -332,23 +332,23 @@ lemma tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     tensorCovDerivAt (I := I) (M := M) g r s S b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α m b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)) =
       chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-        (chartBasisVecFiber (I := I) α m) b := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b := by
   classical
   obtain ⟨Xfield, hXfield⟩ :=
     ContMDiffSection.exists_eq_at (I := I) (F := E)
       (V := (TangentSpace I : M → Type _)) (n := (⊤ : ℕ∞)) b
-      (chartBasisVecFiber (I := I) α m b)
-  have hXfield' : Xfield.toFun b = chartBasisVecFiber (I := I) α m b := hXfield
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)
+  have hXfield' : Xfield.toFun b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b := hXfield
   have hagree := chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet (I := I)
     (M := M)
     g r s α S.toSection Xfield hb
   have hloc := chartTensorRSCovariantDerivative_locality (I := I) r s g α
-    S.toSection Xfield.toFun (chartBasisVecFiber (I := I) α m) b hXfield'
+    S.toSection Xfield.toFun (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b hXfield'
   calc tensorCovDerivAt (I := I) (M := M) g r s S b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α m b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))
       = TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g) (fun y : M => S.toSection y) b
           (Xfield.toFun b) := by
@@ -358,7 +358,7 @@ lemma tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
     _ = chartTensorRSCovariantDerivative (I := I) r s g α
           (fun y : M => S.toSection y) Xfield.toFun b := hagree.symm
     _ = chartTensorRSCovariantDerivative (I := I) r s g α
-          (fun y : M => S.toSection y) (chartBasisVecFiber (I := I) α m) b :=
+          (fun y : M => S.toSection y) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b :=
         hloc
 
 noncomputable def covPrincipalIntegrand
@@ -433,7 +433,7 @@ theorem covPrincipalIntegrand_symm
     have hHerm : (chartInvGramMatrix (I := I) g α
         ((extChartAt I α).symm (toEuclidean.symm y))).IsHermitian := by
       unfold chartInvGramMatrix
-      exact (chartGramMatrix_isHermitian (I := I) g α
+      exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α
         ((extChartAt I α).symm (toEuclidean.symm y))).inv
     have hsymm := hHerm.apply k l
     rw [star_trivial] at hsymm
@@ -496,49 +496,49 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
   have hcov_S : ∀ i : Fin (Module.finrank ℝ E),
       tensorCovDerivAt (I := I) (M := M) g r s S b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α i b)) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) =
         chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-          (chartBasisVecFiber (I := I) α i) b := fun i =>
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i) b := fun i =>
     tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
       g r s S α i hb_good
   have hcov_T : ∀ j : Fin (Module.finrank ℝ E),
       tensorCovDerivAt (I := I) (M := M) g r s T b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α j b)) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) =
         chartTensorRSCovariantDerivative (I := I) r s g α T.toSection
-          (chartBasisVecFiber (I := I) α j) b := fun j =>
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b := fun j =>
     tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
       g r s T α j hb_good
   have hG_entry : ∀ i j : Fin (Module.finrank ℝ E),
-      (chartGramMatrix (I := I) g α b)⁻¹ i j =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b)⁻¹ i j =
         chartInvGramEuclid (I := I) g α i j y := by
     intro i j
     rw [chartInvGramEuclid_def, chartInvGramOnE_def]
-    show (chartGramMatrix (I := I) g α b)⁻¹ i j =
+    show (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b)⁻¹ i j =
       chartInvGramMatrix (I := I) g α
         ((extChartAt I α).symm (toEuclidean.symm y)) i j
     rw [chartInvGramMatrix]
   have hsum_rewrite :
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          (chartGramMatrix (I := I) g α b)⁻¹ i j *
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b)⁻¹ i j *
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α i b))))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s T b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α j b))))) =
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))))) =
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramEuclid (I := I) g α i j y *
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (chartTensorRSCovariantDerivative (I := I) r s g α
-                  S.toSection (chartBasisVecFiber (I := I) α i) b))
+                  S.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i) b))
               (TensorRSSpace.toModel
                 (chartTensorRSCovariantDerivative (I := I) r s g α
-                  T.toSection (chartBasisVecFiber (I := I) α j) b)) := by
+                  T.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b)) := by
     refine Finset.sum_congr rfl (fun i _ => ?_)
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [hcov_S i, hcov_T j, hG_entry i j]
@@ -547,10 +547,10 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
       tensorInnerPointwise (I := I) (M := M) g r s b
           (TensorRSSpace.toModel
             (chartTensorRSCovariantDerivative (I := I) r s g α
-              S.toSection (chartBasisVecFiber (I := I) α i) b))
+              S.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i) b))
           (TensorRSSpace.toModel
             (chartTensorRSCovariantDerivative (I := I) r s g α
-              T.toSection (chartBasisVecFiber (I := I) α j) b)) =
+              T.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b)) =
         ∑ P : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
           ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -574,14 +574,14 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
     rw [tensorInnerPointwise_toModel_eq_component_sum (I := I) (M := M)
       g r s α hb_chart
       (chartTensorRSCovariantDerivative (I := I) r s g α
-        S.toSection (chartBasisVecFiber (I := I) α i) b)
+        S.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i) b)
       (chartTensorRSCovariantDerivative (I := I) r s g α
-        T.toSection (chartBasisVecFiber (I := I) α j) b)]
+        T.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b)]
     refine Finset.sum_congr rfl (fun P _ => ?_)
     refine Finset.sum_congr rfl (fun Q _ => ?_)
     have hSproj : wrappedComponentProj (I := I) (M := M) r s α b P.1 P.2
           (chartTensorRSCovariantDerivative (I := I) r s g α
-            S.toSection (chartBasisVecFiber (I := I) α i) b) =
+            S.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i) b) =
         euclidPartial (E := E) i
             (chartPushedRaw I α
               (tensorChartComponentRaw (I := I) (M := M)
@@ -592,7 +592,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
         g r s S α i P.1 P.2 hy
     have hTproj : wrappedComponentProj (I := I) (M := M) r s α b Q.1 Q.2
           (chartTensorRSCovariantDerivative (I := I) r s g α
-            T.toSection (chartBasisVecFiber (I := I) α j) b) =
+            T.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b) =
         euclidPartial (E := E) j
             (chartPushedRaw I α
               (tensorChartComponentRaw (I := I) (M := M)
@@ -607,10 +607,10 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
           tensorInnerPointwise (I := I) (M := M) g r s b
             (TensorRSSpace.toModel
               (chartTensorRSCovariantDerivative (I := I) r s g α
-                S.toSection (chartBasisVecFiber (I := I) α i) b))
+                S.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i) b))
             (TensorRSSpace.toModel
               (chartTensorRSCovariantDerivative (I := I) r s g α
-                T.toSection (chartBasisVecFiber (I := I) α j) b))) =
+                T.toSection (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b))) =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ∑ P : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),

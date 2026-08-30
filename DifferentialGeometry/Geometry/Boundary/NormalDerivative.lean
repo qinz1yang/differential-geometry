@@ -25,20 +25,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 def outwardNormalDerivative
-    (g : Measure.SmoothRiemannianMetric I M) (f : M → ℝ)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) (f : M → ℝ)
     (x : BoundaryManifold I M) : ℝ :=
   g.inner (x : M) (gradientFun (I := I) g f (x : M))
     (outwardNormal (E := E) (H := H) (I := I) (M := M) g x)
 
 @[simp] theorem outwardNormalDerivative_apply
-    (g : Measure.SmoothRiemannianMetric I M) (f : M → ℝ)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) (f : M → ℝ)
     (x : BoundaryManifold I M) :
     outwardNormalDerivative (M := M) g f x =
       g.inner (x : M) (gradientFun (I := I) g f (x : M))
         (outwardNormal (E := E) (H := H) (I := I) (M := M) g x) := rfl
 
 theorem outwardNormalDerivative_eq_mfderiv
-    (g : Measure.SmoothRiemannianMetric I M) (f : M → ℝ)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) (f : M → ℝ)
     (x : BoundaryManifold I M) :
     outwardNormalDerivative (M := M) g f x =
       mfderiv I (modelWithCornersSelf ℝ ℝ) f (x : M)
@@ -97,7 +97,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 theorem inner_gradient_boundary_tangent_eq_zero_at_local_min
-    (g : Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {f : M → ℝ} {x : BoundaryManifold I M}
     (hmin : IsLocalMin (fun y : BoundaryManifold I M ↦ f (y : M)) x)
     (hf : MDifferentiableAt I (modelWithCornersSelf ℝ ℝ) f (x : M))
@@ -118,7 +118,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 theorem outwardNormalDerivative_neg_of_inner_gradient_inwardCoord_pos_at_local_min
-    (g : Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {f : M → ℝ} {x : BoundaryManifold I M}
     (hmin : IsLocalMin (fun y : BoundaryManifold I M ↦ f (y : M)) x)
     (hf : MDifferentiableAt I (modelWithCornersSelf ℝ ℝ) f (x : M))

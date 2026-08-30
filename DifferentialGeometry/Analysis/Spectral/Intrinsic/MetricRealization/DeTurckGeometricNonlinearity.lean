@@ -155,9 +155,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma chartFrameVec_eq_chartBasisVecFiber_helper (α : M)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
-    (trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i)
-      = chartBasisVecFiber (I := I) α i x := by
-  rw [chartBasisVecFiber]
+    (trivializationAt E (TangentSpace I) α).symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
+      = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber]
 
 
 omit [BoundarylessManifold I M] in
@@ -232,7 +232,7 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   set α : M := p₀.1 with hα
-  set Bb := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBb
+  set Bb := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBb
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
   have hcoord : ∀ σ : Fin 2 → Fin (Module.finrank ℝ E),
@@ -270,7 +270,7 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       change Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p.1
-            ((chartModelBasis E) (σ i))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ i))) = _
       rw [deTurckRHSField_eval]
       rw [chartFrameVec_eq_chartBasisVecFiber_helper,
         chartFrameVec_eq_chartBasisVecFiber_helper]
@@ -285,7 +285,7 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       change Tensor0SSpace.eval
           (deTurckRHSField (I := I) g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.1
-            ((chartModelBasis E) (σ i))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ i))) = _
       rw [deTurckRHSField_eval]
       rw [chartFrameVec_eq_chartBasisVecFiber_helper,
         chartFrameVec_eq_chartBasisVecFiber_helper]

@@ -147,9 +147,9 @@ noncomputable def tensorCovDerivPointwiseInner
     (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
       tensorInnerPointwise (I := I) (M := M) g r s x
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) i)))
+          (tensorCovDerivAt (I := I) (M := M) g r s S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g r s T x ((chartModelBasis E) j)))
+          (tensorCovDerivAt (I := I) (M := M) g r s T x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -163,10 +163,10 @@ lemma tensorCovDerivPointwiseInner_def
           tensorInnerPointwise (I := I) (M := M) g r s x
             (TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s S x
-                ((chartModelBasis E) i)))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))
             (TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s T x
-                ((chartModelBasis E) j))) := rfl
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) := rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -206,10 +206,10 @@ lemma tensorCovDerivPointwiseInner_add_left
   refine Finset.sum_congr rfl ?_
   intro j _
   have hAdd : tensorCovDerivAt (I := I) (M := M) g r s (S₁ + S₂) x
-        ((chartModelBasis E) i) =
-      tensorCovDerivAt (I := I) (M := M) g r s S₁ x ((chartModelBasis E) i) +
-        tensorCovDerivAt (I := I) (M := M) g r s S₂ x ((chartModelBasis E) i) :=
-    tensorCovDerivAt_add (I := I) (M := M) g r s S₁ S₂ x ((chartModelBasis E) i)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+      tensorCovDerivAt (I := I) (M := M) g r s S₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) +
+        tensorCovDerivAt (I := I) (M := M) g r s S₂ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+    tensorCovDerivAt_add (I := I) (M := M) g r s S₁ S₂ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
   rw [hAdd, TensorRSSpace.toModel_add, tensorInnerPointwise_add_left]
   ring
 
@@ -228,9 +228,9 @@ lemma tensorCovDerivPointwiseInner_smul_left
   refine Finset.sum_congr rfl ?_
   intro j _
   have hSmul : tensorCovDerivAt (I := I) (M := M) g r s (c • S) x
-        ((chartModelBasis E) i) =
-      c • tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) i) :=
-    tensorCovDerivAt_smul (I := I) (M := M) g r s c S x ((chartModelBasis E) i)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+      c • tensorCovDerivAt (I := I) (M := M) g r s S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+    tensorCovDerivAt_smul (I := I) (M := M) g r s c S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
   rw [hSmul, TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_left]
   ring
 
@@ -250,7 +250,7 @@ lemma tensorCovDerivPointwiseInner_nonneg
   have hGinv_herm : Ginv.IsHermitian := hGinv_psd.isHermitian
   set vfam : Fin n → TensorRSModel r s ℝ E :=
     fun i => TensorRSSpace.toModel
-      (tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) i))
+      (tensorCovDerivAt (I := I) (M := M) g r s S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
     with hvfam_def
   have hspec := hGinv_herm.spectral_theorem
   set U : Matrix (Fin n) (Fin n) ℝ :=

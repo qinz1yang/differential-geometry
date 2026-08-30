@@ -536,7 +536,7 @@ private lemma chartGramAlongCurve_eq_inner
   rw [chartGramAlongCurve_def]
   have hgram : ∀ i j : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g p i j (chartCurve (I := I) p γ t) =
-        chartGramMatrix (I := I) g p (γ t) i j := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g p (γ t) i j := by
     intro i j
     rw [chartGramOnE_def]
     rw [chartCurve_def]

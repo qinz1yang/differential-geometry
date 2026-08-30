@@ -25,8 +25,8 @@ def paramGramMatrix (g : SmoothRiemannianMetric I M)
     E → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   fun w => Matrix.of fun i j =>
     g.inner (Ψ w)
-      (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-      (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j))
+      (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+      (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
 
 @[simp] lemma paramGramMatrix_apply
     (g : SmoothRiemannianMetric I M)
@@ -34,8 +34,8 @@ def paramGramMatrix (g : SmoothRiemannianMetric I M)
     (w : E) (i j : Fin (Module.finrank ℝ E)) :
     paramGramMatrix (I := I) g Ψ w i j =
       g.inner (Ψ w)
-        (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-        (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j)) := rfl
+        (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+        (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := rfl
 
 def paramDensity (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) : E → ℝ :=
@@ -75,7 +75,7 @@ def paramChartMap (x₀ : M)
 def paramJacobianMatrix (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) (w : E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
+  LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).toLinearMap
 
 omit [IsManifold I ∞ M] in
@@ -83,9 +83,9 @@ omit [IsManifold I ∞ M] in
     (x₀ : M) (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) (w : E)
     (k i : Fin (Module.finrank ℝ E)) :
     paramJacobianMatrix (I := I) x₀ Ψ w k i =
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         ((fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w)
-          ((chartModelBasis E) i)) k := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) k := by
   simp [paramJacobianMatrix, LinearMap.toMatrix_apply]
 
 lemma paramDeriv_chartBasis_eq_sum
@@ -93,9 +93,9 @@ lemma paramDeriv_chartBasis_eq_sum
     {w : E} (hw : w ∈ Ψ.source)
     (hx : Ψ w ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (i : Fin (Module.finrank ℝ E)) :
-    mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i) =
+    mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
       ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-        chartBasisVecFiber (I := I) x₀ k (Ψ w) := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w) := by
   have hxchart : Ψ w ∈ (chartAt H x₀).source := by
     simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) x₀] using hx
   have hxsrc : Ψ w ∈ (extChartAt I x₀).source := by
@@ -123,38 +123,38 @@ lemma paramDeriv_chartBasis_eq_sum
     trivializationAt E (TangentSpace I) x₀
   apply (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).injective
   have hrepr :
-      (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) ((chartModelBasis E) i) =
+      (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-          (chartModelBasis E) k := by
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
     simpa [paramJacobianMatrix_apply] using
-      (((chartModelBasis E).sum_repr
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
         ((fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w)
-          ((chartModelBasis E) i))).symm)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))).symm)
   calc
     T₀.continuousLinearEquivAt ℝ (Ψ w) hx
-        (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-        = (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) ((chartModelBasis E) i) := by
+        (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+        = (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
           rw [Trivialization.coe_continuousLinearEquivAt_eq (R := ℝ) T₀ hx]
           rw [TangentBundle.continuousLinearMapAt_trivializationAt
             (I := I) (x₀ := x₀) (x := Ψ w) hxchart]
           rw [hchain_f]
           rfl
     _ = ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-          (chartModelBasis E) k := hrepr
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := hrepr
     _ = T₀.continuousLinearEquivAt ℝ (Ψ w) hx
           (∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-            chartBasisVecFiber (I := I) x₀ k (Ψ w)) := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w)) := by
           rw [map_sum]
           refine Finset.sum_congr rfl ?_
           intro k _
           rw [map_smul]
           have hbasis :
-              chartBasisVecFiber (I := I) x₀ k (Ψ w) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w) =
                 (T₀.continuousLinearEquivAt ℝ (Ψ w) hx).symm
-                  ((chartModelBasis E) k) := by
-            unfold chartBasisVecFiber
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
+            unfold DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
             exact (congrFun (T₀.symm_continuousLinearEquivAt_eq hx)
-              ((chartModelBasis E) k)).symm
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)).symm
           rw [hbasis]
           rw [ContinuousLinearEquiv.apply_symm_apply]
 
@@ -168,16 +168,16 @@ lemma paramGramMatrix_pullback_eq_sum
       ∑ k, ∑ l,
         paramJacobianMatrix (I := I) x₀ Ψ w k i *
         paramJacobianMatrix (I := I) x₀ Ψ w l j *
-        chartGramMatrix g x₀ (Ψ w) k l := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w) k l := by
   rw [paramGramMatrix_apply]
   rw [paramDeriv_chartBasis_eq_sum (I := I) x₀ Ψ hw hx i]
   rw [paramDeriv_chartBasis_eq_sum (I := I) x₀ Ψ hw hx j]
   have hL :
       g.inner (Ψ w)
           (∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-            chartBasisVecFiber (I := I) x₀ k (Ψ w))
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w))
         = ∑ k, paramJacobianMatrix (I := I) x₀ Ψ w k i •
-            g.inner (Ψ w) (chartBasisVecFiber (I := I) x₀ k (Ψ w)) := by
+            g.inner (Ψ w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w)) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
@@ -188,12 +188,12 @@ lemma paramGramMatrix_pullback_eq_sum
   intro k _
   rw [smul_apply]
   have hR :
-      g.inner (Ψ w) (chartBasisVecFiber (I := I) x₀ k (Ψ w))
+      g.inner (Ψ w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w))
           (∑ l, paramJacobianMatrix (I := I) x₀ Ψ w l j •
-            chartBasisVecFiber (I := I) x₀ l (Ψ w))
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ l (Ψ w))
         = ∑ l, paramJacobianMatrix (I := I) x₀ Ψ w l j *
-            g.inner (Ψ w) (chartBasisVecFiber (I := I) x₀ k (Ψ w))
-              (chartBasisVecFiber (I := I) x₀ l (Ψ w)) := by
+            g.inner (Ψ w) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k (Ψ w))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ l (Ψ w)) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
@@ -202,7 +202,7 @@ lemma paramGramMatrix_pullback_eq_sum
   rw [hR, smul_eq_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro l _
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   ring
 
 theorem paramGramMatrix_pullback_eq_mul
@@ -212,7 +212,7 @@ theorem paramGramMatrix_pullback_eq_mul
     (hx : Ψ w ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     paramGramMatrix (I := I) g Ψ w =
       (paramJacobianMatrix (I := I) x₀ Ψ w)ᵀ *
-        chartGramMatrix g x₀ (Ψ w) *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w) *
         paramJacobianMatrix (I := I) x₀ Ψ w := by
   ext i j
   rw [paramGramMatrix_pullback_eq_sum (I := I) g x₀ Ψ hw hx i j]
@@ -240,7 +240,7 @@ lemma paramGramMatrix_det_pullback
     (hx : Ψ w ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     (paramGramMatrix (I := I) g Ψ w).det =
       ((fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).det) ^ 2 *
-        (chartGramMatrix g x₀ (Ψ w)).det := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w)).det := by
   rw [paramGramMatrix_pullback_eq_mul (I := I) g x₀ Ψ hw hx]
   rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
   rw [paramJacobianMatrix_det (I := I) x₀ Ψ w]
@@ -298,20 +298,20 @@ lemma paramGram_contOn
       (fun w => paramJacobianMatrix (I := I) x₀ Ψ w k i) s := by
     intro k i
     have happ : Continuous
-        (fun L : E →L[ℝ] E => L ((chartModelBasis E) i)) :=
+        (fun L : E →L[ℝ] E => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) :=
       continuous_eval_const _
     have hcoord : Continuous
-        (fun v : E => ((chartModelBasis E).coord k).toContinuousLinearMap v) :=
-      ((chartModelBasis E).coord k).toContinuousLinearMap.continuous
+        (fun v : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k).toContinuousLinearMap v) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k).toContinuousLinearMap.continuous
     unfold paramJacobianMatrix
     simp only [LinearMap.toMatrix_apply]
     exact hcoord.comp_continuousOn (happ.comp_continuousOn hfderiv)
   have hΨcont : ContinuousOn Ψ s :=
     (Ψ.contMDiffOn_toFun.mono hs_source).continuousOn
   have hG : ∀ k l, ContinuousOn
-      (fun w => chartGramMatrix g x₀ (Ψ w) k l) s := by
+      (fun w => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w) k l) s := by
     intro k l
-    exact (chartGramMatrix_entry_contMDiffOn (I := I) g x₀ k l).continuousOn.comp
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g x₀ k l).continuousOn.comp
       hΨcont hs_chart
   rw [continuousOn_iff_continuous_domRestrict]
   apply continuous_matrix
@@ -320,7 +320,7 @@ lemma paramGram_contOn
       (fun w => ∑ k, ∑ l,
         paramJacobianMatrix (I := I) x₀ Ψ w k i *
         paramJacobianMatrix (I := I) x₀ Ψ w l j *
-        chartGramMatrix g x₀ (Ψ w) k l) s := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ (Ψ w) k l) s := by
     refine continuousOn_finsetSum _ fun k _ => ?_
     refine continuousOn_finsetSum _ fun l _ => ?_
     exact ((hJ k i).mul (hJ l j)).mul (hG k l)
@@ -1365,8 +1365,8 @@ lemma paramGramMatrix_isHermitian
     paramGramMatrix (I := I) g Ψ w i j
   simp only [paramGramMatrix_apply, star_trivial]
   exact g.symm (Ψ w)
-    (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j))
-    (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
+    (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
+    (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
 
 lemma paramGramMatrix_dotProduct_mulVec
     (g : SmoothRiemannianMetric I M)
@@ -1374,22 +1374,22 @@ lemma paramGramMatrix_dotProduct_mulVec
     (c : Fin (Module.finrank ℝ E) → ℝ) :
     star c ⬝ᵥ (paramGramMatrix (I := I) g Ψ w) *ᵥ c =
       g.inner (Ψ w)
-        (∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-        (∑ j, c j • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j)) := by
+        (∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+        (∑ j, c j • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
   have hexpand' :
       g.inner (Ψ w)
-          (∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-          (∑ j, c j • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j))
+          (∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          (∑ j, c j • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
         = ∑ i, ∑ j, (c i * c j) *
             g.inner (Ψ w)
-              (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-              (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j)) := by
+              (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
     have hL :
         g.inner (Ψ w)
-            (∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
+            (∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           = ∑ i, c i •
               g.inner (Ψ w)
-                (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i)) := by
+                (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -1401,12 +1401,12 @@ lemma paramGramMatrix_dotProduct_mulVec
     rw [smul_apply]
     have hR :
         g.inner (Ψ w)
-            (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-            (∑ j, c j • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j))
+            (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (∑ j, c j • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
           = ∑ j, c j *
               g.inner (Ψ w)
-                (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-                (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j)) := by
+                (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro j _
@@ -1433,16 +1433,16 @@ lemma paramGramMatrix_posDef
     (paramGramMatrix_isHermitian (I := I) g Ψ w) ?_
   intro c hc
   set v : TangentSpace I (Ψ w) :=
-    ∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i) with hv_def
+    ∑ i, c i • mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) with hv_def
   have heq := paramGramMatrix_dotProduct_mulVec (I := I) g Ψ w c
   rw [heq]
   have hker := paramDeriv_ker (I := I) Ψ hw
   have hli : LinearIndependent ℝ
       (fun i : Fin (Module.finrank ℝ E) =>
-        mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i)) := by
+        mfderiv 𝓘(ℝ, E) I Ψ w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
     change LinearIndependent ℝ
-      ((mfderiv 𝓘(ℝ, E) I Ψ w).toLinearMap ∘ chartModelBasis E)
-    exact (chartModelBasis E).linearIndependent.map'
+      ((mfderiv 𝓘(ℝ, E) I Ψ w).toLinearMap ∘ DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
+    exact (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).linearIndependent.map'
       (mfderiv 𝓘(ℝ, E) I Ψ w).toLinearMap hker
   have hvnz : v ≠ 0 := by
     intro hv0

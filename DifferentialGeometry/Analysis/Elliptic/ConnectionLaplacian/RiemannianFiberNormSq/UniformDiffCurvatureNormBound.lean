@@ -74,13 +74,13 @@ private lemma nablaBaseSlotCurv_chartBasisVec_alpha_value
     (p q r s : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (Sp Sq Sr : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (hSp : (Sp : Π b : M, TangentSpace I b) x = chartBasisVecFiber (I := I) α p x)
-    (hSq : (Sq : Π b : M, TangentSpace I b) x = chartBasisVecFiber (I := I) α q x)
-    (hSr : (Sr : Π b : M, TangentSpace I b) x = chartBasisVecFiber (I := I) α r x) :
-    nablaBaseSlotCurv (I := I) g Sp Sq Sr x (chartBasisVecFiber (I := I) α s x) =
+    (hSp : (Sp : Π b : M, TangentSpace I b) x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x)
+    (hSq : (Sq : Π b : M, TangentSpace I b) x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α q x)
+    (hSr : (Sr : Π b : M, TangentSpace I b) x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α r x) :
+    nablaBaseSlotCurv (I := I) g Sp Sq Sr x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x) =
       ∑ l : Fin (Module.finrank ℝ E),
         nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x) •
-          chartBasisVecFiber (I := I) α l x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
   classical
   obtain ⟨Xp, Up, hXp_sm, hUp_open, hxUp, hUp_good, hXp_eq⟩ :=
     exists_globalSmooth_chartBasisVec_ext_alpha (I := I) α p hx
@@ -95,42 +95,42 @@ private lemma nablaBaseSlotCurv_chartBasisVec_alpha_value
   have hxU : x ∈ U := ⟨⟨⟨hxUp, hxUq⟩, hxUr⟩, hxUs⟩
   have hU_good : U ⊆ chartLeviCivitaGoodSet (I := I) α :=
     fun y hy => hUp_good hy.1.1.1
-  have hXp_eqU : ∀ y ∈ U, Xp y = chartBasisVecFiber (I := I) α p y :=
+  have hXp_eqU : ∀ y ∈ U, Xp y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p y :=
     fun y hy => hXp_eq y hy.1.1.1
-  have hXq_eqU : ∀ y ∈ U, Xq y = chartBasisVecFiber (I := I) α q y :=
+  have hXq_eqU : ∀ y ∈ U, Xq y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α q y :=
     fun y hy => hXq_eq y hy.1.1.2
-  have hXr_eqU : ∀ y ∈ U, Xr y = chartBasisVecFiber (I := I) α r y :=
+  have hXr_eqU : ∀ y ∈ U, Xr y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α r y :=
     fun y hy => hXr_eq y hy.1.2
-  have hXs_eqU : ∀ y ∈ U, Xs y = chartBasisVecFiber (I := I) α s y :=
+  have hXs_eqU : ∀ y ∈ U, Xs y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s y :=
     fun y hy => hXs_eq y hy.2
   set Pp : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := ContMDiffSection.mk Xp hXp_sm with hPp_def
   set Pq : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := ContMDiffSection.mk Xq hXq_sm with hPq_def
   set Pr : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := ContMDiffSection.mk Xr hXr_sm with hPr_def
-  have hPp_x : (Pp : Π b : M, TangentSpace I b) x = chartBasisVecFiber (I := I) α p x :=
+  have hPp_x : (Pp : Π b : M, TangentSpace I b) x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x :=
     hXp_eqU x hxU
-  have hPq_x : (Pq : Π b : M, TangentSpace I b) x = chartBasisVecFiber (I := I) α q x :=
+  have hPq_x : (Pq : Π b : M, TangentSpace I b) x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α q x :=
     hXq_eqU x hxU
-  have hPr_x : (Pr : Π b : M, TangentSpace I b) x = chartBasisVecFiber (I := I) α r x :=
+  have hPr_x : (Pr : Π b : M, TangentSpace I b) x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α r x :=
     hXr_eqU x hxU
   rw [nablaBaseSlotCurv_eq_of_leftMidRight (I := I) g Sp Pp Sq Pq Sr Pr x
       (hSp.trans hPp_x.symm) (hSq.trans hPq_x.symm) (hSr.trans hPr_x.symm)
-      (chartBasisVecFiber (I := I) α s x)]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x)]
   rw [nablaBaseSlotCurv_eq_nablaCurvSec]
   have hacted :
       nablaCurvSec (LeviCivita (I := I) g) (fun b => Pp b) (fun b => Pq b) (fun b => Pr b)
           (fun b => smoothExtensionTangent (I := I) x
-            (chartBasisVecFiber (I := I) α s x) b) x =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x) b) x =
         nablaCurvSec (LeviCivita (I := I) g) (fun b => Pp b) (fun b => Pq b) (fun b => Pr b)
           (fun b => Xs b) x := by
     set Es : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
       ContMDiffSection.mk (smoothExtensionTangent (I := I) x
-        (chartBasisVecFiber (I := I) α s x))
-        (smoothExtensionTangent_contMDiff (I := I) x (chartBasisVecFiber (I := I) α s x))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x))
+        (smoothExtensionTangent_contMDiff (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x))
       with hEs_def
     set Ps : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := ContMDiffSection.mk Xs hXs_sm with hPs_def
     have hval : (Es : Π b : M, TangentSpace I b) x = (Ps : Π b : M, TangentSpace I b) x := by
       rw [hEs_def, hPs_def]
-      change smoothExtensionTangent (I := I) x (chartBasisVecFiber (I := I) α s x) x = Xs x
+      change smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x) x = Xs x
       rw [smoothExtensionTangent_eq, hXs_eqU x hxU]
     exact nablaCurvSec_eq_of_acted_eq (g := g) Pp Pq Pr Es Ps x hval
   rw [hacted]
@@ -281,16 +281,16 @@ private lemma nablaBaseSlotCurv_finsetSum_smul_acted
 private def chartFrameExtSection
     (α : M) (p : Fin (Module.finrank ℝ E)) (x : M) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-  ContMDiffSection.mk (smoothExtensionTangent (I := I) x (chartBasisVecFiber (I := I) α p x))
-    (smoothExtensionTangent_contMDiff (I := I) x (chartBasisVecFiber (I := I) α p x))
+  ContMDiffSection.mk (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x))
+    (smoothExtensionTangent_contMDiff (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma chartFrameExtSection_value
     (α : M) (p : Fin (Module.finrank ℝ E)) (x : M) :
     (chartFrameExtSection (I := I) α p x : Π b : M, TangentSpace I b) x =
-      chartBasisVecFiber (I := I) α p x := by
-  change smoothExtensionTangent (I := I) x (chartBasisVecFiber (I := I) α p x) x = _
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
+  change smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x) x = _
   rw [smoothExtensionTangent_eq]
 
 omit [CompactSpace M] in
@@ -305,60 +305,60 @@ private lemma nablaBaseSlotCurv_chartCoord_expand
       ∑ l : Fin (Module.finrank ℝ E),
         (∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
           ∑ r : Fin (Module.finrank ℝ E), ∑ s : Fin (Module.finrank ℝ E),
-            (chartBasisFamily (I := I) α hxbase).repr (Sp x) p *
-              (chartBasisFamily (I := I) α hxbase).repr (Sq x) q *
-              (chartBasisFamily (I := I) α hxbase).repr (Sr x) r *
-              (chartBasisFamily (I := I) α hxbase).repr w s *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Sp x) p *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Sq x) q *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Sr x) r *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr w s *
               nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
   classical
   set n := Module.finrank ℝ E with hn_def
-  set a : Fin n → ℝ := fun p => (chartBasisFamily (I := I) α hxbase).repr (Sp x) p with ha_def
-  set b : Fin n → ℝ := fun q => (chartBasisFamily (I := I) α hxbase).repr (Sq x) q with hb_def
-  set c : Fin n → ℝ := fun r => (chartBasisFamily (I := I) α hxbase).repr (Sr x) r with hc_def
-  set ev : Fin n → ℝ := fun s => (chartBasisFamily (I := I) α hxbase).repr w s with hev_def
+  set a : Fin n → ℝ := fun p => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Sp x) p with ha_def
+  set b : Fin n → ℝ := fun q => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Sq x) q with hb_def
+  set c : Fin n → ℝ := fun r => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Sr x) r with hc_def
+  set ev : Fin n → ℝ := fun s => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr w s with hev_def
   set P : Fin n → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     fun p => chartFrameExtSection (I := I) α p x with hP_def
   have hSp_decomp : (Sp : Π z : M, TangentSpace I z) x =
       (∑ p : Fin n, a p • P p : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x := by
     rw [ContMDiffSection.finset_sum_apply]
-    have hrep := (chartBasisFamily (I := I) α hxbase).sum_repr (Sp x)
+    have hrep := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).sum_repr (Sp x)
     rw [← hrep]
     refine Finset.sum_congr rfl (fun p _ => ?_)
     rw [ContMDiffSection.coe_smul, Pi.smul_apply, ha_def, chartFrameExtSection_value,
-      chartBasisFamily_apply]
+      DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   have hSq_decomp : (Sq : Π z : M, TangentSpace I z) x =
       (∑ q : Fin n, b q • P q : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x := by
     rw [ContMDiffSection.finset_sum_apply]
-    have hrep := (chartBasisFamily (I := I) α hxbase).sum_repr (Sq x)
+    have hrep := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).sum_repr (Sq x)
     rw [← hrep]
     refine Finset.sum_congr rfl (fun q _ => ?_)
     rw [ContMDiffSection.coe_smul, Pi.smul_apply, hb_def, chartFrameExtSection_value,
-      chartBasisFamily_apply]
+      DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   have hSr_decomp : (Sr : Π z : M, TangentSpace I z) x =
       (∑ r : Fin n, c r • P r : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x := by
     rw [ContMDiffSection.finset_sum_apply]
-    have hrep := (chartBasisFamily (I := I) α hxbase).sum_repr (Sr x)
+    have hrep := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).sum_repr (Sr x)
     rw [← hrep]
     refine Finset.sum_congr rfl (fun r _ => ?_)
     rw [ContMDiffSection.coe_smul, Pi.smul_apply, hc_def, chartFrameExtSection_value,
-      chartBasisFamily_apply]
-  have hw_decomp : w = ∑ s : Fin n, ev s • chartBasisVecFiber (I := I) α s x := by
-    have hrep := (chartBasisFamily (I := I) α hxbase).sum_repr w
+      DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
+  have hw_decomp : w = ∑ s : Fin n, ev s • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x := by
+    have hrep := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).sum_repr w
     rw [← hrep]
     refine Finset.sum_congr rfl (fun s _ => ?_)
-    rw [hev_def, chartBasisFamily_apply]
+    rw [hev_def, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   rw [nablaBaseSlotCurv_eq_of_leftMidRight (I := I) g Sp (∑ p : Fin n, a p • P p)
       Sq (∑ q : Fin n, b q • P q) Sr (∑ r : Fin n, c r • P r) x hSp_decomp hSq_decomp hSr_decomp w]
   conv_lhs => rw [hw_decomp]
   rw [nablaBaseSlotCurv_finsetSum_smul_acted]
   have hper_s : ∀ s : Fin n,
       nablaBaseSlotCurv (I := I) g (∑ p : Fin n, a p • P p) (∑ q : Fin n, b q • P q)
-          (∑ r : Fin n, c r • P r) x (chartBasisVecFiber (I := I) α s x) =
+          (∑ r : Fin n, c r • P r) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x) =
         ∑ p : Fin n, ∑ q : Fin n, ∑ r : Fin n,
           (a p * b q * c r) •
             nablaBaseSlotCurv (I := I) g (P p) (P q) (P r) x
-              (chartBasisVecFiber (I := I) α s x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x) := by
     intro s
     rw [nablaBaseSlotCurv_finsetSum_left]
     refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -370,10 +370,10 @@ private lemma nablaBaseSlotCurv_chartCoord_expand
     rw [nablaBaseSlotCurv_smul_Z, smul_smul, smul_smul]
   rw [Finset.sum_congr rfl (fun s _ => by rw [hper_s s])]
   have hPval : ∀ (p q r s : Fin n),
-      nablaBaseSlotCurv (I := I) g (P p) (P q) (P r) x (chartBasisVecFiber (I := I) α s x) =
+      nablaBaseSlotCurv (I := I) g (P p) (P q) (P r) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x) =
         ∑ l : Fin n,
           nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x) •
-            chartBasisVecFiber (I := I) α l x := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
     intro p q r s
     exact nablaBaseSlotCurv_chartBasisVec_alpha_value (I := I) g α p q r s hx (P p) (P q) (P r)
       (chartFrameExtSection_value (I := I) α p x) (chartFrameExtSection_value (I := I) α q x)
@@ -382,11 +382,11 @@ private lemma nablaBaseSlotCurv_chartCoord_expand
         ∑ p : Fin n, ∑ q : Fin n, ∑ r : Fin n,
           (a p * b q * c r) •
             nablaBaseSlotCurv (I := I) g (P p) (P q) (P r) x
-              (chartBasisVecFiber (I := I) α s x)) =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α s x)) =
       ∑ s : Fin n, ∑ p : Fin n, ∑ q : Fin n, ∑ r : Fin n, ∑ l : Fin n,
         (a p * b q * c r * ev s *
           nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
     refine Finset.sum_congr rfl (fun s _ => ?_)
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -403,16 +403,16 @@ private lemma nablaBaseSlotCurv_chartCoord_expand
   rw [show (∑ s : Fin n, ∑ p : Fin n, ∑ q : Fin n, ∑ r : Fin n, ∑ l : Fin n,
         (a p * b q * c r * ev s *
           nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x) =
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x) =
       ∑ l : Fin n, ∑ p : Fin n, ∑ q : Fin n, ∑ r : Fin n, ∑ s : Fin n,
         (a p * b q * c r * ev s *
           nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x from by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x from by
     set F : Fin n → Fin n → Fin n → Fin n → Fin n → TangentSpace I x :=
       fun s p q r l =>
         (a p * b q * c r * ev s *
           nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x with hF_def
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x with hF_def
     have e1 : (∑ s : Fin n, ∑ p : Fin n, ∑ q : Fin n, ∑ r : Fin n, ∑ l : Fin n, F s p q r l) =
         ∑ s : Fin n, ∑ p : Fin n, ∑ q : Fin n, ∑ l : Fin n, ∑ r : Fin n, F s p q r l := by
       refine Finset.sum_congr rfl (fun s _ => ?_)
@@ -554,32 +554,32 @@ private lemma gInner_self_eq_chartGram_quadForm
     g.inner x v v =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j *
-            (chartBasisFamily (I := I) α hx).repr v i *
-            (chartBasisFamily (I := I) α hx).repr v j := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v i *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v j := by
   classical
   set c : Fin (Module.finrank ℝ E) → ℝ :=
-    fun i => (chartBasisFamily (I := I) α hx).repr v i with hc_def
-  have hv : v = ∑ i, c i • chartBasisVecFiber (I := I) α i x := by
-    have h := (chartBasisFamily (I := I) α hx).sum_repr v
+    fun i => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v i with hc_def
+  have hv : v = ∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).sum_repr v
     rw [← h]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [hc_def, chartBasisFamily_apply (I := I) α hx i]
-  have hdot := chartGramMatrix_dotProduct_mulVec (I := I) g α x c
-  have hgi : g.inner x (∑ i, c i • chartBasisVecFiber (I := I) α i x)
-        (∑ j, c j • chartBasisVecFiber (I := I) α j x)
+    rw [hc_def, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx i]
+  have hdot := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α x c
+  have hgi : g.inner x (∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (∑ j, c j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
       = ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            chartGramMatrix (I := I) g α x i j * c i * c j := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * c i * c j := by
     rw [← hdot]
-    simp only [dotProduct, Matrix.mulVec, chartGramMatrix_apply, Pi.star_apply, star_trivial]
+    simp only [dotProduct, Matrix.mulVec, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, Pi.star_apply, star_trivial]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     ring
   calc g.inner x v v
-      = g.inner x (∑ i, c i • chartBasisVecFiber (I := I) α i x)
-          (∑ j, c j • chartBasisVecFiber (I := I) α j x) := by rw [← hv]
+      = g.inner x (∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+          (∑ j, c j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by rw [← hv]
     _ = _ := hgi
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -591,11 +591,11 @@ private lemma chartCoord_sq_sum_le
     (hcgbound : ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
       cg * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j * ξ i * ξ j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * ξ i * ξ j)
     (v : TangentSpace I x) :
-    (∑ p : Fin (Module.finrank ℝ E), (chartBasisFamily (I := I) α hx).repr v p ^ 2) ≤
+    (∑ p : Fin (Module.finrank ℝ E), (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v p ^ 2) ≤
       cg⁻¹ * g.inner x v v := by
-  set ξ : Fin (Module.finrank ℝ E) → ℝ := fun p => (chartBasisFamily (I := I) α hx).repr v p
+  set ξ : Fin (Module.finrank ℝ E) → ℝ := fun p => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v p
     with hξ_def
   have hlow : cg * (∑ p, ξ p ^ 2) ≤ g.inner x v v := by
     rw [gInner_self_eq_chartGram_quadForm (I := I) g α hx v]; exact hcgbound ξ
@@ -636,12 +636,12 @@ private lemma W_chartFrame_expand
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
           ∑ r : Fin (Module.finrank ℝ E), ∑ s : Fin (Module.finrank ℝ E),
-            (chartBasisFamily (I := I) α hxbase).repr (B i x) p *
-              (chartBasisFamily (I := I) α hxbase).repr (B i x) q *
-              (chartBasisFamily (I := I) α hxbase).repr (Ba x) r *
-              (chartBasisFamily (I := I) α hxbase).repr u s *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (B i x) p *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (B i x) q *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr (Ba x) r *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hxbase).repr u s *
               nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
   classical
   rw [Finset.sum_congr rfl (fun i _ => nablaBaseSlotCurv_chartCoord_expand (I := I) g α hx hxbase
     (B i) (B i) Ba u)]
@@ -675,12 +675,12 @@ private lemma nablaBaseSlotCurv_frameSum_normSq_le_chartConstants_mul_normSq_u
       |nablaChartRiemannCoeff (I := I) g α p q r s l (extChartAt I α x)| ≤ CR)
     (hCGbound : ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j * ξ i * ξ j ≤
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * ξ i * ξ j ≤
         CG * ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2)
     (hcgbound : ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
       cg * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j * ξ i * ξ j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * ξ i * ξ j)
     (B : Fin (Module.finrank ℝ E) → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (Ba : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hBon : ∀ i : Fin (Module.finrank ℝ E), g.inner x (B i x) (B i x) = 1)
@@ -692,11 +692,11 @@ private lemma nablaBaseSlotCurv_frameSum_normSq_le_chartConstants_mul_normSq_u
       CG * CR ^ 2 * (Module.finrank ℝ E : ℝ) ^ 7 * cg⁻¹ ^ 4 * g.inner x u u := by
   classical
   set bi : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun i p
-    => (chartBasisFamily (I := I) α hx_base).repr (B i x) p
+    => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr (B i x) p
     with hbi_def
-  set ca : Fin (Module.finrank ℝ E) → ℝ := fun r => (chartBasisFamily (I := I) α hx_base).repr
+  set ca : Fin (Module.finrank ℝ E) → ℝ := fun r => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr
                                                       (Ba x) r with hca_def
-  set du : Fin (Module.finrank ℝ E) → ℝ := fun s => (chartBasisFamily (I := I) α hx_base).repr u s
+  set du : Fin (Module.finrank ℝ E) → ℝ := fun s => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr u s
                                                       with hdu_def
   set R : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin
     (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
@@ -707,21 +707,21 @@ private lemma nablaBaseSlotCurv_frameSum_normSq_le_chartConstants_mul_normSq_u
       bi i p * bi i q * ca r * du s * R p q r s l with hcoeff_def
   have hWexp :
       (∑ i : Fin (Module.finrank ℝ E), nablaBaseSlotCurv (I := I) g (B i) (B i) Ba x u) =
-        ∑ l : Fin (Module.finrank ℝ E), coeff l • chartBasisVecFiber (I := I) α l x := by
+        ∑ l : Fin (Module.finrank ℝ E), coeff l • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
     rw [W_chartFrame_expand (I := I) g α hx_good hx_base B Ba u]
   have hgnorm_le :
       g.inner x (∑ i : Fin (Module.finrank ℝ E), nablaBaseSlotCurv (I := I) g (B i) (B i) Ba x u)
           (∑ i : Fin (Module.finrank ℝ E), nablaBaseSlotCurv (I := I) g (B i) (B i) Ba x u) ≤
         CG * ∑ l : Fin (Module.finrank ℝ E), coeff l ^ 2 := by
     rw [hWexp]
-    have hdot := chartGramMatrix_dotProduct_mulVec (I := I) g α x coeff
-    have heq : g.inner x (∑ l : Fin (Module.finrank ℝ E), coeff l • chartBasisVecFiber (I := I) α l
+    have hdot := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α x coeff
+    have heq : g.inner x (∑ l : Fin (Module.finrank ℝ E), coeff l • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l
       x)
-          (∑ l' : Fin (Module.finrank ℝ E), coeff l' • chartBasisVecFiber (I := I) α l' x) =
-        ∑ l : Fin (Module.finrank ℝ E), ∑ l' : Fin (Module.finrank ℝ E), chartGramMatrix (I := I) g
+          (∑ l' : Fin (Module.finrank ℝ E), coeff l' • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l' x) =
+        ∑ l : Fin (Module.finrank ℝ E), ∑ l' : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g
           α x l l' * coeff l * coeff l' := by
       rw [← hdot]
-      simp only [dotProduct, Matrix.mulVec, chartGramMatrix_apply, Pi.star_apply, star_trivial]
+      simp only [dotProduct, Matrix.mulVec, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, Pi.star_apply, star_trivial]
       refine Finset.sum_congr rfl (fun l _ => ?_)
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl (fun l' _ => ?_)
@@ -794,16 +794,16 @@ private lemma nablaBaseSlotCurv_frameSum_normSq_le_chartConstants_mul_normSq_u
       _ = (Module.finrank ℝ E : ℝ) * (CR * Sa * Su * T) ^ 2 := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hCheb : ∀ (v : TangentSpace I x),
-    (∑ p : Fin (Module.finrank ℝ E), |(chartBasisFamily (I := I) α hx_base).repr v p|) ^ 2 ≤
+    (∑ p : Fin (Module.finrank ℝ E), |(DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v p|) ^ 2 ≤
       (Module.finrank ℝ E : ℝ) * ∑ p : Fin (Module.finrank ℝ E),
-        (chartBasisFamily (I := I) α hx_base).repr v p ^ 2 := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v p ^ 2 := by
     intro v
     have h := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset (Fin (Module.finrank ℝ E))))
-      (f := fun p => |(chartBasisFamily (I := I) α hx_base).repr v p|)
+      (f := fun p => |(DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v p|)
     rw [Finset.card_univ, Fintype.card_fin] at h
-    have heq : ∑ p : Fin (Module.finrank ℝ E), |(chartBasisFamily (I := I) α hx_base).repr v p| ^ 2
+    have heq : ∑ p : Fin (Module.finrank ℝ E), |(DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v p| ^ 2
       =
-        ∑ p : Fin (Module.finrank ℝ E), (chartBasisFamily (I := I) α hx_base).repr v p ^ 2 :=
+        ∑ p : Fin (Module.finrank ℝ E), (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v p ^ 2 :=
       Finset.sum_congr rfl (fun p _ => sq_abs _)
     rw [heq] at h
     exact h
@@ -824,7 +824,7 @@ private lemma nablaBaseSlotCurv_frameSum_normSq_le_chartConstants_mul_normSq_u
     rw [← mul_assoc] at h1; exact h1
   have hSbi_sq : ∀ i, Sbi i ^ 2 ≤ (Module.finrank ℝ E : ℝ) * cg⁻¹ := by
     intro i
-    have hcoord : (∑ p : Fin (Module.finrank ℝ E), (chartBasisFamily (I := I) α hx_base).repr
+    have hcoord : (∑ p : Fin (Module.finrank ℝ E), (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr
       (B i x) p ^ 2) ≤ cg⁻¹ := by
       refine le_trans (chartCoord_sq_sum_le (I := I) g α hx_base hcg hcgbound (B i x)) ?_
       rw [hBon i, mul_one]
@@ -884,14 +884,14 @@ theorem exists_continuous_nablaCurvSec_frameSum_gNorm_envelope
   have hCG_ex : ∀ α : M, ∃ C : ℝ, 0 ≤ C ∧
       ∀ b ∈ tsupport (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x),
         ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
-          ∑ i, ∑ j, chartGramMatrix (I := I) g α b i j * ξ i * ξ j ≤ C * ∑ i, ξ i ^ 2 := by
+          ∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j ≤ C * ∑ i, ξ i ^ 2 := by
     intro α
     obtain ⟨C, hC0, hCbound⟩ :=
       exists_chartGramMatrix_quadForm_upper_bound_on_pouTsupport (I := I) g α
     refine ⟨C, hC0, fun b hb ξ => ?_⟩
     refine le_trans (le_of_eq ?_) (hCbound hb ξ)
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-    rw [chartGramMatrix_apply]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   choose CR hCR0 hCRbound using hCR_ex
   choose CG hCG0 hCGbound using hCG_ex
   choose cg hcg0 hcgbound using fun α =>

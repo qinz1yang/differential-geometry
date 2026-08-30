@@ -488,8 +488,8 @@ private noncomputable def outerPairBilinChartα (g : SmoothRiemannianMetric I M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-        (chartInvGramMatrix (I := I) g α x k l * K X (chartBasisVecFiber (I := I) α k x)) •
-          (ContinuousLinearMap.flip Dd (chartBasisVecFiber (I := I) α l x))
+        (chartInvGramMatrix (I := I) g α x k l * K X (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)) •
+          (ContinuousLinearMap.flip Dd (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x))
       map_add' := fun X X' => by
         ext Y'
         simp only [add_apply, FunLike.coe_sum,
@@ -518,8 +518,8 @@ private lemma outerPairBilinChartα_apply (g : SmoothRiemannianMetric I M) (α :
     outerPairBilinChartα (I := I) g α K Dd X X' =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x k l *
-          (K X (chartBasisVecFiber (I := I) α k x) *
-            Dd X' (chartBasisVecFiber (I := I) α l x)) := by
+          (K X (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) *
+            Dd X' (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)) := by
   rw [outerPairBilinChartα, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
   simp only [sum_apply, smul_apply, smul_eq_mul,
     ContinuousLinearMap.flip_apply]
@@ -538,8 +538,8 @@ lemma double_frame_bilin_trace_chartα
     ∑ a, ∑ b, K (B a) (B b) * Dd (B a) (B b) =
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g α x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g α x k l *
-          (K (chartBasisVecFiber (I := I) α m x) (chartBasisVecFiber (I := I) α k x) *
-            Dd (chartBasisVecFiber (I := I) α n x) (chartBasisVecFiber (I := I) α l x))) := by
+          (K (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) *
+            Dd (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * Dd (B a) (B b) =
       outerPairBilinChartα (I := I) g α K Dd (B a) (B a) := by
@@ -628,16 +628,16 @@ private lemma curvatureDecompositionMonomialBiContrFib_toModel_chartα
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g α x k l *
           (Tensor0SSpace.toModel (𝕜 := ℝ) (W x)
               ![tangentSpaceModelContinuousLinearEquiv (I := I) x
-                  (chartBasisVecFiber (I := I) α m x),
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m x),
                 tangentSpaceModelContinuousLinearEquiv (I := I) x
-                  (chartBasisVecFiber (I := I) α k x)] *
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)] *
             Tensor0SSpace.toModel (𝕜 := ℝ) G
               (fun i => (Fin.cons
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x
-                  (chartBasisVecFiber (I := I) α n x))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n x))
                 (Fin.cons
                   (tangentSpaceModelContinuousLinearEquiv (I := I) x
-                    (chartBasisVecFiber (I := I) α l x)) v) : Fin 4 → E)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x)) v) : Fin 4 → E)
                 (σp i)))) := by
   classical
   have hBf_on : ∀ i j : Fin (Module.finrank ℝ E),
@@ -703,21 +703,21 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
         (curvatureActionMonomialTrace (I := I) (M := M)
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) W σp p.1 (Y p.1))
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-          ((![chartBasisVecFiber (I := I) α (σc 0) p.1,
-            chartBasisVecFiber (I := I) α (σc 1) p.1] : Fin 2 → TangentSpace I p.1) i)))
+          ((![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 0) p.1,
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 1) p.1] : Fin 2 → TangentSpace I p.1) i)))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
   classical
   have htuple : ∀ (y : M) (n l : Fin (Module.finrank ℝ E)) (j : Fin 4),
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
-          (chartBasisVecFiber (I := I) α n y))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n y))
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) y
-            (chartBasisVecFiber (I := I) α l y))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l y))
           ![tangentSpaceModelContinuousLinearEquiv (I := I) y
-              (chartBasisVecFiber (I := I) α (σc 0) y),
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 0) y),
             tangentSpaceModelContinuousLinearEquiv (I := I) y
-              (chartBasisVecFiber (I := I) α (σc 1) y)]) : Fin 4 → E) j =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 1) y)]) : Fin 4 → E) j =
       tangentSpaceModelContinuousLinearEquiv (I := I) y
-        (chartBasisVecFiber (I := I) α
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
           ((Fin.cons n (Fin.cons l ![σc 0, σc 1]) : Fin 4 → Fin (Module.finrank ℝ E)) j) y) := by
     intro y n l j
     fin_cases j <;> rfl
@@ -725,7 +725,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Tensor0SSpace.toModel (𝕜 := ℝ) (Y p.1)
           (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-            (chartBasisVecFiber (I := I) α (w i) p.1)))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (w i) p.1)))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
     intro w p₀ hp₀
     have hYon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
@@ -735,20 +735,20 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
       (Y.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
     have hv : ∀ i : Fin 4, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-          (chartBasisVecFiber (I := I) α (w i) p.1))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (w i) p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) p₀ := fun i =>
       (chartBasisVec_jointContMDiffOn (I := I) α (w i) p₀
         ⟨hp₀.1, Set.mem_univ _⟩).mono (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
     exact TensorMultilinear.contMDiffWithinAt_section_apply_prod (I := I) 4
       (fun b : M => Y b) (hYon p₀ hp₀)
-      (fun i => fun b : M => chartBasisVecFiber (I := I) α (w i) b) hv
+      (fun i => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (w i) b) hv
   have hWpair : ∀ m k : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Tensor0SSpace.toModel (𝕜 := ℝ) (W p.1)
           ![tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-              (chartBasisVecFiber (I := I) α m p.1),
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m p.1),
             tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-              (chartBasisVecFiber (I := I) α k p.1)])
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k p.1)])
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
     intro m k p₀ hp₀
     have hWon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
@@ -758,7 +758,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
       (hW.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
     have hv : ∀ i : Fin 2, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-          (chartBasisVecFiber (I := I) α
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
             ((![m, k] : Fin 2 → Fin (Module.finrank ℝ E)) i) p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) p₀ := fun i =>
       (chartBasisVec_jointContMDiffOn (I := I) α
@@ -766,7 +766,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
         ⟨hp₀.1, Set.mem_univ _⟩).mono (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
     have happly := TensorMultilinear.contMDiffWithinAt_section_apply_prod (I := I) 2
       (fun b : M => W b) (hWon p₀ hp₀)
-      (fun i => fun b : M => chartBasisVecFiber (I := I) α
+      (fun i => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
         ((![m, k] : Fin 2 → Fin (Module.finrank ℝ E)) i) b) hv
     refine happly.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with q _
@@ -783,20 +783,20 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContM
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) α p.1 k l *
           (Tensor0SSpace.toModel (𝕜 := ℝ) (W p.1)
               ![tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-                  (chartBasisVecFiber (I := I) α m p.1),
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m p.1),
                 tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-                  (chartBasisVecFiber (I := I) α k p.1)] *
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k p.1)] *
             Tensor0SSpace.toModel (𝕜 := ℝ) (Y p.1)
               (fun i => (Fin.cons
                 (tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-                  (chartBasisVecFiber (I := I) α n p.1))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α n p.1))
                 (Fin.cons
                   (tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-                    (chartBasisVecFiber (I := I) α l p.1))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l p.1))
                   ![tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-                      (chartBasisVecFiber (I := I) α (σc 0) p.1),
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 0) p.1),
                     tangentSpaceModelContinuousLinearEquiv (I := I) p.1
-                      (chartBasisVecFiber (I := I) α (σc 1) p.1)]) : Fin 4 → E)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 1) p.1)]) : Fin 4 → E)
                 (σp i)))))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) := by
     refine contMDiffOn_finsetSum (fun m _ => contMDiffOn_finsetSum (fun n _ => ?_))
@@ -856,7 +856,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -881,8 +881,8 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
           Tensor0SSpace.toModel (curvatureActionMonomialTrace (I := I) (M := M)
               (gfam q.2) W σp q.1 (Y q.1))
             (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) q.1
-              ((![chartBasisVecFiber (I := I) α (σc 0) q.1,
-                chartBasisVecFiber (I := I) α (σc 1) q.1] :
+              ((![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 0) q.1,
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 1) q.1] :
                   Fin 2 → TangentSpace I q.1) i)) := by
       intro q hqbase
       rw [continuousMultilinearMap_basis_repr]
@@ -896,7 +896,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
         hqbase
         (Tensor0SSpace.toModel
           (curvatureActionMonomialTrace (I := I) (M := M) (gfam q.2) W σp q.1 (Y q.1)))
-        (fun j => (chartModelBasis E) (σc j))
+        (fun j => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σc j))
       rw [Tensor0SSpace.toModel,
         (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
       rw [happly]
@@ -904,7 +904,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
           (gfam q.2) W σp q.1 (Y q.1))
           (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) q.1
             ((trivializationAt E (TangentSpace I) α).symmL ℝ q.1
-              ((chartModelBasis E) (σc j)))) = _
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σc j)))) = _
       congr 1
       funext j
       fin_cases j <;> rfl

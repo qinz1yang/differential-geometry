@@ -30,8 +30,8 @@ def deTurckChartLocal (g g' : SmoothRiemannianMetric I M) (α : M) (x : M) :
   ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
     chartInvGramMatrix (I := I) g α x j k •
       connectionDifference (I := I) g g' x
-        (chartBasisVecFiber (I := I) α j x)
-        (chartBasisVecFiber (I := I) α k x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -40,8 +40,8 @@ lemma deTurckChartLocal_def (g g' : SmoothRiemannianMetric I M) (α : M) (x : M)
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x j k •
           connectionDifference (I := I) g g' x
-            (chartBasisVecFiber (I := I) α j x)
-            (chartBasisVecFiber (I := I) α k x) := rfl
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) := rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -93,28 +93,28 @@ private lemma clm_bilinear_expand_two_sums_scalar
 private def deTurckCobMatrix (α : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i k =>
-    (centeredChartTangentBasis (I := I) x).repr
-      ((chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma chartBasisVecFiber_eq_sum_model (α : M) (x : M)
     (i : Fin (Module.finrank ℝ E)) :
-    (chartBasisVecFiber (I := I) α i x : TangentSpace I x) =
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x) =
       ∑ k : Fin (Module.finrank ℝ E),
         deTurckCobMatrix (I := I) α x i k •
-          centeredChartTangentBasis (I := I) x k := by
+          DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k := by
   classical
   unfold deTurckCobMatrix
   simp only [Matrix.of_apply]
-  exact ((centeredChartTangentBasis (I := I) x).sum_repr
-    (chartBasisVecFiber (I := I) α i x : TangentSpace I x)).symm
+  exact ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).sum_repr
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma deTurckCobMatrix_eq_toMatrix_transpose (α : M) (x : M) :
     deTurckCobMatrix (I := I) α x =
-      ((centeredChartTangentBasis (I := I) x).toMatrix
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).toMatrix
         (fun i : Fin (Module.finrank ℝ E) =>
-          chartBasisVecFiber (I := I) α i x))ᵀ := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))ᵀ := by
   classical
   unfold deTurckCobMatrix
   ext i k
@@ -127,17 +127,17 @@ private lemma deTurckCobMatrix_isUnit (α : M) {x : M}
   classical
   rw [deTurckCobMatrix_eq_toMatrix_transpose]
   set chartBasis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    chartBasisFamily (I := I) α hx with hCB_def
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx with hCB_def
   have hfam_eq : (fun i : Fin (Module.finrank ℝ E) =>
-      chartBasisVecFiber (I := I) α i x)
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
       = (chartBasis : Fin (Module.finrank ℝ E) → TangentSpace I x) := by
     funext i
     rw [hCB_def]
-    exact (chartBasisFamily_apply (I := I) α hx i).symm
+    exact (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx i).symm
   rw [hfam_eq]
-  have hbase_unit : IsUnit ((centeredChartTangentBasis (I := I) x).toMatrix
+  have hbase_unit : IsUnit ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).toMatrix
       (chartBasis : Fin (Module.finrank ℝ E) → TangentSpace I x)) :=
-    ⟨⟨_, chartBasis.toMatrix (centeredChartTangentBasis (I := I) x),
+    ⟨⟨_, chartBasis.toMatrix (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x),
         Module.Basis.toMatrix_mul_toMatrix_flip _ _,
         Module.Basis.toMatrix_mul_toMatrix_flip _ _⟩, rfl⟩
   rw [Matrix.isUnit_iff_isUnit_det] at hbase_unit ⊢
@@ -146,36 +146,36 @@ private lemma deTurckCobMatrix_isUnit (α : M) {x : M}
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma chartGramMatrix_self_eq_model (g : SmoothRiemannianMetric I M) (x : M)
     (k l : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix (I := I) g x x k l =
-      g.inner x (centeredChartTangentBasis (I := I) x k)
-        (centeredChartTangentBasis (I := I) x l) := by
-  rw [chartGramMatrix_apply, chartBasisVecFiber_self (I := I) x k,
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k l =
+      g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, chartBasisVecFiber_self (I := I) x k,
     chartBasisVecFiber_self (I := I) x l]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma chartGramMatrix_eq_cob_conj (g : SmoothRiemannianMetric I M)
     (α : M) (x : M) :
-    chartGramMatrix (I := I) g α x =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x =
       deTurckCobMatrix (I := I) α x *
-        chartGramMatrix (I := I) g x x *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x *
         (deTurckCobMatrix (I := I) α x)ᵀ := by
   classical
   set P := deTurckCobMatrix (I := I) α x with hP_def
   ext i j
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   have hbilinear :
-      g.inner x (chartBasisVecFiber (I := I) α i x)
-          (chartBasisVecFiber (I := I) α j x)
+      g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
         = ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             (P i k * P j l) *
-              g.inner x (centeredChartTangentBasis (I := I) x k)
-                (centeredChartTangentBasis (I := I) x l) := by
+              g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) := by
     rw [chartBasisVecFiber_eq_sum_model (I := I) α x i,
         chartBasisVecFiber_eq_sum_model (I := I) α x j]
     exact clm_bilinear_expand_two_sums_scalar (n := Module.finrank ℝ E) g x
       (fun k => P i k) (fun l => P j l)
-      (fun k => centeredChartTangentBasis (I := I) x k)
-      (fun l => centeredChartTangentBasis (I := I) x l)
+      (fun k => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+      (fun l => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
   rw [hbilinear]
   rw [Matrix.mul_apply]
   rw [Finset.sum_comm]
@@ -190,10 +190,10 @@ private lemma chartGramMatrix_eq_cob_conj (g : SmoothRiemannianMetric I M)
 private def deTurckModelTrace (g g' : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x :=
   ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-    (chartGramMatrix (I := I) g x x)⁻¹ p q •
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹ p q •
       connectionDifference (I := I) g g' x
-        (centeredChartTangentBasis (I := I) x p)
-        (centeredChartTangentBasis (I := I) x q)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x p)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x q)
 
 private lemma transpose_mul_conj_inv_mul
     {n : ℕ} (P Gx : Matrix (Fin n) (Fin n) ℝ)
@@ -220,20 +220,20 @@ private lemma deTurckChartLocal_eq_modelTrace (g g' : SmoothRiemannianMetric I M
   classical
   set n := Module.finrank ℝ E with hn_def
   set P := deTurckCobMatrix (I := I) α x with hP_def
-  set Gx := chartGramMatrix (I := I) g x x with hGx_def
-  set Gα := chartGramMatrix (I := I) g α x with hGα_def
+  set Gx := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x with hGx_def
+  set Gα := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x with hGα_def
   set A := connectionDifference (I := I) g g' x with hA_def
-  set e := fun k : Fin n => centeredChartTangentBasis (I := I) x k with he_def
+  set e := fun k : Fin n => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k with he_def
   have hP_unit : IsUnit P := deTurckCobMatrix_isUnit (I := I) α hx
   have hGα_eq : Gα = P * Gx * Pᵀ := chartGramMatrix_eq_cob_conj (I := I) g α x
   have hframe : ∀ j : Fin n,
-      (chartBasisVecFiber (I := I) α j x : TangentSpace I x) =
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x : TangentSpace I x) =
         ∑ p : Fin n, P j p • e p := fun j =>
     chartBasisVecFiber_eq_sum_model (I := I) α x j
   rw [deTurckChartLocal_def]
   have hstep1 : ∀ j k : Fin n,
-      A (chartBasisVecFiber (I := I) α j x)
-          (chartBasisVecFiber (I := I) α k x) =
+      A (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
         ∑ p : Fin n, ∑ q : Fin n, (P j p * P k q) • A (e p) (e q) := by
     intro j k
     rw [hframe j, hframe k]
@@ -244,8 +244,8 @@ private lemma deTurckChartLocal_eq_modelTrace (g g' : SmoothRiemannianMetric I M
   calc
     ∑ j : Fin n, ∑ k : Fin n,
         chartInvGramMatrix (I := I) g α x j k •
-          A (chartBasisVecFiber (I := I) α j x)
-            (chartBasisVecFiber (I := I) α k x)
+          A (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
         = ∑ j : Fin n, ∑ k : Fin n,
             Gα⁻¹ j k •
               ∑ p : Fin n, ∑ q : Fin n, (P j p * P k q) • A (e p) (e q) := by

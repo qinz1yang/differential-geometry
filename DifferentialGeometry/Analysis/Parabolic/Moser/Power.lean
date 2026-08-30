@@ -465,10 +465,10 @@ theorem localized_energy_positive_rpow_of_supersolution
   have hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
-    have hspace := chartGramMatrix_entry_contMDiffOn (I := I) g x₀ i j
+    have hspace := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g x₀ i j
     exact (hspace.comp contMDiffOn_snd (fun p hp => hp.2)).congr (fun _ _ => rfl)
   have hgrad_joint : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M =>

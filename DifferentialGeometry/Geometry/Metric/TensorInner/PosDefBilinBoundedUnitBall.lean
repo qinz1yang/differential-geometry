@@ -26,7 +26,6 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace Tensor0SRiemannian
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 

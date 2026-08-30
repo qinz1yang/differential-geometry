@@ -45,9 +45,9 @@ noncomputable def chartInvGramPrincipalSum
                 (LeviCivita (I := I) g)).toFun
               (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                 (LeviCivita (I := I) g))
-                (chartBasisVecFiber (I := I) α k)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
                 (fun z : M => T₀.toSection z)) b
-              (chartBasisVecFiber (I := I) α l b)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))
 
 noncomputable def chartFrameCoordMatrixWeightedDoubleSum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -67,7 +67,7 @@ noncomputable def chartFrameCoordMatrixWeightedDoubleSum
                 (LeviCivita (I := I) g))
                 (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                 (fun z : M => T₀.toSection z)) b
-              (chartBasisVecFiber (I := I) α l b)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))
 
 noncomputable def chartLeibnizRemainder
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -143,7 +143,7 @@ theorem chartPushed_rawConnLap_chart_α_proj_eq_chartInvGram_secondCovDeriv_plus
                     (LeviCivita (I := I) g))
                     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) =
         chartFrameCoordMatrixWeightedDoubleSum (I := I) (M := M)
           g r s α T₀ Idx Jdx b := rfl
   rw [hFrameWeighted_eq]

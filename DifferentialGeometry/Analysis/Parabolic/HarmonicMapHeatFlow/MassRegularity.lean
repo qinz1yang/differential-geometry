@@ -682,7 +682,7 @@ theorem hmfStateTime_cont
     ∃ R : ℝ, 0 < R ∧
       ∀ (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ}, IsCompact K →
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-        (fun p : ℝ × M ↦ chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
       ∀ v w : EuclideanSpace ℝ {i // i ∈ S},

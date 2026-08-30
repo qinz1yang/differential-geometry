@@ -15,7 +15,7 @@ namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 
-open DifferentialGeometry.Integral.Measure (SmoothRiemannianMetric)
+open DifferentialGeometry (SmoothRiemannianMetric)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

@@ -262,16 +262,16 @@ theorem gradInner_eq_invGramMatrix_partials_smooth
   rw [← gradChartLocal_eq_gradFun (I := I) g α hh_mdiff hx hx_int]
   have h_grad_h_decomp : gradChartLocal (I := I) g α h x =
       ∑ k, gradChartCoeff (I := I) g α h k x •
-        chartBasisVecFiber (I := I) α k x := by rfl
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x := by rfl
   rw [h_grad_h_decomp]
   have h_pull : g.inner x (gradChartLocal (I := I) g α f x)
         (∑ k : Fin (Module.finrank ℝ E),
           gradChartCoeff (I := I) g α h k x •
-          chartBasisVecFiber (I := I) α k x) =
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α h k x *
           g.inner x (gradChartLocal (I := I) g α f x)
-            (chartBasisVecFiber (I := I) α k x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
@@ -281,7 +281,7 @@ theorem gradInner_eq_invGramMatrix_partials_smooth
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α h k x *
           g.inner x (gradChartLocal (I := I) g α f x)
-            (chartBasisVecFiber (I := I) α k x) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α h k x *
           partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
@@ -351,8 +351,8 @@ private lemma fderiv_chartPullback_eq_partialDeriv_scalarOnE
   rw [ContinuousLinearMap.coe_comp, Function.comp_apply]
   have h_iso_apply :
       ((toEuclidean (E := E)).symm : EuclN →L[ℝ] E)
-        (EuclideanSpace.single i (1 : ℝ)) = (chartModelBasis E) i := by
-    rw [chartModelBasis_apply]
+        (EuclideanSpace.single i (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]
     rfl
   rw [h_iso_apply]
   rfl

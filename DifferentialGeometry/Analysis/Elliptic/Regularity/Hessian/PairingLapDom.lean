@@ -145,12 +145,12 @@ lemma chartHessianPhiOnEuclid_continuousOn
           (by rw [ENat.coe_top_add_one])
       have h_pd_j : ContDiffOn ℝ ∞
           (fun z : E => fderiv ℝ (scalarOnE (I := I) α (φ : M → ℝ)) z
-            ((chartModelBasis E) j))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
           (extChartAt I α).target :=
         h_fder1.clm_apply contDiffOn_const
       have h_fder2 : ContDiffOn ℝ ∞
           (fderiv ℝ (fun z : E => fderiv ℝ (scalarOnE (I := I) α (φ : M → ℝ)) z
-            ((chartModelBasis E) j)))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))
           (extChartAt I α).target :=
         h_pd_j.fderiv_of_isOpen (isOpen_extChartAt_target (I := I) α)
           (by rw [ENat.coe_top_add_one])

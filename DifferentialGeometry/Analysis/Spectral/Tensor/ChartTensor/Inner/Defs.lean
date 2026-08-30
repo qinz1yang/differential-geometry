@@ -30,8 +30,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private lemma chartGramMatrix_inv_isHermitian
     (g : SmoothRiemannianMetric I M) (α b : M) :
-    (chartGramMatrix g α b)⁻¹.IsHermitian :=
-  (chartGramMatrix_isHermitian (I := I) g α b).inv
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹.IsHermitian :=
+  (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α b).inv
 
 private lemma chartTensorInnerPointwise_0s_symm_aux
     (g : SmoothRiemannianMetric I M) (α b : M) (n : ℕ)
@@ -50,8 +50,8 @@ private lemma chartTensorInnerPointwise_0s_symm_aux
       refine Finset.sum_congr rfl ?_
       intro j _
       have hG :
-          (chartGramMatrix g α b)⁻¹ j i =
-            (chartGramMatrix g α b)⁻¹ i j := by
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ j i =
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j := by
         have hherm := chartGramMatrix_inv_isHermitian (I := I) (M := M) g α b
         have := hherm.apply i j
         simpa [star_trivial] using this
@@ -170,7 +170,7 @@ section Smoothness
 private noncomputable def localEvalBasisLinear (n : ℕ) :
     Tensor0SModel n ℝ E →ₗ[ℝ]
       ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) where
-  toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
+  toFun := fun Φ φ => Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))
   map_add' Φ₁ Φ₂ := by
     funext φ
     simp [add_apply]
@@ -182,13 +182,13 @@ private noncomputable def localEvalBasisLinear (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     localEvalBasisLinear (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 private lemma localEvalBasisLinear_injective (n : ℕ) :
     Function.Injective (localEvalBasisLinear (E := E) n) := by
   intro Φ₁ Φ₂ h
   apply ContinuousMultilinearMap.toMultilinearMap_injective
-  refine Module.Basis.ext_multilinear (e := fun _ : Fin n => chartModelBasis E) ?_
+  refine Module.Basis.ext_multilinear (e := fun _ : Fin n => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ?_
   intro v
   exact congr_fun h v
 
@@ -240,14 +240,14 @@ private noncomputable def localEvalBasisCLE (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     localEvalBasisCLE (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 omit [IsManifold I ∞ M] in
 private lemma local_contMDiffOn_into_tensor0SModel_of_eval_basis
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun b : M =>
-        Φ b (fun k : Fin n => (chartModelBasis E) (φ k))) U) :
+        Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) U) :
     ContMDiffOn I 𝓘(ℝ, Tensor0SModel n ℝ E) ∞ Φ U := by
   have hpi : ContMDiffOn I 𝓘(ℝ, (Fin n → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun b : M => localEvalBasisCLE (E := E) n (Φ b)) U := by
@@ -270,19 +270,19 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
           chartSeparableFormAt (I := I) (M := M) g α b r
-            (fun k : Fin r => (chartModelBasis E) (φ_first k))
-            (fun k : Fin r => (chartModelBasis E) (ψ k)))
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k))
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have heq :
       (fun b : M =>
           chartSeparableFormAt (I := I) (M := M) g α b r
-            (fun k : Fin r => (chartModelBasis E) (φ_first k))
-            (fun k : Fin r => (chartModelBasis E) (ψ k)))
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k))
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
         = fun b : M =>
             ∏ k : Fin r,
               chartGramBilin (I := I) (M := M) g α b
-                ((chartModelBasis E) (φ_first k))
-                ((chartModelBasis E) (ψ k)) := by
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) := by
     funext b
     exact chartSeparableFormAt_apply (I := I) (M := M) g α b r _ _
   rw [heq]
@@ -290,16 +290,16 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
   have hentry :
       (fun b : M =>
           chartGramBilin (I := I) (M := M) g α b
-            ((chartModelBasis E) (φ_first k))
-            ((chartModelBasis E) (ψ k)))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
         = fun b : M =>
             ∑ j : Fin (Module.finrank ℝ E),
               ∑ kk : Fin (Module.finrank ℝ E),
-                chartGramMatrix g α b j kk *
-                  (chartModelBasis E).equivFun
-                    ((chartModelBasis E) (φ_first k)) j *
-                  (chartModelBasis E).equivFun
-                    ((chartModelBasis E) (ψ k)) kk := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b j kk *
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k)) j *
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) kk := by
     funext b
     rw [chartGramBilin_apply]
   rw [hentry]
@@ -307,7 +307,7 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
   refine contMDiffOn_finsetSum (fun kk _ => ?_)
   refine ContMDiffOn.mul ?_ contMDiffOn_const
   refine ContMDiffOn.mul ?_ contMDiffOn_const
-  exact chartGramMatrix_entry_contMDiffOn (I := I) g α j kk
+  exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α j kk
 
 private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -316,16 +316,16 @@ private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
           (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T)
-            (fun k : Fin (r + s) => (chartModelBasis E) (φ k)))
+            (fun k : Fin (r + s) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   set v_last : Fin s → E :=
-    fun j => (chartModelBasis E) (φ (Fin.natAdd r j)) with hv_last
+    fun j => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ (Fin.natAdd r j)) with hv_last
   set v_first : Fin r → E :=
-    fun k => (chartModelBasis E) (φ (Fin.castAdd s k)) with hv_first
+    fun k => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ (Fin.castAdd s k)) with hv_first
   have hrewrite :
       (fun b : M =>
           (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T)
-            (fun k : Fin (r + s) => (chartModelBasis E) (φ k)))
+            (fun k : Fin (r + s) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         = fun b : M =>
             T (chartSeparableFormAt (I := I) (M := M) g α b r v_first) v_last := by
     funext b
@@ -345,12 +345,12 @@ private lemma chartLowerAllUpperIndices_model_basis_eval_contMDiffOn
     have h_unfold :
         (fun b : M =>
             (chartSeparableFormAt (I := I) (M := M) g α b r v_first)
-              (fun k : Fin r => (chartModelBasis E) (ψ k)))
+              (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
           = fun b : M =>
               chartSeparableFormAt (I := I) (M := M) g α b r
-                (fun k : Fin r => (chartModelBasis E)
+                (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                   (φ (Fin.castAdd s k)))
-                (fun k : Fin r => (chartModelBasis E) (ψ k)) := by
+                (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) := by
       funext b
       rfl
     rw [h_unfold]

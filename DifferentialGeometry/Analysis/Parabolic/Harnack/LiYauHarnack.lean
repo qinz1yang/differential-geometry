@@ -69,7 +69,7 @@ private theorem chartLaplacianValue_jointContDiffAt
       (f := fun (p : ℝ × E) => fun (z : E) => scalarOnE (I := I) α (f p.1) z)
       (g := fun p : ℝ × E => p.2) hf' hg (by simp)
     have hcomp :=
-      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
+      (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).contDiff.contDiffAt.comp
         (t₀, y) hfd
     unfold partialDeriv
     refine hcomp.congr_of_eventuallyEq ?_
@@ -133,7 +133,7 @@ private theorem chartLaplacianValue_jointContDiffAt
       (f := fun (p : ℝ × E) => fun (z : E) => chartVossWeylIntegrand (I := I) g α (f p.1) i z)
       (g := fun p : ℝ × E => p.2) hf' hg (by simp)
     have hcomp :=
-      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
+      (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).contDiff.contDiffAt.comp
         (t₀, y) hfd
     unfold partialDeriv
     refine hcomp.congr_of_eventuallyEq ?_

@@ -52,13 +52,13 @@ noncomputable def dualCoordinateProductMultilinearMap (r : ℕ)
     ContinuousMultilinearMap ℝ (fun _ : Fin r => E) ℝ :=
   (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
     (fun k : Fin r =>
-      LinearMap.toContinuousLinearMap ((chartModelBasis E).coord (Idx k)))
+      LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Idx k)))
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma dualCovariantCMM_apply (r : ℕ)
     (Idx : Fin r → Fin (Module.finrank ℝ E)) (v : Fin r → E) :
     dualCoordinateProductMultilinearMap (E := E) r Idx v =
-      ∏ k : Fin r, ((chartModelBasis E).coord (Idx k)) (v k) := by
+      ∏ k : Fin r, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Idx k)) (v k) := by
   classical
   unfold dualCoordinateProductMultilinearMap
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
@@ -69,7 +69,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma dualCovariantCMM_apply_basis_tuple (r : ℕ)
     (Idx Jdx : Fin r → Fin (Module.finrank ℝ E)) :
     dualCoordinateProductMultilinearMap (E := E) r Idx
-        (fun k : Fin r => chartModelBasis E (Jdx k)) =
+        (fun k : Fin r => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
       if Idx = Jdx then (1 : ℝ) else 0 := by
   classical
   rw [dualCovariantCMM_apply]
@@ -77,7 +77,7 @@ lemma dualCovariantCMM_apply_basis_tuple (r : ℕ)
   · subst hEq
     rw [if_pos rfl]
     have hone : ∀ k : Fin r,
-        ((chartModelBasis E).coord (Idx k)) (chartModelBasis E (Idx k)) = 1 := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Idx k)) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Idx k)) = 1 := by
       intro k
       rw [Module.Basis.coord_apply, Module.Basis.repr_self,
         Finsupp.single_apply, if_pos rfl]
@@ -91,7 +91,7 @@ lemma dualCovariantCMM_apply_basis_tuple (r : ℕ)
       by_contra hne
       exact h_all ⟨k, hne⟩
     obtain ⟨k₀, hk₀⟩ := h_exists
-    have hzero : ((chartModelBasis E).coord (Idx k₀)) (chartModelBasis E (Jdx k₀)) = 0 := by
+    have hzero : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Idx k₀)) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k₀)) = 0 := by
       rw [Module.Basis.coord_apply, Module.Basis.repr_self,
         Finsupp.single_apply]
       exact if_neg hk₀.symm
@@ -103,7 +103,7 @@ noncomputable def tensorChartComponentProjection (r s : ℕ)
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     TensorRSModel r s ℝ E →L[ℝ] ℝ :=
   (ContinuousMultilinearMap.apply ℝ (fun _ : Fin s => E) ℝ
-      (fun k : Fin s => chartModelBasis E (Jdx k))).comp
+      (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k))).comp
     (ContinuousLinearMap.apply ℝ
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
       (dualCoordinateProductMultilinearMap (E := E) r Idx))
@@ -115,7 +115,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (T : TensorRSModel r s ℝ E) :
     tensorChartComponentProjection (E := E) r s Idx Jdx T =
       T (dualCoordinateProductMultilinearMap (E := E) r Idx)
-        (fun k : Fin s => chartModelBasis E (Jdx k)) := rfl
+        (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) := rfl
 
 noncomputable def tensorChartBasisElement (r s : ℕ)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -123,7 +123,7 @@ noncomputable def tensorChartBasisElement (r s : ℕ)
     TensorRSModel r s ℝ E :=
   ContinuousLinearMap.smulRight
     (ContinuousMultilinearMap.apply ℝ (fun _ : Fin r => E) ℝ
-      (fun k : Fin r => chartModelBasis E (Idx k)))
+      (fun k : Fin r => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Idx k)))
     (dualCoordinateProductMultilinearMap (E := E) s Jdx)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -132,7 +132,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     (w : ContinuousMultilinearMap ℝ (fun _ : Fin r => E) ℝ) :
     tensorChartBasisElement (E := E) r s Idx Jdx w =
-      w (fun k : Fin r => chartModelBasis E (Idx k)) •
+      w (fun k : Fin r => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Idx k)) •
         dualCoordinateProductMultilinearMap (E := E) s Jdx := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -154,61 +154,61 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma cmm_eq_sum_basis_coeffs (s : ℕ)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     f = ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) •
+          f (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) •
             dualCoordinateProductMultilinearMap (E := E) s Jdx := by
   classical
   ext v
   have hexpand : ∀ k : Fin s,
       v k = ∑ i : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).coord i) (v k) • chartModelBasis E i := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i) (v k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
     intro k
-    have hrep := (chartModelBasis E).sum_repr (v k)
+    have hrep := (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr (v k)
     conv_lhs => rw [← hrep]
     refine Finset.sum_congr rfl ?_
     intro i _
     rw [Module.Basis.coord_apply]
   have h_v_eq : v =
       fun k : Fin s => ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).coord i) (v k) • chartModelBasis E i := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i) (v k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
     funext k; exact hexpand k
   rw [show f v = f (fun k : Fin s =>
         ∑ i : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).coord i) (v k) • chartModelBasis E i) from
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i) (v k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) from
     congrArg f h_v_eq]
   rw [ContinuousMultilinearMap.map_sum
     (f := f)
     (g := fun (k : Fin s) (i : Fin (Module.finrank ℝ E)) =>
-      ((chartModelBasis E).coord i) (v k) • chartModelBasis E i)]
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i) (v k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)]
   have h_pull : ∀ Jdx : Fin s → Fin (Module.finrank ℝ E),
       f (fun k : Fin s =>
-          ((chartModelBasis E).coord (Jdx k)) (v k) • chartModelBasis E (Jdx k)) =
-        (∏ k : Fin s, ((chartModelBasis E).coord (Jdx k)) (v k)) *
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
+        (∏ k : Fin s, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k)) *
+          f (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) := by
     intro Jdx
     have hpull := f.toMultilinearMap.map_smul_univ
-      (c := fun k : Fin s => ((chartModelBasis E).coord (Jdx k)) (v k))
-      (m := fun k : Fin s => chartModelBasis E (Jdx k))
+      (c := fun k : Fin s => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k))
+      (m := fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k))
     have hpull' :
-        f (fun k : Fin s => ((chartModelBasis E).coord (Jdx k)) (v k) •
-            chartModelBasis E (Jdx k)) =
-        (∏ k : Fin s, ((chartModelBasis E).coord (Jdx k)) (v k)) •
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) := hpull
+        f (fun k : Fin s => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k) •
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
+        (∏ k : Fin s, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k)) •
+          f (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) := hpull
     rw [hpull']
     rfl
   rw [show ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
         f (fun k : Fin s =>
-            ((chartModelBasis E).coord (Jdx k)) (v k) • chartModelBasis E (Jdx k)) =
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) =
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-        (∏ k : Fin s, ((chartModelBasis E).coord (Jdx k)) (v k)) *
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) from
+        (∏ k : Fin s, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k)) *
+          f (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) from
     Finset.sum_congr rfl (fun Jdx _ => h_pull Jdx)]
   have h_rhs_eq :
       (∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) •
+          f (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) •
             dualCoordinateProductMultilinearMap (E := E) s Jdx) v =
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-          f (fun k : Fin s => chartModelBasis E (Jdx k)) *
-            (∏ k : Fin s, ((chartModelBasis E).coord (Jdx k)) (v k)) := by
+          f (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) *
+            (∏ k : Fin s, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Jdx k)) (v k)) := by
     classical
     rw [sum_apply]
     refine Finset.sum_congr rfl ?_
@@ -232,7 +232,7 @@ theorem tensorRSModel_eq_sum_basis (r s : ℕ) (T : TensorRSModel r s ℝ E) :
   intro w
   have hw := cmm_eq_sum_basis_coeffs (E := E) r w
   set c : (Fin r → Fin (Module.finrank ℝ E)) → ℝ := fun Idx =>
-    w (fun k : Fin r => chartModelBasis E (Idx k)) with hc_def
+    w (fun k : Fin r => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Idx k)) with hc_def
   have hw' : w = ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       c Idx • dualCoordinateProductMultilinearMap (E := E) r Idx := hw
   have hT : T w = ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -247,7 +247,7 @@ theorem tensorRSModel_eq_sum_basis (r s : ℕ) (T : TensorRSModel r s ℝ E) :
       T (dualCoordinateProductMultilinearMap (E := E) r Idx) =
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
           T (dualCoordinateProductMultilinearMap (E := E) r Idx)
-              (fun k : Fin s => chartModelBasis E (Jdx k)) •
+              (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) •
             dualCoordinateProductMultilinearMap (E := E) s Jdx := fun Idx =>
     cmm_eq_sum_basis_coeffs (E := E) s (T (dualCoordinateProductMultilinearMap (E := E) r Idx))
   have hrhs :
@@ -275,7 +275,7 @@ theorem tensorRSModel_eq_sum_basis (r s : ℕ) (T : TensorRSModel r s ℝ E) :
       c Idx •
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
           T (dualCoordinateProductMultilinearMap (E := E) r Idx)
-              (fun k : Fin s => chartModelBasis E (Jdx k)) •
+              (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k)) •
             dualCoordinateProductMultilinearMap (E := E) s Jdx := by
     intro Idx
     rw [Finset.smul_sum]

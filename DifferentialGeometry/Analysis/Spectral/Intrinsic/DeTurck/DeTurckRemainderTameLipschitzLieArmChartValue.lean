@@ -136,21 +136,21 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x
-        ![(chartModelBasis E) i, (chartModelBasis E) j] =
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix g₁ x x k₁ l *
           (unitModel (I := I) (M := M) g₀ 4 D x
-              ![(chartModelBasis E) i, (chartModelBasis E) l,
-                (chartModelBasis E) j, (chartModelBasis E) k₁]
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l,
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₁]
             + unitModel (I := I) (M := M) g₀ 4 D x
-              ![(chartModelBasis E) j, (chartModelBasis E) l,
-                (chartModelBasis E) i, (chartModelBasis E) k₁]
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l,
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₁]
             - unitModel (I := I) (M := M) g₀ 4 D x
-              ![(chartModelBasis E) i, (chartModelBasis E) j,
-                (chartModelBasis E) l, (chartModelBasis E) k₁]) := by
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j,
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₁]) := by
   classical
   refine (deTurckLieArm2PrincipalCoeff_apply_eq (I := I) g₀ g₁ D x
-    ![(chartModelBasis E) i, (chartModelBasis E) j]).trans ?_
+    ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j]).trans ?_
   have hpack13 : ∀ (u w c v : E),
       quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
         1 3 (by decide) ![u, 0, w, 0] c v =
@@ -179,7 +179,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix g₁ x x k₁ l *
           unitModel (I := I) (M := M) g₀ 4 D x
-            ![u, (chartModelBasis E) l, w, (chartModelBasis E) k₁] := by
+            ![u, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l, w, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₁] := by
     intro u w
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
@@ -200,7 +200,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
     rw [smul_eq_mul, hpack13 u w]
   have hpatH : (∑ k : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ 4 D x
-        ![(chartModelBasis E) i, (chartModelBasis E) j,
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j,
           cometricLmodel (I := I) g₁ x
             (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
@@ -208,11 +208,11 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix g₁ x x k₁ l *
           unitModel (I := I) (M := M) g₀ 4 D x
-            ![(chartModelBasis E) i, (chartModelBasis E) j,
-              (chartModelBasis E) l, (chartModelBasis E) k₁] := by
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j,
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₁] := by
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
-          ![(chartModelBasis E) i, (chartModelBasis E) j,
+          ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j,
             cometricLmodel (I := I) g₁ x
               (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
@@ -220,19 +220,19 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       ∑ k : Fin (Module.finrank ℝ E),
         quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
           2 3 (by decide)
-          ![(chartModelBasis E) i, (chartModelBasis E) j, 0, 0]
+          ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j, 0, 0]
           (cometricLmodel (I := I) g₁ x
             (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ =>
-        (hpack23 ((chartModelBasis E) i) ((chartModelBasis E) j) _ _).symm)]
+        (hpack23 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) _ _).symm)]
     rw [cometricFinBasisTrace_eq_chartInvGram_bilin (I := I) g₁ x _]
     refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun l _ => ?_))
-    rw [smul_eq_mul, hpack23 ((chartModelBasis E) i) ((chartModelBasis E) j)]
+    rw [smul_eq_mul, hpack23 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
-  rw [hpat ((chartModelBasis E) i) ((chartModelBasis E) j),
-    hpat ((chartModelBasis E) j) ((chartModelBasis E) i), hpatH]
+  rw [hpat ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j),
+    hpat ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i), hpatH]
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun k₁ _ => ?_)
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
@@ -261,7 +261,6 @@ open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
   (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
 open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
-open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -280,7 +279,7 @@ private lemma lieArm_rawComponent_eq_unitModel_frame
     (hb : b ∈ (chartAt H x).source) :
     tensorChartComponentRaw (I := I) (M := M) g 0 s W x ![] Jdx b =
       unitModel (I := I) (M := M) g s W b
-        (fun j => (show E from chartBasisVecFiber (I := I) x (Jdx j) b)) := by
+        (fun j => (show E from DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x (Jdx j) b)) := by
   rw [tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g 0 s W x hb ![] Jdx]
   rw [lieArm_frame0_eq_unitTensor (I := I) (M := M) x b]
   rfl
@@ -351,7 +350,7 @@ private lemma lieArm_unitModel4_basisChart_readout_split
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 h) x
-        ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c, chartModelBasis E d] =
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] =
       euclidPartial (E := E) a
           (fun y' => euclidPartial (E := E) b
             (chartPushedRaw I x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
@@ -363,10 +362,10 @@ private lemma lieArm_unitModel4_basisChart_readout_split
   have hroundtrip : (extChartAt I x).symm
       ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x))) = x :=
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x hmemsrc
-  have hbasis : (fun j => chartModelBasis E
+  have hbasis : (fun j => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
       ((![a, b, c, d] : Fin 4 → Fin (Module.finrank ℝ E)) j)) =
-      ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c,
-        chartModelBasis E d] := by
+      ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c,
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] := by
     funext j
     fin_cases j <;> rfl
   rw [← hbasis]
@@ -406,7 +405,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
     (g₀ : SmoothRiemannianMetric I M) (h : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1 h) x
-        ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c] =
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c] =
       euclidPartial (E := E) a
           (chartPushedRaw I x (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             h x ![] ![b, c]))
@@ -417,9 +416,9 @@ private lemma lieArm_unitModel3_basisChart_readout_split
   have hroundtrip : (extChartAt I x).symm
       ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x))) = x :=
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x hmemsrc
-  have hbasis : (fun j => chartModelBasis E
+  have hbasis : (fun j => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
       ((![a, b, c] : Fin 3 → Fin (Module.finrank ℝ E)) j)) =
-      ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c] := by
+      ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c] := by
     funext j
     fin_cases j <;> rfl
   rw [← hbasis]
@@ -532,7 +531,7 @@ private lemma lieArm_U4_readout
     (x : M) (a b c d : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 4
         (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-        ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c, chartModelBasis E d] =
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] =
       DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
           (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
@@ -556,10 +555,10 @@ private lemma lieArm_U4_readout
         (DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE (I := I) x
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])))
-      (extChartAt I x x) ((chartModelBasis E) a) = fderiv ℝ
+      (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a) = fderiv ℝ
       (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) b
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d))
-      (extChartAt I x x) ((chartModelBasis E) a)
+      (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a)
   rw [hev1.fderiv_eq]
 
 omit [SigmaCompactSpace M] in
@@ -574,7 +573,7 @@ private lemma lieArm_U3_readout
     (x : M) (a b c : Fin (Module.finrank ℝ E)) :
     unitModel (I := I) (M := M) g₀ 3
         (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-        ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c] =
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c] =
       DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) a
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b c)
           (extChartAt I x x)
@@ -630,7 +629,7 @@ private lemma lieArm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M
     (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g x a b
         (extChartAt I x x) =
-      DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x a b := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b := by
   rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def]
   have hx_src : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
@@ -641,9 +640,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma lieArm_chartInvGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
     chartInvGramMatrix (I := I) g x x a b = chartInvGramMatrix (I := I) g x x b a := by
-  have hherm : (DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x
+  have hherm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x
     x)⁻¹.IsHermitian :=
-    (DifferentialGeometry.Integral.Measure.chartGramMatrix_isHermitian (I := I) g x x).inv
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g x x).inv
   have h := congrFun (congrFun hherm a) b
   rw [Matrix.conjTranspose_apply, star_trivial] at h
   exact h.symm
@@ -653,7 +652,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x : M)
     (l j : Fin (Module.finrank ℝ E)) :
     (∑ k : Fin (Module.finrank ℝ E),
-        DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x k j *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
           chartInvGramMatrix (I := I) g x x k l) =
       if l = j then (1 : ℝ) else 0 := by
   classical
@@ -665,11 +664,11 @@ private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x :
   have h := congrFun (congrFun hmul l) j
   rw [Matrix.mul_apply, Matrix.one_apply] at h
   rw [show (∑ k : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x k j *
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
         chartInvGramMatrix (I := I) g x x k l) =
     ∑ k : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x l k *
-        DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x k j from
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j from
     Finset.sum_congr rfl (fun k _ => by
       rw [lieArm_chartInvGramMatrix_symm (I := I) g x k l]; ring)]
   rw [h]
@@ -703,7 +702,6 @@ private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
-open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
@@ -744,7 +742,7 @@ private lemma lieArm_P2_halfCollapse
   set CIM : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
     chartInvGramMatrix (I := I) g₁ x x a b with hCIM
   set CGM : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
-    DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g₁ x x a b with hCGM
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ x x a b with hCGM
   have hHB : ∀ k a b : Fin (Module.finrank ℝ E),
       chartDeTurckCorrHessBlockRaw (I := I) g₁ x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) d a b k
@@ -867,7 +865,7 @@ private lemma lieArm_arm2_value_eq_principal_add_tail
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁)
           (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-        ![(chartModelBasis E) i, (chartModelBasis E) j] =
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] =
       chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g₁ x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j (extChartAt I x x)
         + ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -895,7 +893,7 @@ private lemma lieArm_arm2_value_eq_principal_add_tail
   have hU4 : ∀ a b c d : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ 4
           (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c, chartModelBasis E d] =
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d] =
         pd2 a b c d + R4 ![a, b, c, d] := fun a b c d =>
     lieArm_U4_readout (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b c d
   rw [Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun l _ => by
@@ -904,13 +902,13 @@ private lemma lieArm_arm2_value_eq_principal_add_tail
       chartInvGramMatrix (I := I) g₁ x x k₁ l *
         (unitModel (I := I) (M := M) g₀ 4
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-            ![chartModelBasis E i, chartModelBasis E l, chartModelBasis E j, chartModelBasis E k₁]
+            ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]
           + unitModel (I := I) (M := M) g₀ 4
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-            ![chartModelBasis E j, chartModelBasis E l, chartModelBasis E i, chartModelBasis E k₁]
+            ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]
           - unitModel (I := I) (M := M) g₀ 4
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-            ![chartModelBasis E i, chartModelBasis E j, chartModelBasis E l, chartModelBasis E k₁])
+            ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
               =
       CIM k₁ l *
         ((pd2 i l j k₁ + R4 ![i, l, j, k₁])
@@ -994,8 +992,8 @@ private lemma lieArm_cometric_doubleTrace_eq_invGram
         ∑ l₁ : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g₁ x x k₁ p *
             (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-              F (chartModelBasis E m) (chartModelBasis E l₁)
-                (chartModelBasis E p) (chartModelBasis E k₁)) := by
+              F (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)) := by
   classical
   have hinner : ∀ c v : E,
       (∑ l : Fin (Module.finrank ℝ E),
@@ -1036,13 +1034,13 @@ private lemma lieArm_cometric_doubleTrace_eq_invGram
   rw [show (∑ l₁ : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g₁ x x k₁ p *
         (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-          F (chartModelBasis E m) (chartModelBasis E l₁)
-            (chartModelBasis E p) (chartModelBasis E k₁))) =
+          F (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))) =
     chartInvGramMatrix (I := I) g₁ x x k₁ p *
       ∑ l₁ : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x l₁ m *
-          F (chartModelBasis E m) (chartModelBasis E l₁)
-            (chartModelBasis E p) (chartModelBasis E k₁) from by
+          F (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁) from by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun l₁ _ => ?_)
     rw [Finset.mul_sum]]
@@ -1052,10 +1050,10 @@ private lemma lieArm_cometric_doubleTrace_eq_invGram
       F (cometricLmodel (I := I) g₁ x
           (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis l)))
-        ((Module.finBasis ℝ E) l) (chartModelBasis E p) (chartModelBasis E k₁)) =
+        ((Module.finBasis ℝ E) l) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)) =
     ∑ l : Fin (Module.finrank ℝ E),
       ContinuousLinearMap.evalCurriedFourLastTwo F
-        (chartModelBasis E p) (chartModelBasis E k₁)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)
         (cometricLmodel (I := I) g₁ x
           (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis l)))
@@ -1099,8 +1097,8 @@ private lemma lieArm_doubleTrace_slotBilin
           chartInvGramMatrix (I := I) g₁ x x k₁ p *
             (chartInvGramMatrix (I := I) g₁ x x l₁ m *
               (unitModel3SlotBilin (E := E) W3 i₁ i₂ h12 base
-                  (chartModelBasis E m) (chartModelBasis E p) *
-                B (chartModelBasis E l₁) (chartModelBasis E k₁))) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) *
+                B (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))) := by
   classical
   have hbrick := lieArm_cometric_doubleTrace_eq_invGram (I := I) g₁ x
     (ContinuousLinearMap.curriedBilinearMul
@@ -1214,18 +1212,18 @@ private lemma lieArm_arm1_group_traced
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![v0, chartModelBasis E m, chartModelBasis E p] *
+            (W3 ![v0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v1 (chartModelBasis E l₁))
-                (chartModelBasis E k₁))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v1 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![v0, chartModelBasis E m, chartModelBasis E p] *
+            (W3 ![v0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (chartModelBasis E l₁)
-                  (chartModelBasis E k₁)) v1)))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)) v1)))
       - W3 ![v0, v1,
           (show E from
             (PDE.DeTurck.deTurckVF (I := I) g₁ g₀X : Π y : M, TangentSpace I y) x)]
@@ -1233,23 +1231,23 @@ private lemma lieArm_arm1_group_traced
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![chartModelBasis E m, v1, chartModelBasis E p] *
+            (W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, v1, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (chartModelBasis E k₁))
-                (chartModelBasis E l₁))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
-          W3 ![chartModelBasis E p,
+          W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p,
                 (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1),
-                chartModelBasis E k₁])
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![chartModelBasis E m, v1, chartModelBasis E p] *
+            (W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, v1, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (chartModelBasis E l₁))
-                (chartModelBasis E k₁))))) := by
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))))) := by
   classical
   have hT2 : (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![v0,
@@ -1266,10 +1264,10 @@ private lemma lieArm_arm1_group_traced
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![v0, chartModelBasis E m, chartModelBasis E p] *
+            (W3 ![v0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v1 (chartModelBasis E l₁))
-                (chartModelBasis E k₁)))) := by
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v1 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)))) := by
     have h := lieArm_doubleTrace_slotBilin (I := I) g₁ x W3 1 2 (by decide)
       ![v0, 0, 0] ((metricConnectionDifferenceLoweredTrilin (I := I) g₁ g₁ g₀X x) v1)
     refine Eq.trans ?_ (Eq.trans h ?_)
@@ -1295,10 +1293,10 @@ private lemma lieArm_arm1_group_traced
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![v0, chartModelBasis E m, chartModelBasis E p] *
+            (W3 ![v0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (chartModelBasis E l₁)
-                  (chartModelBasis E k₁)) v1))) := by
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)) v1))) := by
     have h := lieArm_doubleTrace_slotBilin (I := I) g₁ x W3 1 2 (by decide)
       ![v0, 0, 0] (ContinuousLinearMap.evalCurriedThreeLast
         (metricConnectionDifferenceLoweredTrilin (I := I) g₁ g₁ g_bg x) v1)
@@ -1325,10 +1323,10 @@ private lemma lieArm_arm1_group_traced
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![chartModelBasis E m, v1, chartModelBasis E p] *
+            (W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, v1, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (chartModelBasis E k₁))
-                (chartModelBasis E l₁)))) := by
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)))) := by
     have h := lieArm_doubleTrace_slotBilin (I := I) g₁ x W3 0 2 (by decide)
       ![0, v1, 0] (((metricConnectionDifferenceLoweredTrilin (I := I) g₁ g₁ g₀X x) v0).flip)
     refine Eq.trans ?_ (Eq.trans h ?_)
@@ -1354,10 +1352,10 @@ private lemma lieArm_arm1_group_traced
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
-            (W3 ![chartModelBasis E m, v1, chartModelBasis E p] *
+            (W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, v1, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (chartModelBasis E l₁))
-                (chartModelBasis E k₁)))) := by
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)))) := by
     have h := lieArm_doubleTrace_slotBilin (I := I) g₁ x W3 0 2 (by decide)
       ![0, v1, 0] ((metricConnectionDifferenceLoweredTrilin (I := I) g₁ g₁ g₀X x) v0)
     refine Eq.trans ?_ (Eq.trans h ?_)
@@ -1376,9 +1374,9 @@ private lemma lieArm_arm1_group_traced
               ((Module.finBasis ℝ E) k)]) =
       (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
-          W3 ![chartModelBasis E p,
+          W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p,
                 (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1),
-                chartModelBasis E k₁]) := by
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]) := by
     have h := cometricFinBasisTrace_eq_chartInvGram_bilin (I := I) g₁ x
       (unitModel3SlotBilin (E := E) W3 0 2 (by decide)
         ![0, (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1), 0])
@@ -1405,8 +1403,8 @@ private lemma lieArm_arm1_T14_traced
       (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           W3 ![(show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1),
-                chartModelBasis E p,
-                chartModelBasis E k₁]) := by
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p,
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]) := by
   classical
   have h := cometricFinBasisTrace_eq_chartInvGram_bilin (I := I) g₁ x
     (unitModel3SlotBilin (E := E) W3 1 2 (by decide)
@@ -1426,30 +1424,30 @@ private lemma lieArm_arm1_value_traced
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 3 2
           (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg) D) x
-        ![chartModelBasis E i, chartModelBasis E j] =
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j] =
       unitModel (I := I) (M := M) g₀ 3 D x
         ![(show E from
             (PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x),
-          chartModelBasis E i, chartModelBasis E j]
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![(chartModelBasis E i), chartModelBasis E m, chartModelBasis E p] *
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E j) (chartModelBasis E l₁))
-                (chartModelBasis E k₁))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![(chartModelBasis E i), chartModelBasis E m, chartModelBasis E p] *
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (chartModelBasis E l₁)
-                  (chartModelBasis E k₁)) (chartModelBasis E j))))
-      - unitModel (I := I) (M := M) g₀ 3 D x ![(chartModelBasis E i), (chartModelBasis E j),
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j))))
+      - unitModel (I := I) (M := M) g₀ 3 D x ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j),
           (show E from
             (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -1457,44 +1455,44 @@ private lemma lieArm_arm1_value_traced
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![chartModelBasis E m, (chartModelBasis E j), chartModelBasis E p] *
+              ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E i) (chartModelBasis E k₁))
-                (chartModelBasis E l₁))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
-          unitModel (I := I) (M := M) g₀ 3 D x ![chartModelBasis E p,
-                (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E i)
-                  (chartModelBasis E j)),
-                chartModelBasis E k₁])
+          unitModel (I := I) (M := M) g₀ 3 D x ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p,
+                (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)),
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![chartModelBasis E m, (chartModelBasis E j), chartModelBasis E p] *
+              ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E i) (chartModelBasis E l₁))
-                (chartModelBasis E k₁)))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)))))
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![(chartModelBasis E j), chartModelBasis E m, chartModelBasis E p] *
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E i) (chartModelBasis E l₁))
-                (chartModelBasis E k₁))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![(chartModelBasis E j), chartModelBasis E m, chartModelBasis E p] *
+              ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (chartModelBasis E l₁)
-                  (chartModelBasis E k₁)) (chartModelBasis E i))))
-      - unitModel (I := I) (M := M) g₀ 3 D x ![(chartModelBasis E j), (chartModelBasis E i),
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁)
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))))
+      - unitModel (I := I) (M := M) g₀ 3 D x ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i),
           (show E from
             (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -1502,60 +1500,60 @@ private lemma lieArm_arm1_value_traced
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![chartModelBasis E m, (chartModelBasis E i), chartModelBasis E p] *
+              ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E j) (chartModelBasis E k₁))
-                (chartModelBasis E l₁))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
-          unitModel (I := I) (M := M) g₀ 3 D x ![chartModelBasis E p,
-                (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E j)
-                  (chartModelBasis E i)),
-                chartModelBasis E k₁])
+          unitModel (I := I) (M := M) g₀ 3 D x ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p,
+                (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)),
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           (chartInvGramMatrix (I := I) g₁ x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3 D x
-              ![chartModelBasis E m, (chartModelBasis E i), chartModelBasis E p] *
+              ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E j) (chartModelBasis E l₁))
-                (chartModelBasis E k₁)))))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l₁))
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁)))))
       + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k₁ p *
           unitModel (I := I) (M := M) g₀ 3 D x
-            ![(show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (chartModelBasis E i)
-            (chartModelBasis E j)),
-                chartModelBasis E p,
-                chartModelBasis E k₁]) := by
+            ![(show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)),
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p,
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]) := by
   classical
   refine (deTurckLieArm1Coeff_apply_eq (I := I) g₀ g₁ g_bg D x
-    ![chartModelBasis E i, chartModelBasis E j]).trans ?_
+    ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]).trans ?_
   refine congrArg₂ (· + ·) (congrArg₂ (· + ·) (congrArg₂ (· + ·) rfl ?_) ?_) ?_
   · exact lieArm_arm1_group_traced (I := I) g₀ g₁ g_bg x
-      (unitModel (I := I) (M := M) g₀ 3 D x) (chartModelBasis E i) (chartModelBasis E j)
+      (unitModel (I := I) (M := M) g₀ 3 D x) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
   · exact lieArm_arm1_group_traced (I := I) g₀ g₁ g_bg x
-      (unitModel (I := I) (M := M) g₀ 3 D x) (chartModelBasis E j) (chartModelBasis E i)
+      (unitModel (I := I) (M := M) g₀ 3 D x) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
   · exact lieArm_arm1_T14_traced (I := I) g₀ g₁ x
-      (unitModel (I := I) (M := M) g₀ 3 D x) (chartModelBasis E i) (chartModelBasis E j)
+      (unitModel (I := I) (M := M) g₀ 3 D x) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieArm_inner_chartBasis_center (g : SmoothRiemannianMetric I M) (x : M)
     (p q : Fin (Module.finrank ℝ E)) :
-    g.inner x ((chartModelBasis E) p : TangentSpace I x)
-        ((chartModelBasis E) q : TangentSpace I x) =
-      DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x p q := by
-  have hp : ((chartModelBasis E) p : TangentSpace I x) =
-      centeredChartTangentBasis (I := I) x p := by
-    rw [centeredChartTangentBasis_apply]
-    exact (centeredChartTangentEquiv_symm_apply (I := I) x _).symm
-  have hq : ((chartModelBasis E) q : TangentSpace I x) =
-      centeredChartTangentBasis (I := I) x q := by
-    rw [centeredChartTangentBasis_apply]
-    exact (centeredChartTangentEquiv_symm_apply (I := I) x _).symm
+    g.inner x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p : TangentSpace I x)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q : TangentSpace I x) =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p q := by
+  have hp : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p : TangentSpace I x) =
+      DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x p := by
+    rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply]
+    exact (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply (I := I) x _).symm
+  have hq : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q : TangentSpace I x) =
+      DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x q := by
+    rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply]
+    exact (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply (I := I) x _).symm
   rw [hp, hq]
-  rw [DifferentialGeometry.Integral.Measure.chartGramMatrix_apply,
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x p,
     DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x q]
 
@@ -1565,20 +1563,20 @@ omit [SigmaCompactSpace M] in
 private lemma lieArm_connectionDifference_chartBasis_center
     (gA gB : SmoothRiemannianMetric I M) (x : M) (j k : Fin (Module.finrank ℝ E)) :
     PDE.DeTurck.connectionDifference (I := I) gA gB x
-        ((chartModelBasis E) j : TangentSpace I x)
-        ((chartModelBasis E) k : TangentSpace I x) =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j : TangentSpace I x)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k : TangentSpace I x) =
       ∑ p : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x k j p
             (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x k j p
             (extChartAt I x x)) •
-          ((chartModelBasis E) p : TangentSpace I x) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p : TangentSpace I x) := by
   have hbasis : ∀ p : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E) p : TangentSpace I x) =
-        centeredChartTangentBasis (I := I) x p := by
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p : TangentSpace I x) =
+        DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x p := by
     intro p
-    rw [centeredChartTangentBasis_apply]
-    exact (centeredChartTangentEquiv_symm_apply (I := I) x _).symm
+    rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply]
+    exact (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply (I := I) x _).symm
   simp_rw [hbasis]
   rw [← DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x j]
   rw [← DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x k]
@@ -1616,43 +1614,43 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_U3_sum_slot0
     (W3 : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => E) ℝ)
     (c : Fin (Module.finrank ℝ E) → ℝ) (u v : E) :
-    W3 ![∑ q : Fin (Module.finrank ℝ E), c q • chartModelBasis E q, u, v] =
-      ∑ q : Fin (Module.finrank ℝ E), c q * W3 ![chartModelBasis E q, u, v] := by
+    W3 ![∑ q : Fin (Module.finrank ℝ E), c q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, u, v] =
+      ∑ q : Fin (Module.finrank ℝ E), c q * W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, u, v] := by
   refine ((lieArm_slot02_pack (E := E) W3 u
-    (∑ q : Fin (Module.finrank ℝ E), c q • chartModelBasis E q) v).symm).trans ?_
+    (∑ q : Fin (Module.finrank ℝ E), c q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) v).symm).trans ?_
   refine (lieArm_bilin_expand_fst (E := E)
     (unitModel3SlotBilin (E := E) W3 0 2 (by decide) ![0, u, 0]) c
-    (fun q => chartModelBasis E q) v).trans ?_
+    (fun q => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) v).trans ?_
   refine Finset.sum_congr rfl (fun q _ => ?_)
-  exact congrArg (HMul.hMul (c q)) (lieArm_slot02_pack (E := E) W3 u (chartModelBasis E q) v)
+  exact congrArg (HMul.hMul (c q)) (lieArm_slot02_pack (E := E) W3 u (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) v)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_U3_sum_slot1
     (W3 : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => E) ℝ)
     (u : E) (c : Fin (Module.finrank ℝ E) → ℝ) (v : E) :
-    W3 ![u, ∑ q : Fin (Module.finrank ℝ E), c q • chartModelBasis E q, v] =
-      ∑ q : Fin (Module.finrank ℝ E), c q * W3 ![u, chartModelBasis E q, v] := by
+    W3 ![u, ∑ q : Fin (Module.finrank ℝ E), c q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, v] =
+      ∑ q : Fin (Module.finrank ℝ E), c q * W3 ![u, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, v] := by
   refine ((lieArm_slot12_pack (E := E) W3 u
-    (∑ q : Fin (Module.finrank ℝ E), c q • chartModelBasis E q) v).symm).trans ?_
+    (∑ q : Fin (Module.finrank ℝ E), c q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) v).symm).trans ?_
   refine (lieArm_bilin_expand_fst (E := E)
     (unitModel3SlotBilin (E := E) W3 1 2 (by decide) ![u, 0, 0]) c
-    (fun q => chartModelBasis E q) v).trans ?_
+    (fun q => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) v).trans ?_
   refine Finset.sum_congr rfl (fun q _ => ?_)
-  exact congrArg (HMul.hMul (c q)) (lieArm_slot12_pack (E := E) W3 u (chartModelBasis E q) v)
+  exact congrArg (HMul.hMul (c q)) (lieArm_slot12_pack (E := E) W3 u (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) v)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_U3_sum_slot2
     (W3 : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => E) ℝ)
     (u v : E) (c : Fin (Module.finrank ℝ E) → ℝ) :
-    W3 ![u, v, ∑ q : Fin (Module.finrank ℝ E), c q • chartModelBasis E q] =
-      ∑ q : Fin (Module.finrank ℝ E), c q * W3 ![u, v, chartModelBasis E q] := by
+    W3 ![u, v, ∑ q : Fin (Module.finrank ℝ E), c q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q] =
+      ∑ q : Fin (Module.finrank ℝ E), c q * W3 ![u, v, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q] := by
   refine ((lieArm_slot12_pack (E := E) W3 u v
-    (∑ q : Fin (Module.finrank ℝ E), c q • chartModelBasis E q)).symm).trans ?_
+    (∑ q : Fin (Module.finrank ℝ E), c q • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q)).symm).trans ?_
   refine (lieArm_bilin_expand_snd (E := E)
     (unitModel3SlotBilin (E := E) W3 1 2 (by decide) ![u, 0, 0]) v c
-    (fun q => chartModelBasis E q)).trans ?_
+    (fun q => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q)).trans ?_
   refine Finset.sum_congr rfl (fun q _ => ?_)
-  exact congrArg (HMul.hMul (c q)) (lieArm_slot12_pack (E := E) W3 u v (chartModelBasis E q))
+  exact congrArg (HMul.hMul (c q)) (lieArm_slot12_pack (E := E) W3 u v (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q))
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1661,22 +1659,22 @@ private lemma lieArm_inner_connectionDifference_chartBasis_value
     (gm gA gB : SmoothRiemannianMetric I M) (x : M)
     (a c d : Fin (Module.finrank ℝ E)) :
     gm.inner x
-        (PDE.DeTurck.connectionDifference (I := I) gA gB x (chartModelBasis E a) (chartModelBasis E c))
-        (chartModelBasis E d) =
+        (PDE.DeTurck.connectionDifference (I := I) gA gB x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c))
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d) =
       ∑ q : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x c a q
             (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x c a q
             (extChartAt I x x)) *
-          DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) gm x x q d := by
-  refine (congrArg (fun t : TangentSpace I x => gm.inner x t (chartModelBasis E d))
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gm x x q d := by
+  refine (congrArg (fun t : TangentSpace I x => gm.inner x t (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d))
     (lieArm_connectionDifference_chartBasis_center (I := I) gA gB x a c)).trans ?_
   refine (lieArm_bilin_expand_fst (E := E) (gm.inner x)
     (fun q => DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x c a q
         (extChartAt I x x) -
       DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x c a q
         (extChartAt I x x))
-    (fun q => chartModelBasis E q) (chartModelBasis E d)).trans ?_
+    (fun q => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d)).trans ?_
   refine Finset.sum_congr rfl (fun q _ => ?_)
   exact congrArg (HMul.hMul _) (lieArm_inner_chartBasis_center (I := I) gm x q d)
 
@@ -1691,18 +1689,18 @@ private lemma lieArm_U3_deTurckVF_slot0_value
       ∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) gA gB x w
             (extChartAt I x x) *
-          W3 ![chartModelBasis E w, u, v] := by
+          W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w, u, v] := by
   have hW : (show E from
       (PDE.DeTurck.deTurckVF (I := I) gA gB : Π y : M, TangentSpace I y) x) =
       ∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) gA gB x w
             (extChartAt I x x) •
-          chartModelBasis E w :=
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w :=
     by
       have h := congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x)
         (PDE.DeTurck.deTurckVF_apply_eq_chartDeTurckVFComp_sum_self (I := I) gA gB x)
       rw [map_sum] at h
-      simp_rw [map_smul, tangent_model_equiv_centered_chart_basis] at h
+      simp_rw [map_smul, DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis] at h
       rw [tangentSpaceModelContinuousLinearEquiv_apply] at h
       exact h
   refine (congrArg (fun t : E => W3 ![t, u, v]) hW).trans ?_
@@ -1721,18 +1719,18 @@ private lemma lieArm_U3_deTurckVF_slot2_value
       ∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) gA gB x w
             (extChartAt I x x) *
-          W3 ![u, v, chartModelBasis E w] := by
+          W3 ![u, v, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w] := by
   have hW : (show E from
       (PDE.DeTurck.deTurckVF (I := I) gA gB : Π y : M, TangentSpace I y) x) =
       ∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I) gA gB x w
             (extChartAt I x x) •
-          chartModelBasis E w :=
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w :=
     by
       have h := congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x)
         (PDE.DeTurck.deTurckVF_apply_eq_chartDeTurckVFComp_sum_self (I := I) gA gB x)
       rw [map_sum] at h
-      simp_rw [map_smul, tangent_model_equiv_centered_chart_basis] at h
+      simp_rw [map_smul, DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis] at h
       rw [tangentSpaceModelContinuousLinearEquiv_apply] at h
       exact h
   refine (congrArg (fun t : E => W3 ![u, v, t]) hW).trans ?_
@@ -1748,21 +1746,21 @@ private lemma lieArm_U3_connectionDifference_slot0_value
     (gA gB : SmoothRiemannianMetric I M) (x : M)
     (a c : Fin (Module.finrank ℝ E)) (u v : E) :
     W3 ![(show E from PDE.DeTurck.connectionDifference (I := I) gA gB x
-        (chartModelBasis E a) (chartModelBasis E c)), u, v] =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)), u, v] =
       ∑ q : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x c a q
             (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x c a q
             (extChartAt I x x)) *
-          W3 ![chartModelBasis E q, u, v] := by
+          W3 ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, u, v] := by
   have hconn : (show E from PDE.DeTurck.connectionDifference (I := I) gA gB x
-      (chartModelBasis E a) (chartModelBasis E c)) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)) =
       ∑ q : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x c a q
             (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x c a q
             (extChartAt I x x)) •
-          chartModelBasis E q :=
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q :=
     lieArm_connectionDifference_chartBasis_center (I := I) gA gB x a c
   refine (congrArg (fun t : E => W3 ![t, u, v]) hconn).trans ?_
   exact lieArm_U3_sum_slot0 (E := E) W3
@@ -1779,21 +1777,21 @@ private lemma lieArm_U3_connectionDifference_slot1_value
     (gA gB : SmoothRiemannianMetric I M) (x : M)
     (a c : Fin (Module.finrank ℝ E)) (u v : E) :
     W3 ![u, (show E from PDE.DeTurck.connectionDifference (I := I) gA gB x
-        (chartModelBasis E a) (chartModelBasis E c)), v] =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)), v] =
       ∑ q : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x c a q
             (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x c a q
             (extChartAt I x x)) *
-          W3 ![u, chartModelBasis E q, v] := by
+          W3 ![u, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, v] := by
   have hconn : (show E from PDE.DeTurck.connectionDifference (I := I) gA gB x
-      (chartModelBasis E a) (chartModelBasis E c)) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E a) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)) =
       ∑ q : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x c a q
             (extChartAt I x x) -
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x c a q
             (extChartAt I x x)) •
-          chartModelBasis E q :=
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q :=
     lieArm_connectionDifference_chartBasis_center (I := I) gA gB x a c
   refine (congrArg (fun t : E => W3 ![u, t, v]) hconn).trans ?_
   exact lieArm_U3_sum_slot1 (E := E) W3 u
@@ -1816,26 +1814,26 @@ private lemma lieArm_arm1_value_realized
           (deTurckLieArm1Coeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-        ![chartModelBasis E i, chartModelBasis E j] =
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j] =
       (∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) *
           unitModel (I := I) (M := M) g₀ 3
             (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-            ![chartModelBasis E w, chartModelBasis E i, chartModelBasis E j])
+            ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j])
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![(chartModelBasis E i), chartModelBasis E m, chartModelBasis E p] *
+                ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g₀ x l₁ j q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -1843,33 +1841,33 @@ private lemma lieArm_arm1_value_realized
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![(chartModelBasis E i), chartModelBasis E m, chartModelBasis E p] *
+                ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g_bg x k₁ l₁ q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j))))
       - (∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x w (extChartAt I x x) *
           unitModel (I := I) (M := M) g₀ 3
             (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-            ![chartModelBasis E i, chartModelBasis E j, chartModelBasis E w])
+            ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w])
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E m, (chartModelBasis E j), chartModelBasis E p] *
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g₀ x k₁ i q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -1880,20 +1878,20 @@ private lemma lieArm_arm1_value_realized
                 g₀ x j i q (extChartAt I x x)) *
               unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁]))
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E m, (chartModelBasis E j), chartModelBasis E p] *
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g₀ x l₁ i q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -1901,13 +1899,13 @@ private lemma lieArm_arm1_value_realized
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![(chartModelBasis E j), chartModelBasis E m, chartModelBasis E p] *
+                ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g₀ x l₁ i q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -1915,33 +1913,33 @@ private lemma lieArm_arm1_value_realized
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![(chartModelBasis E j), chartModelBasis E m, chartModelBasis E p] *
+                ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g_bg x k₁ l₁ q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i))))
       - (∑ w : Fin (Module.finrank ℝ E),
         PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x w (extChartAt I x x) *
           unitModel (I := I) (M := M) g₀ 3
             (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-            ![chartModelBasis E j, chartModelBasis E i, chartModelBasis E w])
+            ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w])
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E m, (chartModelBasis E i), chartModelBasis E p] *
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g₀ x k₁ j q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -1952,20 +1950,20 @@ private lemma lieArm_arm1_value_realized
                 g₀ x i j q (extChartAt I x x)) *
               unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁]))
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]))
       - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
             (unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E m, (chartModelBasis E i), chartModelBasis E p] *
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
               (∑ q : Fin (Module.finrank ℝ E),
                 (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
                   DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                     g₀ x l₁ j q (extChartAt I x x)) *
-                  DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
                     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -1976,7 +1974,7 @@ private lemma lieArm_arm1_value_realized
                 g₀ x j i q (extChartAt I x x)) *
               unitModel (I := I) (M := M) g₀ 3
                 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-                ![chartModelBasis E q, chartModelBasis E p, chartModelBasis E k₁])) := by
+                ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])) := by
   classical
   refine (lieArm_arm1_value_traced (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
     (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x i j).trans
@@ -1986,7 +1984,7 @@ private lemma lieArm_arm1_value_realized
       (unitModel (I := I) (M := M) g₀ 3
         (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
-      (chartModelBasis E i) (chartModelBasis E j)
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
   · refine congrArg₂ (· - ·) (congrArg₂ (· - ·) (congrArg₂ (· - ·) (congrArg₂ (· - ·)
       (congrArg₂ (· - ·) ?_ ?_) ?_) ?_) ?_) ?_
     · refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
@@ -2005,7 +2003,7 @@ private lemma lieArm_arm1_value_realized
         (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x
-        (chartModelBasis E i) (chartModelBasis E j)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
     · refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => ?_))))
       exact congrArg (HMul.hMul _) (congrArg (HMul.hMul _) (congrArg (HMul.hMul _)
@@ -2018,7 +2016,7 @@ private lemma lieArm_arm1_value_realized
           (unitModel (I := I) (M := M) g₀ 3
             (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x i j
-          (chartModelBasis E p) (chartModelBasis E k₁))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
     · refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => ?_))))
       exact congrArg (HMul.hMul _) (congrArg (HMul.hMul _) (congrArg (HMul.hMul _)
@@ -2043,7 +2041,7 @@ private lemma lieArm_arm1_value_realized
         (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x
-        (chartModelBasis E j) (chartModelBasis E i)
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
     · refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => ?_))))
       exact congrArg (HMul.hMul _) (congrArg (HMul.hMul _) (congrArg (HMul.hMul _)
@@ -2056,7 +2054,7 @@ private lemma lieArm_arm1_value_realized
           (unitModel (I := I) (M := M) g₀ 3
             (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x j i
-          (chartModelBasis E p) (chartModelBasis E k₁))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
     · refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => ?_))))
       exact congrArg (HMul.hMul _) (congrArg (HMul.hMul _) (congrArg (HMul.hMul _)
@@ -2069,7 +2067,7 @@ private lemma lieArm_arm1_value_realized
         (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x i j
-        (chartModelBasis E p) (chartModelBasis E k₁))
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁))
 
 namespace O1Abstract
 
@@ -3372,10 +3370,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieArm_chartGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x a b
-    = DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x b a := by
-  rw [DifferentialGeometry.Integral.Measure.chartGramMatrix_apply,
-    DifferentialGeometry.Integral.Measure.chartGramMatrix_apply]
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b
+    = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x b a := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   exact g.symm _ _ _
 
 omit [BoundarylessManifold I M] in
@@ -3470,7 +3468,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
     PDE.DeTurck.DeTurckLinearization.lieDeTurckOrder1Raw (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j (extChartAt I x x)
-    = ((∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Integral.Measure.chartGramMatrix
+    = ((∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k j *
         ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) i
@@ -3496,7 +3494,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l a) (extChartAt I x x) -
             DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) l
             (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b) (extChartAt I x x)))))
-      + ∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Integral.Measure.chartGramMatrix
+      + ∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i k *
         ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) j
@@ -3540,7 +3538,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x k (extChartAt I x x) *
         DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) k
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i j) (extChartAt I x x))
-      + (∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Integral.Measure.chartGramMatrix
+      + (∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k j *
         (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), chartInvGramMatrix
@@ -3562,7 +3560,7 @@ private lemma lieArm_o1raw_center_eq (g₀ g_bg : SmoothRiemannianMetric I M)
               DifferentialGeometry.Geometry.Connection.chartChristoffelBracket
                 (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
               l (extChartAt I x x)))))
-      + (∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Integral.Measure.chartGramMatrix
+      + (∑ k : Fin (Module.finrank ℝ E), DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
         (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i k *
         (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), chartInvGramMatrix
@@ -3607,7 +3605,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (deTurckLieArm1Coeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-        ![chartModelBasis E i, chartModelBasis E j]
+        ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]
     = PDE.DeTurck.DeTurckLinearization.lieDeTurckOrder1Raw (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j (extChartAt I x x)
@@ -3625,7 +3623,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3637,7 +3635,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j))))
         - (∑ w : Fin (Module.finrank ℝ E),
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
@@ -3657,7 +3655,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -3677,7 +3675,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
         (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3689,7 +3687,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3701,7 +3699,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i))))
         - (∑ w : Fin (Module.finrank ℝ E),
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
@@ -3721,7 +3719,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -3741,7 +3739,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
@@ -3821,7 +3819,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) * unitModel
     (I := I) (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1
     (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-    ![chartModelBasis E w, chartModelBasis E i, chartModelBasis E j]) =
+    ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]) =
     (∑ w : Fin (Module.finrank ℝ E), PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) *
     DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) w
@@ -3833,7 +3831,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) * unitModel
       (I := I) (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-      ![chartModelBasis E w, chartModelBasis E i, chartModelBasis E j]) = ∑ w : Fin
+      ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j]) = ∑ w : Fin
       (Module.finrank ℝ E), (PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x w (extChartAt I x x) *
       DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) w
@@ -3851,12 +3849,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E i, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3868,7 +3866,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3880,7 +3878,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3888,12 +3886,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E i, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3905,7 +3903,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -3915,7 +3913,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -3928,12 +3926,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E i, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3945,7 +3943,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3957,7 +3955,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3965,12 +3963,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E i, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -3982,7 +3980,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -3992,7 +3990,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁
-             q (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             q (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q j)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4002,7 +4000,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
   have hs4 : (∑ w : Fin (Module.finrank ℝ E), PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp
     (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x w (extChartAt I x x) * unitModel (I := I)
     (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
-    x ![chartModelBasis E i, chartModelBasis E j, chartModelBasis E w]) =
+    x ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w]) =
     (∑ w : Fin (Module.finrank ℝ E),
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b *
@@ -4023,7 +4021,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x w (extChartAt I x x) * unitModel
       (I := I) (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-      ![chartModelBasis E i, chartModelBasis E j, chartModelBasis E w]) = ∑ w : Fin
+      ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w]) = ∑ w : Fin
       (Module.finrank ℝ E), ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b *
       (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4049,12 +4047,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E j, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4066,7 +4064,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4078,7 +4076,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4086,12 +4084,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E j, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4103,7 +4101,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -4113,7 +4111,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
-             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4128,7 +4126,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁])) =
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])) =
           (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
@@ -4153,7 +4151,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁]))
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (∑ q : Fin (Module.finrank ℝ E),
@@ -4177,7 +4175,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁])
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
             = ∑ q : Fin (Module.finrank ℝ E),
               ((DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
@@ -4200,12 +4198,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E j, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4217,7 +4215,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4229,7 +4227,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4237,12 +4235,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E j, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4254,7 +4252,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -4264,7 +4262,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4277,12 +4275,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E j, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4294,7 +4292,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4306,7 +4304,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4314,12 +4312,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E j, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4331,7 +4329,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -4341,7 +4339,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
-             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4354,12 +4352,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E j, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4371,7 +4369,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4383,7 +4381,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4391,12 +4389,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E j, chartModelBasis E m, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4408,7 +4406,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -4418,7 +4416,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁
-             q (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             q (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q i)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4428,7 +4426,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
   have hs10 : (∑ w : Fin (Module.finrank ℝ E), PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp
     (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x w (extChartAt I x x) * unitModel (I := I)
     (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
-    x ![chartModelBasis E j, chartModelBasis E i, chartModelBasis E w]) =
+    x ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w]) =
     (∑ w : Fin (Module.finrank ℝ E),
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b *
@@ -4449,7 +4447,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
       (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g₀ x w (extChartAt I x x) * unitModel
       (I := I) (M := M) g₀ 3 (iteratedCovGrad (I := I) g₀ 0 2 1
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-      ![chartModelBasis E j, chartModelBasis E i, chartModelBasis E w]) = ∑ w : Fin
+      ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E w]) = ∑ w : Fin
       (Module.finrank ℝ E), ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b *
       (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
@@ -4475,12 +4473,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E i, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4492,7 +4490,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4504,7 +4502,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4512,12 +4510,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E i, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4529,7 +4527,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -4539,7 +4537,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
-             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q l₁)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4554,7 +4552,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁])) =
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])) =
           (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
@@ -4579,7 +4577,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁]))
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (∑ q : Fin (Module.finrank ℝ E),
@@ -4603,7 +4601,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E p, chartModelBasis E q, chartModelBasis E k₁])
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
             = ∑ q : Fin (Module.finrank ℝ E),
               ((DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
@@ -4626,12 +4624,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E i, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) =
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4643,7 +4641,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) +
             (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
             (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4655,7 +4653,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) := by
     rw [show (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
       (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4663,12 +4661,12 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
           (unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E m, chartModelBasis E i, chartModelBasis E p] *
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p] *
           (∑ q : Fin (Module.finrank ℝ E),
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
           (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
@@ -4680,7 +4678,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
             DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-            (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+            (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))
            + chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
              (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x l₁ m *
@@ -4690,7 +4688,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
              (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
-             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+             (extChartAt I x x)) * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x q k₁)))) from
       Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun p _ =>
         Finset.sum_congr rfl (fun l₁ _ => Finset.sum_congr rfl (fun m _ => by
@@ -4705,7 +4703,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E q, chartModelBasis E p, chartModelBasis E k₁])) =
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])) =
           (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
@@ -4730,7 +4728,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E q, chartModelBasis E p, chartModelBasis E k₁]))
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁]))
         = ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
             (∑ q : Fin (Module.finrank ℝ E),
@@ -4754,7 +4752,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
           DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * unitModel (I := I) (M := M) g₀ 3
           (iteratedCovGrad (I := I) g₀ 0 2 1 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) x
-          ![chartModelBasis E q, chartModelBasis E p, chartModelBasis E k₁])
+          ![DifferentialGeometry.Tensor.Coordinates.chartModelBasis E q, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E p, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k₁])
             = ∑ q : Fin (Module.finrank ℝ E),
               ((DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
@@ -4774,7 +4772,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
   rw [hs1, hs2, hs3, hs4, hs5, hs6, hs7, hs8, hs9, hs10, hs11, hs12, hs13, hs14]
   rw [lieArm_o1raw_center_eq (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' s x i j]
   have hcol' : ∀ l j' : Fin (Module.finrank ℝ E), (∑ k : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k j' *
         chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x k l) = if l = j'
           then (1 : ℝ) else 0 :=
@@ -4784,9 +4782,9 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x b a :=
     fun a b => lieArm_chartInvGramMatrix_symm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
   have hcgs' : ∀ a b : Fin (Module.finrank ℝ E),
-    DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b =
-    DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x b a :=
     fun a b => lieArm_chartGramMatrix_symm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x a b
   have hf3s' : ∀ d a b : Fin (Module.finrank ℝ E),
@@ -4859,7 +4857,7 @@ lemma lieArm_arm1_value_eq_order1Raw_add_tail (g₀ g_bg : SmoothRiemannianMetri
                    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x m a b
   have hM := O1Abstract.o1_master
     (fun a b => chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b)
-    (fun a b => DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
+    (fun a b => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x a b)
     (fun m a b => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E) m
       (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
@@ -5115,7 +5113,7 @@ lemma lieArm_chartSlope_center_value_eq_threeArm
             (deTurckLieArm2PrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-        ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
   classical
   have hy : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
@@ -5160,7 +5158,7 @@ theorem realizedDeTurckLie_threeArm_symmAbsorbed_perm_data
       ∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
         ∀ (x : M) (v : Fin 2 → E),
           (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
               deriv (fun s : ℝ =>
                 DeTurckCoefficients.chartLieDeTurckComp (I := I)
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s) =
@@ -5221,7 +5219,7 @@ theorem realizedDeTurckLie_threeArm_symmAbsorbed_perm_data
             (deTurckLieArm2PrincipalCoeff (I := I) g₀
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-        ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
     intro i j
     rw [deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope (I := I) g₀ T T'
       hδ_lt hδ hδ'_lt hδ' g_bg x i j hs]
@@ -5244,26 +5242,26 @@ theorem realizedDeTurckLie_threeArm_symmAbsorbed_perm_data
         (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))) with
           hWbase
   have hexpand : (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
         deriv (fun s : ℝ =>
           DeTurckCoefficients.chartLieDeTurckComp (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s) =
       unitModel (I := I) (M := M) g₀ 2 Wbase x v := by
     calc (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
           deriv (fun s : ℝ =>
             DeTurckCoefficients.chartLieDeTurckComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s)
         = ∑ j : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
               deriv (fun s : ℝ =>
                 DeTurckCoefficients.chartLieDeTurckComp (I := I)
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s :=
           Finset.sum_comm
       _ = ∑ j : Fin (Module.finrank ℝ E), ∑ i : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
               unitModel (I := I) (M := M) g₀ 2 Wbase x
-                ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+                ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] := by
           refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => ?_))
           rw [hcomp i j]
       _ = unitModel (I := I) (M := M) g₀ 2 Wbase x v :=
@@ -5301,7 +5299,7 @@ theorem realizedDeTurckLie_threeArm_covariant_identity
       ∀ (s : ℝ), s ∈ Set.Ioo (0 : ℝ) 1 →
         ∀ (x : M) (v : Fin 2 → E),
           (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr (v 0)) i * ((chartModelBasis E).repr (v 1)) j *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 0)) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (v 1)) j *
               deriv (fun s : ℝ =>
                 DeTurckCoefficients.chartLieDeTurckComp (I := I)
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i j (extChartAt I x x)) s) =

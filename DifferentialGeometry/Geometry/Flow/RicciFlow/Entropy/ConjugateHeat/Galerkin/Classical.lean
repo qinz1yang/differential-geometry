@@ -59,19 +59,19 @@ private theorem rev_gram_smooth
     (x₀ : M) (i j : Fin (Module.finrank Real E)) :
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
-        chartGramMatrix (I := I)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
           ((reverseFamily (I := I) (M := M) (flowG (I := I) S) T).metric p.1)
           x₀ p.2 i j)
       (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let e := trivializationAt E (TangentSpace I) x₀
   change ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
     (fun p : Real × M =>
-      chartGramMatrix (I := I)
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         ((reverseFamily (I := I) (M := M) (flowG (I := I) S) T).metric p.1)
         x₀ p.2 i j) (U ×ˢ e.baseSet)
   have hframe :
-      IsLocalFrameOn I E ∞ (e.localFrame (chartModelBasis E)) e.baseSet :=
-    e.isLocalFrameOn_localFrame_baseSet I ∞ (chartModelBasis E)
+      IsLocalFrameOn I E ∞ (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I ∞ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
   have hrev : ContMDiff (𝓘(Real, Real).prod I) (𝓘(Real, Real).prod I) ∞
       (fun p : Real × M => (T - p.1, p.2)) :=
     (contMDiff_const.sub contMDiff_fst).prodMk contMDiff_snd
@@ -82,22 +82,22 @@ private theorem rev_gram_smooth
   have hcomp : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       ((fun q : Real × M =>
         (S.family.metric q.1).inner q.2
-          (e.localFrame (chartModelBasis E) i q.2)
-          (e.localFrame (chartModelBasis E) j q.2)) ∘
+          (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i q.2)
+          (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j q.2)) ∘
         fun p : Real × M => (T - p.1, p.2)) (U ×ˢ e.baseSet) :=
     (hS.smoothMetric.frameCompSmooth
-      (e.localFrame (chartModelBasis E)) hframe i j).comp hrev.contMDiffOn hmap
+      (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) hframe i j).comp hrev.contMDiffOn hmap
   refine hcomp.congr ?_
   intro p hp
   have hx : p.2 ∈ e.baseSet := hp.2
-  simp only [Function.comp_apply, chartGramMatrix_apply, reverse_metric]
-  rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx,
-    e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
+  simp only [Function.comp_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, reverse_metric]
+  rw [e.localFrame_apply_of_mem_baseSet (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx,
+    e.localFrame_apply_of_mem_baseSet (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx]
   have hbasis (k : Fin (Module.finrank Real E)) :
-      e.basisAt (chartModelBasis E) hx k = chartBasisVecFiber (I := I) x₀ k p.2 := by
-    unfold Bundle.Trivialization.basisAt chartBasisVecFiber
+      e.basisAt (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx k = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k p.2 := by
+    unfold Bundle.Trivialization.basisAt DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
     rw [Module.Basis.map_apply]
-    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
+    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
   rw [hbasis i, hbasis j]
   have hmetric : (flowG (I := I) S).metric (T - p.1) =
       S.family.metric (T - p.1) := by
@@ -142,7 +142,7 @@ private theorem rev_trace_eq
     intro y
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
       exact mem_baseSet_trivializationAt E (TangentSpace I) y
-    let b := chartBasisFamily (I := I) y hy
+    let b := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) y hy
     have hinv : MetricInverseInBasisGen (I := I) (G.metric s) y b
         (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j) := by
       simpa only [b] using
@@ -154,15 +154,15 @@ private theorem rev_trace_eq
     change -S.scalar (T - s) y =
       ∑ i : Fin (Module.finrank Real E),
         ∑ j : Fin (Module.finrank Real E),
-          ((chartGramMatrix (I := I) (G.metric s) y y)⁻¹) i j *
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric s) y y)⁻¹) i j *
             (-S.ricciAt (T - s) y
-              (vec2 (I := I) (chartBasisVecFiber (I := I) y i y)
-                (chartBasisVecFiber (I := I) y j y)))
+              (vec2 (I := I) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y i y)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y j y)))
     rw [S.scalar_eq_metricTrace]
     change -metricTracePair0SAt (I := I) (G.metric s)
       (S.ricciAt (T - s) y) = _
     rw [htrace]
-    simp only [b, chartBasisFamily_apply]
+    simp only [b, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
     rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_neg_distrib]
@@ -211,7 +211,7 @@ theorem heatpot_mass_deriv
   have hgram (x₀ : M) (i j : Fin (Module.finrank Real E)) :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     simpa only [G] using
       rev_gram_smooth (I := I) (M := M) hS (T : Real) hUmap x₀ i j
@@ -319,7 +319,7 @@ theorem heatpot_mass_eq
   have hmass_cont : ContinuousOn mass (Set.Icc (0 : Real) tau') := by
     have hgram (x₀ : M) (i j : Fin (Module.finrank Real E)) :
         ContinuousOn
-          (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+          (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
           (Set.Icc (0 : Real) tau' ×ˢ
             (trivializationAt E (TangentSpace I) x₀).baseSet) := by
       exact (rev_gram_smooth (I := I) (M := M) hS (T : Real) hmap x₀ i j).continuousOn
@@ -384,7 +384,7 @@ theorem heatpot_mass_on
   have hmass_cont : ContinuousOn mass (Set.Icc (0 : Real) tau) := by
     have hgram (x₀ : M) (i j : Fin (Module.finrank Real E)) :
         ContinuousOn
-          (fun p : Real × M => chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
+          (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) x₀ p.2 i j)
           (Set.Icc (0 : Real) tau ×ˢ
             (trivializationAt E (TangentSpace I) x₀).baseSet) := by
       exact (rev_gram_smooth (I := I) (M := M) hS (T : Real) hmap x₀ i j).continuousOn
@@ -957,7 +957,7 @@ theorem galLim_d_joint
       (fun p : Real × M => mvfderiv (I := I)
         (scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
           (fun k s => ulim s k) p.1) p.2
-        (chartBasisVecFiber (I := I) a i p.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) a i p.2))
       (Set.Icc (0 : Real) tau ×ˢ
         (trivializationAt E (TangentSpace I) a).baseSet)
       ((0 : Real), a) := by
@@ -965,7 +965,7 @@ theorem galLim_d_joint
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   let e := trivializationAt E (TangentSpace I) a
   let Xf : (y : M) → TangentSpace I y := fun y =>
-    chartBasisVecFiber (I := I) a i y
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) a i y
   let f : Real → M → Real := fun t =>
     scalarSpecSum (I := I) (M := M) q (fun k s => ulim s k) t
   let f0 : M → Real :=
@@ -991,8 +991,8 @@ theorem galLim_d_joint
     hN0.comp (continuousAt_fst.mono_left inf_le_left)
   have hgram0 : ContinuousWithinAt
       (fun y : M => q.inner y (Xf y) (Xf y)) e.baseSet a := by
-    simpa only [q, Xf, e, chartGramMatrix_apply] using
-      (chartGramMatrix_entry_contMDiffOn (I := I) q a i i).continuousOn a hae
+    simpa only [q, Xf, e, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply] using
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) q a i i).continuousOn a hae
   have hmap : Set.MapsTo (fun p : Real × M => p.2) K e.baseSet := by
     intro p hp
     exact hp.2
@@ -1095,7 +1095,7 @@ theorem galLim_d_joint
     have hmem : (trivializationAt E (TangentSpace I) a).baseSet ∈ 𝓝 a :=
       (trivializationAt E (TangentSpace I) a).open_baseSet.mem_nhds
         (mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) a)
-    exact (chartBasisVec_contMDiffOn (I := I) a i).contMDiffAt
+    exact (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) a i).contMDiffAt
       hmem
   have hbase0 : ContinuousAt base a := by
     exact (mvfderiv_apply_contMDiffAt_of_section (I := I)
@@ -1155,10 +1155,10 @@ theorem galLim_grad_zero
   let K : Set (Real × M) := Set.Icc (0 : Real) sigma ×ˢ e.baseSet
   let Gm : Real × M → Matrix (Fin (Module.finrank Real E))
       (Fin (Module.finrank Real E)) Real := fun p =>
-    chartGramMatrix (I := I) (G.metric p.1) a p.2
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric p.1) a p.2
   let dF : Real × M → Fin (Module.finrank Real E) → Real := fun p i =>
     mvfderiv (I := I) (f p.1) p.2
-      (chartBasisVecFiber (I := I) a i p.2)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) a i p.2)
   let rhs : Real × M → Real := fun p =>
     ∑ i, ∑ j, (Gm p)⁻¹ i j * dF p i * dF p j
   have hae : a ∈ e.baseSet := by
@@ -1179,7 +1179,7 @@ theorem galLim_grad_zero
         hmap a i j).continuousOn ((0 : Real), a) hp0
     exact hpi
   have hdet : (Gm ((0 : Real), a)).det ≠ 0 := by
-    exact ne_of_gt (chartGramMatrix_det_pos (I := I) (G.metric 0) a hae)
+    exact ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (G.metric 0) a hae)
   have hinvAt : ContinuousAt Inv.inv (Gm ((0 : Real), a)) := by
     apply continuousAt_matrix_inv
     rw [Ring.inverse_eq_inv']
@@ -1223,16 +1223,16 @@ theorem galLim_grad_zero
       exact differential1FormFun_apply_eq_inner_gradientFun
         (I := I) (G.metric p.1) (f p.1) p.2 X
     have hInv : MetricInverseInBasis (I := I) (G.metric p.1) p.2
-        (chartBasisFamily (I := I) a hp.2)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) a hp.2)
         (fun i j => (Gm p)⁻¹ i j) := by
       intro i j
       have hunit : IsUnit (Gm p).det := isUnit_iff_ne_zero.2
-        (ne_of_gt (chartGramMatrix_det_pos (I := I) (G.metric p.1) a hp.2))
+        (ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (G.metric p.1) a hp.2))
       have hGb (i' j' : Fin (Module.finrank Real E)) :
           (G.metric p.1).inner p.2
-              (chartBasisFamily (I := I) a hp.2 i')
-              (chartBasisFamily (I := I) a hp.2 j') = Gm p i' j' := by
-        rw [chartBasisFamily_apply, chartBasisFamily_apply]
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) a hp.2 i')
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) a hp.2 j') = Gm p i' j' := by
+        rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
         rfl
       constructor
       · have hmul : (∑ k, (Gm p)⁻¹ i k * Gm p k j) =
@@ -1250,16 +1250,16 @@ theorem galLim_grad_zero
           cotangentInner (I := I) (G.metric p.1) p.2 df df := by
         rw [cotangentInner_eq_sharp, hsharp]
       _ = ∑ i, ∑ j, (Gm p)⁻¹ i j *
-          cotangentToDual (I := I) df (chartBasisFamily (I := I) a hp.2 i) *
-          cotangentToDual (I := I) df (chartBasisFamily (I := I) a hp.2 j) :=
+          cotangentToDual (I := I) df (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) a hp.2 i) *
+          cotangentToDual (I := I) df (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) a hp.2 j) :=
         cotangentInner_eq_coord (I := I) (G.metric p.1) p.2
-          (chartBasisFamily (I := I) a hp.2) (fun i j => (Gm p)⁻¹ i j)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) a hp.2) (fun i j => (Gm p)⁻¹ i j)
           hInv df df
       _ = rhs p := by
         dsimp only [rhs]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         simp only [df, dF, cotangentToDual_apply,
-          differential1FormFun_apply_eq_mvfderiv, chartBasisFamily_apply]
+          differential1FormFun_apply_eq_mvfderiv, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   have hlocal : ContinuousWithinAt
       (fun p : Real × M =>
         (G.metric p.1).inner p.2

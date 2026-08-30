@@ -64,7 +64,7 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
           c * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
   classical
   set Kα : Set M := tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hKα_def
@@ -76,24 +76,24 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
   set Q : M × (Fin (Module.finrank ℝ E) → ℝ) → ℝ := fun p =>
     ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
-        chartGramMatrix (I := I) g α p.1 i j * p.2 i * p.2 j
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p.1 i j * p.2 i * p.2 j
     with hQ_def
   have hQ_pos_baseSet : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
       ∀ ξ : Fin (Module.finrank ℝ E) → ℝ, ξ ≠ 0 →
         0 < ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
     intro b hb ξ hξ
-    have hG_pd : (chartGramMatrix (I := I) g α b).PosDef :=
-      chartGramMatrix_posDef (I := I) g α hb
+    have hG_pd : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b).PosDef :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hb
     have hdot_pos :
-        0 < star ξ ⬝ᵥ chartGramMatrix (I := I) g α b *ᵥ ξ :=
+        0 < star ξ ⬝ᵥ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *ᵥ ξ :=
       hG_pd.dotProduct_mulVec_pos hξ
     have hexp :
-        star ξ ⬝ᵥ chartGramMatrix (I := I) g α b *ᵥ ξ =
+        star ξ ⬝ᵥ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *ᵥ ξ =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
       simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_trivial]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [Finset.mul_sum]
@@ -107,7 +107,7 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
     refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
-      · have hentry := (chartGramMatrix_entry_contMDiffOn
+      · have hentry := (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn
           (I := I) g α i j).continuousOn
         exact hentry.comp continuous_fst.continuousOn (fun p hp => hp.1)
       · exact ((continuous_apply i).comp continuous_snd).continuousOn
@@ -169,7 +169,7 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
       have hQzero :
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j) = 0 := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) = 0 := by
         refine Finset.sum_eq_zero (fun i _ => ?_)
         refine Finset.sum_eq_zero (fun j _ => ?_)
         rw [hξzero i, mul_zero, zero_mul]
@@ -195,13 +195,13 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
       have hQη_eq : Q (b, η) =
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j) / rr ^ 2 := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) / rr ^ 2 := by
         change (∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * η i * η j) =
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * η i * η j) =
             (∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j) / rr ^ 2
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) / rr ^ 2
         rw [Finset.sum_div]
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [Finset.sum_div]
@@ -213,7 +213,7 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
       have hmul : Q p₀ * rr ^ 2 ≤
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j :=
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j :=
         (le_div_iff₀ hrrsq_pos).mp hmin
       have hgoal_eq : Q p₀ * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2)
           = Q p₀ * rr ^ 2 := by rw [hrr_sq]
@@ -241,32 +241,32 @@ private lemma gInner_self_eq_chartGram_quadForm
     g.inner x v v =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j *
-            (chartBasisFamily (I := I) α hx).repr v i *
-            (chartBasisFamily (I := I) α hx).repr v j := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v i *
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v j := by
   classical
   set c : Fin (Module.finrank ℝ E) → ℝ :=
-    fun i => (chartBasisFamily (I := I) α hx).repr v i with hc_def
-  have hv : v = ∑ i, c i • chartBasisVecFiber (I := I) α i x := by
-    have h := (chartBasisFamily (I := I) α hx).sum_repr v
+    fun i => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).repr v i with hc_def
+  have hv : v = ∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx).sum_repr v
     rw [← h]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [hc_def, chartBasisFamily_apply (I := I) α hx i]
-  have hdot := chartGramMatrix_dotProduct_mulVec (I := I) g α x c
-  have hgi : g.inner x (∑ i, c i • chartBasisVecFiber (I := I) α i x)
-        (∑ j, c j • chartBasisVecFiber (I := I) α j x)
+    rw [hc_def, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx i]
+  have hdot := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α x c
+  have hgi : g.inner x (∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (∑ j, c j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
       = ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            chartGramMatrix (I := I) g α x i j * c i * c j := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * c i * c j := by
     rw [← hdot]
-    simp only [dotProduct, Matrix.mulVec, chartGramMatrix_apply, Pi.star_apply, star_trivial]
+    simp only [dotProduct, Matrix.mulVec, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, Pi.star_apply, star_trivial]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     ring
   calc g.inner x v v
-      = g.inner x (∑ i, c i • chartBasisVecFiber (I := I) α i x)
-          (∑ j, c j • chartBasisVecFiber (I := I) α j x) := by rw [← hv]
+      = g.inner x (∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+          (∑ j, c j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by rw [← hv]
     _ = _ := hgi
 
 
@@ -283,32 +283,32 @@ private lemma riemannOp_LeviCivita_chartAlpha_frame_expand
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
-              (chartBasisFamily (I := I) α hx_base).repr u i *
-                (chartBasisFamily (I := I) α hx_base).repr v j *
-                (chartBasisFamily (I := I) α hx_base).repr w k *
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr u i *
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v j *
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr w k *
                 chartRiemannTensor (I := I) g α i j k l (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α l x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
   classical
   set eα : Fin (Module.finrank ℝ E) → TangentSpace I x :=
-    fun i => chartBasisVecFiber (I := I) α i x with heα_def
+    fun i => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x with heα_def
   set a : Fin (Module.finrank ℝ E) → ℝ :=
-    fun j => (chartBasisFamily (I := I) α hx_base).repr v j with ha_def
+    fun j => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v j with ha_def
   set b : Fin (Module.finrank ℝ E) → ℝ :=
-    fun k => (chartBasisFamily (I := I) α hx_base).repr w k with hb_def
+    fun k => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr w k with hb_def
   set c : Fin (Module.finrank ℝ E) → ℝ :=
-    fun i => (chartBasisFamily (I := I) α hx_base).repr u i with hc_def
+    fun i => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr u i with hc_def
   have hv : v = ∑ j, a j • eα j := by
-    have h := (chartBasisFamily (I := I) α hx_base).sum_repr v
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).sum_repr v
     rw [← h]; refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [ha_def, heα_def, chartBasisFamily_apply (I := I) α hx_base j]
+    rw [ha_def, heα_def, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx_base j]
   have hw : w = ∑ k, b k • eα k := by
-    have h := (chartBasisFamily (I := I) α hx_base).sum_repr w
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).sum_repr w
     rw [← h]; refine Finset.sum_congr rfl (fun k _ => ?_)
-    rw [hb_def, heα_def, chartBasisFamily_apply (I := I) α hx_base k]
+    rw [hb_def, heα_def, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx_base k]
   have hu : u = ∑ i, c i • eα i := by
-    have h := (chartBasisFamily (I := I) α hx_base).sum_repr u
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).sum_repr u
     rw [← h]; refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [hc_def, heα_def, chartBasisFamily_apply (I := I) α hx_base i]
+    rw [hc_def, heα_def, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hx_base i]
   have hbasis : ∀ i j k : Fin (Module.finrank ℝ E),
       riemannOp (cov := LeviCivita (I := I) g) x (eα j) (eα k) (eα i) =
         ∑ l : Fin (Module.finrank ℝ E),
@@ -378,12 +378,12 @@ private lemma riemannOp_normSq_le_chartConstants
       |chartRiemannTensor (I := I) g α i j k l (extChartAt I α x)| ≤ CR)
     (hCGbound : ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j * ξ i * ξ j ≤
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * ξ i * ξ j ≤
         CG * ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2)
     (hcgbound : ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
       cg * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i j * ξ i * ξ j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * ξ i * ξ j)
     (v w u : TangentSpace I x) :
     g.inner x (riemannOp (cov := LeviCivita (I := I) g) x v w u)
         (riemannOp (cov := LeviCivita (I := I) g) x v w u) ≤
@@ -391,22 +391,22 @@ private lemma riemannOp_normSq_le_chartConstants
         g.inner x v v * g.inner x w w * g.inner x u u := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
-  set a : Fin n → ℝ := fun j => (chartBasisFamily (I := I) α hx_base).repr v j with ha_def
-  set b : Fin n → ℝ := fun k => (chartBasisFamily (I := I) α hx_base).repr w k with hb_def
-  set c : Fin n → ℝ := fun i => (chartBasisFamily (I := I) α hx_base).repr u i with hc_def
+  set a : Fin n → ℝ := fun j => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr v j with ha_def
+  set b : Fin n → ℝ := fun k => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr w k with hb_def
+  set c : Fin n → ℝ := fun i => (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx_base).repr u i with hc_def
   set R : Fin n → Fin n → Fin n → Fin n → ℝ :=
     fun i j k l => chartRiemannTensor (I := I) g α i j k l (extChartAt I α x) with hR_def
   set coeff : Fin n → ℝ := fun l => ∑ i, ∑ j, ∑ k, c i * a j * b k * R i j k l with hcoeff_def
   have hRvwu : riemannOp (cov := LeviCivita (I := I) g) x v w u =
-      ∑ l, coeff l • chartBasisVecFiber (I := I) α l x := by
+      ∑ l, coeff l • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x := by
     rw [riemannOp_LeviCivita_chartAlpha_frame_expand (I := I) g α hx_base hx_good v w u]
   have hgnorm_eq : g.inner x (riemannOp (cov := LeviCivita (I := I) g) x v w u)
         (riemannOp (cov := LeviCivita (I := I) g) x v w u) =
-      ∑ l, ∑ l', chartGramMatrix (I := I) g α x l l' * coeff l * coeff l' := by
+      ∑ l, ∑ l', DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x l l' * coeff l * coeff l' := by
     rw [hRvwu]
-    have hdot := chartGramMatrix_dotProduct_mulVec (I := I) g α x coeff
+    have hdot := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α x coeff
     rw [← hdot]
-    simp only [dotProduct, Matrix.mulVec, chartGramMatrix_apply, Pi.star_apply, star_trivial]
+    simp only [dotProduct, Matrix.mulVec, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, Pi.star_apply, star_trivial]
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun l' _ => ?_)
@@ -498,13 +498,13 @@ private lemma riemannOp_normSq_le_chartConstants
     rw [heq] at h
     exact h
   have hgvv_eq : g.inner x v v =
-      ∑ i, ∑ j, chartGramMatrix (I := I) g α x i j * a i * a j := by
+      ∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * a i * a j := by
     rw [gInner_self_eq_chartGram_quadForm (I := I) g α hx_base v]
   have hgww_eq : g.inner x w w =
-      ∑ i, ∑ j, chartGramMatrix (I := I) g α x i j * b i * b j := by
+      ∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * b i * b j := by
     rw [gInner_self_eq_chartGram_quadForm (I := I) g α hx_base w]
   have hguu_eq : g.inner x u u =
-      ∑ i, ∑ j, chartGramMatrix (I := I) g α x i j * c i * c j := by
+      ∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j * c i * c j := by
     rw [gInner_self_eq_chartGram_quadForm (I := I) g α hx_base u]
   have hQa_le : ∑ j, a j ^ 2 ≤ cg⁻¹ * g.inner x v v := by
     have hlow : cg * (∑ j, a j ^ 2) ≤ g.inner x v v := by rw [hgvv_eq]; exact hcgbound a
@@ -591,7 +591,7 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
   have hCG_ex : ∀ α : M, ∃ C : ℝ, 0 ≤ C ∧
       ∀ b ∈ tsupport (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x),
         ∀ ξ : Fin n → ℝ,
-          ∑ i, ∑ j, chartGramMatrix (I := I) g α b i j * ξ i * ξ j ≤ C * ∑ i, ξ i ^ 2 := by
+          ∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j ≤ C * ∑ i, ξ i ^ 2 := by
     intro α
     obtain ⟨C, hC0, hCbound⟩ :=
       exists_chartGramMatrix_quadForm_upper_bound_on_pouTsupport (I := I) g α
@@ -599,7 +599,7 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
     have h := hCbound hb ξ
     refine le_trans (le_of_eq ?_) h
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-    rw [chartGramMatrix_apply]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   choose CR hCR0 hCRbound using hCR_ex
   choose CG hCG0 hCGbound using hCG_ex
   choose cg hcg0 hcgbound using fun α =>

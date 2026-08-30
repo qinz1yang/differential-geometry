@@ -172,7 +172,7 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
       (fun p : ℝ × M =>
         (TotalSpace.mk' E (Φ p.1 p.2)
           (mfderiv I I (fun y : M => Φ p.1 y) p.2
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
           : TangentBundle I M))
       (Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
@@ -213,12 +213,12 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
     (x₀ := (t₀, b₀))
     hf hg ht₀b₀ hu le_rfl uniqueMDiffOn_univ
   have hv : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) (m : ℕ)
-      (fun q : ℝ × M => (Integral.Measure.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
+      (fun q : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
       S (t₀, b₀) := by
     have hcb : ContMDiffWithinAt I (I.prod 𝓘(ℝ, E)) (m : ℕ)
-        (Integral.Measure.chartBasisVec (I := I) x₀ i)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ i)
         (trivializationAt E (TangentSpace I) x₀).baseSet b₀ :=
-      (Integral.Measure.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
     have hsnd : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I (m : ℕ)
         (fun q : ℝ × M => q.2) S (t₀, b₀) := contMDiffWithinAt_snd
     have hmaps2 : Set.MapsTo (fun q : ℝ × M => q.2) S
@@ -232,7 +232,7 @@ private theorem flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth
     (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
     (b₁ := fun q : ℝ × M => q.2) (b₂ := fun q : ℝ × M => Φ q.1 q.2)
     (ϕ := fun q : ℝ × M => mfderiv I I (fun y : M => Φ q.1 y) q.2)
-    (v := fun q : ℝ × M => Integral.Measure.chartBasisVecFiber (I := I) x₀ i q.2)
+    (v := fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i q.2)
     (m₀ := (t₀, b₀)) (s := S) (n := (m : ℕ))
     ?_ hv hb₂
   · convert hkey using 2
@@ -273,7 +273,7 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E (Φ p.1 p.2)
             (mfderiv I I (fun y : M => Φ p.1 y) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∃ lo hi : ℝ, lo < 0 ∧ T < hi ∧
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)
@@ -343,7 +343,7 @@ theorem forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
         (fun p : ℝ × M =>
           (TotalSpace.mk' E (Φ p.1 p.2)
             (mfderiv I I (fun y : M => Φ p.1 y) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
         (Set.Ioo lo hi ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
       intro p hp
       exact flow_chartBasis_section_contMDiffWithinAt_of_jointSmooth Φ hΦsm x₀ i 0 p.1 hp.1 p.2 hp.2
@@ -369,7 +369,7 @@ theorem forward_flow_existence_onesided_of_jointsmooth_field
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E (Φ p.1 p.2)
             (mfderiv I I (fun y : M => Φ p.1 y) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
   obtain ⟨Φ, hΦ0, hdiffeo, hode, hcont0, hbundle0, horbit, hsection, -⟩ :=
     forward_flow_existence_smooth_neighborhood_of_jointsmooth_field (I := I) X_DT T hT hsmooth0

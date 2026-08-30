@@ -42,7 +42,7 @@ theorem chartGramOnE_realize_delta_irrel
     chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g_bg T hδ_lt hδ) α a b =
       chartGramOnE (I := I) (tensorSectionRealizeMetric (I := I) g_bg T hδ'_lt hδ') α a b := by
   funext y
-  simp only [chartGramOnE_def, chartGramMatrix_apply,
+  simp only [chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     tensorSectionRealizeMetric_inner (I := I) g_bg T hδ_lt hδ,
     tensorSectionRealizeMetric_inner (I := I) g_bg T hδ'_lt hδ']
 

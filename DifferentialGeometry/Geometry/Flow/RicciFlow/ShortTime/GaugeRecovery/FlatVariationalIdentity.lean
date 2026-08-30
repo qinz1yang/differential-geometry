@@ -160,16 +160,16 @@ theorem flat_christoffel_correction_eqn
       ((deTurckVF (I := I) (g_DT t) g_bg).mdifferentiableAt)
       (hRdiff t ht x) (hCdiff t ht x)
   have hcenterSymm (w : E) :
-      (Integral.Measure.centeredChartTangentEquiv (I := I) (Φ_fam t x)).symm w = w := by
-    apply (Integral.Measure.centeredChartTangentEquiv (I := I) (Φ_fam t x)).injective
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (Φ_fam t x)).symm w = w := by
+    apply (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (Φ_fam t x)).injective
     rw [ContinuousLinearEquiv.apply_symm_apply]
     have hmodel : tangentSpaceModelContinuousLinearEquiv (I := I) (Φ_fam t x)
         (show TangentSpace I (Φ_fam t x) from w) = w := rfl
     exact hmodel.symm.trans
-      (Integral.Measure.centeredChartTangentEquiv_apply (I := I) (Φ_fam t x)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply (I := I) (Φ_fam t x)
         (show TangentSpace I (Φ_fam t x) from w)).symm
   have hbridge' := hbridge
-  simp only [hcenterSymm, Integral.Measure.centeredChartTangentEquiv_apply,
+  simp only [hcenterSymm, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
     tangentSpaceModelContinuousLinearEquiv_apply] at hbridge'
   rw [hjet t ht x v, negCovariantSlotValue, hbridge']
   abel

@@ -123,13 +123,13 @@ theorem tensorChartComponentRaw_covGrad
   rw [covGradBundle_trivFibre_eq' (I := I) (M := M) r s α b Φ]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   have hsymmL : (trivializationAt E (TangentSpace I) α).symmL ℝ b
-      ((chartModelBasis E) (Jdx 0)) =
-      chartBasisVecFiber (I := I) α (Jdx 0) b := rfl
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx 0)) =
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b := rfl
   rw [hsymmL]
-  rw [show Φ (chartBasisVecFiber (I := I) α (Jdx 0) b) =
+  rw [show Φ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b) =
       tensorCovDerivAt (I := I) (M := M) g r s S b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α (Jdx 0) b)) from by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b)) from by
       rw [tensorCovDerivAt_def,
         (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]]
   rw [tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)

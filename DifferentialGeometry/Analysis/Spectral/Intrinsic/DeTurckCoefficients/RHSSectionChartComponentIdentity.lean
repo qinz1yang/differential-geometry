@@ -46,8 +46,8 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRi
     tensorChartComponentRaw (I := I) (M := M) g_bg 0 2
         (deTurckRHSSectionBackground (I := I) g_bg g₁) α Idx Jdx b =
       deTurckRicciRHS (I := I) g_bg g₁ b
-        (chartBasisVecFiber (I := I) α (Jdx 0) b)
-        (chartBasisVecFiber (I := I) α (Jdx 1) b) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 1) b) := by
   classical
   rw [tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g_bg 0 2
     (deTurckRHSSectionBackground (I := I) g_bg g₁) α hb Idx Jdx]
@@ -62,7 +62,7 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRi
     exact h
   rw [hframe]
   have hmodel := deTurckRHSSection_eval (I := I) g_bg g₁ b
-    (fun k : Fin 2 => chartBasisVecFiber (I := I) α (Jdx k) b)
+    (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx k) b)
   rw [show (deTurckRHSSectionBackground (I := I) g_bg g₁).toSection b =
       (deTurckRHSSection (I := I) g_bg g₁).toSection b from rfl]
   have hdirect :
@@ -70,12 +70,12 @@ private theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRi
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I b) (1 : ℝ)) :
         ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I b) ℝ)
-        (fun k : Fin 2 => chartBasisVecFiber (I := I) α (Jdx k) b) =
+        (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx k) b) =
       Tensor0SSpace.eval
         ((deTurckRHSSection (I := I) g_bg g₁).toSection b
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I b) (1 : ℝ)))
-        (fun k : Fin 2 => chartBasisVecFiber (I := I) α (Jdx k) b) := rfl
+        (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx k) b) := rfl
   rw [hdirect, hmodel]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -92,12 +92,12 @@ theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_chartRicciLie
   classical
   have hb_src : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
-  set v₀ : TangentSpace I b := chartBasisVecFiber (I := I) α (Jdx 0) b with hv₀_def
-  set v₁ : TangentSpace I b := chartBasisVecFiber (I := I) α (Jdx 1) b with hv₁_def
+  set v₀ : TangentSpace I b := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b with hv₀_def
+  set v₁ : TangentSpace I b := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 1) b with hv₁_def
   rw [tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRicciRHS (I := I) (M := M) g_bg g₁ α
       hb_src Idx Jdx]
-  rw [show chartBasisVecFiber (I := I) α (Jdx 0) b = v₀ from rfl,
-    show chartBasisVecFiber (I := I) α (Jdx 1) b = v₁ from rfl]
+  rw [show DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b = v₀ from rfl,
+    show DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 1) b = v₁ from rfl]
   rw [deTurckRicciRHS, add_apply, add_apply,
     smul_apply, smul_apply, smul_eq_mul]
   have hRic :

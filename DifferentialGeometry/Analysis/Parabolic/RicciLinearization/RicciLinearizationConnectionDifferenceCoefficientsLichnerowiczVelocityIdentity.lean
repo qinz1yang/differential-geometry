@@ -885,7 +885,7 @@ private lemma lkc_basis_contMDiffOn
       (fun b : M =>
         linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b (Z b) (Y b)
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   classical
   have hΛ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -912,10 +912,10 @@ private lemma lkc_basis_contMDiffOn
   have heq : ∀ b ∈ (chartAt H α).source,
       linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b (Z b) (Y b)
-          (chartBasisVecFiber (I := I) α j b) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) =
         (1 - s)⁻¹ *
           Tensor0SBundle.Tensor0SSpace.toModel (Kf b)
-            (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b) := by
+            (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) := by
     intro b _
     rw [lkc_eq_endpoint_flat (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs b (Z b) (Y b)]
     rw [LinearMap.smul_apply, smul_eq_mul]
@@ -923,7 +923,7 @@ private lemma lkc_basis_contMDiffOn
   have hcomb : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => (1 - s)⁻¹ *
         Tensor0SBundle.Tensor0SSpace.toModel (Kf b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b))
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source :=
     contMDiffOn_const.mul hbase
   exact hcomb.congr heq
@@ -1273,19 +1273,19 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma slotPair_trace_basis_indep (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (p q : E) :
     (∑ i : Fin (Module.finrank ℝ E),
-        D ![(chartModelBasis E i : E), p, q,
-          sharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)]) =
+        D ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i : E), p, q,
+          sharpCovCLM (I := I) (M := M) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)]) =
       ∑ k : Fin (Module.finrank ℝ E),
         D ![(Module.finBasis ℝ E k : E), p, q,
           sharpCovCLM (I := I) (M := M) g₁ x ((Module.finBasis ℝ E).cDualBasis k)] := by
-  have h := cDualBasis_trace_basis_indep (chartModelBasis E)
+  have h := cDualBasis_trace_basis_indep (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     ((cmmSlotPairCLM (E := E) D p q).comp (sharpCovCLM (I := I) (M := M) g₁ x))
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       ((cmmSlotPairCLM (E := E) D p q).comp (sharpCovCLM (I := I) (M := M) g₁ x))
-        ((chartModelBasis E).cDualBasis k) (chartModelBasis E k)) =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis k) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) =
       ∑ i : Fin (Module.finrank ℝ E),
-        D ![(chartModelBasis E i : E), p, q,
-          sharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)] from
+        D ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i : E), p, q,
+          sharpCovCLM (I := I) (M := M) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)] from
     Finset.sum_congr rfl (fun i _ => by
       rw [ContinuousLinearMap.comp_apply, tensorRank4OuterSlotBilinearCLM_apply])] at h
   rw [show (∑ k : Fin (Module.finrank ℝ E),
@@ -1304,8 +1304,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma slotPair_trace_swap (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (p q : E) :
     (∑ i : Fin (Module.finrank ℝ E),
-        D ![(chartModelBasis E i : E), p, q,
-          sharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)]) =
+        D ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i : E), p, q,
+          sharpCovCLM (I := I) (M := M) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)]) =
       ∑ k : Fin (Module.finrank ℝ E),
         D ![sharpCovCLM (I := I) (M := M) g₁ x ((Module.finBasis ℝ E).cDualBasis k), p, q,
           (Module.finBasis ℝ E k : E)] := by
@@ -1338,8 +1338,8 @@ private lemma slotPair_trace_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x
     (D : Tensor0SBundle.Tensor0SSpace 4 I x) (p q : TangentSpace I x) :
     (∑ i : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.eval D
-          ![centeredChartTangentBasis (I := I) x i, p, q,
-            tangentSharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)]) =
+          ![DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i, p, q,
+            tangentSharpCovCLM (I := I) (M := M) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)]) =
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.eval D
           ![tangentSharpCovCLM (I := I) (M := M) g₁ x
@@ -1348,12 +1348,12 @@ private lemma slotPair_trace_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x
   change (∑ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x
-            (centeredChartTangentBasis (I := I) x i),
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i),
           tangentSpaceModelContinuousLinearEquiv (I := I) x p,
           tangentSpaceModelContinuousLinearEquiv (I := I) x q,
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             (tangentSharpCovCLM (I := I) (M := M) g₁ x
-              ((chartModelBasis E).cDualBasis i))]) =
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i))]) =
     ∑ k : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -1368,7 +1368,7 @@ private lemma slotPair_trace_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x
     (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
     (tangentSpaceModelContinuousLinearEquiv (I := I) x q)
   simpa only [tangentSharpCovCLM, modelBasisTangent_apply,
-    tangent_model_equiv_centered_chart_basis, tangent_model_equiv_tangentOfModel] using h
+    DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis, tangent_model_equiv_tangentOfModel] using h
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
@@ -1476,39 +1476,39 @@ private lemma slotPair_diag_swap_tangent (g₁ : SmoothRiemannianMetric I M) (x 
     (D : Tensor0SBundle.Tensor0SSpace 4 I x) (p q : TangentSpace I x) :
     (∑ i : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.eval D
-          ![p, centeredChartTangentBasis (I := I) x i,
-            tangentSharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i), q]) =
+          ![p, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i,
+            tangentSharpCovCLM (I := I) (M := M) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i), q]) =
       ∑ i : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.eval D
           ![p, tangentSharpCovCLM (I := I) (M := M) g₁ x
-              ((chartModelBasis E).cDualBasis i),
-            centeredChartTangentBasis (I := I) x i, q] := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i),
+            DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i, q] := by
   change (∑ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
           tangentSpaceModelContinuousLinearEquiv (I := I) x
-            (centeredChartTangentBasis (I := I) x i),
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i),
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             (tangentSharpCovCLM (I := I) (M := M) g₁ x
-              ((chartModelBasis E).cDualBasis i)),
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)),
           tangentSpaceModelContinuousLinearEquiv (I := I) x q]) =
     ∑ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             (tangentSharpCovCLM (I := I) (M := M) g₁ x
-              ((chartModelBasis E).cDualBasis i)),
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)),
           tangentSpaceModelContinuousLinearEquiv (I := I) x
-            (centeredChartTangentBasis (I := I) x i),
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i),
           tangentSpaceModelContinuousLinearEquiv (I := I) x q]
-  have hswap := bilinCLM_diag_swap (I := I) g₁ x (chartModelBasis E)
+  have hswap := bilinCLM_diag_swap (I := I) g₁ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     ((cmmSlotPairCLM (E := E)
       (ContinuousMultilinearMap.domDomCongr perm4_1032
         (Tensor0SBundle.Tensor0SSpace.toModel D))
       (tangentSpaceModelContinuousLinearEquiv (I := I) x p)
       (tangentSpaceModelContinuousLinearEquiv (I := I) x q)).flip)
   simpa only [ContinuousLinearMap.flip_apply, tensorRank4OuterSlotBilinearCLM_apply,
-    domDomCongr_1032_eval, tangent_model_equiv_centered_chart_basis,
+    domDomCongr_1032_eval, DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis,
     tangentSharpCovCLM, tangent_model_equiv_tangentOfModel] using hswap
 
 
@@ -1722,9 +1722,9 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
   let D : Tensor0SBundle.Tensor0SSpace 4 I x :=
     unitEvalSection (I := I) (M := M) g₁ 4 (iteratedCovGrad (I := I) g₁ 0 2 2 W) x
   let Bc : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    centeredChartTangentBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x
   let Tc : Fin (Module.finrank ℝ E) → TangentSpace I x := fun i =>
-    tangentSharpCovCLM (I := I) (M := M) g₁ x ((chartModelBasis E).cDualBasis i)
+    tangentSharpCovCLM (I := I) (M := M) g₁ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis i)
   let Bm : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
     modelBasisTangent (I := I) x (Module.finBasis ℝ E)
   let Tm : Fin (Module.finrank ℝ E) → TangentSpace I x := fun k =>
@@ -1774,9 +1774,9 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
     have hrepr : ∀ W₀ : TangentSpace I x,
         Bc.repr W₀ i = g₁.inner x W₀ (Tc i) := by
       intro W₀
-      simp only [Bc, Tc, centeredChartTangentBasis_repr]
+      simp only [Bc, Tc, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr]
       rw [g₁.symm x W₀]
-      rw [tangentSharpCovCLM_inner, centeredChartTangentEquiv_apply,
+      rw [tangentSharpCovCLM_inner, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
         cDualBasis_eq_coord]
       rfl
     rw [map_sub, Finsupp.sub_apply, hrepr, hrepr]

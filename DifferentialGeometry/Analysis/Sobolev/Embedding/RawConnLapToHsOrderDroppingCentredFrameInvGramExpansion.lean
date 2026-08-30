@@ -68,7 +68,7 @@ private noncomputable def centredOrthoFrameCoordMatrix
   classical
   exact
     if h : b ∈ (trivializationAt E (TangentSpace I) α).baseSet then
-      (chartBasisFamily (I := I) α h).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α h).repr
         (smoothOrthoFrame (I := I) g c i b) k
     else 0
 
@@ -79,7 +79,7 @@ private lemma centredOrthoFrameCoordMatrix_of_mem
     (i k : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k b =
-      (chartBasisFamily (I := I) α hb).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb).repr
         (smoothOrthoFrame (I := I) g c i b) k := by
   classical
   unfold centredOrthoFrameCoordMatrix
@@ -94,15 +94,15 @@ private lemma smoothOrthoFrame_eq_centredCoordMatrix_sum
     smoothOrthoFrame (I := I) g c i b =
       ∑ k : Fin (Module.finrank ℝ E),
         centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k b •
-          chartBasisVecFiber (I := I) α k b := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b := by
   classical
-  have hsum := (chartBasisFamily (I := I) α hb).sum_repr
+  have hsum := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb).sum_repr
       (smoothOrthoFrame (I := I) g c i b)
   rw [← hsum]
   refine Finset.sum_congr rfl ?_
   intro k _
   rw [centredOrthoFrameCoordMatrix_of_mem (I := I) (M := M) g α c i k hb]
-  rw [chartBasisFamily_apply (I := I) α hb k]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hb k]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -114,12 +114,12 @@ private lemma centredFrame_gram_expand
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k b *
           centredOrthoFrameCoordMatrix (I := I) (M := M) g α c j l b *
-            chartGramMatrix (I := I) g α b k l := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l := by
   classical
   rw [smoothOrthoFrame_eq_centredCoordMatrix_sum (I := I) (M := M) g α c i hb]
   rw [smoothOrthoFrame_eq_centredCoordMatrix_sum (I := I) (M := M) g α c j hb]
   set v : Fin (Module.finrank ℝ E) → TangentSpace I b :=
-    fun k => chartBasisVecFiber (I := I) α k b with hv_def
+    fun k => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b with hv_def
   set a : Fin (Module.finrank ℝ E) → ℝ :=
     fun k => centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k b with ha_def
   set d : Fin (Module.finrank ℝ E) → ℝ :=
@@ -141,7 +141,7 @@ private lemma centredFrame_gram_expand
   rw [hR, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro l _
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   ring
 
 private noncomputable def centredCoordMatrix
@@ -155,7 +155,7 @@ private lemma centredCoordMatrix_orthonormal_form
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     centredCoordMatrix (I := I) (M := M) g α b b *
-        chartGramMatrix (I := I) g α b *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *
           (centredCoordMatrix (I := I) (M := M) g α b b).transpose =
       (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ) := by
   classical
@@ -168,20 +168,20 @@ private lemma centredCoordMatrix_orthonormal_form
   rw [Matrix.mul_apply]
   have h_inner : ∀ k₀ : Fin (Module.finrank ℝ E),
       (centredCoordMatrix (I := I) (M := M) g α b b *
-          chartGramMatrix (I := I) g α b) i k₀ *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b) i k₀ *
         (centredCoordMatrix (I := I) (M := M) g α b b).transpose k₀ j =
       ∑ l₀ : Fin (Module.finrank ℝ E),
         centredCoordMatrix (I := I) (M := M) g α b b i l₀ *
-          chartGramMatrix (I := I) g α b l₀ k₀ *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b l₀ k₀ *
           centredCoordMatrix (I := I) (M := M) g α b b j k₀ := by
     intro k₀
     rw [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
   rw [show (∑ k₀, (centredCoordMatrix (I := I) (M := M) g α b b *
-            chartGramMatrix (I := I) g α b) i k₀ *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b) i k₀ *
         (centredCoordMatrix (I := I) (M := M) g α b b).transpose k₀ j) =
       ∑ k₀, ∑ l₀,
         centredCoordMatrix (I := I) (M := M) g α b b i l₀ *
-          chartGramMatrix (I := I) g α b l₀ k₀ *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b l₀ k₀ *
           centredCoordMatrix (I := I) (M := M) g α b b j k₀ from
     Finset.sum_congr rfl (fun k₀ _ => h_inner k₀)]
   rw [show (1 : Matrix (Fin (Module.finrank ℝ E))
@@ -213,7 +213,7 @@ private lemma centredOrthoFrameCoordMatrix_orthonormality
   set A : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     centredCoordMatrix (I := I) (M := M) g α b b with hA_def
   set G : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    chartGramMatrix (I := I) g α b with hG_def
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b with hG_def
   have hAGA_right : A * (G * A.transpose) = 1 := by rw [← Matrix.mul_assoc]; exact hAGA
   have hA_left_inv : (G * A.transpose) * A = 1 := mul_eq_one_comm.mp hAGA_right
   rw [Matrix.mul_assoc] at hA_left_inv
@@ -231,14 +231,14 @@ private lemma centredOrthoFrameCoordMatrix_orthonormality
 
 private noncomputable def modelBasisProj (k : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
   LinearMap.toContinuousLinearMap
-    (((LinearMap.proj k).comp ((chartModelBasis E).equivFun.toLinearMap)) : E →ₗ[ℝ] ℝ)
+    (((LinearMap.proj k).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) : E →ₗ[ℝ] ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma modelBasisProj_apply (k : Fin (Module.finrank ℝ E)) (v : E) :
-    modelBasisProj (E := E) k v = ((chartModelBasis E).repr v) k := by
+    modelBasisProj (E := E) k v = ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) k := by
   classical
   unfold modelBasisProj
-  change ((LinearMap.proj k).comp ((chartModelBasis E).equivFun.toLinearMap)) v = _
+  change ((LinearMap.proj k).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) v = _
   rw [LinearMap.comp_apply]
   simp [Module.Basis.equivFun]
 
@@ -255,7 +255,7 @@ private lemma centredOrthoFrameCoordMatrix_eq_clmAt_proj
   classical
   unfold centredOrthoFrameCoordMatrix
   rw [dif_pos hb]
-  unfold chartBasisFamily
+  unfold DifferentialGeometry.Tensor.Coordinates.chartBasisFamily
   rw [Module.Basis.map_repr]
   simp only [LinearEquiv.trans_apply]
   rw [modelBasisProj_apply]
@@ -361,13 +361,13 @@ private lemma centred_chartBasisVecFiber_mdiffAt
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun z : M => TotalSpace.mk' E (E := TangentSpace I) z
-        (chartBasisVecFiber (I := I) α k z)) b := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)) b := by
   classical
-  have h_contMDiffOn := chartBasisVec_contMDiffOn (I := I) α k
+  have h_contMDiffOn := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α k
   have h_open : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
   have h_contMDiffAt : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
-      (chartBasisVec (I := I) α k) b :=
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α k) b :=
     (h_contMDiffOn b hb).contMDiffAt (h_open.mem_nhds hb)
   exact h_contMDiffAt.mdifferentiableAt (by simp)
 
@@ -383,7 +383,7 @@ private lemma centred_covApply_chartBasisVecFiber_T₀_mdiffAt
         (E := fun w : M => TensorRSSpace r s I w) z
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (fun w : M => chartBasisVecFiber (I := I) α k w)
+          (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
           (fun w : M => T₀.toSection w) z)) b := by
   classical
   have hcov_RS_smooth :
@@ -397,7 +397,7 @@ private lemma centred_covApply_chartBasisVecFiber_T₀_mdiffAt
     T₀.toSection.contMDiff
   have hX_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun z : M => TotalSpace.mk' E (E := TangentSpace I) z
-        (chartBasisVecFiber (I := I) α k z)) b :=
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)) b :=
     centred_chartBasisVecFiber_mdiffAt (I := I) (M := M) α k (b := b) hb
   have hHomSec_on :
       ContMDiffOn I (I.prod 𝓘(ℝ, E →L[ℝ] TensorRSModel r s ℝ E)) ∞
@@ -431,7 +431,7 @@ private lemma centred_covApply_frameVec_eq_coord_sum
         centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k y •
           covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g))
-            (fun z : M => chartBasisVecFiber (I := I) α k z)
+            (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
             (fun z : M => T₀.toSection z) y := by
   classical
   have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -443,7 +443,7 @@ private lemma centred_covApply_frameVec_eq_coord_sum
       centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k y •
         (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)).toFun (fun z : M => T₀.toSection z) y
-            (chartBasisVecFiber (I := I) α k y)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y)
   rw [smoothOrthoFrame_eq_centredCoordMatrix_sum (I := I) (M := M) g α c i hy_base]
   set L : TangentSpace I y →L[ℝ] TensorRSSpace r s I y :=
     (TensorRSNabla.tensorRSCovariantDerivative I M r s
@@ -613,23 +613,23 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
           (LeviCivita (I := I) g))
           (smoothOrthoFrame (I := I) g c i)
           (fun z : M => T₀.toSection z)) b
-        (chartBasisVecFiber (I := I) α l b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       (∑ k : Fin (Module.finrank ℝ E),
         centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k b •
           (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g)).toFun
               (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                 (LeviCivita (I := I) g))
-                (fun z : M => chartBasisVecFiber (I := I) α k z)
+                (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                 (fun z : M => T₀.toSection z)) b
-              (chartBasisVecFiber (I := I) α l b)) +
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) +
       (∑ k : Fin (Module.finrank ℝ E),
         mvfderiv (I := I) (fun z : M =>
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z)
-            b (chartBasisVecFiber (I := I) α l b) •
+            b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) •
           covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g))
-            (fun z : M => chartBasisVecFiber (I := I) α k z)
+            (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
             (fun z : M => T₀.toSection z) b) := by
   classical
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -644,7 +644,7 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
           (E := fun w : M => TensorRSSpace r s I w) z
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g))
-            (fun w : M => chartBasisVecFiber (I := I) α k w)
+            (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
             (fun w : M => T₀.toSection w) z)) b := fun k =>
     centred_covApply_chartBasisVecFiber_T₀_mdiffAt
       (I := I) (M := M) g r s α T₀ k (b := b) hb_base
@@ -692,7 +692,7 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
           centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z •
             covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-              (fun w : M => chartBasisVecFiber (I := I) α k w)
+              (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
               (fun w : M => T₀.toSection w) z)) b :=
     centred_finsum_smul_section_mdiffAt (I := I) (M := M)
       (s_finset := Finset.univ) r s
@@ -700,7 +700,7 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
       (fun k => fun z =>
         covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (fun w : M => chartBasisVecFiber (I := I) α k w)
+          (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
           (fun w : M => T₀.toSection w) z)
       (b := b) (fun k _ => hC_mdiff k) (fun k _ => hσ_mdiff k)
   have hGoodOpen : IsOpen (chartLeviCivitaGoodSet (I := I) α) :=
@@ -717,7 +717,7 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
           centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z •
             covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-              (fun w : M => chartBasisVecFiber (I := I) α k w)
+              (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
               (fun w : M => T₀.toSection w) z) := by
     filter_upwards [hGood_nhds] with z hz
     exact centred_covApply_frameVec_eq_coord_sum
@@ -732,7 +732,7 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
       cov_RS.toFun
           (fun z : M => ∑ k : Fin (Module.finrank ℝ E),
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z •
-              covApply cov_RS (fun w : M => chartBasisVecFiber (I := I) α k w)
+              covApply cov_RS (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
                 (fun w : M => T₀.toSection w) z) b :=
     cov_RS.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
       hOrig_mdiff hSum_mdiff (Filter.univ_mem) hEvent
@@ -742,27 +742,27 @@ private lemma centred_cov_RS_covApply_frameVec_eq_coord_expansion
     (f := fun k : Fin (Module.finrank ℝ E) => fun z : M =>
       centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z)
     (σ := fun k : Fin (Module.finrank ℝ E) => fun z : M =>
-      covApply cov_RS (fun w : M => chartBasisVecFiber (I := I) α k w)
+      covApply cov_RS (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
         (fun w : M => T₀.toSection w) z)
     (b := b) (hf := fun k _ => hC_mdiff k) (hσ := fun k _ => hσ_mdiff k)
-    (v := chartBasisVecFiber (I := I) α l b)
+    (v := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)
   change cov_RS.toFun
         (covApply cov_RS (smoothOrthoFrame (I := I) g c i)
           (fun z : M => T₀.toSection z)) b
-        (chartBasisVecFiber (I := I) α l b) = _
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) = _
   have hLHS_replace :
       cov_RS.toFun
           (covApply cov_RS (smoothOrthoFrame (I := I) g c i)
             (fun z : M => T₀.toSection z)) b
-          (chartBasisVecFiber (I := I) α l b) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       cov_RS.toFun
           (fun z : M => ∑ k : Fin (Module.finrank ℝ E),
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α c i k z •
-              covApply cov_RS (fun w : M => chartBasisVecFiber (I := I) α k w)
+              covApply cov_RS (fun w : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k w)
                 (fun w : M => T₀.toSection w) z) b
-          (chartBasisVecFiber (I := I) α l b) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) :=
     congrArg (fun (T : TangentSpace I b →L[ℝ] TensorRSSpace r s I b) =>
-      T (chartBasisVecFiber (I := I) α l b)) hCovRSReplace
+      T (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) hCovRSReplace
   rw [hLHS_replace]
   rw [hLeibniz]
   rw [Finset.sum_add_distrib]
@@ -842,7 +842,7 @@ private lemma chartProjCLM_covApply_chartBasis_eq_euclidPartial_add_lowerOrder
     chartProjCLM (I := I) (M := M) r s α Idx Jdx b
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (fun z : M => chartBasisVecFiber (I := I) α m z)
+          (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m z)
           (fun z : M => T₀.toSection z) b) =
       euclidPartial (E := E) m
           (chartPushedRaw I α
@@ -865,18 +865,18 @@ private lemma chartProjCLM_covApply_chartBasis_eq_euclidPartial_add_lowerOrder
   have hAbstract :
       covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (fun z : M => chartBasisVecFiber (I := I) α m z)
+          (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m z)
           (fun z : M => T₀.toSection z) b =
         chartTensorRSCovariantDerivative (I := I) r s g α (fun z : M => T₀.toSection z)
-          (fun z : M => chartBasisVecFiber (I := I) α m z) b := by
+          (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m z) b := by
     rw [covApply_apply]
     have hCovDerivAt :
         TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g) (fun z : M => T₀.toSection z) b
-            (chartBasisVecFiber (I := I) α m b) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b) =
           tensorCovDerivAt (I := I) (M := M) g r s T₀ b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α m b)) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)) := by
       rw [tensorCovDerivAt_def,
         (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]
     rw [hCovDerivAt]
@@ -922,19 +922,19 @@ private lemma centredFrame_proj_summand_expand
                     (LeviCivita (I := I) g)).toFun
                   (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                     (LeviCivita (I := I) g))
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)))) +
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) +
       (∑ l : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
           centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
             (mvfderiv (I := I) (fun z : M =>
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                b (chartBasisVecFiber (I := I) α l b) *
+                b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
               chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                 (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                   (LeviCivita (I := I) g))
-                  (fun z : M => chartBasisVecFiber (I := I) α k z)
+                  (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                   (fun z : M => T₀.toSection z) b))) := by
   classical
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -948,30 +948,30 @@ private lemma centredFrame_proj_summand_expand
   have hBb : smoothOrthoFrame (I := I) g b i b =
       ∑ l : Fin (Module.finrank ℝ E),
         centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b •
-          chartBasisVecFiber (I := I) α l b :=
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b :=
     smoothOrthoFrame_eq_centredCoordMatrix_sum (I := I) (M := M) g α b i hb_base
   have hLBb : L (smoothOrthoFrame (I := I) g b i b) =
       ∑ l : Fin (Module.finrank ℝ E),
         centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b •
-          L (chartBasisVecFiber (I := I) α l b) := by
+          L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
     rw [hBb, map_sum]
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [L.map_smul]
   have hL_l : ∀ l : Fin (Module.finrank ℝ E),
-      L (chartBasisVecFiber (I := I) α l b) =
+      L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
         (∑ k : Fin (Module.finrank ℝ E),
           centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k b •
             cov_RS.toFun
                 (covApply cov_RS
-                  (fun z : M => chartBasisVecFiber (I := I) α k z)
+                  (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) +
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) +
         (∑ k : Fin (Module.finrank ℝ E),
           mvfderiv (I := I) (fun z : M =>
               centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-              b (chartBasisVecFiber (I := I) α l b) •
+              b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) •
             covApply cov_RS
-              (fun z : M => chartBasisVecFiber (I := I) α k z)
+              (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
               (fun z : M => T₀.toSection z) b) := by
     intro l
     exact centred_cov_RS_covApply_frameVec_eq_coord_expansion
@@ -987,15 +987,15 @@ private lemma centredFrame_proj_summand_expand
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k b •
                   cov_RS.toFun
                       (covApply cov_RS
-                        (fun z : M => chartBasisVecFiber (I := I) α k z)
+                        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                         (fun z : M => T₀.toSection z)) b
-                      (chartBasisVecFiber (I := I) α l b)) +
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) +
               (∑ k : Fin (Module.finrank ℝ E),
                 mvfderiv (I := I) (fun z : M =>
                     centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                    b (chartBasisVecFiber (I := I) α l b) •
+                    b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) •
                   covApply cov_RS
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z) b)) := by
     rw [show cov_RS.toFun
             (covApply cov_RS (smoothOrthoFrame (I := I) g b i)
@@ -1014,15 +1014,15 @@ private lemma centredFrame_proj_summand_expand
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k b •
                   cov_RS.toFun
                       (covApply cov_RS
-                        (fun z : M => chartBasisVecFiber (I := I) α k z)
+                        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                         (fun z : M => T₀.toSection z)) b
-                      (chartBasisVecFiber (I := I) α l b)) +
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) +
               (∑ k : Fin (Module.finrank ℝ E),
                 mvfderiv (I := I) (fun z : M =>
                     centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                    b (chartBasisVecFiber (I := I) α l b) •
+                    b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) •
                   covApply cov_RS
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z) b))) =
         (∑ k : Fin (Module.finrank ℝ E),
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
@@ -1030,17 +1030,17 @@ private lemma centredFrame_proj_summand_expand
                 chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                   (cov_RS.toFun
                     (covApply cov_RS
-                      (fun z : M => chartBasisVecFiber (I := I) α k z)
+                      (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                       (fun z : M => T₀.toSection z)) b
-                    (chartBasisVecFiber (I := I) α l b)))) +
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) +
           (∑ k : Fin (Module.finrank ℝ E),
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
               (mvfderiv (I := I) (fun z : M =>
                   centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                  b (chartBasisVecFiber (I := I) α l b) *
+                  b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
                 chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                   (covApply cov_RS
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z) b))) := by
     intro l
     rw [map_smul, smul_eq_mul, map_add, mul_add]
@@ -1071,9 +1071,9 @@ private lemma centredFrame_proj_principal_eq_invGramPrincipalSum
                     (LeviCivita (I := I) g)).toFun
                   (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                     (LeviCivita (I := I) g))
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) =
       chartInvGramPrincipalSum (I := I) (M := M) g r s α T₀ Idx Jdx b := by
   classical
   rw [chartInvGramPrincipalSum]
@@ -1083,9 +1083,9 @@ private lemma centredFrame_proj_principal_eq_invGramPrincipalSum
           (LeviCivita (I := I) g)).toFun
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-          (fun z : M => chartBasisVecFiber (I := I) α k z)
+          (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
           (fun z : M => T₀.toSection z)) b
-        (chartBasisVecFiber (I := I) α l b)) with hP_def
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) with hP_def
   set C : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i k => centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k b with hC_def
   have hLHS :
@@ -1169,11 +1169,11 @@ private lemma rawConnLap_chartα_firstOrder_remainder_smooth_coeff_form
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
                   (mvfderiv (I := I) (fun z : M =>
                       centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                      b (chartBasisVecFiber (I := I) α l b) *
+                      b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
                     chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                       (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                         (LeviCivita (I := I) g))
-                        (fun z : M => chartBasisVecFiber (I := I) α k z)
+                        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                         (fun z : M => T₀.toSection z) b))) -
           (∑ i : Fin (Module.finrank ℝ E),
             chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -1210,11 +1210,11 @@ private lemma rawConnLap_chartα_firstOrder_remainder_smooth_coeff_form
             centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
               (mvfderiv (I := I) (fun z : M =>
                   centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                  b (chartBasisVecFiber (I := I) α l b) *
+                  b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
                 chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                   (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                     (LeviCivita (I := I) g))
-                    (fun z : M => chartBasisVecFiber (I := I) α k z)
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                     (fun z : M => T₀.toSection z) b))) -
       (∑ i : Fin (Module.finrank ℝ E),
         chartProjCLM (I := I) (M := M) r s α Idx Jdx b
@@ -1253,19 +1253,19 @@ private lemma rawConnLap_chartα_firstOrder_remainder_smooth_coeff_form
                           (LeviCivita (I := I) g)).toFun
                         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                           (LeviCivita (I := I) g))
-                          (fun z : M => chartBasisVecFiber (I := I) α k z)
+                          (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                           (fun z : M => T₀.toSection z)) b
-                        (chartBasisVecFiber (I := I) α l b)))) +
+                        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) +
             (∑ l : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
                   (mvfderiv (I := I) (fun z : M =>
                       centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                      b (chartBasisVecFiber (I := I) α l b) *
+                      b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
                     chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                       (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                         (LeviCivita (I := I) g))
-                        (fun z : M => chartBasisVecFiber (I := I) α k z)
+                        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                         (fun z : M => T₀.toSection z) b)))) -
           chartProjCLM (I := I) (M := M) r s α Idx Jdx b
             ((TensorRSNabla.tensorRSCovariantDerivative I M r s
@@ -1349,19 +1349,19 @@ theorem rawTensorConnLap_chartα_proj_eq_invGramPrincipalSum_on_goodSet
                         (LeviCivita (I := I) g)).toFun
                       (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                         (LeviCivita (I := I) g))
-                        (fun z : M => chartBasisVecFiber (I := I) α k z)
+                        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                         (fun z : M => T₀.toSection z)) b
-                      (chartBasisVecFiber (I := I) α l b)))) +
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) +
           (∑ l : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
               centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i l b *
                 (mvfderiv (I := I) (fun z : M =>
                     centredOrthoFrameCoordMatrix (I := I) (M := M) g α b i k z)
-                    b (chartBasisVecFiber (I := I) α l b) *
+                    b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) *
                   chartProjCLM (I := I) (M := M) r s α Idx Jdx b
                     (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                       (LeviCivita (I := I) g))
-                      (fun z : M => chartBasisVecFiber (I := I) α k z)
+                      (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
                       (fun z : M => T₀.toSection z) b)))) -
         chartProjCLM (I := I) (M := M) r s α Idx Jdx b
           ((TensorRSNabla.tensorRSCovariantDerivative I M r s

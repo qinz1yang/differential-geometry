@@ -751,7 +751,7 @@ private theorem anisoOn_realizeGram_det
               (iteratedDeriv j (φ i) t) ^ 2 ≤ B i)
     (α : M) :
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T (interior (extChartAt I α).target)
-      (fun t y => (Integral.Measure.chartGramMatrix (I := I)
+      (fun t y => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
         ((extChartAt I α).symm y)).det) := by
   classical
@@ -792,7 +792,7 @@ private theorem anisoOn_realizeGram_adjugate
               (iteratedDeriv j (φ i) t) ^ 2 ≤ B i)
     (α : M) (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T (interior (extChartAt I α).target)
-      (fun t y => (Integral.Measure.chartGramMatrix (I := I)
+      (fun t y => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
         ((extChartAt I α).symm y)).adjugate a b) := by
   classical
@@ -800,7 +800,7 @@ private theorem anisoOn_realizeGram_adjugate
   have hentry : ∀ (r c : Fin (Module.finrank ℝ E)),
       DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
         (interior (extChartAt I α).target)
-        (fun t y => ((Integral.Measure.chartGramMatrix (I := I)
+        (fun t y => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
             ((extChartAt I α).symm y)).updateRow b (Pi.single a 1)) r c) := by
     intro r c
@@ -821,7 +821,7 @@ private theorem anisoOn_realizeGram_adjugate
         (interior (extChartAt I α).target)
         (fun t y => (((Equiv.Perm.sign σp : ℤ) : ℝ)) *
           ∏ i : Fin (Module.finrank ℝ E),
-            ((Integral.Measure.chartGramMatrix (I := I)
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
               ((extChartAt I α).symm y)).updateRow b (Pi.single a 1)) (σp i) i) := by
     intro σp
@@ -858,7 +858,7 @@ private theorem anisoOn_realizeGram_inv
   have hV : IsOpen (interior (extChartAt I α).target) := isOpen_interior
   have hdet := anisoOn_realizeGram_det hT hδ_lt hδ hφ_smooth hcoeff hmodemass α
   have hdet_ne : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ y ∈ interior (extChartAt I α).target,
-      (Integral.Measure.chartGramMatrix (I := I)
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
         ((extChartAt I α).symm y)).det ≠ 0 := by
     intro t _ y hy
@@ -870,7 +870,7 @@ private theorem anisoOn_realizeGram_inv
         (trivializationAt E (TangentSpace I) α).baseSet := by
       rw [Integral.Measure.trivializationAt_baseSet_eq_chartAt_source (I := I)]
       exact hsrc
-    exact ne_of_gt (chartGramMatrix_det_pos (I := I)
+    exact ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I)
       (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α hbase)
   have hinv := hdet.inv hV hdet_ne
   have hadj := anisoOn_realizeGram_adjugate hT hδ_lt hδ hφ_smooth hcoeff hmodemass α a b
@@ -910,20 +910,20 @@ private theorem anisoOn_realize_chartChristoffel
         (fun t y => DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
             ((extChartAt I α).symm y) c l *
-          (DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E i)
+          (DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
               (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α l j) y +
-            DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E j)
+            DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
               (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α l i) y -
-            DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E l)
+            DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l)
               (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j) y)) := by
     intro l
     refine (hinv c l).mul hV ?_
-    exact (((hgram l j).pdShift hV (chartModelBasis E i)).add hV
-      ((hgram l i).pdShift hV (chartModelBasis E j))).sub hV
-      ((hgram i j).pdShift hV (chartModelBasis E l))
+    exact (((hgram l j).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).add hV
+      ((hgram l i).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j))).sub hV
+      ((hgram i j).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l))
   have hsum := (DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
     (fun l _ => hterm l)).smul hV (1 / 2 : ℝ)
   refine hsum.congr hV _ (fun t ht y hy => ?_)
@@ -1007,10 +1007,10 @@ private theorem anisoOn_realize_chartRicci
     have hterm : DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
         (interior (extChartAt I α).target)
         (fun t y =>
-          DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E j)
+          DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i c j) y -
-          DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E c)
+          DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)
             (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j j) y +
           (∑ m : Fin (Module.finrank ℝ E),
@@ -1022,8 +1022,8 @@ private theorem anisoOn_realize_chartRicci
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α c m j y *
               DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j m y))) := by
-      refine (((hchr i c j).pdShift hV (chartModelBasis E j)).sub hV
-        ((hchr i j j).pdShift hV (chartModelBasis E c))).add hV ?_
+      refine (((hchr i c j).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)).sub hV
+        ((hchr i j j).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c))).add hV ?_
       refine DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
         (fun m _ => ?_)
       exact ((hchr j m j).mul hV (hchr i c m)).sub hV ((hchr c m j).mul hV (hchr i j m))
@@ -1065,31 +1065,31 @@ private theorem anisoOn_realize_chartLieDeTurckComp
       (fun t y => ∑ c : Fin (Module.finrank ℝ E),
         chartDeTurckVFComp (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) g_bg α c y *
-          DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E c)
+          DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)
             (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j) y) :=
     DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
-      (fun c _ => (hvf c).mul hV ((hgram i j).pdShift hV (chartModelBasis E c)))
+      (fun c _ => (hvf c).mul hV ((hgram i j).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E c)))
   have h2 : DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
     (interior (extChartAt I α).target)
       (fun t y => ∑ c : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α c j y *
-          DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E i)
+          DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
             (chartDeTurckVFComp (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) g_bg α c) y) :=
     DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
-      (fun c _ => (hgram c j).mul hV ((hvf c).pdShift hV (chartModelBasis E i)))
+      (fun c _ => (hgram c j).mul hV ((hvf c).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)))
   have h3 : DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
     (interior (extChartAt I α).target)
       (fun t y => ∑ c : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i c y *
-          DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E j)
+          DifferentialGeometry.Analysis.dirDeriv (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
             (chartDeTurckVFComp (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) g_bg α c) y) :=
     DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
-      (fun c _ => (hgram i c).mul hV ((hvf c).pdShift hV (chartModelBasis E j)))
+      (fun c _ => (hgram i c).mul hV ((hvf c).pdShift hV (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)))
   refine ((h1.add hV h2).add hV h3).congr hV _ (fun t ht y hy => ?_)
   rw [chartLieDeTurckComp_def]
   rfl

@@ -38,34 +38,28 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.Measure (chartGramMatrix
-  chartGramMatrix_apply chartGramMatrix_isHermitian
-  chartGramMatrix_posDef chartGramMatrix_det_pos
-  chartGramMatrix_entry_contMDiffOn chartGramMatrix_det_contMDiffOn
-  chartBasisVecFiber chartBasisVec)
-
 private lemma chartGramMatrix_adjugate_entry_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => (chartGramMatrix g α b).adjugate i j)
+      (fun b : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).adjugate i j)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
   have hexp :
-      (fun b : M => (chartGramMatrix g α b).adjugate i j)
+      (fun b : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).adjugate i j)
         = (fun b : M =>
-            ((chartGramMatrix g α b).updateRow j (Pi.single i 1)).det) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).updateRow j (Pi.single i 1)).det) := by
     funext b
     rw [Matrix.adjugate_apply]
   rw [hexp]
   have hexp2 :
       (fun b : M =>
-          ((chartGramMatrix g α b).updateRow j (Pi.single i 1)).det)
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).updateRow j (Pi.single i 1)).det)
         = (fun b : M =>
             ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
               (Equiv.Perm.sign σ : ℝ) *
                 ∏ k,
-                  ((chartGramMatrix g α b).updateRow j (Pi.single i 1))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).updateRow j (Pi.single i 1))
                     (σ k) k) := by
     funext b
     rw [Matrix.det_apply]
@@ -77,7 +71,7 @@ private lemma chartGramMatrix_adjugate_entry_contMDiffOn
   by_cases hσkj : σ k = j
   · have heq :
         (fun b : M =>
-            ((chartGramMatrix g α b).updateRow j (Pi.single i 1)) (σ k) k)
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).updateRow j (Pi.single i 1)) (σ k) k)
           = (fun _ : M => (Pi.single i 1 : Fin (Module.finrank ℝ E) → ℝ) k) := by
       funext b
       rw [hσkj, Matrix.updateRow_self]
@@ -85,35 +79,35 @@ private lemma chartGramMatrix_adjugate_entry_contMDiffOn
     exact contMDiffOn_const
   · have heq :
         (fun b : M =>
-            ((chartGramMatrix g α b).updateRow j (Pi.single i 1)) (σ k) k)
-          = (fun b : M => chartGramMatrix g α b (σ k) k) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).updateRow j (Pi.single i 1)) (σ k) k)
+          = (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b (σ k) k) := by
       funext b
       rw [Matrix.updateRow_ne hσkj]
     rw [heq]
-    exact chartGramMatrix_entry_contMDiffOn (I := I) g α (σ k) k
+    exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α (σ k) k
 
 lemma chartGramMatrix_inv_entry_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => (chartGramMatrix g α b)⁻¹ i j)
+      (fun b : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have hexp :
-      (fun b : M => (chartGramMatrix g α b)⁻¹ i j)
-        = (fun b : M => (chartGramMatrix g α b).det⁻¹ *
-              (chartGramMatrix g α b).adjugate i j) := by
+      (fun b : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j)
+        = (fun b : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).det⁻¹ *
+              (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).adjugate i j) := by
     funext b
     rw [Matrix.inv_def]
     simp [Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
   rw [hexp]
   intro b hb
-  have hdet := chartGramMatrix_det_contMDiffOn (I := I) g α b hb
+  have hdet := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_contMDiffOn (I := I) g α b hb
   have hadj := chartGramMatrix_adjugate_entry_contMDiffOn (I := I) g α i j b hb
-  have hpos : 0 < (chartGramMatrix g α b).det :=
-    chartGramMatrix_det_pos (I := I) g α hb
-  have hpos_ne : (chartGramMatrix g α b).det ≠ 0 := ne_of_gt hpos
+  have hpos : 0 < (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).det :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g α hb
+  have hpos_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b).det ≠ 0 := ne_of_gt hpos
   have hinv : ContMDiffWithinAt I 𝓘(ℝ) ∞
-      (fun b' : M => (chartGramMatrix g α b').det⁻¹)
+      (fun b' : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b').det⁻¹)
       (trivializationAt E (TangentSpace I) α).baseSet b :=
     ContMDiffWithinAt.inv₀ hdet hpos_ne
   exact hinv.mul hadj
@@ -126,10 +120,10 @@ noncomputable def chartTensorInnerPointwise0s :
       S (fun i => Fin.elim0 i) * T (fun i => Fin.elim0 i)
   | s + 1, g, α, b, S, T =>
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j *
           chartTensorInnerPointwise0s s g α b
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j))
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
 
 lemma chartTensorInnerPointwise_0s_zero
     (g : SmoothRiemannianMetric I M) (α b : M)
@@ -142,10 +136,10 @@ lemma chartTensorInnerPointwise_0s_succ
     (S T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
     chartTensorInnerPointwise0s (I := I) (M := M) (s + 1) g α b S T =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (chartGramMatrix g α b)⁻¹ i j *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j *
           chartTensorInnerPointwise0s (I := I) (M := M) s g α b
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j)) := rfl
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := rfl
 
 lemma chartTensorInnerPointwise_0s_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M) :
@@ -175,10 +169,10 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
             = fun b : M =>
               ∑ i : Fin (Module.finrank ℝ E),
                 ∑ j : Fin (Module.finrank ℝ E),
-                  (chartGramMatrix g α b)⁻¹ i j *
+                  (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j *
                     chartTensorInnerPointwise0s (I := I) (M := M) s g α b
-                      (S.curryLeft ((chartModelBasis E) i))
-                      (T.curryLeft ((chartModelBasis E) j)) := by
+                      (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                      (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
         funext b
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
@@ -187,8 +181,8 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
       refine ContMDiffOn.mul ?_ ?_
       · exact chartGramMatrix_inv_entry_contMDiffOn (I := I) g α i j
       · exact ih
-          (S.curryLeft ((chartModelBasis E) i))
-          (T.curryLeft ((chartModelBasis E) j))
+          (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
 
 lemma chartTensorInnerPointwise_0s_add_left
     (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
@@ -211,9 +205,9 @@ lemma chartTensorInnerPointwise_0s_add_left
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (S₁ + S₂).curryLeft ((chartModelBasis E) i) =
-            S₁.curryLeft ((chartModelBasis E) i) +
-              S₂.curryLeft ((chartModelBasis E) i) := by
+          (S₁ + S₂).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+            S₁.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) +
+              S₂.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               add_apply]
@@ -239,8 +233,8 @@ lemma chartTensorInnerPointwise_0s_smul_left
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (c • S).curryLeft ((chartModelBasis E) i) =
-            c • S.curryLeft ((chartModelBasis E) i) := by
+          (c • S).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+            c • S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               smul_apply]
@@ -268,9 +262,9 @@ lemma chartTensorInnerPointwise_0s_add_right
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (T₁ + T₂).curryLeft ((chartModelBasis E) j) =
-            T₁.curryLeft ((chartModelBasis E) j) +
-              T₂.curryLeft ((chartModelBasis E) j) := by
+          (T₁ + T₂).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+            T₁.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) +
+              T₂.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               add_apply]
@@ -296,8 +290,8 @@ lemma chartTensorInnerPointwise_0s_smul_right
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (c • T).curryLeft ((chartModelBasis E) j) =
-            c • T.curryLeft ((chartModelBasis E) j) := by
+          (c • T).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+            c • T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               smul_apply]

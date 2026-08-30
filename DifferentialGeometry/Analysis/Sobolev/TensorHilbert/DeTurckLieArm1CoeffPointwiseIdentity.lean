@@ -784,7 +784,7 @@ private lemma lieArm1_cometricTrace_eq_chartInvGram (g₁ : SmoothRiemannianMetr
           ((Module.finBasis ℝ E) k)) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k l •
-          F ((chartModelBasis E) l) ((chartModelBasis E) k) := by
+          F ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
   classical
   set L₁ : (E →L[ℝ] ℝ) →L[ℝ] E :=
     (cometricLmodel (I := I) g₁ x).comp
@@ -797,7 +797,7 @@ private lemma lieArm1_cometricTrace_eq_chartInvGram (g₁ : SmoothRiemannianMetr
     rfl
   have htrace :=
     (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.cDualBasis_trace_basis_indep
-      (E := E) (chartModelBasis E) F').symm
+      (E := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) F').symm
   rw [show (∑ k : Fin (Module.finrank ℝ E),
         F (cometricLmodel (I := I) g₁ x
             (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
@@ -808,17 +808,17 @@ private lemma lieArm1_cometricTrace_eq_chartInvGram (g₁ : SmoothRiemannianMetr
     Finset.sum_congr rfl (fun k _ => (hFapp _ _).symm)]
   rw [htrace]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [hFapp ((chartModelBasis E).cDualBasis k) (chartModelBasis E k)]
+  rw [hFapp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).cDualBasis k) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)]
   rw
     [cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
     (I := I) g₁ x k]
   change F (tangentSpaceModelContinuousLinearEquiv (I := I) x
       (∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramMatrix (I := I) g₁ x x k l • centeredChartTangentBasis (I := I) x l))
-      ((chartModelBasis E) k) = _
+        chartInvGramMatrix (I := I) g₁ x x k l • DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l))
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) = _
   rw [map_sum, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun l _ => ?_)
-  rw [map_smul, map_smul, smul_apply, tangent_model_equiv_centered_chart_basis]
+  rw [map_smul, map_smul, smul_apply, DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -858,25 +858,25 @@ private lemma lieArm1_deTurckVF_cometric_trace (g₁ gB : SmoothRiemannianMetric
     rfl
   rw [h1, lieArm1_cometricTrace_eq_chartInvGram (I := I) g₁ x F]
   have h2 : ∀ k l : Fin (Module.finrank ℝ E),
-      F ((chartModelBasis E) l) ((chartModelBasis E) k) =
-        F ((chartModelBasis E) k) ((chartModelBasis E) l) := by
+      F ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) =
+        F ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
     intro k l
     change (g₁.inner x u : TangentSpace I x →L[ℝ] ℝ)
         (PDE.DeTurck.connectionDifference (I := I) g₁ gB x
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) l))
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) k))) =
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))) =
       (g₁.inner x u : TangentSpace I x →L[ℝ] ℝ)
         (PDE.DeTurck.connectionDifference (I := I) g₁ gB x
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) k))
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) l)))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)))
     rw [PDE.DeTurck.connectionDifference_symm (I := I) g₁ gB x
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) l))
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) k))]
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))]
   have h3 : g₁.inner x
       ((PDE.DeTurck.deTurckVF (I := I) g₁ gB : Π y : M, TangentSpace I y) x) u =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k l •
-          F ((chartModelBasis E) k) ((chartModelBasis E) l) := by
+          F ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
     rw [show ((PDE.DeTurck.deTurckVF (I := I) g₁ gB : Π y : M, TangentSpace I y) x) =
         (PDE.DeTurck.deTurckVF (I := I) g₁ gB :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x from rfl]
@@ -892,13 +892,13 @@ private lemma lieArm1_deTurckVF_cometric_trace (g₁ gB : SmoothRiemannianMetric
     rw [g₁.symm x _ u]
     change (g₁.inner x u)
         (PDE.DeTurck.connectionDifference (I := I) g₁ gB x
-          (centeredChartTangentBasis (I := I) x k)
-          (centeredChartTangentBasis (I := I) x l)) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) =
       (g₁.inner x u)
         (PDE.DeTurck.connectionDifference (I := I) g₁ gB x
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) k))
-          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) l)))
-    rw [tangent_model_equiv_symm_chart_basis, tangent_model_equiv_symm_chart_basis]
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)))
+    rw [DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_symm_chart_basis, DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_symm_chart_basis]
   rw [h3]
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun l _ => ?_))
   rw [h2 k l]

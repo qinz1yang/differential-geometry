@@ -490,11 +490,11 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
                   ((∑ k : Fin r,
                       ‖chartTensorRSInputSlotCorrection (I := I) r s g α
                           (fun b' => S.toCcTensor.toSection b')
-                          (chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
                     (∑ l : Fin s,
                       ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
                           (fun b' => S.toCcTensor.toSection b')
-                          (chartBasisVecFiber (I := I) α j) b l‖ ^ 2)))
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2)))
             2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
@@ -514,7 +514,7 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ k : Fin r,
           ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-              (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α j) b k‖ ≤
+              (fun b' => S.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ≤
             M_F * ‖S.toSection b‖ := by
     intro S b hb k
     have h_orig := hM_F_in_le (fun b' => S.toSection b') (b := b) hb j k
@@ -526,7 +526,7 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ l : Fin s,
           ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-              (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α j) b l‖ ≤
+              (fun b' => S.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ≤
             M_F * ‖S.toSection b‖ := by
     intro S b hb l
     have h_orig := hM_F_out_le (fun b' => S.toSection b') (b := b) hb j l
@@ -555,9 +555,9 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
       b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
       ((∑ k : Fin r, ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-            (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
+            (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
         (∑ l : Fin s, ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-            (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b l‖ ^ 2)) ≤
+            (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2)) ≤
         C * tensorInnerPointwise (I := I) (M := M) g r s b
           (T.toFun b) (T.toFun b) := by
     intro T b hb
@@ -566,29 +566,29 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
           (T.toFun b) (T.toFun b) := hK_S_bound T hb
     have h_in_each : ∀ k : Fin r,
         ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-            (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b k‖ ^ 2 ≤
+            (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ^ 2 ≤
           M_F ^ 2 * ‖T.toSection b‖ ^ 2 := by
       intro k
       have hbnd := hM_F_input T hb k
       have hLHS_nn : 0 ≤ ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-          (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b k‖ :=
+          (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ :=
         norm_nonneg _
       have := mul_self_le_mul_self hLHS_nn hbnd
       nlinarith [this, sq_nonneg M_F, norm_nonneg (T.toSection b)]
     have h_out_each : ∀ l : Fin s,
         ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-            (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b l‖ ^ 2 ≤
+            (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2 ≤
           M_F ^ 2 * ‖T.toSection b‖ ^ 2 := by
       intro l
       have hbnd := hM_F_output T hb l
       have hLHS_nn : 0 ≤ ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-          (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b l‖ :=
+          (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ :=
         norm_nonneg _
       have := mul_self_le_mul_self hLHS_nn hbnd
       nlinarith [this, sq_nonneg M_F, norm_nonneg (T.toSection b)]
     have h_in_sum : (∑ k : Fin r,
           ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-              (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b k‖ ^ 2) ≤
+              (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ^ 2) ≤
         (r : ℝ) * (M_F ^ 2 * ‖T.toSection b‖ ^ 2) := by
       have h_le := Finset.sum_le_sum (s := (Finset.univ : Finset (Fin r)))
         (fun k _ => h_in_each k)
@@ -596,7 +596,7 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
       exact h_le
     have h_out_sum : (∑ l : Fin s,
           ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-              (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b l‖ ^ 2) ≤
+              (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2) ≤
         (s : ℝ) * (M_F ^ 2 * ‖T.toSection b‖ ^ 2) := by
       have h_le := Finset.sum_le_sum (s := (Finset.univ : Finset (Fin s)))
         (fun l _ => h_out_each l)
@@ -612,10 +612,10 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
     have h_rs_nn : 0 ≤ (r : ℝ) + (s : ℝ) := by positivity
     calc (∑ k : Fin r,
             ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-                (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
+                (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
           (∑ l : Fin s,
             ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-                (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α j) b l‖ ^ 2)
+                (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2)
         ≤ (r : ℝ) * (M_F ^ 2 * ‖T.toSection b‖ ^ 2) +
             (s : ℝ) * (M_F ^ 2 * ‖T.toSection b‖ ^ 2) :=
           add_le_add h_in_sum h_out_sum
@@ -634,11 +634,11 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
     (∑ k : Fin r,
         ‖chartTensorRSInputSlotCorrection (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
-            (chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b k‖ ^ 2) +
       (∑ l : Fin s,
         ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
             (fun b' => S.toCcTensor.toSection b')
-            (chartBasisVecFiber (I := I) α j) b l‖ ^ 2) with hSumSq_def
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2) with hSumSq_def
   set f : M → ℝ := fun b : M => ρ b * Real.sqrt (SumSq b) with hf_def
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   have hSumSq_nn : ∀ b : M, 0 ≤ SumSq b := by

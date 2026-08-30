@@ -93,7 +93,7 @@ theorem segBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
       have hs := normalFrame_sqrt (I := I) g x w
       change q (L w) = ‖w‖ at hs
       exact hs.trans hnorm
-  let b : Module.Basis (Fin (Module.finrank Real E)) Real E := chartModelBasis E
+  let b : Module.Basis (Fin (Module.finrank Real E)) Real E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   let b' : Module.Basis (Fin (Module.finrank Real E)) Real E :=
     b.map L.toLinearEquiv
   have hmap : Measure.map L (modelHaar (E := E)) = b'.addHaar := by

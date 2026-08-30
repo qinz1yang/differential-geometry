@@ -44,7 +44,7 @@ theorem ricci_flow_short_time_existence
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
           (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
@@ -63,7 +63,7 @@ theorem ricci_flow_short_time_existence
         (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
           ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
             (fun p : ℝ × M =>
-              Integral.Measure.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
             (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
         (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
           HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
@@ -87,7 +87,7 @@ theorem ricci_flow_short_time_existence
     have h_gram_DT_T : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
           (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
       intro x₀ i j
       exact (h_gram_DT x₀ i j).mono
@@ -95,7 +95,7 @@ theorem ricci_flow_short_time_existence
     have h_gramIcc_T : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
           (Set.Icc (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
       intro x₀ i j
       exact (hJ x₀ i j).mono

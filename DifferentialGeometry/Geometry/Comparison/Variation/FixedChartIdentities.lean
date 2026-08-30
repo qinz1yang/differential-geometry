@@ -46,7 +46,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 
 omit [NeZero (Module.finrank ℝ E)] in
 def chartCoordCLM (i : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
-  (chartModelBasis E).coord i |>.toContinuousLinearMap
+  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i |>.toContinuousLinearMap
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartCoordCLM_apply (i : Fin (Module.finrank ℝ E)) (v : E) :
@@ -297,14 +297,14 @@ lemma hasDerivAt_chartChristoffelContraction
               chartCoord (E := E) i P' * chartCoord (E := E) j (Q s)
             + chartChristoffel (I := I) g α i j k (R s) *
               chartCoord (E := E) i (P s) * chartCoord (E := E) j Q')) •
-          chartModelBasis E k) s := by
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k) s := by
   classical
   have hfun : (fun u => chartChristoffelContraction (I := I) g α (P u) (Q u) (R u))
       = fun u => ∑ k : Fin (Module.finrank ℝ E),
           (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α i j k (R u) *
               chartCoord (E := E) i (P u) * chartCoord (E := E) j (Q u)) •
-            chartModelBasis E k := by
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
     funext u; rw [chartChristoffelContraction_def]
   rw [hfun]
   apply HasDerivAt.fun_sum
@@ -551,7 +551,7 @@ lemma hasDerivAt_innerW
                 + chartChristoffel (I := I) g α i j k (extChartAt I α (f s t)) *
                   chartCoord (E := E) i (fderiv ℝ (fun v : ℝ => extChartAt I α (f s v)) t (1 : ℝ))
                   * chartCoord (E := E) j (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2) (s, t) (1, 0)))) •
-              chartModelBasis E k)) s := by
+              DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) s := by
   rw [innerW_eq]
   have hterm1 : HasDerivAt (fun u => fderiv ℝ (fun v : ℝ => Y u v) t (1 : ℝ))
       (fderiv ℝ (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2)) (s, t) (1, 0) (0, 1)) s :=
@@ -612,7 +612,7 @@ lemma hasDerivAt_innerW_snd
                 + chartChristoffel (I := I) g α i j k (extChartAt I α (f s t)) *
                   chartCoord (E := E) i (fderiv ℝ (fun u : ℝ => extChartAt I α (f u t)) s (1 : ℝ))
                   * chartCoord (E := E) j (fderiv ℝ (fun p : ℝ × ℝ => Y p.1 p.2) (s, t) (0, 1)))) •
-              chartModelBasis E k)) t := by
+              DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) t := by
   have hinnerW_eq : (fun v => chartCovDerivAlong (I := I) g α (fun u : ℝ => f u v)
         (fun u : ℝ => Y u v) s)
       = fun v => fderiv ℝ (fun u : ℝ => Y u v) s (1 : ℝ)
@@ -669,8 +669,8 @@ lemma fderiv_eq_sum_partialDeriv (u : E → ℝ) (y v : E) :
         chartCoord (E := E) k v * partialDeriv (E := E) k u y := by
   classical
   have hv : v = ∑ k : Fin (Module.finrank ℝ E),
-      chartCoord (E := E) k v • (chartModelBasis E) k := by
-    conv_lhs => rw [← (chartModelBasis E).sum_repr v]
+      chartCoord (E := E) k v • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr v]
     rfl
   conv_lhs => rw [hv]
   rw [map_sum]
@@ -680,13 +680,13 @@ lemma fderiv_eq_sum_partialDeriv (u : E → ℝ) (y v : E) :
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartCoord_basis (b s : Fin (Module.finrank ℝ E)) :
-    chartCoord (E := E) s (chartModelBasis E b) = if b = s then 1 else 0 := by
-  rw [chartCoord]; exact (chartModelBasis E).repr_self_apply b s
+    chartCoord (E := E) s (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E b) = if b = s then 1 else 0 := by
+  rw [chartCoord]; exact (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply b s
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartCoord_sum_smul_basis (c : Fin (Module.finrank ℝ E) → ℝ)
     (s : Fin (Module.finrank ℝ E)) :
-    chartCoord (E := E) s (∑ m, c m • chartModelBasis E m) = c s := by
+    chartCoord (E := E) s (∑ m, c m • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) = c s := by
   classical
   rw [← chartCoordCLM_apply, map_sum]
   rw [Finset.sum_eq_single s]
@@ -741,18 +741,18 @@ lemma curvPart_eq_chartRiemannCLM
               chartCoord (E := E) i D₂ * chartCoord (E := E) j Yv
             - (fderiv ℝ (chartChristoffel (I := I) g x i j k) (extChartAt I x x) D₂) *
               chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv)) •
-          chartModelBasis E k)
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
       + (chartChristoffelContraction (I := I) g x D₁
             (chartChristoffelContraction (I := I) g x D₂ Yv (extChartAt I x x))
             (extChartAt I x x)
           - chartChristoffelContraction (I := I) g x D₂
             (chartChristoffelContraction (I := I) g x D₁ Yv (extChartAt I x x))
             (extChartAt I x x))
-      = centeredChartTangentEquiv (I := I) x
+      = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x
           (chartRiemannCLM (I := I) g x
-            ((centeredChartTangentEquiv (I := I) x).symm D₁)
-            ((centeredChartTangentEquiv (I := I) x).symm D₂)
-            ((centeredChartTangentEquiv (I := I) x).symm Yv)) := by
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm D₁)
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm D₂)
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm Yv)) := by
   classical
   set y₀ : E := extChartAt I x x with hy₀
   set d₁ : Fin (Module.finrank ℝ E) → ℝ := fun i => chartCoord (E := E) i D₁ with hd₁
@@ -768,7 +768,7 @@ lemma curvPart_eq_chartRiemannCLM
         (chartChristoffelContraction (I := I) g x D₂ Yv y₀) y₀
       = ∑ l, (∑ i, ∑ j, chartChristoffel (I := I) g x i j l y₀ * d₁ i *
           (∑ p, ∑ q, chartChristoffel (I := I) g x p q j y₀ * d₂ p * yc q)) •
-          chartModelBasis E l := by
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l := by
     rw [chartChristoffelContraction_def]
     refine Finset.sum_congr rfl fun l _ => ?_
     congr 1
@@ -782,7 +782,7 @@ lemma curvPart_eq_chartRiemannCLM
         (chartChristoffelContraction (I := I) g x D₁ Yv y₀) y₀
       = ∑ l, (∑ i, ∑ j, chartChristoffel (I := I) g x i j l y₀ * d₂ i *
           (∑ p, ∑ q, chartChristoffel (I := I) g x p q j y₀ * d₁ p * yc q)) •
-          chartModelBasis E l := by
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l := by
     rw [chartChristoffelContraction_def]
     refine Finset.sum_congr rfl fun l _ => ?_
     congr 1
@@ -792,33 +792,33 @@ lemma curvPart_eq_chartRiemannCLM
           (chartChristoffelContraction (I := I) g x D₁ Yv y₀)
         = ∑ p, ∑ q, chartChristoffel (I := I) g x p q j y₀ * d₁ p * yc q from
       chartCoord_chartChristoffelContraction (I := I) g x D₁ Yv y₀ j]
-  have hRHS : centeredChartTangentEquiv (I := I) x
+  have hRHS : DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x
         (chartRiemannCLM (I := I) g x
-          ((centeredChartTangentEquiv (I := I) x).symm D₁)
-          ((centeredChartTangentEquiv (I := I) x).symm D₂)
-          ((centeredChartTangentEquiv (I := I) x).symm Yv))
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm D₁)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm D₂)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm Yv))
       = ∑ l, (∑ i, ∑ j, ∑ k, yc i * d₁ j * d₂ k *
-          chartRiemannTensor (I := I) g x i j k l y₀) • chartModelBasis E l := by
+          chartRiemannTensor (I := I) g x i j k l y₀) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l := by
     rw [chart_riemann_clm_model_apply]
     rw [show (∑ i, ∑ j, ∑ k, ∑ l,
-            ((chartModelBasis E).repr Yv i * (chartModelBasis E).repr D₁ j *
-                (chartModelBasis E).repr D₂ k *
-                chartRiemannTensor (I := I) g x i j k l y₀) • ((chartModelBasis E) l : E))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Yv i * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₁ j *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₂ k *
+                chartRiemannTensor (I := I) g x i j k l y₀) • ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l : E))
           = ∑ i, ∑ j, ∑ l, ∑ k,
-            ((chartModelBasis E).repr Yv i * (chartModelBasis E).repr D₁ j *
-                (chartModelBasis E).repr D₂ k *
-                chartRiemannTensor (I := I) g x i j k l y₀) • ((chartModelBasis E) l : E) from by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Yv i * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₁ j *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₂ k *
+                chartRiemannTensor (I := I) g x i j k l y₀) • ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l : E) from by
       refine Finset.sum_congr rfl fun i _ => ?_
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [Finset.sum_comm]]
     rw [show (∑ i, ∑ j, ∑ l, ∑ k,
-            ((chartModelBasis E).repr Yv i * (chartModelBasis E).repr D₁ j *
-                (chartModelBasis E).repr D₂ k *
-                chartRiemannTensor (I := I) g x i j k l y₀) • ((chartModelBasis E) l : E))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Yv i * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₁ j *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₂ k *
+                chartRiemannTensor (I := I) g x i j k l y₀) • ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l : E))
           = ∑ i, ∑ l, ∑ j, ∑ k,
-            ((chartModelBasis E).repr Yv i * (chartModelBasis E).repr D₁ j *
-                (chartModelBasis E).repr D₂ k *
-                chartRiemannTensor (I := I) g x i j k l y₀) • ((chartModelBasis E) l : E) from by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Yv i * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₁ j *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr D₂ k *
+                chartRiemannTensor (I := I) g x i j k l y₀) • ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l : E) from by
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Finset.sum_comm]]
     rw [Finset.sum_comm]
@@ -1009,13 +1009,13 @@ lemma commutator_eq_chartRiemannCLM
       - chartCovDerivAlong (I := I) g (f s t) (fun v : ℝ => f s v) (fun v : ℝ =>
         chartCovDerivAlong (I := I) g (f s t) (fun u : ℝ => f u v)
           (fun u : ℝ => Y u v) s) t
-      = centeredChartTangentEquiv (I := I) (f s t)
+      = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)
           (chartRiemannCLM (I := I) g (f s t)
-            ((centeredChartTangentEquiv (I := I) (f s t)).symm
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm
               (fderiv ℝ (fun u : ℝ => extChartAt I (f s t) (f u t)) s (1 : ℝ)))
-            ((centeredChartTangentEquiv (I := I) (f s t)).symm
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm
               (fderiv ℝ (fun v : ℝ => extChartAt I (f s t) (f s v)) t (1 : ℝ)))
-            ((centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
   classical
   set α : M := f s t with hα
   set y₀ : E := extChartAt I α (f s t) with hy₀
@@ -1089,10 +1089,10 @@ lemma commutator_eq_chartRiemannCLM
               chartCoord (E := E) i mF * chartCoord (E := E) j Yv
             + chartChristoffel (I := I) g α i j k y₀ *
               chartCoord (E := E) i D₂ * chartCoord (E := E) j DY₁)) •
-          chartModelBasis E k)
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
       = (∑ k, (∑ i, ∑ j,
             (fderiv ℝ (chartChristoffel (I := I) g α i j k) y₀ D₁) *
-              chartCoord (E := E) i D₂ * chartCoord (E := E) j Yv) • chartModelBasis E k)
+              chartCoord (E := E) i D₂ * chartCoord (E := E) j Yv) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
         + chartChristoffelContraction (I := I) g α mF Yv y₀
         + chartChristoffelContraction (I := I) g α D₂ DY₁ y₀ := by
     rw [chartChristoffelContraction_def (v := mF), chartChristoffelContraction_def (v := D₂)
@@ -1110,10 +1110,10 @@ lemma commutator_eq_chartRiemannCLM
               chartCoord (E := E) i mF * chartCoord (E := E) j Yv
             + chartChristoffel (I := I) g α i j k y₀ *
               chartCoord (E := E) i D₁ * chartCoord (E := E) j DY₂)) •
-          chartModelBasis E k)
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
       = (∑ k, (∑ i, ∑ j,
             (fderiv ℝ (chartChristoffel (I := I) g α i j k) y₀ D₂) *
-              chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv) • chartModelBasis E k)
+              chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
         + chartChristoffelContraction (I := I) g α mF Yv y₀
         + chartChristoffelContraction (I := I) g α D₁ DY₂ y₀ := by
     rw [chartChristoffelContraction_def (v := mF), chartChristoffelContraction_def (v := D₁)
@@ -1125,15 +1125,15 @@ lemma commutator_eq_chartRiemannCLM
     simp only [Finset.sum_add_distrib]
   have hdGcomb : (∑ k, (∑ i, ∑ j,
           (fderiv ℝ (chartChristoffel (I := I) g α i j k) y₀ D₁) *
-            chartCoord (E := E) i D₂ * chartCoord (E := E) j Yv) • chartModelBasis E k)
+            chartCoord (E := E) i D₂ * chartCoord (E := E) j Yv) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
         - (∑ k, (∑ i, ∑ j,
           (fderiv ℝ (chartChristoffel (I := I) g α i j k) y₀ D₂) *
-            chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv) • chartModelBasis E k)
+            chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
       = ∑ k, (∑ i, ∑ j,
           ((fderiv ℝ (chartChristoffel (I := I) g α i j k) y₀ D₁) *
               chartCoord (E := E) i D₂ * chartCoord (E := E) j Yv
             - (fderiv ℝ (chartChristoffel (I := I) g α i j k) y₀ D₂) *
-              chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv)) • chartModelBasis E k := by
+              chartCoord (E := E) i D₁ * chartCoord (E := E) j Yv)) • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [← sub_smul]
@@ -1161,15 +1161,15 @@ theorem chartCovDerivAlong_commutator_eq_riemannOp_on_variation
       - chartCovDerivAlong (I := I) g (f s t) (fun v : ℝ => f s v) (fun v : ℝ =>
         chartCovDerivAlong (I := I) g (f s t) (fun u : ℝ => f u v)
           (fun u : ℝ => Y u v) s) t
-    = centeredChartTangentEquiv (I := I) (f s t)
+    = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)
         ((DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita
             (I := I) g) (f s t))
-          ((centeredChartTangentEquiv (I := I) (f s t)).symm
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm
             (fderiv ℝ (fun u : ℝ => extChartAt I (f s t) (f u t)) s (1 : ℝ)))
-          ((centeredChartTangentEquiv (I := I) (f s t)).symm
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm
             (fderiv ℝ (fun v : ℝ => extChartAt I (f s t) (f s v)) t (1 : ℝ)))
-          ((centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (f s t)).symm (Y s t))) := by
   have hF : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => extChartAt I (f s t) (f p.1 p.2)) (s, t) :=
     chartPulled_contDiffAt (I := I) f hf s t
   rw [Aux7.commutator_eq_chartRiemannCLM (I := I) g f Y s t hF hY,

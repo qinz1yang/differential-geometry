@@ -48,28 +48,28 @@ private noncomputable def chartAlphaCoBchange
     (α : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i k =>
-    (centeredChartTangentBasis (I := I) x).repr
-      ((chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 @[simp] private lemma chartAlphaCoBchange_apply
     (α : M) (x : M) (i k : Fin (Module.finrank ℝ E)) :
     chartAlphaCoBchange (I := I) α x i k =
-      (centeredChartTangentBasis (I := I) x).repr
-        ((chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k := rfl
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma chartBasisVecFiber_decompose_in_modelBasis
     (α : M) (x : M) (i : Fin (Module.finrank ℝ E)) :
-    (chartBasisVecFiber (I := I) α i x : TangentSpace I x) =
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartAlphaCoBchange (I := I) α x i k •
-          centeredChartTangentBasis (I := I) x k := by
+          DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k := by
   classical
-  have h := (centeredChartTangentBasis (I := I) x).sum_repr
-    (chartBasisVecFiber (I := I) α i x : TangentSpace I x)
+  have h := (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).sum_repr
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x : TangentSpace I x)
   exact h.symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
@@ -124,38 +124,38 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 private lemma chartGramMatrix_alpha_eq_PGPt
     (g : SmoothRiemannianMetric I M) (α : M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix (I := I) g α x i j =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartAlphaCoBchange (I := I) α x i k *
           chartAlphaCoBchange (I := I) α x j l *
-          chartGramMatrix (I := I) g x x k l := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k l := by
   classical
   have hi := chartBasisVecFiber_decompose_in_modelBasis (I := I) α x i
   have hj := chartBasisVecFiber_decompose_in_modelBasis (I := I) α x j
   have h_expand :
-      g.inner x (chartBasisVecFiber (I := I) α i x)
-        (chartBasisVecFiber (I := I) α j x) =
+      g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartAlphaCoBchange (I := I) α x i k *
           chartAlphaCoBchange (I := I) α x j l *
-          g.inner x (centeredChartTangentBasis (I := I) x k)
-            (centeredChartTangentBasis (I := I) x l) := by
+          g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) := by
     conv_lhs => rw [hi, hj]
     exact clm_bilinear_expand_two_sums (I := I) (g.inner x) (Module.finrank ℝ E)
       (fun k => chartAlphaCoBchange (I := I) α x i k)
       (fun l => chartAlphaCoBchange (I := I) α x j l)
-      (fun k => centeredChartTangentBasis (I := I) x k)
-      (fun l => centeredChartTangentBasis (I := I) x l)
-  rw [chartGramMatrix_apply]
+      (fun k => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+      (fun l => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   rw [h_expand]
   refine Finset.sum_congr rfl ?_
   intro k _
   refine Finset.sum_congr rfl ?_
   intro l _
-  have h_inner : g.inner x (centeredChartTangentBasis (I := I) x k)
-      (centeredChartTangentBasis (I := I) x l) =
-      chartGramMatrix (I := I) g x x k l := by
-    rw [chartGramMatrix_apply]
+  have h_inner : g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k l := by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     rw [chartBasisVecFiber_self (I := I) x k]
     rw [chartBasisVecFiber_self (I := I) x l]
   rw [h_inner]
@@ -164,9 +164,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     [SigmaCompactSpace M] in
 private lemma chartGramMatrix_alpha_eq_PGPt_matrix
     (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
-    chartGramMatrix (I := I) g α x =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x =
       chartAlphaCoBchange (I := I) α x *
-        chartGramMatrix (I := I) g x x *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x *
         (chartAlphaCoBchange (I := I) α x).transpose := by
   classical
   ext i j
@@ -174,20 +174,20 @@ private lemma chartGramMatrix_alpha_eq_PGPt_matrix
   rw [Matrix.mul_apply]
   have h_inner : ∀ k : Fin (Module.finrank ℝ E),
       (chartAlphaCoBchange (I := I) α x *
-          chartGramMatrix (I := I) g x x) i k *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x) i k *
         (chartAlphaCoBchange (I := I) α x).transpose k j =
       ∑ l : Fin (Module.finrank ℝ E),
         chartAlphaCoBchange (I := I) α x i l *
-          chartGramMatrix (I := I) g x x l k *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x l k *
           chartAlphaCoBchange (I := I) α x j k := by
     intro k
     rw [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
   rw [show (∑ k, (chartAlphaCoBchange (I := I) α x *
-            chartGramMatrix (I := I) g x x) i k *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x) i k *
         (chartAlphaCoBchange (I := I) α x).transpose k j) =
       ∑ k, ∑ l,
         chartAlphaCoBchange (I := I) α x i l *
-          chartGramMatrix (I := I) g x x l k *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x l k *
           chartAlphaCoBchange (I := I) α x j k from
     Finset.sum_congr rfl (fun k _ => h_inner k)]
   rw [Finset.sum_comm]
@@ -202,21 +202,21 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 private lemma chartGramMatrix_alpha_isUnit
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (chartAt H α).source) :
-    IsUnit (chartGramMatrix (I := I) g α x).det := by
+    IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det := by
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hx
-  have hpos := chartGramMatrix_posDef (I := I) g α hbase
+  have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hbase
   exact isUnit_iff_ne_zero.mpr (ne_of_gt hpos.det_pos)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma chartGramMatrix_x_isUnit
     (g : SmoothRiemannianMetric I M) (x : M) :
-    IsUnit (chartGramMatrix (I := I) g x x).det := by
+    IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x).det := by
   have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
-  have hpos := chartGramMatrix_posDef (I := I) g x hbase
+  have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g x hbase
   exact isUnit_iff_ne_zero.mpr (ne_of_gt hpos.det_pos)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -227,21 +227,21 @@ private lemma chartAlphaCoBchange_isUnit
     IsUnit (chartAlphaCoBchange (I := I) α x).det := by
   classical
   have h_mat := chartGramMatrix_alpha_eq_PGPt_matrix (I := I) g α x
-  have h_det : (chartGramMatrix (I := I) g α x).det =
+  have h_det : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det =
       (chartAlphaCoBchange (I := I) α x).det *
-        (chartGramMatrix (I := I) g x x).det *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x).det *
         (chartAlphaCoBchange (I := I) α x).transpose.det := by
     rw [h_mat]
     rw [Matrix.det_mul, Matrix.det_mul]
-  have h_det' : (chartGramMatrix (I := I) g α x).det =
+  have h_det' : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det =
       (chartAlphaCoBchange (I := I) α x).det^2 *
-        (chartGramMatrix (I := I) g x x).det := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x).det := by
     rw [h_det, Matrix.det_transpose]; ring
   have h_alpha := chartGramMatrix_alpha_isUnit (I := I) g α hx
   have h_x := chartGramMatrix_x_isUnit (I := I) g x
-  have h_alpha_ne : (chartGramMatrix (I := I) g α x).det ≠ 0 :=
+  have h_alpha_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det ≠ 0 :=
     h_alpha.ne_zero
-  have h_x_ne : (chartGramMatrix (I := I) g x x).det ≠ 0 :=
+  have h_x_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x).det ≠ 0 :=
     h_x.ne_zero
   rw [h_det'] at h_alpha_ne
   have hAne : (chartAlphaCoBchange (I := I) α x).det ≠ 0 := by
@@ -264,9 +264,9 @@ private lemma PT_chartInvGram_alpha_P_eq_chartInvGram_x
   set P : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     chartAlphaCoBchange (I := I) α x with hP_def
   set Gα : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    chartGramMatrix (I := I) g α x with hGα_def
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x with hGα_def
   set Gx : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    chartGramMatrix (I := I) g x x with hGx_def
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x with hGx_def
   have h_GalphaPGP : Gα = P * Gx * P.transpose :=
     chartGramMatrix_alpha_eq_PGPt_matrix (I := I) g α x
   have h_Galpha_det : IsUnit Gα.det := chartGramMatrix_alpha_isUnit (I := I) g α hx
@@ -383,22 +383,22 @@ private lemma chartHessianTensor_alpha_eq_P_chartHessianTensor_x
     chartHessianMatrixIdentity_holds (I := I) g hf x
   have h_expand :
       abstractHessian (I := I) g f x
-        (chartBasisVecFiber (I := I) α i x)
-        (chartBasisVecFiber (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartAlphaCoBchange (I := I) α x i a *
           chartAlphaCoBchange (I := I) α x j b *
           abstractHessian (I := I) g f x
-            (centeredChartTangentBasis (I := I) x a)
-            (centeredChartTangentBasis (I := I) x b) := by
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x a)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x b) := by
     conv_lhs => rw [hi, hj]
     exact clm_bilinear_expand_two_sums (I := I)
       (abstractHessian (I := I) g f x)
       (Module.finrank ℝ E)
       (fun a => chartAlphaCoBchange (I := I) α x i a)
       (fun b => chartAlphaCoBchange (I := I) α x j b)
-      (fun a => centeredChartTangentBasis (I := I) x a)
-      (fun b => centeredChartTangentBasis (I := I) x b)
+      (fun a => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x a)
+      (fun b => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x b)
   rw [h_expand]
   refine Finset.sum_congr rfl ?_
   intro a _

@@ -192,7 +192,7 @@ theorem weighted_caccioppoli_evolving_positive_rpow_of_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     {weight dweight : ℝ → ℝ} {a b B : ℝ}
@@ -332,7 +332,7 @@ theorem backward_caccioppoli_evolving_inner_energy_positive_rpow_of_supersolutio
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     {weight dweight : ℝ → ℝ} {a t₁ b A B : ℝ}
@@ -447,7 +447,7 @@ theorem caccioppoli_evolving_rpow_of_subsolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {weight dweight : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
@@ -508,7 +508,7 @@ theorem evolving_rpow_moser_step_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {C : ℝ} (hC : 0 ≤ C)
     {weight dweight : ℝ → ℝ} {a t₀ t₁ A K L : ℝ}
@@ -596,7 +596,7 @@ theorem evolving_rpow_moser_step_homogeneous_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {C a t₀ t₁ B D K L : ℝ} (hC : 0 ≤ C)
     (hSobolev : ∀ s ∈ Icc a t₁,

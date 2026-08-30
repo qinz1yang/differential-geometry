@@ -60,9 +60,9 @@ private lemma chartChristoffel_scalarSummand_hasFDerivAt_zero
     have h0 : (∞ : WithTop ℕ∞) ≠ 0 := by decide
     exact hcomp'.differentiableAt h0
   let Li : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((chartModelBasis E).coord i)
+    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i)
   let Lj : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((chartModelBasis E).coord j)
+    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j)
   have hci_z : HasFDerivAt (fun z : E × E => chartCoord (E := E) i z.2)
       (Li.comp (ContinuousLinearMap.snd ℝ E E)) ((x, (0 : E)) : E × E) :=
     (Li.hasFDerivAt).comp ((x, (0 : E)) : E × E)
@@ -112,7 +112,7 @@ private lemma chartChristoffelContraction_hasFDerivAt_zero
               chartChristoffel (I := I) g α i j k z.1 *
                 chartCoord (E := E) i z.2 *
                 chartCoord (E := E) j z.2) •
-            chartModelBasis E k)
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
       (∑ _k : Fin (Module.finrank ℝ E), (0 : E × E →L[ℝ] E)) (x, (0 : E)) := by
     refine HasFDerivAt.fun_sum (fun k _ => ?_)
     have hscalar : HasFDerivAt
@@ -147,8 +147,8 @@ private lemma chartChristoffelContraction_hasFDerivAt_zero
         exact chartCoord_zero (E := E) j
       rw [h2]; ring
     let Lk : ℝ →L[ℝ] E :=
-      (ContinuousLinearMap.id ℝ ℝ).smulRight (chartModelBasis E k)
-    have hLk : HasFDerivAt (fun s : ℝ => s • (chartModelBasis E k))
+      (ContinuousLinearMap.id ℝ ℝ).smulRight (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
+    have hLk : HasFDerivAt (fun s : ℝ => s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k))
         Lk (scalar (x, (0 : E))) := by
       have h1 : HasFDerivAt (Lk : ℝ → E) Lk (scalar (x, (0 : E))) := Lk.hasFDerivAt
       exact h1
@@ -157,8 +157,8 @@ private lemma chartChristoffelContraction_hasFDerivAt_zero
         Lk.comp (0 : E × E →L[ℝ] ℝ) = (0 : E × E →L[ℝ] E) :=
       ContinuousLinearMap.comp_zero _
     have hfn_eq2 :
-        (fun s : ℝ => s • (chartModelBasis E k)) ∘ scalar =
-          (fun z : E × E => scalar z • (chartModelBasis E k)) := by
+        (fun s : ℝ => s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) ∘ scalar =
+          (fun z : E × E => scalar z • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) := by
       funext z; rfl
     rw [hfn_eq2] at hcomp
     rw [hcomp_eq] at hcomp
@@ -172,7 +172,7 @@ private lemma chartChristoffelContraction_hasFDerivAt_zero
               chartChristoffel (I := I) g α i j k z.1 *
                 chartCoord (E := E) i z.2 *
                 chartCoord (E := E) j z.2) •
-            chartModelBasis E k) := by
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k) := by
     funext z
     rfl
   rw [hfn_eq]

@@ -36,7 +36,7 @@ private noncomputable def mixedGram
     (frame : Fin (Module.finrank ℝ E) → E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i a =>
-    modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) (frame a)
+    modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) (frame a)
 
 omit [CompleteSpace E] in
 @[simp] private lemma mixedGram_apply
@@ -44,7 +44,7 @@ omit [CompleteSpace E] in
     (frame : Fin (Module.finrank ℝ E) → E)
     (i a : Fin (Module.finrank ℝ E)) :
     mixedGram (I := I) (M := M) g x frame i a =
-      modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) (frame a) := rfl
+      modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) (frame a) := rfl
 
 omit [Module.Finite ℝ E] [CompleteSpace E] in
 private lemma orthoFrame_expansion
@@ -87,16 +87,16 @@ private lemma gramMatrixAt_eq_mixedGram_mul_transpose
   classical
   ext i j
   rw [gramMatrixAt_apply, Matrix.mul_apply]
-  have hexp : (chartModelBasis E) j =
+  have hexp : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j =
       ∑ a : Fin (Module.finrank ℝ E),
-        modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) j) (frame a) •
+        modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) (frame a) •
           frame a :=
-    orthoFrame_expansion (I := I) (M := M) g x frame horth ((chartModelBasis E) j)
+    orthoFrame_expansion (I := I) (M := M) g x frame horth ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
   calc modelInnerAt (I := I) (M := M) g x
-        ((chartModelBasis E) i) ((chartModelBasis E) j)
-      = modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+      = modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (∑ a : Fin (Module.finrank ℝ E),
-            modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) j) (frame a) •
+            modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) (frame a) •
               frame a) := by rw [← hexp]
     _ = ∑ a : Fin (Module.finrank ℝ E),
           mixedGram (I := I) (M := M) g x frame i a *
@@ -224,18 +224,18 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
   classical
   rw [tensorInnerPointwise_0s_succ]
   have hmodel_exp : ∀ i : Fin (Module.finrank ℝ E),
-      (chartModelBasis E) i =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i =
         ∑ a : Fin (Module.finrank ℝ E),
           mixedGram (I := I) (M := M) g x frame i a • frame a := by
     intro i
     have hexp := orthoFrame_expansion (I := I) (M := M) g x frame horth
-      ((chartModelBasis E) i)
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
     rw [hexp]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [mixedGram_apply]
   have hcurry_exp : ∀ (P : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
       (i : Fin (Module.finrank ℝ E)),
-      P.curryLeft ((chartModelBasis E) i) =
+      P.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         ∑ a : Fin (Module.finrank ℝ E),
           mixedGram (I := I) (M := M) g x frame i a • P.curryLeft (frame a) := by
     intro P i
@@ -244,8 +244,8 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
   have hstep : ∀ i j : Fin (Module.finrank ℝ E),
       (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j)) =
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           (mixedGram (I := I) (M := M) g x frame i a *
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
@@ -266,8 +266,8 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
   rw [show (∑ i, ∑ j,
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j))) =
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) =
       ∑ i, ∑ j, ∑ a, ∑ b,
         (mixedGram (I := I) (M := M) g x frame i a *
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *

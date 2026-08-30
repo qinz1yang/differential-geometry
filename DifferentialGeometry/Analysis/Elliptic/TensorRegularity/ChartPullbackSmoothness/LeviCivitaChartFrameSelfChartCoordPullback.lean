@@ -32,17 +32,17 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private noncomputable def chartModelBasisProj (m : Fin (Module.finrank ℝ E)) :
     E →L[ℝ] ℝ :=
   LinearMap.toContinuousLinearMap
-    (((LinearMap.proj m).comp ((chartModelBasis E).equivFun.toLinearMap)) :
+    (((LinearMap.proj m).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) :
       E →ₗ[ℝ] ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] private lemma chartModelBasisProj_apply (m : Fin (Module.finrank ℝ E))
     (v : E) :
     chartModelBasisProj (E := E) m v =
-      ((chartModelBasis E).repr v) m := by
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) m := by
   classical
   unfold chartModelBasisProj
-  change ((LinearMap.proj m).comp ((chartModelBasis E).equivFun.toLinearMap)) v = _
+  change ((LinearMap.proj m).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) v = _
   rw [LinearMap.comp_apply]
   simp [Module.Basis.equivFun]
 

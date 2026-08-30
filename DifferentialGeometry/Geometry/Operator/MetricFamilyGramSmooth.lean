@@ -48,8 +48,8 @@ theorem chartGramOp_smooth {D : RealTimeInterval}
         (fun p : Real × E =>
           ∑ j : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
             chartGramOnE (I := I) (G.metric p.1) alpha j k p.2 *
-              (chartModelBasis E).equivFun v j *
-              (chartModelBasis E).equivFun w k)
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun v j *
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k)
         (D.regular ×ˢ K) := by
       exact ContDiffOn.sum fun j _ => ContDiffOn.sum fun k _ =>
         ((hentry j k).mul contDiffOn_const).mul contDiffOn_const

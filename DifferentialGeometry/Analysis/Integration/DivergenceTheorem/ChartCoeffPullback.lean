@@ -31,24 +31,24 @@ lemma chartCoeff_pullback
   have hβ_recompose := chartCoeff_recompose (I := I) β X hβ
   have hα_recompose := chartCoeff_recompose (I := I) α X hα
   have hbasis : ∀ j : Fin (Module.finrank ℝ E),
-      chartBasisVecFiber (I := I) β j x =
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) β j x =
         ∑ k, transitionMatrix (I := I) α β x k j •
-          chartBasisVecFiber (I := I) α k x :=
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x :=
     fun j => chartBasisVecFiber_pullback (I := I) α β hα hβ j
   have hexpand :
       X x = ∑ k : Fin (Module.finrank ℝ E),
               (∑ j, transitionMatrix (I := I) α β x k j *
                 chartCoeff (I := I) β X j x) •
-                chartBasisVecFiber (I := I) α k x := by
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x := by
     rw [hβ_recompose]
     simp_rw [hbasis]
     have hsmul_sum : ∀ j,
         chartCoeff (I := I) β X j x •
             ∑ k, transitionMatrix (I := I) α β x k j •
-              chartBasisVecFiber (I := I) α k x =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x =
           ∑ k, (transitionMatrix (I := I) α β x k j *
                   chartCoeff (I := I) β X j x) •
-            chartBasisVecFiber (I := I) α k x := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x := by
       intro j
       rw [Finset.smul_sum]
       refine Finset.sum_congr rfl ?_
@@ -59,13 +59,13 @@ lemma chartCoeff_pullback
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [Finset.sum_smul]
-  have hli := chartBasisFamily_linearIndependent (I := I) α hα
+  have hli := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_linearIndependent (I := I) α hα
   rw [Fintype.linearIndependent_iff] at hli
   set f : Fin (Module.finrank ℝ E) → ℝ := fun k =>
     chartCoeff (I := I) α X k x -
       ∑ j, transitionMatrix (I := I) α β x k j *
         chartCoeff (I := I) β X j x
-  have hf : ∑ k, f k • chartBasisVecFiber (I := I) α k x = 0 := by
+  have hf : ∑ k, f k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x = 0 := by
     simp only [f, sub_smul]
     rw [Finset.sum_sub_distrib]
     rw [← hα_recompose, ← hexpand, sub_self]

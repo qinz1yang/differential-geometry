@@ -33,7 +33,7 @@ variable (g : SmoothRiemannianMetric I M) (x : M)
 private noncomputable def coBchange
     (B : Fin (Module.finrank ℝ E) → TangentSpace I x) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun i k => (centeredChartTangentBasis (I := I) x).repr (B i) k
+  Matrix.of fun i k => (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (B i) k
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -41,25 +41,25 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     (B : Fin (Module.finrank ℝ E) → TangentSpace I x)
     (i k : Fin (Module.finrank ℝ E)) :
     coBchange (I := I) (x := x) B i k =
-      (centeredChartTangentBasis (I := I) x).repr (B i) k := rfl
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (B i) k := rfl
 
 private noncomputable def modelGramMatrix :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun k l =>
-    g.inner x ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l)
+    g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 @[simp] private lemma modelGramMatrix_apply
     (k l : Fin (Module.finrank ℝ E)) :
     modelGramMatrix (I := I) g x k l =
-      g.inner x ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) := rfl
+      g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma modelGramMatrix_eq_chartGramMatrix :
-    modelGramMatrix (I := I) g x = chartGramMatrix (I := I) g x x := by
+    modelGramMatrix (I := I) g x = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x := by
   classical
   ext k l
-  rw [modelGramMatrix_apply, chartGramMatrix_apply]
+  rw [modelGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   rw [chartBasisVecFiber_self (I := I) x k]
   rw [chartBasisVecFiber_self (I := I) x l]
 
@@ -70,9 +70,9 @@ private lemma decompose_in_modelBasis
     (i : Fin (Module.finrank ℝ E)) :
     B i = ∑ k : Fin (Module.finrank ℝ E),
       coBchange (I := I) (x := x) B i k •
-        ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x) := by
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x) := by
   classical
-  have h := (centeredChartTangentBasis (I := I) x).sum_repr (B i)
+  have h := (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).sum_repr (B i)
   exact h.symm
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -85,50 +85,50 @@ private lemma bilin_expand_modelBasis
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         coBchange (I := I) (x := x) B i k *
           coBchange (I := I) (x := x) B j l *
-            Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) := by
+            Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) := by
   classical
   have hHb_first : Hb (B i) =
       ∑ k : Fin (Module.finrank ℝ E),
         coBchange (I := I) (x := x) B i k •
-          Hb ((centeredChartTangentBasis (I := I) x) k) := by
+          Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) := by
     have hi := decompose_in_modelBasis (I := I) (x := x) B i
     rw [show Hb (B i) = Hb (∑ k : Fin (Module.finrank ℝ E),
             coBchange (I := I) (x := x) B i k •
-              ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x))
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x))
           from congrArg Hb hi]
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
     exact Hb.map_smul (coBchange (I := I) (x := x) B i k)
-      ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x)
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x)
   rw [hHb_first]
   rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro k _
   rw [smul_apply, smul_eq_mul]
-  have hHb_second : Hb ((centeredChartTangentBasis (I := I) x) k) (B j) =
+  have hHb_second : Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) (B j) =
       ∑ l : Fin (Module.finrank ℝ E),
         coBchange (I := I) (x := x) B j l *
-          Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) := by
+          Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) := by
     have hj := decompose_in_modelBasis (I := I) (x := x) B j
-    rw [show Hb ((centeredChartTangentBasis (I := I) x) k) (B j) =
-          Hb ((centeredChartTangentBasis (I := I) x) k)
+    rw [show Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) (B j) =
+          Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
             (∑ l : Fin (Module.finrank ℝ E),
               coBchange (I := I) (x := x) B j l •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
-        from congrArg (Hb ((centeredChartTangentBasis (I := I) x) k)) hj]
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
+        from congrArg (Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)) hj]
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
-    have hsmul : Hb ((centeredChartTangentBasis (I := I) x) k)
+    have hsmul : Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
         (coBchange (I := I) (x := x) B j l •
-          ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
         coBchange (I := I) (x := x) B j l •
-          Hb ((centeredChartTangentBasis (I := I) x) k)
-            ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) :=
-      (Hb ((centeredChartTangentBasis (I := I) x) k)).map_smul
+          Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) :=
+      (Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)).map_smul
         (coBchange (I := I) (x := x) B j l)
-        ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)
     rw [hsmul, smul_eq_mul]
   rw [hHb_second]
   rw [Finset.mul_sum]
@@ -237,12 +237,12 @@ private lemma sum_coBchange_eq_invGram
   have h := orthonormal_matrix_inverse (I := I) g x B hB
   have heq : (coBchange (I := I) (x := x) B).transpose *
       coBchange (I := I) (x := x) B =
-        (chartGramMatrix (I := I) g x x)⁻¹ := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹ := by
     rw [h]
     rw [modelGramMatrix_eq_chartGramMatrix (I := I) g x]
   have heval : ((coBchange (I := I) (x := x) B).transpose *
       coBchange (I := I) (x := x) B) k l =
-        (chartGramMatrix (I := I) g x x)⁻¹ k l := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x)⁻¹ k l := by
     rw [heq]
   rw [Matrix.mul_apply] at heval
   rw [show ∑ i, (coBchange (I := I) (x := x) B).transpose k i *
@@ -264,21 +264,21 @@ theorem orthonormal_basis_bilin_trace
     ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) := by
+          Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) := by
   classical
   have h_expand : ∀ i : Fin (Module.finrank ℝ E),
       Hb (B i) (B i) =
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           coBchange (I := I) (x := x) B i k *
             coBchange (I := I) (x := x) B i l *
-              Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) :=
+              Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) :=
     fun i => bilin_expand_modelBasis (I := I) (x := x) Hb B i i
   rw [show ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           coBchange (I := I) (x := x) B i k *
             coBchange (I := I) (x := x) B i l *
-              Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) from
+              Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) from
     Finset.sum_congr rfl (fun i _ => h_expand i)]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl ?_
@@ -289,11 +289,11 @@ theorem orthonormal_basis_bilin_trace
   rw [show (∑ i : Fin (Module.finrank ℝ E),
         coBchange (I := I) (x := x) B i k *
           coBchange (I := I) (x := x) B i l *
-            Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l)) =
+            Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)) =
       (∑ i : Fin (Module.finrank ℝ E),
         coBchange (I := I) (x := x) B i k *
           coBchange (I := I) (x := x) B i l) *
-        Hb ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) l) from by
+        Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) from by
     rw [Finset.sum_mul]]
   rw [sum_coBchange_eq_invGram (I := I) g x B hB k l]
 
@@ -306,67 +306,67 @@ variable (g : SmoothRiemannianMetric I M) (x : M)
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma finBasis_repr_eq_invGram_inner_sum
     (X : TangentSpace I x) (k : Fin (Module.finrank ℝ E)) :
-    (centeredChartTangentBasis (I := I) x).repr X k =
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X k =
       ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          g.inner x X ((centeredChartTangentBasis (I := I) x) l) := by
+          g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) := by
   classical
   have hX_decomp : X = ∑ p : Fin (Module.finrank ℝ E),
-      (centeredChartTangentBasis (I := I) x).repr X p •
-        ((centeredChartTangentBasis (I := I) x) p : TangentSpace I x) :=
-    ((centeredChartTangentBasis (I := I) x).sum_repr X).symm
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p •
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p : TangentSpace I x) :=
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).sum_repr X).symm
   have h_inner_decomp : ∀ l : Fin (Module.finrank ℝ E),
-      g.inner x X ((centeredChartTangentBasis (I := I) x) l) =
+      g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) =
         ∑ p : Fin (Module.finrank ℝ E),
-          (centeredChartTangentBasis (I := I) x).repr X p *
-            chartGramMatrix (I := I) g x x p l := by
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l := by
     intro l
-    rw [g.symm x X ((centeredChartTangentBasis (I := I) x) l)]
-    rw [show g.inner x ((centeredChartTangentBasis (I := I) x) l) X =
-          g.inner x ((centeredChartTangentBasis (I := I) x) l) (∑ p : Fin (Module.finrank ℝ E),
-            (centeredChartTangentBasis (I := I) x).repr X p •
-              ((centeredChartTangentBasis (I := I) x) p : TangentSpace I x)) from
-      congrArg (g.inner x ((centeredChartTangentBasis (I := I) x) l)) hX_decomp]
+    rw [g.symm x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)]
+    rw [show g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) X =
+          g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) (∑ p : Fin (Module.finrank ℝ E),
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p •
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p : TangentSpace I x)) from
+      congrArg (g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)) hX_decomp]
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro p _
-    show g.inner x ((centeredChartTangentBasis (I := I) x) l)
-        (((centeredChartTangentBasis (I := I) x).repr X) p •
-          ((centeredChartTangentBasis (I := I) x) p : TangentSpace I x)) =
-      ((centeredChartTangentBasis (I := I) x).repr X) p *
-        chartGramMatrix (I := I) g x x p l
-    rw [show g.inner x ((centeredChartTangentBasis (I := I) x) l)
-            (((centeredChartTangentBasis (I := I) x).repr X) p •
-              ((centeredChartTangentBasis (I := I) x) p : TangentSpace I x)) =
-        ((centeredChartTangentBasis (I := I) x).repr X) p •
-          g.inner x ((centeredChartTangentBasis (I := I) x) l)
-            ((centeredChartTangentBasis (I := I) x) p) from
-      ContinuousLinearMap.map_smul (g.inner x ((centeredChartTangentBasis (I := I) x) l)) _ _]
+    show g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)
+        (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X) p •
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p : TangentSpace I x)) =
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X) p *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l
+    rw [show g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X) p •
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p : TangentSpace I x)) =
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X) p •
+          g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p) from
+      ContinuousLinearMap.map_smul (g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)) _ _]
     rw [smul_eq_mul]
-    rw [g.symm x ((centeredChartTangentBasis (I := I) x) l) ((centeredChartTangentBasis (I := I) x) p)]
-    rw [show g.inner x ((centeredChartTangentBasis (I := I) x) p) ((centeredChartTangentBasis (I := I) x) l) =
-          chartGramMatrix (I := I) g x x p l from by
+    rw [g.symm x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p)]
+    rw [show g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l from by
       rw [← modelGramMatrix_apply (I := I) g x p l,
           modelGramMatrix_eq_chartGramMatrix (I := I) g x]]
   rw [show (∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          g.inner x X ((centeredChartTangentBasis (I := I) x) l)) =
+          g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)) =
       ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           (∑ p : Fin (Module.finrank ℝ E),
-            (centeredChartTangentBasis (I := I) x).repr X p *
-              chartGramMatrix (I := I) g x x p l) from
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l) from
     Finset.sum_congr rfl (fun l _ => by rw [h_inner_decomp])]
   rw [show (∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           (∑ p : Fin (Module.finrank ℝ E),
-            (centeredChartTangentBasis (I := I) x).repr X p *
-              chartGramMatrix (I := I) g x x p l)) =
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l)) =
       ∑ l : Fin (Module.finrank ℝ E),
         ∑ p : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
-            ((centeredChartTangentBasis (I := I) x).repr X p *
-              chartGramMatrix (I := I) g x x p l) from by
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l) from by
     refine Finset.sum_congr rfl ?_
     intro l _
     rw [Finset.mul_sum]]
@@ -374,13 +374,13 @@ private lemma finBasis_repr_eq_invGram_inner_sum
   rw [show (∑ p : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
-            ((centeredChartTangentBasis (I := I) x).repr X p *
-              chartGramMatrix (I := I) g x x p l)) =
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l)) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr X p *
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x k l *
-              chartGramMatrix (I := I) g x x p l from by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l from by
     refine Finset.sum_congr rfl ?_
     intro p _
     rw [Finset.mul_sum]
@@ -390,20 +390,20 @@ private lemma finBasis_repr_eq_invGram_inner_sum
   have h_invGram_gram_eq : ∀ p : Fin (Module.finrank ℝ E),
       ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          chartGramMatrix (I := I) g x x p l =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l =
       if k = p then (1 : ℝ) else 0 := by
     intro p
     have h_gram_symm : ∀ l : Fin (Module.finrank ℝ E),
-        chartGramMatrix (I := I) g x x p l =
-        chartGramMatrix (I := I) g x x l p := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x l p := by
       intro l
-      rw [chartGramMatrix_apply, chartGramMatrix_apply, g.symm]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, g.symm]
     rw [show (∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          chartGramMatrix (I := I) g x x p l) =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l) =
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
-            chartGramMatrix (I := I) g x x l p from by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x l p from by
       refine Finset.sum_congr rfl ?_
       intro l _
       rw [h_gram_symm]]
@@ -411,27 +411,27 @@ private lemma finBasis_repr_eq_invGram_inner_sum
       FiberBundle.mem_baseSet_trivializationAt' x
     have hmul := chartInvGramMatrix_mul_chartGramMatrix (I := I) g x hx_base
     have heval : (chartInvGramMatrix (I := I) g x x *
-        chartGramMatrix (I := I) g x x) k p =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x) k p =
         (1 : Matrix (Fin (Module.finrank ℝ E))
           (Fin (Module.finrank ℝ E)) ℝ) k p := by
       rw [hmul]
     rw [Matrix.mul_apply] at heval
     rw [heval, Matrix.one_apply]
   rw [show (∑ p : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr X p *
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x k l *
-              chartGramMatrix (I := I) g x x p l) =
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p l) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr X p *
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
           (if k = p then (1 : ℝ) else 0) from by
     refine Finset.sum_congr rfl ?_
     intro p _
     rw [h_invGram_gram_eq]]
   rw [show (∑ p : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr X p *
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X p *
           (if k = p then (1 : ℝ) else 0)) =
-      (centeredChartTangentBasis (I := I) x).repr X k from by
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr X k from by
     rw [Finset.sum_eq_single k]
     · simp
     · intro p _ hpk
@@ -446,20 +446,20 @@ private lemma linearMap_trace_eq_invGram_bilin_sum
       ∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
-            g.inner x (T ((centeredChartTangentBasis (I := I) x) k))
-              ((centeredChartTangentBasis (I := I) x) l) := by
+            g.inner x (T ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k))
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) := by
   classical
   have : FiniteDimensional ℝ (TangentSpace I x) :=
     inferInstanceAs (FiniteDimensional ℝ E)
   rw [LinearMap.trace_eq_matrix_trace ℝ
-        (centeredChartTangentBasis (I := I) x) T]
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) T]
   unfold Matrix.trace
   refine Finset.sum_congr rfl ?_
   intro k _
   simp only [Matrix.diag_apply]
   rw [LinearMap.toMatrix_apply]
   exact finBasis_repr_eq_invGram_inner_sum (I := I) g x
-    (T ((centeredChartTangentBasis (I := I) x) k)) k
+    (T ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)) k
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem trace_eq_ortho_sum
@@ -673,13 +673,13 @@ theorem g_inner_eq_orthonormal_parseval_sum
     rw [show (∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x k l *
-              g.inner x (T ((centeredChartTangentBasis (I := I) x) k))
-                ((centeredChartTangentBasis (I := I) x) l)) =
+              g.inner x (T ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k))
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)) =
         ∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x k l *
-              (g.inner x X ((centeredChartTangentBasis (I := I) x) k) *
-                g.inner x ((centeredChartTangentBasis (I := I) x) l) Y) from by
+              (g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) *
+                g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) Y) from by
       refine Finset.sum_congr rfl ?_
       intro k _
       refine Finset.sum_congr rfl ?_
@@ -688,13 +688,13 @@ theorem g_inner_eq_orthonormal_parseval_sum
     rw [show (∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x k l *
-              (g.inner x X ((centeredChartTangentBasis (I := I) x) k) *
-                g.inner x ((centeredChartTangentBasis (I := I) x) l) Y)) =
+              (g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) *
+                g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) Y)) =
         ∑ k : Fin (Module.finrank ℝ E),
-          g.inner x X ((centeredChartTangentBasis (I := I) x) k) *
+          g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) *
             (∑ l : Fin (Module.finrank ℝ E),
               chartInvGramMatrix (I := I) g x x k l *
-                g.inner x ((centeredChartTangentBasis (I := I) x) l) Y) from by
+                g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) Y) from by
       refine Finset.sum_congr rfl ?_
       intro k _
       rw [Finset.mul_sum]
@@ -702,47 +702,47 @@ theorem g_inner_eq_orthonormal_parseval_sum
       intro l _
       ring]
     rw [show (∑ k : Fin (Module.finrank ℝ E),
-          g.inner x X ((centeredChartTangentBasis (I := I) x) k) *
+          g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) *
             (∑ l : Fin (Module.finrank ℝ E),
               chartInvGramMatrix (I := I) g x x k l *
-                g.inner x ((centeredChartTangentBasis (I := I) x) l) Y)) =
+                g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) Y)) =
         ∑ k : Fin (Module.finrank ℝ E),
-          g.inner x X ((centeredChartTangentBasis (I := I) x) k) *
-            (centeredChartTangentBasis (I := I) x).repr Y k from by
+          g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k from by
       refine Finset.sum_congr rfl ?_
       intro k _
       have h := finBasis_repr_eq_invGram_inner_sum (I := I) g x Y k
-      have h' : (centeredChartTangentBasis (I := I) x).repr Y k =
+      have h' : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k =
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x k l *
-              g.inner x ((centeredChartTangentBasis (I := I) x) l) Y := by
+              g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l) Y := by
         rw [h]
         refine Finset.sum_congr rfl ?_
         intro l _
-        rw [g.symm x Y ((centeredChartTangentBasis (I := I) x) l)]
+        rw [g.symm x Y ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)]
       rw [h']]
     have hY_decomp : Y = ∑ k : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr Y k •
-          ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x) :=
-      ((centeredChartTangentBasis (I := I) x).sum_repr Y).symm
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k •
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x) :=
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).sum_repr Y).symm
     rw [show g.inner x X Y = g.inner x X
             (∑ k : Fin (Module.finrank ℝ E),
-              (centeredChartTangentBasis (I := I) x).repr Y k •
-                ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x)) from
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k •
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x)) from
       congrArg (g.inner x X) hY_decomp]
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [show g.inner x X
-            ((centeredChartTangentBasis (I := I) x).repr Y k •
-              ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x)) =
-          (centeredChartTangentBasis (I := I) x).repr Y k *
-            g.inner x X ((centeredChartTangentBasis (I := I) x) k) from by
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k •
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x)) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k *
+            g.inner x X ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) from by
       rw [show ((g.inner x) X)
-              (((centeredChartTangentBasis (I := I) x).repr Y k) •
-                ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x)) =
-            ((centeredChartTangentBasis (I := I) x).repr Y k) •
-              ((g.inner x) X) ((centeredChartTangentBasis (I := I) x) k) from
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k) •
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x)) =
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr Y k) •
+              ((g.inner x) X) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) from
         ContinuousLinearMap.map_smul ((g.inner x) X) _ _]
       rw [smul_eq_mul]]
     ring

@@ -33,17 +33,17 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 theorem metric_eq_chartGram
     (g h : SmoothRiemannianMetric I M)
     (hgram : ∀ (x : M) (i j : Fin (Module.finrank Real E)),
-      chartGramMatrix (I := I) g x x i j =
-        chartGramMatrix (I := I) h x x i j) :
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) h x x i j) :
     g = h := by
   have hinner : g.inner = h.inner := by
     funext x
     have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
       FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) x
-    let basis := chartBasisFamily (I := I) x hx
+    let basis := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hx
     have hb (i j : Fin (Module.finrank Real E)) :
         g.inner x (basis i) (basis j) = h.inner x (basis i) (basis j) := by
-      simpa only [basis, chartBasisFamily_apply, chartGramMatrix_apply] using
+      simpa only [basis, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply] using
         hgram x i j
     have hcoe : (g.inner x).toLinearMap = (h.inner x).toLinearMap := by
       apply Module.Basis.ext basis
@@ -73,30 +73,30 @@ theorem metric_eq_leftLim
     (hcont₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (heq : ∀ t ∈ Ico c d, g₁ t = g₂ t) :
     g₁ d = g₂ d := by
   apply metric_eq_chartGram
   intro x i j
   let f₁ : Real → Real := fun t =>
-    chartGramMatrix (I := I) (g₁ t) x x i j
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ t) x x i j
   let f₂ : Real → Real := fun t =>
-    chartGramMatrix (I := I) (g₂ t) x x i j
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ t) x x i j
   have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) x
   have hf₁ : ContinuousOn f₁ (Ico a b) := by
     change ContinuousOn
-      (fun t : Real => chartGramMatrix (I := I) (g₁ t) x x i j) (Ico a b)
+      (fun t : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ t) x x i j) (Ico a b)
     exact continuousOn_prod_slice (hcont₁ x i j) hx
   have hf₂ : ContinuousOn f₂ (Ico a b) := by
     change ContinuousOn
-      (fun t : Real => chartGramMatrix (I := I) (g₂ t) x x i j) (Ico a b)
+      (fun t : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ t) x x i j) (Ico a b)
     exact continuousOn_prod_slice (hcont₂ x i j) hx
   have hdmem : d ∈ Ico a b := ⟨hd.1.le, hd.2⟩
   have hdnhds : Ico a b ∈ 𝓝 d := Ico_mem_nhds hd.1 hd.2
@@ -126,22 +126,22 @@ theorem chartRD_local
     (hsmooth₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hsmooth₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hagree : g₁ c = g₂ c)
     (hPDE₁ : ∀ t ∈ Ioo a b, ∀ x : M, ∀ v w : TangentSpace I x,
@@ -202,22 +202,22 @@ theorem chartRD_forward
     (hsmooth₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hsmooth₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hagree : g₁ c = g₂ c)
     (hPDE₁ : ∀ t ∈ Ioo a b, ∀ x : M, ∀ v w : TangentSpace I x,

@@ -40,8 +40,8 @@ lemma chartInvGramOnE_posDef
       (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     rwa [trivializationAt_baseSet_eq_chartAt_source]
-  have hpos := chartGramMatrix_posDef (I := I) g α hbase
-  change (chartGramMatrix (I := I) g α ((extChartAt I α).symm y))⁻¹.PosDef
+  have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hbase
+  change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α ((extChartAt I α).symm y))⁻¹.PosDef
   exact hpos.inv
 
 def gradChartCoeffOnE (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
@@ -99,7 +99,7 @@ lemma chartCoeff_grad_g_eq_gradChartCoeff [I.Boundaryless]
   classical
   set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   have hxchart : x ∈ (chartAt H α).source := by
     rw [trivializationAt_baseSet_eq_chartAt_source] at hx; exact hx
   have hf_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ) f x :=
@@ -108,15 +108,15 @@ lemma chartCoeff_grad_g_eq_gradChartCoeff [I.Boundaryless]
       gradFun (I := I) g f x =
         ∑ k : Fin (Module.finrank ℝ E),
           gradChartCoeff (I := I) g α f k x •
-            chartBasisVecFiber (I := I) α k x :=
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x :=
     (gradChartLocal_eq_gradFun (I := I) g α hf_mdiff hx hx_int).symm
   set L : TangentSpace I x ≃L[ℝ] E := T.continuousLinearEquivAt ℝ x hx with hL_def
   have hL_apply : ∀ v : TangentSpace I x, L v = (T ⟨x, v⟩).2 := fun _ => rfl
   have hL_basis : ∀ k : Fin (Module.finrank ℝ E),
-      L (chartBasisVecFiber (I := I) α k x) = b k := by
+      L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) = b k := by
     intro k
     rw [hL_apply]
-    exact trivializationAt_chartBasisVec_snd (I := I) α k hx
+    exact DifferentialGeometry.Tensor.Coordinates.trivializationAt_chartBasisVec_snd (I := I) α k hx
   have hLgrad : L (gradFun (I := I) g f x) =
       ∑ k : Fin (Module.finrank ℝ E),
         gradChartCoeff (I := I) g α f k x • b k := by

@@ -36,11 +36,11 @@ noncomputable def lChartPosRep
         (((1 / 2 : Real) •
           (fderiv Real (chartGramOp (I := I) S.family p)
             (T - (a + r) ^ 2, u.toFun r))
-            (0, chartModelBasis E i)) (q r))
+            (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (q r))
         (q r) +
       2 * (a + r) ^ 2 *
         chartScalCov (I := I) S p (T - (a + r) ^ 2, u.toFun r)
-          (chartModelBasis E i)) •
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) •
       chartCoordCLM E i
 
 noncomputable def lChartForceRep
@@ -56,10 +56,10 @@ private theorem chartScalCov_basis
     (z : Real × E)
     (hz : z ∈ D.regular ×ˢ interior (extChartAt I p).target)
     (i : Fin (Module.finrank Real E)) :
-    chartScalCov (I := I) S p z (chartModelBasis E i) =
+    chartScalCov (I := I) S p z (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
       let x := (extChartAt I p).symm z.2
       mvfderiv (I := I) (S.scalar z.1) x
-        (chartBasisVecFiber (I := I) p i x) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i x) := by
   let f : M → Real := S.scalar z.1
   let x : M := (extChartAt I p).symm z.2
   have hzt : z.2 ∈ (extChartAt I p).target := interior_subset hz.2
@@ -118,37 +118,37 @@ theorem lChartForceRep_cont
         inner Real
           (((1 / 2 : Real) •
             (fderiv Real (chartGramOp (I := I) S.family p)
-              (tau r, u.toFun r)) (0, chartModelBasis E i)) (q r))
+              (tau r, u.toFun r)) (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (q r))
           (q r) +
         2 * (a + r) ^ 2 *
           chartScalCov (I := I) S p (tau r, u.toFun r)
-            (chartModelBasis E i))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
       (Icc (0 : Real) L) := by
     have hdir : ContinuousOn
         (fun z ↦ (1 / 2 : Real) •
           (fderiv Real (chartGramOp (I := I) S.family p) z)
-            (0, chartModelBasis E i)) U :=
+            (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) U :=
       by
         have hvec : ContinuousOn
-            (fun _ : Real × E ↦ ((0 : Real), chartModelBasis E i)) U :=
+            (fun _ : Real × E ↦ ((0 : Real), DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) U :=
           continuousOn_const
         have h := (hGramFd.clm_apply hvec).const_smul (1 / 2 : Real)
         with_unfolding_all exact h
     have hdir' : ContinuousOn
         (fun r ↦ (1 / 2 : Real) •
           (fderiv Real (chartGramOp (I := I) S.family p)
-            (tau r, u.toFun r)) (0, chartModelBasis E i))
+            (tau r, u.toFun r)) (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
         (Icc (0 : Real) L) := hdir.comp hpair hpair_mem
     have hkin : ContinuousOn
         (fun r ↦ inner Real
           (((1 / 2 : Real) •
             (fderiv Real (chartGramOp (I := I) S.family p)
-              (tau r, u.toFun r)) (0, chartModelBasis E i)) (q r))
+              (tau r, u.toFun r)) (0, DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (q r))
           (q r)) (Icc (0 : Real) L) :=
       (hdir'.clm_apply hq).inner (𝕜 := Real) hq
     have hscal : ContinuousOn
         (fun r ↦ chartScalCov (I := I) S p (tau r, u.toFun r)
-          (chartModelBasis E i)) (Icc (0 : Real) L) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) (Icc (0 : Real) L) :=
       (hScal.comp hpair hpair_mem).clm_apply continuousOn_const
     exact hkin.add
       ((continuousOn_const.mul

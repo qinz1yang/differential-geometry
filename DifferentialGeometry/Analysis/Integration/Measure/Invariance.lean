@@ -20,6 +20,7 @@ namespace DifferentialGeometry
 namespace Integral
 namespace Measure
 
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -123,27 +124,27 @@ lemma tangentCoordChange_hasFDerivWithinAt
 
 lemma chartModelBasis_repr_sum
     (L : E →L[ℝ] E) (i : Fin (Module.finrank ℝ E)) :
-    L ((chartModelBasis E) i) =
-      ∑ k, ((chartModelBasis E).repr (L ((chartModelBasis E) i)) k)
-            • (chartModelBasis E) k :=
-  (((chartModelBasis E).sum_repr (L ((chartModelBasis E) i)))).symm
+    L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+      ∑ k, ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) k)
+            • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k :=
+  (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr (L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))).symm
 
 def transitionMatrix (x₀ x₁ : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun k i =>
-    (chartModelBasis E).repr
-      ((tangentCoordChange I x₁ x₀ x) ((chartModelBasis E) i)) k
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+      ((tangentCoordChange I x₁ x₀ x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) k
 
 @[simp] lemma transitionMatrix_apply (x₀ x₁ : M) (x : M)
     (k i : Fin (Module.finrank ℝ E)) :
     transitionMatrix (I := I) x₀ x₁ x k i =
-      (chartModelBasis E).repr
-        ((tangentCoordChange I x₁ x₀ x) ((chartModelBasis E) i)) k := rfl
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+        ((tangentCoordChange I x₁ x₀ x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) k := rfl
 
 lemma tangentCoordChange_chartModelBasis_eq_sum
     (x₀ x₁ : M) (x : M) (i : Fin (Module.finrank ℝ E)) :
-    (tangentCoordChange I x₁ x₀ x) ((chartModelBasis E) i) =
-      ∑ k, transitionMatrix (I := I) x₀ x₁ x k i • (chartModelBasis E) k :=
+    (tangentCoordChange I x₁ x₀ x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+      ∑ k, transitionMatrix (I := I) x₀ x₁ x k i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k :=
   chartModelBasis_repr_sum (tangentCoordChange I x₁ x₀ x) i
 
 lemma chartBasisVecFiber_pullback
@@ -151,9 +152,9 @@ lemma chartBasisVecFiber_pullback
     (hx0 : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hx1 : x ∈ (trivializationAt E (TangentSpace I) x₁).baseSet)
     (i : Fin (Module.finrank ℝ E)) :
-    chartBasisVecFiber (I := I) x₁ i x =
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₁ i x =
       ∑ k, transitionMatrix (I := I) x₀ x₁ x k i •
-        chartBasisVecFiber (I := I) x₀ k x := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x := by
   set T₀ : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) x₀
   set T₁ : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
@@ -161,46 +162,46 @@ lemma chartBasisVecFiber_pullback
   have hx0' : x ∈ T₀.baseSet := hx0
   have hx1' : x ∈ T₁.baseSet := hx1
   have hdef1 :
-      chartBasisVecFiber (I := I) x₁ i x =
-        T₁.symm x ((chartModelBasis E) i) := by
-    rw [chartBasisVecFiber, T₁.symmL_apply hx1']
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₁ i x =
+        T₁.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, T₁.symmL_apply hx1']
   have hcompeq' :=
     Bundle.Trivialization.comp_continuousLinearEquivAt_eq_coord_change
       (R := ℝ) (F := E) (E := (TangentSpace I : M → Type _))
       T₁ T₀ (b := x) ⟨hx1', hx0'⟩
   have happ :
       (T₀.continuousLinearEquivAt ℝ x hx0')
-          ((T₁.continuousLinearEquivAt ℝ x hx1').symm ((chartModelBasis E) i))
+          ((T₁.continuousLinearEquivAt ℝ x hx1').symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
         = (Bundle.Trivialization.coordChangeL (R := ℝ) T₁ T₀ x)
-            ((chartModelBasis E) i) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
     have := congrArg
-      (fun L : E ≃L[ℝ] E => L ((chartModelBasis E) i)) hcompeq'
+      (fun L : E ≃L[ℝ] E => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) hcompeq'
     simpa [ContinuousLinearEquiv.trans_apply] using this
   have hequiv :
-      T₁.symm x ((chartModelBasis E) i) =
+      T₁.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         T₀.symm x
           ((Bundle.Trivialization.coordChangeL (R := ℝ) T₁ T₀ x)
-            ((chartModelBasis E) i)) := by
-    have hL : (T₁.continuousLinearEquivAt ℝ x hx1').symm ((chartModelBasis E) i) =
-              T₁.symm x ((chartModelBasis E) i) := rfl
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
+    have hL : (T₁.continuousLinearEquivAt ℝ x hx1').symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+              T₁.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := rfl
     have hR : (T₀.continuousLinearEquivAt ℝ x hx0').symm
                 ((Bundle.Trivialization.coordChangeL (R := ℝ) T₁ T₀ x)
-                  ((chartModelBasis E) i)) =
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) =
               T₀.symm x
                 ((Bundle.Trivialization.coordChangeL (R := ℝ) T₁ T₀ x)
-                  ((chartModelBasis E) i)) := rfl
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := rfl
     have := congrArg (T₀.continuousLinearEquivAt ℝ x hx0').symm happ
     simp only [ContinuousLinearEquiv.symm_apply_apply] at this
     rw [← hL, ← hR]
     exact this
   have hcc :
       (Bundle.Trivialization.coordChangeL (R := ℝ) T₁ T₀ x)
-          ((chartModelBasis E) i)
-        = (tangentCoordChange I x₁ x₀ x) ((chartModelBasis E) i) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+        = (tangentCoordChange I x₁ x₀ x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
     change (Bundle.Trivialization.coordChangeL (R := ℝ)
           ((tangentBundleCore I M).localTriv (achart H x₁))
           ((tangentBundleCore I M).localTriv (achart H x₀)) x)
-        ((chartModelBasis E) i) = _
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) = _
     exact VectorBundleCore.localTriv_coordChange_eq
         (tangentBundleCore I M) (achart H x₁) (achart H x₀) (b := x)
         ⟨hx1', hx0'⟩ _
@@ -214,32 +215,32 @@ lemma chartBasisVecFiber_pullback
   refine Finset.sum_congr rfl ?_
   intro k _
   rw [map_smul]
-  rw [chartBasisVecFiber, T₀.symmL_apply hx0']
+  rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, T₀.symmL_apply hx0']
 
 lemma chartGramMatrix_pullback_eq_sum
     (g : SmoothRiemannianMetric I M) (x₀ x₁ : M) {x : M}
     (hx0 : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hx1 : x ∈ (trivializationAt E (TangentSpace I) x₁).baseSet)
     (i j : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix g x₁ x i j =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₁ x i j =
       ∑ k, ∑ l,
         (transitionMatrix (I := I) x₀ x₁ x k i) *
         (transitionMatrix (I := I) x₀ x₁ x l j) *
-        chartGramMatrix g x₀ x k l := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ x k l := by
   have hlhs :
-      chartGramMatrix g x₁ x i j =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₁ x i j =
         g.inner x
-          (chartBasisVecFiber (I := I) x₁ i x)
-          (chartBasisVecFiber (I := I) x₁ j x) := rfl
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₁ i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₁ j x) := rfl
   rw [hlhs]
   rw [chartBasisVecFiber_pullback (I := I) x₀ x₁ hx0 hx1 i]
   rw [chartBasisVecFiber_pullback (I := I) x₀ x₁ hx0 hx1 j]
   have hL :
       g.inner x
           (∑ k, transitionMatrix (I := I) x₀ x₁ x k i •
-            chartBasisVecFiber (I := I) x₀ k x)
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x)
         = ∑ k, transitionMatrix (I := I) x₀ x₁ x k i •
-            g.inner x (chartBasisVecFiber (I := I) x₀ k x) := by
+            g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro k _
@@ -250,12 +251,12 @@ lemma chartGramMatrix_pullback_eq_sum
   intro k _
   rw [smul_apply]
   have hR :
-      g.inner x (chartBasisVecFiber (I := I) x₀ k x)
+      g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x)
           (∑ l, transitionMatrix (I := I) x₀ x₁ x l j •
-            chartBasisVecFiber (I := I) x₀ l x)
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ l x)
         = ∑ l, transitionMatrix (I := I) x₀ x₁ x l j *
-            g.inner x (chartBasisVecFiber (I := I) x₀ k x)
-              (chartBasisVecFiber (I := I) x₀ l x) := by
+            g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ l x) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
@@ -264,16 +265,16 @@ lemma chartGramMatrix_pullback_eq_sum
   rw [hR, smul_eq_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro l _
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   ring
 
 lemma chartGramMatrix_pullback_eq_mul
     (g : SmoothRiemannianMetric I M) (x₀ x₁ : M) {x : M}
     (hx0 : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hx1 : x ∈ (trivializationAt E (TangentSpace I) x₁).baseSet) :
-    chartGramMatrix g x₁ x =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₁ x =
       (transitionMatrix (I := I) x₀ x₁ x)ᵀ *
-        chartGramMatrix g x₀ x *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ x *
         transitionMatrix (I := I) x₀ x₁ x := by
   ext i j
   rw [chartGramMatrix_pullback_eq_sum (I := I) g x₀ x₁ hx0 hx1 i j]
@@ -291,7 +292,7 @@ lemma transitionMatrix_det (x₀ x₁ : M) (x : M) :
       (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).det := by
   have hL :
       transitionMatrix (I := I) x₀ x₁ x =
-        LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
+        LinearMap.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
           (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).toLinearMap := by
     ext k i
     simp [transitionMatrix, LinearMap.toMatrix_apply]
@@ -302,9 +303,9 @@ lemma chartGramMatrix_det_pullback
     (g : SmoothRiemannianMetric I M) (x₀ x₁ : M) {x : M}
     (hx0 : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hx1 : x ∈ (trivializationAt E (TangentSpace I) x₁).baseSet) :
-    (chartGramMatrix g x₁ x).det =
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₁ x).det =
       ((tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).det) ^ 2 *
-        (chartGramMatrix g x₀ x).det := by
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ x).det := by
   rw [chartGramMatrix_pullback_eq_mul (I := I) g x₀ x₁ hx0 hx1]
   rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
   rw [transitionMatrix_det (I := I) x₀ x₁ x]

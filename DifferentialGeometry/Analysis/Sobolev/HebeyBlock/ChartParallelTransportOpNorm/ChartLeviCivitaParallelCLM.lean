@@ -222,7 +222,7 @@ private noncomputable def modelBasisCoordSup : ℝ :=
     (by
       refine Finset.univ_nonempty_iff.mpr ?_
       exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩)
-    (fun i => ‖((chartModelBasis E).coord i).toContinuousLinearMap‖)
+    (fun i => ‖((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap‖)
 
 private lemma modelBasisCoordSup_nonneg :
     0 ≤ modelBasisCoordSup (E := E) := by
@@ -232,19 +232,19 @@ private lemma modelBasisCoordSup_nonneg :
     refine Finset.univ_nonempty_iff.mpr ?_
     exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩
   obtain ⟨i₀, hi₀⟩ := hne
-  have h_nn : (0 : ℝ) ≤ ‖((chartModelBasis E).coord i₀).toContinuousLinearMap‖ :=
+  have h_nn : (0 : ℝ) ≤ ‖((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i₀).toContinuousLinearMap‖ :=
     norm_nonneg _
   exact h_nn.trans (Finset.le_sup'
-    (f := fun i => ‖((chartModelBasis E).coord i).toContinuousLinearMap‖) hi₀)
+    (f := fun i => ‖((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap‖) hi₀)
 
 private lemma norm_coord_le_modelBasisCoordSup
     (i : Fin (Module.finrank ℝ E)) :
-    ‖((chartModelBasis E).coord i).toContinuousLinearMap‖ ≤
+    ‖((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap‖ ≤
       modelBasisCoordSup (E := E) := by
   classical
   unfold modelBasisCoordSup
   exact Finset.le_sup'
-    (f := fun i => ‖((chartModelBasis E).coord i).toContinuousLinearMap‖)
+    (f := fun i => ‖((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap‖)
     (Finset.mem_univ _)
 
 private noncomputable def modelBasisVecSup : ℝ :=
@@ -252,7 +252,7 @@ private noncomputable def modelBasisVecSup : ℝ :=
     (by
       refine Finset.univ_nonempty_iff.mpr ?_
       exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩)
-    (fun k => ‖(chartModelBasis E) k‖)
+    (fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖)
 
 private lemma modelBasisVecSup_nonneg :
     0 ≤ modelBasisVecSup (E := E) := by
@@ -262,17 +262,17 @@ private lemma modelBasisVecSup_nonneg :
     refine Finset.univ_nonempty_iff.mpr ?_
     exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩
   obtain ⟨k₀, hk₀⟩ := hne
-  have h_nn : (0 : ℝ) ≤ ‖(chartModelBasis E) k₀‖ := norm_nonneg _
+  have h_nn : (0 : ℝ) ≤ ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₀‖ := norm_nonneg _
   exact h_nn.trans (Finset.le_sup'
-    (f := fun k => ‖(chartModelBasis E) k‖) hk₀)
+    (f := fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖) hk₀)
 
 private lemma norm_basis_le_modelBasisVecSup
     (k : Fin (Module.finrank ℝ E)) :
-    ‖(chartModelBasis E) k‖ ≤ modelBasisVecSup (E := E) := by
+    ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ ≤ modelBasisVecSup (E := E) := by
   classical
   unfold modelBasisVecSup
   exact Finset.le_sup'
-    (f := fun k => ‖(chartModelBasis E) k‖)
+    (f := fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖)
     (Finset.mem_univ _)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -294,11 +294,11 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
       g.toContinuousRiemannianMetric
     letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
       ⟨cg.toRiemannianMetric⟩
-    ‖(((chartModelBasis E).coord i).toContinuousLinearMap.comp
+    ‖(((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.comp
           (trivToE (I := I) α b)).smulRight
-        (((chartModelBasis E).repr Y j *
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j *
             chartChristoffel (I := I) g α i j k (extChartAt I α b)) •
-          (chartModelBasis E) k)‖ ≤
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)‖ ≤
       modelBasisCoordSup (E := E) * C_J *
         (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) *
         modelBasisVecSup (E := E) := by
@@ -307,8 +307,8 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
     g.toContinuousRiemannianMetric
   let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
-  set L_i : E →L[ℝ] ℝ := ((chartModelBasis E).coord i).toContinuousLinearMap
-  set L_j : E →L[ℝ] ℝ := ((chartModelBasis E).coord j).toContinuousLinearMap
+  set L_i : E →L[ℝ] ℝ := ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap
+  set L_j : E →L[ℝ] ℝ := ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap
   set Γijk : ℝ := chartChristoffel (I := I) g α i j k (extChartAt I α b)
   rw [ContinuousLinearMap.norm_smulRight_apply]
   have hcomp_le :
@@ -317,32 +317,32 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
     ContinuousLinearMap.opNorm_comp_le L_i (trivToE (I := I) α b)
   have h_triv_le : ‖trivToE (I := I) α b‖ ≤ C_J := hCJ
   have h_scalar_norm :
-      ‖((chartModelBasis E).repr Y j * Γijk) • (chartModelBasis E) k‖ =
-        |(chartModelBasis E).repr Y j * Γijk| * ‖(chartModelBasis E) k‖ := by
+      ‖((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j * Γijk) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ =
+        |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j * Γijk| * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ := by
     rw [norm_smul, Real.norm_eq_abs]
   rw [h_scalar_norm]
-  have h_repr_eq : (chartModelBasis E).repr Y j = L_j Y := rfl
-  have h_repr_bound : |(chartModelBasis E).repr Y j| ≤ ‖L_j‖ * ‖Y‖ := by
+  have h_repr_eq : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j = L_j Y := rfl
+  have h_repr_bound : |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j| ≤ ‖L_j‖ * ‖Y‖ := by
     rw [h_repr_eq]
     have := L_j.le_opNorm Y
     have h_abs : ‖L_j Y‖ = |L_j Y| := Real.norm_eq_abs _
     rw [h_abs] at this
     exact this
-  have h_abs_mul : |(chartModelBasis E).repr Y j * Γijk| =
-      |(chartModelBasis E).repr Y j| * |Γijk| := abs_mul _ _
+  have h_abs_mul : |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j * Γijk| =
+      |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j| * |Γijk| := abs_mul _ _
   have h_Lj_le : ‖L_j‖ ≤ modelBasisCoordSup (E := E) :=
     norm_coord_le_modelBasisCoordSup (E := E) j
   have h_Lj_nn : 0 ≤ ‖L_j‖ := norm_nonneg _
   have h_Y_nn : 0 ≤ ‖Y‖ := norm_nonneg _
   have h_abs_Γ_nn : 0 ≤ |Γijk| := abs_nonneg _
   have h_scalar_bound :
-      |(chartModelBasis E).repr Y j * Γijk| ≤
+      |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j * Γijk| ≤
         modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ := by
     rw [h_abs_mul]
-    have h1 : |(chartModelBasis E).repr Y j| * |Γijk| ≤
+    have h1 : |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j| * |Γijk| ≤
         (‖L_j‖ * ‖Y‖) * C_Γ := by
       have hpos : 0 ≤ ‖L_j‖ * ‖Y‖ := by positivity
-      have h_mid : |(chartModelBasis E).repr Y j| * |Γijk| ≤
+      have h_mid : |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j| * |Γijk| ≤
           (‖L_j‖ * ‖Y‖) * |Γijk| :=
         mul_le_mul_of_nonneg_right h_repr_bound h_abs_Γ_nn
       have h_end : (‖L_j‖ * ‖Y‖) * |Γijk| ≤ (‖L_j‖ * ‖Y‖) * C_Γ :=
@@ -357,9 +357,9 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
     have h_eq : (modelBasisCoordSup (E := E) * ‖Y‖) * C_Γ =
         modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ := by ring
     linarith
-  have h_ek_le : ‖(chartModelBasis E) k‖ ≤ modelBasisVecSup (E := E) :=
+  have h_ek_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ ≤ modelBasisVecSup (E := E) :=
     norm_basis_le_modelBasisVecSup (E := E) k
-  have h_ek_nn : 0 ≤ ‖(chartModelBasis E) k‖ := norm_nonneg _
+  have h_ek_nn : 0 ≤ ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ := norm_nonneg _
   have h_Li_le : ‖L_i‖ ≤ modelBasisCoordSup (E := E) :=
     norm_coord_le_modelBasisCoordSup (E := E) i
   have h_Li_nn : 0 ≤ ‖L_i‖ := norm_nonneg _
@@ -367,7 +367,7 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
   have h_coord_nn : 0 ≤ modelBasisCoordSup (E := E) := modelBasisCoordSup_nonneg
   have h_vec_nn : 0 ≤ modelBasisVecSup (E := E) := modelBasisVecSup_nonneg
   set A : ℝ := ‖L_i.comp (trivToE (I := I) α b)‖
-  set B : ℝ := |(chartModelBasis E).repr Y j * Γijk| * ‖(chartModelBasis E) k‖
+  set B : ℝ := |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j * Γijk| * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖
   have hA_nn : 0 ≤ A := norm_nonneg _
   have hB_nn : 0 ≤ B := by
     refine mul_nonneg ?_ h_ek_nn
@@ -385,12 +385,12 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
   have hB_le : B ≤ (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) *
       modelBasisVecSup (E := E) := by
     have h_first :
-        |(chartModelBasis E).repr Y j * Γijk| * ‖(chartModelBasis E) k‖ ≤
+        |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j * Γijk| * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ ≤
           (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) *
-            ‖(chartModelBasis E) k‖ :=
+            ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ :=
       mul_le_mul_of_nonneg_right h_scalar_bound h_ek_nn
     have h_second :
-        (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) * ‖(chartModelBasis E) k‖ ≤
+        (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ ≤
           (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) *
             modelBasisVecSup (E := E) := by
       have h_left_nn : 0 ≤ modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ := by positivity
@@ -480,11 +480,11 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
     have : 0 ≤ C_coord * C_J := by positivity
     positivity
   have h_per : ∀ i j k : Fin (Module.finrank ℝ E),
-      ‖(((chartModelBasis E).coord i).toContinuousLinearMap.comp
+      ‖(((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.comp
             (trivToE (I := I) α b)).smulRight
-          (((chartModelBasis E).repr Y j *
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j *
               chartChristoffel (I := I) g α i j k (extChartAt I α b)) •
-            (chartModelBasis E) k)‖ ≤ D := by
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)‖ ≤ D := by
     intro i j k
     exact christoffelCorrection_summand_opNorm_le_unconditional (I := I)
       g α b Y i j k C_J hb_chartJ hCJ_nn C_Γ (hb_Γ i j k) hCΓ_nn
@@ -493,11 +493,11 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
       ‖∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).coord i).toContinuousLinearMap.comp
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.comp
                   (trivToE (I := I) α b)).smulRight
-                (((chartModelBasis E).repr Y j *
+                (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j *
                     chartChristoffel (I := I) g α i j k (extChartAt I α b)) •
-                  (chartModelBasis E) k)‖ ≤
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)‖ ≤
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E), D := by

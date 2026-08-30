@@ -78,9 +78,9 @@ lemma per_chart_integrand_hasDerivAt
         (Matrix.of fun i j : n =>
           deriv (fun s => chartGramMatrixFamily (I := I) g_fam α x s i j) t))
         = traceTimeDerivMetric (I := I) g_fam t x := by
-    change Matrix.trace ((chartGramMatrix (I := I) (g_fam t) α x)⁻¹ *
+    change Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) α x)⁻¹ *
         (Matrix.of fun i j : n =>
-          deriv (fun s => chartGramMatrix (I := I) (g_fam s) α x i j) t))
+          deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α x i j) t))
       = traceTimeDerivMetric (I := I) g_fam t x
     rw [traceTimeDerivMetric_eq_trace_chartGramMatrix
       (I := I) (M := M) hreg α hxα]
@@ -205,28 +205,28 @@ lemma continuousOn_traceTimeDerivMetric_on_base
     (α : M) :
     ContinuousOn
       (fun p : ℝ × M => Matrix.trace
-        ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
           (Matrix.of fun i j : Fin (Module.finrank ℝ E) =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
   classical
   set n := Fin (Module.finrank ℝ E)
   have hG_joint : ∀ i j : n, ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g_fam p.1) α p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2 i j)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := fun i j =>
     hreg.continuousOn_chartGramMatrix α i j
   have hdG_joint : ∀ i j : n, ContinuousOn
       (fun p : ℝ × M =>
-        deriv (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)
+        deriv (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := fun i j =>
     hreg.continuousOn_deriv_chartGramMatrix α i j
   have h_det_cont : ContinuousOn
-      (fun p : ℝ × M => (chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
+      (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
-    have hexp : (fun p : ℝ × M => (chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
+    have hexp : (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
         = (fun p : ℝ × M =>
             ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
-              ∏ i, chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i) := by
+              ∏ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i) := by
       funext p
       rw [Matrix.det_apply]
       simp [Units.smul_def]
@@ -237,19 +237,19 @@ lemma continuousOn_traceTimeDerivMetric_on_base
     refine continuousOn_finsetProd _ (fun i _ => ?_)
     exact hG_joint (σ i) i
   have h_adj_cont : ∀ k v : n, ContinuousOn
-      (fun p : ℝ × M => (chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v)
+      (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
     intro k v
     have hform : ∀ p : ℝ × M,
-        (chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v
-          = ((chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v
+          = ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
               (Pi.single k 1)).det := by
       intro p; rw [adjugate_apply]
     have hexp : ∀ p : ℝ × M,
-        ((chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v (Pi.single k 1)).det
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v (Pi.single k 1)).det
           = ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
             ∏ i : n,
-              ((chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
+              ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
                 (Pi.single k 1)) (σ i) i := by
       intro p
       rw [Matrix.det_apply]
@@ -257,11 +257,11 @@ lemma continuousOn_traceTimeDerivMetric_on_base
       rfl
     have hfn_eq :
         (fun p : ℝ × M =>
-          (chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v)
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v)
           = fun p : ℝ × M =>
             ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
               ∏ i : n,
-                ((chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
+                ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
                   (Pi.single k 1)) (σ i) i := by
       funext p; rw [hform p, hexp p]
     rw [hfn_eq]
@@ -271,7 +271,7 @@ lemma continuousOn_traceTimeDerivMetric_on_base
     by_cases hiv : σ i = v
     · have hconst :
           (fun p : ℝ × M =>
-            ((chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
               (Pi.single k 1)) (σ i) i)
             = fun _ => (Pi.single k 1 : n → ℝ) i := by
         funext p
@@ -279,55 +279,55 @@ lemma continuousOn_traceTimeDerivMetric_on_base
       rw [hconst]; exact continuousOn_const
     · have hnonrow :
           (fun p : ℝ × M =>
-            ((chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).updateRow v
               (Pi.single k 1)) (σ i) i)
             = fun p : ℝ × M =>
-              chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i := by
         funext p
         rw [Matrix.updateRow_apply]
         exact if_neg hiv
       rw [hnonrow]; exact hG_joint (σ i) i
   have h_det_ne_zero : ∀ p ∈ (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet
         : Set (ℝ × M)),
-      (chartGramMatrix (I := I) (g_fam p.1) α p.2).det ≠ 0 := by
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det ≠ 0 := by
     intro p hp
-    exact ne_of_gt (chartGramMatrix_det_pos (I := I) (g_fam p.1) α hp.2)
+    exact ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_fam p.1) α hp.2)
   have h_inv_cont : ∀ i j : n, ContinuousOn
-      (fun p : ℝ × M => ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i j)
+      (fun p : ℝ × M => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i j)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
     intro i j
     have h_inv_entry : ∀ p : ℝ × M,
-        ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i j
-          = (chartGramMatrix (I := I) (g_fam p.1) α p.2).det⁻¹ *
-            (chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate i j := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i j
+          = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det⁻¹ *
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate i j := by
       intro p
       rw [Matrix.inv_def]
       simp [Matrix.smul_apply, Ring.inverse_eq_inv']
     have hfn_eq :
-        (fun p : ℝ × M => ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i j)
+        (fun p : ℝ × M => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i j)
           = fun p : ℝ × M =>
-            (chartGramMatrix (I := I) (g_fam p.1) α p.2).det⁻¹ *
-            (chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate i j := by
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det⁻¹ *
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate i j := by
       funext p; exact h_inv_entry p
     rw [hfn_eq]
     refine ContinuousOn.mul ?_ (h_adj_cont i j)
     exact h_det_cont.inv₀ h_det_ne_zero
   have h_prod_cont : ∀ i j : n, ContinuousOn
       (fun p : ℝ × M =>
-        ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
           Matrix.of fun i j : n =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i j)
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i j)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
     intro i j
     have hfun :
         (fun p : ℝ × M =>
-          ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
             Matrix.of fun i j : n =>
-              deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i j)
+              deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i j)
           = fun p : ℝ × M =>
-            ∑ k : n, ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i k *
+            ∑ k : n, ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹) i k *
               (deriv (fun s : ℝ =>
-                chartGramMatrix (I := I) (g_fam s) α p.2 k j) p.1) := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 k j) p.1) := by
       funext p
       rw [Matrix.mul_apply]
       rfl
@@ -335,23 +335,23 @@ lemma continuousOn_traceTimeDerivMetric_on_base
     refine continuousOn_finsetSum _ (fun k _ => ?_)
     exact (h_inv_cont i k).mul (hdG_joint k j)
   have htrace_eq : ∀ p : ℝ × M,
-      Matrix.trace ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+      Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
           Matrix.of fun i j : n =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)
         = ∑ i : n,
-            ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+            ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
               Matrix.of fun i j : n =>
-                deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i i := by
+                deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i i := by
     intro p
     rfl
   have hfun : (fun p : ℝ × M =>
-        Matrix.trace ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+        Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
           Matrix.of fun i j : n =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1))
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1))
       = fun p : ℝ × M =>
-          ∑ i : n, ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+          ∑ i : n, ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
             Matrix.of fun i j : n =>
-              deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i i := by
+              deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i i := by
     funext p; exact htrace_eq p
   rw [hfun]
   refine continuousOn_finsetSum _ (fun i _ => h_prod_cont i i)
@@ -371,16 +371,16 @@ lemma traceTimeDerivMetric_continuous
     exact mem_chart_source _ _
   have h_joint : ContinuousOn
       (fun p : ℝ × M => Matrix.trace
-        ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
           (Matrix.of fun i j : n =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
     continuousOn_traceTimeDerivMetric_on_base (I := I) (M := M) hreg α
   have h_slice : ContinuousOn
       (fun x : M => Matrix.trace
-        ((chartGramMatrix (I := I) (g_fam t) α x)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) α x)⁻¹ *
           (Matrix.of fun i j : n =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α x i j) t)))
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α x i j) t)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
     intro x hx
     have hp : ((t, x) : ℝ × M) ∈
@@ -396,9 +396,9 @@ lemma traceTimeDerivMetric_continuous
     exact h_at.comp hincl_cont.continuousWithinAt hincl_mapsTo
   have hev : (fun x : M => traceTimeDerivMetric (I := I) g_fam t x) =ᶠ[𝓝 x₀]
       (fun x : M => Matrix.trace
-        ((chartGramMatrix (I := I) (g_fam t) α x)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) α x)⁻¹ *
           (Matrix.of fun i j : n =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α x i j) t))) := by
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α x i j) t))) := by
     filter_upwards [hα_base_open.mem_nhds hx₀_base] with y hy
     exact traceTimeDerivMetric_eq_trace_chartGramMatrix
       (I := I) (M := M) hreg α hy
@@ -416,9 +416,9 @@ lemma continuousOn_traceTimeDerivMetric_of_base
   have h_eq : Set.EqOn
       (fun p : ℝ × M => traceTimeDerivMetric (I := I) g_fam p.1 p.2)
       (fun p : ℝ × M => Matrix.trace
-        ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
           (Matrix.of fun i j : Fin (Module.finrank ℝ E) =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
     intro p hp
     exact traceTimeDerivMetric_eq_trace_chartGramMatrix
@@ -451,17 +451,17 @@ lemma continuousOn_chartDensity_family
   classical
   set n := Fin (Module.finrank ℝ E)
   have hG_joint : ∀ i j : n, ContinuousOn
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g_fam p.1) α p.2 i j)
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2 i j)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := fun i j =>
     hreg.continuousOn_chartGramMatrix α i j
   have h_det_cont : ContinuousOn
-      (fun p : ℝ × M => (chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
+      (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
     have hexp :
-        (fun p : ℝ × M => (chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
+        (fun p : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det)
           = (fun p : ℝ × M =>
               ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
-                ∏ i, chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i) := by
+                ∏ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i) := by
       funext p
       rw [Matrix.det_apply]
       simp [Units.smul_def]
@@ -473,7 +473,7 @@ lemma continuousOn_chartDensity_family
     exact hG_joint (σ i) i
   have h_sqrtdet_cont : ContinuousOn
       (fun p : ℝ × M =>
-        Real.sqrt ((chartGramMatrix (I := I) (g_fam p.1) α p.2).det))
+        Real.sqrt ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2).det))
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
     Real.continuous_sqrt.comp_continuousOn h_det_cont
   refine h_sqrtdet_cont.congr ?_
@@ -488,16 +488,16 @@ lemma continuousOn_chartTrace_form_of_base_pullback
       (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet)) :
     ContinuousOn
       (fun p : ℝ × E => Matrix.trace
-        ((chartGramMatrix (I := I) (g_fam p.1) α (sym p.2))⁻¹ *
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α (sym p.2))⁻¹ *
           (Matrix.of fun i j : Fin (Module.finrank ℝ E) =>
-            deriv (fun s => chartGramMatrix (I := I) (g_fam s) α (sym p.2) i j) p.1)))
+            deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α (sym p.2) i j) p.1)))
       S := by
   have h_base := continuousOn_traceTimeDerivMetric_on_base (I := I) (M := M) hreg α
   have h_comp : ContinuousOn
       ((fun p : ℝ × M => Matrix.trace
-          ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
             (Matrix.of fun i j : Fin (Module.finrank ℝ E) =>
-              deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
+              deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1)))
         ∘ (fun p : ℝ × E => ((p.1, sym p.2) : ℝ × M))) S :=
     h_base.comp hsym_cont hsym_maps
   exact h_comp
@@ -676,9 +676,9 @@ lemma per_chart_hasDerivAt
       ⟨Set.mem_univ _, h_symm_maps p.2 (hK'_sub_target hp.2)⟩
     have h_tr_base_pb :
         ContinuousOn (fun p : ℝ × E => Matrix.trace
-          ((chartGramMatrix (I := I) (g_fam p.1) α (symm p.2))⁻¹ *
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α (symm p.2))⁻¹ *
             (Matrix.of fun i j : Fin (Module.finrank ℝ E) =>
-              deriv (fun s => chartGramMatrix (I := I) (g_fam s) α (symm p.2) i j) p.1)))
+              deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) α (symm p.2) i j) p.1)))
         (I₁ ×ˢ K') :=
       continuousOn_chartTrace_form_of_base_pullback (I := I) (M := M) hreg α
         (sym := symm) h_symm_pair_contOn h_symm_pair_mapsTo

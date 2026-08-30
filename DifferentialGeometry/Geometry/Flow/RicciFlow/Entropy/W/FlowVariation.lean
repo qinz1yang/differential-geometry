@@ -45,19 +45,19 @@ theorem revGram_smooth
     (x₀ : M) (i j : Fin (Module.finrank Real E)) :
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
-        chartGramMatrix (I := I)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
           ((reverseFamily (I := I) (M := M) (flowG (I := I) S) T).metric p.1)
           x₀ p.2 i j)
       (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let e := trivializationAt E (TangentSpace I) x₀
   change ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
     (fun p : Real × M =>
-      chartGramMatrix (I := I)
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         ((reverseFamily (I := I) (M := M) (flowG (I := I) S) T).metric p.1)
         x₀ p.2 i j) (U ×ˢ e.baseSet)
   have hframe :
-      IsLocalFrameOn I E ∞ (e.localFrame (chartModelBasis E)) e.baseSet :=
-    e.isLocalFrameOn_localFrame_baseSet I ∞ (chartModelBasis E)
+      IsLocalFrameOn I E ∞ (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) e.baseSet :=
+    e.isLocalFrameOn_localFrame_baseSet I ∞ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
   have hrev : ContMDiff (𝓘(Real, Real).prod I) (𝓘(Real, Real).prod I) ∞
       (fun p : Real × M => (T - p.1, p.2)) :=
     (contMDiff_const.sub contMDiff_fst).prodMk contMDiff_snd
@@ -68,22 +68,22 @@ theorem revGram_smooth
   have hcomp : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       ((fun q : Real × M =>
         (S.family.metric q.1).inner q.2
-          (e.localFrame (chartModelBasis E) i q.2)
-          (e.localFrame (chartModelBasis E) j q.2)) ∘
+          (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i q.2)
+          (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j q.2)) ∘
         fun p : Real × M => (T - p.1, p.2)) (U ×ˢ e.baseSet) :=
     (hS.smoothMetric.frameCompSmooth
-      (e.localFrame (chartModelBasis E)) hframe i j).comp hrev.contMDiffOn hmap
+      (e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)) hframe i j).comp hrev.contMDiffOn hmap
   refine hcomp.congr ?_
   intro p hp
   have hx : p.2 ∈ e.baseSet := hp.2
-  simp only [Function.comp_apply, chartGramMatrix_apply, reverse_metric]
-  rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx,
-    e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
+  simp only [Function.comp_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, reverse_metric]
+  rw [e.localFrame_apply_of_mem_baseSet (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx,
+    e.localFrame_apply_of_mem_baseSet (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx]
   have hbasis (k : Fin (Module.finrank Real E)) :
-      e.basisAt (chartModelBasis E) hx k = chartBasisVecFiber (I := I) x₀ k p.2 := by
-    unfold Bundle.Trivialization.basisAt chartBasisVecFiber
+      e.basisAt (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) hx k = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ k p.2 := by
+    unfold Bundle.Trivialization.basisAt DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
     rw [Module.Basis.map_apply]
-    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
+    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
   rw [hbasis i, hbasis j]
   have hmetric : (flowG (I := I) S).metric (T - p.1) =
       S.family.metric (T - p.1) := by
@@ -139,25 +139,25 @@ theorem revTrace_eq
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) y
     have hinv : MetricInverseInBasisGen (I := I) (G.metric s) y
-        (chartBasisFamily (I := I) y hy)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) y hy)
         (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j) := by
       exact chartInvGram_inverse (I := I) (G.metric s) y hy
     have htrace := metricTracePair0SAt_eq_sum_basis
-      (I := I) (G.metric s) (chartBasisFamily (I := I) y hy)
+      (I := I) (G.metric s) (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) y hy)
       (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j)
       hinv (S.ricciAt (T - s) y)
     change -S.scalar (T - s) y =
       ∑ i : Fin (Module.finrank Real E),
         ∑ j : Fin (Module.finrank Real E),
-          ((chartGramMatrix (I := I) (G.metric s) y y)⁻¹) i j *
+          ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (G.metric s) y y)⁻¹) i j *
             (-S.ricciAt (T - s) y
-              (vec2 (I := I) (chartBasisVecFiber (I := I) y i y)
-                (chartBasisVecFiber (I := I) y j y)))
+              (vec2 (I := I) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y i y)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) y j y)))
     rw [S.scalar_eq_metricTrace]
     change -metricTracePair0SAt (I := I) (G.metric s)
       (S.ricciAt (T - s) y) = _
     rw [htrace]
-    simp only [chartBasisFamily_apply]
+    simp only [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
     rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_neg_distrib]

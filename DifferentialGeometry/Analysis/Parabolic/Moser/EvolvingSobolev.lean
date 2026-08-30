@@ -179,7 +179,7 @@ theorem evolving_localized_parabolic_sobolev_time_le_of_chartGramMatrix_smooth
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hC : 0 ≤ C)
     (hSobolev : ∀ t ∈ Icc a b,
@@ -275,7 +275,7 @@ theorem evolving_localized_parabolic_sobolev_of_energy_bound_le_of_chartGramMatr
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hC : 0 ≤ C)
     (hSobolev : ∀ t ∈ Icc a b,
@@ -405,7 +405,7 @@ theorem evolving_localized_parabolic_sobolev_of_mass_and_dirichlet_bound_le_of_c
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hC : 0 ≤ C)
     (hSobolev : ∀ t ∈ Icc a b,
@@ -451,7 +451,7 @@ theorem evolving_localized_parabolic_sobolev_of_nested_cutoffs_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)

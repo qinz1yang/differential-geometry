@@ -1058,16 +1058,16 @@ private lemma gammaContr_contDiffAt
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem centeredChartTangentEquiv_riemannOp
     (g : SmoothRiemannianMetric I M) (x : M) (S T V : E) :
-    Integral.Measure.centeredChartTangentEquiv (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x
         ((riemannOp (LeviCivita (I := I) g) x)
-          ((Integral.Measure.centeredChartTangentEquiv (I := I) x).symm S)
-          ((Integral.Measure.centeredChartTangentEquiv (I := I) x).symm T)
-          ((Integral.Measure.centeredChartTangentEquiv (I := I) x).symm V)) =
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm S)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm T)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm V)) =
       (riemannOp (LeviCivita (I := I) g) x) S T V := by
-  rw [Integral.Measure.centeredChartTangentEquiv_symm_apply,
-    Integral.Measure.centeredChartTangentEquiv_symm_apply,
-    Integral.Measure.centeredChartTangentEquiv_symm_apply]
-  simp only [Integral.Measure.centeredChartTangentEquiv_apply,
+  rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply,
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply,
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
     tangentSpaceModelContinuousLinearEquiv_apply]
   rfl
 

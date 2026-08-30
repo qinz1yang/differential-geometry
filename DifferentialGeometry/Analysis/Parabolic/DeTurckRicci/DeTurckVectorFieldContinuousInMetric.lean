@@ -116,7 +116,7 @@ theorem chartInvGramOnE_continuous_in_metric_at
   classical
   set Gmat : ℝ → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     fun t => Matrix.of fun a b => chartGramOnE (I := I) (g_DT t) α a b y with hGmat_def
-  have hGmat_eq : ∀ t, Gmat t = chartGramMatrix (I := I) (g_DT t) α
+  have hGmat_eq : ∀ t, Gmat t = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t) α
       ((extChartAt I α).symm y) := by
     intro t
     ext a b
@@ -129,13 +129,13 @@ theorem chartInvGramOnE_continuous_in_metric_at
     intro t _
     rw [chartInvGramOnE_def]
     unfold chartInvGramMatrix
-    have hpos := chartGramMatrix_det_pos (I := I) (g_DT t) α hx
-    have hdet_ne : (chartGramMatrix (I := I) (g_DT t) α
+    have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_DT t) α hx
+    have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t) α
         ((extChartAt I α).symm y)).det ≠ 0 := ne_of_gt hpos
     rw [Matrix.inv_def]
-    change (Ring.inverse (chartGramMatrix (I := I) (g_DT t) α
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t) α
             ((extChartAt I α).symm y)).det •
-          (chartGramMatrix (I := I) (g_DT t) α
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t) α
             ((extChartAt I α).symm y)).adjugate) i j =
       ((Gmat t).det)⁻¹ * (Gmat t).adjugate i j
     rw [Matrix.smul_apply, smul_eq_mul]
@@ -149,8 +149,8 @@ theorem chartInvGramOnE_continuous_in_metric_at
       exact h
     refine hdet_cont.inv₀ ?_
     intro t _
-    have hpos := chartGramMatrix_det_pos (I := I) (g_DT t) α hx
-    have : (Gmat t).det = (chartGramMatrix (I := I) (g_DT t) α
+    have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_DT t) α hx
+    have : (Gmat t).det = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t) α
         ((extChartAt I α).symm y)).det := by
       rw [hGmat_eq t]
     rw [this]

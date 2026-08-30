@@ -24,16 +24,16 @@ theorem chartInvGram_inverse
     (g : SmoothRiemannianMetric I M) (alpha : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) alpha).baseSet) :
     MetricInverseInBasisGen (I := I) g x
-      (chartBasisFamily (I := I) alpha hx)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) alpha hx)
       (fun i j => chartInvGramMatrix (I := I) g alpha x i j) := by
   classical
   have hgram : ∀ i j : Fin (Module.finrank ℝ E),
-      g.inner x (chartBasisFamily (I := I) alpha hx i)
-          (chartBasisFamily (I := I) alpha hx j) =
-        chartGramMatrix (I := I) g alpha x i j := by
+      g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) alpha hx i)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) alpha hx j) =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g alpha x i j := by
     intro i j
-    rw [chartBasisFamily_apply, chartBasisFamily_apply]
-    exact (chartGramMatrix_apply (I := I) g alpha x i j).symm
+    rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply (I := I) g alpha x i j).symm
   intro i j
   refine ⟨?_, ?_⟩
   · simp only [hgram]

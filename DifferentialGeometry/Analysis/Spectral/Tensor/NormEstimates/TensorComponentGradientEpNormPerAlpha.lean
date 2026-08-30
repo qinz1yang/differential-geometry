@@ -218,22 +218,22 @@ private theorem tchr_model_triv_per_direction_le
           Cto * ‖X‖) →
     (∀ i : Fin r,
         ‖chartTensorRSInputSlotCorrection (I := I) r s g α
-            (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α k) b i‖ ≤
+            (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i‖ ≤
           M_F * ‖T.toSection b‖) →
     (∀ l : Fin s,
         ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
-            (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α k) b l‖ ≤
+            (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l‖ ≤
           M_F * ‖T.toSection b‖) →
       ‖(trivializationAt (TensorRSModel r s ℝ E)
           (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
         (- (∑ i : Fin r,
             chartTensorRSInputSlotCorrection (I := I) r s g α
               (fun b' => T.toSection b')
-              (chartBasisVecFiber (I := I) α k) b i)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
           + (∑ l : Fin s,
               chartTensorRSOutputSlotCorrection (I := I) r s g α
                 (fun b' => T.toSection b')
-                (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2 ≤
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2 ≤
         Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * ((r : ℝ) + (s : ℝ)) *
           M_F ^ 2 * ‖T.toSection b‖ ^ 2 := by
   classical
@@ -248,9 +248,9 @@ private theorem tchr_model_triv_per_direction_le
         (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b X)
     Cto M_F ‖T.toSection b‖ hCto
     (fun i => chartTensorRSInputSlotCorrection (I := I) r s g α
-      (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α k) b i)
+      (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
     (fun l => chartTensorRSOutputSlotCorrection (I := I) r s g α
-      (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α k) b l)
+      (fun b' => T.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l)
     hinput houtput
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
@@ -270,11 +270,11 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
               (- (∑ i : Fin r,
                   chartTensorRSInputSlotCorrection (I := I) r s g α
                     (fun b' => T.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b i)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
                 + (∑ l : Fin s,
                     chartTensorRSOutputSlotCorrection (I := I) r s g α
                       (fun b' => T.toSection b')
-                      (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2) ≤
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2) ≤
           C * tensorInnerPointwise (I := I) (M := M) g r s b (T.toFun b) (T.toFun b) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
@@ -318,11 +318,11 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
         (- (∑ i : Fin r,
             chartTensorRSInputSlotCorrection (I := I) r s g α
               (fun b' => T.toSection b')
-              (chartBasisVecFiber (I := I) α k) b i)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
           + (∑ l : Fin s,
               chartTensorRSOutputSlotCorrection (I := I) r s g α
                 (fun b' => T.toSection b')
-                (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2 ≤
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2 ≤
         Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * ((r : ℝ) + (s : ℝ)) *
           M_F ^ 2 * ‖T.toSection b‖ ^ 2 := by
     intro k
@@ -342,11 +342,11 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
             (- (∑ i : Fin r,
                 chartTensorRSInputSlotCorrection (I := I) r s g α
                   (fun b' => T.toSection b')
-                  (chartBasisVecFiber (I := I) α k) b i)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
               + (∑ l : Fin s,
                   chartTensorRSOutputSlotCorrection (I := I) r s g α
                     (fun b' => T.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)
       ≤ ∑ _k : Fin n,
           (Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * ((r : ℝ) + (s : ℝ)) *
             M_F ^ 2 * ‖T.toSection b‖ ^ 2) :=
@@ -431,7 +431,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
           (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
         (chartTensorRSCovariantDerivative (I := I) r s g α
           (fun b' => S.toCcTensor.toSection b')
-          (chartBasisVecFiber (I := I) α k) b)‖ ^ 2
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2
     with hTcov_def
   set Tchr : M → ℝ := fun b : M => ∑ k : Fin (Module.finrank ℝ E),
       ‖(trivializationAt (TensorRSModel r s ℝ E)
@@ -439,11 +439,11 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
         (- (∑ i : Fin r,
             chartTensorRSInputSlotCorrection (I := I) r s g α
               (fun b' => S.toCcTensor.toSection b')
-              (chartBasisVecFiber (I := I) α k) b i)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
           + (∑ l : Fin s,
               chartTensorRSOutputSlotCorrection (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2
     with hTchr_def
   have hρ_nn : ∀ b, 0 ≤ ρ b := fun b => by
     rw [hρ_def]; exact (chartAtlasPOU I M).nonneg α b
@@ -605,7 +605,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                         ℝ b
                     (chartTensorRSCovariantDerivative (I := I) r s g α
                       (fun b' => S.toCcTensor.toSection b')
-                      (chartBasisVecFiber (I := I) α k) b)‖ ^ 2))
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2))
           μ :=
       aestronglyMeasurable_pou_mul_sqrt_sum_triv_chart_cov
         (I := I) (M := M) g r s α S
@@ -619,7 +619,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                       ℝ b
                   (chartTensorRSCovariantDerivative (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) ^ 2 := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) ^ 2 := by
       intro b
       have h_sum_eq :
           (∑ k : Fin (Module.finrank ℝ E),
@@ -628,7 +628,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                     ℝ b
                 (chartTensorRSCovariantDerivative (I := I) r s g α
                   (fun b' => S.toCcTensor.toSection b')
-                  (chartBasisVecFiber (I := I) α k) b)‖ ^ 2) = Tcov b := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2) = Tcov b := by
         rw [hTcov_def]
       have h_eq_inside :
           Real.sqrt
@@ -638,7 +638,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                       ℝ b
                   (chartTensorRSCovariantDerivative (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b)‖ ^ 2) =
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2) =
             Real.sqrt (Tcov b) := by
         rw [h_sum_eq]
       rw [hρ_def, h_eq_inside, mul_pow,
@@ -656,7 +656,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                             ℝ b
                         (chartTensorRSCovariantDerivative (I := I) r s g α
                           (fun b' => S.toCcTensor.toSection b')
-                          (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) ^ 2) := by
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)) ^ 2) := by
           funext b; exact h_rho_Tcov_sq_eq b
         rw [hfun_eq]
         exact (continuous_pow 2).comp_aestronglyMeasurable h_atom1
@@ -749,7 +749,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
                     ℝ b
                 (chartTensorRSCovariantDerivative (I := I) r s g α
                   (fun b' => S.toCcTensor.toSection b')
-                  (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
         with hh2_def
       have h_f2_eq :
           ∀ b, f2 b = ENNReal.ofReal B * (‖h2 b‖ₑ : ℝ≥0∞) ^ 2 := by

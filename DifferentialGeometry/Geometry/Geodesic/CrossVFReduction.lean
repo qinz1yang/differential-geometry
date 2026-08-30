@@ -166,7 +166,7 @@ private lemma chartCoord_fderiv_chartTransitionAt [I.Boundaryless]
   have hcA : DifferentiableAt ℝ A x₀ :=
     differentiableAt_chartTransitionAt (I := I) p.proj α hx_src
   set coordCLM : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((chartModelBasis E).coord c) with hcoordCLM
+    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord c) with hcoordCLM
   set eval : (E →L[ℝ] E) →L[ℝ] ℝ :=
     coordCLM.comp (ContinuousLinearMap.apply ℝ E v) with heval
   have hstep1 :
@@ -325,7 +325,7 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
     have hcorr :
         chartTransitionAt (I := I) α p.proj (extChartAt I α p.proj) Dterm =
           chartTransitionSecondDerivCorrection (I := I) p.proj α pModel pModel x₀ := by
-      refine (chartModelBasis E).ext_elem (fun k => ?_)
+      refine (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).ext_elem (fun k => ?_)
       change chartCoord (E := E) k
           (chartTransitionAt (I := I) α p.proj (extChartAt I α p.proj) Dterm) =
         chartCoord (E := E) k
@@ -341,7 +341,7 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
                   partialDeriv (E := E) i
                     (fun z => chartTransitionJacEntry (I := I) p.proj α z c j) x₀ *
                     chartCoord (E := E) i pModel * chartCoord (E := E) j pModel)) •
-              chartModelBasis E k') =
+              DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k') =
           ∑ c : Fin (Module.finrank ℝ E),
               chartTransitionJacEntry (I := I) α p.proj
                 (chartTransitionMap (I := I) p.proj α x₀) k c *
@@ -354,10 +354,10 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
         rw [hDterm, chartCoord_fderiv_chartTransitionAt (I := I) α hp c pModel]
       · rw [chartCoord_def, map_sum, Finsupp.finsetSum_apply]
         rw [Finset.sum_eq_single k]
-        · rw [map_smul, Finsupp.smul_apply, (chartModelBasis E).repr_self k,
+        · rw [map_smul, Finsupp.smul_apply, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self k,
             Finsupp.single_eq_same, smul_eq_mul, mul_one]
         · intro k' _ hk'
-          rw [map_smul, Finsupp.smul_apply, (chartModelBasis E).repr_self k']
+          rw [map_smul, Finsupp.smul_apply, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self k']
           rw [Finsupp.single_eq_of_ne (Ne.symm hk'), smul_zero]
         · intro hk; exact absurd (Finset.mem_univ k) hk
     have hx_src : x₀ ∈ chartTransitionSource (I := I) p.proj α :=

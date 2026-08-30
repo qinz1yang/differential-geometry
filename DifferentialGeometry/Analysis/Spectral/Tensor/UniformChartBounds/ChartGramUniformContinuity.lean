@@ -45,12 +45,12 @@ omit [T2Space M] in
 private lemma chartGramMatrix_entry_continuousOn_chartSource
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun b : M => chartGramMatrix (I := I) g α b i j)
+    ContinuousOn (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j)
       (chartAt H α).source := by
   have hsmooth :
-      ContMDiffOn I 𝓘(ℝ) ∞ (fun b : M => chartGramMatrix (I := I) g α b i j)
+      ContMDiffOn I 𝓘(ℝ) ∞ (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j)
         (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
   have h_set_eq : ((trivializationAt E (TangentSpace I) α).baseSet : Set M)
       = (chartAt H α).source :=
     trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M) α
@@ -110,8 +110,8 @@ theorem chartGramMatrix_entry_isBounded_on_compact
     (α : M) (i j : Fin (Module.finrank ℝ E))
     {K : Set M} (hK : IsCompact K) (hKsub : K ⊆ (chartAt H α).source) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ b ∈ K, |chartGramMatrix (I := I) g α b i j| ≤ C := by
-  have h_cont : ContinuousOn (fun b : M => |chartGramMatrix (I := I) g α b i j|)
+      ∀ b ∈ K, |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j| ≤ C := by
+  have h_cont : ContinuousOn (fun b : M => |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j|)
       (chartAt H α).source :=
     (chartGramMatrix_entry_continuousOn_chartSource (I := I) (M := M) g α i j).abs
   exact exists_bound_on_compact_of_continuousOn (α := α) _ h_cont hK hKsub

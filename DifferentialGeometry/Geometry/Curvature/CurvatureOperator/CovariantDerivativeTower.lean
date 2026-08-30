@@ -101,7 +101,7 @@ private theorem oneForm_comp_smooth
     (a : M) (j : Fin (Module.finrank Real E)) :
     ContMDiffOn I 𝓘(Real, Real) ∞
       (fun b : M =>
-        beta b (fun _ : Fin 1 => chartBasisVecFiber (I := I) a j b))
+        beta b (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) a j b))
       (chartAt H a).source := by
   intro x hx
   apply ContMDiffAt.contMDiffWithinAt
@@ -110,7 +110,7 @@ private theorem oneForm_comp_smooth
       (I := I) (M := M) (n := 1)
       (T := fun b : M => beta b) (beta.contMDiff x)
       (fun _ : Fin 1 => fun b : M =>
-        chartBasisVecFiber (I := I) a j b) (by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) a j b) (by
           intro i
           fin_cases i
           have hbase :
@@ -122,7 +122,7 @@ private theorem oneForm_comp_smooth
             rw [hbase]
             exact hx
           exact
-            (chartBasisVec_contMDiffOn (I := I) a j x hxbase).contMDiffAt
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) a j x hxbase).contMDiffAt
               ((trivializationAt E (TangentSpace I) a).open_baseSet.mem_nhds
                 hxbase))
   exact hEval

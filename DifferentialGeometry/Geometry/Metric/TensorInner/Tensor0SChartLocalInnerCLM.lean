@@ -37,12 +37,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.Measure (chartGramMatrix
-  chartGramMatrix_apply chartGramMatrix_isHermitian
-  chartGramMatrix_posDef chartGramMatrix_det_pos
-  chartGramMatrix_entry_contMDiffOn chartGramMatrix_det_contMDiffOn
-  chartBasisVecFiber chartBasisVec)
-
 variable {n : ℕ}
 
 def chartTensorInnerPointwise0sBilin
@@ -131,8 +125,8 @@ private noncomputable def composeCurryAtIJ (s : ℕ)
       Tensor0SModel s ℝ E →L[ℝ] ℝ) :
     Tensor0SModel (s + 1) ℝ E →L[ℝ] Tensor0SModel (s + 1) ℝ E →L[ℝ] ℝ := by
   dsimp only [Tensor0SModel] at B ⊢
-  let CLi := curryLeftAtCLM (E := E) s ((chartModelBasis E) i)
-  let CLj := curryLeftAtCLM (E := E) s ((chartModelBasis E) j)
+  let CLi := curryLeftAtCLM (E := E) s ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+  let CLj := curryLeftAtCLM (E := E) s ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
   let postCompCLj :
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ →L[ℝ] ℝ) →L[ℝ]
         (ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ] ℝ) :=
@@ -147,10 +141,10 @@ private noncomputable def composeCurryAtIJ (s : ℕ)
       Tensor0SModel s ℝ E →L[ℝ] ℝ)
     (S T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
     composeCurryAtIJ (E := E) s i j B S T =
-      B (S.curryLeft ((chartModelBasis E) i))
-        (T.curryLeft ((chartModelBasis E) j)) := by
-  change B (S.curryLeft ((chartModelBasis E) i))
-      (curryLeftAtCLM (E := E) s ((chartModelBasis E) j) T) = _
+      B (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+        (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
+  change B (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+      (curryLeftAtCLM (E := E) s ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) T) = _
   rw [curryLeftAtCLM_apply]
 
 private lemma chartTensorInnerPointwise_0sCLM_succ_eq
@@ -158,7 +152,7 @@ private lemma chartTensorInnerPointwise_0sCLM_succ_eq
     chartTensorInnerPointwise0sCLM (I := I) (M := M) g (s + 1) α b
       = ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
-            (chartGramMatrix g α b)⁻¹ i j •
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b)⁻¹ i j •
               composeCurryAtIJ (E := E) s i j
                 (chartTensorInnerPointwise0sCLM (I := I) (M := M) g s α b) := by
   dsimp only [Tensor0SModel]

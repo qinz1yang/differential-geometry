@@ -432,7 +432,7 @@ private lemma toModel_tensor0SIntrinsicChartCLM_self (s : ℕ) (x : M)
   classical
   rw [tensor0SIntrinsicChartCLM_apply]
   rw [show trivToE (I := I) x x v = v from by
-    rw [trivToE_self_apply, centeredChartTangentEquiv_apply,
+    rw [trivToE_self_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
       tangentSpaceModelContinuousLinearEquiv_apply]]
   rw [toModel_tensor0SChartFiberFromModel_self (I := I) s x]
 
@@ -991,24 +991,24 @@ private lemma covDerivUnitModel_prodUnitEval_frame (g : SmoothRiemannianMetric I
     Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M ((p' + 1) + (q' + 1)) (LeviCivita (I := I) g)
           (prodUnitEval (I := I) g S T) x
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)) =
       Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) (p' + 1) (q' + 1)
           (Tensor0SSpace.toModel
             (Tensor0SNabla.tensor0SCovariantDerivative I M (p' + 1) (LeviCivita (I := I) g)
               (factorUnitEval (I := I) g S) x
-              (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)))
           (unitModel (I := I) (M := M) g (q' + 1) T x) +
         Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) (p' + 1) (q' + 1)
           (unitModel (I := I) (M := M) g (p' + 1) S x)
           (Tensor0SSpace.toModel
             (Tensor0SNabla.tensor0SCovariantDerivative I M (q' + 1) (LeviCivita (I := I) g)
               (factorUnitEval (I := I) g T) x
-              (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x))) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x))) := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_chartLeviCivitaGoodSet x
   have hX_at := chartBasisVec_alpha_mdifferentiableAt (I := I) x i hx_good
   set Xf : Π b' : M, TangentSpace I b' :=
-    DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i with hXf
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i with hXf
   set P : Π b' : M, Tensor0SSpace ((p' + 1) + (q' + 1)) I b' := prodUnitEval (I := I) g S T with hP
   have hP_mdiff : TensorSectionMDiffAt (I := I) ((p' + 1) + (q' + 1)) P x := by
     rw [hP]; exact prodUnitEval_tensorSectionMDiffAt (I := I) g S T x
@@ -1046,24 +1046,24 @@ private lemma covDerivUnitModel_prodUnitEval_frame_gen (g : SmoothRiemannianMetr
     Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M (p + q) (LeviCivita (I := I) g)
           (prodUnitEval (I := I) g S T) x
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)) =
       Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
           (Tensor0SSpace.toModel
             (Tensor0SNabla.tensor0SCovariantDerivative I M p (LeviCivita (I := I) g)
               (factorUnitEval (I := I) g S) x
-              (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)))
           (unitModel (I := I) (M := M) g q T x) +
         Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
           (unitModel (I := I) (M := M) g p S x)
           (Tensor0SSpace.toModel
             (Tensor0SNabla.tensor0SCovariantDerivative I M q (LeviCivita (I := I) g)
               (factorUnitEval (I := I) g T) x
-              (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x))) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x))) := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_chartLeviCivitaGoodSet x
   have hX_at := chartBasisVec_alpha_mdifferentiableAt (I := I) x i hx_good
   set Xf : Π b' : M, TangentSpace I b' :=
-    DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i with hXf
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i with hXf
   set P : Π b' : M, Tensor0SSpace (p + q) I b' := prodUnitEval (I := I) g S T with hP
   have hP_mdiff : TensorSectionMDiffAt (I := I) (p + q) P x := by
     rw [hP]; exact prodUnitEval_tensorSectionMDiffAt (I := I) g S T x
@@ -1142,14 +1142,14 @@ private lemma covDerivUnitModel_prodUnitEval (g : SmoothRiemannianMetric I M) {p
   have hxE : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx_good
   set c : Fin (Module.finrank ℝ E) → ℝ :=
-    fun i => ((DifferentialGeometry.Integral.Measure.chartModelBasis E).repr
+    fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x w)) i with hc
   have hdecomp : ∀ (n : ℕ) (Y : Π b' : M, Tensor0SSpace n I b'),
       Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g) Y x w) =
       ∑ i, c i • Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g) Y x
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)) := by
     intro n Y
     conv_lhs => rw [chartBasisVecFiber_recompose (I := I) x hxE w]
     rw [map_sum (Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g) Y x)]
@@ -1185,14 +1185,14 @@ private lemma covDerivUnitModel_prodUnitEval_gen (g : SmoothRiemannianMetric I M
   have hxE : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx_good
   set c : Fin (Module.finrank ℝ E) → ℝ :=
-    fun i => ((DifferentialGeometry.Integral.Measure.chartModelBasis E).repr
+    fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x w)) i with hc
   have hdecomp : ∀ (n : ℕ) (Y : Π b' : M, Tensor0SSpace n I b'),
       Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g) Y x w) =
       ∑ i, c i • Tensor0SSpace.toModel
         (Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g) Y x
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)) := by
     intro n Y
     conv_lhs => rw [chartBasisVecFiber_recompose (I := I) x hxE w]
     rw [map_sum (Tensor0SNabla.tensor0SCovariantDerivative I M n (LeviCivita (I := I) g) Y x)]

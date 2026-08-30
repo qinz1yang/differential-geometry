@@ -73,10 +73,10 @@ lemma chartChristoffelContraction_scalarCoeff_contDiffOn
         (interior (extChartAt I α).target) :=
       fun _ hp => hp.1
     exact hbase.comp hfst.contDiffOn hmapsto
-  have hCLM_i : ContDiff ℝ ∞ (((chartModelBasis E).coord i).toContinuousLinearMap) :=
-    ((chartModelBasis E).coord i).toContinuousLinearMap.contDiff
-  have hCLM_j : ContDiff ℝ ∞ (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-    ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff
+  have hCLM_i : ContDiff ℝ ∞ (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap) :=
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff
+  have hCLM_j : ContDiff ℝ ∞ (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff
   have hsnd : ContDiff ℝ ∞ (Prod.snd : E × E → E) := contDiff_snd
   have hci : ContDiffOn ℝ ∞
       (fun z : E × E => chartCoord (E := E) i z.2)
@@ -101,7 +101,7 @@ lemma chartChristoffelContraction_contDiffOn
   have hscalar :=
     chartChristoffelContraction_scalarCoeff_contDiffOn (I := I) g α k
   have hconst : ContDiffOn ℝ ∞
-      (fun _ : E × E => (chartModelBasis E) k)
+      (fun _ : E × E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E)) :=
     contDiffOn_const
   exact hscalar.smul hconst

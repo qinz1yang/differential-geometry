@@ -361,7 +361,7 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
     letI : IsManifold I ∞ P.M := P.smooth
     ContinuousOn
       (fun p : ℝ × P.M =>
-        Integral.Measure.chartGramMatrix (I := I)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
           (gSeqExt (I := I) Φ R bf hsrc htgt k p.1) x₀ p.2 i j)
       (X.D.carrier ×ˢ
         (trivializationAt E (TangentSpace I) x₀).baseSet) := by
@@ -400,7 +400,7 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
         (fun z : SourceDomain (I := I) Φ k =>
           TotalSpace.mk' E
             (E := fun z : SourceDomain (I := I) Φ k => TangentSpace I z) z
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ a (z : P.M)))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ a (z : P.M)))
         ⟨x, hxU⟩ := by
     have hf' :
         (mfderiv I I
@@ -419,14 +419,14 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
         ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
           (T% (VectorField.mpullback I I
             (Subtype.val : SourceDomain (I := I) Φ k → P.M)
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ a)))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ a)))
           (⟨x, hxU⟩ : SourceDomain (I := I) Φ k) :=
       ContMDiffAt.mpullback_vectorField_preimage
         (I := I) (I' := I)
         (f := (Subtype.val : SourceDomain (I := I) Φ k → P.M))
-        (V := Integral.Measure.chartBasisVecFiber (I := I) x₀ a)
+        (V := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ a)
         (x₀ := ⟨x, hxU⟩) (m := ∞) (n := ∞)
-        ((Integral.Measure.chartBasisVec_contMDiffOn (I := I) x₀ a).contMDiffAt
+        ((DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ a).contMDiffAt
           ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hxb))
         (contMDiff_subtype_val (I := I)
           (U := sourceOpen (I := I) Φ k)).contMDiffAt
@@ -455,10 +455,10 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
     refine ((ContinuousLinearMap.IsInvertible.inverse_apply_eq hfz).mpr ?_).symm
     simpa only using
       (mfderiv_subtype_val_apply (I := I) (sourceOpen (I := I) Φ k) z
-        (Integral.Measure.chartBasisVecFiber (I := I) x₀ a (z : P.M))).symm
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ a (z : P.M))).symm
   let v : Fin 2 → (q : ↥sU) → TangentSpace I (b q) :=
     fun a q =>
-      Integral.Measure.chartBasisVecFiber (I := I) x₀
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀
         (if a = 0 then i else j) q.1.2
   have hτ : Continuous (fun q : ↥sU => q.1.1) :=
     continuous_fst.comp continuous_subtype_val
@@ -477,7 +477,7 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
       (g := fun z : SourceDomain (I := I) Φ k =>
         TotalSpace.mk' E
           (E := fun z : SourceDomain (I := I) Φ k => TangentSpace I z) z
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀
             (if a = 0 then i else j) (z : P.M)))
       ha hb.continuousAt
   have hS :=
@@ -488,8 +488,8 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
       hτ hτK hb hv
   have hsrcC : Continuous (fun q : ↥sU =>
       (srcMetric (I := I) Φ hsrc htgt k q.1.1).inner (b q)
-        (Integral.Measure.chartBasisVecFiber (I := I) x₀ i q.1.2)
-        (Integral.Measure.chartBasisVecFiber (I := I) x₀ j q.1.2)) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i q.1.2)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j q.1.2)) := by
     refine heval.congr ?_
     intro q
     rw [Tensor0SBundle.metricTensorField_apply]
@@ -498,40 +498,40 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
     (bf.chi_smooth k).continuous.comp
       (continuous_snd.comp continuous_subtype_val)
   have hRsrc : Continuous (fun q : ↥sU =>
-      Integral.Measure.chartGramMatrix (I := I) R x₀ q.1.2 i j) :=
-    (Integral.Measure.chartGramMatrix_entry_contMDiffOn
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) R x₀ q.1.2 i j) :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn
       (I := I) R x₀ i j).continuousOn.comp_continuous
         (continuous_snd.comp continuous_subtype_val) (fun q => q.2.2.1)
   have hblend : Continuous (fun q : ↥sU =>
       bf.chi k q.1.2 *
           (srcMetric (I := I) Φ hsrc htgt k q.1.1).inner (b q)
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i q.1.2)
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ j q.1.2)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i q.1.2)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j q.1.2)
         + (1 - bf.chi k q.1.2) *
-          Integral.Measure.chartGramMatrix (I := I) R x₀ q.1.2 i j) :=
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) R x₀ q.1.2 i j) :=
     (hχ.mul hsrcC).add ((continuous_const.sub hχ).mul hRsrc)
   have hinside : Continuous (fun q : ↥sU =>
-      Integral.Measure.chartGramMatrix (I := I)
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
         (gSeqExt (I := I) Φ R bf hsrc htgt k q.1.1) x₀ q.1.2 i j) := by
     refine hblend.congr ?_
     intro q
-    simp only [Integral.Measure.chartGramMatrix_apply]
+    simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     rw [
       gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k q.1.1
         q.1.2 q.2.2.2]
     simp only [smul_eq_mul, b]
   have hinsideOn : ContinuousOn
       (fun p : ℝ × P.M =>
-        Integral.Measure.chartGramMatrix (I := I)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
           (gSeqExt (I := I) Φ R bf hsrc htgt k p.1) x₀ p.2 i j) sU := by
     rw [continuousOn_iff_continuous_domRestrict]
     exact hinside
   have hROn : ContinuousOn
       (fun p : ℝ × P.M =>
-        Integral.Measure.chartGramMatrix (I := I) R x₀ p.2 i j) s := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) R x₀ p.2 i j) s := by
     rw [continuousOn_iff_continuous_domRestrict]
     exact
-      (Integral.Measure.chartGramMatrix_entry_contMDiffOn
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn
         (I := I) R x₀ i j).continuousOn.comp_continuous
           (continuous_snd.comp continuous_subtype_val) (fun q => q.2.2)
   intro p hp
@@ -559,17 +559,17 @@ theorem gSeqExt_gram_cont (k : Nat) (x₀ : P.M)
         continuous_snd).mem_nhds hxNotSupp)
     have heq :
         (fun q : ℝ × P.M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (gSeqExt (I := I) Φ R bf hsrc htgt k q.1) x₀ q.2 i j)
           =ᶠ[𝓝[s] p]
         (fun q : ℝ × P.M =>
-          Integral.Measure.chartGramMatrix (I := I) R x₀ q.2 i j) := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) R x₀ q.2 i j) := by
       filter_upwards [nhdsWithin_le_nhds hopen] with q hq
-      simp only [Integral.Measure.chartGramMatrix_apply]
+      simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
       rw [
         gSeqExt_inner_of_notMem (I := I) Φ R bf hsrc htgt k q.1 q.2 hq]
     refine (hROn p hp).congr_of_eventuallyEq heq ?_
-    simp only [Integral.Measure.chartGramMatrix_apply]
+    simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     rw [
       gSeqExt_inner_of_notMem (I := I) Φ R bf hsrc htgt k p.1 p.2 hxNotSupp]
 

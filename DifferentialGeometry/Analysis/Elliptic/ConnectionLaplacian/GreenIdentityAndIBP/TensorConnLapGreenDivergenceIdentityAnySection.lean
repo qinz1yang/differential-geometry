@@ -312,25 +312,25 @@ private lemma dirichletFormGen_chartBasis_component_contMDiffOn
     (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => dirichletFormGen (I := I) (M := M) g s T v b
-        (chartBasisVecFiber (I := I) α j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   have hcov_section : ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun y : M => TensorRSSpace 0 s I y) b
         (tensorCovDerivAt (I := I) (M := M) g 0 s T b
-          (chartBasisVecFiber (I := I) α j b)))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     tensorCovDeriv_chartBasis_contMDiffOn (I := I) (M := M) g 0 s T α j
   have hcov_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + s) ℝ E) ∞
       (fun b : M => loweredCompose (I := I) (M := M) g 0 s α b
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g 0 s T b
-            (chartBasisVecFiber (I := I) α j b))))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     TensorMetricLowering.contMDiffOn_loweredCompose_of_section_contMDiffOn
       (I := I) (M := M) g 0 s
       (fun b : M => tensorCovDerivAt (I := I) (M := M) g 0 s T b
-        (chartBasisVecFiber (I := I) α j b)) α hcov_section
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) α hcov_section
   have hv_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + s) ℝ E) ∞
       (fun b : M => loweredCompose (I := I) (M := M) g 0 s α b
         (TensorRSSpace.toModel (v.toSection b)))
@@ -341,13 +341,13 @@ private lemma dirichletFormGen_chartBasis_component_contMDiffOn
         tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g 0 s T b
-              (chartBasisVecFiber (I := I) α j b)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))
           (TensorRSSpace.toModel (v.toSection b)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     DifferentialGeometry.Tensor.TensorRSRiemannian.chartLocal_contMDiff_inner_of_smooth_sections
       (I := I) (M := M) g 0 s
       (fun b : M => tensorCovDerivAt (I := I) (M := M) g 0 s T b
-        (chartBasisVecFiber (I := I) α j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (fun b : M => v.toSection b) α hcov_lowered hv_lowered
   have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet =
       (chartAt H α).source :=

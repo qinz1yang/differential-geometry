@@ -414,15 +414,15 @@ private theorem realizedChartGramIncrement_eigenSeries_eq
     (α : M) (i' j' : Fin (Module.finrank ℝ E)) :
     ∀ q ∈ Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target,
       ccTensorBilinSymm (I := I) g (T_rep q.1) ((extChartAt I α).symm q.2)
-          (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
-          (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2))
         = ∑' i, eigenChartIncrementMode (I := I) (M := M) g φ α i' j' i q := by
   classical
   rintro q ⟨hqt, hqy⟩
   set t : ℝ := q.1 with ht_def
   set x : M := (extChartAt I α).symm q.2 with hx_def
-  set vv : TangentSpace I x := chartBasisVecFiber (I := I) α i' x with hvv
-  set ww : TangentSpace I x := chartBasisVecFiber (I := I) α j' x with hww
+  set vv : TangentSpace I x := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' x with hvv
+  set ww : TangentSpace I x := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' x with hww
   set u : TensorL2 0 2 g := SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) (T_rep t) with hu_def
   have hcoeff_t : ∀ i, tensorL2Coeff (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2) u i = φ i t :=
@@ -513,8 +513,8 @@ theorem realizedChartGramIncrement_euclidean_contDiffOn
     ContDiffOn ℝ ∞
       (fun q : ℝ × E =>
         ccTensorBilinSymm (I := I) g (T_rep q.1) ((extChartAt I α).symm q.2)
-          (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
-          (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2)))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2)))
       (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := by
   set Ω : Set E := interior (extChartAt I α).target with hΩ_def
   have hΩ_open : IsOpen Ω := isOpen_interior
@@ -597,14 +597,14 @@ private theorem realizedChartGramIncrement_alongChart_contMDiffOn
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
       (fun q : ℝ × M =>
         ccTensorBilinSymm (I := I) g (T_rep q.1) q.2
-          (chartBasisVecFiber (I := I) α i' q.2)
-          (chartBasisVecFiber (I := I) α j' q.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' q.2)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' q.2))
       (Set.Icc (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
   set G : ℝ × E → ℝ :=
     fun q : ℝ × E =>
       ccTensorBilinSymm (I := I) g (T_rep q.1) ((extChartAt I α).symm q.2)
-        (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
-        (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2)) with hG_def
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2)) with hG_def
   have hGEuclid : ContDiffOn ℝ ∞ G
       (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
     realizedChartGramIncrement_euclidean_contDiffOn
@@ -630,8 +630,8 @@ private theorem realizedChartGramIncrement_alongChart_contMDiffOn
   have heq : Set.EqOn
       (fun q : ℝ × M =>
         ccTensorBilinSymm (I := I) g (T_rep q.1) q.2
-          (chartBasisVecFiber (I := I) α i' q.2)
-          (chartBasisVecFiber (I := I) α j' q.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' q.2)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' q.2))
       (G ∘ f)
       (Set.Icc (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
     rintro ⟨t, x⟩ ⟨_, hx⟩
@@ -670,9 +670,9 @@ theorem jointChartGramSmooth_of_spectralSmooth_timeSmooth
     (I := I) (M := M) g hT T_rep φ hφ_smooth hcoeff hmodemass α i j
   have hbg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
       (fun p : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) g α p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p.2 i j)
       (Set.Icc (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) := by
-    have hbase := chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+    have hbase := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
     have hsnd : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun p : ℝ × M => p.2)
         (Set.Icc (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) α).baseSet) :=
       contMDiffOn_snd
@@ -683,13 +683,13 @@ theorem jointChartGramSmooth_of_spectralSmooth_timeSmooth
     exact hbase.comp hsnd hmaps
   refine (hbg.add hincrement).congr ?_
   rintro ⟨t, x⟩ _
-  change Integral.Measure.chartGramMatrix (I := I)
+  change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
       (tensorSectionRealizeMetric (I := I) g (T_rep t) hδ_lt (hδ t)) α x i j =
-    Integral.Measure.chartGramMatrix (I := I) g α x i j +
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i j +
       ccTensorBilinSymm (I := I) g (T_rep t) x
-        (chartBasisVecFiber (I := I) α i x)
-        (chartBasisVecFiber (I := I) α j x)
-  rw [chartGramMatrix_apply, chartGramMatrix_apply,
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply,
     tensorSectionRealizeMetric_inner]
 
 section FiniteOrderEigenSeries
@@ -1303,7 +1303,7 @@ lemma chartGramOnE_realize_eq_add_half_rawCompOnE
     rwa [extChartAt_source] at this
   rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def,
     DifferentialGeometry.Geometry.Operator.chartGramOnE_def,
-    chartGramMatrix_apply, chartGramMatrix_apply, tensorSectionRealizeMetric_inner]
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, tensorSectionRealizeMetric_inner]
   have hhalf := ccTensorBilinSymm_eq_half_rawComponent (I := I) (M := M) g S α a b hp_src
   rw [hhalf]
   rfl

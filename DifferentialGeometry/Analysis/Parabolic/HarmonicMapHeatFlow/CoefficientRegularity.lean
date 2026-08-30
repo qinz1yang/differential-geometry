@@ -580,7 +580,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space 
   [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfChartInv
     (q : SmoothRiemannianMetric I M) (x : M) :
-    MetricInverseInBasis (I := I) q x (chartModelBasis E)
+    MetricInverseInBasis (I := I) q x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
       (fun i j ↦ (gramMatrixAt (I := I) (M := M) q x)⁻¹ i j) := by
   classical
   have hdet : IsUnit (gramMatrixAt (I := I) (M := M) q x).det :=
@@ -621,7 +621,7 @@ private theorem hmfCovInner
     rw [inverseMetricSharpFib_inner, cotangentSharp_inner,
       cotangentToDualLinear_apply]
   have hcoord := cotangentInner_eq_coord (I := I) q x
-    (chartModelBasis E)
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     (fun i j ↦ (gramMatrixAt (I := I) (M := M) q x)⁻¹ i j)
     (hmfChartInv (I := I) (M := M) q x) α β
   have htensor :
@@ -630,8 +630,8 @@ private theorem hmfCovInner
         ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             (gramMatrixAt (I := I) (M := M) q x)⁻¹ i j *
-              cotangentToDual (I := I) α ((chartModelBasis E) i) *
-                cotangentToDual (I := I) β ((chartModelBasis E) j) := by
+              cotangentToDual (I := I) α ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) *
+                cotangentToDual (I := I) β ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     rw [tensorInnerPointwise_0s_succ]
     apply Finset.sum_congr rfl
     intro i _
@@ -639,18 +639,18 @@ private theorem hmfCovInner
     intro j _
     rw [tensorInnerPointwise_0s_zero_arity]
     have hα :
-        ((Tensor0SSpace.toModel α).curryLeft ((chartModelBasis E) i))
+        ((Tensor0SSpace.toModel α).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
             (fun k : Fin 0 ↦ Fin.elim0 k) =
-          cotangentToDual (I := I) α ((chartModelBasis E) i) := by
+          cotangentToDual (I := I) α ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
       rw [ContinuousMultilinearMap.curryLeft_apply,
         Tensor0SSpace.toModel_apply_model_vector]
       let X : TangentSpace I x :=
         (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-          ((chartModelBasis E) i)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
       have hvec :
           (fun k : Fin 1 =>
             (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (@Fin.cons 0 (fun _ : Fin 1 => E) ((chartModelBasis E) i)
+              (@Fin.cons 0 (fun _ : Fin 1 => E) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
                 (fun k : Fin 0 => Fin.elim0 k) k)) =
             fun _ : Fin 1 => X := by
         funext k
@@ -660,22 +660,22 @@ private theorem hmfCovInner
       calc
         α (fun _ : Fin 1 => X) = cotangentToDual (I := I) α X :=
           (cotangentToDual_apply (I := I) α X).symm
-        _ = cotangentToDual (I := I) α ((chartModelBasis E) i) := by
+        _ = cotangentToDual (I := I) α ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
           with_unfolding_all
             rfl
     have hβ :
-        ((Tensor0SSpace.toModel β).curryLeft ((chartModelBasis E) j))
+        ((Tensor0SSpace.toModel β).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
             (fun k : Fin 0 ↦ Fin.elim0 k) =
-          cotangentToDual (I := I) β ((chartModelBasis E) j) := by
+          cotangentToDual (I := I) β ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
       rw [ContinuousMultilinearMap.curryLeft_apply,
         Tensor0SSpace.toModel_apply_model_vector]
       let X : TangentSpace I x :=
         (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-          ((chartModelBasis E) j)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
       have hvec :
           (fun k : Fin 1 =>
             (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (@Fin.cons 0 (fun _ : Fin 1 => E) ((chartModelBasis E) j)
+              (@Fin.cons 0 (fun _ : Fin 1 => E) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
                 (fun k : Fin 0 => Fin.elim0 k) k)) =
             fun _ : Fin 1 => X := by
         funext k
@@ -685,7 +685,7 @@ private theorem hmfCovInner
       calc
         β (fun _ : Fin 1 => X) = cotangentToDual (I := I) β X :=
           (cotangentToDual_apply (I := I) β X).symm
-        _ = cotangentToDual (I := I) β ((chartModelBasis E) j) := by
+        _ = cotangentToDual (I := I) β ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
           with_unfolding_all
             rfl
     rw [hα, hβ]
@@ -700,8 +700,8 @@ private theorem hmfCovInner
     _ = ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             (gramMatrixAt (I := I) (M := M) q x)⁻¹ i j *
-              cotangentToDual (I := I) α ((chartModelBasis E) i) *
-                cotangentToDual (I := I) β ((chartModelBasis E) j) := hcoord
+              cotangentToDual (I := I) α ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) *
+                cotangentToDual (I := I) β ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := hcoord
     _ = covariantTensorInnerPointwise (I := I) (M := M) 1 q x
           (Tensor0SSpace.toModel α) (Tensor0SSpace.toModel β) := htensor.symm
 

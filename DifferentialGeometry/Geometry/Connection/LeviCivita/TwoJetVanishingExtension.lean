@@ -34,8 +34,8 @@ omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma tangentCoord_eq_centeredChartTangentEquiv (x : M) (v : TangentSpace I x) :
-    tangentCoord (I := I) x v = centeredChartTangentEquiv (I := I) x v := by
-  change trivToE (I := I) x x v = centeredChartTangentEquiv (I := I) x v
+    tangentCoord (I := I) x v = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x v := by
+  change trivToE (I := I) x x v = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x v
   exact trivToE_self_apply (I := I) x v
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -118,10 +118,10 @@ private lemma chartE_section_repr_covApply_linExt_eventuallyEq
         (fun y : E =>
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) i *
-                  ((chartModelBasis E).repr (tangentCoord (I := I) x₀ w)) j *
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ w)) j *
                   chartChristoffel (I := I) g x₀ i j m y) •
-                (chartModelBasis E) m) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := by
   classical
   have hbump1 : {b : M | (linExtBump (I := I) x₀ : M → ℝ) b = 1} ∈ 𝓝 x₀ :=
     (linExtBump (I := I) x₀).eventuallyEq_one
@@ -167,9 +167,9 @@ private lemma chartE_section_repr_covApply_linExt_eventuallyEq
   rw [christoffelCorrection_apply (I := I) g x₀ b (tangentCoord (I := I) x₀ w)
     (linearExtensionTangent (I := I) x₀ v b)]
   have hreprVb :
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (trivToE (I := I) x₀ b (linearExtensionTangent (I := I) x₀ v b)) =
-        (chartModelBasis E).repr (tangentCoord (I := I) x₀ v) := by
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ v) := by
     have hVb : chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ v) b =
         tangentCoord (I := I) x₀ v :=
       (chartE_section_repr_linExt_eventuallyEq_const_at (I := I) x₀ v hb1
@@ -207,24 +207,24 @@ private lemma fderiv_christoffelVWSum_apply
         (fun y : E =>
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
-                  chartChristoffel (I := I) g x₀ i j m y) • (chartModelBasis E) m)
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
+                  chartChristoffel (I := I) g x₀ i j m y) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
         (extChartAt I x₀ x₀) d =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ∑ m : Fin (Module.finrank ℝ E),
-          (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
               (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                (extChartAt I x₀ x₀)) d) • (chartModelBasis E) m := by
+                (extChartAt I x₀ x₀)) d) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   have hdiff_inner : ∀ i j m : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ (fun y : E =>
-        (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
-            chartChristoffel (I := I) g x₀ i j m y) • (chartModelBasis E) m)
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
+            chartChristoffel (I := I) g x₀ i j m y) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
         (extChartAt I x₀ x₀) := by
     intro i j m
     exact (((chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j m).const_mul
-      (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j)).smul_const
-      ((chartModelBasis E) m))
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j)).smul_const
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m))
   rw [fderiv_fun_sum (fun i _ => DifferentiableAt.fun_sum
     (fun j _ => DifferentiableAt.fun_sum (fun m _ => hdiff_inner i j m)))]
   rw [sum_apply]
@@ -237,26 +237,26 @@ private lemma fderiv_christoffelVWSum_apply
   refine Finset.sum_congr rfl (fun m _ => ?_)
   rw [fderiv_smul_const (((chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j
     m).const_mul
-    (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j)))
-    ((chartModelBasis E) m)]
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j)))
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)]
   rw [ContinuousLinearMap.smulRight_apply]
   rw [fderiv_const_mul (chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j m)
-    (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j)]
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j)]
   rw [smul_apply, smul_eq_mul, mul_assoc]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum3_collect_basis_inner
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ) :
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-      ∑ z : Fin (Module.finrank ℝ E), (F a b z) • (chartModelBasis E) z) =
+      ∑ z : Fin (Module.finrank ℝ E), (F a b z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z) =
       ∑ z : Fin (Module.finrank ℝ E),
         (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), F a b z) •
-          (chartModelBasis E) z := by
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z := by
   classical
   rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        ∑ z : Fin (Module.finrank ℝ E), (F a b z) • (chartModelBasis E) z) =
+        ∑ z : Fin (Module.finrank ℝ E), (F a b z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z) =
       ∑ z : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
-        ∑ b : Fin (Module.finrank ℝ E), (F a b z) • (chartModelBasis E) z from by
+        ∑ b : Fin (Module.finrank ℝ E), (F a b z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z from by
     simp_rw [← Finset.sum_product']
     refine Finset.sum_nbij' (fun x => (x.2.2, x.1, x.2.1)) (fun x => (x.2.1, x.2.2, x.1))
       (fun x _ => Finset.mem_univ _) (fun x _ => Finset.mem_univ _)
@@ -272,18 +272,18 @@ private lemma sum5_collect_basis_inner
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ) :
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       ∑ c : Fin (Module.finrank ℝ E), ∑ d : Fin (Module.finrank ℝ E),
-        ∑ z : Fin (Module.finrank ℝ E), (F a b c d z) • (chartModelBasis E) z) =
+        ∑ z : Fin (Module.finrank ℝ E), (F a b c d z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z) =
       ∑ z : Fin (Module.finrank ℝ E),
         (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           ∑ c : Fin (Module.finrank ℝ E), ∑ d : Fin (Module.finrank ℝ E),
-            F a b c d z) • (chartModelBasis E) z := by
+            F a b c d z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z := by
   classical
   rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ∑ c : Fin (Module.finrank ℝ E), ∑ d : Fin (Module.finrank ℝ E),
-          ∑ z : Fin (Module.finrank ℝ E), (F a b c d z) • (chartModelBasis E) z) =
+          ∑ z : Fin (Module.finrank ℝ E), (F a b c d z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z) =
       ∑ z : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         ∑ b : Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
-          ∑ d : Fin (Module.finrank ℝ E), (F a b c d z) • (chartModelBasis E) z from by
+          ∑ d : Fin (Module.finrank ℝ E), (F a b c d z) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z from by
     simp_rw [← Finset.sum_product']
     refine Finset.sum_nbij' (fun x => (x.2.2.2.2, x.1, x.2.1, x.2.2.1, x.2.2.2.1))
       (fun x => (x.2.1, x.2.2.1, x.2.2.2.1, x.2.2.2.2, x.1))
@@ -318,13 +318,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 private lemma chartModelBasis_repr_christoffelVWSum
     (g : SmoothRiemannianMetric I M) (x₀ : M) (V W : E) (y : E)
     (q : Fin (Module.finrank ℝ E)) :
-    ((chartModelBasis E).repr
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
-                chartChristoffel (I := I) g x₀ i j m y) • (chartModelBasis E) m)) q =
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
+                chartChristoffel (I := I) g x₀ i j m y) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) q =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
           chartChristoffel (I := I) g x₀ i j q y := by
   classical
   rw [map_sum]
@@ -354,21 +354,21 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
       trivFromE (I := I) x₀ x₀
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) k *
-                ((chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) i *
-                ((chartModelBasis E).repr (tangentCoord (I := I) x₀ w)) j) •
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ w)) j) •
               ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m)) +
+                  (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) +
       trivFromE (I := I) x₀ x₀
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) i *
-                ((chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) k *
-                ((chartModelBasis E).repr (tangentCoord (I := I) x₀ w)) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ v)) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ w)) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := by
   classical
   set V : E := tangentCoord (I := I) x₀ v with hV_def
   set W : E := tangentCoord (I := I) x₀ w with hW_def
@@ -402,9 +402,9 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
       chartESectionRepr (I := I) x₀ S x₀ =
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
                 chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
     have h0 := hev.self_of_nhds
     simp only [Function.comp_apply] at h0
     rw [(extChartAt I x₀).left_inv hx₀src_ext] at h0
@@ -413,52 +413,52 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
   rw [christoffelCorrection_apply (I := I) g x₀ x₀
     (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
       ∑ m : Fin (Module.finrank ℝ E),
-        (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
             chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
-          (chartModelBasis E) m) v]
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) v]
   rw [trivToE_self_apply (I := I) x₀ v]
   rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ v]
   rw [map_add]
   have hv_basis : V =
-      ∑ k : Fin (Module.finrank ℝ E), ((chartModelBasis E).repr V) k • (chartModelBasis E) k := by
-    exact ((chartModelBasis E).sum_repr V).symm
+      ∑ k : Fin (Module.finrank ℝ E), ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) k • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
+    exact ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr V).symm
   congr 1
   · have hLHS1 :
         (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
                 (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
                   (extChartAt I x₀ x₀)) (tangentCoord (I := I) x₀ v)) •
-                (chartModelBasis E) m) =
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) =
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr V) k * ((chartModelBasis E).repr V) i *
-                  ((chartModelBasis E).repr W) j) •
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j) •
                 ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                    (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m) := by
+                    (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
       have hfd : ∀ m : Fin (Module.finrank ℝ E),
           (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
               (extChartAt I x₀ x₀)) (tangentCoord (I := I) x₀ v) =
             ∑ k : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr V) k *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) k *
                 (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) := by
+                  (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
         intro m
         conv_lhs => rw [← hV_def, hv_basis]
         rw [map_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [map_smul, smul_eq_mul]
       rw [show (∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
                 (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
                   (extChartAt I x₀ x₀)) (tangentCoord (I := I) x₀ v)) •
-                (chartModelBasis E) m) =
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) =
           ∑ m : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
-                (((chartModelBasis E).repr V) k *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
+                (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) k *
                   (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                    (extChartAt I x₀ x₀)) ((chartModelBasis E) k))) • (chartModelBasis E) m from by
+                    (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from by
         refine Finset.sum_congr rfl (fun m _ => ?_)
         rw [hfd m, Finset.mul_sum, Finset.sum_smul]]
       rw [Finset.sum_comm]
@@ -469,35 +469,35 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
     rw [hLHS1]
   · refine congrArg (trivFromE (I := I) x₀ x₀) ?_
     rw [sum3_collect_basis_inner (fun p q r =>
-      ((chartModelBasis E).repr V) p *
-        ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) p *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
                   chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
-                (chartModelBasis E) m)) q *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) q *
         chartChristoffel (I := I) g x₀ p q r (extChartAt I x₀ x₀))]
     rw [sum5_collect_basis_inner (fun i j k l m =>
-      ((chartModelBasis E).repr V) i * ((chartModelBasis E).repr V) k *
-        ((chartModelBasis E).repr W) j *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) k *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
         chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
         chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀))]
     refine Finset.sum_congr rfl (fun z _ => ?_)
-    refine congrArg (fun t : ℝ => t • (chartModelBasis E) z) ?_
+    refine congrArg (fun t : ℝ => t • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) z) ?_
     have hLHScoeff :
         (∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr V) p *
-            ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) p *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
                 ∑ m : Fin (Module.finrank ℝ E),
-                  (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
+                  (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
                       chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
-                    (chartModelBasis E) m)) q *
+                    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) q *
             chartChristoffel (I := I) g x₀ p q z (extChartAt I x₀ x₀)) =
           ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
             ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr V) p * ((chartModelBasis E).repr V) i *
-                ((chartModelBasis E).repr W) j *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) p * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
                 chartChristoffel (I := I) g x₀ i j q (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ p q z (extChartAt I x₀ x₀) := by
       refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
@@ -507,8 +507,8 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
       ring
     rw [hLHScoeff]
     rw [sum4_scalar_swap_pairs (fun p q i j =>
-      ((chartModelBasis E).repr V) p * ((chartModelBasis E).repr V) i *
-        ((chartModelBasis E).repr W) j *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) p * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr W) j *
         chartChristoffel (I := I) g x₀ i j q (extChartAt I x₀ x₀) *
         chartChristoffel (I := I) g x₀ p q z (extChartAt I x₀ x₀))]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
@@ -531,7 +531,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma polyCoordExtensionTangent_basepoint (x₀ : M) (P : E → E) :
     polyCoordExtensionTangent (I := I) x₀ P x₀ =
-      (centeredChartTangentEquiv (I := I) x₀).symm (P 0) := by
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm (P 0) := by
   classical
   rw [polyCoordExtensionTangent_apply, linExtBump_eq_one, one_smul, sub_self,
     trivFromE_self_apply]
@@ -785,10 +785,10 @@ private lemma chartE_section_repr_covApply_polyCoordExt_eventuallyEq
           fderiv ℝ P (y - extChartAt I x₀ x₀) (tangentCoord (I := I) x₀ u) +
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-                  ((chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j *
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j *
                   chartChristoffel (I := I) g x₀ i j m y) •
-                (chartModelBasis E) m) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := by
   classical
   set φ := extChartAt I x₀ with hφ_def
   set c := extChartAt I x₀ x₀ with hc_def
@@ -850,10 +850,10 @@ private def innerReprPoly (g : SmoothRiemannianMetric I M) (x₀ : M) (P : E →
     fderiv ℝ P (y - extChartAt I x₀ x₀) (tangentCoord (I := I) x₀ u) +
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
       ∑ m : Fin (Module.finrank ℝ E),
-        (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-            ((chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j *
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j *
             chartChristoffel (I := I) g x₀ i j m y) •
-          (chartModelBasis E) m
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -908,7 +908,7 @@ private lemma covApply_covApply_polyCoordExt_basepoint_reduce
 private def jetCancelPoly (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀)
     (Qbil : E →L[ℝ] E →L[ℝ] E) : E → E :=
   fun h => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
-      ((centeredChartTangentEquiv (I := I) x₀).symm h)) +
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm h)) +
     (1 / 2 : ℝ) • Qbil h h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -946,9 +946,9 @@ private lemma jetCancelPoly_contDiff (g : SmoothRiemannianMetric I M) (x₀ : M)
   unfold jetCancelPoly
   have h1 : ContDiff ℝ ∞ (fun h : E =>
       -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
-        ((centeredChartTangentEquiv (I := I) x₀).symm h))) :=
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm h))) :=
     (((christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)).comp
-      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap).contDiff).neg
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap).contDiff).neg
   have h2 : ContDiff ℝ ∞ (fun h : E => (1 / 2 : ℝ) • Qbil h h) := by
     have hb : ContDiff ℝ ∞ (fun h : E => (Qbil h) h) :=
       (Qbil.contDiff.clm_apply contDiff_id)
@@ -963,12 +963,12 @@ private lemma fderiv_jetCancelPoly_centred
     fderiv ℝ (fun y : E => jetCancelPoly (I := I) g x₀ v Qbil (y - extChartAt I x₀ x₀))
         (extChartAt I x₀ x₀) u =
       -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
-        ((centeredChartTangentEquiv (I := I) x₀).symm u)) := by
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm u)) := by
   classical
   set c := extChartAt I x₀ x₀ with hc
   set L : E →L[ℝ] E :=
     (christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)).comp
-      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hL
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hL
   have hlinFD : HasFDerivAt (fun y : E => -(L (y - c))) (-L) c := by
     have h0 : HasFDerivAt (fun y : E => L (y - c)) L c := by
       have hshift : HasFDerivAt (fun y : E => y - c) (ContinuousLinearMap.id ℝ E) c :=
@@ -995,9 +995,9 @@ private def christoffelCorrectionBilin (g : SmoothRiemannianMetric I M) (x₀ : 
     E →L[ℝ] E →L[ℝ] E :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
     ∑ k : Fin (Module.finrank ℝ E),
-      (((chartModelBasis E).coord j).toContinuousLinearMap).smulRight
-        ((((chartModelBasis E).coord i).toContinuousLinearMap).smulRight
-          (chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀) • (chartModelBasis E) k))
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).smulRight
+        ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).smulRight
+          (chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1005,7 +1005,7 @@ private lemma christoffelCorrectionBilin_apply (g : SmoothRiemannianMetric I M) 
     (Y U : E) :
     christoffelCorrectionBilin (I := I) g x₀ Y U =
       christoffelCorrection (I := I) g x₀ x₀ Y
-        ((centeredChartTangentEquiv (I := I) x₀).symm U) := by
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U) := by
   classical
   rw [christoffelCorrection_apply]
   unfold christoffelCorrectionBilin
@@ -1018,11 +1018,11 @@ private lemma christoffelCorrectionBilin_apply (g : SmoothRiemannianMetric I M) 
   rw [ContinuousLinearMap.smulRight_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply, smul_smul, smul_smul]
   congr 1
-  change ((chartModelBasis E).coord j) Y * ((chartModelBasis E).coord i) U *
+  change ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j) Y * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i) U *
       chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀) =
-    ((chartModelBasis E).coord i)
-        (trivToE (I := I) x₀ x₀ ((centeredChartTangentEquiv (I := I) x₀).symm U)) *
-      ((chartModelBasis E).coord j) Y *
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i)
+        (trivToE (I := I) x₀ x₀ ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U)) *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j) Y *
       chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀)
   rw [trivToE_self_apply, ContinuousLinearEquiv.apply_symm_apply]
   ring
@@ -1031,11 +1031,11 @@ private def christoffelDerivQuadraticCorrection (g : SmoothRiemannianMetric I M)
     E →L[ℝ] E →L[ℝ] E :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
     ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
-      (((chartModelBasis E).coord k).toContinuousLinearMap).smulRight
-        ((((chartModelBasis E).coord i).toContinuousLinearMap).smulRight
-          (((chartModelBasis E).repr V) j •
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k).toContinuousLinearMap).smulRight
+        ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).smulRight
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j •
             ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m)))
+                (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1043,10 +1043,10 @@ private lemma psiDGamma_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E
     christoffelDerivQuadraticCorrection (I := I) g x₀ V a b =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
-          (((chartModelBasis E).repr a) k * ((chartModelBasis E).repr b) i *
-              ((chartModelBasis E).repr V) j) •
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr a) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr b) i *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j) •
             ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m) := by
+                (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := by
   classical
   unfold christoffelDerivQuadraticCorrection
   rw [sum_apply, sum_apply]
@@ -1060,10 +1060,10 @@ private lemma psiDGamma_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E
   rw [ContinuousLinearMap.smulRight_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply]
   conv_rhs =>
-    rw [show ((chartModelBasis E).repr a) k * ((chartModelBasis E).repr b) i *
-          ((chartModelBasis E).repr V) j =
-        ((chartModelBasis E).repr a) k *
-          (((chartModelBasis E).repr b) i * ((chartModelBasis E).repr V) j) from by ring,
+    rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr a) k * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr b) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j =
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr a) k *
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr b) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j) from by ring,
       mul_smul, mul_smul]
   rfl
 
@@ -1073,12 +1073,12 @@ private def christoffelSquaredQuadraticCorrection (g : SmoothRiemannianMetric I 
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
     ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
       ∑ m : Fin (Module.finrank ℝ E),
-        (((chartModelBasis E).coord i).toContinuousLinearMap).smulRight
-          ((((chartModelBasis E).coord k).toContinuousLinearMap).smulRight
-            ((((chartModelBasis E).repr V) j *
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).smulRight
+          ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k).toContinuousLinearMap).smulRight
+            ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1087,11 +1087,11 @@ private lemma psiGG_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) (a
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr a) i * ((chartModelBasis E).repr b) k *
-                ((chartModelBasis E).repr V) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr a) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr b) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   unfold christoffelSquaredQuadraticCorrection
   rw [sum_apply, sum_apply]
@@ -1107,13 +1107,13 @@ private lemma psiGG_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) (a
   rw [ContinuousLinearMap.smulRight_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply]
   conv_rhs =>
-    rw [show ((chartModelBasis E).repr a) i * ((chartModelBasis E).repr b) k *
-          ((chartModelBasis E).repr V) j *
+    rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr a) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr b) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j *
           chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
           chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀) =
-        ((chartModelBasis E).repr a) i *
-          (((chartModelBasis E).repr b) k *
-            (((chartModelBasis E).repr V) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr a) i *
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr b) k *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j *
               chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
               chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀))) from by ring,
       mul_smul, mul_smul]
@@ -1125,12 +1125,12 @@ private lemma fderiv_jetCancelPoly_apply (g : SmoothRiemannianMetric I M) (x₀ 
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) (z w : E) :
     fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) z w =
       -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
-          ((centeredChartTangentEquiv (I := I) x₀).symm w)) +
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm w)) +
         (1 / 2 : ℝ) • (Qbil z w + Qbil w z) := by
   classical
   set L : E →L[ℝ] E :=
     (christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)).comp
-      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hL
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hL
   have hlin : HasFDerivAt (fun y : E => -(L y)) (-L) z := (L.hasFDerivAt).neg
   have hid : HasFDerivAt (fun y : E => y) (ContinuousLinearMap.id ℝ E) z := hasFDerivAt_id z
   have hc : HasFDerivAt (fun y : E => Qbil y) (Qbil.comp (ContinuousLinearMap.id ℝ E)) z :=
@@ -1162,7 +1162,7 @@ private lemma fderiv_jetCancelPoly_zero_apply (g : SmoothRiemannianMetric I M) (
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) (w : E) :
     fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) 0 w =
       -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
-        ((centeredChartTangentEquiv (I := I) x₀).symm w)) := by
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm w)) := by
   rw [fderiv_jetCancelPoly_apply]; simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -1177,7 +1177,7 @@ private lemma fderiv_jetCancel_Aterm (g : SmoothRiemannianMetric I M) (x₀ : M)
   have hfun : (fun y : E => fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) (y - c) U) =
       (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀
           (tangentCoord (I := I) x₀ v)
-          ((centeredChartTangentEquiv (I := I) x₀).symm U)) +
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U)) +
         (1 / 2 : ℝ) • (Qbil (y - c) U + Qbil U (y - c))) := by
     funext y; rw [fderiv_jetCancelPoly_apply]
   rw [hfun]
@@ -1203,13 +1203,13 @@ private lemma fderiv_jetCancel_Aterm (g : SmoothRiemannianMetric I M) (x₀ : M)
   have hAfull : HasFDerivAt
       (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀
           (tangentCoord (I := I) x₀ v)
-          ((centeredChartTangentEquiv (I := I) x₀).symm U)) +
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U)) +
         (1 / 2 : ℝ) • (Qbil (y - c) U + Qbil U (y - c)))
       ((1 / 2 : ℝ) • (Qbil.flip U + Qbil U)) c := by
     have hconst : HasFDerivAt
         (fun _ : E => -(christoffelCorrection (I := I) g x₀ x₀
           (tangentCoord (I := I) x₀ v)
-          ((centeredChartTangentEquiv (I := I) x₀).symm U)))
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U)))
         (0 : E →L[ℝ] E) c := hasFDerivAt_const _ c
     have := hconst.add ((hA1.add hA2).const_smul (1 / 2 : ℝ))
     rwa [zero_add] at this
@@ -1229,20 +1229,20 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma diffAt_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ : M)
     {P : E → E} (hP : ContDiff ℝ ∞ P) (U : E) (i j m : Fin (Module.finrank ℝ E)) :
     DifferentiableAt ℝ (fun y : E =>
-        (((chartModelBasis E).repr U) i *
-            (((chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j) *
-            chartChristoffel (I := I) g x₀ i j m y) • (chartModelBasis E) m)
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j) *
+            chartChristoffel (I := I) g x₀ i j m y) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
         (extChartAt I x₀ x₀) := by
   classical
   set c := extChartAt I x₀ x₀ with hc
   have hPshift : Differentiable ℝ (fun y : E => P (y - c)) :=
     (hP.differentiable (by norm_num)).comp ((differentiable_id).sub_const c)
-  have hcoordj : DifferentiableAt ℝ (fun y : E => ((chartModelBasis E).repr (P (y - c))) j) c :=
-    (((chartModelBasis E).coord j).toContinuousLinearMap.differentiable.comp
+  have hcoordj : DifferentiableAt ℝ (fun y : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j) c :=
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.differentiable.comp
       hPshift).differentiableAt
   have hγ : DifferentiableAt ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y) c :=
     chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j m
-  exact (((hcoordj.const_mul _).mul hγ)).smul_const ((chartModelBasis E) m)
+  exact (((hcoordj.const_mul _).mul hγ)).smul_const ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1250,20 +1250,20 @@ private lemma fderiv_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ :
     {P : E → E} (hP : ContDiff ℝ ∞ P) (hP0 : P 0 = 0) (U u : E)
     (i j m : Fin (Module.finrank ℝ E)) :
     fderiv ℝ (fun y : E =>
-        (((chartModelBasis E).repr U) i *
-            (((chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j) *
-            chartChristoffel (I := I) g x₀ i j m y) • (chartModelBasis E) m)
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - extChartAt I x₀ x₀))) j) *
+            chartChristoffel (I := I) g x₀ i j m y) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
         (extChartAt I x₀ x₀) u =
-      (((chartModelBasis E).repr U) i *
-          (((chartModelBasis E).repr (fderiv ℝ P 0 u)) j) *
-          chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) • (chartModelBasis E) m := by
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (fderiv ℝ P 0 u)) j) *
+          chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   set c := extChartAt I x₀ x₀ with hc
-  set cst := ((chartModelBasis E).repr U) i with hcst
+  set cst := ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i with hcst
   set γ := fun y : E => chartChristoffel (I := I) g x₀ i j m y with hγ
   have hγdiff : DifferentiableAt ℝ γ c :=
     chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j m
-  set e := (chartModelBasis E) m with he
+  set e := (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m with he
   have hcomp : HasFDerivAt (fun y : E => P (y - c)) (fderiv ℝ P 0) c := by
     have hcompgen : ∀ z : E, HasFDerivAt (fun y : E => P (y - c)) (fderiv ℝ P (z - c)) z := by
       intro z
@@ -1275,28 +1275,28 @@ private lemma fderiv_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ :
           ((fderiv ℝ P (z - c)).comp (ContinuousLinearMap.id ℝ E)) z := hPdz.comp z hshiftz
       rwa [ContinuousLinearMap.comp_id] at hcz
     have h := hcompgen c; rwa [sub_self] at h
-  have hcoordj : HasFDerivAt (fun y : E => ((chartModelBasis E).repr (P (y - c))) j)
-      ((((chartModelBasis E).coord j).toContinuousLinearMap).comp (fderiv ℝ P 0)) c :=
-    ((((chartModelBasis E).coord j).toContinuousLinearMap).hasFDerivAt).comp c hcomp
+  have hcoordj : HasFDerivAt (fun y : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j)
+      ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).comp (fderiv ℝ P 0)) c :=
+    ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).hasFDerivAt).comp c hcomp
   have hγ' : HasFDerivAt γ (fderiv ℝ γ c) c := hγdiff.hasFDerivAt
-  have h1 : HasFDerivAt (fun y : E => cst * (((chartModelBasis E).repr (P (y - c))) j))
-      ((cst : ℝ) • ((((chartModelBasis E).coord j).toContinuousLinearMap).comp (fderiv ℝ P 0))) c :=
+  have h1 : HasFDerivAt (fun y : E => cst * (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j))
+      ((cst : ℝ) • ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).comp (fderiv ℝ P 0))) c :=
     hcoordj.const_mul cst
   have hs := (h1.mul hγ').smul_const e
   have hFD : fderiv ℝ (fun y : E =>
-        (cst * (((chartModelBasis E).repr (P (y - c))) j) * γ y) • e) c =
-      ((fun y => cst * (((chartModelBasis E).repr (P (y - c))) j)) c • fderiv ℝ γ c +
-        γ c • ((cst : ℝ) • ((((chartModelBasis E).coord j).toContinuousLinearMap).comp
+        (cst * (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j) * γ y) • e) c =
+      ((fun y => cst * (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j)) c • fderiv ℝ γ c +
+        γ c • ((cst : ℝ) • ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).comp
           (fderiv ℝ P 0)))).smulRight e := hs.fderiv
   rw [hFD, ContinuousLinearMap.smulRight_apply]
-  have hP0c : ((chartModelBasis E).repr (P (c - c))) j = 0 := by rw [sub_self, hP0]; simp
-  have hcoordeq : (((chartModelBasis E).coord j).toContinuousLinearMap) (fderiv ℝ P 0 u) =
-      ((chartModelBasis E).repr (fderiv ℝ P 0 u)) j := rfl
+  have hP0c : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (c - c))) j = 0 := by rw [sub_self, hP0]; simp
+  have hcoordeq : (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) (fderiv ℝ P 0 u) =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (fderiv ℝ P 0 u)) j := rfl
   have hcoeff :
-      (((fun y => cst * (((chartModelBasis E).repr (P (y - c))) j)) c • fderiv ℝ γ c +
-        γ c • ((cst : ℝ) • ((((chartModelBasis E).coord j).toContinuousLinearMap).comp
+      (((fun y => cst * (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j)) c • fderiv ℝ γ c +
+        γ c • ((cst : ℝ) • ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).comp
           (fderiv ℝ P 0)))) u) =
-        cst * (((chartModelBasis E).repr (fderiv ℝ P 0 u)) j) * γ c := by
+        cst * (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (fderiv ℝ P 0 u)) j) * γ c := by
     simp only [add_apply, smul_apply,
       ContinuousLinearMap.comp_apply, hcoordeq, hP0c, smul_eq_mul]
     ring
@@ -1312,10 +1312,10 @@ private lemma innerReprPoly_centre (g : SmoothRiemannianMetric I M) (x₀ : M)
   unfold innerReprPoly
   rw [sub_self, hP0]
   have hzero : ∀ i j m : Fin (Module.finrank ℝ E),
-      (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-          ((chartModelBasis E).repr (0 : E)) j *
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (0 : E)) j *
           chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
-        (chartModelBasis E) m = 0 := by
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m = 0 := by
     intro i j m; rw [map_zero]; simp
   rw [Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
     Finset.sum_congr rfl (fun m _ => hzero i j m)))]
@@ -1332,12 +1332,12 @@ private lemma fderiv_innerReprPoly_jetCancel (g : SmoothRiemannianMetric I M) (x
             Qbil (tangentCoord (I := I) x₀ u) (tangentCoord (I := I) x₀ u)) +
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-                (((chartModelBasis E).repr
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
+                (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                   (fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) 0
                     (tangentCoord (I := I) x₀ u))) j) *
                 chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   set c := extChartAt I x₀ x₀ with hc
   set U := tangentCoord (I := I) x₀ u with hU
@@ -1348,8 +1348,8 @@ private lemma fderiv_innerReprPoly_jetCancel (g : SmoothRiemannianMetric I M) (x
   set Bfun : E → E := fun y : E =>
     ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
       ∑ m : Fin (Module.finrank ℝ E),
-        (((chartModelBasis E).repr U) i * ((chartModelBasis E).repr (P (y - c))) j *
-            chartChristoffel (I := I) g x₀ i j m y) • (chartModelBasis E) m with hBfun
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (P (y - c))) j *
+            chartChristoffel (I := I) g x₀ i j m y) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m with hBfun
   have hsplit : innerReprPoly (I := I) g x₀ P u = fun y => Afun y + Bfun y := by funext y; rfl
   rw [hsplit]
   have hAdiff : DifferentiableAt ℝ Afun c := by
@@ -1357,7 +1357,7 @@ private lemma fderiv_innerReprPoly_jetCancel (g : SmoothRiemannianMetric I M) (x
     have hfun : (fun y : E => fderiv ℝ P (y - c) U) =
         (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀
             (tangentCoord (I := I) x₀ v)
-            ((centeredChartTangentEquiv (I := I) x₀).symm U)) +
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U)) +
           (1 / 2 : ℝ) • (Qbil (y - c) U + Qbil U (y - c))) := by
       funext y; rw [hP, fderiv_jetCancelPoly_apply]
     rw [hfun]
@@ -1396,11 +1396,11 @@ private lemma psiDGamma_diag (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E)
     christoffelDerivQuadraticCorrection (I := I) g x₀ V U U =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr U) k *
-                ((chartModelBasis E).repr U) i *
-                ((chartModelBasis E).repr V) j) •
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j) •
               ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m) := by
+                  (extChartAt I x₀ x₀)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := by
   classical
   rw [psiDGamma_apply]
 
@@ -1412,12 +1412,12 @@ private lemma psiGG_diag (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E)
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr U) i *
-                ((chartModelBasis E).repr U) k *
-                ((chartModelBasis E).repr V) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr V) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   rw [psiGG_apply]
 
@@ -1438,7 +1438,7 @@ private lemma exists_jetCancelQuadraticCoeff
   set V : E := tangentCoord (I := I) x₀ v with hV
   set ΓV : E →L[ℝ] E :=
     (christoffelCorrection (I := I) g x₀ x₀ V).comp
-      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hΓV
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hΓV
   set Φ₁ : E →L[ℝ] E →L[ℝ] E :=
     (christoffelCorrectionBilin (I := I) g x₀).comp (-ΓV) with hΦ₁
   refine ⟨-(christoffelDerivQuadraticCorrection (I := I) g x₀ V) -
@@ -1449,7 +1449,7 @@ private lemma exists_jetCancelQuadraticCoeff
   set P : E → E := jetCancelPoly (I := I) g x₀ v Qbil with hP
   set c := extChartAt I x₀ x₀ with hc
   set U : E := tangentCoord (I := I) x₀ u with hU
-  have hU_symm : (centeredChartTangentEquiv (I := I) x₀).symm U = u := by
+  have hU_symm : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U = u := by
     rw [hU, tangentCoord_eq_centeredChartTangentEquiv,
       ContinuousLinearEquiv.symm_apply_apply]
   have hfP0 : fderiv ℝ P 0 U =
@@ -1463,16 +1463,16 @@ private lemma exists_jetCancelQuadraticCoeff
         (1 / 2 : ℝ) • (Qbil U U + Qbil U U) +
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr U) i *
-                  (((chartModelBasis E).repr (fderiv ℝ P 0 U)) j) *
-                  chartChristoffel (I := I) g x₀ i j m c) • (chartModelBasis E) m from
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+                  (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (fderiv ℝ P 0 U)) j) *
+                  chartChristoffel (I := I) g x₀ i j m c) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from
       by simpa [hP, hc, hU] using
         fderiv_innerReprPoly_jetCancel (I := I) g x₀ v Qbil u]
   rw [show (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ∑ m : Fin (Module.finrank ℝ E),
-          (((chartModelBasis E).repr U) i *
-              (((chartModelBasis E).repr (fderiv ℝ P 0 U)) j) *
-              chartChristoffel (I := I) g x₀ i j m c) • (chartModelBasis E) m) =
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr U) i *
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (fderiv ℝ P 0 U)) j) *
+              chartChristoffel (I := I) g x₀ i j m c) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) =
       christoffelCorrection (I := I) g x₀ x₀ (fderiv ℝ P 0 U) u from by
     rw [christoffelCorrection_apply]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
@@ -1503,8 +1503,8 @@ private lemma exists_jetCancelQuadraticCoeff
       hΓV, ContinuousLinearMap.comp_apply, christoffelCorrectionBilin_apply]
     change christoffelCorrection (I := I) g x₀ x₀
         (-(christoffelCorrection (I := I) g x₀ x₀ V
-          ((centeredChartTangentEquiv (I := I) x₀).symm U)))
-          ((centeredChartTangentEquiv (I := I) x₀).symm U) =
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U)))
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm U) =
       christoffelCorrection (I := I) g x₀ x₀
         (-(christoffelCorrection (I := I) g x₀ x₀ V u)) u
     rw [hU_symm]]
@@ -1538,7 +1538,7 @@ theorem exists_linExtJetCancellingCorrection
     rw [covApply_polyCoordExtensionTangent_basepoint_eq (I := I) g x₀ hP_cd u]
     rw [hP_def, jetCancelPoly_zero,
       fderiv_jetCancelPoly_centred (I := I) g x₀ v Qbil (tangentCoord (I := I) x₀ u)]
-    have hU_symm : (centeredChartTangentEquiv (I := I) x₀).symm
+    have hU_symm : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x₀).symm
         (tangentCoord (I := I) x₀ u) = u := by
       rw [tangentCoord_eq_centeredChartTangentEquiv,
         ContinuousLinearEquiv.symm_apply_apply]

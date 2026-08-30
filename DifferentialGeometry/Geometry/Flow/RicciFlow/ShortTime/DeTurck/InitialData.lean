@@ -157,12 +157,12 @@ theorem deturck_ricci_flow_parabolic_short_time_existence
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
           (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
           (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn

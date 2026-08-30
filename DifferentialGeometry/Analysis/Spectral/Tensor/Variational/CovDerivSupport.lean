@@ -124,9 +124,9 @@ private lemma tensorCovDerivPointwiseInner_eq_zero_off_tsupport
   apply Finset.sum_eq_zero
   intro j _
   have hSi : tensorCovDerivAt (I := I) (M := M) g r s S x
-      ((chartModelBasis E) i) = 0 :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) = 0 :=
     tensorCovDerivAt_eq_zero_off_tsupport (I := I) (M := M) g r s S
-      hx ((chartModelBasis E) i)
+      hx ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
   rw [hSi, TensorRSSpace.toModel_zero, tensorInnerPointwise_zero_left]
   ring
 

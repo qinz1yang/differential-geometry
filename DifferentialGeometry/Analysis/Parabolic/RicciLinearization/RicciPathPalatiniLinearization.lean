@@ -507,7 +507,7 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn
       (fun b : M =>
         linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   classical
   have hΛ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -533,10 +533,10 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn
   have heq : ∀ b ∈ (chartAt H α).source,
       linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)
-          (chartBasisVecFiber (I := I) α j b) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) =
         (1 - s₀)⁻¹ *
           Tensor0SSpace.toModel (Kf b)
-            (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b) := by
+            (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) := by
     intro b _
     rw [linearizedKoszulCovec_eq_endpoint_flat (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀
       b (Z b) (Y b)]
@@ -545,7 +545,7 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn
   have hcomb : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => (1 - s₀)⁻¹ *
         Tensor0SSpace.toModel (Kf b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b))
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source :=
     contMDiffOn_const.mul hbase
   exact hcomb.congr heq
@@ -606,7 +606,7 @@ private lemma sharpPsiField_jointContMDiffOn
         (fun p : M × ℝ =>
           linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) p.1 (Z p.1) (Y p.1)
-            (chartBasisVecFiber (I := I) α j p.1))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro α j
     exact (linearizedKoszulCovec_basis_contMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
@@ -721,17 +721,17 @@ private lemma continuousAt_leviCivita_toFun_slice
         fun Yv : E =>
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr (trivToE (I := I) x x e)) i *
-                  ((chartModelBasis E).repr Yv) j *
+              (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) x x e)) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Yv) j *
                   chartChristoffel (I := I) g' x i j k (extChartAt I x x)) •
-                (chartModelBasis E) k := by
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
       funext Yv
       exact christoffelCorrection_apply (I := I) g' x x Yv e
     rw [heq]
     refine continuous_finsetSum _ (fun i _ => continuous_finsetSum _ (fun j _ =>
       continuous_finsetSum _ (fun k _ => ?_)))
-    have hcoord : Continuous (fun Yv : E => ((chartModelBasis E).repr Yv) j) :=
-      LinearMap.continuous_of_finiteDimensional ((chartModelBasis E).coord j)
+    have hcoord : Continuous (fun Yv : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Yv) j) :=
+      LinearMap.continuous_of_finiteDimensional ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j)
     exact (((continuous_const.mul hcoord).mul continuous_const).smul continuous_const)
   have hfd : ContDiffAt ℝ ∞ (fun s : ℝ => fderiv ℝ (fun y : E => F (s, y)) xhat) s₀ := by
     have hf : ContDiffAt ℝ ∞
@@ -788,8 +788,8 @@ private lemma metricSharp_metricPerturbationPath_eq_invGram_sum
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j *
-              α₀ (chartBasisVecFiber (I := I) x j x)) •
-          chartBasisVecFiber (I := I) x i x := by
+              α₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x := by
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) x
   have h := metricSharpChartLocal_eq_metricSharp (I := I)
@@ -818,8 +818,8 @@ private lemma tendsto_metricSharp_metricPerturbationPath_fixed
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j *
-              α₀ (chartBasisVecFiber (I := I) x j x)) •
-          chartBasisVecFiber (I := I) x i x :=
+              α₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x :=
     fun s => metricSharp_metricPerturbationPath_eq_invGram_sum (I := I) g₀ T T' hδ hδ' s x α₀
   rw [heq s₀]
   refine Filter.Tendsto.congr (fun s => (heq s).symm) ?_
@@ -844,8 +844,8 @@ private lemma tendsto_metricSharp_metricPerturbationPath_varying
     {s₀ : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (x : M) {κ : ℝ → TangentSpace I x →ₗ[ℝ] ℝ}
     (hκ : ∀ j : Fin (Module.finrank ℝ E),
-      Filter.Tendsto (fun s : ℝ => κ s (chartBasisVecFiber (I := I) x j x)) (𝓝 s₀)
-        (𝓝 (κ s₀ (chartBasisVecFiber (I := I) x j x)))) :
+      Filter.Tendsto (fun s : ℝ => κ s (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) (𝓝 s₀)
+        (𝓝 (κ s₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)))) :
     Filter.Tendsto
       (fun s : ℝ => DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x (κ s))
@@ -858,8 +858,8 @@ private lemma tendsto_metricSharp_metricPerturbationPath_varying
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j *
-              κ s (chartBasisVecFiber (I := I) x j x)) •
-          chartBasisVecFiber (I := I) x i x :=
+              κ s (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x :=
     fun s => metricSharp_metricPerturbationPath_eq_invGram_sum (I := I) g₀ T T' hδ hδ' s x (κ s)
   rw [heq s₀]
   refine Filter.Tendsto.congr (fun s => (heq s).symm) ?_
@@ -900,14 +900,14 @@ private def slopeCore
       δ')
     (s₀ s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
-    (centeredChartTangentBasis (I := I) x).repr
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
       (covDerivSharp (I := I) g₀ T T' x hδ hδ' s₀ s
-          (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+          (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
           (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w)
         - covDerivSharp (I := I) g₀ T T' x hδ hδ' s₀ s
             (smoothExtensionTangent (I := I) x v)
-            (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+            (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
             (smoothExtensionTangent (I := I) x w)
         + (s - s₀) •
             DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
@@ -917,14 +917,14 @@ private def slopeCore
                 (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
                   (smoothExtensionTangent (I := I) x v)
                   (smoothExtensionTangent (I := I) x w) x)
-                (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x))
+                (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x))
         - (s - s₀) •
             DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
               (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
                 (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
-                  (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+                  (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                   (smoothExtensionTangent (I := I) x w) x)
                 (smoothExtensionTangent (I := I) x v x))) i
 
@@ -1044,8 +1044,8 @@ private lemma pathValue_sub_eq_mul_slopeCore
   rw [slopeCore, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   set Bi : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    ⟨smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i),
-      smoothExtensionTangent_contMDiff (I := I) x (centeredChartTangentBasis (I := I) x i)⟩ with hBi
+    ⟨smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i),
+      smoothExtensionTangent_contMDiff (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)⟩ with hBi
   set Vf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) x v,
       smoothExtensionTangent_contMDiff (I := I) x v⟩ with hVf
@@ -1056,11 +1056,11 @@ private lemma pathValue_sub_eq_mul_slopeCore
     Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs₀Icc
   have hA : covDerivConnectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
-      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+      (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
       (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w) x =
       (s - s₀) • covDerivSharp (I := I) g₀ T T' x hδ hδ' s₀ s
-        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+        (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) :=
     covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDerivSharp (I := I) g₀ T T' x
@@ -1068,11 +1068,11 @@ private lemma pathValue_sub_eq_mul_slopeCore
   have hB : covDerivConnectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (smoothExtensionTangent (I := I) x v)
-      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+      (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
       (smoothExtensionTangent (I := I) x w) x =
       (s - s₀) • covDerivSharp (I := I) g₀ T T' x hδ hδ' s₀ s
         (smoothExtensionTangent (I := I) x v)
-        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+        (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
         (smoothExtensionTangent (I := I) x w) :=
     covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDerivSharp (I := I) g₀ T T' x
       hδ_lt hδ hδ'_lt hδ' hs₀ hsmem Vf Bi Wf
@@ -1082,7 +1082,7 @@ private lemma pathValue_sub_eq_mul_slopeCore
         (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) x)
-      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x) =
+      (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x) =
       (s - s₀) • ((s - s₀) •
         DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
@@ -1091,7 +1091,7 @@ private lemma pathValue_sub_eq_mul_slopeCore
             (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w) x)
-            (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x))) := by
+            (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x))) := by
     have h1 : diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
         (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (smoothExtensionTangent (I := I) x v)
@@ -1109,12 +1109,12 @@ private lemma pathValue_sub_eq_mul_slopeCore
       (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) x)
-      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x)
+      (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x)
   have hQ2 : PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
       (diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
         (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
-        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+        (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
         (smoothExtensionTangent (I := I) x w) x)
       (smoothExtensionTangent (I := I) x v x) =
       (s - s₀) • ((s - s₀) •
@@ -1123,25 +1123,25 @@ private lemma pathValue_sub_eq_mul_slopeCore
           (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
             (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
-              (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+              (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
               (smoothExtensionTangent (I := I) x w) x)
             (smoothExtensionTangent (I := I) x v x))) := by
     have h1 : diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
         (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
-        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+        (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
         (smoothExtensionTangent (I := I) x w) x =
         (s - s₀) • linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
-          (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+          (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
           (smoothExtensionTangent (I := I) x w) x :=
       connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         hs₀mem hsmem x (smoothExtensionTangent (I := I) x w x)
-        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x)
+        (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x)
     rw [h1, map_smul, smul_apply]
     congr 1
     exact connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀mem hsmem x
       (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
-        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+        (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
         (smoothExtensionTangent (I := I) x w) x)
       (smoothExtensionTangent (I := I) x v x)
   rw [hA, hB, hQ1, hQ2]
@@ -1233,7 +1233,7 @@ private lemma slopeCore_tendsto
       have hucont := continuous_linearizedKoszulCovec_fst (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x e
-        (chartBasisVecFiber (I := I) x j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
       have hΨ : Filter.Tendsto (fun s : ℝ =>
           linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s (fun b => Yf b) (fun b => Zf b) x)
           (𝓝 s₀)
@@ -1245,15 +1245,15 @@ private lemma slopeCore_tendsto
   simp only [slopeCore]
   refine tendsto_finsetSum _ (fun i _ => ?_)
   set Bi : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    ⟨smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i),
-      smoothExtensionTangent_contMDiff (I := I) x (centeredChartTangentBasis (I := I) x i)⟩ with hBi
-  have hcoord : Continuous (fun u : TangentSpace I x => ((centeredChartTangentBasis (I := I) x).repr u) i) :=
-    LinearMap.continuous_of_finiteDimensional ((centeredChartTangentBasis (I := I) x).coord i)
+    ⟨smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i),
+      smoothExtensionTangent_contMDiff (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)⟩ with hBi
+  have hcoord : Continuous (fun u : TangentSpace I x => ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i) :=
+    LinearMap.continuous_of_finiteDimensional ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).coord i)
   refine (hcoord.tendsto _).comp ?_
   refine Filter.Tendsto.sub (Filter.Tendsto.add (Filter.Tendsto.sub ?_ ?_) ?_) ?_
   · exact hcovSharp Bi Vf Wf
   · exact hcovSharp Vf Bi Wf
-  · exact hquad Vf Wf (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x)
+  · exact hquad Vf Wf (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x)
   · exact hquad Bi Wf (smoothExtensionTangent (I := I) x v x)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -1265,16 +1265,16 @@ private lemma slopeCore_at_base
     (s₀ : ℝ) :
     slopeCore (I := I) g₀ T T' x v w hδ hδ' s₀ s₀ =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
-              (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+              (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w) x
             - covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
                 (smoothExtensionTangent (I := I) x v)
-                (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+                (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x w) x) i := by
   simp only [slopeCore, sub_self, zero_smul, add_zero, sub_zero]
   rfl
@@ -1288,16 +1288,16 @@ theorem linearizedRicciAt_eq_palatini_covDeriv
     {s₀ : ℝ} (hs₀ : s₀ ∈ Set.Ioo (0 : ℝ) 1) :
     linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s₀ =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
-              (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+              (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w) x
             - covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
                 (smoothExtensionTangent (I := I) x v)
-                (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+                (smoothExtensionTangent (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x w) x) i := by
   classical
   have hEv : (fun s : ℝ =>

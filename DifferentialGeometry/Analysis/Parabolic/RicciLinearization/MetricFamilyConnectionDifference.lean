@@ -106,12 +106,12 @@ private theorem covComp_joint
     (α : M) (i : Fin (Module.finrank ℝ E)) {S : Set ℝ} :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ =>
-        (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α i p.1))
+        (om p.1) (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p.1))
       ((chartAt H α).source ×ˢ S) := by
   have hbase := cotangentSection_chartComponent_contMDiffOn (I := I) om α i
   have hcomp : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => Tensor0SSpace.toModel (om p.1)
-        (fun _ : Fin 1 => chartBasisVecFiber (I := I) α i p.1))
+        (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p.1))
       ((chartAt H α).source ×ˢ S) :=
     hbase.comp contMDiffOn_fst (fun _p hp => hp.1)
   refine hcomp.congr ?_
@@ -133,15 +133,15 @@ private theorem conn_pair_joint
       (fun p : M × ℝ =>
         ((show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
             connectionDifferenceFib (I := I) (g_fam p.2) q p.1) (om p.1))
-          ![chartBasisVecFiber (I := I) α j p.1,
-            chartBasisVecFiber (I := I) α k p.1])
+          ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p.1,
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k p.1])
       ((chartAt H α).source ×ˢ D.regular) := by
   classical
   have hsum : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => ∑ a : Fin (Module.finrank ℝ E),
         (chartChristoffel (I := I) (g_fam p.2) α k j a (extChartAt I α p.1) -
           chartChristoffel (I := I) q α k j a (extChartAt I α p.1)) *
-        (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α a p.1))
+        (om p.1) (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p.1))
       ((chartAt H α).source ×ˢ D.regular) := by
     refine contMDiffOn_finsetSum (fun a _ => ?_)
     exact ((MetricFamilySmoothOn.chartChristoffel_comp_extChartAt_jointContMDiffOn
@@ -191,7 +191,7 @@ private theorem connectionDifference_app_joint
   set α := p₀.1
   set e := trivializationAt (Tensor0SModel 2 ℝ E)
     (fun x : M => Tensor0SSpace 2 I x) α with he
-  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -219,8 +219,8 @@ private theorem connectionDifference_app_joint
               (connectionDifferenceSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)⟩).2 σ =
           ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
               connectionDifferenceFib (I := I) (g_fam z.2) q z.1) (om z.1))
-            ![chartBasisVecFiber (I := I) α (σ 0) z.1,
-              chartBasisVecFiber (I := I) α (σ 1) z.1] := by
+            ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 0) z.1,
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σ 1) z.1] := by
       intro z hzbase
       rw [continuousMultilinearMap_basis_repr]
       have hcoe :
@@ -236,7 +236,7 @@ private theorem connectionDifference_app_joint
         (Tensor0SSpace.toModel
           ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
             (connectionDifferenceSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)))
-        (fun a => (chartModelBasis E) (σ a))
+        (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ a))
       rw [Tensor0SSpace.toModel,
         (tensor0SSpaceContinuousLinearEquiv (I := I) 2 z.1).symm_apply_apply] at happly
       rw [happly]
@@ -244,7 +244,7 @@ private theorem connectionDifference_app_joint
       change Tensor0SSpace.eval
           ((connectionDifferenceFib (I := I) (g_fam z.2) q z.1) (om z.1))
             (fun a => (trivializationAt E (TangentSpace I) α).symmL ℝ z.1
-              ((chartModelBasis E) (σ a))) = _
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (σ a))) = _
       congr 1
       funext a
       fin_cases a <;> rfl

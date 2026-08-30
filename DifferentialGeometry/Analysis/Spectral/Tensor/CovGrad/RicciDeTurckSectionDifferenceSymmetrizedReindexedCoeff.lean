@@ -478,11 +478,11 @@ private lemma alignedPrincipalEndoCcross_trace_eq
 def alignmentTraceRemainderCross (g₀ gop gcov : SmoothRiemannianMetric I M)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
-    (chartModelBasis E).repr
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (tangentSpaceModelContinuousLinearEquiv (I := I) x
         (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            ((chartModelBasis E) i)))) i
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) i
 
 def palatiniTracedPrincipalRemainderCrossMetric (g₀ gop gcov : SmoothRiemannianMetric I M)
     (S' : SmoothCcTensor g₀ 0 2) (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) : ℝ :=
@@ -496,7 +496,7 @@ theorem palatini_tracedPrincipal_cross_eq_combinedTrace
       smoothCcTensorBilinForm (I := I) g₀ S' b u w = gcov.inner b u w - g₀.inner b u w)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (∑ i : Fin (Module.finrank ℝ E),
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (inverseMetricSharpFib (I := I) gop x
             (dualToCotangent (I := I)
@@ -504,7 +504,7 @@ theorem palatini_tracedPrincipal_cross_eq_combinedTrace
                 (fun b => cotangentToCLM (I := I)
                   (koszulCovGradCovec (I := I) (M := M) g₀ gcov Z Y b)) x
                     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                      ((chartModelBasis E) i)) :
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) :
                 TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -515,7 +515,7 @@ theorem palatini_tracedPrincipal_cross_eq_combinedTrace
             g₀ gop gcov S' Z Y x := by
   classical
   have hsumeq : (∑ i : Fin (Module.finrank ℝ E),
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (inverseMetricSharpFib (I := I) gop x
             (dualToCotangent (I := I)
@@ -523,21 +523,21 @@ theorem palatini_tracedPrincipal_cross_eq_combinedTrace
                 (fun b => cotangentToCLM (I := I)
                   (koszulCovGradCovec (I := I) (M := M) g₀ gcov Z Y b)) x
                     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                      ((chartModelBasis E) i)) :
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) :
                 TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i) =
       ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (alignedPrincipalEndoCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
-              ((chartModelBasis E) i)) i
-          + (chartModelBasis E).repr
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i
+          + (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (tangentSpaceModelContinuousLinearEquiv (I := I) x
                 (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
                   ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                    ((chartModelBasis E) i)))) i) := by
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) i) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
     have hsplit := g1Principal_splitCcross (I := I) (M := M) g₀ gop gcov Z Y x
-      (e.symm ((chartModelBasis E) i))
+      (e.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
     unfold g1PrincipalVecCcross at hsplit
     have hsplitE := congrArg e hsplit
     rw [hsplitE]
@@ -565,7 +565,7 @@ theorem palatini_tracedPrincipalDiff_covector_eq_combinedTrace
       g₁'.inner b u w = g₀.inner b u w + ccTensorBilinSymm (I := I) g₀ T' b u w)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (tangentSpaceModelContinuousLinearEquiv (I := I) x
             (inverseMetricSharpFib (I := I) g₁ x
               (dualToCotangent (I := I)
@@ -573,10 +573,10 @@ theorem palatini_tracedPrincipalDiff_covector_eq_combinedTrace
                   (fun b => cotangentToCLM (I := I)
                     (koszulCovGradCovec (I := I) (M := M) g₀ g₁ Z Y b)) x
                       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                        ((chartModelBasis E) i)) :
+                        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) :
                   TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i)
       - (∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (tangentSpaceModelContinuousLinearEquiv (I := I) x
             (inverseMetricSharpFib (I := I) g₁ x
               (dualToCotangent (I := I)
@@ -584,7 +584,7 @@ theorem palatini_tracedPrincipalDiff_covector_eq_combinedTrace
                   (fun b => cotangentToCLM (I := I)
                     (koszulCovGradCovec (I := I) (M := M) g₀ g₁' Z Y b)) x
                       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                        ((chartModelBasis E) i)) :
+                        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) :
                   TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -648,24 +648,24 @@ theorem palatini_tracedPrincipalDiff_covector_eq_combinedTrace
 def palatiniTracedPrincipalZRemainderCross (g₀ gop gcov : SmoothRiemannianMetric I M)
     (S' : SmoothCcTensor g₀ 0 2) (V W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) : ℝ :=
   (∑ i : Fin (Module.finrank ℝ E),
-    (chartModelBasis E).repr
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (alignedPrincipalEndoCrossMetric (I := I) (M := M) g₀ gop gcov
           (⟨smoothExtensionTangent (I := I) x
-              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) i)),
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
             smoothExtensionTangent_contMDiff (I := I) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i))⟩)
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩)
           W x (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x))
-        - alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x ((chartModelBasis E) i)) i)
+        - alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i)
   + (∑ i : Fin (Module.finrank ℝ E),
-    (chartModelBasis E).repr
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (tangentSpaceModelContinuousLinearEquiv (I := I) x
         (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov
           (⟨smoothExtensionTangent (I := I) x
-              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((chartModelBasis E) i)),
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
             smoothExtensionTangent_contMDiff (I := I) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                ((chartModelBasis E) i))⟩)
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩)
           W x (V x))) i)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -673,7 +673,7 @@ theorem palatini_tracedPrincipal_Zslot_cross_eq_combinedTrace
     (g₀ gop gcov : SmoothRiemannianMetric I M) (S' : SmoothCcTensor g₀ 0 2)
     (V W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (∑ i : Fin (Module.finrank ℝ E),
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (inverseMetricSharpFib (I := I) gop x
             (dualToCotangent (I := I)
@@ -682,10 +682,10 @@ theorem palatini_tracedPrincipal_Zslot_cross_eq_combinedTrace
                   (koszulCovGradCovec (I := I) (M := M) g₀ gcov
                     (⟨smoothExtensionTangent (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) i)),
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
                       smoothExtensionTangent_contMDiff (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) i))⟩) W b)) x (V x) :
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩) W b)) x (V x) :
                 TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -698,7 +698,7 @@ theorem palatini_tracedPrincipal_Zslot_cross_eq_combinedTrace
   rw [← trace_eq_basis_repr_sum (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x)]
   rw [palatiniTracedPrincipalZRemainderCross]
   have hsumeq : ∀ i : Fin (Module.finrank ℝ E),
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (inverseMetricSharpFib (I := I) gop x
             (dualToCotangent (I := I)
@@ -707,51 +707,51 @@ theorem palatini_tracedPrincipal_Zslot_cross_eq_combinedTrace
                   (koszulCovGradCovec (I := I) (M := M) g₀ gcov
                     (⟨smoothExtensionTangent (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) i)),
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
                       smoothExtensionTangent_contMDiff (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) i))⟩) W b)) x (V x) :
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩) W b)) x (V x) :
                 TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i =
-        (chartModelBasis E).repr
-            (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x ((chartModelBasis E) i)) i
-          + ((chartModelBasis E).repr
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+            (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i
+          + ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (alignedPrincipalEndoCrossMetric (I := I) (M := M) g₀ gop gcov
                   (⟨smoothExtensionTangent (I := I) x
                       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                        ((chartModelBasis E) i)),
+                        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
                     smoothExtensionTangent_contMDiff (I := I) x
                       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                        ((chartModelBasis E) i))⟩) W x
+                        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩) W x
                     (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x))
                 - alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x
-                  ((chartModelBasis E) i)) i
-            + (chartModelBasis E).repr
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i
+            + (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x
                   (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov
                     (⟨smoothExtensionTangent (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) i)),
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
                       smoothExtensionTangent_contMDiff (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                          ((chartModelBasis E) i))⟩) W x (V x))) i) := by
+                          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩) W x (V x))) i) := by
     intro i
     let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
     set ei : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-      ⟨smoothExtensionTangent (I := I) x (e.symm ((chartModelBasis E) i)),
-        smoothExtensionTangent_contMDiff (I := I) x (e.symm ((chartModelBasis E) i))⟩ with hei
+      ⟨smoothExtensionTangent (I := I) x (e.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
+        smoothExtensionTangent_contMDiff (I := I) x (e.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩ with hei
     have hsplit := g1Principal_splitCcross (I := I) (M := M) g₀ gop gcov ei W x (V x)
     unfold g1PrincipalVecCcross at hsplit
     have hsplitE := congrArg e hsplit
     rw [hsplitE]
     rw [map_add, map_add, Finsupp.add_apply, ← alignedPrincipalEndoCcross_apply]
-    rw [show (chartModelBasis E).repr
+    rw [show (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (alignedPrincipalEndoCrossMetric (I := I) (M := M) g₀ gop gcov ei W x (e (V x))) i =
-        (chartModelBasis E).repr
-            (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x ((chartModelBasis E) i)) i
-          + (chartModelBasis E).repr
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+            (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i
+          + (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (alignedPrincipalEndoCrossMetric (I := I) (M := M) g₀ gop gcov ei W x (e (V x))
                 - alignedPrincipalEndoZSlot (I := I) (M := M) g₀ gop S' V W x
-                  ((chartModelBasis E) i)) i from by
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i from by
       rw [map_sub, Finsupp.sub_apply]
       ring]
     rw [add_assoc]
@@ -768,7 +768,7 @@ theorem palatini_tracedPrincipalDiff_Zslot_eq_combinedTrace
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (V W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (tangentSpaceModelContinuousLinearEquiv (I := I) x
             (inverseMetricSharpFib (I := I) g₁ x
               (dualToCotangent (I := I)
@@ -777,13 +777,13 @@ theorem palatini_tracedPrincipalDiff_Zslot_eq_combinedTrace
                     (koszulCovGradCovec (I := I) (M := M) g₀ g₁
                       (⟨smoothExtensionTangent (I := I) x
                           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                            ((chartModelBasis E) i)),
+                            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
                         smoothExtensionTangent_contMDiff (I := I) x
                           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                            ((chartModelBasis E) i))⟩) W b)) x (V x) :
+                            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩) W b)) x (V x) :
                   TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i)
       - (∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (tangentSpaceModelContinuousLinearEquiv (I := I) x
             (inverseMetricSharpFib (I := I) g₁ x
               (dualToCotangent (I := I)
@@ -792,10 +792,10 @@ theorem palatini_tracedPrincipalDiff_Zslot_eq_combinedTrace
                     (koszulCovGradCovec (I := I) (M := M) g₀ g₁'
                       (⟨smoothExtensionTangent (I := I) x
                           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                            ((chartModelBasis E) i)),
+                            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
                         smoothExtensionTangent_contMDiff (I := I) x
                           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                            ((chartModelBasis E) i))⟩) W b)) x (V x) :
+                            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))⟩) W b)) x (V x) :
                   TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x))))) i) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2

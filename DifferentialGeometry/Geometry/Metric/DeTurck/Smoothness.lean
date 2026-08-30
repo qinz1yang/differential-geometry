@@ -90,8 +90,8 @@ private lemma connectionDifference_chartBasis_contMDiffOn (g g' : SmoothRiemanni
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
         (⟨x, connectionDifference (I := I) g g' x
-            (chartBasisVecFiber (I := I) α j x)
-            (chartBasisVecFiber (I := I) α k x)⟩ :
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)⟩ :
           TotalSpace E (TangentSpace I)))
       (chartAt H α).source := by
   have hopen : IsOpen ((chartAt H α).source) := (chartAt H α).open_source
@@ -99,10 +99,10 @@ private lemma connectionDifference_chartBasis_contMDiffOn (g g' : SmoothRiemanni
     trivializationAt_baseSet_eq_chartAt_source α
   have hframe : ∀ i : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (T% (fun x : M => chartBasisVecFiber (I := I) α i x))
+        (T% (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
         (chartAt H α).source := by
     intro i
-    have h := chartBasisVec_contMDiffOn (I := I) α i
+    have h := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i
     rw [hbase] at h
     exact h
   exact connectionDifference_contMDiffOn_local (I := I) g g' hopen (hframe j) (hframe k)
@@ -133,8 +133,8 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M =>
           (⟨x, connectionDifference (I := I) g g' x
-              (chartBasisVecFiber (I := I) α j x)
-              (chartBasisVecFiber (I := I) α k x)⟩ :
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)⟩ :
             TotalSpace E (TangentSpace I)))
         (chartAt H α).source :=
     fun j k => connectionDifference_chartBasis_contMDiffOn (I := I) g g' α j k
@@ -143,8 +143,8 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
         (fun x : M => TotalSpace.mk' E x
           (chartInvGramMatrix (I := I) g α x j k •
             connectionDifference (I := I) g g' x
-              (chartBasisVecFiber (I := I) α j x)
-              (chartBasisVecFiber (I := I) α k x)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)))
         (chartAt H α).source :=
     fun j k => (hcoeff j k).smul_section (hterm j k)
   have hinner : ∀ j : Fin (Module.finrank ℝ E),
@@ -153,8 +153,8 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
           (∑ k : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α x j k •
               connectionDifference (I := I) g g' x
-                (chartBasisVecFiber (I := I) α j x)
-                (chartBasisVecFiber (I := I) α k x)))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)))
         (chartAt H α).source :=
     fun j => ContMDiffOn.sum_section (fun k _ => hsmul j k)
   have houter : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -163,8 +163,8 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
           ∑ k : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α x j k •
               connectionDifference (I := I) g g' x
-                (chartBasisVecFiber (I := I) α j x)
-                (chartBasisVecFiber (I := I) α k x)))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)))
       (chartAt H α).source :=
     ContMDiffOn.sum_section (fun j _ => hinner j)
   refine houter.congr (fun x _hx => ?_)

@@ -34,7 +34,7 @@ lemma mvfderiv_comp_extChartAt_apply_basis [I.Boundaryless]
     (hgE : ContDiffAt ℝ ∞ gE (extChartAt I x x))
     (a : Fin (Module.finrank ℝ E)) :
     mvfderiv (I := I) (fun b : M => gE (extChartAt I x b)) x
-        (centeredChartTangentBasis (I := I) x a) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x a) =
       partialDeriv (E := E) a gE (extChartAt I x x) := by
   classical
   have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
@@ -53,9 +53,9 @@ lemma mvfderiv_comp_extChartAt_apply_basis [I.Boundaryless]
     mdifferentiableAt_extChartAt (I := I) (x := x) hxsrc
   have hG_mdiff : MDiffAt Gfun x := hgE_mdiff.comp x hphi_mdiff
   rw [mfderiv_scalar_eq_chart_fderiv (I := I) x Gfun hxsrc hxint hG_mdiff
-    (centeredChartTangentBasis (I := I) x a)]
-  rw [trivToE_self_apply (I := I) x (centeredChartTangentBasis (I := I) x a)]
-  rw [centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x a)]
+  rw [trivToE_self_apply (I := I) x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x a)]
+  rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
   have htgt_nhds : ((extChartAt I x).target : Set E) ∈ 𝓝 (extChartAt I x x) :=
     Filter.mem_of_superset (isOpen_interior.mem_nhds hxint) interior_subset
   have hcompose_eq : (Gfun ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)] gE := by
@@ -71,7 +71,7 @@ lemma exists_globalSmooth_chartBasisVec_ext
     ∃ (Xext : Π b : M, TangentSpace I b) (U : Set M),
       ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xext) ∧
         IsOpen U ∧ x ∈ U ∧ U ⊆ chartLeviCivitaGoodSet (I := I) x ∧
-        ∀ y ∈ U, Xext y = chartBasisVecFiber (I := I) x j y := by
+        ∀ y ∈ U, Xext y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
     self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
@@ -81,19 +81,19 @@ lemma exists_globalSmooth_chartBasisVec_ext
   obtain ⟨χ, _, hχ_tsupp⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp hnhds
   have hXext_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun y : M => (χ : M → ℝ) y • chartBasisVecFiber (I := I) x j y)) :=
+      (T% (fun y : M => (χ : M → ℝ) y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y)) :=
     bumpedChartBasis_contMDiff (I := I) x (b₀ := x) j χ hχ_tsupp
   have hχ_eq_one_nhds : ∀ᶠ y in 𝓝 x, (χ : M → ℝ) y = 1 := χ.eventuallyEq_one
   obtain ⟨V_set, hV_nhds, hχ_one_V⟩ :=
     Filter.eventually_iff_exists_mem.mp hχ_eq_one_nhds
   obtain ⟨V_open, hV_sub_V_set, hV_open_isOpen, hx_in_V_open⟩ :=
     mem_nhds_iff.mp hV_nhds
-  refine ⟨fun y : M => (χ : M → ℝ) y • chartBasisVecFiber (I := I) x j y,
+  refine ⟨fun y : M => (χ : M → ℝ) y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y,
     V_open ∩ chartLeviCivitaGoodSet (I := I) x, hXext_smooth,
     hV_open_isOpen.inter hopen, ⟨hx_in_V_open, hx_good⟩, fun y hy => hy.2, ?_⟩
   intro y hyU
   have hχ_one_y : (χ : M → ℝ) y = 1 := hχ_one_V y (hV_sub_V_set hyU.1)
-  change (χ : M → ℝ) y • chartBasisVecFiber (I := I) x j y = chartBasisVecFiber (I := I) x j y
+  change (χ : M → ℝ) y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y
   rw [hχ_one_y, one_smul]
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -154,9 +154,9 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
     (hXi : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xi))
     (hU_open : IsOpen U) (hxU : x ∈ U)
     (hU_good : U ⊆ chartLeviCivitaGoodSet (I := I) x)
-    (hXa_eq : ∀ y ∈ U, Xa y = chartBasisVecFiber (I := I) x a y)
-    (hXb_eq : ∀ y ∈ U, Xb y = chartBasisVecFiber (I := I) x b y)
-    (hXi_eq : ∀ y ∈ U, Xi y = chartBasisVecFiber (I := I) x i y) :
+    (hXa_eq : ∀ y ∈ U, Xa y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a y)
+    (hXb_eq : ∀ y ∈ U, Xb y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x b y)
+    (hXi_eq : ∀ y ∈ U, Xi y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i y) :
     (LeviCivita (I := I) g).toFun
         (covApply (LeviCivita (I := I) g) Xb Xi) x (Xa x) =
       ∑ l : Fin (Module.finrank ℝ E),
@@ -164,10 +164,10 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
           ∑ m : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g x a m l (extChartAt I x x) *
               chartChristoffel (I := I) g x b i m (extChartAt I x x)) •
-          centeredChartTangentBasis (I := I) x l := by
+          DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l := by
   classical
   set cov := LeviCivita (I := I) g with hcov_def
-  have hXa_x : Xa x = chartBasisVecFiber (I := I) x a x := hXa_eq x hxU
+  have hXa_x : Xa x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x := hXa_eq x hxU
   set S : Π y : M, TangentSpace I y := covApply cov Xb Xi with hS_def
   have hXi_plus : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% Xi) := by
     rw [show ((∞ : WithTop ℕ∞) + 1) = ∞ from rfl]; exact hXi
@@ -176,20 +176,20 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
   set Γc : Fin (Module.finrank ℝ E) → M → ℝ :=
     fun m y => chartChristoffel (I := I) g x b i m (extChartAt I x y) with hΓc_def
   set term : Fin (Module.finrank ℝ E) → Π y : M, TangentSpace I y :=
-    fun m y => Γc m y • chartBasisVecFiber (I := I) x m y with hterm_def
+    fun m y => Γc m y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m y with hterm_def
   have hS_eq_sum_on_U : ∀ y ∈ U, S y = ∑ m : Fin (Module.finrank ℝ E), term m y := by
     intro y hy
     have hy_good : y ∈ chartLeviCivitaGoodSet (I := I) x := hU_good hy
     have hSval : S y = cov.toFun Xi y (Xb y) := rfl
     rw [hSval]
     have hXi_diff_y : MDiffAt (T% Xi) y := (hXi y).mdifferentiableAt (by simp)
-    have hchart_i_diff_y : MDiffAt (T% (fun z : M => chartBasisVecFiber (I := I) x i z)) y :=
+    have hchart_i_diff_y : MDiffAt (T% (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i z)) y :=
       chartBasisVec_alpha_mdifferentiableAt (I := I) x i hy_good
     have hXi_ev : (fun z : M => Xi z) =ᶠ[𝓝 y]
-        (fun z : M => chartBasisVecFiber (I := I) x i z) := by
+        (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i z) := by
       filter_upwards [hU_open.mem_nhds hy] with z hz using hXi_eq z hz
     have hcov_congr :
-        cov.toFun Xi y = cov.toFun (fun z : M => chartBasisVecFiber (I := I) x i z) y :=
+        cov.toFun Xi y = cov.toFun (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i z) y :=
       cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hXi_diff_y hchart_i_diff_y
         Filter.univ_mem hXi_ev
     rw [hcov_congr]
@@ -208,7 +208,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
       mdifferentiableAt_extChartAt (I := I) (x := x) (mem_chart_source H x)
     exact hΓ_mdiff.comp x hphi_mdiff
   have hframe_diff : ∀ m : Fin (Module.finrank ℝ E),
-      MDiffAt (T% (fun y : M => chartBasisVecFiber (I := I) x m y)) x :=
+      MDiffAt (T% (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m y)) x :=
     fun m => chartBasisVec_alpha_mdifferentiableAt (I := I) x m
       (self_mem_chartLeviCivitaGoodSet (I := I) (α := x))
   have hterm_diff : ∀ m : Fin (Module.finrank ℝ E), MDiffAt (T% (term m)) x :=
@@ -230,9 +230,9 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
   rw [hcov_S_eq, hXa_x]
   have hsum_apply :
       (cov.toFun (fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) x)
-          (chartBasisVecFiber (I := I) x a x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) =
         ∑ m : Fin (Module.finrank ℝ E),
-          (cov.toFun (term m) x) (chartBasisVecFiber (I := I) x a x) := by
+          (cov.toFun (term m) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) := by
     have hfun :
         (fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) =
           (Finset.univ : Finset (Fin (Module.finrank ℝ E))).sum term := by
@@ -240,46 +240,46 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
     rw [hfun]
     exact leviCivita_finset_sum_apply (I := I) g
       (Finset.univ : Finset (Fin (Module.finrank ℝ E))) term
-      (chartBasisVecFiber (I := I) x a x) hterm_diff
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) hterm_diff
   rw [hsum_apply]
   have hleib : ∀ m : Fin (Module.finrank ℝ E),
-      (cov.toFun (term m) x) (chartBasisVecFiber (I := I) x a x) =
-        mvfderiv (I := I) (Γc m) x (chartBasisVecFiber (I := I) x a x) •
-            chartBasisVecFiber (I := I) x m x +
+      (cov.toFun (term m) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) =
+        mvfderiv (I := I) (Γc m) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) •
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x +
           Γc m x •
-            (cov.toFun (fun y : M => chartBasisVecFiber (I := I) x m y) x)
-              (chartBasisVecFiber (I := I) x a x) := by
+            (cov.toFun (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m y) x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) := by
     intro m
     have hleibniz := cov.isCovariantDerivativeOnUniv.leibniz
-      (σ := fun y : M => chartBasisVecFiber (I := I) x m y) (g := Γc m) (x := x)
+      (σ := fun y : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m y) (g := Γc m) (x := x)
       (hframe_diff m) (hΓc_diff m)
-    have hterm_eq : term m = (Γc m) • (fun y : M => chartBasisVecFiber (I := I) x m y) := by
+    have hterm_eq : term m = (Γc m) • (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m y) := by
       funext y; rfl
     rw [hterm_eq]
-    have happ := congr($(hleibniz) (chartBasisVecFiber (I := I) x a x))
+    have happ := congr($(hleibniz) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x))
     simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply] at happ
     rw [happ]
     rw [add_comm]
   rw [Finset.sum_congr rfl (fun m _ => hleib m)]
   have hder : ∀ m : Fin (Module.finrank ℝ E),
-      mvfderiv (I := I) (Γc m) x (chartBasisVecFiber (I := I) x a x) =
+      mvfderiv (I := I) (Γc m) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) =
         partialDeriv (E := E) a (chartChristoffel (I := I) g x b i m) (extChartAt I x x) := by
     intro m
     rw [chartBasisVecFiber_self (I := I) x a]
     exact mvfderiv_comp_extChartAt_apply_basis (I := I) x
       (chartChristoffel_contDiffAt_self (I := I) g x b i m) a
   have hframe_x : ∀ m : Fin (Module.finrank ℝ E),
-      chartBasisVecFiber (I := I) x m x = centeredChartTangentBasis (I := I) x m :=
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m x = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x m :=
     fun m => chartBasisVecFiber_self (I := I) x m
   have hΓc_x : ∀ m : Fin (Module.finrank ℝ E),
       Γc m x = chartChristoffel (I := I) g x b i m (extChartAt I x x) := fun m => rfl
   have hinner : ∀ m : Fin (Module.finrank ℝ E),
-      (cov.toFun (fun y : M => chartBasisVecFiber (I := I) x m y) x)
-          (chartBasisVecFiber (I := I) x a x) =
+      (cov.toFun (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x m y) x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x a x) =
         ∑ l : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g x a m l (extChartAt I x x) •
-            centeredChartTangentBasis (I := I) x l := by
+            DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l := by
     intro m
     have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
       self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
@@ -289,7 +289,7 @@ lemma LeviCivita_chartBasisVec_secondCovDeriv [I.Boundaryless]
   rw [Finset.sum_congr rfl (fun m _ => by
     rw [hder m, hframe_x m, hΓc_x m, hinner m])]
   set e : Fin (Module.finrank ℝ E) → TangentSpace I x :=
-    fun l => centeredChartTangentBasis (I := I) x l with he_def
+    fun l => DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l with he_def
   set D : Fin (Module.finrank ℝ E) → ℝ :=
     fun m => partialDeriv (E := E) a (chartChristoffel (I := I) g x b i m) (extChartAt I x x)
     with hD_def
@@ -328,7 +328,7 @@ private lemma fderiv_chartE_section_repr_eq_zero_of_eventuallyEq [I.Boundaryless
     (x : M) (j : Fin (Module.finrank ℝ E))
     {X : Π b : M, TangentSpace I b} {U : Set M}
     (hU_open : IsOpen U) (hxU : x ∈ U)
-    (hX_eq : ∀ y ∈ U, X y = chartBasisVecFiber (I := I) x j y) :
+    (hX_eq : ∀ y ∈ U, X y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y) :
     fderiv ℝ (chartESectionRepr (I := I) x X ∘ (extChartAt I x).symm)
         (extChartAt I x x) = 0 := by
   classical
@@ -353,13 +353,13 @@ private lemma fderiv_chartE_section_repr_eq_zero_of_eventuallyEq [I.Boundaryless
   have hev :
       (chartESectionRepr (I := I) x X ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)]
         (chartESectionRepr (I := I) x
-          (fun b : M => chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) := by
+          (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) := by
     filter_upwards [hopen_V.mem_nhds hxV] with y hy
     obtain ⟨_hy_tgt, hy_pre⟩ := hy
     rw [Set.mem_preimage] at hy_pre
     change chartESectionRepr (I := I) x X ((extChartAt I x).symm y) =
       chartESectionRepr (I := I) x
-        (fun b : M => chartBasisVecFiber (I := I) x j b) ((extChartAt I x).symm y)
+        (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b) ((extChartAt I x).symm y)
     unfold chartESectionRepr
     rw [hX_eq ((extChartAt I x).symm y) hy_pre]
   rw [hev.fderiv_eq]
@@ -372,8 +372,8 @@ lemma mlieBracket_chartBasisVec_ext_self_eq_zero [I.Boundaryless]
     (hXj : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xj))
     (hXk : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Xk))
     (hU_open : IsOpen U) (hxU : x ∈ U)
-    (hXj_eq : ∀ y ∈ U, Xj y = chartBasisVecFiber (I := I) x j y)
-    (hXk_eq : ∀ y ∈ U, Xk y = chartBasisVecFiber (I := I) x k y) :
+    (hXj_eq : ∀ y ∈ U, Xj y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y)
+    (hXk_eq : ∀ y ∈ U, Xk y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k y) :
     VectorField.mlieBracket I Xj Xk x = 0 := by
   classical
   have hxsrc : x ∈ (chartAt H x).source := mem_chart_source H x
@@ -399,13 +399,13 @@ lemma riemannOp_chartBasis_eq_chartRiemannCLM_basis [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j k : Fin (Module.finrank ℝ E)) :
     riemannOp (cov := LeviCivita (I := I) g) x
-        (centeredChartTangentBasis (I := I) x j)
-        (centeredChartTangentBasis (I := I) x k)
-        (centeredChartTangentBasis (I := I) x i) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) =
       chartRiemannCLM (I := I) g x
-        (centeredChartTangentBasis (I := I) x j)
-        (centeredChartTangentBasis (I := I) x k)
-        (centeredChartTangentBasis (I := I) x i) := by
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) := by
   classical
   set cov := LeviCivita (I := I) g with hcov_def
   obtain ⟨Xj, Uj, hXj_sm, hUj_open, hxUj, hUj_good, hXj_eq⟩ :=
@@ -419,21 +419,21 @@ lemma riemannOp_chartBasis_eq_chartRiemannCLM_basis [I.Boundaryless]
   have hxU : x ∈ U := ⟨⟨hxUj, hxUk⟩, hxUi⟩
   have hU_good : U ⊆ chartLeviCivitaGoodSet (I := I) x :=
     fun y hy => hUj_good hy.1.1
-  have hXj_eqU : ∀ y ∈ U, Xj y = chartBasisVecFiber (I := I) x j y :=
+  have hXj_eqU : ∀ y ∈ U, Xj y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j y :=
     fun y hy => hXj_eq y hy.1.1
-  have hXk_eqU : ∀ y ∈ U, Xk y = chartBasisVecFiber (I := I) x k y :=
+  have hXk_eqU : ∀ y ∈ U, Xk y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k y :=
     fun y hy => hXk_eq y hy.1.2
-  have hXi_eqU : ∀ y ∈ U, Xi y = chartBasisVecFiber (I := I) x i y :=
+  have hXi_eqU : ∀ y ∈ U, Xi y = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i y :=
     fun y hy => hXi_eq y hy.2
-  have hXj_x : Xj x = centeredChartTangentBasis (I := I) x j := by
+  have hXj_x : Xj x = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j := by
     rw [hXj_eqU x hxU, chartBasisVecFiber_self (I := I) x j]
-  have hXk_x : Xk x = centeredChartTangentBasis (I := I) x k := by
+  have hXk_x : Xk x = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k := by
     rw [hXk_eqU x hxU, chartBasisVecFiber_self (I := I) x k]
-  have hXi_x : Xi x = centeredChartTangentBasis (I := I) x i := by
+  have hXi_x : Xi x = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i := by
     rw [hXi_eqU x hxU, chartBasisVecFiber_self (I := I) x i]
-  rw [show centeredChartTangentBasis (I := I) x j = Xj x from hXj_x.symm,
-      show centeredChartTangentBasis (I := I) x k = Xk x from hXk_x.symm,
-      show centeredChartTangentBasis (I := I) x i = Xi x from hXi_x.symm]
+  rw [show DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j = Xj x from hXj_x.symm,
+      show DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k = Xk x from hXk_x.symm,
+      show DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i = Xi x from hXi_x.symm]
   rw [riemannOp_apply_smooth (cov := cov) hXj_sm hXk_sm hXi_sm]
   rw [riemannSec_def]
   rw [mlieBracket_chartBasisVec_ext_self_eq_zero (I := I) x j k hXj_sm hXk_sm

@@ -110,11 +110,11 @@ private lemma speedSq_eq_chartGramAlongCurve
   have hroundtrip :
       DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i j
           (chartCurve (I := I) α (fun v : ℝ => f s v) t)
-        = chartGramMatrix (I := I) g α α i j := by
+        = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α α i j := by
     rw [chartCurve_def]
-    change chartGramMatrix (I := I) g α
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
         ((extChartAt I α).symm (extChartAt I α (f s t))) i j
-      = chartGramMatrix (I := I) g α α i j
+      = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α α i j
     rw [hα] at *
     rw [extChartAt_to_inv]
   rw [hroundtrip]

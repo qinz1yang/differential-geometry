@@ -282,17 +282,17 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
     (v : E) :
     (fderiv ℝ (fderiv ℝ ftilde) y₀ v) v =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) i *
-          ((chartModelBasis E).repr v) j *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j *
           partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ := by
   classical
   have h_outer_inner : ∀ i j : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) i (partialDeriv (E := E) j ftilde) y₀ =
-        (fderiv ℝ (fderiv ℝ ftilde) y₀ ((chartModelBasis E) i))
-          ((chartModelBasis E) j) := by
+        (fderiv ℝ (fderiv ℝ ftilde) y₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     intros i j
     set L_j : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
-      ContinuousLinearMap.apply ℝ ℝ ((chartModelBasis E) j) with hLj_def
+      ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) with hLj_def
     have heq : partialDeriv (E := E) j ftilde = L_j ∘ (fderiv ℝ ftilde) := by
       funext y
       rfl
@@ -305,7 +305,7 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
     rw [hcomp_fderiv]
     rw [L_j.fderiv]
     rfl
-  set b := chartModelBasis E with hb_def
+  set b := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E with hb_def
   set B : E →L[ℝ] E →L[ℝ] ℝ := fderiv ℝ (fderiv ℝ ftilde) y₀ with hB_def
   have hv_decomp : v = ∑ i : Fin (Module.finrank ℝ E),
       ((b.repr v) i) • b i := by
@@ -417,7 +417,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
       rw [show (scalarOnE (I := I) α f) = ftilde from rfl, h_partial_zero k]
       ring
     rw [h_christ_term, sub_zero]
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb_def
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E with hb_def
   set v : E := ∑ i : Fin (Module.finrank ℝ E), c i • b i with hv_def
   have h_repr_v : ∀ k : Fin (Module.finrank ℝ E), (b.repr v) k = c k := by
     intro k
@@ -477,8 +477,8 @@ theorem laplacian_nonpos_at_max
         chartHessianTensor (I := I) g α f i j x_max) with hHmat_def
   have hx_in_baseSet : x_max ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact mem_chart_source H α
-  have hG_PD : (chartGramMatrix (I := I) g α x_max).PosDef :=
-    chartGramMatrix_posDef (I := I) g α hx_in_baseSet
+  have hG_PD : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x_max).PosDef :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hx_in_baseSet
   have hMmat_PD : Mmat.PosDef := by
     rw [hMmat_def]
     unfold chartInvGramMatrix

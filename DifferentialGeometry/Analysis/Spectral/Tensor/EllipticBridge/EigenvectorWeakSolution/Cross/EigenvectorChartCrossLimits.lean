@@ -184,7 +184,7 @@ theorem tensorCovDerivCrossRight_eq_crossLeft
     tensorInnerPointwise_symm (I := I) (M := M) g r s x
       (w.toFun x)
       (TensorRSSpace.toModel
-        (tensorCovDerivAt (I := I) (M := M) g r s S x ((chartModelBasis E) j)))]
+        (tensorCovDerivAt (I := I) (M := M) g r s S x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem tensorCovDerivCrossRight_integral_eq_inner

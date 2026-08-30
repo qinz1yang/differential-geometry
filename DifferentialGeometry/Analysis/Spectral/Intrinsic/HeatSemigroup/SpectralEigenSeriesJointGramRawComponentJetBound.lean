@@ -66,7 +66,7 @@ lemma ccTensorBilinSymm_eq_half_rawComponent
     (α : M) (a b : Fin (Module.finrank ℝ E)) {p : M}
     (hp : p ∈ (chartAt H α).source) :
     ccTensorBilinSymm (I := I) g S p
-        (chartBasisVecFiber (I := I) α a p) (chartBasisVecFiber (I := I) α b p) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α a p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α b p) =
       (1 / 2 : ℝ) *
         (tensorChartComponentRaw (I := I) (M := M) g 0 2 S α ![] ![a, b] p +
           tensorChartComponentRaw (I := I) (M := M) g 0 2 S α ![] ![b, a] p) := by
@@ -96,13 +96,13 @@ lemma ccTensorBilinSymm_eq_half_rawComponent
             (fun _ : Fin 0 => TangentSpace I p) (1 : ℝ)) :
         ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I p) ℝ)
           (fun k : Fin 2 =>
-            chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
         smoothCcTensorBilinForm (I := I) g S p
-            (chartBasisVecFiber (I := I) α i p) (chartBasisVecFiber (I := I) α j p) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p) := by
     intro i j
     have hvecAB : (fun k : Fin 2 =>
-        chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
-        ![chartBasisVecFiber (I := I) α i p, chartBasisVecFiber (I := I) α j p] := by
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α ((![i, j] : Fin 2 → _) k) p) =
+        ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i p, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j p] := by
       funext k; fin_cases k <;> rfl
     rw [hvecAB, ccTensorBilin_apply]
     rfl

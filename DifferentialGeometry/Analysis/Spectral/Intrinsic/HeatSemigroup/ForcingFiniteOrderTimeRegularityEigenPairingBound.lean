@@ -500,11 +500,11 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
     (TT SS : M × ℝ → ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ)
     (_hT : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
-        (fun p : M × ℝ => (TT p) (fun k : Fin n => (chartModelBasis E) (φ k)))
+        (fun p : M × ℝ => (TT p) (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T))
     (_hS : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
-        (fun p : M × ℝ => (SS p) (fun k : Fin n => (chartModelBasis E) (φ k)))
+        (fun p : M × ℝ => (SS p) (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
         (fun p : M × ℝ =>
@@ -524,7 +524,7 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
       have hT0 := hT (fun i : Fin 0 => Fin.elim0 i)
       have hS0 := hS (fun i : Fin 0 => Fin.elim0 i)
       have hempty :
-          (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))
+          (fun k : Fin 0 => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))
             = (fun i : Fin 0 => (Fin.elim0 i : E)) := by
         funext i; exact Fin.elim0 i
       have hT_smooth :
@@ -533,7 +533,7 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
             ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
         have : (fun p : M × ℝ => (TT p) (fun i : Fin 0 => Fin.elim0 i)) =
             (fun p : M × ℝ => (TT p)
-              (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
+              (fun k : Fin 0 => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
           funext p; congr 1; rw [hempty]
         rw [this]; exact hT0
       have hS_smooth :
@@ -542,7 +542,7 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
             ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
         have : (fun p : M × ℝ => (SS p) (fun i : Fin 0 => Fin.elim0 i)) =
             (fun p : M × ℝ => (SS p)
-              (fun k : Fin 0 => (chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
+              (fun k : Fin 0 => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((fun i : Fin 0 => Fin.elim0 i) k))) := by
           funext p; congr 1; rw [hempty]
         rw [this]; exact hS0
       exact hT_smooth.mul hS_smooth
@@ -553,10 +553,10 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
           fun p : M × ℝ =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                (chartGramMatrix (I := I) g α p.1)⁻¹ i j *
+                (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p.1)⁻¹ i j *
                   chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1
-                    ((TT p).curryLeft ((chartModelBasis E) i))
-                    ((SS p).curryLeft ((chartModelBasis E) j)) := by
+                    ((TT p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                    ((SS p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
         funext p
         rw [chartTensorInnerPointwise_0s_succ]
       rw [heq]
@@ -569,17 +569,17 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
         rw [hbase_eq] at hinv
         exact (hinv.of_le hN).comp contMDiffOn_fst (fun p hp => hp.1)
       · refine ih
-            (fun p : M × ℝ => (TT p).curryLeft ((chartModelBasis E) i))
-            (fun p : M × ℝ => (SS p).curryLeft ((chartModelBasis E) j))
+            (fun p : M × ℝ => (TT p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (fun p : M × ℝ => (SS p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
             ?_ ?_
         · intro ψ
           set ψ' : Fin (n + 1) → Fin (Module.finrank ℝ E) :=
             Fin.cons (α := fun _ => Fin (Module.finrank ℝ E)) i ψ with hψ'
           have heq' :
-              (fun p : M × ℝ => ((TT p).curryLeft ((chartModelBasis E) i))
-                  (fun k : Fin n => (chartModelBasis E) (ψ k)))
+              (fun p : M × ℝ => ((TT p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
                 = fun p : M × ℝ =>
-                    (TT p) (fun k : Fin (n + 1) => (chartModelBasis E) (ψ' k)) := by
+                    (TT p) (fun k : Fin (n + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ' k)) := by
             funext p
             rw [ContinuousMultilinearMap.curryLeft_apply]
             congr 1
@@ -593,10 +593,10 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
           set ψ' : Fin (n + 1) → Fin (Module.finrank ℝ E) :=
             Fin.cons (α := fun _ => Fin (Module.finrank ℝ E)) j ψ with hψ'
           have heq' :
-              (fun p : M × ℝ => ((SS p).curryLeft ((chartModelBasis E) j))
-                  (fun k : Fin n => (chartModelBasis E) (ψ k)))
+              (fun p : M × ℝ => ((SS p).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
+                  (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
                 = fun p : M × ℝ =>
-                    (SS p) (fun k : Fin (n + 1) => (chartModelBasis E) (ψ' k)) := by
+                    (SS p) (fun k : Fin (n + 1) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ' k)) := by
             funext p
             rw [ContinuousMultilinearMap.curryLeft_apply]
             congr 1
@@ -626,13 +626,13 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
       (fun p : M × ℝ =>
         (loweredCompose (I := I) (M := M) g 0 2 α p.1 (arm p))
-          (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)))
+          (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
   have heval : ∀ p : M × ℝ,
       (loweredCompose (I := I) (M := M) g 0 2 α p.1 (arm p))
-          (fun k : Fin (0 + 2) => (chartModelBasis E) (φ k)) =
+          (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) =
         Tensor0SBundle.Tensor0SSpace.eval (Tval p)
-          (fun j : Fin 2 => chartBasisVecFiber (I := I) α
+          (fun j : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α
             (φ (Fin.natAdd 0 j)) p.1) := by
     intro p
     rw [loweredCompose_apply, lowerAllUpperIndices_apply, separableFormAt_zero, harm p]
@@ -640,7 +640,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
   refine ContMDiffOn.congr ?_ (fun p _ => heval p)
   have hv : ∀ j : Fin 2, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
-        (chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1))
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro j
     have h := DifferentialGeometry.Geometry.Operator.chartBasisVec_jointContMDiffOn
@@ -650,7 +650,7 @@ private theorem loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
   exact contMDiffWithinAt_section_apply_prod_ofOrder_local 2
     (s := (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)
     (p₀ := p) Tval (hTval p hp)
-    (fun j p => chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1)
+    (fun j p => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (φ (Fin.natAdd 0 j)) p.1)
     (fun j => (hv j p hp).of_le hN)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -995,7 +995,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
         ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((0 : ℕ) : WithTop ℕ∞)
           (fun p : M × ℝ =>
             (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (jetD p.1 p.2))
-              (fun k : Fin (0 + 2) => (chartModelBasis E) (ψ k)))
+              (fun k : Fin (0 + 2) => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
           ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
       fun ψ => loweredCompose_zero_basis_eval_jointContMDiffOn_ofOrder_local
         (I := I) (M := M) h0inf g₀ α

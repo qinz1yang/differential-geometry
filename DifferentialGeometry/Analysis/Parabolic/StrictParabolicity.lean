@@ -63,8 +63,8 @@ theorem deTurckSymbol_apply_apply_eq_isotropic_of_symm (g : SmoothRiemannianMetr
     (x : M) (ξ : E) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (ht : ∀ v w, t v w = t w v) (i k : Fin (Module.finrank ℝ E)) :
     (deTurckSymbol (I := I) g x ξ t)
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x k) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) =
       metricCovectorNormSq (I := I) g x ξ * formComp (I := I) x t i k := by
   rw [deTurckSymbol_apply_apply]
   rw [ricciSymbol_apply_eq_closedForm (I := I) g x ξ t i k,
@@ -78,16 +78,16 @@ theorem deTurckSymbol_apply_eq_smul_of_symm (g : SmoothRiemannianMetric I M)
     (ht : ∀ v w, t v w = t w v) :
     deTurckSymbol (I := I) g x ξ t =
       metricCovectorNormSq (I := I) g x ξ • t := by
-  refine LinearMap.ext_basis (centeredChartTangentBasis (I := I) x)
-    (centeredChartTangentBasis (I := I) x) (fun i k => ?_)
+  refine LinearMap.ext_basis (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) (fun i k => ?_)
   calc (deTurckSymbol (I := I) g x ξ t)
-          (centeredChartTangentBasis (I := I) x i)
-          (centeredChartTangentBasis (I := I) x k)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
       = metricCovectorNormSq (I := I) g x ξ * formComp (I := I) x t i k :=
         deTurckSymbol_apply_apply_eq_isotropic_of_symm (I := I) g x ξ t ht i k
     _ = (metricCovectorNormSq (I := I) g x ξ • t)
-          (centeredChartTangentBasis (I := I) x i)
-          (centeredChartTangentBasis (I := I) x k) := by
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) := by
         rw [LinearMap.smul_apply, LinearMap.smul_apply, smul_eq_mul, formComp_def]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in

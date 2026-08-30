@@ -27,7 +27,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma chartFrameVec_eq_chartBasisVecFiber
     (α : M) (i : Fin (Module.finrank ℝ E)) (b : M) :
-    chartFrameVec (I := I) α i b = chartBasisVecFiber (I := I) α i b := rfl
+    chartFrameVec (I := I) α i b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -98,11 +98,11 @@ theorem lieDerivMetric_pairing_contMDiff
       rw [he_def, h_baseSet_eq]; exact hb_chart
     have hY_decomp : Y b =
         ∑ i, chartCoeff (I := I) b₀ Y i b •
-          chartBasisVecFiber (I := I) b₀ i b :=
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b :=
       chartCoeff_recompose (I := I) b₀ Y hb_baseSet
     have hZ_decomp : Z b =
         ∑ j, chartCoeff (I := I) b₀ Z j b •
-          chartBasisVecFiber (I := I) b₀ j b :=
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b :=
       chartCoeff_recompose (I := I) b₀ Z hb_baseSet
     set B : TangentSpace I b →ₗ[ℝ] TangentSpace I b →ₗ[ℝ] ℝ :=
       lieDerivMetric (I := I) g W b with hB_def
@@ -110,9 +110,9 @@ theorem lieDerivMetric_pairing_contMDiff
     rw [map_sum]
     have h_smul_left : ∀ i,
         B (chartCoeff (I := I) b₀ Y i b •
-            chartBasisVecFiber (I := I) b₀ i b) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b) =
           chartCoeff (I := I) b₀ Y i b •
-            B (chartBasisVecFiber (I := I) b₀ i b) := by
+            B (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b) := by
       intro i; rw [LinearMap.map_smul]
     simp_rw [h_smul_left, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     refine Finset.sum_congr rfl ?_
@@ -123,8 +123,8 @@ theorem lieDerivMetric_pairing_contMDiff
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro j _
-    rw [show chartFrameVec (I := I) b₀ i b = chartBasisVecFiber (I := I) b₀ i b from rfl,
-        show chartFrameVec (I := I) b₀ j b = chartBasisVecFiber (I := I) b₀ j b from rfl]
+    rw [show chartFrameVec (I := I) b₀ i b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ i b from rfl,
+        show chartFrameVec (I := I) b₀ j b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b₀ j b from rfl]
     ring
   have h_summand_smooth :
       ∀ i j : Fin (Module.finrank ℝ E),

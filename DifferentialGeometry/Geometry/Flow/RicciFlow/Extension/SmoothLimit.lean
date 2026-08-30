@@ -91,14 +91,14 @@ theorem chartGramMatrix_tendsto_nhdsLT_of_bounded_deriv
     {C : ℝ}
     (hderiv : ∀ s : ℝ, s ∈ Set.Ioo α omega →
       HasDerivAt (fun u : ℝ =>
-        Integral.Measure.chartGramMatrix (I := I) (g_fam u) x₀ x i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam u) x₀ x i j)
         (deriv (fun u : ℝ =>
-          Integral.Measure.chartGramMatrix (I := I) (g_fam u) x₀ x i j) s) s)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam u) x₀ x i j) s) s)
     (hbound : ∀ s : ℝ, s ∈ Set.Ioo α omega →
       |deriv (fun u : ℝ =>
-        Integral.Measure.chartGramMatrix (I := I) (g_fam u) x₀ x i j) s| ≤ C) :
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam u) x₀ x i j) s| ≤ C) :
     ∃ L : ℝ, Tendsto (fun s : ℝ =>
-      Integral.Measure.chartGramMatrix (I := I) (g_fam s) x₀ x i j) (𝓝[<] omega) (𝓝 L) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x₀ x i j) (𝓝[<] omega) (𝓝 L) := by
   refine tendsto_nhdsLT_of_bounded_deriv (F := ℝ) (a := α) (b := omega) (C := C) hαomega
     hderiv (fun s hs => ?_)
   simpa [Real.norm_eq_abs] using hbound s hs
@@ -109,8 +109,8 @@ structure CinftyLimitData
   tendsto_left :
     ∀ (x₀ x : M) (i j : Fin (Module.finrank ℝ E)),
       Tendsto (fun s : ℝ =>
-        Integral.Measure.chartGramMatrix (I := I) (g_fam s) x₀ x i j) (𝓝[<] omega)
-        (𝓝 (Integral.Measure.chartGramMatrix (I := I) limitMetric x₀ x i j))
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x₀ x i j) (𝓝[<] omega)
+        (𝓝 (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) limitMetric x₀ x i j))
 
   ricci_match :
     ∀ (x : M) (v w : TangentSpace I x),
@@ -128,12 +128,12 @@ theorem restart_short_time (gomega : SmoothRiemannianMetric I M) :
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (r p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (r p.1) x₀ p.2 i j)
           (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (r p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (r p.1) x₀ p.2 i j)
           (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (r s).inner x v w)
@@ -366,7 +366,7 @@ structure CinftyGlueData
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (gluedFamily (I := I) g_fam r omega p.1) x₀ p.2 i j)
         (Set.Ioo α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
 
@@ -374,7 +374,7 @@ structure CinftyGlueData
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (gluedFamily (I := I) g_fam r omega p.1) x₀ p.2 i j)
         (Set.Ico α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
 
@@ -397,7 +397,7 @@ theorem ricci_flow_extends_construction
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (r p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (r p.1) x₀ p.2 i j)
           (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun u : ℝ => (r u).inner x v w)
@@ -410,12 +410,12 @@ theorem ricci_flow_extends_construction
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
           (Set.Ioo α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun p : ℝ × M =>
-            Integral.Measure.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
           (Set.Ico α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ t ∈ Set.Ico α (omega + ε), ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_ext s).inner x v w)

@@ -151,8 +151,8 @@ theorem vol_le_ball_of_len
     (hJ : ∀ w ∈ (normalChartAt (I := I) g p) '' A,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g A ≤
       ENNReal.ofReal
           (Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -184,8 +184,8 @@ theorem vol_le_ball_of_len_radius
     (hJ : ∀ w ∈ (normalChartAt (I := I) g p) '' A,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g A ≤
       ENNReal.ofReal
           (Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -208,8 +208,8 @@ theorem coordBall_vol_le
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) ≤
       ENNReal.ofReal
@@ -242,8 +242,8 @@ theorem coordBall_vol_le_tgt
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) ≤
       ENNReal.ofReal
@@ -263,8 +263,8 @@ theorem coordBall_vol_scale
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) ≤
       ENNReal.ofReal
@@ -284,8 +284,8 @@ theorem coordBall_vol_scale_c2
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) ≤
       ENNReal.ofReal
@@ -629,7 +629,7 @@ private noncomputable def basisNormSupBV : ℝ :=
     (by
       refine Finset.univ_nonempty_iff.mpr ?_
       exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩)
-    (fun k => ‖(chartModelBasis E) k‖)
+    (fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖)
 
 omit [CompleteSpace E] in
 private lemma basisNormSupBV_nonneg : 0 ≤ basisNormSupBV (E := E) := by
@@ -639,18 +639,18 @@ private lemma basisNormSupBV_nonneg : 0 ≤ basisNormSupBV (E := E) := by
     refine Finset.univ_nonempty_iff.mpr ?_
     exact ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩
   obtain ⟨k₀, hk₀⟩ := hne
-  have hnn : (0 : ℝ) ≤ ‖(chartModelBasis E) k₀‖ := norm_nonneg _
+  have hnn : (0 : ℝ) ≤ ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k₀‖ := norm_nonneg _
   exact hnn.trans (Finset.le_sup'
-    (f := fun k => ‖(chartModelBasis E) k‖) hk₀)
+    (f := fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖) hk₀)
 
 omit [CompleteSpace E] in
 private lemma norm_basis_le_supBV
     (k : Fin (Module.finrank ℝ E)) :
-    ‖(chartModelBasis E) k‖ ≤ basisNormSupBV (E := E) := by
+    ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ ≤ basisNormSupBV (E := E) := by
   classical
   unfold basisNormSupBV
   exact Finset.le_sup'
-    (f := fun k => ‖(chartModelBasis E) k‖)
+    (f := fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖)
     (Finset.mem_univ _)
 
 omit [I.Boundaryless] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M]
@@ -658,14 +658,14 @@ omit [I.Boundaryless] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M]
 private lemma exists_basis_upper_const
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ A : ℝ, ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A := by
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A := by
   refine ⟨(Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ + 1) *
     basisNormSupBV (E := E), ?_⟩
   intro k
   have hsqrt_nonneg :
       0 ≤ Real.sqrt ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖ :=
     Real.sqrt_nonneg _
-  exact (sqrt_inner_le_opNorm_const (I := I) g p ((chartModelBasis E) k)).trans
+  exact (sqrt_inner_le_opNorm_const (I := I) g p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)).trans
     (mul_le_mul_of_nonneg_left (norm_basis_le_supBV (E := E) k)
       (by nlinarith))
 
@@ -839,8 +839,8 @@ theorem metricBall_vol_le [PseudoMetricSpace M]
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g (Metric.ball p s) ≤
       ENNReal.ofReal
           (Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -864,8 +864,8 @@ theorem metricBall_vol_scale [PseudoMetricSpace M]
     (hJ : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g (Metric.ball p s) ≤
       ENNReal.ofReal
           (Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -918,8 +918,8 @@ theorem exists_metricBall_vol_scale_local
       (∀ w ∈ Metric.ball (0 : E) R,
         ∀ i : Fin (Module.finrank ℝ E),
           Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-            (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-            (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) →
+            (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+            (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       riemannianVolumeMeasure (I := I) (M := M) g (Metric.ball p s) ≤
         ENNReal.ofReal
@@ -1472,9 +1472,9 @@ structure IsRm04VolHyp
   hsR : s < R
   hsρ : s < ρ
   hsdiv : s / Real.sqrt (gpCoerciveConst (I := I) g p) < R
-  hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ
+  hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ
   hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-    ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ
+    ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ
   hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb
   hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * Vb ^ 2 ≤ K
@@ -1496,16 +1496,16 @@ structure IsRm04VolHyp
     DifferentiableAt ℝ
       (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t
   hinit : ∀ k : Fin (Module.finrank ℝ E),
-    Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A
+    Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A
   hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B
   hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
     a * B ≤ Real.sqrt
-        (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-          (a • (∑ i, v i • (chartModelBasis E) i))) -
+        (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
         gronwallBound 0 (max K 1)
           (K * (b * Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))))) 1
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1
 
 structure IsRm04VolPairHyp
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -1531,9 +1531,9 @@ structure IsRm04VolPairHyp
   hsR : s < R
   hsρ : s < ρ
   hsdiv : s / Real.sqrt (gpCoerciveConst (I := I) g p) < R
-  hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ
+  hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ
   hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-    ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ
+    ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ
   hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb
   hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
       Rm * Vb ^ 2 ≤ K
@@ -1555,16 +1555,16 @@ structure IsRm04VolPairHyp
     DifferentiableAt ℝ
       (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t
   hinit : ∀ k : Fin (Module.finrank ℝ E),
-    Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A
+    Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A
   hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi
   hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
     a * Blo ≤ Real.sqrt
-        (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-          (a • (∑ i, v i • (chartModelBasis E) i))) -
+        (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
         gronwallBound 0 (max K 1)
           (K * (b * Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))))) 1
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma IsRm04VolHyp.radialC2
@@ -1616,9 +1616,9 @@ lemma exists_rm04_hyp
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
     (hsR : s < R) (hsρ : s < ρ)
     (hsdiv : s / Real.sqrt (gpCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ)
+    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
     (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-      ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ)
+      ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
     (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
     (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
@@ -1628,16 +1628,16 @@ lemma exists_rm04_hyp
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
     (hinit : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B)
     (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a * B ≤ Real.sqrt
-          (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-            (a • (∑ i, v i • (chartModelBasis E) i))) -
+          (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                (a • (∑ i, v i • (chartModelBasis E) i))))) 1) :
+              (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) :
     ∃ D : Rm04FrameData (I := I) g p R b,
       IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s := by
   have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
@@ -1681,28 +1681,28 @@ lemma scalarModel_smul
     (g : SmoothRiemannianMetric I M) (p : M)
     {a K b A B : ℝ} (ha : 0 < a)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B)
     (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       B ≤ Real.sqrt
-          (g.inner p (∑ i, v i • (chartModelBasis E) i)
-            (∑ i, v i • (chartModelBasis E) i)) -
+          (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+            (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                (∑ i, v i • (chartModelBasis E) i)))) 1) :
+              (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
     (∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤
+      Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤
         a * A) ∧
     a * A + gronwallBound 0 (max K 1) (K * (b * (a * A))) 1 ≤ a * B ∧
     (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a * B ≤ Real.sqrt
-          (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-            (a • (∑ i, v i • (chartModelBasis E) i))) -
+          (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                (a • (∑ i, v i • (chartModelBasis E) i))))) 1) := by
+              (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) := by
   obtain ⟨hinit, hle⟩ := basisModel_le_smul (I := I) g p ha hbasis hmodelLe
   exact ⟨hinit, hle, dirModel_ge_smul (I := I) g p ha hmodelGe⟩
 
@@ -1713,28 +1713,28 @@ lemma scalarModel_pair_smul
     (g : SmoothRiemannianMetric I M) (p : M)
     {a K b A Blo Bhi : ℝ} (ha : 0 < a)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi)
     (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       Blo ≤ Real.sqrt
-          (g.inner p (∑ i, v i • (chartModelBasis E) i)
-            (∑ i, v i • (chartModelBasis E) i)) -
+          (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+            (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                (∑ i, v i • (chartModelBasis E) i)))) 1) :
+              (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
     (∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤
+      Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤
         a * A) ∧
     a * A + gronwallBound 0 (max K 1) (K * (b * (a * A))) 1 ≤ a * Bhi ∧
     (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a * Blo ≤ Real.sqrt
-          (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-            (a • (∑ i, v i • (chartModelBasis E) i))) -
+          (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                (a • (∑ i, v i • (chartModelBasis E) i))))) 1) := by
+              (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) := by
   obtain ⟨hinit, hle⟩ := basisModel_le_smul (I := I) g p ha hbasis hmodelLe
   exact ⟨hinit, hle, dirModel_ge_smul (I := I) g p ha hmodelGe⟩
 
@@ -1754,9 +1754,9 @@ lemma exists_rm04_scalar
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
     (hsR : s < R) (hsρ : s < ρ)
     (hsdiv : s / Real.sqrt (gpCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ)
+    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
     (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-      ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ)
+      ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
     (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
     (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
@@ -1766,16 +1766,16 @@ lemma exists_rm04_scalar
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B)
     (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       B ≤ Real.sqrt
-          (g.inner p (∑ i, v i • (chartModelBasis E) i)
-            (∑ i, v i • (chartModelBasis E) i)) -
+          (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+            (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                (∑ i, v i • (chartModelBasis E) i)))) 1) :
+              (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
     ∃ D : Rm04FrameData (I := I) g p R b,
       IsRm04VolHyp (I := I) g p D ρ a K Rm Vb (a * A) B s := by
   obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
@@ -1800,9 +1800,9 @@ lemma exists_rm04_pair_hyp
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
     (hsR : s < R) (hsρ : s < ρ)
     (hsdiv : s / Real.sqrt (gpCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ)
+    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
     (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-      ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ)
+      ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
     (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
     (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
@@ -1812,16 +1812,16 @@ lemma exists_rm04_pair_hyp
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
     (hinit : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi)
     (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a * Blo ≤ Real.sqrt
-          (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-            (a • (∑ i, v i • (chartModelBasis E) i))) -
+          (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                (a • (∑ i, v i • (chartModelBasis E) i))))) 1) :
+              (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) :
     ∃ D : Rm04FrameData (I := I) g p R b,
       IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
   have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
@@ -1875,9 +1875,9 @@ lemma exists_rm04_pair_scalar
       Real.sqrt (g.inner p (show TangentSpace I p from w) (show TangentSpace I p from w)) < s)
     (hsR : s < R) (hsρ : s < ρ)
     (hsdiv : s / Real.sqrt (gpCoerciveConst (I := I) g p) < R)
-    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ)
+    (hsmallBasis : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ)
     (hsmallDir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-      ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ)
+      ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ)
     (hlaunch : ∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb)
     (hKbound : Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
         Rm * Vb ^ 2 ≤ K)
@@ -1887,16 +1887,16 @@ lemma exists_rm04_pair_scalar
         (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodelLe : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi)
     (hmodelGe : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       Blo ≤ Real.sqrt
-          (g.inner p (∑ i, v i • (chartModelBasis E) i)
-            (∑ i, v i • (chartModelBasis E) i)) -
+          (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+            (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt
-              (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                (∑ i, v i • (chartModelBasis E) i)))) 1) :
+              (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
     ∃ D : Rm04FrameData (I := I) g p R b,
       IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb (a * A) Blo Bhi s := by
   obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
@@ -1912,9 +1912,9 @@ lemma exists_rm04_scale
     {R b ρ K Rm Vb A B s : ℝ}
     (D : Rm04FrameData (I := I) g p R b) (hρ : 0 < ρ)
     (H : ∀ a : ℝ, 0 < a →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
       IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s) :
     ∃ a : ℝ, IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s := by
   obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
@@ -1928,9 +1928,9 @@ lemma exists_rm04_pair_scale
     {R b ρ K Rm Vb A Blo Bhi s : ℝ}
     (D : Rm04FrameData (I := I) g p R b) (hρ : 0 < ρ)
     (H : ∀ a : ℝ, 0 < a →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
       IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
     ∃ a : ℝ, IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
   obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
@@ -1959,9 +1959,9 @@ theorem exists_vol_two_rm04_at
       s < R →
       s < ρ →
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < R →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
       (∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb) →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * Vb ^ 2 ≤ K →
@@ -1985,16 +1985,16 @@ theorem exists_vol_two_rm04_at
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p w) (F w i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * B ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -2021,11 +2021,11 @@ theorem exists_vol_two_rm04_at
     fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
   have hsρvol : s < ρvol := lt_of_lt_of_le hsρ (min_le_left _ _)
   have hsmallBasis_dens :
-      ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρdens :=
+      ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρdens :=
     fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_right _ _)
   have hsmallDir_dens :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρdens :=
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρdens :=
     fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right _ _)
   have hdensPair : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w ∧
@@ -2074,9 +2074,9 @@ theorem exists_vol_pair_rm04_at
       s < R →
       s < ρ →
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < R →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
       (∀ w ∈ Metric.ball (0 : E) R, Real.sqrt (g.inner p w w) ≤ Vb) →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * Vb ^ 2 ≤ K →
@@ -2100,16 +2100,16 @@ theorem exists_vol_pair_rm04_at
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p w) (F w i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * Blo ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -2136,11 +2136,11 @@ theorem exists_vol_pair_rm04_at
     fun w hw => lt_of_lt_of_le (hρball w hw) (min_le_left _ _)
   have hsρvol : s < ρvol := lt_of_lt_of_le hsρ (min_le_left _ _)
   have hsmallBasis_dens :
-      ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρdens :=
+      ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρdens :=
     fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_right _ _)
   have hsmallDir_dens :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρdens :=
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρdens :=
     fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right _ _)
   have hdensPair : ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w ∧
@@ -2188,9 +2188,9 @@ theorem exists_pairR_rm04_at
       s < Rup →
       s < ρ →
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < Rup →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
       (∀ w, w ∈ Metric.ball (0 : E) Rlo ∨ w ∈ Metric.ball (0 : E) Rup →
         Real.sqrt (g.inner p w w) ≤ Vb) →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
@@ -2221,16 +2221,16 @@ theorem exists_pairR_rm04_at
           DifferentiableAt ℝ
             (chartRepAt (I := I) (radialCurve (I := I) g p w) (F w i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * Blo ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (Rlo ^ Module.finrank ℝ E) *
@@ -2258,11 +2258,11 @@ theorem exists_pairR_rm04_at
     fun w hw => lt_of_lt_of_le (hρlo_ball w hw) (min_le_left _ _)
   have hsρvol : s < ρvol := lt_of_lt_of_le hsρ (min_le_left _ _)
   have hsmallBasis_dens :
-      ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρdens :=
+      ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρdens :=
     fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_right _ _)
   have hsmallDir_dens :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρdens :=
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρdens :=
     fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right _ _)
   have hdensLower : ∀ w ∈ Metric.ball (0 : E) Rlo,
       Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
@@ -2325,7 +2325,7 @@ theorem exists_pairR_rglobal
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0
         (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * (C * Rup) ^ 2) 1)
@@ -2333,15 +2333,15 @@ theorem exists_pairR_rglobal
           Rm * (C * Rup) ^ 2) * (b * A)) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0
               (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * Rup) ^ 2) 1)
               ((Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * Rup) ^ 2) * (b * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i)))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (Rlo ^ Module.finrank ℝ E) *
@@ -2458,7 +2458,7 @@ theorem exists_pairR_rm1
             (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g q)) ≤ Rm) →
         (∀ k : Fin (Module.finrank ℝ E),
-          Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+          Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
         let Bhi : ℝ :=
           max
             (A + gronwallBound 0
@@ -2531,7 +2531,7 @@ theorem exists_pairR_small
             (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g q)) ≤ Rm) →
         (∀ k : Fin (Module.finrank ℝ E),
-          Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+          Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
         ∃ δ : ℝ, 0 < δ ∧ ∀ {s : ℝ}, 0 < s → s < δ →
           ∃ Rlo Rup : ℝ, 0 < Rlo ∧ 0 < Rup ∧ Rlo ≤ Rup ∧
             let Bhi : ℝ :=
@@ -2613,7 +2613,7 @@ theorem exists_pairR_scaled
             (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g q)) ≤ Rm) →
         (∀ k : Fin (Module.finrank ℝ E),
-          Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+          Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
         ∃ δ : ℝ, 0 < δ ∧ ∀ {s : ℝ}, 0 < s → s < δ →
           let Rlo : ℝ := s / (2 * C)
           let Rup : ℝ := D * s
@@ -2940,9 +2940,9 @@ theorem exists_vol_pair_scale
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A Blo Bhi R s : ℝ},
       (D : Rm04FrameData (I := I) g p R b) →
       (∀ a : ℝ, 0 < a →
-        (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
+        (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
         (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-          ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < ρ) →
+          ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
         IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
@@ -2992,16 +2992,16 @@ theorem exists_vol_pair_scalar
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i)))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -3054,16 +3054,16 @@ theorem exists_vol_pair_launch
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i)))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -3118,16 +3118,16 @@ theorem exists_pair_rlaunch
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i)))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -3185,7 +3185,7 @@ theorem exists_pair_rcoeff
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0
         (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * (C * R) ^ 2) 1)
@@ -3193,15 +3193,15 @@ theorem exists_pair_rcoeff
           Rm * (C * R) ^ 2) * (b * A)) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0
               (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * R) ^ 2) 1)
               ((Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * R) ^ 2) * (b * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i)))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -3257,7 +3257,7 @@ theorem exists_pair_rglobal
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0
         (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * (C * R) ^ 2) 1)
@@ -3265,15 +3265,15 @@ theorem exists_pair_rglobal
           Rm * (C * R) ^ 2) * (b * A)) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0
               (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * R) ^ 2) 1)
               ((Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * R) ^ 2) * (b * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i)))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -3319,7 +3319,7 @@ theorem exists_pair_rglobal1
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0
         (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Rm * (C * R) ^ 2) 1)
@@ -3327,15 +3327,15 @@ theorem exists_pair_rglobal1
           Rm * (C * R) ^ 2) * A) 1 ≤ Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         Blo ≤ Real.sqrt
-            (g.inner p (∑ i, v i • (chartModelBasis E) i)
-              (∑ i, v i • (chartModelBasis E) i)) -
+            (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) -
             gronwallBound 0
               (max (Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * R) ^ 2) 1)
               ((Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
                 Rm * (C * R) ^ 2) * Real.sqrt
-                (g.inner p (∑ i, v i • (chartModelBasis E) i)
-                  (∑ i, v i • (chartModelBasis E) i))) 1) →
+                (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                  (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) 1) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *

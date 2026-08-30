@@ -33,7 +33,7 @@ noncomputable def chartFrameNormGlobalSmoothCoordMatrix
   classical
   exact
     if h : b ∈ (trivializationAt E (TangentSpace I) α).baseSet then
-      (chartBasisFamily (I := I) α h).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α h).repr
         ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b) k
     else 0
 
@@ -43,7 +43,7 @@ private lemma chartFrameNormGlobalSmoothCoordMatrix_of_mem
     (i k : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b =
-      (chartBasisFamily (I := I) α hb).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb).repr
         ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b) k := by
   classical
   unfold chartFrameNormGlobalSmoothCoordMatrix
@@ -59,11 +59,11 @@ theorem chartFrameNormGlobalSmooth_eq_coordMatrix_sum
         Π b : M, TangentSpace I b) b) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b •
-          chartBasisVecFiber (I := I) α k b := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b := by
   classical
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
-  have hsum := (chartBasisFamily (I := I) α hb_base).sum_repr
+  have hsum := (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb_base).sum_repr
       ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b)
   have hcoerce : ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i :
         Π b : M, TangentSpace I b) b)
@@ -73,7 +73,7 @@ theorem chartFrameNormGlobalSmooth_eq_coordMatrix_sum
   refine Finset.sum_congr rfl ?_
   intro k _
   rw [chartFrameNormGlobalSmoothCoordMatrix_of_mem (I := I) (M := M) g α i k hb_base]
-  rw [chartBasisFamily_apply (I := I) α hb_base k]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hb_base k]
 
 section LinearAlgebra
 
@@ -98,7 +98,7 @@ private lemma chartFrameNormGlobalSmooth_eq_coord_sum_of_mem
     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b =
       ∑ k : Fin (Module.finrank ℝ E),
         coordMatrix (I := I) (M := M) g α (b := b) i k •
-          chartBasisVecFiber (I := I) α k b := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b := by
   classical
   have h :=
     chartFrameNormGlobalSmooth_eq_coordMatrix_sum
@@ -120,12 +120,12 @@ private lemma gram_expand_coordBasis
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         coordMatrix (I := I) (M := M) g α (b := b) i k *
           coordMatrix (I := I) (M := M) g α (b := b) j l *
-            chartGramMatrix (I := I) g α b k l := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b k l := by
   classical
   rw [chartFrameNormGlobalSmooth_eq_coord_sum_of_mem (I := I) (M := M) g α i hb]
   rw [chartFrameNormGlobalSmooth_eq_coord_sum_of_mem (I := I) (M := M) g α j hb]
   set v : Fin (Module.finrank ℝ E) → TangentSpace I b :=
-    fun k => chartBasisVecFiber (I := I) α k b with hv_def
+    fun k => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b with hv_def
   set a : Fin (Module.finrank ℝ E) → ℝ :=
     fun k => coordMatrix (I := I) (M := M) g α (b := b) i k with ha_def
   set c : Fin (Module.finrank ℝ E) → ℝ :=
@@ -152,7 +152,7 @@ private lemma gram_expand_coordBasis
   rw [hR, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro l _
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   ring
 
 omit [I.Boundaryless] in
@@ -161,7 +161,7 @@ private lemma orthonormal_matrix_form_at
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x))
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     coordMatrix (I := I) (M := M) g α (b := b) *
-        chartGramMatrix (I := I) g α b *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *
           (coordMatrix (I := I) (M := M) g α (b := b)).transpose =
       (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ) := by
   classical
@@ -178,20 +178,20 @@ private lemma orthonormal_matrix_form_at
   rw [Matrix.mul_apply]
   have h_inner : ∀ k₀ : Fin (Module.finrank ℝ E),
       (coordMatrix (I := I) (M := M) g α (b := b) *
-          chartGramMatrix (I := I) g α b) i k₀ *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b) i k₀ *
         (coordMatrix (I := I) (M := M) g α (b := b)).transpose k₀ j =
       ∑ l₀ : Fin (Module.finrank ℝ E),
         coordMatrix (I := I) (M := M) g α (b := b) i l₀ *
-          chartGramMatrix (I := I) g α b l₀ k₀ *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b l₀ k₀ *
           coordMatrix (I := I) (M := M) g α (b := b) j k₀ := by
     intro k₀
     rw [Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
   rw [show (∑ k₀, (coordMatrix (I := I) (M := M) g α (b := b) *
-            chartGramMatrix (I := I) g α b) i k₀ *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b) i k₀ *
         (coordMatrix (I := I) (M := M) g α (b := b)).transpose k₀ j) =
       ∑ k₀, ∑ l₀,
         coordMatrix (I := I) (M := M) g α (b := b) i l₀ *
-          chartGramMatrix (I := I) g α b l₀ k₀ *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b l₀ k₀ *
           coordMatrix (I := I) (M := M) g α (b := b) j k₀ from
     Finset.sum_congr rfl (fun k₀ _ => h_inner k₀)]
   rw [show (1 : Matrix (Fin (Module.finrank ℝ E))
@@ -221,7 +221,7 @@ private lemma orthonormal_matrix_inverse_at
       (Fin (Module.finrank ℝ E)) ℝ :=
     coordMatrix (I := I) (M := M) g α (b := b)
   set G : Matrix (Fin (Module.finrank ℝ E))
-      (Fin (Module.finrank ℝ E)) ℝ := chartGramMatrix (I := I) g α b
+      (Fin (Module.finrank ℝ E)) ℝ := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b
   have hAGA_right : A * (G * A.transpose) = 1 := by
     rw [← Matrix.mul_assoc]; exact hAGA
   have hG_At_eq_invA : G * A.transpose = A⁻¹ :=

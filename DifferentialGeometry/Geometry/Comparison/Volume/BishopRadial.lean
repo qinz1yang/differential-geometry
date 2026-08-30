@@ -76,7 +76,7 @@ private lemma exists_coeff_ge
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartCoeff_sum
     (w : E) :
-    (∑ i, (toEuclidean (E := E) w) i • (chartModelBasis E) i) = w := by
+    (∑ i, (toEuclidean (E := E) w) i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) = w := by
   let b :=
     (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ).toBasis
   have hsum :
@@ -86,12 +86,12 @@ private lemma chartCoeff_sum
     simpa [b, EuclideanSpace.basisFun_apply] using
       (b.sum_repr (toEuclidean (E := E) w)).symm
   calc
-    (∑ i, (toEuclidean (E := E) w) i • (chartModelBasis E) i) =
+    (∑ i, (toEuclidean (E := E) w) i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         (toEuclidean (E := E)).symm
           (∑ i, (toEuclidean (E := E) w) i •
             EuclideanSpace.single i (1 : ℝ)) := by
       rw [map_sum]
-      simp only [map_smul, chartModelBasis_apply]
+      simp only [map_smul, DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]
     _ = (toEuclidean (E := E)).symm (toEuclidean (E := E) w) :=
       congrArg (toEuclidean (E := E)).symm hsum.symm
     _ = w := (toEuclidean (E := E)).symm_apply_apply w
@@ -166,9 +166,9 @@ theorem exists_radial_base
           B ^ 2 ≤
             g.inner (radialCurve (I := I) g p x t)
               (radialJacobiField (I := I) g p (t • x)
-                (∑ j, d j • (chartModelBasis E) j) 1)
+                (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1)
               (radialJacobiField (I := I) g p (t • x)
-                (∑ j, d j • (chartModelBasis E) j) 1) := by
+                (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1) := by
   classical
   let n : ℕ := Module.finrank ℝ E
   have hn : 0 < n := NeZero.pos n
@@ -210,8 +210,8 @@ theorem exists_radial_base
   have hbaseQuad
       (d : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
       dotProduct (⇑d) (Matrix.mulVec A₀ (⇑d)) =
-        g.inner p (∑ j, d j • (chartModelBasis E) j)
-          (∑ j, d j • (chartModelBasis E) j) := by
+        g.inner p (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+          (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     dsimp only [A₀]
     rw [normalGram_radialMat (I := I) g p hzeroSrc hzeroRad]
     rw [radialJacobiGram_quadratic (I := I) g p]
@@ -221,8 +221,8 @@ theorem exists_radial_base
       expMap_zero (I := I) g p
     rw [hpoint]
     have hJzero (j : Fin (Module.finrank ℝ E)) :
-        radialJacobiField (I := I) g p 0 ((chartModelBasis E) j) 1 =
-          (chartModelBasis E) j := by
+        radialJacobiField (I := I) g p 0 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1 =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j := by
       rw [radialJacobi_one (I := I) g p 0 _ hzeroRad]
       simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]
       rw [mfderiv_expMap_at_zero (I := I) g p]
@@ -250,8 +250,8 @@ theorem exists_radial_base
     exact hpertN.trans_lt
       ((mul_lt_mul_of_pos_left hnorm (sq_pos_of_pos hnR)).trans_eq hscale)
   have hbaseNonneg : 0 ≤
-      g.inner p (∑ j, d j • (chartModelBasis E) j)
-        (∑ j, d j • (chartModelBasis E) j) := by
+      g.inner p (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+        (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     have hself (w : E) : 0 ≤ g.inner p w w := by
       by_cases hw : w = 0
       · subst w
@@ -277,22 +277,22 @@ theorem exists_radial_base
   have hAt : dotProduct (⇑d) (Matrix.mulVec A (⇑d)) =
       g.inner (radialCurve (I := I) g p x t)
         (radialJacobiField (I := I) g p (t • x)
-          (∑ j, d j • (chartModelBasis E) j) 1)
+          (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1)
         (radialJacobiField (I := I) g p (t • x)
-          (∑ j, d j • (chartModelBasis E) j) 1) := by
+          (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1) := by
     dsimp only [A]
     rw [normalGram_radialMat (I := I) g p hsrcT hradT]
     rw [radialJacobiGram_quadratic (I := I) g p]
     change g.inner (radialCurve (I := I) g p x t)
         (∑ i, d i • radialJacobiField (I := I) g p (t • x)
-          ((chartModelBasis E) i) 1)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
         (∑ i, d i • radialJacobiField (I := I) g p (t • x)
-          ((chartModelBasis E) i) 1) = _
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1) = _
     have hsum :
         (∑ i, d i • radialJacobiField (I := I) g p (t • x)
-          ((chartModelBasis E) i) 1) =
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1) =
           radialJacobiField (I := I) g p (t • x)
-            (∑ j, d j • (chartModelBasis E) j) 1 :=
+            (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1 :=
       (radialJacobi_one_sum (I := I) g p (t • x) (⇑d) hradT).symm
     exact congrArg
       (fun z => g.inner (radialCurve (I := I) g p x t) z z) hsum
@@ -543,9 +543,9 @@ theorem radialRatio_basis
         B ^ 2 ≤
           g.inner (radialCurve (I := I) g p x t)
             (radialJacobiField (I := I) g p (t • x)
-              (∑ j, d j • (chartModelBasis E) j) 1)
+              (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1)
             (radialJacobiField (I := I) g p (t • x)
-              (∑ j, d j • (chartModelBasis E) j) 1)) :
+              (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1)) :
     ∃ C : ℝ, 0 < C ∧
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
@@ -587,10 +587,10 @@ theorem radialRatio_basis
       rw [norm_smul, Real.norm_eq_abs,
         abs_of_pos (inv_pos.mpr hdpos)]
       exact inv_mul_cancel₀ hdpos.ne'
-    let z : E := ∑ j, u j • (chartModelBasis E) j
+    let z : E := ∑ j, u j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j
     have hd : d = toEuclidean (E := E) w := by
       simpa only [d, w] using familyCoeffMap_apply (E := E) v c
-    have hdsum : (∑ j, d j • (chartModelBasis E) j) = w := by
+    have hdsum : (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) = w := by
       rw [hd]
       exact chartCoeff_sum (E := E) w
     have hdu : d = ‖d‖ • u := by
@@ -598,18 +598,18 @@ theorem radialRatio_basis
       rw [smul_smul]
       simp only [mul_inv_cancel₀ hdpos.ne', one_smul]
     have hsumdu :
-        (∑ j, d j • (chartModelBasis E) j) = ‖d‖ • z := by
+        (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) = ‖d‖ • z := by
       calc
-        (∑ j, d j • (chartModelBasis E) j) =
-            ∑ j, (‖d‖ • u) j • (chartModelBasis E) j :=
+        (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+            ∑ j, (‖d‖ • u) j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j :=
           congrArg (fun a : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
-            ∑ j, a j • (chartModelBasis E) j) hdu
+            ∑ j, a j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) hdu
         _ = ‖d‖ • z := by
           dsimp only [z]
           rw [Finset.smul_sum]
           refine Finset.sum_congr rfl fun j _ => ?_
-          change (‖d‖ * u j) • (chartModelBasis E) j =
-            ‖d‖ • (u j • (chartModelBasis E) j)
+          change (‖d‖ * u j) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j =
+            ‖d‖ • (u j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
           rw [mul_smul]
     have hw : w = ‖d‖ • z := by
       rw [← hdsum]

@@ -99,7 +99,7 @@ lemma mfderiv_chart_diff (α : M)
     {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
     (hf : DifferentiableAt ℝ (scalarOnE (I := I) α f) (extChartAt I α x))
     (i : Fin (Module.finrank ℝ E)) :
-    mfderiv I 𝓘(ℝ) f x (chartBasisVecFiber (I := I) α i x) =
+    mfderiv I 𝓘(ℝ) f x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
   set φ := extChartAt I α
   have hxsrc : x ∈ φ.source := by
@@ -125,26 +125,26 @@ lemma mfderiv_chart_diff (α : M)
         mfderiv_eq_fderiv (𝕜 := ℝ) (f := scalarOnE (I := I) α f)]
   have hmfderiv_chartBasis :
       mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
-          (chartBasisVecFiber (I := I) α i x) = (chartModelBasis E) i := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
     rw [← TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
       (x₀ := α) (x := x) hx]
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
-    have heq : chartBasisVecFiber (I := I) α i x =
-        T.symm x ((chartModelBasis E) i) := by
-      rw [chartBasisVecFiber, T.symmL_apply hbase]
+    have heq : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x =
+        T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
+      rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
-        T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i)) =
-          (chartModelBasis E) i := by
-      have : T.symm x ((chartModelBasis E) i) =
-          T.symmL ℝ x ((chartModelBasis E) i) := by
+        T.continuousLinearMapAt ℝ x (T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
+      have : T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+          T.symmL ℝ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         rw [Trivialization.symmL_apply T hbase]
       rw [this, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
         (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
-          (chartBasisVecFiber (I := I) α i x)) = _
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) = _
   rw [hmfderiv_chartBasis]
   rfl
 
@@ -154,7 +154,7 @@ lemma mfderiv_chartBasisVecFiber (α : M)
     (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target)
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ) f x
-        (chartBasisVecFiber (I := I) α i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
       = partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
   classical
   set φ := extChartAt I α
@@ -200,25 +200,25 @@ lemma mfderiv_chartBasisVecFiber (α : M)
         mfderiv_eq_fderiv (𝕜 := ℝ) (f := scalarOnE (I := I) α f)]
   have hmfderiv_chartBasis :
       mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
-          (chartBasisVecFiber (I := I) α i x)
-        = (chartModelBasis E) i := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+        = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
     rw [← TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
       (x₀ := α) (x := x) hx]
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
-    have heq : chartBasisVecFiber (I := I) α i x = T.symm x ((chartModelBasis E) i) :=
-      by rw [chartBasisVecFiber, T.symmL_apply hbase]
+    have heq : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x = T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+      by rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
-        T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i))
-          = (chartModelBasis E) i := by
-      have : T.symm x ((chartModelBasis E) i)
-            = T.symmL ℝ x ((chartModelBasis E) i) := by
+        T.continuousLinearMapAt ℝ x (T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
+      have : T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+            = T.symmL ℝ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         rw [Trivialization.symmL_apply T hbase]
       rw [this, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
-        (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x (chartBasisVecFiber (I := I) α i x))
+        (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       = partialDeriv (E := E) i (scalarOnE (I := I) α f) (φ x)
   rw [hmfderiv_chartBasis]
   rfl
@@ -237,7 +237,7 @@ theorem tangentSectionAction_chartLocal
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx
   have hXrecomp : X x = ∑ i, chartCoeff (I := I) α X i x •
-        chartBasisVecFiber (I := I) α i x :=
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartCoeff_recompose (I := I) α X hbase
   rw [tangentSectionAction_def, hXrecomp]
   rw [map_sum]
@@ -263,7 +263,7 @@ theorem tangent_chart_diff [I.Boundaryless]
       ∑ i : Fin (Module.finrank ℝ E),
         chartCoeff (I := I) α X i x *
           lineDeriv ℝ (chartPullZero (I := I) α f) (extChartAt I α x)
-            ((chartModelBasis E) i) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
   classical
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
@@ -280,7 +280,7 @@ theorem tangent_chart_diff [I.Boundaryless]
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hx
   have hXrecomp : X x = ∑ i, chartCoeff (I := I) α X i x •
-      chartBasisVecFiber (I := I) α i x :=
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartCoeff_recompose (I := I) α X hbase
   rw [tangentSectionAction_def, hXrecomp, map_sum]
   refine Finset.sum_congr rfl ?_
@@ -321,7 +321,7 @@ private lemma partialDeriv_scalarOnE_contDiffOn_interior
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ (scalarOnE (I := I) α f))
       (interior (extChartAt I α).target) :=
     hbase_int.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
       (interior (extChartAt I α).target) := contDiffOn_const
   exact hfderiv.clm_apply hconst
 

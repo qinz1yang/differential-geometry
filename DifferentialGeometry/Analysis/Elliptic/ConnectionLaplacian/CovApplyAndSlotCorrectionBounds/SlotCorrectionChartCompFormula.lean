@@ -53,7 +53,7 @@ theorem chartTensorRSInputSlotCorrection_chartComp_formula
                       (chartLeviCivitaParallelCLM (I := I) g α b B) i))))))
         (fun j : Fin s =>
           chartTrivializationLinearMapSymm (I := I) (M := M) α b
-            ((chartModelBasis E) (Jdx j))) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j))) := by
   classical
   rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel (I := I) (M := M)
     r s α hb (chartTensorRSInputSlotCorrection (I := I) r s g α T B b k)]
@@ -68,7 +68,7 @@ theorem chartTensorRSInputSlotCorrection_chartComp_formula
             (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b))))
       (fun j : Fin s =>
         chartTrivializationLinearMapSymm (I := I) (M := M) α b
-          ((chartModelBasis E) (Jdx j))) = _
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j))) = _
   rw [Tensor0SSpace.toModel_apply_model_vector]
   change Tensor0SSpace.eval
       (chartTensorRSInputSlotCorrection (I := I) r s g α T B b k
@@ -78,7 +78,7 @@ theorem chartTensorRSInputSlotCorrection_chartComp_formula
       (fun j : Fin s =>
         (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
           (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-            ((chartModelBasis E) (Jdx j)))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j)))) = _
   rw [chartTensorRSInputSlotCorrection_apply (I := I) r s g α T B b k
     (Tensor0SSpace.ofModel
       ((dualCoordinateProductMultilinearMap (E := E) r Idx).compContinuousLinearMap
@@ -86,7 +86,7 @@ theorem chartTensorRSInputSlotCorrection_chartComp_formula
     (fun j : Fin s =>
       (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
         (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-          ((chartModelBasis E) (Jdx j))))]
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j))))]
   have hsubst :
       tensorSlotSubstCLM (I := I) r b
           (tangentSlotCLM (I := I) r k
@@ -160,7 +160,7 @@ theorem chartTensorRSOutputSlotCorrection_chartComp_formula
             (tangentSlotCLM (I := I) s l
               (chartLeviCivitaParallelCLM (I := I) g α b B) j)
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-              ((chartModelBasis E) (Jdx j)))) := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j)))) := by
   classical
   rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel (I := I) (M := M)
     r s α hb (chartTensorRSOutputSlotCorrection (I := I) r s g α T B b l)]
@@ -175,7 +175,7 @@ theorem chartTensorRSOutputSlotCorrection_chartComp_formula
             (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b))))
       (fun j : Fin s =>
         chartTrivializationLinearMapSymm (I := I) (M := M) α b
-          ((chartModelBasis E) (Jdx j))) = _
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j))) = _
   rw [Tensor0SSpace.toModel_apply_model_vector]
   change Tensor0SSpace.eval
       (chartTensorRSOutputSlotCorrection (I := I) r s g α T B b l
@@ -185,7 +185,7 @@ theorem chartTensorRSOutputSlotCorrection_chartComp_formula
       (fun j : Fin s =>
         (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
           (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-            ((chartModelBasis E) (Jdx j)))) = _
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j)))) = _
   rw [chartTensorRSOutputSlotCorrection_apply (I := I) r s g α T B b l]
   change Tensor0SSpace.eval
       (T b (Tensor0SSpace.ofModel
@@ -195,7 +195,7 @@ theorem chartTensorRSOutputSlotCorrection_chartComp_formula
         (chartLeviCivitaParallelCLM (I := I) g α b B) j
           ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-              ((chartModelBasis E) (Jdx j))))) = _
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j))))) = _
   rw [Tensor0SSpace.toModel_apply_model_vector]
   congr 1
 
@@ -219,7 +219,7 @@ example (g : SmoothRiemannianMetric I M) (α : M)
                     (tangentSlotCLM (I := I) 1 k
                       (chartLeviCivitaParallelCLM (I := I) g α b B) i))))))
         (fun j : Fin 2 =>
-          chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) (Jdx j))) :=
+          chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j))) :=
   chartTensorRSInputSlotCorrection_chartComp_formula (I := I) (M := M)
     g 1 2 α T B hb k Idx Jdx
 
@@ -243,7 +243,7 @@ example (g : SmoothRiemannianMetric I M) (α : M)
             (tangentSlotCLM (I := I) 2 l
               (chartLeviCivitaParallelCLM (I := I) g α b B) j)
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-              ((chartModelBasis E) (Jdx j)))) :=
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx j)))) :=
   chartTensorRSOutputSlotCorrection_chartComp_formula (I := I) (M := M)
     g 1 2 α T B hb l Idx Jdx
 

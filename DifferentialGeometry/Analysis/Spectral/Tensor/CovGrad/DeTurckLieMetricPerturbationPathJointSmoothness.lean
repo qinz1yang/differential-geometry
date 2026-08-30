@@ -282,7 +282,7 @@ private theorem deTurckVFChartLocal_metricPerturbationPath_jointContMDiffOn
         (∑ k : Fin (Module.finrank ℝ E),
           PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α k (extChartAt I α p.1) •
-            chartBasisVecFiber (I := I) α k p.1))
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k p.1))
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hcoeff : ∀ k : Fin (Module.finrank ℝ E),
@@ -296,11 +296,11 @@ private theorem deTurckVFChartLocal_metricPerturbationPath_jointContMDiffOn
       (e ⟨q.1, ∑ k : Fin (Module.finrank ℝ E),
           PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) g_bg α k (extChartAt I α q.1) •
-            chartBasisVecFiber (I := I) α k q.1⟩).2 =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k q.1⟩).2 =
         ∑ k : Fin (Module.finrank ℝ E),
           PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) g_bg α k (extChartAt I α q.1) •
-            (chartModelBasis E) k := by
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
     rintro q ⟨hqx, _⟩
     have hqbase : q.1 ∈ e.baseSet := by
       rw [he, trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hqx
@@ -312,12 +312,12 @@ private theorem deTurckVFChartLocal_metricPerturbationPath_jointContMDiffOn
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [map_smul, ← hclm]
     congr 1
-    rw [trivializationAt_chartBasisVec_snd (I := I) α k hqbase]
+    rw [DifferentialGeometry.Tensor.Coordinates.trivializationAt_chartBasisVec_snd (I := I) α k hqbase]
   have hcoordSmooth : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) ∞
       (fun q : M × ℝ => (e ⟨q.1, ∑ k : Fin (Module.finrank ℝ E),
           PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) g_bg α k (extChartAt I α q.1) •
-            chartBasisVecFiber (I := I) α k q.1⟩).2)
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k q.1⟩).2)
       ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine ContMDiffOn.congr ?_ hcoord_eq
     refine contMDiffOn_finsetSum (fun k _ => ?_)
@@ -350,7 +350,7 @@ theorem deTurckVF_metricPerturbationPath_jointContMDiffOn
           (∑ k : Fin (Module.finrank ℝ E),
             PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) g_bg p.1 k (extChartAt I p.1 q.1) •
-              chartBasisVecFiber (I := I) p.1 k q.1) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p.1 k q.1) =
         TotalSpace.mk' E (E := fun z : M => TangentSpace I z) q.1
           ((PDE.DeTurck.deTurckVF (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) g_bg :
             Π b : M, TangentSpace I b) q.1) := by
@@ -371,7 +371,7 @@ theorem deTurckVF_metricPerturbationPath_jointContMDiffOn
         (∑ k : Fin (Module.finrank ℝ E),
           PDE.DeTurck.DeTurckLinearization.chartDeTurckVFComp (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' q.2) g_bg p.1 k (extChartAt I p.1 q.1) •
-            chartBasisVecFiber (I := I) p.1 k q.1))
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p.1 k q.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p :=
     (hlocal p hpmem).mono_of_mem_nhdsWithin hnhd
   refine hlocalAt.congr_of_eventuallyEq ?_ (heqOn p hpmem).symm

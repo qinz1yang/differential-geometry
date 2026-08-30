@@ -78,8 +78,8 @@ private lemma raw_fderiv_eq
     ContinuousLinearMap.coe_comp, Function.comp_apply]
   have hb : ((toEuclidean (E := E)).symm :
       EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →L[ℝ] E)
-      (EuclideanSpace.single i 1) = chartModelBasis E i := by
-    rw [chartModelBasis_apply]
+      (EuclideanSpace.single i 1) = DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]
     rfl
   rw [hb]
   rfl

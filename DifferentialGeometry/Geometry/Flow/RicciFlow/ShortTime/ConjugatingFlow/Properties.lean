@@ -239,12 +239,12 @@ private theorem flow_chartGram_contMDiffAt
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (t : ℝ) (ht : t ∈ Set.Ioo (0 : ℝ) T) (x : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) (5 : ℕ)
       (fun p : ℝ × ℝ =>
-        Integral.Measure.chartGramMatrix (I := I) (g_DT p.1)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1)
           ((Φ_fam t : M → M) x) ((Φ_fam p.2 : M → M) x) i j) (t, t) := by
   classical
   set α : M := (Φ_fam t : M → M) x with hα
@@ -275,11 +275,11 @@ private theorem flow_chartGram_contMDiffAt
       ∈ nhds ((t : ℝ), α) :=
     (isOpen_Ioo.prod (trivializationAt E (TangentSpace I) α).open_baseSet).mem_nhds hmem_dom
   have hgramAt : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (5 : ℕ)
-      (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j) (t, α) :=
+      (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j) (t, α) :=
     ((hgram_DT α i j).of_le h8le).contMDiffAt hdom_nhds |>.of_le
       (by exact_mod_cast (by norm_num : (5 : ℕ) ≤ (8 : ℕ)) : (5 : WithTop ℕ∞) ≤ (8 : ℕ))
   exact ContMDiffAt.comp (x := (t, t))
-    (g := fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j)
+    (g := fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) α p.2 i j)
     (by simpa [hα] using hgramAt) hpair
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
@@ -293,7 +293,7 @@ theorem evalForm_joint
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (t : ℝ) (ht : t ∈ Set.Ioo (0 : ℝ) T) (x : M) (v w : TangentSpace I x) :
     ∃ Q' : (ℝ × ℝ) →L[ℝ] ℝ,
@@ -305,36 +305,36 @@ theorem evalForm_joint
   have hsummand : ∀ i j : Fin (Module.finrank ℝ E),
       ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) (5 : ℕ)
         (fun p : ℝ × ℝ =>
-          ((Integral.Measure.chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
               (mfderiv I I (Φ_fam p.2 : M → M) x v))) i *
-          ((Integral.Measure.chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
               (mfderiv I I (Φ_fam p.2 : M → M) x w))) j *
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j)
         (t, t) := by
     intro i j
     have hV := spatial_pushforward_chartCoord_contMDiffAt (I := I) T Φ_fam hjoint t ht x v
     have hW := spatial_pushforward_chartCoord_contMDiffAt (I := I) T Φ_fam hjoint t ht x w
     have hlinCLM : ∀ p : Fin (Module.finrank ℝ E),
         ContMDiff 𝓘(ℝ, E) 𝓘(ℝ) (5 : ℕ)
-          (fun y : E => ((Integral.Measure.chartModelBasis E).repr y) p) := by
+          (fun y : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr y) p) := by
       intro p
       set L : E →ₗ[ℝ] ℝ :=
         (Finsupp.lapply (R := ℝ) (M := ℝ) (α := Fin (Module.finrank ℝ E)) p).comp
-          (Integral.Measure.chartModelBasis E).repr.toLinearMap with hL
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr.toLinearMap with hL
       set Lclm : E →L[ℝ] ℝ := LinearMap.toContinuousLinearMap L with hLclm
-      have hfun : (fun y : E => ((Integral.Measure.chartModelBasis E).repr y) p)
+      have hfun : (fun y : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr y) p)
           = fun y : E => Lclm y := by funext y; rfl
       rw [hfun, contMDiff_iff_contDiff]
       exact Lclm.contDiff.of_le le_top
     have hVrepr : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) (5 : ℕ)
-        (fun p : ℝ × ℝ => ((Integral.Measure.chartModelBasis E).repr
+        (fun p : ℝ × ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
             (mfderiv I I (Φ_fam p.2 : M → M) x v))) i) (t, t) :=
       (hlinCLM i).contMDiffAt.comp (t, t) hV
     have hWrepr : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) (5 : ℕ)
-        (fun p : ℝ × ℝ => ((Integral.Measure.chartModelBasis E).repr
+        (fun p : ℝ × ℝ => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
             (mfderiv I I (Φ_fam p.2 : M → M) x w))) j) (t, t) :=
       (hlinCLM j).contMDiffAt.comp (t, t) hW
@@ -342,13 +342,13 @@ theorem evalForm_joint
     exact (hVrepr.mul hWrepr).mul (by simpa [hα] using hG)
   have hsum : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) (5 : ℕ)
       (fun p : ℝ × ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((Integral.Measure.chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
             (mfderiv I I (Φ_fam p.2 : M → M) x v))) i *
-        ((Integral.Measure.chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
             (mfderiv I I (Φ_fam p.2 : M → M) x w))) j *
-        Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j)
       (t, t) :=
     ContMDiffAt.sum (fun i _ => ContMDiffAt.sum (fun j _ => hsummand i j))
   have hcontAt : ContinuousAt (fun p : ℝ × ℝ => (Φ_fam p.2 : M → M) x) (t, t) := by
@@ -368,13 +368,13 @@ theorem evalForm_joint
     exact ⟨by rw [← hα]; exact hbase0, by rw [← hα]; exact hsrc0⟩
   have heq : (evalFormTwoVar (I := I) g_DT Φ_fam x v w) =ᶠ[nhds (t, t)]
       (fun p : ℝ × ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        ((Integral.Measure.chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
             (mfderiv I I (Φ_fam p.2 : M → M) x v))) i *
-        ((Integral.Measure.chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam p.2 : M → M) x)
             (mfderiv I I (Φ_fam p.2 : M → M) x w))) j *
-        Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j) := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j) := by
     filter_upwards [hpre] with p hp
     obtain ⟨hb, hsr⟩ := hp
     have hbE : (Φ_fam p.2 : M → M) x ∈ e.baseSet := hb
@@ -386,7 +386,7 @@ theorem evalForm_joint
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
     have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE
           (I := I) (g_DT p.1) α i j (extChartAt I α ((Φ_fam p.2 : M → M) x))
-        = Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j := by
+        = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) α ((Φ_fam p.2 : M → M) x) i j := by
       unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
       rw [(extChartAt I α).left_inv hsr]
     rw [hgramEq]
@@ -561,7 +561,7 @@ theorem conjugating_flow_flat_data
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
@@ -733,7 +733,7 @@ private theorem flow_pushforward_chartBasisVec_section_cmwa
       (fun p : ℝ × M =>
         (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
           (mfderiv I I (Φ_fam p.1 : M → M) p.2
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
           : TangentBundle I M))
       (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
@@ -774,12 +774,12 @@ private theorem flow_pushforward_chartBasisVec_section_cmwa
     (x₀ := (t₀, b₀))
     hf hg ht₀b₀ hu le_rfl uniqueMDiffOn_univ
   have hv : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) (m : ℕ)
-      (fun q : ℝ × M => (Integral.Measure.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
+      (fun q : ℝ × M => (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ i q.2 : TangentBundle I M))
       S (t₀, b₀) := by
     have hcb : ContMDiffWithinAt I (I.prod 𝓘(ℝ, E)) (m : ℕ)
-        (Integral.Measure.chartBasisVec (I := I) x₀ i)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) x₀ i)
         (trivializationAt E (TangentSpace I) x₀).baseSet b₀ :=
-      (Integral.Measure.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ i b₀ hb₀).of_le hmtop
     have hsnd : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I (m : ℕ)
         (fun q : ℝ × M => q.2) S (t₀, b₀) := contMDiffWithinAt_snd
     have hmaps2 : Set.MapsTo (fun q : ℝ × M => q.2) S
@@ -793,7 +793,7 @@ private theorem flow_pushforward_chartBasisVec_section_cmwa
     (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
     (b₁ := fun q : ℝ × M => q.2) (b₂ := fun q : ℝ × M => (Φ_fam q.1 : M → M) q.2)
     (ϕ := fun q : ℝ × M => mfderiv I I (Φ_fam q.1 : M → M) q.2)
-    (v := fun q : ℝ × M => Integral.Measure.chartBasisVecFiber (I := I) x₀ i q.2)
+    (v := fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i q.2)
     (m₀ := (t₀, b₀)) (s := S) (n := (m : ℕ))
     ?_ hv hb₂
   · convert hkey using 2
@@ -829,7 +829,7 @@ private theorem flow_pushforward_chartCoord_cmwa
         (trivializationAt E (TangentSpace I) ((Φ_fam t₀ : M → M) b₀)).continuousLinearMapAt ℝ
           ((Φ_fam p.1 : M → M) p.2)
           (mfderiv I I (Φ_fam p.1 : M → M) p.2
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)))
       (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
   set α : M := (Φ_fam t₀ : M → M) b₀ with hα
@@ -838,7 +838,7 @@ private theorem flow_pushforward_chartCoord_cmwa
     with hS
   set F : (ℝ × M) → TangentBundle I M := fun p : ℝ × M =>
     (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
-      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
       : TangentBundle I M) with hF
   have hsection := flow_pushforward_chartBasisVec_section_cmwa
     (I := I) J Φ_fam hjoint x₀ i m t₀ ht₀ b₀ hb₀
@@ -858,12 +858,12 @@ private theorem flow_pushforward_chartCoord_cmwa
   · filter_upwards [hpb] with p hp
     change e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
         (mfderiv I I (Φ_fam p.1 : M → M) p.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
       = (e (F p)).2
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hp,
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hp]
   · change e.continuousLinearMapAt ℝ ((Φ_fam t₀ : M → M) b₀)
-        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ i b₀))
+        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i b₀))
       = (e (F (t₀, b₀))).2
     have hb0 : (Φ_fam t₀ : M → M) b₀ ∈ e.baseSet := by rw [← hα]; exact hbase0
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hb0,
@@ -876,10 +876,10 @@ private theorem chartModelBasis_repr_cmwa {n : ℕ}
     (hf : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, E) (n : ℕ) f S p₀)
     (p : Fin (Module.finrank ℝ E)) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
-      (fun q : ℝ × M => ((Integral.Measure.chartModelBasis E).repr (f q)) p) S p₀ := by
+      (fun q : ℝ × M => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (f q)) p) S p₀ := by
   set L : E →ₗ[ℝ] ℝ :=
     (Finsupp.lapply (R := ℝ) (M := ℝ) (α := Fin (Module.finrank ℝ E)) p).comp
-      (Integral.Measure.chartModelBasis E).repr.toLinearMap with hL
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr.toLinearMap with hL
   set Lclm : E →L[ℝ] ℝ := LinearMap.toContinuousLinearMap L with hLclm
   have hlin : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ) (n : ℕ) (fun y : E => Lclm y) := by
     rw [contMDiff_iff_contDiff]; exact Lclm.contDiff.of_le le_top
@@ -895,7 +895,7 @@ private theorem flow_chartGramMatrix_alpha_cmwa
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (J_g ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (α : M) (p q : Fin (Module.finrank ℝ E)) (n : ℕ)
     (t₀ : ℝ) (ht₀ : t₀ ∈ J) (b₀ : M) (x₀ : M)
@@ -903,7 +903,7 @@ private theorem flow_chartGramMatrix_alpha_cmwa
     (hαbase : (Φ_fam t₀ : M → M) b₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
       (fun r : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
       (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
   set S : Set (ℝ × M) := J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet
@@ -935,12 +935,12 @@ private theorem flow_chartGramMatrix_alpha_cmwa
     rintro r ⟨hrS, hrpre⟩
     exact ⟨hJJ (hS_sub hrS).1, hrpre⟩
   have hgramAt : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
-      (fun s : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_DT s.1) α s.2 p q)
+      (fun s : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT s.1) α s.2 p q)
       (J_g ×ˢ eα.baseSet) (t₀, (Φ_fam t₀ : M → M) b₀) :=
     ((hgram_DT α p q).of_le hntop) _ ⟨hJJ ht₀, hαbase⟩
   have hcompS' : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
       (fun r : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
       S' (t₀, b₀) :=
     hgramAt.comp (t₀, b₀) hpair hmaps
   exact hcompS'.mono_of_mem_nhdsWithin hS'_mem
@@ -952,7 +952,7 @@ private theorem flow_pushforward_chartCoord_continuousWithinAt
     (hΦsection_joint : ContinuousOn (fun p : ℝ × M =>
       (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
         (mfderiv I I (Φ_fam p.1 : M → M) p.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
         : TangentBundle I M))
       (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hΦorbit_joint : ContinuousOn (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
@@ -964,14 +964,14 @@ private theorem flow_pushforward_chartCoord_continuousWithinAt
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
           ((Φ_fam p.1 : M → M) p.2)
           (mfderiv I I (Φ_fam p.1 : M → M) p.2
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)))
       (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
   set e := trivializationAt E (TangentSpace I) α with he
   set S : Set (ℝ × M) := Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet with hS
   set F : (ℝ × M) → TangentBundle I M := fun p : ℝ × M =>
     (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
-      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+      (mfderiv I I (Φ_fam p.1 : M → M) p.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
       : TangentBundle I M) with hF
   have ht₀b₀ : (t₀, b₀) ∈ S := ⟨ht₀, hb₀⟩
   have hsec_cwa : ContinuousWithinAt F S (t₀, b₀) := hΦsection_joint.continuousWithinAt ht₀b₀
@@ -995,12 +995,12 @@ private theorem flow_pushforward_chartCoord_continuousWithinAt
     filter_upwards [hpb] with p hp
     change e.continuousLinearMapAt ℝ ((Φ_fam p.1 : M → M) p.2)
         (mfderiv I I (Φ_fam p.1 : M → M) p.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2))
       = (e (F p)).2
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hp,
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hp]
   · change e.continuousLinearMapAt ℝ ((Φ_fam t₀ : M → M) b₀)
-        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ i b₀))
+        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i b₀))
       = (e (F (t₀, b₀))).2
     rw [hF, e.apply_eq_prod_continuousLinearEquivAt ℝ _ hαbase,
       e.coe_continuousLinearEquivAt_eq (R := ℝ) hαbase]
@@ -1010,11 +1010,11 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [Boun
 private theorem chartModelBasis_repr_continuousWithinAt
     {S : Set (ℝ × M)} {p₀ : ℝ × M} {f : (ℝ × M) → E}
     (hf : ContinuousWithinAt f S p₀) (p : Fin (Module.finrank ℝ E)) :
-    ContinuousWithinAt (fun q : ℝ × M => ((Integral.Measure.chartModelBasis E).repr (f q)) p)
+    ContinuousWithinAt (fun q : ℝ × M => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (f q)) p)
       S p₀ := by
-  have hlin : Continuous (fun y : E => ((Integral.Measure.chartModelBasis E).repr y) p) :=
+  have hlin : Continuous (fun y : E => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr y) p) :=
     ((Finsupp.lapply (R := ℝ) (M := ℝ) (α := Fin (Module.finrank ℝ E)) p).comp
-      (Integral.Measure.chartModelBasis E).repr.toLinearMap).continuous_of_finiteDimensional
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr.toLinearMap).continuous_of_finiteDimensional
   exact hlin.continuousWithinAt.comp hf (Set.mapsTo_univ _ _)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
@@ -1041,7 +1041,7 @@ private theorem flow_chartGramMatrix_alpha_continuousWithinAt
     (hgram0_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (α : M) (p q : Fin (Module.finrank ℝ E))
     (t₀ : ℝ) (ht₀ : t₀ ∈ Set.Ico 0 T) (b₀ : M) (x₀ : M)
@@ -1049,7 +1049,7 @@ private theorem flow_chartGramMatrix_alpha_continuousWithinAt
     (hαbase : (Φ_fam t₀ : M → M) b₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ContinuousWithinAt
       (fun r : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
       (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) (t₀, b₀) := by
   classical
   set S : Set (ℝ × M) := Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet
@@ -1078,17 +1078,17 @@ private theorem flow_chartGramMatrix_alpha_continuousWithinAt
     rintro r ⟨hrS, hrpre⟩
     exact ⟨(hS_sub hrS).1, hrpre⟩
   have hgramAt : ContinuousWithinAt
-      (fun s : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_DT s.1) α s.2 p q)
+      (fun s : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT s.1) α s.2 p q)
       (Set.Ico (0 : ℝ) T ×ˢ eα.baseSet) (t₀, (Φ_fam t₀ : M → M) b₀) :=
     (hgram0_DT α p q).continuousWithinAt ⟨ht₀, hαbase⟩
   have hcompS' :
       ContinuousWithinAt ((fun s : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT s.1) α s.2 p q) ∘
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT s.1) α s.2 p q) ∘
         (fun r : ℝ × M => (r.1, (Φ_fam r.1 : M → M) r.2))) S' (t₀, b₀) :=
     ContinuousWithinAt.comp_of_eq hgramAt hpair hmaps rfl
   have hcompS'' : ContinuousWithinAt
       (fun r : ℝ × M =>
-        Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
       S' (t₀, b₀) := by
     simpa only [Function.comp_def] using hcompS'
   exact hcompS''.mono_of_mem_nhdsWithin hS'_mem
@@ -1110,12 +1110,12 @@ theorem conjugating_flow_pullback_jointGram_data
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram0_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hΦorbit_joint : ContinuousOn (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2)
       (Set.Ico 0 T ×ˢ Set.univ))
@@ -1123,18 +1123,18 @@ theorem conjugating_flow_pullback_jointGram_data
       ContinuousOn (fun p : ℝ × M =>
         (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
           (mfderiv I I (Φ_fam p.1 : M → M) p.2
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
         (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
     (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
   classical
@@ -1160,15 +1160,15 @@ theorem conjugating_flow_pullback_jointGram_data
     have hsummand : ∀ p q : Fin (Module.finrank ℝ E),
         ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
           (fun r : ℝ × M =>
-            ((Integral.Measure.chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
                 (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                  (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
-            ((Integral.Measure.chartModelBasis E).repr
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
                 (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                  (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
-            Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
           S (t₀, b₀) := by
       intro p q
       have hVi := flow_pushforward_chartCoord_cmwa (I := I) (Set.Ioo (0 : ℝ) T) Φ_fam hjoint
@@ -1183,15 +1183,15 @@ theorem conjugating_flow_pullback_jointGram_data
       exact (hri.mul hrj).mul hG
     have hsum : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
         (fun r : ℝ × M => ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-          ((Integral.Measure.chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
               (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
-          ((Integral.Measure.chartModelBasis E).repr
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
               (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
-          Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
         S (t₀, b₀) :=
       ContMDiffWithinAt.sum (fun p _ => ContMDiffWithinAt.sum (fun q _ => hsummand p q))
     have horbit_cwa : ContinuousWithinAt (fun r : ℝ × M => (Φ_fam r.1 : M → M) r.2) S (t₀, b₀) :=
@@ -1205,32 +1205,32 @@ theorem conjugating_flow_pullback_jointGram_data
     refine hsum.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [hpre] with r hr
       obtain ⟨hbE, hsr⟩ := hr
-      rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
       have hexpand := g_inner_eq_chart_sum (I := I) (g_DT r.1) α hbE hsr
         (mfderiv I I (Φ_fam r.1 : M → M) r.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2))
         (mfderiv I I (Φ_fam r.1 : M → M) r.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2))
       rw [hexpand]
       refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
       have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT r.1) α p q
             (extChartAt I α ((Φ_fam r.1 : M → M) r.2))
-          = Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p
+          = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p
             q := by
         unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
         rw [(extChartAt I α).left_inv hsr]
       rw [hgramEq]
     · obtain ⟨hbE0, hsr0⟩ : (Φ_fam t₀ : M → M) b₀ ∈ e.baseSet ∧
           (Φ_fam t₀ : M → M) b₀ ∈ (extChartAt I α).source := ⟨hαbase', by rw [← hα]; exact hsrc0⟩
-      rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
       have hexpand := g_inner_eq_chart_sum (I := I) (g_DT t₀) α hbE0 hsr0
-        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ i b₀))
-        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ j b₀))
+        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i b₀))
+        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j b₀))
       rw [hexpand]
       refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
       have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t₀) α p q
             (extChartAt I α ((Φ_fam t₀ : M → M) b₀))
-          = Integral.Measure.chartGramMatrix (I := I) (g_DT t₀) α ((Φ_fam t₀ : M → M) b₀) p q := by
+          = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t₀) α ((Φ_fam t₀ : M → M) b₀) p q := by
         unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
         rw [(extChartAt I α).left_inv hsr0]
       rw [hgramEq]
@@ -1251,15 +1251,15 @@ theorem conjugating_flow_pullback_jointGram_data
     have hsummand : ∀ p q : Fin (Module.finrank ℝ E),
         ContinuousWithinAt
           (fun r : ℝ × M =>
-            ((Integral.Measure.chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
                 (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                  (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
-            ((Integral.Measure.chartModelBasis E).repr
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
                 (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                  (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
-            Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
           S (t₀, b₀) := by
       intro p q
       have hVi := flow_pushforward_chartCoord_continuousWithinAt (I := I) T Φ_fam x₀ i
@@ -1273,15 +1273,15 @@ theorem conjugating_flow_pullback_jointGram_data
       exact (hri.mul hrj).mul hG
     have hsum : ContinuousWithinAt
         (fun r : ℝ × M => ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-          ((Integral.Measure.chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
               (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
-          ((Integral.Measure.chartModelBasis E).repr
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
               (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
-          Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
         S (t₀, b₀) := by
       refine cwa_finset_sum _ (fun p _ => ?_)
       exact cwa_finset_sum _ (fun q _ => hsummand p q)
@@ -1296,32 +1296,32 @@ theorem conjugating_flow_pullback_jointGram_data
     refine hsum.congr_of_eventuallyEq ?_ ?_
     · filter_upwards [hpre] with r hr
       obtain ⟨hbE, hsr⟩ := hr
-      rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
       have hexpand := g_inner_eq_chart_sum (I := I) (g_DT r.1) α hbE hsr
         (mfderiv I I (Φ_fam r.1 : M → M) r.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2))
         (mfderiv I I (Φ_fam r.1 : M → M) r.2
-          (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2))
       rw [hexpand]
       refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
       have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT r.1) α p q
             (extChartAt I α ((Φ_fam r.1 : M → M) r.2))
-          = Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p
+          = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p
             q := by
         unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
         rw [(extChartAt I α).left_inv hsr]
       rw [hgramEq]
     · obtain ⟨hbE0, hsr0⟩ : (Φ_fam t₀ : M → M) b₀ ∈ e.baseSet ∧
           (Φ_fam t₀ : M → M) b₀ ∈ (extChartAt I α).source := ⟨hαbase', by rw [← hα]; exact hsrc0⟩
-      rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
       have hexpand := g_inner_eq_chart_sum (I := I) (g_DT t₀) α hbE0 hsr0
-        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ i b₀))
-        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ j b₀))
+        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i b₀))
+        (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j b₀))
       rw [hexpand]
       refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
       have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t₀) α p q
             (extChartAt I α ((Φ_fam t₀ : M → M) b₀))
-          = Integral.Measure.chartGramMatrix (I := I) (g_DT t₀) α ((Φ_fam t₀ : M → M) b₀) p q := by
+          = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t₀) α ((Φ_fam t₀ : M → M) b₀) p q := by
         unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
         rw [(extChartAt I α).left_inv hsr0]
       rw [hgramEq]
@@ -1337,12 +1337,12 @@ theorem conjugating_flow_pullback_jointGram_onesided
     (hgram_DT : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT p.1) x₀ p.2 i j)
         (Set.Icc (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   classical
@@ -1365,15 +1365,15 @@ theorem conjugating_flow_pullback_jointGram_onesided
   have hsummand : ∀ p q : Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
         (fun r : ℝ × M =>
-          ((Integral.Measure.chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
               (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
-          ((Integral.Measure.chartModelBasis E).repr
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
               (mfderiv I I (Φ_fam r.1 : M → M) r.2
-                (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
-          Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
         S (t₀, b₀) := by
     intro p q
     have hVi := flow_pushforward_chartCoord_cmwa (I := I) (Set.Ico (0 : ℝ) T) Φ_fam hjoint
@@ -1388,15 +1388,15 @@ theorem conjugating_flow_pullback_jointGram_onesided
     exact (hri.mul hrj).mul hG
   have hsum : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) (n : ℕ)
       (fun r : ℝ × M => ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-        ((Integral.Measure.chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
             (mfderiv I I (Φ_fam r.1 : M → M) r.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
-        ((Integral.Measure.chartModelBasis E).repr
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2)))) p *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam r.1 : M → M) r.2)
             (mfderiv I I (Φ_fam r.1 : M → M) r.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
-        Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2)))) q *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q)
       S (t₀, b₀) :=
     ContMDiffWithinAt.sum (fun p _ => ContMDiffWithinAt.sum (fun q _ => hsummand p q))
   have horbit_cwa : ContinuousWithinAt (fun r : ℝ × M => (Φ_fam r.1 : M → M) r.2) S (t₀, b₀) :=
@@ -1410,29 +1410,29 @@ theorem conjugating_flow_pullback_jointGram_onesided
   refine hsum.congr_of_eventuallyEq ?_ ?_
   · filter_upwards [hpre] with r hr
     obtain ⟨hbE, hsr⟩ := hr
-    rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
     have hexpand := g_inner_eq_chart_sum (I := I) (g_DT r.1) α hbE hsr
-      (mfderiv I I (Φ_fam r.1 : M → M) r.2 (Integral.Measure.chartBasisVecFiber (I := I) x₀ i r.2))
-      (mfderiv I I (Φ_fam r.1 : M → M) r.2 (Integral.Measure.chartBasisVecFiber (I := I) x₀ j r.2))
+      (mfderiv I I (Φ_fam r.1 : M → M) r.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i r.2))
+      (mfderiv I I (Φ_fam r.1 : M → M) r.2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j r.2))
     rw [hexpand]
     refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
     have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT r.1) α p q
           (extChartAt I α ((Φ_fam r.1 : M → M) r.2))
-        = Integral.Measure.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q := by
+        = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT r.1) α ((Φ_fam r.1 : M → M) r.2) p q := by
       unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
       rw [(extChartAt I α).left_inv hsr]
     rw [hgramEq]
   · obtain ⟨hbE0, hsr0⟩ : (Φ_fam t₀ : M → M) b₀ ∈ e.baseSet ∧
         (Φ_fam t₀ : M → M) b₀ ∈ (extChartAt I α).source := ⟨hαbase', by rw [← hα]; exact hsrc0⟩
-    rw [Integral.Measure.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, pullbackMetric_inner_eq_inner_mfderiv]
     have hexpand := g_inner_eq_chart_sum (I := I) (g_DT t₀) α hbE0 hsr0
-      (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ i b₀))
-      (mfderiv I I (Φ_fam t₀ : M → M) b₀ (Integral.Measure.chartBasisVecFiber (I := I) x₀ j b₀))
+      (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i b₀))
+      (mfderiv I I (Φ_fam t₀ : M → M) b₀ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j b₀))
     rw [hexpand]
     refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
     have hgramEq : DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t₀) α p q
           (extChartAt I α ((Φ_fam t₀ : M → M) b₀))
-        = Integral.Measure.chartGramMatrix (I := I) (g_DT t₀) α ((Φ_fam t₀ : M → M) b₀) p q := by
+        = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_DT t₀) α ((Φ_fam t₀ : M → M) b₀) p q := by
       unfold DifferentialGeometry.Geometry.Operator.chartGramOnE
       rw [(extChartAt I α).left_inv hsr0]
     rw [hgramEq]

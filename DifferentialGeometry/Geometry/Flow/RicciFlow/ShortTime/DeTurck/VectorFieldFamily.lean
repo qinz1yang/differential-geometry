@@ -53,7 +53,7 @@ theorem deturck_vf_time_family_smoothness
         ∑ p : Fin (Module.finrank ℝ E),
           DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg x p
               (extChartAt I x x) •
-            centeredChartTangentBasis (I := I) x p := by
+            DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x p := by
     funext t
     exact deTurckVF_apply_eq_chartDeTurckVFComp_sum_self (I := I) (g_DT t) g_bg x
   rw [hrewrite]
@@ -71,17 +71,17 @@ theorem deturck_vf_time_family_smoothness
             chartGramOnE (I := I) (g_DT t) x i j (extChartAt I x x))
           = fun t : ℝ =>
               (g_DT t).inner x
-                (centeredChartTangentBasis (I := I) x i)
-                (centeredChartTangentBasis (I := I) x j) := by
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) := by
       funext t
       rw [chartGramOnE_def]
       rw [extChartAt_to_inv (I := I) x]
-      rw [chartGramMatrix_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
       rw [chartBasisVecFiber_self (I := I) x i,
           chartBasisVecFiber_self (I := I) x j]
     rw [hreduce]
-    exact h_metric_cont x (centeredChartTangentBasis (I := I) x i)
-      (centeredChartTangentBasis (I := I) x j)
+    exact h_metric_cont x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
   have h_partial : ∀ l i j : Fin (Module.finrank ℝ E),
       ContinuousOn
         (fun t : ℝ =>

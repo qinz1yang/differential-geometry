@@ -77,20 +77,20 @@ theorem intrinsicG1G3BridgePouTsupport
         ‖- (∑ i : Fin r,
               chartTensorRSInputSlotCorrection (I := I) r s g α
                 (fun b' => S.toSection b')
-                (chartBasisVecFiber (I := I) α k) b i)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
           + (∑ l : Fin s,
               chartTensorRSOutputSlotCorrection (I := I) r s g α
                 (fun b' => S.toSection b')
-                (chartBasisVecFiber (I := I) α k) b l)‖ ^ 2 ≤
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l)‖ ^ 2 ≤
           C_bridge *
             ((∑ i : Fin r,
                 ‖chartTensorRSInputSlotCorrection (I := I) r s g α
                     (fun b' => S.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b i‖ ^ 2) +
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i‖ ^ 2) +
               (∑ l : Fin s,
                 ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
                     (fun b' => S.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
   classical
   set C_bridge : ℝ := 2 * ((r : ℝ) + s) with hC_bridge_def
   have hC_bridge_nn : 0 ≤ C_bridge := by
@@ -99,11 +99,11 @@ theorem intrinsicG1G3BridgePouTsupport
   intro S k b _hb
   set a : Fin r → TensorRSSpace r s I b := fun i =>
     chartTensorRSInputSlotCorrection (I := I) r s g α
-      (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α k) b i
+      (fun b' => S.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i
     with ha_def
   set c : Fin s → TensorRSSpace r s I b := fun l =>
     chartTensorRSOutputSlotCorrection (I := I) r s g α
-      (fun b' => S.toSection b') (chartBasisVecFiber (I := I) α k) b l
+      (fun b' => S.toSection b') (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l
     with hc_def
   have h_X_sq_split :
       ‖- (∑ i : Fin r, a i) + (∑ l : Fin s, c l)‖ ^ 2 ≤
@@ -189,20 +189,20 @@ theorem norm_sq_triv_neg_sum_add_sum_le_const_mul_sum_norm_sq_on_pouTsupport_int
         ‖- (∑ i : Fin r,
               chartTensorRSInputSlotCorrection (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b i)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
           + (∑ l : Fin s,
               chartTensorRSOutputSlotCorrection (I := I) r s g α
                 (fun b' => S.toCcTensor.toSection b')
-                (chartBasisVecFiber (I := I) α k) b l)‖ ^ 2 ≤
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l)‖ ^ 2 ≤
           C_bridge *
             ((∑ i : Fin r,
                 ‖chartTensorRSInputSlotCorrection (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b i‖ ^ 2) +
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i‖ ^ 2) +
               (∑ l : Fin s,
                 ‖chartTensorRSOutputSlotCorrection (I := I) r s g α
                     (fun b' => S.toCcTensor.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l‖ ^ 2)) := by
   obtain ⟨C_bridge, hC_nn, h⟩ :=
     intrinsicG1G3BridgePouTsupport (I := I) (M := M) g r s α
   exact ⟨C_bridge, hC_nn, fun S k b hb => h S.toCcTensor k hb⟩

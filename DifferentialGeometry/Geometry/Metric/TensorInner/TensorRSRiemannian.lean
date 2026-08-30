@@ -19,7 +19,7 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace TensorRSRiemannian
 
-open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry (SmoothRiemannianMetric)
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
@@ -264,7 +264,7 @@ namespace TensorRSBundle
 
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry (SmoothRiemannianMetric)
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

@@ -54,7 +54,7 @@ theorem parallelTransportVF_contDiffOn
                   chartChristoffel (I := I) g α i j k (u z.1) *
                     chartCoord (E := E) i (deriv u z.1) *
                     chartCoord (E := E) j z.2) •
-                chartModelBasis E k := by
+                DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := by
     funext z
     rfl
   rw [huncurry]
@@ -78,21 +78,21 @@ theorem parallelTransportVF_contDiffOn
   have hvi : ContDiffOn ℝ ∞
       (fun z : ℝ × E => chartCoord (E := E) i (deriv u z.1))
       (W ×ˢ (Set.univ : Set E)) := by
-    have hCLM : ContDiff ℝ ∞ (((chartModelBasis E).coord i).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord i).toContinuousLinearMap.contDiff
+    have hCLM : ContDiff ℝ ∞ (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff
     have hcomp : ContDiffOn ℝ ∞ (fun z : ℝ × E => deriv u z.1)
         (W ×ˢ (Set.univ : Set E)) :=
       hderiv_cd.comp contDiffOn_fst (fun z hz => hz.1)
     have hci : ContDiffOn ℝ ∞
-        (fun z : ℝ × E => (((chartModelBasis E).coord i).toContinuousLinearMap)
+        (fun z : ℝ × E => (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap)
           (deriv u z.1)) (W ×ˢ (Set.univ : Set E)) :=
       hCLM.comp_contDiffOn hcomp
     exact hci
   have hwj : ContDiffOn ℝ ∞
       (fun z : ℝ × E => chartCoord (E := E) j z.2)
       (W ×ˢ (Set.univ : Set E)) := by
-    have hCLM : ContDiff ℝ ∞ (((chartModelBasis E).coord j).toContinuousLinearMap) :=
-      ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff
+    have hCLM : ContDiff ℝ ∞ (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap) :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff
     have hsnd : ContDiff ℝ ∞ (Prod.snd : ℝ × E → E) := contDiff_snd
     exact (hCLM.comp hsnd).contDiffOn
   exact (hΓ.mul hvi).mul hwj

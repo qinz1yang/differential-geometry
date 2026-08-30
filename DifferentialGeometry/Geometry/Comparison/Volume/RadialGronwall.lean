@@ -1751,7 +1751,7 @@ theorem exists_rm04_basis
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -1763,35 +1763,35 @@ theorem exists_rm04_basis
       (∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Icc (0 : ℝ) b,
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) t) t) ∧
+            (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t) ∧
       (∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Icc (0 : ℝ) b,
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x)
             (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-              (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t) t) ∧
+              (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t) ∧
       ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Ico (0 : Real) b,
         g.inner (radialCurve (I := I) g p x t)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
             (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-              (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t)
+              (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
             (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-              (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t)
+              (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-          (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t)
-          (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t) := by
+          (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+          (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t) := by
   obtain ⟨r, hr, hdata⟩ := exists_rm04_data (I := I) g hEnorm p
   refine ⟨r, hr, ?_⟩
   intro x hx a K R Vb b hK hVb hb hsmall hlaunch hKbound hRm
   refine ⟨?_, ?_, ?_⟩
   · intro k
-    exact (hdata x (a • (chartModelBasis E) k) hx (hsmall k)
+    exact (hdata x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) hx (hsmall k)
       hK hVb hb hlaunch hKbound hRm).1
   · intro k
-    exact (hdata x (a • (chartModelBasis E) k) hx (hsmall k)
+    exact (hdata x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) hx (hsmall k)
       hK hVb hb hlaunch hKbound hRm).2.1
   · intro k
-    exact (hdata x (a • (chartModelBasis E) k) hx (hsmall k)
+    exact (hdata x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) hx (hsmall k)
       hK hVb hb hlaunch hKbound hRm).2.2
 
 open Bundle in
@@ -1806,7 +1806,7 @@ theorem exists_rm04_pack
     ∃ r : Real, 0 < r ∧
       (∀ x : E, ‖x‖ < r →
         ∀ {a K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
-        (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+        (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
         Real.sqrt (g.inner p x x) ≤ Vb →
         Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
             R * Vb ^ 2 ≤ K →
@@ -1818,23 +1818,23 @@ theorem exists_rm04_pack
         (∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Icc (0 : ℝ) b,
           DifferentiableAt ℝ
             (chartRepAt (I := I) (radialCurve (I := I) g p x)
-              (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) t) t) ∧
+              (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t) ∧
         (∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Icc (0 : ℝ) b,
           DifferentiableAt ℝ
             (chartRepAt (I := I) (radialCurve (I := I) g p x)
               (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-                (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t) t) ∧
+                (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t) ∧
         ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Ico (0 : Real) b,
           g.inner (radialCurve (I := I) g p x t)
             (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
               (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-                (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t)
+                (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
             (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
               (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-                (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t)
+                (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
           ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-            (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t)
-            (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t)) ∧
+            (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+            (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)) ∧
       (∀ x w : E, ‖x‖ < r → ‖w‖ < r →
         (covDerivAlong (I := I) g
           (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))

@@ -111,7 +111,7 @@ theorem cotangentSection_chartComponent_contMDiffOn
     (γ : M) (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => Tensor0SSpace.toModel (Y b)
-        (fun _ : Fin 1 => chartBasisVecFiber (I := I) γ j b))
+        (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b))
       (chartAt H γ).source := by
   intro x₀ hx₀
   apply ContMDiffAt.contMDiffWithinAt
@@ -124,7 +124,7 @@ theorem cotangentSection_chartComponent_contMDiffOn
       rw [hbase]; exact hx₀
     have hopen : IsOpen (trivializationAt E (TangentSpace I) γ).baseSet :=
       (trivializationAt E (TangentSpace I) γ).open_baseSet
-    exact (chartBasisVec_contMDiffOn (I := I) γ j x₀ hx₀base).contMDiffAt
+    exact (DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) γ j x₀ hx₀base).contMDiffAt
       (hopen.mem_nhds hx₀base)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -145,9 +145,9 @@ theorem inverseMetricSharpField_contMDiff (g : SmoothRiemannianMetric I M) :
     apply metricSharp_contMDiff_total (I := I) g
     intro γ j
     have hcongr : (fun b : M => (cotangentToDualLinear (I := I) (x := b) (Y b))
-          (chartBasisVecFiber (I := I) γ j b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b)) =
         (fun b : M => Tensor0SSpace.toModel (Y b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) γ j b)) := by
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b)) := by
       funext b
       rw [cotangentToDualLinear_apply, cotangentToDual_apply]
       rfl
@@ -183,9 +183,9 @@ theorem cometricBilin_contMDiff (g : SmoothRiemannianMetric I M)
     apply metricSharp_contMDiff_total (I := I) g
     intro γ j
     have hcongr : (fun b : M => (cotangentToDualLinear (I := I) (x := b) (β b))
-          (chartBasisVecFiber (I := I) γ j b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b)) =
         (fun b : M => Tensor0SSpace.toModel (β b)
-          (fun _ : Fin 1 => chartBasisVecFiber (I := I) γ j b)) := by
+          (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) γ j b)) := by
       funext b
       rw [cotangentToDualLinear_apply, cotangentToDual_apply]
       rfl

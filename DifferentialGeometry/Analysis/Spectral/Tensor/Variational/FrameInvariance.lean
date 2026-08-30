@@ -106,48 +106,48 @@ noncomputable def chartTensorCovDerivPointwiseInner
     (g : SmoothRiemannianMetric I M) (α : M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (b : M) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-    (chartGramMatrix (I := I) g α b)⁻¹ i j *
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b)⁻¹ i j *
       tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s S b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α i b))))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s T b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α j b))))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))))
 
 private noncomputable def chartBasisTransitionMatrix (α : M) (b : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun k i =>
-    ((chartModelBasis E).repr
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (tangentSpaceModelContinuousLinearEquiv (I := I) b
-        (chartBasisVecFiber (I := I) α i b))) k
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma chartBasisVecFiber_toModel_eq_sum_chartModelBasis
     (α : M) (b : M) (i : Fin (Module.finrank ℝ E)) :
     tangentSpaceModelContinuousLinearEquiv (I := I) b
-        (chartBasisVecFiber (I := I) α i b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) =
       ∑ k : Fin (Module.finrank ℝ E),
-        chartBasisTransitionMatrix (I := I) α b k i • (chartModelBasis E) k := by
+        chartBasisTransitionMatrix (I := I) α b k i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
   classical
   unfold chartBasisTransitionMatrix
   simp only [Matrix.of_apply]
-  exact (((chartModelBasis E).sum_repr
+  exact (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
     (tangentSpaceModelContinuousLinearEquiv (I := I) b
-      (chartBasisVecFiber (I := I) α i b)))).symm
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma chartBasisTransitionMatrix_eq_toMatrix
     (α : M) (b : M) :
     chartBasisTransitionMatrix (I := I) α b =
-      (chartModelBasis E).toMatrix
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).toMatrix
         (fun i : Fin (Module.finrank ℝ E) =>
           tangentSpaceModelContinuousLinearEquiv (I := I) b
-            (chartBasisVecFiber (I := I) α i b)) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) := by
   classical
   unfold chartBasisTransitionMatrix
   ext k i
@@ -162,18 +162,18 @@ private lemma chartBasisTransitionMatrix_isUnit
   classical
   rw [chartBasisTransitionMatrix_eq_toMatrix]
   set chartBasis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E :=
-    (chartBasisFamily (I := I) α hb).map
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb).map
       (tangentSpaceModelContinuousLinearEquiv (I := I) b).toLinearEquiv with hCB_def
   have hfam_eq : (fun i : Fin (Module.finrank ℝ E) =>
       tangentSpaceModelContinuousLinearEquiv (I := I) b
-        (chartBasisVecFiber (I := I) α i b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))
       = (chartBasis : Fin (Module.finrank ℝ E) → E) := by
     funext i
     rw [hCB_def]
-    rw [Module.Basis.map_apply, chartBasisFamily_apply]
+    rw [Module.Basis.map_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
     rfl
   rw [hfam_eq]
-  refine ⟨⟨_, chartBasis.toMatrix (chartModelBasis E), ?_, ?_⟩, rfl⟩
+  refine ⟨⟨_, chartBasis.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E), ?_, ?_⟩, rfl⟩
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
 
@@ -208,7 +208,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     [SigmaCompactSpace M] in
 private lemma chartGramMatrix_eq_transition
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) :
-    chartGramMatrix (I := I) g α b =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b =
       (chartBasisTransitionMatrix (I := I) α b)ᵀ *
         gramMatrixAt (I := I) (M := M) g b *
         chartBasisTransitionMatrix (I := I) α b := by
@@ -217,15 +217,15 @@ private lemma chartGramMatrix_eq_transition
   set T : Matrix (Fin n) (Fin n) ℝ :=
     chartBasisTransitionMatrix (I := I) α b with hT_def
   ext i j
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   rw [← (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply
-      (chartBasisVecFiber (I := I) α i b),
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b),
     ← (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply
-      (chartBasisVecFiber (I := I) α j b), ← modelInnerAt_apply]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b), ← modelInnerAt_apply]
   rw [chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b i,
       chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b j]
   rw [modelInnerAt_bilinear_expand g b
-        (fun k => T k i) (fun l => T l j) (chartModelBasis E)]
+        (fun k => T k i) (fun l => T l j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)]
   rw [Matrix.mul_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl ?_
@@ -281,20 +281,20 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s S b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α i b))))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r s T b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
-              (chartBasisVecFiber (I := I) α j b)))) =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))) =
       ((chartBasisTransitionMatrix (I := I) α b)ᵀ *
           (Matrix.of fun k l : Fin (Module.finrank ℝ E) =>
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  ((chartModelBasis E) k)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s T b
-                  ((chartModelBasis E) l)))) *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)))) *
           chartBasisTransitionMatrix (I := I) α b) i j := by
   classical
   set Tmat : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
@@ -303,9 +303,9 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
   have hexp_j := chartBasisVecFiber_toModel_eq_sum_chartModelBasis (I := I) α b j
   have hSi : tensorCovDerivAt (I := I) (M := M) g r s S b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α i b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) =
       ∑ k : Fin (Module.finrank ℝ E), Tmat k i •
-        tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k) := by
+        tensorCovDerivAt (I := I) (M := M) g r s S b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
     rw [hexp_i]
     unfold tensorCovDerivAt
     rw [map_sum, map_sum]
@@ -314,9 +314,9 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
     rw [map_smul, map_smul]
   have hTj : tensorCovDerivAt (I := I) (M := M) g r s T b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α j b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) =
       ∑ l : Fin (Module.finrank ℝ E), Tmat l j •
-        tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l) := by
+        tensorCovDerivAt (I := I) (M := M) g r s T b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
     rw [hexp_j]
     unfold tensorCovDerivAt
     rw [map_sum, map_sum]
@@ -337,10 +337,10 @@ private lemma chartTensorCovDeriv_innerMatrix_eq_transition
         rw [Finset.sum_insert hi₀, TensorRSSpace.toModel_add,
             TensorRSSpace.toModel_smul, ih, Finset.sum_insert hi₀]
   have htoM_left := htoM_sum Finset.univ
-    (fun k => tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k))
+    (fun k => tensorCovDerivAt (I := I) (M := M) g r s S b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
     (fun k => Tmat k i)
   have htoM_right := htoM_sum Finset.univ
-    (fun l => tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l))
+    (fun l => tensorCovDerivAt (I := I) (M := M) g r s T b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))
     (fun l => Tmat l j)
   rw [htoM_left, htoM_right]
   rw [tensorInnerPointwise_sum_left (I := I) (M := M) g r s b Finset.univ]
@@ -377,39 +377,39 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
     Matrix.of fun k l : Fin n =>
       tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k)))
+          (tensorCovDerivAt (I := I) (M := M) g r s S b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l)))
+          (tensorCovDerivAt (I := I) (M := M) g r s T b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)))
     with hBmat_def
   unfold chartTensorCovDerivPointwiseInner
   unfold tensorCovDerivPointwiseInner
-  have hG_eq : chartGramMatrix (I := I) g α b = Tmatᵀ * Gmat * Tmat :=
+  have hG_eq : DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b = Tmatᵀ * Gmat * Tmat :=
     chartGramMatrix_eq_transition (I := I) g α b
   have hLHS_term_eq : ∀ i j : Fin n,
       tensorInnerPointwise (I := I) (M := M) g r s b
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S b
               (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                (chartBasisVecFiber (I := I) α i b))))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s T b
               (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                (chartBasisVecFiber (I := I) α j b)))) =
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))) =
         (Tmatᵀ * Bmat * Tmat) i j := by
     intro i j
     exact chartTensorCovDeriv_innerMatrix_eq_transition (I := I) (M := M) g α r s S T b i j
   have hLHS_rewrite :
       ∑ i : Fin n, ∑ j : Fin n,
-          (chartGramMatrix (I := I) g α b)⁻¹ i j *
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b)⁻¹ i j *
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α i b))))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s T b
                   (tangentSpaceModelContinuousLinearEquiv (I := I) b
-                    (chartBasisVecFiber (I := I) α j b)))) =
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))) =
         ∑ i : Fin n, ∑ j : Fin n,
           (Tmatᵀ * Gmat * Tmat)⁻¹ i j * (Tmatᵀ * Bmat * Tmat) i j := by
     refine Finset.sum_congr rfl ?_
@@ -429,11 +429,11 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
         (gramMatrixAt_isHermitian (I := I) (M := M) g b) ?_
       intro v hv
       let w : E := ∑ i : Fin (Module.finrank ℝ E),
-        v i • (chartModelBasis E) i
+        v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
       have hw_ne : w ≠ 0 := by
         intro h
-        have hlin : LinearIndependent ℝ ((chartModelBasis E) : Fin _ → E) :=
-          (chartModelBasis E).linearIndependent
+        have hlin : LinearIndependent ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) : Fin _ → E) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).linearIndependent
         rw [Fintype.linearIndependent_iff] at hlin
         exact hv (funext (hlin v h))
       have hquad : star v ⬝ᵥ (gramMatrixAt (I := I) (M := M) g b) *ᵥ v =
@@ -443,17 +443,17 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
               v j * ∑ i : Fin (Module.finrank ℝ E),
                 v i * gramMatrixAt (I := I) (M := M) g b i j := by
           change modelInnerAt (I := I) (M := M) g b
-              (∑ i, v i • (chartModelBasis E) i)
-              (∑ j, v j • (chartModelBasis E) j) = _
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ j, v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) = _
           rw [map_sum]
           refine Finset.sum_congr rfl ?_
           intro j _
           have hsm1 : (modelInnerAt (I := I) (M := M) g b
-                (∑ i, v i • (chartModelBasis E) i))
-                (v j • (chartModelBasis E) j) =
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
               v j * (modelInnerAt (I := I) (M := M) g b
-                (∑ i, v i • (chartModelBasis E) i))
-                ((chartModelBasis E) j) := by
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
             rw [map_smul, smul_eq_mul]
           rw [hsm1]
           congr 1
@@ -461,14 +461,14 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
           refine Finset.sum_congr rfl ?_
           intro i _
           have hsm2 : (modelInnerAt (I := I) (M := M) g b
-                (v i • (chartModelBasis E) i))
-                ((chartModelBasis E) j) =
+                (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
               v i * (modelInnerAt (I := I) (M := M) g b
-                ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
             rw [show modelInnerAt (I := I) (M := M) g b
-                (v i • (chartModelBasis E) i) =
+                (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
                 v i • modelInnerAt (I := I) (M := M) g b
-                  ((chartModelBasis E) i) from by rw [map_smul]]
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) from by rw [map_smul]]
             rw [smul_apply, smul_eq_mul]
           rw [hsm2, gramMatrixAt_apply]
         rw [hexp]
@@ -495,18 +495,18 @@ lemma chartTensorCovDerivPointwiseInner_eq_tensorCovDerivPointwiseInner
 private noncomputable def frameTransitionMatrix
     (frame : Fin (Module.finrank ℝ E) → E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun k i => ((chartModelBasis E).repr (frame i)) k
+  Matrix.of fun k i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (frame i)) k
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma frame_eq_sum_chartModelBasis
     (frame : Fin (Module.finrank ℝ E) → E) (i : Fin (Module.finrank ℝ E)) :
     frame i =
       ∑ k : Fin (Module.finrank ℝ E),
-        frameTransitionMatrix (E := E) frame k i • (chartModelBasis E) k := by
+        frameTransitionMatrix (E := E) frame k i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
   classical
   unfold frameTransitionMatrix
   simp only [Matrix.of_apply]
-  exact ((chartModelBasis E).sum_repr (frame i)).symm
+  exact ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr (frame i)).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma frameTransitionMatrix_isUnit
@@ -516,12 +516,12 @@ private lemma frameTransitionMatrix_isUnit
   classical
   have hmat : frameTransitionMatrix (E := E)
       (frame : Fin (Module.finrank ℝ E) → E) =
-      (chartModelBasis E).toMatrix (frame : Fin (Module.finrank ℝ E) → E) := by
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).toMatrix (frame : Fin (Module.finrank ℝ E) → E) := by
     unfold frameTransitionMatrix
     ext k i
     rw [Module.Basis.toMatrix_apply, Matrix.of_apply]
   rw [hmat]
-  refine ⟨⟨_, frame.toMatrix (chartModelBasis E), ?_, ?_⟩, rfl⟩
+  refine ⟨⟨_, frame.toMatrix (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E), ?_, ?_⟩, rfl⟩
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
   · exact Module.Basis.toMatrix_mul_toMatrix_flip _ _
 
@@ -542,7 +542,7 @@ private lemma frameGram_eq_transition
     frame_eq_sum_chartModelBasis (E := E) frame j]
   rw [modelInnerAt_bilinear_expand g b
         (fun k => frameTransitionMatrix (E := E) frame k i)
-        (fun l => frameTransitionMatrix (E := E) frame l j) (chartModelBasis E)]
+        (fun l => frameTransitionMatrix (E := E) frame l j) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)]
   rw [Matrix.mul_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl ?_
@@ -571,16 +571,16 @@ private lemma frameInnerMatrix_eq_transition
             tensorInnerPointwise (I := I) (M := M) g r s b
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  ((chartModelBasis E) k)))
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s T b
-                  ((chartModelBasis E) l)))) *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)))) *
           frameTransitionMatrix (E := E) frame) i j := by
   classical
   have hSi : tensorCovDerivAt (I := I) (M := M) g r s S b (frame i) =
       ∑ k : Fin (Module.finrank ℝ E),
         frameTransitionMatrix (E := E) frame k i •
-        tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k) := by
+        tensorCovDerivAt (I := I) (M := M) g r s S b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
     rw [frame_eq_sum_chartModelBasis (E := E) frame i]
     unfold tensorCovDerivAt
     rw [map_sum, map_sum]
@@ -590,7 +590,7 @@ private lemma frameInnerMatrix_eq_transition
   have hTj : tensorCovDerivAt (I := I) (M := M) g r s T b (frame j) =
       ∑ l : Fin (Module.finrank ℝ E),
         frameTransitionMatrix (E := E) frame l j •
-        tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l) := by
+        tensorCovDerivAt (I := I) (M := M) g r s T b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l) := by
     rw [frame_eq_sum_chartModelBasis (E := E) frame j]
     unfold tensorCovDerivAt
     rw [map_sum, map_sum]
@@ -611,10 +611,10 @@ private lemma frameInnerMatrix_eq_transition
         rw [Finset.sum_insert hi₀, TensorRSSpace.toModel_add,
             TensorRSSpace.toModel_smul, ih, Finset.sum_insert hi₀]
   rw [htoM_sum Finset.univ
-        (fun k => tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k))
+        (fun k => tensorCovDerivAt (I := I) (M := M) g r s S b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
         (fun k => frameTransitionMatrix (E := E) frame k i),
       htoM_sum Finset.univ
-        (fun l => tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l))
+        (fun l => tensorCovDerivAt (I := I) (M := M) g r s T b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))
         (fun l => frameTransitionMatrix (E := E) frame l j)]
   rw [tensorInnerPointwise_sum_left (I := I) (M := M) g r s b Finset.univ]
   conv_lhs =>
@@ -656,9 +656,9 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
     Matrix.of fun k l : Fin (Module.finrank ℝ E) =>
       tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g r s S b ((chartModelBasis E) k)))
+          (tensorCovDerivAt (I := I) (M := M) g r s S b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
         (TensorRSSpace.toModel
-          (tensorCovDerivAt (I := I) (M := M) g r s T b ((chartModelBasis E) l)))
+          (tensorCovDerivAt (I := I) (M := M) g r s T b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)))
   have hG_eq : (Matrix.of fun i' j' : Fin (Module.finrank ℝ E) =>
       modelInnerAt (I := I) (M := M) g b (frame i') (frame j')) = Tmatᵀ * Gmat * Tmat :=
     frameGram_eq_transition (I := I) (M := M) g b (frame : Fin (Module.finrank ℝ E) → E)
@@ -685,11 +685,11 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
         (gramMatrixAt_isHermitian (I := I) (M := M) g b) ?_
       intro v hv
       let w : E := ∑ i : Fin (Module.finrank ℝ E),
-        v i • (chartModelBasis E) i
+        v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
       have hw_ne : w ≠ 0 := by
         intro h
-        have hlin : LinearIndependent ℝ ((chartModelBasis E) : Fin _ → E) :=
-          (chartModelBasis E).linearIndependent
+        have hlin : LinearIndependent ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) : Fin _ → E) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).linearIndependent
         rw [Fintype.linearIndependent_iff] at hlin
         exact hv (funext (hlin v h))
       have hquad : star v ⬝ᵥ (gramMatrixAt (I := I) (M := M) g b) *ᵥ v =
@@ -699,17 +699,17 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
               v j * ∑ i : Fin (Module.finrank ℝ E),
                 v i * gramMatrixAt (I := I) (M := M) g b i j := by
           change modelInnerAt (I := I) (M := M) g b
-              (∑ i, v i • (chartModelBasis E) i)
-              (∑ j, v j • (chartModelBasis E) j) = _
+              (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (∑ j, v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) = _
           rw [map_sum]
           refine Finset.sum_congr rfl ?_
           intro j _
           have hsm1 : (modelInnerAt (I := I) (M := M) g b
-                (∑ i, v i • (chartModelBasis E) i))
-                (v j • (chartModelBasis E) j) =
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                (v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
               v j * (modelInnerAt (I := I) (M := M) g b
-                (∑ i, v i • (chartModelBasis E) i))
-                ((chartModelBasis E) j) := by
+                (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
             rw [map_smul, smul_eq_mul]
           rw [hsm1]
           congr 1
@@ -717,14 +717,14 @@ lemma tensorCovDerivPointwiseInner_eq_frameGram_sum
           refine Finset.sum_congr rfl ?_
           intro i _
           have hsm2 : (modelInnerAt (I := I) (M := M) g b
-                (v i • (chartModelBasis E) i))
-                ((chartModelBasis E) j) =
+                (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
               v i * (modelInnerAt (I := I) (M := M) g b
-                ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
             rw [show modelInnerAt (I := I) (M := M) g b
-                (v i • (chartModelBasis E) i) =
+                (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
                 v i • modelInnerAt (I := I) (M := M) g b
-                  ((chartModelBasis E) i) from by rw [map_smul]]
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) from by rw [map_smul]]
             rw [smul_apply, smul_eq_mul]
           rw [hsm2, gramMatrixAt_apply]
         rw [hexp]

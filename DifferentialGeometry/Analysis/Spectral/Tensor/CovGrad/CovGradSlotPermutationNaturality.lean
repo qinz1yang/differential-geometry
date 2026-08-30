@@ -440,27 +440,27 @@ lemma tensor0SCovariantDerivative_succ_domDomCongr
   have hframe : ∀ i : Fin (Module.finrank ℝ E),
       (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) ŝ' x)
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) =
         permuteTensor0S (I := I) (M := M) σ
           ((Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
             (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) ŝ x)
-            (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x)) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)) := by
     intro i
     have hXi_at := DifferentialGeometry.Geometry.Connection.chartBasisVec_alpha_mdifferentiableAt
         (I := I) x i hx_good
     rw [←
       DifferentialGeometry.Geometry.Connection.chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       (I := I) (M := M) g x s ŝ'
-        (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i)
       hx_good hŝ' hXi_at]
     rw [show ŝ' = (fun y => permuteTensor0S (I := I) (M := M) σ (ŝ y))
         from funext hrel]
     rw [chartTensor0SCovariantDerivative_succ_domDomCongr (I := I) s g σ x ŝ
-      (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i) hx_good]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i) hx_good]
     rw
       [chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       (I := I) (M := M) g x s ŝ
-        (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i)
       hx_good hŝ hXi_at]
   conv_lhs => rw [DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_recompose
     (I := I) x hxE v, map_sum]
@@ -468,11 +468,11 @@ lemma tensor0SCovariantDerivative_succ_domDomCongr
     (I := I) x hxE v, map_sum]
   simp_rw [map_smul]
   rw [permuteTensor0S_finsum_smul σ
-    (fun i => ((DifferentialGeometry.Integral.Measure.chartModelBasis E).repr
+    (fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt ℝ x v)) i)
     (fun i => (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
       (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) ŝ x)
-      (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x i x))]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x))]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [hframe i]
 

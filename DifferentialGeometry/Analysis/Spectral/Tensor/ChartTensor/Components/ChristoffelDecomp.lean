@@ -358,11 +358,11 @@ theorem tensorChartComponentRaw_chartBasis_partial
     (k : Fin (Module.finrank ℝ E)) :
     (mfderiv I (𝓘(ℝ, ℝ))
         (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx) b)
-      (chartBasisVecFiber (I := I) α k b) =
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
       tensorChartComponentProjection (E := E) r s Idx Jdx
         ((mfderiv I (𝓘(ℝ, TensorRSModel r s ℝ E))
           (tensorTrivProj (I := I) (M := M) g r s S α) b)
-          (chartBasisVecFiber (I := I) α k b)) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) :=
   tensorChartComponentRaw_mfderiv_decomp
     (I := I) (M := M) g r s α S hb_chart Idx Jdx _
 

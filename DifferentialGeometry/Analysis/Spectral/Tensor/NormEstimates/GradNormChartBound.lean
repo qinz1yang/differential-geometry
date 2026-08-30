@@ -391,7 +391,7 @@ private lemma sum_sq_partialDeriv_scalarOnE_chartAtlasPOU_continuousOn
   intro k _
   unfold partialDeriv
   have h_eval_cont :
-      Continuous (fun L : E →L[ℝ] ℝ => L ((chartModelBasis E) k)) :=
+      Continuous (fun L : E →L[ℝ] ℝ => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) :=
     continuous_id.clm_apply continuous_const
   exact (h_eval_cont.comp_continuousOn h_fderiv_cont).pow 2
 
@@ -454,8 +454,8 @@ omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)] in
 private lemma chartBasisVecFiber_eq_trivFromE_chartModelBasis
     (α : M) (k : Fin (Module.finrank ℝ E)) (b : M) :
-    chartBasisVecFiber (I := I) α k b =
-      trivFromE (I := I) α b ((chartModelBasis E) k) := rfl
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b =
+      trivFromE (I := I) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := rfl
 
 private lemma sq_add_le_two_mul_sq_add_sq_local (a b : ℝ) :
     (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := by
@@ -485,7 +485,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
                       ℝ b
                   (chartTensorRSCovariantDerivative (I := I) r s g α
                     (fun b' => S.toSection b')
-                    (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
               + (∑ k : Fin (Module.finrank ℝ E),
                 ‖(trivializationAt (TensorRSModel r s ℝ E)
                     (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt
@@ -493,11 +493,11 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
                   (- (∑ i : Fin r,
                       chartTensorRSInputSlotCorrection (I := I) r s g α
                         (fun b' => S.toSection b')
-                        (chartBasisVecFiber (I := I) α k) b i)
+                        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
                     + (∑ l : Fin s,
                         chartTensorRSOutputSlotCorrection (I := I) r s g α
                           (fun b' => S.toSection b')
-                          (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)
               + (scalarOnE (I := I) α
                   (tensorChartComponentRaw (I := I) (M := M)
                     g r s S α Idx Jdx) (extChartAt I α b)) ^ 2) := by
@@ -535,7 +535,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
         (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
       (chartTensorRSCovariantDerivative (I := I) r s g α
         (fun b' => S.toSection b')
-        (chartBasisVecFiber (I := I) α k) b)‖ ^ 2
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2
     with hTcov_def
   set Tchr : Fin (Module.finrank ℝ E) → ℝ := fun k =>
     ‖(trivializationAt (TensorRSModel r s ℝ E)
@@ -543,11 +543,11 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
       (- (∑ i : Fin r,
           chartTensorRSInputSlotCorrection (I := I) r s g α
             (fun b' => S.toSection b')
-            (chartBasisVecFiber (I := I) α k) b i)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
         + (∑ l : Fin s,
             chartTensorRSOutputSlotCorrection (I := I) r s g α
               (fun b' => S.toSection b')
-              (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2
     with hTchr_def
   set Tcov_sum : ℝ := ∑ k : Fin (Module.finrank ℝ E), Tcov k with hTcov_sum_def
   set Tchr_sum : ℝ := ∑ k : Fin (Module.finrank ℝ E), Tchr k with hTchr_sum_def
@@ -715,15 +715,15 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
         fderiv ℝ
           (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx ∘
             (extChartAt I α).symm) z
-          ((chartModelBasis E) k) := rfl
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := rfl
     rw [h_lhs_eq]
-    have hXb : chartBasisVecFiber (I := I) α k b =
-        trivFromE (I := I) α b ((chartModelBasis E) k) := rfl
+    have hXb : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b =
+        trivFromE (I := I) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := rfl
     have h_split :=
       fderiv_tensorChartComponentRaw_pullback_norm_sq_two_term_split
         (I := I) (M := M) g r s α S Idx Jdx
-        (chartBasisVecFiber (I := I) α k) hb_goodSet
-        ((chartModelBasis E) k) hXb
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) hb_goodSet
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) hXb
     rw [hz_def]
     rw [hTcov_def, hTchr_def]
     exact h_split

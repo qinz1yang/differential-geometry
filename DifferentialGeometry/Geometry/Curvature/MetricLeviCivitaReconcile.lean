@@ -118,7 +118,7 @@ theorem ricciCurvatureAt_leviCivita_apply_eq_ricciTensor
   classical
   have hcov₂ := leviCivita_contMDiffCovariantDerivativeLocally (I := I) g
   rw [ricciCurvatureAt_eq_trace,
-    ricciFromRm13At_apply_basis_trace (centeredChartTangentBasis (I := I) x)
+    ricciFromRm13At_apply_basis_trace (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x)
       (riemannCurvatureAt (LeviCivita (I := I) g) hcov₂ x) v w,
     ricciTensor_apply_basisSum]
   refine Finset.sum_congr rfl (fun a _ => ?_)

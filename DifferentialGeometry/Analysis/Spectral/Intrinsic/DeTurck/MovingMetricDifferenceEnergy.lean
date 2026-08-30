@@ -156,7 +156,7 @@ theorem deTurckRHSField_continuousOn
   intro q hq
   change Tensor0SSpace.eval
       (deTurckRHSField (I := I) g_bg (g q.1.1) q.2)
-      (fun k : Fin 2 => chartBasisVecFiber (I := I) α (idx k) q.2) = _
+      (fun k : Fin 2 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (idx k) q.2) = _
   rw [deTurckRHSField_eval]
   exact deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS
     (I := I) (g q.1.1) g_bg α (idx 0) (idx 1) hq
@@ -174,7 +174,7 @@ theorem exists_uniform_negativeHalfDeTurckRHS_bound
   have hgram : ∀ (α : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun q : {t : Real // t ∈ Set.Icc 0 T} × M =>
-          chartGramMatrix (I := I) (g q.1.1) α q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1.1) α q.2 i j)
         {q : {t : Real // t ∈ Set.Icc 0 T} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet} := by
     intro α i j
@@ -235,7 +235,7 @@ theorem normSq0S_family_continuousOn
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun q : {t : Real // t ∈ K} × M ↦
-          chartGramMatrix (I := I) (g q.1.1) x₀ q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1.1) x₀ q.2 i j)
         {q : {t : Real // t ∈ K} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet})
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
@@ -247,13 +247,13 @@ theorem normSq0S_family_continuousOn
   rw [continuous_iff_continuousAt] at hA ⊢
   intro q₀
   let e := trivializationAt E (TangentSpace I : M → Type _) q₀.2
-  let b : Module.Basis (Fin (Module.finrank Real E)) Real E := chartModelBasis E
+  let b : Module.Basis (Fin (Module.finrank Real E)) Real E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   have hx₀ : q₀.2 ∈ e.baseSet := by
     simpa only [e] using
       mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) q₀.2
   let Gm : ({t : Real // t ∈ K} × M) →
       Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
-    fun q ↦ chartGramMatrix (I := I) (g q.1.1) q₀.2 q.2
+    fun q ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g q.1.1) q₀.2 q.2
   have hopen : {q : {t : Real // t ∈ K} × M | q.2 ∈ e.baseSet} ∈ nhds q₀ := by
     exact (e.open_baseSet.preimage continuous_snd).mem_nhds hx₀
   have hGmEnt : ∀ i j : Fin (Module.finrank Real E),
@@ -264,7 +264,7 @@ theorem normSq0S_family_continuousOn
     continuousAt_pi.2 fun i ↦ continuousAt_pi.2 fun j ↦ hGmEnt i j
   have hdetne : (Gm q₀).det ≠ 0 := by
     exact ne_of_gt
-      (chartGramMatrix_det_pos (I := I) (g q₀.1.1) q₀.2 hx₀)
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g q₀.1.1) q₀.2 hx₀)
   have hGinvc : ContinuousAt (fun q ↦ (Gm q)⁻¹) q₀ := by
     have hdetc : ContinuousAt (fun q ↦ (Gm q).det) q₀ :=
       (continuous_id.matrix_det).continuousAt.comp hGmc
@@ -346,27 +346,27 @@ theorem normSq0S_family_continuousOn
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (J₀ a)))) := by
     filter_upwards [hopen] with q hq
     have hinv : MetricInverseInBasisGen (I := I) (g q.1.1) q.2
-        (chartBasisFamily (I := I) q₀.2 hq)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) q₀.2 hq)
         (fun i j ↦ (Gm q)⁻¹ i j) := by
       simpa only [Gm, chartInvGramMatrix] using
         chartInvGram_inverse (I := I) (g q.1.1) q₀.2 hq
     rw [normSq0S_eq_coord (I := I) (g q.1.1) q.2 s
-      (chartBasisFamily (I := I) q₀.2 hq)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) q₀.2 hq)
       (fun i j ↦ (Gm q)⁻¹ i j) hinv (A q.1.1 q.2)]
     unfold coordInner0S
     refine Finset.sum_congr rfl fun I₀ _ ↦ Finset.sum_congr rfl fun J₀ _ ↦ ?_
     rw [tensor0SComponent_apply, tensor0SComponent_apply]
     have hI :
-        (fun a : Fin s => chartBasisFamily (I := I) q₀.2 hq (I₀ a)) =
+        (fun a : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) q₀.2 hq (I₀ a)) =
           fun a : Fin s => e.symmL Real q.2 (b (I₀ a)) := by
       funext a
-      rw [chartBasisFamily_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
       rfl
     have hJ :
-        (fun a : Fin s => chartBasisFamily (I := I) q₀.2 hq (J₀ a)) =
+        (fun a : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) q₀.2 hq (J₀ a)) =
           fun a : Fin s => e.symmL Real q.2 (b (J₀ a)) := by
       funext a
-      rw [chartBasisFamily_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
       rfl
     rw [hI, hJ]
   exact hF.congr hev.symm
@@ -802,69 +802,69 @@ theorem traceTimeDerivMetric_bound
   classical
   let Gmat : Matrix (Fin (Module.finrank Real E))
       (Fin (Module.finrank Real E)) Real :=
-    chartGramMatrix (I := I) (g t) x x
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g t) x x
   let dG : Matrix (Fin (Module.finrank Real E))
       (Fin (Module.finrank Real E)) Real :=
     Matrix.of fun i j =>
-      deriv (fun r : Real => chartGramMatrix (I := I) (g r) x x i j) t
+      deriv (fun r : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g r) x x i j) t
   have htrace : traceTimeDerivMetric (I := I) g t x =
       Matrix.trace (Gmat⁻¹ * dG) := by
     simp only [traceTimeDerivMetric_eq, Gmat, dG]
   have hdG : dG =
       Matrix.of fun i j : Fin (Module.finrank Real E) =>
         (-2 : Real) * Q (vec2 (I := I)
-          (chartBasisVecFiber (I := I) x i x)
-          (chartBasisVecFiber (I := I) x j x)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) := by
     ext i j
-    simpa only [dG, Matrix.of_apply, chartGramMatrix_apply] using
-      (hg (chartBasisVecFiber (I := I) x i x)
-        (chartBasisVecFiber (I := I) x j x)).deriv
+    simpa only [dG, Matrix.of_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply] using
+      (hg (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)).deriv
   have hInvSymm : ∀ i j : Fin (Module.finrank Real E),
       Gmat⁻¹ j i = Gmat⁻¹ i j := by
     intro i j
     have hHerm :
-        ((chartGramMatrix (I := I) (g t) x x)⁻¹).IsHermitian :=
-      (chartGramMatrix_isHermitian (I := I) (g t) x x).inv
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g t) x x)⁻¹).IsHermitian :=
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) (g t) x x).inv
     simpa only [Gmat, star_trivial] using hHerm.apply i j
   have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) x
-  let basis := chartBasisFamily (I := I) x hx
+  let basis := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hx
   have hinv := chartInvGram_inverse (I := I) (g t) x hx
   have hscalar : metricTracePair0SAt (I := I) (g t) Q =
       ∑ i : Fin (Module.finrank Real E),
         ∑ j : Fin (Module.finrank Real E),
           Gmat⁻¹ i j * Q (vec2 (I := I)
-            (chartBasisVecFiber (I := I) x i x)
-            (chartBasisVecFiber (I := I) x j x)) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)) := by
     rw [metricTracePair0SAt_eq_sum_basis (I := I) (g t) basis
       (chartInvGramMatrix (I := I) (g t) x x) hinv Q]
-    simp only [basis, Gmat, chartInvGramMatrix, chartBasisFamily_apply]
+    simp only [basis, Gmat, chartInvGramMatrix, DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply]
   rw [htrace, hdG]
   calc
     Matrix.trace
         (Gmat⁻¹ *
           Matrix.of fun i j : Fin (Module.finrank Real E) =>
             (-2 : Real) * Q (vec2 (I := I)
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x))) =
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))) =
         Matrix.trace
           ((Matrix.of fun i j : Fin (Module.finrank Real E) =>
             (-2 : Real) * Q (vec2 (I := I)
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x))) * Gmat⁻¹) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))) * Gmat⁻¹) := by
       rw [Matrix.trace_mul_comm]
     _ = ∑ i : Fin (Module.finrank Real E),
           ∑ j : Fin (Module.finrank Real E),
             ((-2 : Real) * Q (vec2 (I := I)
-              (chartBasisVecFiber (I := I) x i x)
-              (chartBasisVecFiber (I := I) x j x))) * Gmat⁻¹ j i := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))) * Gmat⁻¹ j i := by
       simp [Matrix.trace, Matrix.mul_apply]
     _ = (-2 : Real) *
           (∑ i : Fin (Module.finrank Real E),
             ∑ j : Fin (Module.finrank Real E),
               Gmat⁻¹ i j * Q (vec2 (I := I)
-                (chartBasisVecFiber (I := I) x i x)
-                (chartBasisVecFiber (I := I) x j x))) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))) := by
       simp_rw [hInvSymm]
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
@@ -970,19 +970,19 @@ theorem movingMetricDifferenceEnergy_continuousOn
     (h₀ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ContinuousOn (movingMetricDifferenceEnergy (I := I) (M := M) g₀ g₁) K := by
   classical
   have h₀' : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun q : {t : Real // t ∈ K} × M ↦
-          chartGramMatrix (I := I) (g₀ q.1.1) x₀ q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ q.1.1) x₀ q.2 i j)
         {q : {t : Real // t ∈ K} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} := by
     intro x₀ i j
@@ -995,7 +995,7 @@ theorem movingMetricDifferenceEnergy_continuousOn
   have h₁' : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun q : {t : Real // t ∈ K} × M ↦
-          chartGramMatrix (I := I) (g₁ q.1.1) x₀ q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ q.1.1) x₀ q.2 i j)
         {q : {t : Real // t ∈ K} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} := by
     intro x₀ i j
@@ -1057,12 +1057,12 @@ theorem movingMetricDifferenceNormSq_smooth
     (h₀ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M ↦
@@ -1072,16 +1072,16 @@ theorem movingMetricDifferenceNormSq_smooth
   intro p hp
   let x₀ : M := p.2
   let e := trivializationAt E (TangentSpace I : M → Type _) x₀
-  let b : Module.Basis (Fin (Module.finrank Real E)) Real E := chartModelBasis E
+  let b : Module.Basis (Fin (Module.finrank Real E)) Real E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   have hx : x₀ ∈ e.baseSet := by
     simpa only [e, x₀] using
       mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) p.2
   let G₀ : Real × M →
       Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
-    fun q ↦ chartGramMatrix (I := I) (g₀ q.1) x₀ q.2
+    fun q ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ q.1) x₀ q.2
   let G₁ : Real × M →
       Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
-    fun q ↦ chartGramMatrix (I := I) (g₁ q.1) x₀ q.2
+    fun q ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ q.1) x₀ q.2
   have hG₀ (i j : Fin (Module.finrank Real E)) :
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q ↦ G₀ q i j) p := by
@@ -1127,7 +1127,7 @@ theorem movingMetricDifferenceNormSq_smooth
       exact hG₀ a c
   have hdetne : (G₀ p).det ≠ 0 := by
     exact ne_of_gt
-      (chartGramMatrix_det_pos (I := I) (g₀ p.1) x₀ hx)
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g₀ p.1) x₀ hx)
   have hInv (i j : Fin (Module.finrank Real E)) :
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q ↦ (G₀ q)⁻¹ i j) p := by
@@ -1159,13 +1159,13 @@ theorem movingMetricDifferenceNormSq_smooth
         movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ q.1 q.2) =ᶠ[nhds p] rhs := by
     filter_upwards [(hU.prod e.open_baseSet).mem_nhds ⟨hp.1, hx⟩] with q hq
     have hinv : MetricInverseInBasisGen (I := I) (g₀ q.1) q.2
-        (chartBasisFamily (I := I) p.2 hq.2)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2)
         (fun i j ↦ (G₀ q)⁻¹ i j) := by
       simpa only [G₀, x₀, chartInvGramMatrix] using
         chartInvGram_inverse (I := I) (g₀ q.1) p.2 hq.2
     rw [movingMetricDifferenceNormSq,
       normSq0S_eq_coord (I := I) (g₀ q.1) q.2 2
-        (chartBasisFamily (I := I) p.2 hq.2)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2)
         (fun i j ↦ (G₀ q)⁻¹ i j) hinv
         (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)]
     unfold coordInner0S rhs
@@ -1173,18 +1173,18 @@ theorem movingMetricDifferenceNormSq_smooth
     have hcomp (K₀ : Fin 2 → Fin (Module.finrank Real E)) :
         tensor0SComponent (I := I)
             (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
-            (fun i ↦ chartBasisFamily (I := I) p.2 hq.2 i) K₀ = W q K₀ := by
+            (fun i ↦ DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2 i) K₀ = W q K₀ := by
       rw [tensor0SComponent_apply]
       change Tensor0SSpace.eval
           (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
-          (fun a ↦ chartBasisFamily (I := I) p.2 hq.2 (K₀ a)) = _
+          (fun a ↦ DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2 (K₀ a)) = _
       rw [metricDiff02Field_eval_local, metricDiff02_apply]
       simp only [G₀, G₁, W]
       have hslot (a : Fin 2) :
-          chartBasisFamily (I := I) p.2 hq.2 (K₀ a) =
-            chartBasisVecFiber (I := I) p.2 (K₀ a) q.2 := by
-        exact chartBasisFamily_apply (I := I) p.2 hq.2 (K₀ a)
-      rw [hslot 0, hslot 1, ← chartGramMatrix_apply, ← chartGramMatrix_apply]
+          DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) p.2 hq.2 (K₀ a) =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p.2 (K₀ a) q.2 := by
+        exact DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) p.2 hq.2 (K₀ a)
+      rw [hslot 0, hslot 1, ← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, ← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     rw [hcomp I₀, hcomp J₀]
   exact (hrhs.congr_of_eventuallyEq heq).contMDiffWithinAt
 
@@ -1338,12 +1338,12 @@ theorem movingMetricDifferenceEnergy_deriv
     (h₀ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     HasDerivAt
       (movingMetricDifferenceEnergy (I := I) (M := M) g₀ g₁)
@@ -1369,12 +1369,12 @@ theorem movingMetricDifferenceEnergy_ricciDeTurck_deriv
     (h₀ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hPDE₀ : ∀ x : M, ∀ X Y : TangentSpace I x,
       HasDerivAt
@@ -1428,12 +1428,12 @@ theorem movingMetricDifferenceEnergy_hasDerivAt
     (h₀ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hPDE₀ : ∀ x : M, ∀ X Y : TangentSpace I x,
       HasDerivAt
@@ -1458,25 +1458,25 @@ theorem movingMetricDifferenceEnergy_eq_zero
     (h₀s : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (Ioo (0 : Real) T ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁s : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ioo (0 : Real) T ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₀c : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₀ p.1) x₀ p.2 i j)
         (Icc (0 : Real) T ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h₁c : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun p : Real × M ↦
-          chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc (0 : Real) T ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hPDE₀ : ∀ t ∈ Ioo (0 : Real) T, ∀ x : M,

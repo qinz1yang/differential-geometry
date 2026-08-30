@@ -56,11 +56,11 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 
 def chartRiemannBasisIdentity (g : SmoothRiemannianMetric I M) (x : M) : Prop :=
   ∀ i j k l : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
         (riemannOp (cov := LeviCivita (I := I) g) x
-          (centeredChartTangentBasis (I := I) x j)
-          (centeredChartTangentBasis (I := I) x k)
-          (centeredChartTangentBasis (I := I) x i))) l =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))) l =
       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -69,17 +69,17 @@ theorem chartRiemannBasisIdentity_iff (g : SmoothRiemannianMetric I M) (x : M) :
     chartRiemannBasisIdentity (I := I) g x ↔
       ∀ i j k : Fin (Module.finrank ℝ E),
         riemannOp (cov := LeviCivita (I := I) g) x
-            (centeredChartTangentBasis (I := I) x j)
-            (centeredChartTangentBasis (I := I) x k)
-            (centeredChartTangentBasis (I := I) x i) =
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) =
           chartRiemannCLM (I := I) g x
-            (centeredChartTangentBasis (I := I) x j)
-            (centeredChartTangentBasis (I := I) x k)
-            (centeredChartTangentBasis (I := I) x i) := by
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) := by
   classical
   constructor
   · intro h i j k
-    apply (centeredChartTangentBasis (I := I) x).repr.injective
+    apply (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr.injective
     ext l
     rw [h i j k]
     rw [chartRiemannCLM_repr_basis (I := I) g x i j k l]
@@ -97,7 +97,7 @@ theorem riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
       chartRiemannCLM (I := I) g x v w u := by
   classical
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    centeredChartTangentBasis (I := I) x with hb_def
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x with hb_def
   have hbasis := (chartRiemannBasisIdentity_iff (I := I) g x).mp h
   have hv : v = ∑ j : Fin (Module.finrank ℝ E), b.repr v j • b j :=
     (Module.Basis.sum_repr b v).symm
@@ -245,12 +245,12 @@ theorem ricciTensor_eq_chartRicciSwap_of_basis_identity
     ricciTensor (I := I) g x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) k *
-            ((centeredChartTangentBasis (I := I) x).repr w) i *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
             chartRicciTensor (I := I) g x i k (extChartAt I x x) := by
   classical
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    centeredChartTangentBasis (I := I) x with hb_def
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x with hb_def
   rw [ricciTensor_apply_basisSum]
   have hrewrite_term : ∀ t : Fin (Module.finrank ℝ E),
       (b.repr (riemannOp (cov := LeviCivita (I := I) g) x (b t) v w)) t =

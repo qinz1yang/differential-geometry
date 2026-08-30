@@ -49,9 +49,9 @@ theorem exists_endMetric
     exists gInf : SmoothRiemannianMetric I M,
       forall x0 x : M, forall i j : Fin (Module.finrank Real E),
         Tendsto (fun s : Real =>
-          Integral.Measure.chartGramMatrix (I := I) (S.base.metric s) x0 x i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric s) x0 x i j)
           (nhdsWithin omega (Set.Iio omega))
-          (nhds (Integral.Measure.chartGramMatrix (I := I) gInf x0 x i j)) := by
+          (nhds (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gInf x0 x i j)) := by
   classical
   cases isEmpty_or_nonempty M with
   | inl hM =>
@@ -99,9 +99,9 @@ theorem exists_endMetric
       refine ⟨gInf, ?_⟩
       intro x0 x i j
       let v : TangentSpace I x :=
-        Integral.Measure.chartBasisVecFiber (I := I) x0 i x
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 i x
       let w : TangentSpace I x :=
-        Integral.Measure.chartBasisVecFiber (I := I) x0 j x
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x
       have hRicAbs : forall s : Real, s ∈ Set.Ioo beta omega ->
           |ricciTensor (I := I) (S.base.metric s) x v w| <=
             KShi * (Real.sqrt (Lambda * gRef.inner x v v) *
@@ -157,18 +157,18 @@ theorem exists_endMetric
               mul_le_mul_of_nonneg_left hProd hKShi
       have hDeriv : forall s : Real, s ∈ Set.Ioo beta omega ->
           HasDerivAt (fun u : Real =>
-            Integral.Measure.chartGramMatrix (I := I) (S.base.metric u) x0 x i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric u) x0 x i j)
             (deriv (fun u : Real =>
-              Integral.Measure.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s) s := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s) s := by
         intro s hs
         have hsReg : s ∈ Set.Ioo alpha omega :=
           ⟨lt_trans hBeta.1 hs.1, hs.2⟩
         have h := metricDerivAt (I := I) S hS ⟨s, hsReg⟩ x v w
-        simpa [Integral.Measure.chartGramMatrix_apply, v, w, SolutionOn.family] using
+        simpa [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, v, w, SolutionOn.family] using
           h.differentiableAt.hasDerivAt
       have hDerivBound : forall s : Real, s ∈ Set.Ioo beta omega ->
           |deriv (fun u : Real =>
-            Integral.Measure.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s| <=
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s| <=
               2 * (KShi * (Real.sqrt (Lambda * gRef.inner x v v) *
                 Real.sqrt (Lambda * gRef.inner x w w))) := by
         intro s hs
@@ -180,13 +180,13 @@ theorem exists_endMetric
           metricRicciAt_apply_eq_ricciTensor (I := I) (S.base.metric s) x v w
         have hDerivEq :
             deriv (fun u : Real =>
-              Integral.Measure.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s =
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s =
                 (-2 : Real) * ricciTensor (I := I) (S.base.metric s) x v w := by
-          simpa [Integral.Measure.chartGramMatrix_apply, v, w, SolutionOn.family, hVal] using
+          simpa [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, v, w, SolutionOn.family, hVal] using
             h.deriv
         calc
           |deriv (fun u : Real =>
-              Integral.Measure.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s| =
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s| =
               2 * |ricciTensor (I := I) (S.base.metric s) x v w| := by
                 rw [hDerivEq, abs_mul]
                 norm_num
@@ -201,7 +201,7 @@ theorem exists_endMetric
           (Set.range_subset_iff.2 (fun n => (hSeqMem n).2))
           (tendsto_nhdsWithin_range.2 hSeqLim)
       have hLimitSeq : Tendsto (fun n : Nat =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (S.base.metric (tSeq (phi n))) x0 x i j) atTop (nhds L) := by
         exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl)
           (hLimit.comp (hSeqLeft.comp hPhi.tendsto_atTop))
@@ -211,12 +211,12 @@ theorem exists_endMetric
         ((ContinuousLinearMap.apply Real Real w).comp
           (ContinuousLinearMap.apply Real (TangentSpace I x →L[Real] Real) v)).continuous
       have hMetricSeq : Tendsto (fun n : Nat =>
-          Integral.Measure.chartGramMatrix (I := I)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I)
             (S.base.metric (tSeq (phi n))) x0 x i j) atTop
-          (nhds (Integral.Measure.chartGramMatrix (I := I) gInf x0 x i j)) := by
+          (nhds (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gInf x0 x i j)) := by
         exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl)
           ((hEvalCont.tendsto (gInf.inner x)).comp (hInner x))
-      have hEq : L = Integral.Measure.chartGramMatrix (I := I) gInf x0 x i j :=
+      have hEq : L = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gInf x0 x i j :=
         tendsto_nhds_unique hLimitSeq hMetricSeq
       rwa [hEq] at hLimit
 

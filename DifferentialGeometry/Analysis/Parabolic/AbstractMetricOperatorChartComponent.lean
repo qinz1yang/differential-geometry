@@ -31,9 +31,9 @@ theorem F_canonical_chart_component_smooth
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M => F g x
         ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-          (chartModelBasis E i))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
         ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-          (chartModelBasis E j)))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)))
       (chartAt H α).source :=
   hF.1 g α i j
 
@@ -47,17 +47,17 @@ theorem F_chart_component_symmetric
     (i j : Fin (Module.finrank ℝ E)) :
     F g x
         ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-          (chartModelBasis E i))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
         ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-          (chartModelBasis E j)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)) =
       F g x
         ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-          (chartModelBasis E j))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j))
         ((trivializationAt E (TangentSpace I) α).symmL ℝ x
-          (chartModelBasis E i)) :=
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) :=
   hSymm g x
-    ((trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i))
-    ((trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E j))
+    ((trivializationAt E (TangentSpace I) α).symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i))
+    ((trivializationAt E (TangentSpace I) α).symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j))
 
 end Parabolic
 end Analysis

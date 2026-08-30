@@ -50,10 +50,10 @@ private theorem paramDensity_cont
   have hslot : ∀ i : Fin (Module.finrank Real E),
       Continuous (fun q : P =>
         TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b q)
-          (mfderiv 𝓘(Real, E) I Ψ q.2.1 ((chartModelBasis E) i))) := by
+          (mfderiv 𝓘(Real, E) I Ψ q.2.1 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) := by
     intro i
     let lift : P → TangentBundle 𝓘(Real, E) E :=
-      fun q => ⟨q.2.1, (chartModelBasis E) i⟩
+      fun q => ⟨q.2.1, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i⟩
     have hlift : Continuous lift :=
       (tangentBundleModelSpaceHomeomorph 𝓘(Real, E)).symm.continuous.comp
         ((continuous_subtype_val.comp continuous_snd).prodMk continuous_const)
@@ -66,7 +66,7 @@ private theorem paramDensity_cont
     intro i j
     let v : Fin 2 → (q : P) → TangentSpace I (b q) :=
       fun k q => mfderiv 𝓘(Real, E) I Ψ q.2.1
-        ((chartModelBasis E) (if k = 0 then i else j))
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (if k = 0 then i else j))
     have hv : ∀ k : Fin 2, Continuous (fun q : P =>
         TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b q) (v k q)) := by
       intro k

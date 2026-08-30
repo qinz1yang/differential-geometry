@@ -191,11 +191,11 @@ theorem chartChristoffelContraction_continuousOn_prod
     hΓ.comp continuousOn_snd (fun p hp => hp.2)
   have hci : Continuous (fun p : E × E => chartCoord (E := E) i p.1) := by
     have : Continuous (fun v : E => chartCoord (E := E) i v) :=
-      (((chartModelBasis E).coord i).toContinuousLinearMap).continuous
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).continuous
     exact this.comp continuous_fst
   have hcj : Continuous (fun p : E × E => chartCoord (E := E) j p.1) := by
     have : Continuous (fun v : E => chartCoord (E := E) j v) :=
-      (((chartModelBasis E).coord j).toContinuousLinearMap).continuous
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).continuous
     exact this.comp continuous_fst
   exact (hΓp.mul hci.continuousOn).mul hcj.continuousOn
 
@@ -370,9 +370,9 @@ private lemma chartGramQuad_continuousOn
     ((chartGramOnE_contDiffOn (I := I) g y i j).continuousOn).comp continuousOn_fst
       (fun p hp => hp.1)
   have hci : Continuous (fun p : E × E => chartCoord (E := E) i p.2) :=
-    (((chartModelBasis E).coord i).toContinuousLinearMap).continuous.comp continuous_snd
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap).continuous.comp continuous_snd
   have hcj : Continuous (fun p : E × E => chartCoord (E := E) j p.2) :=
-    (((chartModelBasis E).coord j).toContinuousLinearMap).continuous.comp continuous_snd
+    (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap).continuous.comp continuous_snd
   exact (hG.mul hci.continuousOn).mul hcj.continuousOn
 
 omit [I.Boundaryless]

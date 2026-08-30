@@ -28,9 +28,9 @@ def chartInnerOnE (g : SmoothRiemannianMetric I M) (α : M)
     (Y Z : Π x : M, TangentSpace I x) (y : E) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (chartESectionRepr (I := I) α Y ((extChartAt I α).symm y))) i *
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (chartESectionRepr (I := I) α Z ((extChartAt I α).symm y))) j *
         chartGramOnE (I := I) g α i j y
 
@@ -41,9 +41,9 @@ omit [NeZero (Module.finrank ℝ E)] in
     chartInnerOnE (I := I) g α Y Z y =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Y ((extChartAt I α).symm y))) i *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Z ((extChartAt I α).symm y))) j *
             chartGramOnE (I := I) g α i j y := rfl
 
@@ -61,7 +61,7 @@ lemma chartInnerOnE_eq_g_inner
     (extChartAt I α).left_inv hb_src
   have hG : ∀ i j : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i j (extChartAt I α b) =
-        chartGramMatrix (I := I) g α b i j := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j := by
     intro i j
     unfold chartGramOnE
     rw [hb_inv]
@@ -82,9 +82,9 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma differentiableAt_repr_comp
     {f : E → E} {y : E} (hf : DifferentiableAt ℝ f y)
     (i : Fin (Module.finrank ℝ E)) :
-    DifferentiableAt ℝ (fun y => ((chartModelBasis E).repr (f y)) i) y := by
+    DifferentiableAt ℝ (fun y => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (f y)) i) y := by
   classical
-  set ci : E →L[ℝ] ℝ := ((chartModelBasis E).coord i).toContinuousLinearMap
+  set ci : E →L[ℝ] ℝ := ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap
   have hclm : DifferentiableAt ℝ ci (f y) := ci.differentiableAt
   exact hclm.comp y hf
 
@@ -125,7 +125,7 @@ private lemma chartInnerOnE_eventuallyEq
 private def chartReprComp
     (α : M) (Y : Π x : M, TangentSpace I x)
     (i : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
-  ((chartModelBasis E).repr
+  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (chartESectionRepr (I := I) α Y ((extChartAt I α).symm y))) i
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -133,7 +133,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (α : M) (Y : Π x : M, TangentSpace I x)
     (i : Fin (Module.finrank ℝ E)) (y : E) :
     chartReprComp (I := I) α Y i y =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (chartESectionRepr (I := I) α Y ((extChartAt I α).symm y))) i := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -157,12 +157,12 @@ private lemma chartReprComp_fderiv_apply
     (hY : MDiffAt (T% Y) x)
     (i : Fin (Module.finrank ℝ E)) (w : E) :
     fderiv ℝ (chartReprComp (I := I) α Y i) (extChartAt I α x) w =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (fderiv ℝ (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
             (extChartAt I α x) w)) i := by
   classical
   set fE : E → E := chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm
-  set ci : E →L[ℝ] ℝ := ((chartModelBasis E).coord i).toContinuousLinearMap
+  set ci : E →L[ℝ] ℝ := ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap
   have hfun : chartReprComp (I := I) α Y i = ci ∘ fE := rfl
   have hfE_diff : DifferentiableAt ℝ fE (extChartAt I α x) :=
     differentiableAt_chartE_pullback_of_MDiff (I := I) α hx hY
@@ -372,17 +372,17 @@ private lemma fderiv_chartGramOnE_apply_eq_partialDeriv_sum
     {y₀ : E} (_hy₀ : y₀ ∈ interior (extChartAt I α).target) (w : E) :
     fderiv ℝ (chartGramOnE (I := I) g α i j) y₀ w =
       ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr w) k *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) k *
           partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) y₀ := by
   classical
   have hw_decomp : w =
       ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr w) k • (chartModelBasis E) k :=
-    (Module.Basis.sum_repr (chartModelBasis E) w).symm
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) k • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k :=
+    (Module.Basis.sum_repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) w).symm
   rw [show (fderiv ℝ (chartGramOnE (I := I) g α i j) y₀) w =
         (fderiv ℝ (chartGramOnE (I := I) g α i j) y₀)
           (∑ k : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).repr w) k • (chartModelBasis E) k) from by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) k • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) from by
     rw [← hw_decomp]]
   rw [map_sum]
   refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -393,12 +393,12 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma christoffelCorrection_repr_apply
     (g : SmoothRiemannianMetric I M) (α : M) (x : M) (Y : E)
     (v : TangentSpace I x) (i : Fin (Module.finrank ℝ E)) :
-    ((chartModelBasis E).repr
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (christoffelCorrection (I := I) g α x Y v)) i =
       ∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-            ((chartModelBasis E).repr Y) l *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y) l *
             chartChristoffel (I := I) g α k l i (extChartAt I α x) := by
   classical
   rw [christoffelCorrection_apply]
@@ -435,26 +435,26 @@ private lemma mfderiv_g_inner_chart_expand
     (mfderiv I 𝓘(ℝ) (fun b => g.inner b (Y b) (Z b)) x) v =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          (((chartModelBasis E).repr
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (fderiv ℝ
                 (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
                 (extChartAt I α x) (trivToE (I := I) α x v))) i *
-              ((chartModelBasis E).repr
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (chartESectionRepr (I := I) α Z x)) j *
               chartGramOnE (I := I) g α i j (extChartAt I α x) +
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Y x)) i *
-              ((chartModelBasis E).repr
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (fderiv ℝ
                   (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
                   (extChartAt I α x) (trivToE (I := I) α x v))) j *
               chartGramOnE (I := I) g α i j (extChartAt I α x) +
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Y x)) i *
-              ((chartModelBasis E).repr
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (chartESectionRepr (I := I) α Z x)) j *
               (∑ k : Fin (Module.finrank ℝ E),
-                ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
                   ((∑ l : Fin (Module.finrank ℝ E),
                       chartChristoffel (I := I) g α k i l (extChartAt I α x) *
                         chartGramOnE (I := I) g α l j (extChartAt I α x)) +
@@ -474,17 +474,17 @@ private lemma mfderiv_g_inner_chart_expand
   refine Finset.sum_congr rfl (fun i _ => ?_)
   refine Finset.sum_congr rfl (fun j _ => ?_)
   have hreprY : chartReprComp (I := I) α Y i (extChartAt I α x) =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (chartESectionRepr (I := I) α Y x)) i := by
     unfold chartReprComp; rw [hxinv]
   have hreprZ : chartReprComp (I := I) α Z j (extChartAt I α x) =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (chartESectionRepr (I := I) α Z x)) j := by
     unfold chartReprComp; rw [hxinv]
   have hfderivY :
       fderiv ℝ (chartReprComp (I := I) α Y i) (extChartAt I α x)
         (trivToE (I := I) α x v) =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (fderiv ℝ
             (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x v))) i :=
@@ -492,7 +492,7 @@ private lemma mfderiv_g_inner_chart_expand
   have hfderivZ :
       fderiv ℝ (chartReprComp (I := I) α Z j) (extChartAt I α x)
         (trivToE (I := I) α x v) =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (fderiv ℝ
             (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x v))) j :=
@@ -501,11 +501,11 @@ private lemma mfderiv_g_inner_chart_expand
   rw [fderiv_chartGramOnE_apply_eq_partialDeriv_sum (I := I) g α i j hx_int
     (trivToE (I := I) α x v)]
   rw [show (∑ k : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
         partialDeriv (E := E) k (chartGramOnE (I := I) g α i j)
           (extChartAt I α x)) =
     ∑ k : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
         ((∑ l : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α k i l (extChartAt I α x) *
               chartGramOnE (I := I) g α l j (extChartAt I α x)) +
@@ -524,17 +524,17 @@ private lemma g_inner_chartLeviCivita_Y_Z_expand
     g.inner x (chartLeviCivita (I := I) g α Y x v) (Z x) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ( ((chartModelBasis E).repr
+          ( ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (fderiv ℝ
                   (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
                   (extChartAt I α x) (trivToE (I := I) α x v))) i +
             ∑ k : Fin (Module.finrank ℝ E),
               ∑ l : Fin (Module.finrank ℝ E),
-                ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-                  ((chartModelBasis E).repr
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                     (chartESectionRepr (I := I) α Y x)) l *
                   chartChristoffel (I := I) g α k l i (extChartAt I α x) ) *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (chartESectionRepr (I := I) α Z x)) j *
             chartGramOnE (I := I) g α i j (extChartAt I α x) := by
   classical
@@ -573,17 +573,17 @@ private lemma g_inner_chartLeviCivita_Y_Z_expand
           christoffelCorrection (I := I) g α x
             (chartESectionRepr (I := I) α Y x) v) from
     trivToE_trivFromE (I := I) α hx_base _]
-  rw [show ((chartModelBasis E).repr
+  rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (fderiv ℝ
           (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v) +
           christoffelCorrection (I := I) g α x
             (chartESectionRepr (I := I) α Y x) v)) i =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) i +
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (christoffelCorrection (I := I) g α x
               (chartESectionRepr (I := I) α Y x) v)) i from by
     rw [map_add]; rfl]
@@ -598,16 +598,16 @@ private lemma g_inner_Y_chartLeviCivita_Z_expand
     g.inner x (Y x) (chartLeviCivita (I := I) g α Z x v) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Y x)) i *
-            ( ((chartModelBasis E).repr
+            ( ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                   (fderiv ℝ
                     (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
                     (extChartAt I α x) (trivToE (I := I) α x v))) j +
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-                    ((chartModelBasis E).repr
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                       (chartESectionRepr (I := I) α Z x)) l *
                     chartChristoffel (I := I) g α k l j (extChartAt I α x) ) *
             chartGramOnE (I := I) g α i j (extChartAt I α x) := by
@@ -647,17 +647,17 @@ private lemma g_inner_Y_chartLeviCivita_Z_expand
           christoffelCorrection (I := I) g α x
             (chartESectionRepr (I := I) α Z x) v) from
     trivToE_trivFromE (I := I) α hx_base _]
-  rw [show ((chartModelBasis E).repr
+  rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (fderiv ℝ
           (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v) +
           christoffelCorrection (I := I) g α x
             (chartESectionRepr (I := I) α Z x) v)) j =
-      ((chartModelBasis E).repr
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) j +
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (christoffelCorrection (I := I) g α x
               (chartESectionRepr (I := I) α Z x) v)) j from by
     rw [map_add]; rfl]
@@ -867,34 +867,34 @@ theorem chartLeviCivita_isMetricCompatibleOn
   set n := Module.finrank ℝ E with hn
   have hRHS_Y_distr :
     (∑ i : Fin n, ∑ j : Fin n,
-        ( ((chartModelBasis E).repr
+        ( ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (fderiv ℝ
                 (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
                 (extChartAt I α x) (trivToE (I := I) α x v))) i +
           ∑ k : Fin n,
             ∑ l : Fin n,
-              ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-                ((chartModelBasis E).repr
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                   (chartESectionRepr (I := I) α Y x)) l *
                 chartChristoffel (I := I) g α k l i (extChartAt I α x) ) *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Z x)) j *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) =
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) i *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Z x)) j *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) +
     (∑ i : Fin n, ∑ j : Fin n,
         (∑ k : Fin n, ∑ l : Fin n,
-          ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-            ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Y x)) l *
             chartChristoffel (I := I) g α k l i (extChartAt I α x)) *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Z x)) j *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) := by
     rw [← Finset.sum_add_distrib]
@@ -904,33 +904,33 @@ theorem chartLeviCivita_isMetricCompatibleOn
     rw [add_mul, add_mul]
   have hRHS_Z_distr :
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
-          ( ((chartModelBasis E).repr
+          ( ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (fderiv ℝ
                   (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
                   (extChartAt I α x) (trivToE (I := I) α x v))) j +
             ∑ k : Fin n,
               ∑ l : Fin n,
-                ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-                  ((chartModelBasis E).repr
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                     (chartESectionRepr (I := I) α Z x)) l *
                   chartChristoffel (I := I) g α k l j (extChartAt I α x) ) *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) =
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) j *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) +
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
           (∑ k : Fin n, ∑ l : Fin n,
-            ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
-              ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (chartESectionRepr (I := I) α Z x)) l *
               chartChristoffel (I := I) g α k l j (extChartAt I α x)) *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) := by
@@ -942,26 +942,26 @@ theorem chartLeviCivita_isMetricCompatibleOn
   rw [hRHS_Y_distr, hRHS_Z_distr]
   have hLHS_split :
     (∑ i : Fin n, ∑ j : Fin n,
-        (((chartModelBasis E).repr
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) i *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Z x)) j *
             chartGramOnE (I := I) g α i j (extChartAt I α x) +
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (fderiv ℝ
                 (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
                 (extChartAt I α x) (trivToE (I := I) α x v))) j *
             chartGramOnE (I := I) g α i j (extChartAt I α x) +
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
-            ((chartModelBasis E).repr
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (chartESectionRepr (I := I) α Z x)) j *
             (∑ k : Fin n,
-              ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
                 ((∑ l : Fin n,
                     chartChristoffel (I := I) g α k i l (extChartAt I α x) *
                       chartGramOnE (I := I) g α l j (extChartAt I α x)) +
@@ -969,28 +969,28 @@ theorem chartLeviCivita_isMetricCompatibleOn
                     chartChristoffel (I := I) g α k j l (extChartAt I α x) *
                       chartGramOnE (I := I) g α l i (extChartAt I α x)))))) =
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) i *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Z x)) j *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) +
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (fderiv ℝ
               (chartESectionRepr (I := I) α Z ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v))) j *
           chartGramOnE (I := I) g α i j (extChartAt I α x)) +
     (∑ i : Fin n, ∑ j : Fin n,
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Y x)) i *
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (chartESectionRepr (I := I) α Z x)) j *
           (∑ k : Fin n,
-            ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
               ((∑ l : Fin n,
                   chartChristoffel (I := I) g α k i l (extChartAt I α x) *
                     chartGramOnE (I := I) g α l j (extChartAt I α x)) +
@@ -1011,11 +1011,11 @@ theorem chartLeviCivita_isMetricCompatibleOn
   have hmatch :=
     christoffel_match
       (n := n)
-      (B := fun i => ((chartModelBasis E).repr
+      (B := fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (chartESectionRepr (I := I) α Y x)) i)
-      (D := fun j => ((chartModelBasis E).repr
+      (D := fun j => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         (chartESectionRepr (I := I) α Z x)) j)
-      (w := fun k => ((chartModelBasis E).repr (trivToE (I := I) α x v)) k)
+      (w := fun k => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k)
       (G := fun a b => chartGramOnE (I := I) g α a b (extChartAt I α x))
       (Γ := fun a b c => chartChristoffel (I := I) g α a b c (extChartAt I α x))
       hGsymm

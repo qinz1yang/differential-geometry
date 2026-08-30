@@ -80,7 +80,7 @@ theorem lcTrace_halfTrace
           chartInvGramMatrix (I := I) g x x i j *
             partialDeriv (E := E) p
               (fun y : E =>
-                chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
               (extChartAt I x x) := by
   classical
   let y₀ : E := extChartAt I x x
@@ -130,7 +130,7 @@ theorem lcTrace_halfTrace
             chartInvGramMatrix (I := I) g x x i j *
               partialDeriv (E := E) p
                 (fun y : E =>
-                  chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
                 y₀ := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
@@ -167,7 +167,7 @@ theorem lcTrace_logDensity
             chartInvGramMatrix (I := I) g x x i j *
               partialDeriv (E := E) p
                 (fun y : E =>
-                  chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
                 (extChartAt I x x) := by
           exact
             chartDensityOnE_partial_div_eq_half_trace_invGram_partialGram

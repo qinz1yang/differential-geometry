@@ -42,7 +42,7 @@ def expJacDensity
     (intrinsicGeodesic (I := I) g hEnorm x (show TangentSpace I x from v))
     (fun (i : Fin (Module.finrank ℝ E)) (t : ℝ) =>
       intrinsicJacobi g hEnorm x (show TangentSpace I x from v)
-        (show TangentSpace I x from (chartModelBasis E i)) t) 1
+        (show TangentSpace I x from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) t) 1
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

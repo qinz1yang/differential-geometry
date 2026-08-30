@@ -68,11 +68,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 private lemma trivToE_chartBasisVecFiber_eq_chartModelBasis
     (α : M) (m : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    trivToE (I := I) α b (chartBasisVecFiber (I := I) α m b) =
-      (chartModelBasis E) m := by
+    trivToE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m := by
   classical
   change trivToE (I := I) α b
-      (trivFromE (I := I) α b (chartModelBasis E m)) = _
+      (trivFromE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) = _
   exact trivToE_trivFromE (I := I) α hb _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -82,25 +82,25 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (k m : Fin (Module.finrank ℝ E)) :
     chartLeviCivitaParallelCLM (I := I) g α b
-        (chartBasisVecFiber (I := I) α m)
-        (chartBasisVecFiber (I := I) α k b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
       ∑ p : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g α k m p (extChartAt I α b) •
-          chartBasisVecFiber (I := I) α p b := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b := by
   classical
   rw [chartLeviCivitaParallelCLM_apply]
   have hX_id :
-      trivToE (I := I) α b (chartBasisVecFiber (I := I) α m b) =
-        (chartModelBasis E) m :=
+      trivToE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m :=
     trivToE_chartBasisVecFiber_eq_chartModelBasis (I := I) α m hb
   have hv_id :
-      trivToE (I := I) α b (chartBasisVecFiber (I := I) α k b) =
-        (chartModelBasis E) k :=
+      trivToE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k :=
     trivToE_chartBasisVecFiber_eq_chartModelBasis (I := I) α k hb
   rw [christoffelCorrection_apply]
   rw [hv_id, hX_id]
   have hrepr_v : ∀ i : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (chartModelBasis E k)) i =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) i =
         if i = k then (1 : ℝ) else 0 := by
     intro i
     rw [Module.Basis.repr_self]
@@ -108,7 +108,7 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
     · subst hi; simp
     · simp [hi]
   have hrepr_Y : ∀ j : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (chartModelBasis E m)) j =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) j =
         if j = m then (1 : ℝ) else 0 := by
     intro j
     rw [Module.Basis.repr_self]
@@ -121,15 +121,15 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
         trivFromE (I := I) α b
             (∑ j : Fin (Module.finrank ℝ E),
               ∑ p : Fin (Module.finrank ℝ E),
-                (((chartModelBasis E).repr (chartModelBasis E k)) i *
-                    ((chartModelBasis E).repr (chartModelBasis E m)) j *
+                (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) i *
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) j *
                     chartChristoffel (I := I) g α i j p
                       (extChartAt I α b)) •
-                  (chartModelBasis E) p) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p) =
           (if i = k then
               ∑ p : Fin (Module.finrank ℝ E),
                 chartChristoffel (I := I) g α k m p (extChartAt I α b) •
-                  trivFromE (I := I) α b ((chartModelBasis E) p)
+                  trivFromE (I := I) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p)
             else 0) := by
     intro i
     by_cases hik : i = k
@@ -140,16 +140,16 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
           ∀ j : Fin (Module.finrank ℝ E),
             trivFromE (I := I) α b
                 (∑ p : Fin (Module.finrank ℝ E),
-                  (((chartModelBasis E).repr (chartModelBasis E i)) i *
-                      ((chartModelBasis E).repr (chartModelBasis E m)) j *
+                  (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) i *
+                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) j *
                       chartChristoffel (I := I) g α i j p
                         (extChartAt I α b)) •
-                    (chartModelBasis E) p) =
+                    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p) =
               (if j = m then
                   ∑ p : Fin (Module.finrank ℝ E),
                     chartChristoffel (I := I) g α i m p
                         (extChartAt I α b) •
-                      trivFromE (I := I) α b ((chartModelBasis E) p)
+                      trivFromE (I := I) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p)
                 else 0) := by
         intro j
         by_cases hjm : j = m
@@ -166,11 +166,11 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
           have h_sum_zero :
               (∑ p : Fin (Module.finrank ℝ E),
                   trivFromE (I := I) α b
-                    ((((chartModelBasis E).repr (chartModelBasis E i)) i *
-                        ((chartModelBasis E).repr (chartModelBasis E m)) j *
+                    ((((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) i *
+                        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m)) j *
                         chartChristoffel (I := I) g α i j p
                           (extChartAt I α b)) •
-                      (chartModelBasis E) p)) = 0 := by
+                      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p)) = 0 := by
             refine Finset.sum_eq_zero ?_
             intro p _
             rw [map_smul]
@@ -201,16 +201,16 @@ private lemma g_inner_sum_smul_chartBasisVec_self_eq_double_sum
     (g : SmoothRiemannianMetric I M) (α : M) (b : M)
     (a : Fin (Module.finrank ℝ E) → ℝ) :
     g.inner b (∑ p : Fin (Module.finrank ℝ E),
-                  a p • chartBasisVecFiber (I := I) α p b)
+                  a p • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b)
             (∑ q : Fin (Module.finrank ℝ E),
-                  a q • chartBasisVecFiber (I := I) α q b) =
+                  a q • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α q b) =
       ∑ p : Fin (Module.finrank ℝ E),
         ∑ q : Fin (Module.finrank ℝ E),
-          a p * a q * chartGramMatrix (I := I) g α b p q := by
+          a p * a q * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q := by
   classical
   have h_left :
-      g.inner b (∑ p, a p • chartBasisVecFiber (I := I) α p b) =
-        ∑ p, a p • g.inner b (chartBasisVecFiber (I := I) α p b) := by
+      g.inner b (∑ p, a p • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b) =
+        ∑ p, a p • g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p b) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro p _
@@ -235,16 +235,16 @@ private lemma g_inner_Phi_eq_double_sum
     (k : Fin (Module.finrank ℝ E)) :
     g.inner b
         (chartLeviCivitaParallelCLM (I := I) g α b
-          (chartBasisVecFiber (I := I) α k)
-          (chartBasisVecFiber (I := I) α k b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
         (chartLeviCivitaParallelCLM (I := I) g α b
-          (chartBasisVecFiber (I := I) α k)
-          (chartBasisVecFiber (I := I) α k b)) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) =
       ∑ p : Fin (Module.finrank ℝ E),
         ∑ q : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α k k p (extChartAt I α b) *
             chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-            chartGramMatrix (I := I) g α b p q := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q := by
   classical
   rw [chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_sum
       (I := I) (M := M) g α hb_base k k]
@@ -260,11 +260,11 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         g.inner b
             (chartLeviCivitaParallelCLM (I := I) g α b
-              (chartBasisVecFiber (I := I) α k)
-              (chartBasisVecFiber (I := I) α k b))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
             (chartLeviCivitaParallelCLM (I := I) g α b
-              (chartBasisVecFiber (I := I) α k)
-              (chartBasisVecFiber (I := I) α k b)) ≤ K := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) ≤ K := by
   classical
   obtain ⟨CΓ, hCΓ_nn, hCΓ_le⟩ :=
     chartChristoffel_bdd_on_pou_tsupport (I := I) (M := M) g α
@@ -278,7 +278,7 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
     exact (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α hb
   have h_gram_each : ∀ p q : Fin (Module.finrank ℝ E),
       ∃ Cpq : ℝ, 0 < Cpq ∧ ∀ b ∈ K_M,
-        |chartGramMatrix (I := I) g α b p q| ≤ Cpq := by
+        |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| ≤ Cpq := by
     intro p q
     exact
       chartGramMatrix_entry_isBounded_on_compact
@@ -297,7 +297,7 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
     refine (hCpq_pos pq₀.1 pq₀.2).le.trans ?_
     exact Finset.le_sup' (fun pq => Cpq_fn pq.1 pq.2) hpq₀_mem
   have hC_G_bd : ∀ p q : Fin (Module.finrank ℝ E), ∀ b ∈ K_M,
-      |chartGramMatrix (I := I) g α b p q| ≤ C_G := by
+      |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| ≤ C_G := by
     intro p q b hb
     refine (hCpq_le p q b hb).trans ?_
     have hpq_mem : (p, q) ∈ s := Finset.mem_univ _
@@ -319,18 +319,18 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
           ∑ q : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q| ≤
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| ≤
         ∑ p : Fin (Module.finrank ℝ E),
           ∑ q : Fin (Module.finrank ℝ E),
             |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q| :=
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| :=
     (Finset.abs_sum_le_sum_abs _ _).trans
       (Finset.sum_le_sum (fun p _ => Finset.abs_sum_le_sum_abs _ _))
   have h_per : ∀ p q : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
         chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-        chartGramMatrix (I := I) g α b p q| ≤ CΓ * CΓ * C_G := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| ≤ CΓ * CΓ * C_G := by
     intro p q
     have hΓp := hCΓ_at k k p
     have hΓq := hCΓ_at k k q
@@ -338,15 +338,15 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
     have h_abs :
         |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
           chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-          chartGramMatrix (I := I) g α b p q| =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| =
         |chartChristoffel (I := I) g α k k p (extChartAt I α b)| *
           |chartChristoffel (I := I) g α k k q (extChartAt I α b)| *
-          |chartGramMatrix (I := I) g α b p q| := by
+          |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| := by
       rw [abs_mul, abs_mul]
     rw [h_abs]
     have hΓq_nn : 0 ≤ |chartChristoffel (I := I) g α k k q (extChartAt I α b)| :=
       abs_nonneg _
-    have hG_nn : 0 ≤ |chartGramMatrix (I := I) g α b p q| := abs_nonneg _
+    have hG_nn : 0 ≤ |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| := abs_nonneg _
     have hΓp_nn : 0 ≤ |chartChristoffel (I := I) g α k k p (extChartAt I α b)| :=
       abs_nonneg _
     have h_step1 :
@@ -362,7 +362,7 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
     have h_step2 :
         (|chartChristoffel (I := I) g α k k p (extChartAt I α b)| *
             |chartChristoffel (I := I) g α k k q (extChartAt I α b)|) *
-          |chartGramMatrix (I := I) g α b p q| ≤
+          |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| ≤
         (CΓ * CΓ) * C_G :=
       mul_le_mul h_step1 hG hG_nn h_step1_nn
     exact h_step2
@@ -371,13 +371,13 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
           ∑ q : Fin (Module.finrank ℝ E),
             |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q|) ≤
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q|) ≤
         (Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) * (CΓ * CΓ * C_G)) := by
     have h_inner_sum_le : ∀ p : Fin (Module.finrank ℝ E),
         (∑ q : Fin (Module.finrank ℝ E),
             |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q|) ≤
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q|) ≤
           (Module.finrank ℝ E : ℝ) * (CΓ * CΓ * C_G) := by
       intro p
       have h_le :=
@@ -385,7 +385,7 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
           (f := fun q =>
             |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q|)
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q|)
           (g := fun _ => CΓ * CΓ * C_G)
           (fun q _ => h_per p q)
       have h_const :
@@ -400,7 +400,7 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
           ∑ q : Fin (Module.finrank ℝ E),
             |chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q|)
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q|)
         (g := fun _ => (Module.finrank ℝ E : ℝ) * (CΓ * CΓ * C_G))
         (fun p _ => h_inner_sum_le p)
     have h_const_outer :
@@ -414,12 +414,12 @@ private theorem g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_o
           ∑ q : Fin (Module.finrank ℝ E),
             chartChristoffel (I := I) g α k k p (extChartAt I α b) *
               chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-              chartGramMatrix (I := I) g α b p q ≤
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q ≤
         |∑ p : Fin (Module.finrank ℝ E),
             ∑ q : Fin (Module.finrank ℝ E),
               chartChristoffel (I := I) g α k k p (extChartAt I α b) *
                 chartChristoffel (I := I) g α k k q (extChartAt I α b) *
-                chartGramMatrix (I := I) g α b p q| := le_abs_self _
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b p q| := le_abs_self _
   have h_chain := h_abs_le_self.trans (h_tri.trans h_dbl_sum_le)
   have h_arith :
       (Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) * (CΓ * CΓ * C_G)) =
@@ -435,11 +435,11 @@ private theorem chartAtlasPOU_mul_sqrt_g_inner_Phi_le_sqrt_const_globally
             Real.sqrt
               (g.inner b
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b))) ≤ Real.sqrt K := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))) ≤ Real.sqrt K := by
   classical
   obtain ⟨K, hK_nn, h_pt⟩ :=
     g_inner_chartLeviCivitaParallelCLM_chartBasisVec_self_le_const_on_pouTsupport
@@ -449,8 +449,8 @@ private theorem chartAtlasPOU_mul_sqrt_g_inner_Phi_le_sqrt_const_globally
   set ρ_b : ℝ := ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b with hρ_b_def
   set Φ_b : TangentSpace I b :=
     chartLeviCivitaParallelCLM (I := I) g α b
-        (chartBasisVecFiber (I := I) α k)
-        (chartBasisVecFiber (I := I) α k b) with hΦ_b_def
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) with hΦ_b_def
   set q_b : ℝ := g.inner b Φ_b Φ_b with hq_b_def
   have hq_b_nn : 0 ≤ q_b := by
     rw [hq_b_def]
@@ -495,11 +495,11 @@ theorem chartAtlasPOU_mul_sqrt_g_inner_chartLeviCivitaParallelCLM_chartBasisVec_
             Real.sqrt
               (g.inner b
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b)))) 2
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))) 2
         (riemannianVolumeMeasure (I := I) (M := M) g) ≤
       ENNReal.ofReal C := by
   classical
@@ -513,11 +513,11 @@ theorem chartAtlasPOU_mul_sqrt_g_inner_chartLeviCivitaParallelCLM_chartBasisVec_
       Real.sqrt
         (g.inner b
           (chartLeviCivitaParallelCLM (I := I) g α b
-            (chartBasisVecFiber (I := I) α k)
-            (chartBasisVecFiber (I := I) α k b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
           (chartLeviCivitaParallelCLM (I := I) g α b
-            (chartBasisVecFiber (I := I) α k)
-            (chartBasisVecFiber (I := I) α k b))) with hf_def
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))) with hf_def
   have hf_nn : ∀ b : M, 0 ≤ f b := by
     intro b
     rw [hf_def]
@@ -576,11 +576,11 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
               Real.sqrt
                 (g.inner b
                   (chartLeviCivitaParallelCLM (I := I) g α b
-                    (chartBasisVecFiber (I := I) α k)
-                    (chartBasisVecFiber (I := I) α k b))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
                   (chartLeviCivitaParallelCLM (I := I) g α b
-                    (chartBasisVecFiber (I := I) α k)
-                    (chartBasisVecFiber (I := I) α k b)))) 2
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))) 2
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         ENNReal.ofReal C := by
   classical
@@ -594,11 +594,11 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
               Real.sqrt
                 (g.inner b
                   (chartLeviCivitaParallelCLM (I := I) g α b
-                    (chartBasisVecFiber (I := I) α k)
-                    (chartBasisVecFiber (I := I) α k b))
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
                   (chartLeviCivitaParallelCLM (I := I) g α b
-                    (chartBasisVecFiber (I := I) α k)
-                    (chartBasisVecFiber (I := I) α k b)))) 2
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))) 2
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         ENNReal.ofReal C := by
     intro α k
@@ -616,11 +616,11 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
             Real.sqrt
               (g.inner b
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b)))) 2
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))) 2
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         ENNReal.ofReal (Cα_k α k) :=
     fun α k => (Classical.choose_spec (hper α k)).2
@@ -670,11 +670,11 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
             Real.sqrt
               (g.inner b
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b))
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b))
                 (chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)
-                  (chartBasisVecFiber (I := I) α k b)))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))) =
         (fun _ : M => (0 : ℝ)) := by
       funext b
       rw [h_zero b]; ring

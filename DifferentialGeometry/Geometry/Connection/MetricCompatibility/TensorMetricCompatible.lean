@@ -188,7 +188,7 @@ private noncomputable def mixedGramMatrix
     (frame : Fin (Module.finrank ℝ E) → TangentSpace I x) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i a =>
-    g.inner x (centeredChartTangentBasis (I := I) x i) (frame a)
+    g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) (frame a)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -197,7 +197,7 @@ private lemma mixedGramMatrix_apply
     (frame : Fin (Module.finrank ℝ E) → TangentSpace I x)
     (i a : Fin (Module.finrank ℝ E)) :
     mixedGramMatrix (I := I) (M := M) g x frame i a =
-      g.inner x (centeredChartTangentBasis (I := I) x i) (frame a) := rfl
+      g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) (frame a) := rfl
 
 omit [Module.Finite ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -239,18 +239,18 @@ private lemma gramMatrixAt_eq_mixed_mul_transpose
   classical
   ext i j
   rw [gramMatrixAt_apply, modelInnerAt_apply,
-    tangent_model_equiv_symm_chart_basis,
-    tangent_model_equiv_symm_chart_basis, Matrix.mul_apply]
-  have hexp : centeredChartTangentBasis (I := I) x j =
+    DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_symm_chart_basis,
+    DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_symm_chart_basis, Matrix.mul_apply]
+  have hexp : DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j =
       ∑ a : Fin (Module.finrank ℝ E),
-        g.inner x (centeredChartTangentBasis (I := I) x j) (frame a) • frame a :=
+        g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) (frame a) • frame a :=
     orthonormal_expansion (I := I) (M := M) g x frame horth
-      (centeredChartTangentBasis (I := I) x j)
-  calc g.inner x (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j)
-      = g.inner x (centeredChartTangentBasis (I := I) x i)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+  calc g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)
+      = g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
           (∑ a : Fin (Module.finrank ℝ E),
-            g.inner x (centeredChartTangentBasis (I := I) x j) (frame a) • frame a) := by
+            g.inner x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) (frame a) • frame a) := by
         rw [← hexp]
     _ = ∑ a : Fin (Module.finrank ℝ E),
           mixedGramMatrix (I := I) (M := M) g x frame i a *
@@ -384,20 +384,20 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
   classical
   rw [tensorInnerPointwise_0s_succ]
   have hmodel_exp : ∀ i : Fin (Module.finrank ℝ E),
-      (chartModelBasis E) i =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i =
         ∑ a : Fin (Module.finrank ℝ E),
           mixedGramMatrix (I := I) (M := M) g x frame i a •
             tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a) := by
     intro i
     have hexp := orthonormal_expansion (I := I) (M := M) g x frame horth
-      (centeredChartTangentBasis (I := I) x i)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
     have hmapped := congrArg
       (tangentSpaceModelContinuousLinearEquiv (I := I) x) hexp
     simpa only [map_sum, map_smul,
-      tangent_model_equiv_centered_chart_basis, mixedGramMatrix_apply] using hmapped
+      DifferentialGeometry.Tensor.Coordinates.tangent_model_equiv_centered_chart_basis, mixedGramMatrix_apply] using hmapped
   have hcurry_exp : ∀ (P : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
       (i : Fin (Module.finrank ℝ E)),
-      P.curryLeft ((chartModelBasis E) i) =
+      P.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         ∑ a : Fin (Module.finrank ℝ E),
           mixedGramMatrix (I := I) (M := M) g x frame i a •
             P.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)) := by
@@ -407,8 +407,8 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
   have hstep : ∀ i j : Fin (Module.finrank ℝ E),
       (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j)) =
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           (mixedGramMatrix (I := I) (M := M) g x frame i a *
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
@@ -430,8 +430,8 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
   rw [show (∑ i, ∑ j,
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j))) =
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) =
       ∑ i, ∑ j, ∑ a, ∑ b,
         (mixedGramMatrix (I := I) (M := M) g x frame i a *
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *

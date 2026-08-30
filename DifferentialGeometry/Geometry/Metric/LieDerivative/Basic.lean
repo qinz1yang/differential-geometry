@@ -34,7 +34,7 @@ def chartLieMetricDeform (g : SmoothRiemannianMetric I M)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (α : M) (i j : Fin (Module.finrank ℝ E)) (x : M) : ℝ :=
   ∑ k : Fin (Module.finrank ℝ E),
-    chartGramMatrix (I := I) g α x k j *
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
       partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x)
 
 def chartLieDerivMetricMatrix (g : SmoothRiemannianMetric I M)
@@ -60,7 +60,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     (α : M) (i j : Fin (Module.finrank ℝ E)) (x : M) :
     chartLieMetricDeform (I := I) g W α i j x =
       ∑ k : Fin (Module.finrank ℝ E),
-        chartGramMatrix (I := I) g α x k j *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
           partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
             (extChartAt I α x) := rfl
 
@@ -74,11 +74,11 @@ theorem chartLieDerivMetricMatrix_def (g : SmoothRiemannianMetric I M)
             partialDeriv (E := E) k (chartGramOnE (I := I) g α i j)
               (extChartAt I α x))
       + (∑ k : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x k j *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
             partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
               (extChartAt I α x))
       + (∑ k : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α x i k *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k *
             partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k)
               (extChartAt I α x)) := by
   classical
@@ -86,9 +86,9 @@ theorem chartLieDerivMetricMatrix_def (g : SmoothRiemannianMetric I M)
     chartLieMetricDeform_def, chartLieMetricDeform_def]
   congr 1
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [show chartGramMatrix (I := I) g α x k i =
-      chartGramMatrix (I := I) g α x i k from by
-    rw [chartGramMatrix_apply, chartGramMatrix_apply]
+  rw [show DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k i =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k from by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     exact g.symm x _ _]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -136,11 +136,11 @@ theorem lieDerivMetricMatrix_def (g : SmoothRiemannianMetric I M)
             partialDeriv (E := E) k (chartGramOnE (I := I) g x i j)
               (extChartAt I x x))
       + (∑ k : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g x x k j *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
             partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x))
       + (∑ k : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g x x i k *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
             partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k)
               (extChartAt I x x)) := by
   rw [lieDerivMetricMatrix, chartLieDerivMetricMatrix_def]
@@ -161,14 +161,14 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
     (fun v w =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) i *
-            ((centeredChartTangentBasis (I := I) x).repr w) j *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) j *
             lieDerivMetricMatrix (I := I) g W i j x)
     (fun v₁ v₂ w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
-          (centeredChartTangentBasis (I := I) x).repr v₁ +
-            (centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
       rw [hrepr, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [← Finset.sum_add_distrib]
@@ -177,8 +177,8 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
       ring)
     (fun c v w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • v) =
-          c • (centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • v) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -188,9 +188,9 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
       ring)
     (fun v w₁ w₂ => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
-          (centeredChartTangentBasis (I := I) x).repr w₁ +
-            (centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁ +
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
       rw [hrepr, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [← Finset.sum_add_distrib]
@@ -199,8 +199,8 @@ def lieDerivMetric (g : SmoothRiemannianMetric I M)
       ring)
     (fun c v w => by
       classical
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • w) =
-          c • (centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • w) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -216,8 +216,8 @@ lemma lieDerivMetric_apply (g : SmoothRiemannianMetric I M)
     lieDerivMetric (I := I) g W x v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) i *
-            ((centeredChartTangentBasis (I := I) x).repr w) j *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) j *
             lieDerivMetricMatrix (I := I) g W i j x :=
   rfl
 
@@ -226,18 +226,18 @@ lemma lieDerivMetric_basis_apply (g : SmoothRiemannianMetric I M)
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     lieDerivMetric (I := I) g W x
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) =
       lieDerivMetricMatrix (I := I) g W i j x := by
   classical
   rw [lieDerivMetric_apply]
   conv_lhs => rw [show
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr
-            (centeredChartTangentBasis (I := I) x i)) i' *
-            ((centeredChartTangentBasis (I := I) x).repr
-              (centeredChartTangentBasis (I := I) x j)) j' *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)) i' *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)) j' *
             lieDerivMetricMatrix (I := I) g W i' j' x) =
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
@@ -349,8 +349,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
       rw [heq.fderiv_eq]
       simp
     rw [hpd, mul_zero]
-  rw [hconv, hdeform (fun k => chartGramMatrix (I := I) g x x k j) i,
-    hdeform (fun k => chartGramMatrix (I := I) g x x i k) j]
+  rw [hconv, hdeform (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j) i,
+    hdeform (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k) j]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -501,8 +501,8 @@ theorem lieDerivMetricMatrix_add_vectorField [I.Boundaryless]
       rfl
     rw [hpd]
     ring
-  rw [hconv, hdeform (fun k => chartGramMatrix (I := I) g x x k j) i,
-    hdeform (fun k => chartGramMatrix (I := I) g x x i k) j]
+  rw [hconv, hdeform (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j) i,
+    hdeform (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k) j]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -566,8 +566,8 @@ theorem lieDerivMetricMatrix_smul_vectorField [I.Boundaryless]
         smul_apply, smul_eq_mul]
     rw [hpd]
     ring
-  rw [hconv, hdeform (fun k => chartGramMatrix (I := I) g x x k j) i,
-    hdeform (fun k => chartGramMatrix (I := I) g x x i k) j]
+  rw [hconv, hdeform (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j) i,
+    hdeform (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k) j]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -616,7 +616,7 @@ private lemma partialDeriv_chartGramOnE_contDiffOn_interior
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ (chartGramOnE (I := I) g α i j))
       (interior (extChartAt I α).target) :=
     hbase_int.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) k)
+  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
       (interior (extChartAt I α).target) := contDiffOn_const
   exact hfderiv.clm_apply hconst
 
@@ -635,7 +635,7 @@ private lemma partialDeriv_chartCoeffOnE_contDiffOn_interior
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ (chartCoeffOnE (I := I) α W k))
       (interior (extChartAt I α).target) :=
     hbase_int.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
       (interior (extChartAt I α).target) := contDiffOn_const
   exact hfderiv.clm_apply hconst
 
@@ -687,15 +687,15 @@ private lemma chartLieMetricDeform_summand_contMDiffOn [I.Boundaryless]
     (α : M) (i j k : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
-        chartGramMatrix (I := I) g α x k j *
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j *
           partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k)
             (extChartAt I α x))
       (chartAt H α).source := by
   refine ContMDiffOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-        (fun x : M => chartGramMatrix (I := I) g α x k j)
+        (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k j)
         (trivializationAt E (TangentSpace I) α).baseSet :=
-      chartGramMatrix_entry_contMDiffOn (I := I) g α k j
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α k j
     rwa [trivializationAt_baseSet_eq_chartAt_source] at h1
   · exact comp_extChartAt_contMDiffOn_source (I := I) α
       (partialDeriv_chartCoeffOnE_contDiffOn_interior (I := I) α W i k)

@@ -58,8 +58,8 @@ theorem deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS
     (i k : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet (I := I) α) :
     DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg g x
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) α i x)
-          (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) α k x) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       chartDeTurckRicciRHS (I := I) g g_bg α i k (extChartAt I α x) := by
   classical
   rw [DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS_apply]

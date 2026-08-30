@@ -22,7 +22,7 @@ private lemma density_cont
     {g : Real → SmoothRiemannianMetric I M} {K : Set Real}
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
-        (fun p : Real × M ↦ chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : Real × M ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (x₀ : M) :
     ContinuousOn
@@ -32,14 +32,14 @@ private lemma density_cont
   let n := Fin (Module.finrank Real E)
   have hdet : ContinuousOn
       (fun p : Real × M ↦
-        (chartGramMatrix (I := I) (g p.1) x₀ p.2).det)
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2).det)
       (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     have hexp :
         (fun p : Real × M ↦
-          (chartGramMatrix (I := I) (g p.1) x₀ p.2).det) =
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2).det) =
         fun p : Real × M ↦
           ∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : Int) : Real) *
-            ∏ i, chartGramMatrix (I := I) (g p.1) x₀ p.2 (σ i) i := by
+            ∏ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 (σ i) i := by
       funext p
       rw [Matrix.det_apply]
       simp [Units.smul_def]
@@ -58,7 +58,7 @@ private theorem chart_int_cont
     (hK : IsCompact K)
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
-        (fun p : Real × M ↦ chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : Real × M ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hf : ContinuousOn (fun p : Real × M ↦ f p.1 p.2)
       (K ×ˢ (Set.univ : Set M)))
@@ -201,7 +201,7 @@ theorem integral_family_cont
     (hK : IsCompact K)
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
-        (fun p : Real × M ↦ chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : Real × M ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hf : ContinuousOn (fun p : Real × M ↦ f p.1 p.2)
       (K ×ˢ (Set.univ : Set M))) :

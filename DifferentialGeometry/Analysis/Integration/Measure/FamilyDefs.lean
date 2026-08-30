@@ -51,18 +51,18 @@ structure MetricFamilyRegularAt
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)) {x : M},
       x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet →
       ∀ t : ℝ,
-        HasDerivAt (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) x₀ x i j)
-          (deriv (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) x₀ x i j) t) t
+        HasDerivAt (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x₀ x i j)
+          (deriv (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x₀ x i j) t) t
   continuousOn_chartGramMatrix :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun p : ℝ × M => chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
   continuousOn_deriv_chartGramMatrix :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun p : ℝ × M =>
-          deriv (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) x₀ p.2 i j) p.1)
+          deriv (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x₀ p.2 i j) p.1)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
 
 lemma MetricFamilyRegularAt.at_any
@@ -106,12 +106,12 @@ variable {g_fam : ℝ → SmoothRiemannianMetric I M}
 def chartGramMatrixFamily
     (g_fam : ℝ → SmoothRiemannianMetric I M) (x₀ x : M) :
     ℝ → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  fun t => chartGramMatrix (I := I) (g_fam t) x₀ x
+  fun t => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) x₀ x
 
 @[simp] lemma chartGramMatrixFamily_apply
     (g_fam : ℝ → SmoothRiemannianMetric I M) (x₀ x : M) (t : ℝ) :
     chartGramMatrixFamily (I := I) g_fam x₀ x t =
-      chartGramMatrix (I := I) (g_fam t) x₀ x := rfl
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) x₀ x := rfl
 
 def chartDensityFamily
     (g_fam : ℝ → SmoothRiemannianMetric I M) (x₀ x : M) :
@@ -142,7 +142,7 @@ theorem hasDerivAt_chartDensityFamily_eq_half_trace_inv_mul
         Real.sqrt (chartGramMatrixFamily (I := I) g_fam x₀ x t).det) t := by
   have hpos : 0 < (chartGramMatrixFamily (I := I) g_fam x₀ x t).det := by
     simpa [chartGramMatrixFamily_apply] using
-      chartGramMatrix_det_pos (I := I) (g_fam t) x₀ hx
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) (g_fam t) x₀ hx
   have hderiv := hasDerivAt_sqrt_det_eq_half_trace_inv_mul
     (G := chartGramMatrixFamily (I := I) g_fam x₀ x)
     (G' := Gprime) (t := t) hEntries hpos
@@ -159,16 +159,16 @@ end ChartDensityFamily
 variable (I) in
 def traceTimeDerivMetric
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t : ℝ) (x : M) : ℝ :=
-  Matrix.trace ((chartGramMatrix (I := I) (g_fam t) x x)⁻¹ *
+  Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) x x)⁻¹ *
     (Matrix.of fun i j =>
-      deriv (fun s => chartGramMatrix (I := I) (g_fam s) x x i j) t))
+      deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x x i j) t))
 
 lemma traceTimeDerivMetric_eq
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t : ℝ) (x : M) :
     traceTimeDerivMetric (I := I) g_fam t x =
-      Matrix.trace ((chartGramMatrix (I := I) (g_fam t) x x)⁻¹ *
+      Matrix.trace ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) x x)⁻¹ *
         (Matrix.of fun i j =>
-          deriv (fun s => chartGramMatrix (I := I) (g_fam s) x x i j) t)) := rfl
+          deriv (fun s => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x x i j) t)) := rfl
 
 theorem continuousOn_deriv_of_hasDerivAt_eq_continuousOn
     {α : Type*} [TopologicalSpace α]
@@ -193,11 +193,11 @@ theorem MetricFamilyRegularAt.of_chartGram_timeDeriv
         (∀ t x,
           x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet →
             HasDerivAt
-              (fun s : ℝ => chartGramMatrix (I := I) (g_fam s) x₀ x i j)
+              (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x₀ x i j)
               (D t x) t) ∧
         ContinuousOn
           (fun p : ℝ × M =>
-            chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
           (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) ∧
         ContinuousOn
           (fun p : ℝ × M => D p.1 p.2)
@@ -218,7 +218,7 @@ theorem MetricFamilyRegularAt.of_chartGram_timeDeriv
     rcases h x₀ i j with ⟨D, hD_deriv, -, hD_cont⟩
     refine continuousOn_deriv_of_hasDerivAt_eq_continuousOn
       (S := Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
-      (f := fun t x => chartGramMatrix (I := I) (g_fam t) x₀ x i j)
+      (f := fun t x => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam t) x₀ x i j)
       (D := D) ?_ hD_cont
     intro p hp
     exact hD_deriv p.1 p.2 hp.2

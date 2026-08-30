@@ -35,15 +35,15 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
           ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
               ∑ l : Fin (Module.finrank ℝ E),
-                ((centeredChartTangentBasis (I := I) x).repr u i *
-                    (centeredChartTangentBasis (I := I) x).repr v j *
-                    (centeredChartTangentBasis (I := I) x).repr w k *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                     chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                  ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)
       map_add' := fun u₁ u₂ => by
         classical
-        have hrepr : (centeredChartTangentBasis (I := I) x).repr (u₁ + u₂) =
-            (centeredChartTangentBasis (I := I) x).repr u₁ + (centeredChartTangentBasis (I := I) x).repr u₂ := map_add _ _ _
+        have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (u₁ + u₂) =
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u₁ + (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u₂ := map_add _ _ _
         simp only [hrepr]
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -54,20 +54,20 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun l _ => ?_)
         simp only [Finsupp.coe_add, Pi.add_apply]
-        rw [show ((((centeredChartTangentBasis (I := I) x).repr u₁) i + ((centeredChartTangentBasis (I := I) x).repr u₂) i) *
-              ((centeredChartTangentBasis (I := I) x).repr v) j * ((centeredChartTangentBasis (I := I) x).repr w) k *
+        rw [show ((((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u₁) i + ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u₂) i) *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-            (((centeredChartTangentBasis (I := I) x).repr u₁) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u₁) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) +
-            (((centeredChartTangentBasis (I := I) x).repr u₂) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u₂) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
         exact add_smul _ _ _
       map_smul' := fun c u => by
         classical
-        have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • u) =
-            c • (centeredChartTangentBasis (I := I) x).repr u := map_smul _ _ _
+        have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • u) =
+            c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u := map_smul _ _ _
         simp only [hrepr]
         rw [Finset.smul_sum]
         refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -78,37 +78,37 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
         rw [Finset.smul_sum]
         refine Finset.sum_congr rfl (fun l _ => ?_)
         simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
-        rw [show (c * ((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+        rw [show (c * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-              c * (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+              c * (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
         exact mul_smul _ _ _
     }
     map_add' := fun w₁ w₂ => by
       classical
       ext u
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
-          (centeredChartTangentBasis (I := I) x).repr w₁ + (centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (w₁ + w₂) =
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁ + (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂ := map_add _ _ _
       change (∑ i, ∑ j, ∑ k, ∑ l,
-              (((centeredChartTangentBasis (I := I) x).repr u) i *
-                  ((centeredChartTangentBasis (I := I) x).repr v) j *
-                  ((centeredChartTangentBasis (I := I) x).repr (w₁ + w₂)) k *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (w₁ + w₂)) k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
           (∑ i, ∑ j, ∑ k, ∑ l,
-              (((centeredChartTangentBasis (I := I) x).repr u) i *
-                  ((centeredChartTangentBasis (I := I) x).repr v) j *
-                  ((centeredChartTangentBasis (I := I) x).repr w₁) k *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁) k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) +
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) +
           (∑ i, ∑ j, ∑ k, ∑ l,
-              (((centeredChartTangentBasis (I := I) x).repr u) i *
-                  ((centeredChartTangentBasis (I := I) x).repr v) j *
-                  ((centeredChartTangentBasis (I := I) x).repr w₂) k *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂) k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
       simp only [hrepr]
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -119,33 +119,33 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun l _ => ?_)
       simp only [Finsupp.coe_add, Pi.add_apply]
-      rw [show (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-              (((centeredChartTangentBasis (I := I) x).repr w₁) k + ((centeredChartTangentBasis (I := I) x).repr w₂) k) *
+      rw [show (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁) k + ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂) k) *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-            (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w₁) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₁) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) +
-            (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w₂) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w₂) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
       exact add_smul _ _ _
     map_smul' := fun c w => by
       classical
       ext u
-      have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • w) =
-          c • (centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
+      have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • w) =
+          c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w := map_smul _ _ _
       change (∑ i, ∑ j, ∑ k, ∑ l,
-              (((centeredChartTangentBasis (I := I) x).repr u) i *
-                  ((centeredChartTangentBasis (I := I) x).repr v) j *
-                  ((centeredChartTangentBasis (I := I) x).repr (c • w)) k *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • w)) k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
           c • (∑ i, ∑ j, ∑ k, ∑ l,
-              (((centeredChartTangentBasis (I := I) x).repr u) i *
-                  ((centeredChartTangentBasis (I := I) x).repr v) j *
-                  ((centeredChartTangentBasis (I := I) x).repr w) k *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
       simp only [hrepr]
       rw [Finset.smul_sum]
       refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -156,37 +156,37 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
       rw [Finset.smul_sum]
       refine Finset.sum_congr rfl (fun l _ => ?_)
       simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
-      rw [show (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-              (c * ((centeredChartTangentBasis (I := I) x).repr w) k) *
+      rw [show (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+              (c * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k) *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-            c * (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            c * (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
       exact mul_smul _ _ _
   }
   map_add' := fun v₁ v₂ => by
     classical
     ext w u
-    have hrepr : (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
-        (centeredChartTangentBasis (I := I) x).repr v₁ + (centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
+    have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁ + (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂ := map_add _ _ _
     change (∑ i, ∑ j, ∑ k, ∑ l,
-            (((centeredChartTangentBasis (I := I) x).repr u) i *
-                ((centeredChartTangentBasis (I := I) x).repr (v₁ + v₂)) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂)) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-              ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
         (∑ i, ∑ j, ∑ k, ∑ l,
-            (((centeredChartTangentBasis (I := I) x).repr u) i *
-                ((centeredChartTangentBasis (I := I) x).repr v₁) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-              ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) +
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) +
         (∑ i, ∑ j, ∑ k, ∑ l,
-            (((centeredChartTangentBasis (I := I) x).repr u) i *
-                ((centeredChartTangentBasis (I := I) x).repr v₂) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-              ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
     simp only [hrepr]
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -197,34 +197,34 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun l _ => ?_)
     simp only [Finsupp.coe_add, Pi.add_apply]
-    rw [show (((centeredChartTangentBasis (I := I) x).repr u) i *
-            (((centeredChartTangentBasis (I := I) x).repr v₁) j + ((centeredChartTangentBasis (I := I) x).repr v₂) j) *
-            ((centeredChartTangentBasis (I := I) x).repr w) k *
+    rw [show (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁) j + ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂) j) *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
             chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-          (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v₁) j *
-              ((centeredChartTangentBasis (I := I) x).repr w) k *
+          (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁) j *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) +
-          (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v₂) j *
-              ((centeredChartTangentBasis (I := I) x).repr w) k *
+          (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂) j *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
     exact add_smul _ _ _
   map_smul' := fun c v => by
     classical
     ext w u
-    have hrepr : (centeredChartTangentBasis (I := I) x).repr (c • v) =
-        c • (centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
+    have hrepr : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • v) =
+        c • (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v := map_smul _ _ _
     change (∑ i, ∑ j, ∑ k, ∑ l,
-            (((centeredChartTangentBasis (I := I) x).repr u) i *
-                ((centeredChartTangentBasis (I := I) x).repr (c • v)) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (c • v)) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-              ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
         c • (∑ i, ∑ j, ∑ k, ∑ l,
-            (((centeredChartTangentBasis (I := I) x).repr u) i *
-                ((centeredChartTangentBasis (I := I) x).repr v) j *
-                ((centeredChartTangentBasis (I := I) x).repr w) k *
+            (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-              ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x))
     simp only [hrepr]
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -235,11 +235,11 @@ def chartRiemannLin (g : SmoothRiemannianMetric I M) (x : M) :
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl (fun l _ => ?_)
     simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
-    rw [show (((centeredChartTangentBasis (I := I) x).repr u) i * (c * ((centeredChartTangentBasis (I := I) x).repr v) j) *
-            ((centeredChartTangentBasis (I := I) x).repr w) k *
+    rw [show (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * (c * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j) *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
             chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-          c * (((centeredChartTangentBasis (I := I) x).repr u) i * ((centeredChartTangentBasis (I := I) x).repr v) j *
-              ((centeredChartTangentBasis (I := I) x).repr w) k *
+          c * (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u) i * ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) j *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) k *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
     exact mul_smul _ _ _
 
@@ -251,11 +251,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr u i *
-                  (centeredChartTangentBasis (I := I) x).repr v j *
-                  (centeredChartTangentBasis (I := I) x).repr w k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) := rfl
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) := rfl
 
 def chartRiemannCLM (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x :=
@@ -298,39 +298,39 @@ theorem chartRiemannCLM_apply (g : SmoothRiemannianMetric I M) (x : M)
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr u i *
-                  (centeredChartTangentBasis (I := I) x).repr v j *
-                  (centeredChartTangentBasis (I := I) x).repr w k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) :=
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) :=
   chartRiemannLin_apply (I := I) g x v w u
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 theorem chart_riemann_clm_model_apply (g : SmoothRiemannianMetric I M) (x : M)
     (v w u : E) :
-    centeredChartTangentEquiv (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x
         (chartRiemannCLM (I := I) g x
-          ((centeredChartTangentEquiv (I := I) x).symm v)
-          ((centeredChartTangentEquiv (I := I) x).symm w)
-          ((centeredChartTangentEquiv (I := I) x).symm u)) =
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm v)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm w)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm u)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr u i *
-                  (chartModelBasis E).repr v j *
-                  (chartModelBasis E).repr w k *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v j *
+                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                (chartModelBasis E) l := by
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l := by
   rw [chartRiemannCLM_apply]
-  simp only [map_sum, map_smul, centeredChartTangentBasis_repr,
-    centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
+  simp only [map_sum, map_smul, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr,
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 private lemma repr_basis_eq_kron (x : M) (a b' : Fin (Module.finrank ℝ E)) :
-    ((centeredChartTangentBasis (I := I) x).repr ((centeredChartTangentBasis (I := I) x) a)) b' =
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) a)) b' =
       (if a = b' then (1 : ℝ) else 0) :=
   Module.Basis.repr_self_apply _ _ _
 
@@ -338,11 +338,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 theorem chartRiemannCLM_basis_apply (g : SmoothRiemannianMetric I M) (x : M)
     (i j k : Fin (Module.finrank ℝ E)) :
     chartRiemannCLM (I := I) g x
-        ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k)
-        ((centeredChartTangentBasis (I := I) x) i) =
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) =
       ∑ l : Fin (Module.finrank ℝ E),
         chartRiemannTensor (I := I) g x i j k l (extChartAt I x x) •
-          ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) := by
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) := by
   classical
   rw [chartRiemannCLM_apply]
   have hkron :
@@ -350,11 +350,11 @@ theorem chartRiemannCLM_basis_apply (g : SmoothRiemannianMetric I M) (x : M)
         ∑ j' : Fin (Module.finrank ℝ E),
           ∑ k' : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              (((centeredChartTangentBasis (I := I) x).repr ((centeredChartTangentBasis (I := I) x) i)) i' *
-                  ((centeredChartTangentBasis (I := I) x).repr ((centeredChartTangentBasis (I := I) x) j)) j' *
-                  ((centeredChartTangentBasis (I := I) x).repr ((centeredChartTangentBasis (I := I) x) k)) k' *
+              (((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)) i' *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j)) j' *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)) k' *
                   chartRiemannTensor (I := I) g x i' j' k' l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
       ∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
           ∑ k' : Fin (Module.finrank ℝ E),
@@ -363,7 +363,7 @@ theorem chartRiemannCLM_basis_apply (g : SmoothRiemannianMetric I M) (x : M)
                   (if j = j' then (1 : ℝ) else 0) *
                   (if k = k' then (1 : ℝ) else 0) *
                   chartRiemannTensor (I := I) g x i' j' k' l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) := by
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) := by
     refine Finset.sum_congr rfl (fun i' _ => ?_)
     refine Finset.sum_congr rfl (fun j' _ => ?_)
     refine Finset.sum_congr rfl (fun k' _ => ?_)
@@ -395,10 +395,10 @@ theorem chartRiemannCLM_basis_apply (g : SmoothRiemannianMetric I M) (x : M)
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem chartRiemannCLM_repr_basis (g : SmoothRiemannianMetric I M) (x : M)
     (i j k l : Fin (Module.finrank ℝ E)) :
-    ((centeredChartTangentBasis (I := I) x).repr
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
         (chartRiemannCLM (I := I) g x
-          ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k)
-          ((centeredChartTangentBasis (I := I) x) i))) l =
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i))) l =
       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x) := by
   classical
   rw [chartRiemannCLM_basis_apply]
@@ -423,27 +423,27 @@ theorem chartRiemannCLM_antisymm_jk (g : SmoothRiemannianMetric I M) (x : M)
   classical
   rw [chartRiemannCLM_apply, chartRiemannCLM_apply]
   have key : ∀ i j k l : Fin (Module.finrank ℝ E),
-      ((centeredChartTangentBasis (I := I) x).repr u i *
-          (centeredChartTangentBasis (I := I) x).repr w k *
-          (centeredChartTangentBasis (I := I) x).repr v j *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
           chartRiemannTensor (I := I) g x i k j l (extChartAt I x x)) •
-        ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
-      -(((centeredChartTangentBasis (I := I) x).repr u i *
-          (centeredChartTangentBasis (I := I) x).repr v j *
-          (centeredChartTangentBasis (I := I) x).repr w k *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
+      -(((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
           chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-        ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) := by
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) := by
     intro i j k l
     rw [show chartRiemannTensor (I := I) g x i k j l (extChartAt I x x) =
           - chartRiemannTensor (I := I) g x i j k l (extChartAt I x x) from
         chartRiemannTensor_antisymm_jk (I := I) g x i k j l _]
-    rw [show ((centeredChartTangentBasis (I := I) x).repr u i *
-            (centeredChartTangentBasis (I := I) x).repr w k *
-            (centeredChartTangentBasis (I := I) x).repr v j *
+    rw [show ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
             -chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) =
-          -((centeredChartTangentBasis (I := I) x).repr u i *
-              (centeredChartTangentBasis (I := I) x).repr v j *
-              (centeredChartTangentBasis (I := I) x).repr w k *
+          -((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
               chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) from by ring]
     rw [neg_smul]
   have hRHS_to_neg_LHS :
@@ -451,81 +451,81 @@ theorem chartRiemannCLM_antisymm_jk (g : SmoothRiemannianMetric I M) (x : M)
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr u i *
-                  (centeredChartTangentBasis (I := I) x).repr w j *
-                  (centeredChartTangentBasis (I := I) x).repr v k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
       -(∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr u i *
-                  (centeredChartTangentBasis (I := I) x).repr v j *
-                  (centeredChartTangentBasis (I := I) x).repr w k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) := by
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) := by
     have step1 : ∀ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr u i *
-                  (centeredChartTangentBasis (I := I) x).repr w j *
-                  (centeredChartTangentBasis (I := I) x).repr v k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
         -(∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((centeredChartTangentBasis (I := I) x).repr u i *
-                  (centeredChartTangentBasis (I := I) x).repr v j *
-                  (centeredChartTangentBasis (I := I) x).repr w k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                   chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) := by
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) := by
       intro i
       rw [Finset.sum_comm
         (s := (Finset.univ : Finset (Fin (Module.finrank ℝ E))))
         (t := (Finset.univ : Finset (Fin (Module.finrank ℝ E))))
         (f := fun j k =>
           ∑ l : Fin (Module.finrank ℝ E),
-            ((centeredChartTangentBasis (I := I) x).repr u i *
-                (centeredChartTangentBasis (I := I) x).repr w j *
-                (centeredChartTangentBasis (I := I) x).repr v k *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v k *
                 chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-              ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x))]
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x))]
       rw [show ∑ k : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  ((centeredChartTangentBasis (I := I) x).repr u i *
-                      (centeredChartTangentBasis (I := I) x).repr w j *
-                      (centeredChartTangentBasis (I := I) x).repr v k *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v k *
                       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                    ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
+                    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
             ∑ j : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  ((centeredChartTangentBasis (I := I) x).repr u i *
-                      (centeredChartTangentBasis (I := I) x).repr w k *
-                      (centeredChartTangentBasis (I := I) x).repr v j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
                       chartRiemannTensor (I := I) g x i k j l (extChartAt I x x)) •
-                    ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) from by
+                    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) from by
         rw [Finset.sum_comm]]
       rw [show ∑ j : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  ((centeredChartTangentBasis (I := I) x).repr u i *
-                      (centeredChartTangentBasis (I := I) x).repr w k *
-                      (centeredChartTangentBasis (I := I) x).repr v j *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
                       chartRiemannTensor (I := I) g x i k j l (extChartAt I x x)) •
-                    ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
+                    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x) =
             ∑ j : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  -(((centeredChartTangentBasis (I := I) x).repr u i *
-                      (centeredChartTangentBasis (I := I) x).repr v j *
-                      (centeredChartTangentBasis (I := I) x).repr w k *
+                  -(((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                    ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) from by
+                    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) from by
         refine Finset.sum_congr rfl (fun j _ => ?_)
         refine Finset.sum_congr rfl (fun k _ => ?_)
         refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -535,20 +535,20 @@ theorem chartRiemannCLM_antisymm_jk (g : SmoothRiemannianMetric I M) (x : M)
             ∑ j : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  ((centeredChartTangentBasis (I := I) x).repr u i *
-                      (centeredChartTangentBasis (I := I) x).repr w j *
-                      (centeredChartTangentBasis (I := I) x).repr v k *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v k *
                       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                    ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
+                    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) =
           ∑ i : Fin (Module.finrank ℝ E),
             -(∑ j : Fin (Module.finrank ℝ E),
               ∑ k : Fin (Module.finrank ℝ E),
                 ∑ l : Fin (Module.finrank ℝ E),
-                  ((centeredChartTangentBasis (I := I) x).repr u i *
-                      (centeredChartTangentBasis (I := I) x).repr v j *
-                      (centeredChartTangentBasis (I := I) x).repr w k *
+                  ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr u i *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v j *
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
                       chartRiemannTensor (I := I) g x i j k l (extChartAt I x x)) •
-                    ((centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) from by
+                    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l : TangentSpace I x)) from by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       exact step1 i]
     simp only [Finset.sum_neg_distrib]
@@ -560,13 +560,13 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRiemannCLM_basis_antisymm_jk (g : SmoothRiemannianMetric I M) (x : M)
     (i j k : Fin (Module.finrank ℝ E)) :
     chartRiemannCLM (I := I) g x
-        ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k)
-        ((centeredChartTangentBasis (I := I) x) i) =
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) =
       - chartRiemannCLM (I := I) g x
-          ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) j)
-          ((centeredChartTangentBasis (I := I) x) i) :=
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) :=
   chartRiemannCLM_antisymm_jk (I := I) g x
-    ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) i)
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -590,15 +590,15 @@ omit [SigmaCompactSpace M] in
 theorem riemannOp_chartBasis_via_riemannSec (g : SmoothRiemannianMetric I M) (x : M)
     {X : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hX : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (X i)))
-    (hXx : ∀ i, X i x = (centeredChartTangentBasis (I := I) x) i)
+    (hXx : ∀ i, X i x = (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
     (i j k : Fin (Module.finrank ℝ E)) :
     riemannOp (cov := LeviCivita (I := I) g) x
-        ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k)
-        ((centeredChartTangentBasis (I := I) x) i) =
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) =
       riemannSec (LeviCivita (I := I) g) (X j) (X k) (X i) x := by
-  rw [show ((centeredChartTangentBasis (I := I) x) j : TangentSpace I x) = X j x from (hXx j).symm,
-      show ((centeredChartTangentBasis (I := I) x) k : TangentSpace I x) = X k x from (hXx k).symm,
-      show ((centeredChartTangentBasis (I := I) x) i : TangentSpace I x) = X i x from (hXx i).symm]
+  rw [show ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j : TangentSpace I x) = X j x from (hXx j).symm,
+      show ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k : TangentSpace I x) = X k x from (hXx k).symm,
+      show ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i : TangentSpace I x) = X i x from (hXx i).symm]
   exact riemannOp_apply_smooth (cov := LeviCivita (I := I) g) (hX j) (hX k) (hX i)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -622,13 +622,13 @@ omit [SigmaCompactSpace M] in
 theorem riemannOp_basis_antisymm_jk (g : SmoothRiemannianMetric I M) (x : M)
     (i j k : Fin (Module.finrank ℝ E)) :
     riemannOp (cov := LeviCivita (I := I) g) x
-        ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k)
-        ((centeredChartTangentBasis (I := I) x) i) =
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k)
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) =
       - riemannOp (cov := LeviCivita (I := I) g) x
-          ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) j)
-          ((centeredChartTangentBasis (I := I) x) i) :=
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j)
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) :=
   riemannOp_swap (cov := LeviCivita (I := I) g) x
-    ((centeredChartTangentBasis (I := I) x) j) ((centeredChartTangentBasis (I := I) x) k) ((centeredChartTangentBasis (I := I) x) i)
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k) ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
 
 end Connection
 end Geometry

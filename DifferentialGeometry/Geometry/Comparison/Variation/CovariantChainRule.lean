@@ -37,14 +37,14 @@ private lemma christoffelCorrection_eq_chartChristoffelContraction
   set F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E :=
     fun i j k =>
       (chartChristoffel (I := I) g α i j k (extChartAt I α x) *
-          (chartModelBasis E).repr (trivToE (I := I) α x v) i *
-          (chartModelBasis E).repr Y j) • (chartModelBasis E) k with hF
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v) i *
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j) • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k with hF
   have hLHS :
       (∑ i, ∑ j, ∑ k,
-          ((chartModelBasis E).repr (trivToE (I := I) α x v) i *
-                (chartModelBasis E).repr Y j *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v) i *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Y j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
-            (chartModelBasis E) k)
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
         = ∑ i, ∑ j, ∑ k, F i j k := by
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
       Finset.sum_congr rfl (fun k _ => ?_)))
@@ -55,7 +55,7 @@ private lemma christoffelCorrection_eq_chartChristoffelContraction
               chartChristoffel (I := I) g α i j k (extChartAt I α x) *
                 chartCoord (E := E) i (trivToE (I := I) α x v) *
                 chartCoord (E := E) j Y) •
-            (chartModelBasis E) k)
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
         = ∑ i, ∑ j, ∑ k, F i j k := by
     have hstep1 :
         (∑ k,
@@ -63,7 +63,7 @@ private lemma christoffelCorrection_eq_chartChristoffelContraction
                 chartChristoffel (I := I) g α i j k (extChartAt I α x) *
                   chartCoord (E := E) i (trivToE (I := I) α x v) *
                   chartCoord (E := E) j Y) •
-              (chartModelBasis E) k)
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
           = ∑ k, ∑ i, ∑ j, F i j k := by
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [Finset.sum_smul]

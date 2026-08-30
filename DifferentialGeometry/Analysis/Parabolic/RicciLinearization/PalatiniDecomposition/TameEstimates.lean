@@ -1116,8 +1116,8 @@ theorem deTurckVF_background_sub_eq_connectionDifference_trace
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x j k •
           PDE.DeTurck.connectionDifference (I := I) gB gA x
-            (chartBasisVecFiber (I := I) x j x)
-            (chartBasisVecFiber (I := I) x k x) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x) := by
   classical
   rw [PDE.DeTurck.deTurckVF_apply_eq (I := I) g₁ gA x,
     PDE.DeTurck.deTurckVF_apply_eq (I := I) g₁ gB x,
@@ -1128,7 +1128,7 @@ theorem deTurckVF_background_sub_eq_connectionDifference_trace
   rw [← smul_sub]
   congr 1
   rw [PDE.DeTurck.connectionDifference_cocycle (I := I) gB g₁ gA x
-      (chartBasisVecFiber (I := I) x j x) (chartBasisVecFiber (I := I) x k x),
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x k x),
     add_sub_cancel_left]
 
 

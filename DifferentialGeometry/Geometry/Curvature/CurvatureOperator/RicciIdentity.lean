@@ -285,10 +285,10 @@ theorem ricciTensor_gradFun_eq_frame_sum_riemannSec [I.Boundaryless]
     (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
-    (x : M) (hBx : ∀ i, B i x = centeredChartTangentBasis (I := I) x i) :
+    (x : M) (hBx : ∀ i, B i x = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) :
     ricciTensor (I := I) g x (gradFun (I := I) g f x) (w x) =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (riemannSec (LeviCivita (I := I) g) (B i) w
             (fun y => gradFun (I := I) g f y) x) i := by
   classical

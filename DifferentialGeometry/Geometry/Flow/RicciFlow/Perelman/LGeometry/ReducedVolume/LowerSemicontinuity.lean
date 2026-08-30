@@ -300,10 +300,10 @@ private theorem chartDensity_time_cont
         hat hpair)
   have hdet : ContinuousAt
       (fun r ↦
-        (chartGramMatrix (I := I) (S.base.metric r) alpha
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric r) alpha
           ((extChartAt I alpha).symm z)).det) t := by
     have hmat : ContinuousAt
-        (fun r ↦ chartGramMatrix (I := I) (S.base.metric r) alpha
+        (fun r ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric r) alpha
           ((extChartAt I alpha).symm z)) t :=
       continuousAt_pi.2 fun i ↦ continuousAt_pi.2 fun j ↦ by
         simpa only [chartGramOnE_def] using hentry i j

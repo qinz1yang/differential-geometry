@@ -32,7 +32,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 noncomputable def chartFrameVec (α : M) (i : Fin (Module.finrank ℝ E))
     (x : M) : TangentSpace I x :=
-  (trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i)
+  (trivializationAt E (TangentSpace I) α).symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -92,7 +92,7 @@ theorem liederivmetric_chart_component_smooth_in_g_w_input
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
         (chartAt H α).source := fun k => by
-    have h := chartAlphaFrame_section_contMDiffOn (I := I) α k
+    have h := DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α k
     exact h
   obtain ⟨S, hS_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd
@@ -214,7 +214,7 @@ theorem ricciTensor_chartFrameComponent_contMDiffOn
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
         (chartAt H α).source := fun k => by
-    have h := chartAlphaFrame_section_contMDiffOn (I := I) α k
+    have h := DifferentialGeometry.Tensor.Coordinates.chartAlphaFrame_section_contMDiffOn (I := I) α k
     exact h
   obtain ⟨S, hS_eq⟩ :=
     exists_contMDiffSection_eqOn_nhd

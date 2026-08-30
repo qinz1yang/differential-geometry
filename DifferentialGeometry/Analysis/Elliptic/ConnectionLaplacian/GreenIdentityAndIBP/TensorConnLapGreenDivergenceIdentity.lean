@@ -110,25 +110,25 @@ private lemma dirichletForm_chartBasis_component_contMDiffOn
     (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M => dirichletForm (I := I) (M := M) g T v b
-        (chartBasisVecFiber (I := I) α j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   have hcov_section : ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel 0 2 ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 2 ℝ E)
         (E := fun y : M => TensorRSSpace 0 2 I y) b
         (tensorCovDerivAt (I := I) (M := M) g 0 2 T b
-          (chartBasisVecFiber (I := I) α j b)))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     tensorCovDeriv_chartBasis_contMDiffOn (I := I) (M := M) g 0 2 T α j
   have hcov_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + 2) ℝ E) ∞
       (fun b : M => loweredCompose (I := I) (M := M) g 0 2 α b
         (TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g 0 2 T b
-            (chartBasisVecFiber (I := I) α j b))))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     TensorMetricLowering.contMDiffOn_loweredCompose_of_section_contMDiffOn
       (I := I) (M := M) g 0 2
       (fun b : M => tensorCovDerivAt (I := I) (M := M) g 0 2 T b
-        (chartBasisVecFiber (I := I) α j b)) α hcov_section
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) α hcov_section
   have hv_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + 2) ℝ E) ∞
       (fun b : M => loweredCompose (I := I) (M := M) g 0 2 α b
         (TensorRSSpace.toModel (v.toSection b)))
@@ -139,13 +139,13 @@ private lemma dirichletForm_chartBasis_component_contMDiffOn
         tensorInnerPointwise (I := I) (M := M) g 0 2 b
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g 0 2 T b
-              (chartBasisVecFiber (I := I) α j b)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)))
           (TensorRSSpace.toModel (v.toSection b)))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     DifferentialGeometry.Tensor.TensorRSRiemannian.chartLocal_contMDiff_inner_of_smooth_sections
       (I := I) (M := M) g 0 2
       (fun b : M => tensorCovDerivAt (I := I) (M := M) g 0 2 T b
-        (chartBasisVecFiber (I := I) α j b))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (fun b : M => v.toSection b) α hcov_lowered hv_lowered
   have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet =
       (chartAt H α).source :=
@@ -193,8 +193,8 @@ lemma divergence_g_chartBasis_metricTrace_self
         chartInvGramMatrix (I := I) g b b m n *
           g.inner b
             ((LeviCivita (I := I) g).toFun Z.toFun b
-              (chartBasisVecFiber (I := I) b m b))
-            (chartBasisVecFiber (I := I) b n b) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b m b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b n b) := by
   classical
   have hb_src : b ∈ (chartAt H b).source := mem_chart_source H b
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) b := by
@@ -250,20 +250,20 @@ lemma divergence_g_eq_smoothOrthoFrame_trace
   rw [divergence_g_chartBasis_metricTrace_self (I := I) g Z b]
   rw [show (∑ m : Fin (Module.finrank ℝ E), ∑ n : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g b b m n *
-            g.inner b (L (chartBasisVecFiber (I := I) b m b))
-              (chartBasisVecFiber (I := I) b n b)) =
+            g.inner b (L (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b m b))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b n b)) =
         ∑ m : Fin (Module.finrank ℝ E), ∑ n : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g b b m n *
-            Hb ((centeredChartTangentBasis (I := I) b) m)
-              ((centeredChartTangentBasis (I := I) b) n) from ?_]
+            Hb ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) b) m)
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) b) n) from ?_]
   · rw [← htrace]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [hHb_apply]
   · refine Finset.sum_congr rfl (fun m _ => ?_)
     refine Finset.sum_congr rfl (fun n _ => ?_)
     rw [hHb_apply, chartBasisVecFiber_self (I := I) b m,
-      chartBasisVecFiber_self (I := I) b n, centeredChartTangentBasis_apply,
-      centeredChartTangentBasis_apply]
+      chartBasisVecFiber_self (I := I) b n, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply,
+      DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma tangentSectionAction_inner_dirichletVF

@@ -50,7 +50,7 @@ theorem frozenGram_posDef {index : Type*}
     (chartInvGramMatrix (I := I) (gSeq k) alpha b).PosDef := by
   apply Matrix.PosDef.of_dotProduct_mulVec_pos
   · unfold chartInvGramMatrix
-    exact (chartGramMatrix_isHermitian (I := I) (gSeq k) alpha b).inv
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) (gSeq k) alpha b).inv
   · intro xi hxi
     have hEll := (hD.elliptic alpha hAlpha k b hb xi).1
     have hExists : ∃ i, xi i ≠ 0 := by

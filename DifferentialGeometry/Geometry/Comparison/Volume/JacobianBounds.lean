@@ -213,15 +213,15 @@ lemma radialEntry_le_of_length_bound
     (hB : 0 ≤ B)
     (hJ : ∀ i : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)) ≤ B) :
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     ∀ i j : Fin (Module.finrank ℝ E),
       |radialJacobiGram (I := I) g p x i j| ≤ B * B := by
   intro i j
   have hcs := riemannian_inner_cauchy_schwarz (I := I) g
     (expMap (I := I) g p (show TangentSpace I p from x))
-    (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-    (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1)
+    (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+    (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1)
   rw [radialJacobiGram_apply]
   exact hcs.trans (mul_le_mul (hJ i) (hJ j) (Real.sqrt_nonneg _) hB)
 
@@ -232,11 +232,11 @@ lemma radialJacobiGram_quadratic
     (v : Fin (Module.finrank ℝ E) → ℝ) :
     dotProduct v (Matrix.mulVec (radialJacobiGram (I := I) g p x) v) =
       g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-        (∑ i, v i • radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-        (∑ i, v i • radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1) := by
+        (∑ i, v i • radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+        (∑ i, v i • radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1) := by
   let q : M := expMap (I := I) g p (show TangentSpace I p from x)
   let J : Fin (Module.finrank ℝ E) → TangentSpace I q :=
-    fun i => radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1
+    fun i => radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1
   have hleft :
       dotProduct v (Matrix.mulVec (radialJacobiGram (I := I) g p x) v) =
         ∑ i, ∑ j, v i * (g.inner q (J i) (J j) * v j) := by
@@ -303,8 +303,8 @@ lemma normalDensity_le_of_radial_length_bound
     (hB : 0 ≤ B)
     (hJ : ∀ i : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)) ≤ B) :
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     normalChartDensity (I := I) g p x ≤
       Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
         (B * B) ^ Module.finrank ℝ E) :=
@@ -335,35 +335,35 @@ lemma density_le_gronwall
     (hJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
-          (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) t) t)
+          (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t)
     (hDJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t)
     (hODE : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Ico (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
       ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t))
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t))
     (hG : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner (radialCurve (I := I) g p x 0)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0)) +
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0)) +
           gronwallBound 0 (max K 1)
             (K * (b * Real.sqrt (g.inner (radialCurve (I := I) g p x 0)
               (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-                (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0)
+                (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0)
               (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-                (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0)))) 1 ≤ B) :
+                (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0)))) 1 ≤ B) :
     normalChartDensity (I := I) g p x ≤
       Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
         (B * B) ^ Module.finrank ℝ E) :=
@@ -395,29 +395,29 @@ lemma density_le_gronwall_of_init_bound
     (hJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
-          (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) t) t)
+          (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t)
     (hDJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t)
     (hODE : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Ico (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
       ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t))
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t))
     (hinit : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner (radialCurve (I := I) g p x 0)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0)) ≤ A)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0)) ≤ A)
     (hmodel :
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B) :
     normalChartDensity (I := I) g p x ≤
@@ -451,29 +451,29 @@ lemma density_le_gronwall_of_deriv_eq
     (hJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
-          (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) t) t)
+          (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t)
     (hDJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t)
     (hODE : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Ico (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
       ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t))
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t))
     (hderiv : ∀ k : Fin (Module.finrank ℝ E),
       (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) 0 : E) =
-        (chartModelBasis E) k)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0 : E) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodel :
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B) :
     normalChartDensity (I := I) g p x ≤
@@ -507,31 +507,31 @@ lemma density_le_gronwall_of_radius_deriv
     (hJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
-          (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) t) t)
+          (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t)
     (hDJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t)
     (hODE : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Ico (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x ((chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
       ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) k) t))
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t))
     (hderivRadius : ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       (covDerivAlong (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) 0 : E) = w)
     (hxsmall : ‖x‖ < r)
-    (hbasisSmall : ∀ k : Fin (Module.finrank ℝ E), ‖(chartModelBasis E) k‖ < r)
+    (hbasisSmall : ∀ k : Fin (Module.finrank ℝ E), ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodel :
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B) :
     normalChartDensity (I := I) g p x ≤
@@ -567,31 +567,31 @@ lemma density_le_gronwall_of_scaled_radius
     (hJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
-          (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) t) t)
+          (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) t) t)
     (hDJdiff : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t) t)
+            (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t) t)
     (hODE : ∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Set.Ico (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
         (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
           (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
-            (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k)) s) t)
+            (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) s) t)
       ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
-        (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t)
-        (radialJacobiField (I := I) g p x (a • (chartModelBasis E) k) t))
+        (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t)
+        (radialJacobiField (I := I) g p x (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) t))
     (hderivRadius : ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       (covDerivAlong (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) 0 : E) = w)
     (hxsmall : ‖x‖ < r)
-    (hscaledSmall : ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r)
+    (hscaledSmall : ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r)
     (hinit : ∀ k : Fin (Module.finrank ℝ E),
-      Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A)
+      Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A)
     (hmodel :
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B) :
     normalChartDensity (I := I) g p x ≤
@@ -616,7 +616,7 @@ theorem exists_dens_le_rm04_at
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -642,7 +642,7 @@ theorem exists_dens_le_rm04_at
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B →
       normalChartDensity (I := I) g p x ≤
         Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -671,7 +671,7 @@ theorem exists_dens_le_rm04
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -696,7 +696,7 @@ theorem exists_dens_le_rm04
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B →
       normalChartDensity (I := I) g p x ≤
         Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -767,8 +767,8 @@ lemma normalDensity_ge_of_combo_bound
     (ha : 0 ≤ a)
     (hcombo : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-        (∑ i, v i • radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-        (∑ i, v i • radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)) :
+        (∑ i, v i • radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+        (∑ i, v i • radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) :
     Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x :=
   normalDensity_ge_of_rayleigh_bound (I := I) g p hxsrc hxrad ha
     (fun v hv => by
@@ -786,9 +786,9 @@ lemma normalDensity_ge_of_dir_bound
     (hdir : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       a ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from x))
         (radialJacobiField (I := I) g p x
-          (∑ i, v i • (chartModelBasis E) i) 1)
+          (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
         (radialJacobiField (I := I) g p x
-          (∑ i, v i • (chartModelBasis E) i) 1)) :
+          (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) :
     Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x :=
   normalDensity_ge_of_combo_bound (I := I) g p hxsrc hxrad ha
     (fun v hv => by
@@ -810,7 +810,7 @@ theorem exists_dens_ge_rm04_at
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < r) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -837,12 +837,12 @@ theorem exists_dens_ge_rm04_at
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * B ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x := by
   let _ := (inferInstance : (ConnectedSpace M))
   obtain ⟨r, hr, hdir⟩ := exists_dir_ge_rm04_at (I := I) g hEnorm p
@@ -870,7 +870,7 @@ theorem exists_dens_ge_rm04
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < r) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -896,12 +896,12 @@ theorem exists_dens_ge_rm04
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * B ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x := by
   obtain ⟨r, hr, h⟩ := exists_dens_ge_rm04_at (I := I) g hEnorm p
   refine ⟨r, hr, ?_⟩
@@ -923,9 +923,9 @@ theorem exists_dens_two_rm04_at
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < r) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -951,16 +951,16 @@ theorem exists_dens_two_rm04_at
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * B ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x ∧
         normalChartDensity (I := I) g p x ≤
           Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -977,11 +977,11 @@ theorem exists_dens_two_rm04_at
   have hxle : ‖x‖ < rle := lt_of_lt_of_le hx (min_le_left rle rge)
   have hxge : ‖x‖ < rge := lt_of_lt_of_le hx (min_le_right rle rge)
   have hsmallBasis_le :
-      ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < rle :=
+      ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < rle :=
     fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_left rle rge)
   have hsmallDir_ge :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < rge :=
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < rge :=
     fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right rle rge)
   have hupper :
       normalChartDensity (I := I) g p x ≤
@@ -1009,9 +1009,9 @@ theorem exists_dens_pair_rm04_at
       ∀ {a K R Vb b A Blo Bhi : ℝ}, 0 ≤ Blo → 0 ≤ Bhi →
       0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < r) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -1037,16 +1037,16 @@ theorem exists_dens_pair_rm04_at
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * Bhi →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * Blo ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x ∧
         normalChartDensity (I := I) g p x ≤
           Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -1063,11 +1063,11 @@ theorem exists_dens_pair_rm04_at
   have hxle : ‖x‖ < rle := lt_of_lt_of_le hx (min_le_left rle rge)
   have hxge : ‖x‖ < rge := lt_of_lt_of_le hx (min_le_right rle rge)
   have hsmallBasis_le :
-      ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < rle :=
+      ∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < rle :=
     fun k => lt_of_lt_of_le (hsmallBasis k) (min_le_left rle rge)
   have hsmallDir_ge :
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < rge :=
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < rge :=
     fun v hv => lt_of_lt_of_le (hsmallDir v hv) (min_le_right rle rge)
   have hupper :
       normalChartDensity (I := I) g p x ≤
@@ -1094,9 +1094,9 @@ theorem exists_dens_two_rm04
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
       b ≤ 1 → (1 : ℝ) ≤ b →
-      (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) →
+      (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < r) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
-        ‖a • (∑ i, v i • (chartModelBasis E) i)‖ < r) →
+        ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < r) →
       Real.sqrt (g.inner p x x) ≤ Vb →
       Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           R * Vb ^ 2 ≤ K →
@@ -1121,16 +1121,16 @@ theorem exists_dens_two_rm04
         DifferentiableAt ℝ
           (chartRepAt (I := I) (radialCurve (I := I) g p x) (F i) t) t) →
       (∀ k : Fin (Module.finrank ℝ E),
-        Real.sqrt (g.inner p (a • (chartModelBasis E) k) (a • (chartModelBasis E) k)) ≤ A) →
+        Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) →
       A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ a * B →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a * B ≤ Real.sqrt
-            (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-              (a • (∑ i, v i • (chartModelBasis E) i))) -
+            (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))) -
             gronwallBound 0 (max K 1)
               (K * (b * Real.sqrt
-                (g.inner p (a • (∑ i, v i • (chartModelBasis E) i))
-                  (a • (∑ i, v i • (chartModelBasis E) i))))) 1) →
+                (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+                  (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) →
       Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p x ∧
         normalChartDensity (I := I) g p x ≤
           Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *
@@ -1215,8 +1215,8 @@ lemma density_ge_combo_ball
     (hcombo : ∀ w ∈ Metric.ball (0 : E) R,
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (∑ i, v i • radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (∑ i, v i • radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) :
+          (∑ i, v i • radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (∑ i, v i • radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) :
     ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
   intro w hw
@@ -1238,9 +1238,9 @@ lemma density_ge_dir_ball
       ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         a ≤ g.inner (expMap (I := I) g p (show TangentSpace I p from w))
           (radialJacobiField (I := I) g p w
-            (∑ i, v i • (chartModelBasis E) i) 1)
+            (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
           (radialJacobiField (I := I) g p w
-            (∑ i, v i • (chartModelBasis E) i) 1)) :
+            (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) :
     ∀ w ∈ Metric.ball (0 : E) R,
       Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
   intro w hw
@@ -1304,8 +1304,8 @@ theorem normalChart_volume_le_of_radial_length_bound
     (hJ : ∀ w ∈ (normalChartAt (I := I) g p) '' A,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g A ≤
       ∫⁻ _ in (normalChartAt (I := I) g p) '' A,
         ENNReal.ofReal
@@ -1326,8 +1326,8 @@ theorem normalChart_volume_le_const_mul_of_radial_length_bound
     (hJ : ∀ w ∈ (normalChartAt (I := I) g p) '' A,
       ∀ i : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from w))
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)
-          (radialJacobiField (I := I) g p w ((chartModelBasis E) i) 1)) ≤ B) :
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+          (radialJacobiField (I := I) g p w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)) ≤ B) :
     riemannianVolumeMeasure (I := I) (M := M) g A ≤
       ENNReal.ofReal
           (Real.sqrt (((Module.finrank ℝ E).factorial : ℝ) *

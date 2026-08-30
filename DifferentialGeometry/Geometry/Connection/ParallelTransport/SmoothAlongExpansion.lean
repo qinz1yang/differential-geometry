@@ -86,7 +86,7 @@ theorem exists_frame_exp
           (gamma s) (V s) : TangentBundle I M)))
     (B : Fin (Module.finrank Real E) -> forall x : M, TangentSpace I x)
     (hBnear : ∀ᶠ x in 𝓝 (gamma t), forall i,
-      B i x = chartBasisVecFiber (I := I) (gamma t) i x) :
+      B i x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (gamma t) i x) :
     exists c : Fin (Module.finrank Real E) -> Real -> Real,
       (forall i, ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ (c i)) /\
       (forall i, c i t =
@@ -130,7 +130,7 @@ theorem exists_frame_exp
   have hgammaCont : ContinuousAt gamma t := hgamma.continuous.continuousAt
   have hBcurve :
       ∀ᶠ s in 𝓝 t, forall i, B i (gamma s) =
-        chartBasisVecFiber (I := I) (gamma t) i (gamma s) :=
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (gamma t) i (gamma s) :=
     hgammaCont hBnear
   have hbase :
       ∀ᶠ s in 𝓝 t,

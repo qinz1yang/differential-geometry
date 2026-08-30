@@ -83,47 +83,47 @@ theorem curveDensity_pole
   let vE : Fin (Module.finrank Real E - 1) → E := fun i => ιp (v i)
   let C : Matrix (Fin (Module.finrank Real E))
       (Fin (Module.finrank Real E - 1)) Real :=
-    fun k i => (chartModelBasis E).repr (vE i) k
+    fun k i => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (vE i) k
   let A : Real → Matrix (Fin (Module.finrank Real E - 1))
       (Fin (Module.finrank Real E - 1)) Real :=
     fun t => Cᵀ * normalGramMatrix (I := I) g p (t • uE) * C
   have hvE (i : Fin (Module.finrank Real E - 1)) :
-      vE i = ∑ k, C k i • (chartModelBasis E) k := by
+      vE i = ∑ k, C k i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
     dsimp only [C, vE]
-    exact ((chartModelBasis E).sum_repr (ιp (v i))).symm
+    exact ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr (ιp (v i))).symm
   have hv (i : Fin (Module.finrank Real E - 1)) :
-      v i = ∑ k, C k i • ιp.symm ((chartModelBasis E) k) := by
+      v i = ∑ k, C k i • ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
     apply ιp.injective
     simpa only [map_sum, map_smul, ContinuousLinearEquiv.apply_symm_apply] using hvE i
   have hG0 (k l : Fin (Module.finrank Real E)) :
       normalGramMatrix (I := I) g p (0 : E) k l =
-        g.inner p (ιp.symm ((chartModelBasis E) k))
-          (ιp.symm ((chartModelBasis E) l)) := by
+        g.inner p (ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
+          (ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)) := by
     rw [normalGram_apply, expMapDiffeo_zero]
     change
       g.inner p
           (mfderiv 𝓘(Real, E) I (normalChartAt (I := I) g p).symm (0 : E)
-            ((chartModelBasis E) k))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
           (mfderiv 𝓘(Real, E) I (normalChartAt (I := I) g p).symm (0 : E)
-            ((chartModelBasis E) l)) =
-        g.inner p (ιp.symm ((chartModelBasis E) k))
-          (ιp.symm ((chartModelBasis E) l))
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)) =
+        g.inner p (ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
+          (ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l))
     simpa only [ιp, tangentSpaceModelContinuousLinearEquiv_symm_apply] using
       normalChartAt_metric_pullback_at_origin (I := I) g p
-        ((chartModelBasis E) k) ((chartModelBasis E) l)
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)
   have hC0 :
       Cᵀ * normalGramMatrix (I := I) g p (0 : E) * C =
         (1 : Matrix (Fin (Module.finrank Real E - 1))
           (Fin (Module.finrank Real E - 1)) Real) := by
     have hbase0 :
         curveGram (I := I) g (fun _ : Real => p)
-            (fun k (_ : Real) => ιp.symm ((chartModelBasis E) k)) 0 =
+            (fun k (_ : Real) => ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) 0 =
           normalGramMatrix (I := I) g p (0 : E) := by
       ext k l
       simpa only [curveGram, Matrix.of_apply] using (hG0 k l).symm
     have hrect0 :=
       curveGram_rect (I := I) g (fun _ : Real => p)
-        (fun k (_ : Real) => ιp.symm ((chartModelBasis E) k))
+        (fun k (_ : Real) => ιp.symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
         (fun i (_ : Real) => v i) 0 C hv
     rw [← hbase0, ← hrect0]
     ext i j
@@ -200,17 +200,17 @@ theorem curveDensity_pole
     have hrecomb (i : Fin (Module.finrank Real E - 1)) :
         radialJacobiField (I := I) g p (t • uE) (vE i) 1 =
           ∑ k, C k i • radialJacobiField (I := I) g p (t • uE)
-            ((chartModelBasis E) k) 1 := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) 1 := by
       calc
         radialJacobiField (I := I) g p (t • uE) (vE i) 1 =
             radialJacobiField (I := I) g p (t • uE)
-              (∑ k, C k i • (chartModelBasis E) k) 1 := by rw [hvE i]
+              (∑ k, C k i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) 1 := by rw [hvE i]
         _ = _ := radialJacobi_sum (I := I) g p (t • uE)
-          (chartModelBasis E) (fun k => C k i) hradt
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (fun k => C k i) hradt
     have hbase :
         curveGram (I := I) g (radialCurve (I := I) g p uE)
             (fun k t => radialJacobiField (I := I) g p (t • uE)
-              ((chartModelBasis E) k) 1) t =
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) 1) t =
           normalGramMatrix (I := I) g p (t • uE) := by
       rw [normalGram_radialMat (I := I) g p hsrct hradt]
       rfl
@@ -220,7 +220,7 @@ theorem curveDensity_pole
           A t := by
       rw [curveGram_rect (I := I) g (radialCurve (I := I) g p uE)
         (fun k t => radialJacobiField (I := I) g p (t • uE)
-          ((chartModelBasis E) k) 1)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) 1)
         (fun i t => radialJacobiField (I := I) g p (t • uE) (vE i) 1)
         t C hrecomb, hbase]
     calc

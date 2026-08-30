@@ -90,8 +90,8 @@ omit [SigmaCompactSpace M] in
 theorem deTurckOp_basis_apply (g g' : SmoothRiemannianMetric I M)
     (i j : Fin (Module.finrank ℝ E)) (x : M) :
     deTurckOp (I := I) g g' x
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) =
       chartDeTurckOpMatrix (I := I) g g' i j x := by
   rw [deTurckOp_apply, chartDeTurckOpMatrix_def,
     ricciFun_basis_apply (I := I) g x i j,
@@ -108,12 +108,12 @@ theorem chartDeTurckOpMatrix_eq (g g' : SmoothRiemannianMetric I M)
               partialDeriv (E := E) k (chartGramOnE (I := I) g x i j)
                 (extChartAt I x x))
           + (∑ k : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g x x k j *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x k j *
                 partialDeriv (E := E) i
                   (chartCoeffOnE (I := I) x (deTurckVF (I := I) g g') k)
                   (extChartAt I x x))
           + (∑ k : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g x x i k *
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i k *
                 partialDeriv (E := E) j
                   (chartCoeffOnE (I := I) x (deTurckVF (I := I) g g') k)
                   (extChartAt I x x))) := by

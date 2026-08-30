@@ -205,7 +205,7 @@ theorem first_var_joint
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hf : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M => f p.1 p.2) (U ×ˢ Set.univ)) :
@@ -228,7 +228,7 @@ theorem first_var_joint
   have hg'smooth (x₀ : M) (i j : Fin (Module.finrank Real E)) :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          chartGramMatrix (I := I) (g' p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     have hcomp := (hg x₀ i j).comp hinner.contMDiffOn (by
       intro p (hp : p ∈ Set.univ ×ˢ
@@ -252,14 +252,14 @@ theorem first_var_joint
       have hAt :
           ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
             (fun p : Real × M =>
-              chartGramMatrix (I := I) (g' p.1) x₀ p.2 i j) (s, x) :=
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' p.1) x₀ p.2 i j) (s, x) :=
         ((hg'smooth x₀ i j) (s, x) hp).contMDiffAt (hopen.mem_nhds hp)
       have hslice : ContMDiffAt 𝓘(Real, Real) 𝓘(Real, Real) ∞
-          (fun r : Real => chartGramMatrix (I := I) (g' r) x₀ x i j) s := by
+          (fun r : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' r) x₀ x i j) s := by
         exact (hAt.comp s (contMDiffAt_id.prodMk contMDiffAt_const)).congr_of_eventuallyEq
           (Filter.Eventually.of_forall fun r => by rfl)
       have hdiff : DifferentiableAt Real
-          (fun r : Real => chartGramMatrix (I := I) (g' r) x₀ x i j) s :=
+          (fun r : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' r) x₀ x i j) s :=
         (contMDiffAt_iff_contDiffAt.mp hslice).differentiableAt (by simp)
       exact hdiff.hasDerivAt
     · intro x₀ i j
@@ -272,13 +272,13 @@ theorem first_var_joint
       have hAt :
           ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
             (fun q : Real × M =>
-              chartGramMatrix (I := I) (g' q.1) x₀ q.2 i j) p :=
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' q.1) x₀ q.2 i j) p :=
         ((hg'smooth x₀ i j) p hp).contMDiffAt (hopen.mem_nhds hp)
       have hdAt :
           ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
             (fun q : Real × M =>
               deriv (fun s : Real =>
-                chartGramMatrix (I := I) (g' s) x₀ q.2 i j) q.1) p :=
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' s) x₀ q.2 i j) q.1) p :=
         DifferentialGeometry.timeDeriv_smoothAt hAt (by simp)
       exact hdAt.continuousAt.continuousWithinAt
   have hf'smooth : ContMDiff (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
@@ -312,9 +312,9 @@ theorem first_var_joint
     simp only [f', hs]
   have hmatrix (x : M) :
       (Matrix.of fun i j : Fin (Module.finrank Real E) =>
-        deriv (fun s : Real => chartGramMatrix (I := I) (g' s) x x i j) t) =
+        deriv (fun s : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g' s) x x i j) t) =
       Matrix.of fun i j : Fin (Module.finrank Real E) =>
-        deriv (fun s : Real => chartGramMatrix (I := I) (g_fam s) x x i j) t := by
+        deriv (fun s : Real => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam s) x x i j) t := by
     ext i j
     apply Filter.EventuallyEq.deriv_eq
     filter_upwards [hρeq] with s hs

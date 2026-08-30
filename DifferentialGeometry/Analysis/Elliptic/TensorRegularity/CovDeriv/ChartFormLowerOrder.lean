@@ -420,7 +420,7 @@ theorem covLowerOrderIntegrand_symm
     have hHerm : (chartInvGramMatrix (I := I) g α
         ((extChartAt I α).symm (toEuclidean.symm y))).IsHermitian := by
       unfold chartInvGramMatrix
-      exact (chartGramMatrix_isHermitian (I := I) g α
+      exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α
         ((extChartAt I α).symm (toEuclidean.symm y))).inv
     have hsymm := hHerm.apply k l
     rw [star_trivial] at hsymm

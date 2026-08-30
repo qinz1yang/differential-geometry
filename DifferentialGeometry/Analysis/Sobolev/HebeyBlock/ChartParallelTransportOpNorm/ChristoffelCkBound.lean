@@ -95,16 +95,16 @@ theorem christoffel_Ck_bound_from_metric_Ck1 [I.Boundaryless]
   have hU_open : IsOpen U := chartTargetEuclid_isOpen (I := I) (M := M) α
   let Ψ : EuclideanSpace ℝ (Fin n) → (E →L[ℝ] E →L[ℝ] E) := fun z =>
     ∑ i : Fin n, ∑ j : Fin n, ∑ κ : Fin n,
-      ((chartModelBasis E).coord i).toContinuousLinearMap.smulRight
-        (((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.smulRight
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
           (chartChristoffel (I := I) g α i j κ ((toEuclidean (E := E)).symm z) •
-            (chartModelBasis E) κ))
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ))
   have hΨ : Ψ = fun z =>
     ∑ i : Fin n, ∑ j : Fin n, ∑ κ : Fin n,
-      ((chartModelBasis E).coord i).toContinuousLinearMap.smulRight
-        (((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.smulRight
+        (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
           (chartChristoffel (I := I) g α i j κ ((toEuclidean (E := E)).symm z) •
-            (chartModelBasis E) κ)) := rfl
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ)) := rfl
   have h_toE_symm_mem_target : ∀ {y : EuclideanSpace ℝ (Fin n)},
       y ∈ U → (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     intro y hy
@@ -154,22 +154,22 @@ theorem christoffel_Ck_bound_from_metric_Ck1 [I.Boundaryless]
       exact hz_target
     exact h_outer_contDiffOn.comp (h_inner_contDiff.mono (Set.subset_univ _)) h_maps
   let N : Fin n → Fin n → Fin n → (E →L[ℝ] E →L[ℝ] E) := fun i j κ =>
-    ((chartModelBasis E).coord i).toContinuousLinearMap.smulRight
-      (((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
-        ((chartModelBasis E) κ))
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.smulRight
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ))
   have h_summand_eq : ∀ (i j κ : Fin n) (z : EuclideanSpace ℝ (Fin n)),
-      ((chartModelBasis E).coord i).toContinuousLinearMap.smulRight
-          (((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.smulRight
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
             (chartChristoffel (I := I) g α i j κ ((toEuclidean (E := E)).symm z) •
-              (chartModelBasis E) κ)) =
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ)) =
         chartChristoffel (I := I) g α i j κ ((toEuclidean (E := E)).symm z) •
           N i j κ := by
     intro i j κ z
     set s : ℝ := chartChristoffel (I := I) g α i j κ ((toEuclidean (E := E)).symm z)
-    have h_inner : ((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
-        (s • (chartModelBasis E) κ) =
-        s • ((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
-              ((chartModelBasis E) κ) := by
+    have h_inner : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+        (s • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ) =
+        s • ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ) := by
       ext w
       simp [ContinuousLinearMap.smulRight_apply, smul_apply,
         smul_smul, mul_comm]
@@ -183,10 +183,10 @@ theorem christoffel_Ck_bound_from_metric_Ck1 [I.Boundaryless]
     refine ContDiffOn.sum (fun κ _ => ?_)
     have h_scalar := h_chart_chr_scalar_contDiffOn i j κ
     have h_eq : (fun z : EuclideanSpace ℝ (Fin n) =>
-        ((chartModelBasis E).coord i).toContinuousLinearMap.smulRight
-          (((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.smulRight
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
             (chartChristoffel (I := I) g α i j κ ((toEuclidean (E := E)).symm z) •
-              (chartModelBasis E) κ))) =
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) κ))) =
         fun z => chartChristoffel (I := I) g α i j κ
           ((toEuclidean (E := E)).symm z) • N i j κ := by
       funext z

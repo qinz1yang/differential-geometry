@@ -18,7 +18,6 @@ namespace DifferentialGeometry
 namespace Integral
 namespace L2
 
-open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -46,9 +45,9 @@ theorem tensorInnerPointwise_0s_add_left
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (S₁ + S₂).curryLeft ((chartModelBasis E) i) =
-            S₁.curryLeft ((chartModelBasis E) i) +
-              S₂.curryLeft ((chartModelBasis E) i) := by
+          (S₁ + S₂).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+            S₁.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) +
+              S₂.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               add_apply]
@@ -76,9 +75,9 @@ theorem tensorInnerPointwise_0s_add_right
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (T₁ + T₂).curryLeft ((chartModelBasis E) j) =
-            T₁.curryLeft ((chartModelBasis E) j) +
-              T₂.curryLeft ((chartModelBasis E) j) := by
+          (T₁ + T₂).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+            T₁.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) +
+              T₂.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               add_apply]
@@ -104,8 +103,8 @@ theorem tensorInnerPointwise_0s_smul_left
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (c • S).curryLeft ((chartModelBasis E) i) =
-            c • S.curryLeft ((chartModelBasis E) i) := by
+          (c • S).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+            c • S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               smul_apply]
@@ -131,8 +130,8 @@ theorem tensorInnerPointwise_0s_smul_right
       refine Finset.sum_congr rfl ?_
       intro j _
       have hcurry :
-          (c • T).curryLeft ((chartModelBasis E) j) =
-            c • T.curryLeft ((chartModelBasis E) j) := by
+          (c • T).curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+            c • T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
               smul_apply]
@@ -281,7 +280,7 @@ theorem tensorInnerPointwise_0s_nonneg
         simpa [hGinv] using gramMatrixAt_inv_posSemidef (I := I) (M := M) g x
       have hGinv_herm : Ginv.IsHermitian := hGinv_psd.isHermitian
       set Sfam : Fin n → ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ :=
-        fun i => S.curryLeft ((chartModelBasis E) i) with hSfam_def
+        fun i => S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) with hSfam_def
       have hspec := hGinv_herm.spectral_theorem
       set U : Matrix (Fin n) (Fin n) ℝ :=
         (hGinv_herm.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℝ) with hU_def
@@ -412,7 +411,7 @@ theorem tensorInnerPointwise_0s_eq_zero_iff
       have hGinv_herm : Ginv.IsHermitian :=
         gramMatrixAt_inv_isHermitian (I := I) (M := M) g x
       set Sfam : Fin n → ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ :=
-        fun i => S.curryLeft ((chartModelBasis E) i) with hSfam_def
+        fun i => S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) with hSfam_def
       have hspec := hGinv_herm.spectral_theorem
       set U : Matrix (Fin n) (Fin n) ℝ :=
         (hGinv_herm.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℝ) with hU_def
@@ -629,14 +628,14 @@ theorem tensorInnerPointwise_0s_eq_zero_iff
           refine ContinuousLinearMap.ext ?_
           intro v
           have hexp : v = ∑ i : Fin n,
-              ((chartModelBasis E).repr v i) • ((chartModelBasis E) i) :=
-            ((chartModelBasis E).sum_repr v).symm
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v i) • ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr v).symm
           rw [hexp]
           rw [map_sum]
           refine Finset.sum_eq_zero ?_
           intro i _
           rw [ContinuousLinearMap.map_smul]
-          have : S.curryLeft ((chartModelBasis E) i) = 0 := by
+          have : S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) = 0 := by
             have := hSfam_zero i
             rwa [hSfam_def] at this
           rw [this]

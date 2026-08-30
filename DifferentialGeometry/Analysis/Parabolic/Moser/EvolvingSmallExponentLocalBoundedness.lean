@@ -190,7 +190,7 @@ theorem evolving_local_boundedness_of_subsolution_of_lt_two_of_volume_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -534,7 +534,7 @@ private theorem evolving_local_boundedness_of_subsolution_of_two_le_of_volume_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -753,7 +753,7 @@ theorem evolving_local_boundedness_of_subsolution_rpow_of_volume_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)

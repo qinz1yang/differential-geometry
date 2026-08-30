@@ -105,14 +105,14 @@ private lemma sRep_pd_val
     (m : Fin (Module.finrank Real E))
     (σ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (hσ : ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σ z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) m) z) :
+      σ z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) z) :
     partialDeriv (E := E) m (sRep gRef x A0 p W) (extChartAt I x x)
       = towerStep (I := I) gRef A0 p W σ x := by
-  have hval := (sRep_fderiv_germ gRef x A0 p W ((chartModelBasis E) m) σ hσ).eq_of_nhds
+  have hval := (sRep_fderiv_germ gRef x A0 p W ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) σ hσ).eq_of_nhds
   have hx : (extChartAt I x).symm (extChartAt I x x) = x :=
     (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)
   calc partialDeriv (E := E) m (sRep gRef x A0 p W) (extChartAt I x x)
-      = fderiv Real (sRep gRef x A0 p W) (extChartAt I x x) ((chartModelBasis E) m) := rfl
+      = fderiv Real (sRep gRef x A0 p W) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := rfl
     _ = writtenInExtChartAt I 𝓘(Real, Real) x (towerStep (I := I) gRef A0 p W σ)
         (extChartAt I x x) := hval
     _ = towerStep (I := I) gRef A0 p W σ x := by
@@ -163,9 +163,9 @@ private lemma sRep_pd2_val
     (m mm : Fin (Module.finrank Real E))
     (σm σmm : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (hσm : ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σm z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) m) z)
+      σm z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) z)
     (hσmm : ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σmm z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) mm) z) :
+      σmm z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) z) :
     partialDeriv (E := E) mm
         (partialDeriv (E := E) m (sRep gRef x A0 0 W)) (extChartAt I x x)
       = towerStep (I := I) gRef A0 1 (Fin.cons σm W) σmm x
@@ -177,9 +177,9 @@ private lemma sRep_pd2_val
                     (I := I) gRef) σm (W a))) σmm x := by
   have hαtgt : extChartAt I x x ∈ (extChartAt I x).target :=
     (extChartAt I x).map_source (mem_extChartAt_source (I := I) x)
-  have hgerm := sRep_fderiv_germ gRef x A0 0 W ((chartModelBasis E) m) σm hσm
+  have hgerm := sRep_fderiv_germ gRef x A0 0 W ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) σm hσm
   have hinner : partialDeriv (E := E) m (sRep gRef x A0 0 W)
-      = fun z : E => fderiv Real (sRep gRef x A0 0 W) z ((chartModelBasis E) m) := rfl
+      = fun z : E => fderiv Real (sRep gRef x A0 0 W) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) := rfl
   have hfd : fderiv Real (partialDeriv (E := E) m (sRep gRef x A0 0 W))
         (extChartAt I x x)
       = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x
@@ -202,11 +202,11 @@ private lemma sRep_pd2_val
   have hdc : ∀ a : Fin 2, DifferentiableAt Real (corr a) (extChartAt I x x) :=
     fun a => sRep_diffAt gRef x A0 0 _ hαtgt
   have hsum : fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x
-        (towerStep (I := I) gRef A0 0 W σm)) (extChartAt I x x) ((chartModelBasis E) mm)
+        (towerStep (I := I) gRef A0 0 W σm)) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
       = fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
-          ((chartModelBasis E) mm)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
         + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)
-            ((chartModelBasis E) mm) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := by
     have hcsum := (hdc 0).hasFDerivAt.add (hdc 1).hasFDerivAt
     have htot : HasFDerivAt (writtenInExtChartAt I 𝓘(Real, Real) x
         (towerStep (I := I) gRef A0 0 W σm))
@@ -220,14 +220,14 @@ private lemma sRep_pd2_val
   calc partialDeriv (E := E) mm
         (partialDeriv (E := E) m (sRep gRef x A0 0 W)) (extChartAt I x x)
       = fderiv Real (partialDeriv (E := E) m (sRep gRef x A0 0 W))
-          (extChartAt I x x) ((chartModelBasis E) mm) := rfl
+          (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := rfl
     _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x
           (towerStep (I := I) gRef A0 0 W σm)) (extChartAt I x x)
-          ((chartModelBasis E) mm) := by rw [hfd]
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := by rw [hfd]
     _ = fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
-            ((chartModelBasis E) mm)
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
           + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)
-              ((chartModelBasis E) mm) := hsum
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := hsum
     _ = towerStep (I := I) gRef A0 1 (Fin.cons σm W) σmm x
           + ∑ a : Fin 2,
               towerStep (I := I) gRef A0 0
@@ -236,13 +236,13 @@ private lemma sRep_pd2_val
                     (leviCivitaConnectionOfMetric_contMDiffCovariantDerivative
                       (I := I) gRef) σm (W a))) σmm x := by
         rw [show fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
-              ((chartModelBasis E) mm)
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
             = partialDeriv (E := E) mm (sRep gRef x A0 1 (Fin.cons σm W))
                 (extChartAt I x x) from rfl]
         rw [sRep_pd_val gRef x A0 1 (Fin.cons σm W) mm σmm hσmm]
         congr 1
         refine Finset.sum_congr rfl fun a _ => ?_
-        rw [show fderiv Real (corr a) (extChartAt I x x) ((chartModelBasis E) mm)
+        rw [show fderiv Real (corr a) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
             = partialDeriv (E := E) mm (corr a) (extChartAt I x x) from rfl]
         exact sRep_pd_val gRef x A0 0 _ mm σmm hσmm
 
@@ -426,9 +426,9 @@ private lemma gram_germ
     (i j : Fin (Module.finrank Real E))
     (σi σj : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (hσi : ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σi z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z)
+      σi z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z)
     (hσj : ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σj z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) j) z) :
+      σj z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) z) :
     chartGramOnE (I := I) u x i j
       =ᶠ[𝓝 (extChartAt I x x)]
       sRep gRef x (Tensor0SBundle.metricTensorField (I := I) u) 0 ![σi, σj] := by
@@ -441,10 +441,10 @@ private lemma gram_germ
     have h := (continuousAt_extChartAt_symm'' (I := I) (x := x) hαtgt).tendsto
     rwa [hx] at h
   have hσi0 : ∀ᶠ q in 𝓝 x,
-      σi q = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) q := by
+      σi q = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q := by
     simpa [nhdsSet_singleton] using hσi
   have hσj0 : ∀ᶠ q in 𝓝 x,
-      σj q = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) j) q := by
+      σj q = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) q := by
     simpa [nhdsSet_singleton] using hσj
   filter_upwards [htend.eventually hσi0, htend.eventually hσj0] with z hzi hzj
   simp only [sRep, writtenInExtChartAt_real_apply]
@@ -464,7 +464,7 @@ private lemma gram_germ
     rw [h0, Tensor0SBundle.metricTensorField_apply]
     simp
   rw [hval, hzi, hzj, chartGramOnE]
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   congr 1
 
 omit [Module.Finite ℝ E] in
@@ -474,28 +474,28 @@ private lemma gram0_le
     :
     ∃ C : Real, 0 ≤ C ∧ ∀ (u u' : SmoothRiemannianMetric I M)
       (i j : Fin (Module.finrank Real E)),
-      |chartGramMatrix (I := I) u x x i j - chartGramMatrix (I := I) u' x x i j| ≤
+      |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x i j - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x i j| ≤
         C * metricDerivNorm (I := I) 0 u u' gRef x := by
   classical
   have hC : ∀ t : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
       ∃ C : Real, 0 ≤ C ∧
         ∀ T : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) 2 x,
-          |T ![chartBasisVecFiber (I := I) x t.1 x, chartBasisVecFiber (I := I) x t.2 x]| ≤
+          |T ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t.1 x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t.2 x]| ≤
             C * Real.sqrt (normSq0S (I := I) gRef x 2 T) :=
     fun t => eval_le gRef x 2 _
   choose Cf hCf0 hCf using hC
   refine ⟨∑ t, Cf t, Finset.sum_nonneg fun t _ => hCf0 t, fun u u' i j => ?_⟩
-  have hentry : chartGramMatrix (I := I) u x x i j - chartGramMatrix (I := I) u' x x i j
+  have hentry : DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x i j - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x i j
       = (metricDiffCovDerivAt (I := I) 0 u u' gRef x)
-          ![chartBasisVecFiber (I := I) x i x, chartBasisVecFiber (I := I) x j x] := by
-    rw [chartGramMatrix_apply, chartGramMatrix_apply]
+          ![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x] := by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     have hu := Tensor0SBundle.metricTensorField_apply (I := I) u x
-      (fun a => (![chartBasisVecFiber (I := I) x i x,
-        chartBasisVecFiber (I := I) x j x] : Fin 2 → TangentSpace I x) a)
+      (fun a => (![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x,
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x] : Fin 2 → TangentSpace I x) a)
     have hu' := Tensor0SBundle.metricTensorField_apply (I := I) u' x
-      (fun a => (![chartBasisVecFiber (I := I) x i x,
-        chartBasisVecFiber (I := I) x j x] : Fin 2 → TangentSpace I x) a)
+      (fun a => (![DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x,
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x] : Fin 2 → TangentSpace I x) a)
     simp only [metricDiffCovDerivAt]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one] at hu hu'
     change u.inner x _ _ - u'.inner x _ _
@@ -528,7 +528,7 @@ private lemma gram_pd_eq
     (σs : Fin (Module.finrank Real E) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
     (hσs : ∀ i, ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z)
+      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z)
     (u : SmoothRiemannianMetric I M) (m i j : Fin (Module.finrank Real E)) :
     partialDeriv (E := E) m (chartGramOnE (I := I) u x i j) (extChartAt I x x)
       = towerStep (I := I) gRef (Tensor0SBundle.metricTensorField (I := I) u) 0
@@ -538,8 +538,8 @@ private lemma gram_pd_eq
       = partialDeriv (E := E) m
           (sRep gRef x (Tensor0SBundle.metricTensorField (I := I) u) 0 ![σs i, σs j])
           (extChartAt I x x) := by
-    change fderiv Real _ (extChartAt I x x) ((chartModelBasis E) m)
-      = fderiv Real _ (extChartAt I x x) ((chartModelBasis E) m)
+    change fderiv Real _ (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
+      = fderiv Real _ (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
     rw [hg.fderiv_eq]
   rw [h1, sRep_pd_val gRef x _ 0 ![σs i, σs j] m (σs m) (hσs m)]
 
@@ -552,7 +552,7 @@ private lemma gram_pd2_eq
     (σs : Fin (Module.finrank Real E) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
     (hσs : ∀ i, ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z)
+      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z)
     (u : SmoothRiemannianMetric I M) (mm m i j : Fin (Module.finrank Real E)) :
     partialDeriv (E := E) mm
         (partialDeriv (E := E) m (chartGramOnE (I := I) u x i j)) (extChartAt I x x)
@@ -574,7 +574,7 @@ private lemma gram_pd2_eq
           =ᶠ[𝓝 z] sRep gRef x (Tensor0SBundle.metricTensorField (I := I) u) 0
             ![σs i, σs j] := hg.eventuallyEq_nhds
     filter_upwards [h'] with z hz
-    change fderiv Real _ z ((chartModelBasis E) m) = fderiv Real _ z ((chartModelBasis E) m)
+    change fderiv Real _ z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) = fderiv Real _ z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)
     rw [hz.fderiv_eq]
   have h1 : partialDeriv (E := E) mm
       (partialDeriv (E := E) m (chartGramOnE (I := I) u x i j)) (extChartAt I x x)
@@ -582,8 +582,8 @@ private lemma gram_pd2_eq
           (partialDeriv (E := E) m
             (sRep gRef x (Tensor0SBundle.metricTensorField (I := I) u) 0 ![σs i, σs j]))
           (extChartAt I x x) := by
-    change fderiv Real _ (extChartAt I x x) ((chartModelBasis E) mm)
-      = fderiv Real _ (extChartAt I x x) ((chartModelBasis E) mm)
+    change fderiv Real _ (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
+      = fderiv Real _ (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
     rw [hpd.fderiv_eq]
   rw [h1]
   exact sRep_pd2_val gRef x _ ![σs i, σs j] m mm (σs m) (σs mm) (hσs m) (hσs mm)
@@ -597,7 +597,7 @@ private lemma gram1_le
     (σs : Fin (Module.finrank Real E) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
     (hσs : ∀ i, ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z) :
+      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z) :
     ∃ C : Real, 0 ≤ C ∧ ∀ (u u' : SmoothRiemannianMetric I M)
       (m i j : Fin (Module.finrank Real E)),
       |partialDeriv (E := E) m (chartGramOnE (I := I) u x i j) (extChartAt I x x)
@@ -649,7 +649,7 @@ private lemma gram2_le
     (σs : Fin (Module.finrank Real E) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
     (hσs : ∀ i, ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z) :
+      σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z) :
     ∃ C : Real, 0 ≤ C ∧ ∀ (u u' : SmoothRiemannianMetric I M)
       (mm m i j : Fin (Module.finrank Real E)),
       |partialDeriv (E := E) mm
@@ -832,13 +832,13 @@ private lemma exists_slotSections
     ∃ σs : Fin (Module.finrank Real E) → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _),
       ∀ i, ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-        σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z := by
+        σs i z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z := by
   classical
   have hσex : ∀ i : Fin (Module.finrank Real E),
       ∃ σ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
         ∀ᶠ z in 𝓝ˢ ({x} : Set M),
-          σ z = tangentConstInChart (𝕜 := Real) (I := I) x ((chartModelBasis E) i) z :=
-    fun i => exists_section_eqOn_compact (I := I) x ((chartModelBasis E) i)
+          σ z = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) z :=
+    fun i => exists_section_eqOn_compact (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
       isCompact_singleton (Set.singleton_subset_iff.mpr (mem_chart_source H x))
   choose σs hσs using hσex
   exact ⟨σs, hσs⟩
@@ -889,7 +889,7 @@ theorem jet2Diff_le_dNorm
     rw [hψ]
     unfold chartGramDiffSup matrixEntryL1
     calc ∑ pq : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
-          |(chartGramMatrix (I := I) u x x - chartGramMatrix (I := I) u' x x) pq.1 pq.2|
+          |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x) pq.1 pq.2|
         ≤ ∑ _pq : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
             C0 * S := by
           refine Finset.sum_le_sum fun pq _ => ?_
@@ -1113,33 +1113,33 @@ private lemma gram_quad_low
     [Module.Finite ℝ E]
     :
     ∃ c0 : Real, 0 < c0 ∧ ∀ ξ : Fin (Module.finrank Real E) → Real,
-      c0 * (ξ ⬝ᵥ ξ) ≤ ξ ⬝ᵥ (chartGramMatrix (I := I) gRef x x) *ᵥ ξ := by
+      c0 * (ξ ⬝ᵥ ξ) ≤ ξ ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x x) *ᵥ ξ := by
   classical
   have hxbase : x ∈ (trivializationAt E (TangentSpace I : M → Type _) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   set f : (Fin (Module.finrank Real E) → Real) → Real :=
-    fun ξ => ξ ⬝ᵥ (chartGramMatrix (I := I) gRef x x) *ᵥ ξ with hf
+    fun ξ => ξ ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x x) *ᵥ ξ with hf
   have hfeq : ∀ ξ : Fin (Module.finrank Real E) → Real, f ξ =
-      gRef.inner x (∑ i, ξ i • chartBasisVecFiber (I := I) x i x)
-        (∑ j, ξ j • chartBasisVecFiber (I := I) x j x) := by
+      gRef.inner x (∑ i, ξ i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+        (∑ j, ξ j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) := by
     intro ξ
-    have h := chartGramMatrix_dotProduct_mulVec (I := I) gRef x x ξ
+    have h := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) gRef x x ξ
     have hstar : star ξ = ξ := funext fun i => by simp
     rw [hstar] at h
     exact h
   have hfpos : ∀ ξ : Fin (Module.finrank Real E) → Real, ξ ≠ 0 → 0 < f ξ := by
     intro ξ hξ
     rw [hfeq]
-    set w := ∑ i, ξ i • chartBasisVecFiber (I := I) x i x with hw
+    set w := ∑ i, ξ i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x with hw
     have hwnz : w ≠ 0 := by
       intro hw0
-      have hli := chartBasisFamily_linearIndependent (I := I) x hxbase
+      have hli := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_linearIndependent (I := I) x hxbase
       rw [Fintype.linearIndependent_iff] at hli
       exact hξ (funext (hli ξ hw0))
     exact gRef.pos x w hwnz
   have hfcont : Continuous f := by
     have hfe : f = fun ξ : Fin (Module.finrank Real E) → Real =>
-        ∑ i, ξ i * ∑ j, chartGramMatrix (I := I) gRef x x i j * ξ j := by
+        ∑ i, ξ i * ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x x i j * ξ j := by
       funext ξ
       simp [hf, dotProduct, Matrix.mulVec]
     rw [hfe]
@@ -1207,8 +1207,8 @@ private lemma gram_quad_low
       field_simp
     have hle : f ξ0 ≤ f (r⁻¹ • ξ) := hmin hξ'S
     have hfξ' : f (r⁻¹ • ξ) = (r ^ 2)⁻¹ * f ξ := by
-      change (r⁻¹ • ξ) ⬝ᵥ (chartGramMatrix (I := I) gRef x x) *ᵥ (r⁻¹ • ξ)
-        = (r ^ 2)⁻¹ * (ξ ⬝ᵥ (chartGramMatrix (I := I) gRef x x) *ᵥ ξ)
+      change (r⁻¹ • ξ) ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x x) *ᵥ (r⁻¹ • ξ)
+        = (r ^ 2)⁻¹ * (ξ ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x x) *ᵥ ξ)
       rw [Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul]
       rw [smul_eq_mul, smul_eq_mul, ← mul_assoc]
       rw [show r⁻¹ * r⁻¹ = (r ^ 2)⁻¹ by rw [sq]; rw [mul_inv]]
@@ -1235,28 +1235,28 @@ theorem invGram_le_of_low
     FiberBundle.mem_baseSet_trivializationAt' x
   have hμ : 0 < lam * c0 := by positivity
   refine ⟨(lam * c0)⁻¹, (inv_nonneg).mpr hμ.le, fun u hlow k l => ?_⟩
-  have hdet : IsUnit (chartGramMatrix (I := I) u x x).det :=
-    (chartGramMatrix_det_pos (I := I) u x hxbase).ne'.isUnit
+  have hdet : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x).det :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) u x hxbase).ne'.isUnit
   have hulow : ∀ ξ : Fin (Module.finrank Real E) → Real,
-      lam * c0 * (ξ ⬝ᵥ ξ) ≤ ξ ⬝ᵥ (chartGramMatrix (I := I) u x x) *ᵥ ξ := by
+      lam * c0 * (ξ ⬝ᵥ ξ) ≤ ξ ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x) *ᵥ ξ := by
     intro ξ
-    have hu := chartGramMatrix_dotProduct_mulVec (I := I) u x x ξ
-    have hg := chartGramMatrix_dotProduct_mulVec (I := I) gRef x x ξ
+    have hu := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) u x x ξ
+    have hg := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) gRef x x ξ
     have hstar : star ξ = ξ := funext fun i => by simp
     rw [hstar] at hu hg
     calc lam * c0 * (ξ ⬝ᵥ ξ) = lam * (c0 * (ξ ⬝ᵥ ξ)) := by ring
-      _ ≤ lam * (ξ ⬝ᵥ (chartGramMatrix (I := I) gRef x x) *ᵥ ξ) :=
+      _ ≤ lam * (ξ ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gRef x x) *ᵥ ξ) :=
           mul_le_mul_of_nonneg_left (hquad ξ) hlam.le
-      _ = lam * gRef.inner x (∑ i, ξ i • chartBasisVecFiber (I := I) x i x)
-            (∑ j, ξ j • chartBasisVecFiber (I := I) x j x) := by rw [hg]
-      _ ≤ u.inner x (∑ i, ξ i • chartBasisVecFiber (I := I) x i x)
-            (∑ j, ξ j • chartBasisVecFiber (I := I) x j x) := hlow _
-      _ = ξ ⬝ᵥ (chartGramMatrix (I := I) u x x) *ᵥ ξ := hu.symm
+      _ = lam * gRef.inner x (∑ i, ξ i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+            (∑ j, ξ j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) := by rw [hg]
+      _ ≤ u.inner x (∑ i, ξ i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x)
+            (∑ j, ξ j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x) := hlow _
+      _ = ξ ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x) *ᵥ ξ := hu.symm
   set η : Fin (Module.finrank Real E) → Real :=
-    (chartGramMatrix (I := I) u x x)⁻¹ *ᵥ Pi.single l 1 with hη
-  have hGη : (chartGramMatrix (I := I) u x x) *ᵥ η = Pi.single l 1 := by
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x)⁻¹ *ᵥ Pi.single l 1 with hη
+  have hGη : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x) *ᵥ η = Pi.single l 1 := by
     rw [hη, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hdet, Matrix.one_mulVec]
-  have hquadη : η ⬝ᵥ (chartGramMatrix (I := I) u x x) *ᵥ η = η l := by
+  have hquadη : η ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x) *ᵥ η = η l := by
     rw [hGη]
     simp [dotProduct, Pi.single_apply]
   have hηnn : 0 ≤ η ⬝ᵥ η := Finset.sum_nonneg fun i _ => mul_self_nonneg _
@@ -1295,7 +1295,7 @@ theorem invGram_le_of_low
   have hentry : chartInvGramMatrix (I := I) u x x k l = η k := by
     rw [hη]
     show chartInvGramMatrix (I := I) u x x k l
-      = ((chartGramMatrix (I := I) u x x)⁻¹ *ᵥ Pi.single l 1) k
+      = ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x)⁻¹ *ᵥ Pi.single l 1) k
     rw [chartInvGramMatrix]
     simp [Matrix.mulVec, dotProduct, Pi.single_apply]
   rw [hentry]
@@ -1668,8 +1668,8 @@ theorem ricciSub_le_dNorm
   obtain ⟨CJ2, hCJ20, hCJ2⟩ := jet2Diff_le_dNorm gRef x
   set crep : Real := ∑ i : Fin (Module.finrank Real E),
     ∑ k : Fin (Module.finrank Real E),
-      |((centeredChartTangentBasis (I := I) x).repr v) k| *
-        |((centeredChartTangentBasis (I := I) x).repr w) i| with hcrep
+      |((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k| *
+        |((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i| with hcrep
   have hcrep0 : 0 ≤ crep :=
     Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun k _ =>
       mul_nonneg (abs_nonneg _) (abs_nonneg _)
@@ -1690,16 +1690,16 @@ theorem ricciSub_le_dNorm
     (chartRiemannBasisIdentity_holds (I := I) u' x) v w
   rw [hbru, hbru']
   have hdiff : (∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           chartRicciTensor (I := I) u x i k (extChartAt I x x))
       - (∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          ((centeredChartTangentBasis (I := I) x).repr v) k *
-            ((centeredChartTangentBasis (I := I) x).repr w) i *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
             chartRicciTensor (I := I) u' x i k (extChartAt I x x))
       = ∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          ((centeredChartTangentBasis (I := I) x).repr v) k *
-            ((centeredChartTangentBasis (I := I) x).repr w) i *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
             (chartRicciTensor (I := I) u x i k (extChartAt I x x)
               - chartRicciTensor (I := I) u' x i k (extChartAt I x x)) := by
     rw [← Finset.sum_sub_distrib]
@@ -1709,13 +1709,13 @@ theorem ricciSub_le_dNorm
     ring
   rw [hdiff]
   calc |∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           (chartRicciTensor (I := I) u x i k (extChartAt I x x)
             - chartRicciTensor (I := I) u' x i k (extChartAt I x x))|
       ≤ ∑ i : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
-          |((centeredChartTangentBasis (I := I) x).repr v) k| *
-            |((centeredChartTangentBasis (I := I) x).repr w) i|
+          |((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k| *
+            |((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i|
             * (CR * (CJ2 * S)) := by
         refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
         refine Finset.sum_le_sum fun i _ => ?_
@@ -1802,34 +1802,34 @@ private lemma invGram_sub_le
   have hxbase : x ∈ (trivializationAt E (TangentSpace I : M → Type _) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   have hdN0 : 0 ≤ metricDerivNorm (I := I) 0 u u' gRef x := Real.sqrt_nonneg _
-  have hdetu : IsUnit (chartGramMatrix (I := I) u x x).det :=
-    (chartGramMatrix_det_pos (I := I) u x hxbase).ne'.isUnit
-  have hdetu' : IsUnit (chartGramMatrix (I := I) u' x x).det :=
-    (chartGramMatrix_det_pos (I := I) u' x hxbase).ne'.isUnit
-  have hunit : IsUnit (chartGramMatrix (I := I) u x x)
-      ↔ IsUnit (chartGramMatrix (I := I) u' x x) :=
+  have hdetu : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x).det :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) u x hxbase).ne'.isUnit
+  have hdetu' : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x).det :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) u' x hxbase).ne'.isUnit
+  have hunit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x)
+      ↔ IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x) :=
     iff_of_true ((Matrix.isUnit_iff_isUnit_det _).mpr hdetu)
       ((Matrix.isUnit_iff_isUnit_det _).mpr hdetu')
   have hkey : chartInvGramMatrix (I := I) u x x - chartInvGramMatrix (I := I) u' x x
       = chartInvGramMatrix (I := I) u x x
-          * (chartGramMatrix (I := I) u' x x - chartGramMatrix (I := I) u x x)
+          * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x)
           * chartInvGramMatrix (I := I) u' x x := by
     simp only [chartInvGramMatrix]
     exact Matrix.inv_sub_inv hunit
   have hij : chartInvGramMatrix (I := I) u x x i j - chartInvGramMatrix (I := I) u' x x i j
       = (chartInvGramMatrix (I := I) u x x
-          * (chartGramMatrix (I := I) u' x x - chartGramMatrix (I := I) u x x)
+          * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x)
           * chartInvGramMatrix (I := I) u' x x) i j := by
     rw [← hkey, Matrix.sub_apply]
   have hΔ : ∀ p q : Fin (Module.finrank Real E),
-      |(chartGramMatrix (I := I) u' x x - chartGramMatrix (I := I) u x x) p q|
+      |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x) p q|
         ≤ C0 * metricDerivNorm (I := I) 0 u u' gRef x := by
     intro p q
     rw [Matrix.sub_apply, abs_sub_comm]
     exact hC0 u u' p q
   have hterm : ∀ q : Fin (Module.finrank Real E),
       |(chartInvGramMatrix (I := I) u x x
-          * (chartGramMatrix (I := I) u' x x - chartGramMatrix (I := I) u x x)) i q
+          * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x)) i q
         * chartInvGramMatrix (I := I) u' x x q j|
       ≤ ((Module.finrank Real E : Real)
           * (Mb * (C0 * metricDerivNorm (I := I) 0 u u' gRef x))) * Mb := by
@@ -1842,7 +1842,7 @@ private lemma invGram_sub_le
     refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
     have hp : ∀ p : Fin (Module.finrank Real E),
         |chartInvGramMatrix (I := I) u x x i p
-          * (chartGramMatrix (I := I) u' x x - chartGramMatrix (I := I) u x x) p q|
+          * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x) p q|
         ≤ Mb * (C0 * metricDerivNorm (I := I) 0 u u' gRef x) := by
       intro p
       rw [abs_mul]
@@ -1953,11 +1953,11 @@ theorem scalarSub_le_dNorm
   choose CR hCR0 hCR using
     fun t : Fin (Module.finrank Real E) × Fin (Module.finrank Real E) =>
       ricciSub_le_dNorm gRef x lam B hlam hB
-        (chartBasisVecFiber (I := I) x t.1 x) (chartBasisVecFiber (I := I) x t.2 x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t.1 x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t.2 x)
   choose CA hCA0 hCA using
     fun t : Fin (Module.finrank Real E) × Fin (Module.finrank Real E) =>
       ricci_abs_le gRef x lam B hlam hB
-        (chartBasisVecFiber (I := I) x t.1 x) (chartBasisVecFiber (I := I) x t.2 x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t.1 x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x t.2 x)
   have hsum0 : 0 ≤ ∑ t : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
       (CA t * Cd + Minv * CR t) :=
     Finset.sum_nonneg fun t _ =>
@@ -1984,19 +1984,19 @@ theorem scalarSub_le_dNorm
   simp only [hbr]
   have hdiff : (∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
         chartInvGramMatrix (I := I) u x x i j * ricciTensor (I := I) u x
-          (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))
       - (∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
           chartInvGramMatrix (I := I) u' x x i j * ricciTensor (I := I) u' x
-            (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))
       = ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
           ((chartInvGramMatrix (I := I) u x x i j - chartInvGramMatrix (I := I) u' x x i j)
               * ricciTensor (I := I) u x
-                (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
             + chartInvGramMatrix (I := I) u' x x i j
               * (ricciTensor (I := I) u x
-                  (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
                 - ricciTensor (I := I) u' x
-                  (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x))) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))) := by
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_sub_distrib]
@@ -2006,28 +2006,28 @@ theorem scalarSub_le_dNorm
   have hterm : ∀ i j : Fin (Module.finrank Real E),
       |(chartInvGramMatrix (I := I) u x x i j - chartInvGramMatrix (I := I) u' x x i j)
           * ricciTensor (I := I) u x
-            (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
         + chartInvGramMatrix (I := I) u' x x i j
           * (ricciTensor (I := I) u x
-              (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
             - ricciTensor (I := I) u' x
-              (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x))|
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))|
       ≤ (CA (i, j) * Cd + Minv * CR (i, j))
           * ∑ a ∈ Finset.range 3, metricDerivNorm (I := I) a u u' gRef x := by
     intro i j
     have e1 : |(chartInvGramMatrix (I := I) u x x i j
           - chartInvGramMatrix (I := I) u' x x i j)
         * ricciTensor (I := I) u x
-          (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x)|
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)|
         ≤ (Cd * metricDerivNorm (I := I) 0 u u' gRef x) * CA (i, j) := by
       rw [abs_mul]
       exact mul_le_mul (hCd u u' h1 h2 i j) (hCA (i, j) u h1 h3) (abs_nonneg _)
         (mul_nonneg hCd0 hdN0)
     have e2 : |chartInvGramMatrix (I := I) u' x x i j
         * (ricciTensor (I := I) u x
-            (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x)
           - ricciTensor (I := I) u' x
-            (chartBasisVecFiber (I := I) x i x) (chartBasisVecFiber (I := I) x j x))|
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j x))|
         ≤ Minv * (CR (i, j)
             * ∑ a ∈ Finset.range 3, metricDerivNorm (I := I) a u u' gRef x) := by
       rw [abs_mul]
@@ -2160,7 +2160,7 @@ theorem ricNormSub_le_dn (lam B : Real) (hlam : 0 < lam) (hB : 0 ≤ B) :
   have hxbase : x ∈ (trivializationAt E (TangentSpace I : M → Type _) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   let basis : Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I x) :=
-    chartBasisFamily (I := I) x hxbase
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hxbase
   obtain ⟨Minv, hMinv0, hMinv⟩ := invGram_le_of_low gRef x lam hlam
   obtain ⟨Cd, hCd0, hCd⟩ := invGram_sub_le gRef x lam hlam
   choose CR hCR0 hCR using

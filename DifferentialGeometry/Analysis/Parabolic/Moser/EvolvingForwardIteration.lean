@@ -375,7 +375,7 @@ theorem localizedSpacetimeRpowMoment_gain_le_of_evolving_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a innerTime,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -580,7 +580,7 @@ theorem nestedForwardMoserNorm_succ_le_of_evolving_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a (upperTime k),
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -684,7 +684,7 @@ theorem nestedForwardMoserNorm_succ_le_exp_of_evolving_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -830,7 +830,7 @@ theorem nestedForwardMoserNorm_le_exp_of_evolving_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -927,7 +927,7 @@ theorem nestedForwardMoserNorm_le_evolvingReverseCost_rpow_of_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1027,7 +1027,7 @@ theorem nestedForwardMoserNorm_interpolation_step_le_exp_of_evolving_supersoluti
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1179,7 +1179,7 @@ theorem nestedForwardMoserNorm_interpolation_le_evolvingReverseCost_rpow_of_supe
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1400,7 +1400,7 @@ theorem exists_nested_forward_moser_reverse_holder_of_evolving_supersolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
@@ -1513,7 +1513,7 @@ theorem localizedSpacetimeRpowNorm_le_evolvingReverseCost_of_supersolution_of_lt
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a b,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)

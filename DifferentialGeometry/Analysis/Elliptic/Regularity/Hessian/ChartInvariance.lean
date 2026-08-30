@@ -211,22 +211,22 @@ lemma chartHessianTensor_add_of_smooth
       intro y hy
       exact fderiv_fun_add (hf_int_diff y hy) (hf'_int_diff y hy)
     have h_eq_eventually : (fun y : E => fderiv ℝ (fun w : E => u w + u' w) y
-          ((chartModelBasis E) j)) =ᶠ[𝓝 z]
-        (fun y : E => fderiv ℝ u y ((chartModelBasis E) j) +
-          fderiv ℝ u' y ((chartModelBasis E) j)) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =ᶠ[𝓝 z]
+        (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) +
+          fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := by
       have h_nbd : interior ((extChartAt I α).target : Set E) ∈ 𝓝 z :=
         hopen_int.mem_nhds hx_int
       filter_upwards [h_nbd] with y hy
       rw [h_inner_pointwise y hy]
       rfl
     have h_LHS_fderiv : fderiv ℝ (fun y : E => fderiv ℝ
-        (fun w : E => u w + u' w) y ((chartModelBasis E) j)) z =
-        fderiv ℝ (fun y : E => fderiv ℝ u y ((chartModelBasis E) j) +
-          fderiv ℝ u' y ((chartModelBasis E) j)) z :=
+        (fun w : E => u w + u' w) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z =
+        fderiv ℝ (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) +
+          fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z :=
       Filter.EventuallyEq.fderiv_eq h_eq_eventually
     rw [h_LHS_fderiv]
     have h_a_diff_at_z : DifferentiableAt ℝ
-        (fun y : E => fderiv ℝ u y ((chartModelBasis E) j)) z := by
+        (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z := by
       have hf_fder_int : ContDiffOn ℝ ∞ (fderiv ℝ u)
           (interior ((extChartAt I α).target : Set E)) := by
         have hf_int : ContDiffOn ℝ ∞ u
@@ -234,15 +234,15 @@ lemma chartHessianTensor_add_of_smooth
           hf_smooth_target.mono interior_subset
         exact hf_int.fderiv_of_isOpen hopen_int (by rw [ENat.coe_top_add_one])
       have hf_pd : ContDiffOn ℝ ∞
-          (fun y : E => fderiv ℝ u y ((chartModelBasis E) j))
+          (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
           (interior ((extChartAt I α).target : Set E)) :=
         hf_fder_int.clm_apply contDiffOn_const
       have hf_pd_at : ContDiffAt ℝ ∞
-          (fun y : E => fderiv ℝ u y ((chartModelBasis E) j)) z :=
+          (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z :=
         hf_pd.contDiffAt (hopen_int.mem_nhds hx_int)
       exact hf_pd_at.differentiableAt (by simp)
     have h_b_diff_at_z : DifferentiableAt ℝ
-        (fun y : E => fderiv ℝ u' y ((chartModelBasis E) j)) z := by
+        (fun y : E => fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z := by
       have hf'_fder_int : ContDiffOn ℝ ∞ (fderiv ℝ u')
           (interior ((extChartAt I α).target : Set E)) := by
         have hf'_int : ContDiffOn ℝ ∞ u'
@@ -250,18 +250,18 @@ lemma chartHessianTensor_add_of_smooth
           hf'_smooth_target.mono interior_subset
         exact hf'_int.fderiv_of_isOpen hopen_int (by rw [ENat.coe_top_add_one])
       have hf'_pd : ContDiffOn ℝ ∞
-          (fun y : E => fderiv ℝ u' y ((chartModelBasis E) j))
+          (fun y : E => fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
           (interior ((extChartAt I α).target : Set E)) :=
         hf'_fder_int.clm_apply contDiffOn_const
       have hf'_pd_at : ContDiffAt ℝ ∞
-          (fun y : E => fderiv ℝ u' y ((chartModelBasis E) j)) z :=
+          (fun y : E => fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z :=
         hf'_pd.contDiffAt (hopen_int.mem_nhds hx_int)
       exact hf'_pd_at.differentiableAt (by simp)
     have h_outer_add : fderiv ℝ
-        (fun y : E => fderiv ℝ u y ((chartModelBasis E) j) +
-          fderiv ℝ u' y ((chartModelBasis E) j)) z =
-        fderiv ℝ (fun y : E => fderiv ℝ u y ((chartModelBasis E) j)) z +
-          fderiv ℝ (fun y : E => fderiv ℝ u' y ((chartModelBasis E) j)) z := by
+        (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) +
+          fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z =
+        fderiv ℝ (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z +
+          fderiv ℝ (fun y : E => fderiv ℝ u' y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z := by
       exact fderiv_fun_add h_a_diff_at_z h_b_diff_at_z
     rw [h_outer_add]
     rfl
@@ -327,8 +327,8 @@ lemma chartHessianTensor_neg_of_smooth
     unfold chartIteratedPartialDeriv partialDeriv
     rw [scalarOnE_neg_pointwise (I := I) α f]
     have h_fderiv_neg_fn : (fun y : E => fderiv ℝ (fun w : E => -u w) y
-          ((chartModelBasis E) j)) =
-        fun y : E => -fderiv ℝ u y ((chartModelBasis E) j) := by
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) =
+        fun y : E => -fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
       funext y
       have h1 : fderiv ℝ (fun w : E => -u w) y = -fderiv ℝ u y := by
         change fderiv ℝ (-u) y = -fderiv ℝ u y
@@ -336,9 +336,9 @@ lemma chartHessianTensor_neg_of_smooth
       rw [h1]
       rfl
     rw [h_fderiv_neg_fn]
-    have h_outer_neg : fderiv ℝ (fun y : E => -(fderiv ℝ u y ((chartModelBasis E) j))) z =
-        -fderiv ℝ (fun y : E => fderiv ℝ u y ((chartModelBasis E) j)) z := by
-      change fderiv ℝ (-(fun y : E => fderiv ℝ u y ((chartModelBasis E) j))) z = _
+    have h_outer_neg : fderiv ℝ (fun y : E => -(fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) z =
+        -fderiv ℝ (fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) z := by
+      change fderiv ℝ (-(fun y : E => fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))) z = _
       rw [fderiv_neg]
     rw [h_outer_neg]
     rfl
@@ -424,8 +424,8 @@ theorem chartHessFrobeniusPairOnChartAlpha_eq_polarization_of_smooth
   have h_Gsymm : ∀ i k : Fin (Module.finrank ℝ E), G i k = G k i := by
     intro i k
     change chartInvGramMatrix (I := I) g α x i k = chartInvGramMatrix (I := I) g α x k i
-    have hHerm : (chartGramMatrix (I := I) g α x).IsHermitian :=
-      chartGramMatrix_isHermitian (I := I) g α x
+    have hHerm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).IsHermitian :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α x
     have hHermInv : (chartInvGramMatrix (I := I) g α x).IsHermitian := by
       unfold chartInvGramMatrix
       exact hHerm.inv
@@ -550,7 +550,7 @@ def chartAlphaMatrixIdentity
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ) (x : M) : Prop :=
   ∀ i j : Fin (Module.finrank ℝ E),
     abstractHessian (I := I) g f x
-        (chartBasisVecFiber (I := I) α i x) (chartBasisVecFiber (I := I) α j x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       chartHessianTensor (I := I) g α f i j x
 
 omit [CompactSpace M] in
@@ -561,8 +561,8 @@ omit [T2Space M] [SigmaCompactSpace M] in
     chartAlphaMatrixIdentity (I := I) (M := M) g α f x ↔
       ∀ i j : Fin (Module.finrank ℝ E),
         abstractHessian (I := I) g f x
-            (chartBasisVecFiber (I := I) α i x)
-            (chartBasisVecFiber (I := I) α j x) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
           chartHessianTensor (I := I) g α f i j x := Iff.rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -571,9 +571,9 @@ private lemma chartBasisVecFiber_baseSet
     (α : M) (i : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     (trivializationAt E (TangentSpace I) α
-        ⟨x, chartBasisVecFiber (I := I) α i x⟩).2 =
-      (chartModelBasis E) i :=
-  trivializationAt_chartBasisVec_snd (I := I) α i hx
+        ⟨x, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x⟩).2 =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i :=
+  DifferentialGeometry.Tensor.Coordinates.trivializationAt_chartBasisVec_snd (I := I) α i hx
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -589,11 +589,11 @@ theorem chartHessFrobeniusSqOnChartAlpha_eq_abstractHessian
               chartInvGramMatrix (I := I) g α x i k *
                 chartInvGramMatrix (I := I) g α x j l *
                 abstractHessian (I := I) g f x
-                  (chartBasisVecFiber (I := I) α i x)
-                  (chartBasisVecFiber (I := I) α j x) *
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) *
                 abstractHessian (I := I) g f x
-                  (chartBasisVecFiber (I := I) α k x)
-                  (chartBasisVecFiber (I := I) α l x) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x) := by
   classical
   rw [chartHessFrobeniusSqOnChartAlpha_def]
   refine Finset.sum_congr rfl ?_
@@ -621,11 +621,11 @@ theorem chartHessFrobeniusPairOnChartAlpha_eq_abstractHessian
               chartInvGramMatrix (I := I) g α x i k *
                 chartInvGramMatrix (I := I) g α x j l *
                 abstractHessian (I := I) g f x
-                  (chartBasisVecFiber (I := I) α i x)
-                  (chartBasisVecFiber (I := I) α j x) *
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) *
                 abstractHessian (I := I) g f' x
-                  (chartBasisVecFiber (I := I) α k x)
-                  (chartBasisVecFiber (I := I) α l x) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l x) := by
   classical
   rw [chartHessFrobeniusPairOnChartAlpha_def]
   refine Finset.sum_congr rfl ?_

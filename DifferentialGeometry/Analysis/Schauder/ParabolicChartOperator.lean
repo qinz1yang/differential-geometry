@@ -66,8 +66,8 @@ theorem parabolicGradientComponent_euclideanChartRepresentation
           (EuclideanSpace.basisFun (Fin (Module.finrank Real E)) Real k)] = _
       rw [show (toEuclidean (E := E)).symm
           (EuclideanSpace.basisFun (Fin (Module.finrank Real E)) Real k) =
-            chartModelBasis E k by
-        rw [EuclideanSpace.basisFun_apply, chartModelBasis_apply]]
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k by
+        rw [EuclideanSpace.basisFun_apply, DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]]
       exact (DifferentialGeometry.Analysis.Calculus.partialDeriv_eq_iteratedFDeriv_one
         (scalarOnE (I := I) alpha (u p.time)) k
           ((toEuclidean (E := E)).symm p.space)).symm
@@ -118,12 +118,12 @@ theorem parabolicHessianComponent_euclideanChartRepresentation
             (EuclideanSpace.basisFun (Fin (Module.finrank Real E)) Real j)] = _
       rw [show (toEuclidean (E := E)).symm
           (EuclideanSpace.basisFun (Fin (Module.finrank Real E)) Real i) =
-            chartModelBasis E i by
-        rw [EuclideanSpace.basisFun_apply, chartModelBasis_apply]]
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i by
+        rw [EuclideanSpace.basisFun_apply, DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]]
       rw [show (toEuclidean (E := E)).symm
           (EuclideanSpace.basisFun (Fin (Module.finrank Real E)) Real j) =
-            chartModelBasis E j by
-        rw [EuclideanSpace.basisFun_apply, chartModelBasis_apply]]
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j by
+        rw [EuclideanSpace.basisFun_apply, DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]]
       exact (DifferentialGeometry.Analysis.Calculus.partialDeriv_partialDeriv_eq_iteratedFDeriv_two
         (scalarOnE (I := I) alpha (u p.time)) hu i j).symm
 

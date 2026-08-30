@@ -112,10 +112,10 @@ private lemma gradChartCoeffWithin_continuousOn_source
 private lemma chartGramMatrix_entry_continuousOn_source
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+    ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (chartAt H α).source := by
-  have h := chartGramMatrix_entry_contMDiffOn (I := I) g α i j
-  have hcont : ContinuousOn (fun y : M => chartGramMatrix (I := I) g α y i j)
+  have h := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+  have hcont : ContinuousOn (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j)
       (trivializationAt E (TangentSpace I) α).baseSet := h.continuousOn
   refine hcont.mono ?_
   intro y hy
@@ -131,29 +131,29 @@ private lemma g_inner_gradChartLocalWithin_expand
         ∑ j : Fin (Module.finrank ℝ E),
           gradChartCoeffWithin (I := I) g α f i y *
             gradChartCoeffWithin (I := I) g α h j y *
-              chartGramMatrix (I := I) g α y i j := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α y i j := by
   classical
   unfold gradChartLocalWithin
   rw [show
         g.inner y (∑ i : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α f i y •
-              chartBasisVecFiber (I := I) α i y)
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
           (∑ j : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α h j y •
-              chartBasisVecFiber (I := I) α j y) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) =
         ∑ i : Fin (Module.finrank ℝ E),
           gradChartCoeffWithin (I := I) g α f i y *
-            (g.inner y (chartBasisVecFiber (I := I) α i y))
+            (g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
               (∑ j : Fin (Module.finrank ℝ E),
                 gradChartCoeffWithin (I := I) g α h j y •
-                  chartBasisVecFiber (I := I) α j y) from ?_]
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
   swap
   · rw [show g.inner y (∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α f i y •
-                chartBasisVecFiber (I := I) α i y) =
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y) =
             ∑ i : Fin (Module.finrank ℝ E),
               gradChartCoeffWithin (I := I) g α f i y •
-                g.inner y (chartBasisVecFiber (I := I) α i y) from ?_]
+                g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y) from ?_]
     · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -164,18 +164,18 @@ private lemma g_inner_gradChartLocalWithin_expand
       rw [map_smul]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [show (g.inner y (chartBasisVecFiber (I := I) α i y))
+  rw [show (g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y))
           (∑ j : Fin (Module.finrank ℝ E),
             gradChartCoeffWithin (I := I) g α h j y •
-              chartBasisVecFiber (I := I) α j y) =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) =
         ∑ j : Fin (Module.finrank ℝ E),
           gradChartCoeffWithin (I := I) g α h j y *
-            g.inner y (chartBasisVecFiber (I := I) α i y)
-              (chartBasisVecFiber (I := I) α j y) from ?_]
+            g.inner y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i y)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j y) from ?_]
   · rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro j _
-    rw [chartGramMatrix_apply]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
     ring
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_

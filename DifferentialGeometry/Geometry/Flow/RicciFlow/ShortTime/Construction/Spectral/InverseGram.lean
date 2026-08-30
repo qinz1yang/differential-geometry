@@ -93,32 +93,32 @@ theorem gramD_buffer_bnd
           (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α b)| ≤
           C * ∑ a : Fin (Module.finrank ℝ E),
-            ‖(chartModelBasis E) a‖ := by
+            ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a‖ := by
   classical
   let CE : ℝ := ∑ a : Fin (Module.finrank ℝ E),
-    ‖(chartModelBasis E) a‖
+    ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a‖
   intro k b hb m i j
-  have hm_le : ‖(chartModelBasis E) m‖ ≤ CE :=
+  have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ CE :=
     Finset.single_le_sum
-      (fun a _ => norm_nonneg ((chartModelBasis E) a))
+      (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
   rw [partial_eq_iter1, ← Real.norm_eq_abs]
   change ‖iteratedFDeriv ℝ 1
       (chartGramOnE (I := I) (gSeq k) α i j)
-        (extChartAt I α b) ![(chartModelBasis E) m]‖ ≤ C * CE
+        (extChartAt I α b) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖ ≤ C * CE
   calc
     ‖iteratedFDeriv ℝ 1
         (chartGramOnE (I := I) (gSeq k) α i j)
-          (extChartAt I α b) ![(chartModelBasis E) m]‖
+          (extChartAt I α b) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖
         ≤ ‖iteratedFDeriv ℝ 1
             (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)‖ *
             ∏ a : Fin 1,
-              ‖(![(chartModelBasis E) m] : Fin 1 → E) a‖ :=
+              ‖(![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] : Fin 1 → E) a‖ :=
       ContinuousMultilinearMap.le_opNorm _ _
     _ = ‖iteratedFDeriv ℝ 1
           (chartGramOnE (I := I) (gSeq k) α i j)
-            (extChartAt I α b)‖ * ‖(chartModelBasis E) m‖ := by simp
+            (extChartAt I α b)‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ := by simp
     _ ≤ C * CE :=
       mul_le_mul (hgram k b hb i j) hm_le (norm_nonneg _) hC
 
@@ -180,27 +180,27 @@ theorem invGram_fderiv_bnd
           (extChartAt I α b)‖ ≤
           (∑ m : Fin (Module.finrank ℝ E),
             ‖LinearMap.toContinuousLinearMap
-              ((chartModelBasis E).coord m)‖) * D := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖) * D := by
   classical
   intro k b hb i j
-  refine (opNorm_le_sum_coord (chartModelBasis E)
+  refine (opNorm_le_sum_coord (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     (fderiv ℝ (chartInvGramOnE (I := I) (gSeq k) α i j)
       (extChartAt I α b))).trans ?_
   calc
     ∑ m : Fin (Module.finrank ℝ E),
-        ‖LinearMap.toContinuousLinearMap ((chartModelBasis E).coord m)‖ *
+        ‖LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖ *
           |fderiv ℝ (chartInvGramOnE (I := I) (gSeq k) α i j)
-            (extChartAt I α b) ((chartModelBasis E) m)|
+            (extChartAt I α b) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)|
         ≤ ∑ m : Fin (Module.finrank ℝ E),
             ‖LinearMap.toContinuousLinearMap
-              ((chartModelBasis E).coord m)‖ * D := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖ * D := by
       refine Finset.sum_le_sum fun m _ => ?_
       apply mul_le_mul_of_nonneg_left
       · simpa only [partialDeriv] using hD k b hb m i j
       · exact norm_nonneg _
     _ = (∑ m : Fin (Module.finrank ℝ E),
           ‖LinearMap.toContinuousLinearMap
-            ((chartModelBasis E).coord m)‖) * D := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖) * D := by
       rw [Finset.sum_mul]
 
 omit [NeZero (Module.finrank ℝ E)]

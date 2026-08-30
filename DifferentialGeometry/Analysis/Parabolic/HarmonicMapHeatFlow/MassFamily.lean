@@ -35,7 +35,7 @@ theorem hmfVolumeReal
     (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
       (fun p : ℝ × M ↦
-        chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ C : ℝ≥0∞, C ≠ 0 ∧ C ≠ ⊤ ∧
       (∀ t ∈ Icc a c,
@@ -72,7 +72,7 @@ theorem hmfSpecTime_cont
     ∃ R : ℝ, 0 < R ∧
       ∀ (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ}, IsCompact K →
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-        (fun p : ℝ × M ↦ chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : ℝ × M ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ContinuousOn
@@ -145,7 +145,7 @@ theorem hmfMassFamily
     (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
       (fun p : ℝ × M ↦
-        chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ C : ℝ≥0∞, C ≠ 0 ∧ C ≠ ⊤ ∧
       (∀ t ∈ Icc a c,
@@ -209,7 +209,7 @@ theorem hmfMassFamily
         dsimp only [Rc]
         field_simp [ne_of_gt (show 0 < (L : ℝ) + 1 by positivity)]
   have hgramI : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
-      (fun p : ℝ × M ↦ chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+      (fun p : ℝ × M ↦ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
     intro x₀ i j
     exact (hgram x₀ i j).mono fun p hp ↦

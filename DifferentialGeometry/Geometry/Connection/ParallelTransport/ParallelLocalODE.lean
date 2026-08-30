@@ -55,12 +55,12 @@ theorem chart_christoffel_clm_continuous_on_compact [I.Boundaryless]
       Continuous fun v : E => chartCoord (E := E) i v := by
     intro i
     have heq : (fun v : E => chartCoord (E := E) i v)
-        = fun v : E => (chartModelBasis E).equivFun v i := by
+        = fun v : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun v i := by
       funext v
       simp [chartCoord, Module.Basis.equivFun_apply]
     rw [heq]
-    have hef : Continuous fun v : E => (chartModelBasis E).equivFun v :=
-      ((chartModelBasis E).equivFun.toLinearMap).continuous_of_finiteDimensional
+    have hef : Continuous fun v : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun v :=
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap).continuous_of_finiteDimensional
     exact (continuous_apply i).comp hef
   have hΓ : ∀ i j k : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ =>
@@ -79,7 +79,7 @@ theorem chart_christoffel_clm_continuous_on_compact [I.Boundaryless]
               (chartCurve (I := I) α γ t) *
             chartCoord (E := E) i (uPrime t) *
             chartCoord (E := E) j w) •
-        chartModelBasis E k with hF_def
+        DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k with hF_def
   have hEq : ∀ t ∈ Set.Icc a b,
       chartChristoffelContractionRightCLM (I := I) g α (uPrime t)
           (chartCurve (I := I) α γ t) w = F t := by

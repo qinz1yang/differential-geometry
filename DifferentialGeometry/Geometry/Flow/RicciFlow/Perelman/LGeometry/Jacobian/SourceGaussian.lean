@@ -63,7 +63,7 @@ theorem lSrcGram_quad
   classical
   let v := toEuclidean Z
   let w : E := ∑ i : Fin (Module.finrank Real E),
-    v i • (chartModelBasis E) i
+    v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
   have hw : w = Z := by
     have hvsum :
         v = ∑ i : Fin (Module.finrank Real E),
@@ -75,7 +75,7 @@ theorem lSrcGram_quad
       w = (toEuclidean (E := E)).symm v := by
         rw [hvsum]
         rw [map_sum]
-        simp only [w, map_smul, chartModelBasis_apply]
+        simp only [w, map_smul, DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]
       _ = Z := by
         simpa only [v] using (toEuclidean (E := E)).symm_apply_apply Z
   let g := S.base.metric T
@@ -88,7 +88,7 @@ theorem lSrcGram_quad
             v i * v j *
               DifferentialGeometry.Integral.L2.modelInnerAt
                 (I := I) (M := M) g x
-                  ((chartModelBasis E) i) ((chartModelBasis E) j) := by
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
       rw [lSrcGram_eq_gramMatrixAt S T x]
       rw [Matrix.inner_toEuclideanCLM]
       simp only [dotProduct, Matrix.mulVec,
@@ -103,28 +103,28 @@ theorem lSrcGram_quad
       change DifferentialGeometry.Integral.L2.modelInnerAt
           (I := I) (M := M) g x
           (∑ i : Fin (Module.finrank Real E),
-            v i • (chartModelBasis E) i)
+            v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           (∑ j : Fin (Module.finrank Real E),
-            v j • (chartModelBasis E) j) = _
+            v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) = _
       rw [map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       have hsm1 :
           DifferentialGeometry.Integral.L2.modelInnerAt
               (I := I) (M := M) g x
               (∑ i : Fin (Module.finrank Real E),
-                v i • (chartModelBasis E) i)
-              (v j • (chartModelBasis E) j) =
+                v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              (v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
             v j * DifferentialGeometry.Integral.L2.modelInnerAt
               (I := I) (M := M) g x
               (∑ i : Fin (Module.finrank Real E),
-                v i • (chartModelBasis E) i)
-              ((chartModelBasis E) j) := by
+                v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         have h := ContinuousLinearMap.map_smul
           (DifferentialGeometry.Integral.L2.modelInnerAt
             (I := I) (M := M) g x
             (∑ i : Fin (Module.finrank Real E),
-              v i • (chartModelBasis E) i))
-          (v j) ((chartModelBasis E) j)
+              v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+          (v j) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
         simpa only [smul_eq_mul] using h
       rw [hsm1]
       rw [map_sum, _root_.sum_apply]
@@ -132,24 +132,24 @@ theorem lSrcGram_quad
       refine Finset.sum_congr rfl fun i _ => ?_
       have hsm2 :
           DifferentialGeometry.Integral.L2.modelInnerAt
-              (I := I) (M := M) g x (v i • (chartModelBasis E) i)
-              ((chartModelBasis E) j) =
+              (I := I) (M := M) g x (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
             v i * DifferentialGeometry.Integral.L2.modelInnerAt
-              (I := I) (M := M) g x ((chartModelBasis E) i)
-              ((chartModelBasis E) j) := by
+              (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         have h :
             DifferentialGeometry.Integral.L2.modelInnerAt
-                (I := I) (M := M) g x (v i • (chartModelBasis E) i) =
+                (I := I) (M := M) g x (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
               v i • DifferentialGeometry.Integral.L2.modelInnerAt
-                (I := I) (M := M) g x ((chartModelBasis E) i) :=
+                (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
           ContinuousLinearMap.map_smul
             (DifferentialGeometry.Integral.L2.modelInnerAt
-              (I := I) (M := M) g x) (v i) ((chartModelBasis E) i)
+              (I := I) (M := M) g x) (v i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         rw [h, _root_.smul_apply, smul_eq_mul]
       rw [hsm2]
       rw [DifferentialGeometry.Integral.L2.modelInnerAt_symm
-        (I := I) (M := M) g x ((chartModelBasis E) i)
-          ((chartModelBasis E) j)]
+        (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
       ring
     _ = DifferentialGeometry.Integral.L2.modelInnerAt
         (I := I) (M := M) g x Z Z := by rw [hw]

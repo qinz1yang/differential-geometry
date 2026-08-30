@@ -52,7 +52,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_evolvingReciprocalReverseCost_of_volum
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun z : ℝ × M =>
-          chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g z.1) x₀ z.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)

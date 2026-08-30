@@ -178,11 +178,11 @@ theorem speedSq_hasDerivAt
     have hchart : extChartAt I α (f s t) = AlongCurve.chartCurve (I := I) α γ s := by
       rw [AlongCurve.chartCurve_def, hγ]
     rw [hchart]
-    rw [show (chartModelBasis E).repr
+    rw [show (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (f s t)
               (Vsec s)) i
           = chartCoord (E := E) i (V s) from by rw [hVcoord]; rfl,
-       show (chartModelBasis E).repr
+       show (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (f s t)
               (Vsec s)) j
           = chartCoord (E := E) j (V s) from by rw [hVcoord]; rfl]
@@ -246,7 +246,7 @@ theorem speedSq_hasDerivAt
     rw [hu0, AlongCurve.chartCurve_def, hγ, hα]
   have hGram_eq : ∀ l j : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0 =
-        chartGramMatrix (I := I) g α α l j := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α α l j := by
     intro l j
     rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, hu0_eq,
       (extChartAt I α).left_inv (mem_extChartAt_source α)]

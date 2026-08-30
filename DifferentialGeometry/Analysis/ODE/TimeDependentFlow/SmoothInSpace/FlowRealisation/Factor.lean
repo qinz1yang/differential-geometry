@@ -152,15 +152,15 @@ theorem leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
       (extChartAt I (Φ_fam t x) (Φ_fam t x))) :
     (LeviCivita (I := I) g) (X : ∀ y : M, TangentSpace I y) (Φ_fam t x)
         (mfderiv I I (Φ_fam t : M → M) x u)
-      = (centeredChartTangentEquiv (I := I) (Φ_fam t x)).symm
+      = (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (Φ_fam t x)).symm
           ((fderiv ℝ (chartRawRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y))
               (extChartAt I (Φ_fam t x) (Φ_fam t x))
-              ((centeredChartTangentEquiv (I := I) (Φ_fam t x))
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (Φ_fam t x))
                 (mfderiv I I (Φ_fam t : M → M) x u))
             + movingTrivCorrection (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y)
-                ((centeredChartTangentEquiv (I := I) (Φ_fam t x))
+                ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) (Φ_fam t x))
                   (mfderiv I I (Φ_fam t : M → M) x u)))
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
               (chartESectionRepr (I := I) (Φ_fam t x)
@@ -216,15 +216,15 @@ theorem variational_flow_flat_paired_residual_of_chart_realisation
   variational_flow_flat_paired_residual_hasDerivAt (I := I) g X Φ_fam t x v w
     T'v P'v T'w P'w hv_flat hw_flat hflatval_v hflatval_w
     (by
-      simpa only [centeredChartTangentEquiv_apply,
+      simpa only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
         tangentSpaceModelContinuousLinearEquiv_apply,
-        centeredChartTangentEquiv_symm_apply] using
+        DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply] using
           leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
             (I := I) g X Φ_fam t x v hα hRdiff hCdiff)
     (by
-      simpa only [centeredChartTangentEquiv_apply,
+      simpa only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
         tangentSpaceModelContinuousLinearEquiv_apply,
-        centeredChartTangentEquiv_symm_apply] using
+        DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply] using
           leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
             (I := I) g X Φ_fam t x w hα hRdiff hCdiff)
 

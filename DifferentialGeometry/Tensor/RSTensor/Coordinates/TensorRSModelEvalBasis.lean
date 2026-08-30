@@ -20,7 +20,6 @@ namespace Parabolic
 namespace TensorSpectral
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.Integral.Measure
 open scoped Manifold Topology ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -29,7 +28,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 noncomputable def eval0SLinear (n : ℕ) :
     Tensor0SModel n ℝ E →ₗ[ℝ]
       ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) where
-  toFun := fun Φ φ => Φ (fun k : Fin n => (chartModelBasis E) (φ k))
+  toFun := fun Φ φ => Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))
   map_add' Φ₁ Φ₂ := by
     funext φ
     simp [add_apply]
@@ -41,13 +40,13 @@ noncomputable def eval0SLinear (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     eval0SLinear (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 private lemma eval0SLinear_injective (n : ℕ) :
     Function.Injective (eval0SLinear (E := E) n) := by
   intro Φ₁ Φ₂ h
   apply ContinuousMultilinearMap.toMultilinearMap_injective
-  refine Module.Basis.ext_multilinear (e := fun _ : Fin n => chartModelBasis E) ?_
+  refine Module.Basis.ext_multilinear (e := fun _ : Fin n => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ?_
   intro v
   exact congr_fun h v
 
@@ -99,7 +98,7 @@ noncomputable def eval0SLinearEquiv (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     eval0SLinearEquiv (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 noncomputable def eval0SCLE (n : ℕ) :
     Tensor0SModel n ℝ E ≃L[ℝ]
@@ -110,7 +109,7 @@ noncomputable def eval0SCLE (n : ℕ) :
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     eval0SCLE (E := E) n Φ φ =
-      Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
+      Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 noncomputable def evalAtBasisLinearTensorRSModel (r s : ℕ) :
     TensorRSModel r s ℝ E →ₗ[ℝ]
@@ -118,7 +117,7 @@ noncomputable def evalAtBasisLinearTensorRSModel (r s : ℕ) :
         (Fin s → Fin (Module.finrank ℝ E)) → ℝ) where
   toFun := fun T p =>
     (T ((eval0SCLE (E := E) r).symm (Pi.single p.1 (1 : ℝ))))
-      (fun k : Fin s => (chartModelBasis E) (p.2 k))
+      (fun k : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (p.2 k))
   map_add' T₁ T₂ := by
     funext p
     simp [add_apply, add_apply]
@@ -132,7 +131,7 @@ noncomputable def evalAtBasisLinearTensorRSModel (r s : ℕ) :
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     evalAtBasisLinearTensorRSModel (E := E) r s T (Idx, Jdx) =
       (T ((eval0SCLE (E := E) r).symm (Pi.single Idx (1 : ℝ))))
-        (fun k : Fin s => (chartModelBasis E) (Jdx k)) := rfl
+        (fun k : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx k)) := rfl
 
 private lemma evalAtBasisLinear_TensorRSModel_injective (r s : ℕ) :
     Function.Injective (evalAtBasisLinearTensorRSModel (E := E) r s) := by
@@ -223,7 +222,7 @@ noncomputable def evalAtBasisCLETensorRSModel (r s : ℕ) :
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     evalAtBasisCLETensorRSModel (E := E) r s T (Idx, Jdx) =
       (T ((eval0SCLE (E := E) r).symm (Pi.single Idx (1 : ℝ))))
-        (fun k : Fin s => (chartModelBasis E) (Jdx k)) := rfl
+        (fun k : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Jdx k)) := rfl
 
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]

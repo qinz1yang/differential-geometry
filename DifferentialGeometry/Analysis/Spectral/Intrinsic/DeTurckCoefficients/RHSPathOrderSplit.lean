@@ -228,8 +228,8 @@ def rhsChartSum
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       chartDeTurckRicciRHS (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x i k (extChartAt I x x)
 
@@ -243,8 +243,8 @@ def rhsSumSlope
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       rhsPathSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         g_bg x i k s (extChartAt I x x)
 
@@ -258,8 +258,8 @@ def lieSumSlope
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         g_bg x i k s (extChartAt I x x)
 
@@ -273,8 +273,8 @@ def lieTopSum
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       chartDeTurckCorrPrincipalSymbolExprRaw (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
@@ -289,15 +289,15 @@ def lieTopCovSum
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-        ![(chartModelBasis E) i, (chartModelBasis E) k]
+        ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k]
 
 def lieTopTailSum
     (g₀ : SmoothRiemannianMetric I M)
@@ -308,8 +308,8 @@ def lieTopTailSum
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       lieTopTail (I := I) g₀ T T'
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x i k
 
@@ -322,8 +322,8 @@ def lieTopTailSwap
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       lieTopTail (I := I) g₀ T T'
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x k i
 
@@ -410,15 +410,15 @@ theorem lieTop_add_swap
   rw [← Finset.sum_add_distrib]
   calc
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 4 2
               (deTurckLieArm2PrincipalCoeff (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
               (iteratedCovGrad (I := I) g₀ 0 2 2
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
-            ![(chartModelBasis E) k, (chartModelBasis E) i] := by
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -448,8 +448,8 @@ def lieOneSum
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       lieDeTurckOrder1Raw (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
@@ -465,8 +465,8 @@ def lieZeroSum
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) (s : ℝ) : ℝ :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    ((centeredChartTangentBasis (I := I) x).repr v) k *
-      ((centeredChartTangentBasis (I := I) x).repr w) i *
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
       order0PartRaw (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
@@ -503,8 +503,8 @@ theorem ricciSum_eq_lin
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (x : M) (v w : TangentSpace I x) {s : ℝ} (hs : s ∈ Ioo (0 : ℝ) 1) :
     (∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-      ((centeredChartTangentBasis (I := I) x).repr v) k *
-        ((centeredChartTangentBasis (I := I) x).repr w) i *
+      ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
         (∑ j : Fin (Module.finrank ℝ E),
           deriv (fun t : ℝ => chartRiemannTensor (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) x i j k j
@@ -536,8 +536,8 @@ theorem rhsSlope_eq_lin
   simp only [rhsPathSlope, mul_add, Finset.sum_add_distrib]
   have hscale : (∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          ((centeredChartTangentBasis (I := I) x).repr v) k *
-            ((centeredChartTangentBasis (I := I) x).repr w) i *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
             ((-2 : ℝ) * ∑ j : Fin (Module.finrank ℝ E),
               deriv (fun t : ℝ => chartRiemannTensor (I := I)
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) x i j k j
@@ -545,8 +545,8 @@ theorem rhsSlope_eq_lin
       (-2 : ℝ) *
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            ((centeredChartTangentBasis (I := I) x).repr v) k *
-              ((centeredChartTangentBasis (I := I) x).repr w) i *
+            ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+              ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
               (∑ j : Fin (Module.finrank ℝ E),
                 deriv (fun t : ℝ => chartRiemannTensor (I := I)
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) x i j k j
@@ -733,8 +733,8 @@ theorem rhsSum_contDiffAt [BoundarylessManifold I M]
     extChartAt_target_subset_interior_of_boundaryless (I := I) x (mem_extChartAt_target x)
   have heq : rhsChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w =
       (fun t : ℝ => ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr v) k *
-          ((centeredChartTangentBasis (I := I) x).repr w) i *
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
+          ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
           DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE (I := I)
             (DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' t) x i k (extChartAt I x x)) := by

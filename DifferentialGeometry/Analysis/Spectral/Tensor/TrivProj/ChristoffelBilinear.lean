@@ -36,10 +36,10 @@ noncomputable def chartChristoffelBilin
   ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
       ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).coord i).toContinuousLinearMap.smulRight
-          (((chartModelBasis E).coord j).toContinuousLinearMap.smulRight
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.smulRight
+          (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.smulRight
             (chartChristoffel (I := I) g α i j k (extChartAt I α b) •
-              (chartModelBasis E) k))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -49,10 +49,10 @@ lemma chartChristoffelBilin_apply
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr v) i *
-                ((chartModelBasis E).repr w) j *
+            (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α b)) •
-              (chartModelBasis E) k := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
   classical
   unfold chartChristoffelBilin
   rw [sum_apply]
@@ -67,10 +67,10 @@ lemma chartChristoffelBilin_apply
   rw [ContinuousLinearMap.smulRight_apply]
   rw [smul_apply]
   rw [ContinuousLinearMap.smulRight_apply]
-  have hcoord_i : ((chartModelBasis E).coord i).toContinuousLinearMap v =
-      ((chartModelBasis E).repr v) i := rfl
-  have hcoord_j : ((chartModelBasis E).coord j).toContinuousLinearMap w =
-      ((chartModelBasis E).repr w) j := rfl
+  have hcoord_i : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap v =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i := rfl
+  have hcoord_j : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap w =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) j := rfl
   rw [hcoord_i, hcoord_j]
   rw [smul_smul, smul_smul]
 

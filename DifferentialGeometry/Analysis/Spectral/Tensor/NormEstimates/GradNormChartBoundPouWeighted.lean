@@ -63,7 +63,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
                         ℝ b
                     (chartTensorRSCovariantDerivative (I := I) r s g α
                       (fun b' => S.toSection b')
-                      (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
                 + (∑ k : Fin (Module.finrank ℝ E),
                   ‖(trivializationAt (TensorRSModel r s ℝ E)
                       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt
@@ -71,11 +71,11 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
                     (- (∑ i : Fin r,
                         chartTensorRSInputSlotCorrection (I := I) r s g α
                           (fun b' => S.toSection b')
-                          (chartBasisVecFiber (I := I) α k) b i)
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
                       + (∑ l : Fin s,
                           chartTensorRSOutputSlotCorrection (I := I) r s g α
                             (fun b' => S.toSection b')
-                            (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)) := by
+                            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)) := by
   classical
   obtain ⟨M_Ginv, hM_Ginv_nn, hM_Ginv_le⟩ :=
     exists_chartInvGramMatrix_l1Sum_sup_on_pouTsupport (I := I) (M := M) g α
@@ -111,7 +111,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
         (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
       (chartTensorRSCovariantDerivative (I := I) r s g α
         (fun b' => S.toSection b')
-        (chartBasisVecFiber (I := I) α k) b)‖ ^ 2
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2
     with hTcov_def
   set Tchr : Fin (Module.finrank ℝ E) → ℝ := fun k =>
     ‖(trivializationAt (TensorRSModel r s ℝ E)
@@ -119,11 +119,11 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
       (- (∑ i : Fin r,
           chartTensorRSInputSlotCorrection (I := I) r s g α
             (fun b' => S.toSection b')
-            (chartBasisVecFiber (I := I) α k) b i)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
         + (∑ l : Fin s,
             chartTensorRSOutputSlotCorrection (I := I) r s g α
               (fun b' => S.toSection b')
-              (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2
     with hTchr_def
   set Tcov_sum : ℝ := ∑ k : Fin (Module.finrank ℝ E), Tcov k with hTcov_sum_def
   set Tchr_sum : ℝ := ∑ k : Fin (Module.finrank ℝ E), Tchr k with hTchr_sum_def
@@ -279,15 +279,15 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
         fderiv ℝ
           (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx ∘
             (extChartAt I α).symm) z
-          ((chartModelBasis E) k) := rfl
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := rfl
     rw [h_lhs_eq]
-    have hXb : chartBasisVecFiber (I := I) α k b =
-        trivFromE (I := I) α b ((chartModelBasis E) k) := rfl
+    have hXb : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b =
+        trivFromE (I := I) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := rfl
     have h_split :=
       fderiv_tensorChartComponentRaw_pullback_norm_sq_two_term_split
         (I := I) (M := M) g r s α S Idx Jdx
-        (chartBasisVecFiber (I := I) α k) hb_goodSet
-        ((chartModelBasis E) k) hXb
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) hb_goodSet
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) hXb
     rw [hz_def]
     rw [hTcov_def, hTchr_def]
     exact h_split
@@ -439,7 +439,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport_h1
                         ℝ b
                     (chartTensorRSCovariantDerivative (I := I) r s g α
                       (fun b' => S.toCcTensor.toSection b')
-                      (chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b)‖ ^ 2)
                 + (∑ k : Fin (Module.finrank ℝ E),
                   ‖(trivializationAt (TensorRSModel r s ℝ E)
                       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt
@@ -447,11 +447,11 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport_h1
                     (- (∑ i : Fin r,
                         chartTensorRSInputSlotCorrection (I := I) r s g α
                           (fun b' => S.toCcTensor.toSection b')
-                          (chartBasisVecFiber (I := I) α k) b i)
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b i)
                       + (∑ l : Fin s,
                           chartTensorRSOutputSlotCorrection (I := I) r s g α
                             (fun b' => S.toCcTensor.toSection b')
-                            (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)) := by
+                            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b l))‖ ^ 2)) := by
   obtain ⟨A, B, hA_nn, hB_nn, h⟩ :=
     g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
       (I := I) (M := M) g r s α

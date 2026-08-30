@@ -70,7 +70,7 @@ theorem ricci_dim1_bddBelow (h1 : Module.finrank ℝ E = 1)
     rw [ricciTensor_apply_basisSum]
     refine Finset.sum_eq_zero ?_
     intro i _
-    rw [riemannOp_dim1_zero h1 g x ((centeredChartTangentBasis x) i) v v,
+    rw [riemannOp_dim1_zero h1 g x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis x) i) v v,
       map_zero, Finsupp.zero_apply]
   rw [hzero]
 

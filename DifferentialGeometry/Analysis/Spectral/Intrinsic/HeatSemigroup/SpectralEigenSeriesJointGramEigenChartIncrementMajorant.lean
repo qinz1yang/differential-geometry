@@ -62,8 +62,8 @@ def eigenChartIncrementMode
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.eigenvectorSmooth
           (I := I) (M := M) g 0 2 i)
         ((extChartAt I α).symm q.2)
-        (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
-        (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2))
 
 omit [BoundarylessManifold I M] in
 theorem eigenChartIncrementMode_contDiffOn
@@ -82,21 +82,21 @@ theorem eigenChartIncrementMode_contDiffOn
         b (ccTensorBilinSymm (I := I) g S b))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     (MetricRealization.ccTensorBilinSymm_contMDiff (I := I) g S).contMDiffOn
-  have hv := chartBasisVec_contMDiffOn (I := I) α i'
-  have hw := chartBasisVec_contMDiffOn (I := I) α j'
+  have hv := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α i'
+  have hw := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j'
   have happ :
       ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
         (fun m : M => (⟨m,
             ccTensorBilinSymm (I := I) g S m
-              (chartBasisVecFiber (I := I) α i' m)
-              (chartBasisVecFiber (I := I) α j' m)⟩ :
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' m)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' m)⟩ :
               TotalSpace ℝ (Bundle.Trivial M ℝ)))
         (trivializationAt E (TangentSpace I) α).baseSet :=
     ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ) (b := id) hB hv hw
   have hScal : ContMDiffOn I 𝓘(ℝ) ∞
       (fun m : M => ccTensorBilinSymm (I := I) g S m
-        (chartBasisVecFiber (I := I) α i' m)
-        (chartBasisVecFiber (I := I) α j' m))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' m)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' m))
       (trivializationAt E (TangentSpace I) α).baseSet := by
     intro x hx
     have hpx := happ x hx
@@ -116,14 +116,14 @@ theorem eigenChartIncrementMode_contDiffOn
     (contMDiffOn_extChartAt_symm (I := I) (n := ∞) α).mono interior_subset
   have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
       (fun y : E => ccTensorBilinSymm (I := I) g S ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm y)))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm y)))
       (interior (extChartAt I α).target) :=
     hScal.comp hsymm_cmdiff hmapsTo
   have hSpace : ContDiffOn ℝ ∞
       (fun y : E => ccTensorBilinSymm (I := I) g S ((extChartAt I α).symm y)
-        (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm y))
-        (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm y)))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm y))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm y)))
       (interior (extChartAt I α).target) :=
     hcomp.contDiffOn
   have htime : ContDiffOn ℝ ∞ (fun q : ℝ × E => φ i q.1)
@@ -131,8 +131,8 @@ theorem eigenChartIncrementMode_contDiffOn
     ((hφ_smooth i).contDiffOn).comp contDiffOn_fst (Set.mapsTo_fst_prod)
   have hspaceComp : ContDiffOn ℝ ∞
       (fun q : ℝ × E => ccTensorBilinSymm (I := I) g S ((extChartAt I α).symm q.2)
-        (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
-        (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2)))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm q.2))
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm q.2)))
       (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
     hSpace.comp contDiffOn_snd (Set.mapsTo_snd_prod)
   exact htime.mul hspaceComp
@@ -146,8 +146,8 @@ private def eigenSpatialFactor
     ccTensorBilinSymm (I := I) g
       (eigenvectorSmooth (I := I) (M := M) g 0 2 i)
       ((extChartAt I α).symm y)
-      (chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm y))
-      (chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm y))
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i' ((extChartAt I α).symm y))
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j' ((extChartAt I α).symm y))
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (eigenvectorSmooth tensorChartComponentRaw) in

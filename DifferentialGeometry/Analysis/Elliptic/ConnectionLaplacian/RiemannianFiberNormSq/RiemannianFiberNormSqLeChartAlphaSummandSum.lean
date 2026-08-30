@@ -72,29 +72,29 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
           c * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
   classical
   set Q : M × (Fin (Module.finrank ℝ E) → ℝ) → ℝ := fun p =>
     ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
-        chartGramMatrix (I := I) g α p.1 i j * p.2 i * p.2 j
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p.1 i j * p.2 i * p.2 j
     with hQ_def
   have hQ_pos_baseSet : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
       ∀ ξ : Fin (Module.finrank ℝ E) → ℝ, ξ ≠ 0 →
         0 < ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
     intro b hb ξ hξ
-    have hG_pd : (chartGramMatrix (I := I) g α b).PosDef :=
-      chartGramMatrix_posDef (I := I) g α hb
+    have hG_pd : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b).PosDef :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hb
     have hdot_pos :
-        0 < star ξ ⬝ᵥ chartGramMatrix (I := I) g α b *ᵥ ξ :=
+        0 < star ξ ⬝ᵥ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *ᵥ ξ :=
       hG_pd.dotProduct_mulVec_pos hξ
     have hexp :
-        star ξ ⬝ᵥ chartGramMatrix (I := I) g α b *ᵥ ξ =
+        star ξ ⬝ᵥ DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b *ᵥ ξ =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j := by
       simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_trivial]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [Finset.mul_sum]
@@ -108,7 +108,7 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
     refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
-      · have hentry := (chartGramMatrix_entry_contMDiffOn
+      · have hentry := (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn
           (I := I) g α i j).continuousOn
         exact hentry.comp continuous_fst.continuousOn (fun p hp => hp.1)
       · exact ((continuous_apply i).comp continuous_snd).continuousOn
@@ -153,7 +153,7 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
       have hQzero :
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j) = 0 := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) = 0 := by
         refine Finset.sum_eq_zero (fun i _ => ?_)
         refine Finset.sum_eq_zero (fun j _ => ?_)
         rw [hξzero i, mul_zero, zero_mul]
@@ -183,24 +183,24 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
       have hQscale :
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * ξ i * ξ j) =
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j) =
             rr ^ 2 *
               (∑ i : Fin (Module.finrank ℝ E),
                 ∑ j : Fin (Module.finrank ℝ E),
-                  chartGramMatrix (I := I) g α b i j * η i * η j) := by
+                  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * η i * η j) := by
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun j _ => ?_)
         rw [hη_def]
-        change chartGramMatrix (I := I) g α b i j * ξ i * ξ j =
-          rr ^ 2 * (chartGramMatrix (I := I) g α b i j * (ξ i / rr) * (ξ j / rr))
+        change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j =
+          rr ^ 2 * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * (ξ i / rr) * (ξ j / rr))
         field_simp
       rw [hQscale]
       have hQη : Q (b, η) =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b i j * η i * η j := rfl
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * η i * η j := rfl
       rw [← hQη]
       rw [← hrr_sq, mul_comm]
       exact mul_le_mul_of_nonneg_left hmin_le_bη (sq_nonneg rr)
@@ -247,7 +247,7 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
           c * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j :=
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j :=
   exists_chartGramMatrix_quadForm_lower_bound_on_compact
     (I := I) (M := M) g α
     (pouTsupport_isCompact (I := I) (M := M) α)
@@ -302,7 +302,7 @@ private lemma sum_sq_repr_le_inv_c
           c * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) ≤
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
-                chartGramMatrix (I := I) g α b i j * ξ i * ξ j)
+                DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * ξ i * ξ j)
     {b : M}
     (hb : b ∈ tsupport
         (fun x : M =>
@@ -311,7 +311,7 @@ private lemma sum_sq_repr_le_inv_c
     (hA_one :
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          chartGramMatrix (I := I) g α b i j * A i * A j = 1) :
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j * A i * A j = 1) :
     (∑ i : Fin (Module.finrank ℝ E), A i ^ 2) ≤ 1 / c := by
   have hlower := hG_lower b hb A
   rw [hA_one] at hlower
@@ -335,14 +335,14 @@ private lemma mkPiAlgebra_inner_eK_expand_repr
     (hA :
       ∀ i : Fin n,
         e i = ∑ j : Fin (Module.finrank ℝ E),
-          A i j • chartBasisVecFiber (I := I) α j b) :
+          A i j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) :
     ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
         (fun k : Fin r => g.inner b (e (K k)))) =
       ∑ I' : Fin r → Fin (Module.finrank ℝ E),
         (∏ k : Fin r, A (K k) (I' k)) •
           ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
             (fun k : Fin r =>
-              g.inner b (chartBasisVecFiber (I := I) α (I' k) b))) := by
+              g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b))) := by
   classical
   refine ContinuousMultilinearMap.ext (fun v => ?_)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
@@ -351,7 +351,7 @@ private lemma mkPiAlgebra_inner_eK_expand_repr
       g.inner b (e (K k)) (v k) =
         ∑ j : Fin (Module.finrank ℝ E),
           A (K k) j *
-            g.inner b (chartBasisVecFiber (I := I) α j b) (v k) := by
+            g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (v k) := by
     intro k
     rw [hA (K k)]
     rw [map_sum, sum_apply]
@@ -360,7 +360,7 @@ private lemma mkPiAlgebra_inner_eK_expand_repr
   trans (∏ k : Fin r,
         ∑ j : Fin (Module.finrank ℝ E),
           A (K k) j *
-            g.inner b (chartBasisVecFiber (I := I) α j b) (v k))
+            g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (v k))
   · exact Finset.prod_congr rfl (fun k _ => h_each k)
   rw [Finset.prod_univ_sum]
   rw [Fintype.piFinset_univ]
@@ -369,15 +369,15 @@ private lemma mkPiAlgebra_inner_eK_expand_repr
       (∏ k : Fin r, A (K k) (I' k)) •
         ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
           (fun k : Fin r =>
-            g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))) v).symm
+            g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))) v).symm
   refine Finset.sum_congr rfl ?_
   intro I' _
   change ∏ k, A (K k) (I' k) *
-      g.inner b (chartBasisVecFiber (I := I) α (I' k) b) (v k) =
+      g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b) (v k) =
     (∏ k : Fin r, A (K k) (I' k)) •
       (((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
         (fun k : Fin r =>
-          g.inner b (chartBasisVecFiber (I := I) α (I' k) b))) v)
+          g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b))) v)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiAlgebra_apply, smul_eq_mul]
   rw [← Finset.prod_mul_distrib]
@@ -392,19 +392,19 @@ private lemma tensor0S_apply_eJ_expand_repr
     (hA :
       ∀ i : Fin n,
         e i = ∑ j : Fin (Module.finrank ℝ E),
-          A i j • chartBasisVecFiber (I := I) α j b)
+          A i j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
     (X : ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ)
     (J : Fin s → Fin n) :
     X (fun k : Fin s => e (J k)) =
       ∑ J' : Fin s → Fin (Module.finrank ℝ E),
         (∏ l : Fin s, A (J l) (J' l)) *
-          X (fun k : Fin s => chartBasisVecFiber (I := I) α (J' k) b) := by
+          X (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (J' k) b) := by
   classical
   have h_eq_fn :
       (fun k : Fin s => e (J k)) =
         fun k : Fin s =>
           ∑ j : Fin (Module.finrank ℝ E),
-            A (J k) j • chartBasisVecFiber (I := I) α j b := by
+            A (J k) j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b := by
     funext k; exact hA (J k)
   rw [h_eq_fn]
   rw [ContinuousMultilinearMap.map_sum_finset]
@@ -424,7 +424,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
     (hA :
       ∀ i : Fin n,
         e i = ∑ j : Fin (Module.finrank ℝ E),
-          A i j • chartBasisVecFiber (I := I) α j b)
+          A i j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
     (K : Fin r → Fin n) (J : Fin s → Fin n) :
     fiberNormSqSummand (I := I) (M := M) g b r s T n e K J ≤
       (∏ k : Fin r,
@@ -436,7 +436,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
             fiberNormSqSummand (I := I) (M := M) g b r s T
               (Module.finrank ℝ E)
               (fun i : Fin (Module.finrank ℝ E) =>
-                chartBasisVecFiber (I := I) α i b) I' J') := by
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J') := by
   classical
   have h_cov_expand :=
     mkPiAlgebra_inner_eK_expand_repr (I := I) (M := M) g α hb_base r e K A hA
@@ -449,7 +449,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
             (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
               ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
                 (fun k : Fin r =>
-                  g.inner b (chartBasisVecFiber (I := I) α (I' k) b))) := by
+                  g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b))) := by
     have h := congrArg
       (fun X => (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm X)
       h_cov_expand
@@ -465,7 +465,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
               ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
                 ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
                   (fun k : Fin r =>
-                    g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))) := by
+                    g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))) := by
     rw [h_cov_expand_TSp, map_sum]
     refine Finset.sum_congr rfl ?_
     intro I' _
@@ -488,8 +488,8 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
                     ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
                       ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
                         (fun k : Fin r =>
-                          g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
-                  (fun k : Fin s => chartBasisVecFiber (I := I) α (J' k) b)) := by
+                          g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))))
+                  (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (J' k) b)) := by
     rw [hXKJ_def, h_T_apply]
     rw [Tensor0SSpace.eval_eq, Tensor0SSpace.sum_apply]
     refine Finset.sum_congr rfl ?_
@@ -500,7 +500,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
           ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
             ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
               (fun k : Fin r =>
-                g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
+                g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))))
       (fun k : Fin s => e (J k)) = _
     rw [Tensor0SSpace.eval_smul, smul_eq_mul]
     have h_eval := tensor0S_apply_eJ_expand_repr (I := I) (M := M) (s := s)
@@ -510,13 +510,13 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
           ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
             ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
               (fun k : Fin r =>
-                g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))) J
+                g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))))) J
     change Tensor0SSpace.eval
         ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
           ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
             ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
               (fun k : Fin r =>
-                g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
+                g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))))
         (fun k : Fin s => e (J k)) =
       ∑ J' : Fin s → Fin (Module.finrank ℝ E),
         (∏ l : Fin s, A (J l) (J' l)) *
@@ -525,8 +525,8 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
               ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
                 ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
                   (fun k : Fin r =>
-                    g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
-            (fun k : Fin s => chartBasisVecFiber (I := I) α (J' k) b) at h_eval
+                    g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (I' k) b)))))
+            (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (J' k) b) at h_eval
     rw [h_eval]
     rw [Finset.mul_sum]
   set Yfn : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)) → ℝ :=
@@ -536,8 +536,8 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
           ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
             ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
               (fun k : Fin r =>
-                g.inner b (chartBasisVecFiber (I := I) α (p.1 k) b)))))
-        (fun k : Fin s => chartBasisVecFiber (I := I) α (p.2 k) b)
+                g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (p.1 k) b)))))
+        (fun k : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (p.2 k) b)
     with hYfn_def
   set αfn : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)) → ℝ :=
     fun p =>
@@ -666,7 +666,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
             fiberNormSqSummand (I := I) (M := M) g b r s T
               (Module.finrank ℝ E)
               (fun i : Fin (Module.finrank ℝ E) =>
-                chartBasisVecFiber (I := I) α i b) I' J' := by
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J' := by
     intro I' J'
     rw [hYfn_def]
     rfl
@@ -678,7 +678,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
             fiberNormSqSummand (I := I) (M := M) g b r s T
               (Module.finrank ℝ E)
               (fun i : Fin (Module.finrank ℝ E) =>
-                chartBasisVecFiber (I := I) α i b) I' J' := by
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J' := by
     refine Finset.sum_congr rfl (fun I' _ => ?_)
     refine Finset.sum_congr rfl (fun J' _ => ?_)
     exact h_Y_eq_summand I' J'
@@ -696,7 +696,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
               fiberNormSqSummand (I := I) (M := M) g b r s T
                 (Module.finrank ℝ E)
                 (fun i : Fin (Module.finrank ℝ E) =>
-                  chartBasisVecFiber (I := I) α i b) I' J') =
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J') =
         (∏ k : Fin r, ∑ l : Fin (Module.finrank ℝ E), A (K k) l ^ 2) *
           (∏ l : Fin s, ∑ m : Fin (Module.finrank ℝ E), A (J l) m ^ 2) *
           ∑ I' : Fin r → Fin (Module.finrank ℝ E),
@@ -704,7 +704,7 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
               fiberNormSqSummand (I := I) (M := M) g b r s T
                 (Module.finrank ℝ E)
                 (fun i : Fin (Module.finrank ℝ E) =>
-                  chartBasisVecFiber (I := I) α i b) I' J' := by ring
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J' := by ring
   rw [hgoal_eq]
   exact h_CS
 
@@ -728,7 +728,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
                   fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
                     (Module.finrank ℝ E)
                     (fun i : Fin (Module.finrank ℝ E) =>
-                      chartBasisVecFiber (I := I) α i b)
+                      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                     Idx Jdx) := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
@@ -757,20 +757,20 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
     riemannianFiberNormSq_eq_sum_witness_orthonormal (I := I) (M := M)
       g r s b (S.toSection b)
   subst hn'
-  set Bfam := chartBasisFamily (I := I) α hb_base with hBfam_def
+  set Bfam := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hb_base with hBfam_def
   set A : Fin (Module.finrank ℝ (TangentSpace I b)) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => Bfam.repr (e i) j with hA_def
   have hA_expand :
       ∀ i : Fin (Module.finrank ℝ (TangentSpace I b)),
         e i = ∑ j : Fin (Module.finrank ℝ E),
-          A i j • chartBasisVecFiber (I := I) α j b := by
+          A i j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b := by
     intro i
     have h := Bfam.sum_repr (e i)
     have hBfam_apply : ∀ j : Fin (Module.finrank ℝ E),
-        Bfam j = chartBasisVecFiber (I := I) α j b := by
+        Bfam j = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b := by
       intro j
       rw [hBfam_def]
-      exact chartBasisFamily_apply (I := I) α hb_base j
+      exact DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) α hb_base j
     rw [← h]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [hA_def, hBfam_apply j]
@@ -785,11 +785,11 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
         g.inner b (e i) (e i) =
           ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E),
-              chartGramMatrix (I := I) g α b j k * A i j * A i k := by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b j k * A i j * A i k := by
       have h_ei : e i = ∑ j : Fin (Module.finrank ℝ E),
-          A i j • chartBasisVecFiber (I := I) α j b := hA_expand i
+          A i j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b := hA_expand i
       rw [h_ei]
-      have hdotmul := chartGramMatrix_dotProduct_mulVec (I := I) g α b (A i)
+      have hdotmul := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α b (A i)
       rw [← hdotmul]
       simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_trivial]
       refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -799,7 +799,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
     have hA_one :
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
-            chartGramMatrix (I := I) g α b j k * A i j * A i k = 1 := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b j k * A i j * A i k = 1 := by
       rw [← h_expand_inner]; exact h_one
     exact sum_sq_repr_le_inv_c (I := I) (M := M) g α hc_pos hG_lower hb (A i) hA_one
   rw [h_eq]
@@ -809,7 +809,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
           fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
             (Module.finrank ℝ E)
             (fun i : Fin (Module.finrank ℝ E) =>
-              chartBasisVecFiber (I := I) α i b) I' J' := by
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J' := by
     refine Finset.sum_nonneg ?_
     intro I' _
     refine Finset.sum_nonneg ?_
@@ -821,7 +821,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
         fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
           (Module.finrank ℝ E)
           (fun i : Fin (Module.finrank ℝ E) =>
-            chartBasisVecFiber (I := I) α i b) I' J'
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b) I' J'
     with hRHSinner_def
   have h_per_KJ :
       ∀ K : Fin r → Fin (Module.finrank ℝ (TangentSpace I b)),

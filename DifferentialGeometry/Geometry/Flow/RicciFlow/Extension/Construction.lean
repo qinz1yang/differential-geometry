@@ -37,11 +37,11 @@ theorem ricci_flow_uniform_existence (hDim : Module.finrank ℝ E = 3)
         ∃ rr : ℝ → SmoothRiemannianMetric I M, rr 0 = g₀ ∧
           (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
             ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-              (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
+              (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
               (Set.Ico (0 : ℝ) τ₀ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
           (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
             ContinuousOn
-              (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
+              (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
               (Set.Ico (0 : ℝ) τ₀ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
           (∀ t ∈ Set.Ico (0 : ℝ) τ₀, ∀ x : M, ∀ v w : TangentSpace I x,
             HasDerivWithinAt (fun u : ℝ => (rr u).inner x v w)
@@ -71,11 +71,11 @@ theorem ricci_flow_interior_restart
       ∃ rr : ℝ → SmoothRiemannianMetric I M, rr 0 = g_fam t_star ∧
         (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
           ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-            (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
+            (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
             (Set.Ico (0 : ℝ) TT ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
         (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
           ContinuousOn
-            (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
+            (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
             (Set.Ico (0 : ℝ) TT ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
         (∀ t ∈ Set.Ico (0 : ℝ) TT, ∀ x : M, ∀ v w : TangentSpace I x,
           HasDerivWithinAt (fun u : ℝ => (rr u).inner x v w)
@@ -127,11 +127,11 @@ theorem ricci_flow_forward_unique
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h2smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Set.Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1pde : ∀ t ∈ Set.Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : ℝ => (g₁ s).inner x v w)
@@ -154,21 +154,21 @@ theorem extend_construction_of_restart
         ((-2 : ℝ) * ricciTensor (I := I) (g_fam t) x v w) (Set.Ici α) t)
     (hsmooth_left : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (Set.Ioo α omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcont_left : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) x₀ p.2 i j)
         (Set.Ico α omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {t_star TT : ℝ} (ht1 : α ≤ t_star) (ht2 : t_star < omega) (hreach : omega < t_star + TT)
     (rr : ℝ → SmoothRiemannianMetric I M)
     (hrr_smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) TT ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hrr_cont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr p.1) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) TT ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hrr_pde : ∀ t ∈ Set.Ico (0 : ℝ) TT, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun u : ℝ => (rr u).inner x v w)
@@ -178,11 +178,11 @@ theorem extend_construction_of_restart
       (∀ s : ℝ, s < omega → g_ext s = g_fam s) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-          (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
+          (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
           (Set.Ioo α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
-          (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
+          (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
           (Set.Ico α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       (∀ t ∈ Set.Ico α (omega + ε), ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_ext s).inner x v w)
@@ -228,7 +228,7 @@ theorem extend_construction_of_restart
         exact ⟨⟨by linarith [hq.1.1], by linarith [hq.1.2, hωε]⟩, hq.2⟩
       have hcomp :
           ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-            (fun q : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (rr (q.1 - t_star)) x₀ q.2 i
+            (fun q : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (rr (q.1 - t_star)) x₀ q.2 i
               j)
             (Set.Ioo t_star (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
         (hrr_smooth x₀ i j).comp hshift.contMDiffOn hmaps
@@ -241,16 +241,16 @@ theorem extend_construction_of_restart
     have hm1 : t_star < m := by rw [hm]; linarith
     have hm2 : m < omega := by rw [hm]; linarith
     have hP1 : ContinuousOn
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
         (Set.Icc α m ×ˢ B) := by
       refine ((hcont_left x₀ i j).mono ?_).congr ?_
       · intro q hq; exact ⟨⟨hq.1.1, lt_of_le_of_lt hq.1.2 hm2⟩, hq.2⟩
       · intro q hq
         exact congrArg (fun mm : SmoothRiemannianMetric I M =>
-          Integral.Measure.chartGramMatrix (I := I) mm x₀ q.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) mm x₀ q.2 i j)
           (hagree q.1 (lt_of_le_of_lt hq.1.2 hm2))
     have hP2 : ContinuousOn
-        (fun p : ℝ × M => Integral.Measure.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
+        (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_ext p.1) x₀ p.2 i j)
         (Set.Ico m (omega + ε) ×ˢ B) := by
       have hmapsc : Set.MapsTo (fun q : ℝ × M => ((q.1 - t_star, q.2) : ℝ × M))
           (Set.Ico m (omega + ε) ×ˢ B) (Set.Ico (0 : ℝ) TT ×ˢ B) := by

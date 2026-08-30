@@ -838,7 +838,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq
     rw [Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [hv, tensorCovDerivAt_scalarSmul (I := I) (M := M) g 0 m ζ w x
-      ((Integral.Measure.chartModelBasis E) j)]
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
     have hwx : Tensor0SBundle.TensorRSSpace.toModel (w.toSection x) = w.toFun x := rfl
     simp only [Tensor0SBundle.TensorRSSpace.toModel_add, Tensor0SBundle.TensorRSSpace.toModel_smul,
       hwx, Integral.L2.tensorInnerPointwise_add_right, Integral.L2.tensorInnerPointwise_smul_right]
@@ -1380,7 +1380,7 @@ private theorem weightedCovIBP_lpFiberJet_sup
     rw [Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [hv, tensorCovDerivAt_scalarSmul (I := I) (M := M) g 0 m ζ w x
-      ((Integral.Measure.chartModelBasis E) j)]
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
     have hwx : Tensor0SBundle.TensorRSSpace.toModel (w.toSection x) = w.toFun x := rfl
     simp only [Tensor0SBundle.TensorRSSpace.toModel_add, Tensor0SBundle.TensorRSSpace.toModel_smul,
       hwx, Integral.L2.tensorInnerPointwise_add_right, Integral.L2.tensorInnerPointwise_smul_right]

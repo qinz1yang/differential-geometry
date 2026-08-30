@@ -56,8 +56,8 @@ theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
                       (LeviCivita (I := I) g)).toFun
                     (fun z : M => T₀.toSection z) b
                     ((LeviCivita (I := I) g).toFun
-                      (fun z : M => chartBasisVecFiber (I := I) α k z) b
-                      (chartBasisVecFiber (I := I) α l b)))) := by
+                      (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) := by
   classical
   have hT_total : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
@@ -87,8 +87,8 @@ theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
   have hChartBasis_mdiff : ∀ k : Fin (Module.finrank ℝ E),
       MDifferentiableAt I (I.prod 𝓘(ℝ, E))
         (fun z : M => TotalSpace.mk' E (E := fun w : M => TangentSpace I w) z
-          (chartBasisVecFiber (I := I) α k z)) b :=
-    fun k => ((chartBasisVec_contMDiffOn (I := I) α k).contMDiffAt
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)) b :=
+    fun k => ((DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α k).contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds
         hb_base)).mdifferentiableAt (by simp)
   have hLHS_trace :
@@ -103,32 +103,32 @@ theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
       (∑ i : Fin (Module.finrank ℝ E), Ψ (B i) (B i)) =
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α b k l •
-            Ψ (chartBasisVecFiber (I := I) α k b)
-              (chartBasisVecFiber (I := I) α l b) :=
+            Ψ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) :=
     orthonormal_basis_bilin_trace_chartα (I := I) (A := TensorRSSpace r s I b)
       g α hb_base Ψ B hB_orthonormal
   have hTrace_chartα :
       proj (∑ i : Fin (Module.finrank ℝ E), Ψ (B i) (B i)) =
         ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α b k l *
-            proj (Ψ (chartBasisVecFiber (I := I) α k b)
-              (chartBasisVecFiber (I := I) α l b)) := by
+            proj (Ψ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
     rw [hTrace_fibre, map_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [map_sum]
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [map_smul, smul_eq_mul]
   have hProjΨ_chartBasis : ∀ k l : Fin (Module.finrank ℝ E),
-      proj (Ψ (chartBasisVecFiber (I := I) α k b) (chartBasisVecFiber (I := I) α l b)) =
+      proj (Ψ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
           tensorChartComponentProjection (E := E) r s Idx Jdx
             ((trivializationAt (TensorRSModel r s ℝ E)
                 (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
               ((TensorRSNabla.tensorRSCovariantDerivative I M r s
                   (LeviCivita (I := I) g)).toFun
                 (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
-                  (LeviCivita (I := I) g)) (chartBasisVecFiber (I := I) α k)
+                  (LeviCivita (I := I) g)) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b))) -
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) -
         tensorChartComponentProjection (E := E) r s Idx Jdx
           ((trivializationAt (TensorRSModel r s ℝ E)
               (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
@@ -136,8 +136,8 @@ theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
                 (LeviCivita (I := I) g)).toFun
               (fun z : M => T₀.toSection z) b
               ((LeviCivita (I := I) g).toFun
-                (fun z : M => chartBasisVecFiber (I := I) α k z) b
-                (chartBasisVecFiber (I := I) α l b)))) := by
+                (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) := by
     intro k l
     rw [hΨ_def, tensorHessianBilinAt_apply (I := I) g r s
       (fun z : M => T₀.toSection z) hT_total (hChartBasis_mdiff k) (hChartBasis_mdiff l)]
@@ -151,9 +151,9 @@ theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
             ((TensorRSNabla.tensorRSCovariantDerivative I M r s
                 (LeviCivita (I := I) g)).toFun
               (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
-                (LeviCivita (I := I) g)) (chartBasisVecFiber (I := I) α k)
+                (LeviCivita (I := I) g)) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
                 (fun z : M => T₀.toSection z)) b
-              (chartBasisVecFiber (I := I) α l b)))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))
     with hA_def
   set C : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun k l =>
@@ -165,13 +165,13 @@ theorem rawConnLap_chartα_minus_invGramPrincipalSum_eq_christoffelTrace
                 (LeviCivita (I := I) g)).toFun
               (fun z : M => T₀.toSection z) b
               ((LeviCivita (I := I) g).toFun
-                (fun z : M => chartBasisVecFiber (I := I) α k z) b
-                (chartBasisVecFiber (I := I) α l b))))
+                (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))))
     with hC_def
   have hProjΨ_split : ∀ k l : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g α b k l *
-          proj (Ψ (chartBasisVecFiber (I := I) α k b)
-            (chartBasisVecFiber (I := I) α l b)) =
+          proj (Ψ (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
         A k l - C k l := by
     intro k l
     rw [hProjΨ_chartBasis k l, hA_def, hC_def, mul_sub]
@@ -231,8 +231,8 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
                     (LeviCivita (I := I) g)).toFun
                   (fun z : M => T₀.toSection z) b
                   ((LeviCivita (I := I) g).toFun
-                    (fun z : M => chartBasisVecFiber (I := I) α k z) b
-                    (chartBasisVecFiber (I := I) α l b))))) =
+                    (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))))) =
       ∑ m : Fin (Module.finrank ℝ E),
         wTraceCoordPullback (I := I) (M := M) g α m
             ((toEuclidean (E := E)) ((extChartAt I α) b)) *
@@ -242,7 +242,7 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
               ((TensorRSNabla.tensorRSCovariantDerivative I M r s
                   (LeviCivita (I := I) g)).toFun
                 (fun z : M => T₀.toSection z) b
-                (chartBasisVecFiber (I := I) α m b))) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))) := by
   classical
   set y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     (toEuclidean (E := E)) ((extChartAt I α) b) with hy_def
@@ -275,11 +275,11 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
     rw [chartInvGramEuclid_def, chartInvGramOnE_def, hsymm_te, hleft_inv]
   have hSummandLHS : ∀ k l : Fin (Module.finrank ℝ E),
       L (Lcov ((LeviCivita (I := I) g).toFun
-            (fun z : M => chartBasisVecFiber (I := I) α k z) b
-            (chartBasisVecFiber (I := I) α l b))) =
+            (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) =
         ∑ m : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α l k m ((extChartAt I α) b) *
-            L (Lcov (chartBasisVecFiber (I := I) α m b)) := by
+            L (Lcov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)) := by
     intro k l
     rw [LeviCivita_chartBasisVec_alpha_basis_apply (I := I) (M := M) g α l k hb]
     rw [map_sum, map_sum]
@@ -289,14 +289,14 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α b k l *
             L (Lcov ((LeviCivita (I := I) g).toFun
-                (fun z : M => chartBasisVecFiber (I := I) α k z) b
-                (chartBasisVecFiber (I := I) α l b)))) =
+                (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) =
       ∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α b k l *
               chartChristoffel (I := I) g α l k m ((extChartAt I α) b) *
-              L (Lcov (chartBasisVecFiber (I := I) α m b)) := by
+              L (Lcov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)) := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [hSummandLHS k l, Finset.mul_sum]
@@ -307,18 +307,18 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
           ∑ m : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α b k l *
               chartChristoffel (I := I) g α l k m ((extChartAt I α) b) *
-              L (Lcov (chartBasisVecFiber (I := I) α m b))) =
+              L (Lcov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))) =
       ∑ m : Fin (Module.finrank ℝ E),
         (∑ k : Fin (Module.finrank ℝ E),
           ∑ l : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α b k l *
               chartChristoffel (I := I) g α l k m ((extChartAt I α) b)) *
-          L (Lcov (chartBasisVecFiber (I := I) α m b)) := by
+          L (Lcov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)) := by
     rw [Finset.sum_congr rfl (fun k (_ : k ∈ Finset.univ) => Finset.sum_comm
       (f := fun (l : Fin (Module.finrank ℝ E)) (m : Fin (Module.finrank ℝ E)) =>
         chartInvGramMatrix (I := I) g α b k l *
           chartChristoffel (I := I) g α l k m ((extChartAt I α) b) *
-          L (Lcov (chartBasisVecFiber (I := I) α m b))))]
+          L (Lcov (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))))]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     rw [Finset.sum_mul]
@@ -350,7 +350,7 @@ private lemma chartα_proj_covRS_chartBasis_eq_euclidPartial_plus_lower
           ((TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g)).toFun
             (fun z : M => T₀.toSection z) b
-            (chartBasisVecFiber (I := I) α m b))) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))) =
       euclidPartial (E := E) m
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
             (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx))
@@ -377,11 +377,11 @@ private lemma chartα_proj_covRS_chartBasis_eq_euclidPartial_plus_lower
       (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)).toFun
         (fun z : M => T₀.toSection z) b
-        (chartBasisVecFiber (I := I) α m b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b) =
       chartTensorRSCovariantDerivative (I := I) r s g α T₀.toSection
-        (chartBasisVecFiber (I := I) α m) b := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b := by
     have htdef := tensorCovDerivAt_def (I := I) (M := M) g r s T₀ b
-      (chartBasisVecFiber (I := I) α m b)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)
     have hagree := tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
       (I := I) (M := M) g r s T₀ α m hb
     exact htdef.symm.trans hagree
@@ -479,8 +479,8 @@ theorem christoffelTrace_correction_eq_T₀_linear
                           (LeviCivita (I := I) g)).toFun
                         (fun z : M => T₀.toSection z) b
                         ((LeviCivita (I := I) g).toFun
-                          (fun z : M => chartBasisVecFiber (I := I) α k z) b
-                          (chartBasisVecFiber (I := I) α l b))))) =
+                          (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) b
+                          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))))) =
             (∑ I' : Fin r → Fin (Module.finrank ℝ E),
               ∑ J' : Fin s → Fin (Module.finrank ℝ E),
               ∑ m,
@@ -522,7 +522,7 @@ theorem christoffelTrace_correction_eq_T₀_linear
                 ((TensorRSNabla.tensorRSCovariantDerivative I M r s
                     (LeviCivita (I := I) g)).toFun
                   (fun z : M => T₀.toSection z) b
-                  (chartBasisVecFiber (I := I) α m b)))) =
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)))) =
         ∑ m : Fin (Module.finrank ℝ E),
           wTraceCoordPullback (I := I) (M := M) g α m y *
             (euclidPartial (E := E) m

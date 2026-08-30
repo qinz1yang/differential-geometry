@@ -34,10 +34,10 @@ private theorem sqrt_pow (c : Real) (hc : 0 ≤ c) (n : Nat) :
 
 theorem chartGram_scale (c : Real) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) (x₀ x : M) :
-    chartGramMatrix (scaleMetric (I := I) c hc g) x₀ x =
-      c • chartGramMatrix g x₀ x := by
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (scaleMetric (I := I) c hc g) x₀ x =
+      c • DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g x₀ x := by
   ext i j
-  simp [chartGramMatrix_apply, scaleMetric_inner]
+  simp [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, scaleMetric_inner]
 
 theorem chartDensity_scale (c : Real) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) (x₀ x : M) :

@@ -267,12 +267,12 @@ theorem normSqSlabSup {s : Nat} (g : Real → SmoothRiemannianMetric I M)
     (A : Real → (x : M) → Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hA : ∀ (x₀ : M) (K : Fin s → Fin (Module.finrank Real E)) {t : Real}, t ∈ Icc a c →
       ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          A p.1 p.2 (fun i : Fin s => chartBasisVecFiber (I := I) x₀ (K i) p.2))
+          A p.1 p.2 (fun i : Fin s => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (K i) p.2))
         (Icc a c ×ˢ (univ : Set M)) (t, x₀)) :
     ∃ B : Real, 0 ≤ B ∧
       ∀ t ∈ Icc a c, ∀ x : M, normSq0S (I := I) (g t) x s (A t x) ≤ B :=
@@ -283,11 +283,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] in
 theorem metricDiffSlabSup (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       metricDiffSq (I := I) (g₁ t) (g₂ t) x ≤ B := by
@@ -300,11 +300,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] in
 theorem metricSlabSup (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (g₁ t) x 2 (metricTensorField (I := I) (g₂ t) x) ≤ B :=
@@ -315,15 +315,15 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem rm04SlabSup (gN gL gC : Real → SmoothRiemannianMetric I M)
     (hgramN : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramL : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gL p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gL p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramC : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (gN t) x 4
@@ -355,11 +355,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciSlabSup (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₂ t) x) ≤ B := by
@@ -373,11 +373,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem nablaRicSlabSup (gN gC : Real → SmoothRiemannianMetric I M)
     (hgramN : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramC : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (gN t) x 3
@@ -396,11 +396,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem nablaKRmSlabSup (gN gC : Real → SmoothRiemannianMetric I M)
     (hgramN : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramC : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (k : ℕ) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
@@ -419,19 +419,19 @@ theorem crossRm1SlabSup
     (gN gL gC gD : Real → SmoothRiemannianMetric I M)
     (hgramN : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramL : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gL p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gL p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramC : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramD : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gD p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gD p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (gN t) x 5
@@ -455,19 +455,19 @@ theorem crossRm2SlabSup
     (gN gL gC gD : Real → SmoothRiemannianMetric I M)
     (hgramN : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gN p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramL : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gL p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gL p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramC : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gC p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgramD : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (gD p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (gD p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (gN t) x 6
@@ -515,11 +515,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] in
 theorem metricCompSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ Λ : Real, 0 ≤ Λ ∧ ∀ t ∈ Icc a c, ∀ (x : M) (v : TangentSpace I x),
       (g₁ t).inner x v v ≤ Λ * (g₂ t).inner x v v := by
@@ -536,11 +536,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] in
 theorem metricEquivSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∃ C : Real, 1 ≤ C ∧ ∀ t ∈ Icc a c, ∀ (x : M) (v : TangentSpace I x),
       C⁻¹ * (g₁ t).inner x v v ≤ (g₂ t).inner x v v ∧
@@ -935,11 +935,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem energyEdgeCont (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real} (hab : a < b)
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgram₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ContinuousWithinAt (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (Ico a b) a := by
   set c : Real := (a + b) / 2 with hcdef
@@ -948,12 +948,12 @@ theorem energyEdgeCont (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : 
   have hsub : Icc a c ⊆ Ico a b := fun x hx => ⟨hx.1, lt_of_le_of_lt hx.2 hcb⟩
   have hres₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
     fun x₀ i j => (hgram₁ x₀ i j).mono (Set.prod_mono hsub (Set.Subset.refl _))
   have hres₂ : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (Icc a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
     fun x₀ i j => (hgram₂ x₀ i j).mono (Set.prod_mono hsub (Set.Subset.refl _))
   have hdens : ContinuousOn

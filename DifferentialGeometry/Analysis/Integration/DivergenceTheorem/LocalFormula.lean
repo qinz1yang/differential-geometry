@@ -33,21 +33,21 @@ open DifferentialGeometry.Integral.Measure
 
 def chartCoeff (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) : M → ℝ :=
-  fun x => (chartModelBasis E).repr
+  fun x => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
     ((trivializationAt E (TangentSpace I) α) ⟨x, X x⟩).2 i
 
 @[simp] lemma chartCoeff_def (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) (x : M) :
     chartCoeff (I := I) α X i x =
-      (chartModelBasis E).repr
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         ((trivializationAt E (TangentSpace I) α) ⟨x, X x⟩).2 i := rfl
 
 lemma chartCoeff_recompose (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {x : M} (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     X x = ∑ i, chartCoeff (I := I) α X i x •
-      chartBasisVecFiber (I := I) α i x := by
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
   classical
   set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α
@@ -55,7 +55,7 @@ lemma chartCoeff_recompose (α : M)
   have hL : L (X x) = (T ⟨x, X x⟩).2 := rfl
   have hLsymm : ∀ v : E, L.symm v = T.symmL ℝ x v := fun v =>
     congrFun (T.symm_continuousLinearEquivAt_eq hx) v
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   have hdecomp : (T ⟨x, X x⟩).2 =
       ∑ i, b.repr ((T ⟨x, X x⟩).2) i • b i := by
     have := (Module.Basis.sum_repr b ((T ⟨x, X x⟩).2))
@@ -67,7 +67,7 @@ lemma chartCoeff_recompose (α : M)
   intro i _
   rw [map_smul]
   rw [hLsymm]
-  simp only [chartCoeff_def, chartBasisVecFiber]
+  simp only [chartCoeff_def, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber]
   rfl
 
 lemma chartCoeff_contMDiffOn (α : M)
@@ -83,7 +83,7 @@ lemma chartCoeff_contMDiffOn (α : M)
     T.contMDiffOn_section_baseSet_iff (IB := I) (n := ∞) (s := fun x : M => X x)
   have hsection : ContMDiffOn I 𝓘(ℝ, E) ∞
       (fun x : M => (T ⟨x, X x⟩).2) T.baseSet := hiff.mp hX.contMDiffOn
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E
+  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   set Lcoord : E →L[ℝ] ℝ := (b.coord i).toContinuousLinearMap
   have hLcoord_contDiff : ContDiff ℝ ∞ (Lcoord : E → ℝ) := Lcoord.contDiff
   have hcomp : ContMDiffOn I 𝓘(ℝ) ∞
@@ -92,7 +92,7 @@ lemma chartCoeff_contMDiffOn (α : M)
   have heq : (Lcoord : E → ℝ) ∘ (fun x : M => (T ⟨x, X x⟩).2)
       = chartCoeff (I := I) α X i := by
     funext x
-    change Lcoord ((T ⟨x, X x⟩).2) = (chartModelBasis E).repr
+    change Lcoord ((T ⟨x, X x⟩).2) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
         ((trivializationAt E (TangentSpace I) α) ⟨x, X x⟩).2 i
     change (b.coord i) ((T ⟨x, X x⟩).2) = _
     rw [Module.Basis.coord_apply]
@@ -107,7 +107,7 @@ def chartDensityOnE (g : SmoothRiemannianMetric I M) (α : M) : E → ℝ :=
   fun y => chartDensity (I := I) g α ((extChartAt I α).symm y)
 
 def partialDeriv (i : Fin (Module.finrank ℝ E)) (u : E → ℝ) (y : E) : ℝ :=
-  fderiv ℝ u y ((chartModelBasis E) i)
+  fderiv ℝ u y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 def localDivergence (g : SmoothRiemannianMetric I M)
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -193,7 +193,7 @@ private lemma partialDeriv_contDiffOn_interior
   have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ u) (interior s) :=
     hu_int.fderiv_of_isOpen isOpen_interior
       (by rw [ENat.coe_top_add_one])
-  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (chartModelBasis E) i)
+  have hconst : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
       (interior s) := contDiffOn_const
   exact hfderiv.clm_apply hconst
 

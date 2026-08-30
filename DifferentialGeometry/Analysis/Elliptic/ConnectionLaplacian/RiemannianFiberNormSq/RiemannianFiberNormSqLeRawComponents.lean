@@ -77,12 +77,12 @@ theorem riemannianFiberNormSq_le_raw_components_on_pouTsupport
               fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
                 n
                 (fun i : Fin n =>
-                  chartBasisVecFiber (I := I) α i b)
+                  DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                 Idx Jdx) := hN3 S hb
   have hB_each : ∀ Idx : Fin r → Fin n, ∀ Jdx : Fin s → Fin n,
       fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
           n
-          (fun i : Fin n => chartBasisVecFiber (I := I) α i b)
+          (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
           Idx Jdx ≤
         C₂ * RawSq := by
     intro Idx Jdx
@@ -93,7 +93,7 @@ theorem riemannianFiberNormSq_le_raw_components_on_pouTsupport
         ∑ Jdx : Fin s → Fin n,
           fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
             n
-            (fun i : Fin n => chartBasisVecFiber (I := I) α i b)
+            (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
             Idx Jdx) ≤
       (∑ Idx : Fin r → Fin n,
         ∑ Jdx : Fin s → Fin n, C₂ * RawSq) := by
@@ -132,7 +132,7 @@ theorem riemannianFiberNormSq_le_raw_components_on_pouTsupport
             ∑ Jdx : Fin s → Fin n,
               fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
                 n
-                (fun i : Fin n => chartBasisVecFiber (I := I) α i b)
+                (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
                 Idx Jdx := by
     refine Finset.sum_nonneg (fun _ _ => ?_)
     refine Finset.sum_nonneg (fun _ _ => ?_)
@@ -143,13 +143,13 @@ theorem riemannianFiberNormSq_le_raw_components_on_pouTsupport
         ∑ Jdx : Fin s → Fin n,
           fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
             n
-            (fun i : Fin n => chartBasisVecFiber (I := I) α i b)
+            (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
             Idx Jdx) ≤ cardIJ * (C₂ * RawSq) := by
     calc (∑ Idx : Fin r → Fin n,
           ∑ Jdx : Fin s → Fin n,
             fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
               n
-              (fun i : Fin n => chartBasisVecFiber (I := I) α i b)
+              (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
               Idx Jdx)
         ≤ (∑ _Idx : Fin r → Fin n,
             ∑ _Jdx : Fin s → Fin n, C₂ * RawSq) := hB_sum
@@ -160,7 +160,7 @@ theorem riemannianFiberNormSq_le_raw_components_on_pouTsupport
           ∑ Jdx : Fin s → Fin n,
             fiberNormSqSummand (I := I) (M := M) g b r s (S.toSection b)
               n
-              (fun i : Fin n => chartBasisVecFiber (I := I) α i b)
+              (fun i : Fin n => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
               Idx Jdx) ≤
         C₃ * (cardIJ * (C₂ * RawSq)) :=
     mul_le_mul_of_nonneg_left hAB_inner hC₃_nn

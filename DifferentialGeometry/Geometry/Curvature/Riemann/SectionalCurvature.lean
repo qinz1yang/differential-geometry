@@ -52,10 +52,10 @@ def sectionalCurvatureNumerator (g : SmoothRiemannianMetric I M) (p : M)
     ∑ j : Fin (Module.finrank ℝ E),
       ∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) l *
-            ((chartModelBasis E).repr w) i *
-              ((chartModelBasis E).repr v) j *
-                ((chartModelBasis E).repr w) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) l *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) i *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) k *
                   chartRiemannLower (I := I) g p i j k l (extChartAt I p p)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -67,10 +67,10 @@ omit [NeZero (Module.finrank ℝ E)] in
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             ∑ l : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr v) l *
-                ((chartModelBasis E).repr w) i *
-                  ((chartModelBasis E).repr v) j *
-                    ((chartModelBasis E).repr w) k *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) l *
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) i *
+                  ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) j *
+                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) k *
                       chartRiemannLower (I := I) g p i j k l
                         (extChartAt I p p) := rfl
 
@@ -206,8 +206,8 @@ theorem sectionalCurvatureNumerator_smul_left
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl ?_; intro j _
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl ?_; intro k _
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl ?_; intro l _
-  have h_repr : (chartModelBasis E).repr (c • v) =
-      c • (chartModelBasis E).repr v := map_smul _ _ _
+  have h_repr : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (c • v) =
+      c • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v := map_smul _ _ _
   rw [h_repr]
   simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
   ring
@@ -225,8 +225,8 @@ theorem sectionalCurvatureNumerator_smul_right
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl ?_; intro j _
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl ?_; intro k _
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl ?_; intro l _
-  have h_repr : (chartModelBasis E).repr (c • w) =
-      c • (chartModelBasis E).repr w := map_smul _ _ _
+  have h_repr : (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (c • w) =
+      c • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w := map_smul _ _ _
   rw [h_repr]
   simp only [Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul]
   ring
@@ -421,8 +421,8 @@ theorem sectionalCurvatureNumerator_symm_of_chartRiemannLower_second_pair_antisy
     ring
   rw [sectionalCurvatureNumerator_def, sectionalCurvatureNumerator_def]
   refine Eq.trans ?_ (chartFourFold_reverse_sum (n := Module.finrank ℝ E)
-    (α := fun i => ((chartModelBasis E).repr v) i)
-    (β := fun i => ((chartModelBasis E).repr w) i)
+    (α := fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i)
+    (β := fun i => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr w) i)
     (T := fun a b c d =>
       chartRiemannLower (I := I) g p d c b a (extChartAt I p p)))
   refine Finset.sum_congr rfl (fun i _ => ?_)

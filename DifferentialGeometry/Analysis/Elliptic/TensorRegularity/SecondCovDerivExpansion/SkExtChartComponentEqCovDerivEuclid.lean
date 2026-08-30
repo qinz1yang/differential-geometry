@@ -172,17 +172,17 @@ theorem chartPushedRaw_tensorChartComponentRaw_S_k_ext_eqOn_covDerivComponentEuc
       covApply
         (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
-        (chartBasisVecFiber (I := I) α k) T₀.toSection b := hU_eq b hb_U
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection b := hU_eq b hb_U
   have hSk_unfold :
       S_k_ext.toFun b = (S_k_ext : Π b' : M, TensorRSSpace r s I b') b := rfl
   rw [hSk_unfold, hStep_BTCi]
   rw [covApply_apply]
   have hCovDerivAt : (TensorRSNabla.tensorRSCovariantDerivative I M r s
         (LeviCivita (I := I) g)).toFun T₀.toSection b
-        (chartBasisVecFiber (I := I) α k b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
       tensorCovDerivAt (I := I) (M := M) g r s T₀ b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α k b)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) := by
     rw [tensorCovDerivAt_def]
     simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [hCovDerivAt]

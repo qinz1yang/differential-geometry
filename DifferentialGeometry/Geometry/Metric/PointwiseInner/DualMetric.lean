@@ -17,7 +17,6 @@ namespace DifferentialGeometry
 namespace Integral
 namespace L2
 
-open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -72,12 +71,12 @@ lemma modelInnerAt_eq_zero_iff
 def gramMatrixAt (g : SmoothRiemannianMetric I M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i j =>
-    modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) ((chartModelBasis E) j)
+    modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
 
 @[simp] lemma gramMatrixAt_apply (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     gramMatrixAt (I := I) (M := M) g x i j =
-      modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) ((chartModelBasis E) j) := rfl
+      modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := rfl
 
 lemma gramMatrixAt_isHermitian
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -101,11 +100,11 @@ lemma gramMatrixAt_posDef
     (gramMatrixAt_isHermitian (I := I) (M := M) g x) ?_
   intro v hv
   let w : E := ∑ i : Fin (Module.finrank ℝ E),
-    v i • (chartModelBasis E) i
+    v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
   have hw_ne : w ≠ 0 := by
     intro h
-    have hlin : LinearIndependent ℝ ((chartModelBasis E) : Fin _ → E) :=
-      (chartModelBasis E).linearIndependent
+    have hlin : LinearIndependent ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) : Fin _ → E) :=
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).linearIndependent
     rw [Fintype.linearIndependent_iff] at hlin
     exact hv (funext (hlin v h))
   have hquad : star v ⬝ᵥ (gramMatrixAt (I := I) (M := M) g x) *ᵥ v =
@@ -114,25 +113,25 @@ lemma gramMatrixAt_posDef
         modelInnerAt (I := I) (M := M) g x w w =
           ∑ j : Fin (Module.finrank ℝ E),
             v j * ∑ i : Fin (Module.finrank ℝ E),
-              v i * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
-                ((chartModelBasis E) j) := by
-      change modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i)
-          (∑ j, v j • (chartModelBasis E) j) = _
+              v i * modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
+      change modelInnerAt (I := I) (M := M) g x (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+          (∑ j, v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) = _
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro j _
       have hsm1 :
-          (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
-              (v j • (chartModelBasis E) j)
-            = v j * (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
-              ((chartModelBasis E) j) := by
-        have hh : (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
-              (v j • (chartModelBasis E) j)
-            = v j • (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
-              ((chartModelBasis E) j) :=
+          (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+            = v j * (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
+        have hh : (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              (v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+            = v j • (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) :=
           ContinuousLinearMap.map_smul
-            (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
-            (v j) ((chartModelBasis E) j)
+            (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (v j) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
         rw [hh, smul_eq_mul]
       rw [hsm1]
       congr 1
@@ -140,12 +139,12 @@ lemma gramMatrixAt_posDef
       refine Finset.sum_congr rfl ?_
       intro i _
       have hsm2 :
-          (modelInnerAt (I := I) (M := M) g x (v i • (chartModelBasis E) i))
-              ((chartModelBasis E) j) =
-            v i * (modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
-        have hh : modelInnerAt (I := I) (M := M) g x (v i • (chartModelBasis E) i) =
-            v i • modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) :=
-          ContinuousLinearMap.map_smul (modelInnerAt (I := I) (M := M) g x) (v i) ((chartModelBasis E) i)
+          (modelInnerAt (I := I) (M := M) g x (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+            v i * (modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
+        have hh : modelInnerAt (I := I) (M := M) g x (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+            v i • modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+          ContinuousLinearMap.map_smul (modelInnerAt (I := I) (M := M) g x) (v i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         rw [hh, smul_apply, smul_eq_mul]
       exact hsm2
     rw [hbilin]
@@ -154,8 +153,8 @@ lemma gramMatrixAt_posDef
             star (v i) * (gramMatrixAt (I := I) (M := M) g x *ᵥ v) i =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              v i * v j * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
-                ((chartModelBasis E) j) := by
+              v i * v j * modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
       refine Finset.sum_congr rfl ?_
       intro i _
       rw [star_trivial]
@@ -172,12 +171,12 @@ lemma gramMatrixAt_posDef
     have hRHS :
         ∑ j : Fin (Module.finrank ℝ E),
             v j * ∑ i : Fin (Module.finrank ℝ E),
-              v i * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
-                ((chartModelBasis E) j) =
+              v i * modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              v i * v j * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
-                ((chartModelBasis E) j) := by
+              v i * v j * modelInnerAt (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
+                ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -580,8 +579,8 @@ private lemma separableFormAt_basis_apply
     (g : SmoothRiemannianMetric I M) (x : M) (r : ℕ)
     (idx jdx : Fin r → Fin (Module.finrank ℝ E)) :
     separableFormAt (I := I) (M := M) g x r
-        (fun k : Fin r => (chartModelBasis E) (idx k))
-        (fun k : Fin r => (chartModelBasis E) (jdx k)) =
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k))
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) =
       ∏ k : Fin r,
         gramMatrixAt (I := I) (M := M) g x (idx k) (jdx k) := by
   rw [separableFormAt_apply]
@@ -596,32 +595,32 @@ private lemma lower_at_basis_pair_zero_of_lower_zero
     (idx : Fin r → Fin (Module.finrank ℝ E))
     (jdx : Fin s → Fin (Module.finrank ℝ E)) :
     (T (separableFormAt (I := I) (M := M) g x r
-          (fun k : Fin r => (chartModelBasis E) (idx k))))
-        (fun j : Fin s => (chartModelBasis E) (jdx j)) = 0 := by
+          (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k))))
+        (fun j : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx j)) = 0 := by
   have hzero :
       lowerAllUpperIndices (I := I) (M := M) g r s x T
           (Fin.append
-            (fun k : Fin r => (chartModelBasis E) (idx k))
-            (fun j : Fin s => (chartModelBasis E) (jdx j))) = 0 := by
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k))
+            (fun j : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx j))) = 0 := by
     rw [hT]
     rfl
   rw [lowerAllUpperIndices_apply] at hzero
   have hcast :
       (fun k : Fin r =>
           Fin.append
-            (fun k' : Fin r => (chartModelBasis E) (idx k'))
-            (fun j' : Fin s => (chartModelBasis E) (jdx j'))
+            (fun k' : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k'))
+            (fun j' : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx j'))
             (Fin.castAdd s k)) =
-        (fun k : Fin r => (chartModelBasis E) (idx k)) := by
+        (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k)) := by
     funext k
     exact Fin.append_left _ _ k
   have hnat :
       (fun j : Fin s =>
           Fin.append
-            (fun k' : Fin r => (chartModelBasis E) (idx k'))
-            (fun j' : Fin s => (chartModelBasis E) (jdx j'))
+            (fun k' : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k'))
+            (fun j' : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx j'))
             (Fin.natAdd r j)) =
-        (fun j : Fin s => (chartModelBasis E) (jdx j)) := by
+        (fun j : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx j)) := by
     funext j
     exact Fin.append_right _ _ j
   rw [hcast, hnat] at hzero
@@ -630,11 +629,11 @@ private lemma lower_at_basis_pair_zero_of_lower_zero
 private lemma cmlm_eq_zero_of_basis_zero
     {p : ℕ} (S : ContinuousMultilinearMap ℝ (fun _ : Fin p => E) ℝ)
     (h : ∀ φ : Fin p → Fin (Module.finrank ℝ E),
-      S (fun k : Fin p => (chartModelBasis E) (φ k)) = 0) :
+      S (fun k : Fin p => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) = 0) :
     S = 0 := by
   apply ContinuousMultilinearMap.toMultilinearMap_injective
   refine Module.Basis.ext_multilinear
-    (e := fun _ : Fin p => chartModelBasis E) ?_
+    (e := fun _ : Fin p => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ?_
   intro v
   rw [ContinuousMultilinearMap.toMultilinearMap_zero,
     zero_apply]
@@ -643,12 +642,12 @@ private lemma cmlm_eq_zero_of_basis_zero
 private lemma tensor0SModel_ext_basis
     {p : ℕ} (S₁ S₂ : ContinuousMultilinearMap ℝ (fun _ : Fin p => E) ℝ)
     (h : ∀ φ : Fin p → Fin (Module.finrank ℝ E),
-      S₁ (fun k : Fin p => (chartModelBasis E) (φ k)) =
-        S₂ (fun k : Fin p => (chartModelBasis E) (φ k))) :
+      S₁ (fun k : Fin p => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) =
+        S₂ (fun k : Fin p => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) :
     S₁ = S₂ := by
   apply ContinuousMultilinearMap.toMultilinearMap_injective
   refine Module.Basis.ext_multilinear
-    (e := fun _ : Fin p => chartModelBasis E) ?_
+    (e := fun _ : Fin p => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ?_
   intro v
   exact h v
 
@@ -666,8 +665,8 @@ theorem lowerAllUpperIndices_injective
   intro kdx
   have hTβ : ∀ idx : Fin r → Fin n,
       (T (separableFormAt (I := I) (M := M) g x r
-            (fun k : Fin r => (chartModelBasis E) (idx k))))
-          (fun j : Fin s => (chartModelBasis E) (kdx j)) = 0 :=
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k))))
+          (fun j : Fin s => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (kdx j)) = 0 :=
     fun idx => lower_at_basis_pair_zero_of_lower_zero
       (I := I) (M := M) g r s x T hT idx kdx
   let Ginv : Matrix (Fin n) (Fin n) ℝ :=
@@ -680,20 +679,20 @@ theorem lowerAllUpperIndices_injective
     exact gramMatrixAt_inv_mul_self (I := I) (M := M) g x
   let c : (Fin r → Fin n) → ℝ := fun idx =>
     ∑ jdx : Fin r → Fin n,
-      α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+      α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
         ∏ k : Fin r, Ginv (jdx k) (idx k)
   have hspan :
       α = ∑ idx : Fin r → Fin n, c idx •
         separableFormAt (I := I) (M := M) g x r
-          (fun k : Fin r => (chartModelBasis E) (idx k)) := by
+          (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k)) := by
     refine tensor0SModel_ext_basis _ _ ?_
     intro kdx'
     rw [sum_apply]
     have hRHS_step :
         (∑ idx : Fin r → Fin n,
           (c idx • separableFormAt (I := I) (M := M) g x r
-            (fun k : Fin r => (chartModelBasis E) (idx k)))
-            (fun k : Fin r => (chartModelBasis E) (kdx' k)))
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (idx k)))
+            (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (kdx' k)))
           = ∑ idx : Fin r → Fin n,
             c idx * ∏ k : Fin r, G (idx k) (kdx' k) := by
       refine Finset.sum_congr rfl ?_
@@ -705,19 +704,19 @@ theorem lowerAllUpperIndices_injective
         ∑ idx : Fin r → Fin n,
             c idx * ∏ k : Fin r, G (idx k) (kdx' k)
           = ∑ jdx : Fin r → Fin n,
-            α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+            α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
               ∑ idx : Fin r → Fin n,
                 (∏ k : Fin r, Ginv (jdx k) (idx k)) *
                   ∏ k : Fin r, G (idx k) (kdx' k) := by
       have h1 : ∀ idx : Fin r → Fin n,
           c idx * ∏ k : Fin r, G (idx k) (kdx' k)
             = ∑ jdx : Fin r → Fin n,
-              α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+              α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
                 ((∏ k : Fin r, Ginv (jdx k) (idx k)) *
                   ∏ k : Fin r, G (idx k) (kdx' k)) := by
         intro idx
         change (∑ jdx : Fin r → Fin n,
-              α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+              α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
                 ∏ k : Fin r, Ginv (jdx k) (idx k)) *
               ∏ k : Fin r, G (idx k) (kdx' k) = _
         rw [Finset.sum_mul]
@@ -774,17 +773,17 @@ theorem lowerAllUpperIndices_injective
         rw [if_neg hk₀]
     have hsimplify :
         ∑ jdx : Fin r → Fin n,
-            α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+            α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
               ∑ idx : Fin r → Fin n,
                 (∏ k : Fin r, Ginv (jdx k) (idx k)) *
                   ∏ k : Fin r, G (idx k) (kdx' k)
-          = α (fun k : Fin r => (chartModelBasis E) (kdx' k)) := by
+          = α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (kdx' k)) := by
       have hrewrite : ∀ jdx : Fin r → Fin n,
-          α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+          α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
               ∑ idx : Fin r → Fin n,
                 (∏ k : Fin r, Ginv (jdx k) (idx k)) *
                   ∏ k : Fin r, G (idx k) (kdx' k)
-            = α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+            = α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
               if jdx = kdx' then (1 : ℝ) else 0 := by
         intro jdx
         rw [hcombine jdx, hfubini jdx]
@@ -794,11 +793,11 @@ theorem lowerAllUpperIndices_injective
       rw [Finset.sum_congr rfl (fun jdx _ => hrewrite jdx)]
       have hsum :
           ∑ jdx : Fin r → Fin n,
-              α (fun k : Fin r => (chartModelBasis E) (jdx k)) *
+              α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
                 (if jdx = kdx' then (1 : ℝ) else 0)
             = ∑ jdx : Fin r → Fin n,
               if jdx = kdx' then
-                α (fun k : Fin r => (chartModelBasis E) (jdx k))
+                α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k))
               else 0 := by
         refine Finset.sum_congr rfl ?_
         intro jdx _
@@ -807,7 +806,7 @@ theorem lowerAllUpperIndices_injective
         · simp [hjk]
       rw [hsum]
       have h := Finset.sum_ite_eq' Finset.univ kdx'
-        (fun jdx => α (fun k : Fin r => (chartModelBasis E) (jdx k)))
+        (fun jdx => α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)))
       rw [h, if_pos (Finset.mem_univ _)]
     rw [hsimplify]
   rw [hspan]

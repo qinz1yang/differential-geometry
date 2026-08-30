@@ -1061,19 +1061,19 @@ theorem chartGram_quad_le_of_equiv
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
     (x₀ x : M) (v : Fin (Module.finrank ℝ E) → ℝ) :
-    v ⬝ᵥ (chartGramMatrix (I := I) g₀ x₀ x) *ᵥ v ≤
-      Λ * (v ⬝ᵥ (chartGramMatrix (I := I) gBase x₀ x) *ᵥ v) := by
-  have hg₀ : v ⬝ᵥ (chartGramMatrix (I := I) g₀ x₀ x) *ᵥ v =
-      g₀.inner x (∑ i, v i • chartBasisVecFiber (I := I) x₀ i x)
-        (∑ j, v j • chartBasisVecFiber (I := I) x₀ j x) := by
-    rw [← chartGramMatrix_dotProduct_mulVec (I := I) g₀ x₀ x v, star_trivial]
-  have hgB : v ⬝ᵥ (chartGramMatrix (I := I) gBase x₀ x) *ᵥ v =
-      gBase.inner x (∑ i, v i • chartBasisVecFiber (I := I) x₀ i x)
-        (∑ j, v j • chartBasisVecFiber (I := I) x₀ j x) := by
-    rw [← chartGramMatrix_dotProduct_mulVec (I := I) gBase x₀ x v, star_trivial]
+    v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₀ x₀ x) *ᵥ v ≤
+      Λ * (v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gBase x₀ x) *ᵥ v) := by
+  have hg₀ : v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₀ x₀ x) *ᵥ v =
+      g₀.inner x (∑ i, v i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+        (∑ j, v j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x) := by
+    rw [← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g₀ x₀ x v, star_trivial]
+  have hgB : v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gBase x₀ x) *ᵥ v =
+      gBase.inner x (∑ i, v i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)
+        (∑ j, v j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ j x) := by
+    rw [← DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) gBase x₀ x v, star_trivial]
   rw [hg₀, hgB]
   exact (hEq.2 x (Set.mem_univ x)
-    (∑ i, v i • chartBasisVecFiber (I := I) x₀ i x)).2
+    (∑ i, v i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)).2
 
 theorem chartDensity_cross_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
@@ -1083,23 +1083,23 @@ theorem chartDensity_cross_le
     chartDensity (I := I) g₀ x₀ x ≤
       Real.sqrt (Λ ^ Module.finrank ℝ E) * chartDensity (I := I) gBase x₀ x := by
   have hΛpos : 0 < Λ := lt_of_lt_of_le zero_lt_one hEq.1
-  have hA : (chartGramMatrix (I := I) g₀ x₀ x).PosSemidef :=
-    (chartGramMatrix_posDef (I := I) g₀ x₀ hx).posSemidef
-  have hB : (Λ • chartGramMatrix (I := I) gBase x₀ x).PosDef :=
-    (chartGramMatrix_posDef (I := I) gBase x₀ hx).smul hΛpos
+  have hA : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₀ x₀ x).PosSemidef :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g₀ x₀ hx).posSemidef
+  have hB : (Λ • DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gBase x₀ x).PosDef :=
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) gBase x₀ hx).smul hΛpos
   have hAB : ∀ v : Fin (Module.finrank ℝ E) → ℝ,
-      v ⬝ᵥ (chartGramMatrix (I := I) g₀ x₀ x) *ᵥ v ≤
-        v ⬝ᵥ (Λ • chartGramMatrix (I := I) gBase x₀ x) *ᵥ v := by
+      v ⬝ᵥ (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₀ x₀ x) *ᵥ v ≤
+        v ⬝ᵥ (Λ • DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gBase x₀ x) *ᵥ v := by
     intro v
     rw [Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul]
     exact chartGram_quad_le_of_equiv (I := I) gBase g₀ hEq x₀ x v
-  have hdet : (chartGramMatrix (I := I) g₀ x₀ x).det ≤
-      Λ ^ Module.finrank ℝ E * (chartGramMatrix (I := I) gBase x₀ x).det := by
+  have hdet : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₀ x₀ x).det ≤
+      Λ ^ Module.finrank ℝ E * (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gBase x₀ x).det := by
     have h := det_le_of_posSemidef_le hA hB hAB
     rwa [Matrix.det_smul, Fintype.card_fin] at h
-  change Real.sqrt ((chartGramMatrix (I := I) g₀ x₀ x).det) ≤
+  change Real.sqrt ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₀ x₀ x).det) ≤
     Real.sqrt (Λ ^ Module.finrank ℝ E) *
-      Real.sqrt ((chartGramMatrix (I := I) gBase x₀ x).det)
+      Real.sqrt ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) gBase x₀ x).det)
   rw [← Real.sqrt_mul (pow_nonneg hΛpos.le _)]
   exact Real.sqrt_le_sqrt hdet
 

@@ -123,7 +123,7 @@ private theorem realizedDeTurckLie_threeArm_lowerOrder_residual
   refine ⟨Φ₀L, Φ₁L, Φ₂L, hj0, hj1, hj2, fun s hs x v => ?_⟩
   rw [(hasDerivAt_realizedDeTurckLieChartSum_general (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
     x (v 0) (v 1) hs).deriv]
-  simpa only [centeredChartTangentEquiv_apply] using
+  simpa only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply] using
     hident s hs x (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i))
 
 section LieCorrectionZeroBoundsAll

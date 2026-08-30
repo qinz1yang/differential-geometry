@@ -216,9 +216,9 @@ private theorem movingCov_contOn
     refine (contAt_sum Finset.univ _ (fun i _ ↦
       contAt_sum Finset.univ _ (fun j _ ↦ ?_))).smul continuousAt_const
     exact (((hGamma i j k).mul
-      (((chartModelBasis E).coord i).toContinuousLinearMap.continuous.continuousAt.comp
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.continuous.continuousAt.comp
         hdu)).mul
-      (((chartModelBasis E).coord j).toContinuousLinearMap.continuous.continuousAt.comp
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.continuous.continuousAt.comp
         hrep))
   have hchart : ContinuousAt
       (fun s ↦ chartCovDerivAlong (I := I) (S.base.metric (tau s))

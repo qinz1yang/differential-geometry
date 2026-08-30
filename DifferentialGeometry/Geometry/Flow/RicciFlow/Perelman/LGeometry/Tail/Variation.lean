@@ -152,7 +152,7 @@ theorem exists_lTailFamily
     exact hv.trans (by
       change trivFromE (I := I) x x A = A
       rw [trivFromE_self_apply]
-      exact Integral.Measure.centeredChartTangentEquiv_symm_apply (I := I) x A)
+      exact DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply (I := I) x A)
   have halpha_eq : (fun s ↦ alpha (A, s)) = gamma := by
     funext s
     rfl

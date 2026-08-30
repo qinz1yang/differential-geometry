@@ -27,22 +27,22 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 def ricciDiffBasisSummand (g₀ gₖ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) (i : Fin (Module.finrank ℝ E)) : TangentSpace I x :=
   (covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) gₖ)
-        (smoothExtensionTangent (I := I) x ((centeredChartTangentBasis (I := I) x) i))
+        (smoothExtensionTangent (I := I) x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i))
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) x
       - covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) gₖ)
         (smoothExtensionTangent (I := I) x v)
-        (smoothExtensionTangent (I := I) x ((centeredChartTangentBasis (I := I) x) i))
+        (smoothExtensionTangent (I := I) x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i))
         (smoothExtensionTangent (I := I) x w) x)
     + (CovariantDerivative.difference (LeviCivita (I := I) gₖ) (LeviCivita (I := I) g₀) x
           (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) gₖ)
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w) x)
-          (smoothExtensionTangent (I := I) x ((centeredChartTangentBasis (I := I) x) i) x)
+          (smoothExtensionTangent (I := I) x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i) x)
         - CovariantDerivative.difference (LeviCivita (I := I) gₖ)
             (LeviCivita (I := I) g₀) x
           (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) gₖ)
-            (smoothExtensionTangent (I := I) x ((centeredChartTangentBasis (I := I) x) i))
+            (smoothExtensionTangent (I := I) x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i))
             (smoothExtensionTangent (I := I) x w) x)
           (smoothExtensionTangent (I := I) x v x))
 
@@ -52,7 +52,7 @@ theorem ricciTensor_sub_eq_basisSum_summand (g₀ gₖ : SmoothRiemannianMetric 
     (v w : TangentSpace I x) :
     ricciTensor (I := I) gₖ x v w - ricciTensor (I := I) g₀ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (ricciDiffBasisSummand (I := I) g₀ gₖ x v w i) i := by
   rw [ricciTensor_sub_eq_basisSum_difference (I := I) g₀ gₖ x v w]
   rfl
@@ -63,7 +63,7 @@ theorem ricciTensor_sub_telescope (g₀ g₁ g₂ : SmoothRiemannianMetric I M) 
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g₁ x v w - ricciTensor (I := I) g₂ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (ricciDiffBasisSummand (I := I) g₀ g₁ x v w i
             - ricciDiffBasisSummand (I := I) g₀ g₂ x v w i) i := by
   have h1 := ricciTensor_sub_eq_basisSum_summand (I := I) g₀ g₁ x v w
@@ -73,12 +73,12 @@ theorem ricciTensor_sub_telescope (g₀ g₁ g₂ : SmoothRiemannianMetric I M) 
         - (ricciTensor (I := I) g₂ x v w - ricciTensor (I := I) g₀ x v w) := by ring
   rw [key, h1, h2, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [show (centeredChartTangentBasis (I := I) x).repr
+  rw [show (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
         (ricciDiffBasisSummand (I := I) g₀ g₁ x v w i
           - ricciDiffBasisSummand (I := I) g₀ g₂ x v w i)
-        = (centeredChartTangentBasis (I := I) x).repr
+        = (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (ricciDiffBasisSummand (I := I) g₀ g₁ x v w i)
-          - (centeredChartTangentBasis (I := I) x).repr
+          - (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (ricciDiffBasisSummand (I := I) g₀ g₂ x v w i)
       from map_sub _ _ _, Finsupp.sub_apply]
 

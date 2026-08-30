@@ -44,7 +44,7 @@ private theorem exists_smooth_exp
           (γ s) (V s) : TangentBundle I M)))
     (B : Fin (Module.finrank Real E) -> ∀ x : M, TangentSpace I x)
     (hBnear : ∀ᶠ x in 𝓝 (γ t), ∀ i,
-      B i x = chartBasisVecFiber (I := I) (γ t) i x) :
+      B i x = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (γ t) i x) :
     ∃ c : Fin (Module.finrank Real E) -> Real -> Real,
       (∀ i, ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ (c i)) ∧
       (∀ i, c i t =
@@ -88,7 +88,7 @@ private theorem exists_smooth_exp
   have hγcont : ContinuousAt γ t := hγ.continuous.continuousAt
   have hBcurve :
       ∀ᶠ s in 𝓝 t, ∀ i, B i (γ s) =
-        chartBasisVecFiber (I := I) (γ t) i (γ s) :=
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (γ t) i (γ s) :=
     hγcont hBnear
   have hbase :
       ∀ᶠ s in 𝓝 t,

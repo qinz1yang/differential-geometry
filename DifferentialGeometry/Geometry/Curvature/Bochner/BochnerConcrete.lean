@@ -38,8 +38,8 @@ private theorem sum_g_inner_T_self_eq_invGram_sum
       ∑ k : Fin (Module.finrank ℝ E),
         ∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x k l *
-            g.inner x (T ((centeredChartTangentBasis (I := I) x) k))
-              (T ((centeredChartTangentBasis (I := I) x) l)) := by
+            g.inner x (T ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) k))
+              (T ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) l)) := by
   classical
   set Hb : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
     (((g.inner x).comp T).flip.comp T).flip with hHb_def
@@ -68,11 +68,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2S
 private lemma g_inner_centeredBasis_eq_chartGram
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    g.inner x ((centeredChartTangentBasis (I := I) x) i)
-        ((centeredChartTangentBasis (I := I) x) j) =
-      chartGramMatrix (I := I) g x x i j := by
+    g.inner x ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j) =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x i j := by
   classical
-  rw [chartGramMatrix_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
   rw [chartBasisVecFiber_self (I := I) x i]
   rw [chartBasisVecFiber_self (I := I) x j]
 
@@ -80,13 +80,13 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2S
 private lemma g_inner_centeredBasis_first_decomp
     (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) (n : Fin (Module.finrank ℝ E)) :
-    g.inner x v ((centeredChartTangentBasis (I := I) x) n) =
+    g.inner x v ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) n) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr v p *
-          chartGramMatrix (I := I) g x x p n := by
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v p *
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p n := by
   classical
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    centeredChartTangentBasis (I := I) x with hb_def
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x with hb_def
   have hv_eq : v = ∑ p : Fin (Module.finrank ℝ E), b.repr v p • b p :=
     (Module.Basis.sum_repr b v).symm
   rw [show g.inner x v =
@@ -106,18 +106,18 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2S
 private lemma centeredBasis_repr_eq_invGram_sum
     (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) (n : Fin (Module.finrank ℝ E)) :
-    (centeredChartTangentBasis (I := I) x).repr v n =
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v n =
       ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
-          g.inner x v ((centeredChartTangentBasis (I := I) x) m) := by
+          g.inner x v ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) m) := by
   classical
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    centeredChartTangentBasis (I := I) x with hb_def
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x with hb_def
   have h_inner : ∀ m : Fin (Module.finrank ℝ E),
       g.inner x v (b m) =
         ∑ p : Fin (Module.finrank ℝ E),
           b.repr v p *
-            chartGramMatrix (I := I) g x x p m :=
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m :=
     g_inner_centeredBasis_first_decomp (I := I) g x v
   rw [show (∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
@@ -125,27 +125,27 @@ private lemma centeredBasis_repr_eq_invGram_sum
       ∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
           (∑ p : Fin (Module.finrank ℝ E),
-            b.repr v p * chartGramMatrix (I := I) g x x p m) from by
+            b.repr v p * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m) from by
     refine Finset.sum_congr rfl ?_
     intro m _
     rw [h_inner m]]
   rw [show (∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
           (∑ p : Fin (Module.finrank ℝ E),
-            b.repr v p * chartGramMatrix (I := I) g x x p m)) =
+            b.repr v p * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m)) =
       ∑ p : Fin (Module.finrank ℝ E),
         b.repr v p *
           (∑ m : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x n m *
-              chartGramMatrix (I := I) g x x p m) from by
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m) from by
     rw [show (∑ m : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x n m *
               (∑ p : Fin (Module.finrank ℝ E),
-                b.repr v p * chartGramMatrix (I := I) g x x p m)) =
+                b.repr v p * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m)) =
         ∑ m : Fin (Module.finrank ℝ E),
           ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x n m *
-              (b.repr v p * chartGramMatrix (I := I) g x x p m) from by
+              (b.repr v p * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m) from by
       refine Finset.sum_congr rfl ?_
       intro m _
       rw [Finset.mul_sum]]
@@ -159,21 +159,21 @@ private lemma centeredBasis_repr_eq_invGram_sum
   have h_inner_collapse : ∀ p : Fin (Module.finrank ℝ E),
       (∑ m : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x n m *
-          chartGramMatrix (I := I) g x x p m) =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m) =
         (if n = p then (1 : ℝ) else 0) := by
     intro p
     have hsymm : ∀ m : Fin (Module.finrank ℝ E),
-        chartGramMatrix (I := I) g x x p m =
-          chartGramMatrix (I := I) g x x m p := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m =
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x m p := by
       intro m
-      rw [chartGramMatrix_apply, chartGramMatrix_apply]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
       exact g.symm x _ _
     rw [show (∑ m : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x n m *
-            chartGramMatrix (I := I) g x x p m) =
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m) =
         ∑ m : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x n m *
-            chartGramMatrix (I := I) g x x m p from by
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x m p from by
       refine Finset.sum_congr rfl ?_
       intro m _
       rw [hsymm m]]
@@ -183,9 +183,9 @@ private lemma centeredBasis_repr_eq_invGram_sum
       (I := I) g x hxbase
     rw [show (∑ m : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g x x n m *
-            chartGramMatrix (I := I) g x x m p) =
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x m p) =
         (chartInvGramMatrix (I := I) g x x *
-          chartGramMatrix (I := I) g x x) n p from by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x) n p from by
       rw [Matrix.mul_apply]]
     rw [hidentity]
     rw [Matrix.one_apply]
@@ -193,7 +193,7 @@ private lemma centeredBasis_repr_eq_invGram_sum
         b.repr v p *
           (∑ m : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g x x n m *
-              chartGramMatrix (I := I) g x x p m)) =
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x p m)) =
       ∑ p : Fin (Module.finrank ℝ E),
         b.repr v p * (if n = p then (1 : ℝ) else 0) from by
     refine Finset.sum_congr rfl ?_
@@ -215,7 +215,7 @@ theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
       chartHessFrobeniusSq (I := I) g f x := by
   classical
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
-    centeredChartTangentBasis (I := I) x with hb_def
+    DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x with hb_def
   set T : TangentSpace I x →L[ℝ] TangentSpace I x :=
     (LeviCivita (I := I) g).toFun
       (fun b => gradFun (I := I) g f b) x with hT_def

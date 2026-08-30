@@ -327,8 +327,8 @@ theorem sum_abstractHessian_orthonormal_eq_laplacian [I.Boundaryless]
   rw [show (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           abstractHessian (I := I) g f x
-            (centeredChartTangentBasis (I := I) x k)
-            (centeredChartTangentBasis (I := I) x l)) =
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           chartHessianTensor (I := I) g x f k l x from by

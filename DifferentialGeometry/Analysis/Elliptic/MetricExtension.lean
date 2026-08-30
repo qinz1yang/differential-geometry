@@ -55,7 +55,7 @@ lemma toEuclidean_symm_mem_target {α : M} {y : EuclN}
 
 def gramOnEuclid (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) : ℝ :=
-  chartGramMatrix (I := I) g α
+  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) i j
 
 def invGramOnEuclid (g : SmoothRiemannianMetric I M) (α : M)
@@ -116,9 +116,9 @@ lemma gramOnEuclid_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α) :=
     contMDiffOn_chart_symm (I := I) α
   have h_g : ContMDiffOn I 𝓘(ℝ) ∞
-      (fun x : M => chartGramMatrix g α x i j)
+      (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α x i j)
       (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartGramMatrix_entry_contMDiffOn (I := I) g α i j
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α i j
   have h_maps := mapsTo_chart_symm_baseSet (I := I) (M := M) α
   have h_comp : ContMDiffOn 𝓘(ℝ, EuclN) 𝓘(ℝ) ∞
       (gramOnEuclid (I := I) g α i j)
@@ -191,8 +191,8 @@ lemma invGramOnEuclid_symm_of_mem
   have h_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     change x ∈ (chartAt H α).source
     rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
-  have hHerm : (chartGramMatrix (I := I) g α x).IsHermitian :=
-    chartGramMatrix_isHermitian (I := I) g α x
+  have hHerm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).IsHermitian :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α x
   have hHermInv : (chartInvGramMatrix (I := I) g α x).IsHermitian := by
     unfold chartInvGramMatrix
     exact hHerm.inv
@@ -241,8 +241,8 @@ lemma invGramOnEuclid_posDef
   have h_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     change x ∈ (chartAt H α).source
     rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
-  have hG : (chartGramMatrix (I := I) g α x).PosDef :=
-    chartGramMatrix_posDef (I := I) g α h_base
+  have hG : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).PosDef :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α h_base
   have hGinv : (chartInvGramMatrix (I := I) g α x).PosDef := by
     unfold chartInvGramMatrix
     exact hG.inv

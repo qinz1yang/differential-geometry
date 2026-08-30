@@ -274,7 +274,7 @@ theorem forwardUniqueEnergy_hasDerivAt
     {U : Set Real} {t : Real} (hU : IsOpen U) (ht : t ∈ U)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (U ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hdens : ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M => forwardUniqueDensity (I := I) g₁ g₂ p.1 p.2)

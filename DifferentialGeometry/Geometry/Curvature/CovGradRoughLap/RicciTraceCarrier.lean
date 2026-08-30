@@ -98,7 +98,7 @@ theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun b : M => (ricciTensor (I := I) g b (Y b)).toLinearMap
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source := by
     intro α j
     have hRic : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -107,12 +107,12 @@ theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
           (ricciTensor (I := I) g b)) :=
       ricciTensor_contMDiff (I := I) g
     have hBasis : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-        (chartBasisVec (I := I) α j)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j)
         (trivializationAt E (TangentSpace I) α).baseSet :=
-      chartBasisVec_contMDiffOn (I := I) α j
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
     have happ : ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
         (fun b : M => (⟨b,
-            ricciTensor (I := I) g b (Y b) (chartBasisVecFiber (I := I) α j b)⟩ :
+            ricciTensor (I := I) g b (Y b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)⟩ :
             TotalSpace ℝ (Bundle.Trivial M ℝ)))
         (trivializationAt E (TangentSpace I) α).baseSet :=
       ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)

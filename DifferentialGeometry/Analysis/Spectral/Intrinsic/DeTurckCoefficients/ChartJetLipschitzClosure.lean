@@ -323,7 +323,7 @@ theorem HasChartJetLip.partialDeriv
   refine ⟨fun g => partialDeriv_contDiffOn_of_isOpen hs_open (hF.contDiff g) i,
     fun N => ?_, fun N => ?_⟩
   · obtain ⟨B, hB_nn, hB⟩ := hF.bound (N + 1)
-    refine ⟨‖(chartModelBasis E) i‖ * B,
+    refine ⟨‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * B,
       mul_nonneg (norm_nonneg _) hB_nn, fun y hy m hm => ?_⟩
     have hyS : y ∈ s := hKsub hy
     obtain ⟨hB1, hB2⟩ := hB y hy (m + 1) (by omega)
@@ -333,7 +333,7 @@ theorem HasChartJetLip.partialDeriv
     · refine (norm_iteratedFDerivWithin_partialDeriv_le hs_open (hF.contDiff g₂) i m hyS).trans ?_
       exact mul_le_mul_of_nonneg_left hB2 (norm_nonneg _)
   · obtain ⟨C, hC_pos, hC⟩ := hF.lip (N + 1)
-    refine ⟨‖(chartModelBasis E) i‖ * C + 1, by positivity, fun y hy => ?_⟩
+    refine ⟨‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * C + 1, by positivity, fun y hy => ?_⟩
     have hyS : y ∈ s := hKsub hy
     have hEqOn : EqOn
         (fun z => DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv i (F g₁) z -
@@ -348,15 +348,15 @@ theorem HasChartJetLip.partialDeriv
         chartGramJetDiffSeminormSum (I := I) (M := M) (N + (d + 1)) g₁ g₂ α s y :=
       chartGramJetDiffSeminormSum_nonneg (I := I) (M := M) (N + (d + 1)) g₁ g₂ α s y
     have hN1d : N + 1 + d = N + (d + 1) := by omega
-    calc ‖(chartModelBasis E) i‖ *
+    calc ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ *
             ‖iteratedFDerivWithin ℝ (N + 1) (fun z => F g₁ z - F g₂ z) s y‖
-        ≤ ‖(chartModelBasis E) i‖ *
+        ≤ ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ *
             (C * chartGramJetDiffSeminormSum (I := I) (M := M) (N + 1 + d) g₁ g₂ α s y) :=
           mul_le_mul_of_nonneg_left (hC y hy) (norm_nonneg _)
-      _ = (‖(chartModelBasis E) i‖ * C) *
+      _ = (‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * C) *
             chartGramJetDiffSeminormSum (I := I) (M := M) (N + (d + 1)) g₁ g₂ α s y := by
           rw [hN1d]; ring
-      _ ≤ (‖(chartModelBasis E) i‖ * C + 1) *
+      _ ≤ (‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i‖ * C + 1) *
             chartGramJetDiffSeminormSum (I := I) (M := M) (N + (d + 1)) g₁ g₂ α s y := by
           refine mul_le_mul_of_nonneg_right ?_ hsem_nn; linarith
 

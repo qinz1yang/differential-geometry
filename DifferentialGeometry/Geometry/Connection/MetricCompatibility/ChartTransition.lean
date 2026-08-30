@@ -74,18 +74,18 @@ private theorem chartGramOnE_eq_sum_chartTransition' [I.Boundaryless]
     change p ∈ (chartAt H β).source; exact hp_β_src
   have h_lhs :
       chartGramOnE (I := I) g α i j x =
-        chartGramMatrix g α p i j := by
-    change chartGramMatrix g α ((extChartAt I α).symm x) i j =
-        chartGramMatrix g α p i j
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j := by
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α ((extChartAt I α).symm x) i j =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j
     rw [hp_symm]
   have h_rhs_inner : ∀ a b : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g β a b
         (chartTransitionMap (I := I) α β x) =
-      chartGramMatrix g β p a b := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b := by
     intro a b
-    change chartGramMatrix g β
+    change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β
         ((extChartAt I β).symm (chartTransitionMap (I := I) α β x)) a b =
-      chartGramMatrix g β p a b
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b
     rw [h_tβ, (extChartAt I β).left_inv hp_ext_β]
   rw [h_lhs]
   rw [chartGramMatrix_pullback_eq_sum (I := I) g β α
@@ -119,7 +119,7 @@ private def invGramPullbackCandidate
 private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α β : M) {p : M}
     (hp_α : p ∈ (chartAt H α).source) (hp_β : p ∈ (chartAt H β).source) :
-    chartGramMatrix (I := I) g α p *
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p *
         invGramPullbackCandidate (I := I) g α β p = 1 := by
   classical
   set x := extChartAt I α p with hx_def
@@ -136,9 +136,9 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
       ((chartAt H α).source ∩ (chartAt H β).source) := by
     refine ⟨p, ⟨hp_α, hp_β⟩, rfl⟩
   have hGram : ∀ k m : Fin (Module.finrank ℝ E),
-      chartGramMatrix (I := I) g α p k m =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p k m =
         ∑ a, ∑ b, J a k * J b m *
-          chartGramMatrix (I := I) g β p a b := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b := by
     intro k m
     have h := chartGramOnE_eq_sum_chartTransition' (I := I) g α β x hx_mem k m
     have hp_ext_α : p ∈ (extChartAt I α).source := by
@@ -151,7 +151,7 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
       rw [hTx_def, hx_def]
       change extChartAt I β ((extChartAt I α).symm (extChartAt I α p)) = _
       rw [(extChartAt I α).left_inv hp_ext_α]
-    have hLHS : chartGramOnE (I := I) g α k m x = chartGramMatrix (I := I) g α p k m := by
+    have hLHS : chartGramOnE (I := I) g α k m x = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p k m := by
       rw [chartGramOnE_def (I := I) g α k m x, hsymm]
     rw [hLHS] at h
     rw [h]
@@ -160,7 +160,7 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
     refine Finset.sum_congr rfl ?_
     intro b _
     have hGβ : chartGramOnE (I := I) g β a b (chartTransitionMap (I := I) α β x) =
-        chartGramMatrix (I := I) g β p a b := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b := by
       rw [chartGramOnE_def (I := I) g β a b (chartTransitionMap (I := I) α β x),
         ← hTx_def, hTx_eq, (extChartAt I β).left_inv hp_ext_β]
     rw [hGβ]
@@ -173,14 +173,14 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
     rw [← hTx_def] at h
     exact h
   have hGβinvR : ∀ a d : Fin (Module.finrank ℝ E),
-      ∑ b, chartGramMatrix (I := I) g β p a b * Gβinv b d =
+      ∑ b, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b * Gβinv b d =
         (if a = d then (1 : ℝ) else 0) := by
     intro a d
     have hmul := chartGramMatrix_mul_chartInvGramMatrix (I := I) g β hp_triv_β
     have := congrFun (congrFun hmul a) d
     rw [Matrix.mul_apply] at this
     rw [hGβinv_def]
-    rw [show (∑ b, chartGramMatrix (I := I) g β p a b *
+    rw [show (∑ b, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b *
         chartInvGramMatrix (I := I) g β p b d) =
         (1 : Matrix _ _ ℝ) a d from this]
     rw [Matrix.one_apply]
@@ -201,12 +201,12 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ :=
     fun a b i j m =>
-      (J a k * chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j) *
+      (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j) *
         (J b m * K m i) with hΦ_def
-  calc ∑ m, chartGramMatrix (I := I) g α p k m *
+  calc ∑ m, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α p k m *
           invGramPullbackCandidate (I := I) g α β p m l
       = ∑ m, (∑ a, ∑ b, J a k * J b m *
-            chartGramMatrix (I := I) g β p a b) *
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) *
           (∑ i, ∑ j, K m i * K l j * Gβinv i j) := by
         refine Finset.sum_congr rfl ?_
         intro m _
@@ -233,7 +233,7 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
         refine Finset.sum_congr rfl ?_; intro i _
         rw [Finset.sum_comm]
     _ = ∑ a, ∑ b, ∑ i, ∑ j,
-          (J a k * chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j) *
+          (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j) *
             (if b = i then (1 : ℝ) else 0) := by
         refine Finset.sum_congr rfl ?_; intro a _
         refine Finset.sum_congr rfl ?_; intro b _
@@ -241,34 +241,34 @@ private theorem chartGramMatrix_mul_invGramPullbackCandidate [I.Boundaryless]
         refine Finset.sum_congr rfl ?_; intro j _
         rw [hΦ_def, ← Finset.mul_sum, hMut' b i]
     _ = ∑ a, ∑ b, ∑ j,
-          (J a k * chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv b j) := by
+          (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv b j) := by
         refine Finset.sum_congr rfl ?_; intro a _
         refine Finset.sum_congr rfl ?_; intro b _
         rw [Finset.sum_comm]
         refine Finset.sum_congr rfl ?_; intro j _
-        rw [show (∑ i, (J a k * chartGramMatrix (I := I) g β p a b) *
+        rw [show (∑ i, (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) *
                 (K l j * Gβinv i j) * (if b = i then (1 : ℝ) else 0)) =
               ∑ i, (if b = i then
-                (J a k * chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j)
+                (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j)
                 else 0) from by
           refine Finset.sum_congr rfl ?_; intro i _
           by_cases h : b = i
           · rw [if_pos h, if_pos h, mul_one]
           · rw [if_neg h, if_neg h, mul_zero]]
         rw [Finset.sum_ite_eq Finset.univ b
-          (fun i => (J a k * chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j))]
+          (fun i => (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j))]
         rw [if_pos (Finset.mem_univ b)]
     _ = ∑ a, J a k * K l a := by
         refine Finset.sum_congr rfl ?_; intro a _
         rw [Finset.sum_comm]
         have hstep : ∀ j : Fin (Module.finrank ℝ E),
-            (∑ b, (J a k * chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv b j)) =
+            (∑ b, (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv b j)) =
               (if a = j then J a k * K l j else 0) := by
           intro j
-          have : (∑ b, (J a k * chartGramMatrix (I := I) g β p a b) *
+          have : (∑ b, (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) *
                 (K l j * Gβinv b j)) =
               J a k * K l j *
-                (∑ b, chartGramMatrix (I := I) g β p a b * Gβinv b j) := by
+                (∑ b, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b * Gβinv b j) := by
             rw [Finset.mul_sum]
             refine Finset.sum_congr rfl ?_; intro b _
             ring
@@ -343,10 +343,10 @@ lemma chartTransitionJacEntry_contDiffOn [I.Boundaryless]
       (fun y => chartTransitionJacEntry (I := I) α β y a i)
       (chartTransitionSource (I := I) α β) := by
   set coordCLM : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((chartModelBasis E).coord a) with hcoordCLM
+    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a) with hcoordCLM
   set evalCoord : (E →L[ℝ] E) →L[ℝ] ℝ :=
     coordCLM.comp
-      (ContinuousLinearMap.apply ℝ E ((chartModelBasis E) i)) with hevalCoord
+      (ContinuousLinearMap.apply ℝ E ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) with hevalCoord
   have hfun : (fun y => chartTransitionJacEntry (I := I) α β y a i) =
       evalCoord ∘ (fun y => (chartTransitionAt (I := I) α β y : E →L[ℝ] E)) := by
     funext y
@@ -414,14 +414,14 @@ lemma partialDeriv_chartGramOnE_comp_chartTransitionMap [I.Boundaryless]
   rw [hcomp_eq]
   rw [fderiv_comp y hGβ_diff hT_diff]
   rw [ContinuousLinearMap.comp_apply]
-  have hTk : fderiv ℝ T y ((chartModelBasis E) k) =
+  have hTk : fderiv ℝ T y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) =
       ∑ c : Fin (Module.finrank ℝ E),
-        chartTransitionJacEntry (I := I) α β y c k • (chartModelBasis E) c := by
-    have hexp : chartTransitionAt (I := I) α β y ((chartModelBasis E) k) =
+        chartTransitionJacEntry (I := I) α β y c k • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c := by
+    have hexp : chartTransitionAt (I := I) α β y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) =
         ∑ c : Fin (Module.finrank ℝ E),
-          chartTransitionJacEntry (I := I) α β y c k • (chartModelBasis E) c := by
-      conv_lhs => rw [← (chartModelBasis E).sum_repr
-        (chartTransitionAt (I := I) α β y ((chartModelBasis E) k))]
+          chartTransitionJacEntry (I := I) α β y c k • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c := by
+      conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr
+        (chartTransitionAt (I := I) α β y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))]
       rfl
     rw [chartTransitionAt_def] at hexp
     rw [hT_def]
@@ -614,9 +614,9 @@ lemma chartCoord_chartTransitionAt (α β : M) (x : E) (v : E)
   unfold chartCoord chartTransitionJacEntry
   have hexp : chartTransitionAt (I := I) α β x v =
       ∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr v i •
-          chartTransitionAt (I := I) α β x ((chartModelBasis E) i) := by
-    conv_lhs => rw [← (chartModelBasis E).sum_repr v]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v i •
+          chartTransitionAt (I := I) α β x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr v]
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro i _
@@ -636,7 +636,7 @@ def chartTransitionSecondDerivCorrection (α β : M) (v w : E) (x : E) : E :=
           partialDeriv (E := E) i
             (fun z => chartTransitionJacEntry (I := I) α β z c j) x *
             chartCoord (E := E) i v * chartCoord (E := E) j w)) •
-      chartModelBasis E k
+      DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k
 
 omit [IsManifold I ∞ M] in
 @[simp] lemma chartTransitionSecondDerivCorrection_def
@@ -650,7 +650,7 @@ omit [IsManifold I ∞ M] in
               partialDeriv (E := E) i
                 (fun z => chartTransitionJacEntry (I := I) α β z c j) x *
                 chartCoord (E := E) i v * chartCoord (E := E) j w)) •
-          chartModelBasis E k := rfl
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k := rfl
 
 lemma partialDeriv_chartTransitionJacEntry_swap [I.Boundaryless]
     (α β : M) (a i l : Fin (Module.finrank ℝ E)) {y : E}
@@ -662,7 +662,7 @@ lemma partialDeriv_chartTransitionJacEntry_swap [I.Boundaryless]
   classical
   set T := chartTransitionMap (I := I) α β with hT_def
   set coordCLM : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((chartModelBasis E).coord a) with hcoordCLM
+    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a) with hcoordCLM
   have h_open : IsOpen (chartTransitionSource (I := I) α β) :=
     chartTransitionSource_isOpen (I := I) α β
   have hcontDiffAt : ContDiffAt ℝ ∞ T y := by
@@ -681,12 +681,12 @@ lemma partialDeriv_chartTransitionJacEntry_swap [I.Boundaryless]
   have hkey : ∀ p q : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) p
           (fun z => chartTransitionJacEntry (I := I) α β z a q) y =
-        coordCLM ((fderiv ℝ (fderiv ℝ T) y ((chartModelBasis E) p))
-          ((chartModelBasis E) q)) := by
+        coordCLM ((fderiv ℝ (fderiv ℝ T) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p))
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q)) := by
     intro p q
     unfold partialDeriv
     set L : (E →L[ℝ] E) →L[ℝ] ℝ :=
-      coordCLM.comp (ContinuousLinearMap.apply ℝ E ((chartModelBasis E) q)) with hL
+      coordCLM.comp (ContinuousLinearMap.apply ℝ E ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q)) with hL
     have hcomp_eq : (fun z : E =>
           chartTransitionJacEntry (I := I) α β z a q) = L ∘ (fderiv ℝ T) := by
       funext z
@@ -698,7 +698,7 @@ lemma partialDeriv_chartTransitionJacEntry_swap [I.Boundaryless]
     rw [ContinuousLinearMap.comp_apply, L.fderiv]
     rw [hL, ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply]
   rw [hkey i l, hkey l i]
-  rw [hsymm ((chartModelBasis E) i) ((chartModelBasis E) l)]
+  rw [hsymm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) l)]
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma chartTransitionMap_extChartAt_symm
@@ -729,7 +729,7 @@ lemma chartInvGramBeta_mul_chartGramOnE_diag
   have hG : ∀ d : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g β d b
           (chartTransitionMap (I := I) α β (extChartAt I α p)) =
-        chartGramMatrix (I := I) g β p d b := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p d b := by
     intro d
     rw [chartGramOnE_def, hsymm]
   rw [Finset.sum_congr rfl (fun d (_ : d ∈ Finset.univ) =>
@@ -1244,18 +1244,18 @@ lemma chartCoord_chartChristoffelContraction
   classical
   rw [chartChristoffelContraction_def, chartCoord, map_sum, Finsupp.finsetSum_apply]
   have hbasis : ∀ k : Fin (Module.finrank ℝ E),
-      (chartModelBasis E).repr ((chartModelBasis E) k) l = if k = l then 1 else 0 :=
-    fun k => (chartModelBasis E).repr_self_apply k l
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) l = if k = l then 1 else 0 :=
+    fun k => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k l
   calc
     ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           ((∑ i, ∑ j, chartChristoffel (I := I) g α i j k y *
             chartCoord (E := E) i v * chartCoord (E := E) j w) •
-            chartModelBasis E k)) l
+            DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) l
       = ∑ k : Fin (Module.finrank ℝ E),
           (∑ i, ∑ j, chartChristoffel (I := I) g α i j k y *
             chartCoord (E := E) i v * chartCoord (E := E) j w) *
-            ((chartModelBasis E).repr (chartModelBasis E k) l) := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k) l) := by
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [map_smul, Finsupp.smul_apply, smul_eq_mul]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -1394,7 +1394,7 @@ theorem chartChristoffelContraction_transform [I.Boundaryless]
   set Tx := chartTransitionMap (I := I) α β x with hTx_def
   set Jv := chartTransitionAt (I := I) α β x v with hJv
   set Jw := chartTransitionAt (I := I) α β x w with hJw
-  refine (chartModelBasis E).ext_elem (fun l => ?_)
+  refine (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).ext_elem (fun l => ?_)
   change chartCoord (E := E) l
       (chartChristoffelContraction (I := I) g α v w x) =
     chartCoord (E := E) l
@@ -1422,10 +1422,10 @@ theorem chartChristoffelContraction_transform [I.Boundaryless]
     rw [← hTx_def]
     rw [Finset.sum_eq_single_of_mem l (Finset.mem_univ l)]
     · rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (chartModelBasis E).repr_self_apply l l, if_pos rfl, mul_one]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply l l, if_pos rfl, mul_one]
     · intro k _ hkl
       rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (chartModelBasis E).repr_self_apply k l, if_neg hkl, mul_zero]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k l, if_neg hkl, mul_zero]
   rw [hcorr]
   have hinner : ∀ c : Fin (Module.finrank ℝ E),
       chartCoord (E := E) c
@@ -1512,8 +1512,8 @@ lemma fderiv_chartTransitionJacEntry_eq_sum_partialDeriv
             (fun z => chartTransitionJacEntry (I := I) α β z a i) y := by
   classical
   have hv : v = ∑ k : Fin (Module.finrank ℝ E),
-      chartCoord (E := E) k v • (chartModelBasis E) k := by
-    conv_lhs => rw [← (chartModelBasis E).sum_repr v]
+      chartCoord (E := E) k v • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
+    conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr v]
     rfl
   conv_lhs => rw [hv]
   rw [map_sum]
@@ -1594,7 +1594,7 @@ lemma chartCoord_fderiv_chartTransitionAt_general [I.Boundaryless]
       chartTransitionAt_smooth (I := I) α β
     exact (hcd.contDiffAt (h_open.mem_nhds hx)).differentiableAt (by simp)
   set coordCLM : E →L[ℝ] ℝ :=
-    LinearMap.toContinuousLinearMap ((chartModelBasis E).coord a) with hcoordCLM
+    LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a) with hcoordCLM
   set eval : (E →L[ℝ] E) →L[ℝ] ℝ :=
     coordCLM.comp (ContinuousLinearMap.apply ℝ E w) with heval
   have hstep1 :
@@ -1657,7 +1657,7 @@ lemma fderiv_chartTransitionAt_apply_eq_pushCorrection [I.Boundaryless]
       chartTransitionAt (I := I) α β x
         (chartTransitionSecondDerivCorrection (I := I) α β v w x) := by
   classical
-  refine (chartModelBasis E).ext_elem (fun a => ?_)
+  refine (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).ext_elem (fun a => ?_)
   change chartCoord (E := E) a
       ((fderiv ℝ (fun z => chartTransitionAt (I := I) α β z) x v) w) =
     chartCoord (E := E) a
@@ -1681,10 +1681,10 @@ lemma fderiv_chartTransitionAt_apply_eq_pushCorrection [I.Boundaryless]
       Finsupp.finsetSum_apply]
     rw [Finset.sum_eq_single_of_mem c (Finset.mem_univ c)]
     · rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (chartModelBasis E).repr_self_apply c c, if_pos rfl, mul_one]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply c c, if_pos rfl, mul_one]
     · intro k _ hkc
       rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (chartModelBasis E).repr_self_apply k c, if_neg hkc, mul_zero]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k c, if_neg hkc, mul_zero]
   rw [Finset.sum_congr rfl (fun c (_ : c ∈ Finset.univ) =>
     congrArg (fun t => chartTransitionJacEntry (I := I) α β x a c * t) (hcorrCoord c))]
   set D : Fin (Module.finrank ℝ E) → ℝ := fun d =>

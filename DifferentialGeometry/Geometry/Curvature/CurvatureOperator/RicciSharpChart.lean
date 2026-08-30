@@ -30,11 +30,11 @@ theorem ricciSharp_chart
         (∑ j : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g α x i j *
             ∑ k : Fin (Module.finrank ℝ E),
-              ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
                 ricciTensor (I := I) g x
-                  (chartBasisVecFiber (I := I) α k x)
-                  (chartBasisVecFiber (I := I) α j x)) •
-          chartModelBasis E i := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)) •
+          DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i := by
   classical
   let cv : ∀ y : M, TangentSpace I y →ₗ[ℝ] ℝ := fun y ↦
     (ricciTensor (I := I) g y
@@ -51,12 +51,12 @@ theorem ricciSharp_chart
   rw [hsharp]
   have hrec := chartBasisVecFiber_recompose (I := I) α hx v
   have hcomponent (j : Fin (Module.finrank ℝ E)) :
-      ricciTensor (I := I) g x v (chartBasisVecFiber (I := I) α j x) =
+      ricciTensor (I := I) g x v (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
         ∑ k : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr (trivToE (I := I) α x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x v)) k *
             ricciTensor (I := I) g x
-              (chartBasisVecFiber (I := I) α k x)
-              (chartBasisVecFiber (I := I) α j x) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) := by
     conv_lhs => rw [hrec]
     rw [map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun k _ ↦ ?_)

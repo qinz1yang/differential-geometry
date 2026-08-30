@@ -87,7 +87,7 @@ theorem conjugating_diffeo_family_jointsmooth
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
             (mfderiv I I (Φ_fam p.1 : M → M) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
         (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (Set.Ico (0 : ℝ) T ×ˢ Set.univ) := by
@@ -149,11 +149,11 @@ theorem conjugating_diffeo_family_jointsmooth
     refine (hΦsection_joint x₀ i).congr ?_
     rintro ⟨s, x⟩ ⟨hs, hx⟩
     change (TotalSpace.mk' E ((Φ_fam s : M → M) x)
-        (mfderiv I I (Φ_fam s : M → M) x (Integral.Measure.chartBasisVecFiber (I := I) x₀ i x))
+        (mfderiv I I (Φ_fam s : M → M) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x))
         : TangentBundle I M)
       = (TotalSpace.mk' E (Φ s x)
           (mfderiv I I (fun y : M => Φ s y) x
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i x)) : TangentBundle I M)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)) : TangentBundle I M)
     rw [hfun_eqOn s hs]
   · have hIcoSub : Set.Ico (0 : ℝ) T_DT ⊆ Set.Ioo lo hi := fun t ht =>
       ⟨lt_of_lt_of_le hlo ht.1, lt_trans ht.2 hhi⟩
@@ -190,7 +190,7 @@ theorem conjugating_diffeo_family
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
             (mfderiv I I (Φ_fam p.1 : M → M) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
   obtain ⟨T, hT0, hT_le, Φ_fam, h0, hode, hcont0, hbundle0, horbit, hsection, -⟩ :=
     conjugating_diffeo_family_jointsmooth (I := I) g_DT g_bg T_DT hDT h_smooth0

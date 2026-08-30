@@ -51,13 +51,13 @@ private lemma covRS_covApply_B_i_T₀_at_B_i_eq_coord_sum_outer
               (LeviCivita (I := I) g))
               (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
               (fun z : M => T₀.toSection z)) b
-            (chartBasisVecFiber (I := I) α l b) := by
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
   classical
   have hExpand :
       (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b =
         ∑ l : Fin (Module.finrank ℝ E),
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b •
-            chartBasisVecFiber (I := I) α l b := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b := by
     have h := chartFrameNormGlobalSmooth_eq_coordMatrix_sum
       (I := I) (M := M) g α i (b := b) hb
     have hcoerce : ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i :
@@ -108,7 +108,7 @@ private lemma chart_α_proj_covRS_covApply_B_i_T₀_at_B_i_eq_coord_sum_outer
                     (LeviCivita (I := I) g))
                     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b))) := by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b))) := by
   classical
   rw [covRS_covApply_B_i_T₀_at_B_i_eq_coord_sum_outer
       (I := I) (M := M) g r s α T₀ i (b := b) hb]
@@ -126,7 +126,7 @@ private lemma chart_α_proj_covRS_covApply_B_i_T₀_at_B_i_eq_coord_sum_outer
                   (LeviCivita (I := I) g))
                   (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) =
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) =
         ∑ l : Fin (Module.finrank ℝ E),
           chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b •
             L ((TensorRSNabla.tensorRSCovariantDerivative I M r s
@@ -135,7 +135,7 @@ private lemma chart_α_proj_covRS_covApply_B_i_T₀_at_B_i_eq_coord_sum_outer
                   (LeviCivita (I := I) g))
                   (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                   (fun z : M => T₀.toSection z)) b
-                (chartBasisVecFiber (I := I) α l b)) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) := by
     rw [map_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
@@ -167,7 +167,7 @@ theorem chartPushed_rawConnLap_chart_α_proj_eq_weighted_secondCovDeriv_minus_fr
                     (LeviCivita (I := I) g))
                     (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                     (fun z : M => T₀.toSection z)) b
-                  (chartBasisVecFiber (I := I) α l b)))) -
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) -
       (∑ i : Fin (Module.finrank ℝ E),
         tensorChartComponentProjection (E := E) r s Idx Jdx
           ((trivializationAt (TensorRSModel r s ℝ E)
@@ -222,7 +222,7 @@ theorem chartPushed_rawConnLap_chart_α_proj_eq_weighted_secondCovDeriv_minus_fr
                       (LeviCivita (I := I) g))
                       (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                       (fun z : M => T₀.toSection z)) b
-                    (chartBasisVecFiber (I := I) α l b)))) -
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) -
           tensorChartComponentProjection (E := E) r s Idx Jdx
             ((trivializationAt (TensorRSModel r s ℝ E)
                 (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
@@ -265,7 +265,7 @@ theorem chartPushed_rawConnLap_chart_α_proj_eq_weighted_secondCovDeriv_minus_fr
                       (LeviCivita (I := I) g))
                       (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun
                       (fun z : M => T₀.toSection z)) b
-                    (chartBasisVecFiber (I := I) α l b)))) -
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)))) -
           tensorChartComponentProjection (E := E) r s Idx Jdx
             ((trivializationAt (TensorRSModel r s ℝ E)
                 (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b

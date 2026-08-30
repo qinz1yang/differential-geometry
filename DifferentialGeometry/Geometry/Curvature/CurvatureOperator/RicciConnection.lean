@@ -186,13 +186,13 @@ theorem ricciTensor_apply_basisSum (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (riemannOp (LeviCivita (I := I) g) x
-            (centeredChartTangentBasis (I := I) x i) v w) i := by
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) v w) i := by
   classical
   rw [ricciTensor_apply]
   rw [LinearMap.trace_eq_matrix_trace ℝ
-        (centeredChartTangentBasis (I := I) x) (ricciEndo (I := I) g x v w)]
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) (ricciEndo (I := I) g x v w)]
   unfold Matrix.trace
   refine Finset.sum_congr rfl ?_
   intro i _
@@ -218,16 +218,16 @@ theorem ricciTensor_apply_smooth_basisSum (g : SmoothRiemannianMetric I M)
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z))
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
-    (x : M) (hBx : ∀ i, B i x = centeredChartTangentBasis (I := I) x i) :
+    (x : M) (hBx : ∀ i, B i x = DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) :
     ricciTensor (I := I) g x (Y x) (Z x) =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (riemannSec (LeviCivita (I := I) g) (B i) Y Z x) i := by
   classical
   rw [ricciTensor_apply_basisSum]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [show centeredChartTangentBasis (I := I) x i = B i x from (hBx i).symm,
+  rw [show DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i = B i x from (hBx i).symm,
       riemannOp_apply_smooth (cov := LeviCivita (I := I) g) (hB i) hY hZ]
 
 lemma trace_eq_zero_of_skew_dual
@@ -1035,12 +1035,12 @@ private lemma trace_eq_chart_sum
     (F : TangentSpace I b →L[ℝ] TangentSpace I b) :
     LinearMap.trace ℝ (TangentSpace I b) (F : TangentSpace I b →ₗ[ℝ] TangentSpace I b) =
       ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           ((trivializationAt E (TangentSpace I : M → Type _) x).continuousLinearMapAt ℝ b
-            (F (chartBasisVecFiber (I := I) x i b)))) i := by
+            (F (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b)))) i := by
   classical
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he
-  set basisB := chartBasisFamily (I := I) x hb with hbasisB_def
+  set basisB := DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) x hb with hbasisB_def
   rw [LinearMap.trace_eq_matrix_trace ℝ basisB
       (F : TangentSpace I b →ₗ[ℝ] TangentSpace I b)]
   unfold Matrix.trace
@@ -1048,20 +1048,20 @@ private lemma trace_eq_chart_sum
   intro i _
   simp only [Matrix.diag_apply]
   rw [LinearMap.toMatrix_apply]
-  rw [show basisB i = chartBasisVecFiber (I := I) x i b from
-    chartBasisFamily_apply (I := I) x hb i]
-  change (basisB.repr (F (chartBasisVecFiber (I := I) x i b))) i =
-      ((chartModelBasis E).repr
-        (e.continuousLinearMapAt ℝ b (F (chartBasisVecFiber (I := I) x i b)))) i
+  rw [show basisB i = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b from
+    DifferentialGeometry.Tensor.Coordinates.chartBasisFamily_apply (I := I) x hb i]
+  change (basisB.repr (F (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b))) i =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
+        (e.continuousLinearMapAt ℝ b (F (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b)))) i
   rw [hbasisB_def]
-  unfold chartBasisFamily
+  unfold DifferentialGeometry.Tensor.Coordinates.chartBasisFamily
   rw [Module.Basis.map_repr]
   simp only [LinearEquiv.trans_apply]
   congr 2
   change (e.continuousLinearEquivAt ℝ b hb : TangentSpace I b → E)
-      (F (chartBasisVecFiber (I := I) x i b)) =
+      (F (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b)) =
       (e.continuousLinearMapAt ℝ b : TangentSpace I b → E)
-        (F (chartBasisVecFiber (I := I) x i b))
+        (F (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b))
   rw [Trivialization.coe_continuousLinearEquivAt_eq (R := ℝ) e hb]
 
 private noncomputable def localFrameSmoothExtension
@@ -1070,7 +1070,7 @@ private noncomputable def localFrameSmoothExtension
   classical
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he_def
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
-  have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (chartModelBasis E)
+  have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
   exact (hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he).choose
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M]
@@ -1078,11 +1078,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold
 private lemma localFrameSmoothExtension_eqOn_nhd (x : M) :
     let e := trivializationAt E (TangentSpace I : M → Type _) x
     ∀ᶠ b in 𝓝 x, ∀ i, (localFrameSmoothExtension (I := I) x i) b =
-      e.localFrame (chartModelBasis E) i b := by
+      e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i b := by
   classical
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he_def
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
-  have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (chartModelBasis E)
+  have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
   exact (hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he).choose_spec
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M]
@@ -1098,14 +1098,14 @@ private noncomputable def finBasisReprAt (i : Fin (Module.finrank ℝ E)) :
   haveI : T2Space E := inferInstance
   haveI : FiniteDimensional ℝ E := inferInstance
   LinearMap.toContinuousLinearMap
-    (((LinearMap.proj i).comp ((chartModelBasis E).equivFun.toLinearMap)) : E →ₗ[ℝ] ℝ)
+    (((LinearMap.proj i).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) : E →ₗ[ℝ] ℝ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 @[simp] private lemma finBasisReprAt_apply (i : Fin (Module.finrank ℝ E)) (v : E) :
-    finBasisReprAt (E := E) i v = ((chartModelBasis E).repr v) i := by
+    finBasisReprAt (E := E) i v = ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v) i := by
   classical
   unfold finBasisReprAt
-  change ((LinearMap.proj i).comp ((chartModelBasis E).equivFun.toLinearMap)) v = _
+  change ((LinearMap.proj i).comp ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun.toLinearMap)) v = _
   rw [LinearMap.comp_apply]
   simp [Module.Basis.equivFun]
 
@@ -1127,7 +1127,7 @@ theorem ricciTensor_pairing_contMDiff
       (T% (fun b : M => S i b)) := fun i =>
     localFrameSmoothExtension_contMDiff (I := I) x i
   have hS_eqOn_nhd : ∀ᶠ b in 𝓝 x, ∀ i,
-      S i b = e.localFrame (chartModelBasis E) i b :=
+      S i b = e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i b :=
     localFrameSmoothExtension_eqOn_nhd (I := I) x
   have hsec_smooth : ∀ i,
       ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -1135,7 +1135,7 @@ theorem ricciTensor_pairing_contMDiff
     riemannSec_section_smooth g (hS_smooth i) hY hW
   have hsummand_smooth : ∀ i,
       ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-        (fun b : M => ((chartModelBasis E).repr
+        (fun b : M => ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ b (riemannSec (LeviCivita (I := I) g) (S i) Y W b))) i) x := by
     intro i
     have h_triv : ContMDiffAt I 𝓘(ℝ, E) ∞
@@ -1165,7 +1165,7 @@ theorem ricciTensor_pairing_contMDiff
   have h_decomp_nhd : ∀ᶠ b in 𝓝 x,
       ricciTensor (I := I) g b (Y b) (W b) =
         ∑ i : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ b (riemannSec (LeviCivita (I := I) g) (S i) Y W b))) i := by
     filter_upwards [e.open_baseSet.mem_nhds hex, hS_eqOn_nhd] with b hb hSb
     have h1 : ricciTensor (I := I) g b (Y b) (W b) =
@@ -1183,20 +1183,20 @@ theorem ricciTensor_pairing_contMDiff
     rw [trace_eq_chart_sum (I := I) (x := x) (b := b) hb F]
     refine Finset.sum_congr rfl ?_
     intro i _
-    have hframe_eq : e.localFrame (chartModelBasis E) i b =
-        chartBasisVecFiber (I := I) x i b := by
+    have hframe_eq : e.localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i b =
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b := by
       rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hb)]
       simp only [Trivialization.basisAt, Module.Basis.map_apply,
         Trivialization.linearEquivAt_symm_apply]
       calc
-        e.symm b ((chartModelBasis E) i) =
-            e.symmL ℝ b ((chartModelBasis E) i) :=
+        e.symm b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+            e.symmL ℝ b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
           (Trivialization.symmL_apply e hb _).symm
-        _ = chartBasisVecFiber (I := I) x i b := by
+        _ = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b := by
           with_unfolding_all
             rfl
-    have hSb_i : S i b = chartBasisVecFiber (I := I) x i b := (hSb i).trans hframe_eq
-    rw [show chartBasisVecFiber (I := I) x i b = S i b from hSb_i.symm]
+    have hSb_i : S i b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b := (hSb i).trans hframe_eq
+    rw [show DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x i b = S i b from hSb_i.symm]
     have h_F_eq : F (S i b) = riemannOp (LeviCivita (I := I) g) b (S i b) (Y b) (W b) := by
       change ((riemannOp (LeviCivita (I := I) g) b).flip (Y b)).flip (W b) (S i b) =
         riemannOp (LeviCivita (I := I) g) b (S i b) (Y b) (W b)
@@ -1208,7 +1208,7 @@ theorem ricciTensor_pairing_contMDiff
     rw [h_F_eq_riemannSec]
   have hsum_smooth : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun b : M => ∑ i : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ b (riemannSec (LeviCivita (I := I) g) (S i) Y W b))) i) x := by
     apply ContMDiffAt.sum
     intro i _

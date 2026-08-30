@@ -54,20 +54,20 @@ lemma metricFamilySmoothOn_stationary
           (fun q : {t : ℝ // t ∈ D.carrier} × M =>
             metricTensorField (I := I) g q.2
               (fun k : Fin 2 =>
-                DifferentialGeometry.Integral.Measure.chartBasisVecFiber
+                DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
                   (I := I) x₀ (idx k) q.2)) =
           fun q : {t : ℝ // t ∈ D.carrier} × M =>
-            DifferentialGeometry.Integral.Measure.chartGramMatrix
+            DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
               (I := I) g x₀ q.2 (idx 0) (idx 1) := by
         funext q
         rw [metricTensorField_apply,
-          DifferentialGeometry.Integral.Measure.chartGramMatrix_apply]
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply]
       rw [heq]
       have hcont : ContinuousOn (fun x : M =>
-          DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x₀ x
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ x
             (idx 0) (idx 1))
           (trivializationAt E (TangentSpace I) x₀).baseSet :=
-        (DifferentialGeometry.Integral.Measure.chartGramMatrix_entry_contMDiffOn
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn
           (I := I) g x₀ (idx 0) (idx 1)).continuousOn
       have hproj : ContinuousOn (fun q : {t : ℝ // t ∈ D.carrier} × M => q.2)
           {q : {t : ℝ // t ∈ D.carrier} × M |

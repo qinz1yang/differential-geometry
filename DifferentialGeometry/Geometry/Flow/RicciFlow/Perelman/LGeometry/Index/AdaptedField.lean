@@ -145,9 +145,9 @@ private theorem movingCov_smooth
     refine ContDiffAt.sum fun k _ ↦ ?_
     refine (ContDiffAt.sum fun i _ ↦ ContDiffAt.sum fun j _ ↦ ?_).smul contDiffAt_const
     exact (((hGamma i j k).mul
-      (((chartModelBasis E).coord i).toContinuousLinearMap.contDiff.contDiffAt.comp
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff.contDiffAt.comp
         t hdu)).mul
-      (((chartModelBasis E).coord j).toContinuousLinearMap.contDiff.contDiffAt.comp
+      (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff.contDiffAt.comp
         t hrepInf))
   have hchart : ContDiffAt Real ∞
       (fun s ↦ chartCovDerivAlong (I := I) (S.base.metric (tau s))
@@ -229,10 +229,10 @@ private theorem movingRicciPair_smooth
           chartCoord (E := E) k (vrep s) *
             (let x := (extChartAt I (alpha t)).symm (u s)
              S.ricciAt (tau s) x
-               (vec2 (chartBasisVecFiber (I := I) (alpha t) k x)
-                 (chartBasisVecFiber (I := I) (alpha t) j x)))
+               (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (alpha t) k x)
+                 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (alpha t) j x)))
   let wrep : Real → E := fun s ↦
-    ∑ i : Fin (Module.finrank Real E), coeff s i • chartModelBasis E i
+    ∑ i : Fin (Module.finrank Real E), coeff s i • DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i
   let f : Real → Real := fun s ↦
     ∑ i : Fin (Module.finrank Real E),
       ∑ j : Fin (Module.finrank Real E),
@@ -296,14 +296,14 @@ private theorem movingRicciPair_smooth
       (fun s ↦
         let x := (extChartAt I (alpha t)).symm (u s)
         S.ricciAt (tau s) x
-          (vec2 (chartBasisVecFiber (I := I) (alpha t) k x)
-            (chartBasisVecFiber (I := I) (alpha t) j x))) t := by
+          (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (alpha t) k x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (alpha t) j x))) t := by
     have hraw := (chartRicci_joint (I := I) S hS (alpha t) k j).contDiffAt
       (hopen.mem_nhds hpair)
     with_unfolding_all exact hraw.comp t hbase
   have hcoordV (k : Fin (Module.finrank Real E)) : ContDiffAt Real ∞
       (fun s ↦ chartCoord (E := E) k (vrep s)) t :=
-    ((chartModelBasis E).coord k).toContinuousLinearMap.contDiff.contDiffAt.comp t hvrep
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord k).toContinuousLinearMap.contDiff.contDiffAt.comp t hvrep
   have hcoeff (i : Fin (Module.finrank Real E)) : ContDiffAt Real ∞
       (fun s ↦ coeff s i) t := by
     dsimp only [coeff]
@@ -320,10 +320,10 @@ private theorem movingRicciPair_smooth
     exact hraw.comp t huInf
   have hcoordU (i : Fin (Module.finrank Real E)) : ContDiffAt Real ∞
       (fun s ↦ chartCoord (E := E) i (urep s)) t :=
-    ((chartModelBasis E).coord i).toContinuousLinearMap.contDiff.contDiffAt.comp t hurep
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord i).toContinuousLinearMap.contDiff.contDiffAt.comp t hurep
   have hcoordW (j : Fin (Module.finrank Real E)) : ContDiffAt Real ∞
       (fun s ↦ chartCoord (E := E) j (wrep s)) t :=
-    ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff.contDiffAt.comp t hwrep
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord j).toContinuousLinearMap.contDiff.contDiffAt.comp t hwrep
   have hf : ContDiffAt Real ∞ f t := by
     dsimp only [f]
     exact ContDiffAt.sum fun i _ ↦ ContDiffAt.sum fun j _ ↦
@@ -365,7 +365,7 @@ private theorem movingRicciPair_smooth
       (ricciSharp (I := I) (S.base.metric (tau s)) x (V s)) = f s
   rw [← hUround, ← hRround]
   rw [inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) q (alpha t)]
-  change (∑ i, ∑ j, chartGramMatrix (I := I) q (alpha t) x i j *
+  change (∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) q (alpha t) x i j *
       chartCoord (E := E) i (urep s) * chartCoord (E := E) j (wrep s)) =
     ∑ i, ∑ j, chartGramOnE (I := I) q (alpha t) i j (u s) *
       chartCoord (E := E) i (urep s) * chartCoord (E := E) j (wrep s)

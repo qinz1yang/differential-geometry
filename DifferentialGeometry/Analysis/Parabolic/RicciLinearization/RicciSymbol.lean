@@ -28,9 +28,9 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 private lemma centeredChartTangentBasis_repr_apply_add (x : M)
     (v₁ v₂ : TangentSpace I x)
     (i : Fin (Module.finrank ℝ E)) :
-    (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) i =
-      (centeredChartTangentBasis (I := I) x).repr v₁ i +
-        (centeredChartTangentBasis (I := I) x).repr v₂ i := by
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) i =
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁ i +
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂ i := by
   rw [← Module.Basis.coord_apply, ← Module.Basis.coord_apply, ← Module.Basis.coord_apply,
     map_add]
 
@@ -39,8 +39,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 private lemma centeredChartTangentBasis_repr_apply_smul (x : M) (a : ℝ)
     (v : TangentSpace I x)
     (i : Fin (Module.finrank ℝ E)) :
-    (centeredChartTangentBasis (I := I) x).repr (a • v) i =
-      a * (centeredChartTangentBasis (I := I) x).repr v i := by
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (a • v) i =
+      a * (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i := by
   rw [← Module.Basis.coord_apply, ← Module.Basis.coord_apply, map_smul, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -52,8 +52,8 @@ def ricciSymbolOutput (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (fun v w : TangentSpace I x =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          (centeredChartTangentBasis (I := I) x).repr v i *
-            (centeredChartTangentBasis (I := I) x).repr w k *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
             ricciSymbolComp (I := I) g x ξ t i k)
     (fun v₁ v₂ w => by
       rw [← Finset.sum_add_distrib]
@@ -92,8 +92,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     ricciSymbolOutput (I := I) g x ξ t v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
-          (centeredChartTangentBasis (I := I) x).repr v i *
-            (centeredChartTangentBasis (I := I) x).repr w k *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w k *
             ricciSymbolComp (I := I) g x ξ t i k := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -147,13 +147,13 @@ theorem ricciSymbol_apply_apply (g : SmoothRiemannianMetric I M) (x : M) (ξ : E
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i k : Fin (Module.finrank ℝ E)) :
     (ricciSymbol (I := I) g x ξ t)
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x k) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) =
       ricciSymbolComp (I := I) g x ξ t i k := by
   classical
   rw [ricciSymbol_apply, ricciSymbolOutput_apply_apply]
-  rw [(centeredChartTangentBasis (I := I) x).repr_self,
-    (centeredChartTangentBasis (I := I) x).repr_self]
+  rw [(DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr_self,
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr_self]
   rw [Finset.sum_eq_single i]
   · rw [Finset.sum_eq_single k]
     · rw [Finsupp.single_eq_same, Finsupp.single_eq_same]
@@ -174,16 +174,16 @@ theorem ricciSymbol_apply_eq_closedForm (g : SmoothRiemannianMetric I M) (x : M)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i k : Fin (Module.finrank ℝ E)) :
     (ricciSymbol (I := I) g x ξ t)
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x k) =
-      (1 / 2 : ℝ) * ((chartModelBasis E).repr ξ i *
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) =
+      (1 / 2 : ℝ) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i *
           raisedFormContraction (I := I) g x ξ t k) +
-        (1 / 2 : ℝ) * ((chartModelBasis E).repr ξ k *
+        (1 / 2 : ℝ) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ k *
           raisedFormContractionSnd (I := I) g x ξ t i) -
         (1 / 2 : ℝ) * (metricCovectorNormSq (I := I) g x ξ *
           formComp (I := I) x t i k) -
-        (1 / 2 : ℝ) * ((chartModelBasis E).repr ξ i *
-          (chartModelBasis E).repr ξ k * formMetricTrace (I := I) g x t) := by
+        (1 / 2 : ℝ) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i *
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ k * formMetricTrace (I := I) g x t) := by
   rw [ricciSymbol_apply_apply, ricciSymbolComp_eq_closedForm]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in

@@ -73,7 +73,7 @@ theorem expJac_normal_int
         ∂(volume : Measure E) := by
   classical
   let b : Module.Basis (Fin (Module.finrank Real E)) Real E :=
-    chartModelBasis E
+    DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   let b' : Module.Basis (Fin (Module.finrank Real E)) Real E :=
     normalBasis (I := I) g x
   let L : E ≃L[Real] E := normalFrame (I := I) (E := E) g x

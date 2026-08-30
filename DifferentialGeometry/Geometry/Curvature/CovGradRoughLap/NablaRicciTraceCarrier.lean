@@ -91,45 +91,45 @@ theorem nablaRicciBilin_chartBasis_contMDiffOn
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (α : M) (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
-      (fun b : M => nablaRicciBilin (I := I) g X b (Y b) (chartBasisVecFiber (I := I) α j b))
+      (fun b : M => nablaRicciBilin (I := I) g X b (Y b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   classical
   intro x₀ hx₀
-  have hbasis_src : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (chartBasisVec (I := I) α j)
+  have hbasis_src : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j)
       (chartAt H α).source := by
-    have h := chartBasisVec_contMDiffOn (I := I) α j
+    have h := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
     rwa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] at h
   obtain ⟨s', hs'_eq⟩ := exists_contMDiffSection_eqOn_nhd (I := I)
     (F := E) (V := fun b : M => TangentSpace I b) (n := (⊤ : ℕ∞))
-    (s := fun _ : Unit => fun b : M => chartBasisVecFiber (I := I) α j b)
+    (s := fun _ : Unit => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
     (u := (chartAt H α).source) (p := x₀)
     (fun _ => hbasis_src) ((chartAt H α).open_source) hx₀
   set Yext : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := s' () with hYext_def
-  have hYext_eq : ∀ᶠ b in 𝓝 x₀, Yext b = chartBasisVecFiber (I := I) α j b := by
+  have hYext_eq : ∀ᶠ b in 𝓝 x₀, Yext b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b := by
     filter_upwards [hs'_eq] with b hb using hb ()
   have hrw : (fun b : M => nablaRicciBilin (I := I) g X b (Y b)
-        (chartBasisVecFiber (I := I) α j b)) =ᶠ[𝓝 x₀]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) =ᶠ[𝓝 x₀]
       (fun b : M => nablaRicci (I := I) g (fun c => X c) (fun c => Y c) (fun c => Yext c) b) := by
     filter_upwards [hYext_eq] with b hb
     change nablaRicci (I := I) g (fun c => X c)
           (fun c => smoothExtensionTangent (I := I) b (Y b) c)
-          (fun c => smoothExtensionTangent (I := I) b (chartBasisVecFiber (I := I) α j b) c) b =
+          (fun c => smoothExtensionTangent (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) c) b =
         nablaRicci (I := I) g (fun c => X c) (fun c => Y c) (fun c => Yext c) b
     refine nablaRicci_eq_of_VW_eq (g := g) X
       (ContMDiffSection.mk (smoothExtensionTangent (I := I) b (Y b))
         (smoothExtensionTangent_contMDiff (I := I) b (Y b))) Y
-      (ContMDiffSection.mk (smoothExtensionTangent (I := I) b (chartBasisVecFiber (I := I) α j b))
-        (smoothExtensionTangent_contMDiff (I := I) b (chartBasisVecFiber (I := I) α j b))) Yext b
+      (ContMDiffSection.mk (smoothExtensionTangent (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
+        (smoothExtensionTangent_contMDiff (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))) Yext b
       ?_ ?_
     · change smoothExtensionTangent (I := I) b (Y b) b = Y b
       exact smoothExtensionTangent_eq (I := I) b (Y b)
-    · change smoothExtensionTangent (I := I) b (chartBasisVecFiber (I := I) α j b) b = Yext b
-      rw [smoothExtensionTangent_eq (I := I) b (chartBasisVecFiber (I := I) α j b), hb]
+    · change smoothExtensionTangent (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b = Yext b
+      rw [smoothExtensionTangent_eq (I := I) b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b), hb]
   have hsmooth : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun b : M => nablaRicci (I := I) g (fun c => X c) (fun c => Y c) (fun c => Yext c) b) x₀ :=
     (nablaRicci_contMDiff (I := I) g X Y Yext).contMDiffAt
   have hAt : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
-      (fun b : M => nablaRicciBilin (I := I) g X b (Y b) (chartBasisVecFiber (I := I) α j b)) x₀ :=
+      (fun b : M => nablaRicciBilin (I := I) g X b (Y b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) x₀ :=
     hsmooth.congr_of_eventuallyEq hrw
   exact hAt.contMDiffWithinAt
 
@@ -150,7 +150,7 @@ theorem nablaRicciEndo_contMDiff
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun b : M => (nablaRicciBilin (I := I) g X b (Y b))
-          (chartBasisVecFiber (I := I) α j b))
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source :=
     fun α j => nablaRicciBilin_chartBasis_contMDiffOn (I := I) g X Y α j
   have hsmooth := metricSharp_contMDiff_total (I := I) g

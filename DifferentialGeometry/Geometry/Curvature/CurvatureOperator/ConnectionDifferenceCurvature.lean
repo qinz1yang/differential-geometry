@@ -250,21 +250,21 @@ theorem ricciTensor_sub_eq_basisSum (g₀ g₁ : SmoothRiemannianMetric I M) (x 
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g₁ x v w - ricciTensor (I := I) g₀ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        ((centeredChartTangentBasis (I := I) x).repr
+        ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (riemannSec (LeviCivita (I := I) g₁)
                 (smoothExtensionTangent (I := I) x
-                  (centeredChartTangentBasis (I := I) x i))
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x) i
-          - (centeredChartTangentBasis (I := I) x).repr
+          - (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (riemannSec (LeviCivita (I := I) g₀)
                 (smoothExtensionTangent (I := I) x
-                  (centeredChartTangentBasis (I := I) x i))
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x) i) := by
   classical
   have : CompleteSpace E := FiniteDimensional.complete ℝ E
-  set b := centeredChartTangentBasis (I := I) x with hb
+  set b := DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x with hb
   set V := smoothExtensionTangent (I := I) x v with hV
   set W := smoothExtensionTangent (I := I) x w with hW
   have hV_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V) := smoothExtensionTangent_contMDiff x v
@@ -296,28 +296,28 @@ theorem ricciTensor_sub_eq_basisSum_difference (g₀ g₁ : SmoothRiemannianMetr
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g₁ x v w - ricciTensor (I := I) g₀ x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           ((covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                 (smoothExtensionTangent (I := I) x
-                  (centeredChartTangentBasis (I := I) x i))
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w) x
               - covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x
-                  (centeredChartTangentBasis (I := I) x i))
+                  (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                 (smoothExtensionTangent (I := I) x w) x)
             + (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₀) x
                   (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                     (smoothExtensionTangent (I := I) x v)
                     (smoothExtensionTangent (I := I) x w) x)
                   (smoothExtensionTangent (I := I) x
-                    (centeredChartTangentBasis (I := I) x i) x)
+                    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) x)
                 - CovariantDerivative.difference (LeviCivita (I := I) g₁)
                     (LeviCivita (I := I) g₀) x
                   (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
                     (smoothExtensionTangent (I := I) x
-                      (centeredChartTangentBasis (I := I) x i))
+                      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i))
                     (smoothExtensionTangent (I := I) x w) x)
                   (smoothExtensionTangent (I := I) x v x))) i := by
   classical
@@ -325,11 +325,11 @@ theorem ricciTensor_sub_eq_basisSum_difference (g₀ g₁ : SmoothRiemannianMetr
   rw [ricciTensor_sub_eq_basisSum (I := I) g₀ g₁ x v w]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   set B := smoothExtensionTangent (I := I) x
-    (centeredChartTangentBasis (I := I) x i) with hB
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i) with hB
   set V := smoothExtensionTangent (I := I) x v with hV
   set W := smoothExtensionTangent (I := I) x w with hW
   have hB_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B) :=
-    smoothExtensionTangent_contMDiff x (centeredChartTangentBasis (I := I) x i)
+    smoothExtensionTangent_contMDiff x (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
   have hV_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V) := smoothExtensionTangent_contMDiff x v
   have hW_sm : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W) := smoothExtensionTangent_contMDiff x w
   have htor : (LeviCivita (I := I) g₀).torsion = 0 := LeviCivita_torsion_eq_zero (I := I) g₀
@@ -346,21 +346,21 @@ theorem ricciTensor_sub_eq_basisSum_difference (g₀ g₁ : SmoothRiemannianMetr
               (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁) B W x) (V x)) := by
     rw [hdiff]; abel
   have hreprsub :
-      (centeredChartTangentBasis (I := I) x).repr
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (riemannSec (LeviCivita (I := I) g₁) B V W x) i
-        - (centeredChartTangentBasis (I := I) x).repr
+        - (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
           (riemannSec (LeviCivita (I := I) g₀) B V W x) i =
-      (centeredChartTangentBasis (I := I) x).repr
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
         (riemannSec (LeviCivita (I := I) g₁) B V W x
           - riemannSec (LeviCivita (I := I) g₀) B V W x) i := by
-    have hms : (centeredChartTangentBasis (I := I) x).repr
+    have hms : (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
         (riemannSec (LeviCivita (I := I) g₁) B V W x
           - riemannSec (LeviCivita (I := I) g₀) B V W x) =
-        (centeredChartTangentBasis (I := I) x).repr
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (riemannSec (LeviCivita (I := I) g₁) B V W x)
-          - (centeredChartTangentBasis (I := I) x).repr
+          - (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr
             (riemannSec (LeviCivita (I := I) g₀) B V W x) :=
-      map_sub (centeredChartTangentBasis (I := I) x).repr _ _
+      map_sub (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr _ _
     rw [hms, Finsupp.sub_apply]
   rw [hreprsub, hdiff_sub]
 

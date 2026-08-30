@@ -40,53 +40,53 @@ theorem invGramOnE_sub_eq
   set x : M := (extChartAt I α).symm y with hx_def
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     symm_mem_baseSet_of_mem_interior_target (I := I) α hy
-  have hA_unit : IsUnit (chartGramMatrix (I := I) g₁ α x) := by
+  have hA_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) := by
     rw [Matrix.isUnit_iff_isUnit_det]
-    exact isUnit_iff_ne_zero.mpr (ne_of_gt (chartGramMatrix_det_pos (I := I) g₁ α hx_base))
-  have hB_unit : IsUnit (chartGramMatrix (I := I) g₂ α x) := by
+    exact isUnit_iff_ne_zero.mpr (ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g₁ α hx_base))
+  have hB_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x) := by
     rw [Matrix.isUnit_iff_isUnit_det]
-    exact isUnit_iff_ne_zero.mpr (ne_of_gt (chartGramMatrix_det_pos (I := I) g₂ α hx_base))
-  have hAB : IsUnit (chartGramMatrix (I := I) g₁ α x) ↔
-      IsUnit (chartGramMatrix (I := I) g₂ α x) := ⟨fun _ => hB_unit, fun _ => hA_unit⟩
-  have h_id : (chartGramMatrix (I := I) g₁ α x)⁻¹ - (chartGramMatrix (I := I) g₂ α x)⁻¹ =
-      (chartGramMatrix (I := I) g₁ α x)⁻¹ *
-        (chartGramMatrix (I := I) g₂ α x - chartGramMatrix (I := I) g₁ α x) *
-        (chartGramMatrix (I := I) g₂ α x)⁻¹ := Matrix.inv_sub_inv hAB
+    exact isUnit_iff_ne_zero.mpr (ne_of_gt (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g₂ α hx_base))
+  have hAB : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) ↔
+      IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x) := ⟨fun _ => hB_unit, fun _ => hA_unit⟩
+  have h_id : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ - (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ =
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) *
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ := Matrix.inv_sub_inv hAB
   have h_entry :
-      (chartGramMatrix (I := I) g₁ α x)⁻¹ k l - (chartGramMatrix (I := I) g₂ α x)⁻¹ k l =
-        ((chartGramMatrix (I := I) g₁ α x)⁻¹ *
-          (chartGramMatrix (I := I) g₂ α x - chartGramMatrix (I := I) g₁ α x) *
-          (chartGramMatrix (I := I) g₂ α x)⁻¹) k l := by
+      (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ k l - (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ k l =
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ *
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) *
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹) k l := by
     have := congrArg (fun X : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ =>
       X k l) h_id
     simpa using this
   have h_expand :
-      ((chartGramMatrix (I := I) g₁ α x)⁻¹ *
-          (chartGramMatrix (I := I) g₂ α x - chartGramMatrix (I := I) g₁ α x) *
-          (chartGramMatrix (I := I) g₂ α x)⁻¹) k l =
+      ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ *
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) *
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹) k l =
         ∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
-          (chartGramMatrix (I := I) g₁ α x)⁻¹ k p *
-            (chartGramMatrix (I := I) g₂ α x - chartGramMatrix (I := I) g₁ α x) p q *
-            (chartGramMatrix (I := I) g₂ α x)⁻¹ q l := by
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ k p *
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) p q *
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ q l := by
     rw [Matrix.mul_apply]
     refine Finset.sum_congr rfl (fun q _ => ?_)
     rw [Matrix.mul_apply, Finset.sum_mul]
   have hkey :
       chartInvGramOnE (I := I) g₁ α k l y - chartInvGramOnE (I := I) g₂ α k l y =
         ∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
-          (chartGramMatrix (I := I) g₁ α x)⁻¹ k p *
-            (chartGramMatrix (I := I) g₂ α x - chartGramMatrix (I := I) g₁ α x) p q *
-            (chartGramMatrix (I := I) g₂ α x)⁻¹ q l := by
-    rw [show chartInvGramOnE (I := I) g₁ α k l y = (chartGramMatrix (I := I) g₁ α x)⁻¹ k l from rfl,
-      show chartInvGramOnE (I := I) g₂ α k l y = (chartGramMatrix (I := I) g₂ α x)⁻¹ k l from rfl,
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ k p *
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x) p q *
+            (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ q l := by
+    rw [show chartInvGramOnE (I := I) g₁ α k l y = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ k l from rfl,
+      show chartInvGramOnE (I := I) g₂ α k l y = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ k l from rfl,
       h_entry, h_expand]
   rw [hkey]
   refine Finset.sum_congr rfl (fun q _ => ?_)
   refine Finset.sum_congr rfl (fun p _ => ?_)
-  rw [show chartInvGramOnE (I := I) g₁ α k p y = (chartGramMatrix (I := I) g₁ α x)⁻¹ k p from rfl,
-    show chartInvGramOnE (I := I) g₂ α q l y = (chartGramMatrix (I := I) g₂ α x)⁻¹ q l from rfl,
-    show chartGramOnE (I := I) g₂ α p q y = chartGramMatrix (I := I) g₂ α x p q from rfl,
-    show chartGramOnE (I := I) g₁ α p q y = chartGramMatrix (I := I) g₁ α x p q from rfl,
+  rw [show chartInvGramOnE (I := I) g₁ α k p y = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x)⁻¹ k p from rfl,
+    show chartInvGramOnE (I := I) g₂ α q l y = (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x)⁻¹ q l from rfl,
+    show chartGramOnE (I := I) g₂ α p q y = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₂ α x p q from rfl,
+    show chartGramOnE (I := I) g₁ α p q y = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ α x p q from rfl,
     Matrix.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in

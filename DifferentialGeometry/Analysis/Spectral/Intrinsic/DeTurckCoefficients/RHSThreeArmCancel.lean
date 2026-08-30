@@ -281,10 +281,10 @@ theorem lieSum_eq_arms
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))
   unfold lieSumSlope
-  simp only [centeredChartTangentBasis_repr, centeredChartTangentEquiv_apply]
+  simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_repr, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply]
   change (∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
         lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
           g_bg x i k s (extChartAt I x x)) =
     unitModel (I := I) (M := M) g₀ 2 W x
@@ -292,18 +292,18 @@ theorem lieSum_eq_arms
         tangentSpaceModelContinuousLinearEquiv (I := I) x w]
   calc
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-            ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
             g_bg x k i s (extChartAt I x x) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [lieSlope_symm (I := I) g₀ g_bg T T'
         hδ_lt hδ hδ'_lt hδ' x i k hs]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
-            ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           unitModel (I := I) (M := M) g₀ 2 W x
-            ![(chartModelBasis E) k, (chartModelBasis E) i] := by
+            ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [lieSlope_eq_arms (I := I) g₀ g_bg T T'
         hδ_lt hδ hδ'_lt hδ' s x k i]

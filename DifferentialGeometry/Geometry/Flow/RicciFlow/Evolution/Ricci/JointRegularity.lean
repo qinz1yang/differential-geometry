@@ -38,8 +38,8 @@ theorem chartRicci_joint
       (fun p : Real × E =>
         let x := (extChartAt I α).symm p.2
         S.ricciAt p.1 x
-          (vec2 (chartBasisVecFiber (I := I) α i x)
-            (chartBasisVecFiber (I := I) α j x)))
+          (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)))
       (D.regular ×ˢ interior (extChartAt I α).target) := by
   intro p hp
   let U := D.regular ×ˢ interior (extChartAt I α).target
@@ -76,8 +76,8 @@ theorem chartRicci_joint
   refine (hsmooth.congr_of_eventuallyEq ?_).contDiffWithinAt
   filter_upwards [hUopen.mem_nhds hp] with q hq
   let x := (extChartAt I α).symm q.2
-  let X := chartBasisVecFiber (I := I) α i x
-  let Y := chartBasisVecFiber (I := I) α j x
+  let X := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x
+  let Y := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x
   have heq := (metricDerivAt (I := I) S hS
     (⟨q.1, hq.1⟩ : D.RegularTime) x X Y).deriv
   change S.ricciAt q.1 x (vec2 X Y) =
@@ -86,7 +86,7 @@ theorem chartRicci_joint
   have hgram : deriv (fun t : Real =>
       chartGramOnE (I := I) (S.family.metric t) α i j q.2) q.1 =
       (-2 : Real) * S.ricciAt q.1 x (vec2 X Y) := by
-    simpa only [chartGramOnE_def, chartGramMatrix_apply, x, X, Y] using heq
+    simpa only [chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, x, X, Y] using heq
   rw [hgram]
   ring
 
@@ -100,9 +100,9 @@ theorem chartNablaRicci [I.Boundaryless]
         let x := (extChartAt I alpha).symm p.2
         totalNabla0SFun (𝕜 := Real) (I := I) 2
           (S.family.connection p.1) (S.ricci p.1) x
-          (vec3 (chartBasisVecFiber (I := I) alpha d x)
-            (chartBasisVecFiber (I := I) alpha i x)
-            (chartBasisVecFiber (I := I) alpha j x)))
+          (vec3 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha d x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha i x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha j x)))
       (D.regular ×ˢ interior (extChartAt I alpha).target) := by
   classical
   let U := D.regular ×ˢ interior (extChartAt I alpha).target
@@ -122,8 +122,8 @@ theorem chartNablaRicci [I.Boundaryless]
     symm
     rw [SolutionOn.ricciAt_eq]
     change metricRicciAt (I := I) (S.family.metric p.1) x
-      (vec2 (chartBasisVecFiber (I := I) alpha a x)
-        (chartBasisVecFiber (I := I) alpha b x)) = _
+      (vec2 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha a x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha b x)) = _
     rw [metricRicciAt_apply_eq_ricciTensor,
       ricciTensor_chartBasisVec_alpha_eq (I := I)
         (S.family.metric p.1) alpha a b hxgood, hright]
@@ -138,8 +138,8 @@ theorem chartNablaRicci [I.Boundaryless]
       (fun p : Real × E =>
         (Function.uncurry (fun t y => fderiv Real
           (fun z => chartRicciTensor (I := I) (S.family.metric t) alpha i j z) y) p)
-          (chartModelBasis E d)) U
-    exact hfd.clm_apply (contDiffOn_const (c := chartModelBasis E d))
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d)) U
+    exact hfd.clm_apply (contDiffOn_const (c := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E d))
   have hGamma (a b c : Fin (Module.finrank Real E)) : ContDiffOn Real ∞
       (fun p : Real × E => chartChristoffel (I := I)
         (S.family.metric p.1) alpha a b c p.2) U :=
@@ -179,17 +179,17 @@ theorem chartNablaRicci [I.Boundaryless]
   have hK1 : K (1 : Fin 3) = i := by rfl
   have hK2 : K (2 : Fin 3) = j := by rfl
   have hslots :
-      (fun a : Fin 3 => chartBasisVecFiber (I := I) alpha (K a) x) =
-        vec3 (chartBasisVecFiber (I := I) alpha d x)
-          (chartBasisVecFiber (I := I) alpha i x)
-          (chartBasisVecFiber (I := I) alpha j x) := by
+      (fun a : Fin 3 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha (K a) x) =
+        vec3 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha d x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha i x)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha j x) := by
     funext q
     fin_cases q <;> rfl
   rw [hslots, hK0, hK1, hK2, hright] at hraw
   change metricNabla0S (I := I) (S.family.metric p.1) (S.ricci p.1) x
-      (vec3 (chartBasisVecFiber (I := I) alpha d x)
-        (chartBasisVecFiber (I := I) alpha i x)
-        (chartBasisVecFiber (I := I) alpha j x)) = _
+      (vec3 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha d x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha i x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) alpha j x)) = _
   exact hraw
 
 omit [SigmaCompactSpace M] in

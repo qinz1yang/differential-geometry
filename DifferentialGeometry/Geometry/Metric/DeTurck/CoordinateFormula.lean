@@ -31,20 +31,20 @@ lemma chartBasisVecFiber_eq_chartParallelExtend_on_baseSet
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (j : Fin (Module.finrank ℝ E)) :
     ∀ b',
-      chartBasisVecFiber (I := I) α j b' =
+      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b' =
         chartParallelExtend (I := I) α b
-          (chartBasisVecFiber (I := I) α j b) b' := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b' := by
   intro b'
   unfold chartParallelExtend
-  have hcoe : ∀ z, chartBasisVecFiber (I := I) α j z =
-      trivFromE (I := I) α z ((chartModelBasis E) j) := by
+  have hcoe : ∀ z, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j z =
+      trivFromE (I := I) α z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     intro z
-    unfold chartBasisVecFiber trivFromE
+    unfold DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber trivFromE
     rfl
-  have hround : trivToE (I := I) α b (chartBasisVecFiber (I := I) α j b) =
-      (chartModelBasis E) j := by
+  have hround : trivToE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j := by
     rw [hcoe b]
-    exact trivToE_trivFromE (I := I) α hb ((chartModelBasis E) j)
+    exact trivToE_trivFromE (I := I) α hb ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
   rw [hround]
   exact hcoe b'
 
@@ -53,9 +53,9 @@ lemma chartBasisVecFiber_eventuallyEq_chartParallelExtend
     (α : M) {b : M}
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (j : Fin (Module.finrank ℝ E)) :
-    (fun b' : M => chartBasisVecFiber (I := I) α j b') =ᶠ[𝓝 b]
+    (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b') =ᶠ[𝓝 b]
       fun b' : M =>
-        chartParallelExtend (I := I) α b (chartBasisVecFiber (I := I) α j b) b' := by
+        chartParallelExtend (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b' := by
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
   have hopen : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -70,13 +70,13 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 lemma chartBasisVecFiber_mdifferentiableAt
     (α : M) (j : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    MDiffAt (T% (fun b' : M => chartBasisVecFiber (I := I) α j b')) b := by
+    MDiffAt (T% (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b')) b := by
   classical
-  have hcontMDiff_on := chartBasisVec_contMDiffOn (I := I) α j
+  have hcontMDiff_on := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
   have hopen : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
   have hcontMDiff_at : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
-      (chartBasisVec (I := I) α j) b :=
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j) b :=
     (hcontMDiff_on b hb).contMDiffAt (hopen.mem_nhds hb)
   exact hcontMDiff_at.mdifferentiableAt (by norm_num)
 
@@ -88,23 +88,23 @@ lemma LeviCivita_chartBasisVecFiber_eq
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (j : Fin (Module.finrank ℝ E)) (v : TangentSpace I b) :
     (LeviCivita (I := I) g).toFun
-        (fun b' : M => chartBasisVecFiber (I := I) α j b') b v =
+        (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b') b v =
       trivFromE (I := I) α b
-        (christoffelCorrection (I := I) g α b ((chartModelBasis E) j) v) := by
+        (christoffelCorrection (I := I) g α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) v) := by
   classical
   have _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hsection_diff : MDiffAt
-      (T% (fun b' : M => chartBasisVecFiber (I := I) α j b')) b :=
+      (T% (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b')) b :=
     chartBasisVecFiber_mdifferentiableAt (I := I) α j
       (chartLeviCivitaGoodSet_mem_baseSet (I := I) hb)
   have hparallel_diff : MDiffAt
       (T% (fun b' : M => chartParallelExtend (I := I) α b
-        (chartBasisVecFiber (I := I) α j b) b')) b :=
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b')) b :=
     chartParallelExtend_mdifferentiableAt (I := I) α hb
-      (chartBasisVecFiber (I := I) α j b)
-  have heq : (fun b' : M => chartBasisVecFiber (I := I) α j b') =ᶠ[𝓝 b]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
+  have heq : (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b') =ᶠ[𝓝 b]
       fun b' : M =>
-        chartParallelExtend (I := I) α b (chartBasisVecFiber (I := I) α j b) b' :=
+        chartParallelExtend (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b' :=
     chartBasisVecFiber_eventuallyEq_chartParallelExtend (I := I) α hb j
   have hgood_open : IsOpen (chartLeviCivitaGoodSet (I := I) α) :=
     chartLeviCivitaGoodSet_isOpen (I := I) α
@@ -112,36 +112,36 @@ lemma LeviCivita_chartBasisVecFiber_eq
     hgood_open.mem_nhds hb
   have hcov_eq :
       (LeviCivita (I := I) g).toFun
-          (fun b' : M => chartBasisVecFiber (I := I) α j b') b =
+          (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b') b =
         (LeviCivita (I := I) g).toFun
           (fun b' : M =>
-            chartParallelExtend (I := I) α b (chartBasisVecFiber (I := I) α j b) b') b := by
+            chartParallelExtend (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b') b := by
     have hLC := (LeviCivita (I := I) g).isCovariantDerivativeOnUniv
     exact hLC.congr_of_eventuallyEq hsection_diff hparallel_diff
       (Filter.univ_mem) heq
   rw [show
         (LeviCivita (I := I) g).toFun
-            (fun b' : M => chartBasisVecFiber (I := I) α j b') b v
+            (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b') b v
           = (LeviCivita (I := I) g).toFun
               (fun b' : M =>
                 chartParallelExtend (I := I) α b
-                  (chartBasisVecFiber (I := I) α j b) b') b v from by
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) b') b v from by
           rw [hcov_eq]]
   rw [LeviCivita_chart_apply (I := I) g α hb hparallel_diff v]
   have hcompute := chartLeviCivita_chartParallelExtend_symm (I := I) g α hb
-    (chartBasisVecFiber (I := I) α j b) (fun _ : M => v)
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) (fun _ : M => v)
   rw [hcompute]
   congr 1
   have hcancel := christoffelCorrection_symm_cancel (I := I) g α b
-    (chartBasisVecFiber (I := I) α j b) v
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) v
   rw [hcancel]
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
   have htriv : trivToE (I := I) α b
-      (chartBasisVecFiber (I := I) α j b) = (chartModelBasis E) j := by
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j := by
     change trivToE (I := I) α b
-        (trivFromE (I := I) α b ((chartModelBasis E) j)) = (chartModelBasis E) j
-    exact trivToE_trivFromE (I := I) α hb_base ((chartModelBasis E) j)
+        (trivFromE (I := I) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j
+    exact trivToE_trivFromE (I := I) α hb_base ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
   rw [htriv]
 
 omit [BoundarylessManifold I M] in
@@ -152,45 +152,45 @@ lemma connectionDifference_chartBasis_pair_eq
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k : Fin (Module.finrank ℝ E)) :
     connectionDifference (I := I) g g' x
-        (chartBasisVecFiber (I := I) α j x)
-        (chartBasisVecFiber (I := I) α k x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       trivFromE (I := I) α x
-        (christoffelCorrection (I := I) g α x ((chartModelBasis E) j)
-          (chartBasisVecFiber (I := I) α k x)) -
+        (christoffelCorrection (I := I) g α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)) -
       trivFromE (I := I) α x
-        (christoffelCorrection (I := I) g' α x ((chartModelBasis E) j)
-          (chartBasisVecFiber (I := I) α k x)) := by
+        (christoffelCorrection (I := I) g' α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)) := by
   classical
   have hsection_diff : MDiffAt
-      (T% (fun b' : M => chartBasisVecFiber (I := I) α j b')) x :=
+      (T% (fun b' : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b')) x :=
     chartBasisVecFiber_mdifferentiableAt (I := I) α j
       (chartLeviCivitaGoodSet_mem_baseSet (I := I) hx)
   rw [connectionDifference_apply (I := I) g g' hsection_diff
-        (chartBasisVecFiber (I := I) α k x)]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)]
   rw [LeviCivita_chartBasisVecFiber_eq (I := I) g α hx j
-        (chartBasisVecFiber (I := I) α k x)]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)]
   rw [LeviCivita_chartBasisVecFiber_eq (I := I) g' α hx j
-        (chartBasisVecFiber (I := I) α k x)]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma coord_christoffelCorrection_chartBasis_pair
     (g : SmoothRiemannianMetric I M) (α : M)
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k p : Fin (Module.finrank ℝ E)) :
-    ((chartModelBasis E).coord p)
-        (christoffelCorrection (I := I) g α x ((chartModelBasis E) j)
-          (chartBasisVecFiber (I := I) α k x)) =
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord p)
+        (christoffelCorrection (I := I) g α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)) =
       chartChristoffel (I := I) g α k j p (extChartAt I α x) := by
   classical
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
-  rw [christoffelCorrection_apply (I := I) g α x ((chartModelBasis E) j)
-        (chartBasisVecFiber (I := I) α k x)]
+  rw [christoffelCorrection_apply (I := I) g α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)]
   have htriv : trivToE (I := I) α x
-      (chartBasisVecFiber (I := I) α k x) = (chartModelBasis E) k := by
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
     change trivToE (I := I) α x
-        (trivFromE (I := I) α x ((chartModelBasis E) k)) = (chartModelBasis E) k
-    exact trivToE_trivFromE (I := I) α hx_base ((chartModelBasis E) k)
+        (trivFromE (I := I) α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k
+    exact trivToE_trivFromE (I := I) α hx_base ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
   rw [htriv]
   rw [map_sum]
   rw [Finset.sum_eq_single k]
@@ -236,8 +236,8 @@ private lemma tangent_vector_eq_chartBasisVecFiber_sum
     (w : TangentSpace I x) :
     w =
       ∑ p : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr (trivToE (I := I) α x w)) p •
-          chartBasisVecFiber (I := I) α p x := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x w)) p •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
   classical
   have hround : trivFromE (I := I) α x (trivToE (I := I) α x w) = w :=
     trivFromE_trivToE (I := I) α hx w
@@ -245,8 +245,8 @@ private lemma tangent_vector_eq_chartBasisVecFiber_sum
   set u : E := trivToE (I := I) α x w with hu_def
   have hexp : u =
       ∑ p : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr u) p • (chartModelBasis E) p := by
-    exact ((chartModelBasis E).sum_equivFun u).symm
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr u) p • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p := by
+    exact ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_equivFun u).symm
   conv_lhs => rw [hexp]
   rw [map_sum]
   refine Finset.sum_congr rfl ?_
@@ -259,13 +259,13 @@ private lemma trivFromE_eq_chartBasisVecFiber_sum
     (α : M) (x : M) (y : E) :
     trivFromE (I := I) α x y =
       ∑ p : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr y) p •
-          chartBasisVecFiber (I := I) α p x := by
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr y) p •
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
   classical
   have hexp : y =
       ∑ p : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr y) p • (chartModelBasis E) p := by
-    exact ((chartModelBasis E).sum_equivFun y).symm
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr y) p • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p := by
+    exact ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_equivFun y).symm
   conv_lhs => rw [hexp]
   rw [map_sum]
   refine Finset.sum_congr rfl ?_
@@ -281,18 +281,18 @@ lemma connectionDifference_chartBasis_pair_eq_sum
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k : Fin (Module.finrank ℝ E)) :
     connectionDifference (I := I) g g' x
-        (chartBasisVecFiber (I := I) α j x)
-        (chartBasisVecFiber (I := I) α k x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       ∑ p : Fin (Module.finrank ℝ E),
         (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
           chartChristoffel (I := I) g' α k j p (extChartAt I α x)) •
-          chartBasisVecFiber (I := I) α p x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
   classical
   rw [connectionDifference_chartBasis_pair_eq (I := I) g g' α hx j k]
-  set Cg : E := christoffelCorrection (I := I) g α x ((chartModelBasis E) j)
-    (chartBasisVecFiber (I := I) α k x) with hCg_def
-  set Cg' : E := christoffelCorrection (I := I) g' α x ((chartModelBasis E) j)
-    (chartBasisVecFiber (I := I) α k x) with hCg'_def
+  set Cg : E := christoffelCorrection (I := I) g α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) with hCg_def
+  set Cg' : E := christoffelCorrection (I := I) g' α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) with hCg'_def
   rw [trivFromE_eq_chartBasisVecFiber_sum (I := I) α x Cg]
   rw [trivFromE_eq_chartBasisVecFiber_sum (I := I) α x Cg']
   rw [← Finset.sum_sub_distrib]
@@ -300,10 +300,10 @@ lemma connectionDifference_chartBasis_pair_eq_sum
   intro p _
   rw [← sub_smul]
   congr 1
-  have hcoord_g : ((chartModelBasis E).repr Cg) p =
-      ((chartModelBasis E).coord p) Cg := rfl
-  have hcoord_g' : ((chartModelBasis E).repr Cg') p =
-      ((chartModelBasis E).coord p) Cg' := rfl
+  have hcoord_g : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Cg) p =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord p) Cg := rfl
+  have hcoord_g' : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr Cg') p =
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord p) Cg' := rfl
   rw [hcoord_g, hcoord_g']
   rw [hCg_def, hCg'_def]
   rw [coord_christoffelCorrection_chartBasis_pair (I := I) g α hx j k p]
@@ -318,7 +318,7 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
     deTurckChartLocal (I := I) g g' α x =
       ∑ p : Fin (Module.finrank ℝ E),
         DeTurckLinearization.chartDeTurckVFComp (I := I) g g' α p (extChartAt I α x) •
-          chartBasisVecFiber (I := I) α p x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
   classical
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
@@ -327,14 +327,14 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x j k •
           connectionDifference (I := I) g g' x
-            (chartBasisVecFiber (I := I) α j x)
-            (chartBasisVecFiber (I := I) α k x) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x j k •
           ∑ p : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
               chartChristoffel (I := I) g' α k j p (extChartAt I α x)) •
-              chartBasisVecFiber (I := I) α p x := by
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
     refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
     rw [connectionDifference_chartBasis_pair_eq_sum (I := I) g g' α hx j k]
   rw [hreplace]
@@ -344,13 +344,13 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
           ∑ p : Fin (Module.finrank ℝ E),
             (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
               chartChristoffel (I := I) g' α k j p (extChartAt I α x)) •
-              chartBasisVecFiber (I := I) α p x =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x =
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         ∑ p : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) g α x j k *
             (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
               chartChristoffel (I := I) g' α k j p (extChartAt I α x))) •
-            chartBasisVecFiber (I := I) α p x := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
     refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -363,13 +363,13 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
             (chartInvGramMatrix (I := I) g α x j k *
               (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
                 chartChristoffel (I := I) g' α k j p (extChartAt I α x))) •
-              chartBasisVecFiber (I := I) α p x =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x =
         ∑ p : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             (chartInvGramMatrix (I := I) g α x j k *
               (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
                 chartChristoffel (I := I) g' α k j p (extChartAt I α x))) •
-              chartBasisVecFiber (I := I) α p x := by
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
     intro j
     exact Finset.sum_comm
   rw [Finset.sum_congr rfl (fun j _ => hcomm1 j)]
@@ -382,13 +382,13 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
             (chartInvGramMatrix (I := I) g α x j k *
               (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
                 chartChristoffel (I := I) g' α k j p (extChartAt I α x))) •
-              chartBasisVecFiber (I := I) α p x =
+              DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x =
         ∑ j : Fin (Module.finrank ℝ E),
           (∑ k : Fin (Module.finrank ℝ E),
               chartInvGramMatrix (I := I) g α x j k *
                 (chartChristoffel (I := I) g α k j p (extChartAt I α x) -
                   chartChristoffel (I := I) g' α k j p (extChartAt I α x))) •
-            chartBasisVecFiber (I := I) α p x := by
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
     refine Finset.sum_congr rfl ?_
     intro j _
     rw [← Finset.sum_smul]
@@ -422,7 +422,7 @@ theorem deTurckVF_apply_eq_chartDeTurckVFComp_sum
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       ∑ p : Fin (Module.finrank ℝ E),
         DeTurckLinearization.chartDeTurckVFComp (I := I) g g' α p (extChartAt I α x) •
-          chartBasisVecFiber (I := I) α p x := by
+          DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x := by
   rw [deTurckVF_apply (I := I) g g' x]
   have hxα_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
@@ -437,7 +437,7 @@ theorem deTurckVF_apply_eq_chartDeTurckVFComp_sum_self
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       ∑ p : Fin (Module.finrank ℝ E),
         DeTurckLinearization.chartDeTurckVFComp (I := I) g g' x p (extChartAt I x x) •
-          (centeredChartTangentBasis (I := I) x) p := by
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) p := by
   rw [deTurckVF_apply_eq_chartDeTurckVFComp_sum (I := I) g g' x
     (self_mem_chartLeviCivitaGoodSet (I := I) (α := x))]
   exact Finset.sum_congr rfl (fun p _ ↦ congrArg _ (chartBasisVecFiber_self (I := I) x p))

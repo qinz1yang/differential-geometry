@@ -195,8 +195,8 @@ def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
   LinearMap.toContinuousLinearMap
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         (chartInvGramMatrix (I := I) g x x k l *
-            K X (centeredChartTangentBasis (I := I) x k)) •
-          (ContinuousLinearMap.flip Dd (centeredChartTangentBasis (I := I) x l))
+            K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)) •
+          (ContinuousLinearMap.flip Dd (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l))
       map_add' := fun X X' => by
         ext Y'
         simp only [add_apply, FunLike.coe_sum,
@@ -206,12 +206,12 @@ def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun l _ => ?_)
         change chartInvGramMatrix (I := I) g x x k l *
-            (K X (centeredChartTangentBasis (I := I) x k) +
-              K X' (centeredChartTangentBasis (I := I) x k)) *
-              Dd Y' (centeredChartTangentBasis (I := I) x l) = _
+            (K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) +
+              K X' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)) *
+              Dd Y' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) = _
         have hflip :
-            (ContinuousLinearMap.flip Dd (centeredChartTangentBasis (I := I) x l)) Y' =
-              Dd Y' (centeredChartTangentBasis (I := I) x l) := rfl
+            (ContinuousLinearMap.flip Dd (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) Y' =
+              Dd Y' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) := rfl
         rw [hflip]
         ring
       map_smul' := fun c X => by
@@ -224,11 +224,11 @@ def outerPairBilin (g : SmoothRiemannianMetric I M) (x : M)
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun l _ => ?_)
         change chartInvGramMatrix (I := I) g x x k l *
-            (c * K X (centeredChartTangentBasis (I := I) x k)) *
-              Dd Y' (centeredChartTangentBasis (I := I) x l) = _
+            (c * K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k)) *
+              Dd Y' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) = _
         have hflip :
-            (ContinuousLinearMap.flip Dd (centeredChartTangentBasis (I := I) x l)) Y' =
-              Dd Y' (centeredChartTangentBasis (I := I) x l) := rfl
+            (ContinuousLinearMap.flip Dd (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) Y' =
+              Dd Y' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) := rfl
         rw [hflip]
         ring }
 
@@ -239,15 +239,15 @@ theorem outerPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
     outerPairBilin (I := I) g x K Dd X X' =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          (K X (centeredChartTangentBasis (I := I) x k) *
-            Dd X' (centeredChartTangentBasis (I := I) x l)) := by
+          (K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) *
+            Dd X' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l)) := by
   rw [outerPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
   simp only [sum_apply, smul_apply, smul_eq_mul]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
   change chartInvGramMatrix (I := I) g x x k l *
-      K X (centeredChartTangentBasis (I := I) x k) *
-        Dd X' (centeredChartTangentBasis (I := I) x l) = _
+      K X (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) *
+        Dd X' (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l) = _
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -260,10 +260,10 @@ theorem double_frame_bilin_trace_eq_fixed
     ∑ a, ∑ b, K (B a) (B b) * Dd (B a) (B b) =
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g x x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g x x k l *
-          (K (centeredChartTangentBasis (I := I) x m)
-              (centeredChartTangentBasis (I := I) x k) *
-            Dd (centeredChartTangentBasis (I := I) x n)
-              (centeredChartTangentBasis (I := I) x l))) := by
+          (K (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x m)
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x k) *
+            Dd (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x n)
+              (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x l))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * Dd (B a) (B b) =
       outerPairBilin (I := I) g x K Dd (B a) (B a) := by
@@ -309,7 +309,7 @@ theorem contMDiff_bilinSection_of_chartScalar
           (bilinFormToModel (TangentSpace I x) (Hb x)))) := by
   classical
   let d := Module.finrank ℝ E
-  let b : Module.Basis (Fin d) ℝ E := chartModelBasis E
+  let b : Module.Basis (Fin d) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
   refine (contMDiff_multilinearSection_iff_coord (TangentSpace I) ∞ b
     (fun x => Tensor0SSpace.ofModel (I := I) (x := x)
       (bilinFormToModel (TangentSpace I x) (Hb x)))).mpr fun σ x₀ => ?_
@@ -405,11 +405,11 @@ theorem contMDiff_bilinSection_of_homSection
   have hcf_0 : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (T% (fun b => chartFrameVec (I := I) x₀ (σ 0) b))
       (trivializationAt E (TangentSpace I) x₀).baseSet := fun x hx =>
-    chartBasisVec_contMDiffOn (I := I) x₀ (σ 0) x hx
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ (σ 0) x hx
   have hcf_1 : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (T% (fun b => chartFrameVec (I := I) x₀ (σ 1) b))
       (trivializationAt E (TangentSpace I) x₀).baseSet := fun x hx =>
-    chartBasisVec_contMDiffOn (I := I) x₀ (σ 1) x hx
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) x₀ (σ 1) x hx
   have happ1 := ContMDiffOn.clm_bundle_apply (F₁ := E) (F₂ := E →L[ℝ] ℝ)
     (E₁ := fun z : M => TangentSpace I z) (E₂ := fun z : M => TangentSpace I z →L[ℝ] ℝ)
     (b := id) hHb.contMDiffOn hcf_0

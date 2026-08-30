@@ -8,7 +8,7 @@ import Mathlib.Topology.VectorBundle.Basic
 
 open Set Function Filter Bundle
 open scoped Topology ContDiff Manifold
-open DifferentialGeometry.Integral.Measure (SmoothRiemannianMetric)
+open DifferentialGeometry (SmoothRiemannianMetric)
 
 noncomputable section
 

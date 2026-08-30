@@ -1022,7 +1022,7 @@ theorem hamilton_limit_chart_gram_smooth
     ∀ (x₀ : P₀.M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
         (fun p : Real × P₀.M =>
-          DifferentialGeometry.Integral.Measure.chartGramMatrix
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
             (I := I) (co.gInf p.1) x₀ p.2 i j)
         (Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by

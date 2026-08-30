@@ -35,7 +35,7 @@ lemma chartCoeff_eq_repr_trivToE (α : M)
     (k : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     chartCoeff (I := I) α X k x =
-      ((chartModelBasis E).repr (trivToE (I := I) α x (X x))) k := by
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x (X x))) k := by
   rw [chartCoeff_def]
   congr 1
   rw [trivToE,
@@ -60,18 +60,18 @@ theorem chartCoeff_deTurckVF_eq_chartDeTurckVFComp
   rw [map_sum]
   simp only [Finsupp.coe_finsetSum, Finset.sum_apply]
   have hbasis : ∀ p : Fin (Module.finrank ℝ E),
-      ((chartModelBasis E).repr (trivToE (I := I) α x
+      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x
           (chartDeTurckVFComp (I := I) g g_bg α p (extChartAt I α x) •
-            chartBasisVecFiber (I := I) α p x))) k =
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x))) k =
         (if p = k then chartDeTurckVFComp (I := I) g g_bg α p (extChartAt I α x)
           else 0) := by
     intro p
     rw [map_smul]
-    have htriv : trivToE (I := I) α x (chartBasisVecFiber (I := I) α p x) =
-        (chartModelBasis E) p := by
-      have : chartBasisVecFiber (I := I) α p x =
-          trivFromE (I := I) α x ((chartModelBasis E) p) := rfl
-      rw [this, trivToE_trivFromE (I := I) α hx_base ((chartModelBasis E) p)]
+    have htriv : trivToE (I := I) α x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p := by
+      have : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α p x =
+          trivFromE (I := I) α x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p) := rfl
+      rw [this, trivToE_trivFromE (I := I) α hx_base ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p)]
     rw [htriv, map_smul, Finsupp.smul_apply, Module.Basis.repr_self,
       Finsupp.single_apply, smul_eq_mul]
     by_cases hpk : p = k
@@ -132,7 +132,7 @@ theorem chartLieDerivMetricMatrix_deTurckVF_eq_chartLieDeTurckComp
   have hx_src : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   have hgram : ∀ a b : Fin (Module.finrank ℝ E),
-      chartGramMatrix (I := I) g α x a b =
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x a b =
         chartGramOnE (I := I) g α a b (extChartAt I α x) := by
     intro a b
     rw [chartGramOnE, (extChartAt I α).left_inv hx_src]

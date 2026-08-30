@@ -27,12 +27,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 def partialDerivWithin (s : Set E) (i : Fin (Module.finrank ℝ E))
     (u : E → ℝ) (y : E) : ℝ :=
-  fderivWithin ℝ u s y ((chartModelBasis E) i)
+  fderivWithin ℝ u s y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 @[simp] lemma partialDerivWithin_def (s : Set E)
     (i : Fin (Module.finrank ℝ E)) (u : E → ℝ) (y : E) :
     partialDerivWithin (E := E) s i u y =
-      fderivWithin ℝ u s y ((chartModelBasis E) i) := rfl
+      fderivWithin ℝ u s y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := rfl
 
 section ComparisonWithFDeriv
 
@@ -78,7 +78,7 @@ lemma partialDerivWithin_contDiffOn_of_uniqueDiffOn
   have hfderiv : ContDiffOn ℝ m (fderivWithin ℝ u s) s :=
     hu.fderivWithin hs hmn
   have hconst : ContDiffOn ℝ m
-      (fun _ : E => (chartModelBasis E) i) s := contDiffOn_const
+      (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) s := contDiffOn_const
   exact hfderiv.clm_apply hconst
 
 lemma partialDerivWithin_contDiffOn_top_of_uniqueDiffOn

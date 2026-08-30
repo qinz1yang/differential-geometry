@@ -52,11 +52,11 @@ omit [T2Space M] in
 private lemma chartGramMatrix_eq_inner
     (g : SmoothRiemannianMetric I M) (α b : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    chartGramMatrix (I := I) g α b i j =
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j =
       g.inner b
-        (chartBasisVecFiber (I := I) α i b)
-        (chartBasisVecFiber (I := I) α j b) :=
-  chartGramMatrix_apply g α b i j
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) :=
+  DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply g α b i j
 
 private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
     [SigmaCompactSpace M] [CompactSpace M]
@@ -65,7 +65,7 @@ private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
       ∀ b : M, b ∈ tsupport (fun x : M =>
               ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ i j : Fin (Module.finrank ℝ E),
-          |chartGramMatrix (I := I) g α b i j| ≤ C₀ := by
+          |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j| ≤ C₀ := by
   classical
   set Kα : Set M := tsupport (fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hKα_def
@@ -82,7 +82,7 @@ private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
     exact hKα_sub_base
   have hchoice : ∀ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
       ∃ K : ℝ, 0 < K ∧
-        ∀ b ∈ Kα, |chartGramMatrix (I := I) g α b ij.1 ij.2| ≤ K := by
+        ∀ b ∈ Kα, |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b ij.1 ij.2| ≤ K := by
     intro ij
     exact chartGramMatrix_entry_isBounded_on_compact (I := I) (M := M)
       g α ij.1 ij.2 hKα_compact hKα_sub_src
@@ -101,7 +101,7 @@ private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
       (Finset.mem_univ (i, j))
     intro ij _
     exact le_of_lt (hK_pos ij)
-  have h_entry : |chartGramMatrix (I := I) g α b i j| ≤ K (i, j) :=
+  have h_entry : |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j| ≤ K (i, j) :=
     hK_le (i, j) b hb
   linarith
 
@@ -114,8 +114,8 @@ theorem exists_chartGramMatrix_quadForm_upper_bound_on_pouTsupport
         ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              g.inner b (chartBasisVecFiber (I := I) α i b)
-                       (chartBasisVecFiber (I := I) α j b) * ξ i * ξ j) ≤
+              g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+                       (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) * ξ i * ξ j) ≤
             C * (∑ i : Fin (Module.finrank ℝ E), (ξ i)^2) := by
   classical
   set N : ℕ := Module.finrank ℝ E with hN_def
@@ -128,13 +128,13 @@ theorem exists_chartGramMatrix_quadForm_upper_bound_on_pouTsupport
   refine ⟨C, hC_nonneg, ?_⟩
   intro b hb ξ
   have h_per_pair : ∀ i j : Fin N,
-      g.inner b (chartBasisVecFiber (I := I) α i b)
-                (chartBasisVecFiber (I := I) α j b) * ξ i * ξ j ≤
+      g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) * ξ i * ξ j ≤
         C₀ * ∑ k : Fin N, ξ k ^ 2 := by
     intro i j
-    set G_ij : ℝ := g.inner b (chartBasisVecFiber (I := I) α i b)
-        (chartBasisVecFiber (I := I) α j b) with hG_def
-    have hG_eq_chart : G_ij = chartGramMatrix (I := I) g α b i j := by
+    set G_ij : ℝ := g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) with hG_def
+    have hG_eq_chart : G_ij = DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j := by
       rw [hG_def]
       exact (chartGramMatrix_eq_inner (I := I) g α b i j).symm
     have h_abs_G : |G_ij| ≤ C₀ := by
@@ -154,8 +154,8 @@ theorem exists_chartGramMatrix_quadForm_upper_bound_on_pouTsupport
           mul_le_mul_of_nonneg_left h_abs_mul_bound hC₀_nonneg
   calc (∑ i : Fin N,
           ∑ j : Fin N,
-            g.inner b (chartBasisVecFiber (I := I) α i b)
-                     (chartBasisVecFiber (I := I) α j b) * ξ i * ξ j)
+            g.inner b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)
+                     (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) * ξ i * ξ j)
       ≤ ∑ i : Fin N, ∑ j : Fin N, C₀ * ∑ k : Fin N, ξ k ^ 2 := by
         refine Finset.sum_le_sum (fun i _ => ?_)
         refine Finset.sum_le_sum (fun j _ => ?_)

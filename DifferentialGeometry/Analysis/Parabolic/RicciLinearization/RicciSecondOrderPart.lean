@@ -97,13 +97,13 @@ lemma partialDeriv_partialDeriv_perturbation_swap
     exact (hfderiv.differentiable (by simp)).differentiableAt
   have hkey : ∀ r s : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) r (partialDeriv (E := E) s (h a b)) y =
-        (fderiv ℝ (fderiv ℝ (h a b)) y ((chartModelBasis E) r))
-          ((chartModelBasis E) s) := by
+        (fderiv ℝ (fderiv ℝ (h a b)) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) r))
+          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) s) := by
     intro r s
     unfold partialDeriv
     set L : (E →L[ℝ] ℝ) →L[ℝ] ℝ :=
-      ContinuousLinearMap.apply ℝ ℝ ((chartModelBasis E) s)
-    have hcomp_eq : (fun z : E => fderiv ℝ (h a b) z ((chartModelBasis E) s)) =
+      ContinuousLinearMap.apply ℝ ℝ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) s)
+    have hcomp_eq : (fun z : E => fderiv ℝ (h a b) z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) s)) =
         L ∘ (fderiv ℝ (h a b)) := by
       funext z; rfl
     rw [hcomp_eq, fderiv_comp y L.differentiableAt hg_diff, L.fderiv]

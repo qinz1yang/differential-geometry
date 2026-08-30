@@ -292,10 +292,10 @@ private def kcOuterPairBilin (g : SmoothRiemannianMetric I M) (x : M)
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         (chartInvGramMatrix (I := I) g x x k l *
           K X ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-            (chartModelBasis E k))) •
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k))) •
           (ContinuousLinearMap.flip L
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (chartModelBasis E l)))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l)))
       map_add' := fun X X' => by
         ext Y'
         simp only [add_apply, FunLike.coe_sum,
@@ -325,9 +325,9 @@ private lemma kcOuterPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
           (K X ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (chartModelBasis E k)) *
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) *
             L X' ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (chartModelBasis E l))) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l))) := by
   rw [kcOuterPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
   simp only [sum_apply, smul_apply, smul_eq_mul,
     ContinuousLinearMap.flip_apply]
@@ -346,13 +346,13 @@ private theorem kc_double_frame_bilin_trace_eq_fixed
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g x x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g x x k l *
           (K ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (chartModelBasis E m))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m))
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                (chartModelBasis E k)) *
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) *
             L ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-              (chartModelBasis E n))
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E n))
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
-                (chartModelBasis E l)))) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E l)))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       kcOuterPairBilin (I := I) g x K L (B a) (B a) := by
@@ -361,19 +361,19 @@ private theorem kc_double_frame_bilin_trace_eq_fixed
     have h := orthonormal_basis_bilin_trace (I := I) (M := M) g (x := x)
       (kcInnerPairBilin (I := I) x K L (B a)) B hB
     simp only [kcInnerPairBilin_apply] at h
-    simp_rw [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply] at h
+    simp_rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply] at h
     exact h
   rw [Finset.sum_congr rfl (fun a _ => hinner a)]
   have hout := orthonormal_basis_bilin_trace (I := I) (M := M) g (x := x)
     (kcOuterPairBilin (I := I) g x K L) B hB
-  simp_rw [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply] at hout
+  simp_rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis_apply, DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply] at hout
   rw [hout]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   refine Finset.sum_congr rfl (fun n _ => ?_)
   exact congrArg (fun z : ℝ => chartInvGramMatrix (I := I) g x x m n * z)
     (kcOuterPairBilin_apply (I := I) g x K L
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (chartModelBasis E m))
-      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (chartModelBasis E n)))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E n)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in

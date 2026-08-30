@@ -42,12 +42,12 @@ lemma contMDiffOn_eval_basisTuple_of_into_tensor0SModel
     (hΦ : ContMDiffOn I 𝓘(ℝ, Tensor0SModel n ℝ E) ∞ Φ U)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
-      (fun b : M => Φ b (fun k : Fin n => (chartModelBasis E) (φ k))) U := by
+      (fun b : M => Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) U := by
   set evalCLM :
       Tensor0SModel n ℝ E →L[ℝ] ℝ :=
     ContinuousMultilinearMap.apply ℝ (fun _ : Fin n => E) ℝ
-      (fun k : Fin n => (chartModelBasis E) (φ k)) with hevalCLM
-  have heq : (fun b : M => Φ b (fun k : Fin n => (chartModelBasis E) (φ k)))
+      (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) with hevalCLM
+  have heq : (fun b : M => Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)))
       = fun b : M => evalCLM (Φ b) := by
     funext b
     rfl

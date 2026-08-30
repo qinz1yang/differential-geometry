@@ -38,16 +38,16 @@ omit [InnerProductSpace ℝ E] in
 theorem cotangentToDual_gen_chartBasis_eval
     (α : M) (j : Fin (Module.finrank ℝ E))
     (β : Π b : M, Tensor0SSpace 1 I b) (b : M) :
-    cotangentToDualGen (I := I) (β b) (chartBasisVecFiber (I := I) α j b) =
-      β b (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b) :=
-  cotangentToDual_apply_gen (I := I) (β b) (chartBasisVecFiber (I := I) α j b)
+    cotangentToDualGen (I := I) (β b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) =
+      β b (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) :=
+  cotangentToDual_apply_gen (I := I) (β b) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
 
 omit [InnerProductSpace ℝ E] in
 theorem cotangentSharp_gen_contMDiff_total (g : SmoothRiemannianMetric I M)
     {β : Π b : M, Tensor0SSpace 1 I b}
     (hβ : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => β b (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b))
+        (fun b : M => β b (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M =>
@@ -56,12 +56,12 @@ theorem cotangentSharp_gen_contMDiff_total (g : SmoothRiemannianMetric I M)
     fun b => cotangentToDualGen (I := I) (β b) with hcv
   have hcv_smooth : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => cv b (chartBasisVecFiber (I := I) α j b))
+        (fun b : M => cv b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source := by
     intro α j
     have heq :
-        (fun b : M => cv b (chartBasisVecFiber (I := I) α j b)) =
-          fun b : M => β b (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b) := by
+        (fun b : M => cv b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)) =
+          fun b : M => β b (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b) := by
       funext b
       exact cotangentToDual_gen_chartBasis_eval (I := I) α j β b
     rw [heq]
@@ -85,7 +85,7 @@ theorem cotangentSharp_gen_mdiffAt (g : SmoothRiemannianMetric I M)
     {β : Π b : M, Tensor0SSpace 1 I b}
     (hβ : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn I 𝓘(ℝ) ∞
-        (fun b : M => β b (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b))
+        (fun b : M => β b (fun _ : Fin 1 => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b))
         (chartAt H α).source)
     (x : M) :
     MDiffAt (T% (fun y : M => cotangentSharpGen (I := I) g y (β y))) x :=

@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Connection
 
 open Set Function Filter Bundle
 open scoped Topology ContDiff
-open DifferentialGeometry.Integral.Measure (SmoothRiemannianMetric chartModelBasis)
+open DifferentialGeometry (SmoothRiemannianMetric)
 
 open DifferentialGeometry.Integral.DivergenceTheorem (chartRiemannTensor)
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers

@@ -38,10 +38,10 @@ theorem chartGramOnE_roundMetric (x₀ : sphere (0 : E) 1)
     (i j : Fin (finrank ℝ (EuclideanSpace ℝ (Fin n)))) (y : EuclideanSpace ℝ (Fin n)) :
     chartGramOnE (roundMetric (E := E) (n := n)) x₀ i j y =
       ⟪dIncl ((extChartAt (𝓡 n) x₀).symm y)
-          (chartBasisVecFiber x₀ i ((extChartAt (𝓡 n) x₀).symm y)),
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber x₀ i ((extChartAt (𝓡 n) x₀).symm y)),
         dIncl ((extChartAt (𝓡 n) x₀).symm y)
-          (chartBasisVecFiber x₀ j ((extChartAt (𝓡 n) x₀).symm y))⟫ := by
-  rw [chartGramOnE_def, chartGramMatrix_apply, roundMetric_inner]
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber x₀ j ((extChartAt (𝓡 n) x₀).symm y))⟫ := by
+  rw [chartGramOnE_def, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, roundMetric_inner]
 
 end Geometry
 end DifferentialGeometry

@@ -27,14 +27,14 @@ section ChartFrame
 
 variable (I) in
 def chartFrame (x₀ : M) : Fin (Module.finrank Real E) → (y : M) → TangentSpace I y :=
-  (trivializationAt E (TangentSpace I) x₀).localFrame (chartModelBasis E)
+  (trivializationAt E (TangentSpace I) x₀).localFrame (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
 
 variable (I) in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 theorem chartFrame_isFrame (x₀ : M) :
     IsLocalFrameOn I E 1 (chartFrame I x₀) (trivializationAt E (TangentSpace I) x₀).baseSet :=
   (trivializationAt E (TangentSpace I) x₀).isLocalFrameOn_localFrame_baseSet I 1
-    (chartModelBasis E)
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
 
 variable (I) in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
@@ -256,7 +256,7 @@ theorem forward_unique_of_inputs
     (rem : Real → (x : M) → Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ico a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (h1pde : ∀ t ∈ Ico a b, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : Real => (g₁ s).inner x v w)
@@ -282,7 +282,7 @@ theorem forward_unique_of_inputs
     rw [he]; linarith
   have hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
+        (fun p : Real × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
         (Ioo a c ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := fun x₀ i j =>
     (h1smooth x₀ i j).mono
       (Set.prod_mono (fun s hs => ⟨hs.1.le, lt_trans hs.2 hc.2⟩) (subset_refl _))

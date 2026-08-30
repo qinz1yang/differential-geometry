@@ -969,13 +969,13 @@ theorem exists_lRegFamily
         change trivFromE (I := I) x x ((2 : Real) • Z) = (2 : Nat) • Z
         rw [trivFromE_self_apply]
         have hcenterSymm (w : E) :
-            (Integral.Measure.centeredChartTangentEquiv (I := I) x).symm w = w := by
-          apply (Integral.Measure.centeredChartTangentEquiv (I := I) x).injective
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).symm w = w := by
+          apply (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x).injective
           rw [ContinuousLinearEquiv.apply_symm_apply]
           have hmodel : tangentSpaceModelContinuousLinearEquiv (I := I) x
               (show TangentSpace I x from w) = w := rfl
           exact hmodel.symm.trans
-            (Integral.Measure.centeredChartTangentEquiv_apply (I := I) x
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply (I := I) x
               (show TangentSpace I x from w)).symm
         rw [hcenterSymm]
         simp only [two_smul]

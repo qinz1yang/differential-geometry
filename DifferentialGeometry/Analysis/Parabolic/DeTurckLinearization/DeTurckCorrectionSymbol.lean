@@ -29,22 +29,22 @@ omit [NeZero (Module.finrank ℝ E)] hSigma hT2 hBoundaryless in
 private lemma centeredChartTangentBasis_repr_apply_add (x : M)
     (v₁ v₂ : TangentSpace I x)
     (i : Fin (Module.finrank ℝ E)) :
-    (centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) i =
-      (centeredChartTangentBasis (I := I) x).repr v₁ i +
-        (centeredChartTangentBasis (I := I) x).repr v₂ i := by
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (v₁ + v₂) i =
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₁ i +
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v₂ i := by
   exact congrArg
     (fun p : Fin (Module.finrank ℝ E) →₀ ℝ => p i)
-    ((centeredChartTangentBasis (I := I) x).repr.map_add v₁ v₂)
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr.map_add v₁ v₂)
 
 omit [NeZero (Module.finrank ℝ E)] hSigma hT2 hBoundaryless in
 private lemma centeredChartTangentBasis_repr_apply_smul (x : M)
     (a : ℝ) (v : TangentSpace I x)
     (i : Fin (Module.finrank ℝ E)) :
-    (centeredChartTangentBasis (I := I) x).repr (a • v) i =
-      a * (centeredChartTangentBasis (I := I) x).repr v i := by
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr (a • v) i =
+      a * (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i := by
   have h := congrArg
     (fun p : Fin (Module.finrank ℝ E) →₀ ℝ => p i)
-    ((centeredChartTangentBasis (I := I) x).repr.map_smul a v)
+    ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr.map_smul a v)
   simpa only [Finsupp.smul_apply, smul_eq_mul] using h
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -56,8 +56,8 @@ def deTurckCorrectionSymbolOutput (g : SmoothRiemannianMetric I M) (x : M) (ξ :
     (fun v w : TangentSpace I x =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          (centeredChartTangentBasis (I := I) x).repr v i *
-            (centeredChartTangentBasis (I := I) x).repr w j *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
             deTurckCorrSymbolComp (I := I) g x ξ t i j)
     (fun v₁ v₂ w => by
       rw [← Finset.sum_add_distrib]
@@ -96,8 +96,8 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
     deTurckCorrectionSymbolOutput (I := I) g x ξ t v w =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          (centeredChartTangentBasis (I := I) x).repr v i *
-            (centeredChartTangentBasis (I := I) x).repr w j *
+          (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i *
+            (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
             deTurckCorrSymbolComp (I := I) g x ξ t i j := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -156,13 +156,13 @@ theorem deTurckCorrectionSymbol_apply_apply (g : SmoothRiemannianMetric I M) (x 
     (ξ : E) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
     (deTurckCorrectionSymbol (I := I) g x ξ t)
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j) =
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) =
       deTurckCorrSymbolComp (I := I) g x ξ t i j := by
   classical
   rw [deTurckCorrectionSymbol_apply, deTurckCorrectionSymbolOutput_apply_apply]
-  rw [(centeredChartTangentBasis (I := I) x).repr_self,
-    (centeredChartTangentBasis (I := I) x).repr_self]
+  rw [(DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr_self,
+    (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr_self]
   rw [Finset.sum_eq_single i]
   · rw [Finset.sum_eq_single j]
     · rw [Finsupp.single_eq_same, Finsupp.single_eq_same]
@@ -183,13 +183,13 @@ theorem deTurckCorrectionSymbol_apply_eq_closedForm (g : SmoothRiemannianMetric 
     (x : M) (ξ : E) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
     (deTurckCorrectionSymbol (I := I) g x ξ t)
-        (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j) =
-      (chartModelBasis E).repr ξ i *
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) =
+      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i *
           raisedFormContractionSnd (I := I) g x ξ t j +
-        (chartModelBasis E).repr ξ j *
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j *
           raisedFormContractionSnd (I := I) g x ξ t i -
-        (chartModelBasis E).repr ξ i * (chartModelBasis E).repr ξ j *
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j *
           formMetricTrace (I := I) g x t := by
   rw [deTurckCorrectionSymbol_apply_apply, deTurckCorrSymbolComp_eq_closedForm]
 

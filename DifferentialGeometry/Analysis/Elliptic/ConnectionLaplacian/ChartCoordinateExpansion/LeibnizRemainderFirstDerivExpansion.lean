@@ -45,7 +45,7 @@ private lemma tensorChartComponentProjection_covApply_eq_covDerivComponentEuclid
             (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-            (fun z : M => chartBasisVecFiber (I := I) α k z)
+            (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
             (fun z : M => T₀.toSection z) b)) =
       covDerivComponentEuclid (I := I) (M := M) g r s α T₀ k Idx Jdx
         ((toEuclidean (E := E)) ((extChartAt I α) b)) := by
@@ -70,10 +70,10 @@ private lemma tensorChartComponentProjection_covApply_eq_covDerivComponentEuclid
   rw [covApply_apply]
   have hCovDerivAt : (TensorRSNabla.tensorRSCovariantDerivative I M r s
         (LeviCivita (I := I) g)).toFun (fun z : M => T₀.toSection z) b
-        (chartBasisVecFiber (I := I) α k b) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
       tensorCovDerivAt (I := I) (M := M) g r s T₀ b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
-          (chartBasisVecFiber (I := I) α k b)) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) := by
     rw [tensorCovDerivAt_def]
     simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [hCovDerivAt]
@@ -93,7 +93,7 @@ private lemma tensorChartComponentProjection_covApply_eq_T₀_expansion
             (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g))
-            (fun z : M => chartBasisVecFiber (I := I) α k z)
+            (fun z : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
             (fun z : M => T₀.toSection z) b)) =
       euclidPartial (E := E) k
           (chartPushedRaw I α
@@ -146,7 +146,7 @@ theorem chartLeibnizRemainder_eq_T₀_linear
               (mvfderiv (I := I) (fun z : M =>
                   chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                     g α i k z) b
-                  (chartBasisVecFiber (I := I) α l b)) *
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b)) *
               (euclidPartial (E := E) k
                   (chartPushedRaw I α
                     (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx

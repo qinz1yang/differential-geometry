@@ -435,14 +435,14 @@ noncomputable def lExpGram
     (Z : TangentSpace I x) (tau : Real) :
     Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
   lGram S T (fun q => lExp S T x Z q)
-    (fun i q => lExpField S T x Z ((chartModelBasis E) i) q) tau
+    (fun i q => lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q) tau
 
 noncomputable def lExpGramDeriv
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) :
     Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
   lGramDeriv S T (fun q => lExp S T x Z q)
-    (fun i q => lExpField S T x Z ((chartModelBasis E) i) q) tau
+    (fun i q => lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q) tau
 
 noncomputable def lExpHess
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
@@ -451,8 +451,8 @@ noncomputable def lExpHess
   Matrix.of fun i j =>
     hessFun (I := I) (S.base.metric (T - tau))
       (fun y : M => redLength S T x y tau) (lExp S T x Z tau)
-      (lExpField S T x Z ((chartModelBasis E) i) tau)
-      (lExpField S T x Z ((chartModelBasis E) j) tau)
+      (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
+      (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) tau)
 
 noncomputable def lExpRicci
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
@@ -461,8 +461,8 @@ noncomputable def lExpRicci
   Matrix.of fun i j =>
     S.ricciAt (T - tau) (lExp S T x Z tau)
       (vec2
-        (lExpField S T x Z ((chartModelBasis E) i) tau)
-        (lExpField S T x Z ((chartModelBasis E) j) tau))
+        (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
+        (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) tau))
 
 noncomputable def lExpVelGram
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
@@ -470,8 +470,8 @@ noncomputable def lExpVelGram
     Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
   Matrix.of fun i j =>
     (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-      (lExpFieldVel S T x Z ((chartModelBasis E) i) tau)
-      (lExpField S T x Z ((chartModelBasis E) j) tau)
+      (lExpFieldVel S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
+      (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) tau)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -484,7 +484,7 @@ theorem lExpVel_eq_hess
     lExpVelGram S T x Z tau = lExpHess S T x Z tau := by
   ext i j
   exact (redHess_lJac S hS T x htau hZ
-    ((chartModelBasis E) i) ((chartModelBasis E) j)).symm
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)).symm
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] in
 theorem lExpGramDeriv_eq
@@ -498,10 +498,10 @@ theorem lExpGramDeriv_eq
     Matrix.of_apply, Matrix.add_apply, Matrix.transpose_apply,
     Matrix.smul_apply, lExpFieldVel, lJacobiVel]
   rw [(S.base.metric (T - tau)).symm (lExp S T x Z tau)
-    (lExpField S T x Z ((chartModelBasis E) i) tau)
+    (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
     (covDerivAlong (I := I) (S.base.metric (T - tau))
       (fun q => lExp S T x Z q)
-      (fun q => lExpField S T x Z ((chartModelBasis E) j) q) tau)]
+      (fun q => lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) q) tau)]
   ring
 
 noncomputable def lExpDensity
@@ -513,7 +513,7 @@ noncomputable def lSrcGram
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
     Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
   Matrix.of fun i j =>
-    (S.base.metric T).inner x ((chartModelBasis E) i) ((chartModelBasis E) j)
+    (S.base.metric T).inner x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
 
 noncomputable def lSrcDensity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) : Real :=
@@ -552,12 +552,12 @@ theorem lExpGram_pos
           (by simp)).injective
   have hker : L.toLinearMap.ker = ⊥ := LinearMap.ker_eq_bot.mpr hinj
   have hLI : LinearIndependent Real
-      (fun i : Fin (Module.finrank Real E) => L ((chartModelBasis E) i)) := by
+      (fun i : Fin (Module.finrank Real E) => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
     with_unfolding_all
-      exact (chartModelBasis E).linearIndependent.map' L.toLinearMap hker
+      exact (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).linearIndependent.map' L.toLinearMap hker
   simpa only [lExpGram, lExpField, f, L, zE] using
     lGram_det_pos S T (fun q => lExp S T x Z q)
-      (fun i q => lExpField S T x Z ((chartModelBasis E) i) q) tau hLI
+      (fun i q => lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q) tau hLI
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -589,9 +589,9 @@ theorem lExpTrace_hess
   let basis : Module.Basis (Fin (Module.finrank Real E)) Real
       (TangentSpace I y) := by
     with_unfolding_all
-      exact (chartModelBasis E).map L.toLinearEquiv
+      exact (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).map L.toLinearEquiv
   have hbasis (i : Fin (Module.finrank Real E)) :
-      basis i = lExpField S T x Z ((chartModelBasis E) i) tau := by
+      basis i = lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau := by
     simp only [basis, L, lExpField, zE]
     rfl
   have hGram : (Matrix.of fun i j => g.inner y (basis i) (basis j)) =
@@ -646,9 +646,9 @@ theorem lExpTrace_ricci
   let basis : Module.Basis (Fin (Module.finrank Real E)) Real
       (TangentSpace I y) := by
     with_unfolding_all
-      exact (chartModelBasis E).map L.toLinearEquiv
+      exact (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).map L.toLinearEquiv
   have hbasis (i : Fin (Module.finrank Real E)) :
-      basis i = lExpField S T x Z ((chartModelBasis E) i) tau := by
+      basis i = lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau := by
     simp only [basis, L, lExpField, zE]
     rfl
   have hGram : (Matrix.of fun i j => g.inner y (basis i) (basis j)) =
@@ -690,8 +690,8 @@ theorem lExpTrace_eq
     intro i j
     simp only [star_trivial, G, lExpGram, lGram, Matrix.of_apply]
     exact (S.base.metric (T - tau)).symm (lExp S T x Z tau)
-      (lExpField S T x Z ((chartModelBasis E) j) tau)
-      (lExpField S T x Z ((chartModelBasis E) i) tau)
+      (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) tau)
+      (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
   have hGinv : ∀ i j, G⁻¹ i j = G⁻¹ j i := by
     intro i j
     simpa only [star_trivial] using hGherm.inv.apply j i
@@ -725,10 +725,10 @@ theorem lSrcDensity_pos
     0 < lSrcDensity S T x := by
   let gamma : Real → M := fun _ => x
   let V : Fin (Module.finrank Real E) →
-      ∀ _ : Real, TangentSpace I x := fun i _ => (chartModelBasis E) i
+      ∀ _ : Real, TangentSpace I x := fun i _ => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
   have hLI : LinearIndependent Real (fun i => V i 0) := by
     with_unfolding_all
-      exact (chartModelBasis E).linearIndependent
+      exact (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).linearIndependent
   have hdet : 0 <
       (DifferentialGeometry.Geometry.Riemannian.Variation.curveGram
         (I := I) (S.base.metric T) gamma V 0).det :=
@@ -779,11 +779,11 @@ theorem lExpDen_hasDeriv
   let gamma : Real → M := fun q => lExp S T x Z q
   let Y : Fin (Module.finrank Real E) →
       ∀ q, TangentSpace I (gamma q) := fun i q =>
-    lExpField S T x Z ((chartModelBasis E) i) q
+    lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q
   have hJac (i : Fin (Module.finrank Real E)) :
       HasLJacobiAt S T gamma (Y i) tau := by
     simpa only [gamma, Y, lExpField] using
-      lExp_jacobi S hS T x Z ((chartModelBasis E) i) tau hdom
+      lExp_jacobi S hS T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau hdom
   have hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma tau :=
     (hJac (Classical.choice inferInstance)).1
   have hY : ∀ i, DifferentiableAt Real
