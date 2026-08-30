@@ -2633,6 +2633,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ActualEvolut
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TestJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Optimization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra
