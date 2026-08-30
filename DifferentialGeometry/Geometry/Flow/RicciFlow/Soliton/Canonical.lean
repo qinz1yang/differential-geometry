@@ -159,6 +159,57 @@ theorem canonicalFlowDiffeomorph_symm_apply
   exact (Classical.choose_spec
     (canonicalFlowMap_diffeomorph (I := I) g f sigma hcomplete hsol s)).2 x
 
+theorem canonicalFlowMap_hasMFDerivAt
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M) :
+    HasMFDerivAt 𝓘(Real, Real) I
+      (fun s : Real => canonicalFlowMap (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma s) x) t
+      ((1 : Real →L[Real] Real).smulRight
+        ((1 / (1 - sigma * t)) •
+          gradFun (I := I) g f
+            (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) x))) := by
+  let hcurves := potentialIntegralCurves (I := I) g f sigma hcomplete hsol
+  let gamma : Real → M := curveAt (fun y : M => gradFun (I := I) g f y) hcurves x
+  have hgamma := curveAt_integralCurve
+    (fun y : M => gradFun (I := I) g f y) hcurves x
+    (canonicalFlowParameter sigma t)
+  have hparam := canonicalFlowParameter_deriv (sigma := sigma) ht
+  have hcomp := HasMFDerivAt.comp t hgamma hparam.hasFDerivAt.hasMFDerivAt
+  have heq : (fun s : Real => canonicalFlowMap (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma s) x) =
+      gamma ∘ canonicalFlowParameter sigma := by
+    funext s
+    simp [gamma, canonicalFlowMap]
+  rw [heq]
+  have hclm :
+      (ContinuousLinearMap.smulRight (1 : Real →L[Real] Real)
+          ((1 / (1 - sigma * t)) •
+            gradFun (I := I) g f
+              (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma t) x))) =
+        (ContinuousLinearMap.smulRight (1 : Real →L[Real] Real)
+            (gradFun (I := I) g f
+              (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+                (canonicalFlowParameter sigma t) x))) ∘SL
+          ContinuousLinearMap.toSpanSingleton ℝ (1 / (1 - sigma * t)) := by
+    apply ContinuousLinearMap.ext
+    intro r
+    change r • ((1 / (1 - sigma * t)) •
+      gradFun (I := I) g f
+        (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+          (canonicalFlowParameter sigma t) x)) =
+      (r * (1 / (1 - sigma * t))) •
+        gradFun (I := I) g f
+          (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) x)
+    rw [smul_smul]
+  rw [hclm]
+  exact hcomp
+
 noncomputable def canonicalMetric
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
     (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
@@ -176,6 +227,62 @@ noncomputable def canonicalPotential
     (t : Real) : C^∞⟮I, M; Real⟯ :=
   f.comp (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
     (canonicalFlowParameter sigma t)).toContMDiffMap
+
+theorem canonicalPotential_hasDerivAt
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M) :
+    HasDerivAt
+      (fun s : Real => canonicalPotential (I := I) g f sigma hcomplete hsol s x)
+      ((1 / (1 - sigma * t)) *
+        g.inner
+          (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) x)
+          (gradFun (I := I) g f
+            (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) x))
+          (gradFun (I := I) g f
+            (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+              (canonicalFlowParameter sigma t) x))) t := by
+  let hcurves := potentialIntegralCurves (I := I) g f sigma hcomplete hsol
+  let gamma : Real → M := curveAt (fun y : M => gradFun (I := I) g f y) hcurves x
+  have hgamma := hasDerivAt_df_comp_integralCurve (I := I) (f := (f : M → Real))
+    f.contMDiff (fun y : M => gradFun (I := I) g f y)
+    (curveAt_integralCurve (fun y : M => gradFun (I := I) g f y) hcurves x)
+    (canonicalFlowParameter sigma t)
+  have hparam := canonicalFlowParameter_deriv (sigma := sigma) ht
+  have hcomp := hgamma.comp t hparam
+  have heq : (fun s : Real => canonicalPotential (I := I) g f sigma hcomplete hsol s x) =
+      (fun s : Real => f (gamma (canonicalFlowParameter sigma s))) := by
+    funext s
+    change f ((canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma s)) x) = _
+    rw [canonicalFlowDiffeomorph_apply]
+    rfl
+  have hinner := inner_gradFun (I := I) g (f : M → Real)
+    (gamma (canonicalFlowParameter sigma t))
+    (gradFun (I := I) g f (gamma (canonicalFlowParameter sigma t)))
+  have hder := hcomp.congr_deriv (by rw [← hinner])
+  have hder' := hder.congr_deriv (mul_comm _ _)
+  have hmap :
+      canonicalFlowMap (I := I) g f sigma hcomplete hsol
+          (canonicalFlowParameter sigma t) x =
+        gamma (canonicalFlowParameter sigma t) := by
+    rfl
+  rw [hmap]
+  have hpoint : ∀ s : Real,
+      canonicalPotential (I := I) g f sigma hcomplete hsol s x =
+        ((f : M → Real) ∘ curveAt (fun y : M => gradFun (I := I) g f y)
+          hcurves x) (canonicalFlowParameter sigma s) := by
+    intro s
+    rw [congrFun heq s]
+    rfl
+  have hresult := hder'.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall hpoint)
+  change HasDerivAt
+    (fun s : Real => (canonicalPotential (I := I) g f sigma hcomplete hsol s) x) _ t
+  exact hresult
 
 theorem canonicalMetric_gradientRicciSoliton
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
