@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartCoeffPullback
+import DifferentialGeometry.Geometry.Coordinates.ScalarFunction
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
@@ -26,6 +27,9 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
+export DifferentialGeometry.Tensor.Coordinates
+  (scalarOnE scalarOnE_contDiffOn scalarOnE_contDiffWithinAt scalarOnE_def
+    scalarOnE_extChartAt)
 
 def tangentSectionAction
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : M → ℝ) : M → ℝ :=
@@ -50,13 +54,6 @@ theorem tangent_mul
   rw [hmul]
   rfl
 
-def scalarOnE (α : M) (f : M → ℝ) : E → ℝ :=
-  fun y => f ((extChartAt I α).symm y)
-
-omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
-@[simp] lemma scalarOnE_def (α : M) (f : M → ℝ) (y : E) :
-    scalarOnE (I := I) α f y = f ((extChartAt I α).symm y) := rfl
-
 def chartPullZero (α : M) (f : M → ℝ) : E → ℝ :=
   (extChartAt I α).target.indicator (scalarOnE (I := I) α f)
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
@@ -69,32 +66,6 @@ lemma chartPullZero_nmem (α : M) (f : M → ℝ) {y : E}
     (hy : y ∉ (extChartAt I α).target) :
     chartPullZero (I := I) α f y = 0 :=
   Set.indicator_of_notMem hy _
-omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
-lemma scalarOnE_extChartAt (α : M) (f : M → ℝ) {x : M}
-    (hx : x ∈ (extChartAt I α).source) :
-    scalarOnE (I := I) α f (extChartAt I α x) = f x := by
-  change f ((extChartAt I α).symm (extChartAt I α x)) = f x
-  rw [(extChartAt I α).left_inv hx]
-
-omit [Module.Finite ℝ E] in
-lemma scalarOnE_contDiffOn (α : M) {f : M → ℝ}
-    (hf : ContMDiff I 𝓘(ℝ) ∞ f) :
-    ContDiffOn ℝ ∞ (scalarOnE (I := I) α f) (extChartAt I α).target := by
-  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
-      (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
-  have hf_on : ContMDiffOn I 𝓘(ℝ) ∞ f univ := hf.contMDiffOn
-  have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞ (f ∘ (extChartAt I α).symm)
-      (extChartAt I α).target :=
-    hf_on.comp hsymm (fun _ _ => mem_univ _)
-  exact hcomp.contDiffOn
-
-omit [Module.Finite ℝ E] in
-lemma scalarOnE_contDiffWithinAt
-    (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) {y : E}
-    (hy : y ∈ (extChartAt I α).target) :
-    ContDiffWithinAt ℝ ∞ (scalarOnE (I := I) α f) (extChartAt I α).target y :=
-  scalarOnE_contDiffOn (I := I) α hf y hy
-
 lemma mfderiv_chart_diff (α : M)
     {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
     (hf : DifferentiableAt ℝ (scalarOnE (I := I) α f) (extChartAt I α x))

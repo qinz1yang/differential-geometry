@@ -2180,6 +2180,8 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphAtlas
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.ChartFrame
+import DifferentialGeometry.Geometry.Coordinates.ScalarFunction
+import DifferentialGeometry.Geometry.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem

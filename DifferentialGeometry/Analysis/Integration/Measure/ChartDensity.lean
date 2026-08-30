@@ -65,6 +65,29 @@ lemma chartDensity_contMDiffOn
       fun y : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x₀ y).det) hdet
   exact this
 
+def chartDensityOnE (g : SmoothRiemannianMetric I M) (x₀ : M) : E → ℝ :=
+  fun y => chartDensity (I := I) g x₀ ((extChartAt I x₀).symm y)
+
+lemma chartDensityOnE_contDiffOn
+    (g : SmoothRiemannianMetric I M) (x₀ : M) :
+    ContDiffOn ℝ ∞ (chartDensityOnE (I := I) g x₀)
+      (extChartAt I x₀).target := by
+  have hbase : ContMDiffOn I 𝓘(ℝ) ∞ (chartDensity (I := I) g x₀)
+      (trivializationAt E (TangentSpace I) x₀).baseSet :=
+    chartDensity_contMDiffOn (I := I) g x₀
+  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I x₀).symm
+      (extChartAt I x₀).target := contMDiffOn_extChartAt_symm (I := I) x₀
+  have hsubset : (extChartAt I x₀).target ⊆
+      (extChartAt I x₀).symm ⁻¹'
+        (trivializationAt E (TangentSpace I) x₀).baseSet :=
+    fun _ hy =>
+      DifferentialGeometry.Tensor.Coordinates.extChartAt_symm_mem_trivializationAt_baseSet
+        (I := I) x₀ hy
+  have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
+      ((chartDensity (I := I) g x₀) ∘ (extChartAt I x₀).symm)
+      (extChartAt I x₀).target := hbase.comp hsymm hsubset
+  exact hcomp.contDiffOn
+
 noncomputable def modelHaar : MeasureTheory.Measure E := (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).addHaar
 
 instance modelHaar_isAddHaarMeasure :

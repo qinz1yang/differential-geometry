@@ -4,6 +4,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
+import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 
 noncomputable section
 
@@ -16,6 +17,27 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+omit [Module.Finite ℝ E] in
+lemma trivializationAt_baseSet_eq_chartAt_source (x₀ : M) :
+    (trivializationAt E (TangentSpace I) x₀).baseSet =
+      (chartAt H x₀).source :=
+  rfl
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+lemma extChartAt_source_eq_chartAt_source (x₀ : M) :
+    (extChartAt I x₀).source = (chartAt H x₀).source := by
+  rw [extChartAt_source]
+
+omit [Module.Finite ℝ E] in
+lemma extChartAt_symm_mem_trivializationAt_baseSet (x₀ : M) {y : E}
+    (hy : y ∈ (extChartAt I x₀).target) :
+    (extChartAt I x₀).symm y ∈
+      (trivializationAt E (TangentSpace I) x₀).baseSet := by
+  have hsource : (extChartAt I x₀).symm y ∈ (extChartAt I x₀).source :=
+    (extChartAt I x₀).map_target hy
+  rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
+  exact hsource
 
 def centeredChartTangentEquiv (x : M) : TangentSpace I x ≃L[ℝ] E :=
   (trivializationAt E (TangentSpace I) x).continuousLinearEquivAt ℝ x

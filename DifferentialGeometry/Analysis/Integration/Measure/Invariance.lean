@@ -323,10 +323,8 @@ theorem chartDensity_pullback_eq_abs_det_jacobian
   rw [Real.sqrt_mul (sq_nonneg _)]
   rw [Real.sqrt_sq_eq_abs]
 
-omit [Module.Finite ℝ E] in
-lemma trivializationAt_baseSet_eq_chartAt_source (x₀ : M) :
-    (trivializationAt E (TangentSpace I) x₀).baseSet = (chartAt H x₀).source :=
-  rfl
+export DifferentialGeometry.Tensor.Coordinates
+  (trivializationAt_baseSet_eq_chartAt_source extChartAt_source_eq_chartAt_source)
 
 lemma isOpen_chartAt_source_inter (x₀ x₁ : M) :
     IsOpen ((chartAt H x₀).source ∩ (chartAt H x₁).source) :=
@@ -335,11 +333,6 @@ lemma isOpen_chartAt_source_inter (x₀ x₁ : M) :
 lemma measurableSet_chartAt_source_inter (x₀ x₁ : M) :
     MeasurableSet ((chartAt H x₀).source ∩ (chartAt H x₁).source) :=
   (isOpen_chartAt_source_inter (H := H) (M := M) x₀ x₁).measurableSet
-
-omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
-lemma extChartAt_source_eq_chartAt_source (x₀ : M) :
-    (extChartAt I x₀).source = (chartAt H x₀).source := by
-  rw [extChartAt_source]
 
 lemma chartDensity_continuousOn
     (g : SmoothRiemannianMetric I M) (x₀ : M) :

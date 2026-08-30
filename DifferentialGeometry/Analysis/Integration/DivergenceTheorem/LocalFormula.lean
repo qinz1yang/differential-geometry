@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
 import DifferentialGeometry.Geometry.Coordinates.PartialDerivative
+import DifferentialGeometry.Geometry.Coordinates.VectorField
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
@@ -31,81 +32,11 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
-
-def chartCoeff (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (i : Fin (Module.finrank ℝ E)) : M → ℝ :=
-  fun x => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-    ((trivializationAt E (TangentSpace I) α) ⟨x, X x⟩).2 i
-
-@[simp] lemma chartCoeff_def (α : M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (i : Fin (Module.finrank ℝ E)) (x : M) :
-    chartCoeff (I := I) α X i x =
-      (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-        ((trivializationAt E (TangentSpace I) α) ⟨x, X x⟩).2 i := rfl
-
-lemma chartCoeff_recompose (α : M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    {x : M} (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    X x = ∑ i, chartCoeff (I := I) α X i x •
-      DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x := by
-  classical
-  set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
-    trivializationAt E (TangentSpace I) α
-  set L : TangentSpace I x ≃L[ℝ] E := T.continuousLinearEquivAt ℝ x hx
-  have hL : L (X x) = (T ⟨x, X x⟩).2 := rfl
-  have hLsymm : ∀ v : E, L.symm v = T.symmL ℝ x v := fun v =>
-    congrFun (T.symm_continuousLinearEquivAt_eq hx) v
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
-  have hdecomp : (T ⟨x, X x⟩).2 =
-      ∑ i, b.repr ((T ⟨x, X x⟩).2) i • b i := by
-    have := (Module.Basis.sum_repr b ((T ⟨x, X x⟩).2))
-    exact this.symm
-  have hX : X x = L.symm ((T ⟨x, X x⟩).2) := by
-    rw [← hL, L.symm_apply_apply]
-  rw [hX, hdecomp, map_sum]
-  refine Finset.sum_congr rfl ?_
-  intro i _
-  rw [map_smul]
-  rw [hLsymm]
-  simp only [chartCoeff_def, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber]
-  rfl
-
-lemma chartCoeff_contMDiffOn (α : M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (i : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn I 𝓘(ℝ) ∞ (chartCoeff (I := I) α X i)
-      (trivializationAt E (TangentSpace I) α).baseSet := by
-  classical
-  set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
-    trivializationAt E (TangentSpace I) α
-  have hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% fun x : M => X x) := X.contMDiff
-  have hiff :=
-    T.contMDiffOn_section_baseSet_iff (IB := I) (n := ∞) (s := fun x : M => X x)
-  have hsection : ContMDiffOn I 𝓘(ℝ, E) ∞
-      (fun x : M => (T ⟨x, X x⟩).2) T.baseSet := hiff.mp hX.contMDiffOn
-  set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := DifferentialGeometry.Tensor.Coordinates.chartModelBasis E
-  set Lcoord : E →L[ℝ] ℝ := (b.coord i).toContinuousLinearMap
-  have hLcoord_contDiff : ContDiff ℝ ∞ (Lcoord : E → ℝ) := Lcoord.contDiff
-  have hcomp : ContMDiffOn I 𝓘(ℝ) ∞
-      ((Lcoord : E → ℝ) ∘ (fun x : M => (T ⟨x, X x⟩).2)) T.baseSet :=
-    hLcoord_contDiff.contMDiff.comp_contMDiffOn hsection
-  have heq : (Lcoord : E → ℝ) ∘ (fun x : M => (T ⟨x, X x⟩).2)
-      = chartCoeff (I := I) α X i := by
-    funext x
-    change Lcoord ((T ⟨x, X x⟩).2) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
-        ((trivializationAt E (TangentSpace I) α) ⟨x, X x⟩).2 i
-    change (b.coord i) ((T ⟨x, X x⟩).2) = _
-    rw [Module.Basis.coord_apply]
-  rw [← heq]
-  exact hcomp
-
-def chartCoeffOnE (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (i : Fin (Module.finrank ℝ E)) : E → ℝ :=
-  fun y => chartCoeff (I := I) α X i ((extChartAt I α).symm y)
-
-def chartDensityOnE (g : SmoothRiemannianMetric I M) (α : M) : E → ℝ :=
-  fun y => chartDensity (I := I) g α ((extChartAt I α).symm y)
+export DifferentialGeometry.Integral.Measure
+  (chartDensityOnE chartDensityOnE_contDiffOn)
+export DifferentialGeometry.Tensor.Coordinates
+  (chartCoeff chartCoeff_contMDiffOn chartCoeff_def chartCoeff_recompose
+    chartCoeffOnE chartCoeffOnE_contDiffOn)
 
 def localDivergence (g : SmoothRiemannianMetric I M)
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -126,51 +57,6 @@ def localDivergence (g : SmoothRiemannianMetric I M)
                 chartDensityOnE (I := I) g α y)
             (extChartAt I α x))
         / chartDensity (I := I) g α x := rfl
-
-omit [Module.Finite ℝ E] in
-private lemma extChartAt_symm_mapsTo_baseSet (α : M) :
-    Set.MapsTo (extChartAt I α).symm (extChartAt I α).target
-      (trivializationAt E (TangentSpace I) α).baseSet := by
-  intro y hy
-  have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-    (extChartAt I α).map_target hy
-  rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
-  exact hsource
-
-lemma chartCoeffOnE_contDiffOn (α : M)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    (i : Fin (Module.finrank ℝ E)) :
-    ContDiffOn ℝ ∞ (chartCoeffOnE (I := I) α X i) (extChartAt I α).target := by
-  have hbase : ContMDiffOn I 𝓘(ℝ) ∞ (chartCoeff (I := I) α X i)
-      (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartCoeff_contMDiffOn (I := I) α X i
-  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
-      (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
-  have hsubset : (extChartAt I α).target ⊆
-      (extChartAt I α).symm ⁻¹'
-        (trivializationAt E (TangentSpace I) α).baseSet :=
-    fun y hy => extChartAt_symm_mapsTo_baseSet (I := I) α hy
-  have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      ((chartCoeff (I := I) α X i) ∘ (extChartAt I α).symm)
-      (extChartAt I α).target := hbase.comp hsymm hsubset
-  exact hcomp.contDiffOn
-
-lemma chartDensityOnE_contDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ ∞ (chartDensityOnE (I := I) g α) (extChartAt I α).target := by
-  have hbase : ContMDiffOn I 𝓘(ℝ) ∞ (chartDensity (I := I) g α)
-      (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartDensity_contMDiffOn (I := I) g α
-  have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
-      (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
-  have hsubset : (extChartAt I α).target ⊆
-      (extChartAt I α).symm ⁻¹'
-        (trivializationAt E (TangentSpace I) α).baseSet :=
-    fun y hy => extChartAt_symm_mapsTo_baseSet (I := I) α hy
-  have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
-      ((chartDensity (I := I) g α) ∘ (extChartAt I α).symm)
-      (extChartAt I α).target := hbase.comp hsymm hsubset
-  exact hcomp.contDiffOn
 
 lemma chartCoeffOnE_mul_chartDensityOnE_contDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)

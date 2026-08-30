@@ -72,17 +72,6 @@ theorem covChartMetricGram_symm
     (tensorChartBasisElement (E := E) r s P.1 P.2)
     (tensorChartBasisElement (E := E) r s Q.1 Q.2)
 
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private lemma extChartAt_symm_mapsTo_baseSet (α : M) :
-    Set.MapsTo (extChartAt I α).symm (extChartAt I α).target
-      (trivializationAt E (TangentSpace I) α).baseSet := by
-  intro y hy
-  rw [TangentBundle.trivializationAt_baseSet]
-  have hsrc : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-    (extChartAt I α).map_target hy
-  rwa [extChartAt_source] at hsrc
-
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covChartMetricGram_contDiffOn
@@ -110,7 +99,9 @@ theorem covChartMetricGram_contDiffOn
             (tensorChartBasisElement (E := E) r s Q.1 Q.2)) ∘
         (extChartAt I α).symm)
       (extChartAt I α).target :=
-    hbase.comp hsymm (extChartAt_symm_mapsTo_baseSet (I := I) (M := M) α)
+    hbase.comp hsymm (fun _ hy =>
+      DifferentialGeometry.Tensor.Coordinates.extChartAt_symm_mem_trivializationAt_baseSet
+        (I := I) α hy)
   have hcontDiff_E : ContDiffOn ℝ ∞
       ((fun b : M =>
           chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
