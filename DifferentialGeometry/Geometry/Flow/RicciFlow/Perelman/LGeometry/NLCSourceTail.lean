@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallReduced
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SourceGaussTail
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.ReducedJacobianLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussianTail
 
 set_option autoImplicit false
 

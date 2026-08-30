@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.ScaledAction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallEndpoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.EndpointInjectivity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.ReducedLengthLimit
 
 set_option autoImplicit false
 

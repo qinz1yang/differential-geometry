@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelSPD
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.Basic
 
 set_option autoImplicit false
 

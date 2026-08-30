@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallReduced
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallExhaustion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SourceGaussian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.ReducedJacobianLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.InjectivityExhaustion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussian
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.GaussianTailSPD
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SourceGaussian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussian
 
 set_option autoImplicit false
 

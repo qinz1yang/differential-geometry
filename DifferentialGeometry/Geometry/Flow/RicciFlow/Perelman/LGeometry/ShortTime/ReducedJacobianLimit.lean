@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallJacobian
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.JacobianLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.ReducedLengthLimit
 
 set_option autoImplicit false
 
