@@ -688,7 +688,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfRoughMap
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfStateFixed
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfStateQuad
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfStateRough
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderJetComplete
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderJet
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderPath
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammBasisPot
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammCarl
@@ -2471,7 +2471,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.WeightedHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.AllDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.LimitData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Complete
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.HigherDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.SolutionHeatEquation
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Complete
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.NormRegularity
