@@ -320,6 +320,46 @@ theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_aestronglyMeasurable
     exact InnerProductSpace.toDual_symm_apply
   simpa only [hinner] using hU z
 
+theorem integrable_weighted_bilinear_of_apply_aestronglyMeasurable
+    [TopologicalSpace.SeparableSpace Y]
+    {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    (u : timeL2 Y T)
+    (B : ℝ → Y →L[ℝ] Z →L[ℝ] ℝ)
+    (hB : ∀ y z, AEStronglyMeasurable (fun t ↦ B t y z) (timeMeasure T))
+    {C : ℝ} (hC : ∀ᵐ t ∂(timeMeasure T), ‖B t‖ ≤ C)
+    (c : ℝ → ℝ) (hc : AEStronglyMeasurable c (timeMeasure T))
+    {K : ℝ} (hK : ∀ᵐ t ∂(timeMeasure T), ‖c t‖ ≤ K)
+    (z : Z) :
+    Integrable (fun t ↦ c t * B t (u t) z) (timeMeasure T) := by
+  let F : ℝ → Y →L[ℝ] ℝ := fun t ↦ c t • (B t).flip z
+  have hF : ∀ y, AEStronglyMeasurable (fun t ↦ F t y) (timeMeasure T) := by
+    intro y
+    refine (hc.mul (hB y z)).congr (Eventually.of_forall fun t ↦ ?_)
+    change c t * B t y z = (c t • (B t).flip z) y
+    simp only [smul_apply, ContinuousLinearMap.flip_apply, smul_eq_mul]
+  have hFbound : ∀ᵐ t ∂(timeMeasure T),
+      ‖F t‖ ≤ max 0 K * (max 0 C * ‖z‖) := by
+    filter_upwards [hC, hK] with t hBt hct
+    calc
+      ‖F t‖ ≤ ‖c t‖ * (‖B t‖ * ‖z‖) := by
+        dsimp only [F]
+        rw [norm_smul]
+        gcongr
+        simpa only [ContinuousLinearMap.opNorm_flip] using (B t).flip.le_opNorm z
+      _ ≤ max 0 K * (max 0 C * ‖z‖) := by
+        gcongr
+        · exact hct.trans (le_max_right 0 K)
+        · exact hBt.trans (le_max_right 0 C)
+  let hv := dualRepresentative_memLp_of_apply_aestronglyMeasurable_of_bound
+    F hF hFbound
+  let v : timeL2 Y T := hv.toLp
+    (fun t ↦ (InnerProductSpace.toDual ℝ Y).symm (F t))
+  refine (MeasureTheory.L2.integrable_inner u v).congr ?_
+  filter_upwards [hv.coeFn_toLp] with t ht
+  rw [show v t = (InnerProductSpace.toDual ℝ Y).symm (F t) from ht]
+  rw [real_inner_comm, InnerProductSpace.toDual_symm_apply]
+  simp only [F, smul_apply, ContinuousLinearMap.flip_apply, smul_eq_mul]
+
 theorem tendsto_integral_weighted_bilinear_of_weakly_tendsto_of_apply_aestronglyMeasurable
     [TopologicalSpace.SeparableSpace Y]
     {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
