@@ -3,6 +3,7 @@ import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Integral.IntegrableOn
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
@@ -91,6 +92,72 @@ omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem integral_norm_sq_nonneg (f : timeL2 X T) :
     0 ≤ ∫ t in Set.Icc (0 : ℝ) T, ‖f t‖ ^ 2 := by
   rw [← norm_sq_eq_integral]; positivity
+
+omit [NormedSpace ℝ X] [CompleteSpace X] in
+theorem abs_intervalIntegral_inner_le_norm
+    (f g : timeL2 X T) {a b : ℝ}
+    (ha : a ∈ Set.Icc (0 : ℝ) T) (hb : b ∈ Set.Icc (0 : ℝ) T) :
+    |∫ t in a..b, inner ℝ (f t) (g t)| ≤ ‖f‖ * ‖g‖ := by
+  let ν : Measure ℝ := volume.restrict (Set.uIoc a b)
+  have hsub : Set.uIoc a b ⊆ Set.Icc (0 : ℝ) T :=
+    Set.uIoc_subset_uIcc.trans (Set.uIcc_subset_Icc ha hb)
+  have hν : ν ≤ timeMeasure T := by
+    exact Measure.restrict_mono hsub le_rfl
+  have hf : MemLp (fun t => f t) 2 ν :=
+    (Lp.memLp f).mono_measure hν
+  have hg : MemLp (fun t => g t) 2 ν :=
+    (Lp.memLp g).mono_measure hν
+  have hprod : Integrable (fun t => ‖f t‖ * ‖g t‖) ν := by
+    change Integrable ((fun t => ‖f t‖) * fun t => ‖g t‖) ν
+    exact hf.norm.integrable_mul hg.norm
+  have hinner : Integrable (fun t => inner ℝ (f t) (g t)) ν := by
+    refine hprod.mono' (hf.1.inner hg.1) ?_
+    filter_upwards [] with t
+    exact norm_inner_le_norm _ _
+  have hholder :
+      (∫ t, ‖f t‖ * ‖g t‖ ∂ν) ≤
+        Real.sqrt (∫ t, ‖f t‖ ^ 2 ∂ν) *
+          Real.sqrt (∫ t, ‖g t‖ ^ 2 ∂ν) := by
+    have hf' : MemLp (fun t => f t) (ENNReal.ofReal (2 : ℝ)) ν := by
+      simpa using hf
+    have hg' : MemLp (fun t => g t) (ENNReal.ofReal (2 : ℝ)) ν := by
+      simpa using hg
+    have h := integral_mul_norm_le_Lp_mul_Lq
+      (μ := ν) Real.HolderConjugate.two_two hf' hg'
+    simpa only [Real.rpow_two, ← Real.sqrt_eq_rpow] using h
+  have hfint : Integrable (fun t => ‖f t‖ ^ 2) (timeMeasure T) :=
+    (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable f)).mp
+      (Lp.memLp f)
+  have hgint : Integrable (fun t => ‖g t‖ ^ 2) (timeMeasure T) :=
+    (memLp_two_iff_integrable_sq_norm (Lp.aestronglyMeasurable g)).mp
+      (Lp.memLp g)
+  have hfmono : (∫ t, ‖f t‖ ^ 2 ∂ν) ≤
+      ∫ t, ‖f t‖ ^ 2 ∂(timeMeasure T) :=
+    integral_mono_measure hν (Eventually.of_forall fun t => sq_nonneg ‖f t‖) hfint
+  have hgmono : (∫ t, ‖g t‖ ^ 2 ∂ν) ≤
+      ∫ t, ‖g t‖ ^ 2 ∂(timeMeasure T) :=
+    integral_mono_measure hν (Eventually.of_forall fun t => sq_nonneg ‖g t‖) hgint
+  calc
+    |∫ t in a..b, inner ℝ (f t) (g t)| =
+        ‖∫ t, inner ℝ (f t) (g t) ∂ν‖ := by
+      rw [intervalIntegral.abs_intervalIntegral_eq]
+      rfl
+    _ ≤ ∫ t, ‖inner ℝ (f t) (g t)‖ ∂ν := norm_integral_le_integral_norm _
+    _ ≤ ∫ t, ‖f t‖ * ‖g t‖ ∂ν := by
+      exact integral_mono_ae hinner.norm hprod
+        (Eventually.of_forall fun t => norm_inner_le_norm _ _)
+    _ ≤ Real.sqrt (∫ t, ‖f t‖ ^ 2 ∂ν) *
+        Real.sqrt (∫ t, ‖g t‖ ^ 2 ∂ν) := hholder
+    _ ≤ Real.sqrt (∫ t, ‖f t‖ ^ 2 ∂(timeMeasure T)) *
+        Real.sqrt (∫ t, ‖g t‖ ^ 2 ∂(timeMeasure T)) := by
+      gcongr
+    _ = ‖f‖ * ‖g‖ := by
+      have hfnorm : (∫ t, ‖f t‖ ^ 2 ∂(timeMeasure T)) = ‖f‖ ^ 2 := by
+        simpa only [timeMeasure] using (norm_sq_eq_integral f).symm
+      have hgnorm : (∫ t, ‖g t‖ ^ 2 ∂(timeMeasure T)) = ‖g‖ ^ 2 := by
+        simpa only [timeMeasure] using (norm_sq_eq_integral g).symm
+      rw [hfnorm, hgnorm,
+        Real.sqrt_sq (norm_nonneg f), Real.sqrt_sq (norm_nonneg g)]
 
 end Hilbert
 
