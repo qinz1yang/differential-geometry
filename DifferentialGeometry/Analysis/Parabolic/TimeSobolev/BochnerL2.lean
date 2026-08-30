@@ -320,6 +320,38 @@ theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_aestronglyMeasurable
     exact InnerProductSpace.toDual_symm_apply
   simpa only [hinner] using hU z
 
+theorem tendsto_integral_weighted_bilinear_of_weakly_tendsto_of_apply_aestronglyMeasurable
+    [TopologicalSpace.SeparableSpace Y]
+    {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    {U : ℕ → timeL2 Y T} {u : timeL2 Y T}
+    (hU : ∀ z, Tendsto (fun m ↦ inner ℝ (U m) z) atTop
+      (𝓝 (inner ℝ u z)))
+    (B : ℝ → Y →L[ℝ] Z →L[ℝ] ℝ)
+    (hB : ∀ y z, AEStronglyMeasurable (fun t ↦ B t y z) (timeMeasure T))
+    {C : ℝ} (hC : ∀ᵐ t ∂(timeMeasure T), ‖B t‖ ≤ C)
+    (c : ℝ → ℝ) (hc : AEStronglyMeasurable c (timeMeasure T))
+    {K : ℝ} (hK : ∀ᵐ t ∂(timeMeasure T), ‖c t‖ ≤ K)
+    (z : Z) :
+    Tendsto (fun m ↦ ∫ t in Set.Icc (0 : ℝ) T, c t * B t (U m t) z) atTop
+      (𝓝 (∫ t in Set.Icc (0 : ℝ) T, c t * B t (u t) z)) := by
+  let F : ℝ → Y →L[ℝ] ℝ := fun t ↦ c t • (B t).flip z
+  apply tendsto_integral_apply_of_weakly_tendsto_of_apply_aestronglyMeasurable hU F
+  · intro y
+    refine (hc.mul (hB y z)).congr (Eventually.of_forall fun t ↦ ?_)
+    change c t * B t y z = (c t • (B t).flip z) y
+    simp only [smul_apply, ContinuousLinearMap.flip_apply, smul_eq_mul]
+  · filter_upwards [hC, hK] with t hBt hct
+    calc
+      ‖F t‖ ≤ ‖c t‖ * (‖B t‖ * ‖z‖) := by
+        dsimp only [F]
+        rw [norm_smul]
+        gcongr
+        simpa only [ContinuousLinearMap.opNorm_flip] using (B t).flip.le_opNorm z
+      _ ≤ max 0 K * (max 0 C * ‖z‖) := by
+        gcongr
+        · exact hct.trans (le_max_right 0 K)
+        · exact hBt.trans (le_max_right 0 C)
+
 theorem tendsto_integral_apply_of_weakly_tendsto_of_apply_continuousOn
     [TopologicalSpace.SeparableSpace Y]
     {U : ℕ → timeL2 Y T} {u : timeL2 Y T}
