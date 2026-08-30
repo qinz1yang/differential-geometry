@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayAdapted
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedField
 
 set_option autoImplicit false
 

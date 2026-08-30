@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinVecBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.FixedEndpoint
 
 set_option autoImplicit false
 

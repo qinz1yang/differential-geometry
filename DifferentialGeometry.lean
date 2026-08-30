@@ -3865,8 +3865,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.LocalBran
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompactCurvatureBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinVecBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinVecVar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.FixedEndpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.VariableEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.MinimizerNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Monotonicity
@@ -3876,11 +3876,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.NLCEndpoi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.NLCSourceTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Naturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.PhaseAt
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayActionLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayAdapted
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayContinue
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayEndpoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayGlobalize
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedField
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.DomainContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.EndpointVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RedLengthFence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RedMinCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RedMinTime
@@ -3898,7 +3898,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ScalarCom
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SecondVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShiBallCalabi
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortMinimizing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.ScaledAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SliceSpliceBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SliceVolumeLow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmallEndpoint
