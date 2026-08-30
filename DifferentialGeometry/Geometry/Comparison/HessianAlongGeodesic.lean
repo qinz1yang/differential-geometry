@@ -54,7 +54,7 @@ private theorem chartRep_sec_diff
 
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
-private theorem deriv_comp_grad
+theorem deriv_comp_eq_inner_grad_velocity
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (t : ℝ) :
@@ -98,7 +98,7 @@ theorem deriv2_comp_geo_at
   let W := fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] _) (1 : ℝ)
   have hfirst : deriv (f ∘ γ) = fun s => g.inner (γ s) (V s) (W s) := by
     funext s
-    exact deriv_comp_grad (I := I) g hf hγ s
+    exact deriv_comp_eq_inner_grad_velocity (I := I) g hf hγ s
   have hgrad : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (T% fun x => gradFun (I := I) g f x) :=
     gradFun_contMDiff_total_section (I := I) g hf

@@ -69,7 +69,7 @@ private theorem linIndep_ortho
     rw [if_neg (by simpa using hij), mul_zero]
 
 omit [T2Space (TangentBundle I M)] in
-private theorem intrJacobi_li_on
+theorem intrinsicJacobi_linearIndependent_of_noConjVec
     {ι : Type*}
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -108,11 +108,11 @@ private theorem intrJacobi_li_on
   rw [hfield]
   exact hmapped
 
-theorem exists_intrMean_on
+theorem exists_intrMean_at_on
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (u : TangentSpace I p) (q b : Real)
-    (hq : 0 ≤ q) (hb : 1 < b)
+    (p : M) (u : TangentSpace I p) (q s b : Real)
+    (hq : 0 ≤ q) (hs : 0 < s) (hsb : s < b)
     (hu : 0 < g.inner p u u)
     (hno : ∀ t ∈ Set.Ioo (0 : Real) b,
       ¬ IsConjVec (I := I) g hEnorm p
@@ -132,8 +132,8 @@ theorem exists_intrMean_on
       let γ := intrinsicGeodesic (I := I) g hEnorm p u
       let V := fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)
       let ell := Real.sqrt (g.inner p u u)
-      curveMean (I := I) g γ V 1 / ell ≤
-        ((Module.finrank Real E - 1 : Nat) : Real) / ell +
+      curveMean (I := I) g γ V s / ell ≤
+        ((Module.finrank Real E - 1 : Nat) : Real) / (s * ell) +
           ((Module.finrank Real E - 1 : Nat) : Real) * q := by
   classical
   let d : Nat := Module.finrank Real E - 1
@@ -150,7 +150,7 @@ theorem exists_intrMean_on
     have hmean0 :
         curveMean (I := I) g
           (intrinsicGeodesic (I := I) g hEnorm p u)
-          (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) 1 = 0 := by
+          (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) s = 0 := by
       simp only [curveMean, Matrix.trace]
       apply Finset.sum_eq_zero
       intro i hi
@@ -224,7 +224,8 @@ theorem exists_intrMean_on
         LinearIndependent Real fun i => V i t := by
       intro t ht
       simpa only [γ, V] using
-        intrJacobi_li_on (I := I) g hEnorm p u v hv ht.1.ne' (hno t ht)
+        intrinsicJacobi_linearIndependent_of_noConjVec
+          (I := I) g hEnorm p u v hv ht.1.ne' (hno t ht)
     have hW : ∀ t ∈ Set.Ioo (0 : Real) b, ∀ i j,
         jacobiWronskian (I := I) g γ (V i) (V j) t = 0 := by
       intro t ht i j
@@ -317,25 +318,55 @@ theorem exists_intrMean_on
       (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
       g γ V q ell b hq hell (Fintype.card_fin d) hd hγ hspeed
       hVperp hDVperp hVdiff hDVdiff hLI hW hJ hRicγ hRatio
-    have hone : (1 : Real) ∈ Set.Ioo (0 : Real) b :=
-      ⟨zero_lt_one, hb⟩
-    have hmean1 := hmean 1 hone
+    have hsmem : s ∈ Set.Ioo (0 : Real) b :=
+      ⟨hs, hsb⟩
+    have hmeans := hmean s hsmem
     have hhyp :=
-      hypMeanCurv_le d (mul_nonneg hq hell.le) (by norm_num : (0 : Real) < 1)
+      hypMeanCurv_le d (mul_nonneg hq hell.le) hs
     have hrawBound :
-        curveMean (I := I) g γ V 1 ≤
-          (d : Real) + (d : Real) * q * ell := by
+        curveMean (I := I) g γ V s ≤
+          (d : Real) / s + (d : Real) * q * ell := by
       calc
-        curveMean (I := I) g γ V 1 ≤
-            hypMeanCurv (q * ell) d 1 := hmean1
-        _ ≤ (d : Real) / 1 + (d : Real) * (q * ell) := hhyp
-        _ = (d : Real) + (d : Real) * q * ell := by ring
+        curveMean (I := I) g γ V s ≤
+            hypMeanCurv (q * ell) d s := hmeans
+        _ ≤ (d : Real) / s + (d : Real) * (q * ell) := hhyp
+        _ = (d : Real) / s + (d : Real) * q * ell := by ring
     apply (div_le_iff₀ hell).2
     calc
-      curveMean (I := I) g γ V 1 ≤
-          (d : Real) + (d : Real) * q * ell := hrawBound
-      _ = ((d : Real) / ell + (d : Real) * q) * ell := by
-        rw [add_mul, div_mul_cancel₀ _ hell.ne']
+      curveMean (I := I) g γ V s ≤
+          (d : Real) / s + (d : Real) * q * ell := hrawBound
+      _ = ((d : Real) / (s * ell) + (d : Real) * q) * ell := by
+        field_simp [hs.ne', hell.ne']
+
+theorem exists_intrMean_on
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (u : TangentSpace I p) (q b : Real)
+    (hq : 0 ≤ q) (hb : 1 < b)
+    (hu : 0 < g.inner p u u)
+    (hno : ∀ t ∈ Set.Ioo (0 : Real) b,
+      ¬ IsConjVec (I := I) g hEnorm p
+        ((t • u : TangentSpace I p) : E))
+    (hRic : 0 < Module.finrank Real E - 1 →
+      let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
+      ∀ t ∈ Set.Ioo (0 : Real) b,
+        -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
+            g.inner (γ t) (curveVelocity (I := I) γ t)
+              (curveVelocity (I := I) γ t) ≤
+          ricciTensor (I := I) g (γ t)
+            (curveVelocity (I := I) γ t)
+            (curveVelocity (I := I) γ t)) :
+    ∃ v : Fin (Module.finrank Real E - 1) → TangentSpace I p,
+      LinearIndependent Real v ∧
+      (∀ i, g.inner p u (v i) = 0) ∧
+      let γ := intrinsicGeodesic (I := I) g hEnorm p u
+      let V := fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)
+      let ell := Real.sqrt (g.inner p u u)
+      curveMean (I := I) g γ V 1 / ell ≤
+        ((Module.finrank Real E - 1 : Nat) : Real) / ell +
+          ((Module.finrank Real E - 1 : Nat) : Real) * q := by
+  simpa only [one_mul] using
+    exists_intrMean_at_on (I := I) g hEnorm p u q 1 b hq zero_lt_one hb hu hno hRic
 
 end VolumeComparison
 end Riemannian
