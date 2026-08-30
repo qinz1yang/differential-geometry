@@ -138,6 +138,28 @@ theorem hamiltonBlockJ_eq_gram_reaction
   exact (DifferentialGeometry.Analysis.Spectral.hamiltonGram_reaction_eq_hamiltonReactionPolynomial
     Y X U W hY hU).symm
 
+theorem hamiltonBlockJ_nonneg_of_gram_quadratic_eq_zero
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ -> ι -> ι -> Real) (X : κ -> ι -> Real)
+    (U : ι -> ι -> Real) (W : ι -> Real)
+    (hY : ∀ r a b, Y r a b = -Y r b a)
+    (hU : ∀ a b, U a b = -U b a)
+    (hzero : hamiltonBlockQuadratic
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W = 0) :
+    0 ≤ hamiltonBlockJ
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
+      (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) U W := by
+  rw [hamiltonBlockJ_eq_gram_reaction Y X U W hY hU]
+  apply DifferentialGeometry.Analysis.Spectral.hamiltonGram_reaction_tangent_nonneg_of_quadratic_eq_zero
+    Y X U W
+  rw [hamiltonBlockQuadratic_eq_hamiltonQuadraticForm] at hzero
+  rw [DifferentialGeometry.Analysis.Spectral.hamiltonGram_quadratic_eq_hamiltonQuadraticForm
+    Y X U W]
+  exact hzero
+
 theorem hamiltonBlock_exact_evolution_eq_pre_square
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)

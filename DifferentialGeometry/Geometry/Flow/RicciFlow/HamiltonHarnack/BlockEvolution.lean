@@ -75,6 +75,63 @@ def hamiltonBlockRawProduct
     2 * (∑ e, ∑ a, ∑ b, ∑ c, ∑ d,
       K a b c d * DU e a b * DU e c d)
 
+def hamiltonBlockRawKProduct
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (LK : Idx -> Idx -> Idx -> Idx -> Real)
+    (DK : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (DU : Idx -> Idx -> Idx -> Real)
+    (U : Idx -> Idx -> Real) : Real :=
+  (∑ a, ∑ b, ∑ c, ∑ d,
+      LK a b c d * U a b * U c d) -
+    4 * (∑ e, ∑ a, ∑ b, ∑ c, ∑ d,
+      DK e a b c d * DU e a b * U c d) -
+    2 * (∑ e, ∑ a, ∑ b, ∑ c, ∑ d,
+      K a b c d * DU e a b * DU e c d)
+
+def hamiltonBlockRawPProduct
+    (P : Idx -> Idx -> Idx -> Real)
+    (LP : Idx -> Idx -> Idx -> Real)
+    (DP : Idx -> Idx -> Idx -> Idx -> Real)
+    (DU : Idx -> Idx -> Idx -> Real)
+    (LW : Idx -> Real)
+    (U : Idx -> Idx -> Real)
+    (W : Idx -> Real) : Real :=
+  2 * (∑ a, ∑ b, ∑ c,
+    LP a b c * U a b * W c) +
+  2 * (∑ a, ∑ b, ∑ c,
+    P a b c * U a b * LW c) -
+  4 * (∑ e, ∑ a, ∑ b, ∑ c,
+    DP e a b c * DU e a b * W c)
+
+def hamiltonBlockRawMProduct
+    (M : Idx -> Idx -> Real)
+    (LM : Idx -> Idx -> Real)
+    (LW : Idx -> Real)
+    (W : Idx -> Real) : Real :=
+  (∑ a, ∑ b, LM a b * W a * W b) +
+    2 * (∑ a, ∑ b, M a b * LW a * W b)
+
+theorem hamiltonBlockRawProduct_eq_split
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (LK : Idx -> Idx -> Idx -> Idx -> Real)
+    (LP : Idx -> Idx -> Idx -> Real)
+    (LM : Idx -> Idx -> Real)
+    (DK : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (DP : Idx -> Idx -> Idx -> Idx -> Real)
+    (DU : Idx -> Idx -> Idx -> Real)
+    (LW : Idx -> Real)
+    (U : Idx -> Idx -> Real)
+    (W : Idx -> Real) :
+    hamiltonBlockRawProduct K P M LK LP LM DK DP DU LW U W =
+      hamiltonBlockRawKProduct K LK DK DU U +
+        hamiltonBlockRawPProduct P LP DP DU LW U W +
+        hamiltonBlockRawMProduct M LM LW W := by
+  unfold hamiltonBlockRawProduct hamiltonBlockRawKProduct
+    hamiltonBlockRawPProduct hamiltonBlockRawMProduct
+  ring
+
 theorem hamiltonBlock_heat_product_eq_raw
     (K : Idx -> Idx -> Idx -> Idx -> Real)
     (P : Idx -> Idx -> Idx -> Real)
@@ -108,6 +165,32 @@ theorem hamiltonBlock_heat_product_eq_raw
     ring
   rw [hswap]
   ring
+
+theorem hamiltonBlock_heat_product_eq_split
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M : Idx -> Idx -> Real)
+    (LK : Idx -> Idx -> Idx -> Idx -> Real)
+    (LP : Idx -> Idx -> Idx -> Real)
+    (LM : Idx -> Idx -> Real)
+    (DK : Idx -> Idx -> Idx -> Idx -> Idx -> Real)
+    (DP : Idx -> Idx -> Idx -> Idx -> Real)
+    (DM : Idx -> Idx -> Idx -> Real)
+    (DU : Idx -> Idx -> Idx -> Real)
+    (DW : Idx -> Real)
+    (LU : Idx -> Idx -> Real)
+    (LW : Idx -> Real)
+    (U : Idx -> Idx -> Real)
+    (W : Idx -> Real)
+    (hDW : ∀ e, DW e = 0)
+    (hLU : ∀ a b, LU a b = 0)
+    (hM : ∀ a b, M a b = M b a) :
+    hamiltonBlockHeatProduct K P M LK LP LM DK DP DM DU DW LU LW U W =
+      hamiltonBlockRawKProduct K LK DK DU U +
+        hamiltonBlockRawPProduct P LP DP DU LW U W +
+        hamiltonBlockRawMProduct M LM LW W := by
+  rw [hamiltonBlock_heat_product_eq_raw K P M LK LP LM DK DP DM DU DW LU LW U W
+    hDW hLU hM, hamiltonBlockRawProduct_eq_split]
 
 def hamiltonBlockSigmaSquare
     (K : Idx -> Idx -> Idx -> Idx -> Real)
