@@ -284,6 +284,77 @@ private theorem dirichletMassVariation_finIncl
   intro j _
   ring
 
+private theorem dirichletMass_finIncl_left
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {h : SmoothRiemannianMetric (I_half n) M}
+    {ι : Type*} [Fintype ι]
+    (φ : ι → SmoothScalarDirichlet q) (u : EuclideanSpace ℝ ι)
+    (ψ : SmoothScalarDirichlet q) :
+    dirichletMass h (dirichletFinIncl φ u) ψ =
+      ∑ i, u.ofLp i * dirichletMass h (φ i) ψ := by
+  classical
+  rw [dirichletFinIncl_apply, dirichletMass_sum_left Finset.univ]
+
+private theorem dirichletMassVariation_finIncl_left
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {t : ℝ} (ht : t ∈ D.regular)
+    {ι : Type*} [Fintype ι]
+    (φ : ι → SmoothScalarDirichlet q) (u : EuclideanSpace ℝ ι)
+    (ψ : SmoothScalarDirichlet q) :
+    dirichletMassVariation G.metric t (dirichletFinIncl φ u) ψ =
+      ∑ i, u.ofLp i * dirichletMassVariation G.metric t (φ i) ψ := by
+  classical
+  rw [dirichletFinIncl_apply,
+    dirichletMassVariation_sum_left hG ht Finset.univ]
+
+theorem hasDerivWithinAt_dirichletFinIncl_mass_left
+    {q : SmoothRiemannianMetric (I_half n) M}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    {t : ℝ} (ht : t ∈ D.regular)
+    {ι : Type*} [Fintype ι]
+    (φ : ι → SmoothScalarDirichlet q) (ψ : SmoothScalarDirichlet q)
+    {γ : ℝ → EuclideanSpace ℝ ι} {v : EuclideanSpace ℝ ι}
+    {S : Set ℝ} (hγ : HasDerivWithinAt γ v S t) :
+    HasDerivWithinAt
+      (fun s => dirichletMass (G.metric s) (dirichletFinIncl φ (γ s)) ψ)
+      (dirichletMass (G.metric t) (dirichletFinIncl φ v) ψ +
+        dirichletMassVariation G.metric t (dirichletFinIncl φ (γ t)) ψ) S t := by
+  classical
+  have hcoord (i : ι) : HasDerivWithinAt
+      (fun s => (γ s).ofLp i) (v.ofLp i) S t := by
+    exact (EuclideanSpace.proj (𝕜 := ℝ) i).hasFDerivAt.comp_hasDerivWithinAt t hγ
+  have hterm (i : ι) : HasDerivWithinAt
+      (fun s => (γ s).ofLp i * dirichletMass (G.metric s) (φ i) ψ)
+      (v.ofLp i * dirichletMass (G.metric t) (φ i) ψ +
+        (γ t).ofLp i * dirichletMassVariation G.metric t (φ i) ψ) S t := by
+    have hmass := (hasDerivAt_dirichletMass hG ht (φ i) ψ).hasDerivWithinAt
+      (s := S)
+    exact (hcoord i).mul hmass
+  have hsum₀ := HasDerivWithinAt.sum (u := Finset.univ) fun i _ => hterm i
+  have hsum : HasDerivWithinAt
+      (fun s => ∑ i, (γ s).ofLp i * dirichletMass (G.metric s) (φ i) ψ)
+      (∑ i, (v.ofLp i * dirichletMass (G.metric t) (φ i) ψ +
+        (γ t).ofLp i * dirichletMassVariation G.metric t (φ i) ψ)) S t := by
+    exact hsum₀.congr_of_eventuallyEq
+      (Filter.Eventually.of_forall fun _ => by
+        simp only [Finset.sum_apply]) (by simp only [Finset.sum_apply])
+  refine (hsum.congr_of_eventuallyEq ?_ ?_).congr_deriv ?_
+  · filter_upwards with s
+    exact dirichletMass_finIncl_left φ (γ s) ψ
+  · exact dirichletMass_finIncl_left φ (γ t) ψ
+  · rw [dirichletMass_finIncl_left φ v ψ,
+      dirichletMassVariation_finIncl_left hG ht φ (γ t) ψ,
+      Finset.sum_add_distrib]
+
 theorem hasDerivWithinAt_dirichletFinIncl_mass
     {q : SmoothRiemannianMetric (I_half n) M}
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
