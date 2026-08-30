@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialCompleteness
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
 
 set_option autoImplicit false
 
@@ -348,6 +349,42 @@ theorem canonicalPotential_hasDerivAt
   change HasDerivAt
     (fun s : Real => (canonicalPotential (I := I) g f sigma hcomplete hsol s) x) _ t
   exact hresult
+
+theorem canonicalPotential_evolution
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M) :
+    HasDerivAt
+      (fun s : Real => canonicalPotential (I := I) g f sigma hcomplete hsol s x)
+      ((1 / (1 - sigma * t)) *
+        normGradSqFun (I := I) g (f : M → Real)
+          (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) x)) t := by
+  simpa only [normGradSqFun_def] using
+    canonicalPotential_hasDerivAt (I := I) g f sigma hcomplete hsol ht x
+
+theorem canonicalMetric_ricciTensor
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) (x : M)
+    (v w : TangentSpace I x) :
+    ricciTensor (I := I)
+        (canonicalMetric (I := I) g f sigma hcomplete hsol ht) x v w =
+      ricciTensor (I := I) g
+        (canonicalFlowMap (I := I) g f sigma hcomplete hsol
+          (canonicalFlowParameter sigma t) x)
+        (mfderiv I I
+          (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) : M → M) x v)
+        (mfderiv I I
+          (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+            (canonicalFlowParameter sigma t) : M → M) x w) := by
+  rw [canonicalMetric,
+    DifferentialGeometry.Geometry.Curvature.ricciTensor_pullback,
+    DifferentialGeometry.Geometry.Curvature.ricciTensor_scaleMetric,
+    canonicalFlowDiffeomorph_apply]
 
 theorem canonicalMetric_gradientRicciSoliton
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
