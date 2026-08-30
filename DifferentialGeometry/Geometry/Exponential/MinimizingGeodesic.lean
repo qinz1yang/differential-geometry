@@ -2382,6 +2382,110 @@ theorem exists_unit_speed_minimizing_geodesic_between_points
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_smooth_unit_speed_minimizing_geodesic_between_points_of_ne
+    [ConnectedSpace M]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p q : M) (hpq : p ≠ q) :
+    ∃ (gamma : Real → M) (L : Real),
+      0 < L ∧ gamma 0 = p ∧ gamma L = q ∧
+        ContMDiff 𝓘(Real, Real) I ∞ gamma ∧
+        IsGeodesicOn (I := I) g gamma (Set.Icc 0 L) ∧
+        (∀ t : Real,
+          g.inner (gamma t)
+            (mfderiv 𝓘(Real, Real) I gamma t (1 : Real))
+            (mfderiv 𝓘(Real, Real) I gamma t (1 : Real)) = 1) ∧
+        (∀ eta : Real → M,
+          ContMDiffOn 𝓘(Real, Real) I 1 eta (Set.Icc 0 L) →
+          eta 0 = gamma 0 → eta L = gamma L →
+          arcLength (I := I) g gamma 0 L ≤
+            arcLength (I := I) g eta 0 L) ∧
+        riemannianEDist I p q = ENNReal.ofReal L := by
+  classical
+  have hfin : riemannianEDist I p q ≠ (∞ : ENNReal) :=
+    riemannianEDist_ne_top (I := I) p q
+  have hdist_ne : riemannianEDist I p q ≠ 0 := by
+    intro hzero
+    exact hpq (riemannianEDist_eq_zero_imp_eq (I := I) p q hzero)
+  let L : Real := (riemannianEDist I p q).toReal
+  have hL : 0 < L := ENNReal.toReal_pos hdist_ne hfin
+  obtain ⟨v, hv_exp, hv_speed⟩ :=
+    minExp_of_ne_top (I := I) g hEnorm p q hfin
+  let w : TangentSpace I p := L⁻¹ • v
+  let gamma : Real → M := intrinsicGeodesic (I := I) g hEnorm p w
+  have hv_inner : g.inner p v v = L ^ 2 := by
+    rw [← Real.sq_sqrt (gInner_self_nonneg (I := I) g p v), hv_speed]
+  have hw_inner : g.inner p w w = 1 := by
+    dsimp only [w]
+    rw [gInner_smul_self (I := I) g p L⁻¹ v, hv_inner]
+    rw [← mul_pow, inv_mul_cancel₀ hL.ne', one_pow]
+  have hLw : L • w = v := by
+    dsimp only [w]
+    rw [smul_smul, mul_inv_cancel₀ hL.ne', one_smul]
+  have hgamma_zero : gamma 0 = p := by
+    exact intrinsicGeodesic_zero (I := I) g hEnorm p w
+  have hgamma_end : gamma L = q := by
+    change intrinsicGeodesic (I := I) g hEnorm p w L = q
+    rw [← intrinsicGeodesic_smul (I := I) g hEnorm p w L,
+      ← expMapIntrinsic_def, hLw]
+    exact hv_exp
+  have hgamma_geo : IsGeodesic (I := I) g gamma :=
+    intrinsicGeodesic_isGeodesic (I := I) g hEnorm p w
+  have hgamma_cont : Continuous gamma :=
+    intrinsicGeodesic_continuous (I := I) g hEnorm p w
+  have hgamma_smooth : ContMDiff 𝓘(Real, Real) I ∞ gamma :=
+    isGeodesic_contMDiff (I := I) g hgamma_geo hgamma_cont
+  have hgamma_unit (t : Real) :
+      g.inner (gamma t)
+        (mfderiv 𝓘(Real, Real) I gamma t (1 : Real))
+        (mfderiv 𝓘(Real, Real) I gamma t (1 : Real)) = 1 := by
+    exact (intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p w t).trans hw_inner
+  have hdist : riemannianEDist I p q = ENNReal.ofReal L := by
+    exact (ENNReal.ofReal_toReal hfin).symm
+  have hmin : ∀ eta : Real → M,
+      ContMDiffOn 𝓘(Real, Real) I 1 eta (Set.Icc 0 L) →
+      eta 0 = gamma 0 → eta L = gamma L →
+      arcLength (I := I) g gamma 0 L ≤
+        arcLength (I := I) g eta 0 L := by
+    intro eta heta heta_zero heta_end
+    have heta_nonneg : 0 ≤ arcLength (I := I) g eta 0 L := by
+      unfold arcLength
+      exact intervalIntegral.integral_nonneg hL.le
+        (fun _ _ => Real.sqrt_nonneg _)
+    have hed : riemannianEDist I (eta 0) (eta L) ≤
+        ENNReal.ofReal (arcLength (I := I) g eta 0 L) :=
+      riemannianEDist_le_arcLength (I := I) g hL.le heta
+        (fun t _ => hEnorm (eta t) _)
+    have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hed
+    have hL_le : L ≤ arcLength (I := I) g eta 0 L := by
+      rw [heta_zero, heta_end, hgamma_zero, hgamma_end, hdist,
+        ENNReal.toReal_ofReal hL.le,
+        ENNReal.toReal_ofReal heta_nonneg] at hreal
+      exact hreal
+    have hgamma_length : arcLength (I := I) g gamma 0 L = L := by
+      unfold arcLength
+      calc
+        (∫ t in (0 : Real)..L,
+            Real.sqrt (g.inner (gamma t)
+              (mfderiv 𝓘(Real, Real) I gamma t (1 : Real))
+              (mfderiv 𝓘(Real, Real) I gamma t (1 : Real)))) =
+            ∫ _t in (0 : Real)..L, (1 : Real) := by
+          apply intervalIntegral.integral_congr
+          intro t _
+          change Real.sqrt (g.inner (gamma t)
+            (mfderiv 𝓘(Real, Real) I gamma t (1 : Real))
+            (mfderiv 𝓘(Real, Real) I gamma t (1 : Real))) = 1
+          rw [hgamma_unit t, Real.sqrt_one]
+        _ = L := by simp
+    rw [hgamma_length]
+    exact hL_le
+  exact ⟨gamma, L, hL, hgamma_zero, hgamma_end, hgamma_smooth,
+    hgamma_geo.isGeodesicOn (Set.Icc 0 L), hgamma_unit, hmin, hdist⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem hopf_rinow_expMapIntrinsic_surjective_of_complete_metric
     [ConnectedSpace M]
