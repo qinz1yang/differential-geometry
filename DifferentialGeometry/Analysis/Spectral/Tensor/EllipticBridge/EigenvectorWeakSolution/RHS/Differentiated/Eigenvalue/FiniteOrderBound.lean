@@ -1,5 +1,7 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.DifferentiatedRHSEigenvalueBounds.EigenvectorChartRHSDiffWkpNormSharp
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Differentiated.Eigenvalue.RHSBound
+import DifferentialGeometry.Analysis.Estimates.WeightedSums
 open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Estimates (sum_le_of_le_ofReal_mul)
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -390,7 +392,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             ≤ ENNReal.ofReal (H.CresH K) * Rhs_eff := fun Q _hQ =>
         h_bridge _ (H.CresH K) (H.eResH K) (H.hCresH_nn K) hResH_le
           (H.hCresH_bd i β Q K hKN)
-      have h_sum := finsetSum_eNNReal_ofReal_mul_le
+      have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -441,7 +443,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
               ≤ ENNReal.ofReal (H.CresH K) * Rhs_eff := fun Q _hQ =>
           h_bridge _ (H.CresH K) (H.eResH K) (H.hCresH_nn K) hResH_le
             (H.hCresH_bd i β' Q K hKN)
-        have h_sum := finsetSum_eNNReal_ofReal_mul_le
+        have h_sum := sum_le_of_le_ofReal_mul
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
               (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -454,7 +456,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           (fun _Q => H.CresH K) Rhs_eff (fun _ _ => H.hCresH_nn K) h_each
         rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ] at h_sum
         exact h_sum.trans_eq (by rw [hCqtot_def])
-      have h_sum := finsetSum_eNNReal_ofReal_mul_le
+      have h_sum := sum_le_of_le_ofReal_mul
         (transportChartCenters (I := I) (M := M) β)
         (fun β' => ∑ Q : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -506,7 +508,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           ((transportChartCenters (I := I) (M := M) β).card : ℝ) := by
         exact_mod_cast Nat.zero_le _
       exact add_nonneg hCqtot_nn (mul_nonneg hN hCqtot_nn)
-    have h_sum := finsetSum_eNNReal_ofReal_mul_le
+    have h_sum := sum_le_of_le_ofReal_mul
       (transportChartCenters (I := I) (M := M) α)
       (fun β => (∑ Q : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K + 1) 2
@@ -570,7 +572,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             ≤ ENNReal.ofReal (H.CresL K) * Rhs_eff := fun Q _hQ =>
         h_bridge _ (H.CresL K) (H.eResL K) (H.hCresL_nn K) hResL_le
           (H.hCresL_bd i β Q K hK_le_N)
-      have h_sum := finsetSum_eNNReal_ofReal_mul_le
+      have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
         (fun Q => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
@@ -588,7 +590,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
       have hQ : (0 : ℝ) ≤ (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) := by
         exact_mod_cast Nat.zero_le _
       exact mul_nonneg hQ (H.hCresL_nn K)
-    have h_sum := finsetSum_eNNReal_ofReal_mul_le
+    have h_sum := sum_le_of_le_ofReal_mul
       (transportChartCenters (I := I) (M := M) α)
       (fun β => ∑ Q : TensorCompIdx (E := E) r s,
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -635,7 +637,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             ≤ ENNReal.ofReal (H.Cpar K) * Rhs_eff := fun k _hk =>
         h_bridge _ (H.Cpar K) (H.ePar K) (H.hCpar_nn K) hPar_le
           (H.hCpar_bd i P k K hKN)
-      have h_sum := finsetSum_eNNReal_ofReal_mul_le
+      have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun k => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
@@ -651,7 +653,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
       have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
         exact_mod_cast Nat.zero_le _
       exact mul_nonneg hk (H.hCpar_nn K)
-    have h_sum := finsetSum_eNNReal_ofReal_mul_le
+    have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => ∑ k : Fin (Module.finrank ℝ E),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -683,7 +685,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           ≤ ENNReal.ofReal (H.Ccom K) * Rhs_eff := fun p _hp =>
       h_bridge _ (H.Ccom K) (H.eCom K) (H.hCcom_nn K) hCom_le
         (H.hCcom_bd i p K hK_le_N)
-    have h_sum := finsetSum_eNNReal_ofReal_mul_le
+    have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun p => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((componentLpLimit (I := I) (M := M)
@@ -713,7 +715,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           ≤ ENNReal.ofReal (H.CcR K) * Rhs_eff := fun P _hP =>
       h_bridge _ (H.CcR K) (H.eCcR K) (H.hCcR_nn K) hCcR_le
         (H.hCcR_bd i P K hK_le_N)
-    have h_sum := finsetSum_eNNReal_ofReal_mul_le
+    have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
@@ -756,7 +758,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             ≤ ENNReal.ofReal (H.Ccut K) * Rhs_eff := fun l _hl =>
         h_bridge _ (H.Ccut K) (H.eCcut K) (H.hCcut_nn K) hCcut_le
           (H.hCcut_bd i P l K hKN)
-      have h_sum := finsetSum_eNNReal_ofReal_mul_le
+      have h_sum := sum_le_of_le_ofReal_mul
         (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
@@ -772,7 +774,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
       have hk : (0 : ℝ) ≤ (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) := by
         exact_mod_cast Nat.zero_le _
       exact mul_nonneg hk (H.hCcut_nn K)
-    have h_sum := finsetSum_eNNReal_ofReal_mul_le
+    have h_sum := sum_le_of_le_ofReal_mul
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P => ∑ l : Fin (Module.finrank ℝ E),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
