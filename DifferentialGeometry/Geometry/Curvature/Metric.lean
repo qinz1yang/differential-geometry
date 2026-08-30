@@ -4,6 +4,7 @@ import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Trace04
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTrace02
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
+import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
@@ -132,6 +133,26 @@ noncomputable def metricRicci (g : SmoothRiemannianMetric I M) :
   DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
     (I := I) (M := M) (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g)
+
+noncomputable def metricNablaRic (g : SmoothRiemannianMetric I M) :
+    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 3 :=
+  totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    2 (metricCov (I := I) (M := M) g) (metricRicci (I := I) (M := M) g)
+    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 (metricCov (I := I) (M := M) g)
+      (metricCov_smooth (I := I) (M := M) g)
+      (metricRicci (I := I) (M := M) g))
+
+noncomputable def metricNabla2Ric (g : SmoothRiemannianMetric I M) :
+    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 4 :=
+  totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    3 (metricCov (I := I) (M := M) g) (metricNablaRic (I := I) (M := M) g)
+    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      3 (metricCov (I := I) (M := M) g)
+      (metricCov_smooth (I := I) (M := M) g)
+      (metricNablaRic (I := I) (M := M) g))
 
 omit [SigmaCompactSpace M] in
 @[simp] theorem metricRm04_apply
@@ -597,6 +618,45 @@ theorem metricRicciSymm
       (invMetric_symm (I := I) (M := M) g x basis gInv hinv) i j
 
 omit [SigmaCompactSpace M] in
+theorem metricRicciAt_symm
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A B : TangentSpace I x) :
+    metricRicciAt (I := I) (M := M) g x (vec2 A B) =
+      metricRicciAt (I := I) (M := M) g x (vec2 B A) := by
+  classical
+  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis
+    (I := I) x
+  let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
+      DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
+    fun i j =>
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
+        (I := I) g x i j (extChartAt I x x)
+  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
+    simpa [basis, gInv] using
+      (DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+        (I := I) g x)
+  have hcomp : ∀ i j,
+      metricRicciAt (I := I) (M := M) g x
+          (fun q : Fin 2 => if q = 0 then basis i else basis j) =
+        metricRicciAt (I := I) (M := M) g x
+          (fun q : Fin 2 => if q = 0 then basis j else basis i) := by
+    intro i j
+    change metricRicciAt (I := I) (M := M) g x (vec2 (basis i) (basis j)) =
+      metricRicciAt (I := I) (M := M) g x (vec2 (basis j) (basis i))
+    exact metricRicciSymm (I := I) (M := M) g basis gInv hinv i j
+  have hsymm :=
+    DifferentialGeometry.Tensor.Coordinates.tensor0S_two_symm_of_coordFrame
+      (I := I) basis (metricRicciAt (I := I) (M := M) g x) hcomp A B
+  have hleft : (fun q : Fin 2 => if q = 0 then A else B) = vec2 A B := by
+    funext q
+    fin_cases q <;> rfl
+  have hright : (fun q : Fin 2 => if q = 0 then B else A) = vec2 B A := by
+    funext q
+    fin_cases q <;> rfl
+  rw [hleft, hright] at hsymm
+  exact hsymm
+
+omit [SigmaCompactSpace M] in
 theorem metricNablaSymm
     (g : SmoothRiemannianMetric I M) (x : M) :
     NablaRicSymmAt (I := I)
@@ -664,6 +724,69 @@ theorem metricNablaSymm
     fin_cases q <;> rfl]
   rw [hleft, hright]
   exact hsymm
+
+omit [SigmaCompactSpace M] in
+theorem metricNablaRic_last_two_symm
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A B C : TangentSpace I x) :
+    metricNablaRic (I := I) (M := M) g x (vec3 A B C) =
+      metricNablaRic (I := I) (M := M) g x (vec3 A C B) := by
+  change
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        2 (metricCov (I := I) (M := M) g) (metricRicci (I := I) (M := M) g) x
+        (vec3 A B C) =
+      totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        2 (metricCov (I := I) (M := M) g) (metricRicci (I := I) (M := M) g) x
+        (vec3 A C B)
+  exact metricNablaSymm (I := I) (M := M) g x A B C
+
+omit [SigmaCompactSpace M] in
+theorem metricNabla2Ric_last_two_symm
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (A B C D : TangentSpace I x) :
+    metricNabla2Ric (I := I) (M := M) g x (vec4 A B C D) =
+      metricNabla2Ric (I := I) (M := M) g x (vec4 A B D C) := by
+  classical
+  let e : Equiv.Perm (Fin 3) := Equiv.swap 1 2
+  have hfield :
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+          (metricNablaRic (I := I) (M := M) g) =
+        metricNablaRic (I := I) (M := M) g := by
+    apply DFunLike.ext _ _
+    intro y
+    apply tensor0SSpace_ext (I := I) 3 y
+    intro slots
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
+    change metricNablaRic (I := I) (M := M) g y (slots ∘ e) =
+      metricNablaRic (I := I) (M := M) g y slots
+    have hleft : slots ∘ e = vec3 (slots 0) (slots 2) (slots 1) := by
+      funext q
+      fin_cases q <;> rfl
+    have hright : slots = vec3 (slots 0) (slots 1) (slots 2) := by
+      funext q
+      fin_cases q <;> rfl
+    rw [hleft, hright]
+    exact (metricNablaRic_last_two_symm (I := I) (M := M) g y
+      (slots 0) (slots 1) (slots 2)).symm
+  have hcongr := totalNabla0SFun_domDomCongr
+    (I := I) (metricCov (I := I) (M := M) g) e
+    (metricNablaRic (I := I) (M := M) g) x
+  rw [hfield] at hcongr
+  change
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+          (metricNablaRic (I := I) (M := M) g) x (vec4 A B C D) =
+      totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+          (metricNablaRic (I := I) (M := M) g) x (vec4 A B D C)
+  have happly := congrArg (fun T : Tensor0SSpace 4 I x => T (vec4 A B C D)) hcongr
+  rw [Tensor0SSpace.domDomCongr_apply] at happly
+  have hslots :
+      (fun q => vec4 A B C D (frontExtendEquiv e q)) = vec4 A B D C := by
+    funext q
+    fin_cases q <;> rfl
+  rw [hslots] at happly
+  exact happly
 
 omit [SigmaCompactSpace M] in
 theorem metricRicci_velocity_eq_sum_rm04_frame

@@ -163,7 +163,7 @@ private theorem raised02CompAt_symm
           ring
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
-private theorem ricciQuadraticAt_symm
+theorem ricciQuadraticAt_symm
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (A : Tensor02At (I := I) (M := M) x)
@@ -204,7 +204,7 @@ private theorem ricciQuadraticAt_symm
           simp [Finset.sum_mul, mul_assoc]
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
-private theorem rm04RicciContractionAt_symm
+theorem rm04RicciContractionAt_symm
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (gInv : Idx -> Idx -> Real)
