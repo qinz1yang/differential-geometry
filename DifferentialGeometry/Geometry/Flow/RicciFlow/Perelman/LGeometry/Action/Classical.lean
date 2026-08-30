@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ForceC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MovingMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Basic
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramInv
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramChristoffel
 

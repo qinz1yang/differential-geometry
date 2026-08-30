@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.PuncturedDerivative
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Exp
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegCurveAt
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.RegularCurveExistenceAtTime
 
 set_option autoImplicit false
 

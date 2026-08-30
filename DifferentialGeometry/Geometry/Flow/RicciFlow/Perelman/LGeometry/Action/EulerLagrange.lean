@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
 
 set_option autoImplicit false
 

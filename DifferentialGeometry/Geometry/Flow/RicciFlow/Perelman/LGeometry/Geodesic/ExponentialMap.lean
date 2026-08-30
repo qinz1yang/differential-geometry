@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Basic
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 

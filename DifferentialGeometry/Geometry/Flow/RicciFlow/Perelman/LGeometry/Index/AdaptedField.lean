@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MovingMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Smoothness
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciSharpChart

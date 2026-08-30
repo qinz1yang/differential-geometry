@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Calculus.ArzelaAscoli
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ScalarCompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 
 set_option autoImplicit false

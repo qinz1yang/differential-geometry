@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SecondVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second
 
 set_option autoImplicit false
 

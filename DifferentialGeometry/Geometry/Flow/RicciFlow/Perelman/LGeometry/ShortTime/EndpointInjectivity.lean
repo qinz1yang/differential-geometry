@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.ParametricIntervalIntegral
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Exp
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.KineticChart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ScalarCompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
 
 set_option autoImplicit false

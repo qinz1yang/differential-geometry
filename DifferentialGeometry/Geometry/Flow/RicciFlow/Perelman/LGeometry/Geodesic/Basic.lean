@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.FirstVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Reparam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.First
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Reparametrization
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Comparison.Variation.ChartVariation

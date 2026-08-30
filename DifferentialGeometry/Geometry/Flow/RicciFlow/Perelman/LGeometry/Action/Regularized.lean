@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Reparam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Reparametrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Regularized
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab

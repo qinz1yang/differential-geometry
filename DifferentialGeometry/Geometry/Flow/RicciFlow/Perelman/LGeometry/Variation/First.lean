@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MovingMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantJet
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
