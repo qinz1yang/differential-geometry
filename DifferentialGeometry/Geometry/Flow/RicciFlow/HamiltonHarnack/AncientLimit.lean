@@ -38,6 +38,31 @@ theorem hamilton_ancient_matrix_limit
   rw [hclock] at hbad
   linarith
 
+theorem hamilton_ancient_trace_limit
+    {q c t : Real}
+    (hshift : ∀ α : Real, α < t → 0 ≤ q + c / (t - α))
+    (hc : 0 ≤ c) :
+    0 ≤ q := by
+  apply hamilton_ancient_matrix_limit (q := q) (c := 2 * c)
+  · intro α hα
+    have h := hshift α hα
+    convert h using 1
+    all_goals field_simp [sub_ne_zero.mpr (ne_of_gt (sub_pos.mpr hα))]
+  · exact mul_nonneg (by norm_num) hc
+
+theorem hamilton_ancient_trace_expression_nonneg
+    {dR R b t : Real}
+    (hshift : ∀ α : Real, α < t → 0 ≤ dR + R / (t - α) + b)
+    (hR : 0 ≤ R) :
+    0 ≤ dR + b := by
+  apply hamilton_ancient_trace_limit (q := dR + b) (c := R)
+  · intro α hα
+    have h := hshift α hα
+    convert h using 1
+    all_goals field_simp [sub_ne_zero.mpr (ne_of_gt (sub_pos.mpr hα))]
+    all_goals ring
+  · exact hR
+
 theorem hamilton_shifted_scalar_hasDerivAt
     {R dR : Real → Real} {α t : Real}
     (hR : HasDerivAt R (dR t) t) :
