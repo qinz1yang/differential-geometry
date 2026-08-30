@@ -43,12 +43,8 @@ noncomputable instance instSeparableSpaceH1ComplDirichlet
     TopologicalSpace.isSeparable_univ_iff.mp (by
       rw [← hclosure]
       exact hspan.closure)
-  have hres : DenseRange (resolventDirichlet g) := by
-    apply Dense.mono _ (denseRange_smoothToH1ComplDirichlet g)
-    rintro _ ⟨u, rfl⟩
-    exact ⟨u.oneSubLapClassicalLp,
-      smoothToH1ComplDirichlet_eq_resolventDirichlet_oneSubLap u |>.symm⟩
-  exact hres.separableSpace (resolventDirichlet g).continuous
+  exact (denseRange_resolventDirichlet g).separableSpace
+    (resolventDirichlet g).continuous
 
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 
