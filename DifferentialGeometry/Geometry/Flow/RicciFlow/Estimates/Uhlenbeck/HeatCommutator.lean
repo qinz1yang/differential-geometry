@@ -122,6 +122,127 @@ theorem curvatureSlotActionContraction_one
       2 * ∑ e : Idx, ∑ d : Idx, R a e d b * DA e d := by
   simp [curvatureSlotActionContraction]
 
+
+def covariantTensorSecondDerivativeCommutatorComponents {q : Nat}
+    (R : Idx -> Idx -> Idx -> Idx -> Real)
+    (A : (Fin q -> Idx) -> Real)
+    (D2A : Idx -> Idx -> (Fin q -> Idx) -> Real) : Prop :=
+  forall a b slots,
+    D2A a b slots - D2A b a slots =
+      (1 / 2 : Real) * ∑ c : Idx, ∑ d : Idx,
+        R a b d c * covariantTensorSkewAction A c d slots
+
+theorem half_curvature_skew_action_eq_slots {q : Nat}
+    (R : Idx -> Idx -> Idx -> Idx -> Real)
+    (A : (Fin q -> Idx) -> Real)
+    (hskewLast : forall a b c d, R a b c d = -R a b d c)
+    (a b : Idx) (slots : Fin q -> Idx) :
+    (1 / 2 : Real) * ∑ c : Idx, ∑ d : Idx,
+        R a b d c * covariantTensorSkewAction A c d slots =
+      ∑ r : Fin q, ∑ d : Idx,
+        R a b d (slots r) * A (Function.update slots r d) := by
+  classical
+  have hslot (r : Fin q) :
+      (∑ c : Idx, ∑ d : Idx,
+          R a b d c *
+            ((if c = slots r then A (Function.update slots r d) else 0) -
+              (if d = slots r then A (Function.update slots r c) else 0))) =
+        2 * ∑ d : Idx, R a b d (slots r) * A (Function.update slots r d) := by
+    simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_zero]
+    have hfirst :
+        (∑ c : Idx, ∑ d : Idx,
+            if c = slots r then
+              R a b d c * A (Function.update slots r d) else 0) =
+          ∑ d : Idx,
+            R a b d (slots r) * A (Function.update slots r d) := by
+      rw [Finset.sum_eq_single (slots r)]
+      · simp
+      · intro c _ hc
+        simp [hc]
+      · intro h
+        exact False.elim (h (Finset.mem_univ (slots r)))
+    have hsecond :
+        (∑ c : Idx, ∑ d : Idx,
+            if d = slots r then
+              R a b d c * A (Function.update slots r c) else 0) =
+          ∑ c : Idx,
+            R a b (slots r) c * A (Function.update slots r c) := by
+      refine Finset.sum_congr rfl fun c _ => ?_
+      rw [Finset.sum_eq_single (slots r)]
+      · simp
+      · intro d _ hd
+        simp [hd]
+      · intro h
+        exact False.elim (h (Finset.mem_univ (slots r)))
+    rw [hfirst, hsecond]
+    calc
+      (∑ d : Idx, R a b d (slots r) * A (Function.update slots r d)) -
+          ∑ c : Idx, R a b (slots r) c * A (Function.update slots r c) =
+        (∑ d : Idx, R a b d (slots r) * A (Function.update slots r d)) -
+          ∑ c : Idx, (-R a b c (slots r)) * A (Function.update slots r c) := by
+            congr 1
+            refine Finset.sum_congr rfl fun c _ => ?_
+            rw [hskewLast a b (slots r) c]
+      _ = _ := by
+        simp only [neg_mul, Finset.sum_neg_distrib]
+        ring_nf
+  simp only [covariantTensorSkewAction]
+  calc
+    (1 / 2 : Real) *
+        (∑ c : Idx, ∑ d : Idx,
+          R a b d c *
+            ∑ r : Fin q,
+              ((if c = slots r then A (Function.update slots r d) else 0) -
+                (if d = slots r then A (Function.update slots r c) else 0))) =
+      (1 / 2 : Real) *
+        (∑ c : Idx, ∑ d : Idx, ∑ r : Fin q,
+          R a b d c *
+            ((if c = slots r then A (Function.update slots r d) else 0) -
+              (if d = slots r then A (Function.update slots r c) else 0))) := by
+        congr 1
+        refine Finset.sum_congr rfl fun c _ => ?_
+        refine Finset.sum_congr rfl fun d _ => ?_
+        rw [Finset.mul_sum]
+    _ =
+    (1 / 2 : Real) *
+        ∑ r : Fin q, ∑ c : Idx, ∑ d : Idx,
+          R a b d c *
+            ((if c = slots r then A (Function.update slots r d) else 0) -
+              (if d = slots r then A (Function.update slots r c) else 0)) := by
+        congr 1
+        calc
+          (∑ c : Idx, ∑ d : Idx, ∑ r : Fin q,
+              R a b d c *
+                ((if c = slots r then A (Function.update slots r d) else 0) -
+                  (if d = slots r then A (Function.update slots r c) else 0))) =
+            ∑ c : Idx, ∑ r : Fin q, ∑ d : Idx,
+              R a b d c *
+                ((if c = slots r then A (Function.update slots r d) else 0) -
+                  (if d = slots r then A (Function.update slots r c) else 0)) := by
+            refine Finset.sum_congr rfl fun c _ => Finset.sum_comm
+          _ = _ := Finset.sum_comm
+    _ = (1 / 2 : Real) *
+        ∑ r : Fin q, 2 * ∑ d : Idx,
+          R a b d (slots r) * A (Function.update slots r d) := by
+      congr 1
+      refine Finset.sum_congr rfl fun r _ => hslot r
+    _ = _ := by
+      simp only [Finset.mul_sum]
+      ring_nf
+
+theorem covariantTensorSecondDerivativeCommutatorComponents_eq_slots {q : Nat}
+    (R : Idx -> Idx -> Idx -> Idx -> Real)
+    (A : (Fin q -> Idx) -> Real)
+    (D2A : Idx -> Idx -> (Fin q -> Idx) -> Real)
+    (hcomm : covariantTensorSecondDerivativeCommutatorComponents R A D2A)
+    (hskewLast : forall a b c d, R a b c d = -R a b d c)
+    (a b : Idx) (slots : Fin q -> Idx) :
+    D2A a b slots - D2A b a slots =
+      ∑ r : Fin q, ∑ d : Idx,
+        R a b d (slots r) * A (Function.update slots r d) := by
+  rw [hcomm a b slots]
+  exact half_curvature_skew_action_eq_slots R A hskewLast a b slots
+
 def covariantTensorRicciSlotAction {q : Nat}
     (Ric : Idx -> Idx -> Real) (A : (Fin q -> Idx) -> Real)
     (b : Fin q -> Idx) : Real :=

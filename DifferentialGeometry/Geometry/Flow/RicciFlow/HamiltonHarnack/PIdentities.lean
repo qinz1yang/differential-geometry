@@ -198,6 +198,23 @@ noncomputable def hamiltonPAt
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x :=
   hamiltonP (I := I) (metricNablaRic (I := I) (M := M) g x)
 
+noncomputable def hamiltonPField
+    (g : SmoothRiemannianMetric I M) :
+    Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 3 :=
+  metricNablaRic (I := I) (M := M) g -
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+      (Equiv.swap (0 : Fin 3) 1) (metricNablaRic (I := I) (M := M) g)
+
+omit [SigmaCompactSpace M] in
+@[simp] theorem hamiltonPField_apply
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    hamiltonPField (I := I) g x = hamiltonPAt (I := I) g x := by
+  ext slots
+  simp only [hamiltonPField, hamiltonPAt, hamiltonP,
+    ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply,
+    Tensor0SField.domDomCongr_apply]
+
 omit [SigmaCompactSpace M] in
 @[simp] theorem hamiltonPAt_apply
     (g : SmoothRiemannianMetric I M) (x : M)
