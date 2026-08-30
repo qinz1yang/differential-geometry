@@ -97,7 +97,15 @@ theorem hamiltonGram_reaction_nonneg
     0 ≤ hamiltonGramReaction Y X U W := by
   unfold hamiltonGramReaction
   exact Finset.sum_nonneg fun r _ =>
-    Finset.sum_nonneg fun s _ => sq_nonneg _
+      Finset.sum_nonneg fun s _ => sq_nonneg _
+
+theorem hamiltonGram_reaction_tangent_nonneg
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real) :
+    0 ≤ hamiltonGramQuadratic Y X U W + hamiltonGramReaction Y X U W := by
+  exact add_nonneg (hamiltonGram_quadratic_nonneg Y X U W)
+    (hamiltonGram_reaction_nonneg Y X U W)
 
 theorem hamiltonGram_sigma_eq_zero_of_quadratic_eq_zero
     {ι κ : Type*} [Fintype ι] [Fintype κ]
