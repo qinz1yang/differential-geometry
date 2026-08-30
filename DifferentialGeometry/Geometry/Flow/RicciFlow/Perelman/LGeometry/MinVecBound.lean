@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinMaxAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayGlobalize
 
 set_option autoImplicit false

@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Mi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MinimizerRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.RawMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteFlowBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CurvatureBounds
 
 set_option autoImplicit false
 

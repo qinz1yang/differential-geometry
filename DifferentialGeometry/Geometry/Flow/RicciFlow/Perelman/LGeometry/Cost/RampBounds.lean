@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostMinBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.MinimizerBound
 
 set_option autoImplicit false
 

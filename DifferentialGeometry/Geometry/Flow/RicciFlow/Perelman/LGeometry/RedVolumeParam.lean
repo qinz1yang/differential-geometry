@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyDecomposition
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostJointParam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.JointParameter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.Topology.Semicontinuity.Basic

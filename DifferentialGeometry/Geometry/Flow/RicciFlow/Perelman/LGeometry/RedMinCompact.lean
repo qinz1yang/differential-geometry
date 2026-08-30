@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteMinimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompleteManifoldMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength
 import DifferentialGeometry.Geometry.Comparison.CGTPaths
 

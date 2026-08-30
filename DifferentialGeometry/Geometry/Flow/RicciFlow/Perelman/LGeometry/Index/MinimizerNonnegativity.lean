@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Comparison.Variation.FieldRealization
 
@@ -28,14 +28,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
-
-def lCost
-    (S : SolutionOn (I := I) (M := M) D) (T : Real)
-    (x y : M) (tau : Real) : Real :=
-  sInf {r : Real | ∃ alpha : Real → M,
-    ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-      alpha 0 = x ∧ alpha (Real.sqrt tau) = y ∧
-      lLength S T (sqrtReparam alpha) 0 tau = r}
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in

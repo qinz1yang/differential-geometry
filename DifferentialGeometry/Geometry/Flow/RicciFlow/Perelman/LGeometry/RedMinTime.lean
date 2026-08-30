@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteFlowBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteActionBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostChartLip
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RedMinCompact
 
 set_option autoImplicit false

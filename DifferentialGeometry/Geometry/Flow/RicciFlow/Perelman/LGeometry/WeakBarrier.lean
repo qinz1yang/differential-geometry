@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.CGTPaths
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteMinimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompleteManifoldMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.HamiltonBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayAdapted
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CompleteActionBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 
 set_option autoImplicit false
 

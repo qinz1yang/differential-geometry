@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.MetricBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinMax
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Operator.NormGradSqTime
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostParam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.TimeParameter
 
 set_option autoImplicit false
 

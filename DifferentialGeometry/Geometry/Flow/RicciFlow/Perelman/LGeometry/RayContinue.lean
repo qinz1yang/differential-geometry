@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinMaxCompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompactCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayGlobalize
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
 

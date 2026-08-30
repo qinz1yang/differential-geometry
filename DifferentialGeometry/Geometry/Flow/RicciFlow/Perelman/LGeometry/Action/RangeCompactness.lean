@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.MinMaxAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
 
 set_option autoImplicit false

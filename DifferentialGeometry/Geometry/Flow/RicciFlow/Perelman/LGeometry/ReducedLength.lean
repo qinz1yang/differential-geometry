@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ManifoldRademacher
 import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostChartLip
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Injectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.LocalExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.LocalBranch

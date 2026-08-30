@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 set_option autoImplicit false

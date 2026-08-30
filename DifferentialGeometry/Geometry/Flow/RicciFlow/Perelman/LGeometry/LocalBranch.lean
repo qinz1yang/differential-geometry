@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Conjugate
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RayGlobalize
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve

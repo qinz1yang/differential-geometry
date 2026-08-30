@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CostChartRamp
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartRamp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.RegularizedMinimizer
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Minimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 
 set_option autoImplicit false
 
