@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.BareSlot0CurryParseval
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Slot0SliceFiberNormDomination
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryBound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 open DifferentialGeometry.Analysis.Elliptic

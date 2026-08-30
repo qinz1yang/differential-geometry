@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.Slot0CurryReconstruction
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryReconstruction
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -6,26 +6,21 @@ open DifferentialGeometry.Geometry.Curvature
 noncomputable section
 
 
-open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
+open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
-  [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-omit [InnerProductSpace ℝ E] [CompleteSpace E] in
 theorem tensorInnerPointwise_succ_eq_sum_slot0Curry
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A B : TensorRSSpace 0 (s + 1) I x) :

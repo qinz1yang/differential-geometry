@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.TraceDiscrepancyDecomposition
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SlotSplitParsevalBridge
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0Curry
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,39 +1,33 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SlotSplitParsevalBridge
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0Curry
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
 
 
 open DifferentialGeometry.Analysis.Elliptic
-open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 
-open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
+open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E]
-  [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 noncomputable def tensor0SToTensorRS {s : ℕ} (x : M) (C : Tensor0SSpace s I x) :
     TensorRSSpace 0 s I x :=
   (tensor00Scalar (I := I) (M := M) x).smulRight C
 
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma tensor0SAsRS_apply {s : ℕ} (x : M) (C : Tensor0SSpace s I x)
     (τ : Tensor0SSpace 0 I x) :
     (tensor0SToTensorRS (I := I) (M := M) x C :
@@ -43,8 +37,6 @@ lemma tensor0SAsRS_apply {s : ℕ} (x : M) (C : Tensor0SSpace s I x)
   rw [ContinuousLinearMap.smulRight_apply]
 
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma coframeS_zero_eq_unitZeroSec
     (g : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n) :
@@ -59,9 +51,6 @@ lemma coframeS_zero_eq_unitZeroSec
   rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.constOfIsEmpty_apply]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
-  [BoundarylessManifold I M] in
 private lemma tensor01_comp
     (g : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 1 I x) {n : ℕ}
@@ -80,9 +69,6 @@ private lemma tensor01_comp
   rw [coframeS_zero_eq_unitZeroSec (I := I) (M := M) g x e K₀]
   rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-  [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
-  [BoundarylessManifold I M] in
 theorem sq_unit_eval_le
     (g : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 1 I x) (X : TangentSpace I x) :
@@ -164,8 +150,6 @@ theorem sq_unit_eval_le
       rw [hcoef, hcomp]
 
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
@@ -178,8 +162,6 @@ lemma slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
   unfold slot0Curry tensor0SToTensorRS
   rw [coframeS_zero_eq_unitZeroSec (I := I) (M := M) g x e K₀]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (T : TensorRSSpace 0 (s + 1) I x) :
@@ -200,8 +182,6 @@ theorem riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M) g x s e K₀ T a]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem riemannianFiberNormSq_three_eq_sum_bareSlot0Curry
     (g : SmoothRiemannianMetric I M) (x : M)
     (T : TensorRSSpace 0 3 I x) :
@@ -219,5 +199,33 @@ theorem riemannianFiberNormSq_three_eq_sum_bareSlot0Curry
 end Elliptic
 end Analysis
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Tensor0SBundle
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M]
+
+abbrev tensor0SAsRS {s : ℕ} (x : M) (C : Tensor0SSpace s I x) :
+    TensorRSSpace 0 s I x :=
+  tensor0SToTensorRS (I := I) (M := M) x C
+
+lemma slot0Curry_eq_tensor0SAsRS_curry_unitZeroSec
+    (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
+    {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
+    (T : TensorRSSpace 0 (s + 1) I x) (a : Fin n) :
+    slot0Curry (I := I) (M := M) g x s e K₀ T a =
+      tensor0SAsRS (I := I) (M := M) x
+        (tensor0SCurry (I := I) (M := M) s x
+          ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
+            (unitZeroSec (I := I) (M := M) x)) (e a)) :=
+  slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
+    (I := I) (M := M) g x s e K₀ T a
+
+end DifferentialGeometry.Integral.Connection
 
 end

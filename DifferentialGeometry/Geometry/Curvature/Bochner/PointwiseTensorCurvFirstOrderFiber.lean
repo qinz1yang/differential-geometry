@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorCurvFirstOrderBound
 import DifferentialGeometry.Geometry.Connection.TensorNabla.HomTensorRSValueLocal
-import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.Slot0CurryReconstruction
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryReconstruction
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 open DifferentialGeometry.Geometry.Connection.Realization

@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Scalar
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SeriesContinuous
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.BareSlot0CurryParseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Strong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equation
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotential

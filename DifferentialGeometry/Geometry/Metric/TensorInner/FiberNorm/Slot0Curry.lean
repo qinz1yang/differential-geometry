@@ -1,27 +1,23 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.TensorRS
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
-open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
 
 
-open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
+open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E]
-  [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 noncomputable def slot0Curry
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
@@ -34,8 +30,6 @@ noncomputable def slot0Curry
         (coframeS (I := I) (M := M) g x 0 e K₀))
       (e a))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
-    [BoundarylessManifold I M] in
 lemma slot0Curry_apply
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
@@ -55,8 +49,6 @@ lemma slot0Curry_apply
       (e a))) τ = _
   rw [ContinuousLinearMap.smulRight_apply]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
-    [BoundarylessManifold I M] in
 lemma fiberNormSqComponent_slot0Curry
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
@@ -97,8 +89,6 @@ lemma fiberNormSqComponent_slot0Curry
   rw [htuple]
   exact hcurry.symm
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
-    [BoundarylessManifold I M] in
 theorem riemannianFiberNormSq_succ_eq_sum_slot0Curry
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (T : TensorRSSpace 0 (s + 1) I x) :
