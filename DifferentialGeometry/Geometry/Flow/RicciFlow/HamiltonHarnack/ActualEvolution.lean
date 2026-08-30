@@ -4291,7 +4291,7 @@ private theorem curvatureSecondDerivativeCommutatorComponents_of_solution
     (nablaKRm04_ricciIdentityAt (I := I) S t 0 x)
     (fun a b c d => hOutput (basis a) (basis b) (basis c) (basis d))
 
-private def hamiltonRmComponentOfSolution
+def hamiltonRmComponentOfSolution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4301,7 +4301,7 @@ private def hamiltonRmComponentOfSolution
   fun i j k l => S.base.rm04 t x
     (vec4 (I := I) (basis i) (basis j) (basis k) (basis l))
 
-private noncomputable def hamiltonRicciComponentOfSolution
+noncomputable def hamiltonRicciComponentOfSolution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4311,7 +4311,7 @@ private noncomputable def hamiltonRicciComponentOfSolution
   fun i j => metricRicci (I := I) (M := M) (S.base.metric t) x
     (vec2 (I := I) (basis i) (basis j))
 
-private noncomputable def hamiltonNablaRmComponentOfSolution
+noncomputable def hamiltonNablaRmComponentOfSolution
     [CompleteSpace E] [T2Space M] [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4321,7 +4321,7 @@ private noncomputable def hamiltonNablaRmComponentOfSolution
   fun i j k l m => nablaRm04Field (I := I) S t x
     (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m))
 
-private noncomputable def hamiltonNablaRicciComponentOfSolution
+noncomputable def hamiltonNablaRicciComponentOfSolution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4341,7 +4341,7 @@ private noncomputable def hamiltonNablaRicciTimeComponentOfSolution
   fun i j k => metricNablaRicciTimeDerivativeField (I := I) (S.base.metric t) x
     (vec3 (I := I) (basis i) (basis j) (basis k))
 
-private noncomputable def hamiltonNablaPTimeComponentOfSolution
+noncomputable def hamiltonNablaPTimeComponentOfSolution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4361,7 +4361,7 @@ private noncomputable def hamiltonNabla3RicciComponentOfSolution
   fun i j k l m => metricNabla3RicField (I := I) (S.base.metric t) x
     (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m))
 
-private noncomputable def hamiltonNabla2RmComponentOfSolution
+noncomputable def hamiltonNabla2RmComponentOfSolution
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4372,7 +4372,7 @@ private noncomputable def hamiltonNabla2RmComponentOfSolution
     (Fin.cons (basis i)
       (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis p)))
 
-private noncomputable def hamiltonNablaPComponentOfSolution
+noncomputable def hamiltonNablaPComponentOfSolution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -4382,7 +4382,7 @@ private noncomputable def hamiltonNablaPComponentOfSolution
   fun i j k l => hamiltonNablaPField (I := I) (S.base.metric t) x
     (vec4 (I := I) (basis i) (basis j) (basis k) (basis l))
 
-private noncomputable def hamiltonNabla3PComponentOfSolution
+noncomputable def hamiltonNabla3PComponentOfSolution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
@@ -5121,5 +5121,219 @@ theorem hamiltonP_time_derivative_component_eq_field
   unfold hamiltonPTimeDerivativeComponent
   simp only [ricciFlowConnectionVariationOrthonormal]
   simp_rw [ricciFlowConnectionVariationField_apply]
+
+private theorem uhlenbeckHeatNablaPComponent_eq_hamiltonNablaPHeatField_of_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    uhlenbeckHeatNablaPComponent
+        (fun i j => metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M) g x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField (I := I) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l => hamiltonNablaPTimeDerivativeField (I := I) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) +
+          ∑ r : Fin 3, ∑ d : Fin n,
+            ricciFlowConnectionVariationField (I := I) g x
+              (vec3 (I := I) (basis i)
+                (basis (if r = 0 then j else if r = 1 then k else l))
+                (basis d)) *
+              hamiltonPField (I := I) g x
+                (vec3 (I := I)
+                  (basis (if 0 = r then d else j))
+                  (basis (if 1 = r then d else k))
+                  (basis (if 2 = r then d else l))))
+        (fun i j k l m r => hamiltonNabla3PField (I := I) g x
+          (Fin.cons (basis i)
+            (Fin.cons (basis j)
+              (Fin.cons (basis k)
+                (Fin.cons (basis l)
+                  (Fin.cons (basis m) (fun _ : Fin 1 => basis r))))))) q a b c =
+      hamiltonNablaPHeatField (I := I) g x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) := by
+  rw [uhlenbeckHeatNablaPComponent,
+    hamiltonNablaPHeatField_apply_orthonormal (I := I) g basis horth]
+  simp only [uhlenbeckTimeDerivativeOfCovariantDerivative,
+    roughLaplacianCovariantDerivativeComponents,
+    covariantTensorNablaRicciSlotAction, covariantTensorRicciSlotAction]
+  rw [nablaRicPActionField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPActionField_apply_orthonormal (I := I) g basis horth]
+  simp [hamiltonPComponent, Function.update_apply,
+    ricciFlowConnectionVariationField_apply]
+  simp only [Fin.sum_univ_three]
+  ring
+
+private theorem hamiltonNablaPHeatField_eq_reaction_add_curvatureAction_of_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    hamiltonNablaPHeatField (I := I) g x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      hamiltonNablaPEvolutionReactionComponent
+        (fun i j k l => metricRm04 (I := I) (M := M) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => metricNablaRm04Field (I := I) g x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M) g x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l m r => metricNabla2Rm04Field (I := I) g x
+          (vec6 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m) (basis r)))
+        (fun i j k l => hamiltonNablaPField (I := I) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l))) q a b c +
+      curvatureSlotActionContraction
+        (fun i j k l => metricRm04 (I := I) (M := M) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun e (slots : Fin 3 -> Fin n) => hamiltonNablaPField (I := I) g x
+          (vec4 (I := I) (basis e) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)))) q
+        (fun r : Fin 3 => if r = 0 then a else if r = 1 then b else c) := by
+  rw [hamiltonNablaPHeatField_apply_orthonormal (I := I) g basis horth,
+    hamiltonNablaPEvolutionReactionField_apply_orthonormal (I := I) g basis horth]
+  simp only [curvatureSlotActionContraction, hamiltonNablaPEvolutionReactionComponent,
+    hamiltonPComponent, Function.update_apply]
+  simp only [Fin.sum_univ_three]
+  ring
+
+private theorem hamiltonNablaP_nablaHeat_components_of_solution
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    uhlenbeckNablaHeatPComponent
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+        (fun i j k l => hamiltonNablaPTimeComponentOfSolution
+            (I := I) S (t : Real) x basis i j k l +
+          ∑ r : Fin 3, ∑ d : Fin n,
+            ricciFlowConnectionVariationField (I := I) (S.base.metric (t : Real)) x
+              (vec3 (I := I) (basis i)
+                (basis (if r = 0 then j else if r = 1 then k else l))
+                (basis d)) *
+              hamiltonPField (I := I) (S.base.metric (t : Real)) x
+                (vec3 (I := I)
+                  (basis (if 0 = r then d else j))
+                  (basis (if 1 = r then d else k))
+                  (basis (if 2 = r then d else l))))
+        (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis)
+        q a b c =
+      hamiltonNablaPEvolutionReactionComponent
+        (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNabla2RmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis) q a b c := by
+  let g := S.base.metric (t : Real)
+  let R := hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis
+  let Ric := hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis
+  let nablaR := hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis
+  let nablaRic := hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis
+  let nabla2R := hamiltonNabla2RmComponentOfSolution (I := I) S (t : Real) x basis
+  let nablaP := hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis
+  let nabla3P := hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis
+  let slots : Fin 3 -> Fin n := fun r => if r = 0 then a else if r = 1 then b else c
+  let nablaDtP : Fin n -> Fin n -> Fin n -> Fin n -> Real := fun i j k l =>
+    hamiltonNablaPTimeComponentOfSolution (I := I) S (t : Real) x basis i j k l +
+      ∑ r : Fin 3, ∑ d : Fin n,
+        ricciFlowConnectionVariationField (I := I) g x
+          (vec3 (I := I) (basis i)
+            (basis (if r = 0 then j else if r = 1 then k else l)) (basis d)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis (if 0 = r then d else j))
+              (basis (if 1 = r then d else k)) (basis (if 2 = r then d else l)))
+  have hHeat := uhlenbeckHeatNablaPComponent_eq_hamiltonNablaPHeatField_of_orthonormal
+    (I := I) g (x := x) basis horth q a b c
+  have hReaction := hamiltonNablaPHeatField_eq_reaction_add_curvatureAction_of_orthonormal
+    (I := I) g (x := x) basis horth q a b c
+  have hHeat' :
+      uhlenbeckHeatNablaPComponent Ric nablaRic nablaP nablaDtP nabla3P q a b c =
+        hamiltonNablaPEvolutionReactionComponent R Ric nablaR nablaRic nabla2R nablaP q a b c +
+          curvatureSlotActionContraction R
+            (fun e (s : Fin 3 -> Fin n) => nablaP e (s 0) (s 1) (s 2)) q slots := by
+    simpa [g, R, Ric, nablaR, nablaRic, nabla2R, nablaP, nabla3P, nablaDtP,
+      slots, hamiltonNablaPTimeComponentOfSolution,
+      hamiltonNablaPComponentOfSolution, hamiltonNabla3PComponentOfSolution] using
+      hHeat.trans hReaction
+  have hComm := uhlenbeck_heat_covariantDerivative_commutator
+    R nablaR Ric nablaRic
+    (fun s : Fin 3 -> Fin n => hamiltonPComponent nablaRic (s 0) (s 1) (s 2))
+    (fun e (s : Fin 3 -> Fin n) => nablaP e (s 0) (s 1) (s 2))
+    (fun e (s : Fin 3 -> Fin n) => nablaDtP e (s 0) (s 1) (s 2))
+    (fun e f d (s : Fin 3 -> Fin n) => nabla3P e f d (s 0) (s 1) (s 2))
+    (hamilton_differentiated_P_identity_components_of_solution (I := I) S t x basis horth)
+    (hamilton_gradient_P_identity_components_of_solution (I := I) S t x basis horth)
+    (hamilton_contracted_curvature_derivative_components_of_solution
+      (I := I) S t x basis horth)
+    (hamilton_rm_components_symm_of_solution (I := I) S t x basis).swap12
+    (hamilton_rm_components_symm_of_solution (I := I) S t x basis).swap34
+    (hamilton_curvature_ricci_trace_components_of_solution (I := I) S t x basis horth)
+    q slots
+  change
+    (uhlenbeckHeatNablaPComponent Ric nablaRic nablaP nablaDtP nabla3P q a b c -
+      uhlenbeckNablaHeatPComponent Ric nablaRic nablaP nablaDtP nabla3P q a b c) =
+      curvatureSlotActionContraction R
+        (fun e (s : Fin 3 -> Fin n) => nablaP e (s 0) (s 1) (s 2)) q slots at hComm
+  rw [hHeat'] at hComm
+  linarith
+
+theorem hamilton_nablaP_evolution_of_ricci_flow
+    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    uhlenbeckNablaHeatPComponent
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+        (fun i j k l => hamiltonNablaPTimeComponentOfSolution
+            (I := I) S (t : Real) x basis i j k l +
+          ∑ r : Fin 3, ∑ d : Fin n,
+            ricciFlowConnectionVariationOrthonormal
+              (fun p r s => hamiltonNablaRicciComponentOfSolution
+                (I := I) S (t : Real) x basis p r s) i
+              (if r = 0 then j else if r = 1 then k else l) d *
+              hamiltonPComponent
+                (hamiltonNablaRicciComponentOfSolution
+                  (I := I) S (t : Real) x basis)
+                (if 0 = r then d else j) (if 1 = r then d else k)
+                (if 2 = r then d else l))
+        (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis)
+        q a b c =
+      hamiltonNablaPEvolutionReactionComponent
+        (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNabla2RmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis) q a b c := by
+  have h := hamiltonNablaP_nablaHeat_components_of_solution
+    (I := I) S t x basis horth q a b c
+  simpa [ricciFlowConnectionVariationField_apply, hamiltonPField_apply,
+    hamiltonPComponent] using h
 
 end DifferentialGeometry.PDE.RicciFlow
