@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletEigenBasis
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 import Mathlib.Order.Filter.AtTopBot.Finset
 
@@ -32,31 +32,11 @@ open DifferentialGeometry.Integral.Measure
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private theorem exists_smoothDirichletL2DenseSeq
+private theorem exists_smoothDirichletH1DenseSeq
     (g : SmoothRiemannianMetric (I_half n) M) :
     ∃ φ : ℕ → SmoothScalarDirichlet g,
-      DenseRange (fun i => smoothToLpDirichlet g (φ i)) := by
-  let b := dirichletLaplacianHilbertBasis g
-  have hrange : TopologicalSpace.IsSeparable (Set.range b) :=
-    Set.countable_range b |>.isSeparable
-  have hspan : TopologicalSpace.IsSeparable
-      (Submodule.span ℝ (Set.range b) : Set
-        (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))) :=
-    hrange.span
-  have hclosure : closure (Submodule.span ℝ (Set.range b) : Set
-      (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))) = Set.univ := by
-    change closure (Submodule.span ℝ (Set.range b) : Set
-      (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))) =
-        (↑(⊤ : Submodule ℝ
-          (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))) : Set _)
-    simpa only [Submodule.topologicalClosure_coe] using
-      congrArg SetLike.coe b.dense_span
-  let _ : TopologicalSpace.SeparableSpace
-      (Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) :=
-    TopologicalSpace.isSeparable_univ_iff.mp (by
-      rw [← hclosure]
-      exact hspan.closure)
-  have hd := denseRange_smoothToLpDirichlet g
+      DenseRange (fun i => smoothToH1ComplDirichlet g (φ i)) := by
+  have hd := denseRange_smoothToH1ComplDirichlet g
   obtain ⟨t, htrange, htcount, htdense⟩ := hd.exists_countable_dense_subset
   obtain ⟨u, hu⟩ := htcount.exists_eq_range htdense.nonempty
   have hu_mem : ∀ i, u i ∈ t := by
@@ -64,27 +44,40 @@ private theorem exists_smoothDirichletL2DenseSeq
     rw [hu]
     exact Set.mem_range_self i
   have hpre : ∀ i, ∃ f : SmoothScalarDirichlet g,
-      smoothToLpDirichlet g f = u i := by
+      smoothToH1ComplDirichlet g f = u i := by
     intro i
     simpa only [Set.mem_range] using htrange (hu_mem i)
   choose φ hφ using hpre
   refine ⟨φ, ?_⟩
-  rw [show (fun i => smoothToLpDirichlet g (φ i)) = u by
+  rw [show (fun i => smoothToH1ComplDirichlet g (φ i)) = u by
     funext i
     exact hφ i]
   change Dense (Set.range u)
   rw [← hu]
   exact htdense
 
-noncomputable def smoothDirichletL2DenseSeq
+noncomputable def smoothDirichletH1DenseSeq
     (g : SmoothRiemannianMetric (I_half n) M) :
     ℕ → SmoothScalarDirichlet g :=
-  Classical.choose (exists_smoothDirichletL2DenseSeq g)
+  Classical.choose (exists_smoothDirichletH1DenseSeq g)
 
-theorem denseRange_smoothToLpDirichlet_smoothDirichletL2DenseSeq
+theorem denseRange_smoothToH1ComplDirichlet_smoothDirichletH1DenseSeq
     (g : SmoothRiemannianMetric (I_half n) M) :
-    DenseRange (fun i => smoothToLpDirichlet g (smoothDirichletL2DenseSeq g i)) :=
-  Classical.choose_spec (exists_smoothDirichletL2DenseSeq g)
+    DenseRange (fun i =>
+      smoothToH1ComplDirichlet g (smoothDirichletH1DenseSeq g i)) :=
+  Classical.choose_spec (exists_smoothDirichletH1DenseSeq g)
+
+theorem denseRange_smoothToLpDirichlet_smoothDirichletH1DenseSeq
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    DenseRange (fun i => smoothToLpDirichlet g (smoothDirichletH1DenseSeq g i)) := by
+  rw [show (fun i => smoothToLpDirichlet g (smoothDirichletH1DenseSeq g i)) =
+      (H1ComplDirichletToLp g) ∘ (fun i =>
+        smoothToH1ComplDirichlet g (smoothDirichletH1DenseSeq g i)) by
+    funext i
+    exact (H1ComplDirichletToLp_smoothToH1ComplDirichlet g _).symm]
+  exact (denseRange_H1ComplDirichletToLp g).comp
+    (denseRange_smoothToH1ComplDirichlet_smoothDirichletH1DenseSeq g)
+    (H1ComplDirichletToLp g).continuous
 
 section OrderedFamily
 
@@ -163,17 +156,29 @@ theorem span_smoothToLpDirichlet_smoothDirichletL2GramSchmidtNormed
     (InnerProductSpace.span_gramSchmidt ℝ
       (fun k => smoothToLpDirichlet g (φ k)))
 
+private theorem span_smoothDirichletL2GramSchmidtNormed
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (φ : ι → SmoothScalarDirichlet g) :
+    Submodule.span ℝ (Set.range (smoothDirichletL2GramSchmidtNormed φ)) =
+      Submodule.span ℝ (Set.range φ) := by
+  apply (Submodule.map_injective_of_injective
+    (f := (smoothToLpDirichlet g).toLinearMap)
+    (smoothToLpDirichlet_injective g))
+  rw [Submodule.map_span, Submodule.map_span, ← Set.range_comp', ← Set.range_comp']
+  simpa only [ContinuousLinearMap.coe_coe, Function.comp_apply] using
+    span_smoothToLpDirichlet_smoothDirichletL2GramSchmidtNormed φ
+
 end OrderedFamily
 
 abbrev SmoothDirichletBasisIndex
     (g : SmoothRiemannianMetric (I_half n) M) :=
   {i : ℕ | InnerProductSpace.gramSchmidtNormed ℝ
-    (fun k => smoothToLpDirichlet g (smoothDirichletL2DenseSeq g k)) i ≠ 0}
+    (fun k => smoothToLpDirichlet g (smoothDirichletH1DenseSeq g k)) i ≠ 0}
 
 noncomputable def smoothDirichletBasisFunction
     (g : SmoothRiemannianMetric (I_half n) M)
     (i : SmoothDirichletBasisIndex g) : SmoothScalarDirichlet g :=
-  smoothDirichletL2GramSchmidtNormed (smoothDirichletL2DenseSeq g) i
+  smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g) i
 
 theorem smoothDirichletBasisFunction_orthonormal
     (g : SmoothRiemannianMetric (I_half n) M) :
@@ -181,7 +186,7 @@ theorem smoothDirichletBasisFunction_orthonormal
       smoothToLpDirichlet g (smoothDirichletBasisFunction g i)) := by
   simpa only [smoothDirichletBasisFunction] using
     smoothDirichletL2GramSchmidtNormed_orthonormal
-      (smoothDirichletL2DenseSeq g)
+      (smoothDirichletH1DenseSeq g)
 
 private theorem span_smoothDirichletBasisFunction_eq
     (g : SmoothRiemannianMetric (I_half n) M) :
@@ -189,24 +194,60 @@ private theorem span_smoothDirichletBasisFunction_eq
         smoothToLpDirichlet g (smoothDirichletBasisFunction g i))) =
       Submodule.span ℝ (Set.range (fun i =>
         smoothToLpDirichlet g
-          (smoothDirichletL2GramSchmidtNormed (smoothDirichletL2DenseSeq g) i))) := by
+          (smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g) i))) := by
   apply le_antisymm
   · apply Submodule.span_mono
     rintro _ ⟨i, rfl⟩
     change smoothToLpDirichlet g
-        (smoothDirichletL2GramSchmidtNormed (smoothDirichletL2DenseSeq g) i.1) ∈
+        (smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g) i.1) ∈
       Set.range (fun i : ℕ => smoothToLpDirichlet g
-        (smoothDirichletL2GramSchmidtNormed (smoothDirichletL2DenseSeq g) i))
+        (smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g) i))
     exact Set.mem_range_self (i.1 : ℕ)
   · apply Submodule.span_le.2
     rintro _ ⟨i, rfl⟩
     by_cases hi : InnerProductSpace.gramSchmidtNormed ℝ
-        (fun k => smoothToLpDirichlet g (smoothDirichletL2DenseSeq g k)) i = 0
+        (fun k => smoothToLpDirichlet g (smoothDirichletH1DenseSeq g k)) i = 0
     · change smoothToLpDirichlet g
-        (smoothDirichletL2GramSchmidtNormed (smoothDirichletL2DenseSeq g) i) ∈ _
+        (smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g) i) ∈ _
       rw [smoothToLpDirichlet_smoothDirichletL2GramSchmidtNormed, hi]
       exact Submodule.zero_mem _
     · exact Submodule.subset_span ⟨⟨i, hi⟩, rfl⟩
+
+private theorem span_smoothDirichletBasisFunction_eq_smooth
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Submodule.span ℝ (Set.range (smoothDirichletBasisFunction g)) =
+      Submodule.span ℝ (Set.range (fun i =>
+        smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g) i)) := by
+  apply (Submodule.map_injective_of_injective
+    (f := (smoothToLpDirichlet g).toLinearMap)
+    (smoothToLpDirichlet_injective g))
+  rw [Submodule.map_span, Submodule.map_span, ← Set.range_comp', ← Set.range_comp']
+  simpa only [ContinuousLinearMap.coe_coe, Function.comp_apply] using
+    span_smoothDirichletBasisFunction_eq g
+
+theorem dense_span_smoothToH1ComplDirichlet_smoothDirichletBasisFunction
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Dense (Submodule.span ℝ (Set.range (fun i =>
+      smoothToH1ComplDirichlet g (smoothDirichletBasisFunction g i))) :
+        Set (H1ComplDirichlet g)) := by
+  have hsmooth :
+      Submodule.span ℝ (Set.range (smoothDirichletBasisFunction g)) =
+        Submodule.span ℝ (Set.range (smoothDirichletH1DenseSeq g)) := by
+    exact (span_smoothDirichletBasisFunction_eq_smooth g).trans
+      (span_smoothDirichletL2GramSchmidtNormed (smoothDirichletH1DenseSeq g))
+  have hmap := congrArg
+    (fun p : Submodule ℝ (SmoothScalarDirichlet g) =>
+      p.map (smoothToH1ComplDirichlet g).toLinearMap) hsmooth
+  have hspan :
+      Submodule.span ℝ (Set.range (fun i =>
+        smoothToH1ComplDirichlet g (smoothDirichletBasisFunction g i))) =
+        Submodule.span ℝ (Set.range (fun i =>
+          smoothToH1ComplDirichlet g (smoothDirichletH1DenseSeq g i))) := by
+    rw [Submodule.map_span, Submodule.map_span, ← Set.range_comp', ← Set.range_comp'] at hmap
+    simpa only [ContinuousLinearMap.coe_coe, Function.comp_apply] using hmap
+  rw [hspan]
+  exact (denseRange_smoothToH1ComplDirichlet_smoothDirichletH1DenseSeq g).mono
+    Submodule.subset_span
 
 private theorem span_smoothDirichletBasisFunction_orthogonal_eq_bot
     (g : SmoothRiemannianMetric (I_half n) M) :
@@ -217,7 +258,7 @@ private theorem span_smoothDirichletBasisFunction_orthogonal_eq_bot
   apply le_antisymm
   · intro x hx
     rw [Submodule.mem_bot]
-    apply (denseRange_smoothToLpDirichlet_smoothDirichletL2DenseSeq g).eq_zero_of_inner_left
+    apply (denseRange_smoothToLpDirichlet_smoothDirichletH1DenseSeq g).eq_zero_of_inner_left
       (𝕜 := ℝ)
     intro i
     exact (Submodule.mem_orthogonal' _ x).mp hx _

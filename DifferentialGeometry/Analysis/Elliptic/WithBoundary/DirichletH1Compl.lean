@@ -56,6 +56,11 @@ noncomputable def smoothToLpDirichlet (g : SmoothRiemannianMetric (I_half n) M) 
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
   smoothToLpInterior g
 
+theorem smoothToLpDirichlet_injective
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Function.Injective (smoothToLpDirichlet g) :=
+  smoothToLpInterior_injective g
+
 noncomputable def H1ComplDirichletToLp (g : SmoothRiemannianMetric (I_half n) M) :
     H1ComplDirichlet g →L[ℝ]
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=

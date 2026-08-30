@@ -152,6 +152,31 @@ noncomputable def smoothToLpInterior (g : SmoothRiemannianMetric (I_half n) M) :
     (f : InteriorSmoothScalar g) :
     smoothToLpInterior g f = f.memLp_two.toLp f.toFun := rfl
 
+theorem smoothToLpInterior_injective
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    Function.Injective (smoothToLpInterior g) := by
+  intro f h hfh
+  apply InteriorSmoothScalar.ext
+  funext x
+  have hf_ae : (smoothToLpInterior g f : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g] f.toFun :=
+    MemLp.coeFn_toLp f.memLp_two
+  have hh_ae : (smoothToLpInterior g h : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g] h.toFun :=
+    MemLp.coeFn_toLp h.memLp_two
+  have hlp_ae : (smoothToLpInterior g f : M → ℝ) =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g]
+      (smoothToLpInterior g h : M → ℝ) := by
+    rw [hfh]
+  have hfun_ae : f.toFun =ᵐ[
+      riemannianVolumeMeasure (I := I_half n) (M := M) g] h.toFun :=
+    hf_ae.symm.trans (hlp_ae.trans hh_ae)
+  let : (riemannianVolumeMeasure (I := I_half n) (M := M) g).IsOpenPosMeasure :=
+    riemannianVolumeMeasure_isOpenPosMeasure (I := I_half n) (M := M) g
+  exact congrFun ((Continuous.ae_eq_iff_eq
+    (riemannianVolumeMeasure (I := I_half n) (M := M) g)
+    f.smooth.continuous h.smooth.continuous).mp hfun_ae) x
+
 private lemma denseRange_toComplL_interiorSmoothScalar
     (g : SmoothRiemannianMetric (I_half n) M) :
     DenseRange (UniformSpace.Completion.toComplL :

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothBasis
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletEigenBasis
 
 noncomputable section
 
@@ -23,7 +23,7 @@ private abbrev I_half (n : ℕ) [NeZero n] :
 noncomputable instance instSeparableSpaceH1ComplDirichlet
     (g : SmoothRiemannianMetric (I_half n) M) :
     TopologicalSpace.SeparableSpace (H1ComplDirichlet g) := by
-  let b := smoothDirichletHilbertBasis g
+  let b := dirichletLaplacianHilbertBasis g
   have hrange : TopologicalSpace.IsSeparable (Set.range b) :=
     Set.countable_range b |>.isSeparable
   have hspan : TopologicalSpace.IsSeparable
