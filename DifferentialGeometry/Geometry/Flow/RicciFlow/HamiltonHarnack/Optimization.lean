@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
+import Mathlib.LinearAlgebra.Dual.Lemmas
 
 set_option autoImplicit false
 
@@ -21,6 +22,122 @@ def ricciQuadratic
 def ricciCovectorPairing
     (dR z : Idx -> Real) : Real :=
   ∑ a, dR a * z a
+
+private def ricciBilinear
+    (Ric : Idx -> Idx -> Real) :
+    (Idx -> Real) →ₗ[Real] (Idx -> Real) →ₗ[Real] Real :=
+  LinearMap.mk₂ Real
+    (fun z w => ∑ b, (∑ a, Ric a b * z a) * w b)
+    (by
+      intro z₁ z₂ w
+      simp [Pi.add_apply, Finset.sum_add_distrib, add_mul, mul_add])
+    (by
+      intro c z w
+      simp [Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_comm, mul_left_comm])
+    (by
+      intro z w₁ w₂
+      simp [Pi.add_apply, Finset.sum_add_distrib, mul_add])
+    (by
+      intro c z w
+      simp [Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_left_comm])
+
+private def dotFunctional (z : Idx -> Real) : (Idx -> Real) →ₗ[Real] Real :=
+  { toFun := fun w => ∑ a, z a * w a
+    map_add' := by
+      intro w₁ w₂
+      simp [Pi.add_apply, Finset.sum_add_distrib, mul_add]
+    map_smul' := by
+      intro c w
+      simp [Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_left_comm] }
+
+private theorem ricciBilinear_flip_eq_of_symmetric
+    (Ric : Idx -> Idx -> Real)
+    (hsym : ∀ a b, Ric a b = Ric b a) :
+    (ricciBilinear Ric).flip = ricciBilinear Ric := by
+  ext z w
+  change (∑ b, (∑ a, Ric a b * w a) * z b) =
+    ∑ b, (∑ a, Ric a b * z a) * w b
+  simp only [Finset.sum_mul]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro a ha
+  apply Finset.sum_congr rfl
+  intro b hb
+  rw [hsym]
+  ring
+
+private theorem dotFunctional_mem_dualAnnihilator_ricciBilinear_ker
+    (Ric : Idx -> Idx -> Real) (dR : Idx -> Real)
+    (hker : ∀ z, ricciKernelDirection Ric z →
+      ricciCovectorPairing dR z = 0) :
+    dotFunctional dR ∈ (ricciBilinear Ric).ker.dualAnnihilator := by
+  classical
+  rw [Submodule.mem_dualAnnihilator]
+  intro z hz
+  have hzfun : ricciBilinear Ric z = 0 := LinearMap.mem_ker.mp hz
+  have hzker : ricciKernelDirection Ric z := by
+    intro b
+    have hzb := LinearMap.congr_fun hzfun (Pi.single b 1)
+    have hsingle :
+        (∑ x, (∑ i, Ric i x * z i) *
+          (Pi.single b (1 : Real) : Idx → Real) x) =
+          ∑ i, Ric i b * z i := by
+      rw [Finset.sum_eq_single b]
+      · simp
+      · intro a ha hab
+        simp [hab]
+      · intro hb
+        exact False.elim (hb (Finset.mem_univ b))
+    change (∑ x, (∑ i, Ric i x * z i) *
+      (Pi.single b (1 : Real) : Idx → Real) x) = 0 at hzb
+    rw [hsingle] at hzb
+    simpa using hzb
+  have hzero := hker z hzker
+  simpa [dotFunctional, ricciCovectorPairing] using hzero
+
+private theorem ricciBilinear_range_exists_of_kernel_annihilation
+    (Ric : Idx -> Idx -> Real) (dR : Idx -> Real)
+    (hsym : ∀ a b, Ric a b = Ric b a)
+    (hker : ∀ z, ricciKernelDirection Ric z →
+      ricciCovectorPairing dR z = 0) :
+    ∃ Y : Idx -> Real, ∀ a, ∑ b, Ric a b * Y b = dR a := by
+  classical
+  have hmem := dotFunctional_mem_dualAnnihilator_ricciBilinear_ker Ric dR hker
+  rw [LinearMap.dualAnnihilator_ker_eq_range_flip] at hmem
+  rw [ricciBilinear_flip_eq_of_symmetric Ric hsym] at hmem
+  obtain ⟨Y, hY⟩ : ∃ Y : Idx -> Real, ricciBilinear Ric Y = dotFunctional dR :=
+    LinearMap.mem_range.mp hmem
+  refine ⟨Y, ?_⟩
+  intro a
+  have hYa := LinearMap.congr_fun hY (Pi.single a (1 : Real) : Idx -> Real)
+  change (∑ b, (∑ i, Ric i b * Y i) *
+      (Pi.single a (1 : Real) : Idx -> Real) b) =
+    ∑ b, dR b * (Pi.single a (1 : Real) : Idx -> Real) b at hYa
+  have hsingleL :
+      (∑ b, (∑ i, Ric i b * Y i) *
+        (Pi.single a (1 : Real) : Idx -> Real) b) =
+        ∑ i, Ric i a * Y i := by
+    rw [Finset.sum_eq_single a]
+    · simp
+    · intro b hb hba
+      simp [hba]
+    · intro ha
+      exact False.elim (ha (Finset.mem_univ a))
+  have hsingleR :
+      (∑ b, dR b * (Pi.single a (1 : Real) : Idx -> Real) b) = dR a := by
+    rw [Finset.sum_eq_single a]
+    · simp
+    · intro b hb hba
+      simp [hba]
+    · intro ha
+      exact False.elim (ha (Finset.mem_univ a))
+  rw [hsingleL, hsingleR] at hYa
+  calc
+    ∑ b, Ric a b * Y b = ∑ b, Ric b a * Y b := by
+      apply Finset.sum_congr rfl
+      intro b hb
+      rw [hsym]
+    _ = dR a := hYa
 
 theorem ricci_quadratic_eq_zero_of_kernel
     (Ric : Idx -> Idx -> Real) (z : Idx -> Real)
@@ -104,7 +221,7 @@ theorem hamilton_trace_ricci_kernel_annihilation
     rw [hsval] at hs
     linarith
 
-theorem hamilton_trace_semidefinite_optimized
+private theorem hamilton_trace_semidefinite_optimized_of_preimage
     (c : Real) (Ric : Idx -> Idx -> Real) (dR Y : Idx -> Real)
     (htrace : ∀ z, 0 ≤ c + 2 * ricciCovectorPairing dR z +
       2 * ricciQuadratic Ric z)
@@ -128,5 +245,19 @@ theorem hamilton_trace_semidefinite_optimized
   rw [ricciCovectorPairing_smul, ricci_quadratic_smul, hpair] at hs
   norm_num [pow_two] at hs
   linarith
+
+theorem hamilton_trace_semidefinite_optimized_of_symmetric
+    (c : Real) (Ric : Idx -> Idx -> Real) (dR : Idx -> Real)
+    (hsym : ∀ a b, Ric a b = Ric b a)
+    (htrace : ∀ z, 0 ≤ c + 2 * ricciCovectorPairing dR z +
+      2 * ricciQuadratic Ric z) :
+    ∃ Y : Idx -> Real,
+      (∀ a, ∑ b, Ric a b * Y b = dR a) ∧
+        0 ≤ c - (1 / 2 : Real) * ricciQuadratic Ric Y := by
+  have hkernel := hamilton_trace_ricci_kernel_annihilation c Ric dR htrace
+  obtain ⟨Y, hY⟩ := ricciBilinear_range_exists_of_kernel_annihilation
+    Ric dR hsym hkernel
+  refine ⟨Y, hY, ?_⟩
+  exact hamilton_trace_semidefinite_optimized_of_preimage c Ric dR Y htrace hY
 
 end DifferentialGeometry.PDE.RicciFlow
