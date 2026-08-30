@@ -1,0 +1,104 @@
+import Mathlib.Order.Lattice.Nat
+import Mathlib.Tactic.Linarith
+import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Filter Set
+open scoped Topology
+
+universe u
+
+variable {X : Type u}
+
+theorem rank_eq_at_positive_time_of_spreading
+    {rank : Real → X → Nat} {T : Real}
+    (hlower : ∀ t ∈ Ioc 0 T, ∀ x,
+      ∀ᶠ s in 𝓝[Icc 0 T] t, rank t x ≤ rank s x)
+    (hspread : ∀ {s t : Real}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y)
+    {t : Real} (ht : t ∈ Ioc 0 T) (x y : X) :
+    rank t x = rank t y := by
+  have hsubset : Ioo 0 t ⊆ Icc 0 T := by
+    intro s hs
+    exact ⟨hs.1.le, hs.2.le.trans ht.2⟩
+  have hxy : rank t x ≤ rank t y := by
+    have hev : ∀ᶠ s in 𝓝[Ioo 0 t] t, rank t x ≤ rank s x :=
+      (hlower t ht x).filter_mono (nhdsWithin_mono t hsubset)
+    have hmem : ∀ᶠ s in 𝓝[Ioo 0 t] t, s ∈ Ioo 0 t := self_mem_nhdsWithin
+    let _ : (𝓝[Ioo 0 t] t).NeBot := right_nhdsWithin_Ioo_neBot ht.1
+    obtain ⟨s, hs_mem, hs_rank⟩ := (hmem.and hev).exists
+    exact hs_rank.trans (hspread hs_mem.1.le hs_mem.2 ht.2 x y)
+  have hyx : rank t y ≤ rank t x := by
+    have hev : ∀ᶠ s in 𝓝[Ioo 0 t] t, rank t y ≤ rank s y :=
+      (hlower t ht y).filter_mono (nhdsWithin_mono t hsubset)
+    have hmem : ∀ᶠ s in 𝓝[Ioo 0 t] t, s ∈ Ioo 0 t := self_mem_nhdsWithin
+    let _ : (𝓝[Ioo 0 t] t).NeBot := right_nhdsWithin_Ioo_neBot ht.1
+    obtain ⟨s, hs_mem, hs_rank⟩ := (hmem.and hev).exists
+    exact hs_rank.trans (hspread hs_mem.1.le hs_mem.2 ht.2 y x)
+  exact le_antisymm hxy hyx
+
+theorem rank_monotoneOn_of_spreading
+    {rank : Real → X → Nat} {T : Real}
+    (hspread : ∀ {s t : Real}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y)
+    (x : X) : MonotoneOn (fun t => rank t x) (Ioc 0 T) := by
+  intro s hs t ht hst
+  rcases hst.eq_or_lt with rfl | hlt
+  · exact le_rfl
+  · exact hspread hs.1.le hlt ht.2 x x
+
+theorem rank_eq_on_left_interval_of_spreading
+    {rank : Real → X → Nat} {T : Real}
+    (hlower : ∀ t ∈ Ioc 0 T, ∀ x,
+      ∀ᶠ s in 𝓝[Icc 0 T] t, rank t x ≤ rank s x)
+    (hspread : ∀ {s t : Real}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y)
+    {t : Real} (ht : t ∈ Ioc 0 T) (x : X) :
+    ∃ ε ∈ Ioc 0 t, ∀ s ∈ Ioc (t - ε) t, rank s x = rank t x := by
+  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhdsWithin_iff.mp (hlower t ht x)
+  let ε := min δ t
+  have hεpos : 0 < ε := lt_min hδ ht.1
+  have hεt : ε ≤ t := min_le_right δ t
+  have hεδ : ε ≤ δ := min_le_left δ t
+  refine ⟨ε, ⟨hεpos, hεt⟩, ?_⟩
+  intro s hs
+  have hs0 : 0 < s := by linarith [hs.1, hεt]
+  have hsT : s ≤ T := hs.2.trans ht.2
+  have hdist : dist s t < δ := by
+    rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hs.2)]
+    linarith [hs.1, hεδ]
+  have hlowerst : rank t x ≤ rank s x :=
+    hball ⟨Metric.mem_ball.mpr hdist, ⟨hs0.le, hsT⟩⟩
+  have hupperst : rank s x ≤ rank t x := by
+    rcases hs.2.eq_or_lt with rfl | hlt
+    · exact le_rfl
+    · exact hspread hs0.le hlt ht.2 x x
+  exact le_antisymm hupperst hlowerst
+
+theorem exists_rank_eq_on_initial_interval_of_spreading
+    [Nonempty X] {rank : Real → X → Nat} {T : Real}
+    (hT : 0 < T)
+    (hspread : ∀ {s t : Real}, 0 ≤ s → s < t → t ≤ T →
+      ∀ x y, rank s x ≤ rank t y) :
+    ∃ δ ∈ Ioc 0 T, ∃ q : Nat, ∀ t ∈ Ioc 0 δ, ∀ x, rank t x = q := by
+  let values : Set Nat := {q | ∃ t ∈ Ioc 0 T, ∃ x, rank t x = q}
+  have hvalues : values.Nonempty := by
+    exact ⟨rank T (Classical.choice inferInstance), T, ⟨hT, le_rfl⟩,
+      Classical.choice inferInstance, rfl⟩
+  let q := sInf values
+  have hqmem : q ∈ values := Nat.sInf_mem hvalues
+  obtain ⟨tstar, htstar, xstar, hxstar⟩ := hqmem
+  refine ⟨tstar / 2,
+    ⟨half_pos htstar.1, (half_le_self htstar.1.le).trans htstar.2⟩, q, ?_⟩
+  intro t ht x
+  have htT : t ∈ Ioc 0 T :=
+    ⟨ht.1, ht.2.trans ((half_le_self htstar.1.le).trans htstar.2)⟩
+  have hqle : q ≤ rank t x := Nat.sInf_le ⟨t, htT, x, rfl⟩
+  have httstar : t < tstar := by linarith [ht.2, htstar.1]
+  have hle : rank t x ≤ q := by
+    rw [← hxstar]
+    exact hspread ht.1.le httstar htstar.2 x xstar
+  exact le_antisymm hle hqle
