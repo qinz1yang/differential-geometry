@@ -55,6 +55,34 @@ universe uX uF
 variable {X : Type uX} (V : X → Type uF)
   [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
 
+def IsParallelSubmoduleFamily
+    (P : LinearIsometricTransport V)
+    (S : ∀ x, Submodule ℝ (V x)) : Prop :=
+  ∀ x y, Submodule.map (P.transport x y).toLinearMap (S x) = S y
+
+namespace IsParallelSubmoduleFamily
+
+variable {P : LinearIsometricTransport V} {S : ∀ x, Submodule ℝ (V x)}
+
+theorem map_transport (h : IsParallelSubmoduleFamily V P S) (x y : X) :
+    Submodule.map (P.transport x y).toLinearMap (S x) = S y :=
+  h x y
+
+theorem transport_mem_iff (h : IsParallelSubmoduleFamily V P S)
+    (x y : X) (v : V x) : P.transport x y v ∈ S y ↔ v ∈ S x := by
+  rw [← h x y]
+  constructor
+  · rintro ⟨w, hw, hwy⟩
+    have : w = v := by
+      apply (P.transport x y).injective
+      change P.transport x y w = P.transport x y v at hwy
+      exact hwy
+    simpa [this] using hw
+  · intro hv
+    exact ⟨v, hv, rfl⟩
+
+end IsParallelSubmoduleFamily
+
 structure UhlenbeckKernelTransfer (base : X)
     (fixedOperator : V base →L[ℝ] V base)
     (physicalOperator : ∀ x, V x →L[ℝ] V x)
@@ -90,6 +118,35 @@ theorem physical_kernel_finrank_eq (h : UhlenbeckKernelTransfer V base fixedOper
     Module.finrank ℝ fixedOperator.ker = Module.finrank ℝ (physicalOperator x).ker := by
   exact LinearIsometryKernelIntertwining.finrank_ker_eq
     { map := P.transport base x, intertwining := h.baseIntertwining x }
+
+theorem physical_kernel_is_parallel
+    (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P) :
+    IsParallelSubmoduleFamily V P (fun x => (physicalOperator x).ker) := by
+  intro x y
+  exact physical_kernel_transport (V := V) h x y
+
+theorem fixed_kernel_mem_iff_physical
+    (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x : X) (v : V base) :
+    P.transport base x v ∈ (physicalOperator x).ker ↔ v ∈ fixedOperator.ker := by
+  constructor
+  · intro hv
+    have hv' : P.transport base x v ∈
+        Submodule.map (P.transport base x).toLinearMap fixedOperator.ker := by
+      rw [fixed_kernel_transport (V := V) h x]
+      exact hv
+    rcases hv' with ⟨w, hw, hwy⟩
+    have : w = v := by
+      apply (P.transport base x).injective
+      change P.transport base x w = P.transport base x v at hwy
+      exact hwy
+    simpa [this] using hw
+  · intro hv
+    have hv' : P.transport base x v ∈
+        Submodule.map (P.transport base x).toLinearMap fixedOperator.ker :=
+      ⟨v, hv, rfl⟩
+    rw [fixed_kernel_transport (V := V) h x] at hv'
+    exact hv'
 
 end UhlenbeckKernelTransfer
 
