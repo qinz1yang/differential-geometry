@@ -8,6 +8,43 @@ namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped BigOperators RealInnerProductSpace
 
+private theorem move_outer4 {ι κ R : Type*} [Fintype ι] [Fintype κ]
+    [AddCommMonoid R] (f : κ → ι → ι → ι → ι → R) :
+    (∑ r, ∑ a, ∑ b, ∑ c, ∑ d, f r a b c d) =
+      ∑ a, ∑ b, ∑ c, ∑ d, ∑ r, f r a b c d := by
+  calc
+    _ = ∑ a, ∑ r, ∑ b, ∑ c, ∑ d, f r a b c d :=
+      Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ r, ∑ c, ∑ d, f r a b c d := by
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ c, ∑ r, ∑ d, f r a b c d := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      refine Finset.sum_congr rfl fun b _ => Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ c, ∑ d, ∑ r, f r a b c d := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      refine Finset.sum_congr rfl fun b _ => ?_
+      refine Finset.sum_congr rfl fun c _ => Finset.sum_comm
+
+private theorem move_outer3 {ι κ R : Type*} [Fintype ι] [Fintype κ]
+    [AddCommMonoid R] (f : κ → ι → ι → ι → R) :
+    (∑ r, ∑ a, ∑ b, ∑ c, f r a b c) =
+      ∑ a, ∑ b, ∑ c, ∑ r, f r a b c := by
+  calc
+    _ = ∑ a, ∑ r, ∑ b, ∑ c, f r a b c := Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ r, ∑ c, f r a b c := by
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ c, ∑ r, f r a b c := by
+      refine Finset.sum_congr rfl fun a _ => ?_
+      refine Finset.sum_congr rfl fun b _ => Finset.sum_comm
+
+private theorem move_outer2 {ι κ R : Type*} [Fintype ι] [Fintype κ]
+    [AddCommMonoid R] (f : κ → ι → ι → R) :
+    (∑ r, ∑ a, ∑ b, f r a b) = ∑ a, ∑ b, ∑ r, f r a b := by
+  calc
+    _ = ∑ a, ∑ r, ∑ b, f r a b := Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ r, f r a b := by
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_comm
+
 theorem exists_finite_gram_factorization
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace Real V]
     [FiniteDimensional Real V] (T : V →L[Real] V)
@@ -81,6 +118,119 @@ def hamiltonReactionPolynomial {ι : Type*} [Fintype ι]
       K a d c e * P d b e * U a b * W c +
     4 * ∑ a, ∑ b, ∑ c, ∑ d, ∑ e, ∑ f,
       K a e c f * K b e d f * U a b * U c d
+
+theorem hamiltonGram_quadratic_eq_hamiltonQuadraticForm
+    {ι κ : Type*} [Fintype ι] [Fintype κ]
+    (Y : κ → ι → ι → Real) (X : κ → ι → Real)
+    (U : ι → ι → Real) (W : ι → Real) :
+    hamiltonGramQuadratic Y X U W =
+      hamiltonQuadraticForm (hamiltonGramK Y) (hamiltonGramP Y X)
+        (hamiltonGramM X) U W := by
+  unfold hamiltonGramQuadratic hamiltonGramLinearTerm hamiltonQuadraticForm
+    hamiltonGramK hamiltonGramP hamiltonGramM
+  have hYY (r : κ) :
+      (∑ a, ∑ b, Y r a b * U a b) ^ 2 =
+        ∑ a, ∑ b, ∑ c, ∑ d,
+          (Y r a b * Y r c d) * U a b * U c d := by
+    rw [pow_two, Fintype.sum_mul_sum]
+    simp_rw [Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    refine Finset.sum_congr rfl fun c _ => ?_
+    refine Finset.sum_congr rfl fun d _ => ?_
+    ring
+  have hYX (r : κ) :
+      (∑ a, ∑ b, Y r a b * U a b) * (∑ c, X r c * W c) =
+        ∑ a, ∑ b, ∑ c,
+          (Y r a b * X r c) * U a b * W c := by
+    rw [Fintype.sum_mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    simp_rw [Finset.sum_mul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    refine Finset.sum_congr rfl fun c _ => ?_
+    ring
+  have hXX (r : κ) :
+      (∑ c, X r c * W c) ^ 2 =
+        ∑ c, ∑ d, (X r c * X r d) * W c * W d := by
+    rw [pow_two, Fintype.sum_mul_sum]
+    refine Finset.sum_congr rfl fun c _ => ?_
+    refine Finset.sum_congr rfl fun d _ => ?_
+    ring
+  have hsq (r : κ) :
+      ((∑ a, ∑ b, Y r a b * U a b) + (∑ c, X r c * W c)) ^ 2 =
+        (∑ a, ∑ b, Y r a b * U a b) ^ 2 +
+          2 * ((∑ a, ∑ b, Y r a b * U a b) * (∑ c, X r c * W c)) +
+          (∑ c, X r c * W c) ^ 2 := by
+    ring
+  simp_rw [hsq]
+  simp_rw [hYY]
+  simp_rw [hYX]
+  simp_rw [hXX]
+  have hYYsum :
+      (∑ x, ∑ a, ∑ b, ∑ c, ∑ d,
+        Y x a b * Y x c d * U a b * U c d) =
+        ∑ a, ∑ b, ∑ c, ∑ d,
+          (∑ r, Y r a b * Y r c d) * U a b * U c d := by
+    calc
+      _ = ∑ a, ∑ b, ∑ c, ∑ d, ∑ x,
+          Y x a b * Y x c d * U a b * U c d := move_outer4 _
+      _ = _ := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        refine Finset.sum_congr rfl fun b _ => ?_
+        refine Finset.sum_congr rfl fun c _ => ?_
+        refine Finset.sum_congr rfl fun d _ => ?_
+        calc
+          _ = ∑ x, (Y x a b * Y x c d) * (U a b * U c d) := by
+            refine Finset.sum_congr rfl fun x _ => ?_
+            ring
+          _ = (∑ x, Y x a b * Y x c d) * (U a b * U c d) := by
+            rw [Finset.sum_mul]
+          _ = _ := by ring
+  have hYXsum :
+      (∑ x, 2 * ∑ a, ∑ b, ∑ c,
+        Y x a b * X x c * U a b * W c) =
+        2 * ∑ a, ∑ b, ∑ c,
+          (∑ r, Y r a b * X r c) * U a b * W c := by
+    calc
+      _ = 2 * (∑ x, ∑ a, ∑ b, ∑ c,
+          Y x a b * X x c * U a b * W c) := by
+        rw [Finset.mul_sum]
+      _ = 2 * (∑ a, ∑ b, ∑ c, ∑ x,
+          Y x a b * X x c * U a b * W c) := by
+        rw [move_outer3]
+      _ = _ := by
+        congr 1
+        refine Finset.sum_congr rfl fun a _ => ?_
+        refine Finset.sum_congr rfl fun b _ => ?_
+        refine Finset.sum_congr rfl fun c _ => ?_
+        calc
+          _ = ∑ x, (Y x a b * X x c) * (U a b * W c) := by
+            refine Finset.sum_congr rfl fun x _ => ?_
+            ring
+          _ = (∑ x, Y x a b * X x c) * (U a b * W c) := by
+            rw [Finset.sum_mul]
+          _ = _ := by ring
+  have hXXsum :
+      (∑ x, ∑ c, ∑ d,
+        X x c * X x d * W c * W d) =
+        ∑ c, ∑ d, (∑ r, X r c * X r d) * W c * W d := by
+    calc
+      _ = ∑ c, ∑ d, ∑ x,
+          X x c * X x d * W c * W d := move_outer2 _
+      _ = _ := by
+        refine Finset.sum_congr rfl fun c _ => ?_
+        refine Finset.sum_congr rfl fun d _ => ?_
+        calc
+          _ = ∑ x, (X x c * X x d) * (W c * W d) := by
+            refine Finset.sum_congr rfl fun x _ => ?_
+            ring
+          _ = (∑ x, X x c * X x d) * (W c * W d) := by
+            rw [Finset.sum_mul]
+          _ = _ := by ring
+  simp only [Finset.sum_add_distrib]
+  rw [hYYsum, hYXsum, hXXsum]
 
 theorem hamiltonGramSigma_eq_block
     {ι κ : Type*} [Fintype ι] [Fintype κ]
