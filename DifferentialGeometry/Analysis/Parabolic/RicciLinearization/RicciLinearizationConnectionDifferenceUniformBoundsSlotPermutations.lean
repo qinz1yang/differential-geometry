@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.InverseMetricPerturbationFibreBound
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 noncomputable section
 

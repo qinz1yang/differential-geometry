@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqLeChartAlphaSummandSum
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSqSummandChartAlphaBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormChartBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormSummandBound
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,12 +1,10 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
 
 noncomputable section
 
-open Bundle Manifold Set MeasureTheory Filter Function
+open Bundle Manifold Set Filter Function
 open scoped Manifold Topology ContDiff ENNReal NNReal Matrix BigOperators
 
 namespace DifferentialGeometry
@@ -16,8 +14,6 @@ namespace Laplacian
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-open DifferentialGeometry.Integral.Measure
 
 lemma metric_inner_self_nonneg
     (g : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :

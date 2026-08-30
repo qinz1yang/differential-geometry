@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Mixed.Field
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqSmoothCcUniformBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormUniformBound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderHigherOrderTame

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Operator.NormGradSq
 import Mathlib.Analysis.Normed.Operator.Extend
 open DifferentialGeometry.Geometry.Operator

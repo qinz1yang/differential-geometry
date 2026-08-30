@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.RicciFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffData
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Operator.DirichletForm
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Analysis.Elliptic.Operator.Variational
 open DifferentialGeometry.Geometry.Operator

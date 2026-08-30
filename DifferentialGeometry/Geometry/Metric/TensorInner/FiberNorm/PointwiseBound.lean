@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Tensor.RSTensor.TensorRSSpaceOperatorNorm
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 open DifferentialGeometry.Analysis.Elliptic
@@ -15,7 +15,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Elliptic
 
-open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Tensor0SBundle
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lipschitz
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich
 import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
 import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDenseLemmas

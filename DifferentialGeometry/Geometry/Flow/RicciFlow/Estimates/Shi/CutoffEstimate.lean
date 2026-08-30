@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.HigherDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffData
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

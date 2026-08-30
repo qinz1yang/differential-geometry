@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.CutoffProfile
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.PreH1
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.Topology.Connected.Clopen
 
 

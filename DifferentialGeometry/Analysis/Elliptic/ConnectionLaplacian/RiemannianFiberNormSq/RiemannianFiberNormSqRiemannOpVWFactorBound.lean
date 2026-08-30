@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.TensorRicciCommutatorRiemannianFiberNormBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqLeChartAlphaSummandSum
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormChartBound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Components
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset

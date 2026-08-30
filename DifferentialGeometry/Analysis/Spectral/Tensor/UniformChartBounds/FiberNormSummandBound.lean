@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.ChartGramMatrixQuadFormUpperBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramMatrixUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 open DifferentialGeometry.Analysis.Elliptic

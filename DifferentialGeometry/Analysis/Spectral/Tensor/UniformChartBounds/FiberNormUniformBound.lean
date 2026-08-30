@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqLeChartAlphaSummandSum
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormChartBound
 import DifferentialGeometry.Analysis.Integration.Measure.Family
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Analysis.Elliptic

@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllU
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOpNorm.ChartLeviCivitaParallelCLM
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Elliptic

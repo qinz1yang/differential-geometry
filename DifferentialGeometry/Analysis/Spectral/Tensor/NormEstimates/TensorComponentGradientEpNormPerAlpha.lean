@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorCompone
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChartTwistIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorChartTwistUniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.GradNormChartBound
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 open DifferentialGeometry.Analysis.Elliptic

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqLe
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.PointwiseBound
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

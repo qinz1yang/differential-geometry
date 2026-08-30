@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.PreH1
 import DifferentialGeometry.Analysis.Integration.L2.ParametricFiberInnerSmooth
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Geometry.Operator.NormGradSqTime
 

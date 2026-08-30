@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Analysis.Elliptic.MetricBounds
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
