@@ -284,6 +284,40 @@ theorem tendsto_smoothToLpDirichlet_smoothDirichletBasisApproximation
   simp only [Function.comp_apply, smoothDirichletBasisApproximation,
     map_sum, map_smul, smoothDirichletHilbertBasis_apply]
 
+theorem norm_smoothToLpDirichlet_smoothDirichletBasisApproximation_le
+    (g : SmoothRiemannianMetric (I_half n) M) (m : ℕ)
+    (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) :
+    ‖smoothToLpDirichlet g (smoothDirichletBasisApproximation g m f)‖ ≤ ‖f‖ := by
+  let b := smoothDirichletHilbertBasis g
+  let s := smoothDirichletBasisFinset g m
+  have hsum :
+      smoothToLpDirichlet g (smoothDirichletBasisApproximation g m f) =
+        ∑ i ∈ s, b.repr f i • b i := by
+    simp only [smoothDirichletBasisApproximation, map_sum, map_smul,
+      smoothDirichletHilbertBasis_apply, b, s]
+  rw [hsum]
+  have hnormSq :
+      ‖∑ i ∈ s, b.repr f i • b i‖ ^ 2 =
+        ∑ i ∈ s, ‖b.repr f i‖ ^ 2 := by
+    calc
+      ‖∑ i ∈ s, b.repr f i • b i‖ ^ 2 =
+          inner ℝ (∑ i ∈ s, b.repr f i • b i)
+            (∑ i ∈ s, b.repr f i • b i) :=
+        (real_inner_self_eq_norm_sq _).symm
+      _ = ∑ i ∈ s, b.repr f i * b.repr f i := by
+        convert b.orthonormal.inner_sum
+          (fun i ↦ b.repr f i) (fun i ↦ b.repr f i) s using 1
+        simp
+      _ = ∑ i ∈ s, ‖b.repr f i‖ ^ 2 := by
+        refine Finset.sum_congr rfl (fun i _ ↦ ?_)
+        rw [Real.norm_eq_abs, sq_abs, pow_two]
+  have hbessel : ∑ i ∈ s, ‖b.repr f i‖ ^ 2 ≤ ‖f‖ ^ 2 := by
+    simpa only [b.repr_apply_apply] using b.orthonormal.sum_inner_products_le f
+  have hsquare : ‖∑ i ∈ s, b.repr f i • b i‖ ^ 2 ≤ ‖f‖ ^ 2 := by
+    rw [hnormSq]
+    exact hbessel
+  nlinarith [norm_nonneg (∑ i ∈ s, b.repr f i • b i), norm_nonneg f]
+
 end Dirichlet
 end WithBoundary
 end Laplacian
