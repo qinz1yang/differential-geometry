@@ -83,4 +83,16 @@ theorem hamiltonTestJetDU_clock_coefficient
   field_simp [HarnackClock.elapsed_ne_zero clock]
   ring
 
+theorem hamiltonTestJetDU_clock_coefficient_pos
+    (clock : HarnackClock) :
+    0 < (1 / (4 * clock.elapsed) : Real) := by
+  exact one_div_pos.mpr (mul_pos (by norm_num) clock.elapsed_pos)
+
+theorem hamiltonTestJetDU_zero_of_zero_W
+    (clock : HarnackClock)
+    (Ric h : Idx -> Idx -> Real) (a b c : Idx) :
+    hamiltonTestJetDU clock Ric h (fun _ => 0) a b c = 0 := by
+  unfold hamiltonTestJetDU
+  simp
+
 end DifferentialGeometry.PDE.RicciFlow
