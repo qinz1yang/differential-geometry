@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
+import DifferentialGeometry.Geometry.Operator.WeightedOmoriYau
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
 
 set_option autoImplicit false
@@ -35,6 +36,306 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M]
+
+private theorem log_one_add_sq_hasDerivAt (t : Real) :
+    HasDerivAt (fun s : Real => Real.log (1 + s ^ 2))
+      (2 * t / (1 + t ^ 2)) t := by
+  have hpoly : HasDerivAt (fun s : Real => 1 + s ^ 2) (2 * t) t := by
+    convert! ((hasDerivAt_id t).pow 2).const_add 1 using 1
+    all_goals norm_num
+  exact hpoly.log (by positivity)
+
+private theorem deriv_log_one_add_sq (t : Real) :
+    deriv (fun s : Real => Real.log (1 + s ^ 2)) t =
+      2 * t / (1 + t ^ 2) :=
+  (log_one_add_sq_hasDerivAt t).deriv
+
+private theorem deriv_deriv_log_one_add_sq (t : Real) :
+    deriv (deriv (fun s : Real => Real.log (1 + s ^ 2))) t =
+      2 * (1 - t ^ 2) / (1 + t ^ 2) ^ 2 := by
+  have hfirst :
+      deriv (fun s : Real => Real.log (1 + s ^ 2)) =
+        fun s => 2 * s / (1 + s ^ 2) := by
+    funext s
+    exact deriv_log_one_add_sq s
+  rw [hfirst]
+  have hnum : HasDerivAt (fun s : Real => 2 * s) 2 t := by
+    convert! (hasDerivAt_id t).const_mul 2 using 1
+    all_goals norm_num
+  have hden : HasDerivAt (fun s : Real => 1 + s ^ 2) (2 * t) t := by
+    convert! ((hasDerivAt_id t).pow 2).const_add 1 using 1
+    all_goals norm_num
+  have hquot := hnum.div hden (by positivity)
+  change deriv ((fun s : Real => 2 * s) / fun s => 1 + s ^ 2) t = _
+  rw [hquot.deriv]
+  ring
+
+omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
+  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
+private theorem exists_log_one_add_sq_distance_support_data
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (O x : M) (r : Real) (hr : 0 < r) (rho : M → Real)
+    (hrho_inf : ContMDiffAt I 𝓘(Real, Real) ∞ rho x)
+    (hrho_x : rho x = r)
+    (hupper : ∀ᶠ y in 𝓝 x,
+      (riemannianEDistOf (I := I) g O y).toReal ≤ rho y)
+    (hrho_eventually : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) rho y)
+    (hgrad_rho : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g rho y) x)
+    (hnorm : g.inner x (gradientFun (I := I) g rho x)
+      (gradientFun (I := I) g rho x) = 1) :
+    ∃ phi : M → Real,
+      ContMDiffAt I 𝓘(Real, Real) ∞ phi x ∧
+      phi x = Real.log (1 + r ^ 2) ∧
+      (∀ᶠ y in 𝓝 x,
+        Real.log (1 + (riemannianEDistOf (I := I) g O y).toReal ^ 2) ≤ phi y) ∧
+      (∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(Real, Real) phi y) ∧
+      MDifferentiableAt I (I.prod 𝓘(Real, E))
+        (T% fun y : M => gradientFun (I := I) g phi y) x ∧
+      Real.sqrt (g.inner x (gradientFun (I := I) g phi x)
+        (gradientFun (I := I) g phi x)) = 2 * r / (1 + r ^ 2) ∧
+      laplacian (I := I) (LeviCivita (I := I) g) g phi x -
+          g.inner x (gradFun (I := I) g f x)
+            (gradientFun (I := I) g phi x) =
+        (2 * r / (1 + r ^ 2)) *
+          (laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+            g.inner x (gradFun (I := I) g f x)
+              (gradientFun (I := I) g rho x)) +
+          2 * (1 - r ^ 2) / (1 + r ^ 2) ^ 2 := by
+  let outer : Real → Real := fun s => Real.log (1 + s ^ 2)
+  let phi : M → Real := fun y => outer (rho y)
+  have hinside : ContMDiffAt I 𝓘(Real, Real) ∞
+      (fun y : M => 1 + rho y ^ 2) x :=
+    contMDiffAt_const.add (hrho_inf.pow 2)
+  have hphi_inf : ContMDiffAt I 𝓘(Real, Real) ∞ phi x := by
+    exact (Real.contDiffAt_log.2 (by positivity : (1 + rho x ^ 2) ≠ 0)).comp_contMDiffAt
+      (x := x) hinside
+  have hrho_nonneg : ∀ᶠ y in 𝓝 x, 0 ≤ rho y := by
+    exact hrho_inf.continuousAt
+      (Ici_mem_nhds (hrho_x.symm ▸ hr))
+  have hphi_upper : ∀ᶠ y in 𝓝 x,
+      Real.log (1 + (riemannianEDistOf (I := I) g O y).toReal ^ 2) ≤ phi y := by
+    filter_upwards [hupper, hrho_nonneg] with y hy hnonneg
+    have hdist : 0 ≤ (riemannianEDistOf (I := I) g O y).toReal :=
+      ENNReal.toReal_nonneg
+    apply Real.log_le_log (by positivity)
+    nlinarith
+  have hphi_eventually : ∀ᶠ y in 𝓝 x,
+      MDifferentiableAt I 𝓘(Real, Real) phi y := by
+    filter_upwards [hrho_eventually] with y hy
+    have hpoly : MDifferentiableAt I 𝓘(Real, Real)
+        (fun z : M => 1 + rho z ^ 2) y :=
+      mdifferentiableAt_const.add (hy.pow 2)
+    exact (Real.differentiableAt_log
+      (by positivity : 1 + rho y ^ 2 ≠ 0)).mdifferentiableAt.comp y hpoly
+  have hgrad_phi : MDifferentiableAt I (I.prod 𝓘(Real, E))
+      (T% fun y : M => gradientFun (I := I) g phi y) x :=
+    (gradientFun_contMDiffAt (I := I) g hphi_inf).mdifferentiableAt (by simp)
+  have hrho_mdiff : MDifferentiableAt I 𝓘(Real, Real) rho x :=
+    hrho_inf.mdifferentiableAt (by simp)
+  have houter_at : DifferentiableAt Real outer (rho x) := by
+    rw [hrho_x]
+    exact (log_one_add_sq_hasDerivAt r).differentiableAt
+  have hgrad_eq : gradientFun (I := I) g phi x =
+      (2 * r / (1 + r ^ 2)) • gradientFun (I := I) g rho x := by
+    have h := gradientFun_comp (I := I) g houter_at hrho_mdiff
+    change gradientFun (I := I) g phi x = _ at h
+    rw [hrho_x, deriv_log_one_add_sq] at h
+    exact h
+  have hcoef : 0 ≤ 2 * r / (1 + r ^ 2) := by positivity
+  have hgrad_norm : Real.sqrt
+      (g.inner x (gradientFun (I := I) g phi x)
+        (gradientFun (I := I) g phi x)) = 2 * r / (1 + r ^ 2) := by
+    rw [hgrad_eq, sqrt_inner_smul, abs_of_nonneg hcoef, hnorm, Real.sqrt_one,
+      mul_one]
+  have houter_diff : Differentiable Real outer :=
+    fun t => (log_one_add_sq_hasDerivAt t).differentiableAt
+  have houter_deriv_diff : DifferentiableAt Real (deriv outer) r := by
+    have hfirst : deriv outer = fun s => 2 * s / (1 + s ^ 2) := by
+      funext s
+      exact deriv_log_one_add_sq s
+    rw [hfirst]
+    have : 1 + r ^ 2 ≠ 0 := by positivity
+    fun_prop
+  have houter_deriv_diff_x : DifferentiableAt Real (deriv outer) (rho x) := by
+    rw [hrho_x]
+    exact houter_deriv_diff
+  have hlap := laplacian_comp_at (I := I)
+    (LeviCivita (I := I) g) g houter_diff houter_deriv_diff_x
+      hrho_eventually hgrad_rho
+  change laplacian (I := I) (LeviCivita (I := I) g) g phi x = _ at hlap
+  rw [hrho_x, deriv_log_one_add_sq, deriv_deriv_log_one_add_sq, hnorm] at hlap
+  refine ⟨phi, hphi_inf, ?_, hphi_upper, hphi_eventually, hgrad_phi,
+    hgrad_norm, ?_⟩
+  · simp only [phi, outer, hrho_x]
+  · rw [hlap, hgrad_eq, map_smul, smul_eq_mul]
+    ring
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem exists_log_one_add_sq_distance_base_support
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (f : C^∞⟮I, M; Real⟯) (O : M) :
+    ∃ phi : M → Real,
+      isWeightedLaplacianUpperSupportAt (I := I) g f
+        (fun y => Real.log
+          (1 + (riemannianEDistOf (I := I) g O y).toReal ^ 2))
+        O 1
+        |laplacian (I := I) (LeviCivita (I := I) g) g phi O -
+          g.inner O (gradFun (I := I) g f O)
+            (gradientFun (I := I) g phi O)| phi := by
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let _ : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro y v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+  have hzero : ¬ IsConjVec (I := I) g hEnorm O (0 : E) := by
+    unfold IsConjVec
+    simp only [not_not]
+    have hfun :
+        (fun b : E => expMapIntrinsic (I := I) g hEnorm O
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) O).symm b)) =
+          fun b : E => expMapIntrinsic (I := I) g hEnorm O
+            (show TangentSpace I O from b) := by
+      funext b
+      rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    rw [hfun, mfderiv_expMapIntrinsic_at_zero (I := I) g hEnorm O]
+    intro a b hab
+    have habModel := congrArg
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := I)
+        (expMapIntrinsic (I := I) g hEnorm O
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := I) O).symm (0 : E)))) hab
+    change a = b at habModel
+    exact habModel
+  obtain ⟨B, hBzero⟩ := branch_of_not_conj (I := I) g hEnorm hzero
+  have hOexp : expMapIntrinsic (I := I) g hEnorm O
+      (0 : TangentSpace I O) = O :=
+    expMapIntrinsic_zero (I := I) g hEnorm O
+  have hOdom : O ∈ B.dom := by
+    have hmap : B.hom (0 : E) ∈ B.dom := B.hom.map_source hBzero
+    have hhom : B.hom (0 : E) = O := by
+      have h := B.hom_eq hBzero
+      change expMapIntrinsic (I := I) g hEnorm O (0 : TangentSpace I O) =
+        B.hom (0 : E) at h
+      rw [hOexp] at h
+      exact h.symm
+    simpa only [hhom] using hmap
+  have hBinvO : B.inv O = 0 := by
+    have h := B.left_inv hBzero
+    change B.inv (expMapIntrinsic (I := I) g hEnorm O
+      (0 : TangentSpace I O)) = (0 : E) at h
+    rw [hOexp] at h
+    exact h
+  let energy : M → Real := branchEnergy (I := I) g B
+  let phi : M → Real := fun y => Real.log (1 + 2 * energy y)
+  have henergyOn : ContMDiffOn I (modelWithCornersSelf Real Real) ∞ energy B.dom := by
+    have hinv := B.inv_inf
+    let e : E →L[Real] TangentSpace I O :=
+      (tangentSpaceModelContinuousLinearEquiv (I := I) O).symm.toContinuousLinearMap
+    have he : ContMDiffOn I (modelWithCornersSelf Real (TangentSpace I O)) ∞
+        (fun y : M => e (B.inv y)) B.dom :=
+      contMDiffOn_const.clm_apply hinv
+    have hinner : ContMDiffOn I (modelWithCornersSelf Real Real) ∞
+        (fun y : M => g.inner O (e (B.inv y)) (e (B.inv y))) B.dom :=
+      (contMDiffOn_const.clm_apply he).clm_apply he
+    have henergy' : ContMDiffOn I (modelWithCornersSelf Real Real) ∞
+        (fun y : M => (1 / 2 : Real) *
+          g.inner O (e (B.inv y)) (e (B.inv y))) B.dom :=
+      contMDiffOn_const.mul hinner
+    refine henergy'.congr ?_
+    intro y hy
+    simp only [energy, branchEnergy]
+    rfl
+  have henergyO : energy O = 0 := by
+    simp only [energy, branchEnergy, hBinvO]
+    norm_num
+  have hinsideOn : ContMDiffOn I (modelWithCornersSelf Real Real) ∞
+      (fun y : M => 1 + 2 * energy y) B.dom :=
+    contMDiffOn_const.add (contMDiffOn_const.mul henergyOn)
+  have hinsideO : 1 + 2 * energy O ≠ 0 := by rw [henergyO]; norm_num
+  have hphiO : ContMDiffAt I (modelWithCornersSelf Real Real) ∞ phi O := by
+    exact (Real.contDiffAt_log.2 hinsideO).comp_contMDiffAt
+      (x := O) (hinsideOn.contMDiffAt (B.hom.open_target.mem_nhds hOdom))
+  have hupper : ∀ᶠ y in nhds O,
+      Real.log (1 + (riemannianEDistOf (I := I) g O y).toReal ^ 2) ≤ phi y := by
+    filter_upwards [B.hom.open_target.mem_nhds hOdom] with y hy
+    have hed := B.edist_le_radius hy
+    have hr_nonneg : 0 ≤ branchRadius (I := I) g B y := Real.sqrt_nonneg _
+    have hreal : (riemannianEDist I O y).toReal ≤
+        branchRadius (I := I) g B y := by
+      have := ENNReal.toReal_mono (by simp) hed
+      simpa only [ENNReal.toReal_ofReal hr_nonneg] using this
+    have hsquare : (riemannianEDist I O y).toReal ^ 2 ≤ 2 * energy y := by
+      have hs : (riemannianEDist I O y).toReal ^ 2 ≤
+          branchRadius (I := I) g B y ^ 2 := by
+        nlinarith [(ENNReal.toReal_nonneg :
+          0 ≤ (riemannianEDist I O y).toReal)]
+      have hradiusSq : branchRadius (I := I) g B y ^ 2 = 2 * energy y := by
+        simp only [branchRadius, energy, branchEnergy]
+        rw [Real.sq_sqrt]
+        · ring
+        · exact gInner_self_nonneg (I := I) g O _
+      rwa [hradiusSq] at hs
+    apply Real.log_le_log (by positivity)
+    change 1 + (riemannianEDist I O y).toReal ^ 2 ≤ 1 + 2 * energy y
+    linarith
+  have hphi_value : phi O = 0 := by
+    simp only [phi, henergyO]
+    norm_num
+  have hpsi_value : Real.log
+      (1 + (riemannianEDistOf (I := I) g O O).toReal ^ 2) = 0 := by
+    rw [riemannianEDistOf_self]
+    norm_num
+  have hphi_eventually : ∀ᶠ y in nhds O,
+      MDifferentiableAt I (modelWithCornersSelf Real Real) phi y := by
+    have hphiOn : ContMDiffOn I (modelWithCornersSelf Real Real) ∞ phi
+        (B.dom ∩ {y | 0 < 1 + 2 * energy y}) := by
+      intro y hy
+      exact (Real.contDiffAt_log.2 hy.2.ne').contMDiffAt.comp_contMDiffWithinAt y
+        (hinsideOn.mono inter_subset_left y hy)
+    have hmem : O ∈ B.dom ∩ {y | 0 < 1 + 2 * energy y} := by
+      refine ⟨hOdom, ?_⟩
+      change 0 < 1 + 2 * energy O
+      rw [henergyO]
+      norm_num
+    have hopen : IsOpen (B.dom ∩ {y | 0 < 1 + 2 * energy y}) := by
+      exact hinsideOn.continuousOn.isOpen_inter_preimage
+        B.hom.open_target isOpen_Ioi
+    filter_upwards [hopen.mem_nhds hmem] with y hy
+    exact ((hphiOn y hy).contMDiffAt
+      (hopen.mem_nhds hy)).mdifferentiableAt (by simp)
+  have hgrad_phi : MDifferentiableAt I (I.prod (modelWithCornersSelf Real E))
+      (T% fun y : M => gradientFun (I := I) g phi y) O :=
+    (gradientFun_contMDiffAt (I := I) g hphiO).mdifferentiableAt (by simp)
+  have hlocalMin : IsLocalMin phi O := by
+    filter_upwards [hupper] with y hy
+    rw [hphi_value]
+    exact le_trans (Real.log_nonneg (by norm_num)) hy
+  have hgrad_zero : gradientFun (I := I) g phi O = 0 :=
+    gradientFun_eq_zero_at_spatial_min (I := I) g hlocalMin
+      (hphiO.mdifferentiableAt (by simp))
+  refine ⟨phi, hphiO, ?_, hupper, hphi_eventually, hgrad_phi, ?_, ?_⟩
+  · change phi O = Real.log
+      (1 + (riemannianEDistOf (I := I) g O O).toReal ^ 2)
+    rw [hphi_value, hpsi_value]
+  · rw [hgrad_zero]
+    simp
+  · exact le_abs_self _
 
 def isWeightedDistanceUpperSupport
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
@@ -560,5 +861,258 @@ theorem gradientRicciSoliton_exists_weightedDistanceUpperSupport
   · simpa only [r] using hrho_x
   · simpa only [riemannianEDistOf] using hupper
   · simpa only [r] using hweighted
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem gradientRicciSoliton_exists_weightedLogDistanceUpperSupport
+    [ConnectedSpace M]
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma) (O : M) :
+    ∃ A B : Real, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ x : M, ∃ phi : M → Real,
+        isWeightedLaplacianUpperSupportAt (I := I) g f
+          (fun y => Real.log
+            (1 + (riemannianEDistOf (I := I) g O y).toReal ^ 2))
+          x A B phi := by
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let _ : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := inferInstance
+  let _ : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro y v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+  obtain ⟨C, hfar⟩ :=
+    gradientRicciSoliton_exists_weightedDistanceUpperSupport
+      (I := I) g f sigma hcomplete hsol O
+  obtain ⟨q, G, hq, hG, hRic, hGrad⟩ :=
+    exists_local_soliton_control (I := I) g f hcomplete O
+  obtain ⟨phiO, hbase⟩ :=
+    exists_log_one_add_sq_distance_base_support (I := I) g hcomplete f O
+  let d : Real := ((Module.finrank Real E - 1 : Nat) : Real)
+  let baseBound : Real :=
+    |laplacian (I := I) (LeviCivita (I := I) g) g phiO O -
+      g.inner O (gradFun (I := I) g f O)
+        (gradientFun (I := I) g phiO O)|
+  let radialBound : Real :=
+    4 * d + d * q + G + |C| + |sigma| + 2
+  let B : Real := radialBound + baseBound
+  have hd : 0 ≤ d := by
+    dsimp only [d]
+    positivity
+  have hbaseBound : 0 ≤ baseBound := by
+    dsimp only [baseBound]
+    positivity
+  have hradialBound : 0 ≤ radialBound := by
+    dsimp only [radialBound]
+    positivity
+  have hB : 0 ≤ B := add_nonneg hradialBound hbaseBound
+  have hcoef_le_one : ∀ s : Real, 2 * s / (1 + s ^ 2) ≤ 1 := by
+    intro s
+    apply (div_le_iff₀ (by positivity : (0 : Real) < 1 + s ^ 2)).2
+    nlinarith [sq_nonneg (s - 1)]
+  have hsecond_le_two : ∀ s : Real,
+      2 * (1 - s ^ 2) / (1 + s ^ 2) ^ 2 ≤ 2 := by
+    intro s
+    apply (div_le_iff₀
+      (sq_pos_of_pos (by positivity : (0 : Real) < 1 + s ^ 2))).2
+    nlinarith [sq_nonneg (s ^ 2)]
+  have hfar_real : ∀ {s D tau : Real}, 0 ≤ s →
+      (2 * s / (1 + s ^ 2)) * (D - tau / 2 * s) +
+          2 * (1 - s ^ 2) / (1 + s ^ 2) ^ 2 ≤
+        |D| + |tau| + 2 := by
+    intro s D tau hs
+    have hden : 0 < 1 + s ^ 2 := by positivity
+    have ha0 : 0 ≤ 2 * s / (1 + s ^ 2) := by positivity
+    have ha1 := hcoef_le_one s
+    have ht0 : 0 ≤ s ^ 2 / (1 + s ^ 2) := by positivity
+    have ht1 : s ^ 2 / (1 + s ^ 2) ≤ 1 := by
+      apply (div_le_iff₀ hden).2
+      linarith
+    have hD : (2 * s / (1 + s ^ 2)) * D ≤ |D| := by
+      calc
+        (2 * s / (1 + s ^ 2)) * D ≤
+            (2 * s / (1 + s ^ 2)) * |D| :=
+          mul_le_mul_of_nonneg_left (le_abs_self D) ha0
+        _ ≤ 1 * |D| :=
+          mul_le_mul_of_nonneg_right ha1 (abs_nonneg D)
+        _ = |D| := one_mul _
+    have htau : -tau * (s ^ 2 / (1 + s ^ 2)) ≤ |tau| := by
+      calc
+        -tau * (s ^ 2 / (1 + s ^ 2)) ≤
+            |tau| * (s ^ 2 / (1 + s ^ 2)) :=
+          mul_le_mul_of_nonneg_right (neg_le_abs tau) ht0
+        _ ≤ |tau| * 1 :=
+          mul_le_mul_of_nonneg_left ht1 (abs_nonneg tau)
+        _ = |tau| := mul_one _
+    have hsplit :
+        (2 * s / (1 + s ^ 2)) * (D - tau / 2 * s) =
+          (2 * s / (1 + s ^ 2)) * D -
+            tau * (s ^ 2 / (1 + s ^ 2)) := by
+      field_simp [hden.ne']
+    rw [hsplit]
+    linarith [hsecond_le_two s]
+  have hsingular : ∀ {s : Real}, 0 < s →
+      (2 * s / (1 + s ^ 2)) * (2 * d / s) ≤ 4 * d := by
+    intro s hs
+    have hden : 0 < 1 + s ^ 2 := by positivity
+    have heq : (2 * s / (1 + s ^ 2)) * (2 * d / s) =
+        4 * d / (1 + s ^ 2) := by
+      field_simp [hs.ne', hden.ne']
+      ring
+    rw [heq]
+    apply (div_le_iff₀ hden).2
+    nlinarith [mul_nonneg (by norm_num : (0 : Real) ≤ 4) hd]
+  refine ⟨1, B, zero_le_one, hB, ?_⟩
+  intro x
+  by_cases hOx : x = O
+  · subst x
+    obtain ⟨hphi_inf, hphi_value, hphi_upper, hphi_eventually,
+        hgrad_phi, hgrad_bound, hweighted⟩ := hbase
+    refine ⟨phiO, hphi_inf, hphi_value, hphi_upper, hphi_eventually,
+      hgrad_phi, hgrad_bound, ?_⟩
+    calc
+      _ ≤ baseBound := hweighted
+      _ ≤ B := by
+        dsimp only [B]
+        linarith
+  · let r : Real := (riemannianEDist I O x).toReal
+    have hfin : riemannianEDist I O x ≠ (⊤ : ENNReal) :=
+      riemannianEDist_ne_top (I := I) O x
+    have hdist_ne : riemannianEDist I O x ≠ 0 := by
+      intro hzero
+      exact hOx (riemannianEDist_eq_zero_imp_eq (I := I) O x hzero).symm
+    have hr : 0 < r :=
+      ENNReal.toReal_pos hdist_ne hfin
+    have hcoef_nonneg : 0 ≤ 2 * r / (1 + r ^ 2) := by positivity
+    have hcoef_bound := hcoef_le_one r
+    by_cases hlarge : 3 ≤ r
+    · obtain ⟨rho, hrho_inf, hrho_value, hrho_upper, hrho_eventually,
+          hgrad_rho, hnorm_rho, hweighted_rho⟩ := hfar x hlarge
+      have hdistance_eq :
+          (riemannianEDistOf (I := I) g O x).toReal = r := by
+        rfl
+      rw [hdistance_eq] at hweighted_rho
+      obtain ⟨phi, hphi_inf, hphi_value, hphi_upper, hphi_eventually,
+          hgrad_phi, hgrad_norm, hweighted_phi⟩ :=
+        exists_log_one_add_sq_distance_support_data
+          (I := I) g f O x r hr rho hrho_inf hrho_value hrho_upper
+            hrho_eventually hgrad_rho hnorm_rho
+      refine ⟨phi, hphi_inf, hphi_value, hphi_upper, hphi_eventually,
+        hgrad_phi, ?_, ?_⟩
+      · rw [hgrad_norm]
+        exact hcoef_bound
+      · rw [hweighted_phi]
+        calc
+          (2 * r / (1 + r ^ 2)) *
+                (laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+                  g.inner x (gradFun (I := I) g f x)
+                    (gradientFun (I := I) g rho x)) +
+              2 * (1 - r ^ 2) / (1 + r ^ 2) ^ 2 ≤
+              (2 * r / (1 + r ^ 2)) * (C - sigma / 2 * r) +
+                2 * (1 - r ^ 2) / (1 + r ^ 2) ^ 2 :=
+            add_le_add
+              (mul_le_mul_of_nonneg_left hweighted_rho hcoef_nonneg) le_rfl
+          _ ≤ |C| + |sigma| + 2 := hfar_real hr.le
+          _ ≤ B := by
+            dsimp only [B, radialBound]
+            nlinarith [mul_nonneg hd hq]
+    · have hsmall : r < 3 := lt_of_not_ge hlarge
+      have hR : (riemannianEDist I O x).toReal < 4 := by
+        dsimp only [r] at hsmall
+        linarith
+      have hRicBall : 0 < Module.finrank Real E - 1 →
+          ∀ y ∈ Metric.eball O (ENNReal.ofReal 4),
+            ∀ w : TangentSpace I y,
+              -(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2) *
+                  g.inner y w w ≤ ricciTensor (I := I) g y w w := by
+        intro hdim y hy w
+        apply hRic hdim y _ w
+        rw [Metric.mem_eball', IsRiemannianManifold.out (I := I) O y] at hy
+        simpa only [riemannianEDistOf] using hy.le
+      obtain ⟨tail, hreach, hdata⟩ :=
+        exists_calabiData_lt (I := I) g hEnorm q hq
+          (O := O) (x := x) (R := 4) hRicBall (Ne.symm hOx) hfin hR
+      let rho : M → Real := fun y =>
+        tail.left + branchRadius (I := I) g tail.branch y
+      change ContMDiffAt I (modelWithCornersSelf Real Real) ∞ rho x ∧
+          rho x = r ∧
+          (∀ᶠ y in nhds x, (riemannianEDist I O y).toReal ≤ rho y) ∧
+          (∀ᶠ y in nhds x,
+            MDifferentiableAt I (modelWithCornersSelf Real Real) rho y) ∧
+          MDifferentiableAt I (I.prod (modelWithCornersSelf Real E))
+            (T% fun y : M => gradientFun (I := I) g rho y) x ∧
+          g.inner x (gradientFun (I := I) g rho x)
+              (gradientFun (I := I) g rho x) = 1 ∧
+          laplacian (I := I) (LeviCivita (I := I) g) g rho x ≤
+            2 * d / r + d * q at hdata
+      obtain ⟨hrho_inf, hrho_value, hrho_upper, hrho_eventually,
+        hgrad_rho, hnorm_rho, hlap_rho⟩ := hdata
+      have hx4 : riemannianEDistOf (I := I) g O x ≤ ENNReal.ofReal 4 := by
+        apply (ENNReal.toReal_le_toReal hfin ENNReal.ofReal_ne_top).mp
+        rw [ENNReal.toReal_ofReal (by norm_num : (0 : Real) ≤ 4)]
+        dsimp only [r] at hsmall
+        linarith
+      have hcs := abs_inner_le_sqrt_mul_sqrt (I := I) g x
+        (gradFun (I := I) g f x) (gradientFun (I := I) g rho x)
+      change |g.inner x (gradFun (I := I) g f x)
+          (gradientFun (I := I) g rho x)| ≤
+        Real.sqrt (normGradSqFun (I := I) g f x) *
+          Real.sqrt (g.inner x (gradientFun (I := I) g rho x)
+            (gradientFun (I := I) g rho x)) at hcs
+      rw [hnorm_rho, Real.sqrt_one, mul_one] at hcs
+      have hinner_rho :
+          -g.inner x (gradFun (I := I) g f x)
+              (gradientFun (I := I) g rho x) ≤ G :=
+        (neg_le_abs _).trans (hcs.trans (hGrad x hx4))
+      have hweighted_rho :
+          laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+              g.inner x (gradFun (I := I) g f x)
+                (gradientFun (I := I) g rho x) ≤
+            2 * d / r + d * q + G := by
+        linarith
+      obtain ⟨phi, hphi_inf, hphi_value, hphi_upper, hphi_eventually,
+          hgrad_phi, hgrad_norm, hweighted_phi⟩ :=
+        exists_log_one_add_sq_distance_support_data
+          (I := I) g f O x r hr rho hrho_inf hrho_value hrho_upper
+            hrho_eventually hgrad_rho hnorm_rho
+      have hrest_nonneg : 0 ≤ d * q + G :=
+        add_nonneg (mul_nonneg hd hq) hG
+      have hrest :
+          (2 * r / (1 + r ^ 2)) * (d * q + G) ≤ d * q + G := by
+        simpa only [one_mul] using
+          mul_le_mul_of_nonneg_right hcoef_bound hrest_nonneg
+      refine ⟨phi, hphi_inf, hphi_value, hphi_upper, hphi_eventually,
+        hgrad_phi, ?_, ?_⟩
+      · rw [hgrad_norm]
+        exact hcoef_bound
+      · rw [hweighted_phi]
+        calc
+          (2 * r / (1 + r ^ 2)) *
+                (laplacian (I := I) (LeviCivita (I := I) g) g rho x -
+                  g.inner x (gradFun (I := I) g f x)
+                    (gradientFun (I := I) g rho x)) +
+              2 * (1 - r ^ 2) / (1 + r ^ 2) ^ 2 ≤
+              (2 * r / (1 + r ^ 2)) * (2 * d / r + d * q + G) +
+                2 * (1 - r ^ 2) / (1 + r ^ 2) ^ 2 :=
+            add_le_add
+              (mul_le_mul_of_nonneg_left hweighted_rho hcoef_nonneg) le_rfl
+          _ = (2 * r / (1 + r ^ 2)) * (2 * d / r) +
+                (2 * r / (1 + r ^ 2)) * (d * q + G) +
+                  2 * (1 - r ^ 2) / (1 + r ^ 2) ^ 2 := by ring
+          _ ≤ 4 * d + (d * q + G) + 2 :=
+            add_le_add (add_le_add (hsingular hr) hrest) (hsecond_le_two r)
+          _ ≤ B := by
+            dsimp only [B, radialBound]
+            nlinarith [abs_nonneg C, abs_nonneg sigma, hbaseBound]
 
 end DifferentialGeometry.Geometry
