@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.NLCEndpoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.NLCSourceTail
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.EndpointControl
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.CurvatureBound
 
 set_option autoImplicit false

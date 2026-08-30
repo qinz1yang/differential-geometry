@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.LateSliceSplice
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.LocalBallLengthBound
 import Mathlib.Data.Finset.Lattice.Fold
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SliceSpliceBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.SmoothNLC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.SliceLengthBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.SetLowerBound
 
 set_option autoImplicit false
 
