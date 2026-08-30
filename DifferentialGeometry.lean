@@ -2620,6 +2620,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Curvatur
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FrameExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ConventionChecks
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.CurvatureBlock
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionLeibniz
