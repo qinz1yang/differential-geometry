@@ -871,6 +871,10 @@ private noncomputable def hamiltonNabla3PField
       5 (metricCov (I := I) (M := M) g)
       (metricCov_smooth (I := I) (M := M) g) (hamiltonNabla2PField (I := I) g))
 
+private def vec6 {x : M} (A B C D E F : TangentSpace I x) : Fin 6 -> TangentSpace I x :=
+  fun i => if i = 0 then A else if i = 1 then B else if i = 2 then C else
+    if i = 3 then D else if i = 4 then E else F
+
 private theorem hamiltonNablaPField_apply
     [T2Space M]
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -1383,19 +1387,19 @@ private theorem quadTraceProductField_apply_orthonormal
 
 private def nablaRPFourthFirstPerm : Equiv.Perm (Fin 8) where
   toFun q := if q = 0 then 4 else if q = 1 then 5 else if q = 2 then 0 else
-    if q = 3 then 1 else if q = 4 then 6 else if q = 5 then 2 else
+    if q = 3 then 2 else if q = 4 then 6 else if q = 5 then 1 else
       if q = 6 then 3 else 7
-  invFun q := if q = 0 then 2 else if q = 1 then 3 else if q = 2 then 5 else
+  invFun q := if q = 0 then 2 else if q = 1 then 5 else if q = 2 then 3 else
     if q = 3 then 6 else if q = 4 then 0 else if q = 5 then 1 else
       if q = 6 then 4 else 7
   left_inv q := by fin_cases q <;> simp
   right_inv q := by fin_cases q <;> simp
 
 private def RnablaPFourthFirstPerm : Equiv.Perm (Fin 8) where
-  toFun q := if q = 0 then 5 else if q = 1 then 0 else if q = 2 then 1 else
-    if q = 3 then 6 else if q = 4 then 4 else if q = 5 then 2 else
+  toFun q := if q = 0 then 5 else if q = 1 then 0 else if q = 2 then 2 else
+    if q = 3 then 6 else if q = 4 then 4 else if q = 5 then 1 else
       if q = 6 then 3 else 7
-  invFun q := if q = 0 then 1 else if q = 1 then 2 else if q = 2 then 5 else
+  invFun q := if q = 0 then 1 else if q = 1 then 5 else if q = 2 then 2 else
     if q = 3 then 6 else if q = 4 then 4 else if q = 5 then 0 else
       if q = 6 then 3 else 7
   left_inv q := by fin_cases q <;> simp
@@ -1403,19 +1407,19 @@ private def RnablaPFourthFirstPerm : Equiv.Perm (Fin 8) where
 
 private def nablaRPFourthSecondPerm : Equiv.Perm (Fin 8) where
   toFun q := if q = 0 then 4 else if q = 1 then 5 else if q = 2 then 0 else
-    if q = 3 then 1 else if q = 4 then 7 else if q = 5 then 2 else
+    if q = 3 then 2 else if q = 4 then 7 else if q = 5 then 1 else
       if q = 6 then 6 else 3
-  invFun q := if q = 0 then 2 else if q = 1 then 3 else if q = 2 then 5 else
+  invFun q := if q = 0 then 2 else if q = 1 then 5 else if q = 2 then 3 else
     if q = 3 then 7 else if q = 4 then 0 else if q = 5 then 1 else
       if q = 6 then 6 else 4
   left_inv q := by fin_cases q <;> simp
   right_inv q := by fin_cases q <;> simp
 
 private def RnablaPFourthSecondPerm : Equiv.Perm (Fin 8) where
-  toFun q := if q = 0 then 5 else if q = 1 then 0 else if q = 2 then 1 else
-    if q = 3 then 7 else if q = 4 then 4 else if q = 5 then 2 else
+  toFun q := if q = 0 then 5 else if q = 1 then 0 else if q = 2 then 2 else
+    if q = 3 then 7 else if q = 4 then 4 else if q = 5 then 1 else
       if q = 6 then 6 else 3
-  invFun q := if q = 0 then 1 else if q = 1 then 2 else if q = 2 then 5 else
+  invFun q := if q = 0 then 1 else if q = 1 then 5 else if q = 2 then 2 else
     if q = 3 then 7 else if q = 4 then 4 else if q = 5 then 0 else
       if q = 6 then 6 else 3
   left_inv q := by fin_cases q <;> simp
@@ -1423,41 +1427,41 @@ private def RnablaPFourthSecondPerm : Equiv.Perm (Fin 8) where
 
 private def nablaRPFourthThirdPerm : Equiv.Perm (Fin 8) where
   toFun q := if q = 0 then 4 else if q = 1 then 6 else if q = 2 then 0 else
-    if q = 3 then 1 else if q = 4 then 7 else if q = 5 then 5 else
-      if q = 6 then 2 else 3
-  invFun q := if q = 0 then 2 else if q = 1 then 3 else if q = 2 then 6 else
+    if q = 3 then 2 else if q = 4 then 7 else if q = 5 then 5 else
+      if q = 6 then 1 else 3
+  invFun q := if q = 0 then 2 else if q = 1 then 6 else if q = 2 then 3 else
     if q = 3 then 7 else if q = 4 then 0 else if q = 5 then 5 else
       if q = 6 then 1 else 4
   left_inv q := by fin_cases q <;> simp
   right_inv q := by fin_cases q <;> simp
 
 private def RnablaPFourthThirdPerm : Equiv.Perm (Fin 8) where
-  toFun q := if q = 0 then 6 else if q = 1 then 0 else if q = 2 then 1 else
+  toFun q := if q = 0 then 6 else if q = 1 then 0 else if q = 2 then 2 else
     if q = 3 then 7 else if q = 4 then 4 else if q = 5 then 5 else
-      if q = 6 then 2 else 3
-  invFun q := if q = 0 then 1 else if q = 1 then 2 else if q = 2 then 6 else
+      if q = 6 then 1 else 3
+  invFun q := if q = 0 then 1 else if q = 1 then 6 else if q = 2 then 2 else
     if q = 3 then 7 else if q = 4 then 4 else if q = 5 then 5 else
       if q = 6 then 0 else 3
   left_inv q := by fin_cases q <;> simp
   right_inv q := by fin_cases q <;> simp
 
 private def nablaRicNablaRmFourthPerm : Equiv.Perm (Fin 8) where
-  toFun q := if q = 0 then 4 else if q = 1 then 0 else if q = 2 then 1 else
-    if q = 3 then 2 else if q = 4 then 3 else if q = 5 then 5 else
-      if q = 6 then 6 else 7
-  invFun q := if q = 0 then 1 else if q = 1 then 2 else if q = 2 then 3 else
-    if q = 3 then 4 else if q = 4 then 0 else if q = 5 then 5 else
-      if q = 6 then 6 else 7
+  toFun q := if q = 0 then 4 else if q = 1 then 0 else if q = 2 then 2 else
+    if q = 3 then 1 else if q = 4 then 5 else if q = 5 then 6 else
+      if q = 6 then 3 else 7
+  invFun q := if q = 0 then 1 else if q = 1 then 3 else if q = 2 then 2 else
+    if q = 3 then 6 else if q = 4 then 0 else if q = 5 then 4 else
+      if q = 6 then 5 else 7
   left_inv q := by fin_cases q <;> simp
   right_inv q := by fin_cases q <;> simp
 
 private def ricciNabla2RmFourthPerm : Equiv.Perm (Fin 8) where
-  toFun q := if q = 0 then 0 else if q = 1 then 1 else if q = 2 then 4 else
-    if q = 3 then 2 else if q = 4 then 5 else if q = 5 then 6 else
-      if q = 6 then 7 else 3
-  invFun q := if q = 0 then 0 else if q = 1 then 1 else if q = 2 then 3 else
-    if q = 3 then 7 else if q = 4 then 2 else if q = 5 then 4 else
-      if q = 6 then 5 else 6
+  toFun q := if q = 0 then 0 else if q = 1 then 2 else if q = 2 then 4 else
+    if q = 3 then 1 else if q = 4 then 5 else if q = 5 then 6 else
+      if q = 6 then 3 else 7
+  invFun q := if q = 0 then 0 else if q = 1 then 3 else if q = 2 then 1 else
+    if q = 3 then 6 else if q = 4 then 2 else if q = 5 then 4 else
+      if q = 6 then 5 else 7
   left_inv q := by fin_cases q <;> simp
   right_inv q := by fin_cases q <;> simp
 
@@ -1850,6 +1854,230 @@ private theorem hamiltonPTimeDerivativeField_apply_orthonormal
     fin_cases q <;> rfl
   rw [hswap]
 
+private theorem nablaRicPFirstField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    nablaRicPContractionField (I := I) g nablaRicPFirstFieldPerm x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ p : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis a) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis p) (basis b) (basis c)) := by
+  classical
+  rw [nablaRicPContractionField,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    tensor0SField_product_apply]
+  congr 2
+  · funext r
+    fin_cases r <;> rfl
+  · funext r
+    fin_cases r <;> rfl
+
+private theorem nablaRicPSecondField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    nablaRicPContractionField (I := I) g nablaRicPSecondFieldPerm x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ p : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis b) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis p) (basis c)) := by
+  classical
+  rw [nablaRicPContractionField,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    tensor0SField_product_apply]
+  congr 2
+  · funext r
+    fin_cases r <;> rfl
+  · funext r
+    fin_cases r <;> rfl
+
+private theorem nablaRicPThirdField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    nablaRicPContractionField (I := I) g nablaRicPThirdFieldPerm x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ p : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis c) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis b) (basis p)) := by
+  classical
+  rw [nablaRicPContractionField,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    tensor0SField_product_apply]
+  congr 2
+  · funext r
+    fin_cases r <;> rfl
+  · funext r
+    fin_cases r <;> rfl
+
+private theorem nablaRicPActionField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    nablaRicPActionField (I := I) g x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      (∑ p : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis a) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis p) (basis b) (basis c))) +
+      (∑ p : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis b) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis p) (basis c))) +
+      ∑ p : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis c) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis b) (basis p)) := by
+  rw [nablaRicPActionField]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply]
+  rw [nablaRicPFirstField_apply_orthonormal (I := I) g basis horth,
+    nablaRicPSecondField_apply_orthonormal (I := I) g basis horth,
+    nablaRicPThirdField_apply_orthonormal (I := I) g basis horth]
+
+private theorem ricciNablaPFirstField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    ricciNablaPContractionField (I := I) g ricciNablaPFirstFieldPerm x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ p : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis a) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis p) (basis b) (basis c)) := by
+  classical
+  rw [ricciNablaPContractionField,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    tensor0SField_product_apply]
+  congr 2
+  · funext r
+    fin_cases r <;> rfl
+  · funext r
+    fin_cases r <;> rfl
+
+private theorem ricciNablaPSecondField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    ricciNablaPContractionField (I := I) g ricciNablaPSecondFieldPerm x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ p : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis b) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis p) (basis c)) := by
+  classical
+  rw [ricciNablaPContractionField,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    tensor0SField_product_apply]
+  congr 2
+  · funext r
+    fin_cases r <;> rfl
+  · funext r
+    fin_cases r <;> rfl
+
+private theorem ricciNablaPThirdField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    ricciNablaPContractionField (I := I) g ricciNablaPThirdFieldPerm x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ p : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis c) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis b) (basis p)) := by
+  classical
+  rw [ricciNablaPContractionField,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    tensor0SField_product_apply]
+  congr 2
+  · funext r
+    fin_cases r <;> rfl
+  · funext r
+    fin_cases r <;> rfl
+
+private theorem ricciNablaPActionField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    ricciNablaPActionField (I := I) g x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      (∑ p : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis a) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis p) (basis b) (basis c))) +
+      (∑ p : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis b) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis p) (basis c))) +
+      ∑ p : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis c) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis b) (basis p)) := by
+  rw [ricciNablaPActionField]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply]
+  rw [ricciNablaPFirstField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPSecondField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPThirdField_apply_orthonormal (I := I) g basis horth]
+
 private theorem hamiltonPRoughLaplacianField_apply_orthonormal
     [T2Space M]
     {n : Nat}
@@ -1869,6 +2097,521 @@ private theorem hamiltonPRoughLaplacianField_apply_orthonormal
   congr 1
   funext q
   fin_cases q <;> rfl
+
+private theorem hamiltonNablaPHeatField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    hamiltonNablaPHeatField (I := I) g x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      hamiltonNablaPTimeDerivativeField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) +
+        nablaRicPActionField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) +
+        ricciNablaPActionField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) -
+        ∑ d : Fin n,
+          hamiltonNabla3PField (I := I) g x
+            (Fin.cons (basis d) (Fin.cons (basis d)
+              (Fin.cons (basis q) (Fin.cons (basis a)
+                (Fin.cons (basis b) (fun _ : Fin 1 => basis c)))))) := by
+  rw [hamiltonNablaPHeatField]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply, ContMDiffSection.coe_sub,
+    Pi.sub_apply, Tensor0SSpace.add_apply, Tensor0SSpace.sub_apply]
+  rw [metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  refine congrArg (fun z =>
+      hamiltonNablaPTimeDerivativeField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) +
+        nablaRicPActionField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) +
+        ricciNablaPActionField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) - z) ?_
+  refine Finset.sum_congr rfl fun d _ => ?_
+  congr 1
+  funext r
+  fin_cases r <;> rfl
+
+private theorem nablaRPFourthFirstField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g nablaRPFourthFirstPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis a) (basis d) (basis e) (basis b)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis d) (basis e) (basis c)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRPFourthFirstPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis a) (basis d) (basis e) (basis b)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis d) (basis e) (basis c)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [nablaRPFourthFirstPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec4, vec5, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [nablaRPFourthFirstPerm, Fin.natAdd,
+          metricTraceInput_apply, vec3, vec4, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRPFourthFirstPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis a) (basis d) (basis e) (basis b)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis d) (basis e) (basis c)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem nablaRPFourthSecondField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g nablaRPFourthSecondPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis a) (basis d) (basis e) (basis c)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis d) (basis b) (basis e)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRPFourthSecondPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis a) (basis d) (basis e) (basis c)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis d) (basis b) (basis e)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [nablaRPFourthSecondPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec4, vec5, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [nablaRPFourthSecondPerm, Fin.natAdd,
+          metricTraceInput_apply, vec3, vec4, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRPFourthSecondPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis a) (basis d) (basis e) (basis c)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis d) (basis b) (basis e)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem nablaRPFourthThirdField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g nablaRPFourthThirdPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis b) (basis d) (basis e) (basis c)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis d) (basis e)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRPFourthThirdPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis b) (basis d) (basis e) (basis c)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis d) (basis e)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [nablaRPFourthThirdPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec4, vec5, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [nablaRPFourthThirdPerm, Fin.natAdd,
+          metricTraceInput_apply, vec3, vec4, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRPFourthThirdPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis q) (basis b) (basis d) (basis e) (basis c)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis a) (basis d) (basis e)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem RnablaPFourthFirstField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g RnablaPFourthFirstPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis d) (basis e) (basis b)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis d) (basis e) (basis c)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) RnablaPFourthFirstPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis d) (basis e) (basis b)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis d) (basis e) (basis c)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [RnablaPFourthFirstPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec4, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [RnablaPFourthFirstPerm, Fin.natAdd,
+          metricTraceInput_apply, vec4, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) RnablaPFourthFirstPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis d) (basis e) (basis b)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis d) (basis e) (basis c)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem RnablaPFourthSecondField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g RnablaPFourthSecondPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis d) (basis e) (basis c)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis d) (basis b) (basis e)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) RnablaPFourthSecondPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis d) (basis e) (basis c)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis d) (basis b) (basis e)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [RnablaPFourthSecondPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec4, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [RnablaPFourthSecondPerm, Fin.natAdd,
+          metricTraceInput_apply, vec4, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) RnablaPFourthSecondPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis d) (basis e) (basis c)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis d) (basis b) (basis e)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem RnablaPFourthThirdField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g RnablaPFourthThirdPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis b) (basis d) (basis e) (basis c)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis d) (basis e)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) RnablaPFourthThirdPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis b) (basis d) (basis e) (basis c)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis d) (basis e)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [RnablaPFourthThirdPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec4, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [RnablaPFourthThirdPerm, Fin.natAdd,
+          metricTraceInput_apply, vec4, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) RnablaPFourthThirdPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g) (hamiltonNablaPField (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis b) (basis d) (basis e) (basis c)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis q) (basis a) (basis d) (basis e)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem nablaRicNablaRmFourthField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g nablaRicNablaRmFourthPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRic (I := I) (M := M) g)
+          (metricNablaRm04Field (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis d) (basis e)) *
+          metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis d) (basis a) (basis b) (basis e) (basis c)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRicNablaRmFourthPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricNablaRic (I := I) (M := M) g)
+          (metricNablaRm04Field (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis d) (basis e)) *
+          metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis d) (basis a) (basis b) (basis e) (basis c)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [nablaRicNablaRmFourthPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec3, vec4, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [nablaRicNablaRmFourthPerm, Fin.natAdd,
+          metricTraceInput_apply, vec4, vec5, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) nablaRicNablaRmFourthPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRic (I := I) (M := M) g)
+            (metricNablaRm04Field (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis q) (basis d) (basis e)) *
+          metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis d) (basis a) (basis b) (basis e) (basis c)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
+
+private theorem ricciNabla2RmFourthField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    quadTraceProductField (I := I) g ricciNabla2RmFourthPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRicci (I := I) (M := M) g)
+          (metricNabla2Rm04Field (I := I) g)) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      ∑ d : Fin n, ∑ e : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis d) (basis e)) *
+          metricNabla2Rm04Field (I := I) g x
+            (vec6 (I := I) (basis q) (basis d) (basis a) (basis b) (basis e) (basis c)) := by
+  classical
+  rw [quadTraceProductField_apply_orthonormal (I := I) g basis horth]
+  have heval : forall e d : Fin n,
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) ricciNabla2RmFourthPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+          (metricRicci (I := I) (M := M) g)
+          (metricNabla2Rm04Field (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)))) =
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis d) (basis e)) *
+          metricNabla2Rm04Field (I := I) g x
+            (vec6 (I := I) (basis q) (basis d) (basis a) (basis b) (basis e) (basis c)) := by
+    intro e d
+    rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      tensor0SField_product_apply]
+    congr 2
+    · funext r
+      fin_cases r <;>
+        simp [ricciNabla2RmFourthPerm, Fin.castAdd, Fin.castLE,
+          metricTraceInput_apply, vec2, vec4, Function.comp_apply]
+    · funext r
+      fin_cases r <;>
+        simp [ricciNabla2RmFourthPerm, Fin.natAdd,
+          metricTraceInput_apply, vec4, vec6, Function.comp_apply]
+  calc
+    (∑ e : Fin n, ∑ d : Fin n,
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) ricciNabla2RmFourthPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRicci (I := I) (M := M) g)
+            (metricNabla2Rm04Field (I := I) g))) x
+          (metricTraceInput (I := I) (basis d) (basis d)
+            (metricTraceInput (I := I) (basis e) (basis e)
+              (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))))) =
+      ∑ e : Fin n, ∑ d : Fin n,
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis d) (basis e)) *
+          metricNabla2Rm04Field (I := I) g x
+            (vec6 (I := I) (basis q) (basis d) (basis a) (basis b) (basis e) (basis c)) := by
+        refine Finset.sum_congr rfl fun e _ => ?_
+        refine Finset.sum_congr rfl fun d _ => heval e d
+    _ = _ := Finset.sum_comm
 
 private theorem hamiltonPHeatField_apply_orthonormal
     [T2Space M]
@@ -2257,6 +3000,50 @@ private theorem hamiltonPEvolutionReactionField_apply_orthonormal
   simp only [hamiltonPEvolutionReactionComponent, hamiltonPComponent,
     hamiltonPField_apply, hamiltonPAt_apply]
   ring
+
+private theorem hamiltonNablaPEvolutionReactionField_apply_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    hamiltonNablaPEvolutionReactionField (I := I) g x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) =
+      hamiltonNablaPEvolutionReactionComponent
+        (fun i j k l => metricRm04 (I := I) (M := M) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => metricNablaRm04Field (I := I) g x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M) g x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l m r => metricNabla2Rm04Field (I := I) g x
+          (vec6 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m) (basis r)))
+        (fun i j k l => hamiltonNablaPField (I := I) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l))) q a b c := by
+  rw [hamiltonNablaPEvolutionReactionField]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply,
+    ContMDiffSection.coe_sub, Pi.sub_apply,
+    ContMDiffSection.coe_smul, Pi.smul_apply, Tensor0SSpace.add_apply,
+    Tensor0SSpace.sub_apply, Tensor0SSpace.smul_apply, smul_eq_mul]
+  rw [nablaRPFourthFirstField_apply_orthonormal (I := I) g basis horth,
+    RnablaPFourthFirstField_apply_orthonormal (I := I) g basis horth,
+    nablaRPFourthSecondField_apply_orthonormal (I := I) g basis horth,
+    RnablaPFourthSecondField_apply_orthonormal (I := I) g basis horth,
+    nablaRPFourthThirdField_apply_orthonormal (I := I) g basis horth,
+    RnablaPFourthThirdField_apply_orthonormal (I := I) g basis horth,
+    nablaRicNablaRmFourthField_apply_orthonormal (I := I) g basis horth,
+    ricciNabla2RmFourthField_apply_orthonormal (I := I) g basis horth]
+  simp only [hamiltonNablaPEvolutionReactionComponent, hamiltonPComponent,
+    hamiltonPField_apply, hamiltonPAt_apply, hamiltonNablaPField_apply]
+  simp only [Finset.sum_add_distrib]
+  ring
+
+
+
 
 private theorem hamiltonRicciSquareField_apply_basis
     [T2Space M]
