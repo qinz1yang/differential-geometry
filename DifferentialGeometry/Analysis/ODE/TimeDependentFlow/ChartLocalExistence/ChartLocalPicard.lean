@@ -200,22 +200,4 @@ theorem time_dependent_vf_chart_local_picard_with_lipschitz
   · intro t ht
     have hd := h_flow t ht
     exact hd
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem time_dependent_vf_chart_local_picard
-    (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
-    (h : ∃ T : ℝ, 0 < T ∧ ∃ U : Set M, IsOpen U ∧ α ∈ U ∧ U ⊆ (chartAt H α).source ∧
-      ∃ φ : ℝ → M → M,
-        (∀ x ∈ U, φ 0 x = x) ∧
-        ∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x ∈ U,
-          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => φ s x) (Set.Ici 0) t
-            ((ContinuousLinearMap.id ℝ ℝ).smulRight (X t (φ t x)))) :
-    ∃ T : ℝ, 0 < T ∧ ∃ U : Set M, IsOpen U ∧ α ∈ U ∧ U ⊆ (chartAt H α).source ∧
-      ∃ φ : ℝ → M → M,
-        (∀ x ∈ U, φ 0 x = x) ∧
-        ∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x ∈ U,
-          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => φ s x) (Set.Ici 0) t
-            ((ContinuousLinearMap.id ℝ ℝ).smulRight (X t (φ t x))) := h
-
-
 end DifferentialGeometry.Analysis.ODE

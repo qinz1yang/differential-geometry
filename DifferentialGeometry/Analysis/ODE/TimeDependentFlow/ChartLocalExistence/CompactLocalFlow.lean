@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.CorrectedChartSpatialC1
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.CorrectedChartPicard
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.CorrectedBareVelocity
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.ChartFieldLipschitz
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.BoundedChartPicard
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.ChartFlowDerivative
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 open DifferentialGeometry.Geometry.Curvature
@@ -53,7 +53,7 @@ private lemma intervalIntegrable_chartTrivRepr_along_orbit
   exact ae_restrict_of_forall_mem measurableSet_Ioo (fun u hu => hφ_eq u hu)
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-theorem corrected_chart_anchor_flow_build
+theorem time_dependent_vf_compact_local_flow_with_chart_bounds
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hCont : ContinuousOn (fun q : ℝ × M => (X q.1 q.2 : TangentSpace I q.2))
       (Set.univ : Set (ℝ × M)))
@@ -90,9 +90,9 @@ theorem corrected_chart_anchor_flow_build
             ‖chartTrivRepr (I := I) α (X t) (flowα y t)‖ ≤ Cα := by
     intro α
     obtain ⟨L, K, rα, hL, hrα, hK, hContBall, hLipBall, hsub⟩ :=
-      corrected_chart_field_lipschitz_of_data (I := I) X α T hT hCont (hgrad α) hint
+      chart_triv_repr_lipschitz_on_ball (I := I) X α T hT hCont (hgrad α) hint
     obtain ⟨Tα, hTα, r'α, hr'α, Cα, hCα, flowα, hflowα⟩ :=
-      corrected_chart_local_picard_from_zero (I := I) X α rα hrα hCont
+      time_dependent_vf_chart_local_picard_with_bounds (I := I) X α rα hrα hCont
         ⟨L, K, hL, hK, hContBall, hLipBall⟩
     exact ⟨Tα, rα, r'α, Cα, hTα, hrα, hr'α, hCα, hsub, flowα, hflowα⟩
   choose! Tα rα r'α Cα hTα hrα hr'α hCα hsub flowα hflowα using hper
@@ -187,7 +187,7 @@ theorem corrected_chart_anchor_flow_build
           (chartTrivRepr (I := I) (αRep x) (X u) (flowα (αRep x) (extChartAt I (αRep x) x) u))
           (Set.Ioo (0 : ℝ) σ) u := fun u hu =>
       (((hspec x).2 u (hIoo_sub hu)).1).mono hIoo_sub
-    exact corrected_chartflow_eq_bareflow (I := I) X (αRep x)
+    exact chart_flow_has_mfderiv (I := I) X (αRep x)
       (flowα (αRep x)) (extChartAt I (αRep x) x) hconf' hode' t ht
   · intro x
     set α := αRep x with hαdef

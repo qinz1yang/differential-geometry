@@ -16,7 +16,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem time_dependent_vf_global_flow_glue
+theorem chart_local_picard_flow_selection
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α) :
     ∃ T : ℝ, 0 < T ∧
@@ -24,11 +24,12 @@ theorem time_dependent_vf_global_flow_glue
         ∃ Φ : ℝ → M → M,
           (∀ x : M, Φ 0 x = x) ∧
           ∀ x : M, ∃ α ∈ S, x ∈ (hper α).U ∧
+            T ≤ (hper α).T ∧
             ∀ s : ℝ,
               Φ s x = (chartAt H α).symm
                 (I.symm ((hper α).flow (I ((chartAt H α) x)) s)) := by
-  obtain ⟨T, hT_pos, S, hCoverEq, flow, hflow⟩ :=
-    time_dependent_vf_uniform_existence_time_on_closed_mfd X hper
+  obtain ⟨T, hT_pos, S, hCoverEq, hTle⟩ :=
+    chart_local_picard_uniform_time X hper
   have hMem : ∀ x : M, ∃ α ∈ S, x ∈ (hper α).U := by
     intro x
     have hx : x ∈ (⋃ α ∈ S, (hper α).U) := by
@@ -74,7 +75,7 @@ theorem time_dependent_vf_global_flow_glue
     exact (chartAt H (αRep x)).left_inv (hxChart_source x)
   refine ⟨T, hT_pos, S, hCoverEq, Φ, hΦ_init, ?_⟩
   intro x
-  refine ⟨αRep x, hαRep_S x, hαRep_U x, ?_⟩
+  refine ⟨αRep x, hαRep_S x, hαRep_U x, hTle (αRep x) (hαRep_S x), ?_⟩
   intro s
   rfl
 

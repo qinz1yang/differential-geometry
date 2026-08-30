@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary

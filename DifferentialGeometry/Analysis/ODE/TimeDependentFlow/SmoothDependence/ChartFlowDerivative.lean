@@ -30,7 +30,7 @@ private lemma chartTrivRepr_eq_tangentCoordChange_of_target
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem corrected_chartflow_eq_bareflow
+theorem chart_flow_has_mfderiv
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (flow : E → ℝ → E) (y : E) {a b : ℝ}
     (hconf : ∀ t ∈ Set.Ioo a b, flow y t ∈ (extChartAt I α).target)
     (hode : ∀ t ∈ Set.Ioo a b, HasDerivWithinAt (flow y) (chartTrivRepr (I := I) α (X t) (flow y t))

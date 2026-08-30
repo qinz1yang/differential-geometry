@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 import Mathlib.Geometry.Manifold.Diffeomorph
@@ -127,24 +127,24 @@ theorem time_dependent_vf_flow_diffeomorph_on_closed_manifold
         ∀ t, 0 < t → t < T →
           ∃ d : Diffeomorph I I M M ∞, ∀ x, d x = Φ t x := by
   obtain ⟨T_fwd, hT_fwd_pos, _S_fwd, _hCover_fwd, Φ, hΦ_init, hΦ_repr⟩ :=
-    time_dependent_vf_global_flow_glue X hper
+    chart_local_picard_flow_selection X hper
   have hΦ_repr' : ∀ x : M, ∃ α : M, x ∈ (hper α).U ∧
       ∀ s : ℝ, Φ s x = (chartAt H α).symm
         (I.symm ((hper α).flow (I ((chartAt H α) x)) s)) := by
     intro x
-    obtain ⟨α, _hαS, hxU, hrepr⟩ := hΦ_repr x
+    obtain ⟨α, _hαS, hxU, _hTle, hrepr⟩ := hΦ_repr x
     exact ⟨α, hxU, hrepr⟩
   have hΦ_repr_simple : ∀ x : M, ∃ α : M, ∀ s : ℝ,
       Φ s x = (chartAt H α).symm
         (I.symm ((hper α).flow (I ((chartAt H α) x)) s)) := by
     intro x; obtain ⟨α, _, hrepr⟩ := hΦ_repr' x; exact ⟨α, hrepr⟩
   obtain ⟨T_rev, hT_rev_pos, _S_rev, _hCover_rev, Ψ, hΨ_init, hΨ_repr⟩ :=
-    time_dependent_vf_global_flow_glue (fun t x => -(X t x)) hperNeg
+    chart_local_picard_flow_selection (fun t x => -(X t x)) hperNeg
   have hΨ_repr' : ∀ x : M, ∃ α : M, x ∈ (hperNeg α).U ∧
       ∀ s : ℝ, Ψ s x = (chartAt H α).symm
         (I.symm ((hperNeg α).flow (I ((chartAt H α) x)) s)) := by
     intro x
-    obtain ⟨α, _hαS, hxU, hrepr⟩ := hΨ_repr x
+    obtain ⟨α, _hαS, hxU, _hTle, hrepr⟩ := hΨ_repr x
     exact ⟨α, hxU, hrepr⟩
   have hΨ_repr_simple : ∀ x : M, ∃ α : M, ∀ s : ℝ,
       Ψ s x = (chartAt H α).symm

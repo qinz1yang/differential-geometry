@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.PointwiseLocal
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 
@@ -57,19 +57,12 @@ lemma ChartLocalPicardData.mem_U_self
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem time_dependent_vf_uniform_existence_time_on_closed_mfd
+theorem chart_local_picard_uniform_time
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α) :
     ∃ T : ℝ, 0 < T ∧
       ∃ S : Finset M, (⋃ α ∈ S, (hper α).U) = (Set.univ : Set M) ∧
-        ∃ flow : M → E → ℝ → E,
-          ∀ α ∈ S,
-            ∀ y ∈ Metric.closedBall (I ((chartAt H α) α)) (hper α).r,
-              flow α y 0 = y ∧
-              ∀ t ∈ Set.Icc (0 : ℝ) T,
-                HasDerivWithinAt (flow α y)
-                  ((X t ((chartAt H α).symm (I.symm (flow α y t)))) : E)
-                  (Set.Icc (0 : ℝ) T) t := by
+        ∀ α ∈ S, T ≤ (hper α).T := by
   have hCompact : IsCompact (Set.univ : Set M) := isCompact_univ
   have hOpenU : ∀ α : M, IsOpen ((hper α).U) := fun α => (hper α).isOpen_U
   have hCover : (Set.univ : Set M) ⊆ ⋃ α : M, (hper α).U := by
@@ -82,7 +75,7 @@ theorem time_dependent_vf_uniform_existence_time_on_closed_mfd
     apply Set.eq_univ_of_univ_subset
     exact hS
   rcases Finset.eq_empty_or_nonempty S with hSempty | hSnonempty
-  · refine ⟨1, by norm_num, S, hCoverEq, fun _ _ _ => 0, ?_⟩
+  · refine ⟨1, by norm_num, S, hCoverEq, ?_⟩
     intro α hα
     rw [hSempty] at hα
     exact absurd hα (Finset.notMem_empty α)
@@ -98,17 +91,35 @@ theorem time_dependent_vf_uniform_existence_time_on_closed_mfd
       intro α hα
       apply Finset.min'_le
       exact Finset.mem_image.mpr ⟨α, hα, rfl⟩
-    refine ⟨Tmin, hTmin_pos, S, hCoverEq, fun α => (hper α).flow, ?_⟩
-    intro α hα y hy
-    obtain ⟨hinit, hflow⟩ := (hper α).flow_spec y hy
-    refine ⟨hinit, ?_⟩
-    intro t ht
-    have ht' : t ∈ Set.Icc (0 : ℝ) (hper α).T :=
-      ⟨ht.1, ht.2.trans (hTmin_le α hα)⟩
-    have hderiv := hflow t ht'
-    have hsub : Set.Icc (0 : ℝ) Tmin ⊆ Set.Icc (0 : ℝ) (hper α).T := by
-      intro s hs
-      exact ⟨hs.1, hs.2.trans (hTmin_le α hα)⟩
-    exact hderiv.mono hsub
+    exact ⟨Tmin, hTmin_pos, S, hCoverEq, hTmin_le⟩
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem chart_local_picard_uniform_flow
+    (X : ℝ → ∀ x : M, TangentSpace I x)
+    (hper : ∀ α : M, ChartLocalPicardData X α) :
+    ∃ T : ℝ, 0 < T ∧
+      ∃ S : Finset M, (⋃ α ∈ S, (hper α).U) = (Set.univ : Set M) ∧
+        ∃ flow : M → E → ℝ → E,
+          ∀ α ∈ S,
+            ∀ y ∈ Metric.closedBall (I ((chartAt H α) α)) (hper α).r,
+              flow α y 0 = y ∧
+              ∀ t ∈ Set.Icc (0 : ℝ) T,
+                HasDerivWithinAt (flow α y)
+                  ((X t ((chartAt H α).symm (I.symm (flow α y t)))) : E)
+                  (Set.Icc (0 : ℝ) T) t := by
+  obtain ⟨T, hT, S, hCover, hTle⟩ := chart_local_picard_uniform_time X hper
+  refine ⟨T, hT, S, hCover, fun α => (hper α).flow, ?_⟩
+  intro α hα y hy
+  obtain ⟨hinit, hflow⟩ := (hper α).flow_spec y hy
+  refine ⟨hinit, ?_⟩
+  intro t ht
+  have ht' : t ∈ Set.Icc (0 : ℝ) (hper α).T :=
+    ⟨ht.1, ht.2.trans (hTle α hα)⟩
+  have hderiv := hflow t ht'
+  have hsub : Set.Icc (0 : ℝ) T ⊆ Set.Icc (0 : ℝ) (hper α).T := by
+    intro s hs
+    exact ⟨hs.1, hs.2.trans (hTle α hα)⟩
+  exact hderiv.mono hsub
 
 end DifferentialGeometry.Analysis.ODE

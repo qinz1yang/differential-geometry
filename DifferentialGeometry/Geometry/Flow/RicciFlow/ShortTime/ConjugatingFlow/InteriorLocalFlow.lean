@@ -9,7 +9,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFr
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
 open DifferentialGeometry.Geometry.Curvature
 
@@ -154,7 +154,7 @@ private structure ChartFlowEngineInputs
 private noncomputable def glueFlow
     (Y : ℝ → ∀ x : M, TangentSpace I x)
     (hperY : ∀ α : M, ChartLocalPicardData (I := I) Y α) : ℝ → M → M :=
-  (time_dependent_vf_global_flow_glue (I := I) Y hperY).choose_spec.2.choose_spec.2.choose
+  (chart_local_picard_flow_selection (I := I) Y hperY).choose_spec.2.choose_spec.2.choose
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -166,9 +166,9 @@ private theorem glueFlow_spec
       glueFlow (I := I) Y hperY s x =
         (chartAt H α).symm (I.symm ((hperY α).flow (I ((chartAt H α) x)) s))) := by
   have hspec :=
-    (time_dependent_vf_global_flow_glue (I := I) Y hperY).choose_spec.2.choose_spec.2.choose_spec
+    (chart_local_picard_flow_selection (I := I) Y hperY).choose_spec.2.choose_spec.2.choose_spec
   refine ⟨hspec.1, fun x => ?_⟩
-  obtain ⟨α, _hαS, hxU, hrepr⟩ := hspec.2 x
+  obtain ⟨α, _hαS, hxU, _hTle, hrepr⟩ := hspec.2 x
   exact ⟨α, hxU, hrepr⟩
 
 private noncomputable def flowBijectiveHorizon

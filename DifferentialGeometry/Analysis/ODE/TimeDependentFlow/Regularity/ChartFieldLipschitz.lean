@@ -115,7 +115,7 @@ private lemma pointwise_tendsto_chartTrivRepr
   exact hclm.mono_left nhdsWithin_le_nhds
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-theorem corrected_chart_field_lipschitz_of_data
+theorem chart_triv_repr_lipschitz_on_ball
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (T : ℝ) (hT : 0 < T)
     (hcont : ContinuousOn (fun q : ℝ × M => (X q.1 q.2 : TangentSpace I q.2))
       (Set.univ : Set (ℝ × M)))
