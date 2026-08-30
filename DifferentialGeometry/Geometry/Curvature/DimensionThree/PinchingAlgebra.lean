@@ -35,6 +35,80 @@ def ricciEigenTraceCube3 [CommRing R] (l1 l2 l3 : R) : R :=
   l1 ^ 3 + l2 ^ 3 + l3 ^ 3
 
 
+noncomputable def curvatureReactionPolynomial3 (lambda mu nu : Real) : Real :=
+  ricciEigenNormSq3 ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) ^ 2 -
+    ricciEigenScalar3 lambda mu nu *
+      (lambda * ((lambda + nu) / 2) * ((lambda + mu) / 2) +
+        mu * ((mu + nu) / 2) * ((lambda + mu) / 2) +
+        nu * ((mu + nu) / 2) * ((lambda + nu) / 2))
+
+
+noncomputable def curvatureReactionSumSquares3 (lambda mu nu : Real) : Real :=
+  (lambda ^ 2 * (mu - nu) ^ 2 +
+    mu ^ 2 * (lambda - nu) ^ 2 +
+    nu ^ 2 * (lambda - mu) ^ 2) / 8
+
+
+theorem curvatureReactionPolynomial3_eq_sum_squares
+    (lambda mu nu : Real) :
+    curvatureReactionPolynomial3 lambda mu nu =
+      curvatureReactionSumSquares3 lambda mu nu := by
+  unfold curvatureReactionPolynomial3 curvatureReactionSumSquares3
+    ricciEigenNormSq3 ricciEigenScalar3
+  ring
+
+
+theorem curvatureReactionSumSquares3_nonneg
+    (lambda mu nu : Real) :
+    0 ≤ curvatureReactionSumSquares3 lambda mu nu := by
+  unfold curvatureReactionSumSquares3
+  positivity
+
+
+theorem curvatureReactionPolynomial3_nonneg
+    (lambda mu nu : Real) :
+    0 ≤ curvatureReactionPolynomial3 lambda mu nu := by
+  rw [curvatureReactionPolynomial3_eq_sum_squares]
+  exact curvatureReactionSumSquares3_nonneg lambda mu nu
+
+
+theorem curvatureReactionSumSquares3_eq_zero_iff
+    (lambda mu nu : Real) (hlambda : 0 < lambda) (hnu : 0 < nu) :
+    curvatureReactionSumSquares3 lambda mu nu = 0 ↔
+      lambda = mu ∧ mu = nu := by
+  constructor
+  · intro h
+    have hsum :
+        lambda ^ 2 * (mu - nu) ^ 2 +
+            mu ^ 2 * (lambda - nu) ^ 2 +
+            nu ^ 2 * (lambda - mu) ^ 2 = 0 := by
+      unfold curvatureReactionSumSquares3 at h
+      nlinarith
+    have hfirst : (mu - nu) ^ 2 = 0 := by
+      have hnonneg : 0 ≤
+          mu ^ 2 * (lambda - nu) ^ 2 + nu ^ 2 * (lambda - mu) ^ 2 := by positivity
+      have hlambda_sq : 0 < lambda ^ 2 := sq_pos_of_pos hlambda
+      nlinarith
+    have hlast : (lambda - mu) ^ 2 = 0 := by
+      have hnonneg : 0 ≤
+          lambda ^ 2 * (mu - nu) ^ 2 + mu ^ 2 * (lambda - nu) ^ 2 := by positivity
+      have hnu_sq : 0 < nu ^ 2 := sq_pos_of_pos hnu
+      nlinarith
+    constructor <;> nlinarith
+  · rintro ⟨h_lam_mu, h_mu_nu⟩
+    subst lambda
+    subst nu
+    simp [curvatureReactionSumSquares3]
+
+
+theorem curvatureReactionPolynomial3_eq_zero_iff
+    (lambda mu nu : Real) (hlambda : 0 < lambda) (hnu : 0 < nu) :
+    curvatureReactionPolynomial3 lambda mu nu = 0 ↔
+      lambda = mu ∧ mu = nu := by
+  rw [curvatureReactionPolynomial3_eq_sum_squares]
+  exact curvatureReactionSumSquares3_eq_zero_iff lambda mu nu hlambda hnu
+
+
 def hamiltonCubicQ3 [CommRing R] (l1 l2 l3 : R) : R :=
   2 * ricciEigenNormSq3 l1 l2 l3 ^ 2 +
     ricciEigenScalar3 l1 l2 l3 ^ 4 -
