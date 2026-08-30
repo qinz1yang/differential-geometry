@@ -93,7 +93,7 @@ noncomputable def ricDriftVec [I.Boundaryless]
         gradG (I := I) g ⟨_, hf⟩ x :=
   rfl
 
-private theorem div_ricGrad [I.Boundaryless]
+theorem divergence_ricGradVec [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M -> Real}
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f) (x : M) :
     divergence (I := I) (metricCov (I := I) (M := M) g)
@@ -328,7 +328,7 @@ theorem ricDriftDiv [I.Boundaryless]
             (hessianSec (I := I) cov
               (metricCov_smooth (I := I) (M := M) g) f hf x) := by
     simpa only [cov, LeviCivita, metricCov, RG, G] using
-      div_ricGrad (I := I) g hf x
+      divergence_ricGradVec (I := I) g hf x
   have hdivaG :
       divergence (I := I) cov (fun y : M => a y • G y) x =
         a x * divergence (I := I) cov (fun y : M => G y) x +
