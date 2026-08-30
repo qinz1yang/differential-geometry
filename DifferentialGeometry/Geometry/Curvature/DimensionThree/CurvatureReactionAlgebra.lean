@@ -143,4 +143,104 @@ theorem curvatureOperatorReaction3_diagonal_rank_two_excluded
   have hpos := curvatureOperatorReaction3_diagonal_rank_two_null_direction_pos ha hb
   linarith
 
+theorem curvatureOperatorReaction3_posDef_of_rank_two
+    {A : Matrix (Fin 3) (Fin 3) Real} (hA : A.PosSemidef) (hrank : A.rank = 2) :
+    (curvatureOperatorReaction3 A).PosDef := by
+  let hH : A.IsHermitian := hA.isHermitian
+  let d : Fin 3 → Real := hH.eigenvalues
+  have hcard : Fintype.card {i // d i ≠ 0} = 2 := by
+    rw [← hH.rank_eq_card_non_zero_eigs]
+    exact hrank
+  have hzero_card : Fintype.card {i // d i = 0} = 1 := by
+    have hc := Fintype.card_subtype_compl (fun i : Fin 3 => d i ≠ 0)
+    have hc' : Fintype.card {i // ¬ d i ≠ 0} =
+        Fintype.card (Fin 3) - Fintype.card {i // d i ≠ 0} := hc
+    rw [hcard] at hc'
+    norm_num [Fintype.card_fin] at hc'
+    simpa [not_ne_iff] using hc'
+  obtain ⟨i₀, hi₀zero⟩ := Fintype.card_eq_one_iff.mp hzero_card
+  have hi₀ : ∀ j : Fin 3, d j = 0 → j = i₀ := by
+    intro j hj
+    have heq := congrArg Subtype.val
+      (hi₀zero (⟨j, hj⟩ : {i // d i = 0}))
+    exact heq
+  have hne_of_ne (i : Fin 3) (hi : i ≠ i₀) : d i ≠ 0 := by
+    intro hz
+    exact hi (hi₀ i hz)
+  have hd_nonneg (i : Fin 3) : 0 ≤ d i := by
+    exact hA.eigenvalues_nonneg i
+  have hdiag_pos :
+      0 < d 0 ^ 2 + d 1 * d 2 ∧
+      0 < d 1 ^ 2 + d 0 * d 2 ∧
+      0 < d 2 ^ 2 + d 0 * d 1 := by
+    have hp0 : 0 < d 0 ^ 2 + d 1 * d 2 := by
+      by_cases h0 : d 0 = 0
+      · have hzero : (0 : Fin 3) = i₀ := hi₀ 0 h0
+        have h1 : 0 < d 1 := lt_of_le_of_ne (hd_nonneg 1)
+          (Ne.symm (hne_of_ne 1 (by simpa [hzero] using
+            (show (1 : Fin 3) ≠ 0 by decide))))
+        have h2 : 0 < d 2 := lt_of_le_of_ne (hd_nonneg 2)
+          (Ne.symm (hne_of_ne 2 (by simpa [hzero] using
+            (show (2 : Fin 3) ≠ 0 by decide))))
+        simpa [h0] using (mul_pos h1 h2)
+      · exact add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero h0)
+          (mul_nonneg (hd_nonneg 1) (hd_nonneg 2))
+    have hp1 : 0 < d 1 ^ 2 + d 0 * d 2 := by
+      by_cases h1 : d 1 = 0
+      · have hzero : (1 : Fin 3) = i₀ := hi₀ 1 h1
+        have h0 : 0 < d 0 := lt_of_le_of_ne (hd_nonneg 0)
+          (Ne.symm (hne_of_ne 0 (by simpa [hzero] using
+            (show (0 : Fin 3) ≠ 1 by decide))))
+        have h2 : 0 < d 2 := lt_of_le_of_ne (hd_nonneg 2)
+          (Ne.symm (hne_of_ne 2 (by simpa [hzero] using
+            (show (2 : Fin 3) ≠ 1 by decide))))
+        simpa [h1] using (mul_pos h0 h2)
+      · exact add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero h1)
+          (mul_nonneg (hd_nonneg 0) (hd_nonneg 2))
+    have hp2 : 0 < d 2 ^ 2 + d 0 * d 1 := by
+      by_cases h2 : d 2 = 0
+      · have hzero : (2 : Fin 3) = i₀ := hi₀ 2 h2
+        have h0 : 0 < d 0 := lt_of_le_of_ne (hd_nonneg 0)
+          (Ne.symm (hne_of_ne 0 (by simpa [hzero] using
+            (show (0 : Fin 3) ≠ 2 by decide))))
+        have h1 : 0 < d 1 := lt_of_le_of_ne (hd_nonneg 1)
+          (Ne.symm (hne_of_ne 1 (by simpa [hzero] using
+            (show (1 : Fin 3) ≠ 2 by decide))))
+        simpa [h2] using (mul_pos h0 h1)
+      · exact add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero h2)
+          (mul_nonneg (hd_nonneg 0) (hd_nonneg 1))
+    exact ⟨hp0, hp1, hp2⟩
+  have hdvec : d = ![d 0, d 1, d 2] := by
+    funext i
+    fin_cases i <;> rfl
+  let D : Matrix (Fin 3) (Fin 3) Real := Matrix.diagonal d
+  have hRD : (curvatureOperatorReaction3 D).PosDef := by
+    have hD : D = Matrix.diagonal ![d 0, d 1, d 2] := by
+      ext i j
+      fin_cases i <;> fin_cases j <;> rfl
+    rw [hD, curvatureOperatorReaction3_diagonal]
+    apply Matrix.PosDef.diagonal
+    intro i
+    fin_cases i
+    · exact hdiag_pos.1
+    · exact hdiag_pos.2.1
+    · exact hdiag_pos.2.2
+  let U : Matrix.unitaryGroup (Fin 3) Real := hH.eigenvectorUnitary
+  have hU : (U : Matrix (Fin 3) (Fin 3) Real) *
+      (U : Matrix (Fin 3) (Fin 3) Real).transpose = 1 := by
+    simpa [Matrix.star_eq_conjTranspose] using (Matrix.mem_unitaryGroup_iff.mp U.prop)
+  have hrepr : A = (U : Matrix (Fin 3) (Fin 3) Real) * D *
+      (U : Matrix (Fin 3) (Fin 3) Real).transpose := by
+    have hs := hH.spectral_theorem
+    simpa [U, D, Matrix.star_eq_conjTranspose] using hs
+  have hinj : Function.Injective (fun v : Fin 3 → Real =>
+      Matrix.vecMul v (U : Matrix (Fin 3) (Fin 3) Real)) := by
+    intro x y hxy
+    have hxy' := congrArg (fun z : Fin 3 → Real =>
+      Matrix.vecMul z (U : Matrix (Fin 3) (Fin 3) Real).transpose) hxy
+    simpa [Matrix.vecMul_vecMul, hU, Matrix.vecMul_one] using hxy'
+  rw [hrepr, curvatureOperatorReaction3_orthogonal_conj _ _ hU]
+  simpa [Matrix.star_eq_conjTranspose] using
+    (Matrix.PosDef.mul_mul_conjTranspose_same hRD hinj)
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

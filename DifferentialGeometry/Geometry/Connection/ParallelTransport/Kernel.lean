@@ -1,0 +1,96 @@
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.Geometry.Connection
+
+structure LinearIsometryKernelIntertwining
+    (V W : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+    (source : V →L[ℝ] V) (target : W →L[ℝ] W) where
+  map : V ≃ₗᵢ[ℝ] W
+  intertwining :
+    map.toLinearMap.comp source.toLinearMap =
+      target.toLinearMap.comp map.toLinearMap
+
+namespace LinearIsometryKernelIntertwining
+
+variable {V W : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+  [NormedAddCommGroup W] [InnerProductSpace ℝ W]
+  {source : V →L[ℝ] V} {target : W →L[ℝ] W}
+
+theorem map_ker_eq_ker (h : LinearIsometryKernelIntertwining V W source target) :
+    Submodule.map h.map.toLinearMap source.ker = target.ker := by
+  apply le_antisymm
+  · rintro y ⟨v, hv, rfl⟩
+    apply LinearMap.mem_ker.mpr
+    have hz := congrArg (fun L : V →ₗ[ℝ] W => L v) h.intertwining
+    rw [LinearMap.comp_apply, LinearMap.comp_apply, LinearMap.mem_ker.mp hv] at hz
+    simpa using hz.symm
+  · intro y hy
+    let v : V := h.map.symm y
+    have hv : source.toLinearMap v = 0 := by
+      apply h.map.injective
+      have hmapv : h.map v = y := by simp [v]
+      calc
+        h.map (source v) = target (h.map v) := by
+          simpa [LinearMap.comp_apply] using
+            congrArg (fun L : V →ₗ[ℝ] W => L v) h.intertwining
+        _ = target y := by rw [hmapv]
+        _ = 0 := LinearMap.mem_ker.mp hy
+        _ = h.map 0 := by simp
+    exact ⟨v, hv, by simp [v]⟩
+
+theorem finrank_ker_eq (h : LinearIsometryKernelIntertwining V W source target) :
+    Module.finrank ℝ source.ker = Module.finrank ℝ target.ker := by
+  rw [← h.map_ker_eq_ker]
+  exact (Submodule.equivMapOfInjective h.map.toLinearMap h.map.injective source.ker).finrank_eq
+
+end LinearIsometryKernelIntertwining
+
+universe uX uF
+
+variable {X : Type uX} (V : X → Type uF)
+  [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
+
+structure UhlenbeckKernelTransfer (base : X)
+    (fixedOperator : V base →L[ℝ] V base)
+    (physicalOperator : ∀ x, V x →L[ℝ] V x)
+    (P : LinearIsometricTransport V) where
+  baseIntertwining : ∀ x,
+    (P.transport base x).toLinearMap.comp fixedOperator.toLinearMap =
+      (physicalOperator x).toLinearMap.comp (P.transport base x).toLinearMap
+  pathIntertwining : ∀ x y,
+    (P.transport x y).toLinearMap.comp (physicalOperator x).toLinearMap =
+      (physicalOperator y).toLinearMap.comp (P.transport x y).toLinearMap
+
+namespace UhlenbeckKernelTransfer
+
+variable {base : X} {fixedOperator : V base →L[ℝ] V base}
+  {physicalOperator : ∀ x, V x →L[ℝ] V x} {P : LinearIsometricTransport V}
+
+theorem fixed_kernel_transport (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x : X) :
+    Submodule.map (P.transport base x).toLinearMap fixedOperator.ker =
+      (physicalOperator x).ker := by
+  exact LinearIsometryKernelIntertwining.map_ker_eq_ker
+    { map := P.transport base x, intertwining := h.baseIntertwining x }
+
+theorem physical_kernel_transport (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x y : X) :
+    Submodule.map (P.transport x y).toLinearMap (physicalOperator x).ker =
+      (physicalOperator y).ker := by
+  exact LinearIsometryKernelIntertwining.map_ker_eq_ker
+    { map := P.transport x y, intertwining := h.pathIntertwining x y }
+
+theorem physical_kernel_finrank_eq (h : UhlenbeckKernelTransfer V base fixedOperator physicalOperator P)
+    (x : X) :
+    Module.finrank ℝ fixedOperator.ker = Module.finrank ℝ (physicalOperator x).ker := by
+  exact LinearIsometryKernelIntertwining.finrank_ker_eq
+    { map := P.transport base x, intertwining := h.baseIntertwining x }
+
+end UhlenbeckKernelTransfer
+
+end DifferentialGeometry.Geometry.Connection
