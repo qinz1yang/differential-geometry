@@ -290,6 +290,19 @@ theorem hamiltonShiftedBlockQuadratic_nonneg_of_origin
   exact add_nonneg hQ (mul_nonneg (le_of_lt (by
     exact one_div_pos.mpr (mul_pos (by norm_num) clock.elapsed_pos))) hRic)
 
+theorem hamiltonShiftedBlockPSD_of_origin
+    (clock : HarnackClock)
+    (K : Idx -> Idx -> Idx -> Idx -> Real)
+    (P : Idx -> Idx -> Idx -> Real)
+    (M Ric : Idx -> Idx -> Real)
+    (hPSD : hamiltonBlockPSD K P M)
+    (hRic : ∀ (W : Idx -> Real), 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b) :
+    hamiltonBlockPSD K P (hamiltonShiftedM clock M Ric) := by
+  intro U W
+  change 0 ≤ hamiltonShiftedBlockQuadratic clock K P M Ric U W
+  exact hamiltonShiftedBlockQuadratic_nonneg_of_origin clock K P M Ric U W
+    (hPSD U W) (hRic W)
+
 theorem hamiltonBlockQuadratic_nonneg_of_all_shifted
     {q c t : Real}
     (hshift : ∀ α : Real, α < t → 0 ≤ q + c / (2 * (t - α)))
@@ -331,16 +344,11 @@ theorem hamiltonShiftedBlockPSD_of_gram
       (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
       (hamiltonShiftedM clock
         (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) Ric) := by
-  intro U W
-  change 0 ≤ hamiltonShiftedBlockQuadratic clock
+  exact hamiltonShiftedBlockPSD_of_origin clock
     (DifferentialGeometry.Analysis.Spectral.hamiltonGramK Y)
     (DifferentialGeometry.Analysis.Spectral.hamiltonGramP Y X)
-    (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) Ric U W
-  rw [hamiltonShiftedBlockQuadratic_expand]
-  exact add_nonneg
-    (hamiltonBlockQuadratic_nonneg_of_gram Y X U W)
-    (mul_nonneg (le_of_lt (by
-      exact one_div_pos.mpr (mul_pos (by norm_num) clock.elapsed_pos))) (hRic W))
+    (DifferentialGeometry.Analysis.Spectral.hamiltonGramM X) Ric
+    (hamiltonBlockPSD_of_gram Y X) hRic
 
 theorem hamiltonBlockPSD_of_shifted_family
     {ι : Type*} [Fintype ι]
