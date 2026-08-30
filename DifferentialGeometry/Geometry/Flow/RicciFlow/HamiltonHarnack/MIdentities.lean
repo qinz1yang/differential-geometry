@@ -606,6 +606,22 @@ theorem hamiltonMAt_eq_hamiltonDivPAt_add
     hamiltonMbarAt_eq_hamiltonDivPAt_add (I := I) S hS ⟨clock.time, ht⟩ x]
 
 omit [SigmaCompactSpace M] in
+theorem hamiltonMAt_apply
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular) (x : M)
+    (A B : TangentSpace I x) :
+    hamiltonMAt (I := I) clock (S.family.metric clock.time) x (vec2 A B) =
+      hamiltonDivPAt (I := I) (S.family.metric clock.time) x (vec2 A B) +
+        hamiltonCurvatureRicciAt (I := I) (S.family.metric clock.time) x (vec2 A B) +
+        (1 / (2 * clock.elapsed) : Real) *
+          metricRicci (I := I) (M := M) (S.family.metric clock.time) x (vec2 A B) := by
+  have h := hamiltonMAt_eq_hamiltonDivPAt_add (I := I) S hS clock ht x
+  have hAB := congrArg (fun T => T (vec2 A B)) h
+  simpa only [Tensor0SSpace.add_apply, Tensor0SSpace.smul_apply, smul_eq_mul] using hAB
+
+omit [SigmaCompactSpace M] in
 private theorem hamiltonRicciSquareAt_symm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
