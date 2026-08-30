@@ -396,6 +396,34 @@ theorem hamilton_trace_from_shifted_quadratic_nonneg
   · exact hRLast
   · exact hRPair
 
+theorem hamilton_trace_from_shifted_PSD
+    {ι : Type*} [Fintype ι]
+    (t : Real)
+    (R : ι -> ι -> ι -> ι -> Real)
+    (P : ι -> ι -> ι -> Real)
+    (M Ric : ι -> ι -> Real)
+    (v dR : ι -> Real)
+    (hshift : ∀ (α : Real) (hα : α < t),
+      hamiltonBlockPSD (fun a b c d => R a b d c) P
+        (hamiltonShiftedM ⟨α, t, hα⟩ M Ric))
+    (hRic : ∀ (W : ι -> Real), 0 ≤ ∑ a, ∑ b, Ric a b * W a * W b)
+    (hPFirst : ∀ a, (∑ c, P c a c) = -(1 / 2 : Real) * dR a)
+    (hPSecond : ∀ a, (∑ c, P a c c) = (1 / 2 : Real) * dR a)
+    (hRFirst : ∀ a b c d, R a b c d = -R b a c d)
+    (hRLast : ∀ a b c d, R a b c d = -R a b d c)
+    (hRPair : ∀ a b c d, R a b c d = R c d a b) :
+    0 ≤ (∑ a, M a a) + ∑ a, dR a * v a +
+      ∑ a, ∑ b, hamiltonRicciContraction R a b * v a * v b := by
+  apply hamilton_trace_from_shifted_quadratic_nonneg t R P M Ric v dR
+  · intro α hα U W
+    exact hshift α hα U W
+  · exact hRic
+  · exact hPFirst
+  · exact hPSecond
+  · exact hRFirst
+  · exact hRLast
+  · exact hRPair
+
 def hamiltonCoordinateCurvature
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H]
