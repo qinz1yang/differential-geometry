@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Operations
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialCompleteness
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Pullback
+import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
@@ -553,5 +554,21 @@ theorem canonicalMetric_zero
     exact mfderiv_id
   rw [hmapx, hmfd]
   simp
+
+theorem canonicalMetric_complete
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (sigma : Real) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hsol : gradientRicciSoliton (I := I) g f sigma)
+    {t : Real} (ht : t ∈ canonicalTimeDomain sigma) :
+    RiemannianMetricComplete (I := I)
+      (canonicalMetric (I := I) g f sigma hcomplete hsol ht) := by
+  exact RiemannianMetricComplete.pullbackMetric
+    (scaleMetric (I := I) (1 - sigma * t)
+      (mem_canonicalTimeDomain_iff.mp ht) g)
+    (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+      (canonicalFlowParameter sigma t))
+    (RiemannianMetricComplete.scaleMetric hcomplete
+      (1 - sigma * t) (mem_canonicalTimeDomain_iff.mp ht))
+
 
 end DifferentialGeometry.PDE.RicciFlow.Soliton
