@@ -136,4 +136,10 @@ theorem hamilton_ancient_scalar_two_time
     R t₁ ≤ R t₂ := by
   exact hmono ⟨le_rfl, ht⟩ ⟨ht, le_rfl⟩ ht
 
+theorem hamilton_ancient_backward_time_trace_of_forward
+    {timeDeriv gradientPair ricciPair : Real}
+    (hforward : 0 ≤ timeDeriv + 2 * gradientPair + 2 * ricciPair) :
+    0 ≤ -(-timeDeriv) - 2 * (-gradientPair) + 2 * ricciPair := by
+  linarith
+
 end DifferentialGeometry.PDE.RicciFlow
