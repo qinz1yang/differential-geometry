@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
 
 set_option autoImplicit false
@@ -28,7 +28,7 @@ private theorem seg_before {m : Nat} {i j : Fin m} (hij : i < j) :
   exact Fin.succ_le_castSucc_iff.mpr hij
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lNodeWin_cmp
+theorem lChartAct_adjacent_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -169,7 +169,7 @@ theorem lNodeWin_cmp
   obtain ⟨gammaW, hgammaW, hsrcW, hrepW, hW0, hW2, _alphaW, _wW,
       _halphaW, _halphaW0, _halphaW2, _hsrcAW, _hrepAW, _hwW, _hunifW,
       _hactW⟩ :=
-    lNode_c1_dense (I := I) S hMet hSc T tw htw pw vw hvwtar hvwnode hregw
+    exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T tw htw pw vw hvwtar hvwnode hregw
   have hWleft : gammaW (t i.castSucc) = gamma (t i.castSucc) := by
     have hW0' := hW0
     rw [htw0, hpw0, hvw0] at hW0'

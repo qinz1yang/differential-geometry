@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 omit [CompactSpace M] in
-theorem lNodeHead_min
+theorem lChartAct_initial_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -98,7 +98,7 @@ theorem lNodeHead_min
     exact ⟨hs.1, hs.2.trans hcd⟩
   obtain ⟨gammaV, _hgammaV, hsrcV, hrepV, hV0, hV2, alpha, _w,
       halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _hunif, hact⟩ :=
-    lNode_c1_dense (I := I) S hMet hSc T th hth ph vh hvhtar hvhnode
+    exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T th hth ph vh hvhtar hvhnode
       hregHead
   have hjoin : gammaV c = gamma c := by
     exact hV2.trans (by

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteChartsC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.C1Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Strict
 
 set_option autoImplicit false
@@ -58,7 +58,7 @@ theorem lMinCurve_c1
   have hpos : ∀ i : Fin k, s i.castSucc < s i.succ := by
     intro i
     exact hs Fin.castSucc_lt_succ
-  exact lFinCurve_c1 (I := I) S hS T a b hk s hs0a hslastb p' gamma
+  exact lRegAction_minimizer_contMDiffOn_one_of_chart_partition (I := I) S hS T a b hk s hs0a hslastb p' gamma
     hgamma u' hpos hsrc' hrep' hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

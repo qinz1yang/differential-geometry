@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeRefinement
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSameChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.RefinedSegmentMinimality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.SameChartMomentumMatching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
 import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
@@ -29,7 +29,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lFinNode_vel
+theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last (m + 2)) = b)
@@ -324,7 +324,7 @@ theorem lFinNode_vel
           lChartAct S T s p0 w := by
       subst y
       rfl
-    have hcmp := lNodeRef_cmp (I := I) S hS.smoothMetric hSc T a b t htmono
+    have hcmp := lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin q c hpos0 hc0 hc1
       uHead hsrcHead
       (by
@@ -350,7 +350,7 @@ theorem lFinNode_vel
         lChartAct S T (t j.castSucc) (p i) (v 1)
     rw [← hv0act, ← hv1act]
     simpa only [i, j] using hcmp
-  have hmom := lNode_mom_same (I := I) S hS T th (p i) uh hthpos hthreg
+  have hmom := lChartAct_momentum_eq_of_pair_minimality (I := I) S hS T th (p i) uh hthpos hthreg
     huhchart huhnode huhcmp
   have hmom' : chartGramOp (I := I) S.family (p i)
         (T - (t j.castSucc) ^ 2, (u i).toFun (lSegLen t i))

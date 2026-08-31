@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeLocalMinimum
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodePiece
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceActionMinimality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PieceLocalMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Momentum
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Ramp
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Buffer
@@ -211,7 +211,7 @@ private theorem ramp_down_deriv
   exact hint
 
 omit [CompactSpace M] in
-theorem lNode_mom_same
+theorem lChartAct_momentum_eq_of_pair_minimality
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (t : Fin 3 → Real) (p : M)
@@ -249,10 +249,10 @@ theorem lNode_mom_same
     simpa only [lSegLen] using sub_pos.mpr (hpos i)
   have hlocal0 : IsLocalMinOn
       (lChartAct S T (t 0) p) (sameTimeEnds (u 0)) (u 0) :=
-    lNode_piece_min (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 0
+    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 0
   have hlocal1 : IsLocalMinOn
       (lChartAct S T (t 1) p) (sameTimeEnds (u 1)) (u 1) :=
-    lNode_piece_min (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 1
+    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 1
   obtain ⟨q0, P0, hq0c, hq0ae, hu0c1, hu0d, hP0c1, hP0eq, hP0d⟩ :=
     lChart_mom_c1 (I := I) S hS T (t 0) p (hL 0) (u 0)
       (hreg 0) (hchart 0) hlocal0

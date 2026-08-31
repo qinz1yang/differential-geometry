@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.AdjacentSegmentMinimality
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Slice
 
 set_option autoImplicit false
@@ -56,7 +56,7 @@ private theorem ins_succ {m : Nat} (j k : Fin (m + 2)) :
   omega
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lNodeRef_cmp
+theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -344,7 +344,7 @@ theorem lNodeRef_cmp
   have hposHead : tr i.succ.castSucc < tr i.succ.succ := by
     rw [hheadIdx, htrHead0, htrHead1]
     simpa only [j] using hc0
-  have hcmpR := lNodeWin_cmp (I := I) S hMet hSc T a b
+  have hcmpR := lChartAct_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hMet hSc T a b
     (m := m + 1) tr htrMono (htr0.trans ht0) (htrLast.trans htlast)
     pr gamma hgamma ur hsrcR hrepR hreg hmin i hposLeft hposHead
     v0r v1r htar0r htar1r hv0r hv2r hvnoder

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSplicing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 omit [CompactSpace M] in
-theorem lNodeAct_min
+theorem lChartAct_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -57,7 +57,7 @@ theorem lNodeAct_min
       ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i) := by
   obtain ⟨gammaV, hgammaV, hsrcV, hrepV, hV0, hV2, alpha, _w,
       halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _hunif, hact⟩ :=
-    lNode_c1_dense (I := I) S hMet hSc T t htmono p v hvtar hvnode hreg
+    exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T t htmono p v hvtar hvnode hreg
   have hneg : Tendsto
       (fun n ↦ -lRegAction S T (alpha n) (t 0) (t (Fin.last 2))) atTop
       (nhds (-lRegAction S T gammaV (t 0) (t (Fin.last 2)))) :=

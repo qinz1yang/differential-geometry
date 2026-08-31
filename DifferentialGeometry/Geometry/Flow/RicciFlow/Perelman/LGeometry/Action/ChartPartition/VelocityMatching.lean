@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeMatching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.MomentumMatching
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramInv
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lNode_vel_match
+theorem lRegAction_minimizer_velocity_eq_under_chart_change
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
     (u : (i : Fin 2) → timeH1 E (lSegLen t i))
@@ -74,7 +74,7 @@ theorem lNode_vel_match
         tangentCoordChange_comp (I := I) (w := p 1) (x := p 0)
           (y := p 1) (z := gamma (t 1)) ⟨⟨hq, hp⟩, hq⟩
       _ = y := tangentCoordChange_self (I := I) hq
-  have hmom := lNode_mom_match (I := I) S hS T t p gamma u
+  have hmom := lRegAction_minimizer_momentum_pairing_eq (I := I) S hS T t p gamma u
     hpos hsrc hrep hreg hmin
   have hGram :
       chartGramOp (I := I) S.family (p 1)

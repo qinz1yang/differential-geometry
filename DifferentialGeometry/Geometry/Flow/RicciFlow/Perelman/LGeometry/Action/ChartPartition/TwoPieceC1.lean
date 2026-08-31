@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeVelocity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodePiece
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.VelocityMatching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PieceLocalMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CurveC1Glue
@@ -28,7 +28,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lNode_c1
+theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
     (u : (i : Fin 2) → timeH1 E (lSegLen t i))
@@ -113,14 +113,14 @@ theorem lNode_c1
         ⟨by simpa only [lSegLen, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
       simpa only [lSegLen, hfin1c, hfin1s, add_sub_cancel] using h
-    exact lNodeAct_min (I := I) S hS.smoothMetric hSc T t htmono p gamma u
+    exact lChartAct_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal0 : IsLocalMinOn
       (lChartAct S T (t 0) (p 0)) (sameTimeEnds (u 0)) (u 0) :=
-    lNode_piece_min (I := I) S T t p u hchart hnode hcmp 0
+    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 0
   have hlocal1 : IsLocalMinOn
       (lChartAct S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
-    lNode_piece_min (I := I) S T t p u hchart hnode hcmp 1
+    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
   have hreg0 : ∀ r, r ∈ Icc (0 : Real) (lSegLen t 0) →
       T - (t 0 + r) ^ 2 ∈ D.regular := by
     intro r hr
@@ -200,7 +200,7 @@ theorem lNode_c1
     hgamma1 ⟨le_rfl, ht12.le⟩
     (uniqueDiffOn_Icc ht12 (t 1) ⟨le_rfl, ht12.le⟩)
     (hsrc 1) hnodesrc
-  have hvel := lNode_vel_match (I := I) S hS T t p gamma u
+  have hvel := lRegAction_minimizer_velocity_eq_under_chart_change (I := I) S hS T t p gamma u
     hpos hsrc hrep hreg hmin
   have hder :
       derivWithin ((extChartAt I (gamma (t 1))) ∘ gamma)

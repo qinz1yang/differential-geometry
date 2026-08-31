@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeAcceleration
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.AccelerationAtNodes
 
 set_option autoImplicit false
 
@@ -124,7 +124,7 @@ theorem lStrict_curve_reg
             have hsnode : s = t q.succ.castSucc := by
               rw [hleft, ← hq]
             rw [hsnode]
-            exact lFinNode_reg (I := I) S hS T a b t ht ht0 htlast p
+            exact lRegAction_minimizer_acceleration_eq_at_partition_nodes (I := I) S hS T a b t ht ht0 htlast p
               gamma hgamma u hsrc hrep hreg hmin q
       · by_cases hright : s = t i.succ
         · have hilast : i ≠ Fin.last n := by
@@ -146,7 +146,7 @@ theorem lStrict_curve_reg
                 simp only [Fin.val_succ, Fin.val_castSucc]
                 omega
               rw [hsnode]
-              exact lFinNode_reg (I := I) S hS T a b t ht ht0 htlast p
+              exact lRegAction_minimizer_acceleration_eq_at_partition_nodes (I := I) S hS T a b t ht ht0 htlast p
                 gamma hgamma u hsrc hrep hreg hmin q
         · have hsopen : s ∈ Ioo (t i.castSucc) (t i.succ) :=
             ⟨lt_of_le_of_ne hi.1 (Ne.symm hleft),

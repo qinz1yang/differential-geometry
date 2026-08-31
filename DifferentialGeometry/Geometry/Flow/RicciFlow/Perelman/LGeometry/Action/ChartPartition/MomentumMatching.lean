@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeHead
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.NodeSameChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.InitialSegmentMinimality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.SameChartMomentumMatching
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
 import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
@@ -43,7 +43,7 @@ private theorem nodeMatch_act_cast {a b : Real} (h : a = b)
   rfl
 
 omit [CompactSpace M] in
-theorem lNode_mom_match
+theorem lRegAction_minimizer_momentum_pairing_eq
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
     (u : (i : Fin 2) → timeH1 E (lSegLen t i))
@@ -138,11 +138,11 @@ theorem lNode_mom_match
         ⟨by simpa only [lSegLen, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
       simpa only [lSegLen, hfin1c, hfin1s, add_sub_cancel] using h
-    exact lNodeAct_min (I := I) S hS.smoothMetric hSc T t htmono p gamma u
+    exact lChartAct_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal1 : IsLocalMinOn
       (lChartAct S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
-    lNode_piece_min (I := I) S T t p u hchart hnode hcmp 1
+    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
   have hreg1 : ∀ r, r ∈ Icc (0 : Real) (lSegLen t 1) →
       T - (t 1 + r) ^ 2 ∈ D.regular := by
     intro r hr
@@ -229,7 +229,7 @@ theorem lNode_mom_match
         lChartAct S T (t 0) (p 0) v0 +
           lChartAct S T (t 1) (p 0) v1 := by
     intro v0 v1 hv0tar hv1tar hv0 hv2 hvnode
-    exact lNodeHead_min (I := I) S hS.smoothMetric hSc T
+    exact lChartAct_initial_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T
       (t 0) (t 1) c (t (Fin.last 2)) (hpos 0).le h1c.le hc2
       (p 0) (p 1) gamma (u 0) uHead uTail
       (hsrc 0) hsrcHead hsrcTail (hrep 0)
@@ -409,7 +409,7 @@ theorem lNode_mom_match
       exact nodeMatch_act_cast hthLen1.symm S T (t 1) (p 0) (v 1)
     simpa only [Fin.sum_univ_two, hfin0c, hfin1c, hth0, hth1, huh0Act,
       huh1Act, hv0Act, hv1Act] using hhead
-  have hmom := lNode_mom_same (I := I) S hS T th (p 0) uh hthpos hthreg
+  have hmom := lChartAct_momentum_eq_of_pair_minimality (I := I) S hS T th (p 0) uh hthpos hthreg
     huhchart huhnode huhcmp
   have hmom' : chartGramOp (I := I) S.family (p 0)
         (T - (t 1) ^ 2, (u 0).toFun (lSegLen t 0))

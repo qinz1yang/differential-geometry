@@ -458,7 +458,7 @@ theorem exists_chartH1_join
         (hgamma1_eq (hshift1 i1 hr')).symm
 
 omit [CompactSpace M] in
-theorem lNode_c1_dense
+theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)

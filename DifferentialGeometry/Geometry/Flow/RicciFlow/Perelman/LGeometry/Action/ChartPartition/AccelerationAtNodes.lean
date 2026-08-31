@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.PuncturedDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteChartsC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.C1Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.StrictC2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.PieceAcceleration
 
@@ -31,7 +31,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lFinNode_reg
+theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
@@ -82,7 +82,7 @@ theorem lFinNode_reg
   have hcb : c < b := by
     rw [← htlast]
     exact hcj.trans_le (ht.monotone (Fin.le_last j.succ))
-  have hcurve1 := lFinCurve_c1 (I := I) S hS T a b (m := m + 2)
+  have hcurve1 := lRegAction_minimizer_contMDiffOn_one_of_chart_partition (I := I) S hS T a b (m := m + 2)
     (by omega) t ht0 htlast p gamma hgamma u
     (fun k ↦ ht Fin.castSucc_lt_succ) hsrc hrep hreg hmin
   have hIcc : Icc a b ∈ 𝓝 c :=

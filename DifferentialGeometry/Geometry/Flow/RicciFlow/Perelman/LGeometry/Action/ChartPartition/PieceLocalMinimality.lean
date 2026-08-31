@@ -22,7 +22,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 variable {D : RealTimeInterval}
 
-theorem lNode_piece_min
+theorem lChartAct_isLocalMinOn_of_pair_minimality
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (t : Fin 3 → Real) (p : Fin 2 → M)
     (u : (i : Fin 2) → timeH1 E (lSegLen t i))

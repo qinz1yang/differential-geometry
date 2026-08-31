@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteNodes
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.VelocityMatchingAtNodes
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.StrictC1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CurveC1Finite
 
@@ -26,7 +26,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-private theorem lFinCurve_c1_aux
+private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last (m + 2)) = b)
@@ -183,7 +183,7 @@ private theorem lFinCurve_c1_aux
             (Icc (0 : Real) (lSegLen t i)) (lSegLen t i)) =
         derivWithin (u j).toFun (Icc (0 : Real) (lSegLen t j)) 0 := by
       simpa only [i, j] using
-        lFinNode_vel (I := I) S hS T a b t ht0 htlast p gamma hgamma u
+        lRegAction_minimizer_velocity_eq_at_partition_nodes (I := I) S hS T a b t ht0 htlast p gamma hgamma u
           hpos hsrc hrep hreg hmin q
     rw [hchange0, hchange1, hp0der, hp1der, ← hvel]
     exact (tangentCoordChange_comp (I := I) (w := p i) (x := p j)
@@ -201,7 +201,7 @@ private theorem lFinCurve_c1_aux
   simpa only [htn0, htnlast] using hfull
 
 omit [CompactSpace M] in
-theorem lFinCurve_c1
+theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (hm : 0 < m) (t : Fin (m + 1) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last m) = b)
@@ -240,7 +240,7 @@ theorem lFinCurve_c1
             exact htlast
           simpa only [hleft, hright] using hpiece
       | succ n =>
-          exact lFinCurve_c1_aux (I := I) S hS T a b t ht0 htlast p gamma
+          exact lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux (I := I) S hS T a b t ht0 htlast p gamma
             hgamma u hpos hsrc hrep hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
