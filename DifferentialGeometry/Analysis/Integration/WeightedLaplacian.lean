@@ -203,4 +203,75 @@ theorem integral_mul_weightedLaplacian_comm
       Real.exp (-f x)
   rw [g.symm x]
 
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem integral_mul_weightedLaplacian_add_inner_grad_eq_zero_of_compact
+    [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) (f u v : C^∞⟮I, M; Real⟯) :
+    ∫ x, (u x * weightedLaplacian (I := I) g f v x +
+          g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x)) *
+        Real.exp (-f x) ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
+  let V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g v
+  have hweighted : ContMDiff I 𝓘(Real, Real) ∞
+      (weightedLaplacian (I := I) g f v) := by
+    have hdiv := divergence_g_contMDiff (I := I) g V
+    have hact := tangentSectionAction_contMDiff (I := I) V f.contMDiff
+    have heq : weightedLaplacian (I := I) g f v =
+        fun x : M => divergenceG (I := I) g V x -
+          tangentSectionAction (I := I) V f x := by
+      funext x
+      rw [weightedLaplacian_apply, Δ_g_def,
+        tangentSectionAction_eq_inner_grad_g (I := I) g f V x]
+      simp only [V, grad_g_apply]
+      rw [g.symm x (gradFun (I := I) g f x) (gradFun (I := I) g v x)]
+    rw [heq]
+    exact hdiv.sub hact
+  have hinner : ContMDiff I 𝓘(Real, Real) ∞
+      (fun x : M =>
+        g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x)) := by
+    have hact := tangentSectionAction_contMDiff (I := I) V u.contMDiff
+    have heq : (fun x : M =>
+        g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x)) =
+        tangentSectionAction (I := I) V u := by
+      funext x
+      rw [tangentSectionAction_eq_inner_grad_g (I := I) g u V x]
+      simp only [V, grad_g_apply]
+      exact g.symm x _ _
+    rw [heq]
+    exact hact
+  let p : M → Real := fun x =>
+    u x * weightedLaplacian (I := I) g f v x * Real.exp (-f x)
+  let q : M → Real := fun x =>
+    g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x) *
+      Real.exp (-f x)
+  have hpcont : Continuous p :=
+    (u.contMDiff.continuous.mul hweighted.continuous).mul
+      (Real.continuous_exp.comp f.contMDiff.continuous.neg)
+  have hqcont : Continuous q :=
+    hinner.continuous.mul
+      (Real.continuous_exp.comp f.contMDiff.continuous.neg)
+  have hpint : Integrable p (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    DifferentialGeometry.Integral.DivergenceTheorem.Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
+      (I := I) g hpcont (HasCompactSupport.of_compactSpace _)
+  have hqint : Integrable q (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    DifferentialGeometry.Integral.DivergenceTheorem.Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
+      (I := I) g hqcont (HasCompactSupport.of_compactSpace _)
+  have hibp := integral_mul_weightedLaplacian_eq_neg_integral_inner_grad
+    (I := I) (M := M) g f u v (HasCompactSupport.of_compactSpace _)
+  rw [show (fun x : M =>
+      (u x * weightedLaplacian (I := I) g f v x +
+          g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x)) *
+        Real.exp (-f x)) = fun x : M => p x + q x by
+    funext x
+    dsimp [p, q]
+    ring]
+  rw [integral_add hpint hqint]
+  change (∫ x, u x * weightedLaplacian (I := I) g f v x * Real.exp (-f x)
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
+      ∫ x, g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x) *
+        Real.exp (-f x) ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0
+  rw [hibp]
+  ring
+
 end DifferentialGeometry.Integral.DivergenceTheorem
