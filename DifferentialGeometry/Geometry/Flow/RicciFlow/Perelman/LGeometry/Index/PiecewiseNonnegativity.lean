@@ -30,7 +30,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M]
   [SigmaCompactSpace M] [CompactSpace M] in
-private theorem nodePair_deriv
+private theorem hasDerivAt_nodePair
     (g : SmoothRiemannianMetric I M)
     (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (c : Real) :
@@ -121,7 +121,7 @@ private theorem nodePair_deriv
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem indexGreen_var
+private theorem lRegIndex_eq_boundary_sub_integral_variation
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
@@ -222,7 +222,7 @@ private theorem indexGreen_var
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem nodeAction_second
+private theorem hasDerivAt_deriv_piecewise_lRegAction
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (f0 f1 : Real → Real → M)
@@ -333,9 +333,9 @@ private theorem nodeAction_second
       (fun v : Real ↦
         lRegAction S T (f0 v) a c + lRegAction S T (f1 v) c b) u) =
       (fun u : Real ↦ deriv L u) by rfl, hfun]
-  have hpair0 := nodePair_deriv (I := I)
+  have hpair0 := hasDerivAt_nodePair (I := I)
     (S.base.metric (T - c ^ 2)) f0 hf0 c
-  have hpair1 := nodePair_deriv (I := I)
+  have hpair1 := hasDerivAt_nodePair (I := I)
     (S.base.metric (T - c ^ 2)) f1 hf1 c
   have hpairs : HasDerivAt (fun u : Real ↦ P0 u - P1 u)
       ((S.base.metric (T - c ^ 2)).inner (f0 0 c)
@@ -396,8 +396,8 @@ private theorem nodeAction_second
   have heuler0 := hasDerivAt_integral_lRegEulerPair_variation (I := I) S hS T f0 hf0 a c x Z hgeo0
   have heuler1 := hasDerivAt_integral_lRegEulerPair_variation (I := I) S hS T f1 hf1 c b x Z hgeo1
   have htotal := (hpairs.add heuler0).add heuler1
-  have hgreen0 := indexGreen_var (I := I) S hS T f0 hf0 a c x Z hgeo0
-  have hgreen1 := indexGreen_var (I := I) S hS T f1 hf1 c b x Z hgeo1
+  have hgreen0 := lRegIndex_eq_boundary_sub_integral_variation (I := I) S hS T f0 hf0 a c x Z hgeo0
+  have hgreen1 := lRegIndex_eq_boundary_sub_integral_variation (I := I) S hS T f1 hf1 c b x Z hgeo1
   have hYa : lVelocity (I := I) (fun u : Real ↦ f0 u a) 0 = 0 := by
     have hconst : (fun u : Real ↦ f0 u a) = fun _ : Real ↦ f0 0 a :=
       funext hfixa
@@ -419,7 +419,7 @@ private theorem nodeAction_second
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lIndex_sum_nonneg
+theorem lRegIndex_piecewise_nonneg
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (gamma : Real → M) (a c b : Real) (hac : a < c) (hcb : c < b)
@@ -565,7 +565,7 @@ theorem lIndex_sum_nonneg
   have hfirst : HasDerivAt L 0 0 := by
     have hraw := hfirst0.add hfirst1
     exact hraw.congr_deriv (hLmin.hasDerivAt_eq_zero hraw)
-  have hsecond := nodeAction_second (I := I) S hS T f0 f1 hf0 hf1
+  have hsecond := hasDerivAt_deriv_piecewise_lRegAction (I := I) S hS T f0 f1 hf0 hf1
     a c b x Z hgeo0 hgeo1 hcenter hfixa hfixb hnode
   have hnonneg := second_deriv_nonneg_of_isLocalMin hLmin hfirst hsecond
   have hEq0 : EqOn

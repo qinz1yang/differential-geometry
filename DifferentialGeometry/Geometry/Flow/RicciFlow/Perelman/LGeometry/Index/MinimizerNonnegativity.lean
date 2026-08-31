@@ -32,7 +32,7 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lRegIndex_nonneg_var
+theorem lRegIndex_nonneg_of_variation_isLocalMin
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (x : M) (Z : TangentSpace I x)
@@ -73,7 +73,7 @@ theorem lRegIndex_nonneg
     exists_var_fix_ends (I := I) (S.base.metric T) gamma Y a b hY hYa hYb
   have hcenter : f 0 = gamma := funext hfzero
   subst gamma
-  have hnonneg := lRegIndex_nonneg_var (I := I) S hS T f hf a b x Z hgeo
+  have hnonneg := lRegIndex_nonneg_of_variation_isLocalMin (I := I) S hS T f hf a b x Z hgeo
     hfixa hfixb (hmin f hf (fun _ => rfl) hfixa hfixb)
   have hEq : Set.EqOn
       (fun s : Real => lVelocity (I := I) (fun u : Real => f u s) 0)

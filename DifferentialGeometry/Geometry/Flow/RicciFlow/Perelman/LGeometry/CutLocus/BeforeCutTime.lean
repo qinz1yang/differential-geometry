@@ -408,7 +408,7 @@ theorem lMinVec_nconj_lt
       exact hEq ⟨hs'.1.le, hs'.2.le⟩
     rw [haction]
     exact hraw
-  have hnonneg := lIndex_sum_nonneg (I := I) S hS T gamma
+  have hnonneg := lRegIndex_piecewise_nonneg (I := I) S hS T gamma
     0 (Real.sqrt sigma) (Real.sqrt tau) hc0 hcb x Z hgeo hminGamma
     Y0 Y1 hY0 hY1 hY0zero hY1zero hnode
   linarith

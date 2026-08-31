@@ -802,7 +802,7 @@ theorem lTail_hess_le
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (gammaG s) ((0 : Real) • Jg s) : TangentBundle I M))
     exact hz
-  have hnonneg := lIndex_sum_nonneg (E := E) (I := I) S hS T gammaG
+  have hnonneg := lRegIndex_piecewise_nonneg (E := E) (I := I) S hS T gammaG
     0 a b ha0 hab x Z hgeoG hminG Zg Qg hZg8 hQg8
     (by dsimp only [Zg]; change (0 : Real) • (Jg 0 : E) = 0; module)
     hQgb (by

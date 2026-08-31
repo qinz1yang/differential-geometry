@@ -434,7 +434,7 @@ private theorem tailEnd_injective
   have hnode : Y0 s0 = Y1 s0 := by
     change k • W s0 = YgE s0 + k • W s0
     rw [hYgES0, zero_add]
-  have hnonneg := lIndex_sum_nonneg (E := E) (I := I) S hS T gammaG
+  have hnonneg := lRegIndex_piecewise_nonneg (E := E) (I := I) S hS T gammaG
     0 s0 b hs00 hs0b x Z hgeoG hminG Y0 Y1
     (hkW.of_le (by decide :
       (8 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)))
