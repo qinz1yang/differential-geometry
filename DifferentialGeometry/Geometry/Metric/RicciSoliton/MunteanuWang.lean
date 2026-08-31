@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.WeightedTensorMinimum
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Sublevel
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialGrowth
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialIntegralCurve
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Reciprocal
@@ -11,13 +12,14 @@ set_option autoImplicit false
 
 noncomputable section
 
-open Bundle Filter Manifold Set
+open Bundle Filter Manifold MeasureTheory Set
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Geometry
 
 open Connection Curvature Operator
 open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -564,5 +566,53 @@ theorem normalizedGradientRicciSoliton_scalar_lower_bound_by_min_rank_potential
       simp [R, hγ0]
     rw [hR0] at hRforward
     exact (min_le_right n (a * f x)).trans (haf.le.trans hRforward)
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+omit [NeZero (Module.finrank Real E)] [ConnectedSpace M] in
+theorem normalizedGradientRicciSoliton_integral_scalar_le_rank_half_mul_volume_on_lt_sublevel
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f) (t : Real)
+    (hcompact : IsCompact {x : M | f x ≤ t}) :
+    ∫ x in {x : M | f x < t}, metricScalarAt (I := I) g x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
+      (Module.finrank Real E : Real) / 2 *
+        (riemannianVolumeMeasure (I := I) (M := M) g).real {x : M | f x < t} := by
+  let mu : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
+  let K : Set M := {x : M | f x ≤ t}
+  let U : Set M := {x : M | f x < t}
+  let _ : IsFiniteMeasureOnCompacts mu :=
+    riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
+  have hUK : U ⊆ K := by
+    intro x hx
+    change f x < t at hx
+    change f x ≤ t
+    exact hx.le
+  have hscalar_int : IntegrableOn (metricScalarAt (I := I) g) U mu :=
+    ((metricScalar_smooth (I := I) (M := M) g).continuous.continuousOn.integrableOn_compact
+      hcompact).mono_set hUK
+  have hlap_int : IntegrableOn (ΔG (I := I) g f) U mu :=
+    ((Δ_g_contMDiff (I := I) g f).continuous.continuousOn.integrableOn_compact
+      hcompact).mono_set hUK
+  have htrace_integral :
+      (∫ x in U, metricScalarAt (I := I) g x ∂mu) +
+          ∫ x in U, ΔG (I := I) g f x ∂mu =
+        ∫ _x in U, (Module.finrank Real E : Real) / 2 ∂mu := by
+    rw [← integral_add hscalar_int hlap_int]
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall fun x => by
+      simpa only [mul_one] using gradientRicciSoliton_trace (I := I) h.2.1 x
+  have hlap_nonneg : 0 ≤ ∫ x in U, ΔG (I := I) g f x ∂mu := by
+    exact DifferentialGeometry.Integral.DivergenceTheorem.integral_laplacian_nonneg_on_lt_sublevel_of_compact
+      (I := I) g f t hcompact
+  have hconst :
+      ∫ _x in U, (Module.finrank Real E : Real) / 2 ∂mu =
+        (Module.finrank Real E : Real) / 2 * mu.real U := by
+    rw [MeasureTheory.integral_const, measureReal_restrict_apply_univ, smul_eq_mul]
+    ring
+  rw [hconst] at htrace_integral
+  change (∫ x in U, metricScalarAt (I := I) g x ∂mu) ≤ _
+  linarith
 
 end DifferentialGeometry.Geometry
