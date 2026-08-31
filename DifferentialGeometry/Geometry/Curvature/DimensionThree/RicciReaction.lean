@@ -245,6 +245,87 @@ theorem ricciReactionDefectAt_eq_zero_iff_of_curvature_eigenframe
     (I := I) (M := M) g x basis horth lambda mu nu hdiag]
   exact curvatureReactionPolynomial3_eq_zero_iff lambda mu nu hlambda hnu
 
+omit [FiniteDimensional Real E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] in
+private theorem linearIndependent_vec2_basis
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (i j : Fin 3) (hij : i ≠ j) :
+    LinearIndependent Real (vec2 (I := I) (basis i) (basis j)) := by
+  let e : Fin 2 → Fin 3 := fun q => if q = 0 then i else j
+  have he : Function.Injective e := by
+    intro a b hab
+    fin_cases a <;> fin_cases b <;> simp_all [e]
+  have h := basis.linearIndependent.comp e he
+  have heq : basis ∘ e = vec2 (I := I) (basis i) (basis j) := by
+    funext q
+    fin_cases q <;> simp [e, vec2]
+  rw [heq] at h
+  exact h
+
+omit [I.Boundaryless] in
+theorem curvature_eigenvalues_pos_of_sectional_pos
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (lambda mu nu : Real)
+    (hdiag : RicciDiagAt (I := I)
+      (metricRicciAt (I := I) (M := M) g x)
+      (metricScalarAt (I := I) (M := M) g x)
+      ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) basis)
+    (hsec : ∀ (v w : TangentSpace I x),
+      LinearIndependent Real (vec2 (I := I) v w) →
+        0 < metricRm04StdAt (I := I) (M := M) g x v w w v) :
+    0 < lambda ∧ 0 < mu ∧ 0 < nu := by
+  let Ric := metricRicciAt (I := I) (M := M) g x
+  let Rm := metricRm04At (I := I) (M := M) g x
+  have htrace := metricRiemannFromRicci3DTraceDataAt
+    (I := I) (M := M) g x basis horth
+  have hnegdiag :
+      RicciDiagAt (I := I) (-Ric)
+        (-(metricScalarAt (I := I) (M := M) g x))
+        (-((mu + nu) / 2)) (-((lambda + nu) / 2)) (-((lambda + mu) / 2)) basis := by
+    rcases hdiag with ⟨hscalar, hric⟩
+    constructor
+    · unfold ricciEigenScalar3 at hscalar ⊢
+      linarith
+    · intro i j
+      change -(ricciCompAt (I := I) basis Ric i j) =
+        ricciDiag3 (-((mu + nu) / 2)) (-((lambda + nu) / 2))
+          (-((lambda + mu) / 2)) i j
+      rw [hric i j]
+      fin_cases i <;> fin_cases j <;> simp [ricciDiag3]
+  have hcomp := stdRmComp_eq_diag (I := I) htrace hnegdiag
+  have h01 :
+      metricRm04StdAt (I := I) (M := M) g x
+          (basis 0) (basis 1) (basis 1) (basis 0) = nu / 2 := by
+    change standardRmCompAt (I := I) basis Rm 0 1 1 0 = nu / 2
+    rw [hcomp]
+    simp [stdRmDiag3, ricciDiag3, ricciEigenScalar3, delta3]
+    ring
+  have h02 :
+      metricRm04StdAt (I := I) (M := M) g x
+          (basis 0) (basis 2) (basis 2) (basis 0) = mu / 2 := by
+    change standardRmCompAt (I := I) basis Rm 0 2 2 0 = mu / 2
+    rw [hcomp]
+    simp [stdRmDiag3, ricciDiag3, ricciEigenScalar3, delta3]
+    ring
+  have h12 :
+      metricRm04StdAt (I := I) (M := M) g x
+          (basis 1) (basis 2) (basis 2) (basis 1) = lambda / 2 := by
+    change standardRmCompAt (I := I) basis Rm 1 2 2 1 = lambda / 2
+    rw [hcomp]
+    simp [stdRmDiag3, ricciDiag3, ricciEigenScalar3, delta3]
+    ring
+  have hnu := hsec (basis 0) (basis 1)
+    (linearIndependent_vec2_basis (I := I) basis 0 1 (by decide))
+  have hmu := hsec (basis 0) (basis 2)
+    (linearIndependent_vec2_basis (I := I) basis 0 2 (by decide))
+  have hlambda := hsec (basis 1) (basis 2)
+    (linearIndependent_vec2_basis (I := I) basis 1 2 (by decide))
+  rw [h01] at hnu
+  rw [h02] at hmu
+  rw [h12] at hlambda
+  exact ⟨by linarith, by linarith, by linarith⟩
+
 omit [I.Boundaryless] in
 theorem exists_orthonormal_curvature_eigenframe
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -326,5 +407,129 @@ theorem ricciReactionDefectAt_nonneg_of_finrank_eq_three
     exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
   exact ricciReactionDefectAt_nonneg_of_curvature_eigenframe
     (I := I) (M := M) g x basis horth lambda mu nu hdiag
+
+omit [I.Boundaryless] in
+theorem metricScalarAt_pos_of_sectional_pos_of_finrank_eq_three
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hsec : ∀ (v w : TangentSpace I x),
+      LinearIndependent Real (vec2 (I := I) v w) →
+        0 < metricRm04StdAt (I := I) (M := M) g x v w w v) :
+    0 < metricScalarAt (I := I) (M := M) g x := by
+  obtain ⟨basis, lambda, mu, nu, horth, hdiag⟩ :=
+    exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
+  obtain ⟨hlambda, hmu, hnu⟩ :=
+    curvature_eigenvalues_pos_of_sectional_pos
+      (I := I) (M := M) g x basis horth lambda mu nu hdiag hsec
+  have hscalar := hdiag.1
+  unfold ricciEigenScalar3 at hscalar
+  nlinarith
+
+theorem metricRicciAt_eq_scalar_div_three_of_ricciReactionDefectAt_eq_zero_of_sectional_pos
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hzero : ricciReactionDefectAt (I := I) g x = 0)
+    (hsec : ∀ (v w : TangentSpace I x),
+      LinearIndependent Real (vec2 (I := I) v w) →
+        0 < metricRm04StdAt (I := I) (M := M) g x v w w v) :
+    ∀ v w : TangentSpace I x,
+      metricRicciAt (I := I) (M := M) g x (vec2 (I := I) v w) =
+        (metricScalarAt (I := I) (M := M) g x / 3) * g.inner x v w := by
+  obtain ⟨basis, lambda, mu, nu, horth, hdiag⟩ :=
+    exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
+  obtain ⟨hlambda, _hmu, hnu⟩ :=
+    curvature_eigenvalues_pos_of_sectional_pos
+      (I := I) (M := M) g x basis horth lambda mu nu hdiag hsec
+  obtain ⟨hlambda_mu, hmu_nu⟩ :=
+    (ricciReactionDefectAt_eq_zero_iff_of_curvature_eigenframe
+      (I := I) (M := M) g x basis horth lambda mu nu hdiag hlambda hnu).mp hzero
+  subst mu
+  subst nu
+  have htensor :
+      metricRicciAt (I := I) (M := M) g x =
+        (metricScalarAt (I := I) (M := M) g x / 3) •
+          metricTensor0S (I := I) g x := by
+    apply ext0S_basis (I := I) basis
+    intro slots
+    simp only [component0S_apply, Tensor0SSpace.smul_apply, metricTensor0S_apply]
+    have hslots :
+        (fun a : Fin 2 => basis (slots a)) =
+          vec2 (I := I) (basis (slots 0)) (basis (slots 1)) := by
+      funext a
+      fin_cases a <;> rfl
+    rw [hslots]
+    simp only [smul_eq_mul]
+    have hric := hdiag.2 (slots 0) (slots 1)
+    rw [ricciCompAt_apply] at hric
+    rw [hric, horth]
+    have hscalar := hdiag.1
+    unfold ricciEigenScalar3 at hscalar
+    generalize hi : slots 0 = i
+    generalize hj : slots 1 = j
+    fin_cases i <;> fin_cases j <;>
+      simp [ricciDiag3, delta3] at hscalar ⊢ <;> nlinarith
+  intro v w
+  have happly := congrArg
+    (fun A : Tensor02At (I := I) (M := M) x => A (vec2 (I := I) v w)) htensor
+  simpa [Tensor0SSpace.smul_apply, metricTensor0S_apply, vec2, smul_eq_mul] using happly
+
+omit [I.Boundaryless] in
+theorem metricRm04StdAt_eq_scalar_div_six_of_finrank_eq_three_of_einstein
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hEin : ∀ v w : TangentSpace I x,
+      metricRicciAt (I := I) (M := M) g x (vec2 (I := I) v w) =
+        (metricScalarAt (I := I) (M := M) g x / 3) * g.inner x v w) :
+    ∀ X Y : TangentSpace I x,
+      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+        (metricScalarAt (I := I) (M := M) g x / 6) *
+          (g.inner x X X * g.inner x Y Y -
+            g.inner x X Y * g.inner x X Y) := by
+  obtain ⟨basis, _lambda, _mu, _nu, horth, _hdiag⟩ :=
+    exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
+  let K := metricCurvData (I := I) (M := M) g
+  have hcurv :
+      AlgebraicCurvatureSymmetries3
+        (standardRmCompAt (I := I) basis
+          (metricRm04At (I := I) (M := M) g x)) :=
+    algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
+      (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis delta3 :=
+    orthonormal_invBasis3 (I := I) g basis horth
+  have hLower :
+      Rm04LowersRm13At (I := I) g x
+        (metricRm13At (I := I) (M := M) g x)
+        (metricRm04At (I := I) (M := M) g x) := by
+    exact rm04LowersRm13At_of_realizes
+      (I := I) g
+      (leviCivitaConnectionOfMetric (I := I) g)
+      (metricRm13 (I := I) (M := M) g)
+      (metricRm04 (I := I) (M := M) g)
+      K.rm13Realizes K.rm04Realizes x
+  have hRic :
+      RicciRealizesRm04FirstTraceAt (I := I)
+        (metricRicciAt (I := I) (M := M) g x)
+        (metricRm04At (I := I) (M := M) g x) delta3 basis :=
+    ricciFirstTraceAt_of_rm13 (I := I) g basis delta3 hinv
+      (metricRicciAt (I := I) (M := M) g x)
+      (metricRm13At (I := I) (M := M) g x)
+      (metricRm04At (I := I) (M := M) g x)
+      (metricRicciAt_eq_trace (I := I) (M := M) g x) hLower
+  have hScalar :
+      ScalarRealizesRicciTraceAt (I := I)
+        (metricScalarAt (I := I) (M := M) g x)
+        (metricRicciAt (I := I) (M := M) g x) delta3 basis := by
+    unfold ScalarRealizesRicciTraceAt
+    rw [metricScalarAt_def]
+    exact metricTracePair0SAt_eq_sum_basis (I := I) g basis delta3 hinv
+      (metricRicciAt (I := I) (M := M) g x)
+  have hEinComp : ∀ i j : Fin 3,
+      ricciCompAt (I := I) basis
+          (metricRicciAt (I := I) (M := M) g x) i j =
+        (metricScalarAt (I := I) (M := M) g x / 3) * delta3 i j := by
+    intro i j
+    rw [ricciCompAt_apply, hEin, horth]
+  intro X Y
+  exact rm04Std_ein3_at (I := I) horth hcurv hRic hScalar hEinComp X Y
 
 end DifferentialGeometry.Geometry.Curvature
