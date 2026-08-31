@@ -3,9 +3,10 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Differentia
 import DifferentialGeometry.Geometry.Curvature.CurvatureRicciContraction
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities
 import DifferentialGeometry.Geometry.Operator.WeightedLaplacianRicci
-import DifferentialGeometry.Geometry.Operator.WeightedLaplacian
+import DifferentialGeometry.Geometry.Operator.WeightedLaplacianTensorNorm
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SBochnerProduct
+import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false
 
@@ -1296,5 +1297,46 @@ theorem gradientRicciSoliton_weightedRoughLaplacian_ricci
   rw [hbridge]
   rw [hsum]
   simpa [metricRicciAt_apply_eq_ricciTensor] using hc
+
+omit [SigmaCompactSpace M] in
+theorem gradientRicciSoliton_weightedLaplacian_ricci_norm_sq
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {σ : Real}
+    (h : gradientRicciSoliton (I := I) g f σ) (x : M) :
+    let cov := LeviCivita (I := I) g
+    let hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞ := by
+      simpa [cov, LeviCivita] using
+        (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+          (I := I) (M := M) g)
+    let Ric := metricRicci (I := I) (M := M) g
+    let nablaRic := totalNabla0S (I := I) 2 cov Ric
+      (totalNabla0S_reg (I := I) 2 cov hcov Ric)
+    weightedLaplacian (I := I) g f
+        (⟨fun y : M => normSq0S (I := I) g y 2 (Ric y),
+          normSq0S_smooth (I := I) g Ric⟩ : C^∞⟮I, M; Real⟯) x =
+      2 * σ * normSq0S (I := I) g x 2 (Ric x) -
+        4 * inner0S (I := I) g x 2
+          (curvatureRicciContractionAt (I := I) (M := M) g x) (Ric x) +
+        2 * normSq0S (I := I) g x 3 (nablaRic x) := by
+  let cov := LeviCivita (I := I) g
+  let hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞ := by
+    simpa [cov, LeviCivita] using
+      (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+        (I := I) (M := M) g)
+  let Ric := metricRicci (I := I) (M := M) g
+  let nablaRic := totalNabla0S (I := I) 2 cov Ric
+    (totalNabla0S_reg (I := I) 2 cov hcov Ric)
+  have hnorm := Operator.weightedLaplacian_normSq0S
+    (I := I) (M := M) g f Ric x
+  have hric := gradientRicciSoliton_weightedRoughLaplacian_ricci
+    (I := I) (M := M) h x
+  change weightedLaplacian (I := I) g f
+      (⟨fun y : M => normSq0S (I := I) g y 2 (Ric y),
+        normSq0S_smooth (I := I) g Ric⟩ : C^∞⟮I, M; Real⟯) x = _
+  rw [hnorm, hric]
+  rw [inner0S_sub_left, _root_.Tensor0SBundle.inner0S_smul_left,
+    two_smul, inner0S_add_left]
+  simp only [normSq0S_eq_inner]
+  rw [← metricRicci_apply]
+  ring
 
 end DifferentialGeometry.Geometry
