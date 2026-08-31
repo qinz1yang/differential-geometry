@@ -245,6 +245,40 @@ theorem smoothMulLp_norm_le
     (phiSupBound_nonneg (I := I) (M := M) g φ)
     (fun f => norm_smoothMulLpFun_le (I := I) (M := M) g φ f)
 
+theorem norm_smoothMulLp_le_of_bound
+    (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
+    {C : ℝ} (hC : 0 ≤ C) (hφ : ∀ x : M, |φ x| ≤ C) :
+    ‖smoothMulLp (I := I) (M := M) g φ‖ ≤ C := by
+  apply ContinuousLinearMap.opNorm_le_bound _ hC
+  intro f
+  rw [smoothMulLp_apply]
+  have h_norm_eq : ‖smoothMulLpFun (I := I) (M := M) g φ f‖ =
+      (eLpNorm (fun x : M => φ x * (f : M → ℝ) x) 2
+        (riemannianVolumeMeasure (I := I) (M := M) g)).toReal := by
+    rw [show smoothMulLpFun (I := I) (M := M) g φ f =
+        (memLp_phi_mul_lp (I := I) (M := M) g φ f).toLp _ from rfl]
+    exact Lp.norm_toLp _ _
+  rw [h_norm_eq, Lp.norm_def]
+  have h_le :
+      eLpNorm (fun x : M => φ x * (f : M → ℝ) x) 2
+          (riemannianVolumeMeasure (I := I) (M := M) g) ≤
+        ENNReal.ofReal C * eLpNorm (f : M → ℝ) 2
+          (riemannianVolumeMeasure (I := I) (M := M) g) := by
+    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+      (Filter.Eventually.of_forall ?_) 2
+    intro x
+    rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_right (hφ x) (abs_nonneg _)
+  have h_f_lt : eLpNorm (f : M → ℝ) 2
+      (riemannianVolumeMeasure (I := I) (M := M) g) < ⊤ :=
+    (Lp.memLp f).2
+  have h_prod_lt : ENNReal.ofReal C * eLpNorm (f : M → ℝ) 2
+      (riemannianVolumeMeasure (I := I) (M := M) g) < ⊤ :=
+    ENNReal.mul_lt_top ENNReal.ofReal_lt_top h_f_lt
+  have h_le_real := ENNReal.toReal_mono h_prod_lt.ne h_le
+  rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hC] at h_le_real
+  exact h_le_real
+
 theorem smoothMulLp_apply_coeFn
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (f : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
