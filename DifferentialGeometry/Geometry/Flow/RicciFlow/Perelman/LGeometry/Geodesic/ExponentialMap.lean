@@ -33,12 +33,10 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-def IsLRegCurveOn
+def IsLRegGeodesicOn
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
-    (alpha : Real → M) (J : Set Real) (x : M) (Z : TangentSpace I x) : Prop :=
-  alpha 0 = x ∧
-    lVelocity (I := I) alpha 0 = 2 • Z ∧
-    ∀ s ∈ J,
+    (alpha : Real → M) (J : Set Real) : Prop :=
+  ∀ s ∈ J,
       T - s ^ 2 ∈ D.regular ∧
         MDifferentiableAt 𝓘(Real, Real) I alpha s ∧
         DifferentiableAt Real
@@ -47,6 +45,13 @@ def IsLRegCurveOn
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
             (fun r : Real => lVelocity (I := I) alpha r) s =
           lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s)
+
+def IsLRegCurveOn
+    (S : SolutionOn (I := I) (M := M) D) (T : Real)
+    (alpha : Real → M) (J : Set Real) (x : M) (Z : TangentSpace I x) : Prop :=
+  alpha 0 = x ∧
+    lVelocity (I := I) alpha 0 = 2 • Z ∧
+    IsLRegGeodesicOn S T alpha J
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in

@@ -97,7 +97,7 @@ theorem exists_lRegMinOn
   have hcurveOpen :
       IsLRegCurveOn S T alpha (Ioo (-e) (b + e)) x Z := by
     refine ⟨ha0, hvel, ?_⟩
-    simpa only [zero_sub] using halphaSol
+    simpa only [IsLRegGeodesicOn, zero_sub] using halphaSol
   have h0Open : (0 : Real) ∈ Ioo (-e) (b + e) := by
     constructor <;> linarith
   have hbOpen : b ∈ Ioo (-e) (b + e) := by

@@ -3932,7 +3932,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.ActionBranch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.EndpointInjectivity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.VariationExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.HessianBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LaplacianBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.TraceDensity

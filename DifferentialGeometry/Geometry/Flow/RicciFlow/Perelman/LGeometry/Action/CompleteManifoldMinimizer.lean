@@ -715,7 +715,7 @@ theorem exists_lMin_rm
   have hcurveOpen : IsLRegCurveOn S T alpha
       (Ioo (-e) (Real.sqrt tau + e)) x Z := by
     refine ⟨ha0, hvel, ?_⟩
-    simpa only [zero_sub] using halphaSol
+    simpa only [IsLRegGeodesicOn, zero_sub] using halphaSol
   have h0Open : (0 : Real) ∈ Ioo (-e) (Real.sqrt tau + e) := by
     constructor <;> linarith
   have htOpen : Real.sqrt tau ∈ Ioo (-e) (Real.sqrt tau + e) := by

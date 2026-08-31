@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.JacobiCrossTerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.VariationExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.CurvatureBoundedMinimizer
 
@@ -117,20 +117,7 @@ private theorem tailEnd_injective
     (hcurves : ∀ A ∈ V,
       alpha (A, s0) = gamma s0 ∧
         lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-        ∀ r ∈ K,
-          T - r ^ 2 ∈ D.regular ∧
-            MDifferentiableAt 𝓘(Real, Real) I
-              (fun q ↦ alpha (A, q)) r ∧
-            DifferentiableAt Real
-              (chartRepAt (I := I) (fun q ↦ alpha (A, q))
-                (fun q : Real ↦
-                  lVelocity (I := I) (fun z ↦ alpha (A, z)) q) r) r ∧
-            covDerivAlong (I := I) (S.base.metric (T - r ^ 2))
-                (fun q ↦ alpha (A, q))
-                (fun q : Real ↦
-                  lVelocity (I := I) (fun z ↦ alpha (A, z)) q) r =
-              lRegAccel S T r (alpha (A, r))
-                (lVelocity (I := I) (fun q ↦ alpha (A, q)) r))
+        IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) K)
     (hcenter : ∀ s ∈ Icc (0 : Real) b,
       (fun r ↦ alpha (A0, r)) =ᶠ[nhds s] gamma) :
     Function.Injective
@@ -471,20 +458,7 @@ theorem exists_lTail_inj
             (∀ A ∈ V,
               alpha (A, s0) = x0 ∧
                 lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-                ∀ r ∈ K,
-                  T - r ^ 2 ∈ D.regular ∧
-                    MDifferentiableAt 𝓘(Real, Real) I
-                      (fun q ↦ alpha (A, q)) r ∧
-                    DifferentiableAt Real
-                      (chartRepAt (I := I) (fun q ↦ alpha (A, q))
-                        (fun q : Real ↦
-                          lVelocity (I := I) (fun z ↦ alpha (A, z)) q) r) r ∧
-                    covDerivAlong (I := I) (S.base.metric (T - r ^ 2))
-                        (fun q ↦ alpha (A, q))
-                        (fun q : Real ↦
-                          lVelocity (I := I) (fun z ↦ alpha (A, z)) q) r =
-                      lRegAccel S T r (alpha (A, r))
-                        (lVelocity (I := I) (fun q ↦ alpha (A, q)) r)) ∧
+                IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) K) ∧
             Function.Injective
               (mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0) := by
   dsimp only
@@ -511,15 +485,7 @@ theorem exists_lTail_inj
     simpa only [J] using lRegDomain_seg S T x Z hbdom hs00.le hs0b.le
   have hbJ : b ∈ J := by
     simpa only [J] using hbdom
-  have hgamma : ∀ r ∈ J,
-      T - r ^ 2 ∈ D.regular ∧
-        MDifferentiableAt 𝓘(Real, Real) I gamma r ∧
-        DifferentiableAt Real
-          (chartRepAt (I := I) gamma
-            (fun q : Real ↦ lVelocity (I := I) gamma q) r) r ∧
-        covDerivAlong (I := I) (S.base.metric (T - r ^ 2)) gamma
-            (fun q : Real ↦ lVelocity (I := I) gamma q) r =
-          lRegAccel S T r (gamma r) (lVelocity (I := I) gamma r) := by
+  have hgamma : IsLRegGeodesicOn S T gamma J := by
     intro r hr
     have hrdom : r ∈ lRegDomain S T x Z := by
       simpa only [J] using hr
@@ -533,7 +499,7 @@ theorem exists_lTail_inj
     exact lRegData_congr S T r heq (hchosen.2.2 r hrK)
   obtain ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, hs0K, hbK,
       alpha, halpha, hcurves⟩ :=
-    lTailFamily_span S hS T hJopen hJconn h0J hs0J hbJ rfl rfl hgamma
+    exists_lRegGeodesicFamily_to_time_containing_zero S hS T hJopen hJconn h0J hs0J hbJ rfl rfl hgamma
   have hcenterEq : Set.EqOn (fun r ↦ alpha (A0, r)) gamma (Ktime ∩ J) :=
     lRegSol_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
       (hcurves A0 hA0V).2.2 hgamma
