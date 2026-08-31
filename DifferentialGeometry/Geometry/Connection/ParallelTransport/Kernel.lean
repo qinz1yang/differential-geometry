@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantCone
+import DifferentialGeometry.Tensor.Alternating.Contraction
 
 set_option autoImplicit false
 
@@ -96,6 +97,39 @@ theorem transport_mem_iff (h : IsParallelSubmoduleFamily V P S)
     exact ⟨v, hv, rfl⟩
 
 end IsParallelSubmoduleFamily
+
+def IsParallelAlternatingSubmoduleFamily
+    (P : LinearIsometricTransport V)
+    (K : ∀ x, Submodule ℝ (V x [⋀^Fin 2]→ₗ[ℝ] ℝ)) : Prop :=
+  ∀ x y,
+    Submodule.map
+      (AlternatingMap.domLCongr ℝ ℝ (Fin 2) ℝ
+        (P.transport x y).toLinearEquiv).toLinearMap (K x) = K y
+
+namespace IsParallelAlternatingSubmoduleFamily
+
+variable {P : LinearIsometricTransport V}
+  {K : ∀ x, Submodule ℝ (V x [⋀^Fin 2]→ₗ[ℝ] ℝ)}
+
+theorem contractionAnnihilator
+    (h : IsParallelAlternatingSubmoduleFamily V P K) :
+    IsParallelSubmoduleFamily V P
+      (fun x => AlternatingMap.contractionAnnihilator (K x)) := by
+  intro x y
+  have hback :
+      Submodule.map
+          (AlternatingMap.domLCongr ℝ ℝ (Fin 2) ℝ
+            (P.transport x y).symm.toLinearEquiv).toLinearMap (K y) =
+        K x := by
+    simpa [P.transport_symm V x y] using h y x
+  change Submodule.map (P.transport x y).toLinearMap
+      (AlternatingMap.contractionAnnihilator (K x)) =
+    AlternatingMap.contractionAnnihilator (K y)
+  rw [← hback]
+  exact AlternatingMap.map_contractionAnnihilator_compLinearEquiv
+    (K y) (P.transport x y).toLinearEquiv
+
+end IsParallelAlternatingSubmoduleFamily
 
 structure UhlenbeckKernelTransfer (base : X)
     (fixedOperator : V base →L[ℝ] V base)

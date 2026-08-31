@@ -226,6 +226,16 @@ theorem finrank_ker_curryLeft_eq_one [FiniteDimensional ℝ E] (hE : Module.finr
   rw [hE] at hsum
   omega
 
+theorem finrank_contractionAnnihilator_eq_one [FiniteDimensional ℝ E]
+    (hE : Module.finrank ℝ E = 3)
+    (K : Submodule ℝ (E [⋀^Fin 2]→ₗ[ℝ] ℝ))
+    (hK : Module.finrank ℝ K = 1) :
+    Module.finrank ℝ (contractionAnnihilator K) = 1 := by
+  obtain ⟨ω, hω, _, hann⟩ :=
+    contractionAnnihilator_eq_curryLeft_ker_of_finrank_eq_one K hK
+  rw [hann]
+  exact finrank_ker_curryLeft_eq_one hE hω
+
 theorem map_ker_curryLeft_compLinearEquiv
     {F : Type*} [AddCommGroup F] [Module ℝ F]
     (ω : E [⋀^Fin 2]→ₗ[ℝ] ℝ) (e : F ≃ₗ[ℝ] E) :
