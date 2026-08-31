@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
+import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
+import DifferentialGeometry.Geometry.Metric.Pullback.Product
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
 import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
 import Mathlib.Geometry.Manifold.Instances.Quotient
@@ -225,80 +227,13 @@ private theorem roundTwoSphereAntipodalDiffeomorph_pullbackMetric :
     (roundInner_sphereDiffeo (n := 2)
       (LinearIsometryEquiv.neg Real) x v w)
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem realNegDiffeomorph_pullbackMetric :
-    Diffeomorph.pullbackMetric (euclideanMetric (E := Real))
-        (ContinuousLinearEquiv.neg Real).toDiffeomorph =
-      euclideanMetric := by
-  apply SmoothRiemannianMetric.ext_inner
-  intro x v w
-  rw [Diffeomorph.pullbackMetric_inner,
-    DifferentialGeometry.euclideanMetric_inner,
-    DifferentialGeometry.euclideanMetric_inner]
-  change inner Real
-      (mfderiv 𝓘(Real, Real) 𝓘(Real, Real) (fun q : Real => -q) x v)
-      (mfderiv 𝓘(Real, Real) 𝓘(Real, Real) (fun q : Real => -q) x w) =
-    inner Real v w
-  have hmf (z a : Real) :
-      mfderiv 𝓘(Real, Real) 𝓘(Real, Real) (fun q : Real => -q) z a = -a := by
-    rw [mfderiv_eq_fderiv]
-    change (fderiv Real (fun q : Real => -q) z) a = -a
-    rw [show (fun q : Real => -q) = -(id : Real → Real) by rfl,
-      fderiv_neg, fderiv_id]
-    rfl
-  calc
-    inner Real
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, Real) (fun q : Real => -q) x v)
-        (mfderiv 𝓘(Real, Real) 𝓘(Real, Real) (fun q : Real => -q) x w) =
-      inner Real (-v) (-w) :=
-        congrArg₂ (inner Real) (hmf x v) (hmf x w)
-    _ = inner Real v w := by
-      exact inner_neg_neg v w
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E]
-variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
-  [FiniteDimensional Real F]
-variable {H : Type*} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H}
-variable {G : Type*} [TopologicalSpace G]
-variable {J : ModelWithCorners Real F G}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
-variable [T2Space M] [T2Space N]
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem pullbackMetric_prodCongr
-    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
-    (Phi : M ≃ₘ⟮I, I⟯ M) (Psi : N ≃ₘ⟮J, J⟯ N) :
-    Diffeomorph.pullbackMetric (g.prod h) (Phi.prodCongr Psi) =
-      (Diffeomorph.pullbackMetric g Phi).prod
-        (Diffeomorph.pullbackMetric h Psi) := by
-  apply SmoothRiemannianMetric.ext_inner
-  intro x v w
-  rw [Diffeomorph.pullbackMetric_inner,
-    SmoothRiemannianMetric.prod_inner,
-    SmoothRiemannianMetric.prod_inner,
-    Diffeomorph.pullbackMetric_inner,
-    Diffeomorph.pullbackMetric_inner]
-  have hPhi : MDiffAt (Phi : M → M) x.1 :=
-    Phi.contMDiff.mdifferentiableAt (by simp)
-  have hPsi : MDiffAt (Psi : N → N) x.2 :=
-    Psi.contMDiff.mdifferentiableAt (by simp)
-  rw [Diffeomorph.coe_prodCongr]
-  rw [mfderiv_prodMap hPhi hPsi]
-  simp [ContinuousLinearMap.prodMap]
-  rfl
-
 theorem cylinderAntipodalDiffeomorph_pullbackMetric :
     Diffeomorph.pullbackMetric roundThreeCylinderShrinkerMetric
         cylinderAntipodalDiffeomorph =
       roundThreeCylinderShrinkerMetric := by
   rw [roundThreeCylinderShrinkerMetric,
     cylinderAntipodalDiffeomorph,
-    pullbackMetric_prodCongr,
+    Diffeomorph.pullbackMetric_prodCongr,
     roundTwoSphereAntipodalDiffeomorph_pullbackMetric,
     Diffeomorph.pullbackMetric_refl]
 
@@ -306,11 +241,25 @@ theorem cylinderDiagonalDiffeomorph_pullbackMetric :
     Diffeomorph.pullbackMetric roundThreeCylinderShrinkerMetric
         cylinderDiagonalDiffeomorph =
       roundThreeCylinderShrinkerMetric := by
+  have hneg :
+      Diffeomorph.pullbackMetric (euclideanMetric (E := Real))
+          (ContinuousLinearEquiv.neg Real).toDiffeomorph =
+        euclideanMetric := by
+    have hdiffeo :
+        (ContinuousLinearEquiv.neg Real).toDiffeomorph =
+          (LinearIsometryEquiv.neg Real : Real ≃ₗᵢ[Real] Real).toContinuousLinearEquiv.toDiffeomorph := by
+      apply Diffeomorph.ext
+      intro x
+      rfl
+    rw [hdiffeo]
+    exact
+      LinearIsometryEquiv.pullbackMetric_euclidean
+        (E := Real) (LinearIsometryEquiv.neg Real)
   rw [roundThreeCylinderShrinkerMetric,
     cylinderDiagonalDiffeomorph,
-    pullbackMetric_prodCongr,
+    Diffeomorph.pullbackMetric_prodCongr,
     roundTwoSphereAntipodalDiffeomorph_pullbackMetric,
-    realNegDiffeomorph_pullbackMetric]
+    hneg]
 
 theorem cylinderAntipodalDiffeomorph_potential :
     roundThreeCylinderShrinkerPotential.comp
