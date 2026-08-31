@@ -7,6 +7,7 @@ import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Topology.MetricSpace.Lipschitz
 
 set_option autoImplicit false
 
@@ -360,6 +361,64 @@ theorem nonLipschitzReaction_on_square (u : ℝ) (hu : 0 ≤ u) :
   rw [nonLipschitzReaction, max_eq_left (sq_nonneg u), Real.sqrt_sq_eq_abs,
     abs_of_nonneg hu]
 
+theorem nonLipschitzReaction_zero : nonLipschitzReaction 0 = 0 := by
+  norm_num [nonLipschitzReaction]
+
+theorem nonLipschitzReaction_continuous : Continuous nonLipschitzReaction := by
+  exact (continuous_const.mul
+    (Real.continuous_sqrt.comp (continuous_id.max continuous_const)))
+
+private theorem nonLipschitzReaction_not_lipschitzOnWith_Icc
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) (K : NNReal) :
+    ¬ LipschitzOnWith K nonLipschitzReaction (Set.Icc 0 epsilon) := by
+  intro hLipschitz
+  let k : ℝ := K
+  let u : ℝ := min (Real.sqrt epsilon / 2) (1 / (k + 1))
+  have hk : 0 ≤ k := K.coe_nonneg
+  have hsqrt : 0 < Real.sqrt epsilon := Real.sqrt_pos.2 hepsilon
+  have hkone : 0 < k + 1 := by linarith
+  have hu : 0 < u := by
+    exact lt_min (div_pos hsqrt (by norm_num)) (one_div_pos.mpr hkone)
+  have hu_sqrt : u ≤ Real.sqrt epsilon / 2 := min_le_left _ _
+  have hu_k : u ≤ 1 / (k + 1) := min_le_right _ _
+  let a : ℝ := u ^ 2
+  have ha_nonneg : 0 ≤ a := sq_nonneg u
+  have ha_le : a ≤ epsilon := by
+    have hsqrt_sq : Real.sqrt epsilon ^ 2 = epsilon := Real.sq_sqrt hepsilon.le
+    dsimp [a]
+    nlinarith [sq_nonneg (Real.sqrt epsilon / 2 - u)]
+  have hdist := hLipschitz.dist_le_mul a
+    (show a ∈ Set.Icc 0 epsilon from ⟨ha_nonneg, ha_le⟩) 0
+    (show (0 : ℝ) ∈ Set.Icc 0 epsilon from ⟨le_rfl, hepsilon.le⟩)
+  have hreaction_a : nonLipschitzReaction a = -2 * u := by
+    dsimp [a]
+    exact nonLipschitzReaction_on_square u hu.le
+  rw [hreaction_a, nonLipschitzReaction_zero] at hdist
+  have hbound : 2 * u ≤ k * u ^ 2 := by
+    have hneg : -2 * u ≤ 0 := by linarith
+    simpa [Real.dist_eq, abs_of_nonneg hu.le, abs_of_nonpos hneg,
+      a, k] using hdist
+  have hku : k * u < 1 := by
+    calc
+      k * u ≤ k * (1 / (k + 1)) := mul_le_mul_of_nonneg_left hu_k hk
+      _ = k / (k + 1) := by ring
+      _ < 1 := (div_lt_one hkone).2 (by linarith)
+  nlinarith
+
+theorem nonLipschitzReaction_not_locallyLipschitz :
+    ¬ LocallyLipschitz nonLipschitzReaction := by
+  intro hloc
+  obtain ⟨K, s, hs, hLipschitz⟩ := hloc 0
+  obtain ⟨epsilon, hepsilon, hball⟩ := Metric.mem_nhds_iff.mp hs
+  have hhalf : 0 < epsilon / 2 := half_pos hepsilon
+  have hsubset : Set.Icc (0 : ℝ) (epsilon / 2) ⊆ s := by
+    intro x hx
+    apply hball
+    rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_nonneg hx.1]
+    exact hx.2.trans_lt (half_lt_self hepsilon)
+  exact nonLipschitzReaction_not_lipschitzOnWith_Icc hhalf K
+    (hLipschitz.mono hsubset)
+
 theorem rankLossSolution_nonneg (t : ℝ) : 0 ≤ rankLossSolution t := by
   exact sq_nonneg _
 
@@ -381,5 +440,68 @@ theorem rankLossSolution_reaction_of_lt {t : ℝ} (ht : t < 1) :
     nonLipschitzReaction (rankLossSolution t) = -2 * (1 - t) := by
   rw [rankLossSolution_eq_square_of_lt ht]
   exact nonLipschitzReaction_on_square (1 - t) (le_of_lt (sub_pos.mpr ht))
+
+private theorem rankLossSolution_hasDerivAt_one :
+    HasDerivAt rankLossSolution 0 1 := by
+  have hleft : HasDerivWithinAt rankLossSolution 0 (Set.Iio 1) 1 := by
+    have hpoly : HasDerivAt (fun t : ℝ => (1 - t) ^ 2) 0 1 := by
+      have hlin := (hasDerivAt_const (x := (1 : ℝ)) (c := (1 : ℝ))).sub
+        (hasDerivAt_id (x := (1 : ℝ)))
+      have hlinfun : (fun _ : ℝ => 1) - id = fun t : ℝ => 1 - t := by
+        funext t
+        rfl
+      rw [hlinfun] at hlin
+      have hmul := hlin.mul hlin
+      have hmulf : (fun t : ℝ => 1 - t) * (fun t : ℝ => 1 - t) =
+          fun t : ℝ => (1 - t) ^ 2 := by
+        funext t
+        rw [Pi.mul_apply, pow_two]
+      rw [hmulf] at hmul
+      norm_num at hmul
+      exact hmul
+    exact hpoly.hasDerivWithinAt.congr
+      (fun t ht => rankLossSolution_eq_square_of_lt ht)
+      (by simp [rankLossSolution])
+  have hright : HasDerivWithinAt rankLossSolution 0 (Set.Ioi 1) 1 := by
+    have hzero := hasDerivAt_const (x := (1 : ℝ)) (c := (0 : ℝ))
+    exact hzero.hasDerivWithinAt.congr (f₁ := rankLossSolution)
+      (fun t ht => rankLossSolution_eq_zero_of_one_le ht.le)
+      (by simp [rankLossSolution])
+  rw [hasDerivAt_iff_tendsto_slope_left_right]
+  exact ⟨by simpa using hasDerivWithinAt_iff_tendsto_slope.mp hleft,
+    by simpa using hasDerivWithinAt_iff_tendsto_slope.mp hright⟩
+
+theorem rankLossSolution_hasDerivAt (t : ℝ) :
+    HasDerivAt rankLossSolution (nonLipschitzReaction (rankLossSolution t)) t := by
+  rcases lt_trichotomy t 1 with ht | rfl | ht
+  · have hpoly : HasDerivAt (fun s : ℝ => (1 - s) ^ 2) (-2 * (1 - t)) t := by
+      have hlin := (hasDerivAt_const (x := t) (c := (1 : ℝ))).sub
+        (hasDerivAt_id (x := t))
+      have hlinfun : (fun _ : ℝ => 1) - id = fun s : ℝ => 1 - s := by
+        funext s
+        rfl
+      rw [hlinfun] at hlin
+      have hmul := hlin.mul hlin
+      have hmulf : (fun s : ℝ => 1 - s) * (fun s : ℝ => 1 - s) =
+          fun s : ℝ => (1 - s) ^ 2 := by
+        funext s
+        rw [Pi.mul_apply, pow_two]
+      rw [hmulf] at hmul
+      exact hmul.congr_deriv (by ring)
+    have heq : Filter.EventuallyEq (nhds t) rankLossSolution
+        (fun s : ℝ => (1 - s) ^ 2) := by
+      filter_upwards [Iio_mem_nhds ht] with s hs
+      exact rankLossSolution_eq_square_of_lt hs
+    rw [rankLossSolution_reaction_of_lt ht]
+    exact hpoly.congr_of_eventuallyEq heq
+  · rw [show nonLipschitzReaction (rankLossSolution 1) = 0 by
+      rw [rankLossSolution_eq_zero_of_one_le le_rfl, nonLipschitzReaction_zero]]
+    exact rankLossSolution_hasDerivAt_one
+  · have hzero := hasDerivAt_const (x := t) (c := (0 : ℝ))
+    have heq : Filter.EventuallyEq (nhds t) rankLossSolution (fun _ : ℝ => 0) := by
+      filter_upwards [Ioi_mem_nhds ht] with s hs
+      exact rankLossSolution_eq_zero_of_one_le hs.le
+    rw [rankLossSolution_eq_zero_of_one_le ht.le, nonLipschitzReaction_zero]
+    exact hzero.congr_of_eventuallyEq heq
 
 end DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple
