@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FormCompletion
+import DifferentialGeometry.Analysis.Integration.Measure.CompactParametricIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.CometricDifferenceRaisedGreenPairing
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
+import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity
 
 noncomputable section
 
@@ -142,6 +144,66 @@ private lemma dirichletCometricDifferenceForm_integrable
     hcont'.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   refine hint.congr (Filter.Eventually.of_forall fun x => ?_)
   exact dirichletCometricDifferenceForm_integrand q h u v x
+
+theorem dirichletCometricDifferenceForm_time_cont
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn
+      (I := I_half n) (M := M) D}
+    (hG : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+      (I := I_half n) (M := M) D G.metric)
+    (q : SmoothRiemannianMetric (I_half n) M)
+    {K : Set ℝ} (hK : IsCompact K) (hKreg : K ⊆ D.regular)
+    (u v : SmoothScalarDirichlet q) :
+    ContinuousOn
+      (fun t => dirichletCometricDifferenceForm q (G.metric t) u v) K := by
+  let μ := riemannianVolumeMeasure (I := I_half n) (M := M) q
+  let _ : IsFiniteMeasure μ :=
+    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
+      (I := I_half n) (M := M) q
+  let c : ℝ := ∫ x, q.inner x
+    (gradFun (I := I_half n) q u.toFun x)
+    (gradFun (I := I_half n) q v.toFun x) ∂μ
+  have hmove : ContinuousOn
+      (fun t : ℝ => ∫ x, (G.metric t).inner x
+        (gradFun (I := I_half n) (G.metric t) u.toFun x)
+        (gradFun (I := I_half n) (G.metric t) v.toFun x) ∂μ) K :=
+    integral_contOn_cpt μ
+      (fun t x => (G.metric t).inner x
+        (gradFun (I := I_half n) (G.metric t) u.toFun x)
+        (gradFun (I := I_half n) (G.metric t) v.toFun x)) hK
+      (DifferentialGeometry.Geometry.Operator.WithBoundary.gradient_inner_continuousOn_of_tsupport_subset_interior
+        hG hKreg u.smooth v.smooth u.interior_support)
+  have heq (t : ℝ) :
+      dirichletCometricDifferenceForm q (G.metric t) u v =
+        (∫ x, (G.metric t).inner x
+          (gradFun (I := I_half n) (G.metric t) u.toFun x)
+          (gradFun (I := I_half n) (G.metric t) v.toFun x) ∂μ) - c := by
+    have hmoveInt : Integrable (fun x : M => (G.metric t).inner x
+        (gradFun (I := I_half n) (G.metric t) u.toFun x)
+        (gradFun (I := I_half n) (G.metric t) v.toFun x)) μ :=
+      (DifferentialGeometry.Geometry.Operator.WithBoundary.continuous_g_inner_gradFun_gradFun
+        (G.metric t) u.smooth v.smooth).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)
+    have hqInt : Integrable (fun x : M => q.inner x
+        (gradFun (I := I_half n) q u.toFun x)
+        (gradFun (I := I_half n) q v.toFun x)) μ :=
+      (DifferentialGeometry.Geometry.Operator.WithBoundary.continuous_g_inner_gradFun_gradFun
+        q u.smooth v.smooth).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)
+    unfold dirichletCometricDifferenceForm
+    change (∫ x, q.inner x
+        (metricComparisonDifferenceEndomorphism (I := I_half n) q (G.metric t) x
+          (gradFun (I := I_half n) q u.toFun x))
+        (gradFun (I := I_half n) q v.toFun x) ∂μ) = _
+    rw [show c = ∫ x, q.inner x
+      (gradFun (I := I_half n) q u.toFun x)
+      (gradFun (I := I_half n) q v.toFun x) ∂μ from rfl]
+    rw [← integral_sub hmoveInt hqInt]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    exact (dirichletCometricDifferenceForm_integrand q (G.metric t) u v x).symm
+  refine (hmove.sub (continuousOn_const : ContinuousOn (fun _ : ℝ => c) K)).congr ?_
+  intro t _
+  exact heq t
 
 theorem dirichletCometricDifferenceForm_add_left
     (q h : SmoothRiemannianMetric (I_half n) M)

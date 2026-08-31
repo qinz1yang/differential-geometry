@@ -15,19 +15,17 @@ variable [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 variable {T : ℝ}
 
 omit [CompleteSpace X] in
-theorem memLp_timeOp
+theorem memLp_timeOp_of_apply_aestronglyMeasurable
     (A : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (f : timeL2 X T) :
     MemLp (fun t => A t (f t)) 2 (timeMeasure T) := by
   have hf : AEStronglyMeasurable (fun t => f t) (timeMeasure T) :=
     Lp.aestronglyMeasurable f
-  have hmeas : AEStronglyMeasurable (fun t => A t (f t)) (timeMeasure T) := by
-    have h :=
-      (ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hf hA
-    simpa only [ContinuousLinearMap.apply_apply] using h
+  have hmeas : AEStronglyMeasurable (fun t => A t (f t)) (timeMeasure T) :=
+    AEStronglyMeasurable.clm_apply_of_apply_aestronglyMeasurable A hA f hf
   refine MemLp.of_le_mul (c := (C : ℝ)) (Lp.memLp f) hmeas ?_
   filter_upwards [hC] with t ht
   calc
@@ -35,30 +33,42 @@ theorem memLp_timeOp
     _ ≤ (C : ℝ) * ‖f t‖ :=
       mul_le_mul_of_nonneg_right ht (norm_nonneg _)
 
-variable [CompleteSpace Y]
-
-private noncomputable def timeOpFun
-    (A : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
-    (C : NNReal)
-    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
-    (f : timeL2 X T) : timeL2 Y T :=
-  (memLp_timeOp A hA C hC f).toLp (fun t => A t (f t))
-
-omit [CompleteSpace X] [CompleteSpace Y] in
-private theorem timeOpFun_apply_ae
+omit [CompleteSpace X] in
+theorem memLp_timeOp
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (f : timeL2 X T) :
+    MemLp (fun t => A t (f t)) 2 (timeMeasure T) :=
+  memLp_timeOp_of_apply_aestronglyMeasurable A
+    (fun x => hA.apply_continuousLinearMap x) C hC f
+
+variable [CompleteSpace Y]
+
+private noncomputable def timeOpFun
+    (A : ℝ → X →L[ℝ] Y)
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
+    (C : NNReal)
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
+    (f : timeL2 X T) : timeL2 Y T :=
+  (memLp_timeOp_of_apply_aestronglyMeasurable A hA C hC f).toLp
+    (fun t => A t (f t))
+
+omit [CompleteSpace X] [CompleteSpace Y] in
+private theorem timeOpFun_apply_ae
+    (A : ℝ → X →L[ℝ] Y)
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
+    (C : NNReal)
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
+    (f : timeL2 X T) :
     timeOpFun A hA C hC f =ᵐ[timeMeasure T] fun t => A t (f t) :=
-  (memLp_timeOp A hA C hC f).coeFn_toLp
+  (memLp_timeOp_of_apply_aestronglyMeasurable A hA C hC f).coeFn_toLp
 
 omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_add
     (A : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (f g : timeL2 X T) :
@@ -77,7 +87,7 @@ private theorem timeOpFun_add
 omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_smul
     (A : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (c : ℝ) (f : timeL2 X T) :
@@ -94,7 +104,7 @@ private theorem timeOpFun_smul
 omit [CompleteSpace X] [CompleteSpace Y] in
 private theorem timeOpFun_norm_le
     (A : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (f : timeL2 X T) :
@@ -109,7 +119,7 @@ private theorem timeOpFun_norm_le
 
 private noncomputable def timeOpLin
     (A : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ)) :
     timeL2 X T →ₗ[ℝ] timeL2 Y T where
@@ -117,14 +127,44 @@ private noncomputable def timeOpLin
   map_add' := timeOpFun_add A hA C hC
   map_smul' := timeOpFun_smul A hA C hC
 
+noncomputable def timeOpOfApplyAEStronglyMeasurable
+    (A : ℝ → X →L[ℝ] Y)
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
+    (C : NNReal)
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ)) :
+    timeL2 X T →L[ℝ] timeL2 Y T :=
+  (timeOpLin A hA C hC).mkContinuous (C : ℝ)
+    (timeOpFun_norm_le A hA C hC)
+
+omit [CompleteSpace X] [CompleteSpace Y] in
+theorem timeOpOfApplyAEStronglyMeasurable_apply_ae
+    (A : ℝ → X →L[ℝ] Y)
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
+    (C : NNReal)
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
+    (f : timeL2 X T) :
+    timeOpOfApplyAEStronglyMeasurable A hA C hC f =ᵐ[timeMeasure T]
+      fun t => A t (f t) :=
+  timeOpFun_apply_ae A hA C hC f
+
+omit [CompleteSpace X] [CompleteSpace Y] in
+theorem timeOpOfApplyAEStronglyMeasurable_norm_le
+    (A : ℝ → X →L[ℝ] Y)
+    (hA : ∀ x, AEStronglyMeasurable (fun t => A t x) (timeMeasure T))
+    (C : NNReal)
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ)) :
+    ‖timeOpOfApplyAEStronglyMeasurable A hA C hC‖ ≤ (C : ℝ) := by
+  exact LinearMap.mkContinuous_norm_le (timeOpLin A hA C hC) C.coe_nonneg
+    (timeOpFun_norm_le A hA C hC)
+
 noncomputable def timeOp
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ)) :
     timeL2 X T →L[ℝ] timeL2 Y T :=
-  (timeOpLin A hA C hC).mkContinuous (C : ℝ)
-    (timeOpFun_norm_le A hA C hC)
+  timeOpOfApplyAEStronglyMeasurable A
+    (fun x => hA.apply_continuousLinearMap x) C hC
 
 omit [CompleteSpace X] [CompleteSpace Y] in
 theorem timeOp_apply_ae
@@ -134,7 +174,8 @@ theorem timeOp_apply_ae
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (f : timeL2 X T) :
     timeOp A hA C hC f =ᵐ[timeMeasure T] fun t => A t (f t) :=
-  timeOpFun_apply_ae A hA C hC f
+  timeOpOfApplyAEStronglyMeasurable_apply_ae A
+    (fun x => hA.apply_continuousLinearMap x) C hC f
 
 omit [CompleteSpace X] [CompleteSpace Y] in
 theorem timeOp_norm_le
@@ -142,9 +183,9 @@ theorem timeOp_norm_le
     (hA : AEStronglyMeasurable A (timeMeasure T))
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ)) :
-    ‖timeOp A hA C hC‖ ≤ (C : ℝ) := by
-  exact LinearMap.mkContinuous_norm_le (timeOpLin A hA C hC) C.coe_nonneg
-    (timeOpFun_norm_le A hA C hC)
+    ‖timeOp A hA C hC‖ ≤ (C : ℝ) :=
+  timeOpOfApplyAEStronglyMeasurable_norm_le A
+    (fun x => hA.apply_continuousLinearMap x) C hC
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
