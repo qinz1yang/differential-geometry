@@ -44,6 +44,28 @@ theorem exists_smooth_kernel
   · intro x
     exact ContMDiffVectorSubbundle.kernel_fiber A hA k hker x
 
+theorem exists_smooth_subbundle_of_locally_eq_kernel
+    (S : ∀ x, Submodule 𝕜 (V₁ x)) (k : ℕ)
+    (hlocal : ∀ x₀, ∃ (W : Set M) (A : ∀ x, V₁ x →L[𝕜] V₂ x),
+      IsOpen W ∧ x₀ ∈ W ∧
+      ContMDiffOn I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+        (fun x => TotalSpace.mk' (F₁ →L[𝕜] F₂) x (A x)) W ∧
+      (∀ x ∈ W, Module.finrank 𝕜 (A x).ker = k) ∧
+      ∀ x ∈ W, S x = (A x).ker) :
+    ∃ T : ContMDiffVectorSubbundle (I := I) (F := F₁) (V := V₁) (n := n),
+      T.rank = k ∧ ∀ x, T.fiber x = S x := by
+  let T : ContMDiffVectorSubbundle (I := I) (F := F₁) (V := V₁) (n := n) :=
+    { fiber := S
+      rank := k
+      exists_isSubbundleFrameOn := fun x₀ => by
+        obtain ⟨W, A, hW, hx₀W, hA, hker, hS⟩ := hlocal x₀
+        obtain ⟨U, s, hU, hx₀U, hUW, hs⟩ :=
+          exists_kernel_frameOn A W hW hA k hker x₀ hx₀W
+        refine ⟨U, s, hU, hx₀U, hs.linearIndependent, ?_, hs.contMDiffOn⟩
+        intro x hx
+        rw [hs.spans hx, hS x (hUW hx)] }
+  exact ⟨T, rfl, fun _ => rfl⟩
+
 theorem exists_smooth_kernel_frame
     (A : ∀ x, V₁ x →L[𝕜] V₂ x)
     (hA : ContMDiff I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
