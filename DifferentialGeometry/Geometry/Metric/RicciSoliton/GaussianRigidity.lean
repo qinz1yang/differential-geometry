@@ -3,7 +3,12 @@ import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.GeodesicSpeedBound
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
+import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
+import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
+import DifferentialGeometry.Geometry.Exponential.NormalFrame
 import DifferentialGeometry.Geometry.Exponential.RadialFlat
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialGrowth
 
 set_option autoImplicit false
 
@@ -427,5 +432,295 @@ theorem normalizedGradientRicciSoliton_expMapIntrinsic_mfderiv_inner_of_scalar_e
   exact
     normalizedGradientRicciSoliton_riemannOp_velocity_eq_zero_along_geodesic_of_scalar_eq_zero
       (I := I) h hx hγ hgeo hcrit0 t X (curveVelocity (I := I) γ t)
+
+end DifferentialGeometry.Geometry
+
+namespace DifferentialGeometry.Geometry
+
+open Curvature Operator
+open Riemannian
+open Riemannian.Exponential
+open Riemannian.Geodesic
+open Riemannian.NormalCoordinates
+open Riemannian.Variation
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
+  [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+  [ConnectedSpace M]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem normalizedGradientRicciSoliton_isGaussian_of_scalar_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0) :
+    isGaussianGradientRicciSoliton (E := E) g f 1 := by
+  let _ : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun y : M ↦ TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  let _ : CompleteSpace M := h.1.complete
+  let hEnorm : IsMetricNorm (I := I) (M := M) g := fun y v =>
+    tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+  obtain ⟨p, hpmin⟩ :=
+    normalizedGradientRicciSoliton_exists_potential_minimizer (I := I) h
+  have hpcrit : gradFun (I := I) g f p = 0 :=
+    gradientFun_eq_zero_at_spatial_min (I := I) g
+      (hpmin.isLocalMin (isOpen_univ.mem_nhds (Set.mem_univ p)))
+      ((f.contMDiff p).mdifferentiableAt (by simp))
+  let expf : E → M := fun u =>
+    expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from u)
+  have hexp_local : IsLocalDiffeomorph 𝓘(Real, E) I ∞ expf := by
+    intro u
+    have hinj : Function.Injective (mfderiv 𝓘(Real, E) I expf u) := by
+      intro v w hvw
+      by_contra hvw_ne
+      have hpos : 0 < g.inner p (v - w) (v - w) :=
+        g.pos p (v - w) (sub_ne_zero.mpr hvw_ne)
+      have hmetric :=
+        normalizedGradientRicciSoliton_expMapIntrinsic_mfderiv_inner_of_scalar_eq_zero
+          (I := I) h hEnorm hx hpcrit u (v - w) (v - w)
+      have hzero : mfderiv 𝓘(Real, E) I expf u (v - w) = 0 := by
+        rw [map_sub, hvw, sub_self]
+      rw [hzero] at hmetric
+      simp only [map_zero] at hmetric
+      exact (ne_of_gt hpos) hmetric.symm
+    have hnconj : ¬ IsConjVec (I := I) g hEnorm p u := by
+      with_unfolding_all
+        exact fun hnot => hnot hinj
+    obtain ⟨B, huB⟩ := branch_of_not_conj (I := I) g hEnorm hnconj
+    exact ⟨B.hom, huB, B.hom_eq⟩
+  have hexp_surj : Function.Surjective expf := by
+    intro q
+    obtain ⟨u, hu, -⟩ :=
+      hopf_rinow_expMapIntrinsic_surjective_minimizing (I := I) g hEnorm p q
+    exact ⟨u, hu⟩
+  have hexp_inj : Function.Injective expf := by
+    intro u v huv
+    let γu : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
+    let γv : Real → M := intrinsicGeodesic (I := I) g hEnorm p v
+    have hγu : ContMDiff 𝓘(Real, Real) I ∞ γu :=
+      intrinsicGeodesic_contMDiff (I := I) g hEnorm p u
+    have hγv : ContMDiff 𝓘(Real, Real) I ∞ γv :=
+      intrinsicGeodesic_contMDiff (I := I) g hEnorm p v
+    have hgeou : IsGeodesic (I := I) g γu :=
+      intrinsicGeodesic_isGeodesic (I := I) g hEnorm p u
+    have hgeov : IsGeodesic (I := I) g γv :=
+      intrinsicGeodesic_isGeodesic (I := I) g hEnorm p v
+    have hend : γu 1 = γv 1 := by
+      change intrinsicGeodesic (I := I) g hEnorm p u 1 =
+        intrinsicGeodesic (I := I) g hEnorm p v 1 at huv
+      exact huv
+    let δu : Real → M := fun t => γu (t + 1)
+    let δv : Real → M := fun t => γv (t + 1)
+    have hδu : ContMDiff 𝓘(Real, Real) I ∞ δu :=
+      hγu.comp (contDiff_id.add contDiff_const).contMDiff
+    have hδv : ContMDiff 𝓘(Real, Real) I ∞ δv :=
+      hγv.comp (contDiff_id.add contDiff_const).contMDiff
+    have hδgeou : IsGeodesic (I := I) g δu := by
+      simpa only [δu] using isGeodesic_comp_add hgeou 1
+    have hδgeov : IsGeodesic (I := I) g δv := by
+      simpa only [δv] using isGeodesic_comp_add hgeov 1
+    have hδzero : δu 0 = δv 0 := by
+      simpa only [δu, δv, zero_add] using hend
+    have hδvel : (mfderiv 𝓘(Real, Real) I δu 0 (1 : Real) : E) =
+        (mfderiv 𝓘(Real, Real) I δv 0 (1 : Real) : E) := by
+      have hcritδu : gradFun (I := I) g f (δu (-1)) = 0 := by
+        rw [show δu (-1) = p by
+          change γu ((-1 : Real) + 1) = p
+          rw [show (-1 : Real) + 1 = 0 by norm_num]
+          exact intrinsicGeodesic_zero (I := I) g hEnorm p u]
+        exact hpcrit
+      have hcritδv : gradFun (I := I) g f (δv (-1)) = 0 := by
+        rw [show δv (-1) = p by
+          change γv ((-1 : Real) + 1) = p
+          rw [show (-1 : Real) + 1 = 0 by norm_num]
+          exact intrinsicGeodesic_zero (I := I) g hEnorm p v]
+        exact hpcrit
+      have hu_grad :=
+        normalizedGradientRicciSoliton_gradFun_along_geodesic_eq_smul_velocity_of_scalar_eq_zero
+          (I := I) h hx hδu hδgeou hcritδu 0
+      have hv_grad :=
+        normalizedGradientRicciSoliton_gradFun_along_geodesic_eq_smul_velocity_of_scalar_eq_zero
+          (I := I) h hx hδv hδgeov hcritδv 0
+      rw [hδzero] at hu_grad
+      have hscaled := hu_grad.symm.trans hv_grad
+      have hscaledE := congrArg
+        (tangentSpaceModelContinuousLinearEquiv (I := I) (δv 0)) hscaled
+      rw [map_smul, map_smul] at hscaledE
+      have hcancel := congrArg (fun z : E => (2 : Real) • z) hscaledE
+      simp only [tangentSpaceModelContinuousLinearEquiv_apply] at hcancel
+      norm_num at hcancel
+      exact (isUnit_iff_ne_zero.mpr (by norm_num : (1 / 2 : Real) ≠ 0)).smul_left_cancel.mp
+        hcancel
+    have hδeq : δu = δv :=
+      isGeodesic_eq_of_initial (I := I) g hδgeou hδgeov
+        hδu.continuous hδv.continuous hδzero hδvel
+    have hγeq : γu = γv := by
+      funext t
+      have ht := congrFun hδeq (t - 1)
+      simpa only [δu, δv, sub_add_cancel] using ht
+    have hzero_u := intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p u
+    have hzero_v := intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p v
+    change (mfderiv 𝓘(Real, Real) I γu 0 (1 : Real) : E) = u at hzero_u
+    change (mfderiv 𝓘(Real, Real) I γv 0 (1 : Real) : E) = v at hzero_v
+    rw [hγeq] at hzero_u
+    exact hzero_u.symm.trans hzero_v
+  let expDiffeomorph : E ≃ₘ⟮𝓘(Real, E), I⟯ M :=
+    hexp_local.diffeomorphOfBijective ⟨hexp_inj, hexp_surj⟩
+  let A : E ≃L[Real] E :=
+    (normalFrame (I := I) g p).toLinearEquiv.toContinuousLinearEquiv
+  let Φ : E ≃ₘ⟮𝓘(Real, E), I⟯ M := A.toDiffeomorph.trans expDiffeomorph
+  have hΦapply (z : E) : Φ z = expf (A z) := rfl
+  have hΦderiv (z a : E) :
+      mfderiv 𝓘(Real, E) I Φ z a =
+        mfderiv 𝓘(Real, E) I expf (A z) (A a) := by
+    have hchain := mfderiv_comp_apply
+      (I := 𝓘(Real, E)) (I' := 𝓘(Real, E)) (I'' := I)
+      (g := expf) (f := fun q : E => A q) (x := z)
+      ((intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffAt.mdifferentiableAt
+        (by simp)) A.mdifferentiableAt a
+    rw [ContinuousLinearEquiv.mfderiv_eq] at hchain
+    exact hchain
+  have hΦmetric : Diffeomorph.pullbackMetricCross g Φ = euclideanMetric := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro z a b
+    rw [Diffeomorph.pullbackMetricCross_inner, euclideanMetric_inner]
+    change E at a b
+    have hmetric :=
+      normalizedGradientRicciSoliton_expMapIntrinsic_mfderiv_inner_of_scalar_eq_zero
+        (I := I) h hEnorm hx hpcrit
+        (show TangentSpace I p from A z)
+        (show TangentSpace I p from A a)
+        (show TangentSpace I p from A b)
+    have hinner := normalFrame_inner (I := I) g p a b
+    rw [hΦderiv z a, hΦderiv z b]
+    rw [hΦapply z]
+    exact hmetric.trans hinner
+  have hΦpotential (z : E) : f (Φ z) = f p + gaussianPotential z := by
+    let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p
+      (show TangentSpace I p from A z)
+    have hγ : ContMDiff 𝓘(Real, Real) I ∞ γ :=
+      intrinsicGeodesic_contMDiff (I := I) g hEnorm p
+        (show TangentSpace I p from A z)
+    have hgeo : IsGeodesic (I := I) g γ :=
+      intrinsicGeodesic_isGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from A z)
+    have hcrit : gradFun (I := I) g f (γ 0) = 0 := by
+      rw [show γ 0 = p from intrinsicGeodesic_zero (I := I) g hEnorm p
+        (show TangentSpace I p from A z)]
+      exact hpcrit
+    have hpot :=
+      normalizedGradientRicciSoliton_potential_along_geodesic_eq_of_scalar_eq_zero
+        (I := I) h hx hγ hgeo hcrit 1
+    have hγzero : γ 0 = p := intrinsicGeodesic_zero (I := I) g hEnorm p
+      (show TangentSpace I p from A z)
+    have hγvel :
+        (mfderiv 𝓘(Real, Real) I γ 0 (1 : Real) : TangentSpace I (γ 0)) =
+          (show TangentSpace I (γ 0) from A z) := by
+      have hzero := intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p
+        (show TangentSpace I p from A z)
+      with_unfolding_all exact hzero
+    have hinnerVel : g.inner (γ 0)
+        (mfderiv 𝓘(Real, Real) I γ 0 (1 : Real))
+        (mfderiv 𝓘(Real, Real) I γ 0 (1 : Real)) =
+          g.inner (γ 0) (show TangentSpace I (γ 0) from A z)
+            (show TangentSpace I (γ 0) from A z) := by
+      exact congrArg₂ (fun v w => g.inner (γ 0) v w) hγvel hγvel
+    have hpot' := hpot.trans (congrArg
+      (fun c : Real => f (γ 0) + c / 4 * (1 - 0) ^ 2) hinnerVel)
+    rw [hγzero] at hpot'
+    rw [hΦapply]
+    dsimp only [expf]
+    change f (expMapIntrinsic (I := I) g hEnorm p
+      (show TangentSpace I p from A z)) = f p + gaussianPotential z
+    rw [expMapIntrinsic_def]
+    rw [hpot']
+    have hAz : g.inner p (show TangentSpace I p from A z)
+        (show TangentSpace I p from A z) = ‖z‖ ^ 2 := by
+      change g.inner p (normalFrame (I := I) g p z)
+        (normalFrame (I := I) g p z) = ‖z‖ ^ 2
+      exact normalFrame_normSq (I := I) g p z
+    rw [hAz, gaussianPotential_apply]
+    ring
+  refine ⟨zero_lt_one, Φ.symm, -f p, ?_, ?_⟩
+  · apply SmoothRiemannianMetric.ext_inner
+    intro y a b
+    obtain ⟨z, rfl⟩ := Φ.surjective y
+    rw [Diffeomorph.pullbackMetricCross_inner, scaleMetric_inner, one_mul]
+    rw [show Φ.symm (Φ.toEquiv z) = z from Φ.symm_apply_apply z]
+    have hforward := Diffeomorph.pullbackMetricCross_inner g Φ z
+      (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) a)
+      (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) b)
+    rw [hΦmetric] at hforward
+    have ha : mfderiv 𝓘(Real, E) I Φ z
+        (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) a) = a := by
+      have hchain := mfderiv_comp_apply
+        (I := I) (I' := 𝓘(Real, E)) (I'' := I)
+        (g := fun q : E => Φ q) (f := fun q : M => Φ.symm q) (x := Φ z)
+        (Φ.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
+        (Φ.symm.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) a
+      have hcomp : (fun z : E => Φ z) ∘ (fun z : M => Φ.symm z) = id := by
+        funext z
+        exact Φ.apply_symm_apply z
+      have hbase : Φ.symm (Φ z) = z := Φ.symm_apply_apply z
+      rw [hbase] at hchain
+      rw [hcomp, mfderiv_id] at hchain
+      change a = mfderiv 𝓘(Real, E) I (Φ : E → M) z
+        (mfderiv I 𝓘(Real, E) (Φ.symm : M → E) (Φ z) a) at hchain
+      exact hchain.symm
+    have hb : mfderiv 𝓘(Real, E) I Φ z
+        (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) b) = b := by
+      have hchain := mfderiv_comp_apply
+        (I := I) (I' := 𝓘(Real, E)) (I'' := I)
+        (g := fun q : E => Φ q) (f := fun q : M => Φ.symm q) (x := Φ z)
+        (Φ.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
+        (Φ.symm.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) b
+      have hcomp : (fun z : E => Φ z) ∘ (fun z : M => Φ.symm z) = id := by
+        funext z
+        exact Φ.apply_symm_apply z
+      have hbase : Φ.symm (Φ z) = z := Φ.symm_apply_apply z
+      rw [hbase] at hchain
+      rw [hcomp, mfderiv_id] at hchain
+      change b = mfderiv 𝓘(Real, E) I (Φ : E → M) z
+        (mfderiv I 𝓘(Real, E) (Φ.symm : M → E) (Φ z) b) at hchain
+      exact hchain.symm
+    calc
+      euclideanMetric.inner z
+          (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) a)
+          (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) b) =
+        g.inner (Φ z)
+          (mfderiv 𝓘(Real, E) I Φ z
+            (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) a))
+          (mfderiv 𝓘(Real, E) I Φ z
+            (mfderiv I 𝓘(Real, E) Φ.symm (Φ z) b)) := hforward
+      _ = g.inner (Φ z) a b := by rw [ha, hb]
+  · apply ContMDiffMap.ext
+    intro y
+    have hpot := hΦpotential (Φ.symm y)
+    rw [Φ.apply_symm_apply] at hpot
+    change f y + -f p = gaussianPotential (Φ.symm y)
+    linarith
+
+theorem normalizedGradientRicciSoliton_scalar_pos_of_not_isGaussian
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hnot : ¬ isGaussianGradientRicciSoliton (E := E) g f 1)
+    (x : M) : 0 < metricScalarAt (I := I) g x := by
+  exact lt_of_le_of_ne
+    (normalizedGradientRicciSoliton_scalar_nonneg (I := I) h x)
+    (fun hzero => hnot
+      (normalizedGradientRicciSoliton_isGaussian_of_scalar_eq_zero
+        (I := I) h hzero.symm))
 
 end DifferentialGeometry.Geometry
