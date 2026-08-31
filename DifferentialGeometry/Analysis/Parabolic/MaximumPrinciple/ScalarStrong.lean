@@ -167,38 +167,65 @@ private theorem strongPropagationRadius_pos_of_ne
       (mul_nonneg hQ.le (sub_nonneg.mpr b.le_one))
 
 private theorem exists_strongPropagationRadius_sublevel_subset
-    [T2Space M] [CompactSpace M]
+    [T2Space M]
     {a c : M} (b : SmoothBumpFunction I a)
     (hc : c ∈ (chartAt H a).source) {Q : Real} (hQ : 0 < Q)
     {V : Set M} (hV : V ∈ nhds c) :
     ∃ r : Real, 0 < r ∧
       {x | strongPropagationRadius (I := I) b c Q x < r} ⊆ V := by
   rcases mem_nhds_iff.mp hV with ⟨U, hUV, hUopen, hcU⟩
-  by_cases hK : (Uᶜ : Set M).Nonempty
-  · have hKcompact : IsCompact (Uᶜ : Set M) := hUopen.isClosed_compl.isCompact
-    obtain ⟨x0, hx0, hx0min⟩ := hKcompact.exists_isMinOn hK
+  let K : Set M := Uᶜ ∩ tsupport b
+  have hKcompact : IsCompact K := by
+    apply b.hasCompactSupport.of_isClosed_subset
+      (hUopen.isClosed_compl.inter isClosed_closure)
+    exact inter_subset_right
+  by_cases hK : K.Nonempty
+  · obtain ⟨x0, hx0, hx0min⟩ := hKcompact.exists_isMinOn hK
       (strongPropagationRadius_contMDiff (I := I) (c := c) b Q).continuous.continuousOn
     have hx0c : x0 ≠ c := by
       intro heq
       subst x0
-      exact hx0 hcU
+      exact hx0.1 hcU
     have hx0pos : 0 < strongPropagationRadius (I := I) b c Q x0 :=
       strongPropagationRadius_pos_of_ne (I := I) b hc hQ hx0c
-    refine ⟨strongPropagationRadius (I := I) b c Q x0 / 2, by linarith, ?_⟩
+    refine ⟨min (strongPropagationRadius (I := I) b c Q x0) Q / 2,
+      div_pos (lt_min hx0pos hQ) two_pos, ?_⟩
     intro x hx
-    apply hUV
-    by_contra hxU
-    have hmin := hx0min (show x ∈ Uᶜ by simpa using hxU)
-    change strongPropagationRadius (I := I) b c Q x0 ≤
-      strongPropagationRadius (I := I) b c Q x at hmin
     change strongPropagationRadius (I := I) b c Q x <
-      strongPropagationRadius (I := I) b c Q x0 / 2 at hx
-    linarith
-  · refine ⟨1, by positivity, ?_⟩
-    intro x _
+      min (strongPropagationRadius (I := I) b c Q x0) Q / 2 at hx
     apply hUV
     by_contra hxU
-    exact hK ⟨x, by simpa using hxU⟩
+    by_cases hb : x ∈ tsupport b
+    · have hmin := hx0min (show x ∈ K from ⟨by simpa using hxU, hb⟩)
+      change strongPropagationRadius (I := I) b c Q x0 ≤
+        strongPropagationRadius (I := I) b c Q x at hmin
+      linarith [min_le_left (strongPropagationRadius (I := I) b c Q x0) Q]
+    · have hbx : b x = 0 := by
+        by_contra hbx
+        apply hb
+        apply subset_closure
+        simpa only [Function.mem_support] using hbx
+      have hrho : strongPropagationRadius (I := I) b c Q x = Q := by
+        simp [strongPropagationRadius, hbx]
+      rw [hrho] at hx
+      linarith [min_le_right (strongPropagationRadius (I := I) b c Q x0) Q]
+  · refine ⟨Q / 2, half_pos hQ, ?_⟩
+    intro x hx
+    change strongPropagationRadius (I := I) b c Q x < Q / 2 at hx
+    apply hUV
+    by_contra hxU
+    have hb : x ∉ tsupport b := by
+      intro hb
+      exact hK ⟨x, ⟨by simpa using hxU, hb⟩⟩
+    have hbx : b x = 0 := by
+      by_contra hbx
+      apply hb
+      apply subset_closure
+      simpa only [Function.mem_support] using hbx
+    have hrho : strongPropagationRadius (I := I) b c Q x = Q := by
+      simp [strongPropagationRadius, hbx]
+    rw [hrho] at hx
+    linarith
 
 omit [IsManifold I ∞ M] in
 private theorem strongPropagationRadius_lt_imp
@@ -431,7 +458,7 @@ private theorem exists_positive_terminal_cylinder
 
 private theorem fixed_metric_spatial_zero_drift
     [I.Boundaryless]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M]
+    [T2Space M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T : Real} (hT : 0 < T)
@@ -544,11 +571,17 @@ private theorem fixed_metric_spatial_zero_drift
       rw [hrhoa]
       linarith
     have hR : 0 < R := lt_of_le_of_lt (hrho_nonneg a) hrhoaR
-    have hcompact : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R} := by
-      have hclosed : IsClosed (rho ⁻¹' Set.Icc r R) :=
-        isClosed_Icc.preimage hrho.continuous
-      change IsCompact (rho ⁻¹' Set.Icc r R)
-      exact hclosed.isCompact
+    have hcompact : IsCompact {x : M | rho x ≤ R} := by
+      apply b.hasCompactSupport.of_isClosed_subset
+        (isClosed_le hrho.continuous continuous_const)
+      intro x hx
+      change rho x ≤ R at hx
+      have hmidR : R < (R + Q) / 2 := by linarith
+      have hmidQ : (R + Q) / 2 < Q := by linarith
+      have hltmid : rho x < (R + Q) / 2 := hx.trans_lt hmidR
+      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
+      apply subset_closure
+      exact hrad.1.ne'
     have hgrad : ∀ x : M, r ≤ rho x → rho x ≤ R →
         gradientFun (I := I) g rho x ≠ 0 := by
       intro x hxr hxR
@@ -575,7 +608,8 @@ private theorem fixed_metric_spatial_zero_drift
         rho x < r → eta ≤ u t x := by
       intro t ht htnear x hxr
       exact hlocal t ht htnear x (hrV hxr)
-    have hpos := scalar_strong_maximum_principle_fixed_metric_of_barrier (I := I)
+    have hpos :=
+      scalar_strong_maximum_principle_fixed_metric_of_compact_sublevel_barrier (I := I)
       g hT u hu_cont hu_nonneg hu_time hu_space hu_super hrho hrho_nonneg
       hR hdelta heta hlocal' hcompact hgrad hrhoaR
     exact (haP hpos).elim
@@ -753,7 +787,7 @@ private theorem exists_positive_time_of_initial_value
 
 private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
     [I.Boundaryless]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M]
+    [T2Space M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T t : Real} (ht : 0 < t) (htT : t ≤ T)
@@ -874,14 +908,11 @@ private theorem fixed_metric_positive_zero_drift
 
 private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
     [I.Boundaryless]
-    [T2Space M] [CompactSpace M]
+    [T2Space M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T : Real} (hT : 0 < T)
     (X : Real → (x : M) → TangentSpace I x)
-    {C : Real} (hC : 0 ≤ C)
-    (hX : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
-      g.inner x (X t x) (X t x) ≤ C)
     (u : Real → M → Real)
     (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
       (spacetimeSlab (M := M) T))
@@ -902,7 +933,11 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
     (hR : 0 < R) (hdelta : 0 < delta) (heta : 0 < eta)
     (hlocal : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
       rho x < r → eta ≤ u t x)
-    (hcompact : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R})
+    {C : Real} (hC : 0 ≤ C)
+    (hX : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
+      r ≤ rho x → rho x ≤ R →
+      g.inner x (X t x) (X t x) ≤ C)
+    (hcompact : IsCompact {x : M | rho x ≤ R})
     (hgrad_ne : ∀ x : M, r ≤ rho x → rho x ≤ R →
       gradientFun (I := I) g rho x ≠ 0)
     {y : M} (hy : rho y < R) :
@@ -911,6 +946,12 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   let q : M → Real := fun x => g.inner x
     (gradientFun (I := I) g rho x) (gradientFun (I := I) g rho x)
   let ell : M → Real := fun x => |ΔG (I := I) g ⟨rho, hrho⟩ x|
+  have hKcompact : IsCompact K := by
+    apply hcompact.of_isClosed_subset
+      ((isClosed_le continuous_const hrho.continuous).inter
+        (isClosed_le hrho.continuous continuous_const))
+    intro x hx
+    exact hx.2
   have hq_cont : Continuous q := by
     apply continuous_iff_continuousAt.mpr
     intro x
@@ -928,11 +969,11 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
           ΔG (I := I) g ⟨rho, hrho⟩ x +
             g.inner x (X t x) (gradientFun (I := I) g rho x) ≤ B) := by
     by_cases hKne : K.Nonempty
-    · obtain ⟨xm, hxm, hxmin⟩ := hcompact.exists_isMinOn
+    · obtain ⟨xm, hxm, hxmin⟩ := hKcompact.exists_isMinOn
         (by simpa [K] using hKne) hq_cont.continuousOn
-      obtain ⟨xq, hxq, hxqmax⟩ := hcompact.exists_isMaxOn
+      obtain ⟨xq, hxq, hxqmax⟩ := hKcompact.exists_isMaxOn
         (by simpa [K] using hKne) hq_cont.continuousOn
-      obtain ⟨xB, hxB, hxBmax⟩ := hcompact.exists_isMaxOn
+      obtain ⟨xB, hxB, hxBmax⟩ := hKcompact.exists_isMaxOn
         (by simpa [K] using hKne) hell_cont.continuousOn
       have hqm : 0 < q xm := g.pos xm _ (hgrad_ne xm hxm.1 hxm.2)
       have hqq : 0 ≤ q xq := metric_inner_self_nonneg (I := I) (M := M) g _ _
@@ -945,7 +986,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
         (X t x) (gradientFun (I := I) g rho x)
       have hsq : (g.inner x (X t x) (gradientFun (I := I) g rho x)) ^ 2 ≤
           C * q xq := by
-        exact hcs.trans (mul_le_mul (hX t ht x) hqx hq0 hC)
+        exact hcs.trans (mul_le_mul (hX t ht x hx.1 hx.2) hqx hq0 hC)
       have hdrift : g.inner x (X t x) (gradientFun (I := I) g rho x) ≤
           C + q xq := by
         nlinarith [sq_nonneg (C - q xq),
@@ -985,9 +1026,11 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
     apply le_of_lt ((div_lt_iff₀ hm).mp ?_)
     dsimp [alpha]
     linarith
-  apply scalar_strong_maximum_principle_fixed_metric_with_drift_of_barrier (I := I)
+  apply scalar_strong_maximum_principle_fixed_metric_with_drift_of_compact_sublevel_barrier
+    (I := I)
     g hT X u hu_cont hu_nonneg hu_time hu_space hu_super hrho hrho_nonneg
-    hR hdelta heta hlocal (m := m) (B := B) (kappa := kappa) (alpha := alpha)
+    hR hdelta heta hlocal hcompact
+    (m := m) (B := B) (kappa := kappa) (alpha := alpha)
   · intro x hxr hxR
     exact hgrad_lower x ⟨hxr, hxR⟩
   · intro t ht htpos x hxr hxR
@@ -999,16 +1042,16 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   · exact hdom
   · exact hy
 
-theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
+theorem scalar_strong_maximum_principle_fixed_metric_with_locally_bounded_drift_spatial
     [I.Boundaryless]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M]
+    [T2Space M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T : Real} (hT : 0 < T)
     (X : Real → (x : M) → TangentSpace I x)
-    {C : Real} (hC : 0 ≤ C)
-    (hX : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
-      g.inner x (X t x) (X t x) ≤ C)
+    (hX : ∀ K : Set M, IsCompact K →
+      ∃ C : Real, 0 ≤ C ∧ ∀ t ∈ Set.Icc 0 T, ∀ x ∈ K,
+        g.inner x (X t x) (X t x) ≤ C)
     (u : Real → M → Real)
     (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
       (spacetimeSlab (M := M) T))
@@ -1119,11 +1162,17 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
       rw [hrhoa]
       linarith
     have hR : 0 < R := lt_of_le_of_lt (hrho_nonneg a) hrhoaR
-    have hcompact : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R} := by
-      have hclosed : IsClosed (rho ⁻¹' Set.Icc r R) :=
-        isClosed_Icc.preimage hrho.continuous
-      change IsCompact (rho ⁻¹' Set.Icc r R)
-      exact hclosed.isCompact
+    have hcompact : IsCompact {x : M | rho x ≤ R} := by
+      apply b.hasCompactSupport.of_isClosed_subset
+        (isClosed_le hrho.continuous continuous_const)
+      intro x hx
+      change rho x ≤ R at hx
+      have hmidR : R < (R + Q) / 2 := by linarith
+      have hmidQ : (R + Q) / 2 < Q := by linarith
+      have hltmid : rho x < (R + Q) / 2 := hx.trans_lt hmidR
+      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
+      apply subset_closure
+      exact hrad.1.ne'
     have hgrad : ∀ x : M, r ≤ rho x → rho x ≤ R →
         gradientFun (I := I) g rho x ≠ 0 := by
       intro x hxr hxR
@@ -1150,15 +1199,54 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
         rho x < r → eta ≤ u t x := by
       intro t ht htnear x hxr
       exact hlocal t ht htnear x (hrV hxr)
+    have hcompact_annulus : IsCompact {x : M | r ≤ rho x ∧ rho x ≤ R} := by
+      apply hcompact.of_isClosed_subset
+        ((isClosed_le continuous_const hrho.continuous).inter
+          (isClosed_le hrho.continuous continuous_const))
+      intro x hx
+      exact hx.2
+    obtain ⟨C, hC, hXC⟩ := hX _ hcompact_annulus
     have hpos :=
       fixed_metric_with_drift_strong_maximum_principle_of_barrier (I := I)
-        g hT X hC hX u hu_cont hu_nonneg hu_time hu_space hu_super hrho hrho_nonneg
-      hR hdelta heta hlocal' hcompact hgrad hrhoaR
+        g hT X u hu_cont hu_nonneg hu_time hu_space hu_super hrho hrho_nonneg
+      hR hdelta heta hlocal' hC
+        (fun t ht x hxr hxR => hXC t ht x ⟨hxr, hxR⟩)
+        hcompact hgrad hrhoaR
     exact (haP hpos).elim
   have hPuniv : P = Set.univ :=
     IsClopen.eq_univ ⟨hPclosed, hPopen⟩ ⟨c, hc⟩
   have hyP : y ∈ P := by rw [hPuniv]; exact Set.mem_univ y
   exact hyP
+
+theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
+    [I.Boundaryless]
+    [T2Space M] [ConnectedSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (g : SmoothRiemannianMetric I M)
+    {T : Real} (hT : 0 < T)
+    (X : Real → (x : M) → TangentSpace I x)
+    {C : Real} (hC : 0 ≤ C)
+    (hX : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
+      g.inner x (X t x) (X t x) ≤ C)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_space : ∀ t ∈ Set.Icc 0 T, 0 < t →
+      ContMDiff I 𝓘(Real, Real) ∞ (u t))
+    (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
+      (x : M),
+      0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+          g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
+    {c : M} (hc : 0 < u T c) (y : M) :
+    0 < u T y := by
+  apply scalar_strong_maximum_principle_fixed_metric_with_locally_bounded_drift_spatial
+    (I := I) g hT X
+      (fun K hK => ⟨C, hC, fun t ht x _ => hX t ht x⟩)
+      u hu_cont hu_nonneg hu_time hu_space hu_super hc y
 
 private theorem fixed_metric_with_drift_lower_bound_from_positive_time
     [I.Boundaryless]
@@ -1297,7 +1385,7 @@ private theorem fixed_metric_with_drift_lower_bound_from_positive_time
 
 private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_at
     [I.Boundaryless]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M]
+    [T2Space M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T t : Real} (ht : 0 < t) (htT : t ≤ T)
@@ -2748,7 +2836,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
 
 theorem scalar_strong_maximum_principle_fixed_metric_spatial
     [I.Boundaryless]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M]
+    [T2Space M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (g : SmoothRiemannianMetric I M)
     {T : Real} (hT : 0 < T)
