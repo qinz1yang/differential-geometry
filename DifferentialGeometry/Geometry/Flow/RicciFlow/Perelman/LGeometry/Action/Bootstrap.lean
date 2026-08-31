@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ForceC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.VelocityC1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocityC1
 
 set_option autoImplicit false
 
@@ -58,7 +58,7 @@ theorem lChartVel_c1
     exact hchart hr
   have huK : MapsTo u.toFun (Icc (0 : Real) L) K :=
     fun r hr ↦ ⟨r, hr, rfl⟩
-  obtain ⟨C, hA, hC⟩ := chartGram_time hS.smoothMetric p tau
+  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p tau
     htau1.continuousOn htaureg hKc hKchart u huK
   let F0 : Real → E := lChartForceRep (I := I) S T a p u q0
   let F : Real → E := fun r ↦ (2 : Real) • F0 r
@@ -169,7 +169,7 @@ theorem lChartVel_c1
                 (tau r, u.toFun r) (u.deriv r)) (v.deriv r)) := by
           rw [hsum]
       _ = 0 := by rw [he', mul_zero]
-  exact chartVel_rep_c1 hS.smoothMetric p hL tau htau1 htaureg
+  exact exists_contDiffOn_one_velocity_representative_of_weak_euler hS.smoothMetric p hL tau htau1 htaureg
     hKchart u huK hA C hC F hF hEuler'
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1C1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Velocity
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.WeakEulerLagrange
 
 set_option autoImplicit false
@@ -52,7 +52,7 @@ theorem lChart_min_c1
   have huK : MapsTo u.toFun (Icc (0 : Real) L) K := by
     intro r hr
     exact ⟨r, hr, rfl⟩
-  obtain ⟨C, hA, hC⟩ := chartGram_time hS.smoothMetric p τ hτc hτreg
+  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτreg
     hKc hKchart u huK
   obtain ⟨hForce, hWeak⟩ :=
     lChart_weak_euler (I := I) S hS T a p hL u hreg hchart hmin
@@ -140,7 +140,7 @@ theorem lChart_min_c1
       simp only [F, real_inner_smul_left]
     rw [hMomEq, hForceEq]
     linarith
-  obtain ⟨q, hq, hqae⟩ := chartVel_rep_cont hS.smoothMetric p hL τ
+  obtain ⟨q, hq, hqae⟩ := exists_continuous_velocity_representative_of_weak_euler hS.smoothMetric p hL τ
     hτc hτreg hKchart u huK hA C hC F hF hEuler
   have hqtime : u.deriv =ᵐ[timeMeasure L] q := by
     have hae : ae (volume.restrict (Ioo (0 : Real) L)) =

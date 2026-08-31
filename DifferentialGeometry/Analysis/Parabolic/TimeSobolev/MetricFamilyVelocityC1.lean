@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1C1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticRegularC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Velocity
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramInv
 
 set_option autoImplicit false
@@ -10,9 +10,8 @@ noncomputable section
 open Filter MeasureTheory Set
 open scoped Manifold Topology ContDiff Interval
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
@@ -22,7 +21,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (∞ : WithTop ℕ∞) M]
 
-theorem chartVel_c1_of_mom {D : RealTimeInterval}
+theorem exists_contDiffOn_one_velocity_representative_of_momentum {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (tau : Real → Real)
@@ -68,7 +67,7 @@ theorem chartVel_c1_of_mom {D : RealTimeInterval}
   simpa only [mul_apply_eq_comp, one_apply_eq_self]
     using hmul.symm
 
-theorem chartVel_rep_c1 {D : RealTimeInterval}
+theorem exists_contDiffOn_one_velocity_representative_of_weak_euler {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 < L) (tau : Real → Real)
@@ -102,13 +101,13 @@ theorem chartVel_rep_c1 {D : RealTimeInterval}
     simpa only [p] using hmom
   have hp1' : ContDiffOn Real 1 p (Icc (0 : Real) L) := by
     simpa only [p] using hp1
-  obtain ⟨q0, hq0cont, hq0ae⟩ := chartVel_of_mom hG alpha tau
+  obtain ⟨q0, hq0cont, hq0ae⟩ := exists_continuous_velocity_representative_of_momentum hG alpha tau
     htau1.continuousOn htaureg hKchart u huK p hmom' hp1'.continuousOn
   have hq0time : u.deriv =ᵐ[timeMeasure L] q0 := by
     simpa only [timeMeasure, Measure.restrict_congr_set Ioo_ae_eq_Icc]
       using hq0ae
   obtain ⟨hu1, _⟩ := toFun_c1_of_rep hL u q0 hq0cont hq0time
-  obtain ⟨q, hq1, hqae⟩ := chartVel_c1_of_mom hG alpha tau htau1
+  obtain ⟨q, hq1, hqae⟩ := exists_contDiffOn_one_velocity_representative_of_momentum hG alpha tau htau1
     htaureg hKchart u huK hu1 p hmom' hp1'
   have hqtime : u.deriv =ᵐ[timeMeasure L] q := by
     simpa only [timeMeasure, Measure.restrict_congr_set Ioo_ae_eq_Icc]
@@ -116,6 +115,6 @@ theorem chartVel_rep_c1 {D : RealTimeInterval}
   obtain ⟨_, hderiv⟩ := toFun_c1_of_rep hL u q hq1.continuousOn hqtime
   exact ⟨q, hq1, hqae, hderiv⟩
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 end

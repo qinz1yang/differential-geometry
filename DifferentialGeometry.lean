@@ -3812,8 +3812,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Ch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.InteriorRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Velocity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.VelocityC1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocityC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.WeakEulerLagrange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Adapted

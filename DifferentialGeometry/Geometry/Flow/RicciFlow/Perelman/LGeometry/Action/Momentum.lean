@@ -63,7 +63,7 @@ theorem lChart_mom_c1
   have huK : MapsTo u.toFun (Icc (0 : Real) L) K := by
     intro r hr
     exact ⟨r, hr, rfl⟩
-  obtain ⟨C, hA, hC⟩ := chartGram_time hS.smoothMetric p τ hτc hτreg
+  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτreg
     hKc hKchart u huK
   obtain ⟨q, hq, hqae, huc1, huderiv⟩ :=
     lChart_min_c1 (I := I) S hS T a p hL u hreg hchart hmin

@@ -9,9 +9,8 @@ noncomputable section
 open Filter MeasureTheory Set
 open scoped Manifold Topology ContDiff Interval
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
@@ -21,7 +20,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (∞ : WithTop ℕ∞) M]
 
-theorem chartGram_time {D : RealTimeInterval}
+theorem exists_chartGramOp_ae_bound {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (τ : Real → Real)
@@ -54,7 +53,7 @@ theorem chartGram_time {D : RealTimeInterval}
   filter_upwards [ae_restrict_mem measurableSet_Icc] with r hr
   exact hC (τ r, u.toFun r) ⟨⟨r, hr, rfl⟩, huK hr⟩
 
-theorem chartVel_of_mom {D : RealTimeInterval}
+theorem exists_continuous_velocity_representative_of_momentum {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (τ : Real → Real)
@@ -96,7 +95,7 @@ theorem chartVel_of_mom {D : RealTimeInterval}
   rw [hhalf, one_smul]
   simpa only [mul_apply_eq_comp, one_apply_eq_self] using hmul.symm
 
-theorem chartVel_rep_cont {D : RealTimeInterval}
+theorem exists_continuous_velocity_representative_of_weak_euler {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 < L) (τ : Real → Real)
@@ -118,7 +117,7 @@ theorem chartVel_rep_cont {D : RealTimeInterval}
       u.deriv =ᵐ[volume.restrict (Ioo (0 : Real) L)] q := by
   obtain ⟨c, hmom, hcont⟩ := mom_rep_cont_l1 hL
     (fun t ↦ chartGramOp (I := I) G alpha (τ t, u.toFun t)) hA C hC u F hF hEuler
-  exact chartVel_of_mom hG alpha τ hτc hτreg hKchart u huK
+  exact exists_continuous_velocity_representative_of_momentum hG alpha τ hτc hτreg hKchart u huK
     (fun t ↦ c + ∫ r in (0 : Real)..t, F r) hmom hcont
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
