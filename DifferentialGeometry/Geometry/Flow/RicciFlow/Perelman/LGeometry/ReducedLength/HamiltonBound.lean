@@ -362,7 +362,7 @@ theorem lTail_lap_K
             S.ricciAt (T - s ^ 2) (beta s) (vec2 (P i s) (P i s))
         rw [← hbase, ← hfield'])]
     exact hRintBeta i
-  have htrace := lIndex_trace_pos (I := I) S hS T gamma Pc a b hab
+  have htrace := lRegIndex_trace_linear_cutoff (I := I) S hS T gamma Pc a b hab
     (by
       intro s hs
       exact lRegDomain_reg S T x Z

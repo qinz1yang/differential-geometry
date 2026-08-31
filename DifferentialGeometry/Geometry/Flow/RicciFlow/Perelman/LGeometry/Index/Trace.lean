@@ -28,119 +28,7 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
-theorem lIndex_trace
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) (T : Real)
-    (alpha : Real → M)
-    (P : Fin (Module.finrank Real E) → ∀ s, TangentSpace I (alpha s))
-    (b : Real) (hb : 0 < b)
-    (ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular)
-    (halpha : ∀ s ∈ Set.Icc (0 : Real) b,
-      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha s)
-    (hP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
-      DifferentiableAt Real (chartRepAt (I := I) alpha (P i) s) s)
-    (hDP : ∀ i, IsLAdapted S T alpha (P i) (Set.Icc (0 : Real) b))
-    (hON : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (alpha b) (P i b) (P j b) =
-        if i = j then 1 else 0)
-    (hIint : ∀ i, IntervalIntegrable
-      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s)
-      MeasureTheory.volume 0 b)
-    (hRint : ∀ i, IntervalIntegrable
-      (fun s : Real ↦ (2 * s ^ 2 / b ^ 2) *
-        S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
-      MeasureTheory.volume 0 b) :
-    ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T alpha (fun s ↦ (s / b) • P i s)
-          (fun s ↦ (s / b) • P i s) 0 b =
-      (Module.finrank Real E : Real) / (2 * b) +
-        ∫ s in (0 : Real)..b,
-          ((s / b) ^ 2 *
-              ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T alpha (P i) (P i) s) -
-            (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
-  classical
-  have hONs (s : Real) (hs : s ∈ Set.Icc (0 : Real) b)
-      (i j : Fin (Module.finrank Real E)) :
-      (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
-        if i = j then 1 else 0 := by
-    rw [metric_inner_eq_of_isLAdapted (I := I) S hS T alpha (P i) (P j) hs.2
-      (fun r hr ↦ ht r ⟨le_trans hs.1 hr.1, hr.2⟩)
-      (fun r hr ↦ halpha r ⟨le_trans hs.1 hr.1, hr.2⟩)
-      (fun r hr ↦ hP i r ⟨le_trans hs.1 hr.1, hr.2⟩)
-      (fun r hr ↦ hP j r ⟨le_trans hs.1 hr.1, hr.2⟩)
-      (fun r hr ↦ hDP i r ⟨le_trans hs.1 hr.1, hr.2⟩)
-      (fun r hr ↦ hDP j r ⟨le_trans hs.1 hr.1, hr.2⟩)]
-    exact hON i j
-  have hRic (s : Real) (hs : s ∈ Set.Icc (0 : Real) b) :
-      ∑ i : Fin (Module.finrank Real E),
-          S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)) =
-        S.scalar (T - s ^ 2) (alpha s) := by
-    let g := S.base.metric (T - s ^ 2)
-    let x := alpha s
-    calc
-      ∑ i : Fin (Module.finrank Real E),
-          S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)) =
-          ∑ i : Fin (Module.finrank Real E),
-            ricciTensor (I := I) g x (P i s) (P i s) := by
-              refine Finset.sum_congr rfl fun i _ ↦ ?_
-              exact metricRicciAt_apply_eq_ricciTensor (I := I) g x (P i s) (P i s)
-      _ = scalarCurv (I := I) g x :=
-        (scalarCurv_eq_orthonormal_trace (I := I) g x (fun i ↦ P i s)
-          (hONs s hs)).symm
-      _ = metricScalarAt (I := I) g x :=
-        (metricScalar_eq_scal (I := I) g x).symm
-      _ = S.scalar (T - s ^ 2) (alpha s) := rfl
-  have hidx (i : Fin (Module.finrank Real E)) :=
-    lRegIndex_linear_cutoff_self_of_isLAdapted (I := I) S hS T alpha (P i) b hb ht halpha
-      (hP i) (hDP i) (hIint i) (hRint i)
-  rw [Finset.sum_congr rfl (fun i _ ↦ hidx i)]
-  rw [Finset.sum_add_distrib]
-  have hint (i : Fin (Module.finrank Real E)) : IntervalIntegrable
-      (fun s : Real ↦
-        (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
-          (2 * s ^ 2 / b ^ 2) *
-            S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
-      MeasureTheory.volume 0 b :=
-    (hIint i).sub (hRint i)
-  rw [← intervalIntegral.integral_finsetSum
-    (s := (Finset.univ : Finset (Fin (Module.finrank Real E))))
-    (f := fun i s ↦
-      (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
-        (2 * s ^ 2 / b ^ 2) *
-          S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
-    (fun i _ ↦ hint i)]
-  apply congrArg₂ (· + ·)
-  · simp_rw [hON, if_pos]
-    rw [Finset.sum_const, Finset.card_fin]
-    simp only [nsmul_eq_mul]
-    field_simp [hb.ne']
-  · apply intervalIntegral.integral_congr
-    intro s hs
-    have hs' : s ∈ Set.Icc (0 : Real) b := by
-      simpa only [Set.uIcc_of_le hb.le] using hs
-    dsimp only
-    calc
-      ∑ i : Fin (Module.finrank Real E),
-          ((s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
-            (2 * s ^ 2 / b ^ 2) *
-              S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s))) =
-          (s / b) ^ 2 *
-              ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T alpha (P i) (P i) s -
-            (2 * s ^ 2 / b ^ 2) *
-              ∑ i : Fin (Module.finrank Real E),
-                S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)) := by
-          rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
-      _ = (s / b) ^ 2 *
-              ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T alpha (P i) (P i) s -
-            (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
-          rw [hRic s hs']
-
-omit [InnerProductSpace Real E] in
-omit [SigmaCompactSpace M] in
-theorem lIndex_trace_pos
+theorem lRegIndex_trace_linear_cutoff
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (alpha : Real → M)
@@ -322,5 +210,76 @@ theorem lIndex_trace_pos
             (2 * s * (s - a) / (b - a) ^ 2) *
               S.scalar (T - s ^ 2) (alpha s) := by
           rw [hRic s hs']
+
+omit [InnerProductSpace Real E] in
+omit [SigmaCompactSpace M] in
+theorem lRegIndex_trace_linear_cutoff_zero
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T : Real)
+    (alpha : Real → M)
+    (P : Fin (Module.finrank Real E) → ∀ s, TangentSpace I (alpha s))
+    (b : Real) (hb : 0 < b)
+    (ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular)
+    (halpha : ∀ s ∈ Set.Icc (0 : Real) b,
+      MDifferentiableAt (modelWithCornersSelf Real Real) I alpha s)
+    (hP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
+      DifferentiableAt Real (chartRepAt (I := I) alpha (P i) s) s)
+    (hDP : ∀ i, IsLAdapted S T alpha (P i) (Set.Icc (0 : Real) b))
+    (hON : ∀ i j,
+      (S.base.metric (T - b ^ 2)).inner (alpha b) (P i b) (P j b) =
+        if i = j then 1 else 0)
+    (hIint : ∀ i, IntervalIntegrable
+      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s)
+      MeasureTheory.volume 0 b)
+    (hRint : ∀ i, IntervalIntegrable
+      (fun s : Real ↦ (2 * s ^ 2 / b ^ 2) *
+        S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
+      MeasureTheory.volume 0 b) :
+    ∑ i : Fin (Module.finrank Real E),
+        lRegIndex S T alpha (fun s ↦ (s / b) • P i s)
+          (fun s ↦ (s / b) • P i s) 0 b =
+      (Module.finrank Real E : Real) / (2 * b) +
+        ∫ s in (0 : Real)..b,
+          ((s / b) ^ 2 *
+              ∑ i : Fin (Module.finrank Real E),
+                lRegIndexIntegrand S T alpha (P i) (P i) s) -
+            (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
+  have hIint' : ∀ i, IntervalIntegrable
+      (fun s : Real ↦ ((s - 0) / (b - 0)) ^ 2 *
+        lRegIndexIntegrand S T alpha (P i) (P i) s)
+      MeasureTheory.volume 0 b := by
+    intro i
+    simpa using hIint i
+  have hRint' : ∀ i, IntervalIntegrable
+      (fun s : Real ↦ (2 * s * (s - 0) / (b - 0) ^ 2) *
+        S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
+      MeasureTheory.volume 0 b := by
+    intro i
+    convert hRint i using 1
+    funext s
+    ring
+  calc
+    ∑ i : Fin (Module.finrank Real E),
+          lRegIndex S T alpha (fun s ↦ (s / b) • P i s)
+            (fun s ↦ (s / b) • P i s) 0 b =
+        (Module.finrank Real E : Real) / (2 * b) +
+          ∫ s in (0 : Real)..b,
+            ((s / b) ^ 2 *
+                ∑ i : Fin (Module.finrank Real E),
+                  lRegIndexIntegrand S T alpha (P i) (P i) s) -
+              (2 * s * s / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
+        simpa only [sub_zero] using
+          lRegIndex_trace_linear_cutoff (I := I) S hS T alpha P 0 b hb ht halpha hP
+            hDP hON hIint' hRint'
+    _ = (Module.finrank Real E : Real) / (2 * b) +
+          ∫ s in (0 : Real)..b,
+            ((s / b) ^ 2 *
+                ∑ i : Fin (Module.finrank Real E),
+                  lRegIndexIntegrand S T alpha (P i) (P i) s) -
+              (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
+        apply congrArg ((Module.finrank Real E : Real) / (2 * b) + ·)
+        apply intervalIntegral.integral_congr
+        intro s _
+        ring
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

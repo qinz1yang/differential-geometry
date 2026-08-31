@@ -211,7 +211,7 @@ theorem redLength_lap_le
         (fun s ↦ (s / b) • P i s) hΩ
         (by simpa only [b] using hΩseg)
         (by simpa only [alpha, b] using hW i) hW0 hWb
-  have htrace := lIndex_trace (I := I) S hS T alpha P b hb
+  have htrace := lRegIndex_trace_linear_cutoff_zero (I := I) S hS T alpha P b hb
     (by simpa only [alpha] using ht)
     (by simpa only [alpha] using halpha)
     (by simpa only [alpha, b] using hP)
