@@ -181,7 +181,7 @@ theorem lTail_lap_K
     (hON : ∀ i j,
       (S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
           (P i b) (P j b) = if i = j then 1 else 0) :
-    let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
       lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     laplacian (I := I) (LeviCivita (I := I)
@@ -462,7 +462,7 @@ theorem lTail_lap_K
         (S.base.metric (T - b ^ 2))) (S.base.metric (T - b ^ 2))
         (fun y ↦ lRegAction S T
           (fun s ↦ alpha
-            ((lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse y, s))
+            ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y, s))
           a b) (alpha (A0, b)) ≤
       2 * ∑ i : Fin (Module.finrank Real E),
         lRegIndex S T beta (fun s ↦ c s • P i s)

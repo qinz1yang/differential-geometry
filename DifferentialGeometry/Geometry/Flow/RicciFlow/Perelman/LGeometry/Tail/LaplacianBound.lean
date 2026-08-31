@@ -111,7 +111,7 @@ theorem lTail_lap_le
     (hON : ∀ i j,
       (S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
           (P i b) (P j b) = if i = j then 1 else 0) :
-    let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let beta : Real → M := fun s ↦ alpha (A0, s)
     let branch : M → Real := fun y ↦
       lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
@@ -126,7 +126,7 @@ theorem lTail_lap_le
   let beta : Real → M := fun s ↦ alpha (A0, s)
   let y : M := beta b
   let g : SmoothRiemannianMetric I M := S.base.metric (T - b ^ 2)
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun q ↦
     lRegAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
   let W : Fin (Module.finrank Real E) →

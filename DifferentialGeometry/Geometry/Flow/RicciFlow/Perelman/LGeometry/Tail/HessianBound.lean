@@ -95,19 +95,19 @@ private theorem lTail_mfd_at
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B)
     (y : M)
     (hySrc : y ∈
-      (lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse.source)
-    (hyV : (lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse y ∈ V) :
+      (Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse.source)
+    (hyV : (Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y ∈ V) :
     HasMFDerivAt I 𝓘(Real, Real)
       (fun q : M ↦ lRegAction S T
         (fun s ↦ alpha
-          ((lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse q, s))
+          ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse q, s))
         a b) y
       ((S.base.metric (T - b ^ 2)).inner y
         (lVelocity (I := I)
           (fun s : Real ↦ alpha
-            ((lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse y, s))
+            ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y, s))
           b)) := by
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let A : E := hloc.localInverse y
   let endMap : E → M := fun B ↦ alpha (B, b)
   let act : E → Real := fun B ↦
@@ -222,7 +222,7 @@ private theorem lTail_grad_on
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B) :
-    let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
       lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     ∃ U : Set M, IsOpen U ∧ alpha (A0, b) ∈ U ∧
@@ -236,7 +236,7 @@ private theorem lTail_grad_on
   obtain ⟨W, hWopen, hA0W, hWV, hact⟩ :=
     lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun y ↦
     lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
@@ -315,7 +315,7 @@ private theorem lTailEnd_cov
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B)
     (Y : TangentSpace I (alpha (A0, b))) :
-    let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let W := mfderiv I 𝓘(Real, E) hloc.localInverse (alpha (A0, b)) Y
     let J : ∀ s, TangentSpace I (alpha (A0, s)) := fun s ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, s)) A0 W
@@ -329,7 +329,7 @@ private theorem lTailEnd_cov
   dsimp only
   let g := S.base.metric (T - b ^ 2)
   let y : M := alpha (A0, b)
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun q ↦
     lRegAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
   let W : E := mfderiv I 𝓘(Real, E) hloc.localInverse y Y
@@ -544,7 +544,7 @@ theorem lTailBranch_hess
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B)
     (Y Z : TangentSpace I (alpha (A0, b))) :
-    let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
       lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     let W := mfderiv I 𝓘(Real, E) hloc.localInverse (alpha (A0, b)) Y
@@ -608,7 +608,7 @@ theorem lTail_hess_le
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (alpha (A0, s)) (W s) : TangentBundle I M)) Omega)
     (hWa : W a = 0) (hWb : W b = Y) :
-    let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
       lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     hessFun (I := I) (S.base.metric (T - b ^ 2)) branch
@@ -618,7 +618,7 @@ theorem lTail_hess_le
   let beta : Real → M := fun s ↦ alpha (A0, s)
   let y : M := beta b
   let g := S.base.metric (T - b ^ 2)
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun q ↦
     lRegAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
   let B : E := mfderiv I 𝓘(Real, E) hloc.localInverse y Y
@@ -1007,7 +1007,7 @@ theorem lTail_hess_le
     hessFun (I := I) (S.base.metric (T - b ^ 2))
         (fun q ↦ lRegAction S T
           (fun s ↦ alpha
-            ((lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse q, s))
+            ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse q, s))
           a b) (alpha (A0, b)) Y Y =
       hessFun (I := I) g branch y Y Y := rfl
     _ = g.inner y (covDerivAlong (I := I) g beta J b) Y := hbranch

@@ -304,8 +304,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [show alpha (A0, b) = gamma b from
       (hcenter b ⟨hb.le, le_rfl⟩).self_of_nhds]
     simpa only [P] using hP0ON i j
-  let htime := lTailTime_local hVopen hA0V hKopen hbK halpha hinj
-  let hfixed := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let htime := Coordinates.isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective hVopen hA0V hKopen hbK halpha hinj
+  let hfixed := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let head : Real := lRegAction S T gamma 0 a
   let joint : M × Real → Real := fun q ↦
     lRegAction S T
@@ -488,7 +488,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     have hsliceRaw : (fun z : M ↦ (htime.localInverse (z, b)).1)
         =ᶠ[nhds (alpha (A0, b))] hfixed.localInverse := by
       simpa only [htime, hfixed, A0, b, gamma] using
-        lTailInv_slice hVopen hA0V hKopen hbK halpha hinj
+        Coordinates.eventuallyEq_fst_localInverse_parameter_graph_slice hVopen hA0V hKopen hbK halpha hinj
     rw [hcenterB] at hsliceRaw
     exact hsliceRaw
   have hPhiFixed : (fun z : M ↦ Phi z tau) =ᶠ[nhds y]

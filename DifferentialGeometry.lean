@@ -2179,6 +2179,7 @@ import DifferentialGeometry.Geometry.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
+import DifferentialGeometry.Topology.Manifold.ParametricInverseFunctionTheorem
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
@@ -3934,7 +3935,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.Endp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.VariationExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.HessianBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LaplacianBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LocalInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.TraceDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.TraceIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.WeakBarrier

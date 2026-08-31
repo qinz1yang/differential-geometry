@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LocalInverse
+import DifferentialGeometry.Topology.Manifold.ParametricInverseFunctionTheorem
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.EndpointInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
@@ -776,7 +776,7 @@ theorem lTailJoint_mfd
           (lVelocity (I := I) (fun r : Real ↦ alpha (A0, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B) :
-    let hloc := lTailTime_local hVopen hA0V hKopen hbK halpha hinj
+    let hloc := Coordinates.isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective hVopen hA0V hKopen hbK halpha hinj
     HasMFDerivAt (I.prod 𝓘(Real, Real)) 𝓘(Real, Real)
       (fun q : M × Real ↦
         lRegAction S T
@@ -795,7 +795,7 @@ theorem lTailJoint_mfd
   let L := I.prod 𝓘(Real, Real)
   let F : E × Real → M × Real := fun p ↦ (alpha p, p.2)
   let q0 : M × Real := (alpha (A0, b), b)
-  let hloc := lTailTime_local hVopen hA0V hKopen hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective hVopen hA0V hKopen hbK halpha hinj
   let Act : E × Real → Real := fun p ↦
     lRegAction S T (fun s : Real ↦ alpha (p.1, s)) a p.2
   let g := S.base.metric (T - b ^ 2)
@@ -946,12 +946,12 @@ theorem lTailBranch_smooth
         ContMDiffOn I 𝓘(Real, Real) ∞ F U ∧
         ∀ y ∈ U, F y = lRegAction S T
           (fun s ↦ alpha
-            ((lTail_localDiffeo hVopen hA0V hbK halpha hinj).localInverse y, s))
+            ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y, s))
           a b := by
   obtain ⟨W, hWopen, hA0W, hWV, hact⟩ :=
     lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
   have hUopen : IsOpen U :=
     hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
@@ -1079,7 +1079,7 @@ theorem exists_lCost_support
     calc
       alpha (A0, b) = gamma b := hcenterEq ⟨hbK, hbJ⟩
       _ = lExp S T x Z tau := by simp only [gamma, b, lExp]
-  let hloc := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   have hregFamily : ∀ q ∈ V ×ˢ Ktime, T - q.2 ^ 2 ∈ DM.regular := by
     intro q hq
     exact ((hcurves q.1 hq.1).2.2 q.2 hq.2).1

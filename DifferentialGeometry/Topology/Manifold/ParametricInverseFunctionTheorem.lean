@@ -1,11 +1,11 @@
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Bundle.TangentSpace
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+namespace DifferentialGeometry.Coordinates
 
 open Set
 open scoped ContDiff Manifold Topology
@@ -19,7 +19,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-private def tailModelMFDerivAt
+private def modelMFDerivAt
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     {G₀ : Type*} [TopologicalSpace G₀]
     {J₀ : ModelWithCorners Real F G₀}
@@ -32,7 +32,7 @@ private def tailModelMFDerivAt
       (tangentSpaceModelContinuousLinearEquiv
         (I := J₀) u).symm.toContinuousLinearMap)
 
-private theorem tail_hasFDerivAt_written
+private theorem hasFDerivAt_writtenInExtChartAt
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     {G₀ : Type*} [TopologicalSpace G₀]
     {J₀ : ModelWithCorners Real F G₀} [J₀.Boundaryless]
@@ -42,14 +42,14 @@ private theorem tail_hasFDerivAt_written
     {f : N₀ → N} {u : N₀}
     (hf : MDifferentiableAt J₀ J f u) :
     HasFDerivAt (writtenInExtChartAt J₀ J u f)
-      (tailModelMFDerivAt (J₀ := J₀) (J := J) f u)
+      (modelMFDerivAt (J₀ := J₀) (J := J) f u)
       (extChartAt J₀ u u) := by
   have h := hf.hasMFDerivAt.2
   rw [ModelWithCorners.Boundaryless.range_eq_univ] at h
   with_unfolding_all
     exact h.hasFDerivAt_of_univ.congr_fderiv (by ext v; rfl)
 
-private theorem tail_written_inv
+private theorem writtenInExtChartAt_fderiv_isInvertible
     {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
     {G₀ : Type*} [TopologicalSpace G₀]
     {J₀ : ModelWithCorners Real F G₀} [J₀.Boundaryless]
@@ -58,13 +58,13 @@ private theorem tail_written_inv
     {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
     {f : N₀ → N} {u : N₀}
     (hf : MDifferentiableAt J₀ J f u)
-    (hinv : (tailModelMFDerivAt (J₀ := J₀) (J := J) f u).IsInvertible) :
+    (hinv : (modelMFDerivAt (J₀ := J₀) (J := J) f u).IsInvertible) :
     (fderiv Real (writtenInExtChartAt J₀ J u f)
       (extChartAt J₀ u u)).IsInvertible := by
-  rw [(tail_hasFDerivAt_written (J₀ := J₀) (J := J) hf).fderiv]
+  rw [(hasFDerivAt_writtenInExtChartAt (J₀ := J₀) (J := J) hf).fderiv]
   exact hinv
 
-theorem lTail_localDiffeo
+theorem isLocalDiffeomorphAt_slice_of_mfderiv_injective
     {alpha : E × Real → M} {V : Set E} {K : Set Real}
     {A0 : E} {b : Real}
     (hVopen : IsOpen V) (hA0V : A0 ∈ V) (hbK : b ∈ K)
@@ -84,7 +84,7 @@ theorem lTail_localDiffeo
     intro A hAV
     exact ⟨hAV, hbK⟩
   let A : E →L[Real] E :=
-    tailModelMFDerivAt (J₀ := 𝓘(Real, E)) (J := I) f A0
+    modelMFDerivAt (J₀ := 𝓘(Real, E)) (J := I) f A0
   have hAinj : Function.Injective A := by
     intro v w hvw
     apply hinj
@@ -100,7 +100,7 @@ theorem lTail_localDiffeo
   have hAinv : A.IsInvertible := ⟨Df, rfl⟩
   have hfA0 : MDifferentiableAt 𝓘(Real, E) I f A0 :=
     (hfV.contMDiffAt (hVopen.mem_nhds hA0V)).mdifferentiableAt (by simp)
-  have hfdinv := tail_written_inv (J := I) hfA0 hAinv
+  have hfdinv := writtenInExtChartAt_fderiv_isInvertible (J := I) hfA0 hAinv
   obtain ⟨Psi, hA0Psi, hPsiV, hEqPsi⟩ :=
     DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn
       (I := 𝓘(Real, E)) (J := I) (n := 1) le_rfl
@@ -121,18 +121,18 @@ theorem lTail_localDiffeo
     have hfA : MDifferentiableAt 𝓘(Real, E) I f A :=
       (hfPsi.contMDiffAt (Psi.open_source.mem_nhds hA)).mdifferentiableAt
         (by simp)
-    have hmodel : (tailModelMFDerivAt
+    have hmodel : (modelMFDerivAt
         (J₀ := 𝓘(Real, E)) (J := I) f A).IsInvertible := by
-      simpa only [tailModelMFDerivAt,
+      simpa only [modelMFDerivAt,
         ContinuousLinearMap.isInvertible_comp_equiv,
         ContinuousLinearMap.isInvertible_equiv_comp] using hmfdinv
-    exact tail_written_inv (J := I) hfA hmodel
+    exact writtenInExtChartAt_fderiv_isInvertible (J := I) hfA hmodel
   obtain ⟨Phi, hA0Phi, _hPhiPsi, hEqPhi⟩ :=
     DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty
       (I := 𝓘(Real, E)) (J := I) Psi.open_source hA0Psi hfPsi hinvPsi
   exact ⟨Phi, hA0Phi, hEqPhi⟩
 
-theorem lTailTime_local
+theorem isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective
     {alpha : E × Real → M} {V : Set E} {K : Set Real}
     {A0 : E} {b : Real}
     (hVopen : IsOpen V) (hA0V : A0 ∈ V)
@@ -243,20 +243,22 @@ theorem lTailTime_local
       exact Prod.ext hv1 hv2
     · rintro rfl
       exact map_zero _
-  let : FiniteDimensional Real (TangentSpace J (z, b)) :=
-    inferInstanceAs (FiniteDimensional Real (E × Real))
-  let : FiniteDimensional Real (TangentSpace L (F (z, b))) :=
-    inferInstanceAs (FiniteDimensional Real (E × Real))
-  have hDFsurj : Function.Surjective (mfderiv J L F (z, b)) :=
-    LinearMap.surjective_of_injective hDFinj
-  let DF :=
-    ContinuousLinearEquiv.ofBijective (mfderiv J L F (z, b))
-      (LinearMap.ker_eq_bot.mpr hDFinj)
-      (LinearMap.range_eq_top.mpr hDFsurj)
-  have hDinv : (mfderiv J L F (z, b)).IsInvertible := by
-    refine ⟨DF, ?_⟩
-    rfl
-  have hfdinv := tail_written_inv (J := L) hFdiff hDinv
+  let A := modelMFDerivAt (J₀ := J) (J := L) F (z, b)
+  have hAinj : Function.Injective A := by
+    intro v w hvw
+    apply (tangentSpaceModelContinuousLinearEquiv (I := J) (z, b)).symm.injective
+    apply hDFinj
+    apply (tangentSpaceModelContinuousLinearEquiv (I := L) (F (z, b))).injective
+    with_unfolding_all
+      exact hvw
+  have hAsurj : Function.Surjective A :=
+    LinearMap.surjective_of_injective hAinj
+  let DA := ContinuousLinearEquiv.ofBijective A
+      (LinearMap.ker_eq_bot.mpr hAinj)
+      (LinearMap.range_eq_top.mpr hAsurj)
+  have hAinv : A.IsInvertible := ⟨DA, rfl⟩
+  have hfdinv :=
+    writtenInExtChartAt_fderiv_isInvertible (J := L) hFdiff hAinv
   obtain ⟨Psi, hzuPsi, hPsiU, hEqPsi⟩ :=
     DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn
       (I := J) (J := L) (n := 1) le_rfl
@@ -276,14 +278,14 @@ theorem lTailTime_local
     have hFp : MDifferentiableAt J L F p :=
       (hFPsi.contMDiffAt (Psi.open_source.mem_nhds hp)).mdifferentiableAt
         (by simp)
-    exact tail_written_inv (J := L) hFp hmfdinv
+    exact writtenInExtChartAt_fderiv_isInvertible (J := L) hFp hmfdinv
   obtain ⟨Phi, hzuPhi, _hPhiPsi, hEqPhi⟩ :=
     DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty
       (I := J) (J := L) Psi.open_source hzuPsi hFPsi hinvPsi
   exact ⟨Phi, by simpa only [z] using hzuPhi,
     by simpa only [F, f, z] using hEqPhi⟩
 
-theorem lTailInv_slice
+theorem eventuallyEq_fst_localInverse_parameter_graph_slice
     {alpha : E × Real → M} {V : Set E} {K : Set Real}
     {A0 : E} {b : Real}
     (hVopen : IsOpen V) (hA0V : A0 ∈ V)
@@ -293,16 +295,22 @@ theorem lTailInv_slice
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B) :
     let htime :=
-      lTailTime_local hVopen hA0V hKopen hbK halpha hinj
+      isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective
+        hVopen hA0V hKopen hbK halpha hinj
     let hfixed :=
-      lTail_localDiffeo hVopen hA0V hbK halpha hinj
+      isLocalDiffeomorphAt_slice_of_mfderiv_injective
+        hVopen hA0V hbK halpha hinj
     (fun y : M ↦ (htime.localInverse (y, b)).1) =ᶠ[nhds (alpha (A0, b))]
       hfixed.localInverse := by
   let F : E × Real → M × Real := fun p ↦ (alpha p, p.2)
   let endMap : E → M := fun A ↦ alpha (A, b)
   let q0 : M × Real := (alpha (A0, b), b)
-  let htime := lTailTime_local hVopen hA0V hKopen hbK halpha hinj
-  let hfixed := lTail_localDiffeo hVopen hA0V hbK halpha hinj
+  let htime :=
+    isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective
+      hVopen hA0V hKopen hbK halpha hinj
+  let hfixed :=
+    isLocalDiffeomorphAt_slice_of_mfderiv_injective
+      hVopen hA0V hbK halpha hinj
   have htime0 : htime.localInverse q0 = (A0, b) := by
     simpa only [htime, q0, F] using
       htime.localInverse_left_inv htime.localInverse_mem_target
@@ -347,4 +355,4 @@ theorem lTailInv_slice
   rw [← hend]
   exact (hfixed.localInverse_left_inv hyTarget).symm
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman
+end DifferentialGeometry.Coordinates
