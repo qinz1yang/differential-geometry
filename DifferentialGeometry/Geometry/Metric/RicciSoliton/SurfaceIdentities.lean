@@ -1,4 +1,6 @@
+import DifferentialGeometry.Geometry.Curvature.DimensionTwo.RicciScalar
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 
 set_option autoImplicit false
 
@@ -9,7 +11,7 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry
 
-open Operator
+open Curvature Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -84,5 +86,128 @@ theorem exists_const_mul_exp_of_gradient_eq_mul
       rw [Real.exp_neg]
       field_simp
     _ = c * Real.exp (f x) := by rw [hcx]
+
+section SurfaceSoliton
+
+variable [SigmaCompactSpace M] [T2Space M]
+
+theorem normalizedGradientRicciSoliton_hessFun_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (x : M)
+    (v w : TangentSpace I x) :
+    hessFun (I := I) g f x v w =
+      (1 - metricScalarAt (I := I) (M := M) g x) / 2 * g.inner x v w := by
+  have hsol := h.2.1 x v w
+  rw [Curvature.ricciTensor_eq_half_metricScalarAt_mul_inner_of_finrank_eq_two
+    (I := I) g hdim x v w] at hsol
+  nlinarith
+
+theorem normalizedGradientRicciSoliton_laplacian_potential_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (x : M) :
+    ΔG (I := I) g f x =
+      1 - metricScalarAt (I := I) (M := M) g x := by
+  have htrace := gradientRicciSoliton_trace h.2.1 x
+  rw [hdim] at htrace
+  norm_num at htrace ⊢
+  linarith
+
+theorem normalizedGradientRicciSoliton_differential_scalar_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (x : M)
+    (v : TangentSpace I x) :
+    differential1FormFun (I := I)
+        (fun y : M => metricScalarAt (I := I) (M := M) g y) x
+        (fun _ : Fin 1 => v) =
+      metricScalarAt (I := I) (M := M) g x *
+        differential1FormFun (I := I) f x (fun _ : Fin 1 => v) := by
+  have hscalar := gradientRicciSoliton_differential_scalar h.2.1 x v
+  rw [Curvature.ricciTensor_eq_half_metricScalarAt_mul_inner_of_finrank_eq_two
+    (I := I) g hdim x (gradFun (I := I) g f x) v] at hscalar
+  calc
+    differential1FormFun (I := I)
+          (fun y : M => metricScalarAt (I := I) (M := M) g y) x
+          (fun _ : Fin 1 => v) =
+        2 * (metricScalarAt (I := I) (M := M) g x / 2 *
+          g.inner x (gradFun (I := I) g f x) v) := hscalar
+    _ = metricScalarAt (I := I) (M := M) g x *
+        g.inner x (gradFun (I := I) g f x) v := by ring
+    _ = metricScalarAt (I := I) (M := M) g x *
+        differential1FormFun (I := I) f x (fun _ : Fin 1 => v) := by
+      rw [differential1FormFun_apply_eq_inner_gradientFun (I := I) g f x v,
+        Connection.gradient_eq_gradFun]
+
+theorem normalizedGradientRicciSoliton_gradient_scalar_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (x : M) :
+    gradientFun (I := I) g
+        (fun y : M => metricScalarAt (I := I) (M := M) g y) x =
+      metricScalarAt (I := I) (M := M) g x •
+        gradientFun (I := I) g f x := by
+  apply metricFlatLinear_injective (I := I) g x
+  ext v
+  rw [metricFlatLinear_apply, metricFlatLinear_apply,
+    (g.inner x).map_smul, smul_apply, smul_eq_mul,
+    inner_gradientFun, inner_gradientFun]
+  have hscalar :=
+    normalizedGradientRicciSoliton_differential_scalar_of_finrank_eq_two
+      (I := I) h hdim x v
+  rw [differential1FormFun_apply_eq_mvfderiv,
+    differential1FormFun_apply_eq_mvfderiv] at hscalar
+  exact hscalar
+
+theorem normalizedGradientRicciSoliton_differential_scalar_mul_exp_neg_of_finrank_eq_two
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) (x : M)
+    (v : TangentSpace I x) :
+    differential1FormFun (I := I)
+        (fun y : M => metricScalarAt (I := I) (M := M) g y *
+          Real.exp (-(f y))) x (fun _ : Fin 1 => v) = 0 := by
+  rw [differential1FormFun_apply_eq_inner_gradientFun (I := I) g]
+  have hRdiff : MDifferentiableAt I (modelWithCornersSelf Real Real)
+      (fun y : M => metricScalarAt (I := I) (M := M) g y) x :=
+    (metricScalar_smooth (I := I) (M := M) g x).mdifferentiableAt (by simp)
+  have hfdiff : MDifferentiableAt I (modelWithCornersSelf Real Real) f x :=
+    (f.contMDiff x).mdifferentiableAt (by simp)
+  have hnegdiff : MDifferentiableAt I (modelWithCornersSelf Real Real)
+      (fun y : M => -(f y)) x :=
+    (f.contMDiff.neg x).mdifferentiableAt (by simp)
+  have hexpdiff : MDifferentiableAt I (modelWithCornersSelf Real Real)
+      (fun y : M => Real.exp (-(f y))) x :=
+    ((Real.contDiff_exp.contMDiff.comp (f.contMDiff.neg)).mdifferentiableAt
+      (by simp))
+  have hgradneg : gradientFun (I := I) g (fun y : M => -(f y)) x =
+      -gradientFun (I := I) g f x := by
+    exact Operator.gradientFun_neg (I := I) g hfdiff
+  rw [Operator.gradientFun_mul (I := I) g hRdiff hexpdiff,
+    Operator.gradientFun_comp (I := I) g Real.differentiableAt_exp hnegdiff,
+    Real.deriv_exp, hgradneg,
+    normalizedGradientRicciSoliton_gradient_scalar_of_finrank_eq_two
+      (I := I) h hdim x]
+  simp only [smul_neg, smul_smul]
+  rw [mul_comm]
+  simp
+
+theorem normalizedGradientRicciSoliton_exists_scalar_eq_const_mul_exp_of_finrank_eq_two
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 2) :
+    ∃ c : Real, ∀ x : M,
+      metricScalarAt (I := I) (M := M) g x = c * Real.exp (f x) := by
+  let R : C^∞⟮I, M; Real⟯ :=
+    ⟨fun x : M => metricScalarAt (I := I) (M := M) g x,
+      metricScalar_smooth (I := I) (M := M) g⟩
+  apply exists_const_mul_exp_of_gradient_eq_mul (I := I) (g := g) (R := R) (f := f)
+  intro x
+  exact normalizedGradientRicciSoliton_gradient_scalar_of_finrank_eq_two
+    (I := I) h hdim x
+
+end SurfaceSoliton
 
 end DifferentialGeometry.Geometry
