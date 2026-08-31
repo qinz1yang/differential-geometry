@@ -92,20 +92,20 @@ theorem solitonModelCovering_potential
   hπ.2.2.2.2.2.2 x
 
 theorem solitonModelCovering_deck_preserves
-    {h : SmoothRiemannianMetric I M} {Fpot : C^∞⟮I, M; Real⟯}
+    {h : SmoothRiemannianMetric J N} {Fpot : C^∞⟮J, N; Real⟯}
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
-    {cover : M → M}
+    {cover : N → M}
     (hπ : solitonModelCovering h Fpot g f cover)
-    (γ : M ≃ₘ⟮I, I⟯ M)
+    (γ : N ≃ₘ⟮J, J⟯ N)
     (hγ : ∀ x, cover (γ x) = cover x) :
     Diffeomorph.pullbackMetricCross h γ = h ∧
       Fpot.comp γ.toContMDiffMap = Fpot := by
-  have hcomp : cover ∘ (γ : M → M) = cover := by
+  have hcomp : cover ∘ (γ : N → N) = cover := by
     funext x
     exact hγ x
-  have hderiv (x : M) :
-      mfderiv I I cover (γ x) ∘L mfderiv I I (γ : M → M) x =
-        mfderiv I I cover x := by
+  have hderiv (x : N) :
+      mfderiv J I cover (γ x) ∘L mfderiv J J (γ : N → N) x =
+        mfderiv J I cover x := by
     have h' := mfderiv_comp x
       ((solitonModelCovering_contMDiff hπ).mdifferentiableAt (by simp))
       (γ.contMDiff.mdifferentiableAt (by simp))
@@ -116,14 +116,14 @@ theorem solitonModelCovering_deck_preserves
     intro x v w
     rw [Diffeomorph.pullbackMetricCross_inner]
     calc
-      h.inner (γ x) (mfderiv I I (γ : M → M) x v)
-          (mfderiv I I (γ : M → M) x w) =
+      h.inner (γ x) (mfderiv J J (γ : N → N) x v)
+          (mfderiv J J (γ : N → N) x w) =
           g.inner (cover (γ x))
-            (mfderiv I I cover (γ x) (mfderiv I I (γ : M → M) x v))
-            (mfderiv I I cover (γ x) (mfderiv I I (γ : M → M) x w)) :=
+            (mfderiv J I cover (γ x) (mfderiv J J (γ : N → N) x v))
+            (mfderiv J I cover (γ x) (mfderiv J J (γ : N → N) x w)) :=
         solitonModelCovering_metric hπ (γ x) _ _
-      _ = g.inner (cover x) (mfderiv I I cover x v)
-            (mfderiv I I cover x w) := by
+      _ = g.inner (cover x) (mfderiv J I cover x v)
+            (mfderiv J I cover x w) := by
         have hv := congrArg (fun L => L v) (hderiv x)
         have hw := congrArg (fun L => L w) (hderiv x)
         simp only [ContinuousLinearMap.comp_apply] at hv hw
