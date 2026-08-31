@@ -127,4 +127,69 @@ theorem sphereDiffeo_eq_neg_of_sq_eq_one_of_fixed_point_free
   change e v = -v
   exact eq_neg_of_add_eq_zero_left hsum
 
+section FreeAction
+
+variable {Γ : Type*} [Group Γ]
+
+theorem orth_rep_injective_of_free_sphere_action
+    (ρ : Γ →* (E ≃ₗᵢ[ℝ] E))
+    (hfree : ∀ (γ : Γ) (x : sphere (0 : E) 1),
+      sphereDiffeo (n := n) (ρ γ) x = x → γ = 1) :
+    Function.Injective ρ := by
+  rw [injective_iff_map_eq_one]
+  intro γ hγ
+  have hfinrank : 0 < finrank ℝ E := by
+    rw [show finrank ℝ E = n + 1 from Fact.out]
+    omega
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos hfinrank
+  let x : sphere (0 : E) 1 :=
+    Classical.choice
+      (NormedSpace.sphere_nonempty_rclike ℝ
+        (E := E) (r := (1 : ℝ)) zero_le_one)
+  apply hfree γ x
+  apply Subtype.ext
+  change ρ γ (x : E) = (x : E)
+  rw [hγ]
+  rfl
+
+variable [Fact (finrank ℝ E = 3)]
+
+theorem orth_rep_apply_eq_one_or_neg_of_free_sphere_action
+    (ρ : Γ →* (E ≃ₗᵢ[ℝ] E))
+    (hfree : ∀ (γ : Γ) (x : sphere (0 : E) 1),
+      sphereDiffeo (n := 2) (ρ γ) x = x → γ = 1)
+    (γ : Γ) :
+    ρ γ = 1 ∨ ρ γ = LinearIsometryEquiv.neg ℝ := by
+  by_cases hγ : γ = 1
+  · left
+    subst γ
+    exact ρ.map_one
+  have hfixedPointFree : ∀ x : sphere (0 : E) 1,
+      sphereDiffeo (n := 2) (ρ γ) x ≠ x := by
+    intro x hx
+    exact hγ (hfree γ x hx)
+  rcases sphereDiffeo_exists_fixed_or_antipodal_point (ρ γ) with
+    ⟨x, hfixed⟩ | ⟨x, hantipodal⟩
+  · exact (hfixedPointFree _ hfixed).elim
+  right
+  have hambient : ρ γ (x : E) = -(x : E) := by
+    simpa using congrArg Subtype.val hantipodal
+  have hsquareFixed : sphereDiffeo (n := 2) (ρ (γ * γ)) x = x := by
+    apply Subtype.ext
+    change ρ (γ * γ) (x : E) = (x : E)
+    rw [ρ.map_mul]
+    calc
+      (ρ γ * ρ γ) (x : E) = ρ γ (ρ γ (x : E)) := rfl
+      _ = ρ γ (-(x : E)) := by rw [hambient]
+      _ = -ρ γ (x : E) := map_neg (ρ γ) (x : E)
+      _ = -(-(x : E)) := by rw [hambient]
+      _ = (x : E) := neg_neg _
+  have hsqGroup : γ * γ = 1 := hfree (γ * γ) x hsquareFixed
+  have hsq : ρ γ * ρ γ = 1 := by
+    rw [← ρ.map_mul, hsqGroup, ρ.map_one]
+  exact sphereDiffeo_eq_neg_of_sq_eq_one_of_fixed_point_free
+    (ρ γ) hsq hfixedPointFree
+
+end FreeAction
+
 end DifferentialGeometry.Geometry
