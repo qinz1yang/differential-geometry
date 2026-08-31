@@ -71,28 +71,14 @@ theorem exists_lRegDomain_smoothClamp
   have hseg : Set.Icc (0 : Real) b ⊆ lRegDomain S T x Z := by
     intro s hs
     exact lRegDomain_seg S T x Z hb hs.1 hs.2
-  obtain ⟨margin, hmargin, hbuffer⟩ :=
-    isCompact_Icc.exists_cthickening_subset_open
-      (lRegDomain_isOpen S T x Z) hseg
-  obtain ⟨rho, hrho, hrho_id, hrho_deriv, hrho_range⟩ :=
-    DifferentialGeometry.exists_smooth_time_clamp
-      (0 : Real) b margin hb0 hmargin
-  refine ⟨rho, hrho, ?_, hrho_deriv, fun s ↦ hbuffer ?_⟩
+  obtain ⟨rho, lo, hi, hlo0, hbhi, hrho, hrho_id, hrho_deriv, hrange⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset
+      (lRegDomain_isOpen S T x Z) hb0 hseg
+  refine ⟨rho, hrho, ?_, ?_, hrange⟩
   · intro s hs
-    simpa only [id_eq] using hrho_id s hs
-  · by_cases hs0 : rho s ≤ 0
-    · refine Metric.mem_cthickening_of_dist_le (rho s) 0 margin
-        (Set.Icc (0 : Real) b) ⟨le_rfl, hb0.le⟩ ?_
-      rw [Real.dist_eq, sub_zero, abs_of_nonpos hs0]
-      linarith [(hrho_range s).1]
-    · by_cases hsb : rho s ≤ b
-      · refine Metric.mem_cthickening_of_dist_le (rho s) (rho s) margin
-          (Set.Icc (0 : Real) b) ⟨(not_le.mp hs0).le, hsb⟩ ?_
-        simpa using hmargin.le
-      · refine Metric.mem_cthickening_of_dist_le (rho s) b margin
-          (Set.Icc (0 : Real) b) ⟨hb0.le, le_rfl⟩ ?_
-        rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr (not_le.mp hsb).le)]
-        linarith [(hrho_range s).2]
+    exact hrho_id ⟨hlo0.le.trans hs.1, hs.2.trans hbhi.le⟩
+  · intro s hs
+    exact hrho_deriv s ⟨hlo0.le.trans hs.1, hs.2.trans hbhi.le⟩
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
@@ -113,47 +99,11 @@ theorem exists_lRegDomain_smoothGerm_in
   have hsegV : Set.Icc (0 : Real) b ⊆ V := by
     intro s hs
     exact ⟨lRegDomain_seg S T x Z hb hs.1 hs.2, hsegU hs⟩
-  obtain ⟨margin, hmargin, hbuffer⟩ :=
-    isCompact_Icc.exists_cthickening_subset_open hVopen hsegV
-  let a : Real := -(margin / 2)
-  let d : Real := b + margin / 2
-  let eps : Real := margin / 4
-  have ha0 : a < 0 := by
-    dsimp only [a]
-    linarith
-  have hbd : b < d := by
-    dsimp only [d]
-    linarith
-  have had : a < d := lt_trans ha0 (hb0.trans hbd)
-  have heps : 0 < eps := by
-    dsimp only [eps]
-    linarith
-  obtain ⟨rho, hrho, hrho_id, hrho_deriv, hrho_range⟩ :=
-    DifferentialGeometry.exists_smooth_time_clamp a d eps had heps
-  have hrange : ∀ s : Real, rho s ∈ V := by
-    intro s
-    apply hbuffer
-    by_cases hs0 : rho s ≤ 0
-    · refine Metric.mem_cthickening_of_dist_le (rho s) 0 margin
-        (Set.Icc (0 : Real) b) ⟨le_rfl, hb0.le⟩ ?_
-      rw [Real.dist_eq, sub_zero, abs_of_nonpos hs0]
-      have hlo := (hrho_range s).1
-      dsimp only [a, eps] at hlo
-      linarith
-    · by_cases hsb : rho s ≤ b
-      · refine Metric.mem_cthickening_of_dist_le (rho s) (rho s) margin
-          (Set.Icc (0 : Real) b) ⟨(not_le.mp hs0).le, hsb⟩ ?_
-        simpa using hmargin.le
-      · refine Metric.mem_cthickening_of_dist_le (rho s) b margin
-          (Set.Icc (0 : Real) b) ⟨hb0.le, le_rfl⟩ ?_
-        rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr (not_le.mp hsb).le)]
-        have hhi := (hrho_range s).2
-        dsimp only [d, eps] at hhi
-        linarith
-  refine ⟨rho, a, d, ha0, hbd, hrho, ?_, hrho_deriv,
+  obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv, hrange⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset
+      hVopen hb0 hsegV
+  refine ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv,
     fun s ↦ (hrange s).1, fun s ↦ (hrange s).2⟩
-  intro s hs
-  simpa only [id_eq] using hrho_id s hs
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in

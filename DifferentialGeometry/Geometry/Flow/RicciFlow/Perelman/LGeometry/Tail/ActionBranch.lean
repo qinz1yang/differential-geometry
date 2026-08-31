@@ -208,43 +208,6 @@ private theorem tailAct_bdry
   simpa only [hzero, map_zero, zero_apply, hint,
     sub_zero] using hfirst
 
-private theorem tail_open_clamp
-    {K : Set Real} {a b : Real} (hKopen : IsOpen K)
-    (hKconn : IsPreconnected K) (haK : a ∈ K) (hbK : b ∈ K)
-    (hab : a < b) :
-    ∃ rho : Real → Real, ∃ lo hi : Real,
-      lo < a ∧ b < hi ∧ ContDiff Real ∞ rho ∧
-        Set.EqOn rho id (Icc lo hi) ∧ ∀ s, rho s ∈ K := by
-  have hseg : Icc a b ⊆ K := by
-    simpa only [uIcc_of_le hab.le] using
-      hKconn.ordConnected.uIcc_subset haK hbK
-  obtain ⟨margin, hmargin, hbuffer⟩ :=
-    isCompact_Icc.exists_cthickening_subset_open hKopen hseg
-  let lo := a - margin / 2
-  let hi := b + margin / 2
-  let eps := margin / 4
-  obtain ⟨rho, hrho, hrhoId, _hrho', hrange⟩ :=
-    DifferentialGeometry.exists_smooth_time_clamp lo hi eps (by
-      dsimp only [lo, hi]; linarith) (by dsimp only [eps]; linarith)
-  refine ⟨rho, lo, hi, (by dsimp only [lo]; linarith),
-    (by dsimp only [hi]; linarith), hrho, hrhoId, fun s ↦ hbuffer ?_⟩
-  by_cases hsa : rho s ≤ a
-  · refine Metric.mem_cthickening_of_dist_le (rho s) a margin
-      (Icc a b) ⟨le_rfl, hab.le⟩ ?_
-    rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hsa)]
-    have hlo := (hrange s).1
-    dsimp only [lo, eps] at hlo
-    linarith
-  · by_cases hsb : rho s ≤ b
-    · exact Metric.mem_cthickening_of_dist_le (rho s) (rho s) margin
-        (Icc a b) ⟨(not_le.mp hsa).le, hsb⟩ (by simpa using hmargin.le)
-    · refine Metric.mem_cthickening_of_dist_le (rho s) b margin
-        (Icc a b) ⟨hab.le, le_rfl⟩ ?_
-      rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr (not_le.mp hsb).le)]
-      have hhi := (hrange s).2
-      dsimp only [hi, eps] at hhi
-      linarith
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
@@ -261,8 +224,9 @@ theorem lTailAct_smooth
     ∃ U : Set E, IsOpen U ∧ A0 ∈ U ∧ U ⊆ V ∧
       ContDiffOn Real ∞
         (fun A : E ↦ lRegAction S T (fun s ↦ alpha (A, s)) a b) U := by
-  obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, hrhoK⟩ :=
-    tail_open_clamp hKopen hKconn haK hbK hab
+  obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset
+      hKopen hab (hKconn.ordConnected.out haK hbK)
   obtain ⟨eps, heps, hball⟩ := (Metric.isOpen_iff.mp hVopen) A0 hA0V
   let bump : ContDiffBump (0 : E) :=
     { rIn := eps / 2, rOut := eps, rIn_pos := half_pos heps,
@@ -373,8 +337,9 @@ theorem lTailAct_joint
   obtain ⟨W, hWopen, hA0W, hWV, hactW⟩ :=
     lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
-  obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, hrhoK⟩ :=
-    tail_open_clamp hKopen hKconn haK hbK hab
+  obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset
+      hKopen hab (hKconn.ordConnected.out haK hbK)
   let Act : E × Real → Real := fun p ↦
     lRegAction S T (fun s ↦ alpha (p.1, s)) a p.2
   let U : Set (E × Real) := V ×ˢ Ioo a hi

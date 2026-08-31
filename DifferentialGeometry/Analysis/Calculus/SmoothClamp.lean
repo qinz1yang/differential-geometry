@@ -237,6 +237,50 @@ theorem exists_smooth_time_clamp
           field_simp [hmargin.ne']
           ring
 
+theorem exists_smooth_time_clamp_range_subset
+    {K : Set ℝ} {a b : ℝ} (hKopen : IsOpen K)
+    (hab : a < b) (hseg : Set.Icc a b ⊆ K) :
+    ∃ rho : ℝ → ℝ, ∃ lo hi : ℝ,
+      lo < a ∧ b < hi ∧ ContDiff ℝ ∞ rho ∧
+      Set.EqOn rho id (Set.Icc lo hi) ∧
+      (∀ s ∈ Set.Icc lo hi, HasDerivAt rho 1 s) ∧
+      ∀ s : ℝ, rho s ∈ K := by
+  obtain ⟨margin, hmargin, hbuffer⟩ :=
+    isCompact_Icc.exists_cthickening_subset_open hKopen hseg
+  let lo := a - margin / 2
+  let hi := b + margin / 2
+  let eps := margin / 4
+  have hloa : lo < a := by
+    dsimp only [lo]
+    linarith
+  have hbhi : b < hi := by
+    dsimp only [hi]
+    linarith
+  obtain ⟨rho, hrho, hrhoId, hrhoDeriv, hrange⟩ :=
+    exists_smooth_time_clamp lo hi eps (by
+      dsimp only [lo, hi]
+      linarith) (by
+      dsimp only [eps]
+      linarith)
+  refine ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, hrhoDeriv,
+    fun s ↦ hbuffer ?_⟩
+  by_cases hsa : rho s ≤ a
+  · refine Metric.mem_cthickening_of_dist_le (rho s) a margin
+      (Set.Icc a b) ⟨le_rfl, hab.le⟩ ?_
+    rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hsa)]
+    have hlo := (hrange s).1
+    dsimp only [lo, eps] at hlo
+    linarith
+  · by_cases hsb : rho s ≤ b
+    · exact Metric.mem_cthickening_of_dist_le (rho s) (rho s) margin
+        (Set.Icc a b) ⟨(not_le.mp hsa).le, hsb⟩ (by simpa using hmargin.le)
+    · refine Metric.mem_cthickening_of_dist_le (rho s) b margin
+        (Set.Icc a b) ⟨hab.le, le_rfl⟩ ?_
+      rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr (not_le.mp hsb).le)]
+      have hhi := (hrange s).2
+      dsimp only [hi, eps] at hhi
+      linarith
+
 theorem exists_smooth_positive_clamp
     (a b : ℝ) (ha : 0 < a) (hab : a < b) :
     ∃ rho : ℝ → ℝ, ContDiff ℝ ∞ rho ∧

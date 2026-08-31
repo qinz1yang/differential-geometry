@@ -35,43 +35,6 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-private theorem tailHess_clamp
-    {K : Set Real} {a b : Real} (hKopen : IsOpen K)
-    (hKconn : IsPreconnected K) (haK : a ∈ K) (hbK : b ∈ K)
-    (hab : a < b) :
-    ∃ rho : Real → Real, ∃ lo hi : Real,
-      lo < a ∧ b < hi ∧ ContDiff Real ∞ rho ∧
-        Set.EqOn rho id (Icc lo hi) ∧ ∀ s, rho s ∈ K := by
-  have hseg : Icc a b ⊆ K := by
-    simpa only [uIcc_of_le hab.le] using
-      hKconn.ordConnected.uIcc_subset haK hbK
-  obtain ⟨margin, hmargin, hbuffer⟩ :=
-    isCompact_Icc.exists_cthickening_subset_open hKopen hseg
-  let lo := a - margin / 2
-  let hi := b + margin / 2
-  let eps := margin / 4
-  obtain ⟨rho, hrho, hrhoId, _hrho', hrange⟩ :=
-    DifferentialGeometry.exists_smooth_time_clamp lo hi eps (by
-      dsimp only [lo, hi]; linarith) (by dsimp only [eps]; linarith)
-  refine ⟨rho, lo, hi, (by dsimp only [lo]; linarith),
-    (by dsimp only [hi]; linarith), hrho, hrhoId, fun s ↦ hbuffer ?_⟩
-  by_cases hsa : rho s ≤ a
-  · refine Metric.mem_cthickening_of_dist_le (rho s) a margin
-      (Icc a b) ⟨le_rfl, hab.le⟩ ?_
-    rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hsa)]
-    have hlo := (hrange s).1
-    dsimp only [lo, eps] at hlo
-    linarith
-  · by_cases hsb : rho s ≤ b
-    · exact Metric.mem_cthickening_of_dist_le (rho s) (rho s) margin
-        (Icc a b) ⟨(not_le.mp hsa).le, hsb⟩ (by simpa using hmargin.le)
-    · refine Metric.mem_cthickening_of_dist_le (rho s) b margin
-        (Icc a b) ⟨hab.le, le_rfl⟩ ?_
-      rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr (not_le.mp hsb).le)]
-      have hhi := (hrange s).2
-      dsimp only [hi, eps] at hhi
-      linarith
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
@@ -371,8 +334,9 @@ private theorem lTailEnd_cov
       (mfderiv 𝓘(Real, Real) I eta 0 1) = W
     rw [heta0]
     exact congrArg (mfderiv I 𝓘(Real, E) hloc.localInverse y) hetaVel
-  obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, hrhoK⟩ :=
-    tailHess_clamp hKopen hKconn haK hbK hab
+  obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset
+      hKopen hab (hKconn.ordConnected.out haK hbK)
   have hrhoM : ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
   let F : Real → Real → M := fun u s ↦ alpha (zeta u, rho s)

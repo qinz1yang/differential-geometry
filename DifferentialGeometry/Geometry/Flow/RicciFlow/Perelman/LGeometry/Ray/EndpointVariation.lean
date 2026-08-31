@@ -243,56 +243,6 @@ private theorem hasFDerivAt_lRegAction_lRegCurve_integral
         lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s)
       V hVopen 0 b K hKopen hseg Z hZV (hlag.of_le (by norm_num))
 
-private theorem exists_smoothClamp_range_subset
-    {K : Set Real} {b : Real} (hKopen : IsOpen K)
-    (hKconn : IsPreconnected K) (h0K : (0 : Real) ∈ K)
-    (hbK : b ∈ K) (hb0 : 0 < b) :
-    ∃ rho : Real → Real, ∃ a d : Real,
-      a < 0 ∧ b < d ∧ ContDiff Real ∞ rho ∧
-      Set.EqOn rho id (Set.Icc a d) ∧
-      ∀ s : Real, rho s ∈ K := by
-  have hseg : Set.Icc (0 : Real) b ⊆ K := by
-    simpa only [Set.uIcc_of_le hb0.le] using
-      hKconn.ordConnected.uIcc_subset h0K hbK
-  obtain ⟨margin, hmargin, hbuffer⟩ :=
-    isCompact_Icc.exists_cthickening_subset_open hKopen hseg
-  let a : Real := -(margin / 2)
-  let d : Real := b + margin / 2
-  let eps : Real := margin / 4
-  have ha0 : a < 0 := by
-    dsimp only [a]
-    linarith
-  have hbd : b < d := by
-    dsimp only [d]
-    linarith
-  have had : a < d := lt_trans ha0 (hb0.trans hbd)
-  have heps : 0 < eps := by
-    dsimp only [eps]
-    linarith
-  obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    DifferentialGeometry.exists_smooth_time_clamp a d eps had heps
-  refine ⟨rho, a, d, ha0, hbd, hrho, ?_, fun s ↦ hbuffer ?_⟩
-  · intro s hs
-    simpa only [id_eq] using hrho_id s hs
-  · by_cases hs0 : rho s ≤ 0
-    · refine Metric.mem_cthickening_of_dist_le (rho s) 0 margin
-        (Set.Icc (0 : Real) b) ⟨le_rfl, hb0.le⟩ ?_
-      rw [Real.dist_eq, sub_zero, abs_of_nonpos hs0]
-      have hlo := (hrho_range s).1
-      dsimp only [a, eps] at hlo
-      linarith
-    · by_cases hsb : rho s ≤ b
-      · refine Metric.mem_cthickening_of_dist_le (rho s) (rho s) margin
-          (Set.Icc (0 : Real) b) ⟨(not_le.mp hs0).le, hsb⟩ ?_
-        simpa using hmargin.le
-      · refine Metric.mem_cthickening_of_dist_le (rho s) b margin
-          (Set.Icc (0 : Real) b) ⟨hb0.le, le_rfl⟩ ?_
-        rw [Real.dist_eq,
-          abs_of_nonneg (sub_nonneg.mpr (not_le.mp hsb).le)]
-        have hhi := (hrho_range s).2
-        dsimp only [d, eps] at hhi
-        linarith
-
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem hasDerivAt_lRegAction_eq_endpoint_inner
@@ -378,8 +328,9 @@ theorem hasFDerivAt_lRegAction_lRegCurve
     obtain ⟨V, hVopen, hZV, K, hKopen, hKconn, h0K, hbK,
         alpha, halpha, hcurves⟩ :=
       lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
-    obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrhoK⟩ :=
-      exists_smoothClamp_range_subset hKopen hKconn h0K hbK hb0
+    obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, _hrhoDeriv, hrhoK⟩ :=
+      DifferentialGeometry.exists_smooth_time_clamp_range_subset
+        hKopen hb0 (hKconn.ordConnected.out h0K hbK)
     obtain ⟨zeta, hzeta, hzetaV, hzeta0, hzetaVel⟩ :=
       exists_smooth_curve (I := modelWithCornersSelf Real E) (M := E)
         Z Y V hVopen hZV
@@ -620,8 +571,9 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
   obtain ⟨V, hVopen, hZV, K, hKopen, hKconn, h0K, hbK,
       _alpha, _halpha, hcurves⟩ :=
     lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
-  obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrhoK⟩ :=
-    exists_smoothClamp_range_subset hKopen hKconn h0K hbK hb0
+  obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, _hrhoDeriv, hrhoK⟩ :=
+    DifferentialGeometry.exists_smooth_time_clamp_range_subset
+      hKopen hb0 (hKconn.ordConnected.out h0K hbK)
   have hd0 : 0 < d := hb0.trans hbd
   let U : Set (E × Real) := V ×ˢ Set.Ioo 0 (d ^ 2)
   have hUopen : IsOpen U := hVopen.prod (isOpen_Ioo)
