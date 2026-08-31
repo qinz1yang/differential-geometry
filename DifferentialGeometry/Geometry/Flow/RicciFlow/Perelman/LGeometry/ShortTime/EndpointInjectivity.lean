@@ -204,7 +204,7 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lEnd_inj_small
+theorem lRegCurve_endpoint_injOn_closedBall_of_small_time
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (R : Real) (hT : T ∈ D.regular) :

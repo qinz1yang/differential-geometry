@@ -31,7 +31,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lJacCoord_zero_lim
+theorem tendsto_normalized_lRegJacobiField_chartRepAtBase_at_zero
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z V : TangentSpace I x) (hT : T ∈ D.regular) :
     Tendsto
@@ -122,7 +122,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompactSpace N] in
 omit [NeZero (Module.finrank ℝ F)] in
-private theorem lNormGram_lim
+private theorem tendsto_lNormGram
     (S : SolutionOn (I := J) (M := N) K) (hS : IsSolutionOn (I := J) S)
     (T : Real) (x : N) (Z : TangentSpace J x) (hT : T ∈ K.regular) :
     Tendsto (lNormGram S T x Z)
@@ -157,7 +157,7 @@ private theorem lNormGram_lim
     have hU0 : U V 0 = e.continuousLinearMapAt Real x V := by
       simp only [U, if_pos]
     rw [hU0]
-    refine (lJacCoord_zero_lim S hS T x Z V hT).congr' ?_
+    refine (tendsto_normalized_lRegJacobiField_chartRepAtBase_at_zero S hS T x Z V hT).congr' ?_
     filter_upwards [self_mem_nhdsWithin] with s hs
     have hspos : 0 < s := hs
     have hs0 : s ≠ 0 := ne_of_gt hspos
@@ -349,7 +349,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompactSpace N] in
 omit [NeZero (Module.finrank ℝ F)] in
-theorem lExpDen_zero_lim
+theorem tendsto_normalized_lExpDensity_at_zero
     (S : SolutionOn (I := J) (M := N) K) (hS : IsSolutionOn (I := J) S)
     (T : Real) (x : N) (Z : TangentSpace J x) (hT : T ∈ K.regular) :
     Tendsto
@@ -357,7 +357,7 @@ theorem lExpDen_zero_lim
         (2 * s) ^ (Module.finrank Real F))
       (nhdsWithin (0 : Real) (Ioi 0))
       (nhds (lSrcDensity S T x)) := by
-  have hmatrix := lNormGram_lim S hS T x Z hT
+  have hmatrix := tendsto_lNormGram S hS T x Z hT
   have hdet : Tendsto (fun s ↦ (lNormGram S T x Z s).det)
       (nhdsWithin (0 : Real) (Ioi 0))
       (nhds (lSrcGram S T x).det) := by

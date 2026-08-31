@@ -24,7 +24,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-private theorem redVol_local_floor
+private theorem exists_redVolume_gt_half_nhds
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -40,7 +40,7 @@ private theorem redVol_local_floor
     simpa only [one_div] using ENNReal.one_half_lt_one
   have hvol : ∀ᶠ tau in 𝓝[>] (0 : Real),
       (1 / 2 : ENNReal) < redVolume S T x tau :=
-    (redVolume_zero_lim (I := I) S hS T x hTreg)
+    (tendsto_redVolume_at_zero (I := I) S hS T x hTreg)
       (Ioi_mem_nhds hhalf)
   have hsmall : ∀ᶠ tau in 𝓝[>] (0 : Real), tau < rho :=
     (tendsto_order.1
@@ -59,7 +59,7 @@ private theorem redVol_local_floor
       (1 / 2 : ENNReal) hvoltau
   exact ⟨tau, htau, htaurho, hnhds⟩
 
-theorem redVolume_unif_low
+theorem exists_uniform_redVolume_gt_half
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -77,7 +77,7 @@ theorem redVolume_unif_low
         {q : Real × M |
           (1 / 2 : ENNReal) < redVolume S q.1 q.2 tau} ∈ 𝓝 (p : Real × M) := by
     intro p
-    exact redVol_local_floor (I := I) S hS p.1.1 p.1.2 rho hrho
+    exact exists_redVolume_gt_half_nhds (I := I) S hS p.1.1 p.1.2 rho hrho
       (hreg p.1.1 p.2.1)
   choose tau htau_pos htau_lt hU using hlocal
   let U : K → Set (Real × M) := fun p ↦

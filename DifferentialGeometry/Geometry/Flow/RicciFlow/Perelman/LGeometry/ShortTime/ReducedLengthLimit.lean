@@ -26,7 +26,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRayAct_zero_lim
+theorem tendsto_lRegAction_div_at_zero
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (hT : T ∈ D.regular) :
     Tendsto
@@ -108,7 +108,7 @@ variable {N : Type u} [PseudoMetricSpace N] [ChartedSpace K N]
   [IsManifold J ∞ N] [T2Space N] [CompactSpace N]
 
 omit [NeZero (Module.finrank ℝ F)] in
-theorem lRedLen_sq_lim
+theorem tendsto_redLength_lExp_square_at_zero
     (S : SolutionOn (I := J) (M := N) D) (hS : IsSolutionOn (I := J) S)
     (T : Real) (x : N) (Z : TangentSpace J x) {tau : Real}
     (hZ : Z ∈ lInjDomain (E := F) (I := J) S T x tau) :
@@ -162,7 +162,7 @@ theorem lRedLen_sq_lim
         (2 * Real.sqrt (s ^ 2))
     rw [Real.sqrt_sq hs.le]
     exact congrArg (fun q : Real ↦ q / (2 * s)) (hlen.symm.trans hcost)
-  exact (lRayAct_zero_lim S hS T x Z hT).congr' hEq
+  exact (tendsto_lRegAction_div_at_zero S hS T x Z hT).congr' hEq
 
 end Compact
 

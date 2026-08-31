@@ -29,7 +29,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem lRedPull_contOn
+private theorem continuousOn_lRedJac_mul_lSrcDensity
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (tau : Real) (htau : 0 < tau) :
     ContinuousOn
@@ -107,7 +107,7 @@ theorem redVolume_le_one
       rw [lSrcGauss_eq]
       simpa only [mul_assoc, mul_comm, mul_left_comm] using
         mul_le_mul_of_nonneg_right
-          (lRedJac_le_gauss S hS T x htau hZ)
+          (lRedJac_le_gaussian S hS T x htau hZ)
           (lSrcDensity_pos S T x).le
     _ ≤ ∫⁻ Z : E, ENNReal.ofReal (lSrcGauss S T x Z)
           ∂modelHaar (E := E) := by
@@ -117,7 +117,7 @@ theorem redVolume_le_one
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem redVolume_zero_lim
+theorem tendsto_redVolume_at_zero
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (hT : T ∈ D.regular) :
@@ -141,7 +141,7 @@ theorem redVolume_zero_lim
   have hmeas : ∀ᶠ tau in 𝓝[>] (0 : Real), Measurable (F tau) := by
     filter_upwards [self_mem_nhdsWithin] with tau htau
     have hU := (lInj_isOpen S hS T x tau).measurableSet
-    have hcont := lRedPull_contOn S hS T x tau htau
+    have hcont := continuousOn_lRedJac_mul_lSrcDensity S hS T x tau htau
     change Measurable ((lInjDomain S T x tau).piecewise
       (ENNReal.ofReal ∘ fun Z ↦ lRedJac S T x Z tau * lSrcDensity S T x) 0)
     exact ContinuousOn.measurable_piecewise
@@ -158,7 +158,7 @@ theorem redVolume_zero_lim
       rw [lSrcGauss_eq]
       simpa only [mul_assoc, mul_comm, mul_left_comm] using
         mul_le_mul_of_nonneg_right
-          (lRedJac_le_gauss S hS T x htau hZ)
+          (lRedJac_le_gaussian S hS T x htau hZ)
           (lSrcDensity_pos S T x).le
     · simp only [F, Set.indicator_of_notMem hZ, zero_le]
   have hfin : ∫⁻ Z : E, G Z ∂modelHaar (E := E) ≠ (⊤ : ENNReal) := by
@@ -170,9 +170,9 @@ theorem redVolume_zero_lim
         (𝓝[>] (0 : Real)) (𝓝 (G Z)) := by
     apply MeasureTheory.ae_of_all
     intro Z
-    have hZev := lInj_eventually S hS T x Z hT
+    have hZev := eventually_mem_lInjDomain S hS T x Z hT
     obtain ⟨rho, hZrho⟩ := hZev.exists
-    have hraw := (lRedJac_tau_lim S hS T x Z hZrho).mul_const
+    have hraw := (tendsto_lRedJac_at_zero S hS T x Z hZrho).mul_const
       (lSrcDensity S T x)
     have hof := ENNReal.continuous_ofReal.continuousAt.tendsto.comp hraw
     have hFeq : (fun tau : Real ↦ F tau Z) =ᶠ[𝓝[>] (0 : Real)]

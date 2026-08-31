@@ -26,7 +26,7 @@ variable {D : RealTimeInterval}
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRedJac_zero_lim
+private theorem tendsto_lRedJac_square_at_zero
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {tau : Real}
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
@@ -48,8 +48,8 @@ theorem lRedJac_zero_lim
   have hT : T ∈ D.regular := by
     simpa only [zero_pow (by norm_num : (2 : Nat) ≠ 0), sub_zero] using
       lRegDomain_reg S T x Z hzeroDom
-  have hden := lExpDen_zero_lim S hS T x Z hT
-  have hlen := lRedLen_sq_lim S hS T x Z hZlater
+  have hden := tendsto_normalized_lExpDensity_at_zero S hS T x Z hT
+  have hlen := tendsto_redLength_lExp_square_at_zero S hS T x Z hZlater
   have hexp : Tendsto
       (fun s : Real ↦ Real.exp
         (-redLength S T x (lExp S T x Z (s ^ 2)) (s ^ 2)))
@@ -161,7 +161,7 @@ theorem lRedJac_zero_lim
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRedJac_tau_lim
+theorem tendsto_lRedJac_at_zero
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {rho : Real}
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x rho) :
@@ -180,7 +180,7 @@ theorem lRedJac_tau_lim
       by
         filter_upwards [self_mem_nhdsWithin] with tau htau
         exact Real.sqrt_pos.2 htau⟩
-  have hlim := (lRedJac_zero_lim S hS T x Z hZ).comp hsqrt
+  have hlim := (tendsto_lRedJac_square_at_zero S hS T x Z hZ).comp hsqrt
   have heq :
       (fun tau : Real ↦ lRedJac S T x Z tau) =ᶠ[𝓝[>] (0 : Real)]
         (fun tau : Real ↦ lRedJac S T x Z (Real.sqrt tau ^ 2)) := by
@@ -190,7 +190,7 @@ theorem lRedJac_tau_lim
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRedJac_le_gauss
+theorem lRedJac_le_gaussian
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
@@ -211,6 +211,6 @@ theorem lRedJac_le_gauss
       lRedJac S T x Z tau ≤ lRedJac S T x Z (s ^ 2) := by
     filter_upwards [self_mem_nhdsWithin, hsLt] with s hs hsSq
     exact lRedJac_anti S hS T x (sq_pos_of_pos hs) hsSq.le hZ
-  exact ge_of_tendsto (lRedJac_zero_lim S hS T x Z hZ) hle
+  exact ge_of_tendsto (tendsto_lRedJac_square_at_zero S hS T x Z hZ) hle
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

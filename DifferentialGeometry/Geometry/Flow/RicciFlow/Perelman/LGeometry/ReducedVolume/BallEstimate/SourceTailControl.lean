@@ -46,7 +46,7 @@ theorem lRedJac_src_le
           Real.exp (-(S.base.metric T).inner x Z Z)) *
             lSrcDensity S T x :=
       mul_le_mul_of_nonneg_right
-        (lRedJac_le_gauss S hS T x htau hZ)
+        (lRedJac_le_gaussian S hS T x htau hZ)
         (lSrcDensity_pos S T x).le
     _ = ((Real.pi : Real) ^
           ((Module.finrank Real E : Real) / 2))⁻¹ *

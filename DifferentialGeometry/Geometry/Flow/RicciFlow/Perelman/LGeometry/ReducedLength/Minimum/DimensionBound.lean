@@ -63,7 +63,7 @@ private theorem exists_redMin_seed [ConnectedSpace M]
       (fun s : Real ↦ lRegAction S T (lRegCurve S T x Z0) 0 s / (2 * s))
       (𝓝[>] (0 : Real)) (nhds 0) := by
     simpa only [Z0, ContinuousLinearMap.map_zero] using
-      lRayAct_zero_lim (I := I) S hS T x Z0 hT
+      tendsto_lRegAction_div_at_zero (I := I) S hS T x Z0 hT
   have hsmall : ∀ᶠ s in 𝓝[>] (0 : Real),
       lRegAction S T (lRegCurve S T x Z0) 0 s / (2 * s) <
         (Module.finrank Real E : Real) / 2 :=

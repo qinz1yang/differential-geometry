@@ -25,7 +25,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-theorem lInj_eventually
+theorem eventually_mem_lInjDomain
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z : TangentSpace I x) (hT : T ∈ D.regular) :
@@ -78,7 +78,7 @@ theorem lInj_eventually
   have hqactLim : Tendsto qact atTop
       (𝓝 ((S.base.metric T).inner x Z Z)) := by
     simpa only [qact, Function.comp_def] using
-      (lRayAct_zero_lim S hS T x Z hT).comp hBLimGT
+      (tendsto_lRegAction_div_at_zero S hS T x Z hT).comp hBLimGT
   obtain ⟨A, hA⟩ := (Metric.isBounded_range_of_tendsto qact hqactLim).bddAbove
   let A0 : Real := 2 * A
   have hZact (n : Nat) :
@@ -181,7 +181,7 @@ theorem lInj_eventually
     exact Metric.mem_closedBall.mpr ((hWL (Set.mem_range_self n)).trans (le_max_left _ _))
   have hZC : Z ∈ Metric.closedBall (0 : TangentSpace I x) C := by
     exact Metric.mem_closedBall.mpr (le_max_right _ _)
-  obtain ⟨epsC, hepsC, hCinj⟩ := lEnd_inj_small S hS T x C hT
+  obtain ⟨epsC, hepsC, hCinj⟩ := lRegCurve_endpoint_injOn_closedBall_of_small_time S hS T x C hT
   have hBC : ∀ᶠ n in atTop, Bt n < epsC := by
     have hBtLim : Tendsto Bt atTop (𝓝 (0 : Real)) := by
       simpa only [Bt, Function.comp_def] using hBLim.comp (tendsto_add_atTop_nat N)
