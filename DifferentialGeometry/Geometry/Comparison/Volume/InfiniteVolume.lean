@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
-open scoped ENNReal Manifold Topology
+open scoped ContDiff ENNReal Manifold Topology
 
 namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 
@@ -19,8 +19,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)] [ConnectedSpace M] [NoncompactSpace M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+  [ConnectedSpace M] [NoncompactSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -31,8 +31,8 @@ theorem riemannianVolumeMeasure_univ_eq_top_of_complete_noncompact_ricci_nonnega
     riemannianVolumeMeasure (I := I) (M := M) g Set.univ = ⊤ := by
   classical
   let _ : IsManifold I 1 M :=
-    IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
-      (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by simp : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
   let _ : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
   let _ : T3Space M := inferInstance
