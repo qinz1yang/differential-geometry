@@ -546,6 +546,44 @@ noncomputable def roundThreeCylinderShrinkerPotential :
   rw [roundTwoSphereShrinkerPotential_apply, gaussianPotential_apply]
   simp [Real.norm_eq_abs]
 
+def roundThreeCylinderCentralSlice :
+    Set (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :=
+  {x | x.2 = 0}
+
+@[simp] theorem mem_roundThreeCylinderCentralSlice
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    x ∈ roundThreeCylinderCentralSlice ↔ x.2 = 0 :=
+  Iff.rfl
+
+theorem roundThreeCylinderShrinkerPotential_eq_one_iff
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    roundThreeCylinderShrinkerPotential x = 1 ↔
+      x ∈ roundThreeCylinderCentralSlice := by
+  rw [roundThreeCylinderShrinkerPotential_apply,
+    mem_roundThreeCylinderCentralSlice]
+  constructor
+  · intro h
+    nlinarith [sq_nonneg x.2]
+  · intro h
+    rw [h]
+    norm_num
+
+theorem roundThreeCylinderCentralSlice_preimage_eq_of_potential_preserving
+    (γ : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real →
+      Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)
+    (hγ : ∀ x, roundThreeCylinderShrinkerPotential (γ x) =
+      roundThreeCylinderShrinkerPotential x) :
+    γ ⁻¹' roundThreeCylinderCentralSlice =
+      roundThreeCylinderCentralSlice := by
+  ext x
+  calc
+    x ∈ γ ⁻¹' roundThreeCylinderCentralSlice ↔
+        roundThreeCylinderShrinkerPotential (γ x) = 1 :=
+      roundThreeCylinderShrinkerPotential_eq_one_iff (γ x) |>.symm
+    _ ↔ roundThreeCylinderShrinkerPotential x = 1 := by rw [hγ x]
+    _ ↔ x ∈ roundThreeCylinderCentralSlice :=
+      roundThreeCylinderShrinkerPotential_eq_one_iff x
+
 theorem gradientRicciSoliton_roundThreeCylinder :
     gradientRicciSoliton (I := (𝓡 2).prod 𝓘(Real, Real))
       roundThreeCylinderShrinkerMetric
