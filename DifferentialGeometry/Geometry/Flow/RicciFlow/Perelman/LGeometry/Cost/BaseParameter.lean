@@ -527,9 +527,9 @@ theorem lCost_lt_x_event
   have hregcb : ∀ s ∈ Icc c b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact hreg s ⟨hc.le.trans hs.1, by simpa only [b] using hs.2⟩
-  have hheadInt := lRegLag_int_c1 (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
+  have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
     T 0 c hc.le alpha halpha.contMDiffOn hreg₀c
-  have htailInt := lRegLag_int_c1 (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
+  have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
     T c b hcb.le alpha halpha.contMDiffOn hregcb
   have halphaAdd := lRegAction_add (I := I) S T alpha 0 c b hheadInt htailInt
   have hpiece : Tendsto
@@ -558,9 +558,9 @@ theorem lCost_lt_x_event
         (Icc (0 : Real) c) := (hbetaC1 n).congr fun s hs ↦ heta₀ hs
     have hetaTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1 eta
         (Icc c b) := halpha.contMDiffOn.congr fun s hs ↦ heta₁ hs
-    have hetaHeadInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+    have hetaHeadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T 0 c hc.le eta hetaHead hreg₀c
-    have hetaTailInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+    have hetaTailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T c b hcb.le eta hetaTail hregcb
     have hetaAdd := lRegAction_add (I := I) S T eta 0 c b
       hetaHeadInt hetaTailInt

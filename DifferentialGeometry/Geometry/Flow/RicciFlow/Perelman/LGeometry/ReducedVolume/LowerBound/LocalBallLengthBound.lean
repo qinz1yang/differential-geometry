@@ -145,9 +145,9 @@ theorem redLen_ramp_bound
       lCost S T x (lRegCurve S T x W c) (c ^ 2) := by
     calc
       lRegAction S T (lRegCurve S T x W) 0 c =
-          lLength S T (sqrtReparam (lRegCurve S T x W)) 0 (c ^ 2) := by
+          lLength S T (squareRootReparametrization (lRegCurve S T x W)) 0 (c ^ 2) := by
         simpa only [Real.sqrt_sq hc.le] using
-          (lLength_sqrt (I := I) S T (lRegCurve S T x W)
+          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x W)
             (c ^ 2) (sq_nonneg c)).symm
       _ = lCost S T x (lExp S T x W (c ^ 2)) (c ^ 2) := by
         change lLength S T (fun r : Real ↦

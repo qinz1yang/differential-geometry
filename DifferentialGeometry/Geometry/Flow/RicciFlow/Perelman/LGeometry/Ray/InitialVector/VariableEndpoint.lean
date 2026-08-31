@@ -39,7 +39,7 @@ private theorem lRayInts_var
     (hB : 0 < B) (hdom : B ∈ lRegDomain S T x Z)
     (hreg : ∀ s ∈ Set.Icc (0 : Real) B, T - s ^ 2 ∈ D.regular) :
     IntervalIntegrable (lRegSpeedSq S T (lRegCurve S T x Z)) volume 0 B ∧
-      IntervalIntegrable (lRegLag S T (lRegCurve S T x Z)) volume 0 B := by
+      IntervalIntegrable (lRegLagrangian S T (lRegCurve S T x Z)) volume 0 B := by
   let alpha : Real → M := lRegCurve S T x Z
   have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
     simpa only [alpha, Set.uIcc_of_le hB.le] using
@@ -47,7 +47,7 @@ private theorem lRayInts_var
   have hkinCont : ContinuousOn (lRegSpeedSq S T alpha)
       (Set.Icc (0 : Real) B) := by
     intro s hs
-    exact (lRegSpeedSq_deriv (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
+    exact (hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
   have hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume 0 B := by
     have hkinCont' : ContinuousOn (lRegSpeedSq S T alpha)
         (Set.uIcc (0 : Real) B) := by
@@ -130,7 +130,7 @@ private theorem lRayMetric_var
       2 * (A + |Cp| * R) := by
     apply hkinRaw.trans
     linarith
-  apply lRegInit_bdd (I := I) S hS T B eps C R
+  apply lRegInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T B eps C R
     (2 * (A + |Cp| * R)) hB hepsB hBR hC halpha
   · intro s hs
     simpa only [alpha, lRegSpeedSq] using
@@ -220,7 +220,7 @@ theorem lRegInit_var
     exact (hric t ht y v).trans
       (mul_le_mul_of_nonneg_right (le_max_right Cg Cr) hvv)
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  obtain ⟨Cp, hpot⟩ := lScalar_lower (I := I) S hSc T 0 R (by
+  obtain ⟨Cp, hpot⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hSc T 0 R (by
     intro s hs
     have hsI : s ∈ Set.Icc (0 : Real) R := by
       simpa only [Set.uIcc_of_le hR] using hs

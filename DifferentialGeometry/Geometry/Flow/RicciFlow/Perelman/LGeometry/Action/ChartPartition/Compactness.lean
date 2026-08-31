@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
@@ -158,7 +158,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
     (htmono : Monotone t) (ht0 : t 0 = a) (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (alpha : ℕ → Real → M)
     (halpha : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (alpha n) (Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (u : (i : Fin m) → ℕ → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
       (chartAt H (p i)).source)
@@ -202,11 +202,11 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
           (lVelocity (I := I) (alpha n) s)
           (lVelocity (I := I) (alpha n) s)) volume a b := by
-    simpa only [lRegLag, add_sub_cancel_right] using (hLag n).sub (hpotInt n)
+    simpa only [lRegLagrangian, add_sub_cancel_right] using (hLag n).sub (hpotInt n)
   have hsplit (n : ℕ) : lRegAction S T (alpha n) a b = kin n + pot n := by
-    simpa only [lRegAction, lRegLag, kin, pot] using
+    simpa only [lRegAction, lRegLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt n) (hpotInt n)
-  obtain ⟨C, hC⟩ := lScalar_lower (I := I) S hSc T a b hcarrier
+  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hSc T a b hcarrier
   have hpotLower (n : ℕ) : C * (b - a) ≤ pot n := by
     have hmono := intervalIntegral.integral_mono_on hab
       intervalIntegrable_const (hpotInt n) (fun s hs ↦

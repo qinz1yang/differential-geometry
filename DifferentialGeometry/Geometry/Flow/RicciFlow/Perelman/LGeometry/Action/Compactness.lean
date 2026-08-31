@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.ArzelaAscoli
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 
@@ -44,7 +44,7 @@ theorem lAction_subseq
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Set.Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A) :
     ∃ (phi : Nat → Nat) (g : C(Set.Icc a b, M)),
       StrictMono phi ∧
@@ -52,7 +52,7 @@ theorem lAction_subseq
           (fun n (s : Set.Icc a b) ↦ alpha (phi n) s.1) g atTop := by
   classical
   obtain ⟨c, C, hc, hbudget⟩ :=
-    lRefEnergy_bound (I := I) S hS T t0 t1 gRef a b A hab htime hback
+    exists_curveEnergy_le_of_lRegAction_le (I := I) S hS T t0 t1 gRef a b A hab htime hback
   let B : Real := (2 / c) * (A - C * (b - a))
   have href (n : Nat) : IntervalIntegrable
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
@@ -136,7 +136,7 @@ theorem lAction_subseq_fix
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Set.Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x)
     (hfixb : ∀ n, alpha n b = y) :
@@ -210,9 +210,9 @@ private theorem lChartKin_bound
       simpa only [uIcc_of_le hab] using hcont n)
   have hsplit (n : Nat) :
       lRegAction S T (alpha n) a b = kin n + pot n := by
-    simpa only [lRegAction, lRegLag, kin, pot] using
+    simpa only [lRegAction, lRegLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt n) (hpotInt n)
-  obtain ⟨C, hC⟩ := lScalar_lower (I := J) S hSc T a b (by
+  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegPotential (I := J) S hSc T a b (by
     simpa only [uIcc_of_le hab] using hcarrier)
   have hpotLower (n : Nat) : C * (b - a) ≤ pot n := by
     have hmono := intervalIntegral.integral_mono_on hab

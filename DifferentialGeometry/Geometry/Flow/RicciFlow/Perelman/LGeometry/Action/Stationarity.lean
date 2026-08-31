@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
 
 set_option autoImplicit false
 
@@ -47,7 +47,7 @@ theorem lRegAction_stationary_of_isLocalMin
     rw [heq]
     simp only [lVelocity, mfderiv_const]
     rfl
-  have hact := lRegAction_first (I := I) S hS T f hf a b ht
+  have hact := lRegAction_first_variation (I := I) S hS T f hf a b ht
   have hzero := hmin.deriv_eq_zero
   rw [hact.deriv] at hzero
   simp only [hva, hvb, map_zero, zero_apply, zero_sub] at hzero

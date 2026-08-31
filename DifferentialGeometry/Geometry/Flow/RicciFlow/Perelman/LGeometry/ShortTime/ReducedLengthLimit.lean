@@ -35,7 +35,7 @@ theorem lRayAct_zero_lim
       (𝓝[>] (0 : Real))
       (𝓝 ((S.base.metric T).inner x Z Z)) := by
   let lag : Real → Real := fun s ↦
-    lRegLag S T (lRegCurve S T x Z) s
+    lRegLagrangian S T (lRegCurve S T x Z) s
   have hzero : (Z, (0 : Real)) ∈ lRegJointDom S T x := by
     exact zero_mem_lRegDomain S hS T x Z hT
   have hopen : IsOpen (lRegJointDom S T x) :=
@@ -53,12 +53,12 @@ theorem lRayAct_zero_lim
       continuous_const.continuousOn.prodMk continuous_id.continuousOn
     have hcomp : ContinuousOn
         ((fun q : E × Real ↦
-          lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
+          lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
             fun s : Real ↦ (z, s)) K :=
       (lRayLag_smooth S hS T x).continuousOn.comp hpairOn
         (fun s hs ↦ hs)
     have heq : ((fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
           fun s : Real ↦ (z, s)) = lag := by
       funext s
       rfl
@@ -79,7 +79,7 @@ theorem lRayAct_zero_lim
       (𝓝[>] (0 : Real)) (𝓝 ((1 / 2 : Real) * lag 0)) := by
     simpa only [smul_eq_mul] using tendsto_const_nhds.mul hlim
   have hlag0 : lag 0 = 2 * (S.base.metric T).inner x Z Z := by
-    simp only [lag, lRegLag]
+    simp only [lag, lRegLagrangian]
     rw [lRegCurve_zero, lRegCurve_vel_zero S hS T x Z hT]
     norm_num only [zero_pow, sub_zero, mul_zero, add_zero]
     rw [((S.base.metric T).inner x).map_smul,
@@ -152,8 +152,8 @@ theorem lRedLen_sq_lim
     have hlen :
         lLength S T (fun r : Real ↦ lExp S T x Z r) 0 (s ^ 2) =
           lRegAction S T (lRegCurve S T x Z) 0 s := by
-      change lLength S T (sqrtReparam (lRegCurve S T x Z)) 0 (s ^ 2) = _
-      have hlenSq := lLength_sqrt (I := J) S T
+      change lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 (s ^ 2) = _
+      have hlenSq := lLength_squareRootReparametrization_eq_lRegAction (I := J) S T
         (lRegCurve S T x Z) (s ^ 2) hs0.le
       rw [Real.sqrt_sq hs.le] at hlenSq
       exact hlenSq

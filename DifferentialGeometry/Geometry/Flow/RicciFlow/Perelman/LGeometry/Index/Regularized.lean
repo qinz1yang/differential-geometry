@@ -190,11 +190,11 @@ theorem lRegIndexInt_sq
     (hW : DifferentiableAt Real
       (chartRepAt (I := I) gamma W (s ^ 2)) (s ^ 2)) :
     lIndexInt S T gamma Y W (s ^ 2) * (2 * s) =
-      lRegIndexInt S T (sqReparam gamma)
+      lRegIndexInt S T (squareReparametrization gamma)
         (fun r ↦ Y (r ^ 2)) (fun r ↦ W (r ^ 2)) s := by
   classical
   let tau : Real := s ^ 2
-  let alpha : Real → M := sqReparam gamma
+  let alpha : Real → M := squareReparametrization gamma
   let Yb : ∀ r, TangentSpace I (alpha r) := fun r ↦ Y (r ^ 2)
   let Wb : ∀ r, TangentSpace I (alpha r) := fun r ↦ W (r ^ 2)
   let q := S.base.metric (T - tau)
@@ -229,7 +229,7 @@ theorem lRegIndexInt_sq
     (vec3 (W tau) (lVelocity (I := I) alpha s) (Y tau))
   have hAs : lVelocity (I := I) alpha s = c • X := by
     simpa only [alpha, c, X, tau] using
-      lVelocity_sq_pos (I := I) gamma s hs
+      lVelocity_squareReparametrization_of_pos (I := I) gamma s hs
   have hDY : covDerivAlong (I := I) q alpha Yb s = c • DY := by
     have hcomp := covDerivAlong_comp (I := I) q gamma Y
       (fun r : Real ↦ r ^ 2) s hgamma hY
@@ -373,7 +373,7 @@ theorem lIndex_sq
       0 < s → DifferentiableAt Real
         (chartRepAt (I := I) gamma W (s ^ 2)) (s ^ 2)) :
     lIndex S T gamma Y W tau1 tau2 =
-      lRegIndex S T (sqReparam gamma)
+      lRegIndex S T (squareReparametrization gamma)
         (fun s ↦ Y (s ^ 2)) (fun s ↦ W (s ^ 2))
         (Real.sqrt tau1) (Real.sqrt tau2) := by
   have hsub :=
@@ -401,7 +401,7 @@ theorem lIndex_sq
         (lIndexInt S T gamma Y W ∘ fun r : Real ↦ r ^ 2) s *
           (2 * s)) =
         ∫ s in Real.sqrt tau1..Real.sqrt tau2,
-          lRegIndexInt S T (sqReparam gamma)
+          lRegIndexInt S T (squareReparametrization gamma)
             (fun r ↦ Y (r ^ 2)) (fun r ↦ W (r ^ 2)) s := by
     apply intervalIntegral.integral_congr_ae
     filter_upwards

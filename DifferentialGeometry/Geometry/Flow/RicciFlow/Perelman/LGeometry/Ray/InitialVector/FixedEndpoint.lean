@@ -37,7 +37,7 @@ private theorem lRayAction_int
     (hB : 0 < B) (hdom : B ∈ lRegDomain S T x Z)
     (hreg : ∀ s ∈ Set.Icc (0 : Real) B, T - s ^ 2 ∈ D.regular) :
     IntervalIntegrable (lRegSpeedSq S T (lRegCurve S T x Z)) volume 0 B ∧
-      IntervalIntegrable (lRegLag S T (lRegCurve S T x Z)) volume 0 B := by
+      IntervalIntegrable (lRegLagrangian S T (lRegCurve S T x Z)) volume 0 B := by
   let alpha : Real → M := lRegCurve S T x Z
   have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
     simpa only [alpha, Set.uIcc_of_le hB.le] using
@@ -45,7 +45,7 @@ private theorem lRayAction_int
   have hkinCont : ContinuousOn (lRegSpeedSq S T alpha)
       (Set.Icc (0 : Real) B) := by
     intro s hs
-    exact (lRegSpeedSq_deriv (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
+    exact (hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
   have hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume 0 B := by
     have hkinCont' : ContinuousOn (lRegSpeedSq S T alpha)
         (Set.uIcc (0 : Real) B) := by
@@ -164,7 +164,7 @@ private theorem lRayMetric_bdd
   have hkinLe :
       (∫ s in 0..B, lRegSpeedSq S T alpha s) ≤ K := by
     simpa only [alpha, K] using hkinBound alpha hkin hLag (hact n)
-  apply lRegInit_bdd (I := I) S hS T B B C B K hB le_rfl le_rfl hC halpha
+  apply lRegInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T B B C B K hB le_rfl le_rfl hC halpha
   · intro s hs
     have h := hgrad (T - s ^ 2) (hback s hs) (alpha s)
       (lVelocity (I := I) alpha s)

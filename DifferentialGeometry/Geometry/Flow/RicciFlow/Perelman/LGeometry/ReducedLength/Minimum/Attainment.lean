@@ -45,7 +45,7 @@ private theorem lRmFree_subseq
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b <= A)
     (x : M) (hfixa : ∀ n, alpha n a = x) :
     ∃ (Cpt : Set M) (phi : Nat -> Nat) (g : C(Icc a b, M)),
@@ -168,7 +168,7 @@ private theorem lRmFree_lsc
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
     (x : M) (hfixa : ∀ n, alpha n a = x) :
     ∃ (m : Nat) (t : Fin (m + 1) → Real) (p : Fin m → M)
@@ -238,7 +238,7 @@ private theorem lRmFree_lsc
       (beta n) (Icc a b) := fun n ↦ halpha _
   have hkinBeta : ∀ n, IntervalIntegrable (lRegSpeedSq S T (beta n)) volume a b :=
     fun n ↦ hkin _
-  have hLagBeta : ∀ n, IntervalIntegrable (lRegLag S T (beta n)) volume a b :=
+  have hLagBeta : ∀ n, IntervalIntegrable (lRegLagrangian S T (beta n)) volume a b :=
     fun n ↦ hLag _
   have hactBeta : ∀ n, lRegAction S T (beta n) a b ≤ A := fun n ↦ hact _
   obtain ⟨psi, uLim, hpsi, hdu, hu⟩ :=
@@ -384,9 +384,9 @@ theorem exists_redMin_rm [ConnectedSpace M]
     refine ⟨C * b, ?_⟩
     intro r hr
     obtain ⟨alpha, halpha, _h0, rfl⟩ := hr
-    have hkin := lRegSpeed_int_c1 (I := I) S hMet hSc T 0 b hb.le alpha
+    have hkin := intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le alpha
       halpha.contMDiffOn hregBack
-    have hLag := lRegLag_int_c1 (I := I) S hMet hSc T 0 b hb.le alpha
+    have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le alpha
       halpha.contMDiffOn hregBack
     have hbound := lRegKinetic_le (I := I) S T alpha 0 b
       (lRegAction S T alpha 0 b) C hb.le
@@ -407,14 +407,14 @@ theorem exists_redMin_rm [ConnectedSpace M]
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s))
       (Icc (0 : Real) b) :=
-    lRegRef_int_c1 (I := I) (S.base.metric T) (alpha n) (halpha n) 0 b
+    integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one (I := I) (S.base.metric T) (alpha n) (halpha n) 0 b
   have hkin (n : Nat) : IntervalIntegrable
       (lRegSpeedSq S T (alpha n)) volume 0 b :=
-    lRegSpeed_int_c1 (I := I) S hMet hSc T 0 b hb.le (alpha n)
+    intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le (alpha n)
       (halpha n).contMDiffOn hregBack
   have hLag (n : Nat) : IntervalIntegrable
-      (lRegLag S T (alpha n)) volume 0 b :=
-    lRegLag_int_c1 (I := I) S hMet hSc T 0 b hb.le (alpha n)
+      (lRegLagrangian S T (alpha n)) volume 0 b :=
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le (alpha n)
       (halpha n).contMDiffOn hregBack
   have hact (n : Nat) : lRegAction S T (alpha n) 0 b ≤ v 0 := by
     rw [hval n]

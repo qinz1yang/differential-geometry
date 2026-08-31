@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompactCurvatureBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 
 set_option autoImplicit false
 
@@ -31,7 +31,7 @@ theorem lRegKinetic_le
     (hpot : ∀ s ∈ Set.Icc a b,
       C ≤ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s))
     (hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume a b)
-    (hLag : IntervalIntegrable (lRegLag S T alpha) volume a b)
+    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
     (hA : lRegAction S T alpha a b ≤ A) :
     (∫ s in a..b, lRegSpeedSq S T alpha s) ≤
       2 * (A - C * (b - a)) := by
@@ -45,7 +45,7 @@ theorem lRegKinetic_le
     unfold lRegAction
     apply intervalIntegral.integral_mono_on hab hleft hLag
     intro s hs
-    simpa only [lRegLag, lRegSpeedSq, add_comm] using
+    simpa only [lRegLagrangian, lRegSpeedSq, add_comm] using
       add_le_add_left (hpot s hs)
         ((1 / 2 : Real) * lRegSpeedSq S T alpha s)
   rw [intervalIntegral.integral_add (hkin.const_mul (1 / 2 : Real))
@@ -66,11 +66,11 @@ theorem lRegKinetic_bound
     (ht : ∀ s ∈ Set.Icc a b, T - s ^ 2 ∈ D.carrier) :
     ∃ C : Real, ∀ alpha : Real → M,
       IntervalIntegrable (lRegSpeedSq S T alpha) volume a b →
-        IntervalIntegrable (lRegLag S T alpha) volume a b →
+        IntervalIntegrable (lRegLagrangian S T alpha) volume a b →
           lRegAction S T alpha a b ≤ A →
             (∫ s in a..b, lRegSpeedSq S T alpha s) ≤
               2 * (A - C * (b - a)) := by
-  obtain ⟨C, hC⟩ := lScalar_lower (I := I) S hS T a b (by
+  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hS T a b (by
     intro s hs
     exact ht s (by simpa only [Set.uIcc_of_le hab] using hs))
   refine ⟨C, ?_⟩

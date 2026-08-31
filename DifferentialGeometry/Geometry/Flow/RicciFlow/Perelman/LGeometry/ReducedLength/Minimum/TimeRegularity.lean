@@ -116,9 +116,9 @@ theorem redMinAct_eq
   have hlen : lRegAction S T (lRegCurve S T x Z) 0 b =
       lLength S T (fun r : Real ↦ lExp S T x Z r) 0 (b ^ 2) := by
     change lRegAction S T (lRegCurve S T x Z) 0 b =
-      lLength S T (sqrtReparam (lRegCurve S T x Z)) 0 (b ^ 2)
+      lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 (b ^ 2)
     simpa only [Real.sqrt_sq hb.le] using
-      (lLength_sqrt (I := I) S T (lRegCurve S T x Z)
+      (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z)
         (b ^ 2) (sq_nonneg b)).symm
   have hcost := ((mem_lMinDomain S T x Z (b ^ 2)).1 hZmin).2
   have hact : lRegAction S T (lRegCurve S T x Z) 0 b =
@@ -175,7 +175,7 @@ private theorem lRegLag_ge_rm
       normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (alpha : Real → M) (s : Real)
     (hs : s ∈ Icc (0 : Real) (Real.sqrt sigma)) :
-    -redPotBound E K sigma ≤ lRegLag S T alpha s := by
+    -redPotBound E K sigma ≤ lRegLagrangian S T alpha s := by
   let F : Real := (Module.finrank Real E : Real) ^ 2 * Real.sqrt K
   have hF : 0 ≤ F := mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg K)
   have hs2 : s ^ 2 ≤ sigma := by
@@ -195,7 +195,7 @@ private theorem lRegLag_ge_rm
     dsimp only [redPotBound, F]
     linarith
   have hspeed := lRegSpeedSq_nonneg (I := I) S T alpha s
-  dsimp only [lRegLag]
+  dsimp only [lRegLagrangian]
   change 0 ≤ (S.base.metric (T - s ^ 2)).inner (alpha s)
     (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) at hspeed
   linarith
@@ -210,7 +210,7 @@ private theorem lRegLag_const_le
       normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (y : M) (s : Real)
     (hs : s ∈ Icc (0 : Real) (Real.sqrt sigma)) :
-    lRegLag S T (fun _ : Real ↦ y) s ≤ redPotBound E K sigma := by
+    lRegLagrangian S T (fun _ : Real ↦ y) s ≤ redPotBound E K sigma := by
   let F : Real := (Module.finrank Real E : Real) ^ 2 * Real.sqrt K
   have hF : 0 ≤ F := mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg K)
   have hs2 : s ^ 2 ≤ sigma := by
@@ -227,7 +227,7 @@ private theorem lRegLag_const_le
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hs2 (by norm_num)) hF
     exact hmul.trans (by simpa only [redPotBound, F] using hsq)
-  dsimp only [lRegLag, redPotBound]
+  dsimp only [lRegLagrangian, redPotBound]
   have hvel : lVelocity (I := I) (fun _ : Real ↦ y) s = 0 := by
     simp only [lVelocity, mfderiv_const]
     rfl
@@ -259,7 +259,7 @@ private theorem lRegAct_const_le
       rw [← Real.sq_sqrt hsigma]
       exact (sq_le_sq₀ hs'.1 (Real.sqrt_nonneg sigma)).2 hs'.2
     constructor <;> linarith [sq_nonneg s]
-  have hint := lRegLag_int_c1 (I := I) S hS.smoothMetric
+  have hint := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T b c hbc (fun _ : Real ↦ y)
       contMDiff_const.contMDiffOn hregBack
   have hmono : lRegAction S T (fun _ : Real ↦ y) b c ≤
@@ -293,7 +293,7 @@ private theorem lRegAct_tail_ge
       rw [← Real.sq_sqrt hsigma]
       exact (sq_le_sq₀ hs'.1 (Real.sqrt_nonneg sigma)).2 hs'.2
     constructor <;> linarith [sq_nonneg s]
-  have hint := lRegLag_int_c1 (I := I) S hS.smoothMetric
+  have hint := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T b c hbc alpha halpha hregBack
   have hmono : (∫ _s in b..c, -redPotBound E K sigma) ≤
       lRegAction S T alpha b c := by
@@ -402,11 +402,11 @@ private theorem redMinAct_ord [ConnectedSpace M]
   have hcurveTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1
       (lRegCurve S T x Zb) (Icc a b) :=
     hcurveB.mono fun s hs ↦ ⟨ha.le.trans hs.1, hs.2⟩
-  have hheadInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+  have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T 0 a ha.le (lRegCurve S T x Zb) hcurveHead
       (fun s hs ↦ lRegDomain_reg S T x Zb
         (lRegDomain_seg S T x Zb hZbDom hs.1 (hs.2.trans hab.le)))
-  have htailInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+  have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T a b hab.le (lRegCurve S T x Zb) hcurveTail
       (fun s hs ↦ lRegDomain_reg S T x Zb
         (lRegDomain_seg S T x Zb hZbDom (ha.le.trans hs.1) hs.2))

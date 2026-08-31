@@ -609,36 +609,36 @@ theorem lRegEuler_sq
         (fun tau : Real ↦ lVelocity (I := I) gamma tau) (s ^ 2))
         (s ^ 2)) :
     4 * s ^ 2 * lEulerPair S T gamma (s ^ 2) Y =
-      lRegEulerPair S T (sqReparam gamma) s Y := by
+      lRegEulerPair S T (squareReparametrization gamma) s Y := by
   rw [lEuler_sq (I := I) S T gamma s Y hs hgamma hvel]
-  simp only [lRegEulerPair, sqReparam]
+  simp only [lRegEulerPair, squareReparametrization]
   have hsub :
-      (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s) Y
+      (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s) Y
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-              (sqReparam gamma)
-              (fun r ↦ lVelocity (I := I) (sqReparam gamma) r) s -
-            lRegAccel S T s (sqReparam gamma s)
-              (lVelocity (I := I) (sqReparam gamma) s)) =
-        (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s) Y
+              (squareReparametrization gamma)
+              (fun r ↦ lVelocity (I := I) (squareReparametrization gamma) r) s -
+            lRegAccel S T s (squareReparametrization gamma s)
+              (lVelocity (I := I) (squareReparametrization gamma) s)) =
+        (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s) Y
             (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-              (sqReparam gamma)
-              (fun r ↦ lVelocity (I := I) (sqReparam gamma) r) s) -
-          (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s) Y
-            (lRegAccel S T s (sqReparam gamma s)
-              (lVelocity (I := I) (sqReparam gamma) s)) :=
-    ((S.base.metric (T - s ^ 2)).inner (sqReparam gamma s) Y).map_sub _ _
+              (squareReparametrization gamma)
+              (fun r ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) -
+          (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s) Y
+            (lRegAccel S T s (squareReparametrization gamma s)
+              (lVelocity (I := I) (squareReparametrization gamma) s)) :=
+    ((S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s) Y).map_sub _ _
   change _ =
-    (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s) Y
+    (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s) Y
       (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (sqReparam gamma)
-          (fun r ↦ lVelocity (I := I) (sqReparam gamma) r) s -
-        lRegAccel S T s (sqReparam gamma s)
-          (lVelocity (I := I) (sqReparam gamma) s))
+          (squareReparametrization gamma)
+          (fun r ↦ lVelocity (I := I) (squareReparametrization gamma) r) s -
+        lRegAccel S T s (squareReparametrization gamma s)
+          (lVelocity (I := I) (squareReparametrization gamma) s))
   conv_rhs =>
     rw [hsub]
-    rw [lRegAccel_inner (I := I) S T s (sqReparam gamma s)
-      (lVelocity (I := I) (sqReparam gamma) s) Y]
-  simp only [sqReparam]
+    rw [lRegAccel_inner (I := I) S T s (squareReparametrization gamma s)
+      (lVelocity (I := I) (squareReparametrization gamma) s) Y]
+  simp only [squareReparametrization]
   ring_nf
   rfl
 

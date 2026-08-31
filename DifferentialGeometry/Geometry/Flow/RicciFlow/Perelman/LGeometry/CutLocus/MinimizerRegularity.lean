@@ -70,8 +70,8 @@ theorem lMinVec_reg_min
         change _ = lLength S T
           (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) 0 tau
         rw [show (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) =
-          sqrtReparam (lRegCurve S T x Z) by rfl]
-        exact (lLength_sqrt (I := I) S T (lRegCurve S T x Z) tau
+          squareRootReparametrization (lRegCurve S T x Z) by rfl]
+        exact (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z) tau
           htau.le).symm
       _ = lCost S T x (lExp S T x Z tau) tau := hvec.2
       _ = lRegCostC1 S T 0 (Real.sqrt tau) x

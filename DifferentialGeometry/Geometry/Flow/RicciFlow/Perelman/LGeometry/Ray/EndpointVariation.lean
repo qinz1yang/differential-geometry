@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
@@ -115,7 +116,7 @@ theorem lRayLag_smooth
     (T : Real) (x : M) :
     ContDiffOn Real ∞
       (fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
       (lRegJointDom S T x) := by
   let J :=
     (modelWithCornersSelf Real E).prod (modelWithCornersSelf Real Real)
@@ -198,10 +199,10 @@ theorem lRayLag_smooth
       ((contMDiffAt_const.mul (contMDiffAt_snd.pow 2)).mul hscalar)
   have hcd : ContDiffAt Real ∞
       (fun p : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x p.1 s) p.2) q := by
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x p.1 s) p.2) q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod]
-    simpa only [J, F, lRegLag] using hlag
+    simpa only [J, F, lRegLagrangian] using hlag
   exact hcd.contDiffWithinAt
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
@@ -215,7 +216,7 @@ private theorem lRayAct_fderivInt
       (∫ s in (0 : Real)..b,
         fderiv Real
           (fun W : E ↦
-            lRegLag S T (fun r ↦ lRegCurve S T x W r) s) Z) Z := by
+            lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s) Z) Z := by
   obtain ⟨J, hJopen, hJconn, h0J, hbJ, hchosen⟩ :=
     lRegChosen_spec S T x Z hb
   obtain ⟨V, hVopen, hZV, K, hKopen, hKconn, h0K, hbK,
@@ -231,7 +232,7 @@ private theorem lRayAct_fderivInt
       hcurves q.1 hq.1⟩
   have hlag : ContDiffOn Real 2
       (fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
       (V ×ˢ K) :=
     ((lRayLag_smooth S hS T x).of_le (by
       change (↑(2 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat)
@@ -239,7 +240,7 @@ private theorem lRayAct_fderivInt
   simpa only [lRegAction] using
     DifferentialGeometry.Analysis.Calculus.hasFDerivAt_paramInt
       (f := fun W : E ↦ fun s : Real ↦
-        lRegLag S T (fun r ↦ lRegCurve S T x W r) s)
+        lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s)
       V hVopen 0 b K hKopen hseg Z hZV (hlag.of_le (by norm_num))
 
 private theorem rayOpenClamp
@@ -331,7 +332,7 @@ theorem lRegAction_bdry
             intro s hs
             exact heuler s hs
       _ = 0 := by simp only [intervalIntegral.integral_zero]
-  have hfirst := lRegAction_first (I := I) S hS T f hf 0 b ht
+  have hfirst := lRegAction_first_variation (I := I) S hS T f hf 0 b ht
   simpa only [hzero, map_zero, zero_apply, hint,
     sub_zero] using hfirst
 
@@ -361,7 +362,7 @@ theorem lRayAct_hasFDeriv
     ∫ s in (0 : Real)..b,
       fderiv Real
         (fun W : E ↦
-          lRegLag S T (fun r ↦ lRegCurve S T x W r) s) Z
+          lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s) Z
   let endMap : E → M := fun W ↦ lExp S T x W tau
   let L : E →L[Real] Real :=
     ((S.base.metric (T - tau)).inner (lExp S T x Z tau)
@@ -607,7 +608,7 @@ theorem lRayAct_joint
             (fun W : E ↦ lExp S T x W tau) (show E from Z) :
               E →L[Real] TangentSpace I (lExp S T x Z tau))).comp
         (ContinuousLinearMap.fst Real E Real)) +
-      (lRegLag S T (lRegCurve S T x Z) (Real.sqrt tau) /
+      (lRegLagrangian S T (lRegCurve S T x Z) (Real.sqrt tau) /
           (2 * Real.sqrt tau)) •
         ContinuousLinearMap.snd Real E Real) (Z, tau) := by
   rcases (mem_lExpPosDom S T x Z tau).1 hdom with
@@ -630,11 +631,11 @@ theorem lRayAct_joint
   have hpU : (Z, tau) ∈ U := ⟨hZV, htau, htauD⟩
   let G : (E × Real) → Real → Real := fun p u ↦
     Real.sqrt p.2 *
-      lRegLag S T (lRegCurve S T x p.1)
+      lRegLagrangian S T (lRegCurve S T x p.1)
         (rho (Real.sqrt p.2 * u))
   have hlag : ContDiffOn Real 2
       (fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
       (V ×ˢ K) := by
     apply ((lRayLag_smooth S hS T x).of_le (by
       change (↑(2 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat)
@@ -674,7 +675,7 @@ theorem lRayAct_joint
       ⟨hq.1.1, hrhoK _⟩
     have hlagAt : ContDiffAt Real 2
         (fun r : E × Real ↦
-          lRegLag S T (fun s ↦ lRegCurve S T x r.1 s) r.2)
+          lRegLagrangian S T (fun s ↦ lRegCurve S T x r.1 s) r.2)
         (q.1.1, rho (Real.sqrt q.1.2 * q.2)) :=
       hlag.contDiffAt ((hVopen.prod hKopen).mem_nhds hpairMem)
     have hcomp := hlagAt.comp q hpair
@@ -707,7 +708,7 @@ theorem lRayAct_joint
         (∫ u in (0 : Real)..1, G p u) =
           ∫ u in (0 : Real)..1,
             Real.sqrt p.2 *
-              lRegLag S T (lRegCurve S T x p.1)
+              lRegLagrangian S T (lRegCurve S T x p.1)
                 (Real.sqrt p.2 * u) := by
       apply intervalIntegral.integral_congr
       intro u hu
@@ -724,7 +725,7 @@ theorem lRayAct_joint
       intervalIntegral.integral_const_mul] using
       (intervalIntegral.smul_integral_comp_mul_left
         (a := (0 : Real)) (b := (1 : Real))
-        (fun s : Real ↦ lRegLag S T (lRegCurve S T x p.1) s)
+        (fun s : Real ↦ lRegLagrangian S T (lRegCurve S T x p.1) s)
         (Real.sqrt p.2)).symm
   have hA : DifferentiableAt Real A (Z, tau) :=
     (hInt.congr_of_eventuallyEq hEq).differentiableAt
@@ -733,7 +734,7 @@ theorem lRayAct_joint
       (lVelocity (I := I) (lRegCurve S T x Z) b)).comp
         (mfderiv (modelWithCornersSelf Real E) I
           (fun W : E ↦ lExp S T x W tau) Z)
-  let c : Real := lRegLag S T (lRegCurve S T x Z) b / (2 * b)
+  let c : Real := lRegLagrangian S T (lRegCurve S T x Z) b / (2 * b)
   let z : E := Z
   have hbase : HasFDerivAt A (fderiv Real A (Z, tau)) (Z, tau) :=
     hA.hasFDerivAt
@@ -747,7 +748,7 @@ theorem lRayAct_joint
     with_unfolding_all exact lRayAct_hasFDeriv S hS T x Z hdom
   have hZeq := hZslice.unique hZgiven
   let lag : Real → Real := fun s ↦
-    lRegLag S T (lRegCurve S T x Z) s
+    lRegLagrangian S T (lRegCurve S T x Z) s
   have hlagK : ContinuousOn lag K := by
     have hzV : z ∈ V := by
       with_unfolding_all exact hZV

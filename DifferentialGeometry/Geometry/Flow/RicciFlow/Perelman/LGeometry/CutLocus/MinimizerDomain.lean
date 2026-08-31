@@ -86,16 +86,16 @@ theorem exists_lMinVec
       change lLength S T
           (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) 0 tau = _
       rw [show (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) =
-        sqrtReparam (lRegCurve S T x Z) by rfl]
-      exact lLength_sqrt (I := I) S T (lRegCurve S T x Z) tau htau.le
+        squareRootReparametrization (lRegCurve S T x Z) by rfl]
+      exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z) tau htau.le
     _ = lRegAction S T alpha 0 (Real.sqrt tau) := by
       apply lRegAction_congr (I := I) S T
       intro s hs
       have hs' : s ∈ Ioo (0 : Real) (Real.sqrt tau) := by
         simpa only [uIoo_of_le (Real.sqrt_nonneg tau)] using hs
       exact hmax ⟨hs'.1.le, hs'.2.le⟩
-    _ = lLength S T (sqrtReparam alpha) 0 tau :=
-      (lLength_sqrt (I := I) S T alpha tau htau.le).symm
+    _ = lLength S T (squareRootReparametrization alpha) 0 tau :=
+      (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau.le).symm
     _ = lCost S T x y tau := hcost
     _ = lCost S T x (lExp S T x Z tau) tau := by rw [hExp]
 
@@ -154,8 +154,8 @@ theorem lMinDomain_down
         lRegCostC1 S T 0 (Real.sqrt tau) x (gamma (Real.sqrt tau)) := by
       calc
         lRegAction S T gamma 0 (Real.sqrt tau) =
-            lLength S T (sqrtReparam gamma) 0 tau :=
-          (lLength_sqrt (I := I) S T gamma tau htau.le).symm
+            lLength S T (squareRootReparametrization gamma) 0 tau :=
+          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gamma tau htau.le).symm
         _ = lLength S T (fun r : Real ↦ lExp S T x Z r) 0 tau := rfl
         _ = lCost S T x (lExp S T x Z tau) tau := hvec.2
         _ = lRegCostC1 S T 0 (Real.sqrt tau) x
@@ -227,8 +227,8 @@ theorem lMinDomain_down
         change lLength S T
             (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) 0 sigma = _
         rw [show (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) =
-          sqrtReparam gamma by rfl]
-        exact lLength_sqrt (I := I) S T gamma sigma hsigma.le
+          squareRootReparametrization gamma by rfl]
+        exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gamma sigma hsigma.le
       _ = lRegCostC1 S T 0 (Real.sqrt sigma) x
           (gamma (Real.sqrt sigma)) := hcostSigma
       _ = lCost S T x (gamma (Real.sqrt sigma)) sigma :=

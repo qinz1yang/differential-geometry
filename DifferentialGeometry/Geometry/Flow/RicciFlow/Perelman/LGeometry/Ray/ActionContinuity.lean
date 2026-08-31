@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 set_option autoImplicit false
@@ -37,7 +37,7 @@ private theorem lagJoint_cont
     (hcurves : ∀ Z ∈ V,
       IsLRegCurveOn S T (fun s ↦ alpha (Z, s)) K x Z) :
     ContinuousOn
-      (fun q : E × Real ↦ lRegLag S T (fun s ↦ alpha (q.1, s)) q.2)
+      (fun q : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)
       (V ×ˢ K) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
   let U := V ×ˢ K
@@ -144,7 +144,7 @@ private theorem lagJoint_cont
         ((continuous_snd.comp continuous_subtype_val).pow 2)).mul hscalar)
   rw [continuousOn_iff_continuous_domRestrict]
   change Continuous ((V ×ˢ K).domRestrict
-    (fun q : E × Real ↦ lRegLag S T (fun s ↦ alpha (q.1, s)) q.2)) at hlag
+    (fun q : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)) at hlag
   exact hlag
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -227,7 +227,7 @@ theorem lRayAct_tendsto
     exact (norm_nonneg _).trans
       (hC (Z₀, 0) ⟨mem_insert _ _, hzeroL⟩)
   let F : E → Real → Real := fun z s ↦
-    lRegLag S T (fun r ↦ alpha (z, r)) s
+    lRegLagrangian S T (fun r ↦ alpha (z, r)) s
   have hb₀L : b₀ ∈ L := by
     exact ⟨hb₀.le, by linarith⟩
   have hzeroL : (0 : Real) ∈ L := by
@@ -265,7 +265,7 @@ theorem lRayAct_tendsto
             (nhds (Z₀, s)) := hZs.prodMk_nhds tendsto_const_nhds
         have hAt : ContinuousAt
             (fun q : E × Real ↦
-              lRegLag S T (fun r ↦ alpha (q.1, r)) q.2) (Z₀, s) :=
+              lRegLagrangian S T (fun r ↦ alpha (q.1, r)) q.2) (Z₀, s) :=
           (hlag (Z₀, s) ⟨hZ₀V, hLK hsL⟩).continuousAt
             ((hVopen.prod hKopen).mem_nhds ⟨hZ₀V, hLK hsL⟩)
         have h := hAt.tendsto.comp hpair

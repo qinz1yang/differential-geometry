@@ -86,11 +86,11 @@ theorem lMinVec_lim
     have hn := ((mem_lMinDomain S T x (Z n) tau).1 (hmin n)).2
     calc
       lRegAction S T (lRegCurve S T x (Z n)) 0 b =
-          lLength S T (sqrtReparam (lRegCurve S T x (Z n))) 0 tau := by
+          lLength S T (squareRootReparametrization (lRegCurve S T x (Z n))) 0 tau := by
         simpa only [b] using
-          (lLength_sqrt (I := I) S T (lRegCurve S T x (Z n)) tau htau.le).symm
+          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (Z n)) tau htau.le).symm
       _ = lCost S T x (q n) tau := by
-        rw [show sqrtReparam (lRegCurve S T x (Z n)) =
+        rw [show squareRootReparametrization (lRegCurve S T x (Z n)) =
           (fun r ↦ lRegCurve S T x (Z n) (Real.sqrt r)) by rfl]
         simpa only [lExp, q] using hn
   have hgammaC1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
@@ -135,8 +135,8 @@ theorem lMinVec_lim
       change lLength S T
           (fun r : Real ↦ lRegCurve S T x Z₀ (Real.sqrt r)) 0 tau = _
       rw [show (fun r : Real ↦ lRegCurve S T x Z₀ (Real.sqrt r)) =
-        sqrtReparam (lRegCurve S T x Z₀) by rfl]
-      exact lLength_sqrt (I := I) S T (lRegCurve S T x Z₀) tau htau.le
+        squareRootReparametrization (lRegCurve S T x Z₀) by rfl]
+      exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z₀) tau htau.le
     _ = lRegCostC1 S T 0 b x y := hcostEq
     _ = lCost S T x (lExp S T x Z₀ tau) tau := by
       simpa only [b, y] using

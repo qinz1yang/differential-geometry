@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.GlobalLowerSemicontinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Attainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Extension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MinimizerC1
@@ -38,84 +38,6 @@ private def rmFactor (E : Type uE) [NormedAddCommGroup E]
     [NormedSpace Real E] (K : Real) : Real :=
   (Module.finrank Real E : Real) ^ 2 * Real.sqrt K
 
-omit [NeZero (Module.finrank Real E)] [T2Space M]
-  [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
-theorem lRegSpeed_int_c1
-    (S : SolutionOn (I := I) (M := M) D)
-    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
-    (hSc : ScalarSTContOn (I := I) (M := M) S)
-    (T a b : Real) (hab : a ≤ b) (alpha : Real → M)
-    (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha (Icc a b))
-    (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegSpeedSq S T alpha) volume a b := by
-  have hLag := lRegLag_int_c1 (I := I) S hMet hSc T a b hab alpha halpha hreg
-  have hcarrier : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.carrier := by
-    intro s hs
-    exact D.regular_subset (hreg s (by simpa only [uIcc_of_le hab] using hs))
-  have hpot : IntervalIntegrable
-      (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)) volume a b :=
-    lScalar_int (I := I) S hSc T a b alpha hcarrier (by
-      simpa only [uIcc_of_le hab] using halpha.continuousOn)
-  have hhalf : IntervalIntegrable
-      (fun s ↦ (1 / 2 : Real) * lRegSpeedSq S T alpha s) volume a b := by
-    change IntervalIntegrable (fun s ↦ (1 / 2 : Real) *
-      (S.base.metric (T - s ^ 2)).inner (alpha s)
-        (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) volume a b
-    rw [show (fun s ↦ (1 / 2 : Real) *
-        (S.base.metric (T - s ^ 2)).inner (alpha s)
-          (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) =
-      (fun s ↦ lRegLag S T alpha s -
-        2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)) by
-      funext s
-      simp only [lRegLag]
-      ring]
-    exact hLag.sub hpot
-  have htwice := hhalf.const_mul 2
-  convert htwice using 1
-  funext s
-  ring
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
-  [I.Boundaryless] [T2Space M] [T2Space (TangentBundle I M)]
-  [SigmaCompactSpace M] in
-theorem lRegRef_int_c1
-    (gRef : SmoothRiemannianMetric I M) (alpha : Real → M)
-    (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
-    (a b : Real) :
-    IntegrableOn
-      (fun s ↦ gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) (Icc a b) := by
-  have hv : ContMDiff (modelWithCornersSelf Real Real)
-      (I.prod (modelWithCornersSelf Real E)) 0
-      (fun s ↦ TotalSpace.mk' E (alpha s) (lVelocity (I := I) alpha s)) := by
-    have ht := halpha.contMDiff_tangentMap (m := 0) (by norm_num)
-    have hone : ContMDiff (modelWithCornersSelf Real Real)
-        (modelWithCornersSelf Real Real).tangent 0
-        (fun s : Real ↦
-          (⟨s, (1 : Real)⟩ : TangentBundle (modelWithCornersSelf Real Real) Real)) := by
-      exact (contMDiff_vectorSpace_iff_contDiff
-        (V := fun _ : Real ↦ (1 : Real))).mpr contDiff_const
-    have h := ht.comp hone
-    change ContMDiff (modelWithCornersSelf Real Real)
-      (I.prod (modelWithCornersSelf Real E)) 0
-      (fun s ↦ TotalSpace.mk' E (alpha s) (lVelocity (I := I) alpha s)) at h
-    exact h
-  let cg : ContinuousRiemannianMetric E
-      (TangentSpace I : M → Type _) := gRef.toContinuousRiemannianMetric
-  let rb : RiemannianBundle (TangentSpace I : M → Type _) :=
-    ⟨cg.toRiemannianMetric⟩
-  have hq : Continuous (fun s ↦
-      gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-        (lVelocity (I := I) alpha s)) := by
-    have hinner := Continuous.inner_bundle (F := E) (B := M)
-      (E := (TangentSpace I : M → Type _))
-      (b := alpha) (v := fun s ↦ lVelocity (I := I) alpha s)
-      (w := fun s ↦ lVelocity (I := I) alpha s) hv.continuous hv.continuous
-    exact hinner.congr fun _ ↦ rfl
-  exact hq.continuousOn.integrableOn_compact isCompact_Icc
-
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
@@ -129,7 +51,7 @@ theorem lRmChartH1_fin
     (halpha : ∀ n, ContMDiffOn (modelWithCornersSelf Real Real) I 1
       (alpha n) (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
       (chartAt H (p i)).source)
@@ -278,7 +200,7 @@ theorem lRmAction_subseq
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x) (hfixb : ∀ n, alpha n b = y) :
     ∃ (Cpt : Set M) (phi : Nat → Nat) (g : C(Icc a b, M)),
@@ -405,7 +327,7 @@ theorem lRmAction_chart_lsc
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x) (hfixb : ∀ n, alpha n b = y) :
     ∃ (m : Nat) (t : Fin (m + 1) → Real) (p : Fin m → M)
@@ -478,7 +400,7 @@ theorem lRmAction_chart_lsc
       (beta n) (Icc a b) := fun n ↦ halpha _
   have hkinBeta : ∀ n, IntervalIntegrable (lRegSpeedSq S T (beta n)) volume a b :=
     fun n ↦ hkin _
-  have hLagBeta : ∀ n, IntervalIntegrable (lRegLag S T (beta n)) volume a b :=
+  have hLagBeta : ∀ n, IntervalIntegrable (lRegLagrangian S T (beta n)) volume a b :=
     fun n ↦ hLag _
   have hactBeta : ∀ n, lRegAction S T (beta n) a b ≤ A := fun n ↦ hact _
   obtain ⟨psi, uLim, hpsi, hdu, hu⟩ :=
@@ -631,9 +553,9 @@ theorem exists_lRegMin_rm
     refine ⟨C * (b - a), ?_⟩
     intro r hr
     obtain ⟨alpha, halpha, _ha, _hb, rfl⟩ := hr
-    have hkin := lRegSpeed_int_c1 (I := I) S hMet hSc T a b hab.le alpha
+    have hkin := intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T a b hab.le alpha
       halpha.contMDiffOn hregBack
-    have hLag := lRegLag_int_c1 (I := I) S hMet hSc T a b hab.le alpha
+    have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab.le alpha
       halpha.contMDiffOn hregBack
     have hbound := lRegKinetic_le (I := I) S T alpha a b
       (lRegAction S T alpha a b) C hab.le
@@ -651,14 +573,14 @@ theorem exists_lRegMin_rm
   have hE (n : Nat) : IntegrableOn (fun s ↦
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b) :=
-    lRegRef_int_c1 (I := I) (S.base.metric T) (alpha n) (halpha n) a b
+    integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one (I := I) (S.base.metric T) (alpha n) (halpha n) a b
   have hkin (n : Nat) : IntervalIntegrable
       (lRegSpeedSq S T (alpha n)) volume a b :=
-    lRegSpeed_int_c1 (I := I) S hMet hSc T a b hab.le (alpha n)
+    intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T a b hab.le (alpha n)
       (halpha n).contMDiffOn hregBack
   have hLag (n : Nat) : IntervalIntegrable
-      (lRegLag S T (alpha n)) volume a b :=
-    lRegLag_int_c1 (I := I) S hMet hSc T a b hab.le (alpha n)
+      (lRegLagrangian S T (alpha n)) volume a b :=
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab.le (alpha n)
       (halpha n).contMDiffOn hregBack
   have hact (n : Nat) : lRegAction S T (alpha n) a b ≤ v 0 := by
     rw [hval n]
@@ -743,12 +665,12 @@ theorem exists_lMin_rm
           (Z, tau) ∈ lExpPosDom S T x ∧
             lExp S T x Z tau = y ∧
               alpha (Real.sqrt tau) = y ∧
-              lLength S T (sqrtReparam alpha) 0 tau = lCost S T x y tau ∧
+              lLength S T (squareRootReparametrization alpha) 0 tau = lCost S T x y tau ∧
               ∀ delta : Real → M,
                 ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
                 delta 0 = x → delta (Real.sqrt tau) = y →
-                lLength S T (sqrtReparam alpha) 0 tau ≤
-                  lLength S T (sqrtReparam delta) 0 tau := by
+                lLength S T (squareRootReparametrization alpha) 0 tau ≤
+                  lLength S T (squareRootReparametrization delta) 0 tau := by
   have hsqrt : 0 < Real.sqrt tau := Real.sqrt_pos.2 htau
   have hsq : (Real.sqrt tau) ^ 2 = tau := Real.sq_sqrt htau.le
   have hregSq : Icc (T - (Real.sqrt tau) ^ 2) T ⊆ D.regular := by
@@ -813,15 +735,15 @@ theorem exists_lMin_rm
     exact heq'.trans hat
   refine ⟨alpha, Z, hcurve, hmax, hdom, hExp, hat, ?_, ?_⟩
   · calc
-      lLength S T (sqrtReparam alpha) 0 tau =
+      lLength S T (squareRootReparametrization alpha) 0 tau =
           lRegAction S T alpha 0 (Real.sqrt tau) :=
-        lLength_sqrt (I := I) S T alpha tau htau.le
+        lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau.le
       _ = lRegCostC1 S T 0 (Real.sqrt tau) x y := haction.trans hcost
       _ = lCost S T x y tau :=
         (lCost_eq_reg (I := I) S T x y tau htau.le).symm
   · intro delta hdelta hd0 hdt
-    rw [lLength_sqrt (I := I) S T alpha tau htau.le,
-      lLength_sqrt (I := I) S T delta tau htau.le]
+    rw [lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau.le,
+      lLength_squareRootReparametrization_eq_lRegAction (I := I) S T delta tau htau.le]
     rw [haction]
     exact hmin delta hdelta hd0 hdt
 
@@ -848,16 +770,16 @@ theorem exists_lMinVec_rm
       change lLength S T
           (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) 0 tau = _
       rw [show (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) =
-        sqrtReparam (lRegCurve S T x Z) by rfl]
-      exact lLength_sqrt (I := I) S T (lRegCurve S T x Z) tau htau.le
+        squareRootReparametrization (lRegCurve S T x Z) by rfl]
+      exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z) tau htau.le
     _ = lRegAction S T alpha 0 (Real.sqrt tau) := by
       apply lRegAction_congr (I := I) S T
       intro s hs
       have hs' : s ∈ Ioo (0 : Real) (Real.sqrt tau) := by
         simpa only [uIoo_of_le (Real.sqrt_nonneg tau)] using hs
       exact hmax ⟨hs'.1.le, hs'.2.le⟩
-    _ = lLength S T (sqrtReparam alpha) 0 tau :=
-      (lLength_sqrt (I := I) S T alpha tau htau.le).symm
+    _ = lLength S T (squareRootReparametrization alpha) 0 tau :=
+      (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau.le).symm
     _ = lCost S T x y tau := hcost
     _ = lCost S T x (lExp S T x Z tau) tau := by rw [hExp]
 

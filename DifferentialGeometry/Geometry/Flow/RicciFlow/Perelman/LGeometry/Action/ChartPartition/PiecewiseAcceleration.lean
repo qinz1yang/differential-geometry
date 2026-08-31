@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.MinimizerEquation
+import DifferentialGeometry.Geometry.Exponential.JacobiVariation
 
 set_option autoImplicit false
 

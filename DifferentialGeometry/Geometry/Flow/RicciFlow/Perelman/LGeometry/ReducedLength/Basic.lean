@@ -64,9 +64,9 @@ theorem lCost_eq_branch
   have hlen :
       lLength S T (fun r : Real ↦ lExp S T x W r) 0 tau =
         lRegAction S T (lRegCurve S T x W) 0 (Real.sqrt tau) := by
-    change lLength S T (sqrtReparam (lRegCurve S T x W)) 0 tau =
+    change lLength S T (squareRootReparametrization (lRegCurve S T x W)) 0 tau =
       lRegAction S T (lRegCurve S T x W) 0 (Real.sqrt tau)
-    exact lLength_sqrt (I := I) S T (lRegCurve S T x W) tau htau.le
+    exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x W) tau htau.le
   change lCost S T x y tau =
     lRegAction S T (lRegCurve S T x (hloc.localInverse y))
       0 (Real.sqrt tau)
@@ -716,7 +716,7 @@ theorem lCost_hasDeriv
     ((S.base.metric (T - tau)).inner y
       (lVelocity (I := I) (lRegCurve S T x Z) b)).comp
         (mfderiv (modelWithCornersSelf Real E) I endMap Z)
-  let c : Real := lRegLag S T (lRegCurve S T x Z) b / (2 * b)
+  let c : Real := lRegLagrangian S T (lRegCurve S T x Z) b / (2 * b)
   let L : E × Real →L[Real] Real :=
     Lz.comp (ContinuousLinearMap.fst Real E Real) +
       c • ContinuousLinearMap.snd Real E Real
@@ -823,7 +823,7 @@ theorem lCost_hasDeriv
         (lVelocity (I := I) (lRegCurve S T x Z) b))
           (mfderiv (modelWithCornersSelf Real E) I endMap Z v.1) +
         c * v.2 = _
-    simp only [c, lRegLag]
+    simp only [c, lRegLagrangian]
     rw [hspace, hv2, hvel]
     have hendb : lRegCurve S T x Z b = y := by
       simp only [b, y, lExp]
@@ -885,8 +885,8 @@ theorem lCost_hasDeriv
       lRegAction S T (lRegCurve S T x (p r).1) 0 (Real.sqrt r) =
           lLength S T (fun s : Real ↦ lExp S T x (p r).1 s) 0 r := by
         change lRegAction S T (lRegCurve S T x (p r).1) 0 (Real.sqrt r) =
-          lLength S T (sqrtReparam (lRegCurve S T x (p r).1)) 0 r
-        exact (lLength_sqrt (I := I) S T (lRegCurve S T x (p r).1)
+          lLength S T (squareRootReparametrization (lRegCurve S T x (p r).1)) 0 r
+        exact (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (p r).1)
           r hrpos.le).symm
       _ = lCost S T x (lExp S T x (p r).1 r) r := hcost
       _ = lCost S T x y r := by rw [hend]

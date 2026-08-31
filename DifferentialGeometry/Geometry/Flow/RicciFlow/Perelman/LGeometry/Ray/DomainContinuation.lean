@@ -79,7 +79,7 @@ private theorem lRegSpeed_le
         lRegCurve_isReg (I := I) S hS T x Z hspos hsdom
     have hsub : Set.uIcc (0 : Real) s ⊆ Set.Icc (0 : Real) B := by
       simpa only [Set.uIcc_of_le hspos.le] using Set.Icc_subset_Icc_right hs.2
-    have hgr := lRegSpeed_gron (I := I) S hS T halpha 0 s C B hC hB.le
+    have hgr := lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha 0 s C B hC hB.le
       (fun _ hr ↦ by simpa only [Set.uIcc_of_le hspos.le] using hr)
       (fun r hr ↦ by
         have hrI := hsub hr

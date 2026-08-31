@@ -41,7 +41,7 @@ theorem lRegEnergy_le
       gRef.inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) (Icc a b))
     (hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume a b)
-    (hLag : IntervalIntegrable (lRegLag S T alpha) volume a b)
+    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
     (hA : lRegAction S T alpha a b ≤ A) :
     curveEnergy (I := I) gRef alpha a b ≤
       Q * (2 * (A - C * (b - a))) := by
@@ -81,7 +81,7 @@ theorem lRegRange_compact
       gRef.inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) (Icc a b))
     (hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume a b)
-    (hLag : IntervalIntegrable (lRegLag S T alpha) volume a b)
+    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
     (hA : lRegAction S T alpha a b ≤ A) :
     ∃ K : Set M, IsCompact K ∧ alpha '' Icc a b ⊆ K := by
   let B : Real := Q * (2 * (A - C * (b - a)))
@@ -128,7 +128,7 @@ theorem lRegRanges_compact
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s))
       (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hA : ∀ n, lRegAction S T (alpha n) a b ≤ A) :
     ∃ K : Set M, IsCompact K ∧ ∀ n, alpha n '' Icc a b ⊆ K := by
   let B : Real := Q * (2 * (A - C * (b - a)))

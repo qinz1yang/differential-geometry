@@ -438,21 +438,21 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     have hvec := (mem_lMinDomain S T x Z tau).1 hZmin
     calc
       lRegAction S T gamma 0 b =
-          lLength S T (sqrtReparam gamma) 0 tau := by
+          lLength S T (squareRootReparametrization gamma) 0 tau := by
         simpa only [gamma, b] using
-          (lLength_sqrt (I := I) S T gamma tau htau.le).symm
+          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gamma tau htau.le).symm
       _ = lCost S T x (lExp S T x Z tau) tau := by
         change lLength S T (fun r : Real ↦ gamma (Real.sqrt r)) 0 tau = _
         simpa only [gamma, lExp] using hvec.2
       _ = lCost S T x y tau := by rw [hZend]
   have hheadTail : head + fixed y = lRegAction S T gamma 0 b := by
     have hheadInt := lRayLag_int S hS T x Z hb hbdom
-    have hheadInt' : IntervalIntegrable (lRegLag S T gamma) volume 0 a :=
+    have hheadInt' : IntervalIntegrable (lRegLagrangian S T gamma) volume 0 a :=
       hheadInt.mono_set (by
         simpa only [uIcc_of_le hb.le, uIcc_of_le ha0.le] using
           (show Icc (0 : Real) a ⊆ Icc (0 : Real) b from
             fun s hs ↦ ⟨hs.1, hs.2.trans hab.le⟩))
-    have htailInt : IntervalIntegrable (lRegLag S T gamma) volume a b :=
+    have htailInt : IntervalIntegrable (lRegLagrangian S T gamma) volume a b :=
       hheadInt.mono_set (by
         simpa only [uIcc_of_le hb.le, uIcc_of_le hab.le] using
           (show Icc a b ⊆ Icc (0 : Real) b from
@@ -520,7 +520,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     hPsiSmoothAt.congr_of_eventuallyEq hPhiFixed
   let vel : TangentSpace I (alpha (A0, b)) :=
     lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b
-  let lag : Real := lRegLag S T (fun s : Real ↦ alpha (A0, s)) b
+  let lag : Real := lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b
   let action : Real := lRegAction S T gamma 0 b
   let d : Real := (lag - (S.base.metric (T - b ^ 2)).inner
       (alpha (A0, b)) vel vel) / (4 * b ^ 2) - action / (4 * b ^ 3)
@@ -715,7 +715,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [laplacian_smul_at (I := I) _ _ _ haddMD haddGrad]
     rw [laplacian_add_const (I := I) _ _ head hfixedMD hfixedGrad]
   have henergy := lK_ray_energy S hS T x Z hb hbdom
-  have hlagEq : lag = lRegLag S T gamma b := by
+  have hlagEq : lag = lRegLagrangian S T gamma b := by
     have heq := hcenter b ⟨hb.le, le_rfl⟩
     have hptBeta : beta b = gamma b := by
       simpa only [beta] using heq.self_of_nhds
@@ -726,8 +726,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       rw [heq.mfderiv_eq (I := 𝓘(Real, Real)) (I' := I)]
       rfl
     unfold lag
-    change lRegLag S T beta b = lRegLag S T gamma b
-    dsimp only [lRegLag]
+    change lRegLagrangian S T beta b = lRegLagrangian S T gamma b
+    dsimp only [lRegLagrangian]
     rw [hptBeta]
     rw [show lVelocity (I := I) beta b = lVelocity (I := I) gamma b from hvelEq]
   have hvelEq : (S.base.metric (T - b ^ 2)).inner
@@ -765,7 +765,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     have hlagShape : lag = (1 / 2 : Real) * speed +
         2 * b ^ 2 * S.scalar (T - b ^ 2) y := by
       rw [hlagEq]
-      dsimp only [lRegLag]
+      dsimp only [lRegLagrangian]
       simp only [speed]
       rw [hgammaB]
     have henergy' : kval = (action - b * lag) / 2 := by

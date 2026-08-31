@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SecondVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Comparison.Variation.FieldRealization
 
@@ -44,10 +45,10 @@ theorem lRegIndex_nonneg_var
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f u s) 0) a b := by
   have ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular :=
     fun s hs ↦ (hgeo.2.2 s hs).1
-  have hfirst := lRegAction_deriv (I := I) S hS T f hf a b ht
+  have hfirst := hasDerivAt_lRegAction (I := I) S hS T f hf a b ht
   have hfirst_zero := hmin.hasDerivAt_eq_zero hfirst
   have hfirst' := hfirst.congr_deriv hfirst_zero
-  have hsecond := lRegAction_second (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
+  have hsecond := lRegAction_second_variation (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
   have hnonneg := second_deriv_nonneg_of_isLocalMin hmin hfirst' hsecond
   linarith
 

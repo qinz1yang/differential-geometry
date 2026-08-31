@@ -45,18 +45,18 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 private theorem cov_sq_smul
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
     (V : ∀ tau, TangentSpace I (gamma tau))
-    (F : ∀ r, TangentSpace I (sqReparam gamma r)) (s : Real)
+    (F : ∀ r, TangentSpace I (squareReparametrization gamma r)) (s : Real)
     (hgamma : MDifferentiableAt (modelWithCornersSelf Real Real) I
       gamma (s ^ 2))
     (hV : DifferentiableAt Real
       (chartRepAt (I := I) gamma V (s ^ 2)) (s ^ 2))
     (hF : F =ᶠ[nhds s]
       fun r : Real ↦ (2 * r) • V (r ^ 2)) :
-    covDerivAlong (I := I) g (sqReparam gamma) F s =
+    covDerivAlong (I := I) g (squareReparametrization gamma) F s =
       (2 : Real) • V (s ^ 2) +
         (2 * s) • ((2 * s) •
           covDerivAlong (I := I) g gamma V (s ^ 2)) := by
-  let B : ∀ r, TangentSpace I (sqReparam gamma r) :=
+  let B : ∀ r, TangentSpace I (squareReparametrization gamma r) :=
     fun r ↦ V (r ^ 2)
   have hsqdiff : DifferentiableAt Real (fun r : Real ↦ r ^ 2) s :=
     differentiableAt_id.pow 2
@@ -64,12 +64,12 @@ private theorem cov_sq_smul
     rw [deriv_pow_field]
     norm_num
   have hBdiff : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma) B s) s := by
+      (chartRepAt (I := I) (squareReparametrization gamma) B s) s := by
     change DifferentiableAt Real
       (chartRepAt (I := I) gamma V (s ^ 2) ∘ fun r : Real ↦ r ^ 2) s
     exact DifferentiableAt.comp (f := fun r : Real ↦ r ^ 2) s hV hsqdiff
   have hBcov :
-      covDerivAlong (I := I) g (sqReparam gamma) B s =
+      covDerivAlong (I := I) g (squareReparametrization gamma) B s =
         (2 * s) • covDerivAlong (I := I) g gamma V (s ^ 2) := by
     have hcomp := covDerivAlong_comp (I := I) g gamma V
       (fun r : Real ↦ r ^ 2) s hgamma hV hsqdiff
@@ -83,11 +83,11 @@ private theorem cov_sq_smul
   have hlinDeriv : deriv (fun r : Real ↦ 2 * r) s = 2 := by
     simpa only [id_eq, mul_one] using hlin.deriv
   rw [covDerivAlong_congr_of_eventuallyEq (I := I) g
-    (sqReparam gamma) hF]
-  have hprod := covDerivAlong_smulFun (I := I) g (sqReparam gamma)
+    (squareReparametrization gamma) hF]
+  have hprod := covDerivAlong_smulFun (I := I) g (squareReparametrization gamma)
     (fun r : Real ↦ 2 * r) B s hlinDiff hBdiff
   rw [hlinDeriv, hBcov] at hprod
-  change covDerivAlong (I := I) g (sqReparam gamma)
+  change covDerivAlong (I := I) g (squareReparametrization gamma)
     (fun r : Real ↦ (2 * r) • V (r ^ 2)) s = _
   exact hprod
 
@@ -185,23 +185,23 @@ private theorem lPair_second_eq
       DifferentiableAt Real
         (chartRepAt (I := I) gamma Y (r ^ 2)) (r ^ 2))
     (hA : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
-        (fun r : Real ↦ lVelocity (I := I) (sqReparam gamma) r) s) s)
+      (chartRepAt (I := I) (squareReparametrization gamma)
+        (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s)
     (hDY : DifferentiableAt Real
       (chartRepAt (I := I) gamma (lJacobiVel S T gamma Y)
         (s ^ 2)) (s ^ 2))
     (hZ : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
+      (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real ↦
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s)
+            (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s)
     (W : TangentSpace I (gamma (s ^ 2))) :
     (S.base.metric (T - s ^ 2)).inner (gamma (s ^ 2)) W
         (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (sqReparam gamma)
+          (squareReparametrization gamma)
           (fun r : Real ↦
             covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-              (sqReparam gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) =
+              (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) =
       2 * (S.base.metric (T - s ^ 2)).inner (gamma (s ^ 2))
           (lJacobiVel S T gamma Y (s ^ 2)) W +
         4 * s ^ 2 * (S.base.metric (T - s ^ 2)).inner (gamma (s ^ 2))
@@ -211,15 +211,15 @@ private theorem lPair_second_eq
           (let N := totalNabla0SFun (𝕜 := Real) (I := I)
               2 (S.base.connection (T - s ^ 2))
                 (S.ricci (T - s ^ 2)) (gamma (s ^ 2))
-           N (vec3 (lVelocity (I := I) (sqReparam gamma) s)
+           N (vec3 (lVelocity (I := I) (squareReparametrization gamma) s)
                 (Y (s ^ 2)) W) +
            N (vec3 (Y (s ^ 2))
-                (lVelocity (I := I) (sqReparam gamma) s) W) -
-           N (vec3 W (lVelocity (I := I) (sqReparam gamma) s)
+                (lVelocity (I := I) (squareReparametrization gamma) s) W) -
+           N (vec3 W (lVelocity (I := I) (squareReparametrization gamma) s)
                 (Y (s ^ 2)))) := by
   classical
   let tau : Real := s ^ 2
-  let alpha : Real → M := sqReparam gamma
+  let alpha : Real → M := squareReparametrization gamma
   let Yb : ∀ r, TangentSpace I (alpha r) := fun r ↦ Y (r ^ 2)
   let q := S.base.metric (T - tau)
   let DY : ∀ u, TangentSpace I (gamma u) := lJacobiVel S T gamma Y
@@ -292,7 +292,7 @@ private theorem lPair_second_eq
         (2 : Real) • DY tau +
           (2 * s) • ((2 * s) •
             covDerivAlong (I := I) q gamma DY tau) := by
-    change covDerivAlong (I := I) q (sqReparam gamma) P s =
+    change covDerivAlong (I := I) q (squareReparametrization gamma) P s =
       (2 : Real) • DY (s ^ 2) + (2 * s) • ((2 * s) •
         covDerivAlong (I := I) q gamma DY (s ^ 2))
     exact cov_sq_smul (I := I) q gamma DY P s hgamma0
@@ -419,23 +419,23 @@ theorem lJacobiPair_sq
       DifferentiableAt Real
         (chartRepAt (I := I) gamma Y (r ^ 2)) (r ^ 2))
     (hA : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
-        (fun r : Real ↦ lVelocity (I := I) (sqReparam gamma) r) s) s)
+      (chartRepAt (I := I) (squareReparametrization gamma)
+        (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s)
     (hDY : DifferentiableAt Real
       (chartRepAt (I := I) gamma (lJacobiVel S T gamma Y)
         (s ^ 2)) (s ^ 2))
     (hZ : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
+      (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real ↦
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s)
+            (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s)
     (W : TangentSpace I (gamma (s ^ 2))) :
     4 * s ^ 2 * lJacobiPair S T gamma Y (s ^ 2) W =
-      lRegJacobiPair S T (sqReparam gamma)
+      lRegJacobiPair S T (squareReparametrization gamma)
         (fun r : Real ↦ Y (r ^ 2)) s W := by
   classical
   let tau : Real := s ^ 2
-  let alpha : Real → M := sqReparam gamma
+  let alpha : Real → M := squareReparametrization gamma
   let Yb : ∀ r, TangentSpace I (alpha r) := fun r ↦ Y (r ^ 2)
   let q := S.base.metric (T - tau)
   let X := lVelocity (I := I) gamma tau
@@ -454,12 +454,12 @@ theorem lJacobiPair_sq
   have hsecond := lPair_second_eq (I := I) S hS T gamma Y s ht
     hgamma_sq hY_sq hA hDY hZ W
   let Dreg : Real :=
-    (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s) W
+    (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s) W
       (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-        (sqReparam gamma)
+        (squareReparametrization gamma)
         (fun r : Real ↦
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma) (fun u : Real ↦ Y (u ^ 2)) r) s)
+            (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s)
   let D2 : Real := q.inner (gamma tau)
     (covDerivAlong (I := I) q gamma DY tau) W
   let U : Real := q.inner (gamma tau) (DY tau) W
@@ -488,7 +488,7 @@ theorem lJacobiPair_sq
     (2 * s) * (Nreg0 + Nreg1 - Nreg2) at hsecond
   have hAs : lVelocity (I := I) alpha s = c • X := by
     simpa only [alpha, c, X, tau] using
-      lVelocity_sq_pos (I := I) gamma s hs
+      lVelocity_squareReparametrization_of_pos (I := I) gamma s hs
   have hZs :
       covDerivAlong (I := I) q alpha Yb s = c • DY tau := by
     have hcomp := covDerivAlong_comp (I := I) q gamma Y
@@ -704,18 +704,18 @@ theorem lJacobiVel_sq_diff
       DifferentiableAt Real
         (chartRepAt (I := I) gamma Y (r ^ 2)) (r ^ 2))
     (hA : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
-        (fun r : Real ↦ lVelocity (I := I) (sqReparam gamma) r) s) s)
+      (chartRepAt (I := I) (squareReparametrization gamma)
+        (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s)
     (hZ : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
+      (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real ↦
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s) :
+            (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s) :
     DifferentiableAt Real
       (chartRepAt (I := I) gamma (lJacobiVel S T gamma Y)
         (s ^ 2)) (s ^ 2) := by
   let tau : Real := s ^ 2
-  let alpha : Real → M := sqReparam gamma
+  let alpha : Real → M := squareReparametrization gamma
   let Yb : ∀ r, TangentSpace I (alpha r) := fun r ↦ Y (r ^ 2)
   let q := S.base.metric (T - tau)
   let DY : ∀ u, TangentSpace I (gamma u) := lJacobiVel S T gamma Y
@@ -847,9 +847,9 @@ theorem lJacobi_of_sq
       DifferentiableAt Real
         (chartRepAt (I := I) gamma Y (r ^ 2)) (r ^ 2))
     (hA : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
-        (fun r : Real ↦ lVelocity (I := I) (sqReparam gamma) r) s) s)
-    (hreg : HasLRegJacobiAt S T (sqReparam gamma)
+      (chartRepAt (I := I) (squareReparametrization gamma)
+        (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s)
+    (hreg : HasLRegJacobiAt S T (squareReparametrization gamma)
       (fun r : Real ↦ Y (r ^ 2)) s) :
     HasLJacobiAt S T gamma Y (s ^ 2) := by
   rcases hreg with ⟨_, _, hZ, hzero⟩
@@ -943,7 +943,7 @@ theorem lExp_jacobi
       rw [hbase, hcurve, hYq]
     rw [heq]
     exact hcomp
-  let delta : Real → M := sqReparam gamma
+  let delta : Real → M := squareReparametrization gamma
   have halphaInf : ContMDiffAt (modelWithCornersSelf Real Real) I ∞ alpha s := by
     have hparam : ContMDiffAt (modelWithCornersSelf Real Real)
         (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
@@ -954,7 +954,7 @@ theorem lExp_jacobi
     simpa only [alpha, Function.comp_def] using hcomp
   have hdelta_eq : delta =ᶠ[nhds s] alpha := by
     filter_upwards [Ioi_mem_nhds hs] with r hr
-    simp only [delta, gamma, alpha, sqReparam, lExp]
+    simp only [delta, gamma, alpha, squareReparametrization, lExp]
     rw [Real.sqrt_sq hr.le]
   have hdeltaInf : ContMDiffAt
       (modelWithCornersSelf Real Real) I ∞ delta s :=
@@ -970,7 +970,7 @@ theorem lExp_jacobi
     exact lVelocity_chartRepAt_diff (I := I) delta s hdelta2
   have hcurve : Set.EqOn alpha delta (Set.Ioi 0) := by
     intro r hr
-    simp only [alpha, delta, gamma, sqReparam, lExp]
+    simp only [alpha, delta, gamma, squareReparametrization, lExp]
     rw [Real.sqrt_sq hr.le]
   have hfield : ∀ r ∈ Set.Ioi (0 : Real),
       (J r : E) = (Y (r ^ 2) : E) := by
@@ -1050,8 +1050,8 @@ theorem lEuler_var_full
         (fun r : Real ↦ lVelocity (I := I) (F 0) r) s) s := by
     exact lVelocity_chartRepAt_diff (I := I) (F 0) s hF02
   have hA_sq : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
-        (fun r : Real ↦ lVelocity (I := I) (sqReparam gamma) r) s) s := by
+      (chartRepAt (I := I) (squareReparametrization gamma)
+        (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s := by
     change DifferentiableAt Real
       (chartRepAt (I := I) (F 0)
         (fun r : Real ↦ lVelocity (I := I) (F 0) r) s) s
@@ -1059,10 +1059,10 @@ theorem lEuler_var_full
   rcases lRegVar_reg (I := I) S T s F hF with
     ⟨_, _, hZraw⟩
   have hZ : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
+      (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real ↦
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s := by
+            (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s := by
     change DifferentiableAt Real
       (chartRepAt (I := I) (F 0)
         (fun r : Real ↦ covDerivAlong (I := I)
@@ -1079,7 +1079,7 @@ theorem lEuler_var_full
         lRegJacobiPair S T (F 0)
           (fun r ↦ lVelocity (I := I) (fun u ↦ F u r) 0) s (W 0) := by
     change c * lJacobiPair S T gamma Y (s ^ 2) (W 0) =
-      lRegJacobiPair S T (sqReparam gamma)
+      lRegJacobiPair S T (squareReparametrization gamma)
         (fun r ↦ lVelocity (I := I) (fun u ↦ F u r) 0) s (W 0)
     simpa only [c, F, gamma, Y] using hpairRaw
   have hcurve (u : Real) :
@@ -1092,7 +1092,7 @@ theorem lEuler_var_full
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
             (fun u ↦ F u s) W 0) := by
     change c * lEulerPair S T gamma (s ^ 2) DW =
-      lRegEulerPair S T (sqReparam gamma) s
+      lRegEulerPair S T (squareReparametrization gamma) s
         (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
           (fun u ↦ F u s) W 0)
     simpa only [c] using
@@ -1104,7 +1104,7 @@ theorem lEuler_var_full
       c * lEulerPair S T (f u) (s ^ 2) (W u) =
         lRegEulerPair S T (F u) s (W u) := by
     change c * lEulerPair S T (f u) (s ^ 2) (W u) =
-      lRegEulerPair S T (sqReparam (f u)) s (W u)
+      lRegEulerPair S T (squareReparametrization (f u)) s (W u)
     simpa only [c] using
       lRegEuler_sq (I := I) S T (f u) s (W u) hs
         ((hcurve u).mdifferentiableAt (by norm_num))
@@ -1698,18 +1698,18 @@ theorem lVarJacobiVel_diff
         (fun r : Real => lVelocity (I := I) (F 0) r) s) s := by
     exact lVelocity_chartRepAt_diff (I := I) (F 0) s hF02
   have hA_sq : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
-        (fun r : Real ↦ lVelocity (I := I) (sqReparam gamma) r) s) s := by
+      (chartRepAt (I := I) (squareReparametrization gamma)
+        (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s := by
     change DifferentiableAt Real
       (chartRepAt (I := I) (F 0)
         (fun r : Real ↦ lVelocity (I := I) (F 0) r) s) s
     exact hA
   rcases lRegVar_reg (I := I) S T s F hF with ⟨_, _, hZraw⟩
   have hZ : DifferentiableAt Real
-      (chartRepAt (I := I) (sqReparam gamma)
+      (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real =>
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma) (fun u : Real => Y (u ^ 2)) r) s) s := by
+            (squareReparametrization gamma) (fun u : Real => Y (u ^ 2)) r) s) s := by
     change DifferentiableAt Real
       (chartRepAt (I := I) (F 0)
         (fun r : Real ↦ covDerivAlong (I := I)

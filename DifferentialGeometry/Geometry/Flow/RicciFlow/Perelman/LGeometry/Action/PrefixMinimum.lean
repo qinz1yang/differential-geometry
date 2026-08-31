@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Attainment
 
 set_option autoImplicit false
@@ -80,13 +80,13 @@ theorem lReg_prefix_min
   have hetaTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1 eta
       (Icc c b) := hgammaTail.congr fun s hs ↦ hetaGamma hs
   have hgammaIntAC :=
-    lRegLag_int_c1 (I := I) S hMet hSc T a c hac.le gamma hgammaHead hregAC
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a c hac.le gamma hgammaHead hregAC
   have hgammaIntCB :=
-    lRegLag_int_c1 (I := I) S hMet hSc T c b hcb.le gamma hgammaTail hregCB
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T c b hcb.le gamma hgammaTail hregCB
   have hetaIntAC :=
-    lRegLag_int_c1 (I := I) S hMet hSc T a c hac.le eta hetaHead hregAC
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a c hac.le eta hetaHead hregAC
   have hetaIntCB :=
-    lRegLag_int_c1 (I := I) S hMet hSc T c b hcb.le eta hetaTail hregCB
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T c b hcb.le eta hetaTail hregCB
   have hgammaAdd :=
     lRegAction_add (I := I) S T gamma a c b hgammaIntAC hgammaIntCB
   have hetaAdd := lRegAction_add (I := I) S T eta a c b hetaIntAC hetaIntCB

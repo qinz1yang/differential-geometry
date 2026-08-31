@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FieldRealizationPair
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.MinimizerNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Smoothness
@@ -215,7 +215,7 @@ private theorem indexGreen_var
       (fun s : Real ↦ lRegJacobiPair S T alpha Y s (Y s))
       MeasureTheory.volume a b := by
     simpa only [alpha, Y] using
-      (lRegJacobi_contOn (I := I) S hS T f hf a b x Z hgeo).intervalIntegrable
+      (continuousOn_lRegJacobiPair_variation (I := I) S hS T f hf a b x Z hgeo).intervalIntegrable
   simpa only [alpha, Y] using
     lRegIndex_green (I := I) S hS T alpha Y Y a b ht
       halpha hA hY hZ hY hIint hJint
@@ -309,8 +309,8 @@ private theorem nodeAction_second
       rw [hconst]
       simp only [lVelocity, mfderiv_const]
       rfl
-    have hfirst0 := lRegAction_first (I := I) S hS T F0 hF0 a c ht0
-    have hfirst1 := lRegAction_first (I := I) S hS T F1 hF1 c b ht1
+    have hfirst0 := lRegAction_first_variation (I := I) S hS T F0 hF0 a c ht0
+    have hfirst1 := lRegAction_first_variation (I := I) S hS T F1 hF1 c b ht1
     rw [hYa] at hfirst0
     rw [hYb] at hfirst1
     simp only [map_zero, zero_apply, sub_zero, zero_sub] at hfirst0 hfirst1
@@ -393,8 +393,8 @@ private theorem nodeAction_second
           lVelocity (I := I) (fun u : Real ↦ f1 u s) 0) c)
     rw [hsym0, hsym1]
     ring
-  have heuler0 := lRegEulerInt_deriv (I := I) S hS T f0 hf0 a c x Z hgeo0
-  have heuler1 := lRegEulerInt_deriv (I := I) S hS T f1 hf1 c b x Z hgeo1
+  have heuler0 := hasDerivAt_integral_lRegEulerPair_variation (I := I) S hS T f0 hf0 a c x Z hgeo0
+  have heuler1 := hasDerivAt_integral_lRegEulerPair_variation (I := I) S hS T f1 hf1 c b x Z hgeo1
   have htotal := (hpairs.add heuler0).add heuler1
   have hgreen0 := indexGreen_var (I := I) S hS T f0 hf0 a c x Z hgeo0
   have hgreen1 := indexGreen_var (I := I) S hS T f1 hf1 c b x Z hgeo1
@@ -525,13 +525,13 @@ theorem lIndex_sum_nonneg
     have hreg1 : ∀ s ∈ Icc c b, T - s ^ 2 ∈ D.regular := by
       intro s hs
       exact hreg s ⟨hac.le.trans hs.1, hs.2⟩
-    have hgammaInt0 := lRegLag_int_c1 (I := I) S hS.smoothMetric
+    have hgammaInt0 := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T a c hac.le gamma hgamma0 hreg0
-    have hgammaInt1 := lRegLag_int_c1 (I := I) S hS.smoothMetric
+    have hgammaInt1 := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T c b hcb.le gamma hgamma1 hreg1
-    have hetaInt0 := lRegLag_int_c1 (I := I) S hS.smoothMetric
+    have hetaInt0 := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T a c hac.le eta hetaHead hreg0
-    have hetaInt1 := lRegLag_int_c1 (I := I) S hS.smoothMetric
+    have hetaInt1 := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T c b hcb.le eta hetaTail hreg1
     have hgammaAdd := lRegAction_add (I := I) S T gamma a c b
       hgammaInt0 hgammaInt1
@@ -560,8 +560,8 @@ theorem lIndex_sum_nonneg
     hLglobal'.isLocalMin univ_mem
   have hreg0 := fun s hs ↦ (hgeo0.2.2 s hs).1
   have hreg1 := fun s hs ↦ (hgeo1.2.2 s hs).1
-  have hfirst0 := lRegAction_deriv (I := I) S hS T f0 hf0 a c hreg0
-  have hfirst1 := lRegAction_deriv (I := I) S hS T f1 hf1 c b hreg1
+  have hfirst0 := hasDerivAt_lRegAction (I := I) S hS T f0 hf0 a c hreg0
+  have hfirst1 := hasDerivAt_lRegAction (I := I) S hS T f1 hf1 c b hreg1
   have hfirst : HasDerivAt L 0 0 := by
     have hraw := hfirst0.add hfirst1
     exact hraw.congr_deriv (hLmin.hasDerivAt_eq_zero hraw)

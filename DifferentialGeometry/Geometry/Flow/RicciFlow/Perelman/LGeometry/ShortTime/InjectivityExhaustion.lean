@@ -147,10 +147,10 @@ theorem lInj_eventually
           lCost S T x (lExp S T x (W n) (sigmat n)) (sigmat n) := by
       calc
         lRegAction S T (lRegCurve S T x (W n)) 0 (Bt n) =
-            lLength S T (sqrtReparam (lRegCurve S T x (W n))) 0 (sigmat n) := by
+            lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0 (sigmat n) := by
           rw [← hBtSq n]
           simpa only [Real.sqrt_sq_eq_abs, abs_of_nonneg (hBtPos n).le] using
-            (lLength_sqrt (I := I) S T (lRegCurve S T x (W n))
+            (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (W n))
               ((Bt n) ^ 2) (sq_nonneg (Bt n))).symm
         _ = lCost S T x (lExp S T x (W n) (sigmat n)) (sigmat n) := by
           change lLength S T

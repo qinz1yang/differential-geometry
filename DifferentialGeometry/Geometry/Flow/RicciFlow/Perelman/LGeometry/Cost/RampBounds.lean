@@ -31,7 +31,7 @@ private theorem rayLag_cont
     (T : Real) (x : M) :
     ContinuousOn
       (fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
       (lRegJointDom S T x) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
   let U := lRegJointDom S T x
@@ -164,7 +164,7 @@ theorem lRayTail_bound
       |lRegAction S T (lRegCurve S T x Z) c b| ≤ C * (b - c) := by
   let Q : Set (E × Real) := K ×ˢ Icc a b
   let lag : E × Real → Real := fun q ↦
-    lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2
+    lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2
   have hQ : IsCompact Q := hK.prod isCompact_Icc
   have hcont : ContinuousOn lag Q := by
     exact (rayLag_cont (I := I) S hS T x).mono hdom

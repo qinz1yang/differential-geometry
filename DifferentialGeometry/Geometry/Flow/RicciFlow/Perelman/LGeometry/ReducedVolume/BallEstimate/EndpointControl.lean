@@ -122,7 +122,7 @@ theorem lRegSpeed_ball [CompactSpace M]
     exact mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
   have hC : 0 ≤ C := le_max_of_le_left hCgrad
   refine ⟨C, hC, ?_⟩
-  apply lRegSpeed_gron (I := I) S hS (time : Real) halpha
+  apply lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS (time : Real) halpha
     a b C R hC hR hJ hsR
   · intro s hs
     have hgrad := hgradA B.radius B.radius_pos hBrho
@@ -210,7 +210,7 @@ private theorem lRegSpeed_two
     exact lRegSpeedSq_nonneg (I := I) S T alpha s
   · intro s hs
     simpa only [U, U'] using
-      lRegSpeedSq_deriv (I := I) S hS T halpha (hJ hs)
+      hasDerivAt_lRegSpeedSq (I := I) S hS T halpha (hJ hs)
   · intro s hs
     apply speedDeriv_two (hsR s hs) hR hG
       (lRegSpeedSq_nonneg (I := I) S T alpha s)

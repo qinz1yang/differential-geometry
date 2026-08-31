@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 
@@ -200,7 +201,7 @@ theorem lRegAction_lim_cpt
       simpa only [uIcc_of_le hab] using hcont n)
   have hsplit (n : ℕ) :
       lRegAction S T (alpha n) a b = kin n + pot n := by
-    simpa only [lRegAction, lRegLag, kin, pot] using
+    simpa only [lRegAction, lRegLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt n) (hpotInt n)
   have hkin_nonneg (n : ℕ) : 0 ≤ kin n := by
     change 0 ≤ ∫ s in a..b, (1 / 2 : Real) *
@@ -349,7 +350,7 @@ theorem lRegAction_chart
       2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)
   have hsplit (i : Fin m) :
       lRegAction S T gamma (t i.castSucc) (t i.succ) = kin i + pot i := by
-    simpa only [lRegAction, lRegLag, kin, pot] using
+    simpa only [lRegAction, lRegLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt i) (hpotInt i)
   have hkinChart (i : Fin m) : kin i =
       ∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
@@ -359,7 +360,7 @@ theorem lRegAction_chart
     simpa only [kin, partitionIntervalLength, smul_apply, real_inner_smul_left] using
       lKinetic_eq_chart_integral S T gamma (p i) (t i.castSucc) (t i.succ)
         (hseg i) (u i) (hsrc i) (hrep i) (hdiff i)
-  have hLag (i : Fin m) : IntervalIntegrable (lRegLag S T gamma) volume
+  have hLag (i : Fin m) : IntervalIntegrable (lRegLagrangian S T gamma) volume
       (t i.castSucc) (t i.succ) := by
     with_unfolding_all exact (hkinInt i).add (hpotInt i)
   let tNat : Nat → Real := fun k ↦
@@ -487,7 +488,7 @@ theorem lRegAction_fin_cpt
       (hcarrier_i i) (by
         simpa only [uIcc_of_le (hseg i)] using hcont i n)
   have hLag (i : Fin m) (n : Nat) : IntervalIntegrable
-      (lRegLag S T (alpha n)) volume (t i.castSucc) (t i.succ) := by
+      (lRegLagrangian S T (alpha n)) volume (t i.castSucc) (t i.succ) := by
     with_unfolding_all exact (hkinInt i n).add (hpotInt i n)
   let q : Fin m → Nat → Real := fun i n ↦
     lRegAction S T (alpha n) (t i.castSucc) (t i.succ)
@@ -499,7 +500,7 @@ theorem lRegAction_fin_cpt
     ∫ s in t i.castSucc..t i.succ,
       2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)
   have hsplit (i : Fin m) (n : Nat) : q i n = kin i n + pot i n := by
-    simpa only [q, kin, pot, lRegAction, lRegLag] using
+    simpa only [q, kin, pot, lRegAction, lRegLagrangian] using
       intervalIntegral.integral_add (hkinInt i n) (hpotInt i n)
   have hkinNonneg (i : Fin m) (n : Nat) : 0 ≤ kin i n := by
     change 0 ≤ ∫ s in t i.castSucc..t i.succ, (1 / 2 : Real) *

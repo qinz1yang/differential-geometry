@@ -109,7 +109,7 @@ private theorem tailLag_smooth
       (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (V ×ˢ K))
     (hreg : ∀ q ∈ V ×ˢ K, T - q.2 ^ 2 ∈ D.regular) :
     ContDiffOn Real ∞
-      (fun q : E × Real ↦ lRegLag S T (fun s ↦ alpha (q.1, s)) q.2)
+      (fun q : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)
       (V ×ˢ K) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
   intro q hq
@@ -157,10 +157,10 @@ private theorem tailLag_smooth
     (contMDiffAt_const.mul htotal.2).add
       ((contMDiffAt_const.mul (contMDiffAt_snd.pow 2)).mul hscalar)
   have hlag' : ContDiffAt Real ∞
-      (fun p : E × Real ↦ lRegLag S T (fun s ↦ alpha (p.1, s)) p.2) q := by
+      (fun p : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (p.1, s)) p.2) q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod]
-    simpa only [J, lRegLag] using hlag
+    simpa only [J, lRegLagrangian] using hlag
   exact hlag'.contDiffWithinAt
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -204,7 +204,7 @@ private theorem tailAct_bdry
             intro s hs
             exact heuler s hs
       _ = 0 := by simp only [intervalIntegral.integral_zero]
-  have hfirst := lRegAction_first (I := I) S hS T f hf a b hreg
+  have hfirst := lRegAction_first_variation (I := I) S hS T f hf a b hreg
   simpa only [hzero, map_zero, zero_apply, hint,
     sub_zero] using hfirst
 
@@ -277,7 +277,7 @@ theorem lTailAct_smooth
     rw [Metric.mem_ball] at h ⊢
     simpa only [phi, dist_eq_norm, add_sub_cancel_left, sub_zero] using h
   let G : E → Real → Real := fun A u ↦
-    (b - a) * lRegLag S T (fun s ↦ alpha (phi A, s))
+    (b - a) * lRegLagrangian S T (fun s ↦ alpha (phi A, s))
       (rho (a + (b - a) * u))
   have hlag := tailLag_smooth S hS T hVopen hKopen halpha hreg
   have hG : ContDiffOn Real ∞ (fun q : E × Real ↦ G q.1 q.2) univ := by
@@ -296,7 +296,7 @@ theorem lTailAct_smooth
     change ContDiffWithinAt Real ∞
       (fun x : E × Real ↦ (b - a) *
         ((fun r : E × Real ↦
-          lRegLag S T (fun s ↦ alpha (r.1, s)) r.2) ∘
+          lRegLagrangian S T (fun s ↦ alpha (r.1, s)) r.2) ∘
             fun x ↦ (phi x.1, rho (a + (b - a) * x.2))) x)
       Set.univ q
     exact (contDiffAt_const.mul hc).contDiffWithinAt
@@ -324,7 +324,7 @@ theorem lTailAct_smooth
     rw [show Aact A = ∫ u in (0 : Real)..1, G A u by rfl]
     have hcongr : (∫ u in (0 : Real)..1, G A u) =
         ∫ u in (0 : Real)..1, (b-a) *
-          lRegLag S T (fun s ↦ alpha (A,s)) (a+(b-a)*u) := by
+          lRegLagrangian S T (fun s ↦ alpha (A,s)) (a+(b-a)*u) := by
       apply intervalIntegral.integral_congr
       intro u hu
       have hu' : u ∈ Icc (0 : Real) 1 := by
@@ -336,7 +336,7 @@ theorem lTailAct_smooth
     simpa only [intervalIntegral.integral_const_mul, smul_eq_mul,
       mul_zero, add_zero, mul_one, hright] using
       (intervalIntegral.smul_integral_comp_add_mul
-      (f := fun s : Real ↦ lRegLag S T (fun r ↦ alpha (A,r)) s)
+      (f := fun s : Real ↦ lRegLagrangian S T (fun r ↦ alpha (A,r)) s)
       (a := (0 : Real)) (b := 1) (b - a) a)
   exact (hAact.mono (fun _ _ ↦ mem_univ _)).congr fun A hA ↦ (heq hA).symm
 
@@ -368,7 +368,7 @@ theorem lTailAct_joint
             (mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 :
               E →L[Real] TangentSpace I (alpha (A0, b)))).comp
           (ContinuousLinearMap.fst Real E Real)) +
-        (lRegLag S T (fun s : Real ↦ alpha (A0, s)) b) •
+        (lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b) •
           ContinuousLinearMap.snd Real E Real) (A0, b) := by
   obtain ⟨W, hWopen, hA0W, hWV, hactW⟩ :=
     lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
@@ -381,7 +381,7 @@ theorem lTailAct_joint
   have hUopen : IsOpen U := hVopen.prod isOpen_Ioo
   have hpU : (A0, b) ∈ U := ⟨hA0V, hab, hbhi⟩
   let G : (E × Real) → Real → Real := fun p u ↦
-    (p.2 - a) * lRegLag S T (fun s ↦ alpha (p.1, s))
+    (p.2 - a) * lRegLagrangian S T (fun s ↦ alpha (p.1, s))
       (rho (a + (p.2 - a) * u))
   have hlag := tailLag_smooth S hS T hVopen hKopen halpha hreg
   have h1inf : (↑(1 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat) :=
@@ -411,14 +411,14 @@ theorem lTailAct_joint
       ⟨hq.1.1, hrhoK _⟩
     have hlagAt : ContDiffAt Real 1
         (fun r : E × Real ↦
-          lRegLag S T (fun s ↦ alpha (r.1, s)) r.2)
+          lRegLagrangian S T (fun s ↦ alpha (r.1, s)) r.2)
         (q.1.1, rho (a + (q.1.2 - a) * q.2)) :=
       (hlag.contDiffAt ((hVopen.prod hKopen).mem_nhds hpairMem)).of_le h1inf
     have hcomp := hlagAt.comp q hpair
     change ContDiffWithinAt Real 1
       (fun x : (E × Real) × Real ↦ (x.1.2 - a) *
         ((fun r : E × Real ↦
-          lRegLag S T (fun s ↦ alpha (r.1, s)) r.2) ∘
+          lRegLagrangian S T (fun s ↦ alpha (r.1, s)) r.2) ∘
             fun x ↦ (x.1.1, rho (a + (x.1.2 - a) * x.2))) x)
       (U ×ˢ Set.univ) q
     exact (hlen.mul hcomp).contDiffWithinAt
@@ -441,7 +441,7 @@ theorem lTailAct_joint
       · nlinarith [hu.2, hpa, hp.2.2]
     have hcongr : (∫ u in (0 : Real)..1, G p u) =
         ∫ u in (0 : Real)..1, (p.2 - a) *
-          lRegLag S T (fun s ↦ alpha (p.1, s))
+          lRegLagrangian S T (fun s ↦ alpha (p.1, s))
             (a + (p.2 - a) * u) := by
       apply intervalIntegral.integral_congr
       intro u hu
@@ -455,7 +455,7 @@ theorem lTailAct_joint
     simpa only [intervalIntegral.integral_const_mul, smul_eq_mul,
       mul_zero, add_zero, mul_one, hright] using
       (intervalIntegral.smul_integral_comp_add_mul
-        (f := fun s : Real ↦ lRegLag S T (fun r ↦ alpha (p.1, r)) s)
+        (f := fun s : Real ↦ lRegLagrangian S T (fun r ↦ alpha (p.1, r)) s)
         (a := (0 : Real)) (b := 1) (p.2 - a) a).symm
   have hActDiff : DifferentiableAt Real Act (A0, b) :=
     (hInt.congr_of_eventuallyEq hEq).differentiableAt
@@ -692,14 +692,14 @@ theorem lTailAct_joint
     simpa only [Act, Asp] using hAspGiven
   have hspaceEq := hspaceSlice.unique hspace
   let lag : Real → Real := fun s ↦
-    lRegLag S T (fun r ↦ alpha (A0, r)) s
+    lRegLagrangian S T (fun r ↦ alpha (A0, r)) s
   have hlagK : ContinuousOn lag K := by
     have hcomp := hlag.continuousOn.comp
       (continuousOn_const.prodMk continuousOn_id)
       (fun s hs ↦ ⟨hA0V, hs⟩)
     change ContinuousOn
       ((fun q : E × Real ↦
-        lRegLag S T (fun s ↦ alpha (q.1, s)) q.2) ∘
+        lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2) ∘
           fun s : Real ↦ (A0, id s)) K
     exact hcomp
   have hlagI : ContinuousOn lag (uIcc a b) := by
@@ -786,7 +786,7 @@ theorem lTailJoint_mfd
       (((S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
             (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)).comp
           (ContinuousLinearMap.fst Real E Real) +
-        (lRegLag S T (fun s : Real ↦ alpha (A0, s)) b -
+        (lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b -
           (S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
             (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)
             (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)) •
@@ -801,7 +801,7 @@ theorem lTailJoint_mfd
   let g := S.base.metric (T - b ^ 2)
   let Ab : TangentSpace I (alpha (A0, b)) :=
     lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b
-  let Lb : Real := lRegLag S T (fun s : Real ↦ alpha (A0, s)) b
+  let Lb : Real := lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b
   let endMap : E → M := fun A ↦ alpha (A, b)
   let dAct : E × Real →L[Real] Real :=
     (((g.inner (alpha (A0, b)) Ab).comp
@@ -1128,10 +1128,10 @@ theorem exists_lCost_support
   have htailC1 : ContMDiffOn 𝓘(Real, Real) IM 1 gamma
       (Icc s0 b) :=
     hgammaC1.mono fun s hs ↦ ⟨hs00.le.trans hs.1, hs.2⟩
-  have hheadInt := lRegLag_int_c1 (I := IM) S hS.smoothMetric
+  have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := IM) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T 0 s0 hs00.le gamma hheadC1
     (fun s hs ↦ hregSq s ⟨hs.1, hs.2.trans hs0b'.le⟩)
-  have htailInt := lRegLag_int_c1 (I := IM) S hS.smoothMetric
+  have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := IM) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T s0 b hs0b'.le gamma htailC1
     (fun s hs ↦ hregSq s ⟨hs00.le.trans hs.1, hs.2⟩)
   have hactionAdd := lRegAction_add (I := IM) S T gamma 0 s0 b
@@ -1150,11 +1150,11 @@ theorem exists_lCost_support
     have hvec := (mem_lMinDomain S T x Z tau).1 hmin
     calc
       lRegAction S T gamma 0 b =
-          lLength S T (sqrtReparam gamma) 0 tau := by
+          lLength S T (squareRootReparametrization gamma) 0 tau := by
         simpa only [gamma, b] using
-          (lLength_sqrt (I := IM) S T gamma tau htau.le).symm
+          (lLength_squareRootReparametrization_eq_lRegAction (I := IM) S T gamma tau htau.le).symm
       _ = lCost S T x (lExp S T x Z tau) tau := by
-        change lLength S T (sqrtReparam (lRegCurve S T x Z)) 0 tau =
+        change lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 tau =
           lCost S T x (lRegCurve S T x Z (Real.sqrt tau)) tau
         exact hvec.2
   have hF0center := hF0eq (lExp S T x Z tau) hzU0

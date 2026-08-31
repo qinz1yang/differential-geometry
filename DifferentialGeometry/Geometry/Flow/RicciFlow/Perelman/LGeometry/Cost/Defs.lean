@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Reparametrization
 
 set_option autoImplicit false
 
@@ -32,7 +32,7 @@ def lCost
   sInf {r : Real | ∃ alpha : Real → M,
     ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
       alpha 0 = x ∧ alpha (Real.sqrt tau) = y ∧
-      lLength S T (sqrtReparam alpha) 0 tau = r}
+      lLength S T (squareRootReparametrization alpha) 0 tau = r}
 
 end normedSpaceCompatibility
 

@@ -62,9 +62,9 @@ theorem lCost_le_join_bdd
       (Icc (0 : Real) c) := halpha.congr fun s hs ↦ heta0 hs
   have hetaTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1 eta
       (Icc c b) := hbeta.congr fun s hs ↦ heta1 hs
-  have hetaHeadInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+  have hetaHeadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T 0 c hc.le eta hetaHead hreg0c
-  have hetaTailInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+  have hetaTailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T c b hcb.le eta hetaTail hregcb
   have hetaAdd := lRegAction_add (I := I) S T eta 0 c b
     hetaHeadInt hetaTailInt
@@ -789,12 +789,12 @@ theorem lCost_chart_lip
           intro z hz
           exact interior_subset (hQbigTar (by
             simpa only [y, c, sub_sub_cancel] using hmap hz)))
-      have hheadInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+      have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
         ⟨hS.scalarCont⟩ T 0 c hc.le (lRegCurve S T x Wu)
         (lRegCurve_c1On S hS T x Wu
           (lRegDomain_seg S T x Wu (hbdomAll (Wu : E)) hc.le hcb.le))
         (fun s hs ↦ hreg s ⟨hs.1, hs.2.trans hcb.le⟩)
-      have htailInt := lRegLag_int_c1 (I := I) S hS.smoothMetric
+      have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
         ⟨hS.scalarCont⟩ T c b hcb.le (lRegCurve S T x Wu)
         ((lRegCurve_c1On S hS T x Wu (hbdomAll (Wu : E))).mono
           (fun s hs ↦ ⟨hc.le.trans hs.1, hs.2⟩))
@@ -806,12 +806,12 @@ theorem lCost_chart_lip
           lCost S T x ((extChartAt I p).symm u) (b ^ 2) := by
         calc
           lRegAction S T (lRegCurve S T x Wu) 0 b =
-              lLength S T (sqrtReparam (lRegCurve S T x Wu)) 0 (b ^ 2) := by
+              lLength S T (squareRootReparametrization (lRegCurve S T x Wu)) 0 (b ^ 2) := by
                 simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using
-                  (lLength_sqrt (I := I) S T (lRegCurve S T x Wu)
+                  (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Wu)
                     (b ^ 2) (sq_nonneg b)).symm
           _ = lCost S T x (lExp S T x Wu (b ^ 2)) (b ^ 2) := by
-                change lLength S T (sqrtReparam (lRegCurve S T x Wu)) 0
+                change lLength S T (squareRootReparametrization (lRegCurve S T x Wu)) 0
                   (b ^ 2) = lCost S T x
                     (lRegCurve S T x Wu (Real.sqrt (b ^ 2))) (b ^ 2)
                 exact hminEq

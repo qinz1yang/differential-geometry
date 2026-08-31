@@ -36,7 +36,7 @@ private theorem rayInts_shrink
     (hB : 0 < B) (hdom : B ∈ lRegDomain S T x Z)
     (hreg : ∀ s ∈ Set.Icc (0 : Real) B, T - s ^ 2 ∈ D.regular) :
     IntervalIntegrable (lRegSpeedSq S T (lRegCurve S T x Z)) volume 0 B ∧
-      IntervalIntegrable (lRegLag S T (lRegCurve S T x Z)) volume 0 B := by
+      IntervalIntegrable (lRegLagrangian S T (lRegCurve S T x Z)) volume 0 B := by
   let alpha : Real → M := lRegCurve S T x Z
   have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
     simpa only [alpha, Set.uIcc_of_le hB.le] using
@@ -44,7 +44,7 @@ private theorem rayInts_shrink
   have hkinCont : ContinuousOn (lRegSpeedSq S T alpha)
       (Set.Icc (0 : Real) B) := by
     intro s hs
-    exact (lRegSpeedSq_deriv (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
+    exact (hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
   have hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume 0 B := by
     have hkinCont' : ContinuousOn (lRegSpeedSq S T alpha)
         (Set.uIcc (0 : Real) B) := by
@@ -105,7 +105,7 @@ theorem lRegInit_shrink
   let C : Real := max Cg Cr
   have hC : 0 ≤ C := hCg.trans (le_max_left Cg Cr)
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  obtain ⟨Cp, hpot⟩ := lScalar_lower (I := I) S hSc T 0 R (by
+  obtain ⟨Cp, hpot⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hSc T 0 R (by
     intro s hs
     have hsI : s ∈ Set.Icc (0 : Real) R := by
       simpa only [Set.uIcc_of_le hR] using hs
@@ -155,7 +155,7 @@ theorem lRegInit_shrink
         _ ≤ 2 * (A + |Cp|) * b := by
           have hCp : -Cp ≤ |Cp| := neg_le_abs Cp
           nlinarith
-    have hinit := lRegInit_bdd (I := I) S hS T b b C b
+    have hinit := lRegInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T b b C b
       (2 * (A + |Cp|) * b) hb le_rfl le_rfl hC halpha
       (fun s hs ↦ by
         have h := hgrad (T - s ^ 2) (hback s hs) (alpha s)

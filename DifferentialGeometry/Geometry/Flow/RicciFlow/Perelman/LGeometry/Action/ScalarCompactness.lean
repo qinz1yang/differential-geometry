@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 set_option autoImplicit false

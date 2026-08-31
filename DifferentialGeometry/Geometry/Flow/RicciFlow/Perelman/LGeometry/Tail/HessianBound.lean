@@ -132,7 +132,7 @@ private theorem lTail_mfd_at
     apply ContinuousLinearMap.ext
     intro B
     change flat (mfderiv 𝓘(Real, E) I endMap A B) +
-        lRegLag S T (fun s : Real ↦ alpha (A, s)) b * 0 =
+        lRegLagrangian S T (fun s : Real ↦ alpha (A, s)) b * 0 =
       flat (mfderiv 𝓘(Real, E) I endMap A B)
     ring
   have hInv : MDifferentiableAt I 𝓘(Real, E) hloc.localInverse y :=

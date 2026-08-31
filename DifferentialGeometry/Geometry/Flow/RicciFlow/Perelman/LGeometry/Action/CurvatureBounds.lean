@@ -175,7 +175,7 @@ theorem lRegRange_of_rm
       (S.base.metric T).inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) (Icc a b))
     (hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume a b)
-    (hLag : IntervalIntegrable (lRegLag S T alpha) volume a b)
+    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
     (hact : lRegAction S T alpha a b ≤ A) :
     ∃ Cpt : Set M, IsCompact Cpt ∧ alpha '' Icc a b ⊆ Cpt := by
   have hb : 0 ≤ b := ha.trans hab
@@ -211,7 +211,7 @@ theorem lRegRanges_of_rm
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s))
       (Icc a b))
     (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A) :
     ∃ Cpt : Set M, IsCompact Cpt ∧ ∀ n, alpha n '' Icc a b ⊆ Cpt := by
   have hb : 0 ≤ b := ha.trans hab

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.EndpointControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.CurvatureBound
@@ -108,13 +108,13 @@ theorem lRedLen_scale
     intro s hs
     exact lRegDomain_reg S (time : Real) B.center Z
       (lRegDomain_seg S (time : Real) B.center Z hbdom hs.1 hs.2)
-  have hLagInt : IntervalIntegrable (lRegLag S (time : Real) alpha) volume 0 b :=
-    lRegLag_int_c1 S hS.smoothMetric ⟨hS.scalarCont⟩ (time : Real) 0 b
+  have hLagInt : IntervalIntegrable (lRegLagrangian S (time : Real) alpha) volume 0 b :=
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one S hS.smoothMetric ⟨hS.scalarCont⟩ (time : Real) 0 b
       hbpos.le alpha halpha hregRay
   have hconstInt : IntervalIntegrable (fun _ : Real ↦ -2 * b ^ 2 * K)
       volume 0 b := intervalIntegrable_const
   have hLagLower : ∀ s ∈ Icc (0 : Real) b,
-      -2 * b ^ 2 * K ≤ lRegLag S (time : Real) alpha s := by
+      -2 * b ^ 2 * K ≤ lRegLagrangian S (time : Real) alpha s := by
     intro s hs
     have hsSq : s ^ 2 ≤ b ^ 2 :=
       (sq_le_sq₀ hs.1 hbpos.le).2 hs.2
@@ -148,16 +148,16 @@ theorem lRedLen_scale
           2 * s ^ 2 * S.scalar ((time : Real) - s ^ 2) (alpha s) := by
         nlinarith [sq_nonneg s]
       exact h₁.trans h₂
-    dsimp only [lRegLag]
+    dsimp only [lRegLagrangian]
     linarith
   have haction : -2 * b ^ 2 * K * b ≤
       lRegAction S (time : Real) alpha 0 b := by
     change -2 * b ^ 2 * K * b ≤
-      ∫ u : Real in 0..b, lRegLag S (time : Real) alpha u
+      ∫ u : Real in 0..b, lRegLagrangian S (time : Real) alpha u
     have hmono := intervalIntegral.integral_mono_on hbpos.le hconstInt hLagInt hLagLower
     calc
       -2 * b ^ 2 * K * b = b * (-2 * b ^ 2 * K) := by ring
-      _ ≤ ∫ u : Real in 0..b, lRegLag S (time : Real) alpha u := by
+      _ ≤ ∫ u : Real in 0..b, lRegLagrangian S (time : Real) alpha u := by
         simpa only [intervalIntegral.integral_const, smul_eq_mul, sub_zero] using hmono
   have hcost : lCost S (time : Real) B.center
       (lExp S (time : Real) B.center Z tau) tau =
@@ -165,10 +165,10 @@ theorem lRedLen_scale
     have hlen : lLength S (time : Real)
         (fun r : Real ↦ lExp S (time : Real) B.center Z r) 0 tau =
           lRegAction S (time : Real) alpha 0 b := by
-      change lLength S (time : Real) (sqrtReparam alpha) 0 tau =
+      change lLength S (time : Real) (squareRootReparametrization alpha) 0 tau =
         lRegAction S (time : Real) alpha 0 b
       simpa only [hb] using
-        lLength_sqrt (I := J) S (time : Real) alpha tau htau.le
+        lLength_squareRootReparametrization_eq_lRegAction (I := J) S (time : Real) alpha tau htau.le
     exact (((mem_lMinDomain S (time : Real) B.center Z tau).1 hminTau).2.symm).trans hlen
   have hscaleK : B.radius ^ 2 * K = n ^ 2 := by
     dsimp only [K, n]

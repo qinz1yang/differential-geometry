@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.SpeedBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.TraceDensity
 
 set_option autoImplicit false
@@ -393,7 +393,7 @@ omit [InnerProductSpace Real E] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem lK_sq
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (gamma : Real → M) (b : Real) (hb : 0 ≤ b) :
-    lK S T (sqReparam gamma) b =
+    lK S T (squareReparametrization gamma) b =
       ∫ rho in (0 : Real)..b ^ 2,
         rho * Real.sqrt rho *
           lHamilton S T rho (gamma rho) (lVelocity (I := I) gamma rho) := by
@@ -413,7 +413,7 @@ theorem lK_sq
         rw [min_eq_left hb, max_eq_right hb] at hs
         exact mul_nonneg (by norm_num) hs.1.le)
   have hpoint : ∀ s ∈ Set.uIcc (0 : Real) b,
-      2 * lHamSq S T (sqReparam gamma) s =
+      2 * lHamSq S T (squareReparametrization gamma) s =
         (k ∘ fun r : Real ↦ r ^ 2) s * (2 * s) := by
     intro s hs
     by_cases hs0 : s = 0
@@ -422,14 +422,14 @@ theorem lK_sq
     · have hsI : s ∈ Set.Icc (0 : Real) b := by
         simpa only [Set.uIcc_of_le hb] using hs
       have hspos : 0 < s := lt_of_le_of_ne hsI.1 (Ne.symm hs0)
-      rw [lHamSq_eq S T (sqReparam gamma) s
+      rw [lHamSq_eq S T (squareReparametrization gamma) s
         (lVelocity (I := I) gamma (s ^ 2))
-        (lVelocity_sq_pos (I := I) gamma s hspos)]
-      simp only [k, Function.comp_apply, sqReparam, Real.sqrt_sq hspos.le]
+        (lVelocity_squareReparametrization_of_pos (I := I) gamma s hspos)]
+      simp only [k, Function.comp_apply, squareReparametrization, Real.sqrt_sq hspos.le]
       ring
   rw [lK, ← intervalIntegral.integral_const_mul]
   calc
-    (∫ s in (0 : Real)..b, 2 * lHamSq S T (sqReparam gamma) s) =
+    (∫ s in (0 : Real)..b, 2 * lHamSq S T (squareReparametrization gamma) s) =
         ∫ s in (0 : Real)..b, (k ∘ fun r : Real ↦ r ^ 2) s * (2 * s) := by
       exact intervalIntegral.integral_congr hpoint
     _ = ∫ rho in (0 : Real)..b ^ 2, k rho := by
@@ -446,26 +446,26 @@ theorem lLagMul_deriv
     {Z : TangentSpace I x}
     (halpha : IsLRegCurveOn S T alpha J x Z)
     {s : Real} (hs : s ∈ J) :
-    HasDerivAt (fun r ↦ r * lRegLag S T alpha r)
-      (lRegLag S T alpha s - 4 * lHamSq S T alpha s) s := by
+    HasDerivAt (fun r ↦ r * lRegLagrangian S T alpha r)
+      (lRegLagrangian S T alpha s - 4 * lHamSq S T alpha s) s := by
   let R : Real → Real := fun r ↦ S.scalar (T - r ^ 2) (alpha r)
   let U : Real → Real := lRegSpeedSq S T alpha
   let F : Real → Real := fun r ↦ r ^ 3 * R r + (r / 4) * U r
   have hR := lScalar_path_deriv S hS T alpha
     (halpha.2.2 s hs).1 (halpha.2.2 s hs).2.1
-  have hU := lRegSpeedSq_deriv (I := I) S hS T halpha hs
-  have hF : HasDerivAt F (lRegLag S T alpha s / 2 -
+  have hU := hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs
+  have hF : HasDerivAt F (lRegLagrangian S T alpha s / 2 -
       2 * lHamSq S T alpha s) s := by
     have hout := ((hasDerivAt_pow 3 s).mul hR).add
       (((hasDerivAt_id s).div_const 4).mul hU)
     apply hout.congr_deriv
-    simp only [id_eq, lRegLag, lRegSpeedSq, lHamSq]
+    simp only [id_eq, lRegLagrangian, lRegSpeedSq, lHamSq]
     ring
   have hscaled := hF.const_mul 2
   have hfun : (fun r ↦ 2 * F r) =
-      fun r ↦ r * lRegLag S T alpha r := by
+      fun r ↦ r * lRegLagrangian S T alpha r := by
     funext r
-    simp only [F, R, U, lRegLag, lRegSpeedSq]
+    simp only [F, R, U, lRegLagrangian, lRegSpeedSq]
     ring
   rw [hfun] at hscaled
   apply hscaled.congr_deriv
@@ -481,19 +481,19 @@ theorem lK_energy_eq
     {alpha : Real → M} {x : M} {Z : TangentSpace I x}
     (b : Real)
     (halpha : IsLRegCurveOn S T alpha (Set.uIcc (0 : Real) b) x Z)
-    (hLag : IntervalIntegrable (lRegLag S T alpha)
+    (hLag : IntervalIntegrable (lRegLagrangian S T alpha)
       MeasureTheory.volume 0 b)
     (hHam : IntervalIntegrable (lHamSq S T alpha)
       MeasureTheory.volume 0 b) :
     lK S T alpha b =
-      (lRegAction S T alpha 0 b - b * lRegLag S T alpha b) / 2 := by
+      (lRegAction S T alpha 0 b - b * lRegLagrangian S T alpha b) / 2 := by
   have hdiff : IntervalIntegrable
-      (fun s ↦ lRegLag S T alpha s - 4 * lHamSq S T alpha s)
+      (fun s ↦ lRegLagrangian S T alpha s - 4 * lHamSq S T alpha s)
       MeasureTheory.volume 0 b := hLag.sub (hHam.const_mul 4)
   have hFTC :
       (∫ s in (0 : Real)..b,
-          (lRegLag S T alpha s - 4 * lHamSq S T alpha s)) =
-        b * lRegLag S T alpha b := by
+          (lRegLagrangian S T alpha s - 4 * lHamSq S T alpha s)) =
+        b * lRegLagrangian S T alpha b := by
     exact intervalIntegral.integral_eq_sub_of_hasDerivAt
       (fun s hs ↦ lLagMul_deriv S hS T halpha hs) hdiff
       |>.trans (by ring)
@@ -511,16 +511,16 @@ theorem lRayLag_int
     (x : M) (Z : TangentSpace I x) {b : Real}
     (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z) :
     IntervalIntegrable
-      (lRegLag S T (lRegCurve S T x Z)) MeasureTheory.volume 0 b := by
+      (lRegLagrangian S T (lRegCurve S T x Z)) MeasureTheory.volume 0 b := by
   let U : Set Real := lRegDomain S T x Z
   let alpha : Real → M := lRegCurve S T x Z
   let z : E := Z
   have hpair : ContDiff Real ∞ (fun s : Real ↦ (z, s)) :=
     contDiff_const.prodMk contDiff_id
-  have hlag : ContDiffOn Real ∞ (lRegLag S T alpha) U := by
+  have hlag : ContDiffOn Real ∞ (lRegLagrangian S T alpha) U := by
     change ContDiffOn Real ∞
       ((fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
           fun s : Real ↦ (z, s)) U
     exact (lRayLag_smooth S hS T x).comp hpair.contDiffOn
       (fun s (hs : s ∈ U) ↦ by
@@ -546,13 +546,13 @@ theorem lRayHam_int
   let U : Set Real := lRegDomain S T x Z
   let alpha : Real → M := lRegCurve S T x Z
   let z : E := Z
-  let F : Real → Real := fun s ↦ s * lRegLag S T alpha s
+  let F : Real → Real := fun s ↦ s * lRegLagrangian S T alpha s
   have hpair : ContDiff Real ∞ (fun s : Real ↦ (z, s)) :=
     contDiff_const.prodMk contDiff_id
-  have hlag : ContDiffOn Real ∞ (lRegLag S T alpha) U := by
+  have hlag : ContDiffOn Real ∞ (lRegLagrangian S T alpha) U := by
     change ContDiffOn Real ∞
       ((fun q : E × Real ↦
-        lRegLag S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
+        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
           fun s : Real ↦ (z, s)) U
     exact (lRayLag_smooth S hS T x).comp hpair.contDiffOn
       (fun s (hs : s ∈ U) ↦ by
@@ -571,11 +571,11 @@ theorem lRayHam_int
   have hFdint : IntervalIntegrable (deriv F)
       MeasureTheory.volume 0 b :=
     hFdcont.intervalIntegrable_of_Icc hb.le
-  have hLagInt : IntervalIntegrable (lRegLag S T alpha)
+  have hLagInt : IntervalIntegrable (lRegLagrangian S T alpha)
       MeasureTheory.volume 0 b := by
     simpa only [alpha] using lRayLag_int S hS T x Z hb hbdom
   have hright : IntervalIntegrable
-      (fun s ↦ (lRegLag S T alpha s - deriv F s) / 4)
+      (fun s ↦ (lRegLagrangian S T alpha s - deriv F s) / 4)
       MeasureTheory.volume 0 b := (hLagInt.sub hFdint).div_const 4
   have hgeo := lRegCurve_isReg (I := I) S hS T x Z hb hbdom
   refine hright.congr ?_
@@ -586,9 +586,9 @@ theorem lRayHam_int
   have hpoint := (lLagMul_deriv S hS T hgeo
     (by simpa only [Set.uIcc_of_le hb.le] using hsIcc)).deriv
   have hpoint' : deriv F s =
-      lRegLag S T alpha s - 4 * lHamSq S T alpha s := by
+      lRegLagrangian S T alpha s - 4 * lHamSq S T alpha s := by
     simpa only [F, alpha] using hpoint
-  change (lRegLag S T alpha s - deriv F s) / 4 =
+  change (lRegLagrangian S T alpha s - deriv F s) / 4 =
     lHamSq S T alpha s
   rw [hpoint']
   ring
@@ -604,7 +604,7 @@ theorem lK_ray_energy
     (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z) :
     lK S T (lRegCurve S T x Z) b =
       (lRegAction S T (lRegCurve S T x Z) 0 b -
-        b * lRegLag S T (lRegCurve S T x Z) b) / 2 := by
+        b * lRegLagrangian S T (lRegCurve S T x Z) b) / 2 := by
   exact lK_energy_eq S hS T b
     (lRegCurve_isReg (I := I) S hS T x Z hb hbdom)
     (lRayLag_int S hS T x Z hb hbdom)

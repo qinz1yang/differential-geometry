@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.First
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Reparametrization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Reparametrization
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Comparison.Variation.ChartVariation
@@ -1492,14 +1492,14 @@ theorem lEuler_sq
     4 * s ^ 2 * lEulerPair S T gamma (s ^ 2) Y =
       (S.base.metric (T - s ^ 2)).inner (gamma (s ^ 2)) Y
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (sqReparam gamma)
-            (fun r : Real => lVelocity (I := I) (sqReparam gamma) r) s) -
+            (squareReparametrization gamma)
+            (fun r : Real => lVelocity (I := I) (squareReparametrization gamma) r) s) -
         2 * s ^ 2 *
           (S.base.metric (T - s ^ 2)).inner (gamma (s ^ 2))
             (gradientFun (I := I) (S.base.metric (T - s ^ 2))
               (S.scalar (T - s ^ 2)) (gamma (s ^ 2))) Y +
         4 * s * S.ricciAt (T - s ^ 2) (gamma (s ^ 2))
-          (vec2 Y (lVelocity (I := I) (sqReparam gamma) s)) := by
+          (vec2 Y (lVelocity (I := I) (squareReparametrization gamma) s)) := by
   let g := S.base.metric (T - s ^ 2)
   let X : ∀ tau, TangentSpace I (gamma tau) :=
     fun tau => lVelocity (I := I) gamma tau
@@ -1533,8 +1533,8 @@ theorem lEuler_sq
       (fun r : Real => lVelocity (I := I) alpha r) =ᶠ[𝓝 s]
         fun r : Real => (2 * r) • B r := by
     filter_upwards [eventually_gt_nhds hs] with r hr
-    rw [show alpha = sqReparam gamma by rfl]
-    exact lVelocity_sq_pos (I := I) gamma r hr
+    rw [show alpha = squareReparametrization gamma by rfl]
+    exact lVelocity_squareReparametrization_of_pos (I := I) gamma r hr
   have hAcov :
       covDerivAlong (I := I) g alpha
           (fun r : Real => lVelocity (I := I) alpha r) s =
@@ -1622,13 +1622,13 @@ theorem HasLEquationAt.accel_sq
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)
     (s : Real) (hs : 0 < s) (hEq : HasLEquationAt S T gamma (s ^ 2)) :
     covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-        (sqReparam gamma)
-        (fun r : Real => lVelocity (I := I) (sqReparam gamma) r) s =
+        (squareReparametrization gamma)
+        (fun r : Real => lVelocity (I := I) (squareReparametrization gamma) r) s =
       lRegAccel S T s (gamma (s ^ 2))
-        (lVelocity (I := I) (sqReparam gamma) s) := by
-  rw [show gamma (s ^ 2) = sqReparam gamma s by rfl]
+        (lVelocity (I := I) (squareReparametrization gamma) s) := by
+  rw [show gamma (s ^ 2) = squareReparametrization gamma s by rfl]
   let g := S.base.metric (T - s ^ 2)
-  let alpha := sqReparam gamma
+  let alpha := squareReparametrization gamma
   let A := lVelocity (I := I) alpha s
   apply metricFlatLinear_injective (I := I) g (alpha s)
   ext Y

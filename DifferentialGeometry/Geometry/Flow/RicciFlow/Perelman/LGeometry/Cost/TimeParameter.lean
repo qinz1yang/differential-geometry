@@ -30,7 +30,7 @@ theorem lRegLag_time_cont
     (alpha : Real → M)
     (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha) :
     ContinuousOn
-      (fun q : Real × Real ↦ lRegLag S q.1 alpha q.2)
+      (fun q : Real × Real ↦ lRegLagrangian S q.1 alpha q.2)
       {q : Real × Real | q.1 - q.2 ^ 2 ∈ D.regular} := by
   let U : Set (Real × Real) :=
     {q : Real × Real | q.1 - q.2 ^ 2 ∈ D.regular}
@@ -81,7 +81,7 @@ theorem lRegLag_time_cont
         ((continuous_snd.comp continuous_subtype_val).pow 2)).mul hscalar)
   rw [continuousOn_iff_continuous_domRestrict]
   have heq : U.domRestrict (fun q : Real × Real ↦
-      lRegLag S q.1 alpha q.2) = fun q : P ↦
+      lRegLagrangian S q.1 alpha q.2) = fun q : P ↦
         (1 / 2 : Real) *
             (S.base.metric (q.1.1 - q.1.2 ^ 2)).inner (alpha q.1.2)
               (lVelocity (I := I) alpha q.1.2)
@@ -90,7 +90,7 @@ theorem lRegLag_time_cont
     funext q
     rfl
   change Continuous (U.domRestrict (fun q : Real × Real ↦
-    lRegLag S q.1 alpha q.2))
+    lRegLagrangian S q.1 alpha q.2))
   rw [heq]
   exact hlag
 
@@ -148,7 +148,7 @@ theorem lRegAction_T_cont
       exact ⟨by linarith [hq.1.1], by linarith [hq.1.2]⟩
     simpa only [sub_sub_sub_cancel_right] using hdist.trans_lt (half_lt_self hdelta)
   have hlagK : ContinuousOn
-      (fun q : Real × Real ↦ lRegLag S q.1 alpha q.2) K :=
+      (fun q : Real × Real ↦ lRegLagrangian S q.1 alpha q.2) K :=
     hlag.mono hKreg
   obtain ⟨C, hC⟩ := hKc.exists_bound_of_continuousOn hlagK
   let C₀ : Real := max C 0
@@ -159,7 +159,7 @@ theorem lRegAction_T_cont
     · change T < T + eta
       linarith
   apply intervalIntegral.continuousAt_of_dominated_interval
-      (F := fun R s ↦ lRegLag S R alpha s) (bound := fun _ ↦ C₀)
+      (F := fun R s ↦ lRegLagrangian S R alpha s) (bound := fun _ ↦ C₀)
   · filter_upwards [hTnh] with R hR
     exact ((hlagK.comp
       (continuous_const.prodMk continuous_id).continuousOn

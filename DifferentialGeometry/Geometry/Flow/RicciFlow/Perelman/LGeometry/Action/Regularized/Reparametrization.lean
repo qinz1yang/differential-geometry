@@ -20,19 +20,19 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
-def sqReparam (gamma : Real -> M) (s : Real) : M :=
+def squareReparametrization (gamma : Real -> M) (s : Real) : M :=
   gamma (s ^ 2)
 
-def sqrtReparam (alpha : Real → M) (tau : Real) : M :=
+def squareRootReparametrization (alpha : Real → M) (tau : Real) : M :=
   alpha (Real.sqrt tau)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lVelocity_sq
+theorem lVelocity_squareReparametrization
     (gamma : Real -> M) (s : Real)
     (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2))
     :
-    lVelocity (I := I) (sqReparam gamma) s =
+    lVelocity (I := I) (squareReparametrization gamma) s =
       (2 * s) • lVelocity (I := I) gamma (s ^ 2) := by
   have hsqAt : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, Real)
       (fun x : Real => x ^ 2) s :=
@@ -73,15 +73,15 @@ theorem lVelocity_sq
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lVelocity_sq_pos
+theorem lVelocity_squareReparametrization_of_pos
     (gamma : Real → M) (s : Real) (hs : 0 < s) :
-    lVelocity (I := I) (sqReparam gamma) s =
+    lVelocity (I := I) (squareReparametrization gamma) s =
       (2 * s) • lVelocity (I := I) gamma (s ^ 2) := by
   by_cases hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2)
-  · exact lVelocity_sq (I := I) gamma s hgamma
+  · exact lVelocity_squareReparametrization (I := I) gamma s hgamma
   · have hs2 : 0 < s ^ 2 := sq_pos_of_pos hs
     have halpha : ¬ MDifferentiableAt 𝓘(Real, Real) I
-        (sqReparam gamma) s := by
+        (squareReparametrization gamma) s := by
       intro halpha
       have hsqrt : Real.sqrt (s ^ 2) = s := Real.sqrt_sq hs.le
       have hsqrtDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, Real)
@@ -89,16 +89,16 @@ theorem lVelocity_sq_pos
         mdifferentiableAt_iff_differentiableAt.mpr
           (Real.hasDerivAt_sqrt (ne_of_gt hs2)).differentiableAt
       have halpha' : MDifferentiableAt 𝓘(Real, Real) I
-          (sqReparam gamma) (Real.sqrt (s ^ 2)) := by
+          (squareReparametrization gamma) (Real.sqrt (s ^ 2)) := by
         simpa only [hsqrt] using halpha
       have hcomp : MDifferentiableAt 𝓘(Real, Real) I
-          (sqReparam gamma ∘ Real.sqrt) (s ^ 2) :=
+          (squareReparametrization gamma ∘ Real.sqrt) (s ^ 2) :=
         halpha'.comp (s ^ 2) hsqrtDiff
-      have heq : (sqReparam gamma ∘ Real.sqrt) =ᶠ[𝓝 (s ^ 2)] gamma := by
+      have heq : (squareReparametrization gamma ∘ Real.sqrt) =ᶠ[𝓝 (s ^ 2)] gamma := by
         filter_upwards [eventually_gt_nhds hs2] with r hr
-        simp only [Function.comp_apply, sqReparam, Real.sq_sqrt hr.le]
+        simp only [Function.comp_apply, squareReparametrization, Real.sq_sqrt hr.le]
       exact hgamma (hcomp.congr_of_eventuallyEq heq.symm)
-    have hleft : lVelocity (I := I) (sqReparam gamma) s = 0 := by
+    have hleft : lVelocity (I := I) (squareReparametrization gamma) s = 0 := by
       unfold lVelocity
       rw [mfderiv_zero_of_not_mdifferentiableAt halpha]
       exact zero_apply _
@@ -117,15 +117,15 @@ noncomputable def lRegDensity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real -> M)
     (s : Real) : Real :=
   (1 / 2 : Real) *
-      (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s)
-        (lVelocity (I := I) (sqReparam gamma) s)
-        (lVelocity (I := I) (sqReparam gamma) s) +
-    2 * s ^ 2 * S.scalar (T - s ^ 2) (sqReparam gamma s)
+      (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s)
+        (lVelocity (I := I) (squareReparametrization gamma) s)
+        (lVelocity (I := I) (squareReparametrization gamma) s) +
+    2 * s ^ 2 * S.scalar (T - s ^ 2) (squareReparametrization gamma s)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem lDensity_sq
+theorem lDensity_squareReparametrization
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real -> M)
     (s : Real)
     (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2))
@@ -156,8 +156,8 @@ theorem lDensity_sq
         (lVelocity (I := I) gamma (s ^ 2)) := by
     simpa only [g, p, v] using hquad
   rw [lRegDensity, lDensity, lSpeedSq, Real.sqrt_sq hs,
-    lVelocity_sq gamma s hgamma]
-  simp only [sqReparam]
+    lVelocity_squareReparametrization gamma s hgamma]
+  simp only [squareReparametrization]
   calc
     _ = (1 / 2 : Real) * ((2 * s) ^ 2 *
           (S.base.metric (T - s ^ 2)).inner (gamma (s ^ 2))
@@ -172,34 +172,34 @@ theorem lDensity_sq
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem lDensity_sq_pos
+theorem lDensity_squareReparametrization_of_pos
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)
     (s : Real) (hs : 0 < s) :
     lDensity S T gamma (s ^ 2) * (2 * s) =
       lRegDensity S T gamma s := by
   by_cases hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2)
-  · exact lDensity_sq S T gamma s hgamma hs.le
+  · exact lDensity_squareReparametrization S T gamma s hgamma hs.le
   · have hvel : lVelocity (I := I) gamma (s ^ 2) = 0 := by
       unfold lVelocity
       rw [mfderiv_zero_of_not_mdifferentiableAt hgamma]
       exact zero_apply _
-    have hvelsq : lVelocity (I := I) (sqReparam gamma) s = 0 := by
-      have h := lVelocity_sq_pos (I := I) gamma s hs
+    have hvelsq : lVelocity (I := I) (squareReparametrization gamma) s = 0 := by
+      have h := lVelocity_squareReparametrization_of_pos (I := I) gamma s hs
       rw [hvel, smul_zero] at h
       with_unfolding_all exact h
     have hspeed0 : lSpeedSq S T gamma (s ^ 2) = 0 := by
       simp [lSpeedSq, hvel]
     have hreg0 :
-        (S.base.metric (T - s ^ 2)).inner (sqReparam gamma s)
-          (lVelocity (I := I) (sqReparam gamma) s)
-          (lVelocity (I := I) (sqReparam gamma) s) = 0 := by
+        (S.base.metric (T - s ^ 2)).inner (squareReparametrization gamma s)
+          (lVelocity (I := I) (squareReparametrization gamma) s)
+          (lVelocity (I := I) (squareReparametrization gamma) s) = 0 := by
       simp [hvelsq]
     rw [lDensity, lRegDensity, Real.sqrt_sq hs.le, hspeed0, hreg0]
-    simp only [sqReparam]
+    simp only [squareReparametrization]
     ring
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem lLength_sq
+theorem lLength_squareReparametrization
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real -> M)
     (tau1 tau2 : Real) (htau1 : 0 <= tau1) (htau2 : 0 <= tau2)
     (hgamma : ∀ s ∈ uIcc (Real.sqrt tau1) (Real.sqrt tau2),
@@ -236,11 +236,11 @@ theorem lLength_sq
       · exact (Real.sqrt_nonneg tau1).trans hs.1
       · exact (Real.sqrt_nonneg tau2).trans hs.1
     simpa only [Function.comp_apply] using
-      lDensity_sq S T gamma s (hgamma s hs) hs0
+      lDensity_squareReparametrization S T gamma s (hgamma s hs) hs0
   simpa only [lLength] using hsub'.symm.trans hcongr
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem lLength_sq_ae
+theorem lLength_squareReparametrization_ae
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)
     (tau1 tau2 : Real) (htau1 : 0 ≤ tau1) (htau2 : 0 ≤ tau2) :
     lLength S T gamma tau1 tau2 =
@@ -279,7 +279,7 @@ theorem lLength_sq_ae
       · exact (Real.sqrt_nonneg tau2).trans hs.1
     have hspos : 0 < s := lt_of_le_of_ne hsnonneg hs0.symm
     simpa only [Function.comp_apply] using
-      lDensity_sq_pos (I := I) S T gamma s hspos
+      lDensity_squareReparametrization_of_pos (I := I) S T gamma s hspos
   simpa only [lLength] using hsub'.symm.trans hcongr
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

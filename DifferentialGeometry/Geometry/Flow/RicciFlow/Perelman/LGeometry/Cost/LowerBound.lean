@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CurvatureBounds
 
 set_option autoImplicit false
@@ -38,7 +38,7 @@ private theorem regSpeed_int_c1
     (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha (Icc a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     IntervalIntegrable (lRegSpeedSq S T alpha) volume a b := by
-  have hLag := lRegLag_int_c1 (I := I) S hMet hSc T a b hab alpha halpha hreg
+  have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha halpha hreg
   have hcarrier : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.carrier := by
     intro s hs
     exact D.regular_subset (hreg s (by simpa only [uIcc_of_le hab] using hs))
@@ -50,7 +50,7 @@ private theorem regSpeed_int_c1
       (fun s ↦ (1 / 2 : Real) * lRegSpeedSq S T alpha s) volume a b := by
     convert hLag.sub hpot using 1
     funext s
-    unfold lRegLag lRegSpeedSq
+    unfold lRegLagrangian lRegSpeedSq
     ring
   have htwice := hhalf.const_mul 2
   convert htwice using 1
@@ -84,7 +84,7 @@ theorem lRegCosts_bdd_rm
   have hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   have hkin := regSpeed_int_c1 (I := I) S hMet hSc T a b hab alpha
     halpha.contMDiffOn hregBack
-  have hLag := lRegLag_int_c1 (I := I) S hMet hSc T a b hab alpha
+  have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha
     halpha.contMDiffOn hregBack
   have hbound := lRegKinetic_le (I := I) S T alpha a b
     (lRegAction S T alpha a b) C hab

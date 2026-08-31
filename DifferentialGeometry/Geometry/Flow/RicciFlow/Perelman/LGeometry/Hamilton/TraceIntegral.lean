@@ -40,7 +40,7 @@ omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
 theorem lKTail_sq
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (gamma : Real → M) (a b : Real) (ha : 0 ≤ a) (hab : a ≤ b) :
-    lKTail S T (sqReparam gamma) a b =
+    lKTail S T (squareReparametrization gamma) a b =
       ∫ rho in a ^ 2..b ^ 2,
         Real.sqrt rho * (Real.sqrt rho - a) ^ 2 *
           lHamilton S T rho (gamma rho) (lVelocity (I := I) gamma rho) := by
@@ -60,7 +60,7 @@ theorem lKTail_sq
         rw [min_eq_left hab, max_eq_right hab] at hs
         exact mul_nonneg (by norm_num) (ha.trans (le_of_lt hs.1)))
   have hpoint : ∀ s ∈ Set.uIcc a b,
-      2 * (((s - a) / s) ^ 2 * lHamSq S T (sqReparam gamma) s) =
+      2 * (((s - a) / s) ^ 2 * lHamSq S T (squareReparametrization gamma) s) =
         (k ∘ fun r : Real ↦ r ^ 2) s * (2 * s) := by
     intro s hs
     have hsI : s ∈ Set.Icc a b := by
@@ -72,15 +72,15 @@ theorem lKTail_sq
       subst a
       simp [lHamSq, k]
     · have hspos : 0 < s := lt_of_le_of_ne hsnonneg (Ne.symm hs0)
-      rw [lHamSq_eq S T (sqReparam gamma) s
+      rw [lHamSq_eq S T (squareReparametrization gamma) s
         (lVelocity (I := I) gamma (s ^ 2))
-        (lVelocity_sq_pos (I := I) gamma s hspos)]
-      simp only [k, Function.comp_apply, sqReparam, Real.sqrt_sq hspos.le]
+        (lVelocity_squareReparametrization_of_pos (I := I) gamma s hspos)]
+      simp only [k, Function.comp_apply, squareReparametrization, Real.sqrt_sq hspos.le]
       field_simp [hs0]
   rw [lKTail, ← intervalIntegral.integral_const_mul]
   calc
     (∫ s in a..b,
-        2 * (((s - a) / s) ^ 2 * lHamSq S T (sqReparam gamma) s)) =
+        2 * (((s - a) / s) ^ 2 * lHamSq S T (squareReparametrization gamma) s)) =
         ∫ s in a..b, (k ∘ fun r : Real ↦ r ^ 2) s * (2 * s) := by
       exact intervalIntegral.integral_congr hpoint
     _ = ∫ rho in a ^ 2..b ^ 2, k rho := by

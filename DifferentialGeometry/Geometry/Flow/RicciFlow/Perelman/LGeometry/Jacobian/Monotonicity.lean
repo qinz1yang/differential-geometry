@@ -49,7 +49,7 @@ theorem redLength_ray_K
   let z : E := Z
   let A : E × Real → Real := fun p ↦
     lRegAction S T (lRegCurve S T x p.1) 0 (Real.sqrt p.2)
-  let c : Real := lRegLag S T alpha b / (2 * b)
+  let c : Real := lRegLagrangian S T alpha b / (2 * b)
   let y : M := lExp S T x Z tau
   let endMap : E → M := fun W ↦ lExp S T x W tau
   let Lz : E →L[Real] Real :=
@@ -83,8 +83,8 @@ theorem redLength_ray_K
       lRegAction S T alpha 0 (Real.sqrt r) =
           lLength S T (fun q : Real ↦ lExp S T x Z q) 0 r := by
         change lRegAction S T alpha 0 (Real.sqrt r) =
-          lLength S T (sqrtReparam alpha) 0 r
-        exact (lLength_sqrt (I := I) S T alpha r hrpos.le).symm
+          lLength S T (squareRootReparametrization alpha) 0 r
+        exact (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha r hrpos.le).symm
       _ = lCost S T x (lExp S T x Z r) r := hcost
   have hcost := hact.congr_of_eventuallyEq hEq.symm
   have hbpos : 0 < b := by

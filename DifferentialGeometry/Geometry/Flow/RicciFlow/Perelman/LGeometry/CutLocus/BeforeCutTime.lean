@@ -50,8 +50,8 @@ private theorem lRegLag_int_of_eqOn
     (S : SolutionOn (I := I) (M := M) D) (T a b : Real)
     (alpha beta : Real -> M)
     (heq : EqOn alpha beta (uIoo a b))
-    (hbeta : IntervalIntegrable (lRegLag S T beta) volume a b) :
-    IntervalIntegrable (lRegLag S T alpha) volume a b := by
+    (hbeta : IntervalIntegrable (lRegLagrangian S T beta) volume a b) :
+    IntervalIntegrable (lRegLagrangian S T alpha) volume a b := by
   apply hbeta.congr_ae
   rw [Filter.EventuallyEq, ae_restrict_iff' measurableSet_uIoc]
   filter_upwards [MeasureTheory.Measure.ae_ne MeasureTheory.volume (max a b)]
@@ -71,7 +71,7 @@ private theorem lRegLag_int_of_eqOn
     unfold lVelocity
     rw [hmf]
     rfl
-  simp only [lRegLag]
+  simp only [lRegLagrangian]
   rw [hval, hvel]
 
 theorem lMinVec_unique_lt
@@ -110,7 +110,7 @@ theorem lMinVec_unique_lt
   have hZtail : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gammaZ
       (Icc c b) := hZc1.mono (by intro s hs; exact ⟨hc0.le.trans hs.1, hs.2⟩)
   have hnode : gammaW c = gammaZ c := by
-    simpa only [gammaW, gammaZ, c, lExp, sqrtReparam] using hend
+    simpa only [gammaW, gammaZ, c, lExp, squareRootReparametrization] using hend
   let prW : Real -> Real := fun s =>
     ((projIcc (0 : Real) c hc0.le s : Icc (0 : Real) c) : Real)
   let prZ : Real -> Real := fun s =>
@@ -171,20 +171,20 @@ theorem lMinVec_unique_lt
   have hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric :=
     hS.smoothMetric
   have hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  have hWint := lRegLag_int_c1 (I := I) S hMet hSc T 0 c hc0.le gammaW hWc1
+  have hWint := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 c hc0.le gammaW hWc1
     (fun s hs => lExpPosDom_reg S T x W hWvec.1 (by simpa only [c] using hs))
-  have hZint0 := lRegLag_int_c1 (I := I) S hMet hSc T 0 c hc0.le gammaZ
+  have hZint0 := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 c hc0.le gammaZ
     (hZc1.mono (by intro s hs; exact ⟨hs.1, hs.2.trans hcb.le⟩))
     (fun s hs => hreg s ⟨hs.1, hs.2.trans hcb.le⟩)
-  have hZint1 := lRegLag_int_c1 (I := I) S hMet hSc T c b hcb.le gammaZ hZtail
+  have hZint1 := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T c b hcb.le gammaZ hZtail
     (fun s hs => hreg s ⟨hc0.le.trans hs.1, hs.2⟩)
-  have hgammaInt0 : IntervalIntegrable (lRegLag S T gamma) volume 0 c :=
+  have hgammaInt0 : IntervalIntegrable (lRegLagrangian S T gamma) volume 0 c :=
     lRegLag_int_of_eqOn S T 0 c gamma gammaW
       (fun s hs => hgammaW (by
         have hs' : s ∈ Ioo (0 : Real) c := by
           simpa only [uIoo_of_le hc0.le] using hs
         exact ⟨hs'.1.le, hs'.2.le⟩)) hWint
-  have hgammaInt1 : IntervalIntegrable (lRegLag S T gamma) volume c b :=
+  have hgammaInt1 : IntervalIntegrable (lRegLagrangian S T gamma) volume c b :=
     lRegLag_int_of_eqOn S T c b gamma gammaZ
       (fun s hs => hgammaZ (by
         have hs' : s ∈ Ioo c b := by
@@ -197,8 +197,8 @@ theorem lMinVec_unique_lt
         change _ = lLength S T
           (fun r : Real ↦ lRegCurve S T x W (Real.sqrt r)) 0 sigma
         rw [show (fun r : Real ↦ lRegCurve S T x W (Real.sqrt r)) =
-          sqrtReparam gammaW by rfl]
-        exact (lLength_sqrt (I := I) S T gammaW sigma hsigma.le).symm
+          squareRootReparametrization gammaW by rfl]
+        exact (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gammaW sigma hsigma.le).symm
       _ = lCost S T x (lExp S T x W sigma) sigma := hWvec.2
       _ = lCost S T x (lExp S T x Z sigma) sigma := by rw [hend]
       _ = lLength S T (fun r : Real => lExp S T x Z r) 0 sigma := hZsigvec.2.symm
@@ -206,8 +206,8 @@ theorem lMinVec_unique_lt
         change lLength S T
           (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) 0 sigma = _
         rw [show (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) =
-          sqrtReparam gammaZ by rfl]
-        exact lLength_sqrt (I := I) S T gammaZ sigma hsigma.le
+          squareRootReparametrization gammaZ by rfl]
+        exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gammaZ sigma hsigma.le
   have haction : lRegAction S T gamma 0 b = lRegAction S T gammaZ 0 b := by
     rw [← lRegAction_add S T gamma 0 c b hgammaInt0 hgammaInt1,
       lRegAction_congr S T gamma gammaW 0 c (fun s hs => hgammaW (by
@@ -227,11 +227,11 @@ theorem lMinVec_unique_lt
         change _ = lLength S T
           (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) 0 tau
         rw [show (fun r : Real ↦ lRegCurve S T x Z (Real.sqrt r)) =
-          sqrtReparam gammaZ by rfl]
-        exact (lLength_sqrt (I := I) S T gammaZ tau htau.le).symm
+          squareRootReparametrization gammaZ by rfl]
+        exact (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gammaZ tau htau.le).symm
       _ = lCost S T x (lExp S T x Z tau) tau := hZvec.2
       _ = lRegCostC1 S T 0 b x (gammaZ b) := by
-        simpa only [gammaZ, b, lExp, sqrtReparam] using
+        simpa only [gammaZ, b, lExp, squareRootReparametrization] using
           lCost_eq_reg (I := I) S T x (lExp S T x Z tau) tau htau.le
   have hback : ∀ s ∈ Icc (0 : Real) b,
       T - s ^ 2 ∈ Icc (T - tau) T := by

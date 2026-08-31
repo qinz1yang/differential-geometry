@@ -140,11 +140,11 @@ theorem lInj_isOpen
           lCost S T x (lExp S T x (W n) rho) rho := by
       calc
         lRegAction S T (lRegCurve S T x (W n)) 0 b =
-            lLength S T (sqrtReparam (lRegCurve S T x (W n))) 0 rho := by
+            lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0 rho := by
           simpa only [b] using
-            (lLength_sqrt (I := I) S T (lRegCurve S T x (W n)) rho hrho.le).symm
+            (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (W n)) rho hrho.le).symm
         _ = lCost S T x (lExp S T x (W n) rho) rho := by
-          change lLength S T (sqrtReparam (lRegCurve S T x (W n))) 0 rho =
+          change lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0 rho =
             lCost S T x (lRegCurve S T x (W n) (Real.sqrt rho)) rho
           exact hminEq
     have hcostLe := lCost_le_ray (I := I) S hS T x (V n) b hb (hVreg n)

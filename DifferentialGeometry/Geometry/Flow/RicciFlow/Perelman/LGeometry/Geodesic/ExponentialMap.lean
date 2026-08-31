@@ -1852,19 +1852,19 @@ theorem lExp_vel_sqrt
   let s : Real := Real.sqrt tau
   let gamma : Real → M := fun r ↦ lExp S T x Z r
   have hs : 0 < s := Real.sqrt_pos.2 htau
-  have heq : lRegCurve S T x Z =ᶠ[𝓝 s] sqReparam gamma := by
+  have heq : lRegCurve S T x Z =ᶠ[𝓝 s] squareReparametrization gamma := by
     filter_upwards [eventually_gt_nhds hs] with r hr
-    simp only [sqReparam, gamma, lExp, Real.sqrt_sq hr.le]
+    simp only [squareReparametrization, gamma, lExp, Real.sqrt_sq hr.le]
   have hvel :
       lVelocity (I := I) (lRegCurve S T x Z) s =
-        lVelocity (I := I) (sqReparam gamma) s := by
+        lVelocity (I := I) (squareReparametrization gamma) s := by
     unfold lVelocity
     rw [Filter.EventuallyEq.mfderiv_eq
       (I := 𝓘(Real, Real)) (I' := I) heq]
     rfl
   change lVelocity (I := I) (lRegCurve S T x Z) s =
     (2 * s) • lVelocity (I := I) gamma tau
-  have hsq := lVelocity_sq_pos (I := I) gamma s hs
+  have hsq := lVelocity_squareReparametrization_of_pos (I := I) gamma s hs
   rw [← hvel] at hsq
   rw [show s ^ 2 = tau by simpa only [s] using Real.sq_sqrt htau.le] at hsq
   exact hsq

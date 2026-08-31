@@ -36,7 +36,7 @@ theorem lAction_chart_lsc
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x)
     (hfixb : ∀ n, alpha n b = y)
@@ -105,7 +105,7 @@ theorem lAction_chart_lsc
   let beta : Nat → Real → M := fun n ↦ alpha (phi0 (n + N))
   have hbeta : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (beta n) (Icc a b) :=
     fun n ↦ halpha _
-  have hLagBeta : ∀ n, IntervalIntegrable (lRegLag S T (beta n)) volume a b :=
+  have hLagBeta : ∀ n, IntervalIntegrable (lRegLagrangian S T (beta n)) volume a b :=
     fun n ↦ hLag _
   have hactBeta : ∀ n, lRegAction S T (beta n) a b ≤ A :=
     fun n ↦ hact _
@@ -229,7 +229,7 @@ theorem lAction_liminf
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLag S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
     (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x)
     (hfixb : ∀ n, alpha n b = y)

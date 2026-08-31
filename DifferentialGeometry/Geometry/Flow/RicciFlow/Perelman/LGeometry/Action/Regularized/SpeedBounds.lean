@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Metric.Variation.TimeDerivativeBounds
 
 set_option autoImplicit false
@@ -31,29 +32,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-noncomputable def lRegSpeedSq
-    (S : SolutionOn (I := I) (M := M) D) (T : Real)
-    (alpha : Real → M) (s : Real) : Real :=
-  (S.base.metric (T - s ^ 2)).inner (alpha s)
-    (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)
-
-omit [InnerProductSpace Real E] [FiniteDimensional Real E]
-  [NeZero (Module.finrank Real E)]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegSpeedSq_nonneg
-    (S : SolutionOn (I := I) (M := M) D) (T : Real)
-    (alpha : Real → M) (s : Real) : 0 ≤ lRegSpeedSq S T alpha s := by
-  unfold lRegSpeedSq
-  by_cases hzero : lVelocity (I := I) alpha s = 0
-  · rw [hzero]
-    simp
-  · exact ((S.base.metric (T - s ^ 2)).pos (alpha s) _ hzero).le
-
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegSpeedSq_deriv
+theorem hasDerivAt_lRegSpeedSq
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
     {Z : TangentSpace I x} (halpha : IsLRegCurveOn S T alpha J x Z)
@@ -114,7 +97,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegSpeed_gron
+theorem lRegSpeedSq_le_of_gradient_ricci_bounds
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
     {Z : TangentSpace I x} (halpha : IsLRegCurveOn S T alpha J x Z)
@@ -156,7 +139,7 @@ theorem lRegSpeed_gron
     exact lRegSpeedSq_nonneg (I := I) S T alpha s
   · intro s hs
     simpa only [U, U'] using
-      lRegSpeedSq_deriv (I := I) S hS T halpha (hJ hs)
+      hasDerivAt_lRegSpeedSq (I := I) S hS T halpha (hJ hs)
   · intro s hs
     apply speedDeriv_le (hsR s hs) hR hC
       (lRegSpeedSq_nonneg (I := I) S T alpha s)
@@ -166,7 +149,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegInit_bdd
+theorem lRegInitialVector_inner_le_of_integral_speedSq_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {x : M} {Z : TangentSpace I x}
     (B eps C R K : Real) (hB : 0 < B) (hepsB : eps ≤ B)
@@ -203,7 +186,7 @@ theorem lRegInit_bdd
   have hratio : 0 ≤ d / k := (div_pos hd hk).le
   have hUcont : ContinuousOn U (Set.Icc 0 B) := by
     intro s hs
-    exact (lRegSpeedSq_deriv (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
+    exact (hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
   have hUcont' : ContinuousOn U (Set.uIcc 0 B) := by
     simpa only [Set.uIcc_of_le hB.le] using hUcont
   have hUint : IntervalIntegrable U MeasureTheory.volume 0 B :=
@@ -221,7 +204,7 @@ theorem lRegInit_bdd
       have hrI := hsub hr
       rw [abs_of_nonneg hrI.1]
       exact hrI.2.trans hBR
-    have hgr := lRegSpeed_gron (I := I) S hS T halpha s 0 C R hC hR
+    have hgr := lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha s 0 C R hC hR
       (fun _ hr ↦ hsub hr) hsr
       (fun r hr ↦ hgrad r (hsub hr))
       (fun r hr ↦ hric r (hsub hr))

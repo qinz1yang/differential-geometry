@@ -194,7 +194,7 @@ private theorem lRayAct_smooth
       hcurves q.1 hq.1⟩
   have hlag := (lRayLag_smooth S hS T x).mono hVK
   let G : E → Real → Real := fun W u ↦
-    b * lRegLag S T (lRegCurve S T x (phi W)) (rho (b * u))
+    b * lRegLagrangian S T (lRegCurve S T x (phi W)) (rho (b * u))
   have hG : ContDiffOn Real ∞
       (fun q : E × Real ↦ G q.1 q.2) Set.univ := by
     intro q _hq
@@ -210,7 +210,7 @@ private theorem lRayAct_smooth
       ((hVopen.prod hKopen).mem_nhds hmem)).comp q hpair
     change ContDiffWithinAt Real ∞
       (fun r : E × Real ↦
-        b * lRegLag S T (lRegCurve S T x (phi r.1)) (rho (b * r.2)))
+        b * lRegLagrangian S T (lRegCurve S T x (phi r.1)) (rho (b * r.2)))
       Set.univ q
     exact (contDiffAt_const.mul hcomp).contDiffWithinAt
   let A : E → Real := fun W ↦ ∫ u in (0 : Real)..1, G W u
@@ -241,7 +241,7 @@ private theorem lRayAct_smooth
       exact ⟨ha0.le.trans (mul_nonneg hb0.le hu.1),
         (mul_le_of_le_one_right hb0.le hu.2).trans hbd.le⟩
     have hcongr : A W = ∫ u in (0 : Real)..1,
-        b * lRegLag S T (lRegCurve S T x W) (b * u) := by
+        b * lRegLagrangian S T (lRegCurve S T x W) (b * u) := by
       apply intervalIntegral.integral_congr
       intro u hu
       have hu' : u ∈ Set.Icc (0 : Real) 1 := by
@@ -253,7 +253,7 @@ private theorem lRayAct_smooth
       intervalIntegral.integral_const_mul] using
       (intervalIntegral.smul_integral_comp_mul_left
         (a := (0 : Real)) (b := (1 : Real))
-        (fun s : Real ↦ lRegLag S T (lRegCurve S T x W) s) b)
+        (fun s : Real ↦ lRegLagrangian S T (lRegCurve S T x W) s) b)
   refine ⟨U, hUopen, hZU, ?_⟩
   exact (hA.mono (Set.subset_univ U)).congr fun W hW ↦ (hEq hW).symm
 
@@ -1161,9 +1161,9 @@ theorem lActBranch_touch
   have hlen :
       lLength S T (fun r : Real ↦ lExp S T x Z r) 0 tau =
         lRegAction S T (lRegCurve S T x Z) 0 (Real.sqrt tau) := by
-    change lLength S T (sqrtReparam (lRegCurve S T x Z)) 0 tau =
+    change lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 tau =
       lRegAction S T (lRegCurve S T x Z) 0 (Real.sqrt tau)
-    exact lLength_sqrt (I := I) S T (lRegCurve S T x Z) tau htau
+    exact lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z) tau htau
   change lRegAction S T
       (lRegCurve S T x (hloc.localInverse (lExp S T x Z tau)))
         0 (Real.sqrt tau) = _

@@ -128,7 +128,7 @@ theorem lCost_zero_no_curve
   have hempty : {r : Real | ∃ alpha : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
         alpha 0 = x ∧ alpha (Real.sqrt (b ^ 2)) = y ∧
-        lLength S T (sqrtReparam alpha) 0 (b ^ 2) = r} = ∅ := by
+        lLength S T (squareRootReparametrization alpha) 0 (b ^ 2) = r} = ∅ := by
     ext r
     simp only [mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
     rintro ⟨alpha, halpha, hstart, hend, _hr⟩

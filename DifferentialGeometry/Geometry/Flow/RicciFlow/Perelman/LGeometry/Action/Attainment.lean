@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.GlobalLowerSemicontinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.C1Integrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Density
 
 set_option autoImplicit false
@@ -132,7 +132,7 @@ theorem exists_lRegMinC1
   have hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   let gRef : SmoothRiemannianMetric I M := S.family.metric t0
   obtain ⟨c, C, hc, hcoerc⟩ :=
-    lAction_consts (I := I) S hS T t0 t1 gRef a b hab htime hback
+    exists_lRegAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
   have hcosts_bdd : BddBelow costs := by
     refine ⟨C * (b - a), ?_⟩
     intro r hr
@@ -143,7 +143,7 @@ theorem exists_lRegMinC1
           (lVelocity (I := I) alpha s)) volume a b := by
       apply IntegrableOn.intervalIntegrable
       simpa only [uIcc_of_le hab] using hE
-    have hLag := lRegLag_int_c1 (I := I) S hMet hSc T a b hab alpha
+    have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha
       halpha.contMDiffOn hreg
     have hkin : 0 ≤ ∫ s in a..b, (c / 2) *
         gRef.inner (alpha s) (lVelocity (I := I) alpha s)
@@ -165,8 +165,8 @@ theorem exists_lRegMinC1
         (lVelocity (I := I) (alpha n) s)) (Icc a b) :=
     c1_ref_int (I := I) gRef (alpha n) (halpha n) a b
   have hLag (n : Nat) : IntervalIntegrable
-      (lRegLag S T (alpha n)) volume a b :=
-    lRegLag_int_c1 (I := I) S hMet hSc T a b hab (alpha n)
+      (lRegLagrangian S T (alpha n)) volume a b :=
+    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab (alpha n)
       (halpha n).contMDiffOn hreg
   have hact (n : Nat) : lRegAction S T (alpha n) a b ≤ v 0 := by
     rw [hval n]

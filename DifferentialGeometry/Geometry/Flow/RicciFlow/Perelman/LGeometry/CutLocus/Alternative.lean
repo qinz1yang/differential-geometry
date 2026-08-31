@@ -145,13 +145,13 @@ theorem lCut_alt
           lCost S T x (lExp S T x (W n) (sigma n)) (sigma n) := by
       calc
         lRegAction S T (lRegCurve S T x (W n)) 0 (B n) =
-            lLength S T (sqrtReparam (lRegCurve S T x (W n))) 0
+            lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0
               (sigma n) := by
           simpa only [B] using
-            (lLength_sqrt (I := I) S T (lRegCurve S T x (W n))
+            (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (W n))
               (sigma n) (hsigmaPos n).le).symm
         _ = lCost S T x (lExp S T x (W n) (sigma n)) (sigma n) := by
-          rw [show sqrtReparam (lRegCurve S T x (W n)) =
+          rw [show squareRootReparametrization (lRegCurve S T x (W n)) =
             (fun r ↦ lRegCurve S T x (W n) (Real.sqrt r)) by rfl]
           simpa only [lExp] using hminEq
     have hcostLe := lCost_le_ray (I := I) S hS T x Z (B n)
