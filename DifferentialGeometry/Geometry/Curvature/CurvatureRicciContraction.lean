@@ -173,7 +173,8 @@ theorem curvatureRicciContractionAt_eq_neg_rm04RicciContractionAt
   unfold rm04RicciContractionAt raised02CompAt
   simp only [identityInvMetric, diagonalInvMetric]
   simp_rw [metricRicciAt_apply_eq_ricciTensor]
-  simp [Finset.sum_ite_eq]
+  simp only [mul_ite, mul_one, mul_zero, ite_mul, one_mul, zero_mul,
+    Finset.sum_ite_eq, Finset.mem_univ, reduceIte]
   rw [Finset.sum_comm]
   calc
     (∑ k : Idx, ∑ i : Idx,
