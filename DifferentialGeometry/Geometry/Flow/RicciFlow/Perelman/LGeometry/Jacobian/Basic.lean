@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound
 
 set_option autoImplicit false
@@ -161,7 +162,7 @@ noncomputable def lExpFieldVel
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z V : TangentSpace I x) (tau : Real) :
     TangentSpace I (lExp S T x Z tau) :=
-  lJacobiVel S T (fun q => lExp S T x Z q)
+  lJacobiVelocity S T (fun q => lExp S T x Z q)
     (fun q => lExpField S T x Z V q) tau
 
 noncomputable def lExpSqVel
@@ -275,7 +276,7 @@ theorem lExpSq_pair
     lExpField S T x Z V q
   have hJac : HasLJacobiAt S T gamma Y tau := by
     simpa only [gamma, Y, lExpField] using
-      lExp_jacobi S hS T x Z V tau hpos
+      hasLJacobiAt_lExp S hS T x Z V tau hpos
   with_unfolding_all
     exact sqVel_pair (I := I) (S.base.metric (T - tau)) gamma Y tau
       ((mem_lExpPosDom S T x Z tau).1 hpos).1 hJac.1 hJac.2.1 Q
@@ -496,7 +497,7 @@ theorem lExpGramDeriv_eq
   ext i j
   simp only [lExpGramDeriv, lGramDeriv, lExpVelGram, lExpRicci,
     Matrix.of_apply, Matrix.add_apply, Matrix.transpose_apply,
-    Matrix.smul_apply, lExpFieldVel, lJacobiVel]
+    Matrix.smul_apply, lExpFieldVel, lJacobiVelocity]
   rw [(S.base.metric (T - tau)).symm (lExp S T x Z tau)
     (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
     (covDerivAlong (I := I) (S.base.metric (T - tau))
@@ -783,7 +784,7 @@ theorem lExpDen_hasDeriv
   have hJac (i : Fin (Module.finrank Real E)) :
       HasLJacobiAt S T gamma (Y i) tau := by
     simpa only [gamma, Y, lExpField] using
-      lExp_jacobi S hS T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau hdom
+      hasLJacobiAt_lExp S hS T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau hdom
   have hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma tau :=
     (hJac (Classical.choice inferInstance)).1
   have hY : ∀ i, DifferentiableAt Real

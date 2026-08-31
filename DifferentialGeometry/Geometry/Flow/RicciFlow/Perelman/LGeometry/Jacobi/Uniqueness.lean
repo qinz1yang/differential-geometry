@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SInnerSectionContinuity

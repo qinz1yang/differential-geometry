@@ -410,7 +410,7 @@ theorem lRegAction_second_variation
     D.regular_isOpen.preimage (continuous_const.sub continuous_fst)
   have hQ2 : ContDiffOn Real 2 Q W := by
     simpa only [Q, W, alpha, Y] using
-      lVarMetric_c2 (I := I) S T f hS.smoothMetric hf 0
+      contDiffOn_two_metric_inner_variation_field (I := I) S T f hS.smoothMetric hf 0
   have hdQ : ContDiffOn Real 1 dQ W := by
     have hfd : ContDiffOn Real 1 (fderiv Real Q) W :=
       hQ2.fderiv_of_isOpen hWopen (by norm_num)

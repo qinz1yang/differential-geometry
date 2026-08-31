@@ -3859,6 +3859,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Neg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.NegativeDirectionLeft
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.ExponentialMap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Smoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Uniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.Basic
@@ -3907,7 +3909,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Smo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Reparametrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Scaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second.Formula
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBallCalabi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.ScaledAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.SliceLengthBound

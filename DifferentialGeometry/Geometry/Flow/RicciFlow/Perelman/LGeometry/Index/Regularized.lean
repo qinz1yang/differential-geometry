@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.Second
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Basic
 
 set_option autoImplicit false
 
@@ -189,7 +189,7 @@ theorem lRegIndexInt_sq
       (chartRepAt (I := I) gamma Y (s ^ 2)) (s ^ 2))
     (hW : DifferentiableAt Real
       (chartRepAt (I := I) gamma W (s ^ 2)) (s ^ 2)) :
-    lIndexInt S T gamma Y W (s ^ 2) * (2 * s) =
+    lIndexIntegrand S T gamma Y W (s ^ 2) * (2 * s) =
       lRegIndexInt S T (squareReparametrization gamma)
         (fun r ↦ Y (r ^ 2)) (fun r ↦ W (r ^ 2)) s := by
   classical
@@ -349,7 +349,7 @@ theorem lRegIndexInt_sq
   have hNreg2 : Nreg2 = c * N2 := by
     dsimp only [Nreg2]
     rw [hAs, hN2]
-  simp only [lIndexInt, lRegIndexInt]
+  simp only [lIndexIntegrand, lRegIndexInt]
   change Real.sqrt tau *
       (Inn - R + (1 / 2 : Real) * Hess + N0 - N1 - N2) * (2 * s) =
     (1 / 2 : Real) * (InnReg - Rreg) + s ^ 2 * Hess +
@@ -378,7 +378,7 @@ theorem lIndex_sq
         (Real.sqrt tau1) (Real.sqrt tau2) := by
   have hsub :=
     intervalIntegral.integral_comp_mul_deriv_of_deriv_nonneg
-      (g := lIndexInt S T gamma Y W) (f := fun s : Real ↦ s ^ 2)
+      (g := lIndexIntegrand S T gamma Y W) (f := fun s : Real ↦ s ^ 2)
       (f' := fun s : Real ↦ 2 * s)
       (a := Real.sqrt tau1) (b := Real.sqrt tau2)
       (continuous_id.pow 2).continuousOn
@@ -392,13 +392,13 @@ theorem lIndex_sq
         exact mul_nonneg (by norm_num) (hmin.trans hs.1.le))
   have hsub' :
       (∫ s in Real.sqrt tau1..Real.sqrt tau2,
-        (lIndexInt S T gamma Y W ∘ fun r : Real ↦ r ^ 2) s *
+        (lIndexIntegrand S T gamma Y W ∘ fun r : Real ↦ r ^ 2) s *
           (2 * s)) =
-        ∫ tau in tau1..tau2, lIndexInt S T gamma Y W tau := by
+        ∫ tau in tau1..tau2, lIndexIntegrand S T gamma Y W tau := by
     simpa only [Real.sq_sqrt htau1, Real.sq_sqrt htau2] using hsub
   have hcongr :
       (∫ s in Real.sqrt tau1..Real.sqrt tau2,
-        (lIndexInt S T gamma Y W ∘ fun r : Real ↦ r ^ 2) s *
+        (lIndexIntegrand S T gamma Y W ∘ fun r : Real ↦ r ^ 2) s *
           (2 * s)) =
         ∫ s in Real.sqrt tau1..Real.sqrt tau2,
           lRegIndexInt S T (squareReparametrization gamma)
