@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.NegativeDirectionLeft
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.JacobiCrossTerm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.VariationExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.CurvatureBoundedMinimizer
@@ -353,7 +355,7 @@ private theorem tailEnd_injective
     rw [sub_zero] at hWc
     with_unfolding_all exact hWc
   have hYW : lRegIndex S T beta Y W s0 b < 0 :=
-    lIndex_cross_neg (I := I) S hS T beta Y W s0 b hs00 hs0b
+    lRegIndex_cross_neg_of_isLRegJacobi (I := I) S hS T beta Y W s0 b hs00 hs0b
       hregs0b hbetaMdiff hA hJacTail hWdiff hYWInt hWb
       (by with_unfolding_all exact hWc')
       (by simpa only [P] using hDYne)
@@ -387,7 +389,8 @@ private theorem tailEnd_injective
   have hWgdiff : ∀ s ∈ uIcc s0 b,
       DifferentiableAt Real (chartRepAt (I := I) gammaG W s) s :=
     fun s _ ↦ chartRep_diff (I := I) gammaG W hWsmooth s
-  obtain ⟨k, hk⟩ := exists_lSplit_left (I := I) S T gammaG Yg W
+  obtain ⟨k, hk⟩ := exists_lRegIndex_split_lt_zero_of_cross_neg
+    (I := I) S T gammaG Yg W
     0 s0 b hYgdiff hWgdiff hYYgInt hYWgInt hWW0s hWWs0b
     (hYYeq ▸ hYY) (hYWeq ▸ hYW)
   let Y0 : Real → E := fun s ↦ k • W s

@@ -384,7 +384,7 @@ theorem lMinVec_nconj_lt
     Real.sqrt_lt_sqrt hspos.le hlt
   obtain ⟨gamma, Y0, Y1, hEq, hgeo, hY0, hY1,
       hY0zero, hY1zero, hnode, hneg⟩ :=
-    lIndex_neg_conj (I := I) S hS T x Z htau hlt hconj
+    exists_lRegIndex_split_lt_zero_of_isLConj (I := I) S hS T x Z htau hlt hconj
   have hminGamma : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta 0 = gamma 0 →

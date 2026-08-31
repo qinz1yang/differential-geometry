@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SInnerSectionContinuity
 import DifferentialGeometry.Analysis.ODE.Flow.SolutionOperator
+import DifferentialGeometry.Geometry.Comparison.Variation.VelocityLocal
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 
 set_option autoImplicit false
 
@@ -19,6 +21,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor0SBundle
@@ -528,5 +531,111 @@ theorem lRegJacobi_unique
     · exact hclosed
   intro s hs
   exact TotalSpace.mk_inj.mp (congrArg Prod.fst (hsub hs).1)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [InnerProductSpace Real E] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem covDerivAlong_lRegJacobiField_ne_zero
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
+    (Z V : TangentSpace I x) {c : Real}
+    (hcpos : 0 < c) (hc : c ∈ lRegDomain S T x Z)
+    (hV : V ≠ 0)
+    (hzero : lRegJacobiField S T x Z V c = 0) :
+    covDerivAlong (I := I) (S.base.metric (T - c ^ 2))
+        (lRegCurve S T x Z) (lRegJacobiField S T x Z V) c ≠ 0 := by
+  intro hDc
+  let alpha : Real → M := lRegCurve S T x Z
+  let Y : ∀ s, TangentSpace I (alpha s) :=
+    lRegJacobiField S T x Z V
+  let J : Set Real := lRegDomain S T x Z
+  have hJopen : IsOpen J := lRegDomain_isOpen S T x Z
+  have hJconn : IsPreconnected J := lRegDomain_preconn S T x Z
+  have hcJ : c ∈ J := hc
+  have h0J : (0 : Real) ∈ J := by
+    exact lRegDomain_seg S T x Z hc le_rfl hcpos.le
+  have hreg : ∀ s ∈ J, T - s ^ 2 ∈ D.regular := by
+    intro s hs
+    exact lRegDomain_reg S T x Z hs
+  let z : E := Z
+  have hvel : ∀ s ∈ J, DifferentiableAt Real
+      (chartRepAt (I := I) alpha
+        (fun r ↦ lVelocity (I := I) alpha r) s) s := by
+    intro s hs
+    have hpair : ContMDiffAt 𝓘(Real, Real)
+        (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
+        (fun r : Real ↦ (z, r)) s :=
+      (contMDiff_const.prodMk contMDiff_id).contMDiffAt
+    have hcurve : ContMDiffAt 𝓘(Real, Real) I ∞
+        (lRegCurve S T x Z) s := by
+      with_unfolding_all exact (lRegCurve_smooth S hS T x hs).comp s hpair
+    simpa only [alpha, lVelocity] using
+      velocity_rep_diffAt (I := I) (lRegCurve S T x Z) s
+        hcurve
+  have hY : IsLRegJacobi S T alpha Y J := by
+    exact lRegCurve_jacobi S hS T x Z V J (fun _ hs ↦ hs)
+  have hYsub : IsLRegJacobi S T alpha (fun r ↦ Y r - Y r) J :=
+    hY.sub hJopen hY
+  let g := S.base.metric (T - c ^ 2)
+  have hYdiff : DifferentiableAt Real
+      (chartRepAt (I := I) alpha Y c) c :=
+    (hY c hcJ).2.1
+  have hnegdiff : DifferentiableAt Real
+      (chartRepAt (I := I) alpha (fun r ↦ (-1 : Real) • Y r) c) c := by
+    rw [chartRepAt_smul]
+    exact hYdiff.const_smul (-1 : Real)
+  have hDsub : covDerivAlong (I := I) g alpha
+      (fun r ↦ Y r - Y r) c = 0 := by
+    rw [show (fun r ↦ Y r - Y r) =
+      (fun r ↦ Y r + (-1 : Real) • Y r) by
+        funext r
+        module]
+    rw [covDerivAlong_add (I := I) g alpha Y
+      (fun r ↦ (-1 : Real) • Y r) c hYdiff hnegdiff,
+      covDerivAlong_smul]
+    module
+  have hfieldc : Y c = Y c - Y c := by
+    dsimp only [Y]
+    rw [hzero]
+    simp
+  have hDc' : covDerivAlong (I := I) g alpha Y c = 0 := by
+    simpa only [g, alpha, Y] using hDc
+  have heq : Set.EqOn Y (fun r ↦ Y r - Y r) J :=
+    lRegJacobi_unique S hS T hJopen hJconn hcJ hreg hvel hY hYsub
+      hfieldc (hDc'.trans hDsub.symm)
+  have hzeroOn : ∀ s ∈ J, Y s = 0 := by
+    intro s hs
+    have hsEq := heq hs
+    rw [hsEq]
+    exact sub_self _
+  have hEv : Y =ᶠ[𝓝 (0 : Real)]
+      fun r ↦ (0 : TangentSpace I (alpha r)) := by
+    filter_upwards [hJopen.mem_nhds h0J] with s hs
+    exact hzeroOn s hs
+  let g0 := S.base.metric T
+  have hDEq : covDerivAlong (I := I) g0 alpha Y 0 =
+      covDerivAlong (I := I) g0 alpha
+        (fun r ↦ (0 : TangentSpace I (alpha r))) 0 :=
+    covDerivAlong_congr_of_eventuallyEq (I := I) g0 alpha hEv
+  have hDzero : covDerivAlong (I := I) g0 alpha
+      (fun r ↦ (0 : TangentSpace I (alpha r))) 0 = 0 := by
+    rw [show (fun r ↦ (0 : TangentSpace I (alpha r))) =
+      (fun r ↦ (0 : Real) • Y r) by
+        funext r
+        simp]
+    rw [covDerivAlong_smul]
+    simp
+  have hDY0 : covDerivAlong (I := I) g0 alpha Y 0 = 0 :=
+    hDEq.trans hDzero
+  have hT : T ∈ D.regular := by
+    simpa using hreg 0 h0J
+  have hinit := lRegJacobi_d0 S hS T x Z V hT
+  have hDY0' : covDerivAlong (I := I) (S.base.metric T)
+      (lRegCurve S T x Z) (lRegJacobiField S T x Z V) 0 = 0 := by
+    simpa only [g0, alpha, Y] using hDY0
+  have htwo : (2 : Real) • V = 0 := hinit.symm.trans hDY0'
+  have htwo_ne : (2 : Real) ≠ 0 := by norm_num
+  exact hV ((smul_eq_zero.mp htwo).resolve_left htwo_ne)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

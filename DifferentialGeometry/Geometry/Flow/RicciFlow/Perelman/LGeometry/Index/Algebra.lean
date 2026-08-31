@@ -532,4 +532,127 @@ theorem lRegIndex_add_smul_self
       rw [intervalIntegral.integral_const_mul,
         intervalIntegral.integral_const_mul]
 
+private theorem exists_neg_scale {k Q : Real} (hk : 0 < k) :
+    ∃ s : Real, 2 * s * k + s ^ 2 * Q < 0 := by
+  have hden : 0 < |Q| + 1 := by positivity
+  let s : Real := -k / (|Q| + 1)
+  have hsneg : s < 0 :=
+    div_neg_of_neg_of_pos (neg_neg_of_pos hk) hden
+  have hsQ : |s * Q| < k := by
+    simp only [s]
+    rw [abs_mul, abs_div, abs_neg, abs_of_pos hk, abs_of_pos hden,
+      div_mul_eq_mul_div, div_lt_iff₀ hden]
+    nlinarith [abs_nonneg Q]
+  have hsum : 0 < 2 * k + s * Q := by
+    linarith [(abs_lt.mp hsQ).1]
+  refine ⟨s, ?_⟩
+  calc
+    2 * s * k + s ^ 2 * Q = s * (2 * k + s * Q) := by ring
+    _ < 0 := mul_neg_of_neg_of_pos hsneg hsum
+
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
+theorem exists_lRegIndex_split_lt_zero_of_cross_pos
+    (S : SolutionOn (I := I) (M := M) D) (T : Real)
+    (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
+    (a c b : Real)
+    (hY : ∀ s ∈ Set.uIcc a c,
+      DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
+    (hW : ∀ s ∈ Set.uIcc a c,
+      DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
+    (hYYint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y Y)
+      MeasureTheory.volume a c)
+    (hYWint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
+      MeasureTheory.volume a c)
+    (hWWac : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
+      MeasureTheory.volume a c)
+    (hWWcb : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
+      MeasureTheory.volume c b)
+    (hYY : lRegIndex S T alpha Y Y a c = 0)
+    (hYW : 0 < lRegIndex S T alpha Y W a c) :
+    ∃ k : Real,
+      lRegIndex S T alpha (fun s ↦ Y s + k • W s)
+          (fun s ↦ Y s + k • W s) a c +
+        lRegIndex S T alpha (fun s ↦ k • W s)
+          (fun s ↦ k • W s) c b < 0 := by
+  let Q := lRegIndex S T alpha W W a b
+  obtain ⟨k, hk⟩ := exists_neg_scale hYW (Q := Q)
+  refine ⟨k, ?_⟩
+  have hprefix := lRegIndex_add_smul_self (I := I) S T k alpha Y W a c hY hW
+    hYYint hYWint hWWac
+  have htail : lRegIndex S T alpha (fun s ↦ k • W s)
+      (fun s ↦ k • W s) c b =
+      k ^ 2 * lRegIndex S T alpha W W c b := by
+    rw [lRegIndex_smul (I := I) S T k alpha W
+        (fun s ↦ k • W s) c b,
+      lRegIndex_smul_right (I := I) S T k alpha W W c b]
+    ring
+  have hjoin := lRegIndex_add_adjacent (I := I) S T alpha W W a c b hWWac hWWcb
+  rw [hprefix, htail, hYY, zero_add]
+  dsimp only [Q] at hk
+  rw [← hjoin] at hk
+  nlinarith
+
+private theorem exists_pos_scale {h Q : Real} (hh : h < 0) :
+    ∃ k : Real, 2 * k * h + k ^ 2 * Q < 0 := by
+  have hden : 0 < |Q| + 1 := by positivity
+  let k : Real := -h / (|Q| + 1)
+  have hkpos : 0 < k := div_pos (neg_pos.mpr hh) hden
+  have hkQ : |k * Q| < -h := by
+    simp only [k]
+    rw [abs_mul, abs_div, abs_neg, abs_of_neg hh,
+      abs_of_pos hden, div_mul_eq_mul_div, div_lt_iff₀ hden]
+    nlinarith [abs_nonneg Q]
+  have hsum : 2 * h + k * Q < 0 := by
+    linarith [(abs_lt.mp hkQ).2]
+  refine ⟨k, ?_⟩
+  calc
+    2 * k * h + k ^ 2 * Q = k * (2 * h + k * Q) := by ring
+    _ < 0 := mul_neg_of_pos_of_neg hkpos hsum
+
+omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
+  [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
+theorem exists_lRegIndex_split_lt_zero_of_cross_neg
+    (S : SolutionOn (I := I) (M := M) D) (T : Real)
+    (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
+    (a c b : Real)
+    (hY : ∀ s ∈ uIcc c b,
+      DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
+    (hW : ∀ s ∈ uIcc c b,
+      DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
+    (hYYint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y Y)
+      MeasureTheory.volume c b)
+    (hYWint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
+      MeasureTheory.volume c b)
+    (hWWac : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
+      MeasureTheory.volume a c)
+    (hWWcb : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
+      MeasureTheory.volume c b)
+    (hYY : lRegIndex S T alpha Y Y c b = 0)
+    (hYW : lRegIndex S T alpha Y W c b < 0) :
+    ∃ k : Real,
+      lRegIndex S T alpha (fun s ↦ k • W s)
+          (fun s ↦ k • W s) a c +
+        lRegIndex S T alpha (fun s ↦ Y s + k • W s)
+          (fun s ↦ Y s + k • W s) c b < 0 := by
+  let Q := lRegIndex S T alpha W W a b
+  obtain ⟨k, hk⟩ := exists_pos_scale hYW (Q := Q)
+  refine ⟨k, ?_⟩
+  have htail := lRegIndex_add_smul_self (I := I) S T k alpha Y W c b hY hW
+    hYYint hYWint hWWcb
+  have hprefix : lRegIndex S T alpha (fun s ↦ k • W s)
+      (fun s ↦ k • W s) a c =
+      k ^ 2 * lRegIndex S T alpha W W a c := by
+    rw [lRegIndex_smul (I := I) S T k alpha W
+        (fun s ↦ k • W s) a c,
+      lRegIndex_smul_right (I := I) S T k alpha W W a c]
+    ring
+  have hjoin := lRegIndex_add_adjacent (I := I) S T alpha W W a c b hWWac hWWcb
+  rw [hprefix, htail, hYY, zero_add]
+  dsimp only [Q] at hk
+  rw [← hjoin] at hk
+  nlinarith
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
