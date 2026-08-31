@@ -28,6 +28,24 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
+private local instance smoothScalarDirichletBilinearSeminormed
+    {q : SmoothRiemannianMetric (I_half n) M} :
+    SeminormedAddCommGroup
+      (SmoothScalarDirichlet q →L[ℝ] SmoothScalarDirichlet q →L[ℝ] ℝ) :=
+  @ContinuousLinearMap.toSeminormedAddCommGroup ℝ ℝ
+    (SmoothScalarDirichlet q) (SmoothScalarDirichlet q →L[ℝ] ℝ)
+    inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
+    (RingHom.id ℝ) inferInstance
+
+private local instance h1ComplDirichletBilinearSeminormed
+    {q : SmoothRiemannianMetric (I_half n) M} :
+    SeminormedAddCommGroup
+      (H1ComplDirichlet q →L[ℝ] H1ComplDirichlet q →L[ℝ] ℝ) :=
+  @ContinuousLinearMap.toSeminormedAddCommGroup ℝ ℝ
+    (H1ComplDirichlet q) (H1ComplDirichlet q →L[ℝ] ℝ)
+    inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
+    (RingHom.id ℝ) inferInstance
+
 noncomputable def dirichletMassLp
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)

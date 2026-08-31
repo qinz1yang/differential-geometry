@@ -2,6 +2,7 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.Normed.Group.Continuity
 import Mathlib.Analysis.Normed.Module.Completion
 import Mathlib.Analysis.Normed.Operator.Basic
+import Mathlib.Analysis.Normed.Operator.Bilinear
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable
 import Mathlib.Topology.DenseEmbedding
