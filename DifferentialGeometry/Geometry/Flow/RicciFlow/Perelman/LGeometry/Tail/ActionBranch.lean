@@ -1028,7 +1028,8 @@ theorem exists_lCost_support
   have hs0b' : s0 < b := by simpa only [b] using hs0b
   obtain ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, hs0K,
       hbK, alpha, halpha, hcurves, hinj⟩ :=
-    exists_lTail_inj (E := EM) (I := IM) S hS K T x hmin hreg hRm
+    exists_lRegGeodesicFamily_with_injective_endpoint_mfderiv
+      (E := EM) (I := IM) S hS K T x hmin hreg hRm
       hs00 hs0b
   have hbdom : b ∈ lRegDomain S T x Z := by
     have hpos : (Z, tau) ∈ lExpPosDom S T x :=
@@ -1046,15 +1047,7 @@ theorem exists_lCost_support
     simpa only [J] using
       lRegDomain_seg S T x Z hbdom hs00.le hs0b'.le
   have hbJ : b ∈ J := by simpa only [J] using hbdom
-  have hgamma : ∀ r ∈ J,
-      T - r ^ 2 ∈ DM.regular ∧
-        MDifferentiableAt 𝓘(Real, Real) IM gamma r ∧
-        DifferentiableAt Real
-          (chartRepAt (I := IM) gamma
-            (fun q : Real ↦ lVelocity (I := IM) gamma q) r) r ∧
-        covDerivAlong (I := IM) (S.base.metric (T - r ^ 2)) gamma
-            (fun q : Real ↦ lVelocity (I := IM) gamma q) r =
-          lRegAccel S T r (gamma r) (lVelocity (I := IM) gamma r) := by
+  have hgamma : IsLRegGeodesicOn S T gamma J := by
     intro r hr
     have hrdom : r ∈ lRegDomain S T x Z := by simpa only [J] using hr
     obtain ⟨L, hLopen, hLconn, h0L, hrL, hchosen⟩ :=

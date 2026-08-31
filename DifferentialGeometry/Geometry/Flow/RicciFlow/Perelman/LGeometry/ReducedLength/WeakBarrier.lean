@@ -176,7 +176,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       (by simpa only [gamma, kval] using lKTail_tendsto S hS T x Z hb hbdom)
   obtain ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, haK, hbK,
       alpha, halpha, hcurves, hinj⟩ :=
-    exists_lTail_inj (E := E) (I := I) S hS K T x hZmin hregTau hRmTau
+    exists_lRegGeodesicFamily_with_injective_endpoint_mfderiv
+      (E := E) (I := I) S hS K T x hZmin hregTau hRmTau
       ha0 (by simpa only [b] using hab)
   let x0 : M := gamma a
   let A0 : TangentSpace I x0 := lVelocity (I := I) gamma a

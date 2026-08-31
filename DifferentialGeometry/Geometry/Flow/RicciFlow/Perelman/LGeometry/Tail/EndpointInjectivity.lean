@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
+import DifferentialGeometry.Geometry.Comparison.Variation.AffineParameter
+import DifferentialGeometry.Geometry.Comparison.Variation.SmoothCurveGerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.JacobiCrossTerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
@@ -23,71 +24,6 @@ open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Tensor0SBundle
 
 universe u uE uH
-
-section
-
-variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
-variable {H : Type uH} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
-variable {D : RealTimeInterval}
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lTailLine_smooth
-    {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 B : E}
-    (hVopen : IsOpen V) (hA0V : A0 ∈ V) (hKopen : IsOpen K)
-    (halpha : ContMDiffOn
-      (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (V ×ˢ K)) :
-    ContMDiffOn 𝓘(Real, Real) I.tangent ∞
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (alpha (A0, s))
-          (lVelocity (I := I)
-            (fun u : Real ↦ alpha (A0 + u • B, s)) 0) :
-          TangentBundle I M)) K := by
-  let f : Real → Real → M := fun u s ↦ alpha (A0 + u • B, s)
-  have hf : ∀ s ∈ K, ContMDiffAt
-      (𝓘(Real, Real).prod 𝓘(Real, Real)) I ∞
-      (fun p : Real × Real ↦ f p.1 p.2) (0, s) := by
-    intro s hs
-    have hparam : ContMDiffAt
-        (𝓘(Real, Real).prod 𝓘(Real, Real))
-        (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
-        (fun p : Real × Real ↦ (A0 + p.1 • B, p.2)) (0, s) :=
-      ((contMDiff_const.add
-        (contMDiff_fst.smul contMDiff_const)).prodMk
-          contMDiff_snd).contMDiffAt
-    have halphaAt : ContMDiffAt
-        (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (A0, s) :=
-      (halpha (A0, s) ⟨hA0V, hs⟩).contMDiffAt
-        ((hVopen.prod hKopen).mem_nhds ⟨hA0V, hs⟩)
-    have hcomp := halphaAt.comp_of_eq hparam (by
-      simp only [zero_smul, add_zero])
-    rw [show (alpha ∘ fun p : Real × Real ↦ (A0 + p.1 • B, p.2)) =
-      (fun p : Real × Real ↦ alpha (A0 + p.1 • B, p.2)) by rfl] at hcomp
-    exact hcomp
-  have hsmooth := varField_smoothOn (I := I) f hf
-  have heq : (fun s : Real ↦
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (alpha (A0, s))
-          (lVelocity (I := I)
-            (fun u : Real ↦ alpha (A0 + u • B, s)) 0) :
-          TangentBundle I M)) =
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (f 0 s)
-          (mfderiv 𝓘(Real, Real) I (fun u : Real ↦ f u s) 0 (1 : Real)) :
-          TangentBundle I M)) := by
-    funext s
-    dsimp only [f, lVelocity]
-    rw [zero_smul, add_zero]
-  rw [heq]
-  exact hsmooth
-
-end
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -135,9 +71,9 @@ private theorem tailEnd_injective
       (fun s : Real ↦
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (beta s) (Y s) : TangentBundle I M)) K := by
-    simpa only [beta, Y] using
-      lTailLine_smooth (I := I) hVopen hA0V hKopen halpha
-  have hlineJac := lTailLine_jacobi (I := I) (B := B) S T (gamma s0)
+    simpa only [beta, Y, lVelocity] using
+      contMDiffOn_affine_variationField (I := I) hVopen hA0V hKopen halpha
+  have hlineJac := isLRegJacobi_affine_parameter (I := I) (B := B) S T (gamma s0)
     hVopen hA0V hKopen halpha
     (fun A hA ↦ (hcurves A hA).1)
     (fun A hA r hr ↦ (hcurves A hA).2.2 r hr |>.2.2.2)
@@ -154,15 +90,16 @@ private theorem tailEnd_injective
     (halpha (A0, b) ⟨hA0V, hbK⟩).contMDiffAt
       ((hVopen.prod hKopen).mem_nhds ⟨hA0V, hbK⟩)
   have hYb : Y b = 0 := by
-    have hline := lTailLine_deriv (I := I) A0 B b halphaB
-    simpa only [Y, hline] using hB
+    have hline := mfderiv_affine_parameter (I := I) A0 B b halphaB
+    simpa only [Y, lVelocity, hline] using hB
   have halphaS0 : ContMDiffAt
       (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (A0, s0) :=
     (halpha (A0, s0) ⟨hA0V, hs0K⟩).contMDiffAt
       ((hVopen.prod hKopen).mem_nhds ⟨hA0V, hs0K⟩)
   have hDY : covDerivAlong (I := I) (S.base.metric (T - s0 ^ 2))
       beta Y s0 = B := by
-    simpa only [beta, Y] using lTailLine_dstart (I := I)
+    simpa only [beta, Y, lVelocity] using
+      covDerivAlong_affine_variationField_at_fixed_start (I := I)
       (S.base.metric (T - s0 ^ 2)) (gamma s0)
       hVopen hA0V halphaS0
       (fun A hA ↦ (hcurves A hA).1)
@@ -173,7 +110,8 @@ private theorem tailEnd_injective
     exact hBne
   obtain ⟨rho, a, d, ha0, hbd, _hrho, hrhoEq, _hrhoDeriv,
       _hrhoRange, hpairSmooth, _hpairEq⟩ :=
-    exists_lTail_germ (I := I) hKopen (show 0 < b from hs00.trans hs0b)
+    exists_contMDiff_tangentCurve_reparametrization (I := I) hKopen
+      (show 0 < b from hs00.trans hs0b)
       hsegK hlineSmooth
   let gammaG : Real → M := fun s ↦ beta (rho s)
   let Yg : (s : Real) → TangentSpace I (gammaG s) := fun s ↦ Y (rho s)
@@ -436,7 +374,7 @@ private theorem tailEnd_injective
   exact not_lt_of_ge hnonneg hk'
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem exists_lTail_inj
+theorem exists_lRegGeodesicFamily_with_injective_endpoint_mfderiv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (K T : Real) (x : M)
     {Z : TangentSpace I x} {tau s0 : Real}

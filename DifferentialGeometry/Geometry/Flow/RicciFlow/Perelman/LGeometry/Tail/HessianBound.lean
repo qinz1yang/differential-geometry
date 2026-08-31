@@ -5,6 +5,8 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.AffineParameter
+import DifferentialGeometry.Geometry.Comparison.Variation.SmoothCurveGerm
 import DifferentialGeometry.Analysis.Calculus.SmoothClamp
 
 set_option autoImplicit false
@@ -633,10 +635,10 @@ theorem lTail_hess_le
       (fun s : Real ↦
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (beta s) (J s) : TangentBundle I M)) K := by
-    simpa only [beta, J] using
-      lTailLine_smooth (I := I) (B := B)
+    simpa only [beta, J, lVelocity] using
+      contMDiffOn_affine_variationField (I := I) (B := B)
         hVopen hA0V hKopen halpha
-  have hlineJac := lTailLine_jacobi (I := I) (B := B) S T (beta a)
+  have hlineJac := isLRegJacobi_affine_parameter (I := I) (B := B) S T (beta a)
     hVopen hA0V hKopen halpha
     (by simpa only [beta] using hstart) hEuler
   have hJacK : IsLRegJacobi S T beta J K := by
@@ -653,7 +655,7 @@ theorem lTail_hess_le
     (halpha (A0, b) ⟨hA0V, hbK⟩).contMDiffAt
       ((hVopen.prod hKopen).mem_nhds ⟨hA0V, hbK⟩)
   have hJb : J b = Y := by
-    have hline := lTailLine_deriv (I := I) A0 B b halphaB
+    have hline := mfderiv_affine_parameter (I := I) A0 B b halphaB
     have hright :=
       (hloc.mfderivToContinuousLinearEquiv (by simp)).right_inv Y
     change lVelocity (I := I)
@@ -661,7 +663,7 @@ theorem lTail_hess_le
     have hline' : lVelocity (I := I)
         (fun u : Real ↦ alpha (A0 + u • B, b)) 0 =
       mfderiv 𝓘(Real, E) I (fun W : E ↦ alpha (W, b)) A0 B := by
-      simpa only [zero_smul, add_zero] using hline
+      simpa only [lVelocity, zero_smul, add_zero] using hline
     rw [hline']
     change mfderiv 𝓘(Real, E) I (fun W : E ↦ alpha (W, b)) A0
       (mfderiv I 𝓘(Real, E) hloc.localInverse (alpha (A0, b)) Y) = Y at hright
@@ -678,7 +680,8 @@ theorem lTail_hess_le
     exact ⟨hsegK hs, hOmegaSeg hs⟩
   obtain ⟨rho, lo, hi, hlo0, hbhi, hrho, hrhoEq, _hrhoDeriv,
       hrhoRange, hJgSmooth, _hpairEq⟩ :=
-    exists_lTail_germ (I := I) (hKopen.inter hOmega) hb0 hsegInter
+    exists_contMDiff_tangentCurve_reparametrization (I := I)
+      (hKopen.inter hOmega) hb0 hsegInter
       (hlineSmooth.mono inter_subset_left)
   let gammaG : Real → M := fun s ↦ beta (rho s)
   let Jg : (s : Real) → TangentSpace I (gammaG s) := fun s ↦ J (rho s)
@@ -992,7 +995,7 @@ theorem lTail_hess_le
     change mfderiv 𝓘(Real, E) I
         (fun A : E ↦ alpha (A, s)) A0 B =
       lVelocity (I := I) (fun u : Real ↦ alpha (A0 + u • B, s)) 0
-    exact (lTailLine_deriv (I := I) A0 B s hAlphaAt).symm
+    exact (mfderiv_affine_parameter (I := I) A0 B s hAlphaAt).symm
   have hcovEq : covDerivAlong (I := I) g beta Jm b =
       covDerivAlong (I := I) g beta J b :=
     covDerivAlong_congr_of_eventuallyEq (I := I) g beta hJmEq

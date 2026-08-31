@@ -968,6 +968,89 @@ theorem covDerivAlong_expand {ι : Type*} (g : SmoothRiemannianMetric I M) (γ :
 
 end CovariantDerivativeAlong
 
+open CovariantDerivativeAlong
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem chartRep_congr_curve
+    {γ γ' : ℝ → M}
+    (V : ∀ s : ℝ, TangentSpace I (γ s))
+    (V' : ∀ s : ℝ, TangentSpace I (γ' s)) {t : ℝ}
+    (hγ : γ =ᶠ[𝓝 t] γ')
+    (hV : ∀ᶠ s in 𝓝 t, (V s : E) = (V' s : E)) :
+    chartRepAt (I := I) γ V t =ᶠ[𝓝 t] chartRepAt (I := I) γ' V' t := by
+  have hfoot : γ t = γ' t := hγ.eq_of_nhds
+  have hkey : ∀ (x y : M), x = y →
+      ∀ (v : TangentSpace I x) (v' : TangentSpace I y),
+        (v : E) = (v' : E) →
+        (trivializationAt E (TangentSpace I) (γ' t)).continuousLinearMapAt ℝ x v =
+          (trivializationAt E (TangentSpace I) (γ' t)).continuousLinearMapAt ℝ y v' := by
+    intro x y hxy
+    subst hxy
+    intro v v' hvv'
+    have hvv : v = v' := hvv'
+    rw [hvv]
+  filter_upwards [hγ, hV] with s hsγ hsV
+  rw [chartRepAt_apply, chartRepAt_apply, hfoot]
+  exact hkey _ _ hsγ _ _ hsV
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem covDerivAlong_congr_curve
+    (g : SmoothRiemannianMetric I M) {γ γ' : ℝ → M}
+    (V : ∀ s : ℝ, TangentSpace I (γ s))
+    (V' : ∀ s : ℝ, TangentSpace I (γ' s)) {t : ℝ}
+    (hγ : γ =ᶠ[𝓝 t] γ')
+    (hV : ∀ᶠ s in 𝓝 t, (V s : E) = (V' s : E)) :
+    (covDerivAlong (I := I) g γ V t : E) =
+      (covDerivAlong (I := I) g γ' V' t : E) := by
+  have hfoot : γ t = γ' t := hγ.eq_of_nhds
+  have hcurve : chartCurve (I := I) (γ' t) γ =ᶠ[𝓝 t]
+      chartCurve (I := I) (γ' t) γ' := by
+    filter_upwards [hγ] with s hs
+    simp only [chartCurve_def]
+    rw [hs]
+  have hrep : chartRepAt (I := I) γ V t =ᶠ[𝓝 t]
+      chartRepAt (I := I) γ' V' t :=
+    chartRep_congr_curve (I := I) V V' hγ hV
+  rw [covDerivAlong_def, covDerivAlong_def]
+  rw [show (trivializationAt E (TangentSpace I) (γ t)).symmL ℝ (γ t) =
+        (trivializationAt E (TangentSpace I) (γ' t)).symmL ℝ (γ' t) from by
+      rw [hfoot]]
+  rw [show γ t = γ' t from hfoot]
+  congr 1
+  rw [chartCovDerivAlong_def, chartCovDerivAlong_def]
+  rw [hrep.deriv_eq, hrep.eq_of_nhds, hcurve.deriv_eq, hcurve.eq_of_nhds]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem covDerivAlong_const
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (V : ℝ → TangentSpace I p) (t : ℝ)
+    (hV : DifferentiableAt ℝ (fun s ↦ (V s : E)) t) :
+    (covDerivAlong (I := I) g (fun _ : ℝ ↦ p) V t : E) =
+      deriv (fun s ↦ (V s : E)) t := by
+  classical
+  let L : TangentSpace I p →L[ℝ] E :=
+    (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ p
+  have hrep : chartRepAt (I := I) (fun _ : ℝ ↦ p) V t =
+      fun s : ℝ ↦ L (V s) := by
+    funext s
+    rw [chartRepAt_apply]
+  have hcurve_deriv : deriv (chartCurve (I := I) p (fun _ : ℝ ↦ p)) t = 0 := by
+    have hc : chartCurve (I := I) p (fun _ : ℝ ↦ p) =
+        fun _ : ℝ ↦ extChartAt I p p := by
+      funext s
+      rw [chartCurve_def]
+    rw [hc]
+    exact deriv_const t _
+  have hsecderiv : HasDerivAt (fun s : ℝ ↦ L (V s))
+      (L (deriv (fun s ↦ (V s : E)) t)) t :=
+    L.hasFDerivAt.comp_hasDerivAt t hV.hasDerivAt
+  have hmem : p ∈ (trivializationAt E (TangentSpace I) p).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) p
+  rw [covDerivAlong_def, chartCovDerivAlong_def, hrep, hcurve_deriv,
+    chartChristoffelContraction_zero_left, add_zero, hsecderiv.deriv]
+  exact (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt
+    (R := ℝ) hmem (deriv (fun s ↦ (V s : E)) t)
+
 end Riemannian
 end Geometry
 end DifferentialGeometry

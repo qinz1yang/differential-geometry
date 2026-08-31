@@ -1976,6 +1976,7 @@ import DifferentialGeometry.Geometry.Comparison.RadialLaplacian
 import DifferentialGeometry.Geometry.Comparison.RadialSurjectivity
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
+import DifferentialGeometry.Geometry.Comparison.Variation.AffineParameter
 import DifferentialGeometry.Geometry.Comparison.Variation.CartanTransfer
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantCommutationCurvature
