@@ -23,6 +23,7 @@ import DifferentialGeometry.Analysis.Calculus.MapConvergenceAlgebra
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDiagonal
 import DifferentialGeometry.Analysis.Calculus.QuadraticEvaluationConvergence
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
+import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
@@ -2796,6 +2797,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Boun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TracefreeRicciPullback
 import DifferentialGeometry.Analysis.Estimates.IteratedCovariantConstants
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
+import DifferentialGeometry.Analysis.Estimates.BilinearMapPerturbation
 import DifferentialGeometry.Analysis.Estimates.QuarticInterpolation
 import DifferentialGeometry.Analysis.Estimates.IteratedCovariantRecurrence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherCovariantRecurrence

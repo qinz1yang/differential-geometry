@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
+import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
+import DifferentialGeometry.Analysis.Estimates.BilinearMapPerturbation
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Comparison

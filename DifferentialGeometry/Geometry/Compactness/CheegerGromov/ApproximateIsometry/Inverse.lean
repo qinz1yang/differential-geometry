@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
+import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 
 
 import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph

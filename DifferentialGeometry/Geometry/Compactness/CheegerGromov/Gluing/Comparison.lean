@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Map
+import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Fill
