@@ -2,9 +2,10 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Reaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Compactness
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Limit
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Certification
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNullCompactness
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNullSigns
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Regularity
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierCertification
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Limit
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Regularity
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 open DifferentialGeometry.PDE.RicciFlow
 

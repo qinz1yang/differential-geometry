@@ -1,4 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Certification
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierCertification
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierContinuation
 import DifferentialGeometry.Geometry.Operator.TensorHeat
 import DifferentialGeometry.Geometry.Operator.Operators
 open DifferentialGeometry.PDE.RicciFlow
@@ -139,7 +140,7 @@ theorem shortSlab_cert
       N (Set.Icc 0 T))
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S t0) :
     ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
-      TensorBarrierUniformOnSlab (I := I) (M := M) G S delta t0 := by
+      tensorBarrierUniformOnSlab (I := I) (M := M) G S delta t0 := by
   classical
   obtain ⟨delta, hdelta, hdeltaT, hstrict_uniform⟩ := hcert
   refine ⟨delta, hdelta, hdeltaT, ?_⟩
@@ -190,7 +191,7 @@ theorem tensorBarrier_nonnegative_on_short_slab
       N (Set.Icc 0 T))
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S t0) :
     ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
-      TensorBarrierUniformOnSlab (I := I) (M := M) G S delta t0 := by
+      tensorBarrierUniformOnSlab (I := I) (M := M) G S delta t0 := by
   exact shortSlab_cert (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     ht0 hreg.toCore
@@ -214,7 +215,7 @@ theorem tensor_wmp_of_barrier_limit
     (hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
-  exact barrierLimitClosure_of_continuous (I := I) (M := M)
+  exact tensor_nonnegative_on_of_barrier_continuation (I := I) (M := M)
     (G := G) (S := S) hreg.barrierRegularity.tensor_eval_continuous hinit
     (fun t0 ht0 ht0T hinit_t0 =>
       shortSlab_cert (I := I) (M := M)
@@ -240,7 +241,7 @@ theorem wmp_of_cert
     (hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
-  exact barrierLimitClosure_of_continuous (I := I) (M := M)
+  exact tensor_nonnegative_on_of_barrier_continuation (I := I) (M := M)
     (G := G) (S := S) hreg.barrierRegularity.tensor_eval_continuous hinit
     (fun t0 ht0 ht0T hinit_t0 =>
       shortSlab_cert (I := I) (M := M)
