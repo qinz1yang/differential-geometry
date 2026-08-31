@@ -723,4 +723,20 @@ theorem normalizedGradientRicciSoliton_scalar_pos_of_not_isGaussian
       (normalizedGradientRicciSoliton_isGaussian_of_scalar_eq_zero
         (I := I) h hzero.symm))
 
+theorem normalizedGradientRicciSoliton_potential_pos_of_not_isGaussian
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hnot : ¬ isGaussianGradientRicciSoliton (E := E) g f 1)
+    (x : M) : 0 < f x := by
+  have hscalar :=
+    normalizedGradientRicciSoliton_scalar_pos_of_not_isGaussian
+      (I := I) h hnot x
+  have hpotential :=
+    normalizedGradientRicciSoliton_potential_equation (I := I) h x
+  have hgrad : 0 ≤ g.inner x (gradFun (I := I) g f x)
+      (gradFun (I := I) g f x) := by
+    simpa only [normGradSqFun_def] using
+      normGradSqFun_nonneg (I := I) g (f : M → Real) x
+  linarith
+
 end DifferentialGeometry.Geometry

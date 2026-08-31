@@ -643,6 +643,34 @@ theorem isGaussianGradientRicciSoliton_add_const
     rw [show (f x + c) + (b - c) = f x + b by ring]
     exact hx
 
+theorem isGaussianGradientRicciSoliton_scaleMetric
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {σ : Real}
+    (hσ : 0 < σ) :
+    isGaussianGradientRicciSoliton (E := E)
+        (scaleMetric (I := I) σ hσ g) f 1 ↔
+      isGaussianGradientRicciSoliton (E := E) g f σ := by
+  constructor
+  · rintro ⟨hone, Ψ, b, hmetric, hpotential⟩
+    refine ⟨hσ, Ψ, b, ?_, hpotential⟩
+    calc
+      Diffeomorph.pullbackMetricCross euclideanMetric Ψ =
+          scaleMetric (I := I) 1 hone
+            (scaleMetric (I := I) σ hσ g) := hmetric
+      _ = scaleMetric (I := I) σ hσ g := by
+        apply SmoothRiemannianMetric.ext_inner
+        intro x v w
+        simp only [scaleMetric_inner, one_mul]
+  · rintro ⟨hσ', Ψ, b, hmetric, hpotential⟩
+    refine ⟨zero_lt_one, Ψ, b, ?_, hpotential⟩
+    calc
+      Diffeomorph.pullbackMetricCross euclideanMetric Ψ =
+          scaleMetric (I := I) σ hσ' g := hmetric
+      _ = scaleMetric (I := I) 1 zero_lt_one
+          (scaleMetric (I := I) σ hσ g) := by
+        apply SmoothRiemannianMetric.ext_inner
+        intro x v w
+        simp only [scaleMetric_inner, one_mul]
+
 theorem isGaussianGradientRicciSoliton_euclidean :
     isGaussianGradientRicciSoliton
       (euclideanMetric (E := E)) (gaussianPotential (E := E)) 1 := by
