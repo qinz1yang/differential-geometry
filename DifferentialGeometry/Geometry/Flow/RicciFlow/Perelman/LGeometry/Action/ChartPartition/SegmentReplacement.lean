@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteCharts
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticEuler
 
 set_option autoImplicit false
@@ -31,18 +32,18 @@ private theorem fin_seg_right {m : Nat} {i j : Fin m} (hij : i < j) :
   exact hij
 
 omit [FiniteDimensional ℝ E] in
-theorem exists_chart_splice
+theorem exists_continuous_curve_of_chartH1_segment_replacement
     {m : Nat} (t : Fin (m + 1) → Real) (htmono : Monotone t)
     (p : Fin m → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (j : Fin m) → timeH1 E (lSegLen t j))
+    (u : (j : Fin m) → timeH1 E (partitionIntervalLength t j))
     (hsrc : ∀ j, MapsTo gamma (Icc (t j.castSucc) (t j.succ))
       (chartAt H (p j)).source)
     (hrep : ∀ j, EqOn (u j).toFun
       (fun r ↦ extChartAt I (p j) (gamma (t j.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t j)))
+      (Icc (0 : Real) (partitionIntervalLength t j)))
     (i : Fin m) (hpos : t i.castSucc < t i.succ)
-    (v : timeH1 E (lSegLen t i)) (hends : v ∈ sameTimeEnds (u i))
-    (htar : MapsTo v.toFun (Icc (0 : Real) (lSegLen t i))
+    (v : timeH1 E (partitionIntervalLength t i)) (hends : v ∈ sameTimeEnds (u i))
+    (htar : MapsTo v.toFun (Icc (0 : Real) (partitionIntervalLength t i))
       (extChartAt I (p i)).target) :
     ∃ gammaV : Real → M,
       Continuous gammaV ∧
@@ -52,11 +53,11 @@ theorem exists_chart_splice
         (chartAt H (p j)).source) ∧
       (∀ j, EqOn ((Function.update u i v) j).toFun
         (fun r ↦ extChartAt I (p j) (gammaV (t j.castSucc + r)))
-        (Icc (0 : Real) (lSegLen t j))) := by
+        (Icc (0 : Real) (partitionIntervalLength t j))) := by
   classical
-  let L : Real := lSegLen t i
+  let L : Real := partitionIntervalLength t i
   have hL : 0 ≤ L := by
-    dsimp only [L, lSegLen]
+    dsimp only [L, partitionIntervalLength]
     exact sub_nonneg.mpr hpos.le
   let pr : Real → Real := fun s ↦
     ((Set.projIcc (0 : Real) L hL s : Icc (0 : Real) L) : Real)
@@ -77,13 +78,13 @@ theorem exists_chart_splice
       (hvpr_tar.comp fun _ _ ↦ mem_univ _)
   have hshift_mem {s : Real} (hs : s ∈ Icc (t i.castSucc) (t i.succ)) :
       s - t i.castSucc ∈ Icc (0 : Real) L := by
-    dsimp only [L, lSegLen]
+    dsimp only [L, partitionIntervalLength]
     exact ⟨sub_nonneg.mpr hs.1, sub_le_sub_right hs.2 _⟩
   have hpr_shift {s : Real} (hs : s ∈ Icc (t i.castSucc) (t i.succ)) :
       pr (s - t i.castSucc) = s - t i.castSucc := by
     exact congrArg Subtype.val (Set.projIcc_of_mem hL (hshift_mem hs))
   have hend_add : t i.castSucc + L = t i.succ := by
-    dsimp only [L, lSegLen]
+    dsimp only [L, partitionIntervalLength]
     ring
   have hlift_left : liftV (t i.castSucc) = gamma (t i.castSucc) := by
     have hzero : (0 : Real) ∈ Icc (0 : Real) L := ⟨le_rfl, hL⟩
@@ -100,7 +101,7 @@ theorem exists_chart_splice
   have hlift_right : liftV (t i.succ) = gamma (t i.succ) := by
     have hLi : L ∈ Icc (0 : Real) L := ⟨hL, le_rfl⟩
     have hsub : t i.succ - t i.castSucc = L := by
-      simp only [L, lSegLen]
+      simp only [L, partitionIntervalLength]
     have hvL : v.toFun L = (u i).toFun L := hends.2
     simp only [liftV]
     rw [hsub, show pr L = L from
@@ -171,10 +172,10 @@ theorem exists_chart_splice
       exact hsrc j hs
   have hrepV (j : Fin m) : EqOn ((Function.update u i v) j).toFun
       (fun r ↦ extChartAt I (p j) (gammaV (t j.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t j)) := by
+      (Icc (0 : Real) (partitionIntervalLength t j)) := by
     intro r hr
     have hseg : t j.castSucc + r ∈ Icc (t j.castSucc) (t j.succ) := by
-      dsimp only [lSegLen] at hr
+      dsimp only [partitionIntervalLength] at hr
       exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
     by_cases hji : j = i
     · subst j

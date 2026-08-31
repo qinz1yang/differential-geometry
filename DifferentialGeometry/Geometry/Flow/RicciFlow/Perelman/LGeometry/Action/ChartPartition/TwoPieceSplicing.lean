@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Density
+import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
 
 set_option autoImplicit false
 
@@ -32,7 +33,7 @@ theorem exists_chartH1_join
       (Icc c b))
     (hnode : gamma0 c = gamma1 c) :
     ∃ (gamma : Real → M) (m : Nat) (t : Fin (m + 1) → Real)
-      (p : Fin m → M) (u : (i : Fin m) → timeH1 E (lSegLen t i)),
+      (p : Fin m → M) (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i)),
       EqOn gamma gamma0 (Icc a c) ∧
       EqOn gamma gamma1 (Icc c b) ∧
       Monotone t ∧ t 0 = a ∧ t (Fin.last m) = b ∧
@@ -41,7 +42,7 @@ theorem exists_chartH1_join
         (chartAt H (p i)).source) ∧
       (∀ i, EqOn (u i).toFun
         (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-        (Icc (0 : Real) (lSegLen t i))) := by
+        (Icc (0 : Real) (partitionIntervalLength t i))) := by
   classical
   obtain ⟨s0, hs00, hs0mono, ⟨m0, hs0last⟩, hp0⟩ :=
     DifferentialGeometry.Geometry.exists_chart_subdivision (H := H) hac.le
@@ -134,24 +135,24 @@ theorem exists_chartH1_join
   let p : Fin (m0 + 1 + m1) → M := Fin.addCases
     (fun i ↦ if hi : i.1 < m0 then p0 ⟨i.1, hi⟩ else gamma0 c) p1
   have hlen0 (i0 : Fin (m0 + 1)) (hi : i0.1 < m0) :
-      lSegLen t (Fin.castAdd m1 i0) = lSegLen t0 ⟨i0.1, hi⟩ := by
+      partitionIntervalLength t (Fin.castAdd m1 i0) = partitionIntervalLength t0 ⟨i0.1, hi⟩ := by
     have hs : (Fin.castAdd m1 i0).castSucc.1 < m0 + 1 := by
       simp only [Fin.val_castSucc, Fin.val_castAdd]
       omega
     have he : (Fin.castAdd m1 i0).succ.1 < m0 + 1 := by
       simp only [Fin.val_succ, Fin.val_castAdd]
       omega
-    simp only [lSegLen]
+    simp only [partitionIntervalLength]
     rw [ht_left _ he, ht_left _ hs]
     rfl
-  have hlenMid : lSegLen t (Fin.castAdd m1 (Fin.last m0)) = 0 := by
+  have hlenMid : partitionIntervalLength t (Fin.castAdd m1 (Fin.last m0)) = 0 := by
     have hs : (Fin.castAdd m1 (Fin.last m0)).castSucc.1 < m0 + 1 := by
       simp only [Fin.val_castSucc, Fin.val_castAdd, Fin.val_last]
       omega
     have he : m0 + 1 ≤ (Fin.castAdd m1 (Fin.last m0)).succ.1 := by
       simp only [Fin.val_succ, Fin.val_castAdd, Fin.val_last]
       exact le_rfl
-    simp only [lSegLen]
+    simp only [partitionIntervalLength]
     rw [ht_left _ hs, ht_right _ he]
     have hleft : (⟨(Fin.castAdd m1 (Fin.last m0)).castSucc.1, hs⟩ :
         Fin (m0 + 1)) = Fin.last m0 := by
@@ -164,14 +165,14 @@ theorem exists_chartH1_join
       omega
     rw [hleft, hright, ht0last, ht10, sub_self]
   have hlen1 (i : Fin m1) :
-      lSegLen t (Fin.natAdd (m0 + 1) i) = lSegLen t1 i := by
+      partitionIntervalLength t (Fin.natAdd (m0 + 1) i) = partitionIntervalLength t1 i := by
     have hs : m0 + 1 ≤ (Fin.natAdd (m0 + 1) i).castSucc.1 := by
       simp only [Fin.val_castSucc, Fin.val_natAdd]
       omega
     have he : m0 + 1 ≤ (Fin.natAdd (m0 + 1) i).succ.1 := by
       simp only [Fin.val_succ, Fin.val_natAdd]
       omega
-    simp only [lSegLen]
+    simp only [partitionIntervalLength]
     rw [ht_right _ he, ht_right _ hs]
     congr 2 <;> apply Fin.ext <;>
       simp only [Fin.val_succ, Fin.val_natAdd, Fin.val_castSucc] <;> omega
@@ -183,40 +184,40 @@ theorem exists_chartH1_join
       ((hxy.symm ▸ v : timeH1 E x).toFun) = v.toFun := by
     subst y
     rfl
-  have hlen0_nonneg (j : Fin m0) : 0 ≤ lSegLen t0 j := by
+  have hlen0_nonneg (j : Fin m0) : 0 ≤ partitionIntervalLength t0 j := by
     exact sub_nonneg.mpr (hs0mono (Fin.castSucc_le_succ j))
   have hshift0 (j : Fin m0) : MapsTo
       (fun r : Real ↦ t0 j.castSucc + r)
-      (Icc (0 : Real) (lSegLen t0 j)) (Icc a c) := by
+      (Icc (0 : Real) (partitionIntervalLength t0 j)) (Icc a c) := by
     intro r hr
     have hr' : r ≤ t0 j.succ - t0 j.castSucc := by
-      simpa only [lSegLen] using hr.2
+      simpa only [partitionIntervalLength] using hr.2
     exact ⟨(ht0mem j.castSucc).1.trans (le_add_of_nonneg_right hr.1),
       (by linarith [(ht0mem j.succ).2, hr'])⟩
   have hshift0_seg (j : Fin m0) : MapsTo
       (fun r : Real ↦ t0 j.castSucc + r)
-      (Icc (0 : Real) (lSegLen t0 j))
+      (Icc (0 : Real) (partitionIntervalLength t0 j))
       (Icc (t0 j.castSucc) (t0 j.succ)) := by
     intro r hr
     have hr' : r ≤ t0 j.succ - t0 j.castSucc := by
-      simpa only [lSegLen] using hr.2
+      simpa only [partitionIntervalLength] using hr.2
     exact ⟨le_add_of_nonneg_right hr.1, by linarith⟩
   have hmd0 (j : Fin m0) : ContMDiffOn
       (modelWithCornersSelf Real Real) I 1
       (fun r : Real ↦ gamma0 (t0 j.castSucc + r))
-      (Icc (0 : Real) (lSegLen t0 j)) :=
+      (Icc (0 : Real) (partitionIntervalLength t0 j)) :=
     hgamma0.comp (contMDiff_const.add contMDiff_id).contMDiffOn (hshift0 j)
   have hsrc0_shift (j : Fin m0) : MapsTo
       (fun r : Real ↦ gamma0 (t0 j.castSucc + r))
-      (Icc (0 : Real) (lSegLen t0 j)) (chartAt H (p0 j)).source :=
+      (Icc (0 : Real) (partitionIntervalLength t0 j)) (chartAt H (p0 j)).source :=
     (hsrc0 j).comp (hshift0_seg j)
-  let v0 (j : Fin m0) : timeH1 E (lSegLen t0 j) :=
+  let v0 (j : Fin m0) : timeH1 E (partitionIntervalLength t0 j) :=
     chartTimeH1 I (hlen0_nonneg j) (p0 j)
       (fun r ↦ gamma0 (t0 j.castSucc + r))
       (hmd0 j) (hsrc0_shift j)
   have hv0 (j : Fin m0) : EqOn (v0 j).toFun
       (fun r ↦ extChartAt I (p0 j) (gamma0 (t0 j.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t0 j)) := by
+      (Icc (0 : Real) (partitionIntervalLength t0 j)) := by
     intro r hr
     exact chartTimeH1_toFun I (hlen0_nonneg j) (p0 j)
       (fun r ↦ gamma0 (t0 j.castSucc + r)) (hmd0 j) (hsrc0_shift j) hr
@@ -232,40 +233,40 @@ theorem exists_chartH1_join
       contMDiff_const.contMDiffOn (by
         intro _ _
         exact mem_chart_source H (gamma0 c)) hr
-  have hlen1_nonneg (j : Fin m1) : 0 ≤ lSegLen t1 j := by
+  have hlen1_nonneg (j : Fin m1) : 0 ≤ partitionIntervalLength t1 j := by
     exact sub_nonneg.mpr (hs1mono (Fin.castSucc_le_succ j))
   have hshift1 (j : Fin m1) : MapsTo
       (fun r : Real ↦ t1 j.castSucc + r)
-      (Icc (0 : Real) (lSegLen t1 j)) (Icc c b) := by
+      (Icc (0 : Real) (partitionIntervalLength t1 j)) (Icc c b) := by
     intro r hr
     have hr' : r ≤ t1 j.succ - t1 j.castSucc := by
-      simpa only [lSegLen] using hr.2
+      simpa only [partitionIntervalLength] using hr.2
     exact ⟨(ht1mem j.castSucc).1.trans (le_add_of_nonneg_right hr.1),
       (by linarith [(ht1mem j.succ).2, hr'])⟩
   have hshift1_seg (j : Fin m1) : MapsTo
       (fun r : Real ↦ t1 j.castSucc + r)
-      (Icc (0 : Real) (lSegLen t1 j))
+      (Icc (0 : Real) (partitionIntervalLength t1 j))
       (Icc (t1 j.castSucc) (t1 j.succ)) := by
     intro r hr
     have hr' : r ≤ t1 j.succ - t1 j.castSucc := by
-      simpa only [lSegLen] using hr.2
+      simpa only [partitionIntervalLength] using hr.2
     exact ⟨le_add_of_nonneg_right hr.1, by linarith⟩
   have hmd1 (j : Fin m1) : ContMDiffOn
       (modelWithCornersSelf Real Real) I 1
       (fun r : Real ↦ gamma1 (t1 j.castSucc + r))
-      (Icc (0 : Real) (lSegLen t1 j)) :=
+      (Icc (0 : Real) (partitionIntervalLength t1 j)) :=
     hgamma1.comp (contMDiff_const.add contMDiff_id).contMDiffOn (hshift1 j)
   have hsrc1_shift (j : Fin m1) : MapsTo
       (fun r : Real ↦ gamma1 (t1 j.castSucc + r))
-      (Icc (0 : Real) (lSegLen t1 j)) (chartAt H (p1 j)).source :=
+      (Icc (0 : Real) (partitionIntervalLength t1 j)) (chartAt H (p1 j)).source :=
     (hsrc1 j).comp (hshift1_seg j)
-  let v1 (j : Fin m1) : timeH1 E (lSegLen t1 j) :=
+  let v1 (j : Fin m1) : timeH1 E (partitionIntervalLength t1 j) :=
     chartTimeH1 I (hlen1_nonneg j) (p1 j)
       (fun r ↦ gamma1 (t1 j.castSucc + r))
       (hmd1 j) (hsrc1_shift j)
   have hv1 (j : Fin m1) : EqOn (v1 j).toFun
       (fun r ↦ extChartAt I (p1 j) (gamma1 (t1 j.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t1 j)) := by
+      (Icc (0 : Real) (partitionIntervalLength t1 j)) := by
     intro r hr
     exact chartTimeH1_toFun I (hlen1_nonneg j) (p1 j)
       (fun r ↦ gamma1 (t1 j.castSucc + r)) (hmd1 j) (hsrc1_shift j) hr
@@ -275,9 +276,9 @@ theorem exists_chartH1_join
     simp only [Fin.val_last]
     omega
   have hlenMid0 (i0 : Fin (m0 + 1)) (hi : ¬ i0.1 < m0) :
-      lSegLen t (Fin.castAdd m1 i0) = 0 := by
+      partitionIntervalLength t (Fin.castAdd m1 i0) = 0 := by
     simpa only [hlast0 i0 hi] using hlenMid
-  let u : (i : Fin (m0 + 1 + m1)) → timeH1 E (lSegLen t i) := Fin.addCases
+  let u : (i : Fin (m0 + 1 + m1)) → timeH1 E (partitionIntervalLength t i) := Fin.addCases
     (fun i0 ↦ if hi : i0.1 < m0 then
       (hlen0 i0 hi).symm ▸ v0 ⟨i0.1, hi⟩
       else
@@ -388,7 +389,7 @@ theorem exists_chartH1_join
     · by_cases hi : i0.1 < m0
       · let j : Fin m0 := ⟨i0.1, hi⟩
         intro r hr
-        have hr' : r ∈ Icc (0 : Real) (lSegLen t0 j) := by
+        have hr' : r ∈ Icc (0 : Real) (partitionIntervalLength t0 j) := by
           simpa only [hlen0 i0 hi] using hr
         have hu : u (Fin.castAdd m1 i0) =
             (hlen0 i0 hi).symm ▸ v0 j := by
@@ -438,7 +439,7 @@ theorem exists_chartH1_join
         exact congrArg (extChartAt I (gamma0 c)) (hgamma0_eq
           ⟨hac.le, le_rfl⟩).symm
     · intro r hr
-      have hr' : r ∈ Icc (0 : Real) (lSegLen t1 i1) := by
+      have hr' : r ∈ Icc (0 : Real) (partitionIntervalLength t1 i1) := by
         simpa only [hlen1 i1] using hr
       have hu : u (Fin.natAdd (m0 + 1) i1) =
           (hlen1 i1).symm ▸ v1 i1 := by
@@ -464,11 +465,11 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
     (hSc : ScalarSTContOn (I := I) (M := M) S)
     (T : Real) (t : Fin 3 → Real) (htmono : Monotone t)
     (p : Fin 2 → M)
-    (v : (i : Fin 2) → timeH1 E (lSegLen t i))
+    (v : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (htar : ∀ i, MapsTo (v i).toFun
-      (Icc (0 : Real) (lSegLen t i)) (extChartAt I (p i)).target)
+      (Icc (0 : Real) (partitionIntervalLength t i)) (extChartAt I (p i)).target)
     (hnode : (extChartAt I (p 0)).symm
-        ((v 0).toFun (lSegLen t 0)) =
+        ((v 0).toFun (partitionIntervalLength t 0)) =
       (extChartAt I (p 1)).symm ((v 1).toFun 0))
     (hreg : ∀ s ∈ Icc (t 0) (t (Fin.last 2)), T - s ^ 2 ∈ D.regular) :
     ∃ gamma : Real → M,
@@ -477,12 +478,12 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
         (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source) ∧
       (∀ i, EqOn (v i).toFun
         (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-        (Icc (0 : Real) (lSegLen t i))) ∧
+        (Icc (0 : Real) (partitionIntervalLength t i))) ∧
       gamma (t 0) = (extChartAt I (p 0)).symm ((v 0).toFun 0) ∧
       gamma (t (Fin.last 2)) = (extChartAt I (p 1)).symm
-        ((v 1).toFun (lSegLen t 1)) ∧
+        ((v 1).toFun (partitionIntervalLength t 1)) ∧
       ∃ alpha : Nat → Real → M,
-        ∃ w : (i : Fin 2) → Nat → timeH1 E (lSegLen t i),
+        ∃ w : (i : Fin 2) → Nat → timeH1 E (partitionIntervalLength t i),
           (∀ n, ContMDiff (modelWithCornersSelf Real Real) I 1 (alpha n)) ∧
           (∀ n, alpha n (t 0) = gamma (t 0)) ∧
           (∀ n, alpha n (t (Fin.last 2)) = gamma (t (Fin.last 2))) ∧
@@ -490,7 +491,7 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
             (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source) ∧
           (∀ i n, EqOn (w i n).toFun
             (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-            (Icc (0 : Real) (lSegLen t i))) ∧
+            (Icc (0 : Real) (partitionIntervalLength t i))) ∧
           (∀ i, Tendsto (w i) atTop (nhds (v i))) ∧
           TendstoUniformly
             (fun n (s : Icc (t 0) (t (Fin.last 2))) ↦ alpha n s.1)
@@ -500,14 +501,14 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
   classical
   have hseg (i : Fin 2) : t i.castSucc ≤ t i.succ :=
     htmono Fin.castSucc_lt_succ.le
-  have hlen (i : Fin 2) : 0 ≤ lSegLen t i :=
+  have hlen (i : Fin 2) : 0 ≤ partitionIntervalLength t i :=
     sub_nonneg.mpr (hseg i)
   let pr (i : Fin 2) (s : Real) : Real :=
-    ((Set.projIcc (0 : Real) (lSegLen t i) (hlen i) s :
-      Icc (0 : Real) (lSegLen t i)) : Real)
+    ((Set.projIcc (0 : Real) (partitionIntervalLength t i) (hlen i) s :
+      Icc (0 : Real) (partitionIntervalLength t i)) : Real)
   have hpr_mem (i : Fin 2) (s : Real) :
-      pr i s ∈ Icc (0 : Real) (lSegLen t i) :=
-    (Set.projIcc (0 : Real) (lSegLen t i) (hlen i) s).2
+      pr i s ∈ Icc (0 : Real) (partitionIntervalLength t i) :=
+    (Set.projIcc (0 : Real) (partitionIntervalLength t i) (hlen i) s).2
   have hpr_cont (i : Fin 2) : Continuous (pr i) :=
     continuous_subtype_val.comp continuous_projIcc
   have hpr_shift (i : Fin 2) {s : Real}
@@ -516,7 +517,7 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
     simp only [pr]
     exact congrArg Subtype.val (Set.projIcc_of_mem (hlen i) ⟨
       sub_nonneg.mpr hs.1, by
-        simpa only [lSegLen] using sub_le_sub_right hs.2 (t i.castSucc)⟩)
+        simpa only [partitionIntervalLength] using sub_le_sub_right hs.2 (t i.castSucc)⟩)
   let lift (i : Fin 2) (s : Real) : M :=
     (extChartAt I (p i)).symm ((v i).toFun (pr i (s - t i.castSucc)))
   have hlift_cont (i : Fin 2) : Continuous (lift i) := by
@@ -533,9 +534,9 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
     rw [hpr_shift i hs]
     exact (extChartAt I (p i)).right_inv (htar i ⟨
       sub_nonneg.mpr hs.1, by
-        simpa only [lSegLen] using sub_le_sub_right hs.2 (t i.castSucc)⟩)
+        simpa only [partitionIntervalLength] using sub_le_sub_right hs.2 (t i.castSucc)⟩)
   have hleft_node : lift 0 (t 1) =
-      (extChartAt I (p 0)).symm ((v 0).toFun (lSegLen t 0)) := by
+      (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength t 0)) := by
     simp only [lift]
     rw [hpr_shift 0 (by
       constructor
@@ -584,13 +585,13 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
         (htar i (hpr_mem i (s - t i.castSucc)))
   have hrep (i : Fin 2) : EqOn (v i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)) := by
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
     intro r hr
     have hs : t i.castSucc + r ∈ Icc (t i.castSucc) (t i.succ) := by
       constructor
       · linarith [hr.1]
       · have hr' := hr.2
-        simp only [lSegLen] at hr'
+        simp only [partitionIntervalLength] at hr'
         linarith
     change (v i).toFun r =
       extChartAt I (p i) (gamma (t i.castSucc + r))
@@ -611,7 +612,7 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
     congr 2
     rw [show (0 : Fin 2).castSucc = (0 : Fin 3) by rfl, sub_self]
   have hgamma_right : gamma (t (Fin.last 2)) =
-      (extChartAt I (p 1)).symm ((v 1).toFun (lSegLen t 1)) := by
+      (extChartAt I (p 1)).symm ((v 1).toFun (partitionIntervalLength t 1)) := by
     rw [hgamma_piece 1 (by
       constructor
       · simpa using hseg 1

@@ -221,13 +221,13 @@ theorem chart_head_act_lim
   let t : Fin 2 → Real := ![a, c]
   have ht0 : t 0 = a := rfl
   have ht1 : t (Fin.last 1) = c := rfl
-  have htLen : lSegLen t 0 = c - a := by
-    simp [lSegLen, t]
-  let vt (n : Nat) : timeH1 E (lSegLen t 0) := htLen.symm ▸ v n
-  let u₀t : timeH1 E (lSegLen t 0) := htLen.symm ▸ u₀
-  let vtFin : (i : Fin 1) → Nat → timeH1 E (lSegLen t i) :=
+  have htLen : partitionIntervalLength t 0 = c - a := by
+    simp [partitionIntervalLength, t]
+  let vt (n : Nat) : timeH1 E (partitionIntervalLength t 0) := htLen.symm ▸ v n
+  let u₀t : timeH1 E (partitionIntervalLength t 0) := htLen.symm ▸ u₀
+  let vtFin : (i : Fin 1) → Nat → timeH1 E (partitionIntervalLength t i) :=
     Fin.cases vt fun k ↦ Fin.elim0 k
-  let u₀Fin : (i : Fin 1) → timeH1 E (lSegLen t i) :=
+  let u₀Fin : (i : Fin 1) → timeH1 E (partitionIntervalLength t i) :=
     Fin.cases u₀t fun k ↦ Fin.elim0 k
   have htmono : Monotone t := by
     intro i j hij

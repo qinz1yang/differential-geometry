@@ -361,7 +361,7 @@ theorem lRampAct_eq
   let gamma : Real → M := fun s ↦ (extChartAt I p).symm
     ((lChartRamp y z (sub_nonneg.mpr hab.le)).toFun (s - a))
   let ps : Fin 1 → M := fun _ ↦ p
-  let us : (i : Fin 1) → timeH1 E (lSegLen t i) := fun i ↦ by
+  let us : (i : Fin 1) → timeH1 E (partitionIntervalLength t i) := fun i ↦ by
     have hi : i = 0 := Subsingleton.elim i 0
     subst i
     exact lChartRamp y z (sub_nonneg.mpr hab.le)
@@ -386,7 +386,7 @@ theorem lRampAct_eq
       (extChartAt I p).map_target (htar hr)
   have hrep : ∀ i, EqOn (us i).toFun
       (fun r ↦ extChartAt I (ps i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)) := by
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
     intro i
     have hi : i = 0 := Subsingleton.elim i 0
     subst i

@@ -145,26 +145,26 @@ theorem lAction_chart_lim
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (alpha : Nat → Real → M) (gamma : Real → M)
-    (u : (i : Fin m) → Nat → timeH1 E (lSegLen t i))
-    (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i))
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n)
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i n, EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hsrcLim : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrepLim : ∀ i, EqOn (uLim i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
-    (huK : ∀ i n (r : Icc (0 : Real) (lSegLen t i)),
+    (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (u i n).toFun r.1 ∈ K i)
-    (huLimK : ∀ i (r : Icc (0 : Real) (lSegLen t i)),
+    (huLimK : ∀ i (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (uLim i).toFun r.1 ∈ K i)
     (hu : ∀ i, TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ (u i n).toFun r.1)
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ (u i n).toFun r.1)
       (fun r ↦ (uLim i).toFun r.1) atTop)
     (hdu : ∀ i, Tendsto (fun n ↦ (u i n).deriv) atTop
       (nhds (uLim i).deriv))
@@ -191,12 +191,12 @@ theorem lAction_chart_lim
       Icc (t i.castSucc) (t i.succ) ⊆ Icc a b :=
     Icc_subset_Icc (hleft i) (hright i)
   let kin : Fin m → Nat → Real := fun i n ↦
-    ∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+    ∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
       (chartGramOp (I := I) S.family (p i)
         (T - (t i.castSucc + r) ^ 2, (u i n).toFun r) ((u i n).deriv r))
       ((u i n).deriv r)
   let kinLim : Fin m → Real := fun i ↦
-    ∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+    ∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
       (chartGramOp (I := I) S.family (p i)
         (T - (t i.castSucc + r) ^ 2, (uLim i).toFun r) ((uLim i).deriv r))
       ((uLim i).deriv r)
@@ -207,17 +207,17 @@ theorem lAction_chart_lim
     ∫ s in (t i.castSucc)..(t i.succ),
       2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)
   have hkin (i : Fin m) : Tendsto (kin i) atTop (nhds (kinLim i)) := by
-    have hL : 0 ≤ lSegLen t i := sub_nonneg.mpr (hseg i)
+    have hL : 0 ≤ partitionIntervalLength t i := sub_nonneg.mpr (hseg i)
     have htc : ContinuousOn
         (fun r : Real ↦ T - (t i.castSucc + r) ^ 2)
-        (Icc (0 : Real) (lSegLen t i)) :=
+        (Icc (0 : Real) (partitionIntervalLength t i)) :=
       (continuous_const.sub ((continuous_const.add continuous_id).pow 2)).continuousOn
     have htreg : MapsTo (fun r : Real ↦ T - (t i.castSucc + r) ^ 2)
-        (Icc (0 : Real) (lSegLen t i)) D.regular := by
+        (Icc (0 : Real) (partitionIntervalLength t i)) D.regular := by
       intro r hr
       apply hreg (t i.castSucc + r)
       have hr2 : r ≤ t i.succ - t i.castSucc := by
-        simpa only [lSegLen] using hr.2
+        simpa only [partitionIntervalLength] using hr.2
       exact ⟨by linarith [hleft i, hr.1], by
         linarith [hr2, hright i]⟩
     simpa only [kin, kinLim] using
@@ -246,10 +246,10 @@ theorem lAction_chart_lim
           (fun z hz ↦ interior_subset (hKchart i hz)))
     have hval : ∀ n s, s ∈ Icc (t i.castSucc) (t i.succ) → alpha n s ∈ Q := by
       intro n s hs
-      have hr : s - t i.castSucc ∈ Icc (0 : Real) (lSegLen t i) := by
+      have hr : s - t i.castSucc ∈ Icc (0 : Real) (partitionIntervalLength t i) := by
         constructor
         · linarith [hs.1]
-        · simp only [lSegLen]
+        · simp only [partitionIntervalLength]
           linarith [hs.2]
       refine ⟨extChartAt I (p i) (alpha n s), ?_, ?_⟩
       · have hcoord := huK i n ⟨s - t i.castSucc, hr⟩
@@ -293,23 +293,23 @@ theorem lAction_h1_lim
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (alpha : Nat → Real → M) (gamma : Real → M)
-    (u : (i : Fin m) → Nat → timeH1 E (lSegLen t i))
-    (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i))
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n)
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i n, EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hsrcLim : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrepLim : ∀ i, EqOn (uLim i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
-    (huK : ∀ i n (r : Icc (0 : Real) (lSegLen t i)),
+    (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (u i n).toFun r.1 ∈ K i)
-    (huLimK : ∀ i (r : Icc (0 : Real) (lSegLen t i)),
+    (huLimK : ∀ i (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (uLim i).toFun r.1 ∈ K i)
     (hu : ∀ i, Tendsto (u i) atTop (nhds (uLim i)))
     (halpha : ∀ n, ContinuousOn (alpha n) (Icc a b))
@@ -334,15 +334,15 @@ theorem lAction_c1_dense
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M)
-    (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrcLim : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrepLim : ∀ i, EqOn (uLim i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     ∃ alpha : Nat → Real → M,
-      ∃ u : (i : Fin m) → Nat → timeH1 E (lSegLen t i),
+      ∃ u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i),
         (∀ n, ContMDiff (modelWithCornersSelf Real Real) I 1 (alpha n)) ∧
           (∀ n, alpha n a = gamma a) ∧
           (∀ n, alpha n b = gamma b) ∧
@@ -350,7 +350,7 @@ theorem lAction_c1_dense
             (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source) ∧
           (∀ i n, EqOn (u i n).toFun
             (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-            (Icc (0 : Real) (lSegLen t i))) ∧
+            (Icc (0 : Real) (partitionIntervalLength t i))) ∧
           (∀ i, Tendsto (u i) atTop (nhds (uLim i))) ∧
           TendstoUniformly
             (fun n (s : Icc a b) ↦ alpha n s.1)
@@ -358,55 +358,55 @@ theorem lAction_c1_dense
           Tendsto (fun n ↦ lRegAction S T (alpha n) a b) atTop
             (nhds (lRegAction S T gamma a b)) := by
   classical
-  have hseg (i : Fin m) : 0 ≤ lSegLen t i :=
+  have hseg (i : Fin m) : 0 ≤ partitionIntervalLength t i :=
     sub_nonneg.mpr (htmono Fin.castSucc_lt_succ.le)
   have hshift (i : Fin m) : MapsTo (fun r : Real ↦ t i.castSucc + r)
-      (Icc (0 : Real) (lSegLen t i))
+      (Icc (0 : Real) (partitionIntervalLength t i))
       (Icc (t i.castSucc) (t i.succ)) := by
     intro r hr
     change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
     exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
-  have htar (i : Fin m) (r : Icc (0 : Real) (lSegLen t i)) :
+  have htar (i : Fin m) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
       (uLim i).toFun r.1 ∈ (extChartAt I (p i)).target := by
     rw [hrepLim i r.2]
     exact (extChartAt I (p i)).map_source (by
       simpa only [extChartAt_source] using hsrcLim i (hshift i r.2))
   obtain ⟨K, hKc, hKtar, huLimInt⟩ :=
-    exists_chart_buf p (fun i ↦ lSegLen t i) uLim htar
+    exists_chart_buf p (fun i ↦ partitionIntervalLength t i) uLim htar
   have hKchart (i : Fin m) :
       K i ⊆ interior (extChartAt I (p i)).target := by
     rw [(isOpen_extChartAt_target (I := I) (p i)).interior_eq]
     exact hKtar i
-  have huLimK (i : Fin m) (r : Icc (0 : Real) (lSegLen t i)) :
+  have huLimK (i : Fin m) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
       (uLim i).toFun r.1 ∈ K i :=
     interior_subset (huLimInt i r)
   choose w v hvC1 hwv hv0 hvL hvg0 hvgL hw using fun i ↦
     exists_flat_nonneg (hseg i) (uLim i)
   have hvlim (i : Fin m) : TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ v i n r.1)
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ v i n r.1)
       (fun r ↦ (uLim i).toFun r.1) atTop := by
     exact (tendstoUniformly_congr
-      (F := fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ (w i n).toFun r.1)
+      (F := fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ (w i n).toFun r.1)
       (F' := fun n r ↦ v i n r.1)
       (Eventually.of_forall fun n ↦ funext fun r ↦ hwv i n r.2)).mp
         (timeH1_uniform (w i) (uLim i) (hw i))
   have hfc (i : Fin m) : IsCompact
-      (range fun r : Icc (0 : Real) (lSegLen t i) ↦ (uLim i).toFun r.1) :=
+      (range fun r : Icc (0 : Real) (partitionIntervalLength t i) ↦ (uLim i).toFun r.1) :=
     isCompact_range (uLim i).continuousOn_toFun.domRestrict
   have hev (i : Fin m) : ∀ᶠ n in atTop,
-      ∀ r : Icc (0 : Real) (lSegLen t i), v i n r.1 ∈ K i :=
+      ∀ r : Icc (0 : Real) (partitionIntervalLength t i), v i n r.1 ∈ K i :=
     eventually_mem_buf
-      (fun r : Icc (0 : Real) (lSegLen t i) ↦ (uLim i).toFun r.1)
+      (fun r : Icc (0 : Real) (partitionIntervalLength t i) ↦ (uLim i).toFun r.1)
       (fun n r ↦ v i n r.1) (K i) (hfc i) (huLimInt i) (hvlim i)
   have hall : ∀ᶠ n in atTop, ∀ i,
-      ∀ r : Icc (0 : Real) (lSegLen t i), v i n r.1 ∈ K i :=
+      ∀ r : Icc (0 : Real) (partitionIntervalLength t i), v i n r.1 ∈ K i :=
     Filter.eventually_all.mpr hev
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hall
   have hvK (i : Fin m) (n : Nat)
-      (r : Icc (0 : Real) (lSegLen t i)) : v i (n + N) r.1 ∈ K i :=
+      (r : Icc (0 : Real) (partitionIntervalLength t i)) : v i (n + N) r.1 ∈ K i :=
     hN (n + N) (Nat.le_add_left N n) i r
   have hvlimTail (i : Fin m) : TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ v i (n + N) r.1)
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ v i (n + N) r.1)
       (fun r ↦ (uLim i).toFun r.1) atTop := by
     intro U hU
     exact (tendsto_add_atTop_nat N).eventually (hvlim i U hU)
@@ -420,14 +420,14 @@ theorem lAction_c1_dense
         (Eventually.of_forall fun _ ↦ (hvL i (n + N)).symm))
       (fun i n ↦ hv0 i (n + N))
       (fun i n ↦ hvL i (n + N)) hvK huLimK hvlimTail
-  let u : (i : Fin m) → Nat → timeH1 E (lSegLen t i) :=
+  let u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i) :=
     fun i n ↦ w i (n + N)
   have hrep (i : Fin m) (n : Nat) : EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)) :=
+      (Icc (0 : Real) (partitionIntervalLength t i)) :=
     (hwv i (n + N)).trans (hrepV i n)
   have huK (i : Fin m) (n : Nat)
-      (r : Icc (0 : Real) (lSegLen t i)) : (u i n).toFun r.1 ∈ K i := by
+      (r : Icc (0 : Real) (partitionIntervalLength t i)) : (u i n).toFun r.1 ∈ K i := by
     rw [hwv i (n + N) r.2]
     exact hvK i n r
   have hulim (i : Fin m) : Tendsto (u i) atTop (nhds (uLim i)) := by

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Bootstrap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.StrictC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC1
 
 set_option autoImplicit false
 
@@ -25,33 +25,33 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lStrict_piece_c2
+theorem lRegAction_minimizer_chart_piece_contDiffOn_two
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
     (ht : StrictMono t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
       lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
     ∀ i, ContDiffOn Real 2 (u i).toFun
-      (Icc (0 : Real) (lSegLen t i)) := by
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
   classical
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   intro i
   have hpos : t i.castSucc < t i.succ :=
     ht Fin.castSucc_lt_succ
-  have hL : 0 < lSegLen t i := by
-    simpa only [lSegLen] using sub_pos.mpr hpos
+  have hL : 0 < partitionIntervalLength t i := by
+    simpa only [partitionIntervalLength] using sub_pos.mpr hpos
   have hleft : a ≤ t i.castSucc := by
     rw [← ht0]
     exact ht.monotone (Fin.zero_le _)
@@ -59,17 +59,17 @@ theorem lStrict_piece_c2
     rw [← htlast]
     exact ht.monotone (Fin.le_last _)
   have hshift : MapsTo (fun r : Real ↦ t i.castSucc + r)
-      (Icc (0 : Real) (lSegLen t i))
+      (Icc (0 : Real) (partitionIntervalLength t i))
       (Icc (t i.castSucc) (t i.succ)) := by
     intro r hr
     change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
     exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
-  have hregi : ∀ r ∈ Icc (0 : Real) (lSegLen t i),
+  have hregi : ∀ r ∈ Icc (0 : Real) (partitionIntervalLength t i),
       T - (t i.castSucc + r) ^ 2 ∈ D.regular := by
     intro r hr
     exact hreg (t i.castSucc + r)
       ⟨hleft.trans (hshift hr).1, (hshift hr).2.trans hright⟩
-  have hchart : MapsTo (u i).toFun (Icc (0 : Real) (lSegLen t i))
+  have hchart : MapsTo (u i).toFun (Icc (0 : Real) (partitionIntervalLength t i))
       (interior (extChartAt I (p i)).target) := by
     rw [(isOpen_extChartAt_target (I := I) (p i)).interior_eq]
     intro r hr
@@ -95,19 +95,19 @@ theorem lStrict_piece_c2
   exact ⟨hu1.differentiableOn (by norm_num), by simp, hq1.congr hder⟩
 
 omit [CompactSpace M] in
-theorem lStrict_piece_c2_at
+theorem lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
     (ht : StrictMono t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -116,15 +116,15 @@ theorem lStrict_piece_c2_at
     (i : Fin m) (s : Real) (hs : s ∈ Ioo (t i.castSucc) (t i.succ)) :
     ContMDiffAt (modelWithCornersSelf Real Real) I 2 gamma s := by
   let r : Real := s - t i.castSucc
-  have hr : r ∈ Ioo (0 : Real) (lSegLen t i) := by
-    dsimp only [r, lSegLen]
+  have hr : r ∈ Ioo (0 : Real) (partitionIntervalLength t i) := by
+    dsimp only [r, partitionIntervalLength]
     constructor <;> linarith [hs.1, hs.2]
   have hsadd : t i.castSucc + r = s := by
     dsimp only [r]
     ring
-  have hu2 := lStrict_piece_c2 (I := I) S hS T a b t ht ht0 htlast
+  have hu2 := lRegAction_minimizer_chart_piece_contDiffOn_two (I := I) S hS T a b t ht ht0 htlast
     p gamma hgamma u hsrc hrep hreg hmin i
-  have hIcc : Icc (0 : Real) (lSegLen t i) ∈ 𝓝 r :=
+  have hIcc : Icc (0 : Real) (partitionIntervalLength t i) ∈ 𝓝 r :=
     mem_of_superset (Ioo_mem_nhds hr.1 hr.2) Ioo_subset_Icc_self
   have hur : ContDiffAt Real 2 (u i).toFun r := hu2.contDiffAt hIcc
   let alpha : Real → M := fun q ↦
@@ -147,8 +147,8 @@ theorem lStrict_piece_c2_at
     exact hsymm.comp s (contMDiffAt_iff_contDiffAt.mpr hshift)
   have heqOn : EqOn gamma alpha (Ioo (t i.castSucc) (t i.succ)) := by
     intro q hq
-    have hqr : q - t i.castSucc ∈ Icc (0 : Real) (lSegLen t i) := by
-      dsimp only [lSegLen]
+    have hqr : q - t i.castSucc ∈ Icc (0 : Real) (partitionIntervalLength t i) := by
+      dsimp only [partitionIntervalLength]
       constructor <;> linarith [hq.1, hq.2]
     have hqsrc : gamma q ∈ (extChartAt I (p i)).source := by
       simpa only [extChartAt_source] using

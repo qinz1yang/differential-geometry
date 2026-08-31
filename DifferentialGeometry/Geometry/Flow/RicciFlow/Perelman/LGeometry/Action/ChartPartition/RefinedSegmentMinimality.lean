@@ -64,12 +64,12 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last (m + 2)) = b)
     (p : Fin (m + 2) → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (k : Fin (m + 2)) → timeH1 E (lSegLen t k))
+    (u : (k : Fin (m + 2)) → timeH1 E (partitionIntervalLength t k))
     (hsrc : ∀ k, MapsTo gamma
       (Icc (t k.castSucc) (t k.succ)) (chartAt H (p k)).source)
     (hrep : ∀ k, EqOn (u k).toFun
       (fun r ↦ extChartAt I (p k) (gamma (t k.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t k)))
+      (Icc (0 : Real) (partitionIntervalLength t k)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -85,9 +85,9 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
       (fun r ↦ extChartAt I (p q.castSucc)
         (gamma (t q.succ.castSucc + r)))
       (Icc (0 : Real) (c - t q.succ.castSucc)))
-    (v0 : timeH1 E (lSegLen t q.castSucc))
+    (v0 : timeH1 E (partitionIntervalLength t q.castSucc))
     (v1 : timeH1 E (c - t q.succ.castSucc))
-    (htar0 : MapsTo v0.toFun (Icc (0 : Real) (lSegLen t q.castSucc))
+    (htar0 : MapsTo v0.toFun (Icc (0 : Real) (partitionIntervalLength t q.castSucc))
       (extChartAt I (p q.castSucc)).target)
     (htar1 : MapsTo v1.toFun
       (Icc (0 : Real) (c - t q.succ.castSucc))
@@ -97,7 +97,7 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     (hv2 : (extChartAt I (p q.castSucc)).symm
       (v1.toFun (c - t q.succ.castSucc)) = gamma c)
     (hvnode : (extChartAt I (p q.castSucc)).symm
-        (v0.toFun (lSegLen t q.castSucc)) =
+        (v0.toFun (partitionIntervalLength t q.castSucc)) =
       (extChartAt I (p q.castSucc)).symm (v1.toFun 0)) :
     lChartAct S T (t q.castSucc.castSucc) (p q.castSucc) (u q.castSucc) +
         lChartAct S T (t q.succ.castSucc) (p q.castSucc) uHead ≤
@@ -145,18 +145,18 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
       simpa only [head, node] using ins_succ j k]
     simp only [tr, Fin.insertNth_apply_succAbove]
   have haTail : 0 ≤ c - t j.castSucc := sub_nonneg.mpr hc0.le
-  let uTail0 : timeH1 E (lSegLen t j - (c - t j.castSucc)) :=
-    timeH1.slice (u j) (c - t j.castSucc) (lSegLen t j) haTail le_rfl
-  have hHeadLen : lSegLen tr head = c - t j.castSucc := by
-    simp only [lSegLen, htrHead0, htrHead1]
-  have hTailLen : lSegLen tr (head.succAbove j) =
-      lSegLen t j - (c - t j.castSucc) := by
-    simp only [lSegLen, htrTail0, htrTail1]
+  let uTail0 : timeH1 E (partitionIntervalLength t j - (c - t j.castSucc)) :=
+    timeH1.slice (u j) (c - t j.castSucc) (partitionIntervalLength t j) haTail le_rfl
+  have hHeadLen : partitionIntervalLength tr head = c - t j.castSucc := by
+    simp only [partitionIntervalLength, htrHead0, htrHead1]
+  have hTailLen : partitionIntervalLength tr (head.succAbove j) =
+      partitionIntervalLength t j - (c - t j.castSucc) := by
+    simp only [partitionIntervalLength, htrTail0, htrTail1]
     ring
   have hOldLen (k : Fin (m + 2)) (hkj : k ≠ j) :
-      lSegLen tr (head.succAbove k) = lSegLen t k := by
-    simp only [lSegLen, htrOld0 k hkj, htrOld1 k]
-  let ur : (k : Fin (m + 3)) → timeH1 E (lSegLen tr k) :=
+      partitionIntervalLength tr (head.succAbove k) = partitionIntervalLength t k := by
+    simp only [partitionIntervalLength, htrOld0 k hkj, htrOld1 k]
+  let ur : (k : Fin (m + 3)) → timeH1 E (partitionIntervalLength tr k) :=
     Fin.insertNth head (hHeadLen.symm ▸ uHead) fun k ↦
       if hkj : k = j then by
         subst k
@@ -182,19 +182,19 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     induction k using head.succAboveCases with
     | x =>
         apply sub_nonneg.mp
-        change 0 ≤ lSegLen tr head
+        change 0 ≤ partitionIntervalLength tr head
         rw [hHeadLen]
         exact sub_nonneg.mpr hc0.le
     | p k =>
         by_cases hkj : k = j
         · subst k
           apply sub_nonneg.mp
-          change 0 ≤ lSegLen tr (head.succAbove j)
+          change 0 ≤ partitionIntervalLength tr (head.succAbove j)
           rw [hTailLen]
-          simp only [lSegLen]
+          simp only [partitionIntervalLength]
           linarith
         · apply sub_nonneg.mp
-          change 0 ≤ lSegLen tr (head.succAbove k)
+          change 0 ≤ partitionIntervalLength tr (head.succAbove k)
           rw [hOldLen k hkj]
           exact sub_nonneg.mpr (htmono Fin.castSucc_lt_succ.le)
   have hsrcR : ∀ k, MapsTo gamma
@@ -214,7 +214,7 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
           exact hsrc k
   have hrepR : ∀ k, EqOn (ur k).toFun
       (fun r ↦ extChartAt I (pr k) (gamma (tr k.castSucc + r)))
-      (Icc (0 : Real) (lSegLen tr k)) := by
+      (Icc (0 : Real) (partitionIntervalLength tr k)) := by
     intro k r hr
     induction k using head.succAboveCases with
     | x =>
@@ -228,11 +228,11 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
         by_cases hkj : k = j
         · subst k
           have hr' : r ∈ Icc (0 : Real)
-              (lSegLen t j - (c - t j.castSucc)) := by
+              (partitionIntervalLength t j - (c - t j.castSucc)) := by
             simpa only [hTailLen] using hr
           have hs := timeH1.slice_toFun (u j) (c - t j.castSucc)
-            (lSegLen t j) haTail le_rfl hr'
-          have harg : c - t j.castSucc + r ∈ Icc (0 : Real) (lSegLen t j) := by
+            (partitionIntervalLength t j) haTail le_rfl hr'
+          have harg : c - t j.castSucc + r ∈ Icc (0 : Real) (partitionIntervalLength t j) := by
             constructor
             · linarith [hc0.le, hr'.1]
             · linarith [hr'.2]
@@ -244,7 +244,7 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
               (t j.castSucc + (c - t j.castSucc + r))) =
             extChartAt I (p j) (gamma (c + r))
           rw [show t j.castSucc + (c - t j.castSucc + r) = c + r by ring]
-        · have hr' : r ∈ Icc (0 : Real) (lSegLen t k) := by
+        · have hr' : r ∈ Icc (0 : Real) (partitionIntervalLength t k) := by
             simpa only [hOldLen k hkj] using hr
           have hu := hrep k hr'
           rw [hurOld k hkj, htrOld0 k hkj, hprOld]
@@ -288,10 +288,10 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
   have hprLeft : pr i.castSucc = p i := by
     rw [← hleftIdx]
     exact hprOld i
-  have hLeftLen : lSegLen tr i.castSucc = lSegLen t i := by
+  have hLeftLen : partitionIntervalLength tr i.castSucc = partitionIntervalLength t i := by
     rw [← hleftIdx]
     exact hOldLen i hine
-  have hHeadLen' : lSegLen tr i.succ = c - t j.castSucc := by
+  have hHeadLen' : partitionIntervalLength tr i.succ = c - t j.castSucc := by
     rw [hheadIdx]
     exact hHeadLen
   have htrHead0' : tr i.succ.castSucc = t j.castSucc := by
@@ -311,17 +311,17 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     apply eq_of_heq
     exact hindex.symm.trans (heq_of_eq (hurOld i hine)) |>.trans
       hcastOld |>.trans hcastLeft.symm
-  let v0r : timeH1 E (lSegLen tr i.castSucc) := hLeftLen.symm ▸ v0
-  let v1r : timeH1 E (lSegLen tr i.succ) := hHeadLen'.symm ▸ v1
+  let v0r : timeH1 E (partitionIntervalLength tr i.castSucc) := hLeftLen.symm ▸ v0
+  let v1r : timeH1 E (partitionIntervalLength tr i.succ) := hHeadLen'.symm ▸ v1
   have hv0rFun : v0r.toFun = v0.toFun := by
     exact toFun_cast hLeftLen v0
   have hv1rFun : v1r.toFun = v1.toFun := by
     exact toFun_cast hHeadLen' v1
-  have htar0r : MapsTo v0r.toFun (Icc (0 : Real) (lSegLen tr i.castSucc))
+  have htar0r : MapsTo v0r.toFun (Icc (0 : Real) (partitionIntervalLength tr i.castSucc))
       (extChartAt I (pr i.castSucc)).target := by
     rw [hv0rFun, hLeftLen, hprLeft]
     simpa only [i] using htar0
-  have htar1r : MapsTo v1r.toFun (Icc (0 : Real) (lSegLen tr i.succ))
+  have htar1r : MapsTo v1r.toFun (Icc (0 : Real) (partitionIntervalLength tr i.succ))
       (extChartAt I (pr i.succ)).target := by
     rw [hv1rFun, hHeadLen', hheadIdx, hprHead]
     simpa only [i, j] using htar1
@@ -330,11 +330,11 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     rw [hv0rFun, hprLeft, htrLeft0]
     simpa only [i] using hv0
   have hv2r : (extChartAt I (pr i.succ)).symm
-      (v1r.toFun (lSegLen tr i.succ)) = gamma (tr i.succ.succ) := by
+      (v1r.toFun (partitionIntervalLength tr i.succ)) = gamma (tr i.succ.succ) := by
     rw [hv1rFun, hHeadLen', hheadIdx, hprHead, htrHead1]
     simpa only [i, j] using hv2
   have hvnoder : (extChartAt I (pr i.castSucc)).symm
-        (v0r.toFun (lSegLen tr i.castSucc)) =
+        (v0r.toFun (partitionIntervalLength tr i.castSucc)) =
       (extChartAt I (pr i.succ)).symm (v1r.toFun 0) := by
     rw [hv0rFun, hv1rFun, hLeftLen, hprLeft, hheadIdx, hprHead]
     simpa only [i] using hvnode

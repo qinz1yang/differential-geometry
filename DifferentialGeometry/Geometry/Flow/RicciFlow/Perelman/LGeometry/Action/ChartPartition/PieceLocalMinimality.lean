@@ -25,21 +25,21 @@ variable {D : RealTimeInterval}
 theorem lChartAct_isLocalMinOn_of_pair_minimality
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (t : Fin 3 → Real) (p : Fin 2 → M)
-    (u : (i : Fin 2) → timeH1 E (lSegLen t i))
+    (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (hchart : ∀ i, MapsTo (u i).toFun
-      (Icc (0 : Real) (lSegLen t i))
+      (Icc (0 : Real) (partitionIntervalLength t i))
       (interior (extChartAt I (p i)).target))
     (hnode : (extChartAt I (p 0)).symm
-        ((u 0).toFun (lSegLen t 0)) =
+        ((u 0).toFun (partitionIntervalLength t 0)) =
       (extChartAt I (p 1)).symm ((u 1).toFun 0))
-    (hcmp : ∀ v : (i : Fin 2) → timeH1 E (lSegLen t i),
+    (hcmp : ∀ v : (i : Fin 2) → timeH1 E (partitionIntervalLength t i),
       (∀ i, MapsTo (v i).toFun
-        (Icc (0 : Real) (lSegLen t i)) (extChartAt I (p i)).target) →
+        (Icc (0 : Real) (partitionIntervalLength t i)) (extChartAt I (p i)).target) →
       (extChartAt I (p 0)).symm ((v 0).toFun 0) =
         (extChartAt I (p 0)).symm ((u 0).toFun 0) →
-      (extChartAt I (p 1)).symm ((v 1).toFun (lSegLen t 1)) =
-        (extChartAt I (p 1)).symm ((u 1).toFun (lSegLen t 1)) →
-      (extChartAt I (p 0)).symm ((v 0).toFun (lSegLen t 0)) =
+      (extChartAt I (p 1)).symm ((v 1).toFun (partitionIntervalLength t 1)) =
+        (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) →
+      (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((v 1).toFun 0) →
       (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
         ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i))
@@ -50,7 +50,7 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
   fin_cases i
   · change IsLocalMinOn (lChartAct S T (t 0) (p 0))
       (sameTimeEnds (u 0)) (u 0)
-    let K : Set E := (u 0).toFun '' Icc (0 : Real) (lSegLen t 0)
+    let K : Set E := (u 0).toFun '' Icc (0 : Real) (partitionIntervalLength t 0)
     have hKc : IsCompact K :=
       isCompact_Icc.image_of_continuousOn (u 0).continuousOn_toFun
     have hKtar : K ⊆ (extChartAt I (p 0)).target := by
@@ -58,7 +58,7 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
       exact interior_subset (hchart 0 hr)
     obtain ⟨d, hd, hdsub⟩ := hKc.exists_thickening_subset_open
       (isOpen_extChartAt_target (I := I) (p 0)) hKtar
-    let c : Real := 1 + Real.sqrt (lSegLen t 0)
+    let c : Real := 1 + Real.sqrt (partitionIntervalLength t 0)
     have hc : 0 < c := by
       dsimp only [c]
       positivity
@@ -71,7 +71,7 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
     have hvnorm : ‖v - u 0‖ < eps := by
       simpa only [Metric.mem_ball, dist_eq_norm] using hvball
     have hvtar : MapsTo v.toFun
-        (Icc (0 : Real) (lSegLen t 0)) (extChartAt I (p 0)).target := by
+        (Icc (0 : Real) (partitionIntervalLength t 0)) (extChartAt I (p 0)).target := by
       intro r hr
       apply hdsub
       rw [Metric.mem_thickening_iff]
@@ -96,13 +96,13 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
         _ = d := by
           dsimp only [eps]
           exact mul_div_cancel₀ d hc.ne'
-    let w : (j : Fin 2) → timeH1 E (lSegLen t j) :=
+    let w : (j : Fin 2) → timeH1 E (partitionIntervalLength t j) :=
       Fin.cases (by simpa using v)
         (Fin.cases (by simpa using u 1) (fun j ↦ Fin.elim0 j))
     have hw0eq : w 0 = v := rfl
     have hw1eq : w 1 = u 1 := rfl
     have hwtar : ∀ j, MapsTo (w j).toFun
-        (Icc (0 : Real) (lSegLen t j)) (extChartAt I (p j)).target := by
+        (Icc (0 : Real) (partitionIntervalLength t j)) (extChartAt I (p j)).target := by
       intro j
       refine Fin.cases ?_ (fun j ↦ Fin.cases ?_ (fun j ↦ Fin.elim0 j) j) j
       · exact hvtar
@@ -113,11 +113,11 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
       simpa only [← timeH1.toFun_zero] using
         congrArg (extChartAt I (p 0)).symm hvends.1
     have hw2 : (extChartAt I (p 1)).symm
-        ((w 1).toFun (lSegLen t 1)) =
-        (extChartAt I (p 1)).symm ((u 1).toFun (lSegLen t 1)) := by
+        ((w 1).toFun (partitionIntervalLength t 1)) =
+        (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) := by
       rw [hw1eq]
     have hwnode : (extChartAt I (p 0)).symm
-        ((w 0).toFun (lSegLen t 0)) =
+        ((w 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((w 1).toFun 0) := by
       rw [hw0eq, hw1eq]
       simpa only [← timeH1.toFun_zero] using
@@ -133,7 +133,7 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
     linarith
   · change IsLocalMinOn (lChartAct S T (t 1) (p 1))
       (sameTimeEnds (u 1)) (u 1)
-    let K : Set E := (u 1).toFun '' Icc (0 : Real) (lSegLen t 1)
+    let K : Set E := (u 1).toFun '' Icc (0 : Real) (partitionIntervalLength t 1)
     have hKc : IsCompact K :=
       isCompact_Icc.image_of_continuousOn (u 1).continuousOn_toFun
     have hKtar : K ⊆ (extChartAt I (p 1)).target := by
@@ -141,7 +141,7 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
       exact interior_subset (hchart 1 hr)
     obtain ⟨d, hd, hdsub⟩ := hKc.exists_thickening_subset_open
       (isOpen_extChartAt_target (I := I) (p 1)) hKtar
-    let c : Real := 1 + Real.sqrt (lSegLen t 1)
+    let c : Real := 1 + Real.sqrt (partitionIntervalLength t 1)
     have hc : 0 < c := by
       dsimp only [c]
       positivity
@@ -154,7 +154,7 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
     have hvnorm : ‖v - u 1‖ < eps := by
       simpa only [Metric.mem_ball, dist_eq_norm] using hvball
     have hvtar : MapsTo v.toFun
-        (Icc (0 : Real) (lSegLen t 1)) (extChartAt I (p 1)).target := by
+        (Icc (0 : Real) (partitionIntervalLength t 1)) (extChartAt I (p 1)).target := by
       intro r hr
       apply hdsub
       rw [Metric.mem_thickening_iff]
@@ -179,13 +179,13 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
         _ = d := by
           dsimp only [eps]
           exact mul_div_cancel₀ d hc.ne'
-    let w : (j : Fin 2) → timeH1 E (lSegLen t j) :=
+    let w : (j : Fin 2) → timeH1 E (partitionIntervalLength t j) :=
       Fin.cases (by simpa using u 0)
         (Fin.cases (by simpa using v) (fun j ↦ Fin.elim0 j))
     have hw0eq : w 0 = u 0 := rfl
     have hw1eq : w 1 = v := rfl
     have hwtar : ∀ j, MapsTo (w j).toFun
-        (Icc (0 : Real) (lSegLen t j)) (extChartAt I (p j)).target := by
+        (Icc (0 : Real) (partitionIntervalLength t j)) (extChartAt I (p j)).target := by
       intro j
       refine Fin.cases ?_ (fun j ↦ Fin.cases ?_ (fun j ↦ Fin.elim0 j) j) j
       · exact (hchart 0).mono_right interior_subset
@@ -194,12 +194,12 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
         (extChartAt I (p 0)).symm ((u 0).toFun 0) := by
       rw [hw0eq]
     have hw2 : (extChartAt I (p 1)).symm
-        ((w 1).toFun (lSegLen t 1)) =
-        (extChartAt I (p 1)).symm ((u 1).toFun (lSegLen t 1)) := by
+        ((w 1).toFun (partitionIntervalLength t 1)) =
+        (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) := by
       rw [hw1eq]
       exact congrArg (extChartAt I (p 1)).symm hvends.2
     have hwnode : (extChartAt I (p 0)).symm
-        ((w 0).toFun (lSegLen t 0)) =
+        ((w 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((w 1).toFun 0) := by
       rw [hw0eq, hw1eq]
       have hzero : (u 1).toFun 0 = v.toFun 0 := by

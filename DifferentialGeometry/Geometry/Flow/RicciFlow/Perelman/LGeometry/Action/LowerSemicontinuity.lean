@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteCharts
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
@@ -284,16 +284,16 @@ theorem lRegAction_chart
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → N) (gamma : Real → N)
-    (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     lRegAction S T gamma a b =
       ∑ i : Fin m, (
-        (∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+        (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
           (chartGramOp (I := I) S.family (p i)
             (T - (t i.castSucc + r) ^ 2, (u i).toFun r) ((u i).deriv r))
           ((u i).deriv r)) +
@@ -320,7 +320,7 @@ theorem lRegAction_chart
     apply D.regular_subset
     apply hreg_i i s
     simpa only [uIcc_of_le (hseg i)] using hs
-  have hdiff (i : Fin m) : ∀ᵐ r ∂timeMeasure (lSegLen t i),
+  have hdiff (i : Fin m) : ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma
         (t i.castSucc + r) := by
     exact curve_mdiff_local I (p i) gamma (u i) (hseg i) (hsrc i) (hrep i)
@@ -352,11 +352,11 @@ theorem lRegAction_chart
     simpa only [lRegAction, lRegLag, kin, pot] using
       intervalIntegral.integral_add (hkinInt i) (hpotInt i)
   have hkinChart (i : Fin m) : kin i =
-      ∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+      ∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family (p i)
           (T - (t i.castSucc + r) ^ 2, (u i).toFun r) ((u i).deriv r))
         ((u i).deriv r) := by
-    simpa only [kin, lSegLen, smul_apply, real_inner_smul_left] using
+    simpa only [kin, partitionIntervalLength, smul_apply, real_inner_smul_left] using
       lKinetic_local S T gamma (p i) (t i.castSucc) (t i.succ)
         (hseg i) (u i) (hsrc i) (hrep i) (hdiff i)
   have hLag (i : Fin m) : IntervalIntegrable (lRegLag S T gamma) volume
@@ -409,24 +409,24 @@ theorem lRegAction_fin_cpt
     (p : Fin m → N) (alpha : Nat → Real → N) (gamma : Real → N)
     (Q : Set N) (hQ : IsCompact Q)
     (hval : ∀ n s, s ∈ Icc a b → alpha n s ∈ Q)
-    (u : (i : Fin m) → Nat → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n)
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i n, EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
-    (hdiff : ∀ i n, ∀ᵐ r ∂timeMeasure (lSegLen t i),
+      (Icc (0 : Real) (partitionIntervalLength t i)))
+    (hdiff : ∀ i n, ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
       MDifferentiableAt (modelWithCornersSelf Real Real) I
         (alpha n) (t i.castSucc + r))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
-    (huK : ∀ i n (r : Icc (0 : Real) (lSegLen t i)),
+    (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (u i n).toFun r.1 ∈ K i)
-    (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hu : ∀ i, TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ (u i n).toFun r.1)
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ (u i n).toFun r.1)
       (fun r ↦ (uLim i).toFun r.1) atTop)
-    (hdu : ∀ i (z : timeL2 E (lSegLen t i)), Tendsto
+    (hdu : ∀ i (z : timeL2 E (partitionIntervalLength t i)), Tendsto
       (fun n ↦ inner Real (u i n).deriv z) atTop
       (nhds (inner Real (uLim i).deriv z)))
     (halpha : TendstoUniformly
@@ -436,7 +436,7 @@ theorem lRegAction_fin_cpt
       (fun n ↦ lRegAction S T (alpha n) a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     (∑ i : Fin m, (
-      (∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+      (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family (p i)
           (T - (t i.castSucc + r) ^ 2, (uLim i).toFun r)
           ((uLim i).deriv r))
@@ -514,7 +514,7 @@ theorem lRegAction_fin_cpt
       (chartGramOp_nonneg (I := I) S.family (p i)
         (T - (t i.castSucc + r) ^ 2, (u i n).toFun r) ((u i n).deriv r))
   obtain ⟨C, hC⟩ := lScalar_lower_cpt (I := I) S hSc T a b hcarrier Q hQ
-  have hpotLower (i : Fin m) (n : Nat) : C * lSegLen t i ≤ pot i n := by
+  have hpotLower (i : Fin m) (n : Nat) : C * partitionIntervalLength t i ≤ pot i n := by
     have hmono := intervalIntegral.integral_mono_on (hseg i)
       intervalIntegrable_const (hpotInt i n) (fun s hs ↦
         hC s (by
@@ -522,8 +522,8 @@ theorem lRegAction_fin_cpt
             ⟨(hleft i).trans hs.1, hs.2.trans (hright i)⟩) (alpha n s)
           (hval n s ⟨(hleft i).trans hs.1, hs.2.trans (hright i)⟩))
     rw [intervalIntegral.integral_const] at hmono
-    simpa only [pot, lSegLen, smul_eq_mul, mul_comm] using hmono
-  have hqLower (i : Fin m) (n : Nat) : C * lSegLen t i ≤ q i n := by
+    simpa only [pot, partitionIntervalLength, smul_eq_mul, mul_comm] using hmono
+  have hqLower (i : Fin m) (n : Nat) : C * partitionIntervalLength t i ≤ q i n := by
     rw [hsplit]
     linarith [hkinNonneg i n, hpotLower i n]
   let tNat : Nat → Real := fun k ↦
@@ -559,24 +559,24 @@ theorem lRegAction_fin_cpt
   obtain ⟨A, hA⟩ := hact
   change ∀ᶠ n in atTop, lRegAction S T (alpha n) a b ≤ A at hA
   have hqUpper (i : Fin m) : IsBoundedUnder (· ≤ ·) atTop (q i) := by
-    refine ⟨A - (∑ j ∈ (Finset.univ.erase i), C * lSegLen t j), ?_⟩
+    refine ⟨A - (∑ j ∈ (Finset.univ.erase i), C * partitionIntervalLength t j), ?_⟩
     change ∀ᶠ n in atTop,
-      q i n ≤ A - (∑ j ∈ (Finset.univ.erase i), C * lSegLen t j)
+      q i n ≤ A - (∑ j ∈ (Finset.univ.erase i), C * partitionIntervalLength t j)
     filter_upwards [hA] with n hn
     rw [← hsum n] at hn
-    have hrest : (∑ j ∈ (Finset.univ.erase i), C * lSegLen t j) ≤
+    have hrest : (∑ j ∈ (Finset.univ.erase i), C * partitionIntervalLength t j) ≤
         ∑ j ∈ (Finset.univ.erase i), q j n :=
       Finset.sum_le_sum fun j hj ↦ hqLower j n
     have hdecomp : q i n + (∑ j ∈ (Finset.univ.erase i), q j n) =
         ∑ j : Fin m, q j n :=
       Finset.add_sum_erase Finset.univ (fun j ↦ q j n) (Finset.mem_univ i)
     linarith
-  have huLimK (i : Fin m) (r : Icc (0 : Real) (lSegLen t i)) :
+  have huLimK (i : Fin m) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
       (uLim i).toFun r.1 ∈ K i := by
     apply (hKc i).isClosed.mem_of_tendsto ((hu i).tendsto_at r)
     exact Eventually.of_forall fun n ↦ huK i n r
   have hlocal (i : Fin m) :
-      (∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+      (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
           (chartGramOp (I := I) S.family (p i)
             (T - (t i.castSucc + r) ^ 2, (uLim i).toFun r)
             ((uLim i).deriv r))
@@ -609,7 +609,7 @@ theorem lRegAction_fin_cpt
     simpa using sum_liminf_le (Finset.univ : Finset (Fin m)) q hlo hhi
   calc
     (∑ i : Fin m, (
-      (∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+      (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family (p i)
           (T - (t i.castSucc + r) ^ 2, (uLim i).toFun r)
           ((uLim i).deriv r))
@@ -633,24 +633,24 @@ theorem lRegAction_fin_lsc
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → N) (alpha : Nat → Real → N) (gamma : Real → N)
-    (u : (i : Fin m) → Nat → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n)
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i n, EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
-    (hdiff : ∀ i n, ∀ᵐ r ∂timeMeasure (lSegLen t i),
+      (Icc (0 : Real) (partitionIntervalLength t i)))
+    (hdiff : ∀ i n, ∀ᵐ r ∂timeMeasure (partitionIntervalLength t i),
       MDifferentiableAt (modelWithCornersSelf Real Real) I
         (alpha n) (t i.castSucc + r))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
-    (huK : ∀ i n (r : Icc (0 : Real) (lSegLen t i)),
+    (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (u i n).toFun r.1 ∈ K i)
-    (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hu : ∀ i, TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ (u i n).toFun r.1)
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ (u i n).toFun r.1)
       (fun r ↦ (uLim i).toFun r.1) atTop)
-    (hdu : ∀ i (z : timeL2 E (lSegLen t i)), Tendsto
+    (hdu : ∀ i (z : timeL2 E (partitionIntervalLength t i)), Tendsto
       (fun n ↦ inner Real (u i n).deriv z) atTop
       (nhds (inner Real (uLim i).deriv z)))
     (halpha : TendstoUniformly
@@ -660,7 +660,7 @@ theorem lRegAction_fin_lsc
       (fun n ↦ lRegAction S T (alpha n) a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     (∑ i : Fin m, (
-      (∫ r in (0 : Real)..lSegLen t i, (1 / 2 : Real) * inner Real
+      (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family (p i)
           (T - (t i.castSucc + r) ^ 2, (uLim i).toFun r)
           ((uLim i).deriv r))

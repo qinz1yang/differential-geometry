@@ -28,13 +28,13 @@ omit [CompactSpace M] in
 theorem lRegAction_minimizer_velocity_eq_under_chart_change
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
-    (u : (i : Fin 2) → timeH1 E (lSegLen t i))
+    (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (hpos : ∀ i : Fin 2, t i.castSucc < t i.succ)
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc (t 0) (t (Fin.last 2)), T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -44,8 +44,8 @@ theorem lRegAction_minimizer_velocity_eq_under_chart_change
         lRegAction S T delta (t 0) (t (Fin.last 2))) :
     tangentCoordChange I (p 0) (p 1) (gamma (t 1))
         (derivWithin (u 0).toFun
-          (Icc (0 : Real) (lSegLen t 0)) (lSegLen t 0)) =
-      derivWithin (u 1).toFun (Icc (0 : Real) (lSegLen t 1)) 0 := by
+          (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0)) =
+      derivWithin (u 1).toFun (Icc (0 : Real) (partitionIntervalLength t 1)) 0 := by
   classical
   have hfin0c : (0 : Fin 2).castSucc = (0 : Fin 3) := rfl
   have hfin0s : (0 : Fin 2).succ = (1 : Fin 3) := rfl
@@ -62,9 +62,9 @@ theorem lRegAction_minimizer_velocity_eq_under_chart_change
     rw [extChartAt_source]
     exact hsrc 1 ⟨le_rfl, ht12.le⟩
   let v₀ := derivWithin (u 0).toFun
-    (Icc (0 : Real) (lSegLen t 0)) (lSegLen t 0)
+    (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0)
   let v₁ := derivWithin (u 1).toFun
-    (Icc (0 : Real) (lSegLen t 1)) 0
+    (Icc (0 : Real) (partitionIntervalLength t 1)) 0
   let J := tangentCoordChange I (p 0) (p 1) (gamma (t 1))
   let Jrev := tangentCoordChange I (p 1) (p 0) (gamma (t 1))
   have hJrev (y : E) : J (Jrev y) = y := by

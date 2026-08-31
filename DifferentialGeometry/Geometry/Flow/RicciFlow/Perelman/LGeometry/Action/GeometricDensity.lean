@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1Density
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteCharts
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
 
 set_option autoImplicit false
 
@@ -122,27 +122,27 @@ theorem exists_c1_of_flat
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M)
-    (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrcLim : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrepLim : ∀ i, EqOn (uLim i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKtar : ∀ i, K i ⊆ (extChartAt I (p i)).target)
     (v : (i : Fin m) → Nat → Real → E)
     (hvC1 : ∀ i n, ContDiff Real 1 (v i n))
     (hvleft : ∀ i n, v i n =ᶠ[nhds (0 : Real)] fun _ ↦ v i n 0)
-    (hvright : ∀ i n, v i n =ᶠ[nhds (lSegLen t i)]
-      fun _ ↦ v i n (lSegLen t i))
+    (hvright : ∀ i n, v i n =ᶠ[nhds (partitionIntervalLength t i)]
+      fun _ ↦ v i n (partitionIntervalLength t i))
     (hvzero : ∀ i n, v i n 0 = (uLim i).toFun 0)
-    (hvlast : ∀ i n, v i n (lSegLen t i) =
-      (uLim i).toFun (lSegLen t i))
-    (hvK : ∀ i n (r : Icc (0 : Real) (lSegLen t i)), v i n r.1 ∈ K i)
-    (huLimK : ∀ i (r : Icc (0 : Real) (lSegLen t i)),
+    (hvlast : ∀ i n, v i n (partitionIntervalLength t i) =
+      (uLim i).toFun (partitionIntervalLength t i))
+    (hvK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)), v i n r.1 ∈ K i)
+    (huLimK : ∀ i (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (uLim i).toFun r.1 ∈ K i)
     (hvlim : ∀ i, TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦ v i n r.1)
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ v i n r.1)
       (fun r ↦ (uLim i).toFun r.1) atTop) :
     ∃ alpha : Nat → Real → M,
       (∀ n, ContMDiff (modelWithCornersSelf Real Real) I 1 (alpha n)) ∧
@@ -150,7 +150,7 @@ theorem exists_c1_of_flat
       (∀ n, alpha n b = gamma b) ∧
       (∀ i n, EqOn (v i n)
         (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-        (Icc (0 : Real) (lSegLen t i))) ∧
+        (Icc (0 : Real) (partitionIntervalLength t i))) ∧
       (∀ i n, MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
         (chartAt H (p i)).source) ∧
       TendstoUniformly
@@ -159,7 +159,7 @@ theorem exists_c1_of_flat
   classical
   have hseg (i : Fin m) : t i.castSucc ≤ t i.succ :=
     htmono Fin.castSucc_lt_succ.le
-  have hlen (i : Fin m) : 0 ≤ lSegLen t i :=
+  have hlen (i : Fin m) : 0 ≤ partitionIntervalLength t i :=
     sub_nonneg.mpr (hseg i)
   have hleft (i : Fin m) : a ≤ t i.castSucc := by
     rw [← ht0]
@@ -167,16 +167,16 @@ theorem exists_c1_of_flat
   have hright (i : Fin m) : t i.succ ≤ b := by
     rw [← htlast]
     exact htmono (Fin.le_last _)
-  have hlim_lift (i : Fin m) (r : Icc (0 : Real) (lSegLen t i)) :
+  have hlim_lift (i : Fin m) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
       (extChartAt I (p i)).symm ((uLim i).toFun r.1) =
         gamma (t i.castSucc + r.1) := by
     have hs : t i.castSucc + r.1 ∈ Icc (t i.castSucc) (t i.succ) := by
       constructor
       · linarith [r.2.1]
       · calc
-          t i.castSucc + r.1 ≤ t i.castSucc + lSegLen t i :=
+          t i.castSucc + r.1 ≤ t i.castSucc + partitionIntervalLength t i :=
             add_le_add_right r.2.2 _
-          _ = t i.succ := by simp only [lSegLen]; ring
+          _ = t i.succ := by simp only [partitionIntervalLength]; ring
     rw [hrepLim i r.2]
     exact (extChartAt I (p i)).left_inv (by
       simpa only [extChartAt_source] using hsrcLim i hs)
@@ -211,10 +211,10 @@ theorem exists_c1_of_flat
     exact (hvleft i n).comp_tendsto htend
   have hshift_right (i : Fin m) (n : Nat) :
       (fun s ↦ v i n (s - t i.castSucc)) =ᶠ[nhds (t i.succ)]
-        fun _ ↦ v i n (lSegLen t i) := by
+        fun _ ↦ v i n (partitionIntervalLength t i) := by
     have htend : Tendsto (fun s : Real ↦ s - t i.castSucc)
-        (nhds (t i.succ)) (nhds (lSegLen t i)) := by
-      simpa only [id_eq, lSegLen] using
+        (nhds (t i.succ)) (nhds (partitionIntervalLength t i)) := by
+      simpa only [id_eq, partitionIntervalLength] using
         (tendsto_id.sub tendsto_const_nhds : Tendsto
           (fun s : Real ↦ s - t i.castSucc) (nhds (t i.succ))
           (nhds (t i.succ - t i.castSucc)))
@@ -225,14 +225,14 @@ theorem exists_c1_of_flat
     intro s hs
     apply hKtar i
     exact hvK i n ⟨s - t i.castSucc, ⟨by linarith [hs.1], by
-      simpa only [lSegLen] using sub_le_sub_right hs.2 (t i.castSucc)⟩⟩
+      simpa only [partitionIntervalLength] using sub_le_sub_right hs.2 (t i.castSucc)⟩⟩
   have hlift_c1 (i : Fin m) (n : Nat) :
       ContMDiff (modelWithCornersSelf Real Real) I 1 (lift i n) := by
     apply chartLift_contMDiff I (p i)
       (fun s ↦ v i n (s - t i.castSucc)) (hseg i)
     · exact (hvC1 i n).comp (contDiff_id.sub contDiff_const)
     · simpa using hshift_left i n
-    · simpa only [lSegLen] using hshift_right i n
+    · simpa only [partitionIntervalLength] using hshift_right i n
     · exact hmaps i n
   have hlift_left (i : Fin m) (n : Nat) :
       lift i n =ᶠ[nhds (t i.castSucc)] fun _ ↦ gamma (t i.castSucc) := by
@@ -251,19 +251,19 @@ theorem exists_c1_of_flat
       lift i n =ᶠ[nhds (t i.succ)] fun _ ↦ gamma (t i.succ) := by
     have h := chartLift_right I (p i)
       (fun s ↦ v i n (s - t i.castSucc)) (hseg i)
-      (by simpa only [lSegLen] using hshift_right i n)
-    have hval : (extChartAt I (p i)).symm (v i n (lSegLen t i)) =
+      (by simpa only [partitionIntervalLength] using hshift_right i n)
+    have hval : (extChartAt I (p i)).symm (v i n (partitionIntervalLength t i)) =
         gamma (t i.succ) := by
       rw [hvlast i n]
-      have hr : (lSegLen t i : Real) ∈ Icc (0 : Real) (lSegLen t i) :=
+      have hr : (partitionIntervalLength t i : Real) ∈ Icc (0 : Real) (partitionIntervalLength t i) :=
         ⟨hlen i, le_rfl⟩
-      have hadd : t i.castSucc + lSegLen t i = t i.succ := by
-        simp only [lSegLen]
+      have hadd : t i.castSucc + partitionIntervalLength t i = t i.succ := by
+        simp only [partitionIntervalLength]
         ring
-      simpa only [hadd] using hlim_lift i ⟨lSegLen t i, hr⟩
+      simpa only [hadd] using hlim_lift i ⟨partitionIntervalLength t i, hr⟩
     have h' : lift i n =ᶠ[nhds (t i.succ)]
-        fun _ ↦ (extChartAt I (p i)).symm (v i n (lSegLen t i)) := by
-      simpa only [lift, lSegLen] using h
+        fun _ ↦ (extChartAt I (p i)).symm (v i n (partitionIntervalLength t i)) := by
+      simpa only [lift, partitionIntervalLength] using h
     exact h'.trans (Eventually.of_forall fun _ ↦ hval)
   let pieces (n k : Nat) : Real → M :=
     if hk : k < m then lift ⟨k, hk⟩ n else fun _ ↦ gamma b
@@ -368,13 +368,13 @@ theorem exists_c1_of_flat
       rw [← hab, halpha_left]
   have halpha_rep (i : Fin m) (n : Nat) : EqOn (v i n)
       (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)) := by
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
     intro r hr
     have hs : t i.castSucc + r ∈ Icc (t i.castSucc) (t i.succ) := by
       constructor
       · linarith [hr.1]
       · have hr' := hr.2
-        rw [lSegLen] at hr'
+        rw [partitionIntervalLength] at hr'
         linarith
     change v i n r = extChartAt I (p i) (alpha n (t i.castSucc + r))
     rw [halpha_piece i n hs]
@@ -393,7 +393,7 @@ theorem exists_c1_of_flat
     rw [halpha_piece i n hs, hlift]
     simpa only [extChartAt_source] using hin
   have hinv_unif (i : Fin m) : TendstoUniformly
-      (fun n (r : Icc (0 : Real) (lSegLen t i)) ↦
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦
         (extChartAt I (p i)).symm (v i n r.1))
       (fun r ↦ gamma (t i.castSucc + r.1)) atTop := by
     have hcont : ContinuousOn (extChartAt I (p i)).symm (K i) :=
@@ -410,18 +410,18 @@ theorem exists_c1_of_flat
     by_cases hm : 0 < m
     · intro U hU
       have hall : ∀ᶠ n in atTop, ∀ i : Fin m,
-          ∀ r : Icc (0 : Real) (lSegLen t i),
+          ∀ r : Icc (0 : Real) (partitionIntervalLength t i),
             (gamma (t i.castSucc + r.1),
               (extChartAt I (p i)).symm (v i n r.1)) ∈ U := by
         exact Filter.eventually_all.mpr fun i ↦ hinv_unif i U hU
       filter_upwards [hall] with n hn
       intro s
       obtain ⟨i, hs⟩ := exists_fin_seg hm t htmono ht0 htlast s.2
-      let r : Icc (0 : Real) (lSegLen t i) :=
+      let r : Icc (0 : Real) (partitionIntervalLength t i) :=
         ⟨s.1 - t i.castSucc, by
           constructor
           · linarith [hs.1]
-          · simpa only [lSegLen] using sub_le_sub_right hs.2 (t i.castSucc)⟩
+          · simpa only [partitionIntervalLength] using sub_le_sub_right hs.2 (t i.castSucc)⟩
       have hpiece := halpha_piece i n hs
       have hlift : lift i n s.1 = (extChartAt I (p i)).symm (v i n r.1) := by
         simp only [lift, chartFlatLift, Function.comp_apply,

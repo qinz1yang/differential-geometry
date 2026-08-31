@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Attainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.EulerLagrange
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Splicing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.SegmentReplacement
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeNonlinearAction
 
 set_option autoImplicit false
@@ -118,12 +118,12 @@ theorem lRegAction_chart_sum
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M)
-    (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     lRegAction S T gamma a b =
       ∑ i : Fin m, lChartAct S T (t i.castSucc) (p i) (u i) := by
@@ -141,37 +141,37 @@ theorem lRegAction_chart_sum
     rw [← htlast]
     exact htmono (Fin.le_last _)
   have hshift : MapsTo (fun r : Real ↦ t i.castSucc + r)
-      (Icc (0 : Real) (lSegLen t i))
+      (Icc (0 : Real) (partitionIntervalLength t i))
       (Icc (t i.castSucc) (t i.succ)) := by
     intro r hr
     change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
     exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
-  have htar (r : Real) (hr : r ∈ Icc (0 : Real) (lSegLen t i)) :
+  have htar (r : Real) (hr : r ∈ Icc (0 : Real) (partitionIntervalLength t i)) :
       (u i).toFun r ∈ (extChartAt I (p i)).target := by
     rw [hrep i hr]
     exact (extChartAt I (p i)).map_source (by
       simpa only [extChartAt_source] using hsrc i (hshift hr))
-  have hregi (r : Real) (hr : r ∈ Icc (0 : Real) (lSegLen t i)) :
+  have hregi (r : Real) (hr : r ∈ Icc (0 : Real) (partitionIntervalLength t i)) :
       T - (t i.castSucc + r) ^ 2 ∈ D.regular := by
     apply hreg (t i.castSucc + r)
     exact ⟨hleft.trans (hshift hr).1, (hshift hr).2.trans hright⟩
-  have hinv (r : Real) (hr : r ∈ Icc (0 : Real) (lSegLen t i)) :
+  have hinv (r : Real) (hr : r ∈ Icc (0 : Real) (partitionIntervalLength t i)) :
       (extChartAt I (p i)).symm ((u i).toFun r) =
         gamma (t i.castSucc + r) := by
     rw [hrep i hr]
     exact (extChartAt I (p i)).left_inv (by
       simpa only [extChartAt_source] using hsrc i (hshift hr))
   have hpot :
-      (∫ r in (0 : Real)..lSegLen t i, 2 * (t i.castSucc + r) ^ 2 *
+      (∫ r in (0 : Real)..partitionIntervalLength t i, 2 * (t i.castSucc + r) ^ 2 *
         S.scalar (T - (t i.castSucc + r) ^ 2)
           ((extChartAt I (p i)).symm ((u i).toFun r))) =
       ∫ s in t i.castSucc..t i.succ,
         2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s) := by
     calc
-      (∫ r in (0 : Real)..lSegLen t i, 2 * (t i.castSucc + r) ^ 2 *
+      (∫ r in (0 : Real)..partitionIntervalLength t i, 2 * (t i.castSucc + r) ^ 2 *
         S.scalar (T - (t i.castSucc + r) ^ 2)
           ((extChartAt I (p i)).symm ((u i).toFun r))) =
-          ∫ r in (0 : Real)..lSegLen t i, 2 * (t i.castSucc + r) ^ 2 *
+          ∫ r in (0 : Real)..partitionIntervalLength t i, 2 * (t i.castSucc + r) ^ 2 *
             S.scalar (T - (t i.castSucc + r) ^ 2)
               (gamma (t i.castSucc + r)) := by
             apply intervalIntegral.integral_congr
@@ -183,19 +183,19 @@ theorem lRegAction_chart_sum
                 S.scalar (T - (t i.castSucc + r) ^ 2)
                   (gamma (t i.castSucc + r))
             rw [hinv r (by
-              have hL : 0 ≤ lSegLen t i := by
+              have hL : 0 ≤ partitionIntervalLength t i := by
                 exact sub_nonneg.mpr hseg
               rw [uIcc_of_le hL] at hr
               exact hr)]
       _ = ∫ s in t i.castSucc..t i.succ,
           2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s) := by
-        have hend : t i.castSucc + lSegLen t i = t i.succ := by
-          simp only [lSegLen]
+        have hend : t i.castSucc + partitionIntervalLength t i = t i.succ := by
+          simp only [partitionIntervalLength]
           ring
         simpa only [add_zero, hend] using
           (intervalIntegral.integral_comp_add_left
           (f := fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s))
-          (a := (0 : Real)) (b := lSegLen t i) (t i.castSucc))
+          (a := (0 : Real)) (b := partitionIntervalLength t i) (t i.castSucc))
   rw [← hpot]
   symm
   exact lChartAct_split S hMet hSc T (t i.castSucc) (p i)
@@ -210,12 +210,12 @@ theorem lChartAct_local
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (j : Fin m) → timeH1 E (lSegLen t j))
+    (u : (j : Fin m) → timeH1 E (partitionIntervalLength t j))
     (hsrc : ∀ j, MapsTo gamma
       (Icc (t j.castSucc) (t j.succ)) (chartAt H (p j)).source)
     (hrep : ∀ j, EqOn (u j).toFun
       (fun r ↦ extChartAt I (p j) (gamma (t j.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t j)))
+      (Icc (0 : Real) (partitionIntervalLength t j)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -225,14 +225,14 @@ theorem lChartAct_local
     IsLocalMinOn (lChartAct S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) := by
   classical
-  let L : Real := lSegLen t i
+  let L : Real := partitionIntervalLength t i
   have hL : 0 ≤ L := by
-    dsimp only [L, lSegLen]
+    dsimp only [L, partitionIntervalLength]
     exact sub_nonneg.mpr hpos.le
   have hshift : MapsTo (fun r : Real ↦ t i.castSucc + r)
       (Icc (0 : Real) L) (Icc (t i.castSucc) (t i.succ)) := by
     intro r hr
-    dsimp only [L, lSegLen] at hr
+    dsimp only [L, partitionIntervalLength] at hr
     exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
   have hutar (r : Real) (hr : r ∈ Icc (0 : Real) L) :
       (u i).toFun r ∈ (extChartAt I (p i)).target := by
@@ -285,7 +285,7 @@ theorem lChartAct_local
         dsimp only [eps]
         exact mul_div_cancel₀ d hc.ne'
   obtain ⟨gammaV, hgammaV, hVa0, hVab, hsrcV, hrepV⟩ :=
-    exists_chart_splice (I := I) t htmono p gamma hgamma u hsrc hrep i hpos v
+    exists_continuous_curve_of_chartH1_segment_replacement (I := I) t htmono p gamma hgamma u hsrc hrep i hpos v
       hvends (by simpa only [L] using hvtar)
   have hVa : gammaV a = gamma a := by
     rw [← ht0]

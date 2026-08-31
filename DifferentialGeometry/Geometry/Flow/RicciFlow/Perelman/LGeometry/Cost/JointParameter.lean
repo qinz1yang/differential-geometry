@@ -310,7 +310,7 @@ private theorem lAction_head_param
     Fin.cases a (Fin.cases c fun k ↦ Fin.elim0 k)
   have ht0 : t 0 = a := rfl
   have ht1 : t (Fin.last 1) = c := rfl
-  have htLen : lSegLen t 0 = c - a := rfl
+  have htLen : partitionIntervalLength t 0 = c - a := rfl
   have htStart : t (0 : Fin 1).castSucc = a := rfl
   have htEnd : t (0 : Fin 1).succ = c := rfl
   have htmono : Monotone t := by
@@ -324,7 +324,7 @@ private theorem lAction_head_param
       ∫ s in a..c, 2 * s ^ 2 * S.scalar (Rn n - s ^ 2) (alpha n s) := by
     have hregn : ∀ s ∈ Icc a c, Rn n - s ^ 2 ∈ D.regular :=
       fun s hs ↦ hJreg (hJn n s hs)
-    let vn : (i : Fin 1) → timeH1 E (lSegLen t i) :=
+    let vn : (i : Fin 1) → timeH1 E (partitionIntervalLength t i) :=
       Fin.cases (v n) fun k ↦ Fin.elim0 k
     have hvn0 : vn 0 = v n := rfl
     have hraw := lRegAction_chart (I := I) (m := 1) S hMet hSc (Rn n) a c t htmono
@@ -343,7 +343,7 @@ private theorem lAction_head_param
         rw [hvn0]
         exact hrep n hr) hregn
     rw [Fin.sum_univ_one] at hraw
-    dsimp only [lSegLen, t] at hraw
+    dsimp only [partitionIntervalLength, t] at hraw
     rw [hvn0] at hraw
     exact hraw
   have hactLim : lRegAction S R gamma a c =
@@ -354,7 +354,7 @@ private theorem lAction_head_param
       ∫ s in a..c, 2 * s ^ 2 * S.scalar (R - s ^ 2) (gamma s) := by
     have hregLim : ∀ s ∈ Icc a c, R - s ^ 2 ∈ D.regular :=
       fun s hs ↦ hJreg (hJlim s hs)
-    let vLimFin : (i : Fin 1) → timeH1 E (lSegLen t i) :=
+    let vLimFin : (i : Fin 1) → timeH1 E (partitionIntervalLength t i) :=
       Fin.cases vLim fun k ↦ Fin.elim0 k
     have hvLim0 : vLimFin 0 = vLim := rfl
     have hraw := lRegAction_chart (I := I) (m := 1) S hMet hSc R a c t htmono
@@ -373,7 +373,7 @@ private theorem lAction_head_param
         rw [hvLim0]
         exact hrepLim hr) hregLim
     rw [Fin.sum_univ_one] at hraw
-    dsimp only [lSegLen, t] at hraw
+    dsimp only [partitionIntervalLength, t] at hraw
     rw [hvLim0] at hraw
     exact hraw
   have hsum := hkin.add hpot

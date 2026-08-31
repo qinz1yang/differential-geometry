@@ -46,13 +46,13 @@ omit [CompactSpace M] in
 theorem lRegAction_minimizer_momentum_pairing_eq
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
-    (u : (i : Fin 2) → timeH1 E (lSegLen t i))
+    (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (hpos : ∀ i : Fin 2, t i.castSucc < t i.succ)
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc (t 0) (t (Fin.last 2)), T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -65,12 +65,12 @@ theorem lRegAction_minimizer_momentum_pairing_eq
           (chartGramOp (I := I) S.family (p 0)
             (T - (t 1) ^ 2, extChartAt I (p 0) (gamma (t 1)))
             (derivWithin (u 0).toFun
-              (Icc (0 : Real) (lSegLen t 0)) (lSegLen t 0))) z =
+              (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0))) z =
         inner Real
           (chartGramOp (I := I) S.family (p 1)
             (T - (t 1) ^ 2, extChartAt I (p 1) (gamma (t 1)))
             (derivWithin (u 1).toFun
-              (Icc (0 : Real) (lSegLen t 1)) 0))
+              (Icc (0 : Real) (partitionIntervalLength t 1)) 0))
           (tangentCoordChange I (p 0) (p 1) (gamma (t 1)) z) := by
   classical
   have hfin0c : (0 : Fin 2).castSucc = (0 : Fin 3) := rfl
@@ -86,7 +86,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     intro i
     exact (hpos i).le
   have hchart : ∀ i, MapsTo (u i).toFun
-      (Icc (0 : Real) (lSegLen t i))
+      (Icc (0 : Real) (partitionIntervalLength t i))
       (interior (extChartAt I (p i)).target) := by
     intro i r hr
     rw [hrep i hr]
@@ -95,10 +95,10 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     rw [extChartAt_source]
     exact hsrc i ⟨by linarith [hr.1], by
       have hr2 : r ≤ t i.succ - t i.castSucc := by
-        simpa only [lSegLen] using hr.2
+        simpa only [partitionIntervalLength] using hr.2
       linarith⟩
   have hrecover (i : Fin 2) (r : Real)
-      (hr : r ∈ Icc (0 : Real) (lSegLen t i)) :
+      (hr : r ∈ Icc (0 : Real) (partitionIntervalLength t i)) :
       (extChartAt I (p i)).symm ((u i).toFun r) =
         gamma (t i.castSucc + r) := by
     rw [hrep i hr]
@@ -106,55 +106,55 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     rw [extChartAt_source]
     exact hsrc i ⟨by linarith [hr.1], by
       have hr2 : r ≤ t i.succ - t i.castSucc := by
-        simpa only [lSegLen] using hr.2
+        simpa only [partitionIntervalLength] using hr.2
       linarith⟩
   have hnode : (extChartAt I (p 0)).symm
-        ((u 0).toFun (lSegLen t 0)) =
+        ((u 0).toFun (partitionIntervalLength t 0)) =
       (extChartAt I (p 1)).symm ((u 1).toFun 0) := by
-    rw [hrecover 0 (lSegLen t 0)
-        ⟨by simpa only [lSegLen, hfin0s] using sub_nonneg.mpr (hpos 0).le, le_rfl⟩,
+    rw [hrecover 0 (partitionIntervalLength t 0)
+        ⟨by simpa only [partitionIntervalLength, hfin0s] using sub_nonneg.mpr (hpos 0).le, le_rfl⟩,
       hrecover 1 0 ⟨le_rfl, by
-        simpa only [lSegLen, hfin1c, hfin1s] using sub_nonneg.mpr (hpos 1).le⟩]
-    simp only [lSegLen, hfin0c, hfin0s, hfin1c, add_sub_cancel, add_zero]
+        simpa only [partitionIntervalLength, hfin1c, hfin1s] using sub_nonneg.mpr (hpos 1).le⟩]
+    simp only [partitionIntervalLength, hfin0c, hfin0s, hfin1c, add_sub_cancel, add_zero]
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  have hcmp : ∀ v : (i : Fin 2) → timeH1 E (lSegLen t i),
-      (∀ i, MapsTo (v i).toFun (Icc (0 : Real) (lSegLen t i))
+  have hcmp : ∀ v : (i : Fin 2) → timeH1 E (partitionIntervalLength t i),
+      (∀ i, MapsTo (v i).toFun (Icc (0 : Real) (partitionIntervalLength t i))
         (extChartAt I (p i)).target) →
       (extChartAt I (p 0)).symm ((v 0).toFun 0) =
         (extChartAt I (p 0)).symm ((u 0).toFun 0) →
-      (extChartAt I (p 1)).symm ((v 1).toFun (lSegLen t 1)) =
-        (extChartAt I (p 1)).symm ((u 1).toFun (lSegLen t 1)) →
-      (extChartAt I (p 0)).symm ((v 0).toFun (lSegLen t 0)) =
+      (extChartAt I (p 1)).symm ((v 1).toFun (partitionIntervalLength t 1)) =
+        (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) →
+      (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((v 1).toFun 0) →
       (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
         ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i) := by
     intro v hvtar hv0 hv2 hvnode
     have hu0 : (extChartAt I (p 0)).symm ((u 0).toFun 0) = gamma (t 0) := by
       simpa only [hfin0c, add_zero] using hrecover 0 0 ⟨le_rfl, by
-        simpa only [lSegLen, hfin0s] using sub_nonneg.mpr (hpos 0).le⟩
+        simpa only [partitionIntervalLength, hfin0s] using sub_nonneg.mpr (hpos 0).le⟩
     have hu2 : (extChartAt I (p 1)).symm
-        ((u 1).toFun (lSegLen t 1)) = gamma (t (Fin.last 2)) := by
-      have h := hrecover 1 (lSegLen t 1)
-        ⟨by simpa only [lSegLen, hfin1c, hfin1s] using
+        ((u 1).toFun (partitionIntervalLength t 1)) = gamma (t (Fin.last 2)) := by
+      have h := hrecover 1 (partitionIntervalLength t 1)
+        ⟨by simpa only [partitionIntervalLength, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
-      simpa only [lSegLen, hfin1c, hfin1s, add_sub_cancel] using h
+      simpa only [partitionIntervalLength, hfin1c, hfin1s, add_sub_cancel] using h
     exact lChartAct_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal1 : IsLocalMinOn
       (lChartAct S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
     lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
-  have hreg1 : ∀ r, r ∈ Icc (0 : Real) (lSegLen t 1) →
+  have hreg1 : ∀ r, r ∈ Icc (0 : Real) (partitionIntervalLength t 1) →
       T - (t 1 + r) ^ 2 ∈ D.regular := by
     intro r hr
     apply hreg (t 1 + r)
     constructor
     · exact (hpos 0).le.trans (le_add_of_nonneg_right hr.1)
     · have hr2 : r ≤ t (Fin.last 2) - t 1 := by
-        simpa only [lSegLen, hfin1c, hfin1s] using hr.2
+        simpa only [partitionIntervalLength, hfin1c, hfin1s] using hr.2
       linarith
   obtain ⟨q1, _P1, hq1c, hq1ae, hu1c1, hu1d, _hP1c1, _hP1eq, _hP1d⟩ :=
     lChart_mom_c1 (I := I) S hS T (t 1) (p 1)
-      (by simpa only [lSegLen, hfin1c, hfin1s] using sub_pos.mpr (hpos 1))
+      (by simpa only [partitionIntervalLength, hfin1c, hfin1s] using sub_pos.mpr (hpos 1))
       (u 1) hreg1 (hchart 1) hlocal1
   have hgamma1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
       (Icc (t 1) (t (Fin.last 2))) :=
@@ -241,16 +241,16 @@ theorem lRegAction_minimizer_momentum_pairing_eq
   have hth0 : th 0 = t 0 := by simp [th]
   have hth1 : th 1 = t 1 := by simp [th]
   have hth2 : th 2 = c := by simp [th]
-  have hthLen0 : lSegLen th 0 = lSegLen t 0 := by
-    simp only [lSegLen, hth0, hth1, hfin0c, hfin0s]
-  have hthLen1 : lSegLen th 1 = c - t 1 := by
-    rw [lSegLen, hfin1c, hfin1s,
+  have hthLen0 : partitionIntervalLength th 0 = partitionIntervalLength t 0 := by
+    simp only [partitionIntervalLength, hth0, hth1, hfin0c, hfin0s]
+  have hthLen1 : partitionIntervalLength th 1 = c - t 1 := by
+    rw [partitionIntervalLength, hfin1c, hfin1s,
       show Fin.last 2 = (2 : Fin 3) by rfl, hth1, hth2]
-  have hthLen0' : lSegLen th 0 = t 1 - t 0 := by
-    simpa only [lSegLen, hfin0c, hfin0s] using hthLen0
-  let uh0 : timeH1 E (lSegLen th 0) := hthLen0.symm ▸ u 0
-  let uh1 : timeH1 E (lSegLen th 1) := hthLen1.symm ▸ uHead
-  let uh : (i : Fin 2) → timeH1 E (lSegLen th i) :=
+  have hthLen0' : partitionIntervalLength th 0 = t 1 - t 0 := by
+    simpa only [partitionIntervalLength, hfin0c, hfin0s] using hthLen0
+  let uh0 : timeH1 E (partitionIntervalLength th 0) := hthLen0.symm ▸ u 0
+  let uh1 : timeH1 E (partitionIntervalLength th 1) := hthLen1.symm ▸ uHead
+  let uh : (i : Fin 2) → timeH1 E (partitionIntervalLength th i) :=
     Fin.cases uh0 (Fin.cases uh1 (fun i ↦ Fin.elim0 i))
   have huh0 : uh 0 = uh0 := by rfl
   have huh1 : uh 1 = uh1 := by
@@ -267,30 +267,30 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     fin_cases i
     · simpa [th] using hpos 0
     · simpa [th] using h1c
-  have hthreg : ∀ i r, r ∈ Icc (0 : Real) (lSegLen th i) →
+  have hthreg : ∀ i r, r ∈ Icc (0 : Real) (partitionIntervalLength th i) →
       T - (th i.castSucc + r) ^ 2 ∈ D.regular := by
     intro i r hr
     fin_cases i
     · apply hreg (t 0 + r)
       have hr2 : r ≤ t 1 - t 0 := by
-        simpa [th, lSegLen] using hr.2
+        simpa [th, partitionIntervalLength] using hr.2
       exact ⟨by linarith [hr.1], by linarith [hr2, h1c.le, hc2]⟩
     · apply hreg (t 1 + r)
       have hr2 : r ≤ c - t 1 := by
-        simpa [th, lSegLen] using hr.2
+        simpa [th, partitionIntervalLength] using hr.2
       exact ⟨by linarith [hr.1, ht01.le], by linarith [hr2, hc2]⟩
   have huhchart : ∀ i, MapsTo (uh i).toFun
-      (Icc (0 : Real) (lSegLen th i))
+      (Icc (0 : Real) (partitionIntervalLength th i))
       (interior (extChartAt I (p 0)).target) := by
     intro i r hr
     fin_cases i
     · change (uh 0).toFun r ∈ interior (extChartAt I (p 0)).target
-      change r ∈ Icc (0 : Real) (lSegLen th 0) at hr
+      change r ∈ Icc (0 : Real) (partitionIntervalLength th 0) at hr
       rw [huh0Fun]
       rw [hthLen0] at hr
       exact hchart 0 hr
     · change (uh 1).toFun r ∈ interior (extChartAt I (p 0)).target
-      change r ∈ Icc (0 : Real) (lSegLen th 1) at hr
+      change r ∈ Icc (0 : Real) (partitionIntervalLength th 1) at hr
       rw [huh1Fun]
       have hr' : r ∈ Icc (0 : Real) (c - t 1) := by
         rwa [hthLen1] at hr
@@ -303,13 +303,13 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         exact hsrcHead0 hr'
       exact htarget
   have huhnode : (extChartAt I (p 0)).symm
-        ((uh 0).toFun (lSegLen th 0)) =
+        ((uh 0).toFun (partitionIntervalLength th 0)) =
       (extChartAt I (p 0)).symm ((uh 1).toFun 0) := by
-    have hleft := hrecover 0 (lSegLen t 0)
-      ⟨by simpa only [lSegLen, hfin0s] using sub_nonneg.mpr (hpos 0).le, le_rfl⟩
+    have hleft := hrecover 0 (partitionIntervalLength t 0)
+      ⟨by simpa only [partitionIntervalLength, hfin0s] using sub_nonneg.mpr (hpos 0).le, le_rfl⟩
     have hleft' : (extChartAt I (p 0)).symm
-        ((u 0).toFun (lSegLen t 0)) = gamma (t 1) := by
-      simpa only [lSegLen, hfin0c, hfin0s, add_sub_cancel] using hleft
+        ((u 0).toFun (partitionIntervalLength t 0)) = gamma (t 1) := by
+      simpa only [partitionIntervalLength, hfin0c, hfin0s, add_sub_cancel] using hleft
     have hright : (extChartAt I (p 0)).symm (uHead.toFun 0) = gamma (t 1) := by
       rw [huHead ⟨le_rfl, sub_nonneg.mpr h1c.le⟩]
       simpa only [Function.comp_apply, gammaHead, add_zero] using
@@ -319,14 +319,14 @@ theorem lRegAction_minimizer_momentum_pairing_eq
           hsrcHead0 ⟨le_rfl, sub_nonneg.mpr h1c.le⟩)
     rw [huh0Fun, huh1Fun, hthLen0]
     exact hleft'.trans hright.symm
-  have huhcmp : ∀ v : (i : Fin 2) → timeH1 E (lSegLen th i),
-      (∀ i, MapsTo (v i).toFun (Icc (0 : Real) (lSegLen th i))
+  have huhcmp : ∀ v : (i : Fin 2) → timeH1 E (partitionIntervalLength th i),
+      (∀ i, MapsTo (v i).toFun (Icc (0 : Real) (partitionIntervalLength th i))
         (extChartAt I (p 0)).target) →
       (extChartAt I (p 0)).symm ((v 0).toFun 0) =
         (extChartAt I (p 0)).symm ((uh 0).toFun 0) →
-      (extChartAt I (p 0)).symm ((v 1).toFun (lSegLen th 1)) =
-        (extChartAt I (p 0)).symm ((uh 1).toFun (lSegLen th 1)) →
-      (extChartAt I (p 0)).symm ((v 0).toFun (lSegLen th 0)) =
+      (extChartAt I (p 0)).symm ((v 1).toFun (partitionIntervalLength th 1)) =
+        (extChartAt I (p 0)).symm ((uh 1).toFun (partitionIntervalLength th 1)) →
+      (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength th 0)) =
         (extChartAt I (p 0)).symm ((v 1).toFun 0) →
       (∑ i : Fin 2, lChartAct S T (th i.castSucc) (p 0) (uh i)) ≤
         ∑ i : Fin 2, lChartAct S T (th i.castSucc) (p 0) (v i) := by
@@ -335,7 +335,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
       rw [hv0, huh0Fun]
       simpa only [hfin0c, add_zero] using hrecover 0 0
         ⟨le_rfl, by
-          simpa only [lSegLen, hfin0s] using sub_nonneg.mpr (hpos 0).le⟩
+          simpa only [partitionIntervalLength, hfin0s] using sub_nonneg.mpr (hpos 0).le⟩
     have hv2' : (extChartAt I (p 0)).symm
         ((v 1).toFun (c - t 1)) = gamma c := by
       have hv2a : (extChartAt I (p 0)).symm
@@ -343,14 +343,14 @@ theorem lRegAction_minimizer_momentum_pairing_eq
           (extChartAt I (p 0)).symm (uHead.toFun (c - t 1)) := by
         calc
           (extChartAt I (p 0)).symm ((v 1).toFun (c - t 1)) =
-              (extChartAt I (p 0)).symm ((v 1).toFun (lSegLen th 1)) := by
+              (extChartAt I (p 0)).symm ((v 1).toFun (partitionIntervalLength th 1)) := by
             exact congrArg
               (fun r : Real ↦ (extChartAt I (p 0)).symm ((v 1).toFun r))
               hthLen1.symm
           _ = (extChartAt I (p 0)).symm
-              ((uh 1).toFun (lSegLen th 1)) := hv2
+              ((uh 1).toFun (partitionIntervalLength th 1)) := hv2
           _ = (extChartAt I (p 0)).symm
-              (uHead.toFun (lSegLen th 1)) := by rw [huh1Fun]
+              (uHead.toFun (partitionIntervalLength th 1)) := by rw [huh1Fun]
           _ = (extChartAt I (p 0)).symm (uHead.toFun (c - t 1)) := by
             rw [hthLen1]
       have huc : (extChartAt I (p 0)).symm (uHead.toFun (c - t 1)) = gamma c := by
@@ -384,7 +384,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
             (extChartAt I (p 0)).symm ((v 0).toFun (t 1 - t 0)) := by
           rw [hv0Fun]
         _ = (extChartAt I (p 0)).symm
-            ((v 0).toFun (lSegLen th 0)) := by
+            ((v 0).toFun (partitionIntervalLength th 0)) := by
           exact congrArg
             (fun r : Real ↦ (extChartAt I (p 0)).symm ((v 0).toFun r))
             hthLen0'.symm
@@ -412,19 +412,19 @@ theorem lRegAction_minimizer_momentum_pairing_eq
   have hmom := lChartAct_momentum_eq_of_pair_minimality (I := I) S hS T th (p 0) uh hthpos hthreg
     huhchart huhnode huhcmp
   have hmom' : chartGramOp (I := I) S.family (p 0)
-        (T - (t 1) ^ 2, (u 0).toFun (lSegLen t 0))
+        (T - (t 1) ^ 2, (u 0).toFun (partitionIntervalLength t 0))
         (derivWithin (u 0).toFun
-          (Icc (0 : Real) (lSegLen t 0)) (lSegLen t 0)) =
+          (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0)) =
       chartGramOp (I := I) S.family (p 0)
         (T - (t 1) ^ 2, uHead.toFun 0)
         (derivWithin uHead.toFun (Icc (0 : Real) (c - t 1)) 0) := by
     simpa only [hth1, huh0Fun, huh1Fun, hthLen0, hthLen1] using hmom
   have hheadDeriv : derivWithin (u 1).toFun
-        (Icc (0 : Real) (lSegLen t 1)) 0 =
+        (Icc (0 : Real) (partitionIntervalLength t 1)) 0 =
       tangentCoordChange I (p 0) (p 1) (gamma (t 1))
         (derivWithin uHead.toFun (Icc (0 : Real) (c - t 1)) 0) := by
     have hchange := chartDeriv_head I (sub_pos.mpr h1c)
-      (by simpa [lSegLen, hfin1c, hfin1s] using
+      (by simpa [partitionIntervalLength, hfin1c, hfin1s] using
         sub_le_sub_right hc2 (t 1))
       (p 0) (p 1) gammaHead uHead (u 1)
       hsrcHead0
@@ -436,11 +436,11 @@ theorem lRegAction_minimizer_momentum_pairing_eq
           linarith [hr2, hc2])⟩)
       huHead (by
         intro r hr
-        have hr' : r ∈ Icc (0 : Real) (lSegLen t 1) := by
+        have hr' : r ∈ Icc (0 : Real) (partitionIntervalLength t 1) := by
           constructor
           · exact hr.1
           · have hr2 : r ≤ c - t 1 := by simpa only [hfin1c] using hr.2
-            simpa only [lSegLen, hfin1c, hfin1s] using
+            simpa only [partitionIntervalLength, hfin1c, hfin1s] using
               (show r ≤ t (Fin.last 2) - t 1 by linarith [hr2, hc2])
         simpa only [gammaHead, Function.comp_apply, hfin1c] using hrep 1 hr')
       huHeadC1 hu1c1
@@ -454,28 +454,28 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     rw [extChartAt_source]
     exact hsrc 1 (by simpa using
       (show t 1 ∈ Icc (t 1) (t (Fin.last 2)) from ⟨le_rfl, (hpos 1).le⟩))
-  have hu0Node : (u 0).toFun (lSegLen t 0) = extChartAt I (p 0) (gamma (t 1)) := by
+  have hu0Node : (u 0).toFun (partitionIntervalLength t 0) = extChartAt I (p 0) (gamma (t 1)) := by
     rw [hrep 0 ⟨by
-      simpa only [lSegLen, hfin0s] using sub_nonneg.mpr (hpos 0).le, le_rfl⟩]
-    simp only [lSegLen, hfin0s, add_sub_cancel]
+      simpa only [partitionIntervalLength, hfin0s] using sub_nonneg.mpr (hpos 0).le, le_rfl⟩]
+    simp only [partitionIntervalLength, hfin0s, add_sub_cancel]
   have huHead0 : uHead.toFun 0 = extChartAt I (p 0) (gamma (t 1)) := by
     simpa only [gammaHead, Function.comp_apply, add_zero] using
       huHead ⟨le_rfl, sub_nonneg.mpr h1c.le⟩
   have hu10 : (u 1).toFun 0 = extChartAt I (p 1) (gamma (t 1)) := by
     simpa only [add_zero, hfin1c] using
       hrep 1 ⟨le_rfl, by
-        simpa only [lSegLen, hfin1c, hfin1s] using sub_nonneg.mpr (hpos 1).le⟩
+        simpa only [partitionIntervalLength, hfin1c, hfin1s] using sub_nonneg.mpr (hpos 1).le⟩
   calc
     inner Real
         (chartGramOp (I := I) S.family (p 0)
           (T - (t 1) ^ 2, extChartAt I (p 0) (gamma (t 1)))
           (derivWithin (u 0).toFun
-            (Icc (0 : Real) (lSegLen t 0)) (lSegLen t 0))) z =
+            (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0))) z =
       inner Real
         (chartGramOp (I := I) S.family (p 0)
-          (T - (t 1) ^ 2, (u 0).toFun (lSegLen t 0))
+          (T - (t 1) ^ 2, (u 0).toFun (partitionIntervalLength t 0))
           (derivWithin (u 0).toFun
-            (Icc (0 : Real) (lSegLen t 0)) (lSegLen t 0))) z := by
+            (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0))) z := by
         rw [hu0Node]
     _ = inner Real
         (chartGramOp (I := I) S.family (p 0)
@@ -500,7 +500,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         (chartGramOp (I := I) S.family (p 1)
           (T - (t 1) ^ 2, extChartAt I (p 1) (gamma (t 1)))
           (derivWithin (u 1).toFun
-            (Icc (0 : Real) (lSegLen t 1)) 0))
+            (Icc (0 : Real) (partitionIntervalLength t 1)) 0))
         (tangentCoordChange I (p 0) (p 1) (gamma (t 1)) z) := by
       rw [hheadDeriv]
 

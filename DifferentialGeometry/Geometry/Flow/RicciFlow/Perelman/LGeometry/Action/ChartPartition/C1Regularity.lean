@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.VelocityMatchingAtNodes
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.StrictC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CurveC1Finite
 
 set_option autoImplicit false
@@ -31,13 +31,13 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last (m + 2)) = b)
     (p : Fin (m + 2) → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (k : Fin (m + 2)) → timeH1 E (lSegLen t k))
+    (u : (k : Fin (m + 2)) → timeH1 E (partitionIntervalLength t k))
     (hpos : ∀ k : Fin (m + 2), t k.castSucc < t k.succ)
     (hsrc : ∀ k, MapsTo gamma
       (Icc (t k.castSucc) (t k.succ)) (chartAt H (p k)).source)
     (hrep : ∀ k, EqOn (u k).toFun
       (fun r ↦ extChartAt I (p k) (gamma (t k.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t k)))
+      (Icc (0 : Real) (partitionIntervalLength t k)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -49,8 +49,8 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     rw [Fin.strictMono_iff_lt_succ]
     exact hpos
   have huC1 : ∀ i, ContDiffOn Real 1 (u i).toFun
-      (Icc (0 : Real) (lSegLen t i)) :=
-    lStrict_piece_c1 (I := I) S hS T a b t ht ht0 htlast p gamma hgamma
+      (Icc (0 : Real) (partitionIntervalLength t i)) :=
+    lRegAction_minimizer_chart_piece_contDiffOn_one (I := I) S hS T a b t ht ht0 htlast p gamma hgamma
       u hsrc hrep hreg hmin
   have hpieceFin (i : Fin (m + 2)) :
       ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
@@ -120,20 +120,20 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     have hp0der : derivWithin ((extChartAt I (p i)) ∘ gamma)
           (Icc (t i.castSucc) (t j.castSucc)) (t j.castSucc) =
         derivWithin (u i).toFun
-          (Icc (0 : Real) (lSegLen t i)) (lSegLen t i) := by
+          (Icc (0 : Real) (partitionIntervalLength t i)) (partitionIntervalLength t i) := by
       have hshift := chartDeriv_shift
-        (a := t i.castSucc) (b := t i.succ) (r := lSegLen t i)
+        (a := t i.castSucc) (b := t i.succ) (r := partitionIntervalLength t i)
         ((extChartAt I (p i)) ∘ gamma) (u i)
         (by
           intro r hr
           change (u i).toFun r = extChartAt I (p i)
             (gamma (t i.castSucc + r))
-          exact hrep i (by simpa only [lSegLen] using hr))
-        ⟨by simpa only [lSegLen] using sub_nonneg.mpr hpos0.le, le_rfl⟩
-      simpa only [hij, lSegLen, add_sub_cancel] using hshift
+          exact hrep i (by simpa only [partitionIntervalLength] using hr))
+        ⟨by simpa only [partitionIntervalLength] using sub_nonneg.mpr hpos0.le, le_rfl⟩
+      simpa only [hij, partitionIntervalLength, add_sub_cancel] using hshift
     have hp1der : derivWithin ((extChartAt I (p j)) ∘ gamma)
           (Icc (t j.castSucc) (t j.succ)) (t j.castSucc) =
-        derivWithin (u j).toFun (Icc (0 : Real) (lSegLen t j)) 0 := by
+        derivWithin (u j).toFun (Icc (0 : Real) (partitionIntervalLength t j)) 0 := by
       have hshift := chartDeriv_shift
         (a := t j.castSucc) (b := t j.succ) (r := 0)
         ((extChartAt I (p j)) ∘ gamma) (u j)
@@ -141,8 +141,8 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
           intro r hr
           change (u j).toFun r = extChartAt I (p j)
             (gamma (t j.castSucc + r))
-          exact hrep j (by simpa only [lSegLen] using hr))
-        ⟨le_rfl, by simpa only [lSegLen] using sub_nonneg.mpr hpos1.le⟩
+          exact hrep j (by simpa only [partitionIntervalLength] using hr))
+        ⟨le_rfl, by simpa only [partitionIntervalLength] using sub_nonneg.mpr hpos1.le⟩
       change derivWithin ((extChartAt I (p j)) ∘ gamma)
           (Icc (t j.castSucc) (t j.succ)) (t j.castSucc) =
         derivWithin (u j).toFun
@@ -180,8 +180,8 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
       (hsrc j) hnodesrc
     have hvel : tangentCoordChange I (p i) (p j) (gamma (t j.castSucc))
           (derivWithin (u i).toFun
-            (Icc (0 : Real) (lSegLen t i)) (lSegLen t i)) =
-        derivWithin (u j).toFun (Icc (0 : Real) (lSegLen t j)) 0 := by
+            (Icc (0 : Real) (partitionIntervalLength t i)) (partitionIntervalLength t i)) =
+        derivWithin (u j).toFun (Icc (0 : Real) (partitionIntervalLength t j)) 0 := by
       simpa only [i, j] using
         lRegAction_minimizer_velocity_eq_at_partition_nodes (I := I) S hS T a b t ht0 htlast p gamma hgamma u
           hpos hsrc hrep hreg hmin q
@@ -206,13 +206,13 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
     (T a b : Real) {m : Nat} (hm : 0 < m) (t : Fin (m + 1) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (k : Fin m) → timeH1 E (lSegLen t k))
+    (u : (k : Fin m) → timeH1 E (partitionIntervalLength t k))
     (hpos : ∀ k : Fin m, t k.castSucc < t k.succ)
     (hsrc : ∀ k, MapsTo gamma
       (Icc (t k.castSucc) (t k.succ)) (chartAt H (p k)).source)
     (hrep : ∀ k, EqOn (u k).toFun
       (fun r ↦ extChartAt I (p k) (gamma (t k.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t k)))
+      (Icc (0 : Real) (partitionIntervalLength t k)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -228,7 +228,7 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
           have ht : StrictMono t := by
             rw [Fin.strictMono_iff_lt_succ]
             exact hpos
-          have huC1 := lStrict_piece_c1 (I := I) S hS T a b t ht ht0
+          have huC1 := lRegAction_minimizer_chart_piece_contDiffOn_one (I := I) S hS T a b t ht ht0
             htlast p gamma hgamma u hsrc hrep hreg hmin (0 : Fin 1)
           have hpiece := curve_c1_local I (p 0) gamma (u 0) (hsrc 0)
             (hrep 0) huC1

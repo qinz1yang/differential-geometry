@@ -31,12 +31,12 @@ theorem lChartAct_pair_le_of_lRegAction_minimizer
     (hSc : ScalarSTContOn (I := I) (M := M) S)
     (T : Real) (t : Fin 3 → Real) (htmono : Monotone t)
     (p : Fin 2 → M) (gamma : Real → M)
-    (u : (i : Fin 2) → timeH1 E (lSegLen t i))
+    (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc (t 0) (t (Fin.last 2)), T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -44,14 +44,14 @@ theorem lChartAct_pair_le_of_lRegAction_minimizer
       delta (t (Fin.last 2)) = gamma (t (Fin.last 2)) →
       lRegAction S T gamma (t 0) (t (Fin.last 2)) ≤
         lRegAction S T delta (t 0) (t (Fin.last 2)))
-    (v : (i : Fin 2) → timeH1 E (lSegLen t i))
+    (v : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (hvtar : ∀ i, MapsTo (v i).toFun
-      (Icc (0 : Real) (lSegLen t i)) (extChartAt I (p i)).target)
+      (Icc (0 : Real) (partitionIntervalLength t i)) (extChartAt I (p i)).target)
     (hv0 : (extChartAt I (p 0)).symm ((v 0).toFun 0) = gamma (t 0))
     (hv2 : (extChartAt I (p 1)).symm
-      ((v 1).toFun (lSegLen t 1)) = gamma (t (Fin.last 2)))
+      ((v 1).toFun (partitionIntervalLength t 1)) = gamma (t (Fin.last 2)))
     (hvnode : (extChartAt I (p 0)).symm
-        ((v 0).toFun (lSegLen t 0)) =
+        ((v 0).toFun (partitionIntervalLength t 0)) =
       (extChartAt I (p 1)).symm ((v 1).toFun 0)) :
     (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
       ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i) := by

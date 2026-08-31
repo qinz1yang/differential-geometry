@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.FiniteCharts
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
 import DifferentialGeometry.Topology.FiniteSubdivision
 
 set_option autoImplicit false
@@ -26,17 +27,17 @@ private theorem toFun_cast {a b : Real} (h : a = b) (v : timeH1 E b) :
   rfl
 
 omit [CompleteSpace E] in
-theorem exists_lStrict
+theorem exists_strict_chart_partition
     {m : Nat} (t : Fin (m + 1) → Real) (htmono : Monotone t)
-    (p : Fin m → M) (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (p : Fin m → M) (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (gamma : Real → M)
     (hsrc : ∀ i, MapsTo gamma (Icc (t i.castSucc) (t i.succ))
       (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i))) :
+      (Icc (0 : Real) (partitionIntervalLength t i))) :
     ∃ (k : Nat) (s : Fin (k + 1) → Real) (q : Fin k → Fin m)
-      (p' : Fin k → M) (u' : (i : Fin k) → timeH1 E (lSegLen s i)),
+      (p' : Fin k → M) (u' : (i : Fin k) → timeH1 E (partitionIntervalLength s i)),
       StrictMono s ∧ StrictMono q ∧
         s 0 = t 0 ∧ s (Fin.last k) = t (Fin.last m) ∧
         (∀ i, s i.castSucc = t (q i).castSucc ∧
@@ -46,21 +47,21 @@ theorem exists_lStrict
           (chartAt H (p' i)).source) ∧
         (∀ i, EqOn (u' i).toFun
           (fun r ↦ extChartAt I (p' i) (gamma (s i.castSucc + r)))
-          (Icc (0 : Real) (lSegLen s i))) := by
+          (Icc (0 : Real) (partitionIntervalLength s i))) := by
   classical
   obtain ⟨k, s, q, hs, hq, hfirst, hlast, hseg⟩ :=
     DifferentialGeometry.Geometry.exists_strict_subdiv t htmono
   let p' : Fin k → M := fun i ↦ p (q i)
-  have hlen (i : Fin k) : lSegLen s i = lSegLen t (q i) := by
-    simp only [lSegLen, (hseg i).1, (hseg i).2]
-  let u' : (i : Fin k) → timeH1 E (lSegLen s i) := fun i ↦
+  have hlen (i : Fin k) : partitionIntervalLength s i = partitionIntervalLength t (q i) := by
+    simp only [partitionIntervalLength, (hseg i).1, (hseg i).2]
+  let u' : (i : Fin k) → timeH1 E (partitionIntervalLength s i) := fun i ↦
     (hlen i).symm ▸ u (q i)
   have hsrc' (i : Fin k) : MapsTo gamma
       (Icc (s i.castSucc) (s i.succ)) (chartAt H (p' i)).source := by
     simpa only [p', (hseg i).1, (hseg i).2] using hsrc (q i)
   have hrep' (i : Fin k) : EqOn (u' i).toFun
       (fun r ↦ extChartAt I (p' i) (gamma (s i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen s i)) := by
+      (Icc (0 : Real) (partitionIntervalLength s i)) := by
     have hu : (u' i).toFun = (u (q i)).toFun := by
       dsimp only [u']
       exact toFun_cast (hlen i) (u (q i))

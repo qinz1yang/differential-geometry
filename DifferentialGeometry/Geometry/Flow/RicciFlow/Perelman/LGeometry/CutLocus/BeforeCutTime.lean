@@ -285,14 +285,14 @@ theorem lMinVec_unique_lt
     exact hsrc i hs
   have hrepGamma : ∀ i, EqOn (v i).toFun
       (fun r => extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)) := by
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
     intro i r hr
     rw [hrep i hr]
     apply congrArg (fun y => extChartAt I (p i) y)
     apply hetaGamma
     have hstart := htmem i.castSucc
     have hendseg := htmem i.succ
-    simp only [lSegLen] at hr
+    simp only [partitionIntervalLength] at hr
     exact ⟨by linarith [hstart.1, hr.1], by linarith [hendseg.2, hr.2]⟩
   have hgammaC1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
       (Icc (0 : Real) b) :=

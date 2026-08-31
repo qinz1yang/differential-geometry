@@ -34,13 +34,13 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last (m + 2)) = b)
     (p : Fin (m + 2) → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (k : Fin (m + 2)) → timeH1 E (lSegLen t k))
+    (u : (k : Fin (m + 2)) → timeH1 E (partitionIntervalLength t k))
     (hpos : ∀ k : Fin (m + 2), t k.castSucc < t k.succ)
     (hsrc : ∀ k, MapsTo gamma
       (Icc (t k.castSucc) (t k.succ)) (chartAt H (p k)).source)
     (hrep : ∀ k, EqOn (u k).toFun
       (fun r ↦ extChartAt I (p k) (gamma (t k.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t k)))
+      (Icc (0 : Real) (partitionIntervalLength t k)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -50,10 +50,10 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     tangentCoordChange I (p q.castSucc) (p q.succ)
         (gamma (t q.succ.castSucc))
         (derivWithin (u q.castSucc).toFun
-          (Icc (0 : Real) (lSegLen t q.castSucc))
-          (lSegLen t q.castSucc)) =
+          (Icc (0 : Real) (partitionIntervalLength t q.castSucc))
+          (partitionIntervalLength t q.castSucc)) =
       derivWithin (u q.succ).toFun
-        (Icc (0 : Real) (lSegLen t q.succ)) 0 := by
+        (Icc (0 : Real) (partitionIntervalLength t q.succ)) 0 := by
   classical
   let i : Fin (m + 2) := q.castSucc
   let j : Fin (m + 2) := q.succ
@@ -71,7 +71,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     rw [← htlast]
     exact htmono (Fin.le_last _)
   have hchart : ∀ k, MapsTo (u k).toFun
-      (Icc (0 : Real) (lSegLen t k))
+      (Icc (0 : Real) (partitionIntervalLength t k))
       (interior (extChartAt I (p k)).target) := by
     intro k r hr
     rw [hrep k hr]
@@ -80,10 +80,10 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     rw [extChartAt_source]
     exact hsrc k ⟨by linarith [hr.1], by
       have hr2 : r ≤ t k.succ - t k.castSucc := by
-        simpa only [lSegLen] using hr.2
+        simpa only [partitionIntervalLength] using hr.2
       linarith⟩
   have hrecover (k : Fin (m + 2)) (r : Real)
-      (hr : r ∈ Icc (0 : Real) (lSegLen t k)) :
+      (hr : r ∈ Icc (0 : Real) (partitionIntervalLength t k)) :
       (extChartAt I (p k)).symm ((u k).toFun r) =
         gamma (t k.castSucc + r) := by
     rw [hrep k hr]
@@ -91,7 +91,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     rw [extChartAt_source]
     exact hsrc k ⟨by linarith [hr.1], by
       have hr2 : r ≤ t k.succ - t k.castSucc := by
-        simpa only [lSegLen] using hr.2
+        simpa only [partitionIntervalLength] using hr.2
       linarith⟩
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   have hlocal1 : IsLocalMinOn
@@ -99,18 +99,18 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       (sameTimeEnds (u j)) (u j) :=
     lChartAct_local (I := I) S hS.smoothMetric hSc T a b t htmono ht0 htlast
       p gamma hgamma u hsrc hrep hreg hmin j hpos1
-  have hreg1 : ∀ r, r ∈ Icc (0 : Real) (lSegLen t j) →
+  have hreg1 : ∀ r, r ∈ Icc (0 : Real) (partitionIntervalLength t j) →
       T - (t j.castSucc + r) ^ 2 ∈ D.regular := by
     intro r hr
     apply hreg (t j.castSucc + r)
     constructor
     · linarith [hleft j, hr.1]
     · have hr2 : r ≤ t j.succ - t j.castSucc := by
-        simpa only [lSegLen] using hr.2
+        simpa only [partitionIntervalLength] using hr.2
       linarith [hright j]
   obtain ⟨q1, _hq1c, _hq1ae, hu1c1, _hu1d⟩ :=
     lChart_min_c1 (I := I) S hS T (t j.castSucc) (p j)
-      (by simpa only [lSegLen] using sub_pos.mpr hpos1)
+      (by simpa only [partitionIntervalLength] using sub_pos.mpr hpos1)
       (u j) hreg1 (hchart j) hlocal1
   have hgamma1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
       (Icc (t j.castSucc) (t j.succ)) :=
@@ -159,7 +159,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
   let th : Fin 3 → Real :=
     Fin.cases (t i.castSucc)
       (Fin.cases (t j.castSucc) (Fin.cases c fun k ↦ Fin.elim0 k))
-  let uh : (k : Fin 2) → timeH1 E (lSegLen th k) :=
+  let uh : (k : Fin 2) → timeH1 E (partitionIntervalLength th k) :=
     Fin.cases (u i) (Fin.cases uHead fun k ↦ Fin.elim0 k)
   have hth0c : th (0 : Fin 2).castSucc = t i.castSucc := rfl
   have hth0s : th (0 : Fin 2).succ = t j.castSucc := rfl
@@ -172,11 +172,11 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
   have hthMid : th (1 : Fin 3) = t j.castSucc := rfl
   have hth1cStep : th (Fin.succ (0 : Fin 1)).castSucc = t j.castSucc := rfl
   have hth1sStep : th (Fin.succ (0 : Fin 1)).succ = c := rfl
-  have hthLen0 : lSegLen th 0 = lSegLen t i := by
-    simp only [lSegLen]
+  have hthLen0 : partitionIntervalLength th 0 = partitionIntervalLength t i := by
+    simp only [partitionIntervalLength]
     rw [hth0c, hth0s, ← congrArg t hij]
-  have hthLen1 : lSegLen th 1 = c - t j.castSucc := by
-    simp only [lSegLen]
+  have hthLen1 : partitionIntervalLength th 1 = c - t j.castSucc := by
+    simp only [partitionIntervalLength]
     rw [hth1c, hth1s]
   have huh0 : (uh 0).toFun = (u i).toFun := rfl
   have huh1 : (uh 1).toFun = uHead.toFun := by
@@ -190,21 +190,21 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       (by rw [hth0c, hth0s]; exact hpos0)
       (Fin.cases (by rw [hth1cStep, hth1sStep]; exact hc0)
         fun z ↦ Fin.elim0 z) k
-  have hthreg : ∀ k r, r ∈ Icc (0 : Real) (lSegLen th k) →
+  have hthreg : ∀ k r, r ∈ Icc (0 : Real) (partitionIntervalLength th k) →
       T - (th k.castSucc + r) ^ 2 ∈ D.regular := by
     intro k r hr
     fin_cases k
-    · change r ∈ Icc (0 : Real) (lSegLen th 0) at hr
+    · change r ∈ Icc (0 : Real) (partitionIntervalLength th 0) at hr
       change T - (t i.castSucc + r) ^ 2 ∈ D.regular
       apply hreg (t i.castSucc + r)
       have hr2 : r ≤ t j.castSucc - t i.castSucc := by
         rw [hthLen0] at hr
-        simpa only [lSegLen, congrArg t hij] using hr.2
+        simpa only [partitionIntervalLength, congrArg t hij] using hr.2
       have hnodeRight : t j.castSucc ≤ b := by
         rw [← hij]
         exact hright i
       exact ⟨by linarith [hleft i, hr.1], by linarith [hr2, hnodeRight]⟩
-    · change r ∈ Icc (0 : Real) (lSegLen th 1) at hr
+    · change r ∈ Icc (0 : Real) (partitionIntervalLength th 1) at hr
       change T - (t j.castSucc + r) ^ 2 ∈ D.regular
       apply hreg (t j.castSucc + r)
       have hr2 : r ≤ c - t j.castSucc := by
@@ -213,16 +213,16 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       exact ⟨by linarith [hleft j, hr.1], by
         linarith [hr2, hc1.le, hright j]⟩
   have huhchart : ∀ k, MapsTo (uh k).toFun
-      (Icc (0 : Real) (lSegLen th k))
+      (Icc (0 : Real) (partitionIntervalLength th k))
       (interior (extChartAt I (p i)).target) := by
     intro k r hr
     fin_cases k
-    · change r ∈ Icc (0 : Real) (lSegLen th 0) at hr
+    · change r ∈ Icc (0 : Real) (partitionIntervalLength th 0) at hr
       change (uh 0).toFun r ∈ interior (extChartAt I (p i)).target
       rw [hthLen0] at hr
       rw [huh0]
       exact hchart i hr
-    · change r ∈ Icc (0 : Real) (lSegLen th 1) at hr
+    · change r ∈ Icc (0 : Real) (partitionIntervalLength th 1) at hr
       change (uh 1).toFun r ∈ interior (extChartAt I (p i)).target
       rw [hthLen1] at hr
       rw [huh1]
@@ -231,13 +231,13 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       rw [extChartAt_source]
       exact hsrcHead0 hr
   have huhnode : (extChartAt I (p i)).symm
-        ((uh 0).toFun (lSegLen th 0)) =
+        ((uh 0).toFun (partitionIntervalLength th 0)) =
       (extChartAt I (p i)).symm ((uh 1).toFun 0) := by
-    have hleftNode := hrecover i (lSegLen t i)
-      ⟨by simpa only [lSegLen] using sub_nonneg.mpr hpos0.le, le_rfl⟩
+    have hleftNode := hrecover i (partitionIntervalLength t i)
+      ⟨by simpa only [partitionIntervalLength] using sub_nonneg.mpr hpos0.le, le_rfl⟩
     have hleftNode' : (extChartAt I (p i)).symm
-        ((u i).toFun (lSegLen t i)) = gamma (t j.castSucc) := by
-      simpa only [lSegLen, hij, add_sub_cancel] using hleftNode
+        ((u i).toFun (partitionIntervalLength t i)) = gamma (t j.castSucc) := by
+      simpa only [partitionIntervalLength, hij, add_sub_cancel] using hleftNode
     have hrightNode : (extChartAt I (p i)).symm (uHead.toFun 0) =
         gamma (t j.castSucc) := by
       rw [huHead ⟨le_rfl, sub_nonneg.mpr hc0.le⟩]
@@ -248,14 +248,14 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
             hsrcHead0 ⟨le_rfl, sub_nonneg.mpr hc0.le⟩)
     rw [huh0, huh1, hthLen0]
     exact hleftNode'.trans hrightNode.symm
-  have huhcmp : ∀ v : (k : Fin 2) → timeH1 E (lSegLen th k),
-      (∀ k, MapsTo (v k).toFun (Icc (0 : Real) (lSegLen th k))
+  have huhcmp : ∀ v : (k : Fin 2) → timeH1 E (partitionIntervalLength th k),
+      (∀ k, MapsTo (v k).toFun (Icc (0 : Real) (partitionIntervalLength th k))
         (extChartAt I (p i)).target) →
       (extChartAt I (p i)).symm ((v 0).toFun 0) =
         (extChartAt I (p i)).symm ((uh 0).toFun 0) →
-      (extChartAt I (p i)).symm ((v 1).toFun (lSegLen th 1)) =
-        (extChartAt I (p i)).symm ((uh 1).toFun (lSegLen th 1)) →
-      (extChartAt I (p i)).symm ((v 0).toFun (lSegLen th 0)) =
+      (extChartAt I (p i)).symm ((v 1).toFun (partitionIntervalLength th 1)) =
+        (extChartAt I (p i)).symm ((uh 1).toFun (partitionIntervalLength th 1)) →
+      (extChartAt I (p i)).symm ((v 0).toFun (partitionIntervalLength th 0)) =
         (extChartAt I (p i)).symm ((v 1).toFun 0) →
       (∑ k : Fin 2, lChartAct S T (th k.castSucc) (p i) (uh k)) ≤
         ∑ k : Fin 2, lChartAct S T (th k.castSucc) (p i) (v k) := by
@@ -265,15 +265,15 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       rw [hv0]
       rw [huh0]
       simpa only [add_zero] using hrecover i 0 ⟨le_rfl, by
-        simpa only [lSegLen] using sub_nonneg.mpr hpos0.le⟩
+        simpa only [partitionIntervalLength] using sub_nonneg.mpr hpos0.le⟩
     have hv2' : (extChartAt I (p i)).symm
         ((v 1).toFun (c - t j.castSucc)) = gamma c := by
       have hv2a : (extChartAt I (p i)).symm
           ((v 1).toFun (c - t j.castSucc)) =
           (extChartAt I (p i)).symm (uHead.toFun (c - t j.castSucc)) := by
         have hv2u : (extChartAt I (p i)).symm
-              ((v 1).toFun (lSegLen th 1)) =
-            (extChartAt I (p i)).symm (uHead.toFun (lSegLen th 1)) := by
+              ((v 1).toFun (partitionIntervalLength th 1)) =
+            (extChartAt I (p i)).symm (uHead.toFun (partitionIntervalLength th 1)) := by
           rw [← huh1]
           exact hv2
         exact (congrArg (fun r ↦ (extChartAt I (p i)).symm ((v 1).toFun r))
@@ -293,11 +293,11 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
         (hxy ▸ w : timeH1 E y).toFun = w.toFun := by
       subst y
       rfl
-    let v0t : timeH1 E (lSegLen t i) := hthLen0 ▸ v 0
+    let v0t : timeH1 E (partitionIntervalLength t i) := hthLen0 ▸ v 0
     let v1t : timeH1 E (c - t j.castSucc) := hthLen1 ▸ v 1
     have hv0tf : v0t.toFun = (v 0).toFun := hcast_toFun hthLen0 (v 0)
     have hv1tf : v1t.toFun = (v 1).toFun := hcast_toFun hthLen1 (v 1)
-    have hvtar0 : MapsTo v0t.toFun (Icc (0 : Real) (lSegLen t i))
+    have hvtar0 : MapsTo v0t.toFun (Icc (0 : Real) (partitionIntervalLength t i))
         (extChartAt I (p i)).target := by
       rw [hv0tf, ← hthLen0]
       exact hvtar 0
@@ -314,7 +314,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       rw [hv1tf]
       exact hv2'
     have hvnodet : (extChartAt I (p i)).symm
-          (v0t.toFun (lSegLen t i)) =
+          (v0t.toFun (partitionIntervalLength t i)) =
         (extChartAt I (p i)).symm (v1t.toFun 0) := by
       rw [hv0tf, hv1tf, ← hthLen0]
       exact hvnode
@@ -353,9 +353,9 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
   have hmom := lChartAct_momentum_eq_of_pair_minimality (I := I) S hS T th (p i) uh hthpos hthreg
     huhchart huhnode huhcmp
   have hmom' : chartGramOp (I := I) S.family (p i)
-        (T - (t j.castSucc) ^ 2, (u i).toFun (lSegLen t i))
+        (T - (t j.castSucc) ^ 2, (u i).toFun (partitionIntervalLength t i))
         (derivWithin (u i).toFun
-          (Icc (0 : Real) (lSegLen t i)) (lSegLen t i)) =
+          (Icc (0 : Real) (partitionIntervalLength t i)) (partitionIntervalLength t i)) =
       chartGramOp (I := I) S.family (p i)
         (T - (t j.castSucc) ^ 2, uHead.toFun 0)
         (derivWithin uHead.toFun
@@ -364,21 +364,21 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     rw [huh0, huh1, hthLen0, hthLen1, hthMid] at hmom'
     exact hmom'
   have hheadDeriv : derivWithin (u j).toFun
-        (Icc (0 : Real) (lSegLen t j)) 0 =
+        (Icc (0 : Real) (partitionIntervalLength t j)) 0 =
       tangentCoordChange I (p i) (p j) (gamma (t j.castSucc))
         (derivWithin uHead.toFun
           (Icc (0 : Real) (c - t j.castSucc)) 0) := by
     have hchange := chartDeriv_head I (sub_pos.mpr hc0)
-      (by simpa only [lSegLen] using sub_le_sub_right hc1.le (t j.castSucc))
+      (by simpa only [partitionIntervalLength] using sub_le_sub_right hc1.le (t j.castSucc))
       (p i) (p j) gammaHead uHead (u j) hsrcHead0
       (fun r hr ↦ hsrc j ⟨le_add_of_nonneg_right hr.1, by
         have hr2 : r ≤ c - t j.castSucc := hr.2
         linarith [hr2, hc1.le]⟩)
       huHead (by
         intro r hr
-        have hr' : r ∈ Icc (0 : Real) (lSegLen t j) := by
+        have hr' : r ∈ Icc (0 : Real) (partitionIntervalLength t j) := by
           exact ⟨hr.1, by
-            simpa only [lSegLen] using
+            simpa only [partitionIntervalLength] using
               (show r ≤ t j.succ - t j.castSucc by linarith [hr.2, hc1.le])⟩
         simpa only [gammaHead, Function.comp_apply] using hrep j hr')
       huHeadC1 hu1c1
@@ -390,19 +390,19 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
   have hqSrc : gamma (t j.castSucc) ∈ (extChartAt I (p j)).source := by
     rw [extChartAt_source]
     exact hsrc j ⟨le_rfl, hpos1.le⟩
-  have hu0Node : (u i).toFun (lSegLen t i) =
+  have hu0Node : (u i).toFun (partitionIntervalLength t i) =
       extChartAt I (p i) (gamma (t j.castSucc)) := by
     rw [hrep i ⟨by
-      simpa only [lSegLen] using sub_nonneg.mpr hpos0.le, le_rfl⟩]
-    simp only [lSegLen, hij, add_sub_cancel]
+      simpa only [partitionIntervalLength] using sub_nonneg.mpr hpos0.le, le_rfl⟩]
+    simp only [partitionIntervalLength, hij, add_sub_cancel]
   have huHead0 : uHead.toFun 0 =
       extChartAt I (p i) (gamma (t j.castSucc)) := by
     simpa only [gammaHead, Function.comp_apply, add_zero] using
       huHead ⟨le_rfl, sub_nonneg.mpr hc0.le⟩
   let v₀ := derivWithin (u i).toFun
-    (Icc (0 : Real) (lSegLen t i)) (lSegLen t i)
+    (Icc (0 : Real) (partitionIntervalLength t i)) (partitionIntervalLength t i)
   let vh := derivWithin uHead.toFun (Icc (0 : Real) (c - t j.castSucc)) 0
-  let v₁ := derivWithin (u j).toFun (Icc (0 : Real) (lSegLen t j)) 0
+  let v₁ := derivWithin (u j).toFun (Icc (0 : Real) (partitionIntervalLength t j)) 0
   let J := tangentCoordChange I (p i) (p j) (gamma (t j.castSucc))
   let Jrev := tangentCoordChange I (p j) (p i) (gamma (t j.castSucc))
   have hheadDeriv' : v₁ = J vh := by

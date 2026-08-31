@@ -93,9 +93,9 @@ theorem exists_lRegMinC1
     (h0a : alpha0 a = x) (h0b : alpha0 b = y)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     ∃ (gamma : Real → M) (m : Nat) (t : Fin (m + 1) → Real)
-      (p : Fin m → M) (uLim : (i : Fin m) → timeH1 E (lSegLen t i))
+      (p : Fin m → M) (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
       (beta : Nat → Real → M)
-      (u : (i : Fin m) → Nat → timeH1 E (lSegLen t i)),
+      (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i)),
       Continuous gamma ∧ gamma a = x ∧ gamma b = y ∧
         lRegAction S T gamma a b = lRegCostC1 S T a b x y ∧
         (∀ delta : Real → M,
@@ -107,14 +107,14 @@ theorem exists_lRegMinC1
           (chartAt H (p i)).source) ∧
         (∀ i, EqOn (uLim i).toFun
         (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-          (Icc (0 : Real) (lSegLen t i))) ∧
+          (Icc (0 : Real) (partitionIntervalLength t i))) ∧
         (∀ n, ContMDiff (modelWithCornersSelf Real Real) I 1 (beta n)) ∧
         (∀ n, beta n a = x) ∧ (∀ n, beta n b = y) ∧
         (∀ i n, MapsTo (beta n) (Icc (t i.castSucc) (t i.succ))
           (chartAt H (p i)).source) ∧
         (∀ i n, EqOn (u i n).toFun
           (fun r ↦ extChartAt I (p i) (beta n (t i.castSucc + r)))
-          (Icc (0 : Real) (lSegLen t i))) ∧
+          (Icc (0 : Real) (partitionIntervalLength t i))) ∧
         (∀ i, Tendsto (u i) atTop (nhds (uLim i))) ∧
         TendstoUniformly
           (fun n (s : Icc a b) ↦ beta n s.1)

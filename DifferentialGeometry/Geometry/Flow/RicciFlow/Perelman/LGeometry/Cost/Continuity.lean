@@ -226,15 +226,15 @@ private theorem chart_tail_lim
     Fin.cases c (Fin.cases b fun k ↦ Fin.elim0 k)
   have ht0 : t 0 = c := rfl
   have ht1 : t (Fin.last 1) = b := rfl
-  have htLen : lSegLen t 0 = b - c := rfl
+  have htLen : partitionIntervalLength t 0 = b - c := rfl
   have htmono : Monotone t := by
     intro i j hij
     fin_cases i <;> fin_cases j <;> simp_all [t, hcb.le]
-  let vt (n : Nat) : timeH1 E (lSegLen t 0) := htLen.symm ▸ v n
-  let u0t : timeH1 E (lSegLen t 0) := htLen.symm ▸ u0
-  let vtFin : (i : Fin 1) → Nat → timeH1 E (lSegLen t i) :=
+  let vt (n : Nat) : timeH1 E (partitionIntervalLength t 0) := htLen.symm ▸ v n
+  let u0t : timeH1 E (partitionIntervalLength t 0) := htLen.symm ▸ u0
+  let vtFin : (i : Fin 1) → Nat → timeH1 E (partitionIntervalLength t i) :=
     Fin.cases vt fun k ↦ Fin.elim0 k
-  let u0Fin : (i : Fin 1) → timeH1 E (lSegLen t i) :=
+  let u0Fin : (i : Fin 1) → timeH1 E (partitionIntervalLength t i) :=
     Fin.cases u0t fun k ↦ Fin.elim0 k
   have hlim := lAction_h1_lim (I := I) S hMet hSc T c b t htmono
     ht0 ht1 (fun _ ↦ p) beta beta0

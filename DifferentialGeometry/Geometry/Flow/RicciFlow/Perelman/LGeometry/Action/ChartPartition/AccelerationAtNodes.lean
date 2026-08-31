@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.PuncturedDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.C1Regularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.StrictC2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.PieceAcceleration
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseAcceleration
 
 set_option autoImplicit false
 
@@ -38,12 +38,12 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
     (ht : StrictMono t) (ht0 : t 0 = a)
     (htlast : t (Fin.last (m + 2)) = b)
     (p : Fin (m + 2) → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (i : Fin (m + 2)) → timeH1 E (lSegLen t i))
+    (u : (i : Fin (m + 2)) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -141,24 +141,24 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
     rcases lt_or_gt_of_ne hrne with hrc' | hcr'
     · have hri : r ∈ Ioo (t i.castSucc) (t i.succ) := by
         simpa only [i, c] using ⟨hrwin.1, hrc'⟩
-      have hr2 := lStrict_piece_c2_at (I := I) S hS T a b t ht ht0 htlast
+      have hr2 := lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast
         p gamma hgamma u hsrc hrep hreg hmin i r hri
       have hvel :=
         DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
           (I := I) gamma r hr2
-      have hacc := lStrict_piece_accel (I := I) S hS T a b t ht ht0
+      have hacc := lRegAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0
         htlast p gamma hgamma u hsrc hrep hreg hmin i r hri
       simpa only [z, X] using
         lRegCurve_phase (I := I) S T x gamma r
           (hr2.mdifferentiableAt (by norm_num)) hrsrc hvel hacc
     · have hrj : r ∈ Ioo (t j.castSucc) (t j.succ) := by
         simpa only [j, c] using ⟨hcr', hrwin.2⟩
-      have hr2 := lStrict_piece_c2_at (I := I) S hS T a b t ht ht0 htlast
+      have hr2 := lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast
         p gamma hgamma u hsrc hrep hreg hmin j r hrj
       have hvel :=
         DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
           (I := I) gamma r hr2
-      have hacc := lStrict_piece_accel (I := I) S hS T a b t ht ht0
+      have hacc := lRegAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0
         htlast p gamma hgamma u hsrc hrep hreg hmin j r hrj
       simpa only [z, X] using
         lRegCurve_phase (I := I) S T x gamma r

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.StrictRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Strict
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.InteriorRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.StrictRefinement
 
 set_option autoImplicit false
 
@@ -32,12 +32,12 @@ theorem lMinCurve_reg
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b) (p : Fin m → M)
     (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma (Icc (t i.castSucc) (t i.succ))
       (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -53,7 +53,7 @@ theorem lMinCurve_reg
         lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
   classical
   obtain ⟨k, s, _q, p', u', hs, _hq, hs0, hslast, _hseg, _hp,
-      hsrc', hrep'⟩ := exists_lStrict (I := I) t htmono p u gamma hsrc hrep
+      hsrc', hrep'⟩ := exists_strict_chart_partition (I := I) t htmono p u gamma hsrc hrep
   have hs0a : s 0 = a := hs0.trans ht0
   have hslastb : s (Fin.last k) = b := hslast.trans htlast
   have hk : 0 < k := by
@@ -63,7 +63,7 @@ theorem lMinCurve_reg
         apply hab.ne
         exact hs0a.symm.trans ((congrArg s (Fin.ext (by simp))).trans hslastb)
     | succ k => omega
-  exact lStrict_curve_reg (I := I) S hS T a b s hs hs0a hslastb p'
+  exact lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior (I := I) S hS T a b s hs hs0a hslastb p'
     gamma hgamma u' hsrc' hrep' hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

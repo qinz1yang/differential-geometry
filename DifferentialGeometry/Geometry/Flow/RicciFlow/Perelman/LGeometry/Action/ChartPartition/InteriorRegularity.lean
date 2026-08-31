@@ -71,19 +71,19 @@ private theorem has_fin_seg
       exact hks
 
 omit [CompactSpace M] in
-theorem lStrict_curve_reg
+theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
     (ht : StrictMono t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (gamma : Real → M) (hgamma : Continuous gamma)
-    (u : (i : Fin m) → timeH1 E (lSegLen t i))
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i, MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
     (hrep : ∀ i, EqOn (u i).toFun
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
-      (Icc (0 : Real) (lSegLen t i)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
@@ -151,12 +151,12 @@ theorem lStrict_curve_reg
         · have hsopen : s ∈ Ioo (t i.castSucc) (t i.succ) :=
             ⟨lt_of_le_of_ne hi.1 (Ne.symm hleft),
               lt_of_le_of_ne hi.2 hright⟩
-          have hgamma2 := lStrict_piece_c2_at (I := I) S hS T a b t ht ht0
+          have hgamma2 := lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0
             htlast p gamma hgamma u hsrc hrep hreg hmin i s hsopen
           exact ⟨hgamma2.mdifferentiableAt (by norm_num),
             DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
               (I := I) gamma s hgamma2,
-            lStrict_piece_accel (I := I) S hS T a b t ht ht0 htlast p
+            lRegAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast p
               gamma hgamma u hsrc hrep hreg hmin i s hsopen⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
