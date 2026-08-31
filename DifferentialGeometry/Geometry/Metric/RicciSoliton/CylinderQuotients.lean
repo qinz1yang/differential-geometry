@@ -145,6 +145,17 @@ theorem gaussianPotential_affine_preserving_shift_eq_zero
     simpa using hzero
   nlinarith
 
+theorem roundThreeCylinderShrinkerPotential_affine_line_preserving_shift_eq_zero
+    (y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1)
+    (epsilon shift : Real)
+    (hpreserve : ∀ s : Real,
+      roundThreeCylinderShrinkerPotential (y, epsilon * s + shift) =
+        roundThreeCylinderShrinkerPotential (y, s)) :
+    shift = 0 := by
+  have hzero := hpreserve 0
+  simp only [mul_zero, zero_add, roundThreeCylinderShrinkerPotential_apply] at hzero
+  nlinarith
+
 private theorem roundTwoSphereAntipodalDiffeomorph_pullbackMetric :
     Diffeomorph.pullbackMetric roundTwoSphereShrinkerMetric
         roundTwoSphereAntipodalDiffeomorph =
