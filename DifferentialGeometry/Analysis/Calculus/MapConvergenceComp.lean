@@ -500,6 +500,42 @@ theorem MapCInfConvOnCompacts.comp
   exact MapCPConvOn.comp_cInf hU hV hK hKU (hB K hK hKU p) hA
     hBc hBinfc hAc hAinfc hmap hmapk
 
+theorem MapCInfConvOnCompacts.comp_of_finiteDimensional
+    {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
+    [FiniteDimensional Real F]
+    {B : Nat → E → F} {Binf : E → F}
+    {A : Nat → F → G} {Ainf : F → G}
+    (hB : MapCInfConvOnCompacts U B Binf)
+    (hA : MapCInfConvOnCompacts V A Ainf)
+    (hBc : ∀ k, ContDiffOn Real ∞ (B k) U)
+    (hBinfc : ContDiffOn Real ∞ Binf U)
+    (hAc : ∀ k, ContDiffOn Real ∞ (A k) V)
+    (hAinfc : ContDiffOn Real ∞ Ainf V)
+    (hmap : Set.MapsTo Binf U V)
+    (hmapk : ∀ k, Set.MapsTo (B k) U V) :
+    MapCInfConvOnCompacts U (fun k x => A k (B k x))
+      (fun x => Ainf (Binf x)) := by
+  let : ProperSpace F := FiniteDimensional.proper Real F
+  exact hB.comp hU hV hA hBc hBinfc hAc hAinfc hmap hmapk
+
+theorem MapCInfConvOnCompacts.const_arg
+    {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
+    [ProperSpace F]
+    {A : Nat → F → G} {Ainf : F → G} {y₀ : F}
+    (hy₀ : y₀ ∈ V) (hA : MapCInfConvOnCompacts V A Ainf)
+    (hAc : ∀ k, ContDiffOn Real ∞ (A k) V)
+    (hAinfc : ContDiffOn Real ∞ Ainf V) :
+    MapCInfConvOnCompacts U (fun k _ => A k y₀) (fun _ => Ainf y₀) := by
+  have hconst : MapCInfConvOnCompacts U
+      (fun _ : Nat => fun _ : E => y₀) (fun _ : E => y₀) :=
+    by
+      intro K _ _ p ε hε
+      exact ⟨0, fun k _ r _ x _ => by
+        simpa [mapDerivNorm, sub_self] using hε.le⟩
+  exact hconst.comp hU hV hA
+    (fun _ => contDiffOn_const) contDiffOn_const hAc hAinfc
+    (fun _ _ => hy₀) (fun _ _ _ => hy₀)
+
 section BasicClosures
 
 variable {E' P Q : Type*}

@@ -19,6 +19,8 @@ import DifferentialGeometry.Analysis.Calculus.IteratedFDerivProductDifferenceBou
 import DifferentialGeometry.Analysis.Calculus.IteratedFDerivSeminormCalculus
 import DifferentialGeometry.Analysis.Calculus.MapConvergence
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
+import DifferentialGeometry.Analysis.Calculus.MapConvergenceAlgebra
+import DifferentialGeometry.Analysis.Calculus.QuadraticEvaluationConvergence
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
@@ -2747,6 +2749,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Support
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.WeightCompatibility
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.WeightConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility

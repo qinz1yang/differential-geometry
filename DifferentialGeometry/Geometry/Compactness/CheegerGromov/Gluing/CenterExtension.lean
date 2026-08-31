@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
@@ -72,162 +73,6 @@ theorem centerCfgOn_eq
     (pts := fun q i => (NormalCoordinates.normalChartAt (I := I) g p).symm (q.2 i))
     (join := join) (p := fun _ => p) (r := fun _ => r) (qstar := fun _ => p)
     h hparams
-
-section RootExtension
-
-variable {P₀ : Type*} [TopologicalSpace P₀] [T2Space P₀]
-
-omit [NormedSpace Real E] [FiniteDimensional Real E]
-  [NeZero (Module.finrank Real E)] in
-theorem existsRootExtension
-    (G : E -> P₀ -> E) {A B : Set P₀} (hA : IsCompact A) (hAB : A ⊆ B)
-    (c : P₀ -> E) (hc : ContinuousOn c B)
-    (hc0 : ∀ p ∈ B, G (c p) p = 0)
-    (hlocal : ∀ p ∈ A,
-      ∃ e : OpenPartialHomeomorph (E × P₀) (E × P₀),
-        (c p, p) ∈ e.source ∧
-          (e : (E × P₀) -> (E × P₀)) = fun w => (G w.1 w.2, w.2)) :
-    ∃ (T : Set (E × P₀)) (V : Set P₀) (z : P₀ -> E),
-      IsOpen T ∧ IsOpen V ∧
-      (∀ p ∈ A, (c p, p) ∈ T) ∧
-      Set.InjOn (fun w : E × P₀ => (G w.1 w.2, w.2)) T ∧
-      A ⊆ V ∧ ContinuousOn z V ∧
-      (∀ p ∈ V, G (z p) p = 0) ∧ Set.EqOn z c (B ∩ V) := by
-  classical
-  by_cases hAne : A.Nonempty
-  · let F : E × P₀ -> E × P₀ := fun w => (G w.1 w.2, w.2)
-    let graph : P₀ -> E × P₀ := fun p => (c p, p)
-    let S : Set (E × P₀) := graph '' A
-    let eA : ∀ p : A, OpenPartialHomeomorph (E × P₀) (E × P₀) := fun p =>
-      Classical.choose (hlocal p p.2)
-    have he_mem (p : A) : graph p ∈ (eA p).source :=
-      (Classical.choose_spec (hlocal p p.2)).1
-    have he_eq (p : A) :
-        ((eA p : OpenPartialHomeomorph (E × P₀) (E × P₀)) :
-          (E × P₀) -> (E × P₀)) = F :=
-      (Classical.choose_spec (hlocal p p.2)).2
-    let R : Set (E × P₀) := ⋃ p : A, (eA p).source
-    have hRopen : IsOpen R := isOpen_iUnion fun p => (eA p).open_source
-    have hSR : S ⊆ R := by
-      rintro _ ⟨p, hp, rfl⟩
-      exact Set.mem_iUnion.mpr ⟨⟨p, hp⟩, he_mem ⟨p, hp⟩⟩
-    have hlocalR : IsLocalHomeomorphOn F R := by
-      intro x hx
-      obtain ⟨p, hxp⟩ := Set.mem_iUnion.mp hx
-      exact ⟨eA p, hxp, (he_eq p).symm⟩
-    have hScompact : IsCompact S := by
-      exact hA.image_of_continuousOn ((hc.mono hAB).prodMk continuousOn_id)
-    have hSinj : Set.InjOn F S := by
-      rintro _ ⟨p, hp, rfl⟩ _ ⟨q, hq, rfl⟩ heq
-      have hpq : p = q := congrArg Prod.snd heq
-      subst q
-      rfl
-    have hFcont : ∀ x ∈ S, ContinuousAt F x := fun x hx =>
-      hlocalR.continuousAt (hSR hx)
-    have hFloc : ∀ x ∈ S, ∃ u ∈ 𝓝 x, Set.InjOn F u := by
-      intro x hx
-      obtain ⟨e, hxe, he⟩ := hlocalR x (hSR hx)
-      refine ⟨e.source, e.open_source.mem_nhds hxe, ?_⟩
-      simpa only [he] using e.injOn
-    obtain ⟨T₀, hT₀open, hST₀, hT₀inj⟩ :=
-      Set.InjOn.exists_isOpen_superset hSinj hScompact hFcont hFloc
-    let T : Set (E × P₀) := T₀ ∩ R
-    have hTopen : IsOpen T := hT₀open.inter hRopen
-    have hST : S ⊆ T := fun x hx => ⟨hST₀ hx, hSR hx⟩
-    have hTinj : Set.InjOn F T := hT₀inj.mono inter_subset_left
-    have hlocalT : IsLocalHomeomorphOn F T := hlocalR.mono inter_subset_right
-    have hFopen : IsOpenMap (T.domRestrict F) := by
-      intro W hW
-      rw [Set.domRestrict_eq, Set.image_comp]
-      let W₀ : Set (E × P₀) := ((↑) : T -> E × P₀) '' W
-      have hW₀open : IsOpen W₀ := hTopen.isOpenMap_subtype_val W hW
-      have hW₀T : W₀ ⊆ T := by
-        rintro _ ⟨x, hx, rfl⟩
-        exact x.2
-      change IsOpen (F '' W₀)
-      rw [isOpen_iff_forall_mem_open]
-      intro y hy
-      obtain ⟨x, hxW, rfl⟩ := hy
-      obtain ⟨e, hxe, he⟩ := hlocalT x (hW₀T hxW)
-      refine ⟨e '' (W₀ ∩ e.source), ?_, ?_, ?_⟩
-      · rintro _ ⟨w, hw, rfl⟩
-        exact ⟨w, hw.1, congrFun he w⟩
-      · exact e.isOpen_image_of_subset_source
-          (hW₀open.inter e.open_source) inter_subset_right
-      · exact ⟨x, ⟨hxW, hxe⟩, (congrFun he x).symm⟩
-    have hFembed : Topology.IsOpenEmbedding (T.domRestrict F) :=
-      .of_continuous_injective_isOpenMap hlocalT.continuousOn.domRestrict
-        hTinj.injective hFopen
-    obtain ⟨p₀, hp₀⟩ := hAne
-    have hx₀ : graph p₀ ∈ T := hST ⟨p₀, hp₀, rfl⟩
-    let : Nonempty T := ⟨⟨graph p₀, hx₀⟩⟩
-    let eT : OpenPartialHomeomorph T (E × P₀) :=
-      hFembed.toOpenPartialHomeomorph (T.domRestrict F)
-    have heT_coe : (eT : T -> E × P₀) = T.domRestrict F := by rfl
-    let pair : P₀ -> E × P₀ := fun p => (0, p)
-    let V₀ : Set P₀ := pair ⁻¹' eT.target
-    have hpair : Continuous pair := continuous_const.prodMk continuous_id
-    have hV₀open : IsOpen V₀ := eT.open_target.preimage hpair
-    have hAV₀ : A ⊆ V₀ := by
-      intro p hp
-      change pair p ∈ (hFembed.toOpenPartialHomeomorph (T.domRestrict F)).target
-      rw [Topology.IsOpenEmbedding.toOpenPartialHomeomorph_target]
-      refine ⟨⟨graph p, hST ⟨p, hp, rfl⟩⟩, ?_⟩
-      change F (graph p) = pair p
-      simp only [F, graph, pair, hc0 p (hAB hp)]
-    have hgraphB : ContinuousOn graph B := hc.prodMk continuousOn_id
-    obtain ⟨O, hOopen, hOeq⟩ := (continuousOn_iff'.mp hgraphB) T hTopen
-    let V : Set P₀ := V₀ ∩ O
-    have hVopen : IsOpen V := hV₀open.inter hOopen
-    have hAV : A ⊆ V := by
-      intro p hp
-      refine ⟨hAV₀ hp, ?_⟩
-      have hp' : p ∈ graph ⁻¹' T ∩ B := ⟨hST ⟨p, hp, rfl⟩, hAB hp⟩
-      rw [hOeq] at hp'
-      exact hp'.1
-    let z : P₀ -> E := fun p => ((eT.symm (pair p) : T) : E × P₀).1
-    have hinvVal : ContinuousOn
-        (fun y : E × P₀ => ((eT.symm y : T) : E × P₀)) eT.target :=
-      continuous_subtype_val.comp_continuousOn eT.continuousOn_symm
-    have hinvFst : ContinuousOn
-        (fun y : E × P₀ => ((eT.symm y : T) : E × P₀).1) eT.target :=
-      continuous_fst.comp_continuousOn hinvVal
-    have hzcont₀ : ContinuousOn z V₀ :=
-      hinvFst.comp hpair.continuousOn fun p hp => hp
-    have hzcont : ContinuousOn z V := hzcont₀.mono inter_subset_left
-    have hroot : ∀ p ∈ V, G (z p) p = 0 := by
-      intro p hp
-      have hri := eT.right_inv hp.1
-      rw [heT_coe] at hri
-      change F ((eT.symm (pair p) : T) : E × P₀) = pair p at hri
-      have hsnd := congrArg Prod.snd hri
-      have hfst := congrArg Prod.fst hri
-      change G (z p) p = 0
-      change (((eT.symm (pair p) : T) : E × P₀).2) = p at hsnd
-      change G (z p) (((eT.symm (pair p) : T) : E × P₀).2) = 0 at hfst
-      rwa [hsnd] at hfst
-    have hagree : Set.EqOn z c (B ∩ V) := by
-      intro p hp
-      have hpOB : p ∈ O ∩ B := ⟨hp.2.2, hp.1⟩
-      rw [← hOeq] at hpOB
-      have hcT : graph p ∈ T := hpOB.1
-      have hri := eT.right_inv hp.2.1
-      rw [heT_coe] at hri
-      change F ((eT.symm (pair p) : T) : E × P₀) = pair p at hri
-      have hcg : F (graph p) = pair p := by
-        simp only [F, graph, pair, hc0 p hp.1]
-      have hxg : ((eT.symm (pair p) : T) : E × P₀) = graph p :=
-        hTinj (eT.symm (pair p)).2 hcT (hri.trans hcg.symm)
-      exact congrArg Prod.fst hxg
-    exact ⟨T, V, z, hTopen, hVopen, fun p hp => hST ⟨p, hp, rfl⟩,
-      hTinj, hAV, hzcont, hroot, hagree⟩
-  · have hAe : A = ∅ := by
-      exact Set.not_nonempty_iff_eq_empty.mp hAne
-    subst A
-    refine ⟨∅, ∅, fun _ => 0, isOpen_empty, isOpen_empty, ?_⟩
-    simp
-
-end RootExtension
 
 section SmoothDomain
 
@@ -516,7 +361,7 @@ theorem existsCmExtensionB
       A ⊆ V ∧ ContinuousOn z V ∧
       (∀ params ∈ V, chartCmEqnB (I := I) g hEnorm p D (z params) params = 0) ∧
       Set.EqOn z c (B ∩ V) := by
-  apply existsRootExtension
+  apply Analysis.exists_root_extension_of_local_homeomorph
     (G := fun z params => chartCmEqnB (I := I) g hEnorm p D z params)
     hA hAB c hc hzero
   intro params hparams
@@ -555,7 +400,7 @@ theorem existsCmExtension
       A ⊆ V ∧ ContinuousOn z V ∧
       (∀ params ∈ V, chartCmEqn' (I := I) g hEnorm p (z params) params = 0) ∧
       Set.EqOn z c (B ∩ V) := by
-  apply existsRootExtension
+  apply Analysis.exists_root_extension_of_local_homeomorph
     (G := fun z params => chartCmEqn' (I := I) g hEnorm p z params)
     hA hAB c hc hzero
   intro params hparams

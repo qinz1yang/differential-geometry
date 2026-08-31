@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.WeightConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
@@ -121,136 +122,6 @@ theorem averagedCInf_id {U : Set E'} {V : Set (P × Q)} (hU : IsOpen U) (hV : Is
   have hcomp := MapCInfConvOnCompacts.comp hU hV hpair
     (mapCInfConv_const (U := V) Φ) hpairc hpairinfc (fun _ => hΦc) hΦc hmap hmapk
   exact hcomp.congr hU (fun _ => Set.eqOn_refl _ _) (fun y hy => (hdiag y hy).symm)
-
-noncomputable def normWeights {ι : Type*} [Fintype ι] (num : ι → E' → ℝ) (i : ι) (z : E') : ℝ :=
-  num i z / ∑ j, num j z
-
-omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
-theorem normWeights_sum {ι : Type*} [Fintype ι] {num : ι → E' → ℝ} {z : E'}
-    (hne : (∑ j, num j z) ≠ 0) : ∑ i, normWeights num i z = 1 := by
-  simp only [normWeights, ← Finset.sum_div]
-  exact div_self hne
-
-omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
-theorem normWeights_nonneg {ι : Type*} [Fintype ι] {num : ι → E' → ℝ} {z : E'}
-    (hnn : ∀ j, 0 ≤ num j z) (i : ι) : 0 ≤ normWeights num i z :=
-  div_nonneg (hnn i) (Finset.sum_nonneg fun j _ => hnn j)
-
-omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
-theorem normWeights_pos {ι : Type*} [Fintype ι] {num : ι → E' → ℝ} {z : E'}
-    (hnn : ∀ j, 0 ≤ num j z) (hne : (∑ j, num j z) ≠ 0) :
-    ∃ i, 0 < normWeights num i z := by
-  have hsum : ∑ i, normWeights num i z = 1 := normWeights_sum hne
-  have hpos : 0 < ∑ i, normWeights num i z := by rw [hsum]; exact zero_lt_one
-  simpa only [Finset.mem_univ, true_and] using
-    (Finset.sum_pos_iff_of_nonneg
-      (fun i (_hi : i ∈ Finset.univ) => normWeights_nonneg hnn i)).mp hpos
-
-omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
-theorem num_ne_of_weight_ne {ι : Type*} [Fintype ι] {num : ι → E' → ℝ} {i : ι} {z : E'}
-    (hweight : normWeights num i z ≠ 0) : num i z ≠ 0 := by
-  intro hnum
-  apply hweight
-  simp [normWeights, hnum]
-
-omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
-theorem normWeights_delta {ι : Type*} [Fintype ι] {num : ι → E' → ℝ} {z : E'} (i0 : ι)
-    (hzero : ∀ j, j ≠ i0 → num j z = 0) (hne : num i0 z ≠ 0) :
-    normWeights num i0 z = 1 ∧ ∀ j, j ≠ i0 → normWeights num j z = 0 := by
-  have hsum : ∑ j, num j z = num i0 z :=
-    Finset.sum_eq_single i0 (fun b _ hb => hzero b hb)
-      (fun h => absurd (Finset.mem_univ i0) h)
-  refine ⟨?_, fun j hj => ?_⟩
-  · simp [normWeights, hsum, div_self hne]
-  · simp [normWeights, hzero j hj]
-
-theorem normWeights_contDiffOn {ι : Type*} [Fintype ι] {U : Set E'} {num : ι → E' → ℝ}
-    (hnum : ∀ i, ContDiffOn ℝ (∞ : WithTop ℕ∞) (num i) U)
-    (hne : ∀ z ∈ U, (∑ j, num j z) ≠ 0) (i : ι) :
-    ContDiffOn ℝ (∞ : WithTop ℕ∞) (normWeights num i) U :=
-  (hnum i).div (ContDiffOn.sum fun j _ => hnum j) hne
-
-omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
-theorem normWeights_data {ι : Type} [Fintype ι] {s : Set E'} {U : ι → Set E'}
-    {num : ι → E' → ℝ}
-    (hnn : ∀ z ∈ s, ∀ i, 0 ≤ num i z)
-    (hne : ∀ z ∈ s, (∑ j, num j z) ≠ 0)
-    (hactive : ∀ z ∈ s, ∀ i, num i z ≠ 0 → z ∈ U i) :
-    centerAverage.WeightDataOn s U (fun z i => normWeights num i z) where
-  nonneg z hz i := normWeights_nonneg (hnn z hz) i
-  pos z hz := normWeights_pos (hnn z hz) (hne z hz)
-  sum_one z hz := normWeights_sum (hne z hz)
-  active_mem z hz i hi := hactive z hz i (num_ne_of_weight_ne hi)
-
-theorem mapCInfConv_mul {U : Set E'} (hU : IsOpen U)
-    {u v : ℕ → E' → ℝ} {uinf vinf : E' → ℝ}
-    (hu : MapCInfConvOnCompacts U u uinf) (hv : MapCInfConvOnCompacts U v vinf)
-    (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
-    (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U)
-    (hvc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (v k) U)
-    (hvinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) vinf U) :
-    MapCInfConvOnCompacts U (fun k y => u k y * v k y) (fun y => uinf y * vinf y) := by
-  have hpair := mapCInfConv_prodMk hU hu hv huc huinfc hvc hvinfc
-  have hmulc : ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun q : ℝ × ℝ => q.1 * q.2) Set.univ :=
-    contDiff_mul.contDiffOn
-  have hcomp := MapCInfConvOnCompacts.comp hU isOpen_univ hpair
-    (mapCInfConv_const (U := (Set.univ : Set (ℝ × ℝ))) (fun q : ℝ × ℝ => q.1 * q.2))
-    (fun k => (huc k).prodMk (hvc k)) (huinfc.prodMk hvinfc)
-    (fun _ => hmulc) hmulc (Set.mapsTo_univ _ _) (fun _ => Set.mapsTo_univ _ _)
-  exact hcomp
-
-theorem mapCInfConv_inv {U : Set E'} (hU : IsOpen U)
-    {u : ℕ → E' → ℝ} {uinf : E' → ℝ} {δ : ℝ} (hδ : 0 < δ)
-    (hu : MapCInfConvOnCompacts U u uinf)
-    (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
-    (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U)
-    (hlow : ∀ k, ∀ y ∈ U, δ < u k y) (hlowinf : ∀ y ∈ U, δ < uinf y) :
-    MapCInfConvOnCompacts U (fun k y => (u k y)⁻¹) (fun y => (uinf y)⁻¹) := by
-  have hinvc : ContDiffOn ℝ (∞ : WithTop ℕ∞) (Inv.inv : ℝ → ℝ) (Set.Ioi δ) :=
-    ContDiffOn.mono (contDiffOn_inv ℝ)
-      (fun t ht => Set.mem_compl_singleton_iff.mpr (ne_of_gt (lt_trans hδ ht)))
-  have hcomp := MapCInfConvOnCompacts.comp hU isOpen_Ioi hu
-    (mapCInfConv_const (U := Set.Ioi δ) (Inv.inv : ℝ → ℝ))
-    huc huinfc (fun _ => hinvc) hinvc
-    (fun y hy => hlowinf y hy) (fun k y hy => hlow k y hy)
-  exact hcomp
-
-theorem normWeightsConv {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
-    {num : ℕ → ι → E' → ℝ} {numinf : ι → E' → ℝ} {δ : ℝ} (hδ : 0 < δ)
-    (hconv : ∀ i, MapCInfConvOnCompacts U (fun k => num k i) (numinf i))
-    (hc : ∀ k i, ContDiffOn ℝ (∞ : WithTop ℕ∞) (num k i) U)
-    (hcinf : ∀ i, ContDiffOn ℝ (∞ : WithTop ℕ∞) (numinf i) U)
-    (hlow : ∀ k, ∀ z ∈ U, δ < ∑ j, num k j z)
-    (hlowinf : ∀ z ∈ U, δ < ∑ j, numinf j z) (i : ι) :
-    MapCInfConvOnCompacts U (fun k => normWeights (num k) i) (normWeights numinf i) := by
-  have hpi := mapCInfConv_pi hU hconv (fun i k => hc k i) hcinf
-  set Lsum : (ι → ℝ) →L[ℝ] ℝ := ∑ j : ι, ContinuousLinearMap.proj j with hLsum
-  have hpic : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y (j : ι) => num k j y) U :=
-    fun k => contDiffOn_pi.mpr fun j => hc k j
-  have hpiinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y (j : ι) => numinf j y) U :=
-    contDiffOn_pi.mpr fun j => hcinf j
-  have hsum0 := mapCInfConv_clm hU Lsum hpi hpic hpiinfc
-  have hLapp : ∀ v : ι → ℝ, Lsum v = ∑ j, v j := by
-    intro v
-    rw [hLsum, sum_apply]
-    exact Finset.sum_congr rfl fun j _ => ContinuousLinearMap.proj_apply j v
-  have hsum : MapCInfConvOnCompacts U (fun k y => ∑ j, num k j y)
-      (fun y => ∑ j, numinf j y) := by
-    refine hsum0.congr hU (fun k y _ => ?_) (fun y _ => ?_)
-    · exact (hLapp (fun j => num k j y)).symm
-    · exact (hLapp (fun j => numinf j y)).symm
-  have hsumc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y => ∑ j, num k j y) U :=
-    fun k => ContDiffOn.sum fun j _ => hc k j
-  have hsuminfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y => ∑ j, numinf j y) U :=
-    ContDiffOn.sum fun j _ => hcinf j
-  have hinv := mapCInfConv_inv hU hδ hsum hsumc hsuminfc hlow hlowinf
-  have hinvc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y => (∑ j, num k j y)⁻¹) U :=
-    fun k => (hsumc k).inv (fun z hz => ne_of_gt (lt_trans hδ (hlow k z hz)))
-  have hinvinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) (fun y => (∑ j, numinf j y)⁻¹) U :=
-    hsuminfc.inv (fun z hz => ne_of_gt (lt_trans hδ (hlowinf z hz)))
-  have hmul := mapCInfConv_mul hU (hconv i) hinv (fun k => hc k i) (hcinf i) hinvc hinvinfc
-  refine hmul.congr hU (fun k y _ => ?_) (fun y _ => ?_) <;>
-    simp [normWeights, div_eq_mul_inv]
 
 noncomputable def bumpNum {ι : Type*} [DecidableEq ι] (χ : E' → ℝ) (ψ : ι → E' → ℝ)
     (J : ι → E' → E') (i0 : ι) (i : ι) (z : E') : ℝ :=

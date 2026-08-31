@@ -14,6 +14,59 @@ namespace HCGCompactness
 
 open scoped BigOperators
 
+noncomputable def normWeights {E' : Type uX} {ι : Type uι} [Fintype ι]
+    (num : ι → E' → ℝ) (i : ι) (z : E') : ℝ :=
+  num i z / ∑ j, num j z
+
+theorem normWeights_sum {E' : Type uX} {ι : Type uι} [Fintype ι]
+    {num : ι → E' → ℝ} {z : E'} (hne : (∑ j, num j z) ≠ 0) :
+    ∑ i, normWeights num i z = 1 := by
+  simp only [normWeights, ← Finset.sum_div]
+  exact div_self hne
+
+theorem normWeights_nonneg {E' : Type uX} {ι : Type uι} [Fintype ι]
+    {num : ι → E' → ℝ} {z : E'} (hnn : ∀ j, 0 ≤ num j z) (i : ι) :
+    0 ≤ normWeights num i z :=
+  div_nonneg (hnn i) (Finset.sum_nonneg fun j _ => hnn j)
+
+theorem normWeights_pos {E' : Type uX} {ι : Type uι} [Fintype ι]
+    {num : ι → E' → ℝ} {z : E'} (hnn : ∀ j, 0 ≤ num j z)
+    (hne : (∑ j, num j z) ≠ 0) : ∃ i, 0 < normWeights num i z := by
+  have hsum : ∑ i, normWeights num i z = 1 := normWeights_sum hne
+  have hpos : 0 < ∑ i, normWeights num i z := by rw [hsum]; exact zero_lt_one
+  simpa only [Finset.mem_univ, true_and] using
+    (Finset.sum_pos_iff_of_nonneg
+      (fun i (_hi : i ∈ Finset.univ) => normWeights_nonneg hnn i)).mp hpos
+
+theorem num_ne_of_weight_ne {E' : Type uX} {ι : Type uι} [Fintype ι]
+    {num : ι → E' → ℝ} {i : ι} {z : E'} (hweight : normWeights num i z ≠ 0) :
+    num i z ≠ 0 := by
+  intro hnum
+  apply hweight
+  simp [normWeights, hnum]
+
+theorem normWeights_delta {E' : Type uX} {ι : Type uι} [Fintype ι]
+    {num : ι → E' → ℝ} {z : E'} (i0 : ι)
+    (hzero : ∀ j, j ≠ i0 → num j z = 0) (hne : num i0 z ≠ 0) :
+    normWeights num i0 z = 1 ∧ ∀ j, j ≠ i0 → normWeights num j z = 0 := by
+  have hsum : ∑ j, num j z = num i0 z :=
+    Finset.sum_eq_single i0 (fun j _ hj => hzero j hj)
+      (fun h => absurd (Finset.mem_univ i0) h)
+  refine ⟨?_, fun j hj => ?_⟩
+  · simp [normWeights, hsum, div_self hne]
+  · simp [normWeights, hzero j hj]
+
+theorem normWeights_data {E' : Type uX} {ι : Type} [Fintype ι]
+    {s : Set E'} {U : ι → Set E'} {num : ι → E' → ℝ}
+    (hnn : ∀ z ∈ s, ∀ i, 0 ≤ num i z)
+    (hne : ∀ z ∈ s, (∑ j, num j z) ≠ 0)
+    (hactive : ∀ z ∈ s, ∀ i, num i z ≠ 0 → z ∈ U i) :
+    centerAverage.WeightDataOn s U (fun z i => normWeights num i z) where
+  nonneg z hz i := normWeights_nonneg (hnn z hz) i
+  pos z hz := normWeights_pos (hnn z hz) (hne z hz)
+  sum_one z hz := normWeights_sum (hne z hz)
+  active_mem z hz i hi := hactive z hz i (num_ne_of_weight_ne hi)
+
 noncomputable def cutRaw {X : Type uX} {ι : Type uι} [DecidableEq ι]
     (cut : X → ℝ) (a : ι → X → ℝ) (i0 i : ι) (x : X) : ℝ :=
   if i = i0 then a i0 x else (1 - cut x) * a i x
