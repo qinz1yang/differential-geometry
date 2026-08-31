@@ -321,16 +321,6 @@ private lemma memWkp_finset_sum
       exact MemWkp.add (d := Module.finrank ℝ E)
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_open hi hsum
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma one_div_densityOnEuclid_contDiffOn_chartTargetEuclid
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ (⊤ : ℕ∞) (fun y => 1 / densityOnEuclid (I := I) g α y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
-    (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
-
 omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma layerA_coeff_contDiffOn_chartTargetEuclid
@@ -758,7 +748,7 @@ theorem eigenvectorChartRHSDiffNumerator_div_density_wkpNorm_le
       (I := I) (M := M) g r s i α P₀ m l h_prev_zero
   obtain ⟨_h_prod_mem, C₂, hC₂_nn, hC₂⟩ := wkpNorm_coef_mul_factor_le
     (I := I) (M := M) α K
-    (one_div_densityOnEuclid_contDiffOn_chartTargetEuclid (I := I) (M := M) g α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     h_num_memWkp h_num_ae_zero
   rw [← hΩ_def] at hC₂
   refine ⟨C₂ * C₁, mul_nonneg hC₂_nn hC₁_nn, ?_⟩
@@ -810,7 +800,7 @@ theorem eigenvectorChartRHSDiffNumerator_div_density_wkpNorm_le_uniform
       h_iter h_prev h_prev_zero
   obtain ⟨C₂, hC₂_nn, hC₂⟩ := wkpNorm_coef_mul_factor_le_uniform
     (I := I) (M := M) α K
-    (one_div_densityOnEuclid_contDiffOn_chartTargetEuclid (I := I) (M := M) g α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
   refine ⟨C₂ * C₁, mul_nonneg hC₂_nn hC₁_nn, fun i => ?_⟩
   set A := diffNumeratorAggregateK (I := I) (M := M)
     g r s i α P₀ m K l (fChartEffPrev i) with hA_def

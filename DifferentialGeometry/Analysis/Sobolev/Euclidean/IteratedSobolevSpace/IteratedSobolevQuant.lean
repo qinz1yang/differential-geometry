@@ -63,7 +63,7 @@ theorem wkpNorm_chosenWeakPartial_le
   wkpNorm_chosenWeakPartial_le_wkpNorm_succ (d := d) k u i
 
 omit [NeZero d] in
-private theorem memWkp_finset_sum
+theorem MemWkp.finset_sum
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
     {ι : Type*} (s : Finset ι) (f : ι → E → ℝ)
     (hf : ∀ i ∈ s, MemWkp (d := d) k p (f i) Ω) :
@@ -104,7 +104,7 @@ theorem wkpNorm_sum_le
       have hs_mem : ∀ i ∈ s, MemWkp (d := d) k p (f i) Ω :=
         fun i hi => hf i (Finset.mem_insert_of_mem hi)
       have h_sum_mem : MemWkp (d := d) k p (fun x => ∑ i ∈ s, f i x) Ω :=
-        memWkp_finset_sum (d := d) hp hΩ s f hs_mem
+        MemWkp.finset_sum (d := d) hp hΩ s f hs_mem
       have h_triangle :=
         wkpNorm_add_le (d := d) hp hΩ ha_mem h_sum_mem
       exact h_triangle.trans (add_le_add (le_refl _) (ih hs_mem))

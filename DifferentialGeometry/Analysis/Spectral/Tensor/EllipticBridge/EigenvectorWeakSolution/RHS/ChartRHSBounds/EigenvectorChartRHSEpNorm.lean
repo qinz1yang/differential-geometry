@@ -91,21 +91,6 @@ private lemma ofReal_two : ENNReal.ofReal 2 = (2 : ℝ≥0∞) := by
   rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.ofReal_natCast]
   norm_num
 
-section TermMemLp
-
-variable (g : SmoothRiemannianMetric I M) (α : M)
-
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma one_div_densityOnEuclid_contDiffOn :
-    ContDiffOn ℝ ∞ (fun y => 1 / densityOnEuclid (I := I) g α y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
-    (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
-
-end TermMemLp
-
 section Aggregate
 
 private lemma le_sixSum (a₁ a₂ a₃ a₄ a₅ a₆ : ℝ≥0∞) :

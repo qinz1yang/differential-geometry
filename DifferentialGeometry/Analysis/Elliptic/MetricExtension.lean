@@ -228,6 +228,14 @@ lemma densityOnEuclid_pos
   exact chartDensity_pos (I := I) g α h_base
 
 omit [NeZero (Module.finrank ℝ E)] in
+lemma one_div_densityOnEuclid_contDiffOn
+    (g : SmoothRiemannianMetric I M) (α : M) :
+    ContDiffOn ℝ ∞ (fun y => 1 / densityOnEuclid (I := I) g α y)
+      (chartTargetEuclid (I := I) (M := M) α) :=
+  contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
+    (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
+
+omit [NeZero (Module.finrank ℝ E)] in
 lemma invGramOnEuclid_posDef
     (g : SmoothRiemannianMetric I M) (α : M)
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :

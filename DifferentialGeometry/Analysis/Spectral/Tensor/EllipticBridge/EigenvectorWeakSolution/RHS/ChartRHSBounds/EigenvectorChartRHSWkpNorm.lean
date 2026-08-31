@@ -464,7 +464,7 @@ private lemma rhsTerm6_wkpNorm_le
       (fun y => ∑ l : Fin (Module.finrank ℝ E),
         weightedGradCoeffDivLimit (I := I) (M := M)
           g r s i α P₀ l y) Ω :=
-    memWkpFinsetSum hΩ_open
+    MemWkp.finset_sum (by norm_num) hΩ_open
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l => weightedGradCoeffDivLimit (I := I) (M := M)
         g r s i α P₀ l)

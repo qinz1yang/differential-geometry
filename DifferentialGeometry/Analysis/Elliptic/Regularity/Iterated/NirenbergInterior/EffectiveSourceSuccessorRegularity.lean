@@ -985,23 +985,6 @@ private lemma fChartEffStepNumerator_ae_zero_off_Kα
           (Ωα (I := I) (M := M) α) y) = 0
   rw [hA, hB, hC, hD, hE]; ring
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma one_div_densityOnEuclid_contDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ (⊤ : ℕ∞)
-      (fun y => 1 / densityOnEuclid (I := I) g α y)
-      (Ωα (I := I) (M := M) α) := by
-  have h_dens_smooth : ContDiffOn ℝ (⊤ : ℕ∞)
-      (densityOnEuclid (I := I) g α) (Ωα (I := I) (M := M) α) :=
-    densityOnEuclid_contDiffOn (I := I) g α
-  have h_ne : ∀ y ∈ Ωα (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y ≠ 0 := fun y hy =>
-    (densityOnEuclid_pos (I := I) g α hy).ne'
-  have h_const : ContDiffOn ℝ (⊤ : ℕ∞) (fun _ : EuclN => (1 : ℝ))
-      (Ωα (I := I) (M := M) α) := contDiffOn_const
-  exact h_const.div h_dens_smooth h_ne
-
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma fChartEffStepNumerator_div_density_memWkp
     (g : SmoothRiemannianMetric I M) (α : M)

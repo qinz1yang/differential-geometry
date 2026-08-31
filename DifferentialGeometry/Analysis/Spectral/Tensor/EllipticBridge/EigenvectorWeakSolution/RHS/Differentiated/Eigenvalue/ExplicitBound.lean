@@ -1428,7 +1428,7 @@ private lemma sharpDiffBdd_recursion_at_target
           h_prev_mem_succ h_prev_ae_zero
       obtain ⟨Cden, hCden_nn, hCden_bd⟩ :=
         sharpDiff_wkpNorm_coef_mul_factor_le_uniform (I := I) (M := M) α K
-          (one_div_densityOnEuclid_contDiffOn_chartTargetEuclid
+          (one_div_densityOnEuclid_contDiffOn
             (I := I) (M := M) g α)
       refine ⟨Cden * Cnum, mul_nonneg hCden_nn hCnum_nn, fun i => ?_⟩
       set numFun : EuclN → ℝ :=

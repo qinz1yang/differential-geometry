@@ -92,15 +92,6 @@ noncomputable def eigenvectorChartRHS
             crossRightGradCoeffDivLimit (I := I) (M := M)
               g r s i α P₀ y)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma one_div_densityOnEuclid_contDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ ∞ (fun y => 1 / densityOnEuclid (I := I) g α y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
-    (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
-
 omit [CompleteSpace E] in
 lemma crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

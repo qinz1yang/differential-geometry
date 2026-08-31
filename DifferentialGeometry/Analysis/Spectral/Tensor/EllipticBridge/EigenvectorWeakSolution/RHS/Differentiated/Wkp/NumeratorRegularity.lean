@@ -241,16 +241,6 @@ private lemma layer_E_memWkp
     (densityOnEuclid_contDiffOn (I := I) g α)
     h_factor_memWkp h_factor_ae_zero
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma one_div_densityOnEuclid_contDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ (⊤ : ℕ∞) (fun y => 1 / densityOnEuclid (I := I) g α y)
-      (Ωα (I := I) (M := M) α) :=
-  contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
-    (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
-
 omit [CompleteSpace E] in
 private lemma iteratedPartial_ae_zero_off_Kα_unconditional
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

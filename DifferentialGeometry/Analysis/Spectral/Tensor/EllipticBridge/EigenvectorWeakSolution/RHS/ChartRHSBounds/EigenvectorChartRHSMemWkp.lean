@@ -29,6 +29,8 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
+open DifferentialGeometry.Analysis.Laplacian.MetricExtension
+  (one_div_densityOnEuclid_contDiffOn)
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -433,18 +435,6 @@ private lemma memWkp_offKernelSmoothCoef_mul
   exact MemWkp.smul_smooth_bounded (d := Module.finrank ℝ E) K
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hcoef_smooth
     (fun j _hj y _hy => hC_bd y j _hj) hfactor_memWkp
-
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma recipDensityOnEuclid_contDiffOn
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ (⊤ : ℕ∞)
-      (fun y => 1 / Laplacian.MetricExtension.densityOnEuclid (I := I) g α y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  contDiffOn_const.div
-    (Laplacian.MetricExtension.densityOnEuclid_contDiffOn (I := I) g α)
-    (fun _ hy =>
-      (Laplacian.MetricExtension.densityOnEuclid_pos (I := I) g α hy).ne')
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
@@ -1430,7 +1420,7 @@ theorem eigenvectorChartRHS_summand6_memWkp
   exact memWkp_smoothCoef_mul_aeZeroFactor (I := I) (M := M) α K
     (chartPouKernel_isCompact (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
-    (recipDensityOnEuclid_contDiffOn (I := I) (M := M) g α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     h_sum h_sum_ae_zero
 
 open DifferentialGeometry.Analysis.Spectral in
@@ -1598,7 +1588,7 @@ theorem eigenvectorChartRHS_summand7_memWkp
   exact memWkp_smoothCoef_mul_aeZeroFactor (I := I) (M := M) α K
     (chartPouKernel_isCompact (I := I) (M := M) α)
     (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
-    (recipDensityOnEuclid_contDiffOn (I := I) (M := M) g α)
+    (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     h_div h_div_ae_zero
 
 open DifferentialGeometry.Analysis.Spectral in

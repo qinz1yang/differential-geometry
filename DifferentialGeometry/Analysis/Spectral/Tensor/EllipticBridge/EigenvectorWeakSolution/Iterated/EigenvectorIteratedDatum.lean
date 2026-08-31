@@ -34,16 +34,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma one_div_densityOnEuclid_contDiffOn_chartTarget
-    (g : SmoothRiemannianMetric I M) (α : M) :
-    ContDiffOn ℝ ∞ (fun y => 1 / densityOnEuclid (I := I) g α y)
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  contDiffOn_const.div (densityOnEuclid_contDiffOn (I := I) g α)
-    (fun _ hy => (densityOnEuclid_pos (I := I) g α hy).ne')
-
 structure EigenvectorIteratedTensorChartBilinearData
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -407,7 +397,7 @@ theorem eigenvectorChartIteratedStep_memLp_two_weighted
       rw [one_div, mul_comm, ← div_eq_mul_inv]
     rw [h_eq]
     exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-      (one_div_densityOnEuclid_contDiffOn_chartTarget (I := I) (M := M) g α)
+      (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
       hK_compact hK_meas hK_in h_num
   have h_plain : MemLp (eigenvectorChartIteratedStep (I := I) (M := M)
       g r s i α P₀ m dirs fChartEffPrev l) 2
