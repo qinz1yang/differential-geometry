@@ -20,7 +20,7 @@ theorem tensor02_lower_on_of_positive_definite
     {K : Set M} (hK : IsCompact K) (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := ∞) 2)
-    (hA : ∀ x : M, ∀ v : TangentSpace I x, v ≠ 0 →
+    (hA : ∀ x : M, x ∈ K → ∀ v : TangentSpace I x, v ≠ 0 →
       0 < quad02 (I := I) (M := M) (A x) v) :
     ∃ c : Real, 0 < c ∧
       ∀ (x : M), x ∈ K → ∀ v : TangentSpace I x,
@@ -42,11 +42,11 @@ theorem tensor02_lower_on_of_positive_definite
     infer_instance
   by_cases hne : {p : MetricUnitTangent (I := I) (M := M) g |
       MetricUnitTangent.base (I := I) (M := M) p ∈ K}.Nonempty
-  · obtain ⟨p₀, _hp₀, hmin⟩ :=
+  · obtain ⟨p₀, hp₀, hmin⟩ :=
       hcompact.exists_isMinOn hne hq_cont.continuousOn
     let c : Real := q p₀
     have hc : 0 < c := by
-      apply hA
+      apply hA _ hp₀
       intro hz
       have hu := MetricUnitTangent.unit (I := I) (M := M) p₀
       rw [hz] at hu
