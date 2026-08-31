@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Time
+import DifferentialGeometry.Bundle.LocalFrameRegularity
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.MFDeriv.Tangent
@@ -73,6 +74,80 @@ theorem covariantDerivative_eq_sum_christoffel
       ∑ k, christoffelSymbolInFrame cov frame hframe x i j k • frame k x := by
   exact hframe.coeff_sum_eq (fun y => (cov (frame j) y) (frame i y)) hx
 
+theorem christoffelSymbolInFrame_change
+    [Fintype Idx] [IsManifold I ∞ M]
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (frame frame' : Idx → (x : M) → TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hframe' : IsLocalFrameOn I E 1 frame' u)
+    (A : Idx → Idx → M → Real)
+    {x : M} (hu : u ∈ nhds x)
+    (hchange : ∀ᶠ y in nhds x, ∀ a, frame' a y = ∑ i, A i a y • frame i y)
+    (hA : ∀ i a, MDiffAt (A i a) x)
+    (a b c : Idx) :
+    christoffelSymbolInFrame cov frame' hframe' x a b c =
+      ∑ i, A i a x *
+        ∑ j,
+          (mvfderiv I (A j b) x (frame i x) * hframe'.coeff c x (frame j x) +
+            A j b x *
+              ∑ k, christoffelSymbolInFrame cov frame hframe x i j k *
+                hframe'.coeff c x (frame k x)) := by
+  classical
+  let term : Idx → (y : M) → TangentSpace I y := fun j ↦ A j b • frame j
+  have hframe_diff (j : Idx) : MDiffAt (T% (frame j)) x :=
+    ((hframe.contMDiffOn j).mdifferentiableOn one_ne_zero).mdifferentiableAt hu
+  have hframe'_diff : MDiffAt (T% (frame' b)) x :=
+    ((hframe'.contMDiffOn b).mdifferentiableOn one_ne_zero).mdifferentiableAt hu
+  have hterm_diff (j : Idx) : MDiffAt (T% (term j)) x :=
+    (hA j b).smul_section (hframe_diff j)
+  have hsum_diff : MDiffAt (T% ((Finset.univ : Finset Idx).sum term)) x := by
+    simpa using MDifferentiableAt.sum_section
+      (s := (Finset.univ : Finset Idx)) (t := term) (fun j _ ↦ hterm_diff j)
+  have hframe'_eq : frame' b =ᶠ[nhds x]
+      (Finset.univ : Finset Idx).sum term := by
+    filter_upwards [hchange] with y hy
+    calc
+      frame' b y = ∑ j, term j y := by simpa [term] using hy b
+      _ = ((Finset.univ : Finset Idx).sum term) y :=
+        (Finset.sum_apply y Finset.univ term).symm
+  have hcov_eq : cov (frame' b) x = cov ((Finset.univ : Finset Idx).sum term) x :=
+    cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hframe'_diff hsum_diff (by simp) hframe'_eq
+  have hchange_x (d : Idx) : frame' d x = ∑ i, A i d x • frame i x :=
+    hchange.self_of_nhds d
+  have hcov_sum (v : TangentSpace I x) :
+      (cov ((Finset.univ : Finset Idx).sum term) x) v =
+        ∑ j, (cov (term j) x) v := by
+    simpa using covariantDerivative_finset_sum_tangent (I := I) cov
+      (Finset.univ : Finset Idx) term v hterm_diff
+  have hcov_term (i j : Idx) :
+      (cov (term j) x) (frame i x) =
+        A j b x • (cov (frame j) x) (frame i x) +
+          mvfderiv I (A j b) x (frame i x) • frame j x := by
+    have hleib := congr($(cov.isCovariantDerivativeOnUniv.leibniz
+      (hframe_diff j) (hA j b)) (frame i x))
+    simpa [term, add_comm] using hleib
+  have hcov_frame (i j : Idx) :
+      (cov (frame j) x) (frame i x) =
+        ∑ k, christoffelSymbolInFrame cov frame hframe x i j k • frame k x :=
+    covariantDerivative_eq_sum_christoffel cov frame hframe
+      (mem_of_mem_nhds hu) i j
+  change hframe'.coeff c x ((cov (frame' b) x) (frame' a x)) = _
+  rw [hcov_eq, hchange_x a]
+  rw [map_sum]
+  simp only [ContinuousLinearMap.map_smul]
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [hcov_sum]
+  rw [map_smul, map_sum]
+  apply congrArg (A i a x * ·)
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [hcov_term, map_add, map_smul, map_smul, hcov_frame, map_sum]
+  simp only [map_smul, smul_eq_mul]
+  ring
+
 def IsNormalFrameForConnectionAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -103,6 +178,50 @@ theorem christoffelSymbolDifference_expansion
       ∑ k, christoffelSymbolDifferenceInFrame cov cov' frame hframe x i j k • frame k x := by
   exact hframe.coeff_sum_eq
     (fun y => ((CovariantDerivative.difference cov cov' y) (frame j y)) (frame i y)) hx
+
+theorem christoffelSymbolDifferenceInFrame_change
+    [Fintype Idx]
+    (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
+    (frame frame' : Idx -> (x : M) -> TangentSpace I x)
+    (hframe : IsLocalFrameOn I E 1 frame u)
+    (hframe' : IsLocalFrameOn I E 1 frame' u)
+    (A : Idx -> Idx -> Real)
+    {x : M} (hx : x ∈ u)
+    (hchange : ∀ a, frame' a x = ∑ i, A i a • frame i x)
+    (a b c : Idx) :
+    christoffelSymbolDifferenceInFrame cov cov' frame' hframe' x a b c =
+      ∑ i, A i a * ∑ j, A j b *
+        ∑ k, christoffelSymbolDifferenceInFrame cov cov' frame hframe x i j k *
+          hframe'.coeff c x (frame k x) := by
+  classical
+  let D := CovariantDerivative.difference cov cov' x
+  have hD_frame (i j : Idx) :
+      (D (frame j x)) (frame i x) =
+        ∑ k, christoffelSymbolDifferenceInFrame cov cov' frame hframe x i j k •
+          frame k x := by
+    exact christoffelSymbolDifference_expansion cov cov' frame hframe hx i j
+  change hframe'.coeff c x ((D (frame' b x)) (frame' a x)) = _
+  rw [hchange b, map_sum, hchange a, map_sum]
+  simp only [map_smul]
+  rw [map_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  have hsum_apply :
+      (∑ j, A j b • D (frame j x)) (frame i x) =
+        ∑ j, A j b • (D (frame j x)) (frame i x) := by
+    change ((ContinuousLinearMap.apply Real (TangentSpace I x)) (frame i x))
+        (∑ j, A j b • D (frame j x)) = _
+    rw [map_sum]
+    simp only [map_smul, ContinuousLinearMap.apply_apply]
+  rw [hsum_apply]
+  change hframe'.coeff c x
+      (A i a • ∑ j, A j b • (D (frame j x)) (frame i x)) = _
+  rw [map_smul, map_sum]
+  apply congrArg (A i a * ·)
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [hD_frame, map_smul, map_sum]
+  simp only [map_smul, smul_eq_mul]
 
 theorem christoffelSymbolDifferenceInFrame_eq_sub
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))

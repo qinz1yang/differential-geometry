@@ -21,6 +21,220 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+theorem localFrame_coeff_apply_contMDiffAt
+    {Idx : Type*} [Finite Idx] {u : Set M}
+    {frame : Idx → (x : M) → TangentSpace I x}
+    (hframe : IsLocalFrameOn I E ∞ frame u)
+    {x : M} (hu : u ∈ nhds x)
+    {σ : (x : M) → TangentSpace I x}
+    (hσ : ContMDiffAt I (I.prod (modelWithCornersSelf ℝ E)) ∞ (T% σ) x)
+    (i : Idx) :
+    ContMDiffAt I (modelWithCornersSelf ℝ ℝ) ∞ (fun y ↦ hframe.coeff i y (σ y)) x := by
+  classical
+  let _ := Fintype.ofFinite Idx
+  let e := trivializationAt E (TangentSpace I : M → Type _) x
+  have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
+  have hx : x ∈ u := mem_of_mem_nhds hu
+  let b : Module.Basis Idx ℝ E :=
+    (hframe.toBasisAt hx).map (e.linearEquivAt ℝ x he)
+  let A : M → E →L[ℝ] E := fun y ↦
+    b.constrL (fun j ↦ e.continuousLinearMapAt ℝ y (frame j y))
+  have hframe_coord (j : Idx) :
+      ContMDiffAt I (modelWithCornersSelf ℝ E) ∞
+        (fun y ↦ e.continuousLinearMapAt ℝ y (frame j y)) x := by
+    have hj : ContMDiffAt I (I.prod (modelWithCornersSelf ℝ E)) ∞
+        (T% (frame j)) x := (hframe.contMDiffOn j).contMDiffAt hu
+    refine ((e.contMDiffAt_section_iff he).mp hj).congr_of_eventuallyEq ?_
+    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
+    exact Bundle.Trivialization.continuousLinearMapAt_apply_of_mem
+      ℝ e hy (frame j y)
+  have hA : ContMDiffAt I (modelWithCornersSelf ℝ (E →L[ℝ] E)) ∞ A x := by
+    apply contMDiffAt_clm_of_pointwise (IB := I) (X := M)
+    intro v
+    have hv : v = ∑ j, b.repr v j • b j := (b.sum_repr v).symm
+    have hsum : ContMDiffAt I (modelWithCornersSelf ℝ E) ∞
+        (fun y ↦ ∑ j, b.repr v j •
+          e.continuousLinearMapAt ℝ y (frame j y)) x := by
+      apply ContMDiffAt.sum
+      intro j _
+      have hc : ContMDiffAt I (modelWithCornersSelf ℝ ℝ) ∞
+          (fun _ : M ↦ b.repr v j) x := contMDiffAt_const
+      exact hc.smul (hframe_coord j)
+    refine hsum.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y ↦ ?_)
+    change A y v = _
+    change b.constrL (fun j ↦ e.continuousLinearMapAt ℝ y (frame j y)) v = _
+    rw [hv, map_sum]
+    simp
+  have hA_x : A x = ContinuousLinearMap.id ℝ E := by
+    apply ContinuousLinearMap.ext
+    intro v
+    rw [← b.sum_repr v, map_sum]
+    simp only [A, map_smul, Module.Basis.constrL_basis,
+      ContinuousLinearMap.id_apply]
+    apply Finset.sum_congr rfl
+    intro j _
+    congr 1
+    rw [Bundle.Trivialization.continuousLinearMapAt_apply_of_mem ℝ e he]
+    simp [b, IsLocalFrameOn.toBasisAt_coe]
+  have hA_inv : (A x).IsInvertible := by
+    rw [hA_x]
+    simpa using
+      (ContinuousLinearMap.isInvertible_equiv
+        (f := ContinuousLinearEquiv.refl ℝ E))
+  have hAinv : ContMDiffAt I (modelWithCornersSelf ℝ (E →L[ℝ] E)) ∞
+      (ContinuousLinearMap.inverse ∘ A) x :=
+    (hA_inv.contDiffAt_map_inverse (n := ∞)).contMDiffAt.comp x hA
+  have hσcoord : ContMDiffAt I (modelWithCornersSelf ℝ E) ∞
+      (fun y ↦ e.continuousLinearMapAt ℝ y (σ y)) x := by
+    refine ((e.contMDiffAt_section_iff he).mp hσ).congr_of_eventuallyEq ?_
+    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
+    exact Bundle.Trivialization.continuousLinearMapAt_apply_of_mem ℝ e hy (σ y)
+  have hinv_apply : ContMDiffAt I (modelWithCornersSelf ℝ E) ∞
+      (fun y ↦ ContinuousLinearMap.inverse (A y)
+        (e.continuousLinearMapAt ℝ y (σ y))) x :=
+    hAinv.clm_apply hσcoord
+  have hcoord : ContMDiffAt I (modelWithCornersSelf ℝ ℝ) ∞
+      (fun y ↦ b.coord i (ContinuousLinearMap.inverse (A y)
+        (e.continuousLinearMapAt ℝ y (σ y)))) x :=
+    b.coord i |>.toContinuousLinearMap.contDiff.contMDiff.contMDiffAt.comp x hinv_apply
+  refine hcoord.congr_of_eventuallyEq ?_
+  filter_upwards [hu, e.open_baseSet.mem_nhds he] with y hyu hye
+  let by' : Module.Basis Idx ℝ E :=
+    (hframe.toBasisAt hyu).map (e.linearEquivAt ℝ y hye)
+  have hA_basis (j : Idx) : A y (b j) = by' j := by
+    simp only [A, Module.Basis.constrL_basis]
+    rw [Bundle.Trivialization.continuousLinearMapAt_apply_of_mem ℝ e hye]
+    simp [by', IsLocalFrameOn.toBasisAt_coe]
+  have hA_eq : A y = (b.equivFunL.trans by'.equivFunL.symm : E →L[ℝ] E) := by
+    have htrans_basis (j : Idx) :
+        (b.equivFunL.trans by'.equivFunL.symm) (b j) = by' j := by
+      change by'.equivFunL.symm (b.equivFunL (b j)) = by' j
+      apply by'.equivFunL.injective
+      rw [by'.equivFunL.apply_symm_apply]
+      ext k
+      simp [Module.Basis.equivFunL_apply]
+    apply ContinuousLinearMap.ext
+    intro v
+    rw [← b.sum_repr v, map_sum, map_sum]
+    exact Finset.sum_congr rfl fun j _ ↦ by
+      rw [map_smul, map_smul, hA_basis]
+      change (b.repr v) j • by' j =
+        (b.repr v) j • (b.equivFunL.trans by'.equivFunL.symm) (b j)
+      rw [htrans_basis]
+  have hAinv_eq : ContinuousLinearMap.inverse (A y) =
+      (by'.equivFunL.trans b.equivFunL.symm : E →L[ℝ] E) := by
+    rw [hA_eq]
+    rw [ContinuousLinearMap.inverse_equiv]
+    rfl
+  rw [hAinv_eq]
+  have hσcoord_eq : e.continuousLinearMapAt ℝ y (σ y) =
+      (e.linearEquivAt ℝ y hye) (σ y) := by
+    rw [Bundle.Trivialization.continuousLinearMapAt_apply_of_mem ℝ e hye]
+    rfl
+  rw [hσcoord_eq]
+  have hcoord_transfer :
+      b.coord i ((by'.equivFunL.trans b.equivFunL.symm)
+        ((e.linearEquivAt ℝ y hye) (σ y))) =
+        by'.coord i ((e.linearEquivAt ℝ y hye) (σ y)) := by
+    simp only [ContinuousLinearEquiv.trans_apply]
+    exact congrFun
+      (b.equivFunL.apply_symm_apply
+        (by'.repr ((e.linearEquivAt ℝ y hye) (σ y)))) i
+  have hcoeff_eq : hframe.coeff i y (σ y) =
+      by'.coord i ((e.linearEquivAt ℝ y hye) (σ y)) := by
+    rw [hframe.coeff_apply_of_mem hyu]
+    simp only [Module.Basis.coord_apply]
+    change ((hframe.toBasisAt hyu).repr (σ y)) i =
+      (((hframe.toBasisAt hyu).map (e.linearEquivAt ℝ y hye)).repr
+        ((e.linearEquivAt ℝ y hye) (σ y))) i
+    rw [Module.Basis.map_repr]
+    change ((hframe.toBasisAt hyu).repr (σ y)) i =
+      ((hframe.toBasisAt hyu).repr
+        ((e.linearEquivAt ℝ y hye).symm
+          ((e.linearEquivAt ℝ y hye) (σ y)))) i
+    rw [(e.linearEquivAt ℝ y hye).symm_apply_apply]
+  exact hcoeff_eq.trans hcoord_transfer.symm
+
+theorem localFrame_coeff_apply_contMDiffOn
+    {Idx : Type*} [Finite Idx] {u : Set M}
+    {frame : Idx → (x : M) → TangentSpace I x}
+    (hframe : IsLocalFrameOn I E ∞ frame u)
+    (hu : IsOpen u)
+    {σ : (x : M) → TangentSpace I x}
+    (hσ : ContMDiffOn I (I.prod (modelWithCornersSelf ℝ E)) ∞ (T% σ) u)
+    (i : Idx) :
+    ContMDiffOn I (modelWithCornersSelf ℝ ℝ) ∞ (fun x ↦ hframe.coeff i x (σ x)) u := by
+  intro x hx
+  exact (localFrame_coeff_apply_contMDiffAt hframe (hu.mem_nhds hx)
+    ((hσ x hx).contMDiffAt (hu.mem_nhds hx)) i).contMDiffWithinAt
+
+omit [CompleteSpace E] in
+theorem localFrame_dual_contMDiffOn
+    {Idx : Type*} [Finite Idx] {u : Set M}
+    {frame : Idx → (x : M) → TangentSpace I x}
+    (hframe : IsLocalFrameOn I E ∞ frame u)
+    (hu : IsOpen u) (i : Idx) :
+    ContMDiffOn I (I.prod (modelWithCornersSelf ℝ (E →L[ℝ] ℝ))) ∞
+      (fun x ↦ TotalSpace.mk' (E →L[ℝ] ℝ)
+        (E := fun x : M ↦ TangentSpace I x →L[ℝ] ℝ)
+        x (hframe.coeff i x).toContinuousLinearMap) u := by
+  intro x hx
+  apply ContMDiffAt.contMDiffWithinAt
+  rw [contMDiffAt_hom_bundle]
+  refine ⟨contMDiffAt_id, ?_⟩
+  apply contMDiffAt_clm_of_pointwise (IB := I) (X := M)
+  intro v
+  let e₁ := trivializationAt E (TangentSpace I : M → Type _) x
+  let e₂ := trivializationAt ℝ (Bundle.Trivial M ℝ) x
+  have he₁ : x ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
+  let Y : (y : M) → TangentSpace I y := fun y ↦ e₁.symmL ℝ y v
+  have hY : ContMDiffAt I (I.prod (modelWithCornersSelf ℝ E)) ∞ (T% Y) x := by
+    refine (e₁.contMDiffAt_section_iff he₁).mpr ?_
+    have hconst : ContMDiffAt I (modelWithCornersSelf ℝ E) ∞ (fun _ : M ↦ v) x :=
+      contMDiffAt_const
+    refine hconst.congr_of_eventuallyEq ?_
+    filter_upwards [e₁.open_baseSet.mem_nhds he₁] with y hy
+    simp [Y, Bundle.Trivialization.symmL_apply, hy, e₁.apply_mk_symm]
+  have hscalar := localFrame_coeff_apply_contMDiffAt hframe (hu.mem_nhds hx) hY i
+  refine hscalar.congr_of_eventuallyEq ?_
+  have he₂ : x ∈ e₂.baseSet := mem_baseSet_trivializationAt ℝ (Bundle.Trivial M ℝ) x
+  filter_upwards [e₁.open_baseSet.mem_nhds he₁,
+    e₂.open_baseSet.mem_nhds he₂] with y hy₁ hy₂
+  change ContinuousLinearMap.inCoordinates E (TangentSpace I) ℝ
+      (Bundle.Trivial M ℝ) x y x y
+        (hframe.coeff i y).toContinuousLinearMap v = hframe.coeff i y (Y y)
+  rw [show ContinuousLinearMap.inCoordinates E (TangentSpace I) ℝ
+      (Bundle.Trivial M ℝ) x y x y
+        (hframe.coeff i y).toContinuousLinearMap v =
+      e₂.continuousLinearMapAt ℝ y
+        (hframe.coeff i y (e₁.symmL ℝ y v)) from rfl]
+  rw [Bundle.Trivialization.continuousLinearMapAt_apply_of_mem ℝ e₂ hy₂]
+  rfl
+
+omit [CompleteSpace E] in
+theorem exists_smooth_localFrameOn (x : M) :
+    ∃ (u : Set M)
+      (frame : Fin (Module.finrank ℝ E) → (y : M) → TangentSpace I y),
+      IsOpen u ∧ x ∈ u ∧ IsLocalFrameOn I E ∞ frame u := by
+  let e := trivializationAt E (TangentSpace I : M → Type _) x
+  let b := Module.finBasis ℝ E
+  exact ⟨e.baseSet, e.localFrame b, e.open_baseSet,
+    mem_baseSet_trivializationAt E (TangentSpace I) x,
+    e.isLocalFrameOn_localFrame_baseSet I ∞ b⟩
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem localFrame_coeff_apply_frame
+    {Idx : Type*} [DecidableEq Idx] {u : Set M} {n : WithTop ℕ∞}
+    {frame : Idx → (x : M) → TangentSpace I x}
+    (hframe : IsLocalFrameOn I E n frame u)
+    {x : M} (hx : x ∈ u) (i j : Idx) :
+    hframe.coeff i x (frame j x) = if j = i then 1 else 0 := by
+  classical
+  rw [hframe.coeff_apply_of_mem hx]
+  rw [← hframe.toBasisAt_coe hx j]
+  rw [(hframe.toBasisAt hx).repr_self]
+  simp [Finsupp.single_apply]
+
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem covariantDerivative_finset_sum_tangent
     {ι : Type*} (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
