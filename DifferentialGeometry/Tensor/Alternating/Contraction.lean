@@ -11,6 +11,68 @@ namespace AlternatingMap
 
 variable {E : Type*} [AddCommGroup E] [Module ℝ E]
 
+def contractionAnnihilator
+    (K : Submodule ℝ (E [⋀^Fin 2]→ₗ[ℝ] ℝ)) : Submodule ℝ E where
+  carrier := {v | ∀ ω ∈ K, ω.curryLeft v = 0}
+  zero_mem' := by
+    intro ω hω
+    simp
+  add_mem' := by
+    intro v w hv hw ω hω
+    rw [map_add, hv ω hω, hw ω hω, add_zero]
+  smul_mem' := by
+    intro c v hv ω hω
+    rw [map_smul, hv ω hω, smul_zero]
+
+theorem mem_contractionAnnihilator_iff
+    (K : Submodule ℝ (E [⋀^Fin 2]→ₗ[ℝ] ℝ)) (v : E) :
+    v ∈ contractionAnnihilator K ↔ ∀ ω ∈ K, ω.curryLeft v = 0 :=
+  Iff.rfl
+
+theorem contractionAnnihilator_span_singleton
+    (ω : E [⋀^Fin 2]→ₗ[ℝ] ℝ) :
+    contractionAnnihilator (Submodule.span ℝ {ω}) = ω.curryLeft.ker := by
+  apply le_antisymm
+  · intro v hv
+    exact LinearMap.mem_ker.mpr
+      (hv ω (Submodule.subset_span (Set.mem_singleton ω)))
+  · intro v hv ω' hω'
+    let ev : (E [⋀^Fin 2]→ₗ[ℝ] ℝ) →ₗ[ℝ] (E [⋀^Fin 1]→ₗ[ℝ] ℝ) :=
+      { toFun := fun η => η.curryLeft v
+        map_add' := by
+          intro η₁ η₂
+          simp [AlternatingMap.curryLeft_add]
+        map_smul' := by
+          intro c η
+          simp [AlternatingMap.curryLeft_smul] }
+    have hspan : Submodule.span ℝ {ω} ≤ ev.ker := by
+      rw [Submodule.span_le]
+      intro η hη
+      rw [Set.mem_singleton_iff.mp hη]
+      exact LinearMap.mem_ker.mpr hv
+    change ω'.curryLeft v = 0
+    exact LinearMap.mem_ker.mp (hspan hω')
+
+theorem contractionAnnihilator_eq_curryLeft_ker_of_finrank_eq_one
+    (K : Submodule ℝ (E [⋀^Fin 2]→ₗ[ℝ] ℝ))
+    (hK : Module.finrank ℝ K = 1) :
+    ∃ ω, ω ≠ 0 ∧ K = Submodule.span ℝ {ω} ∧
+      contractionAnnihilator K = ω.curryLeft.ker := by
+  let _ : FiniteDimensional ℝ K := FiniteDimensional.of_finrank_eq_succ hK
+  have hKne : K ≠ ⊥ := by
+    intro hbot
+    rw [hbot, finrank_bot] at hK
+    omega
+  obtain ⟨ω, hωK, hω⟩ := K.ne_bot_iff.mp hKne
+  have hspan : K = Submodule.span ℝ {ω} := by
+    symm
+    apply Submodule.eq_of_le_of_finrank_eq
+    · exact (Submodule.span_singleton_le_iff_mem ω K).mpr hωK
+    · rw [finrank_span_singleton hω, hK]
+  refine ⟨ω, hω, hspan, ?_⟩
+  rw [hspan]
+  exact contractionAnnihilator_span_singleton ω
+
 private lemma skew_two (ω : E [⋀^Fin 2]→ₗ[ℝ] ℝ) (u v : E) : ω ![v, u] = -ω ![u, v] := by
   simpa using ω.map_swap (v := ![u, v]) (i := (0 : Fin 2)) (j := 1) (by decide)
 
@@ -203,5 +265,35 @@ theorem ker_curryLeft_smul_eq (ω : E [⋀^Fin 2]→ₗ[ℝ] ℝ) {c : ℝ} (hc 
     have hv' : ω.curryLeft v = 0 := hv
     have hmul : c • ω.curryLeft v = 0 := by simp [hv']
     simpa [AlternatingMap.curryLeft_smul] using hmul
+
+theorem map_contractionAnnihilator_compLinearEquiv
+    {F : Type*} [AddCommGroup F] [Module ℝ F]
+    (K : Submodule ℝ (E [⋀^Fin 2]→ₗ[ℝ] ℝ)) (e : F ≃ₗ[ℝ] E) :
+    Submodule.map e.toLinearMap
+        (contractionAnnihilator
+          (Submodule.map
+            (AlternatingMap.domLCongr ℝ ℝ (Fin 2) ℝ e.symm).toLinearMap K)) =
+      contractionAnnihilator K := by
+  let e₂ := AlternatingMap.domLCongr ℝ ℝ (Fin 2) ℝ e.symm
+  apply le_antisymm
+  · rintro y ⟨x, hx, rfl⟩
+    intro ω hω
+    have hpull : e₂ ω ∈ Submodule.map e₂.toLinearMap K := ⟨ω, hω, rfl⟩
+    have hx0 := hx (e₂ ω) hpull
+    apply AlternatingMap.ext
+    intro z
+    have hz := congrArg
+      (fun α : F [⋀^Fin 1]→ₗ[ℝ] ℝ => α (fun i => e.symm (z i))) hx0
+    simpa [e₂, AlternatingMap.curryLeft_compLinearMap] using hz
+  · intro y hy
+    refine ⟨e.symm y, ?_, by simp⟩
+    intro η hη
+    rcases hη with ⟨ω, hω, rfl⟩
+    apply AlternatingMap.ext
+    intro z
+    have hy0 := hy ω hω
+    have hz := congrArg
+      (fun α : E [⋀^Fin 1]→ₗ[ℝ] ℝ => α (fun i => e (z i))) hy0
+    simpa [e₂, AlternatingMap.curryLeft_compLinearMap] using hz
 
 end AlternatingMap
