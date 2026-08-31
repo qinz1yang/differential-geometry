@@ -156,6 +156,28 @@ theorem roundThreeCylinderShrinkerPotential_affine_line_preserving_shift_eq_zero
   simp only [mul_zero, zero_add, roundThreeCylinderShrinkerPotential_apply] at hzero
   nlinarith
 
+theorem roundThreeCylinderShrinkerPotential_affine_line_preserving_iff
+    (y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1)
+    (epsilon shift : Real) :
+    (∀ s : Real,
+      roundThreeCylinderShrinkerPotential (y, epsilon * s + shift) =
+        roundThreeCylinderShrinkerPotential (y, s)) ↔
+      (epsilon = 1 ∨ epsilon = -1) ∧ shift = 0 := by
+  constructor
+  · intro hpreserve
+    have hshift :=
+      roundThreeCylinderShrinkerPotential_affine_line_preserving_shift_eq_zero
+        y epsilon shift hpreserve
+    subst shift
+    have hone := hpreserve 1
+    simp only [mul_one, add_zero, roundThreeCylinderShrinkerPotential_apply,
+      one_pow] at hone
+    refine ⟨sq_eq_one_iff.mp ?_, rfl⟩
+    nlinarith
+  · rintro ⟨hepsilon, rfl⟩ s
+    rcases hepsilon with rfl | rfl <;>
+      simp [roundThreeCylinderShrinkerPotential_apply]
+
 private theorem roundTwoSphereAntipodalDiffeomorph_pullbackMetric :
     Diffeomorph.pullbackMetric roundTwoSphereShrinkerMetric
         roundTwoSphereAntipodalDiffeomorph =
