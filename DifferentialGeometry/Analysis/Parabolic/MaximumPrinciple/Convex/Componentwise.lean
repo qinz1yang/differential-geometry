@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Convex.Semilinear
 
 set_option autoImplicit false
 

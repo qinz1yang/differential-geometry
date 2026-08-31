@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualConeStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.DualStrong
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
 
 set_option autoImplicit false

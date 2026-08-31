@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeFace
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelCone
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelDualConeStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.Parallel.Basic
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.Parallel.DualStrong
 
 set_option autoImplicit false
 

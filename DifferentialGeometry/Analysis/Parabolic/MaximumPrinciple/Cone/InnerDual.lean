@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.Dual
 
 set_option autoImplicit false
 
@@ -58,19 +58,24 @@ theorem properCone_heat_pot_supersolution_mem_of_potential_le
     (hpotential : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, potential t x ≤ B)
     (hinit : ∀ x : M, u 0 x ∈ C) :
     ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, u t x ∈ C := by
-  have hscalar : ∀ y : F, y ∈ ProperCone.innerDual (C : Set F) →
-      ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
-        0 ≤ innerScalarization u y t x := by
-    intro y hy
-    apply heat_pot_supersolution_nonneg (I := I) G hT potential
-      (innerScalarization u y) (hsol y hy) B hpotential
-    intro x
-    exact hy (hinit x)
-  intro t ht x
-  rw [← C.innerDual_innerDual]
-  rw [ProperCone.mem_innerDual]
-  intro y hy
-  simpa [innerScalarization, real_inner_comm] using hscalar y hy t ht x
+  have hsol' : IsDualHeatPotSupersolutionOn
+      (RealTimeInterval.closed 0 T hT) G potential C u := by
+    intro phi hphi
+    let y : F := (InnerProductSpace.toDual Real F).symm phi
+    have hy : y ∈ ProperCone.innerDual (C : Set F) := by
+      rw [ProperCone.mem_innerDual]
+      intro x hx
+      change 0 ≤ ⟪x, (InnerProductSpace.toDual Real F).symm phi⟫
+      rw [real_inner_comm, InnerProductSpace.toDual_symm_apply]
+      exact hphi x hx
+    have heq : innerScalarization u y = dualScalarization u phi := by
+      funext t x
+      change ⟪u t x, (InnerProductSpace.toDual Real F).symm phi⟫ = phi (u t x)
+      rw [real_inner_comm, InnerProductSpace.toDual_symm_apply]
+    rw [← heq]
+    exact hsol y hy
+  exact properCone_mem_of_dual_heat_pot_supersolution_of_potential_le
+    (I := I) G hT potential C u hsol' B hpotential hinit
 
 omit [CompleteSpace E] in
 theorem properCone_heat_supersolution_mem

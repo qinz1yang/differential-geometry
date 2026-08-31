@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.Nagumo
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.InnerDual
 import Mathlib.Analysis.LocallyConvex.Separation
 import Mathlib.Analysis.InnerProductSpace.Dual
 

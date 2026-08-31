@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualConeStrong
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelCone
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.DualStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.Parallel.Basic
 
 set_option autoImplicit false
 
