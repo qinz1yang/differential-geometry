@@ -27,7 +27,7 @@ variable {D : RealTimeInterval}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_lRayAdaptedFrame
+theorem exists_lRegCurve_adaptedFrame
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {b : Real}
@@ -46,7 +46,7 @@ theorem exists_lRayAdaptedFrame
             (P i b) (P j b) = if i = j then 1 else 0 := by
   classical
   obtain ⟨rho, a, d, ha, hbd, hrho, hrho_id, _hrho_deriv, hrho_dom⟩ :=
-    exists_lReg_germ S T x Z hb hbdom
+    exists_lRegDomain_smoothGerm S T x Z hb hbdom
   let alpha : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
   have hrho_m : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=

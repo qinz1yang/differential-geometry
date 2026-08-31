@@ -522,7 +522,7 @@ theorem lRayLag_int
       ((fun q : E × Real ↦
         lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
           fun s : Real ↦ (z, s)) U
-    exact (lRayLag_smooth S hS T x).comp hpair.contDiffOn
+    exact (contDiffOn_lRegLagrangian_lRegCurve S hS T x).comp hpair.contDiffOn
       (fun s (hs : s ∈ U) ↦ by
         change s ∈ lRegDomain S T x z
         change s ∈ lRegDomain S T x Z at hs
@@ -554,7 +554,7 @@ theorem lRayHam_int
       ((fun q : E × Real ↦
         lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
           fun s : Real ↦ (z, s)) U
-    exact (lRayLag_smooth S hS T x).comp hpair.contDiffOn
+    exact (contDiffOn_lRegLagrangian_lRegCurve S hS T x).comp hpair.contDiffOn
       (fun s (hs : s ∈ U) ↦ by
         change s ∈ lRegDomain S T x z
         change s ∈ lRegDomain S T x Z at hs
@@ -577,7 +577,7 @@ theorem lRayHam_int
   have hright : IntervalIntegrable
       (fun s ↦ (lRegLagrangian S T alpha s - deriv F s) / 4)
       MeasureTheory.volume 0 b := (hLagInt.sub hFdint).div_const 4
-  have hgeo := lRegCurve_isReg (I := I) S hS T x Z hb hbdom
+  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
   refine hright.congr ?_
   intro s hs
   have hs' : s ∈ Set.Ioc (0 : Real) b := by
@@ -606,7 +606,7 @@ theorem lK_ray_energy
       (lRegAction S T (lRegCurve S T x Z) 0 b -
         b * lRegLagrangian S T (lRegCurve S T x Z) b) / 2 := by
   exact lK_energy_eq S hS T b
-    (lRegCurve_isReg (I := I) S hS T x Z hb hbdom)
+    (lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom)
     (lRayLag_int S hS T x Z hb hbdom)
     (lRayHam_int S hS T x Z hb hbdom)
 

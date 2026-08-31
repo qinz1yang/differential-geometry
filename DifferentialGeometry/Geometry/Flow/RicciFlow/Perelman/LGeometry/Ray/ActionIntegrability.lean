@@ -37,7 +37,7 @@ theorem intervalIntegrable_lRegSpeedSq_lRegCurve
   let alpha : Real → M := lRegCurve S T x Z
   have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
     simpa only [alpha, Set.uIcc_of_le hB.le] using
-      lRegCurve_isReg (I := I) S hS T x Z hB hdom
+      lRegCurve_isLRegCurveOn (I := I) S hS T x Z hB hdom
   have hcontinuous : ContinuousOn (lRegSpeedSq S T alpha)
       (Set.Icc (0 : Real) B) := by
     intro s hs

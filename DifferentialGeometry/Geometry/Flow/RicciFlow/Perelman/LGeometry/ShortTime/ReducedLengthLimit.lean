@@ -55,7 +55,7 @@ theorem tendsto_lRegAction_div_at_zero
         ((fun q : E × Real ↦
           lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
             fun s : Real ↦ (z, s)) K :=
-      (lRayLag_smooth S hS T x).continuousOn.comp hpairOn
+      (contDiffOn_lRegLagrangian_lRegCurve S hS T x).continuousOn.comp hpairOn
         (fun s hs ↦ hs)
     have heq : ((fun q : E × Real ↦
         lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘

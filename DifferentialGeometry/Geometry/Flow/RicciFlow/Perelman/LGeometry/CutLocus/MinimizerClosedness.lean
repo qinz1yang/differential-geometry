@@ -77,9 +77,14 @@ theorem lMinVec_lim
   have hactLim : Tendsto
       (fun n ↦ lRegAction S T (lRegCurve S T x (Z n)) 0 b)
       atTop (nhds (lRegAction S T gamma 0 b)) := by
-    simpa only [gamma] using
-      lRayAct_tendsto (I := I) S hS T x hb hbDom hZ
-        (tendsto_const_nhds : Tendsto (fun _ : Nat ↦ b) atTop (nhds b))
+    have hcontinuous := continuousAt_lRegAction_lRegCurve (I := I) S hS T x hb hbDom
+    have hresult := hcontinuous.tendsto.comp
+      (hZ.prodMk_nhds
+        (tendsto_const_nhds : Tendsto (fun _ : Nat ↦ b) atTop (nhds b)))
+    change Tendsto
+      (fun n ↦ lRegAction S T (lRegCurve S T x (Z n)) 0 b)
+      atTop (nhds (lRegAction S T (lRegCurve S T x Z₀) 0 b)) at hresult
+    simpa only [gamma] using hresult
   have hactEq (n : Nat) :
       lRegAction S T (lRegCurve S T x (Z n)) 0 b =
         lCost S T x (q n) tau := by

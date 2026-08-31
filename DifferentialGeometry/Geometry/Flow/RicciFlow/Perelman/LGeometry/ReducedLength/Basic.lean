@@ -237,10 +237,10 @@ theorem lCost_hess_le
     rw [show W b = V by simpa only [b] using hWb, hJb]
     apply sub_eq_zero.mpr
     rfl
-  have hgeoRaw := lRegCurve_isReg (I := I) S hS T x Z hb0 hbdom
+  have hgeoRaw := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrhoEq, _hrhoDeriv,
       _hrhoRange, hrhoΩ, hJgSmooth, _hpairEq⟩ :=
-    exists_lRay_germ_in (I := I) S hS T x Z U hb0 hbdom Ω hΩ
+    exists_lRegJacobiField_smoothGerm_in (I := I) S hS T x Z U hb0 hbdom Ω hΩ
       (by simpa only [b] using hΩseg)
   let gamma : Real → M := fun s ↦ alpha (rho s)
   let Jg : (s : Real) → TangentSpace I (gamma s) := fun s ↦ J (rho s)
@@ -721,7 +721,7 @@ theorem lCost_hasDeriv
     Lz.comp (ContinuousLinearMap.fst Real E Real) +
       c • ContinuousLinearMap.snd Real E Real
   have hJoint : HasFDerivAt A L (Z, tau) := by
-    exact lRayAct_joint S hS T x Z hdom
+    exact hasFDerivAt_lRegAction_lRegCurve_sqrt S hS T x Z hdom
   have hq : HasMFDerivAt (modelWithCornersSelf Real Real) K q tau
       ((0 : TangentSpace (modelWithCornersSelf Real Real) tau →L[Real]
           TangentSpace I y).prod

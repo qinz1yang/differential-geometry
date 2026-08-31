@@ -33,7 +33,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem rayVel_smooth
+private theorem contMDiffOn_lVelocity_lRegCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) :
     ContMDiffOn
@@ -111,7 +111,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRayLag_smooth
+theorem contDiffOn_lRegLagrangian_lRegCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) :
     ContDiffOn Real ∞
@@ -159,7 +159,7 @@ theorem lRayLag_smooth
         (TotalSpace.mk' E (E := TangentSpace I) (F p)
           (lVelocity (I := I) (fun s ↦ F (p.1, s)) p.2) :
             TangentBundle I M)) q := by
-    exact (rayVel_smooth S hS T x q hq).contMDiffAt
+    exact (contMDiffOn_lVelocity_lRegCurve S hS T x q hq).contMDiffAt
       (hUopen.mem_nhds hq)
   have htotal := ContMDiffAt.clm_bundle_apply₂
     (E₁ := fun y : M ↦ TangentSpace I y)
@@ -207,7 +207,7 @@ theorem lRayLag_smooth
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem lRayAct_fderivInt
+private theorem hasFDerivAt_lRegAction_lRegCurve_integral
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {b : Real}
     (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
@@ -234,7 +234,7 @@ private theorem lRayAct_fderivInt
       (fun q : E × Real ↦
         lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
       (V ×ˢ K) :=
-    ((lRayLag_smooth S hS T x).of_le (by
+    ((contDiffOn_lRegLagrangian_lRegCurve S hS T x).of_le (by
       change (↑(2 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat)
       exact WithTop.coe_le_coe.mpr le_top)).mono hVK
   simpa only [lRegAction] using
@@ -243,7 +243,7 @@ private theorem lRayAct_fderivInt
         lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s)
       V hVopen 0 b K hKopen hseg Z hZV (hlag.of_le (by norm_num))
 
-private theorem rayOpenClamp
+private theorem exists_smoothClamp_range_subset
     {K : Set Real} {b : Real} (hKopen : IsOpen K)
     (hKconn : IsPreconnected K) (h0K : (0 : Real) ∈ K)
     (hbK : b ∈ K) (hb0 : 0 < b) :
@@ -295,7 +295,7 @@ private theorem rayOpenClamp
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegAction_bdry
+theorem hasDerivAt_lRegAction_eq_endpoint_inner
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (b : Real) (x : M) (Z : TangentSpace I x)
@@ -340,7 +340,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRayAct_hasFDeriv
+theorem hasFDerivAt_lRegAction_lRegCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {tau : Real}
     (hdom : (Z, tau) ∈ lExpPosDom S T x) :
@@ -370,7 +370,7 @@ theorem lRayAct_hasFDeriv
         (mfderiv (modelWithCornersSelf Real E) I endMap Z)
   have hInt : HasFDerivAt A Lint Z := by
     simpa only [A, Lint, b] using
-      lRayAct_fderivInt S hS T x Z hb0 hb
+      hasFDerivAt_lRegAction_lRegCurve_integral S hS T x Z hb0 hb
   have hL : Lint = L := by
     ext Y
     obtain ⟨J, hJopen, hJconn, h0J, hbJ, hchosen⟩ :=
@@ -379,7 +379,7 @@ theorem lRayAct_hasFDeriv
         alpha, halpha, hcurves⟩ :=
       lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
     obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrhoK⟩ :=
-      rayOpenClamp hKopen hKconn h0K hbK hb0
+      exists_smoothClamp_range_subset hKopen hKconn h0K hbK hb0
     obtain ⟨zeta, hzeta, hzetaV, hzeta0, hzetaVel⟩ :=
       exists_smooth_curve (I := modelWithCornersSelf Real E) (M := E)
         Z Y V hVopen hZV
@@ -553,7 +553,7 @@ theorem lRayAct_hasFDeriv
             (modelWithCornersSelf Real E) zeta 0 (1 : Real)) =
         mfderiv (modelWithCornersSelf Real E) I endMap Z Y
       rw [hzetaVel, hzeta0]
-    have hbdry := lRegAction_bdry S hS T f hf b x Z hcenter hfix
+    have hbdry := hasDerivAt_lRegAction_eq_endpoint_inner S hS T f hf b x Z hcenter hfix
     have hbdry' : HasDerivAt (fun u : Real ↦ A (zeta u))
         ((S.base.metric (T - b ^ 2)).inner (f 0 b)
           (mfderiv (modelWithCornersSelf Real E) I endMap Z Y)
@@ -595,7 +595,7 @@ theorem lRayAct_hasFDeriv
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRayAct_joint
+theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {tau : Real}
     (hdom : (Z, tau) ∈ lExpPosDom S T x) :
@@ -621,7 +621,7 @@ theorem lRayAct_joint
       _alpha, _halpha, hcurves⟩ :=
     lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrhoK⟩ :=
-    rayOpenClamp hKopen hKconn h0K hbK hb0
+    exists_smoothClamp_range_subset hKopen hKconn h0K hbK hb0
   have hd0 : 0 < d := hb0.trans hbd
   let U : Set (E × Real) := V ×ˢ Set.Ioo 0 (d ^ 2)
   have hUopen : IsOpen U := hVopen.prod (isOpen_Ioo)
@@ -637,7 +637,7 @@ theorem lRayAct_joint
       (fun q : E × Real ↦
         lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
       (V ×ˢ K) := by
-    apply ((lRayLag_smooth S hS T x).of_le (by
+    apply ((contDiffOn_lRegLagrangian_lRegCurve S hS T x).of_le (by
       change (↑(2 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat)
       exact WithTop.coe_le_coe.mpr le_top)).mono
     intro q hq
@@ -745,7 +745,7 @@ theorem lRayAct_joint
     simpa only [z] using hbase
   have hZslice := hbaseZ.comp z hins
   have hZgiven : HasFDerivAt (fun W : E ↦ A (W, tau)) Lz z := by
-    with_unfolding_all exact lRayAct_hasFDeriv S hS T x Z hdom
+    with_unfolding_all exact hasFDerivAt_lRegAction_lRegCurve S hS T x Z hdom
   have hZeq := hZslice.unique hZgiven
   let lag : Real → Real := fun s ↦
     lRegLagrangian S T (lRegCurve S T x Z) s

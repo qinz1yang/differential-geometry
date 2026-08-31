@@ -292,12 +292,12 @@ private theorem lRegSpeed_fixed
       linarith [ht.1]
     · exact ht.2
   have hbdom : b ∈ lRegDomain S (time : Real) B.center Z :=
-    lRegDomain_of_slab S hS (time : Real) B.center Z b hbpos.le hslab
+    mem_lRegDomain_of_time_slab S hS (time : Real) B.center Z b hbpos.le hslab
   have halpha : IsLRegCurveOn S (time : Real)
       (lRegCurve S (time : Real) B.center Z) (Icc (0 : Real) b)
       B.center Z := by
     simpa only [Set.uIcc_of_le hbpos.le] using
-      lRegCurve_isReg (I := J) S hS (time : Real) B.center Z hbpos hbdom
+      lRegCurve_isLRegCurveOn (I := J) S hS (time : Real) B.center Z hbpos hbdom
   let a : Real := A / B.radius ^ 3
   let K : Real := n ^ 2 * Real.sqrt (1 / B.radius ^ 4)
   have ha : 0 ≤ a := div_nonneg hA (pow_nonneg B.radius_pos.le 3)
@@ -631,7 +631,7 @@ private theorem lRegTerm_int
         (lVelocity (I := I) (lRegCurve S T x Z) s)
         (lVelocity (I := I) (lRegCurve S T x Z) s)) (Icc 0 b) := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lReg_clamp S T x Z hb0 hb
+    exists_lRegDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
   let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
@@ -926,7 +926,7 @@ theorem lRegRange_scale
     rw [hbSq] at ht
     exact ⟨by linarith [ht.1, hepsr], ht.2⟩
   have hbdom : b ∈ lRegDomain S (time : Real) B.center Z :=
-    lRegDomain_of_slab S hS (time : Real) B.center Z b hbpos.le hslab
+    mem_lRegDomain_of_time_slab S hS (time : Real) B.center Z b hbpos.le hslab
   let alpha : Real → N := lRegCurve S (time : Real) B.center Z
   have halpha : ContinuousOn alpha (Icc (0 : Real) b) := by
     simpa only [alpha] using
@@ -1068,7 +1068,7 @@ theorem lRegRange_scale
             (sq_le_sq₀ ht.1.le hbpos.le).2 (ht.2.trans hs.2)
           linarith [hq.1]
         · exact hq.2
-      exact lRegDomain_of_slab S hS (time : Real) B.center Z t ht.1.le htslab
+      exact mem_lRegDomain_of_time_slab S hS (time : Real) B.center Z t ht.1.le htslab
     have hE := lRegTerm_int (I := J) S hS (time : Real) B.center Z ht.1 htDom
     have hterm : ∀ q ∈ Icc (0 : Real) t,
         (S.base.metric (time : Real)).inner (alpha q)

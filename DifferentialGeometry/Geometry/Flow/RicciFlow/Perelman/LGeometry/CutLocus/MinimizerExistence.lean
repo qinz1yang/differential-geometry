@@ -33,7 +33,7 @@ theorem exists_lMinVec_ray
     ⟨htau, _htau0, hbDom⟩
   let b : Real := Real.sqrt tau
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lReg_clamp S T x Z (Real.sqrt_pos.2 htau) hbDom
+    exists_lRegDomain_smoothClamp S T x Z (Real.sqrt_pos.2 htau) hbDom
   let z : E := Z
   let alpha : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)

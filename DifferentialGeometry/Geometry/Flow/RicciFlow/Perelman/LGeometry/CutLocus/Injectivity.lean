@@ -128,9 +128,15 @@ theorem lInj_isOpen
     lRegAction S T (lRegCurve S T x (V n)) 0 b
   have haVlim : Tendsto aV atTop
       (nhds (lRegAction S T (lRegCurve S T x Z) 0 b)) := by
-    simpa only [aV] using lRayAct_tendsto (I := I) S hS T x hb
+    have hcontinuous := continuousAt_lRegAction_lRegCurve (I := I) S hS T x hb
       (by simpa only [b] using ((mem_lExpPosDom S T x Z rho).1 hZdom).2.2)
-      hVlim (tendsto_const_nhds : Tendsto (fun _ : Nat ↦ b) atTop (nhds b))
+    have hresult := hcontinuous.tendsto.comp
+      (hVlim.prodMk_nhds
+        (tendsto_const_nhds : Tendsto (fun _ : Nat ↦ b) atTop (nhds b)))
+    change Tendsto
+      (fun n ↦ lRegAction S T (lRegCurve S T x (V n)) 0 b)
+      atTop (nhds (lRegAction S T (lRegCurve S T x Z) 0 b)) at hresult
+    simpa only [aV] using hresult
   obtain ⟨A, hA⟩ := (Metric.isBounded_range_of_tendsto aV haVlim).bddAbove
   have hWact (n : Nat) :
       lRegAction S T (lRegCurve S T x (W n)) 0 b ≤ A := by
@@ -164,7 +170,7 @@ theorem lInj_isOpen
   obtain ⟨W0, _hW0cl, phi, hphi, hWlim⟩ :=
     tendsto_subseq_of_bounded hWbounded (fun n ↦ Set.mem_range_self n)
   have hW0reg : b ∈ lRegDomain S T x W0 :=
-    lRegDomain_of_slab S hS T x W0 b hb.le hslab
+    mem_lRegDomain_of_time_slab S hS T x W0 b hb.le hslab
   have hW0dom : (W0, rho) ∈ lExpPosDom S T x :=
     (mem_lExpPosDom S T x W0 rho).2 ⟨hrho, hrho.le, hW0reg⟩
   have hW0min : (W0, rho) ∈ lMinDomain S T x :=

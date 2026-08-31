@@ -27,7 +27,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_isReg
+theorem lRegCurve_isLRegCurveOn
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
@@ -60,7 +60,7 @@ theorem lRegCurve_isReg
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem exists_lReg_clamp
+theorem exists_lRegDomain_smoothClamp
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
     (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
@@ -96,7 +96,7 @@ theorem exists_lReg_clamp
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem exists_lReg_germ_in
+theorem exists_lRegDomain_smoothGerm_in
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
     (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z)
@@ -157,7 +157,7 @@ theorem exists_lReg_germ_in
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem exists_lReg_germ
+theorem exists_lRegDomain_smoothGerm
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
     (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
@@ -168,7 +168,7 @@ theorem exists_lReg_germ
       ∀ s : Real, rho s ∈ lRegDomain S T x Z := by
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv,
       hrho_dom, _hrho_univ⟩ :=
-    exists_lReg_germ_in S T x Z hb0 hb Set.univ isOpen_univ
+    exists_lRegDomain_smoothGerm_in S T x Z hb0 hb Set.univ isOpen_univ
       (fun s _hs ↦ Set.mem_univ s)
   exact ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv, hrho_dom⟩
 
@@ -176,7 +176,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRay_smooth
+theorem exists_lRegJacobiField_smoothClamp
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z V : TangentSpace I x) {b : Real}
@@ -201,7 +201,7 @@ theorem exists_lRay_smooth
             (lRegJacobiField S T x Z V s) : TangentBundle I M))
         (Set.Icc (0 : Real) b) := by
   obtain ⟨rho, hrho, hrho_id, hrho_deriv, hrho_range⟩ :=
-    exists_lReg_clamp S T x Z hb0 hb
+    exists_lRegDomain_smoothClamp S T x Z hb0 hb
   have hrho_m : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho := by
     exact contMDiff_iff_contDiff.mpr hrho
@@ -234,7 +234,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRay_germ_in
+theorem exists_lRegJacobiField_smoothGerm_in
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z V : TangentSpace I x) {b : Real}
@@ -264,7 +264,7 @@ theorem exists_lRay_germ_in
         (Set.Icc a d) := by
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv,
       hrho_dom, hrho_U⟩ :=
-    exists_lReg_germ_in S T x Z hb0 hb U hU hsegU
+    exists_lRegDomain_smoothGerm_in S T x Z hb0 hb U hU hsegU
   have hrho_m : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho := by
     exact contMDiff_iff_contDiff.mpr hrho
@@ -298,7 +298,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRay_germ
+theorem exists_lRegJacobiField_smoothGerm
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z V : TangentSpace I x) {b : Real}
@@ -325,7 +325,7 @@ theorem exists_lRay_germ
         (Set.Icc a d) := by
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv,
       hrho_dom, _hrho_univ, hsmooth, heq⟩ :=
-    exists_lRay_germ_in S hS T x Z V hb0 hb Set.univ isOpen_univ
+    exists_lRegJacobiField_smoothGerm_in S hS T x Z V hb0 hb Set.univ isOpen_univ
       (fun s _hs ↦ Set.mem_univ s)
   exact ⟨rho, a, d, ha0, hbd, hrho, hrho_id, hrho_deriv,
     hrho_dom, hsmooth, heq⟩

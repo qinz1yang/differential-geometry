@@ -148,7 +148,7 @@ theorem redVolume_late_low [ConnectedSpace M]
     rw [hWend']
     exact (hmin y₀).trans hy₀
   have hWdom : Real.sqrt (T - a₀) ∈ lRegDomain S T x W := by
-    apply lRegDomain_of_slab (I := I) S hS T x W
+    apply mem_lRegDomain_of_time_slab (I := I) S hS T x W
       (Real.sqrt (T - a₀)) (Real.sqrt_nonneg _)
     simpa only [Real.sq_sqrt hTa₀.le, sub_sub_cancel] using hslab
   have hlate : v₀ ≤ redVolume S T x (T - a₀) :=

@@ -372,7 +372,7 @@ theorem lTail_lap_K
       have hs' : s ∈ uIcc (0 : Real) b := by
         simpa only [uIcc_of_le hb0.le] using
           (show s ∈ Icc (0 : Real) b from ⟨ha0.le.trans hs.1, hs.2⟩)
-      exact (lRegCurve_isReg (I := I) S hS T x Z hb0 hbdom).2.2 s hs' |>.2.1)
+      exact (lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom).2.2 s hs' |>.2.1)
     hPcanDiff hDPcan hONcan
     (by simpa only [c] using hIintCan) hRintCan
   have htraceInt := lTraceInt_pos (I := I) S hS T x Z ha0 hab hbdom Pc
@@ -400,7 +400,7 @@ theorem lTail_lap_K
     change (e ⟨beta r, c r • P i r⟩).2 = c r • (e ⟨beta r, P i r⟩).2
     exact (e.linear Real hr).map_smul (c r) (P i r)
   have hgeo : IsLRegCurveOn S T gamma (uIcc (0 : Real) b) x Z := by
-    simpa only [gamma] using lRegCurve_isReg (I := I) S hS T x Z hb0 hbdom
+    simpa only [gamma] using lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
   have hlap := lTail_lap_le (I := I) S hS T a b ha0 hab hgeo
     (by simpa only [gamma] using hmin) hVopen hA0V hKopen hKconn h0K hbK
     hstart halpha hreg hEuler (by simpa only [beta, gamma] using hcenter)

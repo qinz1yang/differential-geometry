@@ -116,7 +116,7 @@ theorem lCost_le_ray_bdd
     lCost S T x (lRegCurve S T x Z b) (b ^ 2) ≤
       lRegAction S T (lRegCurve S T x Z) 0 b := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lReg_clamp S T x Z hb0 hb
+    exists_lRegDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
   let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
@@ -537,7 +537,7 @@ theorem lCost_chart_lip
         ((continuousOn_extChartAt_symm (I := I) p).mono hQtar)
     let endMap : E → M := fun Z ↦ lRegCurve S T x Z b
     have hbdomAll (Z : E) : b ∈ lRegDomain S T x Z :=
-      lRegDomain_of_slab S hS T x Z b hb.le (by
+      mem_lRegDomain_of_time_slab S hS T x Z b hb.le (by
         simpa only [hb2] using hslab)
     have hendCont : Continuous endMap := by
       have hpair : ContMDiff 𝓘(Real, E)

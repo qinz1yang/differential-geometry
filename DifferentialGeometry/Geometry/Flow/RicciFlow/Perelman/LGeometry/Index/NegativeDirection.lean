@@ -88,7 +88,7 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
         (by simpa only [c] using hJc)
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrhoEq, _hrhoDeriv,
       _hrhoRange, hJgSmooth, _hpairEq⟩ :=
-    exists_lRay_germ (I := I) S hS T x Z V hb0 hbdom
+    exists_lRegJacobiField_smoothGerm (I := I) S hS T x Z V hb0 hbdom
   let gamma : Real → M := fun s ↦ alpha (rho s)
   let Jg : (s : Real) → TangentSpace I (gamma s) := fun s ↦ J (rho s)
   have hseg : Set.Icc (0 : Real) b ⊆ Set.Ioo a d := by
@@ -123,7 +123,7 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
   have hgammaSmooth : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     intro s
     exact (Bundle.contMDiffAt_totalSpace.mp hJgSmooth'.contMDiffAt).1
-  have hgeoRaw := lRegCurve_isReg (I := I) S hS T x Z hb0 hbdom
+  have hgeoRaw := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
   have hgeo : IsLRegCurveOn S T gamma (Set.uIcc (0 : Real) b) x Z := by
     have h0Icc : (0 : Real) ∈ Set.Icc (0 : Real) b := ⟨le_rfl, hb0.le⟩
     have h0germ := hgammaGerm 0 h0Icc

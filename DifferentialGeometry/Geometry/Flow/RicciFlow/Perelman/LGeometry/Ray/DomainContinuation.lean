@@ -29,7 +29,7 @@ variable {D : RealTimeInterval}
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem lRegSpeed_le
+private theorem exists_uniform_lRegSpeedSq_bound
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {B : Real}
@@ -76,7 +76,7 @@ private theorem lRegSpeed_le
   · have hspos : 0 < s := lt_of_le_of_ne hs.1 (Ne.symm hs0)
     have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) s) x Z := by
       simpa only [alpha, Set.uIcc_of_le hspos.le] using
-        lRegCurve_isReg (I := I) S hS T x Z hspos hsdom
+        lRegCurve_isLRegCurveOn (I := I) S hS T x Z hspos hsdom
     have hsub : Set.uIcc (0 : Real) s ⊆ Set.Icc (0 : Real) B := by
       simpa only [Set.uIcc_of_le hspos.le] using Set.Icc_subset_Icc_right hs.2
     have hgr := lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha 0 s C B hC hB.le
@@ -120,7 +120,7 @@ private theorem lRegSpeed_le
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegDomain_of_slab
+theorem mem_lRegDomain_of_time_slab
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) (B : Real)
@@ -142,7 +142,7 @@ theorem lRegDomain_of_slab
       (show T ∈ Set.Icc (T - B ^ 2) T from
         ⟨sub_le_self T (sq_nonneg B), le_rfl⟩)
   obtain ⟨Q, hQ, hspeed⟩ :=
-    lRegSpeed_le (I := I) S hS T x Z hBpos hslab
+    exists_uniform_lRegSpeedSq_bound (I := I) S hS T x Z hBpos hslab
   have hclosed : closure U ∩ Set.Icc (0 : Real) B ⊆ U := by
     rintro s ⟨hscl, hsIcc⟩
     by_cases hsU : s ∈ U

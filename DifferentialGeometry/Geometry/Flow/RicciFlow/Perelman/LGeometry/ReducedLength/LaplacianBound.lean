@@ -129,7 +129,7 @@ theorem redLength_lap_le
   have hbdom : b ∈ lRegDomain S T x Z := by
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hdom).2.2
-  have hgeo := lRegCurve_isReg (I := I) S hS T x Z hb hbdom
+  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact (hgeo.2.2 s (by

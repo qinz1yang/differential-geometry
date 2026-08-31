@@ -605,7 +605,7 @@ theorem lCost_le_ray
     lCost S T x (lRegCurve S T x Z b) (b ^ 2) ≤
       lRegAction S T (lRegCurve S T x Z) 0 b := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lReg_clamp S T x Z hb0 hb
+    exists_lRegDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
   let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
@@ -705,7 +705,8 @@ theorem lCost_ray_event
         exact hdom))
   have hpos : ∀ᶠ n in atTop, 0 < tau n :=
     htau.eventually (Ioi_mem_nhds htau₀)
-  have hact := lRayAct_tendsto (I := I) S hS T x hsqrt0 hdom hZ hsqrt
+  have hact := (continuousAt_lRegAction_lRegCurve (I := I)
+    S hS T x hsqrt0 hdom).tendsto.comp (hZ.prodMk_nhds hsqrt)
   have hactLt : ∀ᶠ n in atTop,
       lRegAction S T (lRegCurve S T x (Z n)) 0
         (Real.sqrt (tau n)) < A :=

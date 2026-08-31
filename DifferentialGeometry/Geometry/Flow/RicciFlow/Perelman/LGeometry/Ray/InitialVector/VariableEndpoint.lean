@@ -32,7 +32,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [InnerProductSpace Real E]
   [SigmaCompactSpace M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem lRayMetric_var
+private theorem lRegInitialVector_inner_le_of_action_bound
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) (B eps C R A Cp : Real)
@@ -57,7 +57,7 @@ private theorem lRayMetric_var
   let alpha : Real → M := lRegCurve S T x Z
   have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
     simpa only [alpha, Set.uIcc_of_le hB.le] using
-      lRegCurve_isReg (I := I) S hS T x Z hB hdom
+      lRegCurve_isLRegCurveOn (I := I) S hS T x Z hB hdom
   have hkin := intervalIntegrable_lRegSpeedSq_lRegCurve
     (I := I) S hS T x Z hB hdom
   have hLag := intervalIntegrable_lRegLagrangian_lRegCurve
@@ -89,7 +89,7 @@ private theorem lRayMetric_var
 
 omit [InnerProductSpace Real E]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
-private theorem metricRange_bdd
+private theorem isBounded_range_of_metric_inner_le
     (g : SmoothRiemannianMetric I M) (x : M)
     (Z : Nat → TangentSpace I x)
     (eps Q : Real) (heps : 0 < eps)
@@ -181,12 +181,12 @@ theorem isBounded_range_initialVector_of_lRegAction_le
     have hback : ∀ s ∈ Set.Icc (0 : Real) (B n),
         T - s ^ 2 ∈ Set.Icc (T - R ^ 2) T :=
       fun s hs ↦ hbackR s ⟨hs.1, hs.2.trans (hBR n)⟩
-    apply lRayMetric_var (I := I) S hS T x (Z n) (B n) eps C R A Cp
+    apply lRegInitialVector_inner_le_of_action_bound (I := I) S hS T x (Z n) (B n) eps C R A Cp
       (hBn n) (hepsB n) (hBR n) hC (hdom n) hback
       (fun s hs y ↦ hpot s (by
         rw [Set.uIcc_of_le hR]
         exact ⟨hs.1, hs.2.trans (hBR n)⟩) y)
       hgradC hricC (hact n)
-  exact metricRange_bdd (I := I) (S.base.metric T) x Z eps Q heps hmetric
+  exact isBounded_range_of_metric_inner_le (I := I) (S.base.metric T) x Z eps Q heps hmetric
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

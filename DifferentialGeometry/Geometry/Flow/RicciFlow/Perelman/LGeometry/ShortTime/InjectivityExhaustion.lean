@@ -118,7 +118,7 @@ theorem eventually_mem_lInjDomain
       (sq_le_sq₀ (hBtPos n).le hR.le).2 (hBtR n)
     exact ⟨by linarith [ht.1], ht.2⟩
   have hZdom (n : Nat) : Bt n ∈ lRegDomain S T x Z :=
-    lRegDomain_of_slab S hS T x Z (Bt n) (hBtPos n).le (hslabBt n)
+    mem_lRegDomain_of_time_slab S hS T x Z (Bt n) (hBtPos n).le (hslabBt n)
   have hZexp (n : Nat) : (Z, sigmat n) ∈ lExpPosDom S T x := by
     apply (mem_lExpPosDom S T x Z (sigmat n)).2
     refine ⟨hsigmatPos n, (hsigmatPos n).le, ?_⟩

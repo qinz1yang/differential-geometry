@@ -36,7 +36,7 @@ theorem lCost_ray_near
     (hq : Tendsto q atTop (nhds (lRegCurve S T x Z b))) :
     ∀ᶠ n in atTop, lCost S T x (q n) (b ^ 2) < A := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lReg_clamp S T x Z hb0 hb
+    exists_lRegDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
   let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)

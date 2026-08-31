@@ -133,26 +133,6 @@ private theorem exists_open_clamp
         dsimp only [d, eps] at hhi
         linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem lRayAct_contAt
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (T : Real) (x : M) (Z : TangentSpace I x) (b : Real)
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
-    ContinuousAt
-      (fun W : E ↦ lRegAction S T (lRegCurve S T x W) 0 b) Z := by
-  change Tendsto (fun W : E ↦
-    lRegAction S T (lRegCurve S T x W) 0 b) (nhds Z)
-      (nhds (lRegAction S T (lRegCurve S T x Z) 0 b))
-  apply tendsto_nhds_iff_seq_tendsto.2
-  intro W hW
-  change Tendsto (fun n ↦
-    lRegAction S T (lRegCurve S T x (show TangentSpace I x from W n)) 0 b)
-      atTop (nhds (lRegAction S T (lRegCurve S T x Z) 0 b))
-  exact lRayAct_tendsto S hS T x hb0 hb hW tendsto_const_nhds
-
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lRayAct_smooth
@@ -193,7 +173,7 @@ private theorem lRayAct_smooth
     change q.2 ∈ lRegDomain S T x q.1
     exact ⟨fun s ↦ alpha (q.1, s), K, hKopen, hKconn, h0K, hq.2,
       hcurves q.1 hq.1⟩
-  have hlag := (lRayLag_smooth S hS T x).mono hVK
+  have hlag := (contDiffOn_lRegLagrangian_lRegCurve S hS T x).mono hVK
   let G : E → Real → Real := fun W u ↦
     b * lRegLagrangian S T (lRegCurve S T x (phi W)) (rho (b * u))
   have hG : ContDiffOn Real ∞
@@ -322,8 +302,17 @@ theorem lActBranch_cont
   let hloc := lExp_localDiffeo S hS T x Z tau hdom hconj
   rcases (mem_lExpPosDom S T x Z tau).1 hdom with
     ⟨htau, _hTtau, hb⟩
-  have hact := lRayAct_contAt (I := I) S hS T x Z
-    (Real.sqrt tau) (Real.sqrt_pos.2 htau) hb
+  have hactJoint := continuousAt_lRegAction_lRegCurve (I := I) S hS T x
+    (Real.sqrt_pos.2 htau) hb
+  have hact : ContinuousAt
+      (fun W : E ↦
+        lRegAction S T (lRegCurve S T x W) 0 (Real.sqrt tau)) Z := by
+    change ContinuousAt
+      ((fun p : E × Real ↦
+        lRegAction S T (lRegCurve S T x p.1) 0 p.2) ∘
+          fun W : E ↦ (W, Real.sqrt tau)) Z
+    exact ContinuousAt.comp (f := fun W : E ↦ (W, Real.sqrt tau))
+      hactJoint (continuousAt_id.prodMk continuousAt_const)
   have hinv := hloc.localInverse_contMDiffAt.continuousAt
   have hinvZ : hloc.localInverse (lExp S T x Z tau) = Z :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
@@ -363,7 +352,7 @@ theorem lActBranch_hasMFD
         (mfderiv (modelWithCornersSelf Real E) I
           (fun W : E ↦ lExp S T x W tau) z)) z := by
     simpa only [rayAct, alpha, y, z] using
-      lRayAct_hasFDeriv S hS T x Z hdom
+      hasFDerivAt_lRegAction_lRegCurve S hS T x Z hdom
   have hRayM := hRay.hasMFDerivAt
   have hRayInv : HasMFDerivAt (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real Real) rayAct (hloc.localInverse y)
@@ -457,7 +446,7 @@ private theorem lActBranch_mfd_at
       (alpha.comp (mfderiv (modelWithCornersSelf Real E) I
         (fun Q : E ↦ lExp S T x Q tau) W)) W := by
     simpa only [rayAct, alpha, W] using
-      lRayAct_hasFDeriv S hS T x W hyDom
+      hasFDerivAt_lRegAction_lRegCurve S hS T x W hyDom
   have hInv : MDifferentiableAt I (modelWithCornersSelf Real E)
       hloc.localInverse y :=
     (hloc.localInverse_contMDiffOn y hy).contMDiffAt
@@ -1133,7 +1122,7 @@ theorem exists_branch_deriv
     unfold lVelocity
     exact congrArg (fun L ↦ L (1 : Real))
       (heq.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I))
-  have hfirst := lRegAction_bdry S hS T f hf b x Z hcenter hfix
+  have hfirst := hasDerivAt_lRegAction_eq_endpoint_inner S hS T f hf b x Z hcenter hfix
   rw [hact] at hfirst
   rw [show T - b ^ 2 = T - tau by simp only [b, Real.sq_sqrt htau.le],
     show f 0 b = lExp S T x Z tau by

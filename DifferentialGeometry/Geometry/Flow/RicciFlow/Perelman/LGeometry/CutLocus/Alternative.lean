@@ -132,10 +132,15 @@ theorem lCut_alt
     convert h using 1 ; rfl
   have haZlim : Tendsto aZ atTop
       (nhds (lRegAction S T (lRegCurve S T x Z) 0 eps)) := by
-    simpa only [aZ] using lRayAct_tendsto (I := I) S hS T x heps
+    have hcontinuous := continuousAt_lRegAction_lRegCurve (I := I) S hS T x heps
       (by simpa only [eps] using
         ((mem_lExpPosDom S T x Z tau).1 hZdom).2.2)
-      (tendsto_const_nhds : Tendsto (fun _ : Nat ↦ Z) atTop (nhds Z)) hBLim
+    have hresult := hcontinuous.tendsto.comp
+      ((tendsto_const_nhds : Tendsto (fun _ : Nat ↦ Z) atTop (nhds Z)).prodMk_nhds hBLim)
+    change Tendsto
+      (fun n ↦ lRegAction S T (lRegCurve S T x Z) 0 (B n))
+      atTop (nhds (lRegAction S T (lRegCurve S T x Z) 0 eps)) at hresult
+    simpa only [aZ] using hresult
   obtain ⟨A, hA⟩ := (Metric.isBounded_range_of_tendsto aZ haZlim).bddAbove
   have hWact (n : Nat) :
       lRegAction S T (lRegCurve S T x (W n)) 0 (B n) ≤ A := by
@@ -179,7 +184,7 @@ theorem lCut_alt
     lMinDomain_down S hS T x (W (phi n)) (hWmin (phi n)) htau
       (hsigmaGt (phi n)).le
   have hW0regR : R ∈ lRegDomain S T x W0 :=
-    lRegDomain_of_slab S hS T x W0 R (Real.sqrt_nonneg _) hslab
+    mem_lRegDomain_of_time_slab S hS T x W0 R (Real.sqrt_nonneg _) hslab
   have hW0reg : Real.sqrt tau ∈ lRegDomain S T x W0 :=
     lRegDomain_seg S T x W0 hW0regR (Real.sqrt_nonneg tau)
       (by simpa only [R] using Real.sqrt_le_sqrt (hsigmaGt 0).le)

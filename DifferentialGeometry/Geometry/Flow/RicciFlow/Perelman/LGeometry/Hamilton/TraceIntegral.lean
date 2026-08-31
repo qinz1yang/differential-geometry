@@ -249,7 +249,7 @@ private theorem lTraceInt_data
   let Q : Real → Real := fun s ↦
     s ^ 2 * ∑ i : Fin (Module.finrank Real E),
       lRegIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
-  have hgeo := lRegCurve_isReg (I := I) S hS T x Z hb hbdom
+  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact (hgeo.2.2 s (by
@@ -476,7 +476,7 @@ private theorem lTracePos_data
   let W : Real → Real := fun s ↦ c s * lHamSq S T alpha s
   have hb : 0 < b := lt_trans ha hab
   have hba : b - a ≠ 0 := sub_ne_zero.mpr (ne_of_gt hab)
-  have hgeo := lRegCurve_isReg (I := I) S hS T x Z hb hbdom
+  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc a b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact (hgeo.2.2 s (by

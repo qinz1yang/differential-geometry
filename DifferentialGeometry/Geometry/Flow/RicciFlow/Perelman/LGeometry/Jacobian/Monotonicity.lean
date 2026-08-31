@@ -61,7 +61,7 @@ theorem redLength_ray_K
       c • ContinuousLinearMap.snd Real E Real
   have hJoint : HasFDerivAt A L (Z, tau) := by
     with_unfolding_all
-      exact lRayAct_joint S hS T x Z hdom
+      exact hasFDerivAt_lRegAction_lRegCurve_sqrt S hS T x Z hdom
   have htins : HasFDerivAt (fun r : Real ↦ (z, r))
       (ContinuousLinearMap.inr Real E Real) tau :=
     hasFDerivAt_prodMk_right z tau
@@ -323,7 +323,7 @@ theorem lRedJac_deriv_le0
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
   obtain ⟨P, Ω, hΩ, hseg, hPsm, hDPΩ, hON⟩ :=
-    exists_lRayAdaptedFrame (I := I) S hS T x hb hbdom
+    exists_lRegCurve_adaptedFrame (I := I) S hS T x hb hbdom
   have hW (i : Fin (Module.finrank Real E)) :
       ContMDiffOn (modelWithCornersSelf Real Real) I.tangent (8 : Nat)
         (fun s : Real ↦

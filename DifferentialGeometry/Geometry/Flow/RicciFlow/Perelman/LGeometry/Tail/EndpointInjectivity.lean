@@ -549,7 +549,7 @@ theorem exists_lTail_inj
     exact hcenterEq.eventuallyEq_of_mem
       ((hKopen.inter hJopen).mem_nhds ⟨hsegK hs, hsegJ hs⟩)
   have hgeo : IsLRegCurveOn S T gamma (uIcc (0 : Real) b) x Z := by
-    simpa only [gamma] using lRegCurve_isReg (I := I) S hS T x Z hb0 hbdom
+    simpa only [gamma] using lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
   have hminGamma : ∀ delta : Real → M,
       ContMDiff 𝓘(Real, Real) I 1 delta →
       delta 0 = gamma 0 → delta b = gamma b →

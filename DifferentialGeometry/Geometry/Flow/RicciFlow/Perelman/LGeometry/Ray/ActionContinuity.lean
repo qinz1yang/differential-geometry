@@ -28,7 +28,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-private theorem lagJoint_cont
+private theorem continuousOn_lRegLagrangian_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {x : M} {alpha : E × Real → M} {V : Set E} {K : Set Real}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
@@ -151,7 +151,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRayAct_tendsto
+private theorem tendsto_lRegAction_lRegCurve_sequence
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : Nat → TangentSpace I x}
     {Z₀ : TangentSpace I x} {b : Nat → Real} {b₀ : Real}
@@ -167,7 +167,7 @@ theorem lRayAct_tendsto
   obtain ⟨V, hVopen, hZ₀V, K, hKopen, hKconn, h0K, hb₀K,
       alpha, halpha, hcurves⟩ :=
     lRegFamily_extend S hS T hJ₀open hJ₀conn h0J₀ hb₀J₀ hchosen
-  have hlag := lagJoint_cont (I := I) S hS T hVopen hKopen halpha hcurves
+  have hlag := continuousOn_lRegLagrangian_variation (I := I) S hS T hVopen hKopen halpha hcurves
   obtain ⟨ε, hε, hεK⟩ := (Metric.isOpen_iff.1 hKopen) b₀ hb₀K
   let δ : Real := min (ε / 2) (b₀ / 2)
   have hδ : 0 < δ := by
@@ -338,5 +338,26 @@ theorem lRayAct_tendsto
         (hKconn.ordConnected.uIcc_subset h0K (hLK (hbsL n)))))).symm
   exact (tendsto_add_atTop_iff_nat N).1 (by
     simpa only [Zs, bs] using hrayShift)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem continuousAt_lRegAction_lRegCurve
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : Real) (x : M) {Z : TangentSpace I x} {b : Real}
+    (hb : 0 < b) (hdom : b ∈ lRegDomain S T x Z) :
+    ContinuousAt
+      (fun p : E × Real ↦
+        lRegAction S T (lRegCurve S T x p.1) 0 p.2)
+      (Z, b) := by
+  rw [ContinuousAt, tendsto_nhds_iff_seq_tendsto]
+  intro p hp
+  have hZ : Tendsto (fun n ↦ (p n).1) atTop (nhds Z) :=
+    continuousAt_fst.tendsto.comp hp
+  have hb' : Tendsto (fun n ↦ (p n).2) atTop (nhds b) :=
+    continuousAt_snd.tendsto.comp hp
+  simpa only [Function.comp_def] using
+    tendsto_lRegAction_lRegCurve_sequence S hS T x hb hdom hZ hb'
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

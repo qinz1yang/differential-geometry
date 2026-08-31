@@ -67,7 +67,7 @@ theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
     have hbR : b ≤ R := hBR n
     have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) b) x (Z n) := by
       simpa only [alpha, Set.uIcc_of_le hb.le] using
-        lRegCurve_isReg (I := I) S hS T x (Z n) hb (hdom n)
+        lRegCurve_isLRegCurveOn (I := I) S hS T x (Z n) hb (hdom n)
     have hback : ∀ s ∈ Set.Icc (0 : Real) b,
         T - s ^ 2 ∈ Set.Icc (T - R ^ 2) T := by
       intro s hs

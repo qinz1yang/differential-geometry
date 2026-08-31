@@ -95,7 +95,7 @@ theorem lMinSlice_closed
       ring
     simpa only [heq] using hreg
   have hreg : b ∈ lRegDomain S T x Z₀ :=
-    lRegDomain_of_slab S hS T x Z₀ b hb hslab
+    mem_lRegDomain_of_time_slab S hS T x Z₀ b hb hslab
   have hdom : (Z₀, tau) ∈ lExpPosDom S T x :=
     (mem_lExpPosDom S T x Z₀ tau).2 ⟨htau, htau.le, by
       simpa only [b] using hreg⟩
