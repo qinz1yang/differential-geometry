@@ -2392,7 +2392,7 @@ theorem exists_smooth_unit_speed_minimizing_geodesic_between_points_of_ne
     ∃ (gamma : Real → M) (L : Real),
       0 < L ∧ gamma 0 = p ∧ gamma L = q ∧
         ContMDiff 𝓘(Real, Real) I ∞ gamma ∧
-        IsGeodesicOn (I := I) g gamma (Set.Icc 0 L) ∧
+        IsGeodesic (I := I) g gamma ∧
         (∀ t : Real,
           g.inner (gamma t)
             (mfderiv 𝓘(Real, Real) I gamma t (1 : Real))
@@ -2482,7 +2482,7 @@ theorem exists_smooth_unit_speed_minimizing_geodesic_between_points_of_ne
     rw [hgamma_length]
     exact hL_le
   exact ⟨gamma, L, hL, hgamma_zero, hgamma_end, hgamma_smooth,
-    hgamma_geo.isGeodesicOn (Set.Icc 0 L), hgamma_unit, hmin, hdist⟩
+    hgamma_geo, hgamma_unit, hmin, hdist⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
