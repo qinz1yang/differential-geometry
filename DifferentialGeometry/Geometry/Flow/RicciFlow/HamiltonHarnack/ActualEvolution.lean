@@ -88,7 +88,7 @@ private noncomputable def frozenSlotSharpSection
   rfl
 
 private theorem curvatureActionSummand_mvfderiv
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {q : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -212,7 +212,7 @@ private theorem curvatureActionSummand_mvfderiv
   simpa [cov, B, DB] using eq_add_of_sub_eq heval.symm
 
 theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n q : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -1332,7 +1332,6 @@ private def ricciNablaPThirdFieldPerm : Equiv.Perm (Fin 6) where
   right_inv q := by fin_cases q <;> simp
 
 private noncomputable def quadTraceProductField
-    [T2Space M]
     (g : SmoothRiemannianMetric I M) (perm : Equiv.Perm (Fin 8))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 8) :
@@ -1343,7 +1342,6 @@ private noncomputable def quadTraceProductField
       (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) perm A))
 
 private theorem metricTraceFirstTwoField_apply_orthonormal_pre
-    [T2Space M]
     {n q : Nat}
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
@@ -1365,7 +1363,6 @@ private theorem metricTraceFirstTwoField_apply_orthonormal_pre
     Finset.mem_univ, if_true]
 
 private theorem quadTraceProductField_apply_orthonormal
-    [T2Space M]
     {n : Nat}
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
@@ -1660,7 +1657,6 @@ private def ricciNablaRmFieldPerm : Equiv.Perm (Fin 7) where
     fin_cases q <;> simp
 
 private noncomputable def doubleTraceProductField
-    [T2Space M]
     (g : SmoothRiemannianMetric I M) (perm : Equiv.Perm (Fin 7))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 7) :
@@ -1690,7 +1686,6 @@ private noncomputable def hamiltonPEvolutionReactionField
         (metricNablaRm04Field (I := I) g))
 
 private theorem metricTraceFirstTwoField_apply_orthonormal
-    [T2Space M]
     {n q : Nat}
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
@@ -1712,7 +1707,6 @@ private theorem metricTraceFirstTwoField_apply_orthonormal
     Finset.mem_univ, if_true]
 
 private theorem doubleTraceProductField_apply_orthonormal
-    [T2Space M]
     {n : Nat}
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
@@ -3926,7 +3920,7 @@ private theorem hamiltonNablaPField_nabla20SRealizesAt
   exact ⟨fun y X slots => h2 X y slots, fun X slots => h3 X x slots⟩
 
 private theorem hamiltonPField_ricciIdentityAt_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -3955,7 +3949,7 @@ private theorem hamiltonPField_ricciIdentityAt_of_solution
       hamiltonPField_nabla20SRealizesAt (I := I) g x) htor
 
 private theorem hamiltonNablaPField_ricciIdentityAt_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -3984,7 +3978,7 @@ private theorem hamiltonNablaPField_ricciIdentityAt_of_solution
       hamiltonNablaPField_nabla20SRealizesAt (I := I) g x) htor
 
 private theorem metricRicci_ricciIdentityAt_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -4013,7 +4007,7 @@ private theorem metricRicci_ricciIdentityAt_of_solution
       metricRicci_nabla20SRealizesAt (I := I) g x) htor
 
 private theorem metricNablaRic_ricciIdentityAt_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -4042,7 +4036,7 @@ private theorem metricNablaRic_ricciIdentityAt_of_solution
       metricNablaRic_nabla20SRealizesAt (I := I) g x) htor
 
 theorem differentiatedRicciIdentityComponents_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4116,7 +4110,7 @@ theorem differentiatedRicciIdentityComponents_of_solution
       (basis e) (basis a) (basis b) (basis c) (basis d))
 
 theorem gradientRicciIdentityComponents_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4152,7 +4146,7 @@ theorem gradientRicciIdentityComponents_of_solution
     (fun a b c d => hOutput (basis a) (basis b) (basis c) (basis d))
 
 private theorem differentiatedHamiltonPIdentityComponents_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4226,7 +4220,7 @@ private theorem differentiatedHamiltonPIdentityComponents_of_solution
       (basis e) (basis a) (basis b) (basis c) (basis d))
 
 private theorem gradientHamiltonPIdentityComponents_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4261,7 +4255,7 @@ private theorem gradientHamiltonPIdentityComponents_of_solution
     (fun a b c d => hOutput (basis a) (basis b) (basis c) (basis d))
 
 private theorem curvatureSecondDerivativeCommutatorComponents_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4312,7 +4306,7 @@ private noncomputable def hamiltonRicciComponentOfSolution
     (vec2 (I := I) (basis i) (basis j))
 
 private noncomputable def hamiltonNablaRmComponentOfSolution
-    [CompleteSpace E] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -4362,7 +4356,7 @@ private noncomputable def hamiltonNabla3RicciComponentOfSolution
     (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m))
 
 private noncomputable def hamiltonNabla2RmComponentOfSolution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -4418,7 +4412,7 @@ private theorem hamilton_nabla_P_components_skew_of_solution
   ring
 
 private theorem hamilton_differentiated_P_identity_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4488,7 +4482,7 @@ private theorem hamilton_differentiated_P_identity_components_of_solution
     (I := I) S t x basis horth
 
 private theorem hamilton_gradient_P_identity_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4536,7 +4530,7 @@ private theorem hamilton_gradient_P_identity_components_of_solution
     (I := I) S t x basis horth
 
 private theorem hamilton_curvature_second_derivative_commutator_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4586,7 +4580,7 @@ private theorem hamilton_curvature_second_derivative_commutator_components_of_so
     (I := I) S t x basis horth
 
 private theorem hamilton_differentiated_ricci_identity_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4650,7 +4644,7 @@ private theorem hamilton_differentiated_ricci_identity_components_of_solution
   exact differentiatedRicciIdentityComponents_of_solution (I := I) S t x basis horth
 
 private theorem hamilton_gradient_ricci_identity_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4697,7 +4691,7 @@ private theorem hamilton_gradient_ricci_identity_components_of_solution
   exact gradientRicciIdentityComponents_of_solution (I := I) S t x basis horth
 
 private theorem hamilton_bianchi_trace_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -4723,7 +4717,7 @@ private theorem hamilton_bianchi_trace_components_of_solution
         (fun i j => if i = j then (1 : Real) else 0) hinv)
 
 private theorem hamilton_contracted_curvature_derivative_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -4752,7 +4746,7 @@ private theorem hamilton_contracted_curvature_derivative_components_of_solution
     hamiltonNablaRicciComponentOfSolution] using hDiv
 
 private theorem hamilton_differentiated_curvature_divergence_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -4843,7 +4837,7 @@ private theorem hamilton_differentiated_curvature_divergence_components_of_solut
     hamiltonNablaPField_apply] using hDiv
 
 private theorem hamilton_rm_components_symm_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4879,7 +4873,7 @@ private theorem hamilton_rm_components_symm_of_solution
       hFirst (basis i) (basis j) (basis k) (basis l)
 
 private theorem hamilton_curvature_ricci_trace_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -4935,7 +4929,7 @@ private theorem hamilton_nabla_ricci_components_symm_of_solution
       (basis i) (basis j) (basis k))
 
 private theorem hamilton_raw_ricci_reaction_derivative_components_of_solution
-    [CompleteSpace E] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
@@ -4994,7 +4988,7 @@ private theorem hamilton_raw_ricci_reaction_derivative_components_of_solution
     (I := I) S t x basis horth i j k
 
 private theorem hamiltonP_evolution_components_of_solution
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -5048,7 +5042,7 @@ private theorem hamiltonP_evolution_components_of_solution
       (I := I) S (t : Real) x basis horth) a b c
 
 theorem hamiltonP_evolution_of_ricci_flow
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {n : Nat}
     (S : SolutionOn (I := I) (M := M) D)
@@ -5121,6 +5115,1715 @@ theorem hamiltonP_time_derivative_component_eq_field
   unfold hamiltonPTimeDerivativeComponent
   simp only [ricciFlowConnectionVariationOrthonormal]
   simp_rw [ricciFlowConnectionVariationField_apply]
+
+private theorem hamiltonNabla2PExpectedField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        5 (metricCov (I := I) (M := M) g)
+        (hamiltonNabla2PExpectedField (I := I) g) =
+      hamiltonNabla3PField (I := I) g := by
+  unfold hamiltonNabla3PField
+  rw [← hamiltonNabla2PField_eq_expected (I := I) g]
+  funext x
+  rfl
+
+private theorem ricciPContractionField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) (perm : Equiv.Perm (Fin 5)) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (ricciPContractionField (I := I) g perm) =
+      metricTraceFirstTwoField (I := I) (M := M) g
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (traceNablaShuffle 3)
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+            (frontExtendEquiv perm)
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+              (leibnizLeftEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricNablaRic (I := I) (M := M) g)
+                (hamiltonPField (I := I) g)) +
+            Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+              (leibnizRightEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricRicci (I := I) (M := M) g)
+                (hamiltonNablaPField (I := I) g))))) := by
+  let cov := metricCov (I := I) (M := M) g
+  let Ric := metricRicci (I := I) (M := M) g
+  let P := hamiltonPField (I := I) g
+  let RicNabla := metricNablaRic (I := I) (M := M) g
+  let PNabla := hamiltonNablaPField (I := I) g
+  have hRic : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 cov Ric RicNabla := by
+    simpa [cov, Ric, RicNabla, metricNablaRic] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 2 cov Ric
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
+  have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 3 cov P PNabla := by
+    simpa [cov, P, PNabla, hamiltonNablaPField] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 3 cov P
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
+  have hProd := nabla0S_product_realizes (I := I) cov Ric P RicNabla PNabla hRic hP
+  have hProd' : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 5 cov
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric P)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 3)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) RicNabla P) +
+        Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric PNabla)) := by
+    simpa [Ric, P, RicNabla, PNabla] using hProd
+  have hPerm := totalNabla0SRealizes_domDomCongr (I := I) cov perm
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric P)
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 3)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) RicNabla P) +
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric PNabla)) hProd'
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+      (I := I) cov g := by
+    simpa [cov, metricCov] using
+      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+        (I := I) g
+  have hTrace := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
+    (s := 3) cov g hmc
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) perm
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric P))
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (frontExtendEquiv perm)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RicNabla P) +
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric PNabla))) (by
+      simpa only [Nat.reduceAdd] using hPerm)
+  have hUnique := totalNabla0SRealizes_unique
+    (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 3 cov
+      (ricciPContractionField (I := I) g perm)
+      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        3 cov (metricCov_smooth (I := I) (M := M) g)
+        (ricciPContractionField (I := I) g perm)))
+    (by simpa [ricciPContractionField, cov, Ric, P, RicNabla, PNabla] using hTrace)
+  funext x
+  simpa [totalNabla0S_apply, Nat.reduceAdd, ricciPContractionField,
+    cov, Ric, P, RicNabla, PNabla] using congrArg
+    (fun A : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 4 => A x) hUnique
+
+private theorem metricTraceFirstTwoField_nabla_eq
+    [T2Space M]
+    {s : Nat}
+    (g : SmoothRiemannianMetric I M)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) (s + 2))
+    (ANabla : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) (s + 2 + 1))
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (s + 2) (metricCov (I := I) (M := M) g) A ANabla) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        s (metricCov (I := I) (M := M) g)
+        (metricTraceFirstTwoField (I := I) (M := M) g A) =
+      metricTraceFirstTwoField (I := I) (M := M) g
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (traceNablaShuffle s) ANabla) := by
+  let cov := metricCov (I := I) (M := M) g
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+      (I := I) cov g := by
+    simpa [cov, metricCov] using
+      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+        (I := I) g
+  have hTrace := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
+    (s := s) cov g hmc A ANabla (by simpa [cov] using hA)
+  have hUnique := totalNabla0SRealizes_unique
+    (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) s cov
+      (metricTraceFirstTwoField (I := I) (M := M) g A)
+      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        s cov (metricCov_smooth (I := I) (M := M) g)
+        (metricTraceFirstTwoField (I := I) (M := M) g A))) hTrace
+  funext x
+  simpa [totalNabla0S_apply, cov] using congrArg
+    (fun B : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s + 1) => B x) hUnique
+
+private theorem hamiltonPRoughLaplacianField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (hamiltonPRoughLaplacianField (I := I) g) =
+      metricTraceFirstTwoField (I := I) (M := M) g
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (traceNablaShuffle 3) (hamiltonNabla3PField (I := I) g)) := by
+  let cov := metricCov (I := I) (M := M) g
+  have hCanonical := totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+    (I := I) (M := M) 5 cov (hamiltonNabla2PExpectedField (I := I) g)
+    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      5 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g)
+      (hamiltonNabla2PExpectedField (I := I) g))
+  have hExpected : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 5 cov (hamiltonNabla2PExpectedField (I := I) g)
+      (hamiltonNabla3PField (I := I) g) := by
+    intro X x slots
+    have h := hCanonical X x slots
+    simp only [totalNabla0S_apply] at h
+    rw [hamiltonNabla2PExpectedField_nabla_eq (I := I) g] at h
+    exact h
+  rw [hamiltonPRoughLaplacianField, hamiltonNabla2PField_eq_expected (I := I) g]
+  exact metricTraceFirstTwoField_nabla_eq (I := I) g
+    (hamiltonNabla2PExpectedField (I := I) g)
+    (hamiltonNabla3PField (I := I) g) (by simpa [cov] using hExpected)
+
+private theorem ricciPFirstContractionField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (ricciPContractionField (I := I) g ricciPFirstFieldPerm) =
+      nablaRicPContractionField (I := I) g nablaRicPFirstFieldPerm +
+        ricciNablaPContractionField (I := I) g ricciNablaPFirstFieldPerm := by
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  rw [congrFun (ricciPContractionField_nabla_eq
+    (I := I) g ricciPFirstFieldPerm) x]
+  simp only [Pi.add_apply, Tensor0SSpace.add_apply]
+  rw [nablaRicPFirstField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPFirstField_apply_orthonormal (I := I) g basis horth]
+  simp_rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  have hTerm (p : Fin (Module.finrank Real (TangentSpace I x))) :
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 3)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (frontExtendEquiv ricciPFirstFieldPerm)
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricNablaRic (I := I) (M := M) g) (hamiltonPField (I := I) g)) +
+            Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricRicci (I := I) (M := M) g)
+                (hamiltonNablaPField (I := I) g))))) x
+          (metricTraceInput (I := I) (basis p) (basis p)
+            (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+              (basis (slots 2)) (basis (slots 3)))) =
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis (slots 0)) (basis (slots 1)) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis p) (basis (slots 2)) (basis (slots 3))) +
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis (slots 1)) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis (slots 0)) (basis p)
+              (basis (slots 2)) (basis (slots 3))) := by
+    simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+      tensor0SField_product_apply]
+    congr 1
+    · congr 2
+      · funext r
+        fin_cases r <;> rfl
+      · funext r
+        fin_cases r <;> rfl
+    · congr 2
+      · funext r
+        fin_cases r <;> rfl
+      · funext r
+        fin_cases r <;> rfl
+  simp_rw [hTerm, Finset.sum_add_distrib]
+
+private theorem ricciPSecondContractionField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (ricciPContractionField (I := I) g ricciPSecondFieldPerm) =
+      nablaRicPContractionField (I := I) g nablaRicPSecondFieldPerm +
+        ricciNablaPContractionField (I := I) g ricciNablaPSecondFieldPerm := by
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  rw [congrFun (ricciPContractionField_nabla_eq
+    (I := I) g ricciPSecondFieldPerm) x]
+  simp only [Pi.add_apply, Tensor0SSpace.add_apply]
+  rw [nablaRicPSecondField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPSecondField_apply_orthonormal (I := I) g basis horth]
+  simp_rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  have hTerm (p : Fin (Module.finrank Real (TangentSpace I x))) :
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 3)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (frontExtendEquiv ricciPSecondFieldPerm)
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricNablaRic (I := I) (M := M) g) (hamiltonPField (I := I) g)) +
+            Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricRicci (I := I) (M := M) g)
+                (hamiltonNablaPField (I := I) g))))) x
+          (metricTraceInput (I := I) (basis p) (basis p)
+            (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+              (basis (slots 2)) (basis (slots 3)))) =
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis (slots 0)) (basis (slots 2)) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis (slots 1)) (basis p) (basis (slots 3))) +
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis (slots 2)) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+              (basis p) (basis (slots 3))) := by
+    simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+      tensor0SField_product_apply]
+    congr 1
+    · congr 2
+      · funext r
+        fin_cases r <;> rfl
+      · funext r
+        fin_cases r <;> rfl
+    · congr 2
+      · funext r
+        fin_cases r <;> rfl
+      · funext r
+        fin_cases r <;> rfl
+  simp_rw [hTerm, Finset.sum_add_distrib]
+
+private theorem ricciPThirdContractionField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (ricciPContractionField (I := I) g ricciPThirdFieldPerm) =
+      nablaRicPContractionField (I := I) g nablaRicPThirdFieldPerm +
+        ricciNablaPContractionField (I := I) g ricciNablaPThirdFieldPerm := by
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  rw [congrFun (ricciPContractionField_nabla_eq
+    (I := I) g ricciPThirdFieldPerm) x]
+  simp only [Pi.add_apply, Tensor0SSpace.add_apply]
+  rw [nablaRicPThirdField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPThirdField_apply_orthonormal (I := I) g basis horth]
+  simp_rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  have hTerm (p : Fin (Module.finrank Real (TangentSpace I x))) :
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 3)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (frontExtendEquiv ricciPThirdFieldPerm)
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricNablaRic (I := I) (M := M) g) (hamiltonPField (I := I) g)) +
+            Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 3)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+                (metricRicci (I := I) (M := M) g)
+                (hamiltonNablaPField (I := I) g))))) x
+          (metricTraceInput (I := I) (basis p) (basis p)
+            (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+              (basis (slots 2)) (basis (slots 3)))) =
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis (slots 0)) (basis (slots 3)) (basis p)) *
+          hamiltonPField (I := I) g x
+            (vec3 (I := I) (basis (slots 1)) (basis (slots 2)) (basis p)) +
+        metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis (slots 3)) (basis p)) *
+          hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+              (basis (slots 2)) (basis p)) := by
+    simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+      ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+      tensor0SField_product_apply]
+    congr 1
+    · congr 2
+      · funext r
+        fin_cases r <;> rfl
+      · funext r
+        fin_cases r <;> rfl
+    · congr 2
+      · funext r
+        fin_cases r <;> rfl
+      · funext r
+        fin_cases r <;> rfl
+  simp_rw [hTerm, Finset.sum_add_distrib]
+
+private theorem ricciPActionField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g) (ricciPActionField (I := I) g) =
+      nablaRicPActionField (I := I) g + ricciNablaPActionField (I := I) g := by
+  funext x
+  rw [ricciPActionField]
+  repeat' rw [totalNabla0SFun_add (I := I)]
+  rw [congrFun (ricciPFirstContractionField_nabla_eq (I := I) g) x,
+    congrFun (ricciPSecondContractionField_nabla_eq (I := I) g) x,
+    congrFun (ricciPThirdContractionField_nabla_eq (I := I) g) x]
+  rw [nablaRicPActionField, ricciNablaPActionField]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply]
+  abel
+
+private theorem hamiltonPHeatField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g) (hamiltonPHeatField (I := I) g) =
+      hamiltonNablaPTimeDerivativeField (I := I) g +
+        nablaRicPActionField (I := I) g + ricciNablaPActionField (I := I) g -
+        metricTraceFirstTwoField (I := I) (M := M) g
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+            (traceNablaShuffle 3) (hamiltonNabla3PField (I := I) g)) := by
+  funext x
+  rw [hamiltonPHeatField, sub_eq_add_neg]
+  rw [show -hamiltonPRoughLaplacianField (I := I) g =
+      (-1 : Real) • hamiltonPRoughLaplacianField (I := I) g by simp]
+  rw [totalNabla0SFun_add (I := I), totalNabla0SFun_add (I := I),
+    totalNabla0SFun_smul (I := I)]
+  rw [congrFun (ricciPActionField_nabla_eq (I := I) g) x,
+    congrFun (hamiltonPRoughLaplacianField_nabla_eq (I := I) g) x]
+  simp only [hamiltonNablaPTimeDerivativeField, totalNabla0S_apply,
+    Pi.add_apply, Pi.sub_apply, neg_one_smul, sub_eq_add_neg]
+  abel
+
+private theorem uhlenbeckNablaHeatPComponent_eq_hamiltonPHeatFieldNabla_of_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    uhlenbeckNablaHeatPComponent
+        (fun i j => metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M) g x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField (I := I) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l => hamiltonNablaPTimeDerivativeField (I := I) g x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l m r => hamiltonNabla3PField (I := I) g x
+          (Fin.cons (basis i)
+            (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis r))))
+        q a b c =
+      totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          3 (metricCov (I := I) (M := M) g) (hamiltonPHeatField (I := I) g) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) := by
+  rw [uhlenbeckNablaHeatPComponent,
+    congrFun (hamiltonPHeatField_nabla_eq (I := I) g) x]
+  simp only [uhlenbeckCovariantDerivativeOfTimeDerivative,
+    covariantDerivativeRoughLaplacianComponents,
+    Pi.add_apply, Pi.sub_apply, Tensor0SSpace.add_apply, Tensor0SSpace.sub_apply]
+  rw [nablaRicPActionField_apply_orthonormal (I := I) g basis horth,
+    ricciNablaPActionField_apply_orthonormal (I := I) g basis horth,
+    metricTraceFirstTwoField_apply_orthonormal (I := I) g basis horth]
+  simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
+  have hTrace (d : Fin n) :
+      (fun i => metricTraceInput (I := I) (basis d) (basis d)
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c))
+            (traceNablaShuffle 3 i)) =
+        Fin.cons (basis q)
+          (vec5 (I := I) (basis d) (basis d) (basis a) (basis b) (basis c)) := by
+    funext i
+    fin_cases i <;> rfl
+  simp_rw [hTrace]
+  simp [hamiltonPComponent, Function.update_apply,
+    covariantTensorNablaRicciSlotAction, covariantTensorRicciSlotAction]
+  simp [Fin.sum_univ_three]
+
+private theorem hamiltonPHeatComponent_eq_hamiltonPHeatField_of_orthonormal
+    [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (a b c : Fin n) :
+    hamiltonPHeatComponent
+        (fun i j => metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M) g x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k => metricNablaRicciTimeDerivativeField (I := I) g x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l m => metricNabla3RicField (I := I) g x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m))) a b c =
+      hamiltonPHeatField (I := I) g x
+        (vec3 (I := I) (basis a) (basis b) (basis c)) := by
+  rw [hamiltonPHeatComponent, hamiltonPHeatField_apply_orthonormal
+    (I := I) g basis horth]
+  simp only [uhlenbeckHeatNablaRicciComponent,
+    uhlenbeckTimeDerivativeOfCovariantDerivative,
+    roughLaplacianCovariantDerivativeComponents,
+    covariantTensorRicciSlotAction]
+  rw [hamiltonPTimeDerivativeField_apply_orthonormal (I := I) g basis horth,
+    ricciPActionField_apply_orthonormal (I := I) g basis horth,
+    hamiltonNabla2PField_eq_expected (I := I) g]
+  simp only [hamiltonNabla2PExpectedField, ContMDiffSection.coe_sub, Pi.sub_apply,
+    Tensor0SSpace.sub_apply, Tensor0SField.domDomCongr_apply,
+    Tensor0SSpace.domDomCongr_apply]
+  have hConnection (i j k : Fin n) :
+      ricciFlowConnectionVariationOrthonormal
+          (fun p q r => metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis p) (basis q) (basis r))) i j k =
+        ricciFlowConnectionVariationOrthonormal
+          (fun p q r => metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis p) (basis q) (basis r))) j i k := by
+    unfold ricciFlowConnectionVariationOrthonormal
+    change
+      -metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis i) (basis j) (basis k)) -
+          metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis j) (basis i) (basis k)) +
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis k) (basis i) (basis j)) =
+        -metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis j) (basis i) (basis k)) -
+          metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis i) (basis j) (basis k)) +
+        metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis k) (basis j) (basis i))
+    rw [metricNablaRic_last_two_symm (I := I) (M := M) g x
+      (basis k) (basis i) (basis j)]
+    ring
+  have hRic (i j : Fin n) :
+      metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)) =
+        metricRicci (I := I) (M := M) g x
+          (vec2 (I := I) (basis j) (basis i)) :=
+    metricRicciAt_symm (I := I) (M := M) g x (basis i) (basis j)
+  have htraceSwap (d : Fin n) :
+      (fun i => vec5 (I := I) (basis d) (basis d) (basis a) (basis b) (basis c)
+          (frontExtendEquiv (Equiv.swap (1 : Fin 4) 2) i)) =
+        vec5 (I := I) (basis d) (basis d) (basis b) (basis a) (basis c) := by
+    funext i
+    fin_cases i <;> rfl
+  simp only [Fin.sum_univ_two, Function.update_apply, Fin.isValue,
+    ↓reduceIte, one_ne_zero, zero_ne_one]
+  simp_rw [ricciFlowConnectionVariationField_apply,
+    hamiltonPField_apply, hamiltonPAt_apply]
+  simp_rw [htraceSwap]
+  simp_rw [hConnection]
+  simp_rw [hRic]
+  unfold ricciFlowConnectionVariationOrthonormal
+  have hsum_sub (f h : Fin n -> Real) :
+      (∑ d, (f d - h d)) = (∑ d, f d) - (∑ d, h d) :=
+    Finset.sum_sub_distrib (s := Finset.univ) f h
+  ring_nf
+  simp_rw [hsum_sub]
+  abel
+
+private theorem hamiltonPHeatField_eq_reaction_of_orthonormal
+    [CompleteSpace E] [T2Space M]
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (a b c : Fin n) :
+    hamiltonPHeatField (I := I) g x
+        (vec3 (I := I) (basis a) (basis b) (basis c)) =
+      hamiltonPEvolutionReactionField (I := I) g x
+        (vec3 (I := I) (basis a) (basis b) (basis c)) := by
+  let D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.univ 0
+  let S : SolutionOn (I := I) (M := M) D := ⟨⟨fun _ => g⟩⟩
+  let t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D :=
+    ⟨0, Set.mem_univ 0⟩
+  rw [← hamiltonPHeatComponent_eq_hamiltonPHeatField_of_orthonormal
+      (I := I) g basis horth a b c,
+    hamiltonPEvolutionReactionField_apply_orthonormal (I := I) g basis horth]
+  have h := hamiltonP_evolution_components_of_solution
+    (I := I) S t x basis horth a b c
+  unfold hamiltonRmComponentOfSolution hamiltonRicciComponentOfSolution
+    hamiltonNablaRmComponentOfSolution hamiltonNablaRicciComponentOfSolution
+    hamiltonNablaRicciTimeComponentOfSolution
+    hamiltonNabla3RicciComponentOfSolution at h
+  unfold SolutionFamily.rm04 at h
+  rw [← metricNablaRm04Field_eq_nablaRm04Field (I := I) S (t : Real)] at h
+  simpa [S] using h
+
+private theorem hamiltonPHeatField_eq_reaction
+    [CompleteSpace E] [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    hamiltonPHeatField (I := I) g =
+      hamiltonPEvolutionReactionField (I := I) g := by
+  apply DFunLike.ext _ _
+  intro x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 3 => basis (slots r)) =
+        vec3 (I := I) (basis (slots 0)) (basis (slots 1)) (basis (slots 2)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  exact hamiltonPHeatField_eq_reaction_of_orthonormal
+    (I := I) g basis horth (slots 0) (slots 1) (slots 2)
+
+private theorem doubleTraceProductField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) (perm : Equiv.Perm (Fin 7))
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 7)
+    (ANabla : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 8)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 7 (metricCov (I := I) (M := M) g) A ANabla) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (doubleTraceProductField (I := I) g perm A) =
+      metricTraceFirstTwoField (I := I) (M := M) g
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 3)
+          (metricTraceFirstTwoField (I := I) (M := M) g
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 5)
+              (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+                (frontExtendEquiv perm) ANabla)))) := by
+  let cov := metricCov (I := I) (M := M) g
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+      (I := I) cov g := by
+    simpa [cov, metricCov] using
+      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+        (I := I) g
+  have hPerm := totalNabla0SRealizes_domDomCongr (I := I) cov perm A ANabla
+    (by simpa [cov] using hA)
+  have hInner := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
+    (s := 5) cov g hmc
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) perm A)
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+      (frontExtendEquiv perm) ANabla) (by
+        simpa only [Nat.reduceAdd] using hPerm)
+  have hOuter := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
+    (s := 3) cov g hmc
+    (metricTraceFirstTwoField (I := I) (M := M) g
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) perm A))
+    (metricTraceFirstTwoField (I := I) (M := M) g
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 5)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+          (frontExtendEquiv perm) ANabla))) hInner
+  have hUnique := totalNabla0SRealizes_unique
+    (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 3 cov
+      (doubleTraceProductField (I := I) g perm A)
+      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        3 cov (metricCov_smooth (I := I) (M := M) g)
+        (doubleTraceProductField (I := I) g perm A)))
+    (by simpa [doubleTraceProductField] using hOuter)
+  funext x
+  simpa [totalNabla0S_apply, Nat.reduceAdd, cov] using congrArg
+    (fun B : Tensor0SField (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 4 => B x) hUnique
+
+private theorem doubleTraceNablaField_apply_orthonormal
+    {n : Nat}
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
+    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 8)
+    (tail : Fin 4 -> TangentSpace I x) :
+    metricTraceFirstTwoField (I := I) (M := M) g
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 3)
+          (metricTraceFirstTwoField (I := I) (M := M) g
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
+              (traceNablaShuffle 5) A))) x tail =
+      ∑ i : Fin n, ∑ j : Fin n,
+        A x (Fin.cons (tail 0)
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (fun r : Fin 3 => tail r.succ)))) := by
+  rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
+  rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
+  congr 1
+  let Z := tail 0
+  let tail' := fun r : Fin 3 => tail r.succ
+  change (fun r : Fin 8 =>
+      metricTraceInput (I := I) (basis j) (basis j)
+        (fun s : Fin 6 =>
+          metricTraceInput (I := I) (basis i) (basis i) tail
+            (traceNablaShuffle 3 s)) (traceNablaShuffle 5 r)) =
+    Fin.cons Z
+      (metricTraceInput (I := I) (basis j) (basis j)
+        (metricTraceInput (I := I) (basis i) (basis i) tail'))
+  have htail : tail = Fin.cons Z tail' := by
+    funext r
+    fin_cases r <;> rfl
+  have hinner := traceNablaShuffle_metricTraceInput (I := I)
+    (a := basis i) (b := basis i) (Z := Z) (tail := tail')
+  have hinner' :
+      (fun s : Fin 6 =>
+        metricTraceInput (I := I) (basis i) (basis i) tail
+          (traceNablaShuffle 3 s)) =
+        Fin.cons Z (metricTraceInput (I := I) (basis i) (basis i) tail') := by
+    calc
+      (fun s : Fin 6 =>
+          metricTraceInput (I := I) (basis i) (basis i) tail
+            (traceNablaShuffle 3 s)) =
+          fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (Fin.cons Z tail')
+              (traceNablaShuffle 3 s) := by rw [htail]
+      _ = _ := by
+        change metricTraceInput (I := I) (basis i) (basis i)
+            (Fin.cons Z tail') ∘ traceNablaShuffle 3 = _
+        exact hinner
+  have houter := traceNablaShuffle_metricTraceInput (I := I)
+    (a := basis j) (b := basis j) (Z := Z)
+    (tail := metricTraceInput (I := I) (basis i) (basis i) tail')
+  rw [hinner']
+  change metricTraceInput (I := I) (basis j) (basis j)
+      (Fin.cons Z (metricTraceInput (I := I) (basis i) (basis i) tail')) ∘
+        traceNablaShuffle 5 = _
+  exact houter
+
+private theorem curvaturePFirstField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (doubleTraceProductField (I := I) g curvaturePFirstFieldPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g) (hamiltonPField (I := I) g))) =
+      quadTraceProductField (I := I) g nablaRPFourthFirstPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g)) +
+        quadTraceProductField (I := I) g RnablaPFourthFirstPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g)
+            (hamiltonNablaPField (I := I) g)) := by
+  let cov := metricCov (I := I) (M := M) g
+  let R := metricRm04 (I := I) (M := M) g
+  let RNabla := metricNablaRm04Field (I := I) g
+  let P := hamiltonPField (I := I) g
+  let PNabla := hamiltonNablaPField (I := I) g
+  let D :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 4 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RNabla P) +
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 4 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) R PNabla)
+  have hR : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 4 cov R RNabla := by
+    simpa [cov, R, RNabla, metricNablaRm04Field] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 4 cov R
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
+  have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 3 cov P PNabla := by
+    simpa [cov, P, PNabla, hamiltonNablaPField] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 3 cov P
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
+  have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 7 cov
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D := by
+    simpa [D] using nabla0S_product_realizes (I := I) cov
+      R P RNabla PNabla hR hP
+  rw [doubleTraceProductField_nabla_eq (I := I) g curvaturePFirstFieldPerm
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D hProd]
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply]
+  rw [hslots]
+  change _ =
+    quadTraceProductField (I := I) g nablaRPFourthFirstPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RNabla P) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3))) +
+      quadTraceProductField (I := I) g RnablaPFourthFirstPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) R PNabla) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3)))
+  rw [nablaRPFourthFirstField_apply_orthonormal (I := I) g basis horth,
+    RnablaPFourthFirstField_apply_orthonormal (I := I) g basis horth]
+  rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  simp only [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
+  simp_rw [metricTraceFirstTwoField_apply_orthonormal_pre (I := I) g basis horth]
+  simp only [D, Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+    tensor0SField_product_apply]
+  have htraceInputs
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      (fun r : Fin 8 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5 r)) =
+        (Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x) := by
+    have hvec :
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3)) =
+          Fin.cons (basis (slots 0))
+            (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+              (basis (slots 3))) := by
+      funext k
+      fin_cases k <;> rfl
+    rw [hvec]
+    have hinner := traceNablaShuffle_metricTraceInput (I := I)
+      (a := basis i) (b := basis i) (Z := basis (slots 0))
+      (tail := vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+        (basis (slots 3)))
+    rw [show (fun s : Fin 6 =>
+          metricTraceInput (I := I) (basis i) (basis i)
+            (Fin.cons (basis (slots 0))
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3)))) (traceNablaShuffle 3 s)) =
+        Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis i) (basis i)
+            (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+              (basis (slots 3)))) by
+      change metricTraceInput (I := I) (basis i) (basis i)
+          (Fin.cons (basis (slots 0))
+            (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+              (basis (slots 3)))) ∘ traceNablaShuffle 3 = _
+      exact hinner]
+    change metricTraceInput (I := I) (basis j) (basis j)
+        (Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis i) (basis i)
+            (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+              (basis (slots 3))))) ∘ traceNablaShuffle 5 = _
+    exact traceNablaShuffle_metricTraceInput (I := I)
+      (a := basis j) (b := basis j) (Z := basis (slots 0))
+      (tail := metricTraceInput (I := I) (basis i) (basis i)
+        (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+          (basis (slots 3))))
+  have hRNabla
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      (fun r : Fin 5 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizLeftEquiv 4 3 (Fin.castAdd 3 r))))) =
+        vec5 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis j) (basis i) (basis (slots 2)) := by
+    funext r
+    rw [show metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizLeftEquiv 4 3 (Fin.castAdd 3 r)))) =
+        ((Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+          (frontExtendEquiv curvaturePFirstFieldPerm
+            (leibnizLeftEquiv 4 3 (Fin.castAdd 3 r)))) by
+      exact congrFun (htraceInputs i j)
+        (frontExtendEquiv curvaturePFirstFieldPerm
+          (leibnizLeftEquiv 4 3 (Fin.castAdd 3 r)))]
+    fin_cases r <;> rfl
+  have hP
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      (fun r : Fin 3 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizLeftEquiv 4 3 (Fin.natAdd 5 r))))) =
+        vec3 (I := I) (basis j) (basis i) (basis (slots 3)) := by
+    funext r
+    rw [show metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizLeftEquiv 4 3 (Fin.natAdd 5 r)))) =
+        ((Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+          (frontExtendEquiv curvaturePFirstFieldPerm
+            (leibnizLeftEquiv 4 3 (Fin.natAdd 5 r)))) by
+      exact congrFun (htraceInputs i j)
+        (frontExtendEquiv curvaturePFirstFieldPerm
+          (leibnizLeftEquiv 4 3 (Fin.natAdd 5 r)))]
+    fin_cases r <;> rfl
+  have hR
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      (fun r : Fin 4 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizRightEquiv 4 3 (Fin.castAdd 4 r))))) =
+        vec4 (I := I) (basis (slots 1)) (basis j)
+          (basis i) (basis (slots 2)) := by
+    funext r
+    rw [show metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizRightEquiv 4 3 (Fin.castAdd 4 r)))) =
+        ((Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+          (frontExtendEquiv curvaturePFirstFieldPerm
+            (leibnizRightEquiv 4 3 (Fin.castAdd 4 r)))) by
+      exact congrFun (htraceInputs i j)
+        (frontExtendEquiv curvaturePFirstFieldPerm
+          (leibnizRightEquiv 4 3 (Fin.castAdd 4 r)))]
+    fin_cases r <;> rfl
+  have hPNabla
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      (fun r : Fin 4 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizRightEquiv 4 3 (Fin.natAdd 4 r))))) =
+        vec4 (I := I) (basis (slots 0)) (basis j)
+          (basis i) (basis (slots 3)) := by
+    funext r
+    rw [show metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizRightEquiv 4 3 (Fin.natAdd 4 r)))) =
+        ((Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+          (frontExtendEquiv curvaturePFirstFieldPerm
+            (leibnizRightEquiv 4 3 (Fin.natAdd 4 r)))) by
+      exact congrFun (htraceInputs i j)
+        (frontExtendEquiv curvaturePFirstFieldPerm
+          (leibnizRightEquiv 4 3 (Fin.natAdd 4 r)))]
+    fin_cases r <;> rfl
+  have hRNablaComp
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizLeftEquiv 4 3 k)))) ∘ Fin.castAdd 3) =
+        vec5 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis j) (basis i) (basis (slots 2)) := by
+    funext r
+    exact congrFun (hRNabla i j) r
+  have hPComp
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizLeftEquiv 4 3 k)))) ∘ Fin.natAdd (4 + 1)) =
+        vec3 (I := I) (basis j) (basis i) (basis (slots 3)) := by
+    funext r
+    exact congrFun (hP i j) r
+  have hRComp
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizRightEquiv 4 3 k)))) ∘ Fin.castAdd (3 + 1)) =
+        vec4 (I := I) (basis (slots 1)) (basis j)
+          (basis i) (basis (slots 2)) := by
+    funext r
+    exact congrFun (hR i j) r
+  have hPNablaComp
+      (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        metricTraceInput (I := I) (basis j) (basis j)
+          (fun s : Fin 6 =>
+            metricTraceInput (I := I) (basis i) (basis i)
+              (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+                (basis (slots 2)) (basis (slots 3)))
+              (traceNablaShuffle 3 s))
+          (traceNablaShuffle 5
+            (frontExtendEquiv curvaturePFirstFieldPerm
+              (leibnizRightEquiv 4 3 k)))) ∘ Fin.natAdd 4) =
+        vec4 (I := I) (basis (slots 0)) (basis j)
+          (basis i) (basis (slots 3)) := by
+    funext r
+    exact congrFun (hPNabla i j) r
+  simp_rw [hRNablaComp, hPComp, hRComp, hPNablaComp]
+  let A := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    RNabla x (vec5 (I := I) (basis (slots 0)) (basis (slots 1))
+        (basis i) (basis j) (basis (slots 2))) *
+      P x (vec3 (I := I) (basis i) (basis j) (basis (slots 3)))
+  let B := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    R x (vec4 (I := I) (basis (slots 1)) (basis i)
+        (basis j) (basis (slots 2))) *
+      PNabla x (vec4 (I := I) (basis (slots 0)) (basis i)
+        (basis j) (basis (slots 3)))
+  change (∑ i, ∑ j, (A j i + B j i)) =
+    (∑ i, ∑ j, A i j) + ∑ i, ∑ j, B i j
+  rw [show (∑ i, ∑ j, (A j i + B j i)) =
+      (∑ i, ∑ j, A j i) + ∑ i, ∑ j, B j i by
+    simp only [Finset.sum_add_distrib]]
+  rw [show (∑ i, ∑ j, A j i) = ∑ i, ∑ j, A i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, A i j) = ∑ j, ∑ i, A i j).symm,
+    show (∑ i, ∑ j, B j i) = ∑ i, ∑ j, B i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, B i j) = ∑ j, ∑ i, B i j).symm]
+
+private theorem curvaturePSecondField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (doubleTraceProductField (I := I) g curvaturePSecondFieldPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g) (hamiltonPField (I := I) g))) =
+      quadTraceProductField (I := I) g nablaRPFourthSecondPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g)) +
+        quadTraceProductField (I := I) g RnablaPFourthSecondPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g)
+            (hamiltonNablaPField (I := I) g)) := by
+  let cov := metricCov (I := I) (M := M) g
+  let R := metricRm04 (I := I) (M := M) g
+  let RNabla := metricNablaRm04Field (I := I) g
+  let P := hamiltonPField (I := I) g
+  let PNabla := hamiltonNablaPField (I := I) g
+  let D :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 4 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RNabla P) +
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 4 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) R PNabla)
+  have hR : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 4 cov R RNabla := by
+    simpa [cov, R, RNabla, metricNablaRm04Field] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 4 cov R
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
+  have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 3 cov P PNabla := by
+    simpa [cov, P, PNabla, hamiltonNablaPField] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 3 cov P
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
+  have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 7 cov
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D := by
+    simpa [D] using nabla0S_product_realizes (I := I) cov
+      R P RNabla PNabla hR hP
+  rw [doubleTraceProductField_nabla_eq (I := I) g curvaturePSecondFieldPerm
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D hProd]
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  change _ =
+    quadTraceProductField (I := I) g nablaRPFourthSecondPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RNabla P) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3))) +
+      quadTraceProductField (I := I) g RnablaPFourthSecondPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) R PNabla) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3)))
+  rw [nablaRPFourthSecondField_apply_orthonormal (I := I) g basis horth,
+    RnablaPFourthSecondField_apply_orthonormal (I := I) g basis horth,
+    doubleTraceNablaField_apply_orthonormal (I := I) g basis horth]
+  simp only [D, Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+    tensor0SField_product_apply]
+  have htail :
+      (fun r : Fin 3 =>
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) r.succ) =
+        vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+          (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [htail]
+  have hzero :
+      vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) 0 = basis (slots 0) := by
+    simp [vec4]
+  rw [hzero]
+  let W : Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin 8 -> TangentSpace I x := fun i j =>
+    Fin.cons (basis (slots 0))
+      (metricTraceInput (I := I) (basis j) (basis j)
+        (metricTraceInput (I := I) (basis i) (basis i)
+          (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+            (basis (slots 3)))))
+  have hRNabla (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizLeftEquiv 4 3 k))) ∘
+          Fin.castAdd 3) =
+        vec5 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis j) (basis i) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  have hP (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizLeftEquiv 4 3 k))) ∘
+          Fin.natAdd (4 + 1)) =
+        vec3 (I := I) (basis j) (basis (slots 2)) (basis i) := by
+    funext r
+    fin_cases r <;> rfl
+  have hR (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizRightEquiv 4 3 k))) ∘
+          Fin.castAdd (3 + 1)) =
+        vec4 (I := I) (basis (slots 1)) (basis j)
+          (basis i) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  have hPNabla (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizRightEquiv 4 3 k))) ∘
+          Fin.natAdd 4) =
+        vec4 (I := I) (basis (slots 0)) (basis j)
+          (basis (slots 2)) (basis i) := by
+    funext r
+    fin_cases r <;> rfl
+  have hRNablaComp (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        (Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizLeftEquiv 4 3 k))) ∘
+          Fin.castAdd 3) =
+        vec5 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis j) (basis i) (basis (slots 3)) := by
+    simpa only [W] using hRNabla i j
+  have hPComp (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        (Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizLeftEquiv 4 3 k))) ∘
+          Fin.natAdd (4 + 1)) =
+        vec3 (I := I) (basis j) (basis (slots 2)) (basis i) := by
+    simpa only [W] using hP i j
+  have hRComp (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        (Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizRightEquiv 4 3 k))) ∘
+          Fin.castAdd (3 + 1)) =
+        vec4 (I := I) (basis (slots 1)) (basis j)
+          (basis i) (basis (slots 3)) := by
+    simpa only [W] using hR i j
+  have hPNablaComp (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 =>
+        (Fin.cons (basis (slots 0))
+          (metricTraceInput (I := I) (basis j) (basis j)
+            (metricTraceInput (I := I) (basis i) (basis i)
+              (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+                (basis (slots 3))))) : Fin 8 -> TangentSpace I x)
+        (frontExtendEquiv curvaturePSecondFieldPerm (leibnizRightEquiv 4 3 k))) ∘
+          Fin.natAdd 4) =
+        vec4 (I := I) (basis (slots 0)) (basis j)
+          (basis (slots 2)) (basis i) := by
+    exact hPNabla i j
+  conv_lhs =>
+    enter [2, i]
+    enter [2, j]
+    rw [hRNablaComp i j, hPComp i j, hRComp i j, hPNablaComp i j]
+  let A := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    RNabla x (vec5 (I := I) (basis (slots 0)) (basis (slots 1))
+        (basis i) (basis j) (basis (slots 3))) *
+      P x (vec3 (I := I) (basis i) (basis (slots 2)) (basis j))
+  let B := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    R x (vec4 (I := I) (basis (slots 1)) (basis i)
+        (basis j) (basis (slots 3))) *
+      PNabla x (vec4 (I := I) (basis (slots 0)) (basis i)
+        (basis (slots 2)) (basis j))
+  change (∑ i, ∑ j, (A j i + B j i)) =
+    (∑ i, ∑ j, A i j) + ∑ i, ∑ j, B i j
+  rw [show (∑ i, ∑ j, (A j i + B j i)) =
+      (∑ i, ∑ j, A j i) + ∑ i, ∑ j, B j i by
+    simp only [Finset.sum_add_distrib]]
+  rw [show (∑ i, ∑ j, A j i) = ∑ i, ∑ j, A i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, A i j) = ∑ j, ∑ i, A i j).symm,
+    show (∑ i, ∑ j, B j i) = ∑ i, ∑ j, B i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, B i j) = ∑ j, ∑ i, B i j).symm]
+
+private theorem curvaturePThirdField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (doubleTraceProductField (I := I) g curvaturePThirdFieldPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g) (hamiltonPField (I := I) g))) =
+      quadTraceProductField (I := I) g nablaRPFourthThirdPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRm04Field (I := I) g) (hamiltonPField (I := I) g)) +
+        quadTraceProductField (I := I) g RnablaPFourthThirdPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRm04 (I := I) (M := M) g)
+            (hamiltonNablaPField (I := I) g)) := by
+  let cov := metricCov (I := I) (M := M) g
+  let R := metricRm04 (I := I) (M := M) g
+  let RNabla := metricNablaRm04Field (I := I) g
+  let P := hamiltonPField (I := I) g
+  let PNabla := hamiltonNablaPField (I := I) g
+  let D :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 4 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RNabla P) +
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 4 3)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) R PNabla)
+  have hR : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 4 cov R RNabla := by
+    simpa [cov, R, RNabla, metricNablaRm04Field] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 4 cov R
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          4 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) R))
+  have hP : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 3 cov P PNabla := by
+    simpa [cov, P, PNabla, hamiltonNablaPField] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 3 cov P
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          3 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) P))
+  have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 7 cov
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D := by
+    simpa [D] using nabla0S_product_realizes (I := I) cov
+      R P RNabla PNabla hR hP
+  rw [doubleTraceProductField_nabla_eq (I := I) g curvaturePThirdFieldPerm
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) R P) D hProd]
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  change _ =
+    quadTraceProductField (I := I) g nablaRPFourthThirdPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RNabla P) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3))) +
+      quadTraceProductField (I := I) g RnablaPFourthThirdPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) R PNabla) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3)))
+  rw [nablaRPFourthThirdField_apply_orthonormal (I := I) g basis horth,
+    RnablaPFourthThirdField_apply_orthonormal (I := I) g basis horth,
+    doubleTraceNablaField_apply_orthonormal (I := I) g basis horth]
+  simp only [D, Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+    tensor0SField_product_apply]
+  have htail :
+      (fun r : Fin 3 =>
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) r.succ) =
+        vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+          (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [htail]
+  have hzero :
+      vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) 0 = basis (slots 0) := by
+    simp [vec4]
+  rw [hzero]
+  let W : Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin 8 -> TangentSpace I x := fun i j =>
+    Fin.cons (basis (slots 0))
+      (metricTraceInput (I := I) (basis j) (basis j)
+        (metricTraceInput (I := I) (basis i) (basis i)
+          (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+            (basis (slots 3)))))
+  have hRNabla (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePThirdFieldPerm (leibnizLeftEquiv 4 3 k))) ∘
+          Fin.castAdd 3) =
+        vec5 (I := I) (basis (slots 0)) (basis (slots 2))
+          (basis j) (basis i) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  have hP (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePThirdFieldPerm (leibnizLeftEquiv 4 3 k))) ∘
+          Fin.natAdd (4 + 1)) =
+        vec3 (I := I) (basis (slots 1)) (basis j) (basis i) := by
+    funext r
+    fin_cases r <;> rfl
+  have hR (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePThirdFieldPerm (leibnizRightEquiv 4 3 k))) ∘
+          Fin.castAdd (3 + 1)) =
+        vec4 (I := I) (basis (slots 2)) (basis j)
+          (basis i) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  have hPNabla (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv curvaturePThirdFieldPerm (leibnizRightEquiv 4 3 k))) ∘
+          Fin.natAdd 4) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis j) (basis i) := by
+    funext r
+    fin_cases r <;> rfl
+  dsimp only [W] at hRNabla hP hR hPNabla
+  conv_lhs =>
+    enter [2, i]
+    enter [2, j]
+    rw [hRNabla i j, hP i j, hR i j, hPNabla i j]
+  let A := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    RNabla x (vec5 (I := I) (basis (slots 0)) (basis (slots 2))
+        (basis i) (basis j) (basis (slots 3))) *
+      P x (vec3 (I := I) (basis (slots 1)) (basis i) (basis j))
+  let B := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    R x (vec4 (I := I) (basis (slots 2)) (basis i)
+        (basis j) (basis (slots 3))) *
+      PNabla x (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+        (basis i) (basis j))
+  change (∑ i, ∑ j, (A j i + B j i)) =
+    (∑ i, ∑ j, A i j) + ∑ i, ∑ j, B i j
+  rw [show (∑ i, ∑ j, (A j i + B j i)) =
+      (∑ i, ∑ j, A j i) + ∑ i, ∑ j, B j i by
+    simp only [Finset.sum_add_distrib]]
+  rw [show (∑ i, ∑ j, A j i) = ∑ i, ∑ j, A i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, A i j) = ∑ j, ∑ i, A i j).symm,
+    show (∑ i, ∑ j, B j i) = ∑ i, ∑ j, B i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, B i j) = ∑ j, ∑ i, B i j).symm]
+
+private theorem ricciNablaRmField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (doubleTraceProductField (I := I) g ricciNablaRmFieldPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRicci (I := I) (M := M) g)
+            (metricNablaRm04Field (I := I) g))) =
+      quadTraceProductField (I := I) g nablaRicNablaRmFourthPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricNablaRic (I := I) (M := M) g)
+            (metricNablaRm04Field (I := I) g)) +
+        quadTraceProductField (I := I) g ricciNabla2RmFourthPerm
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
+            (metricRicci (I := I) (M := M) g)
+            (metricNabla2Rm04Field (I := I) g)) := by
+  let cov := metricCov (I := I) (M := M) g
+  let Ric := metricRicci (I := I) (M := M) g
+  let RicNabla := metricNablaRic (I := I) (M := M) g
+  let RNabla := metricNablaRm04Field (I := I) g
+  let RNabla2 := metricNabla2Rm04Field (I := I) g
+  let D :=
+    Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 5)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RicNabla RNabla) +
+      Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 5)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric RNabla2)
+  have hRic : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 cov Ric RicNabla := by
+    simpa [cov, Ric, RicNabla, metricNablaRic] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 2 cov Ric
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          2 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) Ric))
+  have hRNabla : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 5 cov RNabla RNabla2 := by
+    simpa [cov, RNabla, RNabla2, metricNabla2Rm04Field] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 5 cov RNabla
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          5 cov (by simpa [cov] using metricCov_smooth (I := I) (M := M) g) RNabla))
+  have hProd : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 7 cov
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric RNabla) D := by
+    simpa [D] using nabla0S_product_realizes (I := I) cov
+      Ric RNabla RicNabla RNabla2 hRic hRNabla
+  rw [doubleTraceProductField_nabla_eq (I := I) g ricciNablaRmFieldPerm
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric RNabla) D hProd]
+  funext x
+  obtain ⟨basis, horth⟩ := exists_gOrthonormalBasis (I := I) g x
+  apply ext0S_basis (I := I) basis
+  intro slots
+  have hslots :
+      (fun r : Fin 4 => basis (slots r)) =
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [component0S_apply, component0S_apply, hslots]
+  change _ =
+    quadTraceProductField (I := I) g nablaRicNablaRmFourthPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) RicNabla RNabla) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3))) +
+      quadTraceProductField (I := I) g ricciNabla2RmFourthPerm
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) Ric RNabla2) x
+          (vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+            (basis (slots 2)) (basis (slots 3)))
+  rw [nablaRicNablaRmFourthField_apply_orthonormal (I := I) g basis horth,
+    ricciNabla2RmFourthField_apply_orthonormal (I := I) g basis horth,
+    doubleTraceNablaField_apply_orthonormal (I := I) g basis horth]
+  simp only [D, Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
+    ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply,
+    tensor0SField_product_apply]
+  have htail :
+      (fun r : Fin 3 =>
+        vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) r.succ) =
+        vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+          (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  rw [htail]
+  have hzero :
+      vec4 (I := I) (basis (slots 0)) (basis (slots 1))
+          (basis (slots 2)) (basis (slots 3)) 0 = basis (slots 0) := by
+    simp [vec4]
+  rw [hzero]
+  let W : Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin (Module.finrank Real (TangentSpace I x)) ->
+      Fin 8 -> TangentSpace I x := fun i j =>
+    Fin.cons (basis (slots 0))
+      (metricTraceInput (I := I) (basis j) (basis j)
+        (metricTraceInput (I := I) (basis i) (basis i)
+          (vec3 (I := I) (basis (slots 1)) (basis (slots 2))
+            (basis (slots 3)))))
+  have hRicNabla (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv ricciNablaRmFieldPerm (leibnizLeftEquiv 2 5 k))) ∘
+          Fin.castAdd 5) =
+        vec3 (I := I) (basis (slots 0)) (basis j) (basis i) := by
+    funext r
+    fin_cases r <;> rfl
+  have hRNabla (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv ricciNablaRmFieldPerm (leibnizLeftEquiv 2 5 k))) ∘
+          Fin.natAdd (2 + 1)) =
+        vec5 (I := I) (basis j) (basis (slots 1))
+          (basis (slots 2)) (basis i) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  have hRic (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv ricciNablaRmFieldPerm (leibnizRightEquiv 2 5 k))) ∘
+          Fin.castAdd (5 + 1)) =
+        vec2 (I := I) (basis j) (basis i) := by
+    funext r
+    fin_cases r <;> rfl
+  have hRNabla2 (i j : Fin (Module.finrank Real (TangentSpace I x))) :
+      ((fun k : Fin 8 => W i j
+        (frontExtendEquiv ricciNablaRmFieldPerm (leibnizRightEquiv 2 5 k))) ∘
+          Fin.natAdd 2) =
+        vec6 (I := I) (basis (slots 0)) (basis j) (basis (slots 1))
+          (basis (slots 2)) (basis i) (basis (slots 3)) := by
+    funext r
+    fin_cases r <;> rfl
+  dsimp only [W] at hRicNabla hRNabla hRic hRNabla2
+  conv_lhs =>
+    enter [2, i]
+    enter [2, j]
+    rw [hRicNabla i j, hRNabla i j, hRic i j, hRNabla2 i j]
+  let A := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    RicNabla x (vec3 (I := I) (basis (slots 0)) (basis i) (basis j)) *
+      RNabla x (vec5 (I := I) (basis i) (basis (slots 1))
+        (basis (slots 2)) (basis j) (basis (slots 3)))
+  let B := fun i j : Fin (Module.finrank Real (TangentSpace I x)) =>
+    Ric x (vec2 (I := I) (basis i) (basis j)) *
+      RNabla2 x (vec6 (I := I) (basis (slots 0)) (basis i) (basis (slots 1))
+        (basis (slots 2)) (basis j) (basis (slots 3)))
+  change (∑ i, ∑ j, (A j i + B j i)) =
+    (∑ i, ∑ j, A i j) + ∑ i, ∑ j, B i j
+  rw [show (∑ i, ∑ j, (A j i + B j i)) =
+      (∑ i, ∑ j, A j i) + ∑ i, ∑ j, B j i by
+    simp only [Finset.sum_add_distrib]]
+  rw [show (∑ i, ∑ j, A j i) = ∑ i, ∑ j, A i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, A i j) = ∑ j, ∑ i, A i j).symm,
+    show (∑ i, ∑ j, B j i) = ∑ i, ∑ j, B i j by
+      simpa only using (Finset.sum_comm :
+        (∑ i, ∑ j, B i j) = ∑ j, ∑ i, B i j).symm]
+
+private theorem hamiltonPEvolutionReactionField_nabla_eq
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M) :
+    totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+        3 (metricCov (I := I) (M := M) g)
+        (hamiltonPEvolutionReactionField (I := I) g) =
+      hamiltonNablaPEvolutionReactionField (I := I) g := by
+  funext x
+  rw [hamiltonPEvolutionReactionField, hamiltonNablaPEvolutionReactionField]
+  repeat' rw [totalNabla0SFun_add (I := I)]
+  repeat' rw [totalNabla0SFun_smul (I := I)]
+  rw [congrFun (curvaturePFirstField_nabla_eq (I := I) g) x,
+    congrFun (curvaturePSecondField_nabla_eq (I := I) g) x,
+    congrFun (curvaturePThirdField_nabla_eq (I := I) g) x,
+    congrFun (ricciNablaRmField_nabla_eq (I := I) g) x]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply,
+    ContMDiffSection.coe_sub, Pi.sub_apply,
+    ContMDiffSection.coe_smul, Pi.smul_apply, smul_add, neg_smul]
+  abel
+
+private theorem metricNabla2Rm04Field_eq_nablaKRm04Field_of_solution
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) :
+    metricNabla2Rm04Field (I := I) (S.base.metric t) =
+      nablaKRm04Field (I := I) S t 2 := by
+  apply totalNabla0SRealizes_unique
+  · simpa [metricNabla2Rm04Field, metricNablaRm04Field,
+      SolutionFamily.connection, metricCov] using
+      (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H)
+        (I := I) (M := M) 5
+        (metricCov (I := I) (M := M) (S.base.metric t))
+        (metricNablaRm04Field (I := I) (S.base.metric t))
+        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+          5 (metricCov (I := I) (M := M) (S.base.metric t))
+          (metricCov_smooth (I := I) (M := M) (S.base.metric t))
+          (metricNablaRm04Field (I := I) (S.base.metric t))))
+  · simpa [nablaKRm04Field, nabla2Rm04Field, nablaRm04Field,
+      SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm04,
+      metricCov] using (nablaKRm04Field_realizes (I := I) S t 1)
+
+private theorem hamiltonNablaP_nablaHeat_components_of_solution
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    uhlenbeckNablaHeatPComponent
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPTimeComponentOfSolution
+          (I := I) S (t : Real) x basis)
+        (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis)
+        q a b c =
+      hamiltonNablaPEvolutionReactionComponent
+        (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNabla2RmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis) q a b c := by
+  let g := S.base.metric (t : Real)
+  calc
+    _ = totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          3 (metricCov (I := I) (M := M) g) (hamiltonPHeatField (I := I) g) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) :=
+      uhlenbeckNablaHeatPComponent_eq_hamiltonPHeatFieldNabla_of_orthonormal
+        (I := I) g basis horth q a b c
+    _ = totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          3 (metricCov (I := I) (M := M) g)
+          (hamiltonPEvolutionReactionField (I := I) g) x
+        (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) := by
+      rw [hamiltonPHeatField_eq_reaction (I := I) g]
+    _ = hamiltonNablaPEvolutionReactionField (I := I) g x
+          (vec4 (I := I) (basis q) (basis a) (basis b) (basis c)) := by
+      rw [congrFun (hamiltonPEvolutionReactionField_nabla_eq (I := I) g) x]
+    _ = hamiltonNablaPEvolutionReactionComponent
+          (fun i j k l => metricRm04 (I := I) (M := M) g x
+            (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+          (fun i j => metricRicci (I := I) (M := M) g x
+            (vec2 (I := I) (basis i) (basis j)))
+          (fun i j k l m => metricNablaRm04Field (I := I) g x
+            (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+          (fun i j k => metricNablaRic (I := I) (M := M) g x
+            (vec3 (I := I) (basis i) (basis j) (basis k)))
+          (fun i j k l m r => metricNabla2Rm04Field (I := I) g x
+            (vec6 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m) (basis r)))
+          (fun i j k l => hamiltonNablaPField (I := I) g x
+            (vec4 (I := I) (basis i) (basis j) (basis k) (basis l))) q a b c :=
+      hamiltonNablaPEvolutionReactionField_apply_orthonormal
+        (I := I) g basis horth q a b c
+    _ = _ := by
+      rw [metricNabla2Rm04Field_eq_nablaKRm04Field_of_solution
+        (I := I) S (t : Real)]
+      have hslots (i j k l m r : Fin n) :
+          vec6 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m) (basis r) =
+            Fin.cons (basis i)
+              (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis r)) := by
+        funext p
+        fin_cases p <;> rfl
+      simp_rw [hslots]
+      unfold hamiltonRmComponentOfSolution hamiltonRicciComponentOfSolution
+        hamiltonNablaRmComponentOfSolution hamiltonNablaRicciComponentOfSolution
+        hamiltonNabla2RmComponentOfSolution hamiltonNablaPComponentOfSolution
+      dsimp only [g]
+      rw [SolutionFamily.rm04,
+        metricNablaRm04Field_eq_nablaRm04Field (I := I) S (t : Real)]
+
+theorem hamiltonP_evolution_covariantDerivative_of_ricci_flow
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (q a b c : Fin n) :
+    uhlenbeckNablaHeatPComponent
+        (fun i j => metricRicci (I := I) (M := M) (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField (I := I) (S.base.metric (t : Real)) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l => hamiltonNablaPTimeDerivativeField
+          (I := I) (S.base.metric (t : Real)) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l m r => hamiltonNabla3PField
+          (I := I) (S.base.metric (t : Real)) x
+          (Fin.cons (basis i)
+            (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis r))))
+        q a b c =
+      hamiltonNablaPEvolutionReactionComponent
+        (fun i j k l => S.base.rm04 (t : Real) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M) (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => nablaRm04Field (I := I) S (t : Real) x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l m r => nablaKRm04Field (I := I) S (t : Real) 2 x
+          (Fin.cons (basis i)
+            (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis r))))
+        (fun i j k l => hamiltonNablaPField (I := I) (S.base.metric (t : Real)) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l))) q a b c := by
+  change uhlenbeckNablaHeatPComponent
+      (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaPTimeComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis) q a b c =
+    hamiltonNablaPEvolutionReactionComponent
+      (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNabla2RmComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis) q a b c
+  exact hamiltonNablaP_nablaHeat_components_of_solution
+    (I := I) S t x basis horth q a b c
+
 
 theorem hamiltonMComponent_eq_hamiltonMAt_orthonormal
     [T2Space M]
