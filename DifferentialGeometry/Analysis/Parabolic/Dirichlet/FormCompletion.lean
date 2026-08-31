@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.DenseExtension
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FormBounds
+import DifferentialGeometry.Analysis.Sobolev.DirichletHs.EnergyDuality
 
 noncomputable section
 
@@ -9,6 +10,8 @@ open scoped ContDiff ENNReal InnerProductSpace Manifold RealInnerProductSpace To
 namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+open DifferentialGeometry.Analysis.Laplacian.WithBoundary
+open DifferentialGeometry.Analysis.Sobolev.Hs
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
@@ -285,6 +288,42 @@ theorem norm_dirichletMassCompl_le
     rw [dirichletMassSmooth_apply, Real.norm_eq_abs]
     exact abs_dirichletMass_le_of_metric_and_volume h hCg hequiv
       Cv hCv0 hCvtop hvol u v
+
+theorem dirichletEnergyForm_apply_smooth
+    (q : SmoothRiemannianMetric (I_half n) M)
+    (u v : SmoothScalarDirichlet q) :
+    dirichletEnergyForm q
+        (smoothToH1ComplDirichlet q u) (smoothToH1ComplDirichlet q v) =
+      dirichletEnergy q u v := by
+  have hselfEquiv : ∀ x : M, ∀ z : TangentSpace (I_half n) x,
+      (1 : ℝ)⁻¹ * q.inner x z z ≤ q.inner x z z ∧
+        q.inner x z z ≤ (1 : ℝ) * q.inner x z z := by
+    intro x z
+    simp only [inv_one, one_mul, le_refl, and_self]
+  have hselfVol :
+      riemannianVolumeMeasure (I := I_half n) (M := M) q ≤
+        (1 : ℝ≥0∞) • riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+    simp only [one_smul, le_refl]
+  have hmass : inner ℝ
+      (H1ComplDirichletToLp q (smoothToH1ComplDirichlet q u))
+      (H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)) =
+      dirichletMass q u v := by
+    rw [← dirichletMassCompl_self_apply
+      (show (1 : ℝ) ≤ 1 from le_rfl) hselfEquiv
+      1 one_ne_zero ENNReal.one_ne_top hselfVol]
+    exact dirichletMassCompl_apply_smooth q
+      (show (1 : ℝ) ≤ 1 from le_rfl) hselfEquiv
+      1 one_ne_zero ENNReal.one_ne_top hselfVol u v
+  rw [dirichletEnergyForm_apply, hmass]
+  change inner ℝ
+      (u : UniformSpace.Completion (SmoothScalarDirichlet q))
+      (v : UniformSpace.Completion (SmoothScalarDirichlet q)) -
+      dirichletMass q u v = dirichletEnergy q u v
+  rw [UniformSpace.Completion.inner_coe]
+  rw [InteriorSmoothScalar.inner_def]
+  unfold interiorSmoothScalarH1Inner dirichletMass dirichletEnergy
+  simp only [grad_g_with_boundary_section_apply']
+  ring
 
 noncomputable def dirichletMassVariationSmooth
     {q : SmoothRiemannianMetric (I_half n) M}

@@ -132,6 +132,93 @@ theorem dirichletHsLaplacian_opNorm_le_one :
     rw [one_mul]
     exact dirichletHsLaplacian_norm_le v
 
+private theorem weight_neg_one_eigenvalue_mul_sq_le
+    (v : dirichletHs g 1) (i : DirichletLaplacianEigenindex g) :
+    dirichletSobolevWeight i (-1) *
+        (-dirichletLaplacianEigenvalue i * v.coeff i) ^ 2 ≤
+      dirichletSobolevWeight i 1 * (v.coeff i) ^ 2 := by
+  have hbase : 0 < 1 + dirichletLaplacianEigenvalue i :=
+    lt_of_lt_of_le one_pos
+      (one_le_one_add_dirichletLaplacianEigenvalue i)
+  have hcoeff : (1 + dirichletLaplacianEigenvalue i)⁻¹ *
+      dirichletLaplacianEigenvalue i ^ 2 ≤
+      1 + dirichletLaplacianEigenvalue i := by
+    calc
+      (1 + dirichletLaplacianEigenvalue i)⁻¹ *
+          dirichletLaplacianEigenvalue i ^ 2 ≤
+        (1 + dirichletLaplacianEigenvalue i)⁻¹ *
+          (1 + dirichletLaplacianEigenvalue i) ^ 2 :=
+        mul_le_mul_of_nonneg_left (eigenvalue_sq_le i) (inv_nonneg.mpr hbase.le)
+      _ = 1 + dirichletLaplacianEigenvalue i := by
+        field_simp [hbase.ne']
+  unfold dirichletSobolevWeight
+  rw [Real.rpow_neg_one, Real.rpow_one]
+  calc
+    (1 + dirichletLaplacianEigenvalue i)⁻¹ *
+        (-dirichletLaplacianEigenvalue i * v.coeff i) ^ 2 =
+      ((1 + dirichletLaplacianEigenvalue i)⁻¹ *
+        dirichletLaplacianEigenvalue i ^ 2) * (v.coeff i) ^ 2 := by ring
+    _ ≤ (1 + dirichletLaplacianEigenvalue i) * (v.coeff i) ^ 2 :=
+      mul_le_mul_of_nonneg_right hcoeff (sq_nonneg _)
+
+private theorem laplacianNegOneWeightedSummable
+    (v : dirichletHs g 1) :
+    Summable (fun i => dirichletSobolevWeight i (-1) *
+      (-dirichletLaplacianEigenvalue i * v.coeff i) ^ 2) := by
+  refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_)
+    v.weighted_summable
+  · exact mul_nonneg (dirichletSobolevWeight_nonneg i (-1)) (sq_nonneg _)
+  · exact weight_neg_one_eigenvalue_mul_sq_le v i
+
+private def laplacianNegOneFun (v : dirichletHs g 1) :
+    dirichletHs g (-1) where
+  coeff i := -dirichletLaplacianEigenvalue i * v.coeff i
+  weighted_summable := laplacianNegOneWeightedSummable v
+
+private theorem laplacianNegOneFun_add
+    (v w : dirichletHs g 1) :
+    laplacianNegOneFun (v + w) =
+      laplacianNegOneFun v + laplacianNegOneFun w := by
+  refine dirichletHs.ext (funext (fun i => ?_))
+  simp only [laplacianNegOneFun, dirichletHs.add_coeff]
+  ring
+
+private theorem laplacianNegOneFun_smul (c : ℝ)
+    (v : dirichletHs g 1) :
+    laplacianNegOneFun (c • v) = c • laplacianNegOneFun v := by
+  refine dirichletHs.ext (funext (fun i => ?_))
+  simp only [laplacianNegOneFun, dirichletHs.smul_coeff]
+  ring
+
+private theorem norm_laplacianNegOneFun_le
+    (v : dirichletHs g 1) :
+    ‖laplacianNegOneFun v‖ ≤ ‖v‖ := by
+  have hsq : ‖laplacianNegOneFun v‖ ^ 2 ≤ ‖v‖ ^ 2 := by
+    rw [dirichletHs.norm_sq_eq_tsum, dirichletHs.norm_sq_eq_tsum]
+    refine Summable.tsum_le_tsum (fun i => ?_)
+      (laplacianNegOneFun v).weighted_summable v.weighted_summable
+    exact weight_neg_one_eigenvalue_mul_sq_le v i
+  have h := Real.sqrt_le_sqrt hsq
+  rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at h
+
+def dirichletHsLaplacianNegOne
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    dirichletHs g 1 →L[ℝ] dirichletHs g (-1) :=
+  LinearMap.mkContinuous
+    { toFun := laplacianNegOneFun
+      map_add' := laplacianNegOneFun_add
+      map_smul' := fun c v => laplacianNegOneFun_smul c v }
+    1
+    (fun v => by
+      rw [one_mul]
+      exact norm_laplacianNegOneFun_le v)
+
+@[simp] theorem dirichletHsLaplacianNegOne_coeff
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : dirichletHs g 1) (i : DirichletLaplacianEigenindex g) :
+    (dirichletHsLaplacianNegOne g u).coeff i =
+      -dirichletLaplacianEigenvalue i * u.coeff i := rfl
+
 end Hs
 end Sobolev
 end Analysis

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.Inclusion
+import DifferentialGeometry.Analysis.Sobolev.DirichletHs.Laplacian
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1EigenBasis
 import Mathlib.Analysis.InnerProductSpace.Dual
 
@@ -62,6 +63,22 @@ def dirichletHsNegOneEquivH1Dual
   (dirichletHsNegOneRieszEquivH1Compl g).toContinuousLinearEquiv.trans
     (InnerProductSpace.toDual ℝ
       (H1ComplDirichlet g)).toContinuousLinearEquiv
+
+def dirichletEnergyForm
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    H1ComplDirichlet g →L[ℝ] H1ComplDirichlet g →L[ℝ] ℝ :=
+  let L := H1ComplDirichletToLp g
+  (innerSL ℝ :
+      H1ComplDirichlet g →L[ℝ] H1ComplDirichlet g →L[ℝ] ℝ) -
+    (innerSL ℝ).bilinearComp L L
+
+@[simp] theorem dirichletEnergyForm_apply
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u v : H1ComplDirichlet g) :
+    dirichletEnergyForm g u v =
+      inner ℝ u v - inner ℝ
+        (H1ComplDirichletToLp g u) (H1ComplDirichletToLp g v) :=
+  rfl
 
 @[simp] theorem dirichletHsNegOneEquivH1Dual_apply
     (g : SmoothRiemannianMetric (I_half n) M)
@@ -132,6 +149,89 @@ theorem dirichletBilinearFormToHs_norm_le
       B.le_opNorm _
     _ = ‖B‖ * ‖u‖ := by
       rw [(dirichletHsOneEquivH1Compl g).norm_map]
+
+private theorem dirichletEnergyForm_apply_basis
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : H1ComplDirichlet g) (i : DirichletLaplacianEigenindex g) :
+    dirichletEnergyForm g u (dirichletH1HilbertBasis g i) =
+      (1 - i.1.val) * inner ℝ u (dirichletH1HilbertBasis g i) := by
+  have hres := resolventDirichlet_inner_eq_lpFunctional g
+    (H1ComplDirichletToLp g (dirichletH1HilbertBasis g i)) u
+  rw [resolventDirichlet_H1ComplDirichletToLp_dirichletH1HilbertBasis,
+    real_inner_smul_left] at hres
+  rw [dirichletEnergyForm_apply, ← hres, real_inner_comm]
+  ring
+
+private theorem dirichletSobolevWeight_one_eq_resolvent_eigenvalue_inv
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (i : DirichletLaplacianEigenindex g) :
+    dirichletSobolevWeight i (1 : ℝ) = i.1.val⁻¹ := by
+  unfold dirichletSobolevWeight dirichletLaplacianEigenvalue
+  rw [Real.rpow_one]
+  field_simp [i.1.val_ne_zero]
+  ring
+
+private theorem dirichletSobolevWeight_neg_one_eq_resolvent_eigenvalue
+    {g : SmoothRiemannianMetric (I_half n) M}
+    (i : DirichletLaplacianEigenindex g) :
+    dirichletSobolevWeight i (-1 : ℝ) = i.1.val := by
+  unfold dirichletSobolevWeight dirichletLaplacianEigenvalue
+  rw [Real.rpow_neg_one]
+  have h : (1 + (1 - i.1.val) / i.1.val) = i.1.val⁻¹ := by
+    field_simp [i.1.val_ne_zero]
+    ring
+  rw [h, inv_inv]
+
+private theorem dirichletBilinearFormToHs_neg_energyForm_coeff
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u : dirichletHs g 1) (i : DirichletLaplacianEigenindex g) :
+    (dirichletBilinearFormToHs g (-dirichletEnergyForm g) u).coeff i =
+      -dirichletLaplacianEigenvalue i * u.coeff i := by
+  let y := dirichletBilinearFormToHs g (-dirichletEnergyForm g) u
+  have hdual := DFunLike.congr_fun
+    (dirichletHsNegOneEquivH1Dual_bilinearFormToHs
+      g (-dirichletEnergyForm g) u)
+    (dirichletH1HilbertBasis g i)
+  change inner ℝ (dirichletHsNegOneRieszEquivH1Compl g y)
+      (dirichletH1HilbertBasis g i) =
+    -dirichletEnergyForm g (dirichletHsOneEquivH1Compl g u)
+      (dirichletH1HilbertBasis g i) at hdual
+  rw [real_inner_comm,
+    ← (dirichletH1HilbertBasis g).repr_apply_apply,
+    dirichletHsNegOneRieszEquivH1Compl_repr,
+    dirichletHs.rescaleEquivL2_apply,
+    dirichletEnergyForm_apply_basis,
+    real_inner_comm,
+    ← (dirichletH1HilbertBasis g).repr_apply_apply,
+    dirichletHsOneEquivH1Compl_repr,
+    dirichletHs.rescaleEquivL2_apply] at hdual
+  simp only at hdual
+  change Real.sqrt (dirichletSobolevWeight i (-1)) * y.coeff i =
+    -((1 - i.1.val) *
+      (Real.sqrt (dirichletSobolevWeight i 1) * u.coeff i)) at hdual
+  change y.coeff i = -dirichletLaplacianEigenvalue i * u.coeff i
+  have hμ : 0 < i.1.val := nonzeroDirichletResolventEigenvalue_pos i.1
+  have hsqrt : Real.sqrt i.1.val ≠ 0 := (Real.sqrt_pos.mpr hμ).ne'
+  apply mul_left_cancel₀ hsqrt
+  rw [dirichletSobolevWeight_neg_one_eq_resolvent_eigenvalue,
+    dirichletSobolevWeight_one_eq_resolvent_eigenvalue_inv,
+    Real.sqrt_inv] at hdual
+  rw [hdual]
+  unfold dirichletLaplacianEigenvalue
+  field_simp [hsqrt, i.1.val_ne_zero]
+  rw [Real.sq_sqrt hμ.le]
+  ring
+
+theorem dirichletBilinearFormToHs_neg_energyForm_eq_laplacian
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    dirichletBilinearFormToHs g (-dirichletEnergyForm g) =
+      dirichletHsLaplacianNegOne g := by
+  apply ContinuousLinearMap.ext
+  intro u
+  apply dirichletHs.ext
+  funext i
+  rw [dirichletBilinearFormToHs_neg_energyForm_coeff,
+    dirichletHsLaplacianNegOne_coeff]
 
 end Hs
 end Sobolev
