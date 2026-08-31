@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Boun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.SourceCovariantLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.SourceCovariantLipschitzBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completeness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Conclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.EarlyTime

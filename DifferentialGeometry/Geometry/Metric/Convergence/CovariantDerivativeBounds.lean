@@ -65,6 +65,34 @@ def MetricUniformEquivalentOn
         C⁻¹ * gRef.inner x v v <= h.inner x v v /\
           h.inner x v v <= C * gRef.inner x v v
 
+omit [FiniteDimensional Real E] [CompleteSpace E] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem MetricUniformEquivalentOn.trans
+    {K : Set M} {g h f : SmoothRiemannianMetric I M} {C₁ C₂ : Real}
+    (hgh : MetricUniformEquivalentOn (I := I) K g h C₁)
+    (hhf : MetricUniformEquivalentOn (I := I) K h f C₂) :
+    MetricUniformEquivalentOn (I := I) K g f (C₁ * C₂) := by
+  obtain ⟨hC₁, hb₁⟩ := hgh
+  obtain ⟨hC₂, hb₂⟩ := hhf
+  have hC₁0 : (0 : Real) < C₁ := lt_of_lt_of_le one_pos hC₁
+  have hC₂0 : (0 : Real) < C₂ := lt_of_lt_of_le one_pos hC₂
+  refine ⟨by nlinarith, fun x hx v => ?_⟩
+  obtain ⟨hg₁, hg₂⟩ := hb₁ x hx v
+  obtain ⟨hh₁, hh₂⟩ := hb₂ x hx v
+  constructor
+  · have hstep : C₂⁻¹ * (C₁⁻¹ * g.inner x v v) ≤ C₂⁻¹ * h.inner x v v :=
+      mul_le_mul_of_nonneg_left hg₁ (inv_nonneg.2 hC₂0.le)
+    calc
+      (C₁ * C₂)⁻¹ * g.inner x v v = C₂⁻¹ * (C₁⁻¹ * g.inner x v v) := by
+        rw [mul_inv]
+        ring
+      _ ≤ C₂⁻¹ * h.inner x v v := hstep
+      _ ≤ f.inner x v v := hh₁
+  · calc
+      f.inner x v v ≤ C₂ * h.inner x v v := hh₂
+      _ ≤ C₂ * (C₁ * g.inner x v v) := mul_le_mul_of_nonneg_left hg₂ hC₂0.le
+      _ = (C₁ * C₂) * g.inner x v v := by ring
+
 def MetricUniformEquivalentOnWindow
     (K : Set M) (β ψ : Real)
     (gRef : SmoothRiemannianMetric I M)

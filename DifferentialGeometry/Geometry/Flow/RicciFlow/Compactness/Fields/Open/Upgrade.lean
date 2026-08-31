@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Conclusion
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.InitialMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness

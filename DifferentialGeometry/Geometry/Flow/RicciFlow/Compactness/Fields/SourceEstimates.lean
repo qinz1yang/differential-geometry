@@ -27,60 +27,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 
-section Prelims
-
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
-variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    [IsManifold I 1 M] [IsManifold I 2 M] in
-theorem equivOn_trans {K : Set M} {g h f : SmoothRiemannianMetric I M} {C₁ C₂ : Real}
-    (h₁ : MetricUniformEquivalentOn (I := I) K g h C₁)
-    (h₂ : MetricUniformEquivalentOn (I := I) K h f C₂) :
-    MetricUniformEquivalentOn (I := I) K g f (C₁ * C₂) := by
-  obtain ⟨hC₁, hb₁⟩ := h₁
-  obtain ⟨hC₂, hb₂⟩ := h₂
-  have hC₁0 : (0 : Real) < C₁ := lt_of_lt_of_le one_pos hC₁
-  have hC₂0 : (0 : Real) < C₂ := lt_of_lt_of_le one_pos hC₂
-  refine ⟨by nlinarith, fun x hx v => ?_⟩
-  obtain ⟨hg₁, hg₂⟩ := hb₁ x hx v
-  obtain ⟨hh₁, hh₂⟩ := hb₂ x hx v
-  constructor
-  · have hstep : C₂⁻¹ * (C₁⁻¹ * g.inner x v v) <= C₂⁻¹ * h.inner x v v :=
-      mul_le_mul_of_nonneg_left hg₁ (inv_nonneg.2 hC₂0.le)
-    calc (C₁ * C₂)⁻¹ * g.inner x v v
-        = C₂⁻¹ * (C₁⁻¹ * g.inner x v v) := by rw [mul_inv]; ring
-      _ <= C₂⁻¹ * h.inner x v v := hstep
-      _ <= f.inner x v v := hh₁
-  · calc f.inner x v v <= C₂ * h.inner x v v := hh₂
-      _ <= C₂ * (C₁ * g.inner x v v) := mul_le_mul_of_nonneg_left hg₂ hC₂0.le
-      _ = (C₁ * C₂) * g.inner x v v := by ring
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
-    [IsManifold I 2 M] in
-theorem derivNorm_congr_diff
-    (a : Nat) (g₁ g₂ h₁ h₂ gRef : SmoothRiemannianMetric I M) (x : M)
-    (hdiff : Tensor0SBundle.metricTensorField (I := I) g₁
-        - Tensor0SBundle.metricTensorField (I := I) g₂
-      = Tensor0SBundle.metricTensorField (I := I) h₁
-        - Tensor0SBundle.metricTensorField (I := I) h₂) :
-    metricDerivNorm (I := I) a g₁ g₂ gRef x = metricDerivNorm (I := I) a h₁ h₂ gRef x := by
-  have key : forall f₁ f₂ : SmoothRiemannianMetric I M,
-      metricCovDeriv (I := I) f₁ gRef a x - metricCovDeriv (I := I) f₂ gRef a x
-        = (covDerivOfField (I := I) gRef
-            (Tensor0SBundle.metricTensorField (I := I) f₁
-              - Tensor0SBundle.metricTensorField (I := I) f₂) a) x := by
-    intro f₁ f₂
-    rw [covDerivOfField_sub, metricCovDeriv_eq_covDerivOfField (I := I) f₁ gRef a,
-      metricCovDeriv_eq_covDerivOfField (I := I) f₂ gRef a]
-    rfl
-  unfold metricDerivNorm metricDiffCovDerivAt
-  rw [key g₁ g₂, key h₁ h₂, hdiff]
-
-end Prelims
-
 section ConvField
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -193,7 +139,7 @@ theorem srcEquivOn
     (V := (Set.univ : Set (SourceDomain (I := I) Φ k)))
     (fun _ _ => Set.mem_univ _)
   have h2t := h2 0 t ht
-  exact equivOn_trans (I := I) (hrel k) h2t
+  exact (hrel k).trans h2t
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem srcShi
@@ -615,7 +561,7 @@ theorem lipTail_of_src
           ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
           ((refRes (I := I) Φ R k).restrictOpen (I := I) O)
           (⟨y, hyO⟩ : ↥O) :=
-        derivNorm_congr_diff (I := I) a _ _ _ _ _ (⟨y, hyO⟩ : ↥O) hdiffO
+        metricDerivNorm_congr_difference (I := I) a _ _ _ _ _ (⟨y, hyO⟩ : ↥O) hdiffO
     _ = metricDerivNorm (I := I) a (srcMetric (I := I) Φ hsrc htgt k s)
           (srcMetric (I := I) Φ hsrc htgt k t)
           (refRes (I := I) Φ R k) y :=

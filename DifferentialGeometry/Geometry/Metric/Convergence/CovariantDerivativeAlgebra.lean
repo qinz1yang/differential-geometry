@@ -170,6 +170,27 @@ theorem covDerivOfField_sub
   rw [sub_eq_add_neg, covDerivOfField_add, ← neg_one_smul Real B0,
     covDerivOfField_smul, neg_one_smul, ← sub_eq_add_neg]
 
+omit [SigmaCompactSpace M] in
+theorem metricDerivNorm_congr_difference
+    (a : Nat) (g₁ g₂ h₁ h₂ gRef : SmoothRiemannianMetric I M) (x : M)
+    (hdiff : Tensor0SBundle.metricTensorField (I := I) g₁
+        - Tensor0SBundle.metricTensorField (I := I) g₂
+      = Tensor0SBundle.metricTensorField (I := I) h₁
+        - Tensor0SBundle.metricTensorField (I := I) h₂) :
+    metricDerivNorm (I := I) a g₁ g₂ gRef x =
+      metricDerivNorm (I := I) a h₁ h₂ gRef x := by
+  have key : ∀ f₁ f₂ : SmoothRiemannianMetric I M,
+      metricCovDeriv (I := I) f₁ gRef a x - metricCovDeriv (I := I) f₂ gRef a x
+        = (covDerivOfField (I := I) gRef
+            (Tensor0SBundle.metricTensorField (I := I) f₁
+              - Tensor0SBundle.metricTensorField (I := I) f₂) a) x := by
+    intro f₁ f₂
+    rw [covDerivOfField_sub, metricCovDeriv_eq_covDerivOfField (I := I) f₁ gRef a,
+      metricCovDeriv_eq_covDerivOfField (I := I) f₂ gRef a]
+    rfl
+  unfold metricDerivNorm metricDiffCovDerivAt
+  rw [key g₁ g₂, key h₁ h₂, hdiff]
+
 noncomputable def covStep
     (gRef : SmoothRiemannianMetric I M) (s : Nat)
     (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)

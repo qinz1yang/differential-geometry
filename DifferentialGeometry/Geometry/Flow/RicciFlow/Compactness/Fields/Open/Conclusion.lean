@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Regularit
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.CurvatureConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Limit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Conclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
