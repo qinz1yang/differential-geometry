@@ -353,7 +353,7 @@ theorem lRedJac_deriv_le0
   have hPdiff (i : Fin (Module.finrank Real E)) (s : Real)
       (hs : s ∈ Set.Icc (0 : Real) b) :
       DifferentiableAt Real (chartRepAt (I := I) alpha (P i) s) s := by
-    apply chartRep_diff_at
+    apply differentiableAt_chartRepAt_of_contMDiffAt_two
     exact (((hPsm i s (hseg hs)).contMDiffAt
       (hΩ.mem_nhds (hseg hs))).of_le (by decide :
         (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)))

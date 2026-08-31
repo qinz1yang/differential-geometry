@@ -50,57 +50,6 @@ private theorem contAt_sum
       rw [hfun] at hadd
       simpa only [Finset.sum_insert ha] using hadd
 
-omit [InnerProductSpace Real E] [FiniteDimensional Real E]
-  [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem chartRep_diff_at
-    {alpha : Real → M} {Y : ∀ s, TangentSpace I (alpha s)} {t : Real}
-    (hY : ContMDiffAt (modelWithCornersSelf Real Real) I.tangent 2
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (alpha s) (Y s) : TangentBundle I M)) t) :
-    DifferentiableAt Real (chartRepAt (I := I) alpha Y t) t := by
-  let F : Real → TangentBundle I M := fun s ↦
-    TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (alpha s) (Y s)
-  have hAt := Bundle.contMDiffAt_totalSpace.mp hY
-  have hbase := hAt.1
-  have hfiber := hAt.2
-  have hmem :
-      alpha t ∈ (trivializationAt E (TangentSpace I) (alpha t)).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (alpha t)
-  have hpre :
-      alpha ⁻¹' (trivializationAt E (TangentSpace I) (alpha t)).baseSet ∈ 𝓝 t :=
-    hbase.continuousAt.preimage_mem_nhds
-      ((trivializationAt E (TangentSpace I) (alpha t)).open_baseSet.mem_nhds hmem)
-  have heq :
-      (fun s : Real ↦
-        ((trivializationAt E (TangentSpace I) (alpha t)) (F s)).2)
-        =ᶠ[𝓝 t] chartRepAt (I := I) alpha Y t := by
-    filter_upwards [hpre] with s hs
-    rw [chartRepAt_apply]
-    simp only [F, TotalSpace.mk']
-    rw [(trivializationAt E (TangentSpace I) (alpha t)).continuousLinearMapAt_apply
-      (R := Real)]
-    rw [(trivializationAt E (TangentSpace I) (alpha t)).coe_linearMapAt_of_mem hs]
-  have hcoord : ContDiffAt Real 2
-      (fun s : Real ↦
-        ((trivializationAt E (TangentSpace I) (alpha t)) (F s)).2) t :=
-    contMDiffAt_iff_contDiffAt.mp hfiber
-  exact (hcoord.differentiableAt (by norm_num)).congr_of_eventuallyEq heq.symm
-
-omit [InnerProductSpace Real E] [FiniteDimensional Real E]
-  [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
-  [SigmaCompactSpace M] in
-theorem chartRep_diff_two
-    {alpha : Real → M} {Y : ∀ s, TangentSpace I (alpha s)}
-    (hY : ContMDiff (modelWithCornersSelf Real Real) I.tangent 2
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (alpha s) (Y s) : TangentBundle I M)))
-    (t : Real) :
-    DifferentiableAt Real (chartRepAt (I := I) alpha Y t) t :=
-  chartRep_diff_at (I := I) (hY.contMDiffAt (x := t))
-
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 private theorem movingCov_contOn
@@ -254,7 +203,7 @@ private theorem movingCov_contOn
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (alpha r) (Y r) : TangentBundle I M)) s :=
       (hY s hsΩ).contMDiffAt (hΩ.mem_nhds hsΩ)
-    have hYdiff := chartRep_diff_at (I := I) hYS
+    have hYdiff := differentiableAt_chartRepAt_of_contMDiffAt_two (I := I) hYS
     have hinv := covDeriv_chartAt (I := I)
       (S.base.metric (tau s)) alpha Y s (alpha t)
       (halphaS.mdifferentiableAt (by norm_num)) hs hYdiff

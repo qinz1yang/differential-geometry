@@ -938,7 +938,7 @@ theorem lTail_hess_le
   have hWdiff : ∀ s ∈ uIcc a b,
       DifferentiableAt Real (chartRepAt (I := I) beta W s) s := by
     intro s hs
-    apply chartRep_diff_at (I := I)
+    apply differentiableAt_chartRepAt_of_contMDiffAt_two (I := I)
     exact (hW.of_le (by norm_num)).contMDiffAt
       (hOmega.mem_nhds (htailInter hs).2)
   have hQdiff : ∀ s ∈ uIcc a b,

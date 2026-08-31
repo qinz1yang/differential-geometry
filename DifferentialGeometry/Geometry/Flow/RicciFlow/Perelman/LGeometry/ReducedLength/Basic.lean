@@ -482,7 +482,7 @@ theorem lCost_hess_le
     fun s hs ↦ by
       have hsIcc : s ∈ Set.Icc (0 : Real) b := by
         simpa only [Set.uIcc_of_le hb0.le] using hs
-      apply chartRep_diff_at (I := I)
+      apply differentiableAt_chartRepAt_of_contMDiffAt_two (I := I)
       simpa only [alpha] using
         (hW.of_le (by norm_num)).contMDiffAt
           (hΩ.mem_nhds (hΩseg (by simpa only [b] using hsIcc)))

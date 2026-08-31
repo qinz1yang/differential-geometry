@@ -215,7 +215,7 @@ theorem lTail_lap_K
   have hPdiff (i : Fin (Module.finrank Real E)) (s : Real)
       (hs : s ∈ Icc a b) :
       DifferentiableAt Real (chartRepAt (I := I) beta (P i) s) s := by
-    apply chartRep_diff_at
+    apply differentiableAt_chartRepAt_of_contMDiffAt_two
     exact (((hPsm i s (hOmegaSeg ⟨ha0.le.trans hs.1,
       hs.2⟩)).contMDiffAt
         (hOmega.mem_nhds (hOmegaSeg ⟨ha0.le.trans hs.1,

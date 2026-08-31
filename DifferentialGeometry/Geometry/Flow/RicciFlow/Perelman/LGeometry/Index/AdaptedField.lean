@@ -175,7 +175,7 @@ private theorem movingCov_smooth
         (by
           change (↑(2 : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           exact WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
-    have hYdiff := chartRep_diff_at (I := I) hYsAt
+    have hYdiff := differentiableAt_chartRepAt_of_contMDiffAt_two (I := I) hYsAt
     have hinv := covDerivAlong_chart_foot_invariance
       (I := I) (n := (∞ : WithTop ℕ∞)) (by simp)
       (S.base.metric (tau s)) alpha Y s (alpha t) halpha hs hYdiff
@@ -557,7 +557,7 @@ private theorem exists_parFrame
       DifferentiableAt Real (chartRepAt (I := I) alpha (F i) s) s := by
     intro i s hs
     have hAt := (hFsmooth i s hs).contMDiffAt (isOpen_Ioo.mem_nhds hs)
-    exact (chartRep_diff_at (I := I) (hAt.of_le (by
+    exact (differentiableAt_chartRepAt_of_contMDiffAt_two (I := I) (hAt.of_le (by
       change (↑(2 : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       exact WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))))
   have hFpar : ∀ i, ∀ s ∈ Set.Ioo (-eps) (b + eps),
