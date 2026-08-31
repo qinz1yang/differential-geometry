@@ -263,7 +263,7 @@ private theorem lTraceInt_data
       (i j : Fin (Module.finrank Real E)) :
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
         if i = j then 1 else 0 := by
-    rw [lAdapted_inner_eq (I := I) S hS T alpha (P i) (P j) hs.2
+    rw [metric_inner_eq_of_isLAdapted (I := I) S hS T alpha (P i) (P j) hs.2
       (fun r hr ↦ ht r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ halpha r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ hP i r ⟨le_trans hs.1 hr.1, hr.2⟩)
@@ -492,7 +492,7 @@ private theorem lTracePos_data
       (i j : Fin (Module.finrank Real E)) :
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
         if i = j then 1 else 0 := by
-    rw [lAdapted_inner_eq (I := I) S hS T alpha (P i) (P j) hs.2
+    rw [metric_inner_eq_of_isLAdapted (I := I) S hS T alpha (P i) (P j) hs.2
       (fun r hr ↦ ht r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ halpha r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ hP i r ⟨le_trans hs.1 hr.1, hr.2⟩)

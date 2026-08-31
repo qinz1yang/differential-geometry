@@ -3815,8 +3815,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Ch
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocityC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.FirstVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.InnerProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Adapted
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Trace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.FiniteChartBallCover
@@ -3885,7 +3887,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Naturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.PhaseExistenceAtTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionContinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedField
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedFrame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.DomainContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.EndpointVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension

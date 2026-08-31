@@ -215,7 +215,7 @@ theorem redLength_lap_le
     (by simpa only [alpha] using ht)
     (by simpa only [alpha] using halpha)
     (by simpa only [alpha, b] using hP)
-    (by simpa only [alpha, b] using hDP) hONb
+    (by simpa only [alpha, b, IsLAdapted, IsLAdaptedAt] using hDP) hONb
     (by simpa only [alpha, b] using hIint)
     (by simpa only [alpha, b] using hRint)
   rw [show S.base.metric (T - tau) = g from rfl,

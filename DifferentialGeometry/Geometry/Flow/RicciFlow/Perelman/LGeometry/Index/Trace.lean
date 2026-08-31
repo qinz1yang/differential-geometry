@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Adapted
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ContractedBianchi
 
 set_option autoImplicit false
@@ -39,10 +39,7 @@ theorem lIndex_trace
       MDifferentiableAt (modelWithCornersSelf Real Real) I alpha s)
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       DifferentiableAt Real (chartRepAt (I := I) alpha (P i) s) s)
-    (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
-      covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha (P i) s =
-        (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (alpha s) (P i s))
+    (hDP : ∀ i, IsLAdapted S T alpha (P i) (Set.Icc (0 : Real) b))
     (hON : ∀ i j,
       (S.base.metric (T - b ^ 2)).inner (alpha b) (P i b) (P j b) =
         if i = j then 1 else 0)
@@ -67,7 +64,7 @@ theorem lIndex_trace
       (i j : Fin (Module.finrank Real E)) :
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
         if i = j then 1 else 0 := by
-    rw [lAdapted_inner_eq (I := I) S hS T alpha (P i) (P j) hs.2
+    rw [metric_inner_eq_of_isLAdapted (I := I) S hS T alpha (P i) (P j) hs.2
       (fun r hr ↦ ht r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ halpha r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ hP i r ⟨le_trans hs.1 hr.1, hr.2⟩)
@@ -95,7 +92,7 @@ theorem lIndex_trace
         (metricScalar_eq_scal (I := I) g x).symm
       _ = S.scalar (T - s ^ 2) (alpha s) := rfl
   have hidx (i : Fin (Module.finrank Real E)) :=
-    lIndex_adapted (I := I) S hS T alpha (P i) b hb ht halpha
+    lRegIndex_linear_cutoff_self_of_isLAdapted (I := I) S hS T alpha (P i) b hb ht halpha
       (hP i) (hDP i) (hIint i) (hRint i)
   rw [Finset.sum_congr rfl (fun i _ ↦ hidx i)]
   rw [Finset.sum_add_distrib]
@@ -154,10 +151,7 @@ theorem lIndex_trace_pos
       MDifferentiableAt (modelWithCornersSelf Real Real) I alpha s)
     (hP : ∀ i s, s ∈ Set.Icc a b →
       DifferentiableAt Real (chartRepAt (I := I) alpha (P i) s) s)
-    (hDP : ∀ i s, s ∈ Set.Icc a b →
-      covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha (P i) s =
-        (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (alpha s) (P i s))
+    (hDP : ∀ i, IsLAdapted S T alpha (P i) (Set.Icc a b))
     (hON : ∀ i j,
       (S.base.metric (T - b ^ 2)).inner (alpha b) (P i b) (P j b) =
         if i = j then 1 else 0)
@@ -185,7 +179,7 @@ theorem lIndex_trace_pos
       (i j : Fin (Module.finrank Real E)) :
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
         if i = j then 1 else 0 := by
-    rw [lAdapted_inner_eq (I := I) S hS T alpha (P i) (P j) hs.2
+    rw [metric_inner_eq_of_isLAdapted (I := I) S hS T alpha (P i) (P j) hs.2
       (fun r hr ↦ ht r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ halpha r ⟨le_trans hs.1 hr.1, hr.2⟩)
       (fun r hr ↦ hP i r ⟨le_trans hs.1 hr.1, hr.2⟩)
@@ -241,7 +235,7 @@ theorem lIndex_trace_pos
         exact (((hasDerivAt_id s).sub_const a).div_const (b - a)).differentiableAt
       have hderiv : deriv f s = 1 / (b - a) := by
         exact (((hasDerivAt_id s).sub_const a).div_const (b - a)).deriv
-      have hbase := lIndex_smul_pt (I := I) S T alpha (P i) f s hf
+      have hbase := lRegIndexIntegrand_smul_function_self_of_isLAdaptedAt (I := I) S T alpha (P i) f s hf
         (hP i s hs') (hDP i s hs')
       rw [hbase, hderiv]
       dsimp only [f, F, N, R]
@@ -250,7 +244,7 @@ theorem lIndex_trace_pos
       intro s hs
       have hs' : s ∈ Set.Icc a b := by
         simpa only [Set.uIcc_of_le hab.le] using hs
-      have hpair := lAdapted_inner_eq (I := I) S hS T alpha (P i) (P i) hs'.2
+      have hpair := metric_inner_eq_of_isLAdapted (I := I) S hS T alpha (P i) (P i) hs'.2
         (fun r hr ↦ ht r ⟨le_trans hs'.1 hr.1, hr.2⟩)
         (fun r hr ↦ halpha r ⟨le_trans hs'.1 hr.1, hr.2⟩)
         (fun r hr ↦ hP i r ⟨le_trans hs'.1 hr.1, hr.2⟩)

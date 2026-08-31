@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedField
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedFrame
 
 set_option autoImplicit false
 
@@ -323,7 +323,7 @@ theorem lRedJac_deriv_le0
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
   obtain ⟨P, Ω, hΩ, hseg, hPsm, hDPΩ, hON⟩ :=
-    exists_lRayAdapt (I := I) S hS T x hb hbdom
+    exists_lRayAdaptedFrame (I := I) S hS T x hb hbdom
   have hW (i : Fin (Module.finrank Real E)) :
       ContMDiffOn (modelWithCornersSelf Real Real) I.tangent (8 : Nat)
         (fun s : Real ↦
@@ -419,7 +419,8 @@ theorem lRedJac_deriv_le0
   · simpa only [alpha, b] using hW
   · simpa only [alpha, b] using hPdiff
   · intro i s hs
-    simpa only [alpha, b] using hDPΩ i s (hseg (by simpa only [b] using hs))
+    simpa only [alpha, b, IsLAdaptedAt] using
+      hDPΩ i s (hseg (by simpa only [b] using hs))
   · intro i j
     have hout := hON i j
     rw [hbsq] at hout

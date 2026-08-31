@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompleteManifoldMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedField
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedFrame
 
 set_option autoImplicit false
 
@@ -246,7 +246,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       _ = lExp S T x Z tau := by simp only [gamma, b, lExp]
       _ = y := hZend
   obtain ⟨P0, Omega0, hOmega0, hOmega0seg, hP0sm, hP0ode, hP0ON⟩ :=
-    exists_lRayAdapt (I := I) S hS T x hb hbdom
+    exists_lRayAdaptedFrame (I := I) S hS T x hb hbdom
   let beta : Real → M := fun s ↦ alpha (A0, s)
   let P : Fin (Module.finrank Real E) →
       ∀ s, TangentSpace I (beta s) := fun i s ↦ (P0 i s : E)

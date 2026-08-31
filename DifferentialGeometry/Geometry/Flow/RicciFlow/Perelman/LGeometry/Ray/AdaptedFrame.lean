@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Construction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
 
 set_option autoImplicit false
@@ -27,7 +27,7 @@ variable {D : RealTimeInterval}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_lRayAdapt
+theorem exists_lRayAdaptedFrame
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {b : Real}
@@ -40,11 +40,7 @@ theorem exists_lRayAdapt
         (fun s : Real ↦
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (lRegCurve S T x Z s) (P i s) : TangentBundle I M)) Ω) ∧
-      (∀ i s, s ∈ Ω →
-        covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-            (lRegCurve S T x Z) (P i) s =
-          (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-            (lRegCurve S T x Z s) (P i s)) ∧
+      (∀ i, IsLAdapted S T (lRegCurve S T x Z) (P i) Ω) ∧
       ∀ i j,
         (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
             (P i b) (P j b) = if i = j then 1 else 0 := by
@@ -75,7 +71,7 @@ theorem exists_lRayAdapt
   obtain ⟨basis, hbasis⟩ :=
     exists_gOrthonormalBasis (I := I) q (alpha b)
   have hex (i : Fin (Module.finrank Real E)) :=
-    exists_lAdapted S hS T alpha halpha ha hb hbd hreg (basis i)
+    exists_lAdaptedField S hS T alpha halpha ha hb hbd hreg (basis i)
   choose R Ωi hΩi hseg_i hsub_i hRsm hRb hRode using hex
   let Ω : Set Real := ⋂ i, Ωi i
   have hΩ : IsOpen Ω := isOpen_iInter_of_finite hΩi
@@ -109,10 +105,7 @@ theorem exists_lRayAdapt
     change TotalSpace.mk' E (gamma s) (P i s) =
       TotalSpace.mk' E (alpha s) (R i s)
     rw [hbase s hs]
-  have hPode : ∀ i s, s ∈ Ω →
-      covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma (P i) s =
-        (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (gamma s) (P i s) := by
+  have hPode : ∀ i, IsLAdapted S T gamma (P i) Ω := by
     intro i s hs
     have hfield : ∀ᶠ r in nhds s, (R i r : E) = (P i r : E) := by
       filter_upwards
