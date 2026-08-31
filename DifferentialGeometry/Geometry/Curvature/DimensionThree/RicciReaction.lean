@@ -31,7 +31,7 @@ noncomputable def ricciReactionDefectAt
         (curvatureRicciContractionAt (I := I) (M := M) g x) (Ric x)
 
 omit [I.Boundaryless] in
-private theorem metricRiemannFromRicci3DTraceDataAt
+theorem metricRiemannFromRicci3DTraceDataAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : OrthonormalBasisAt (I := I) g x basis) :
