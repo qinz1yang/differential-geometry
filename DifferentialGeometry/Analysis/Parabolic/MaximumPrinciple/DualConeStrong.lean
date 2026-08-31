@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualProperCone
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Strong
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotential
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
 
 set_option autoImplicit false
 

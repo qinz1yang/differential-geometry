@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotential
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry
 
 set_option autoImplicit false

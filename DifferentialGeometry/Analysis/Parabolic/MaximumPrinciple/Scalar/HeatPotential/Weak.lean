@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
 
 set_option autoImplicit false

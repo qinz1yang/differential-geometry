@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Strong
 
 set_option autoImplicit false
 

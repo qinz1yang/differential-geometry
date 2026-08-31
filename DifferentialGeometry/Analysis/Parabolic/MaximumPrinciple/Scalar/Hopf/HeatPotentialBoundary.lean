@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BoundaryHopf
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.ManifoldBoundary
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.Basic
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Strong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.TraceAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RmTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.EvolutionEquation

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Hopf
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.CompactAnnulus
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 
 set_option autoImplicit false

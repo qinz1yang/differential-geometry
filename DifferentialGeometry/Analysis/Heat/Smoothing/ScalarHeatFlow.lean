@@ -9,8 +9,8 @@ import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralSemigroup
 import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Comparison
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Comparison
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Strong
 import DifferentialGeometry.Analysis.Heat.Smoothing.MildSolution
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYauHarnack
 

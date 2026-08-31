@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Geometry.Operator.HessianTraceInequality
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
 import DifferentialGeometry.Analysis.Calculus.Extrema
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Geometry.Operator.MetricFamily
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula

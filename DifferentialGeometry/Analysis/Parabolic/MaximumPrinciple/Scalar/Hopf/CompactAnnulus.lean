@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Barrier
 import DifferentialGeometry.Geometry.Boundary.DefiningFunctionCurve
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 

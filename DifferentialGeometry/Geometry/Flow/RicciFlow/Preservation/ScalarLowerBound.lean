@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.TraceAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RmTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.EvolutionEquation
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Analysis.Normed.Group.Uniform
 import Mathlib.Topology.Order.Compact

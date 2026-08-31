@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 
 set_option autoImplicit false
 

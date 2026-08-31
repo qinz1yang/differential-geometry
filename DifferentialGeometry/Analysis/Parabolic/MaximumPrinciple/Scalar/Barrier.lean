@@ -1,6 +1,9 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LocalStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction
+import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
+import DifferentialGeometry.Geometry.Operator.LaplacianBridge
+import Mathlib.Analysis.InnerProductSpace.Calculus
 
 
 set_option autoImplicit false

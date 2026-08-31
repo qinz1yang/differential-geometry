@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Strong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equation
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotential
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
 import DifferentialGeometry.Geometry.Operator.NormGradSqTime
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ScalarWeyl
 open DifferentialGeometry.Tensor.RicciIdentity
