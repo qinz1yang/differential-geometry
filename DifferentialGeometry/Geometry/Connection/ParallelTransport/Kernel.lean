@@ -131,6 +131,39 @@ theorem contractionAnnihilator
 
 end IsParallelAlternatingSubmoduleFamily
 
+def IsParallelContinuousAlternatingSubmoduleFamily
+    (P : LinearIsometricTransport V)
+    (K : ∀ x, Submodule ℝ (V x [⋀^Fin 2]→L[ℝ] ℝ)) : Prop :=
+  ∀ x y,
+    Submodule.map
+      ((P.transport x y).toContinuousLinearEquiv.continuousAlternatingMapCongrLeft
+        (ι := Fin 2)).toLinearMap (K x) = K y
+
+namespace IsParallelContinuousAlternatingSubmoduleFamily
+
+variable {P : LinearIsometricTransport V}
+  {K : ∀ x, Submodule ℝ (V x [⋀^Fin 2]→L[ℝ] ℝ)}
+
+theorem contractionAnnihilator
+    (h : IsParallelContinuousAlternatingSubmoduleFamily V P K) :
+    IsParallelSubmoduleFamily V P
+      (fun x => ContinuousAlternatingMap.contractionAnnihilator (K x)) := by
+  intro x y
+  have hback :
+      Submodule.map
+          ((P.transport x y).symm.toContinuousLinearEquiv.continuousAlternatingMapCongrLeft
+            (ι := Fin 2)).toLinearMap (K y) =
+        K x := by
+    simpa [P.transport_symm V x y] using h y x
+  change Submodule.map (P.transport x y).toLinearMap
+      (ContinuousAlternatingMap.contractionAnnihilator (K x)) =
+    ContinuousAlternatingMap.contractionAnnihilator (K y)
+  rw [← hback]
+  exact ContinuousAlternatingMap.map_contractionAnnihilator_compContinuousLinearEquiv
+    (K y) (P.transport x y).toContinuousLinearEquiv
+
+end IsParallelContinuousAlternatingSubmoduleFamily
+
 structure UhlenbeckKernelTransfer (base : X)
     (fixedOperator : V base →L[ℝ] V base)
     (physicalOperator : ∀ x, V x →L[ℝ] V x)

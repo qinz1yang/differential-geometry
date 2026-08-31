@@ -362,4 +362,42 @@ theorem finrank_contractionAnnihilator_eq_one [FiniteDimensional ℝ E]
   exact (Submodule.equivMapOfInjective
     (toAlternatingMapLinear (R := ℝ)) toAlternatingMap_injective K).finrank_eq.symm
 
+theorem map_contractionAnnihilator_compContinuousLinearEquiv
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Submodule ℝ (E [⋀^Fin 2]→L[ℝ] ℝ)) (e : F ≃L[ℝ] E) :
+    Submodule.map e.toLinearMap
+        (contractionAnnihilator
+          (Submodule.map
+            (e.symm.continuousAlternatingMapCongrLeft (ι := Fin 2)).toLinearMap K)) =
+      contractionAnnihilator K := by
+  let e₂ : (E [⋀^Fin 2]→L[ℝ] ℝ) ≃L[ℝ] (F [⋀^Fin 2]→L[ℝ] ℝ) :=
+    e.symm.continuousAlternatingMapCongrLeft (ι := Fin 2)
+  apply le_antisymm
+  · rintro y ⟨x, hx, rfl⟩
+    rw [mem_contractionAnnihilator_iff]
+    intro ω hω
+    have hpull : e₂ ω ∈ Submodule.map e₂.toLinearMap K := ⟨ω, hω, rfl⟩
+    have hx0 := (mem_contractionAnnihilator_iff.mp hx) (e₂ ω) hpull
+    apply ContinuousAlternatingMap.ext
+    intro z
+    have hz := congrArg
+      (fun α : F [⋀^Fin 1]→L[ℝ] ℝ => α (fun i : Fin 1 => e.symm (z i))) hx0
+    have htail : (⇑e ∘ fun i : Fin 1 => e.symm (z i)) = z := by
+      funext i
+      simp
+    simpa [e₂, ContinuousAlternatingMap.curryLeft_compContinuousLinearMap,
+      htail] using hz
+  · intro y hy
+    refine ⟨e.symm y, ?_, by simp⟩
+    apply mem_contractionAnnihilator_iff.mpr
+    intro η hη
+    rcases hη with ⟨ω, hω, rfl⟩
+    apply ContinuousAlternatingMap.ext
+    intro z
+    have hy0 := (mem_contractionAnnihilator_iff.mp hy) ω hω
+    have hz := congrArg
+      (fun α : E [⋀^Fin 1]→L[ℝ] ℝ => α (fun i : Fin 1 => e (z i))) hy0
+    simpa [e₂, ContinuousAlternatingMap.curryLeft_compContinuousLinearMap,
+      Function.comp_def] using hz
+
 end ContinuousAlternatingMap
