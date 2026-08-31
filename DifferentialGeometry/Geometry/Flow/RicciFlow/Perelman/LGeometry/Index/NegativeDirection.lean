@@ -94,69 +94,6 @@ theorem exists_lSplit_neg
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
-  [I.Boundaryless] [SigmaCompactSpace M] in
-theorem exists_lTest
-    (gamma : Real → M)
-    (hgamma : ContMDiff 𝓘(Real, Real) I ∞ gamma)
-    (c b : Real) (P : TangentSpace I (gamma c)) :
-    ∃ W : Real → E,
-      ContMDiff 𝓘(Real, Real) I.tangent ∞
-        (fun s : Real ↦
-          (TotalSpace.mk' E (E := fun y : M ↦ TangentSpace I y)
-            (gamma s) (W s) : TangentBundle I M)) ∧
-      W 0 = 0 ∧ W b = 0 ∧ W c = (c * (b - c)) • P := by
-  obtain ⟨X, hX, hXc⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.exists_contMDiff_vectorField_eq
-      (I := I) (gamma c) P
-  let chi : Real → Real := fun s ↦ s * (b - s)
-  let W : Real → E := fun s ↦ chi s • X (gamma s)
-  have hchi : ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ chi := by
-    exact contMDiff_id.mul (contMDiff_const.sub contMDiff_id)
-  have hXalong : ContMDiff 𝓘(Real, Real) I.tangent ∞
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := fun y : M ↦ TangentSpace I y)
-          (gamma s) (X (gamma s)) : TangentBundle I M)) := by
-    exact hX.comp hgamma
-  have hW : ContMDiff 𝓘(Real, Real) I.tangent ∞
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := fun y : M ↦ TangentSpace I y)
-          (gamma s) (W s) : TangentBundle I M)) := by
-    intro s0
-    rw [Bundle.contMDiffAt_totalSpace]
-    refine ⟨hgamma s0, ?_⟩
-    have hXfib := ((Bundle.contMDiffAt_totalSpace (f := fun s : Real ↦
-      (TotalSpace.mk' E (E := fun y : M ↦ TangentSpace I y)
-        (gamma s) (X (gamma s)) : TangentBundle I M))).1 (hXalong s0)).2
-    have hsmul := (hchi s0).smul hXfib
-    refine hsmul.congr_of_eventuallyEq ?_
-    have hbase : ∀ᶠ s in 𝓝 s0,
-        gamma s ∈ (trivializationAt E (TangentSpace I) (gamma s0)).baseSet := by
-      have hmem : gamma s0 ∈
-          (trivializationAt E (TangentSpace I) (gamma s0)).baseSet :=
-        FiberBundle.mem_baseSet_trivializationAt' (gamma s0)
-      exact (hgamma s0).continuousAt.preimage_mem_nhds
-        ((trivializationAt E (TangentSpace I) (gamma s0)).open_baseSet.mem_nhds hmem)
-    filter_upwards [hbase] with s hs
-    simp only [W, TotalSpace.mk']
-    change _ = chi s •
-      (((trivializationAt E (TangentSpace I) (gamma s0))
-        (TotalSpace.mk' E (gamma s) (X (gamma s)) : TangentBundle I M)).2)
-    rw [(trivializationAt E (TangentSpace I) (gamma s0)).apply_eq_prod_continuousLinearEquivAt
-          Real (gamma s) hs,
-      (trivializationAt E (TangentSpace I) (gamma s0)).apply_eq_prod_continuousLinearEquivAt
-          Real (gamma s) hs]
-    exact map_smul _ _ _
-  refine ⟨W, hW, ?_, ?_, ?_⟩
-  · simp only [W, chi, zero_mul, zero_smul]
-    rfl
-  · simp only [W, chi, sub_self, mul_zero, zero_smul]
-    rfl
-  · simp only [W, chi, hXc]
-    rfl
-
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lRegJacobi_d_ne
@@ -411,7 +348,8 @@ theorem lIndex_neg_conj
       exact lRegData_congr S T s (hgammaGerm s hsIcc)
         (hgeoRaw.2.2 s hs)
   obtain ⟨W, hWsmooth, hW0, hWb, hWc⟩ :=
-    exists_lTest (I := I) gamma hgammaSmooth c b P
+    DifferentialGeometry.Geometry.Riemannian.exists_contMDiff_vectorFieldAlong_zero_endpoints
+      (I := I) gamma hgammaSmooth 0 c b P
   have hreg0c : ∀ s ∈ Set.uIcc (0 : Real) c,
       T - s ^ 2 ∈ D.regular := by
     intro s hs
@@ -532,10 +470,13 @@ theorem lIndex_neg_conj
       simpa only [J, c] using hJc
     rw [hJ0, hJc']
     simp
+  have hWc' : W c = (c * (b - c)) • P := by
+    rw [sub_zero] at hWc
+    with_unfolding_all exact hWc
   have hYW : 0 < lRegIndex S T alpha J W 0 c :=
     lIndex_cross_pos (I := I) S hS T alpha J W c b hc0 hcb
       hreg0c hAlphaMdiff hA hJac hWdiff hJWInt hW0
-      (by with_unfolding_all exact hWc) hPne
+      (by with_unfolding_all exact hWc') hPne
   have hYYeq : lRegIndex S T alpha J J 0 c =
       lRegIndex S T gamma Jg Jg 0 c := by
     apply lRegIndex_congr_of_eventuallyEq (I := I) S T J J Jg Jg

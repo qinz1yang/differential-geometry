@@ -255,7 +255,8 @@ private theorem tailEnd_injective
   let P : TangentSpace I (beta s0) :=
     covDerivAlong (I := I) (S.base.metric (T - s0 ^ 2)) beta Y s0
   obtain ⟨W, hWsmooth, hW0, hWb, hWc⟩ :=
-    exists_lTest (I := I) gammaG hGSmooth s0 b P
+    DifferentialGeometry.Geometry.Riemannian.exists_contMDiff_vectorFieldAlong_zero_endpoints
+      (I := I) gammaG hGSmooth 0 s0 b P
   have hreg0s : ∀ s ∈ uIcc (0 : Real) s0,
       T - s ^ 2 ∈ D.regular := by
     intro s hs
@@ -348,13 +349,13 @@ private theorem tailEnd_injective
       hregs0b hbetaMdiff hA hJacTail hYdiff hYYInt
     rw [hgreen, hYs0, hYb]
     simp
+  have hWc' : W s0 = (s0 * (b - s0)) • P := by
+    rw [sub_zero] at hWc
+    with_unfolding_all exact hWc
   have hYW : lRegIndex S T beta Y W s0 b < 0 :=
     lIndex_cross_neg (I := I) S hS T beta Y W s0 b hs00 hs0b
       hregs0b hbetaMdiff hA hJacTail hWdiff hYWInt hWb
-      (by
-        change (W s0 : E) = (s0 * (b - s0)) • (P : E)
-        change W s0 = (s0 * (b - s0)) • (P : E) at hWc
-        exact hWc)
+      (by with_unfolding_all exact hWc')
       (by simpa only [P] using hDYne)
   have hBetaUGerm : ∀ s ∈ uIoo s0 b, beta =ᶠ[nhds s] gammaG := by
     intro s hs
