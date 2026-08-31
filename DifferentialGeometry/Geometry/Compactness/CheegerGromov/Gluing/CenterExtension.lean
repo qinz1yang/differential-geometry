@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Averaging
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.InverseDistance
 open DifferentialGeometry.Geometry.Curvature

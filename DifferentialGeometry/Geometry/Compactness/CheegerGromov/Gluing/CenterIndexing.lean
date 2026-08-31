@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
 
-
-
 set_option autoImplicit false
 
 noncomputable section

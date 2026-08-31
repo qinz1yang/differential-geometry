@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomJoin
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricTransitionLimit
 
 
 open DifferentialGeometry.Geometry.Curvature

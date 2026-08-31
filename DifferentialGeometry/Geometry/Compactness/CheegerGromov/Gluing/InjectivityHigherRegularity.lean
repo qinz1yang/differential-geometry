@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuff
 
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TailMappingHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControlHigherRegularity
 
 set_option autoImplicit false
 

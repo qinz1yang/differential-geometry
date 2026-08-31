@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.NormalBump
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights
 open DifferentialGeometry.Geometry.Curvature

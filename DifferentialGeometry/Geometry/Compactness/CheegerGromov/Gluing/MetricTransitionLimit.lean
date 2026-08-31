@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConv
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.TransitionOverlap

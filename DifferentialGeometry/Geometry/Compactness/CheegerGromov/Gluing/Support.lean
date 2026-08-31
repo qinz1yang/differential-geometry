@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.HatReadout
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseConstruction
 open DifferentialGeometry.Geometry.Curvature
 

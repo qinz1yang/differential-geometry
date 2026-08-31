@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformDat
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConv
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomDiagonal
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairTail
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeightSubsequence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairwiseTransition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceCover
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

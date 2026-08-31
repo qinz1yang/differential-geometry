@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomPackage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeightLimit
 
 
 open DifferentialGeometry.Geometry.Curvature

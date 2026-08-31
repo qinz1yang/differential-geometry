@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InvVelConv
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InverseVelocityConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
 open DifferentialGeometry.Geometry.Curvature

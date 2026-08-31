@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.InverseVelocityConvergence
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Fill
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit

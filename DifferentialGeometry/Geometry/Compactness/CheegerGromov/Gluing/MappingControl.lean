@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Comparison
 
-
-
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

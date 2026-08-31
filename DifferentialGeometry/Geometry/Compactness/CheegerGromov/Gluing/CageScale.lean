@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.LiveCenterScale
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterIndexing
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition

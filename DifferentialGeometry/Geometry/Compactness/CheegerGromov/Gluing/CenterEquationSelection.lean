@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateStrictConvexity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 open DifferentialGeometry.Geometry.Curvature

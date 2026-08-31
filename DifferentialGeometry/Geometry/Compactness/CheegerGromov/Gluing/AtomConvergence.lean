@@ -1,9 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Atoms
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.LiveCenterScale
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterIndexing
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

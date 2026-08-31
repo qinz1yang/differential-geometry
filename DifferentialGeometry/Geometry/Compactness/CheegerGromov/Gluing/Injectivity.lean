@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuffer
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TailMapping
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

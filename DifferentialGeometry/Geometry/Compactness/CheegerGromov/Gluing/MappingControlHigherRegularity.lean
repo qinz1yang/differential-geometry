@@ -1,7 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TailMapping
-
-
-
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl
 
 set_option autoImplicit false
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Scal
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictConvexity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartReadout
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartCenterSolution
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 
 set_option autoImplicit false

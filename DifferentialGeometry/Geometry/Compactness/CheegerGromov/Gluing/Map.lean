@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConvergence
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

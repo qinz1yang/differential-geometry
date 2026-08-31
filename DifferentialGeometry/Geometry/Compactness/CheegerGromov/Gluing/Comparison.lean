@@ -2,11 +2,11 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Map
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Fill
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Center
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterRootConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateStrictConvexity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.HatReadout
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Support
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricExtension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ChartSolution
