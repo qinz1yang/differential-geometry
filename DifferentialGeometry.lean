@@ -796,7 +796,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.Heat
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.HeatPotential
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.CompactAnnulus
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.LocalBarrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.MetricFamily
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.Parallel.Basic
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Cone.Parallel.DualStrong
