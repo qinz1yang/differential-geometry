@@ -185,7 +185,7 @@ theorem lMinVec_end_bdd
     have hpos := ((mem_lMinDomain S T x (W n) (b ^ 2)).1 (hmin n)).1
     have hdata := (mem_lExpPosDom S T x (W n) (b ^ 2)).1 hpos
     simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb0] using hdata.2.2
-  apply lRegInit_bound (I := I) S hS T x W b A' hb0 hslab hdom
+  apply isBounded_range_initialVector_of_lRegAction_le_fixed_parameter (I := I) S hS T x W b A' hb0 hslab hdom
   intro n
   simpa only [act] using hact n
 

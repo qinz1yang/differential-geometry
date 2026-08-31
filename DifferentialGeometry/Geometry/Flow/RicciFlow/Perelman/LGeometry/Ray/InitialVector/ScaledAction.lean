@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.InitialVector.VariableEndpoint
+import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionIntegrability
 
 set_option autoImplicit false
 
@@ -25,71 +27,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
-omit [InnerProductSpace Real E] [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem rayInts_shrink
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) (T : Real)
-    (x : M) (Z : TangentSpace I x) {B : Real}
-    (hB : 0 < B) (hdom : B ∈ lRegDomain S T x Z)
-    (hreg : ∀ s ∈ Set.Icc (0 : Real) B, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegSpeedSq S T (lRegCurve S T x Z)) volume 0 B ∧
-      IntervalIntegrable (lRegLagrangian S T (lRegCurve S T x Z)) volume 0 B := by
-  let alpha : Real → M := lRegCurve S T x Z
-  have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
-    simpa only [alpha, Set.uIcc_of_le hB.le] using
-      lRegCurve_isReg (I := I) S hS T x Z hB hdom
-  have hkinCont : ContinuousOn (lRegSpeedSq S T alpha)
-      (Set.Icc (0 : Real) B) := by
-    intro s hs
-    exact (hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
-  have hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume 0 B := by
-    have hkinCont' : ContinuousOn (lRegSpeedSq S T alpha)
-        (Set.uIcc (0 : Real) B) := by
-      simpa only [Set.uIcc_of_le hB.le] using hkinCont
-    exact hkinCont'.intervalIntegrable
-  let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  have halphaCont : ContinuousOn alpha (Set.Icc (0 : Real) B) :=
-    (lRegCurve_c1On (I := I) S hS T x Z hdom).continuousOn
-  have hpair : ContinuousOn (fun s : Real ↦ (T - s ^ 2, alpha s))
-      (Set.Icc (0 : Real) B) :=
-    (continuous_const.sub (continuous_id.pow 2)).continuousOn.prodMk halphaCont
-  have hmaps : Set.MapsTo (fun s : Real ↦ (T - s ^ 2, alpha s))
-      (Set.Icc (0 : Real) B) (D.carrier ×ˢ (Set.univ : Set M)) := by
-    intro s hs
-    exact ⟨D.regular_subset (hreg s hs), Set.mem_univ _⟩
-  have hscalar : ContinuousOn
-      (fun s : Real ↦ S.scalar (T - s ^ 2) (alpha s))
-      (Set.Icc (0 : Real) B) := by
-    simpa only [Function.comp_def] using
-      hSc.scalar_continuousOn.comp hpair hmaps
-  have hpotCont : ContinuousOn
-      (fun s : Real ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s))
-      (Set.uIcc (0 : Real) B) := by
-    have hcoef : Continuous (fun s : Real ↦ 2 * s ^ 2) :=
-      continuous_const.mul (continuous_id.pow 2)
-    have hpotCont' := hcoef.continuousOn.mul hscalar
-    have heq : ((fun s : Real ↦ 2 * s ^ 2) *
-        fun s : Real ↦ S.scalar (T - s ^ 2) (alpha s)) =
-        fun s : Real ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s) := by
-      funext s
-      rfl
-    rw [heq] at hpotCont'
-    simpa only [Set.uIcc_of_le hB.le] using hpotCont'
-  have hpot : IntervalIntegrable
-      (fun s : Real ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s))
-      volume 0 B := hpotCont.intervalIntegrable
-  refine ⟨?_, ?_⟩
-  · simpa only [alpha] using hkin
-  · change IntervalIntegrable (fun s : Real ↦
-      (1 / 2 : Real) * lRegSpeedSq S T alpha s +
-        2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)) volume 0 B
-    exact (hkin.const_mul (1 / 2 : Real)).add hpot
-
 omit [InnerProductSpace Real E] in
-theorem lRegInit_shrink
+theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z : Nat → TangentSpace I x) (B : Nat → Real)
@@ -138,9 +77,10 @@ theorem lRegInit_shrink
         sub_le_self T (sq_nonneg s)⟩
     have hreg : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular :=
       fun s hs ↦ hslab (hback s hs)
-    obtain ⟨hkinInt, hlagInt⟩ := rayInts_shrink (I := I) S hS T x
-      (Z n) hb (hdom n) (fun s hs ↦ hreg s (by
-        simpa only [Set.uIcc_of_le hb.le] using hs))
+    have hkinInt := intervalIntegrable_lRegSpeedSq_lRegCurve
+      (I := I) S hS T x (Z n) hb (hdom n)
+    have hlagInt := intervalIntegrable_lRegLagrangian_lRegCurve
+      (I := I) S hS T x (Z n) hb (hdom n)
     have hkin :
         (∫ s in 0..b, lRegSpeedSq S T alpha s) ≤
           2 * (A + |Cp|) * b := by

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.EndpointVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ConjugatePoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Uniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MinimizerDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
@@ -1269,7 +1270,8 @@ theorem lCost_nondiff_two
   rcases (mem_lExpPosDom S T x W tau).1 hWdom with
     ⟨_hWtau, _hWtau0, hWb⟩
   have hvelNe : vZ ≠ vW := by
-    apply lRay_end_vel_ne S hS T x hZb hWb hZW
+    apply lRegCurve_endpoint_velocity_ne_of_initialVector_ne_of_endpoint_eq
+      S hS T x hZb hWb hZW
     simpa only [vZ, vW, y, b, lExp] using hpos
   have hVne : V ≠ 0 := sub_ne_zero.mpr hvelNe
   have hvalNe :

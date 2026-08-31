@@ -173,7 +173,7 @@ theorem eventually_mem_lInjDomain
       _ ≤ lRegAction S T (lRegCurve S T x Z) 0 (Bt n) := hcostLe'
       _ ≤ A0 * Bt n := hZact (n + N)
   have hWbounded : Bornology.IsBounded (Set.range W) :=
-    lRegInit_shrink (I := I) S hS T x W Bt R A0 hBtPos hBtR hslab hWdom hWact
+    isBounded_range_initialVector_of_lRegAction_le_mul_parameter (I := I) S hS T x W Bt R A0 hBtPos hBtR hslab hWdom hWact
   obtain ⟨L, hWL⟩ :=
     (Metric.isBounded_iff_subset_closedBall (0 : TangentSpace I x)).1 hWbounded
   let C : Real := max L (dist Z (0 : TangentSpace I x))

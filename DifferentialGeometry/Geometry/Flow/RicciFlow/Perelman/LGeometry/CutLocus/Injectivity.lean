@@ -158,7 +158,7 @@ theorem lInj_isOpen
       _ ≤ aV n := hcostLe'
       _ ≤ A := hA (Set.mem_range_self n)
   have hWbounded : Bornology.IsBounded (Set.range W) :=
-    lRegInit_var (I := I) S hS T x W (fun _ : Nat ↦ b) b b A hb
+    isBounded_range_initialVector_of_lRegAction_le (I := I) S hS T x W (fun _ : Nat ↦ b) b b A hb
       (fun _ ↦ le_rfl) (fun _ ↦ le_rfl) hslab hWdom hWact
   let : ProperSpace (TangentSpace I x) := FiniteDimensional.proper Real _
   obtain ⟨W0, _hW0cl, phi, hphi, hWlim⟩ :=
