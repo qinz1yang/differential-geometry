@@ -4397,6 +4397,33 @@ private noncomputable def hamiltonDivPComponentOfSolution
   fun i j => ∑ k : Fin n,
     hamiltonNablaPComponentOfSolution (I := I) S t x basis k k i j
 
+private theorem hamiltonDivPComponentOfSolution_eq_hamiltonDivPAt_orthonormal
+    [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric t).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b : Fin n) :
+    hamiltonDivPComponentOfSolution (I := I) S t x basis a b =
+      hamiltonDivPAt (I := I) (S.base.metric t) x
+        (vec2 (I := I) (basis a) (basis b)) := by
+  have hinv := metricInverseInBasis_of_orthonormal
+    (I := I) (S.base.metric t) basis horth
+  rw [hamiltonDivPAt_apply (I := I) (S.base.metric t) basis
+      (fun i j => if i = j then (1 : Real) else 0) hinv
+      (basis a) (basis b)]
+  unfold hamiltonDivPComponentOfSolution hamiltonNablaPComponentOfSolution
+  simp_rw [hamiltonNablaPField_apply]
+  simp only [Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul,
+    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [metricNabla2Ric_last_two_symm (I := I) (M := M)]
+
 private theorem hamilton_nabla_P_components_skew_of_solution
     [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -6766,6 +6793,196 @@ private theorem hamiltonNablaP_nablaHeat_components_of_solution
       rw [SolutionFamily.rm04,
         metricNablaRm04Field_eq_nablaRm04Field (I := I) S (t : Real)]
 
+private theorem hamiltonDivP_evolution_components_of_solution
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b : Fin n) :
+    hamiltonDivPHeatComponent
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPTimeComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis) a b =
+      hamiltonDivPEvolutionComponent
+        (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+        (fun i j => hamiltonDivPAt (I := I) (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j))) a b := by
+  have hcore := hamilton_bianchi_trace_components_of_solution
+    (I := I) S (t : Real) x basis horth
+  exact hamiltonDivP_evolution
+    (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNabla2RmComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+    (fun i j => hamiltonDivPAt (I := I) (S.base.metric (t : Real)) x
+      (vec2 (I := I) (basis i) (basis j)))
+    (hamiltonNablaPTimeComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamilton_differentiated_P_identity_components_of_solution
+      (I := I) S t x basis horth)
+    (hamilton_gradient_P_identity_components_of_solution
+      (I := I) S t x basis horth)
+    (hamilton_contracted_curvature_derivative_components_of_solution
+      (I := I) S (t : Real) x basis horth)
+    (hamilton_rm_components_symm_of_solution (I := I) S t x basis)
+    (hamilton_ricci_components_symm_of_solution
+      (I := I) S (t : Real) x basis horth)
+    (hamilton_nabla_ricci_components_symm_of_solution
+      (I := I) S (t : Real) x basis)
+    (hamilton_curvature_ricci_trace_components_of_solution
+      (I := I) S t x basis horth)
+    (fun d i j k l => hcore.2.1.2.1
+      (basis d) (basis j) (basis i) (basis k) (basis l))
+    (hamilton_curvature_second_derivative_commutator_components_of_solution
+      (I := I) S t x basis horth)
+    (hamilton_differentiated_curvature_divergence_components_of_solution
+      (I := I) S (t : Real) x basis horth)
+    (hamilton_nabla_P_components_skew_of_solution
+      (I := I) S (t : Real) x basis)
+    (hamiltonDivPComponentOfSolution_eq_hamiltonDivPAt_orthonormal
+      (I := I) S (t : Real) x basis horth)
+    (hamiltonNablaP_nablaHeat_components_of_solution
+      (I := I) S t x basis horth) a b
+
+theorem hamiltonDivP_evolution_of_ricci_flow
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric (t : Real)).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b : Fin n) :
+    hamiltonDivPHeatComponent
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField
+          (I := I) (S.base.metric (t : Real)) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l => hamiltonNablaPTimeDerivativeField
+          (I := I) (S.base.metric (t : Real)) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l m r => hamiltonNabla3PField
+          (I := I) (S.base.metric (t : Real)) x
+          (Fin.cons (basis i)
+            (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis r))))
+        a b =
+      hamiltonDivPEvolutionComponent
+        (fun i j k l => S.base.rm04 (t : Real) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => nablaRm04Field (I := I) S (t : Real) x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField
+          (I := I) (S.base.metric (t : Real)) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => hamiltonDivPAt (I := I) (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j))) a b := by
+  change hamiltonDivPHeatComponent
+      (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaPTimeComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNabla3PComponentOfSolution (I := I) S (t : Real) x basis) a b =
+    hamiltonDivPEvolutionComponent
+      (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis)
+      (hamiltonNablaPComponentOfSolution (I := I) S (t : Real) x basis)
+      (fun i j => hamiltonDivPAt (I := I) (S.base.metric (t : Real)) x
+        (vec2 (I := I) (basis i) (basis j))) a b
+  exact hamiltonDivP_evolution_components_of_solution
+    (I := I) S t x basis horth a b
+
+theorem hamiltonCurvatureRicci_evolution_of_ricci_flow
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (a b : Fin n) :
+    hamiltonCurvatureRicciHeatComponent
+        (fun i j k l => S.base.rm04 (t : Real) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => nablaRm04Field (I := I) S (t : Real) x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k))) a b =
+      hamiltonCurvatureRicciEvolutionComponent
+        (fun i j k l => S.base.rm04 (t : Real) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => nablaRm04Field (I := I) S (t : Real) x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric (t : Real)) x
+          (vec3 (I := I) (basis i) (basis j) (basis k))) a b := by
+  exact hamiltonCurvatureRicci_evolution
+    (hamiltonRmComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonRicciComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNablaRmComponentOfSolution (I := I) S (t : Real) x basis)
+    (hamiltonNablaRicciComponentOfSolution (I := I) S (t : Real) x basis) a b
+
+theorem hamiltonShiftedRicci_evolution_of_ricci_flow
+    [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (clock : HarnackClock) (x : M)
+    (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (a b : Fin n) :
+    hamiltonShiftedRicciHeatComponent clock
+        (fun i j k l => S.base.rm04 clock.time x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j))) a b =
+      hamiltonShiftedRicciEvolutionComponent clock
+        (fun i j k l => S.base.rm04 clock.time x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j => hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j))) a b := by
+  exact hamiltonShiftedRicci_evolution clock
+    (hamiltonRmComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonRicciComponentOfSolution (I := I) S clock.time x basis)
+    (fun i j => hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+      (vec2 (I := I) (basis i) (basis j))) a b
+
 theorem hamiltonP_evolution_covariantDerivative_of_ricci_flow
     [CompleteSpace E] [T2Space M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -6824,6 +7041,137 @@ theorem hamiltonP_evolution_covariantDerivative_of_ricci_flow
   exact hamiltonNablaP_nablaHeat_components_of_solution
     (I := I) S t x basis horth q a b c
 
+
+private theorem hamiltonM_evolution_components_of_solution
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric clock.time).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b : Fin n) :
+    hamiltonMHeatComponent clock
+        (hamiltonRmComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonRicciComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNablaRmComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNablaPTimeComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNabla3PComponentOfSolution (I := I) S clock.time x basis) a b =
+      hamiltonMEvolutionReactionComponent clock
+        (hamiltonRmComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonRicciComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNablaRicciComponentOfSolution (I := I) S clock.time x basis)
+        (hamiltonNablaPComponentOfSolution (I := I) S clock.time x basis)
+        (fun i j => hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j))) a b := by
+  have hcore := hamilton_bianchi_trace_components_of_solution
+    (I := I) S clock.time x basis horth
+  exact hamiltonM_evolution clock
+    (hamiltonRmComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonRicciComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonNablaRmComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonNablaRicciComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonNabla2RmComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonNablaPComponentOfSolution (I := I) S clock.time x basis)
+    (fun i j => hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+      (vec2 (I := I) (basis i) (basis j)))
+    (hamiltonNablaPTimeComponentOfSolution (I := I) S clock.time x basis)
+    (hamiltonNabla3PComponentOfSolution (I := I) S clock.time x basis)
+    (hamilton_differentiated_P_identity_components_of_solution
+      (I := I) S ⟨clock.time, ht⟩ x basis horth)
+    (hamilton_gradient_P_identity_components_of_solution
+      (I := I) S ⟨clock.time, ht⟩ x basis horth)
+    (hamilton_contracted_curvature_derivative_components_of_solution
+      (I := I) S clock.time x basis horth)
+    (hamilton_rm_components_symm_of_solution
+      (I := I) S ⟨clock.time, ht⟩ x basis)
+    (hamilton_ricci_components_symm_of_solution
+      (I := I) S clock.time x basis horth)
+    (hamilton_nabla_ricci_components_symm_of_solution
+      (I := I) S clock.time x basis)
+    (hamilton_curvature_ricci_trace_components_of_solution
+      (I := I) S ⟨clock.time, ht⟩ x basis horth)
+    (fun d i j k l => hcore.2.1.2.1
+      (basis d) (basis j) (basis i) (basis k) (basis l))
+    (hamilton_curvature_second_derivative_commutator_components_of_solution
+      (I := I) S ⟨clock.time, ht⟩ x basis horth)
+    (hamilton_differentiated_curvature_divergence_components_of_solution
+      (I := I) S clock.time x basis horth)
+    (hamilton_nabla_P_components_skew_of_solution
+      (I := I) S clock.time x basis)
+    (hamiltonDivPComponentOfSolution_eq_hamiltonDivPAt_orthonormal
+      (I := I) S clock.time x basis horth)
+    (hamiltonNablaP_nablaHeat_components_of_solution
+      (I := I) S ⟨clock.time, ht⟩ x basis horth) a b
+
+theorem hamiltonM_evolution_of_ricci_flow
+    [CompleteSpace E] [T2Space M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {n : Nat}
+    (S : SolutionOn (I := I) (M := M) D)
+    (clock : HarnackClock) (ht : clock.time ∈ D.regular)
+    (x : M) (basis : Module.Basis (Fin n) Real (TangentSpace I x))
+    (horth : forall i j,
+      (S.base.metric clock.time).inner x (basis i) (basis j) =
+        if i = j then (1 : Real) else 0)
+    (a b : Fin n) :
+    hamiltonMHeatComponent clock
+        (fun i j k l => S.base.rm04 clock.time x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k l m => nablaRm04Field (I := I) S clock.time x
+          (vec5 (I := I) (basis i) (basis j) (basis k) (basis l) (basis m)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric clock.time) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField
+          (I := I) (S.base.metric clock.time) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l => hamiltonNablaPTimeDerivativeField
+          (I := I) (S.base.metric clock.time) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j k l m r => hamiltonNabla3PField
+          (I := I) (S.base.metric clock.time) x
+          (Fin.cons (basis i)
+            (vec5 (I := I) (basis j) (basis k) (basis l) (basis m) (basis r))))
+        a b =
+      hamiltonMEvolutionReactionComponent clock
+        (fun i j k l => S.base.rm04 clock.time x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => metricRicci (I := I) (M := M)
+          (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j)))
+        (fun i j k => metricNablaRic (I := I) (M := M)
+          (S.base.metric clock.time) x
+          (vec3 (I := I) (basis i) (basis j) (basis k)))
+        (fun i j k l => hamiltonNablaPField
+          (I := I) (S.base.metric clock.time) x
+          (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)))
+        (fun i j => hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+          (vec2 (I := I) (basis i) (basis j))) a b := by
+  change hamiltonMHeatComponent clock
+      (hamiltonRmComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonRicciComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNablaRmComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNablaRicciComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNablaPComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNablaPTimeComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNabla3PComponentOfSolution (I := I) S clock.time x basis) a b =
+    hamiltonMEvolutionReactionComponent clock
+      (hamiltonRmComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonRicciComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNablaRicciComponentOfSolution (I := I) S clock.time x basis)
+      (hamiltonNablaPComponentOfSolution (I := I) S clock.time x basis)
+      (fun i j => hamiltonDivPAt (I := I) (S.base.metric clock.time) x
+        (vec2 (I := I) (basis i) (basis j))) a b
+  exact hamiltonM_evolution_components_of_solution
+    (I := I) S clock ht x basis horth a b
 
 theorem hamiltonMComponent_eq_hamiltonMAt_orthonormal
     [T2Space M]
