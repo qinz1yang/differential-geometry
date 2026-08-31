@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.ChartInvariance
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Geometry.Connection.DivergenceCovariantTrace
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 
@@ -51,6 +52,19 @@ theorem divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint
   rw [divergence_g_def]
   exact localDivergenceWithin_eq_localDivergence_of_isInteriorPoint
     (I := I) g x X (mem_chart_source H x) hx_int
+
+theorem divergence_g_with_boundary_eq_leviCivita_divergence_of_isInteriorPoint
+    [T2Space M]
+    (g : SmoothRiemannianMetric I M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {x : M} (hx_int : x ∈ I.interior M) :
+    divergenceGWithBoundary (I := I) g X x =
+      Geometry.Operator.divergence (I := I)
+        (Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) X x := by
+  rw [divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint
+    (I := I) g X hx_int]
+  exact Geometry.Connection.divergence_g_eq_leviCivita_divergence_of_isInteriorPoint
+    (I := I) g X hx_int
 
 omit [Module.Finite ℝ E] in
 private lemma isOpen_interior_M : IsOpen (I.interior M) :=

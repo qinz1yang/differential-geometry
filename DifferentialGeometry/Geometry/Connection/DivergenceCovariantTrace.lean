@@ -185,7 +185,7 @@ private lemma trivToE_chartBasisVecFiber
     rfl
   rw [hcoe, trivToE_trivFromE (I := I) α hb]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma chartCoord_leviCivita_chartBasis
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -238,8 +238,8 @@ lemma chartCoord_leviCivita_chartBasis
             ContinuousLinearMap.fderiv]]
     change (fderiv ℝ ((coordProjE (E := E) k : E → ℝ) ∘ F) y₀) ((chartModelBasis E) m) =
         partialDeriv (E := E) m (chartCoeffOnE (I := I) α Z k) y₀
-    have htgt_nhd : (extChartAt I α).target ∈ 𝓝 y₀ :=
-      (isOpen_extChartAt_target (I := I) α).mem_nhds (interior_subset hb_int)
+    have htgt_nhd : interior (extChartAt I α).target ∈ 𝓝 y₀ :=
+      isOpen_interior.mem_nhds hb_int
     have hev : ((coordProjE (E := E) k : E → ℝ) ∘ F) =ᶠ[𝓝 y₀]
         chartCoeffOnE (I := I) α Z k := by
       filter_upwards [htgt_nhd] with z hz
@@ -249,7 +249,7 @@ lemma chartCoord_leviCivita_chartBasis
       have hz_base : (extChartAt I α).symm z ∈
           (trivializationAt E (TangentSpace I) α).baseSet := by
         have hsource : (extChartAt I α).symm z ∈ (extChartAt I α).source :=
-          (extChartAt I α).map_target hz
+          (extChartAt I α).map_target (interior_subset hz)
         rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
         rw [trivializationAt_baseSet_eq_chartAt_source]
         exact hsource
@@ -337,7 +337,7 @@ private lemma tangent_eq_coordSum
           rw [map_smul]
           rfl
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inner_leviCivita_chartBasis_eq
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -433,7 +433,7 @@ lemma frameTrace_eq_metricTrace
       exact chartFrameNormGlobalSmoothCoordMatrix_orthonormality
         (I := I) (M := M) g α hb_pou hb m n]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma metricTrace_eq_coord_covariant_divergence
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -606,6 +606,102 @@ lemma localDivergence_eq_coord_covariant_divergence
   · refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [partialDeriv_chartDensityOnE_eq_sum_chartChristoffel_diag (I := I) g α i hy₀_int]
     ring
+
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] in
+omit [NeZero (Module.finrank ℝ E)] in
+private lemma linearMapTrace_eq_chart_sum
+    (α : M) {b : M}
+    (hb : b ∈ (trivializationAt E (TangentSpace I : M → Type _) α).baseSet)
+    (F : TangentSpace I b →L[ℝ] TangentSpace I b) :
+    LinearMap.trace ℝ (TangentSpace I b) F.toLinearMap =
+      ∑ i : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).repr
+          ((trivializationAt E (TangentSpace I : M → Type _) α).continuousLinearMapAt ℝ b
+            (F (chartBasisVecFiber (I := I) α i b)))) i := by
+  classical
+  set e := trivializationAt E (TangentSpace I : M → Type _) α with he
+  set basisB := chartBasisFamily (I := I) α hb with hbasisB_def
+  rw [LinearMap.trace_eq_matrix_trace ℝ basisB F.toLinearMap]
+  unfold Matrix.trace
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  simp only [Matrix.diag_apply]
+  rw [LinearMap.toMatrix_apply]
+  rw [show basisB i = chartBasisVecFiber (I := I) α i b from
+    chartBasisFamily_apply (I := I) α hb i]
+  change (basisB.repr (F (chartBasisVecFiber (I := I) α i b))) i =
+      ((chartModelBasis E).repr
+        (e.continuousLinearMapAt ℝ b (F (chartBasisVecFiber (I := I) α i b)))) i
+  rw [hbasisB_def]
+  unfold chartBasisFamily
+  rw [Module.Basis.map_repr]
+  simp only [LinearEquiv.trans_apply]
+  congr 2
+  change (e.continuousLinearEquivAt ℝ b hb : TangentSpace I b → E)
+      (F (chartBasisVecFiber (I := I) α i b)) =
+      (e.continuousLinearMapAt ℝ b : TangentSpace I b → E)
+        (F (chartBasisVecFiber (I := I) α i b))
+  rw [Trivialization.coe_continuousLinearEquivAt_eq (R := ℝ) e hb]
+
+omit [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem divergence_g_eq_leviCivita_divergence_of_isInteriorPoint
+    (g : SmoothRiemannianMetric I M)
+    (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {x : M} (hx : x ∈ I.interior M) :
+    divergenceG (I := I) g Z x =
+      divergence (I := I) (leviCivitaConnectionOfMetric (I := I) g) Z x := by
+  classical
+  have hxgood : x ∈ chartLeviCivitaGoodSet (I := I) x := by
+    refine mem_chartLeviCivitaGoodSet_iff.mpr ⟨mem_extChartAt_source x,
+      mem_baseSet_trivializationAt E (TangentSpace I) x, ?_⟩
+    exact I.isInteriorPoint_iff.mp hx
+  have hxbase : x ∈ (trivializationAt E (TangentSpace I : M → Type _) x).baseSet :=
+    chartLeviCivitaGoodSet_mem_baseSet (I := I) hxgood
+  rw [divergence_g_def]
+  rw [localDivergence_eq_coord_covariant_divergence (I := I) g x Z hxgood]
+  rw [divergence]
+  rw [← LeviCivita_eq_leviCivitaConnectionOfMetric]
+  rw [linearMapTrace_eq_chart_sum (I := I) x hxbase]
+  have hdiag : ∀ i : Fin (Module.finrank ℝ E),
+      ((chartModelBasis E).repr
+        ((trivializationAt E (TangentSpace I : M → Type _) x).continuousLinearMapAt ℝ x
+          ((LeviCivita (I := I) g) (fun y => Z y) x
+            (chartBasisVecFiber (I := I) x i x)))) i =
+        partialDeriv (E := E) i (chartCoeffOnE (I := I) x Z i) (extChartAt I x x) +
+          ∑ j : Fin (Module.finrank ℝ E),
+            chartChristoffel (I := I) g x i j i (extChartAt I x x) *
+              chartCoeffOnE (I := I) x Z j (extChartAt I x x) := by
+    intro i
+    exact chartCoord_leviCivita_chartBasis (I := I) g x Z i i hxgood
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+      ((chartModelBasis E).repr
+        ((trivializationAt E (TangentSpace I : M → Type _) x).continuousLinearMapAt ℝ x
+          ((LeviCivita (I := I) g) (fun y => Z y) x
+            (chartBasisVecFiber (I := I) x i x)))) i) =
+      ∑ i : Fin (Module.finrank ℝ E),
+        (partialDeriv (E := E) i (chartCoeffOnE (I := I) x Z i) (extChartAt I x x) +
+          ∑ j : Fin (Module.finrank ℝ E),
+            chartChristoffel (I := I) g x i j i (extChartAt I x x) *
+              chartCoeffOnE (I := I) x Z j (extChartAt I x x)) from
+    Finset.sum_congr rfl (fun i _ => hdiag i)]
+  rw [Finset.sum_add_distrib]
+  congr 1
+  rw [show (∑ i : Fin (Module.finrank ℝ E),
+          chartCoeffOnE (I := I) x Z i (extChartAt I x x) *
+            ∑ k : Fin (Module.finrank ℝ E),
+              chartChristoffel (I := I) g x i k k (extChartAt I x x)) =
+        ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
+          chartChristoffel (I := I) g x i k k (extChartAt I x x) *
+            chartCoeffOnE (I := I) x Z i (extChartAt I x x) from by
+      refine Finset.sum_congr rfl (fun i _ => ?_)
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl (fun k _ => ?_)
+      ring]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  rw [chartChristoffel_symm (I := I) g x k i i]
 
 theorem voss_weyl_divergence_eq_leviCivita_frameTrace
     (g : SmoothRiemannianMetric I M) (α : M)
