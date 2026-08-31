@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchHessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

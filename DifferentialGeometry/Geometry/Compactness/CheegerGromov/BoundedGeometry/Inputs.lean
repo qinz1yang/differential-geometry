@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.InjectivityRadius
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 
 set_option autoImplicit false

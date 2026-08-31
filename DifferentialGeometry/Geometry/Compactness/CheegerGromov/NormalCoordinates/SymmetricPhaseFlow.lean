@@ -1,7 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalPhaseRealization
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseFlowRealization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

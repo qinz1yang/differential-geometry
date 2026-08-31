@@ -1,8 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalMetricConv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricConvergence
 
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchConv
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchCage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
 
 set_option autoImplicit false
 

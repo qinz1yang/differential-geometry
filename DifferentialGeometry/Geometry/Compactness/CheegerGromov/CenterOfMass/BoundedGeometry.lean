@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalPhase
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchHessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
 import DifferentialGeometry.Geometry.Exponential.NormalBallGeodesic
 
 open DifferentialGeometry.Geometry.Curvature

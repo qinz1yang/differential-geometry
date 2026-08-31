@@ -1,10 +1,8 @@
 import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
-
-
 import DifferentialGeometry.Geometry.Exponential.NormalBallHome
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalPhase
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalMetricExtend
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalDiagAt
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricExtension
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseAt
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
 open DifferentialGeometry.Geometry.Curvature
 

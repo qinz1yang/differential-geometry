@@ -1,8 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalDiagBranch
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalLimitPhase
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.LimitPhaseFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

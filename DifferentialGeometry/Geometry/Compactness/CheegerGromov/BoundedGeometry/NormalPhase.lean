@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalData
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalPhaseEndpoint
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseEndpoint
 
 set_option autoImplicit false
 

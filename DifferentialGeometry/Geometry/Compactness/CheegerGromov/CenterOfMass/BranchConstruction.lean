@@ -1,8 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalDiagBranch
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
 
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchScale
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchHessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.BranchScale
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CageScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartReadout
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CmDomain

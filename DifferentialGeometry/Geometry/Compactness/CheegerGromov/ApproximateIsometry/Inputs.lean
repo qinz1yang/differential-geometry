@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Exponential.NormalBallChart
 import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricKoszul
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.Inputs
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

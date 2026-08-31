@@ -1,6 +1,4 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
-
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringOrdered
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity

@@ -1,6 +1,4 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
-
-
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricKoszul
 import DifferentialGeometry.Geometry.Exponential.NormalBallMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs

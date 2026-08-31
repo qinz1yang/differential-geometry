@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapC
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.HatReadout
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalLiveConv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseConstruction
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

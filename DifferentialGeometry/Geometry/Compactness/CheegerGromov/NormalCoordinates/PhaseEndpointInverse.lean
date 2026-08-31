@@ -1,7 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.PhaseEndpointInverse
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalPhaseSmallness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseSmallness
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

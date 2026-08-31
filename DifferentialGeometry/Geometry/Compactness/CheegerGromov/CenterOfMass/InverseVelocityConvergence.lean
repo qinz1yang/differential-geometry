@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchHessian
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinateHessian
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

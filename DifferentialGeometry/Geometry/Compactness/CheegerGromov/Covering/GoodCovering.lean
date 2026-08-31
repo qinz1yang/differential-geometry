@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.Inputs
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric

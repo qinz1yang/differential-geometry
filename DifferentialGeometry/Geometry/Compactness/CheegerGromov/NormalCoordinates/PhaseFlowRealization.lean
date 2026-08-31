@@ -1,8 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
-
-
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalPhase
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

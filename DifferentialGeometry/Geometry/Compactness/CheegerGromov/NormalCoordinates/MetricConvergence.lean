@@ -1,7 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalBranchCage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BranchConstruction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Comparison.Volume.Packing
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Inputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.Inputs
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

@@ -1,8 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
-
-
 import DifferentialGeometry.Geometry.Exponential.NormalConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalPhaseEndpoint
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.PhaseEndpoint
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
