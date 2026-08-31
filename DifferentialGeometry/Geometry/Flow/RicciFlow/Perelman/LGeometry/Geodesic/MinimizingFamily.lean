@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SmoothCurveGerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.JacobiCrossTerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.Variation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Family
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.CurvatureBoundedMinimizer
 
@@ -34,7 +34,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem tailEnd_injective
+private theorem endpoint_mfderiv_injective_of_minimizing
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {gamma : Real → M} {x : M} {Z : TangentSpace I x}
@@ -462,7 +462,8 @@ theorem exists_lRegGeodesicFamily_with_injective_endpoint_mfderiv
     simpa only [gamma, b] using
       lMinVec_min_rm (I := I) S hS K T x hmin hreg hRm
         delta hdelta hd0 hdb
-  have hinj := tailEnd_injective (I := I) S hS T hs00 hs0b hgeo hminGamma
+  have hinj := endpoint_mfderiv_injective_of_minimizing
+    (I := I) S hS T hs00 hs0b hgeo hminGamma
     hVopen hA0V hKopen hKconn h0K hs0K hbK halpha hcurves hcenter
   exact ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, hs0K, hbK,
     alpha, halpha, hcurves, hinj⟩

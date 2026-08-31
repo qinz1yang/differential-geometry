@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LaplacianBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.TraceIntegral
 
 set_option autoImplicit false
@@ -122,7 +122,7 @@ theorem redLength_lap_K
       field_simp [hb.ne']
       ring
 
-private noncomputable def tailFieldCast
+private noncomputable def tangentFieldCast
      {alpha beta : Real → M} (Y : ∀ s, TangentSpace I (alpha s)) :
      ∀ s, TangentSpace I (beta s) := by
   exact fun s ↦ (Y s : E)
@@ -132,7 +132,7 @@ variable [SigmaCompactSpace M]
 omit [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lTail_lap_K
+theorem laplacian_lRegAction_endpointBranch_le_hamilton
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)
     (x : M) (Z : TangentSpace I x)
@@ -197,7 +197,7 @@ theorem lTail_lap_K
   let c : Real → Real := fun s ↦ (s - a) / (b - a)
   let Pc : Fin (Module.finrank Real E) →
       ∀ s, TangentSpace I (gamma s) := fun i ↦
-    tailFieldCast (I := I) (beta := gamma) (P i)
+    tangentFieldCast (I := I) (beta := gamma) (P i)
   have hb0 : 0 < b := ha0.trans hab
   have hsegK : Icc (0 : Real) b ⊆ K :=
     hKconn.ordConnected.out h0K hbK
@@ -401,7 +401,8 @@ theorem lTail_lap_K
     exact (e.linear Real hr).map_smul (c r) (P i r)
   have hgeo : IsLRegCurveOn S T gamma (uIcc (0 : Real) b) x Z := by
     simpa only [gamma] using lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
-  have hlap := lTail_lap_le (I := I) S hS T a b ha0 hab hgeo
+  have hlap := laplacian_lRegAction_endpointBranch_le_index_sum
+    (I := I) S hS T a b ha0 hab hgeo
     (by simpa only [gamma] using hmin) hVopen hA0V hKopen hKconn h0K hbK
     hstart halpha hreg hEuler (by simpa only [beta, gamma] using hcenter)
     hinj P hOmega hOmegaSeg (by simpa only [beta, c] using hW) hON

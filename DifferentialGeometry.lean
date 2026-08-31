@@ -3822,7 +3822,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedFi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.InnerProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Trace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.Variation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Family
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.FiniteChartBallCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.RangeCompactness
@@ -3931,10 +3931,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.SetLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussianTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.SourceGaussian
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.ActionBranch
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.EndpointInjectivity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.HessianBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.LaplacianBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Hessian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Laplacian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.MinimizingFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.TraceDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.TraceIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.WeakBarrier

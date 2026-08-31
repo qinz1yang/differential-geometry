@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.ParametricInverseFunctionTheorem
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.EndpointInjectivity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.MinimizingFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 import DifferentialGeometry.Geometry.Comparison.Variation.BoundedCurve
@@ -31,7 +31,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [FiniteDimensional Real E] [I.Boundaryless] [T2Space M] in
-private theorem tailVel_smooth
+private theorem contMDiffOn_lVelocity_family
     {alpha : E × Real → M} {V : Set E} {K : Set Real}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
     (halpha : ContMDiffOn
@@ -101,7 +101,7 @@ private theorem tailVel_smooth
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
-private theorem tailLag_smooth
+private theorem contDiffOn_lRegLagrangian_family
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : E × Real → M} {V : Set E} {K : Set Real}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
@@ -135,7 +135,7 @@ private theorem tailLag_smooth
           TangentSpace I y →L[Real] Real)
         (alpha p) ((S.base.metric (T - p.2 ^ 2)).inner (alpha p))) q at hc
     exact hc
-  have hvel := (tailVel_smooth hVopen hKopen halpha q hq).contMDiffAt
+  have hvel := (contMDiffOn_lVelocity_family hVopen hKopen halpha q hq).contMDiffAt
     (hopen.mem_nhds hq)
   have htotal := ContMDiffAt.clm_bundle_apply₂
     (E₁ := TangentSpace I) (E₂ := TangentSpace I)
@@ -165,7 +165,7 @@ private theorem tailLag_smooth
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem tailAct_bdry
+private theorem hasDerivAt_lRegAction_family_eq_boundary
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real)
@@ -211,7 +211,7 @@ private theorem tailAct_bdry
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
-theorem lTailAct_smooth
+theorem exists_contDiffOn_lRegAction_family
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -243,7 +243,7 @@ theorem lTailAct_smooth
   let G : E → Real → Real := fun A u ↦
     (b - a) * lRegLagrangian S T (fun s ↦ alpha (phi A, s))
       (rho (a + (b - a) * u))
-  have hlag := tailLag_smooth S hS T hVopen hKopen halpha hreg
+  have hlag := contDiffOn_lRegLagrangian_family S hS T hVopen hKopen halpha hreg
   have hG : ContDiffOn Real ∞ (fun q : E × Real ↦ G q.1 q.2) univ := by
     intro q _
     have hp := hphi.contDiffAt.comp q contDiffAt_fst
@@ -306,7 +306,7 @@ theorem lTailAct_smooth
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lTailAct_joint
+theorem hasFDerivAt_lRegAction_family_endpoint
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -335,7 +335,7 @@ theorem lTailAct_joint
         (lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b) •
           ContinuousLinearMap.snd Real E Real) (A0, b) := by
   obtain ⟨W, hWopen, hA0W, hWV, hactW⟩ :=
-    lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_contDiffOn_lRegAction_family S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
   obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
     DifferentialGeometry.exists_smooth_time_clamp_range_subset
@@ -348,7 +348,7 @@ theorem lTailAct_joint
   let G : (E × Real) → Real → Real := fun p u ↦
     (p.2 - a) * lRegLagrangian S T (fun s ↦ alpha (p.1, s))
       (rho (a + (p.2 - a) * u))
-  have hlag := tailLag_smooth S hS T hVopen hKopen halpha hreg
+  have hlag := contDiffOn_lRegLagrangian_family S hS T hVopen hKopen halpha hreg
   have h1inf : (↑(1 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat) :=
     WithTop.coe_le_coe.mpr le_top
   have hG : ContDiffOn Real 1
@@ -609,7 +609,8 @@ theorem lTailAct_joint
           (mfderiv 𝓘(Real, Real) 𝓘(Real, E) zeta 0 (1 : Real)) =
         mfderiv 𝓘(Real, E) I endMap A0 Y
       rw [hzetaVel, hzeta0]
-    have hbdry := tailAct_bdry S hS T f hf a b hfReg hfEuler hfix
+    have hbdry := hasDerivAt_lRegAction_family_eq_boundary
+      S hS T f hf a b hfReg hfEuler hfix
     have hfb : f 0 b = alpha (A0, b) := by
       change alpha (zeta 0, rho b) = alpha (A0, b)
       rw [hrhob, hzeta0]
@@ -721,7 +722,7 @@ theorem lTailAct_joint
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lTailJoint_mfd
+theorem hasMFDerivAt_lRegAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -783,7 +784,8 @@ theorem lTailJoint_mfd
       𝓘(Real, Real)
       (fun p : E × Real ↦
         lRegAction S T (fun s ↦ alpha (p.1, s)) a p.2) (A0, b) _
-    exact (lTailAct_joint S hS T a b hab hVopen hA0V hKopen hKconn
+    exact (hasFDerivAt_lRegAction_family_endpoint
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK hstart halpha hreg hEuler).hasMFDerivAt
   have hq0 : hloc.localInverse q0 = (A0, b) := by
     simpa only [hloc, q0, F] using
@@ -894,7 +896,7 @@ theorem lTailJoint_mfd
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lTailBranch_smooth
+theorem exists_contMDiffOn_lRegAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -914,7 +916,8 @@ theorem lTailBranch_smooth
             ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y, s))
           a b := by
   obtain ⟨W, hWopen, hA0W, hWV, hact⟩ :=
-    lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_contDiffOn_lRegAction_family
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
@@ -966,7 +969,7 @@ variable {MM : Type uM} [PseudoMetricSpace MM] [ChartedSpace HM MM]
 variable {DM : RealTimeInterval}
 
 omit [NeZero (Module.finrank ℝ EM)] [SigmaCompactSpace MM] in
-theorem exists_lCost_support
+theorem exists_contMDiffOn_lCost_upper_support
     (S : SolutionOn (I := IM) (M := MM) DM)
     (hS : IsSolutionOn (I := IM) S) (K T : Real) (x : MM)
     {Z : TangentSpace IM x} {tau s0 : Real}
@@ -1042,7 +1045,8 @@ theorem exists_lCost_support
     intro q hq
     exact ((hcurves q.1 hq.1).2.2 q.2 hq.2).1
   obtain ⟨U0, hU0open, hzU0, F0, hF0smooth, hF0eq⟩ :=
-    lTailBranch_smooth S hS T s0 b hs0b' hVopen hA0V hKopen
+    exists_contMDiffOn_lRegAction_endpointBranch
+      S hS T s0 b hs0b' hVopen hA0V hKopen
       hKconn hs0K hbK halpha hregFamily hinj
   rw [hcenterEnd] at hzU0
   let U : Set MM := U0 ∩

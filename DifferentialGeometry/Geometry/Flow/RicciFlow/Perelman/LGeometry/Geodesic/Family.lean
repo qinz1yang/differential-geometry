@@ -185,7 +185,7 @@ theorem exists_lRegGeodesicFamily
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] in
-private theorem tailTimeVel_smooth
+private theorem contDiffAt_time_fderiv_family
     {F : E × Real → E} {A0 : E} {s0 : Real}
     (hF : ContDiffAt Real ∞ F (A0, s0)) :
     ContDiffAt Real ∞
@@ -220,7 +220,7 @@ private theorem tailTimeVel_smooth
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M] in
-private theorem tailSeed_smooth
+private theorem contDiffAt_lRegGeodesicFamily_seed
     {alpha : E × Real → M} {A0 : E} {s0 : Real} (x0 : M)
     (hsrc : alpha (A0, s0) ∈ (chartAt H x0).source)
     (halpha : ContMDiffAt
@@ -250,7 +250,7 @@ private theorem tailSeed_smooth
   have hvel : ContDiffAt Real ∞
       (fun A : E ↦
         fderiv Real (fun s : Real ↦ F (A, s)) s0 (1 : Real)) A0 :=
-    tailTimeVel_smooth hF
+    contDiffAt_time_fderiv_family hF
   simpa only [F] using hpos.prodMk hvel
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -328,7 +328,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
         (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (A, t) :=
       (halpha (A, t) ⟨hA.1, htJ⟩).contMDiffAt
         (hprodOpen.mem_nhds ⟨hA.1, htJ⟩)
-    exact (tailSeed_smooth (I := I) x0 hA.2 halphaAt).contDiffWithinAt
+    exact (contDiffAt_lRegGeodesicFamily_seed (I := I) x0 hA.2 halphaAt).contDiffWithinAt
   let W : Set E := V0 ∩ seed ⁻¹' U
   have hWopen : IsOpen W :=
     hseed.continuousOn.isOpen_inter_preimage hV0open hUopen

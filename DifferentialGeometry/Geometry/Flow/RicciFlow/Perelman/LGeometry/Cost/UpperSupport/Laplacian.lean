@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.HessianBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
 
 set_option autoImplicit false
@@ -28,7 +28,7 @@ variable {D : RealTimeInterval}
 
 omit [FiniteDimensional Real E] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-private theorem tail_basis_of_on
+private theorem exists_basis_eq_of_metric_orthonormal
     (g : SmoothRiemannianMetric I M) (x : M)
     (e : Fin (Module.finrank Real E) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0) :
@@ -68,7 +68,7 @@ private theorem tail_basis_of_on
 omit [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lTail_lap_le
+theorem laplacian_lRegAction_endpointBranch_le_index_sum
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)
     {gamma : Real → M} {x : M} {Z : TangentSpace I x}
@@ -137,7 +137,7 @@ theorem lTail_lap_le
     hKconn.ordConnected.out h0K hbK
   have haK : a ∈ K := hsegK ⟨ha0.le, hab.le⟩
   obtain ⟨basis, hbasis⟩ :=
-    tail_basis_of_on (I := I) g y (fun i ↦ P i b) (by
+    exists_basis_eq_of_metric_orthonormal (I := I) g y (fun i ↦ P i b) (by
       simpa only [g, y, beta] using hON)
   have hONbasis : ∀ i j,
       g.inner y (basis i) (basis j) = if i = j then 1 else 0 := by
@@ -145,7 +145,8 @@ theorem lTail_lap_le
     rw [hbasis i, hbasis j]
     simpa only [g, y, beta] using hON i j
   obtain ⟨U, hUopen, hyU, F, hFsmooth, hFeq⟩ :=
-    lTailBranch_smooth S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_contMDiffOn_lRegAction_endpointBranch
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg hinj
   have hsmooth : ContMDiffOn I (modelWithCornersSelf Real Real) ∞
       branch U := by
@@ -183,7 +184,8 @@ theorem lTail_lap_le
       change ((b - a) / (b - a)) • P i b = P i b
       rw [div_self (sub_ne_zero.mpr hab.ne'), one_smul]
     simpa only [g, branch, y, beta, hloc, W] using
-      lTail_hess_le S hS T a b ha0 hab hgeo hmin hVopen hA0V hKopen
+      hessFun_lRegAction_endpointBranch_le_index
+        S hS T a b ha0 hab hgeo hmin hVopen hA0V hKopen
         hKconn h0K hbK hstart halpha hreg hEuler hcenter hinj
         (P i b) (W i) hOmega hOmegaSeg (by
           simpa only [W, beta] using hW i) hWa hWb

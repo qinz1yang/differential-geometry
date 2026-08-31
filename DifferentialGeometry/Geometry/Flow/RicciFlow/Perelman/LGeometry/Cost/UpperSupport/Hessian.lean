@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Tail.ActionBranch
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
@@ -38,7 +38,7 @@ variable {D : RealTimeInterval}
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-private theorem lTail_mfd_at
+private theorem hasMFDerivAt_lRegAction_endpointBranch_at
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -84,7 +84,8 @@ private theorem lTail_mfd_at
   have hstartA : ∀ B ∈ V, alpha (B, a) = alpha (A, a) := by
     intro B hBV
     exact (hstart B hBV).trans (hstart A hyV).symm
-  have hjoint := lTailAct_joint S hS T a b hab hVopen hyV hKopen
+  have hjoint := hasFDerivAt_lRegAction_family_endpoint
+    S hS T a b hab hVopen hyV hKopen
     hKconn haK hbK hstartA halpha hreg (hEuler A hyV)
   have hins : HasFDerivAt (fun B : E ↦ (B, b))
       ((1 : E →L[Real] E).prod (0 : E →L[Real] Real)) A :=
@@ -167,7 +168,7 @@ private theorem lTail_mfd_at
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-private theorem lTail_grad_on
+private theorem exists_gradient_lRegAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -199,7 +200,8 @@ private theorem lTail_grad_on
           (fun s : Real ↦ alpha (hloc.localInverse y, s)) b := by
   dsimp only
   obtain ⟨W, hWopen, hA0W, hWV, hact⟩ :=
-    lTailAct_smooth S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_contDiffOn_lRegAction_family
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun y ↦
@@ -230,7 +232,8 @@ private theorem lTail_grad_on
     (fun _ hy ↦ hWV hy.2), ?_⟩
   intro y hy
   apply gradientFun_eq_of_flat
-  have hmfd := lTail_mfd_at S hS T a b hab hVopen hA0V hKopen
+  have hmfd := hasMFDerivAt_lRegAction_endpointBranch_at
+    S hS T a b hab hVopen hA0V hKopen
     hKconn haK hbK hstart halpha hreg hEuler hinj y hy.1 (hWV hy.2)
   ext Y
   have hd := congrArg (fun L : TangentSpace I y →L[Real]
@@ -259,7 +262,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-private theorem lTailEnd_cov
+private theorem covDerivAlong_gradient_lRegAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -301,7 +304,8 @@ private theorem lTailEnd_cov
   let J : (s : Real) → TangentSpace I (alpha (A0, s)) := fun s ↦
     mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, s)) A0 W
   obtain ⟨U, hUopen, hyU, hsmooth, hsource, hparam, hgrad⟩ :=
-    lTail_grad_on S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_gradient_lRegAction_endpointBranch
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK hstart halpha hreg hEuler hinj
   obtain ⟨eta, heta, hetaU, heta0, hetaVel⟩ :=
     exists_smooth_curve y Y U hUopen (by simpa only [y] using hyU)
@@ -489,7 +493,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem lTailBranch_hess
+theorem hessFun_lRegAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -523,11 +527,13 @@ theorem lTailBranch_hess
           (fun s ↦ alpha (A0, s)) J b) Z := by
   dsimp only
   obtain ⟨U, hUopen, hyU, hsmooth, _hsource, _hparam, _hgrad⟩ :=
-    lTail_grad_on S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_gradient_lRegAction_endpointBranch
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK hstart halpha hreg hEuler hinj
   have hhess := hessFun_eq_cov_local (I := I)
     (S.base.metric (T - b ^ 2)) hUopen hsmooth hyU Y Z
-  have hcov := lTailEnd_cov S hS T a b hab hVopen hA0V hKopen
+  have hcov := covDerivAlong_gradient_lRegAction_endpointBranch
+    S hS T a b hab hVopen hA0V hKopen
     hKconn haK hbK hstart halpha hreg hEuler hinj Y
   simp only [gradient_eq_gradFun] at hcov
   exact hhess.trans (congrArg
@@ -537,7 +543,7 @@ theorem lTailBranch_hess
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lTail_hess_le
+theorem hessFun_lRegAction_endpointBranch_le_index
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)
     {gamma : Real → M} {x : M} {Z : TangentSpace I x}
@@ -965,7 +971,8 @@ theorem lTail_hess_le
     covDerivAlong_congr_of_eventuallyEq (I := I) g beta hJmEq
   have hbranch : hessFun (I := I) g branch y Y Y =
       g.inner y (covDerivAlong (I := I) g beta J b) Y := by
-    have hh := lTailBranch_hess S hS T a b hab hVopen hA0V hKopen
+    have hh := hessFun_lRegAction_endpointBranch
+      S hS T a b hab hVopen hA0V hKopen
       hKconn haK hbK hstart halpha hreg
       (fun A hA s hs ↦ hEuler A hA s
         (hsegK ⟨ha0.le.trans hs.1, hs.2⟩)) hinj Y Y

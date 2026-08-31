@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.CompleteManifoldMinimizer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.HamiltonBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.AdaptedFrame
 
@@ -477,7 +478,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [hjoint0, hheadTail, hfull]
     rfl
   obtain ⟨Ufix, hUfixOpen, hyUfix, Ffix, hFfixSmooth, hFfixEq⟩ :=
-    lTailBranch_smooth S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_contMDiffOn_lRegAction_endpointBranch
+      S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hregFamily hinj
   have hyUfixY : y ∈ Ufix := by
     rw [← hcenterB]
@@ -525,7 +527,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
   let action : Real := lRegAction S T gamma 0 b
   let d : Real := (lag - (S.base.metric (T - b ^ 2)).inner
       (alpha (A0, b)) vel vel) / (4 * b ^ 2) - action / (4 * b ^ 3)
-  have hjointM := lTailJoint_mfd S hS T a b hab hVopen hA0V hKopen
+  have hjointM := hasMFDerivAt_lRegAction_endpointBranch
+    S hS T a b hab hVopen hA0V hKopen
     hKconn haK hbK hstart halpha hregFamily
     (fun s hs ↦ hEulerFamily A0 hA0V s (hsegK ⟨ha0.le.trans hs.1, hs.2⟩)) hinj
   let ctime : Real := lag - (S.base.metric (T - b ^ 2)).inner
@@ -629,7 +632,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [hnumAt]
     field_simp [hb.ne']
     ring
-  have hlapRaw := lTail_lap_K (I := I) S hS T a b ha0 hab x Z hbdom
+  have hlapRaw := laplacian_lRegAction_endpointBranch_le_hamilton
+    (I := I) S hS T a b ha0 hab x Z hbdom
     (lMinVec_min_rm (I := I) S hS K T x hZmin hregTau hRmTau)
     hVopen hA0V hKopen hKconn h0K hbK hstart halpha hregFamily
     hEulerFamily hcenter hinj P hOmega hOmegaSeg
