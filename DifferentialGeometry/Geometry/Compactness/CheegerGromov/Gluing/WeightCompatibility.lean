@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BumpWeights
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.NormalBump
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights

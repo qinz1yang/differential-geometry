@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
+import DifferentialGeometry.Analysis.Calculus.MapConvergenceDiagonal
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
 open DifferentialGeometry.Geometry.Curvature
 
