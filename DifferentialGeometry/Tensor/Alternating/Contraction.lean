@@ -164,4 +164,44 @@ theorem finrank_ker_curryLeft_eq_one [FiniteDimensional ℝ E] (hE : Module.finr
   rw [hE] at hsum
   omega
 
+theorem map_ker_curryLeft_compLinearEquiv
+    {F : Type*} [AddCommGroup F] [Module ℝ F]
+    (ω : E [⋀^Fin 2]→ₗ[ℝ] ℝ) (e : F ≃ₗ[ℝ] E) :
+    Submodule.map e.toLinearMap (ω.compLinearMap e.toLinearMap).curryLeft.ker =
+      ω.curryLeft.ker := by
+  apply le_antisymm
+  · rintro y ⟨x, hx, rfl⟩
+    have hx0 : (ω.compLinearMap e.toLinearMap).curryLeft x = 0 := hx
+    apply LinearMap.mem_ker.mpr
+    apply AlternatingMap.ext
+    intro z
+    have hz := congrArg (fun α : F [⋀^Fin 1]→ₗ[ℝ] ℝ =>
+      α (fun i : Fin 1 => e.symm (z i))) hx0
+    simpa [AlternatingMap.curryLeft_compLinearMap] using hz
+  · intro y hy
+    refine ⟨e.symm y, ?_, ?_⟩
+    · have hy0 : ω.curryLeft y = 0 := hy
+      apply LinearMap.mem_ker.mpr
+      apply AlternatingMap.ext
+      intro z
+      have hzy := congrArg (fun α : E [⋀^Fin 1]→ₗ[ℝ] ℝ =>
+        α (fun i : Fin 1 => e (z i))) hy0
+      simpa [AlternatingMap.curryLeft_compLinearMap] using hzy
+    · simp
+
+theorem ker_curryLeft_smul_eq (ω : E [⋀^Fin 2]→ₗ[ℝ] ℝ) {c : ℝ} (hc : c ≠ 0) :
+    (c • ω).curryLeft.ker = ω.curryLeft.ker := by
+  apply le_antisymm
+  · intro v hv
+    have hv' : (c • ω).curryLeft v = 0 := hv
+    have hmul : c • ω.curryLeft v = 0 := by
+      simpa [AlternatingMap.curryLeft_smul] using hv'
+    have : ω.curryLeft v = 0 := by
+      exact (smul_eq_zero.mp hmul).resolve_left hc
+    exact this
+  · intro v hv
+    have hv' : ω.curryLeft v = 0 := hv
+    have hmul : c • ω.curryLeft v = 0 := by simp [hv']
+    simpa [AlternatingMap.curryLeft_smul] using hmul
+
 end AlternatingMap
