@@ -91,6 +91,28 @@ theorem weightedLaplacian_const_smul
   simp only [map_smul, smul_eq_mul]
   ring
 
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] [T2Space M] in
+theorem weightedLaplacian_const
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)
+    (c : Real) (x : M) :
+    weightedLaplacian (I := I) g f (ContMDiffMap.const c) x = 0 := by
+  rw [weightedLaplacian_apply, Δ_g_const]
+  change 0 - g.inner x (gradFun (I := I) g f x)
+    (gradFun (I := I) g (fun _ : M => c) x) = 0
+  rw [Operator.gradFun_const]
+  simp
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem weightedLaplacian_sub_const
+    (g : SmoothRiemannianMetric I M) (f u : C^∞⟮I, M; Real⟯)
+    (c : Real) (x : M) :
+    weightedLaplacian (I := I) g f (u - ContMDiffMap.const c) x =
+      weightedLaplacian (I := I) g f u x := by
+  rw [sub_eq_add_neg, ← neg_one_smul Real (ContMDiffMap.const c),
+    weightedLaplacian_add, weightedLaplacian_const_smul,
+    weightedLaplacian_const]
+  ring
+
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 theorem weightedLaplacian_mul
     (g : SmoothRiemannianMetric I M) (f u v : C^∞⟮I, M; Real⟯) (x : M) :
