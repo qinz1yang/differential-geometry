@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureNullity
 
 set_option autoImplicit false
 
@@ -156,5 +157,108 @@ theorem normalizedGradientRicciSoliton_scalar_eq_zero_everywhere_of_eq_zero
       (I := I) g (by norm_num : (0 : Real) < 1) X hX u hu_cont hu_nonneg
         hu_time hu_space hu_super (c := y) (mul_pos (Real.exp_pos 1) hy) x
   simp [u, R, hx] at hpos
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem normalizedGradientRicciSoliton_metricRicciAt_eq_zero_of_scalar_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0) (y : M) :
+    metricRicciAt (I := I) (M := M) g y = 0 := by
+  let R : C^∞⟮I, M; Real⟯ :=
+    ⟨(fun z : M => metricScalarAt (I := I) g z),
+      metricScalar_smooth (I := I) (M := M) g⟩
+  have hR :=
+    normalizedGradientRicciSoliton_scalar_eq_zero_everywhere_of_eq_zero
+      (I := I) h hx
+  have hRzero : R = 0 := by
+    apply ContMDiffMap.ext
+    intro z
+    exact hR z
+  have hweighted := gradientRicciSoliton_weightedLaplacian_scalar h.2.1 y
+  have hweighted' : weightedLaplacian (I := I) g f R y =
+      1 * metricScalarAt (I := I) g y -
+        2 * Tensor0SBundle.normSq0S (I := I) g y 2
+          (metricRicciAt (I := I) (M := M) g y) := by
+    simpa only [R] using hweighted
+  have hweightedZero : weightedLaplacian (I := I) g f
+      (0 : C^∞⟮I, M; Real⟯) y = 0 := by
+    have hlap : ΔG (I := I) g (0 : C^∞⟮I, M; Real⟯) y = 0 := by
+      have hzero : (0 : C^∞⟮I, M; Real⟯) =
+          ContMDiffMap.const (I := I) (I' := 𝓘(ℝ, ℝ)) (M := M) 0 := by
+        apply ContMDiffMap.ext
+        intro z
+        rfl
+      rw [hzero]
+      exact Δ_g_const (I := I) g 0 y
+    have hgrad : gradFun (I := I) g (0 : C^∞⟮I, M; Real⟯) y = 0 := by
+      change gradFun (I := I) g (fun _ : M => (0 : Real)) y = 0
+      exact gradFun_zero (I := I) g y
+    rw [weightedLaplacian_apply, hlap, hgrad]
+    simp
+  rw [hR y, hRzero, hweightedZero] at hweighted'
+  have hnorm : Tensor0SBundle.normSq0S (I := I) g y 2
+      (metricRicciAt (I := I) (M := M) g y) = 0 := by
+    linarith
+  exact (Tensor0SBundle.normSq0S_eq_zero_iff (I := I) g y 2 _).mp hnorm
+
+theorem normalizedGradientRicciSoliton_ricciTensor_eq_zero_of_scalar_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0)
+    (y : M) (v w : TangentSpace I y) :
+    ricciTensor (I := I) g y v w = 0 := by
+  rw [← metricRicciAt_apply_eq_ricciTensor]
+  rw [normalizedGradientRicciSoliton_metricRicciAt_eq_zero_of_scalar_eq_zero
+    (I := I) h hx y]
+  rfl
+
+theorem normalizedGradientRicciSoliton_hessFun_eq_half_metric_of_scalar_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0)
+    (y : M) (v w : TangentSpace I y) :
+    hessFun (I := I) g f y v w = (1 / 2 : Real) * g.inner y v w := by
+  have hsol := h.2.1 y v w
+  rw [normalizedGradientRicciSoliton_ricciTensor_eq_zero_of_scalar_eq_zero
+    (I := I) h hx y v w] at hsol
+  norm_num at hsol ⊢
+  exact hsol
+
+theorem normalizedGradientRicciSoliton_cov_gradFun_eq_half_smul_of_scalar_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0)
+    (y : M) (v : TangentSpace I y) :
+    (LeviCivita (I := I) g).toFun
+        (fun z => gradFun (I := I) g f z) y v =
+      (1 / 2 : Real) • v := by
+  apply metricFlatLinear_injective (I := I) g y
+  ext w
+  change g.inner y
+      ((LeviCivita (I := I) g).toFun
+        (fun z => gradFun (I := I) g f z) y v) w =
+    g.inner y ((1 / 2 : Real) • v) w
+  rw [← hessFun_eq_cov_grad (I := I) g f.contMDiff y v w]
+  rw [normalizedGradientRicciSoliton_hessFun_eq_half_metric_of_scalar_eq_zero
+    (I := I) h hx y v w]
+  simp
+
+theorem normalizedGradientRicciSoliton_riemannOp_gradFun_eq_zero_of_scalar_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0)
+    (y : M) (v w : TangentSpace I y) :
+    riemannOp (LeviCivita (I := I) g) y v w
+      (gradFun (I := I) g f y) = 0 := by
+  exact riemannOp_apply_eq_zero_of_covApply_eq_smul
+    (cov := LeviCivita (I := I) g)
+    (LeviCivita_torsion_eq_zero (I := I) g)
+    (gradientFun_smooth (I := I) g f.contMDiff)
+    (c := 1 / 2)
+    (fun z u =>
+      normalizedGradientRicciSoliton_cov_gradFun_eq_half_smul_of_scalar_eq_zero
+        (I := I) h hx z u)
+    y v w
 
 end DifferentialGeometry.Geometry
