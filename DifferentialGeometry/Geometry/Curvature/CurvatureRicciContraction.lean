@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.SectionalRicci
+import DifferentialGeometry.Geometry.Curvature.Contractions
+import DifferentialGeometry.Geometry.Curvature.MetricSectional
 
 set_option autoImplicit false
 
@@ -88,6 +90,121 @@ theorem curvatureRicciContractionAt_apply_eq_sum_orthonormalBasis
       (Fin.cons (basis i) (Fin.cons (basis i) (vec2 (I := I) v w))) = _
   rw [ricSlotOpFib_apply_eval (I := I) (M := M)]
   rfl
+
+omit [SigmaCompactSpace M] in
+theorem curvatureRicciContractionAt_eq_neg_rm04RicciContractionAt
+    (g : SmoothRiemannianMetric I M) (x : M)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (horth : ∀ i j : Idx,
+      g.inner x (basis i) (basis j) = if i = j then 1 else 0)
+    (a b : Idx) :
+    curvatureRicciContractionAt (I := I) (M := M) g x
+        (vec2 (I := I) (basis a) (basis b)) =
+      -rm04RicciContractionAt (I := I) basis
+        (metricRm04At (I := I) (M := M) g x)
+        (identityInvMetric (Idx := Idx))
+        (metricRicciAt (I := I) (M := M) g x) a b := by
+  classical
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
+      (identityInvMetric (Idx := Idx)) :=
+    metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
+  have hraise (i : Idx) :
+      ricEndoRaisedFib (I := I) g x (basis i) =
+        ∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) • basis k := by
+    have hcoeff (j : Idx) :
+        basis.repr (ricEndoRaisedFib (I := I) g x (basis i)) j =
+          ricciTensor (I := I) g x (basis i) (basis j) := by
+      rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
+        (identityInvMetric (Idx := Idx)) hinv]
+      rw [Finset.sum_eq_single j]
+      · simp only [identityInvMetric, diagonalInvMetric, if_pos, one_mul]
+        rw [inner_ricEndoRaisedFib (I := I) (M := M)]
+      · intro k _ hkj
+        simp [identityInvMetric, diagonalInvMetric, Ne.symm hkj]
+      · simp
+    calc
+      ricEndoRaisedFib (I := I) g x (basis i) =
+          ∑ k : Idx, basis.repr (ricEndoRaisedFib (I := I) g x (basis i)) k • basis k :=
+        (basis.sum_repr _).symm
+      _ = ∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) • basis k := by
+        apply Finset.sum_congr rfl
+        intro k _
+        rw [hcoeff k]
+  have hexpand (i : Idx) :
+      metricRm04At (I := I) (M := M) g x
+          (vec4 (I := I)
+            (∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) • basis k)
+            (basis a) (basis b) (basis i)) =
+        ∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) *
+          metricRm04At (I := I) (M := M) g x
+            (vec4 (I := I) (basis k) (basis a) (basis b) (basis i)) := by
+    let m := vec4 (I := I) (0 : TangentSpace I x) (basis a) (basis b) (basis i)
+    have hupd (v : TangentSpace I x) :
+        Function.update m (0 : Fin 4) v =
+          vec4 (I := I) v (basis a) (basis b) (basis i) := by
+      funext q
+      fin_cases q <;> rfl
+    rw [show vec4 (I := I)
+          (∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) • basis k)
+          (basis a) (basis b) (basis i) =
+        Function.update m (0 : Fin 4)
+          (∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) • basis k) by
+      rw [hupd]]
+    have hsum := (metricRm04At (I := I) (M := M) g x).toMultilinearMap.map_update_sum
+      Finset.univ (0 : Fin 4)
+      (fun k : Idx => ricciTensor (I := I) g x (basis i) (basis k) • basis k) m
+    change metricRm04At (I := I) (M := M) g x
+        (Function.update m (0 : Fin 4)
+          (∑ k : Idx, ricciTensor (I := I) g x (basis i) (basis k) • basis k)) =
+      ∑ k : Idx, metricRm04At (I := I) (M := M) g x
+        (Function.update m (0 : Fin 4)
+          (ricciTensor (I := I) g x (basis i) (basis k) • basis k)) at hsum
+    rw [hsum]
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [(metricRm04At (I := I) (M := M) g x).map_update_smul, hupd]
+    rfl
+  rw [curvatureRicciContractionAt_apply_eq_sum_orthonormalBasis
+    (I := I) (M := M) g x basis horth]
+  simp_rw [hraise]
+  simp_rw [metricRm04StdAt_apply]
+  simp_rw [hexpand]
+  unfold rm04RicciContractionAt raised02CompAt
+  simp only [identityInvMetric, diagonalInvMetric]
+  simp_rw [metricRicciAt_apply_eq_ricciTensor]
+  simp [Finset.sum_ite_eq]
+  rw [Finset.sum_comm]
+  calc
+    (∑ k : Idx, ∑ i : Idx,
+        ricciTensor (I := I) g x (basis i) (basis k) *
+          metricRm04At (I := I) (M := M) g x
+            (vec4 (I := I) (basis k) (basis a) (basis b) (basis i))) =
+        ∑ k : Idx, ∑ i : Idx,
+          -(metricRm04At (I := I) (M := M) g x
+              (vec4 (I := I) (basis a) (basis k) (basis b) (basis i)) *
+            ricciTensor (I := I) g x (basis k) (basis i)) := by
+      apply Finset.sum_congr rfl
+      intro k _
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [ricciTensor_symm (I := I) g x (basis i) (basis k)]
+      have hskew :=
+        DifferentialGeometry.Geometry.Connection.rm04InputSkewAt_of_leviCivita_realizes
+          (I := I) (M := M) g (metricRm04 (I := I) (M := M) g)
+          (metricCurvData (I := I) (M := M) g).rm04Realizes (x := x)
+      rw [show metricRm04At (I := I) (M := M) g x
+          (vec4 (I := I) (basis k) (basis a) (basis b) (basis i)) =
+          -metricRm04At (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis k) (basis b) (basis i)) by
+        simpa [metricRm04_apply] using
+          hskew (basis a) (basis k) (basis b) (basis i)]
+      ring
+    _ = -∑ k : Idx, ∑ i : Idx,
+        metricRm04At (I := I) (M := M) g x
+            (vec4 (I := I) (basis a) (basis k) (basis b) (basis i)) *
+          ricciTensor (I := I) g x (basis k) (basis i) := by
+      simp only [Finset.sum_neg_distrib]
 
 omit [SigmaCompactSpace M] in
 theorem ricciTensor_nonneg_of_sectionalNonnegative
