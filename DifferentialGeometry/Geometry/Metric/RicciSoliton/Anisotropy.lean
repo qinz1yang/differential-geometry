@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciReaction
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.WeightedRicci
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
 
@@ -66,14 +67,6 @@ noncomputable def ricciGradientCouplingAt
       (differential1FormFun (I := I)
         (fun y : M => metricScalarAt (I := I) g y) x)
       (Ric x)
-
-noncomputable def ricciReactionDefectAt
-    (g : SmoothRiemannianMetric I M) (x : M) : Real :=
-  let Ric := metricRicci (I := I) (M := M) g
-  normSq0S (I := I) g x 2 (Ric x) ^ 2 -
-    metricScalarAt (I := I) g x *
-      inner0S (I := I) g x 2
-        (curvatureRicciContractionAt (I := I) (M := M) g x) (Ric x)
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] [I.Boundaryless] in
 private theorem two_mul_inner_nablaRic_product_dscalar_eq_gradient_inner
@@ -366,5 +359,40 @@ theorem gradientRicciSoliton_ricci_anisotropy_identity
       gradientFun_const, sub_zero, Connection.gradient_eq_gradFun]
   rw [hgrad, hA, weightedLaplacian_sub_const]
   simpa [R, Q] using hratio
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem gradientRicciSoliton_ricci_anisotropy_identity_of_curvature_eigenframe
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯} {σ : Real}
+    (h : gradientRicciSoliton (I := I) g f σ)
+    (hscalar : ∀ y : M, 0 < metricScalarAt (I := I) g y) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (lambda mu nu : Real)
+    (hdiag : RicciDiagAt (I := I)
+      (metricRicciAt (I := I) (M := M) g x)
+      (metricScalarAt (I := I) (M := M) g x)
+      ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) basis) :
+    let R : C^∞⟮I, M; Real⟯ :=
+      ⟨fun y : M => metricScalarAt (I := I) g y,
+        metricScalar_smooth (I := I) (M := M) g⟩
+    weightedLaplacian (I := I) g f (ricciAnisotropy (I := I) g hscalar) x +
+        2 * R x ^ (-1 : Real) *
+          g.inner x (gradFun (I := I) g R x)
+            (gradFun (I := I) g (ricciAnisotropy (I := I) g hscalar) x) =
+      2 * R x ^ (-4 : Real) *
+          normSq0S (I := I) g x 3 (ricciGradientCouplingAt (I := I) g x) +
+        4 * R x ^ (-3 : Real) * curvatureReactionPolynomial3 lambda mu nu := by
+  let R : C^∞⟮I, M; Real⟯ :=
+    ⟨fun y : M => metricScalarAt (I := I) g y,
+      metricScalar_smooth (I := I) (M := M) g⟩
+  have hidentity := gradientRicciSoliton_ricci_anisotropy_identity
+    (I := I) (M := M) h hscalar x
+  change weightedLaplacian (I := I) g f (ricciAnisotropy (I := I) g hscalar) x +
+        2 * R x ^ (-1 : Real) *
+          g.inner x (gradFun (I := I) g R x)
+            (gradFun (I := I) g (ricciAnisotropy (I := I) g hscalar) x) = _
+  rw [hidentity]
+  rw [ricciReactionDefectAt_eq_curvatureReactionPolynomial3
+    (I := I) (M := M) g x basis horth lambda mu nu hdiag]
 
 end DifferentialGeometry.Geometry
