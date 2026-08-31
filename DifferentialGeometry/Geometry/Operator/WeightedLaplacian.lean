@@ -40,6 +40,28 @@ theorem weightedLaplacian_apply
     weightedLaplacian (I := I) g f u x = ΔG (I := I) g u x -
       g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g u x) := rfl
 
+open DifferentialGeometry.Integral.DivergenceTheorem in
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem weightedLaplacian_contMDiff
+    (g : SmoothRiemannianMetric I M) (f u : C^∞⟮I, M; Real⟯) :
+    ContMDiff I (modelWithCornersSelf Real Real) ∞
+      (weightedLaplacian (I := I) g f u) := by
+  let V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g u
+  have hinner : ContMDiff I (modelWithCornersSelf Real Real) ∞
+      (fun x : M =>
+        g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g u x)) := by
+    have hact := tangentSectionAction_contMDiff (I := I) V f.contMDiff
+    have heq : (fun x : M =>
+        g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g u x)) =
+        tangentSectionAction (I := I) V f := by
+      funext x
+      rw [tangentSectionAction_eq_inner_grad_g (I := I) g f V x]
+      simp only [V, grad_g_apply]
+      exact g.symm x _ _
+    rw [heq]
+    exact hact
+  exact (Δ_g_contMDiff (I := I) g u).sub hinner
+
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] [T2Space M] in
 theorem weightedLaplacian_add
     (g : SmoothRiemannianMetric I M) (f u v : C^∞⟮I, M; Real⟯) (x : M) :

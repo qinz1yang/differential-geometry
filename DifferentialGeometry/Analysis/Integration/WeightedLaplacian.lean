@@ -214,19 +214,8 @@ theorem integral_mul_weightedLaplacian_add_inner_grad_eq_zero_of_compact
         Real.exp (-f x) ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   let V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g v
   have hweighted : ContMDiff I 𝓘(Real, Real) ∞
-      (weightedLaplacian (I := I) g f v) := by
-    have hdiv := divergence_g_contMDiff (I := I) g V
-    have hact := tangentSectionAction_contMDiff (I := I) V f.contMDiff
-    have heq : weightedLaplacian (I := I) g f v =
-        fun x : M => divergenceG (I := I) g V x -
-          tangentSectionAction (I := I) V f x := by
-      funext x
-      rw [weightedLaplacian_apply, Δ_g_def,
-        tangentSectionAction_eq_inner_grad_g (I := I) g f V x]
-      simp only [V, grad_g_apply]
-      rw [g.symm x (gradFun (I := I) g f x) (gradFun (I := I) g v x)]
-    rw [heq]
-    exact hdiv.sub hact
+      (weightedLaplacian (I := I) g f v) :=
+    weightedLaplacian_contMDiff (I := I) g f v
   have hinner : ContMDiff I 𝓘(Real, Real) ∞
       (fun x : M =>
         g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x)) := by
