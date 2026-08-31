@@ -307,3 +307,59 @@ theorem map_contractionAnnihilator_compLinearEquiv
     simpa [e₂, AlternatingMap.curryLeft_compLinearMap] using hz
 
 end AlternatingMap
+
+namespace ContinuousAlternatingMap
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+def contractionAnnihilator
+    (K : Submodule ℝ (E [⋀^Fin 2]→L[ℝ] ℝ)) : Submodule ℝ E :=
+  AlternatingMap.contractionAnnihilator
+    (Submodule.map (toAlternatingMapLinear (R := ℝ)) K)
+
+theorem mem_contractionAnnihilator_iff
+    {K : Submodule ℝ (E [⋀^Fin 2]→L[ℝ] ℝ)} {v : E} :
+    v ∈ contractionAnnihilator K ↔
+      ∀ ω ∈ K, ω.curryLeft v = 0 := by
+  constructor
+  · intro hv ω hω
+    apply toAlternatingMap_injective
+    exact hv ω.toAlternatingMap ⟨ω, hω, rfl⟩
+  · intro hv ω hω
+    rcases hω with ⟨η, hη, rfl⟩
+    simpa using congrArg toAlternatingMap (hv η hη)
+
+theorem contractionAnnihilator_span_singleton
+    (ω : E [⋀^Fin 2]→L[ℝ] ℝ) :
+    contractionAnnihilator (Submodule.span ℝ {ω}) = ω.curryLeft.ker := by
+  rw [contractionAnnihilator]
+  have hmap :
+      Submodule.map (toAlternatingMapLinear (R := ℝ))
+          (Submodule.span ℝ {ω}) =
+        Submodule.span ℝ {ω.toAlternatingMap} := by
+    rw [Submodule.map_span]
+    congr 1
+    ext η
+    simp
+  rw [hmap, AlternatingMap.contractionAnnihilator_span_singleton]
+  ext v
+  rw [LinearMap.mem_ker, LinearMap.mem_ker]
+  constructor
+  · intro hv
+    apply toAlternatingMap_injective
+    simpa using hv
+  · intro hv
+    simpa using congrArg toAlternatingMap hv
+
+theorem finrank_contractionAnnihilator_eq_one [FiniteDimensional ℝ E]
+    (hE : Module.finrank ℝ E = 3)
+    (K : Submodule ℝ (E [⋀^Fin 2]→L[ℝ] ℝ))
+    (hK : Module.finrank ℝ K = 1) :
+    Module.finrank ℝ (contractionAnnihilator K) = 1 := by
+  rw [contractionAnnihilator]
+  apply AlternatingMap.finrank_contractionAnnihilator_eq_one hE
+  rw [← hK]
+  exact (Submodule.equivMapOfInjective
+    (toAlternatingMapLinear (R := ℝ)) toAlternatingMap_injective K).finrank_eq.symm
+
+end ContinuousAlternatingMap
