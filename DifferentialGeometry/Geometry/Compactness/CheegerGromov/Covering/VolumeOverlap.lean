@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentCount
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.VolumeComparisonBridge
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeComparison
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactne
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.VolumeComparisonBridge
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeComparison
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

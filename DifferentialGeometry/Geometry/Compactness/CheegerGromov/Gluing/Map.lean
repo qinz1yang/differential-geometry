@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.MetricCompactnessInputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomConv

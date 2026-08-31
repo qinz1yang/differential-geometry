@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Distances
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DistanceControl
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

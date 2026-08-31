@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Directed
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
 import DifferentialGeometry.Geometry.Metric.Convergence.ComponentSubsequence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback

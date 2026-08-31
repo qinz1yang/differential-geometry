@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.ODE.PhaseFlowSmallness
 
 
 import DifferentialGeometry.Analysis.ODE.PhaseEndpointInverse
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.MetricCompactnessInputs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactnessInputs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalPhase
 open DifferentialGeometry.Geometry.Curvature
 
