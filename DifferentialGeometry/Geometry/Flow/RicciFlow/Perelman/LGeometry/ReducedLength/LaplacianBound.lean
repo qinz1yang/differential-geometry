@@ -95,7 +95,7 @@ theorem redLength_lap_le
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
@@ -110,7 +110,7 @@ theorem redLength_lap_le
           ∫ s in (0 : Real)..Real.sqrt tau,
             ((s / Real.sqrt tau) ^ 2 *
                 ∑ i : Fin (Module.finrank Real E),
-                  lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s) -
+                  lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
               (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
                 S.scalar (T - s ^ 2) (lRegCurve S T x Z s) := by
   classical
@@ -237,7 +237,7 @@ theorem redLength_lap_le
           ∫ s in (0 : Real)..Real.sqrt tau,
             ((s / Real.sqrt tau) ^ 2 *
                 ∑ i : Fin (Module.finrank Real E),
-                  lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s) -
+                  lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
               (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
                 S.scalar (T - s ^ 2) (lRegCurve S T x Z s) := by
       rw [htrace]
@@ -245,7 +245,7 @@ theorem redLength_lap_le
         ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s) -
+                lRegIndexIntegrand S T alpha (P i) (P i) s) -
             (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s)
       change ((Module.finrank Real E : Real) / (2 * b) + A) / b =
         (Module.finrank Real E : Real) / (2 * tau) + (1 / b) * A

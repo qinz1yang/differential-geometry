@@ -39,9 +39,9 @@ theorem lIndex_smul_pt
     (hDP : covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha P s =
       (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
         (alpha s) (P s)) :
-    lRegIndexInt S T alpha (fun r ↦ f r • P r)
+    lRegIndexIntegrand S T alpha (fun r ↦ f r • P r)
         (fun r ↦ f r • P r) s =
-      (f s) ^ 2 * lRegIndexInt S T alpha P P s +
+      (f s) ^ 2 * lRegIndexIntegrand S T alpha P P s +
         (1 / 2 : Real) * (deriv f s) ^ 2 *
           (S.base.metric (T - s ^ 2)).inner (alpha s) (P s) (P s) -
         2 * s * f s * deriv f s *
@@ -57,19 +57,19 @@ theorem lIndex_smul_pt
   have hcovQ : covDerivAlong (I := I) g alpha Q s =
       c • covDerivAlong (I := I) g alpha P s := by
     exact covDerivAlong_smul (I := I) g alpha c P s
-  have hQ : lRegIndexInt S T alpha Q Q s =
-      c ^ 2 * lRegIndexInt S T alpha P P s := by
+  have hQ : lRegIndexIntegrand S T alpha Q Q s =
+      c ^ 2 * lRegIndexIntegrand S T alpha P P s := by
     calc
-      lRegIndexInt S T alpha Q Q s =
-          c * lRegIndexInt S T alpha P Q s :=
-        lRegIndexInt_smul (I := I) S T c alpha P Q s
-      _ = c * lRegIndexInt S T alpha Q P s := by
-        rw [lRegIndexInt_symm (I := I) S T alpha P Q s]
-      _ = c * (c * lRegIndexInt S T alpha P P s) := by
-        rw [lRegIndexInt_smul (I := I) S T c alpha P P s]
-      _ = c ^ 2 * lRegIndexInt S T alpha P P s := by ring
-  have hWQ : lRegIndexInt S T alpha W W s =
-      lRegIndexInt S T alpha Q Q s +
+      lRegIndexIntegrand S T alpha Q Q s =
+          c * lRegIndexIntegrand S T alpha P Q s :=
+        lRegIndexIntegrand_smul (I := I) S T c alpha P Q s
+      _ = c * lRegIndexIntegrand S T alpha Q P s := by
+        rw [lRegIndexIntegrand_symm (I := I) S T alpha P Q s]
+      _ = c * (c * lRegIndexIntegrand S T alpha P P s) := by
+        rw [lRegIndexIntegrand_smul (I := I) S T c alpha P P s]
+      _ = c ^ 2 * lRegIndexIntegrand S T alpha P P s := by ring
+  have hWQ : lRegIndexIntegrand S T alpha W W s =
+      lRegIndexIntegrand S T alpha Q Q s +
         (1 / 2 : Real) *
           (g.inner (alpha s)
               (q • P s + c • covDerivAlong (I := I) g alpha P s)
@@ -77,7 +77,7 @@ theorem lIndex_smul_pt
             g.inner (alpha s)
               (c • covDerivAlong (I := I) g alpha P s)
               (c • covDerivAlong (I := I) g alpha P s)) := by
-    simp only [lRegIndexInt]
+    simp only [lRegIndexIntegrand]
     rw [hcovW, hcovQ]
     have hWval : W s = Q s := by rfl
     rw [hWval]
@@ -100,9 +100,9 @@ theorem lIndex_adapted_pt
     (hDP : covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha P s =
       (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
         (alpha s) (P s)) :
-    lRegIndexInt S T alpha (fun r ↦ (r / b) • P r)
+    lRegIndexIntegrand S T alpha (fun r ↦ (r / b) • P r)
         (fun r ↦ (r / b) • P r) s =
-      (s / b) ^ 2 * lRegIndexInt S T alpha P P s +
+      (s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s +
         (1 / (2 * b ^ 2)) *
           (S.base.metric (T - s ^ 2)).inner (alpha s) (P s) (P s) -
         (2 * s ^ 2 / b ^ 2) *
@@ -123,19 +123,19 @@ theorem lIndex_adapted_pt
   have hcovQ : covDerivAlong (I := I) g alpha Q s =
       c • covDerivAlong (I := I) g alpha P s := by
     exact covDerivAlong_smul (I := I) g alpha c P s
-  have hQ : lRegIndexInt S T alpha Q Q s =
-      c ^ 2 * lRegIndexInt S T alpha P P s := by
+  have hQ : lRegIndexIntegrand S T alpha Q Q s =
+      c ^ 2 * lRegIndexIntegrand S T alpha P P s := by
     calc
-      lRegIndexInt S T alpha Q Q s =
-          c * lRegIndexInt S T alpha P Q s :=
-        lRegIndexInt_smul (I := I) S T c alpha P Q s
-      _ = c * lRegIndexInt S T alpha Q P s := by
-        rw [lRegIndexInt_symm (I := I) S T alpha P Q s]
-      _ = c * (c * lRegIndexInt S T alpha P P s) := by
-        rw [lRegIndexInt_smul (I := I) S T c alpha P P s]
-      _ = c ^ 2 * lRegIndexInt S T alpha P P s := by ring
-  have hWQ : lRegIndexInt S T alpha W W s =
-      lRegIndexInt S T alpha Q Q s +
+      lRegIndexIntegrand S T alpha Q Q s =
+          c * lRegIndexIntegrand S T alpha P Q s :=
+        lRegIndexIntegrand_smul (I := I) S T c alpha P Q s
+      _ = c * lRegIndexIntegrand S T alpha Q P s := by
+        rw [lRegIndexIntegrand_symm (I := I) S T alpha P Q s]
+      _ = c * (c * lRegIndexIntegrand S T alpha P P s) := by
+        rw [lRegIndexIntegrand_smul (I := I) S T c alpha P P s]
+      _ = c ^ 2 * lRegIndexIntegrand S T alpha P P s := by ring
+  have hWQ : lRegIndexIntegrand S T alpha W W s =
+      lRegIndexIntegrand S T alpha Q Q s +
         (1 / 2 : Real) *
           (g.inner (alpha s)
               (q • P s + c • covDerivAlong (I := I) g alpha P s)
@@ -143,7 +143,7 @@ theorem lIndex_adapted_pt
             g.inner (alpha s)
               (c • covDerivAlong (I := I) g alpha P s)
               (c • covDerivAlong (I := I) g alpha P s)) := by
-    simp only [lRegIndexInt]
+    simp only [lRegIndexIntegrand]
     rw [hcovW, hcovQ]
     have hWval : W s = Q s := by rfl
     rw [hWval]
@@ -174,7 +174,7 @@ theorem lIndex_adapted
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
           (alpha s) (P s))
     (hIint : IntervalIntegrable
-      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexInt S T alpha P P s)
+      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s)
       MeasureTheory.volume 0 b)
     (hRint : IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / b ^ 2) *
@@ -185,11 +185,11 @@ theorem lIndex_adapted
       (1 / (2 * b)) *
           (S.base.metric (T - b ^ 2)).inner (alpha b) (P b) (P b) +
         ∫ s in (0 : Real)..b,
-          ((s / b) ^ 2 * lRegIndexInt S T alpha P P s -
+          ((s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s -
             (2 * s ^ 2 / b ^ 2) *
               S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P s) (P s))) := by
   let F : Real → Real := fun s ↦
-    (s / b) ^ 2 * lRegIndexInt S T alpha P P s
+    (s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s
   let N : Real → Real := fun s ↦
     (1 / (2 * b ^ 2)) *
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P s) (P s)
@@ -197,7 +197,7 @@ theorem lIndex_adapted
     (2 * s ^ 2 / b ^ 2) *
       S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P s) (P s))
   have hpt : ∀ s ∈ Set.uIcc (0 : Real) b,
-      lRegIndexInt S T alpha (fun r ↦ (r / b) • P r)
+      lRegIndexIntegrand S T alpha (fun r ↦ (r / b) • P r)
           (fun r ↦ (r / b) • P r) s = F s + N s - R s := by
     intro s hs
     have hs' : s ∈ Set.Icc (0 : Real) b := by

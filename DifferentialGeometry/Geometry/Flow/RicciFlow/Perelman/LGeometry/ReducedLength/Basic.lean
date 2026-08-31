@@ -390,11 +390,11 @@ theorem lCost_hess_le
         (E := (TangentSpace I : M → Type _))
         (gamma s) (Qg s) : TangentBundle I M)) :=
     hQg8.of_le (by norm_num)
-  have hJJgInt := lRegIndex_int (I := I) S hS T 0 b gamma Jg Jg
+  have hJJgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 b gamma Jg Jg
     hJg2 hJg2 hregG
-  have hJQgInt := lRegIndex_int (I := I) S hS T 0 b gamma Jg Qg
+  have hJQgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 b gamma Jg Qg
     hJg2 hQg2 hregG
-  have hQQgInt := lRegIndex_int (I := I) S hS T 0 b gamma Qg Qg
+  have hQQgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 b gamma Qg Qg
     hQg2 hQg2 hregG
   have hAlphaGerm : ∀ s ∈ Set.Ioo (0 : Real) b,
       alpha =ᶠ[nhds s] gamma := by
@@ -410,21 +410,21 @@ theorem lCost_hess_le
     intro s hs
     exact Filter.EventuallyEq.symm
       (hQgGerm s ⟨hs.1.le, hs.2.le⟩)
-  have hJJInt : IntervalIntegrable (lRegIndexInt S T alpha J J)
+  have hJJInt : IntervalIntegrable (lRegIndexIntegrand S T alpha J J)
       MeasureTheory.volume 0 b :=
-    (lIndexInt_int_iff (I := I) S T J J Jg Jg 0 b hb0.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg 0 b hb0.le
       hAlphaGerm hJGerm hJGerm).2 hJJgInt
-  have hJQInt : IntervalIntegrable (lRegIndexInt S T alpha J Q)
+  have hJQInt : IntervalIntegrable (lRegIndexIntegrand S T alpha J Q)
       MeasureTheory.volume 0 b :=
-    (lIndexInt_int_iff (I := I) S T J Q Jg Qg 0 b hb0.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J Q Jg Qg 0 b hb0.le
       hAlphaGerm hJGerm hQGerm).2 hJQgInt
-  have hQQInt : IntervalIntegrable (lRegIndexInt S T alpha Q Q)
+  have hQQInt : IntervalIntegrable (lRegIndexIntegrand S T alpha Q Q)
       MeasureTheory.volume 0 b :=
-    (lIndexInt_int_iff (I := I) S T Q Q Qg Qg 0 b hb0.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg 0 b hb0.le
       hAlphaGerm hQGerm hQGerm).2 hQQgInt
   have hQQeq : lRegIndex S T alpha Q Q 0 b =
       lRegIndex S T gamma Qg Qg 0 b := by
-    apply lIndex_germ_congr (I := I) S T Q Q Qg Qg
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg
     · intro s hs
       have hs' : s ∈ Set.Ioo (0 : Real) b := by
         simpa only [Set.uIoo_of_le hb0.le] using hs
@@ -502,11 +502,11 @@ theorem lCost_hess_le
     rw [hrep]
     exact (hWdiff s hs).sub (hJdiff s hs)
   have hJQzero : lRegIndex S T alpha J Q 0 b = 0 := by
-    have hgreen := lRegIndex_jacobi (I := I) S hS T alpha J Q 0 b
+    have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T alpha J Q 0 b
       hreg hAlphaMdiff hA hJac hQdiff hJQInt
     rw [hgreen, hQ0, hQb]
     simp
-  have hsquare := lIndex_sq_add (I := I) S T 1 alpha J Q 0 b
+  have hsquare := lRegIndex_add_smul_self (I := I) S T 1 alpha J Q 0 b
     hJdiff hQdiff hJJInt hJQInt hQQInt
   have hfield : (fun s ↦ J s + (1 : Real) • Q s) = W := by
     funext s
@@ -521,7 +521,7 @@ theorem lCost_hess_le
       lRegIndex S T alpha W W 0 b := by
     rw [hdecomp]
     linarith
-  have hgreenJJ := lRegIndex_jacobi (I := I) S hS T alpha J J 0 b
+  have hgreenJJ := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T alpha J J 0 b
     hreg hAlphaMdiff hA hJac hJdiff hJJInt
   have hJJend : 2 * lRegIndex S T alpha J J 0 b =
       g.inner y (covDerivAlong (I := I) g alpha J b) V := by

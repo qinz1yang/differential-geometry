@@ -278,13 +278,13 @@ private theorem tailEnd_injective
     (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
   have hW2 := hWsmooth.of_le (by decide :
     (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
-  have hYYgInt := lRegIndex_int (I := I) S hS T s0 b gammaG Yg Yg
+  have hYYgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T s0 b gammaG Yg Yg
     hYg2 hYg2 hregs0b
-  have hYWgInt := lRegIndex_int (I := I) S hS T s0 b gammaG Yg W
+  have hYWgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T s0 b gammaG Yg W
     hYg2 hW2 hregs0b
-  have hWW0s := lRegIndex_int (I := I) S hS T 0 s0 gammaG W W
+  have hWW0s := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 s0 gammaG W W
     hW2 hW2 hreg0s
-  have hWWs0b := lRegIndex_int (I := I) S hS T s0 b gammaG W W
+  have hWWs0b := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T s0 b gammaG W W
     hW2 hW2 hregs0b
   have hBetaGerm : ∀ s ∈ Ioo s0 b, beta =ᶠ[nhds s] gammaG := by
     intro s hs
@@ -298,13 +298,13 @@ private theorem tailEnd_injective
   have hWGerm : ∀ s ∈ Ioo s0 b,
       ∀ᶠ r in nhds s, (W r : E) = (W r : E) :=
     fun _ _ ↦ Eventually.of_forall fun _ ↦ rfl
-  have hYYInt : IntervalIntegrable (lRegIndexInt S T beta Y Y)
+  have hYYInt : IntervalIntegrable (lRegIndexIntegrand S T beta Y Y)
       MeasureTheory.volume s0 b :=
-    (lIndexInt_int_iff (I := I) S T Y Y Yg Yg s0 b hs0b.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Y Y Yg Yg s0 b hs0b.le
       hBetaGerm hYGerm hYGerm).2 hYYgInt
-  have hYWInt : IntervalIntegrable (lRegIndexInt S T beta Y W)
+  have hYWInt : IntervalIntegrable (lRegIndexIntegrand S T beta Y W)
       MeasureTheory.volume s0 b :=
-    (lIndexInt_int_iff (I := I) S T Y W Yg W s0 b hs0b.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Y W Yg W s0 b hs0b.le
       hBetaGerm hYGerm hWGerm).2 hYWgInt
   have hbetaMdiff : ∀ s ∈ uIcc s0 b, ∀ᶠ r in nhds s,
       MDifferentiableAt 𝓘(Real, Real) I beta r := by
@@ -344,7 +344,7 @@ private theorem tailEnd_injective
     exact hrep.differentiableAt_iff.mpr
       (chartRep_diff (I := I) gammaG W hWsmooth s)
   have hYY : lRegIndex S T beta Y Y s0 b = 0 := by
-    have hgreen := lRegIndex_jacobi (I := I) S hS T beta Y Y s0 b
+    have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T beta Y Y s0 b
       hregs0b hbetaMdiff hA hJacTail hYdiff hYYInt
     rw [hgreen, hYs0, hYb]
     simp
@@ -370,13 +370,13 @@ private theorem tailEnd_injective
     fun _ _ ↦ Eventually.of_forall fun _ ↦ rfl
   have hYYeq : lRegIndex S T beta Y Y s0 b =
       lRegIndex S T gammaG Yg Yg s0 b := by
-    apply lIndex_germ_congr (I := I) S T Y Y Yg Yg
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T Y Y Yg Yg
     · exact hBetaUGerm
     · exact hYUGerm
     · exact hYUGerm
   have hYWeq : lRegIndex S T beta Y W s0 b =
       lRegIndex S T gammaG Yg W s0 b := by
-    apply lIndex_germ_congr (I := I) S T Y W Yg W
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T Y W Yg W
     · exact hBetaUGerm
     · exact hYUGerm
     · exact hWUGerm

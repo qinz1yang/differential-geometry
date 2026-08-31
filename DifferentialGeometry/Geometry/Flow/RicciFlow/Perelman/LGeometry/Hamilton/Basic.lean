@@ -374,11 +374,11 @@ theorem lTrace_deriv
       (fun r : Real ↦ r ^ 3 * S.scalar (T - r ^ 2) (alpha r))
       (-lHamSq S T alpha s -
         (s ^ 2 * ∑ i : Fin (Module.finrank Real E),
-            lRegIndexInt S T alpha (P i) (P i) s -
+            lRegIndexIntegrand S T alpha (P i) (P i) s -
           2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s))) s := by
   have hR := lScalar_path_deriv S hS T alpha ht halpha
   have hF := (hasDerivAt_pow 3 s).mul hR
-  have htrace := lIndexInt_trace S T alpha P s hDP hON
+  have htrace := lRegIndexIntegrand_trace S T alpha P s hDP hON
   apply hF.congr_deriv
   rw [htrace]
   simp only [lHamSq, ricciNorm, SolutionOn.family_metric]

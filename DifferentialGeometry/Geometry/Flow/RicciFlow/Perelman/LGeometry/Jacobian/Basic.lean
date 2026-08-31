@@ -882,7 +882,7 @@ theorem lExpLog_deriv_le
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *

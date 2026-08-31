@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Un
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ConjugatePoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Smoothness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Integrability
 import DifferentialGeometry.Geometry.Comparison.Variation.VelocityLocal
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
 
@@ -59,13 +59,13 @@ theorem exists_lSplit_neg
       DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
     (hW : ∀ s ∈ Set.uIcc a c,
       DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
-    (hYYint : IntervalIntegrable (lRegIndexInt S T alpha Y Y)
+    (hYYint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y Y)
       MeasureTheory.volume a c)
-    (hYWint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hYWint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a c)
-    (hWWac : IntervalIntegrable (lRegIndexInt S T alpha W W)
+    (hWWac : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
       MeasureTheory.volume a c)
-    (hWWcb : IntervalIntegrable (lRegIndexInt S T alpha W W)
+    (hWWcb : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
       MeasureTheory.volume c b)
     (hYY : lRegIndex S T alpha Y Y a c = 0)
     (hYW : 0 < lRegIndex S T alpha Y W a c) :
@@ -77,16 +77,16 @@ theorem exists_lSplit_neg
   let Q := lRegIndex S T alpha W W a b
   obtain ⟨k, hk⟩ := exists_neg_scale hYW (Q := Q)
   refine ⟨k, ?_⟩
-  have hprefix := lIndex_sq_add (I := I) S T k alpha Y W a c hY hW
+  have hprefix := lRegIndex_add_smul_self (I := I) S T k alpha Y W a c hY hW
     hYYint hYWint hWWac
   have htail : lRegIndex S T alpha (fun s ↦ k • W s)
       (fun s ↦ k • W s) c b =
       k ^ 2 * lRegIndex S T alpha W W c b := by
     rw [lRegIndex_smul (I := I) S T k alpha W
         (fun s ↦ k • W s) c b,
-      lRegIndex_smul_r (I := I) S T k alpha W W c b]
+      lRegIndex_smul_right (I := I) S T k alpha W W c b]
     ring
-  have hjoin := lIndex_adj (I := I) S T alpha W W a c b hWWac hWWcb
+  have hjoin := lRegIndex_add_adjacent (I := I) S T alpha W W a c b hWWac hWWcb
   rw [hprefix, htail, hYY, zero_add]
   dsimp only [Q] at hk
   rw [← hjoin] at hk
@@ -277,7 +277,7 @@ theorem lIndex_cross_pos
     (hjac : IsLRegJacobi S T alpha Y (Set.uIcc (0 : Real) c))
     (hW : ∀ s ∈ Set.uIcc (0 : Real) c, DifferentiableAt Real
       (chartRepAt (I := I) alpha W s) s)
-    (hIint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hIint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume 0 c)
     (hW0 : W 0 = 0)
     (hWc : W c = (c * (b - c)) •
@@ -291,7 +291,7 @@ theorem lIndex_cross_pos
     (S.base.metric (T - c ^ 2)).pos (alpha c) P (by
       simpa only [P] using hDne)
   have hscale : 0 < c * (b - c) := mul_pos hc0 (sub_pos.mpr hcb)
-  have hgreen := lRegIndex_jacobi (I := I) S hS T alpha Y W 0 c ht
+  have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T alpha Y W 0 c ht
     halpha hA hjac hW hIint
   rw [hgreen, hW0, hWc]
   simp only [map_zero, sub_zero]
@@ -442,13 +442,13 @@ theorem lIndex_neg_conj
           (gamma s) (W s) : TangentBundle I M)) :=
     hWsmooth.of_le (by decide :
       (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
-  have hJJgInt := lRegIndex_int (I := I) S hS T 0 c gamma Jg Jg
+  have hJJgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma Jg Jg
     hJ2 hJ2 hreg0c
-  have hJWgInt := lRegIndex_int (I := I) S hS T 0 c gamma Jg W
+  have hJWgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma Jg W
     hJ2 hW2 hreg0c
-  have hWW0c := lRegIndex_int (I := I) S hS T 0 c gamma W W
+  have hWW0c := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma W W
     hW2 hW2 hreg0c
-  have hWWcb := lRegIndex_int (I := I) S hS T c b gamma W W
+  have hWWcb := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T c b gamma W W
     hW2 hW2 hregcb
   have hprefixIcc : Set.Icc (0 : Real) c ⊆ Set.Icc (0 : Real) b := by
     intro s hs
@@ -465,13 +465,13 @@ theorem lIndex_neg_conj
   have hWGerm : ∀ s ∈ Set.Ioo (0 : Real) c,
       ∀ᶠ r in nhds s, (W r : E) = (W r : E) :=
     fun _ _ ↦ Eventually.of_forall fun _ ↦ rfl
-  have hJJInt : IntervalIntegrable (lRegIndexInt S T alpha J J)
+  have hJJInt : IntervalIntegrable (lRegIndexIntegrand S T alpha J J)
       MeasureTheory.volume 0 c :=
-    (lIndexInt_int_iff (I := I) S T J J Jg Jg 0 c hc0.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg 0 c hc0.le
       hAlphaGerm hJGerm hJGerm).2 hJJgInt
-  have hJWInt : IntervalIntegrable (lRegIndexInt S T alpha J W)
+  have hJWInt : IntervalIntegrable (lRegIndexIntegrand S T alpha J W)
       MeasureTheory.volume 0 c :=
-    (lIndexInt_int_iff (I := I) S T J W Jg W 0 c hc0.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J W Jg W 0 c hc0.le
       hAlphaGerm hJGerm hWGerm).2 hJWgInt
   have hAlphaMdiff : ∀ s ∈ Set.uIcc (0 : Real) c,
       ∀ᶠ r in nhds s,
@@ -523,7 +523,7 @@ theorem lIndex_neg_conj
     exact hrep.differentiableAt_iff.mpr
       (chartRep_diff (I := I) gamma W hWsmooth s)
   have hYY : lRegIndex S T alpha J J 0 c = 0 := by
-    have hgreen := lRegIndex_jacobi (I := I) S hS T alpha J J 0 c
+    have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T alpha J J 0 c
       hreg0c hAlphaMdiff hA hJac hJdiff hJJInt
     rw [hgreen]
     have hJ0 : J 0 = 0 := by
@@ -538,7 +538,7 @@ theorem lIndex_neg_conj
       (by with_unfolding_all exact hWc) hPne
   have hYYeq : lRegIndex S T alpha J J 0 c =
       lRegIndex S T gamma Jg Jg 0 c := by
-    apply lIndex_germ_congr (I := I) S T J J Jg Jg
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T J J Jg Jg
     · intro s hs
       have hs' : s ∈ Set.Ioo (0 : Real) c := by
         simpa only [Set.uIoo_of_le hc0.le] using hs
@@ -553,7 +553,7 @@ theorem lIndex_neg_conj
       exact hJGerm s hs'
   have hYWeq : lRegIndex S T alpha J W 0 c =
       lRegIndex S T gamma Jg W 0 c := by
-    apply lIndex_germ_congr (I := I) S T J W Jg W
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T J W Jg W
     · intro s hs
       have hs' : s ∈ Set.Ioo (0 : Real) c := by
         simpa only [Set.uIoo_of_le hc0.le] using hs

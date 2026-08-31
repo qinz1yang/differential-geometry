@@ -362,7 +362,7 @@ theorem lRegAction_second_variation
       (Y s)
   let J : Real → Real := fun s ↦
     lRegJacobiPair S T alpha Y s (Y s)
-  let G : Real → Real := lRegIndexInt S T alpha Y Y
+  let G : Real → Real := lRegIndexIntegrand S T alpha Y Y
   let V : Set Real := {s : Real | T - s ^ 2 ∈ D.regular}
   let W : Set (Real × Real) :=
     {p : Real × Real | T - p.1 ∈ D.regular}
@@ -491,7 +491,7 @@ theorem lRegAction_second_variation
     rw [hconst]
     simp only [lVelocity, mfderiv_const]
     rfl
-  have hindex := lRegIndex_zero_ends (I := I) S hS T alpha Y Y a b ht
+  have hindex := lRegIndex_eq_neg_half_integral_lRegJacobiPair_of_boundary_eq_zero (I := I) S hS T alpha Y Y a b ht
     halpha hA hY hZ hY hIint hJint hYa hYb
   have hjac := hasDerivAt_deriv_lRegAction (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
   apply hjac.congr_deriv

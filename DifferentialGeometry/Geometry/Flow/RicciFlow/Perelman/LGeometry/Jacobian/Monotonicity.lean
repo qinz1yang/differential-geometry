@@ -237,7 +237,7 @@ theorem lRedLog_deriv_le
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
@@ -283,7 +283,7 @@ theorem lRedJac_deriv_le
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
@@ -373,9 +373,9 @@ theorem lRedJac_deriv_le0
       (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
   have hIint (i : Fin (Module.finrank Real E)) : IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexInt S T alpha (P i) (P i) s)
+        lRegIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume 0 b := by
-    have hi := lRegIndex_intOn S hS T 0 b alpha (P i) (P i)
+    have hi := intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn S hS T 0 b alpha (P i) (P i)
       hΩ huseg (hPtwo i) (hPtwo i) (by
         intro s hs
         apply hregIcc s

@@ -30,7 +30,7 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lIndexInt_congr
+theorem lRegIndexIntegrand_congr_of_eventuallyEq
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     {alpha beta : Real → M}
     (Y W : ∀ r, TangentSpace I (alpha r))
@@ -38,8 +38,8 @@ theorem lIndexInt_congr
     (halpha : alpha =ᶠ[nhds s] beta)
     (hY : ∀ᶠ r in nhds s, (Y r : E) = (Y' r : E))
     (hW : ∀ᶠ r in nhds s, (W r : E) = (W' r : E)) :
-    lRegIndexInt S T alpha Y W s =
-      lRegIndexInt S T beta Y' W' s := by
+    lRegIndexIntegrand S T alpha Y W s =
+      lRegIndexIntegrand S T beta Y' W' s := by
   have hx : alpha s = beta s := halpha.self_of_nhds
   have hA : (lVelocity (I := I) alpha s : E) =
       (lVelocity (I := I) beta s : E) := by
@@ -54,13 +54,13 @@ theorem lIndexInt_congr
       (I := I) (S.base.metric (T - s ^ 2)) W W' halpha hW
   have hYs : (Y s : E) = (Y' s : E) := hY.self_of_nhds
   have hWs : (W s : E) = (W' s : E) := hW.self_of_nhds
-  unfold lRegIndexInt
+  unfold lRegIndexIntegrand
   dsimp only
   rw [hx, hA, hDY, hDW, hYs, hWs]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lIndex_germ_congr
+theorem lRegIndex_congr_of_eventuallyEq
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     {alpha beta : Real → M}
     (Y W : ∀ r, TangentSpace I (alpha r))
@@ -82,12 +82,12 @@ theorem lIndex_germ_congr
     ⟨hs.1, lt_of_le_of_ne hs.2 hsmax⟩
   have hsu : s ∈ Set.uIoo a b := by
     simpa only [Set.uIoo] using hsIoo
-  exact lIndexInt_congr (I := I) S T Y W Y' W' s
+  exact lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Y W Y' W' s
     (halpha s hsu) (hY s hsu) (hW s hsu)
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lIndexInt_int_iff
+theorem intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     {alpha beta : Real → M}
     (Y W : ∀ r, TangentSpace I (alpha r))
@@ -98,13 +98,13 @@ theorem lIndexInt_int_iff
       ∀ᶠ r in nhds s, (Y r : E) = (Y' r : E))
     (hW : ∀ s ∈ Set.Ioo a b,
       ∀ᶠ r in nhds s, (W r : E) = (W' r : E)) :
-    IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
         MeasureTheory.volume a b ↔
-      IntervalIntegrable (lRegIndexInt S T beta Y' W')
+      IntervalIntegrable (lRegIndexIntegrand S T beta Y' W')
         MeasureTheory.volume a b := by
-  have hae : lRegIndexInt S T alpha Y W =ᵐ[
+  have hae : lRegIndexIntegrand S T alpha Y W =ᵐ[
       MeasureTheory.volume.restrict (Set.uIoc a b)]
-      lRegIndexInt S T beta Y' W' := by
+      lRegIndexIntegrand S T beta Y' W' := by
     filter_upwards [MeasureTheory.Measure.ae_ne
       (MeasureTheory.volume.restrict (Set.uIoc a b)) b,
       MeasureTheory.ae_restrict_mem measurableSet_uIoc]
@@ -113,20 +113,20 @@ theorem lIndexInt_int_iff
       simpa only [Set.uIoc_of_le hab] using hs
     have hsIoo : s ∈ Set.Ioo a b :=
       ⟨hsIoc.1, lt_of_le_of_ne hsIoc.2 hsb⟩
-    exact lIndexInt_congr (I := I) S T Y W Y' W' s
+    exact lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Y W Y' W' s
       (halpha s hsIoo) (hY s hsIoo) (hW s hsIoo)
   exact ⟨fun h ↦ h.congr_ae hae, fun h ↦ h.congr_ae hae.symm⟩
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndexInt_add
+theorem lRegIndexIntegrand_add
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (Y Z W : ∀ s, TangentSpace I (alpha s)) (s : Real)
     (hY : DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
     (hZ : DifferentiableAt Real (chartRepAt (I := I) alpha Z s) s) :
-    lRegIndexInt S T alpha (fun r ↦ Y r + Z r) W s =
-      lRegIndexInt S T alpha Y W s + lRegIndexInt S T alpha Z W s := by
+    lRegIndexIntegrand S T alpha (fun r ↦ Y r + Z r) W s =
+      lRegIndexIntegrand S T alpha Y W s + lRegIndexIntegrand S T alpha Z W s := by
   let t := T - s ^ 2
   let g := S.base.metric t
   let x := alpha s
@@ -222,7 +222,7 @@ theorem lRegIndexInt_add
       funext i
       fin_cases i <;> simp [vec3]
     simpa only [hl, hY', hZ'] using h
-  simp only [lRegIndexInt]
+  simp only [lRegIndexIntegrand]
   change (1 / 2 : Real) *
         (g.inner x (covDerivAlong (I := I) g alpha
             (fun r ↦ Y r + Z r) s) DW -
@@ -236,32 +236,32 @@ theorem lRegIndexInt_add
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndexInt_add_r
+theorem lRegIndexIntegrand_add_right
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (Y W Z : ∀ s, TangentSpace I (alpha s)) (s : Real)
     (hW : DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
     (hZ : DifferentiableAt Real (chartRepAt (I := I) alpha Z s) s) :
-    lRegIndexInt S T alpha Y (fun r ↦ W r + Z r) s =
-      lRegIndexInt S T alpha Y W s + lRegIndexInt S T alpha Y Z s := by
+    lRegIndexIntegrand S T alpha Y (fun r ↦ W r + Z r) s =
+      lRegIndexIntegrand S T alpha Y W s + lRegIndexIntegrand S T alpha Y Z s := by
   calc
-    lRegIndexInt S T alpha Y (fun r ↦ W r + Z r) s =
-        lRegIndexInt S T alpha (fun r ↦ W r + Z r) Y s :=
-      lRegIndexInt_symm (I := I) S T alpha Y (fun r ↦ W r + Z r) s
-    _ = lRegIndexInt S T alpha W Y s + lRegIndexInt S T alpha Z Y s :=
-      lRegIndexInt_add (I := I) S T alpha W Z Y s hW hZ
-    _ = lRegIndexInt S T alpha Y W s + lRegIndexInt S T alpha Y Z s := by
-      rw [lRegIndexInt_symm (I := I) S T alpha W Y s,
-        lRegIndexInt_symm (I := I) S T alpha Z Y s]
+    lRegIndexIntegrand S T alpha Y (fun r ↦ W r + Z r) s =
+        lRegIndexIntegrand S T alpha (fun r ↦ W r + Z r) Y s :=
+      lRegIndexIntegrand_symm (I := I) S T alpha Y (fun r ↦ W r + Z r) s
+    _ = lRegIndexIntegrand S T alpha W Y s + lRegIndexIntegrand S T alpha Z Y s :=
+      lRegIndexIntegrand_add (I := I) S T alpha W Z Y s hW hZ
+    _ = lRegIndexIntegrand S T alpha Y W s + lRegIndexIntegrand S T alpha Y Z s := by
+      rw [lRegIndexIntegrand_symm (I := I) S T alpha W Y s,
+        lRegIndexIntegrand_symm (I := I) S T alpha Z Y s]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndexInt_smul
+theorem lRegIndexIntegrand_smul
     (S : SolutionOn (I := I) (M := M) D) (T c : Real)
     (alpha : Real → M)
     (Y W : ∀ s, TangentSpace I (alpha s)) (s : Real) :
-    lRegIndexInt S T alpha (fun r ↦ c • Y r) W s =
-      c * lRegIndexInt S T alpha Y W s := by
+    lRegIndexIntegrand S T alpha (fun r ↦ c • Y r) W s =
+      c * lRegIndexIntegrand S T alpha Y W s := by
   let t := T - s ^ 2
   let g := S.base.metric t
   let x := alpha s
@@ -339,7 +339,7 @@ theorem lRegIndexInt_smul
       funext i
       fin_cases i <;> simp [vec3]
     simpa only [hl, hr, smul_eq_mul] using h
-  simp only [lRegIndexInt]
+  simp only [lRegIndexIntegrand]
   change (1 / 2 : Real) *
         (g.inner x (covDerivAlong (I := I) g alpha
             (fun r ↦ c • Y r) s) DW -
@@ -353,20 +353,20 @@ theorem lRegIndexInt_smul
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndexInt_smul_r
+theorem lRegIndexIntegrand_smul_right
     (S : SolutionOn (I := I) (M := M) D) (T c : Real)
     (alpha : Real → M)
     (Y W : ∀ s, TangentSpace I (alpha s)) (s : Real) :
-    lRegIndexInt S T alpha Y (fun r ↦ c • W r) s =
-      c * lRegIndexInt S T alpha Y W s := by
+    lRegIndexIntegrand S T alpha Y (fun r ↦ c • W r) s =
+      c * lRegIndexIntegrand S T alpha Y W s := by
   calc
-    lRegIndexInt S T alpha Y (fun r ↦ c • W r) s =
-        lRegIndexInt S T alpha (fun r ↦ c • W r) Y s :=
-      lRegIndexInt_symm (I := I) S T alpha Y (fun r ↦ c • W r) s
-    _ = c * lRegIndexInt S T alpha W Y s :=
-      lRegIndexInt_smul (I := I) S T c alpha W Y s
-    _ = c * lRegIndexInt S T alpha Y W s := by
-      rw [lRegIndexInt_symm (I := I) S T alpha W Y s]
+    lRegIndexIntegrand S T alpha Y (fun r ↦ c • W r) s =
+        lRegIndexIntegrand S T alpha (fun r ↦ c • W r) Y s :=
+      lRegIndexIntegrand_symm (I := I) S T alpha Y (fun r ↦ c • W r) s
+    _ = c * lRegIndexIntegrand S T alpha W Y s :=
+      lRegIndexIntegrand_smul (I := I) S T c alpha W Y s
+    _ = c * lRegIndexIntegrand S T alpha Y W s := by
+      rw [lRegIndexIntegrand_symm (I := I) S T alpha W Y s]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
@@ -378,9 +378,9 @@ theorem lRegIndex_add
       DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
     (hZ : ∀ s ∈ Set.uIcc a b,
       DifferentiableAt Real (chartRepAt (I := I) alpha Z s) s)
-    (hYint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hYint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b)
-    (hZint : IntervalIntegrable (lRegIndexInt S T alpha Z W)
+    (hZint : IntervalIntegrable (lRegIndexIntegrand S T alpha Z W)
       MeasureTheory.volume a b) :
     lRegIndex S T alpha (fun s ↦ Y s + Z s) W a b =
       lRegIndex S T alpha Y W a b + lRegIndex S T alpha Z W a b := by
@@ -388,11 +388,11 @@ theorem lRegIndex_add
   rw [← intervalIntegral.integral_add hYint hZint]
   apply intervalIntegral.integral_congr
   intro s hs
-  exact lRegIndexInt_add (I := I) S T alpha Y Z W s (hY s hs) (hZ s hs)
+  exact lRegIndexIntegrand_add (I := I) S T alpha Y Z W s (hY s hs) (hZ s hs)
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndex_add_r
+theorem lRegIndex_add_right
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (Y W Z : ∀ s, TangentSpace I (alpha s)) (a b : Real)
@@ -400,9 +400,9 @@ theorem lRegIndex_add_r
       DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
     (hZ : ∀ s ∈ Set.uIcc a b,
       DifferentiableAt Real (chartRepAt (I := I) alpha Z s) s)
-    (hWint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hWint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b)
-    (hZint : IntervalIntegrable (lRegIndexInt S T alpha Y Z)
+    (hZint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y Z)
       MeasureTheory.volume a b) :
     lRegIndex S T alpha Y (fun s ↦ W s + Z s) a b =
       lRegIndex S T alpha Y W a b + lRegIndex S T alpha Y Z a b := by
@@ -410,7 +410,7 @@ theorem lRegIndex_add_r
   rw [← intervalIntegral.integral_add hWint hZint]
   apply intervalIntegral.integral_congr
   intro s hs
-  exact lRegIndexInt_add_r (I := I) S T alpha Y W Z s (hW s hs) (hZ s hs)
+  exact lRegIndexIntegrand_add_right (I := I) S T alpha Y W Z s (hW s hs) (hZ s hs)
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
@@ -424,11 +424,11 @@ theorem lRegIndex_smul
   rw [← intervalIntegral.integral_const_mul]
   apply intervalIntegral.integral_congr
   intro s _
-  exact lRegIndexInt_smul (I := I) S T c alpha Y W s
+  exact lRegIndexIntegrand_smul (I := I) S T c alpha Y W s
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndex_smul_r
+theorem lRegIndex_smul_right
     (S : SolutionOn (I := I) (M := M) D) (T c : Real)
     (alpha : Real → M)
     (Y W : ∀ s, TangentSpace I (alpha s)) (a b : Real) :
@@ -438,17 +438,17 @@ theorem lRegIndex_smul_r
   rw [← intervalIntegral.integral_const_mul]
   apply intervalIntegral.integral_congr
   intro s _
-  exact lRegIndexInt_smul_r (I := I) S T c alpha Y W s
+  exact lRegIndexIntegrand_smul_right (I := I) S T c alpha Y W s
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lIndex_adj
+theorem lRegIndex_add_adjacent
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
     (a c b : Real)
-    (hac : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hac : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a c)
-    (hcb : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hcb : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume c b) :
     lRegIndex S T alpha Y W a c + lRegIndex S T alpha Y W c b =
       lRegIndex S T alpha Y W a b := by
@@ -456,7 +456,7 @@ theorem lIndex_adj
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lIndex_sq_add
+theorem lRegIndex_add_smul_self
     (S : SolutionOn (I := I) (M := M) D) (T c : Real)
     (alpha : Real → M)
     (Y W : ∀ s, TangentSpace I (alpha s)) (a b : Real)
@@ -464,11 +464,11 @@ theorem lIndex_sq_add
       DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
     (hW : ∀ s ∈ Set.uIcc a b,
       DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
-    (hYYint : IntervalIntegrable (lRegIndexInt S T alpha Y Y)
+    (hYYint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y Y)
       MeasureTheory.volume a b)
-    (hYWint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hYWint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b)
-    (hWWint : IntervalIntegrable (lRegIndexInt S T alpha W W)
+    (hWWint : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
       MeasureTheory.volume a b) :
     lRegIndex S T alpha (fun s ↦ Y s + c • W s)
         (fun s ↦ Y s + c • W s) a b =
@@ -476,18 +476,18 @@ theorem lIndex_sq_add
         2 * c * lRegIndex S T alpha Y W a b +
         c ^ 2 * lRegIndex S T alpha W W a b := by
   have hYWscaled : IntervalIntegrable
-      (fun s ↦ (2 * c) * lRegIndexInt S T alpha Y W s)
+      (fun s ↦ (2 * c) * lRegIndexIntegrand S T alpha Y W s)
       MeasureTheory.volume a b := hYWint.const_mul (2 * c)
   have hWWscaled : IntervalIntegrable
-      (fun s ↦ c ^ 2 * lRegIndexInt S T alpha W W s)
+      (fun s ↦ c ^ 2 * lRegIndexIntegrand S T alpha W W s)
       MeasureTheory.volume a b := hWWint.const_mul (c ^ 2)
   unfold lRegIndex
   calc
-    (∫ s in a..b, lRegIndexInt S T alpha
+    (∫ s in a..b, lRegIndexIntegrand S T alpha
         (fun r ↦ Y r + c • W r) (fun r ↦ Y r + c • W r) s) =
-      ∫ s in a..b, lRegIndexInt S T alpha Y Y s +
-        (2 * c) * lRegIndexInt S T alpha Y W s +
-        c ^ 2 * lRegIndexInt S T alpha W W s := by
+      ∫ s in a..b, lRegIndexIntegrand S T alpha Y Y s +
+        (2 * c) * lRegIndexIntegrand S T alpha Y W s +
+        c ^ 2 * lRegIndexIntegrand S T alpha W W s := by
       apply intervalIntegral.integral_congr
       intro s hs
       have hYs := hY s hs
@@ -497,38 +497,38 @@ theorem lIndex_sq_add
         rw [chartRepAt_smul]
         exact hWs.const_smul c
       calc
-        lRegIndexInt S T alpha (fun r ↦ Y r + c • W r)
+        lRegIndexIntegrand S T alpha (fun r ↦ Y r + c • W r)
             (fun r ↦ Y r + c • W r) s =
-          lRegIndexInt S T alpha Y (fun r ↦ Y r + c • W r) s +
-            lRegIndexInt S T alpha (fun r ↦ c • W r)
+          lRegIndexIntegrand S T alpha Y (fun r ↦ Y r + c • W r) s +
+            lRegIndexIntegrand S T alpha (fun r ↦ c • W r)
               (fun r ↦ Y r + c • W r) s :=
-          lRegIndexInt_add (I := I) S T alpha Y (fun r ↦ c • W r)
+          lRegIndexIntegrand_add (I := I) S T alpha Y (fun r ↦ c • W r)
             (fun r ↦ Y r + c • W r) s hYs hcWs
-        _ = (lRegIndexInt S T alpha Y Y s +
-              lRegIndexInt S T alpha Y (fun r ↦ c • W r) s) +
-            c * lRegIndexInt S T alpha W
+        _ = (lRegIndexIntegrand S T alpha Y Y s +
+              lRegIndexIntegrand S T alpha Y (fun r ↦ c • W r) s) +
+            c * lRegIndexIntegrand S T alpha W
               (fun r ↦ Y r + c • W r) s := by
-          rw [lRegIndexInt_add_r (I := I) S T alpha Y Y
+          rw [lRegIndexIntegrand_add_right (I := I) S T alpha Y Y
               (fun r ↦ c • W r) s hYs hcWs,
-            lRegIndexInt_smul (I := I) S T c alpha W
+            lRegIndexIntegrand_smul (I := I) S T c alpha W
               (fun r ↦ Y r + c • W r) s]
-        _ = lRegIndexInt S T alpha Y Y s +
-            2 * c * lRegIndexInt S T alpha Y W s +
-            c ^ 2 * lRegIndexInt S T alpha W W s := by
-          rw [lRegIndexInt_smul_r (I := I) S T c alpha Y W s,
-            lRegIndexInt_add_r (I := I) S T alpha W Y
+        _ = lRegIndexIntegrand S T alpha Y Y s +
+            2 * c * lRegIndexIntegrand S T alpha Y W s +
+            c ^ 2 * lRegIndexIntegrand S T alpha W W s := by
+          rw [lRegIndexIntegrand_smul_right (I := I) S T c alpha Y W s,
+            lRegIndexIntegrand_add_right (I := I) S T alpha W Y
               (fun r ↦ c • W r) s hYs hcWs,
-            lRegIndexInt_smul_r (I := I) S T c alpha W W s,
-            lRegIndexInt_symm (I := I) S T alpha W Y s]
+            lRegIndexIntegrand_smul_right (I := I) S T c alpha W W s,
+            lRegIndexIntegrand_symm (I := I) S T alpha W Y s]
           ring
-    _ = (∫ s in a..b, lRegIndexInt S T alpha Y Y s) +
-        (∫ s in a..b, (2 * c) * lRegIndexInt S T alpha Y W s) +
-        ∫ s in a..b, c ^ 2 * lRegIndexInt S T alpha W W s := by
+    _ = (∫ s in a..b, lRegIndexIntegrand S T alpha Y Y s) +
+        (∫ s in a..b, (2 * c) * lRegIndexIntegrand S T alpha Y W s) +
+        ∫ s in a..b, c ^ 2 * lRegIndexIntegrand S T alpha W W s := by
       rw [intervalIntegral.integral_add (hYYint.add hYWscaled) hWWscaled,
         intervalIntegral.integral_add hYYint hYWscaled]
-    _ = (∫ s in a..b, lRegIndexInt S T alpha Y Y s) +
-        2 * c * (∫ s in a..b, lRegIndexInt S T alpha Y W s) +
-        c ^ 2 * ∫ s in a..b, lRegIndexInt S T alpha W W s := by
+    _ = (∫ s in a..b, lRegIndexIntegrand S T alpha Y Y s) +
+        2 * c * (∫ s in a..b, lRegIndexIntegrand S T alpha Y W s) +
+        c ^ 2 * ∫ s in a..b, lRegIndexIntegrand S T alpha W W s := by
       rw [intervalIntegral.integral_const_mul,
         intervalIntegral.integral_const_mul]
 

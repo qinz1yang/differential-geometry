@@ -229,14 +229,14 @@ private theorem lTraceInt_data
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b) :
     IntervalIntegrable
         (fun s ↦ lHamSq S T (lRegCurve S T x Z) s)
         MeasureTheory.volume 0 b ∧
       ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 * ∑ i : Fin (Module.finrank Real E),
-              lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s) -
+              lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
             (2 * s ^ 2 / b ^ 2) *
               S.scalar (T - s ^ 2) (lRegCurve S T x Z s) =
         -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
@@ -248,7 +248,7 @@ private theorem lTraceInt_data
   let F : Real → Real := fun s ↦ s ^ 3 * R s
   let Q : Real → Real := fun s ↦
     s ^ 2 * ∑ i : Fin (Module.finrank Real E),
-      lRegIndexInt S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
+      lRegIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
   have hgeo := lRegCurve_isReg (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
@@ -322,7 +322,7 @@ private theorem lTraceInt_data
   have hidxInt : IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndexInt S T alpha (P i) (P i) s)
+          lRegIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume 0 b := by
     have hsum := IntervalIntegrable.sum
       (Finset.univ : Finset (Fin (Module.finrank Real E)))
@@ -339,7 +339,7 @@ private theorem lTraceInt_data
   have hscaled : IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
           ∑ i : Fin (Module.finrank Real E),
-            lRegIndexInt S T alpha (P i) (P i) s -
+            lRegIndexIntegrand S T alpha (P i) (P i) s -
         (2 * s ^ 2 / b ^ 2) * R s)
       MeasureTheory.volume 0 b := hidxInt.sub hRterm
   have hQint : IntervalIntegrable Q MeasureTheory.volume 0 b := by
@@ -391,7 +391,7 @@ private theorem lTraceInt_data
         b ^ 2 * ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) * R s) := by
     rw [← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr
@@ -403,7 +403,7 @@ private theorem lTraceInt_data
       (∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) * R s)) =
         -b * R b - lK S T alpha b / (2 * b ^ 2) := by
     have hb2 : b ^ 2 ≠ 0 := pow_ne_zero 2 hb.ne'
@@ -411,7 +411,7 @@ private theorem lTraceInt_data
         (∫ s in (0 : Real)..b,
             ((s / b) ^ 2 *
                 ∑ i : Fin (Module.finrank Real E),
-                  lRegIndexInt S T alpha (P i) (P i) s -
+                  lRegIndexIntegrand S T alpha (P i) (P i) s -
               (2 * s ^ 2 / b ^ 2) * R s)) =
           (-b ^ 3 * R b - lK S T alpha b / 2) / b ^ 2 := by
       apply (eq_div_iff hb2).2
@@ -443,7 +443,7 @@ private theorem lTracePos_data
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume a b) :
     IntervalIntegrable
         (fun s ↦ ((s - a) / s) ^ 2 *
@@ -452,7 +452,7 @@ private theorem lTracePos_data
       ∫ s in a..b,
           (((s - a) / (b - a)) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s -
+                lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s -
             (2 * s * (s - a) / (b - a) ^ 2) *
               S.scalar (T - s ^ 2) (lRegCurve S T x Z s)) =
         -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
@@ -467,11 +467,11 @@ private theorem lTracePos_data
   let G : Real → Real := fun s ↦ s * (s - a) ^ 2 * R s
   let Q : Real → Real := fun s ↦
     s ^ 2 * ∑ i : Fin (Module.finrank Real E),
-      lRegIndexInt S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
+      lRegIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
   let A : Real → Real := fun s ↦
     ((s - a) / (b - a)) ^ 2 *
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndexInt S T alpha (P i) (P i) s -
+          lRegIndexIntegrand S T alpha (P i) (P i) s -
       (2 * s * (s - a) / (b - a) ^ 2) * R s
   let W : Real → Real := fun s ↦ c s * lHamSq S T alpha s
   have hb : 0 < b := lt_trans ha hab
@@ -553,7 +553,7 @@ private theorem lTracePos_data
   have hidxInt : IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndexInt S T alpha (P i) (P i) s)
+          lRegIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume a b := by
     have hsum := IntervalIntegrable.sum
       (Finset.univ : Finset (Fin (Module.finrank Real E)))
@@ -666,7 +666,7 @@ theorem lHamSq_int
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b) :
     IntervalIntegrable
       (fun s ↦ lHamSq S T (lRegCurve S T x Z) s)
@@ -695,11 +695,11 @@ theorem lTraceInt_eq
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b) :
     ∫ s in (0 : Real)..b,
         ((s / b) ^ 2 * ∑ i : Fin (Module.finrank Real E),
-            lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s) -
+            lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
           (2 * s ^ 2 / b ^ 2) *
             S.scalar (T - s ^ 2) (lRegCurve S T x Z s) =
       -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
@@ -728,12 +728,12 @@ theorem lTraceInt_pos
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume a b) :
     ∫ s in a..b,
         (((s - a) / (b - a)) ^ 2 *
             ∑ i : Fin (Module.finrank Real E),
-              lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s -
+              lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s -
           (2 * s * (s - a) / (b - a) ^ 2) *
             S.scalar (T - s ^ 2) (lRegCurve S T x Z s)) =
       -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -

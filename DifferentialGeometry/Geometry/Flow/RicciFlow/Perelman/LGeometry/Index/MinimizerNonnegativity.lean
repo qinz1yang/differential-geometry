@@ -80,7 +80,7 @@ theorem lRegIndex_nonneg
       Y (Set.uIoo a b) := by
     intro s hs
     with_unfolding_all exact hfield s (Set.uIoo_subset_uIcc_self hs)
-  rw [lRegIndex_congr (I := I) S T (f 0)
+  rw [lRegIndex_congr_of_eqOn (I := I) S T (f 0)
     (fun s : Real => lVelocity (I := I) (fun u : Real => f u s) 0)
     (fun s : Real => lVelocity (I := I) (fun u : Real => f u s) 0)
     Y Y a b hEq hEq] at hnonneg

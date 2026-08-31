@@ -285,7 +285,7 @@ private theorem sum_nablaRicci_div
 
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
-theorem lIndexInt_trace
+theorem lRegIndexIntegrand_trace
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (P : Fin (Module.finrank Real E) → ∀ r, TangentSpace I (alpha r))
@@ -298,7 +298,7 @@ theorem lIndexInt_trace
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
         if i = j then 1 else 0) :
     ∑ i : Fin (Module.finrank Real E),
-        lRegIndexInt S T alpha (P i) (P i) s =
+        lRegIndexIntegrand S T alpha (P i) (P i) s =
       2 * s ^ 2 * ricciNorm (I := I) S (T - s ^ 2) (alpha s) -
         (1 / 2 : Real) * S.ricciAt (T - s ^ 2) (alpha s)
           (vec2 (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) +

@@ -829,7 +829,7 @@ theorem lTail_hess_le
       (hQgGerm s ⟨ha0.le.trans hs'.1.le, hs'.2.le⟩)
   have hQQeq : lRegIndex S T beta Q Q a b =
       lRegIndex S T gammaG Qg Qg a b := by
-    apply lIndex_germ_congr (I := I) S T Q Q Qg Qg
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg
     · exact hBetaGerm
     · exact hQGerm
     · exact hQGerm
@@ -866,11 +866,11 @@ theorem lTail_hess_le
       rw [uIcc_of_le hb0.le]
       exact hs0b
     exact (hgeoG.2.2 s hs0b').1
-  have hJJgInt := lRegIndex_int (I := I) S hS T a b gammaG Jg Jg
+  have hJJgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Jg Jg
     hJg2 hJg2 hregGTail
-  have hJQgInt := lRegIndex_int (I := I) S hS T a b gammaG Jg Qg
+  have hJQgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Jg Qg
     hJg2 hQg2 hregGTail
-  have hQQgInt := lRegIndex_int (I := I) S hS T a b gammaG Qg Qg
+  have hQQgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Qg Qg
     hQg2 hQg2 hregGTail
   have hBetaIGerm : ∀ s ∈ Ioo a b, beta =ᶠ[nhds s] gammaG := by
     intro s hs
@@ -884,17 +884,17 @@ theorem lTail_hess_le
       ∀ᶠ r in nhds s, (Q r : E) = (Qg r : E) := by
     intro s hs
     exact hQGerm s (by simpa only [uIoo_of_le hab.le] using hs)
-  have hJJInt : IntervalIntegrable (lRegIndexInt S T beta J J)
+  have hJJInt : IntervalIntegrable (lRegIndexIntegrand S T beta J J)
       MeasureTheory.volume a b :=
-    (lIndexInt_int_iff (I := I) S T J J Jg Jg a b hab.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg a b hab.le
       hBetaIGerm hJGerm hJGerm).2 hJJgInt
-  have hJQInt : IntervalIntegrable (lRegIndexInt S T beta J Q)
+  have hJQInt : IntervalIntegrable (lRegIndexIntegrand S T beta J Q)
       MeasureTheory.volume a b :=
-    (lIndexInt_int_iff (I := I) S T J Q Jg Qg a b hab.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J Q Jg Qg a b hab.le
       hBetaIGerm hJGerm hQIGerm).2 hJQgInt
-  have hQQInt : IntervalIntegrable (lRegIndexInt S T beta Q Q)
+  have hQQInt : IntervalIntegrable (lRegIndexIntegrand S T beta Q Q)
       MeasureTheory.volume a b :=
-    (lIndexInt_int_iff (I := I) S T Q Q Qg Qg a b hab.le
+    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg a b hab.le
       hBetaIGerm hQIGerm hQIGerm).2 hQQgInt
   have hbetaAt : ∀ s ∈ Icc a b,
       ContMDiffAt 𝓘(Real, Real) I ∞ beta s := by
@@ -957,11 +957,11 @@ theorem lTail_hess_le
     rw [hrep]
     exact (hWdiff s hs).sub (hJdiff s hs)
   have hJQzero : lRegIndex S T beta J Q a b = 0 := by
-    have hgreen := lRegIndex_jacobi (I := I) S hS T beta J Q a b
+    have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T beta J Q a b
       hregTail hBetaMdiff hA hJacTail hQdiff hJQInt
     rw [hgreen, hQa, hQb]
     simp
-  have hsquare := lIndex_sq_add (I := I) S T 1 beta J Q a b
+  have hsquare := lRegIndex_add_smul_self (I := I) S T 1 beta J Q a b
     hJdiff hQdiff hJJInt hJQInt hQQInt
   have hfield : (fun s ↦ J s + (1 : Real) • Q s) = W := by
     funext s
@@ -976,7 +976,7 @@ theorem lTail_hess_le
       lRegIndex S T beta W W a b := by
     rw [hdecomp]
     linarith
-  have hgreenJJ := lRegIndex_jacobi (I := I) S hS T beta J J a b
+  have hgreenJJ := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T beta J J a b
     hregTail hBetaMdiff hA hJacTail hJdiff hJJInt
   have hJJend : 2 * lRegIndex S T beta J J a b =
       g.inner y (covDerivAlong (I := I) g beta J b) Y := by

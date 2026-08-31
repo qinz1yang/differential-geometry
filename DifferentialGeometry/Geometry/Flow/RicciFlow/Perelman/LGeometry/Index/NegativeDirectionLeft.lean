@@ -52,13 +52,13 @@ theorem exists_lSplit_left
       DifferentiableAt Real (chartRepAt (I := I) alpha Y s) s)
     (hW : ∀ s ∈ uIcc c b,
       DifferentiableAt Real (chartRepAt (I := I) alpha W s) s)
-    (hYYint : IntervalIntegrable (lRegIndexInt S T alpha Y Y)
+    (hYYint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y Y)
       MeasureTheory.volume c b)
-    (hYWint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hYWint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume c b)
-    (hWWac : IntervalIntegrable (lRegIndexInt S T alpha W W)
+    (hWWac : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
       MeasureTheory.volume a c)
-    (hWWcb : IntervalIntegrable (lRegIndexInt S T alpha W W)
+    (hWWcb : IntervalIntegrable (lRegIndexIntegrand S T alpha W W)
       MeasureTheory.volume c b)
     (hYY : lRegIndex S T alpha Y Y c b = 0)
     (hYW : lRegIndex S T alpha Y W c b < 0) :
@@ -70,16 +70,16 @@ theorem exists_lSplit_left
   let Q := lRegIndex S T alpha W W a b
   obtain ⟨k, hk⟩ := exists_pos_scale hYW (Q := Q)
   refine ⟨k, ?_⟩
-  have htail := lIndex_sq_add (I := I) S T k alpha Y W c b hY hW
+  have htail := lRegIndex_add_smul_self (I := I) S T k alpha Y W c b hY hW
     hYYint hYWint hWWcb
   have hprefix : lRegIndex S T alpha (fun s ↦ k • W s)
       (fun s ↦ k • W s) a c =
       k ^ 2 * lRegIndex S T alpha W W a c := by
     rw [lRegIndex_smul (I := I) S T k alpha W
         (fun s ↦ k • W s) a c,
-      lRegIndex_smul_r (I := I) S T k alpha W W a c]
+      lRegIndex_smul_right (I := I) S T k alpha W W a c]
     ring
-  have hjoin := lIndex_adj (I := I) S T alpha W W a c b hWWac hWWcb
+  have hjoin := lRegIndex_add_adjacent (I := I) S T alpha W W a c b hWWac hWWcb
   rw [hprefix, htail, hYY, zero_add]
   dsimp only [Q] at hk
   rw [← hjoin] at hk
@@ -101,7 +101,7 @@ theorem lIndex_cross_neg
     (hjac : IsLRegJacobi S T alpha Y (uIcc c b))
     (hW : ∀ s ∈ uIcc c b, DifferentiableAt Real
       (chartRepAt (I := I) alpha W s) s)
-    (hIint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hIint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume c b)
     (hWb : W b = 0)
     (hWc : W c = (c * (b - c)) •
@@ -115,7 +115,7 @@ theorem lIndex_cross_neg
     (S.base.metric (T - c ^ 2)).pos (alpha c) P (by
       simpa only [P] using hDne)
   have hscale : 0 < c * (b - c) := mul_pos hc0 (sub_pos.mpr hcb)
-  have hgreen := lRegIndex_jacobi (I := I) S hS T alpha Y W c b ht
+  have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T alpha Y W c b ht
     halpha hA hjac hW hIint
   rw [hWb, hWc] at hgreen
   simp only [map_zero, zero_sub] at hgreen

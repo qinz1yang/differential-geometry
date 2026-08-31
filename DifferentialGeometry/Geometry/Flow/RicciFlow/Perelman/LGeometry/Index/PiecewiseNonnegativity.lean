@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.FieldRealizationPair
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.MinimizerNonnegativity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Smoothness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Integrability
 
 set_option autoImplicit false
 
@@ -209,7 +209,7 @@ private theorem indexGreen_var
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (alpha s) (Y s) : TangentBundle I M)) :=
     hYall.of_le (by norm_num)
-  have hIint := lRegIndex_int (I := I) S hS T a b alpha Y Y
+  have hIint := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b alpha Y Y
     hY2 hY2 ht
   have hJint : IntervalIntegrable
       (fun s : Real ↦ lRegJacobiPair S T alpha Y s (Y s))
@@ -587,11 +587,11 @@ theorem lIndex_sum_nonneg
     rw [uIcc_of_le hab.le]
     exact ⟨(hac.trans hs'.1).le, hs'.2.le⟩
   rw [hcenter0, hcenter1,
-    lRegIndex_congr (I := I) S T gamma
+    lRegIndex_congr_of_eqOn (I := I) S T gamma
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f0 u s) 0)
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f0 u s) 0)
       Y0 Y0 a c hEq0 hEq0,
-    lRegIndex_congr (I := I) S T gamma
+    lRegIndex_congr_of_eqOn (I := I) S T gamma
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f1 u s) 0)
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f1 u s) 0)
       Y1 Y1 c b hEq1 hEq1] at hnonneg

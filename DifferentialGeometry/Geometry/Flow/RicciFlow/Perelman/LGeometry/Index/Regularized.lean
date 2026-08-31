@@ -28,7 +28,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-noncomputable def lRegIndexInt
+noncomputable def lRegIndexIntegrand
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (Y W : ∀ s, TangentSpace I (alpha s)) (s : Real) : Real :=
@@ -53,12 +53,12 @@ noncomputable def lRegIndexInt
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
-theorem lRegIndexInt_symm
+theorem lRegIndexIntegrand_symm
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (Y W : ∀ s, TangentSpace I (alpha s)) (s : Real) :
-    lRegIndexInt S T alpha Y W s =
-      lRegIndexInt S T alpha W Y s := by
+    lRegIndexIntegrand S T alpha Y W s =
+      lRegIndexIntegrand S T alpha W Y s := by
   let t := T - s ^ 2
   let g := S.base.metric t
   let x := alpha s
@@ -108,7 +108,7 @@ theorem lRegIndexInt_symm
       SolutionFamily.ricci, SolutionOn.ricci, metricCov] using
       DifferentialGeometry.Geometry.Curvature.metricNablaSymm
         (I := I) (M := M) g x A (Y s) (W s)
-  simp only [lRegIndexInt]
+  simp only [lRegIndexIntegrand]
   rw [hinner, hcurv, hhess, hdRic]
   ring
 
@@ -116,7 +116,7 @@ noncomputable def lRegIndex
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
     (a b : Real) : Real :=
-  ∫ s in a..b, lRegIndexInt S T alpha Y W s
+  ∫ s in a..b, lRegIndexIntegrand S T alpha Y W s
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
@@ -127,11 +127,11 @@ theorem lRegIndex_symm
     lRegIndex S T alpha Y W a b = lRegIndex S T alpha W Y a b := by
   apply intervalIntegral.integral_congr
   intro s _
-  exact lRegIndexInt_symm (I := I) S T alpha Y W s
+  exact lRegIndexIntegrand_symm (I := I) S T alpha Y W s
 
 omit [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndex_congr
+theorem lRegIndex_congr_of_eqOn
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (Y₁ W₁ Y₂ W₂ : ∀ s, TangentSpace I (alpha s))
@@ -164,7 +164,7 @@ theorem lRegIndex_congr
     DifferentialGeometry.Geometry.Riemannian.Variation.covDerivAlong_congr_of_eventuallyEq
       (I := I)
       (S.base.metric (T - s ^ 2)) alpha hWev
-  simp only [lRegIndexInt, hYval, hWval, hYcov, hWcov]
+  simp only [lRegIndexIntegrand, hYval, hWval, hYcov, hWcov]
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M]
@@ -179,7 +179,7 @@ private theorem tensor_slot_smul
 
 omit [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lRegIndexInt_sq
+theorem lRegIndexIntegrand_squareReparametrization
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (gamma : Real → M)
     (Y W : ∀ tau, TangentSpace I (gamma tau))
@@ -190,7 +190,7 @@ theorem lRegIndexInt_sq
     (hW : DifferentiableAt Real
       (chartRepAt (I := I) gamma W (s ^ 2)) (s ^ 2)) :
     lIndexIntegrand S T gamma Y W (s ^ 2) * (2 * s) =
-      lRegIndexInt S T (squareReparametrization gamma)
+      lRegIndexIntegrand S T (squareReparametrization gamma)
         (fun r ↦ Y (r ^ 2)) (fun r ↦ W (r ^ 2)) s := by
   classical
   let tau : Real := s ^ 2
@@ -349,7 +349,7 @@ theorem lRegIndexInt_sq
   have hNreg2 : Nreg2 = c * N2 := by
     dsimp only [Nreg2]
     rw [hAs, hN2]
-  simp only [lIndexIntegrand, lRegIndexInt]
+  simp only [lIndexIntegrand, lRegIndexIntegrand]
   change Real.sqrt tau *
       (Inn - R + (1 / 2 : Real) * Hess + N0 - N1 - N2) * (2 * s) =
     (1 / 2 : Real) * (InnReg - Rreg) + s ^ 2 * Hess +
@@ -360,7 +360,7 @@ theorem lRegIndexInt_sq
 
 omit [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem lIndex_sq
+theorem lIndex_squareReparametrization
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (gamma : Real → M) (Y W : ∀ tau, TangentSpace I (gamma tau))
     (tau1 tau2 : Real) (htau1 : 0 ≤ tau1) (htau2 : 0 ≤ tau2)
@@ -401,7 +401,7 @@ theorem lIndex_sq
         (lIndexIntegrand S T gamma Y W ∘ fun r : Real ↦ r ^ 2) s *
           (2 * s)) =
         ∫ s in Real.sqrt tau1..Real.sqrt tau2,
-          lRegIndexInt S T (squareReparametrization gamma)
+          lRegIndexIntegrand S T (squareReparametrization gamma)
             (fun r ↦ Y (r ^ 2)) (fun r ↦ W (r ^ 2)) s := by
     apply intervalIntegral.integral_congr_ae
     filter_upwards
@@ -414,7 +414,7 @@ theorem lIndex_sq
       · exact (Real.sqrt_nonneg tau2).trans hs.1
     have hspos : 0 < s := lt_of_le_of_ne hsnonneg hs0.symm
     simpa only [Function.comp_apply] using
-      lRegIndexInt_sq (I := I) S T gamma Y W s hspos
+      lRegIndexIntegrand_squareReparametrization (I := I) S T gamma Y W s hspos
         (hgamma s hsu hspos) (hY s hsu hspos) (hW s hsu hspos)
   simpa only [lIndex, lRegIndex] using hsub'.symm.trans hcongr
 
@@ -442,7 +442,7 @@ theorem lRegIndex_balance
         (S.base.metric (T - r ^ 2)).inner (alpha r)
           (covDerivAlong (I := I)
             (S.base.metric (T - r ^ 2)) alpha Y r) (W r))
-      (2 * lRegIndexInt S T alpha Y W s +
+      (2 * lRegIndexIntegrand S T alpha Y W s +
         lRegJacobiPair S T alpha Y s (W s)) s := by
   let q := S.base.metric (T - s ^ 2)
   let P : ∀ r, TangentSpace I (alpha r) := fun r ↦
@@ -460,7 +460,7 @@ theorem lRegIndex_balance
   apply hinner.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun r ↦ rfl) |>.congr_deriv
   rw [hdyn]
-  simp only [lRegIndexInt]
+  simp only [lRegIndexIntegrand]
   dsimp only [q, P]
   ring
 
@@ -484,7 +484,7 @@ theorem lRegIndex_green
           (S.base.metric (T - s ^ 2)) alpha Y r) s) s)
     (hW : ∀ s ∈ Set.uIcc a b, DifferentiableAt Real
       (chartRepAt (I := I) alpha W s) s)
-    (hIint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hIint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b)
     (hJint : IntervalIntegrable
       (fun s ↦ lRegJacobiPair S T alpha Y s (W s))
@@ -502,7 +502,7 @@ theorem lRegIndex_green
     (S.base.metric (T - s ^ 2)).inner (alpha s)
       (covDerivAlong (I := I)
         (S.base.metric (T - s ^ 2)) alpha Y s) (W s)
-  let K : Real → Real := lRegIndexInt S T alpha Y W
+  let K : Real → Real := lRegIndexIntegrand S T alpha Y W
   let J : Real → Real := fun s ↦ lRegJacobiPair S T alpha Y s (W s)
   have hbal : ∀ s ∈ Set.uIcc a b,
       HasDerivAt B (2 * K s + J s) s := by
@@ -534,7 +534,7 @@ theorem lRegIndex_green
       (1 / 2 : Real) * (B b - B a - ∫ s in a..b, J s))
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-theorem lRegIndex_zero_ends
+theorem lRegIndex_eq_neg_half_integral_lRegJacobiPair_of_boundary_eq_zero
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (alpha : Real → M) (Y W : ∀ r, TangentSpace I (alpha r))
@@ -553,7 +553,7 @@ theorem lRegIndex_zero_ends
           (S.base.metric (T - s ^ 2)) alpha Y r) s) s)
     (hW : ∀ s ∈ Set.uIcc a b, DifferentiableAt Real
       (chartRepAt (I := I) alpha W s) s)
-    (hIint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hIint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b)
     (hJint : IntervalIntegrable
       (fun s ↦ lRegJacobiPair S T alpha Y s (W s))
@@ -570,7 +570,7 @@ theorem lRegIndex_zero_ends
   ring
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-theorem lRegIndex_jacobi
+theorem lRegIndex_eq_half_boundary_of_isLRegJacobi
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (alpha : Real → M) (Y W : ∀ r, TangentSpace I (alpha r))
@@ -584,7 +584,7 @@ theorem lRegIndex_jacobi
     (hjac : IsLRegJacobi S T alpha Y (Set.uIcc a b))
     (hW : ∀ s ∈ Set.uIcc a b, DifferentiableAt Real
       (chartRepAt (I := I) alpha W s) s)
-    (hIint : IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    (hIint : IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b) :
     lRegIndex S T alpha Y W a b =
       (1 / 2 : Real) *

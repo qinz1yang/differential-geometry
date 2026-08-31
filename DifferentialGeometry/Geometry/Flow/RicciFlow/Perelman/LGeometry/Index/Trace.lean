@@ -47,7 +47,7 @@ theorem lIndex_trace
       (S.base.metric (T - b ^ 2)).inner (alpha b) (P i b) (P j b) =
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
-      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s)
+      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume 0 b)
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / b ^ 2) *
@@ -60,7 +60,7 @@ theorem lIndex_trace
         ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s) -
+                lRegIndexIntegrand S T alpha (P i) (P i) s) -
             (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
   classical
   have hONs (s : Real) (hs : s ∈ Set.Icc (0 : Real) b)
@@ -101,7 +101,7 @@ theorem lIndex_trace
   rw [Finset.sum_add_distrib]
   have hint (i : Fin (Module.finrank Real E)) : IntervalIntegrable
       (fun s : Real ↦
-        (s / b) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s -
+        (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
           (2 * s ^ 2 / b ^ 2) *
             S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
       MeasureTheory.volume 0 b :=
@@ -109,7 +109,7 @@ theorem lIndex_trace
   rw [← intervalIntegral.integral_finsetSum
     (s := (Finset.univ : Finset (Fin (Module.finrank Real E))))
     (f := fun i s ↦
-      (s / b) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s -
+      (s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
         (2 * s ^ 2 / b ^ 2) *
           S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
     (fun i _ ↦ hint i)]
@@ -125,19 +125,19 @@ theorem lIndex_trace
     dsimp only
     calc
       ∑ i : Fin (Module.finrank Real E),
-          ((s / b) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s -
+          ((s / b) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) *
               S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s))) =
           (s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) *
               ∑ i : Fin (Module.finrank Real E),
                 S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)) := by
           rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
       _ = (s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s) := by
           rw [hRic s hs']
 
@@ -163,7 +163,7 @@ theorem lIndex_trace_pos
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
-        lRegIndexInt S T alpha (P i) (P i) s)
+        lRegIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume a b)
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s * (s - a) / (b - a) ^ 2) *
@@ -176,7 +176,7 @@ theorem lIndex_trace_pos
         ∫ s in a..b,
           (((s - a) / (b - a)) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s) -
+                lRegIndexIntegrand S T alpha (P i) (P i) s) -
             (2 * s * (s - a) / (b - a) ^ 2) *
               S.scalar (T - s ^ 2) (alpha s) := by
   classical
@@ -219,12 +219,12 @@ theorem lIndex_trace_pos
             (S.base.metric (T - b ^ 2)).inner (alpha b) (P i b) (P i b) +
           ∫ s in a..b,
             (((s - a) / (b - a)) ^ 2 *
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
               (2 * s * (s - a) / (b - a) ^ 2) *
                 S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s))) := by
     let f : Real → Real := fun s ↦ (s - a) / (b - a)
     let F : Real → Real := fun s ↦
-      ((s - a) / (b - a)) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s
+      ((s - a) / (b - a)) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s
     let N : Real → Real := fun s ↦
       (1 / (2 * (b - a) ^ 2)) *
         (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P i s)
@@ -232,7 +232,7 @@ theorem lIndex_trace_pos
       (2 * s * (s - a) / (b - a) ^ 2) *
         S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s))
     have hpt : ∀ s ∈ Set.uIcc a b,
-        lRegIndexInt S T alpha (fun r ↦ f r • P i r)
+        lRegIndexIntegrand S T alpha (fun r ↦ f r • P i r)
             (fun r ↦ f r • P i r) s = F s + N s - R s := by
       intro s hs
       have hs' : s ∈ Set.Icc a b := by
@@ -277,7 +277,7 @@ theorem lIndex_trace_pos
           field_simp [hba]
     unfold lRegIndex
     change (∫ s in a..b,
-      lRegIndexInt S T alpha (fun r ↦ f r • P i r)
+      lRegIndexIntegrand S T alpha (fun r ↦ f r • P i r)
         (fun r ↦ f r • P i r) s) = _
     rw [intervalIntegral.integral_congr hpt]
     rw [intervalIntegral.integral_sub ((hIint i).add hNint) (hRint i),
@@ -288,7 +288,7 @@ theorem lIndex_trace_pos
   rw [Finset.sum_add_distrib]
   have hint (i : Fin (Module.finrank Real E)) : IntervalIntegrable
       (fun s : Real ↦
-        ((s - a) / (b - a)) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s -
+        ((s - a) / (b - a)) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
           (2 * s * (s - a) / (b - a) ^ 2) *
             S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
       MeasureTheory.volume a b :=
@@ -296,7 +296,7 @@ theorem lIndex_trace_pos
   rw [← intervalIntegral.integral_finsetSum
     (s := (Finset.univ : Finset (Fin (Module.finrank Real E))))
     (f := fun i s ↦
-      ((s - a) / (b - a)) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s -
+      ((s - a) / (b - a)) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
         (2 * s * (s - a) / (b - a) ^ 2) *
           S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
     (fun i _ ↦ hint i)]
@@ -312,19 +312,19 @@ theorem lIndex_trace_pos
     dsimp only
     calc
       ∑ i : Fin (Module.finrank Real E),
-          (((s - a) / (b - a)) ^ 2 * lRegIndexInt S T alpha (P i) (P i) s -
+          (((s - a) / (b - a)) ^ 2 * lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s * (s - a) / (b - a) ^ 2) *
               S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s))) =
           ((s - a) / (b - a)) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s * (s - a) / (b - a) ^ 2) *
               ∑ i : Fin (Module.finrank Real E),
                 S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)) := by
           rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
       _ = ((s - a) / (b - a)) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T alpha (P i) (P i) s -
+                lRegIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s * (s - a) / (b - a) ^ 2) *
               S.scalar (T - s ^ 2) (alpha s) := by
           rw [hRic s hs']

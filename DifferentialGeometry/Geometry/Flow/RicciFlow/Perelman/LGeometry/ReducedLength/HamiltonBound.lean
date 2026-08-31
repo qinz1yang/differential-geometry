@@ -56,7 +56,7 @@ theorem redLength_lap_K
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
@@ -93,7 +93,7 @@ theorem redLength_lap_K
     exact hON i j
   have hIintb : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b := by
     simpa only [b] using hIint
   have htrace := lTraceInt_eq (I := I) S hS T x Z hb hbdom P
@@ -109,7 +109,7 @@ theorem redLength_lap_K
         (1 / b) *
           ∫ s in (0 : Real)..b,
             ((s / b) ^ 2 * ∑ i : Fin (Module.finrank Real E),
-                lRegIndexInt S T (lRegCurve S T x Z) (P i) (P i) s) -
+                lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
               (2 * s ^ 2 / b ^ 2) *
                 S.scalar (T - s ^ 2) (lRegCurve S T x Z s) := by
         simpa only [b] using hlap
@@ -271,28 +271,28 @@ theorem lTail_lap_K
     (hPsm i).of_le (by decide :
       (2 : WithTop ℕ∞) ≤ (8 : WithTop ℕ∞))
   have hraw (i : Fin (Module.finrank Real E)) :
-      IntervalIntegrable (lRegIndexInt S T beta (P i) (P i))
+      IntervalIntegrable (lRegIndexIntegrand S T beta (P i) (P i))
         MeasureTheory.volume a b := by
     have hsegOmega : uIcc a b ⊆ Omega := by
       intro s hs
       have hs' : s ∈ Icc a b := by
         simpa only [uIcc_of_le hab.le] using hs
       exact hOmegaSeg ⟨ha0.le.trans hs'.1, hs'.2⟩
-    exact lRegIndex_intOn S hS T a b beta (P i) (P i) hOmega hsegOmega
+    exact intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn S hS T a b beta (P i) (P i) hOmega hsegOmega
       (hPtwo i) (hPtwo i) (by
         intro s hs
         exact hregIcc s (by simpa only [uIcc_of_le hab.le] using hs))
   have hrawCan (i : Fin (Module.finrank Real E)) :
-      IntervalIntegrable (lRegIndexInt S T gamma (Pc i) (Pc i))
+      IntervalIntegrable (lRegIndexIntegrand S T gamma (Pc i) (Pc i))
         MeasureTheory.volume a b := by
-    apply (lIndexInt_int_iff (I := I) S T (P i) (P i) (Pc i) (Pc i)
+    apply (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T (P i) (P i) (Pc i) (Pc i)
       a b hab.le
       (fun s hs ↦ hcurve s ⟨hs.1.le, hs.2.le⟩)
       (fun s hs ↦ hPcGerm i s ⟨hs.1.le, hs.2.le⟩)
       (fun s hs ↦ hPcGerm i s ⟨hs.1.le, hs.2.le⟩)).mp
     exact hraw i
   have hIintCan (i : Fin (Module.finrank Real E)) : IntervalIntegrable
-      (fun s : Real ↦ c s ^ 2 * lRegIndexInt S T gamma (Pc i) (Pc i) s)
+      (fun s : Real ↦ c s ^ 2 * lRegIndexIntegrand S T gamma (Pc i) (Pc i) s)
       MeasureTheory.volume a b :=
     (hrawCan i).continuousOn_mul
       (((continuous_id.sub continuous_const).div_const (b - a)).pow 2).continuousOn
@@ -413,7 +413,7 @@ theorem lTail_lap_K
         lRegIndex S T gamma (fun s ↦ c s • Pc i s)
           (fun s ↦ c s • Pc i s) a b := by
     refine Finset.sum_congr rfl fun i _ ↦ ?_
-    apply lIndex_germ_congr (I := I) S T _ _ _ _ a b
+    apply lRegIndex_congr_of_eventuallyEq (I := I) S T _ _ _ _ a b
     · intro s hs
       have hs' : s ∈ Ioo a b := by simpa only [uIoo_of_le hab.le] using hs
       exact hcurve s ⟨hs'.1.le, hs'.2.le⟩

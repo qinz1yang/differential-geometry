@@ -244,7 +244,7 @@ private theorem movingCov_cont
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegIndex_intOn
+theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a b : Real)
     (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
@@ -258,7 +258,7 @@ theorem lRegIndex_intOn
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (alpha s) (W s) : TangentBundle I M)) Ω)
     (hreg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b := by
   classical
   have halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 2 alpha Ω := by
@@ -418,16 +418,16 @@ theorem lRegIndex_intOn
   have hsq : Continuous (fun z : P ↦ (z : Real) ^ 2) := hz.pow 2
   have hall := ((hhalf.mul (hInner.sub hRm)).add (hsq.mul hHess)).add
     (hz.mul ((hRic1.sub hRic2).sub hRic3))
-  have hcont : ContinuousOn (lRegIndexInt S T alpha Y W) K := by
+  have hcont : ContinuousOn (lRegIndexIntegrand S T alpha Y W) K := by
     rw [continuousOn_iff_continuous_domRestrict]
     refine hall.congr (fun z ↦ ?_)
-    change _ = lRegIndexInt S T alpha Y W (z : Real)
+    change _ = lRegIndexIntegrand S T alpha Y W (z : Real)
     rfl
   exact hcont.intervalIntegrable
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegIndex_int
+theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiff
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a b : Real)
     (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
@@ -440,9 +440,9 @@ theorem lRegIndex_int
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (alpha s) (W s) : TangentBundle I M)))
     (hreg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegIndexInt S T alpha Y W)
+    IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b :=
-  lRegIndex_intOn S hS T a b alpha Y W isOpen_univ
+  intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn S hS T a b alpha Y W isOpen_univ
     (Set.subset_univ (uIcc a b)) hY.contMDiffOn hW.contMDiffOn hreg
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
