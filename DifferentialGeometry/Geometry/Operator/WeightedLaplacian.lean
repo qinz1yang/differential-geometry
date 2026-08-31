@@ -91,6 +91,196 @@ theorem weightedLaplacian_const_smul
   simp only [map_smul, smul_eq_mul]
   ring
 
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem weightedLaplacian_mul
+    (g : SmoothRiemannianMetric I M) (f u v : C^∞⟮I, M; Real⟯) (x : M) :
+    weightedLaplacian (I := I) g f (u * v) x =
+      u x * weightedLaplacian (I := I) g f v x +
+        v x * weightedLaplacian (I := I) g f u x +
+          2 * g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x) := by
+  have hu : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) (u : M → Real) y :=
+    Filter.Eventually.of_forall fun y => (u.contMDiff y).mdifferentiableAt (by simp)
+  have hv : ∀ᶠ y in nhds x,
+      MDifferentiableAt I 𝓘(Real, Real) (v : M → Real) y :=
+    Filter.Eventually.of_forall fun y => (v.contMDiff y).mdifferentiableAt (by simp)
+  have hgradu : MDiffAt (T% fun y : M => gradientFun (I := I) g u y) x :=
+    (gradientFun_contMDiffAt (I := I) g (u.contMDiff x)).mdifferentiableAt (by simp)
+  have hgradv : MDiffAt (T% fun y : M => gradientFun (I := I) g v y) x :=
+    (gradientFun_contMDiffAt (I := I) g (v.contMDiff x)).mdifferentiableAt (by simp)
+  have hlap := laplacian_mul_at (I := I) (LeviCivita (I := I) g) g
+    hu hv hgradu hgradv
+  let uv : C^∞⟮I, M; Real⟯ :=
+    ⟨fun y : M => u y * v y, (u * v).contMDiff⟩
+  have huv : uv = u * v := by
+    ext y
+    rfl
+  have huvBridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g
+          (fun y : M => u y * v y) x =
+        ΔG (I := I) g (u * v) x := by
+    calc
+      _ = laplacian (I := I) (LeviCivita (I := I) g) g (uv : M → Real) x := rfl
+      _ = ΔG (I := I) g uv x :=
+        laplacian_levi_eq (I := I) g uv.contMDiff x
+      _ = ΔG (I := I) g (u * v) x := by rw [huv]
+  have huBridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g (u : M → Real) x =
+        ΔG (I := I) g u x :=
+    laplacian_levi_eq (I := I) g u.contMDiff x
+  have hvBridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g (v : M → Real) x =
+        ΔG (I := I) g v x :=
+    laplacian_levi_eq (I := I) g v.contMDiff x
+  have hlap' :
+      ΔG (I := I) g (u * v) x =
+        u x * ΔG (I := I) g v x + v x * ΔG (I := I) g u x +
+          2 * g.inner x (gradFun (I := I) g u x)
+            (gradFun (I := I) g v x) := by
+    calc
+      ΔG (I := I) g (u * v) x =
+          laplacian (I := I) (LeviCivita (I := I) g) g
+            (fun y : M => u y * v y) x := huvBridge.symm
+      _ = u x * laplacian (I := I) (LeviCivita (I := I) g) g v x +
+            v x * laplacian (I := I) (LeviCivita (I := I) g) g u x +
+              2 * g.inner x (gradientFun (I := I) g u x)
+                (gradientFun (I := I) g v x) := hlap
+      _ = _ := by rw [huBridge, hvBridge, Connection.gradient_eq_gradFun,
+        Connection.gradient_eq_gradFun]
+  have hgradmul :
+      gradFun (I := I) g ((u * v : C^∞⟮I, M; Real⟯) : M → Real) x =
+        u x • gradFun (I := I) g v x + v x • gradFun (I := I) g u x := by
+    rw [← huv]
+    change gradFun (I := I) g (fun y : M => u y * v y) x = _
+    have h := gradientFun_mul (I := I) g
+      ((u.contMDiff x).mdifferentiableAt (by simp))
+      ((v.contMDiff x).mdifferentiableAt (by simp))
+    simpa only [Connection.gradient_eq_gradFun] using h
+  rw [weightedLaplacian_apply, weightedLaplacian_apply,
+    weightedLaplacian_apply, hlap', hgradmul]
+  simp only [map_add, map_smul, smul_eq_mul]
+  ring
+
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
+    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [IsManifold I ∞ M] in
+private theorem contMDiff_rpow_const_of_pos
+    {u : C^∞⟮I, M; Real⟯} {p : Real} (hpos : ∀ y : M, 0 < u y) :
+    ContMDiff I 𝓘(Real, Real) ∞ (fun y : M => u y ^ p) := by
+  intro y
+  exact (Real.contDiffAt_rpow_const_of_ne (p := p) (hpos y).ne').comp_contMDiffAt
+    (u.contMDiff.contMDiffAt)
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem weightedLaplacian_rpow
+    (g : SmoothRiemannianMetric I M) (f u : C^∞⟮I, M; Real⟯)
+    (p : Real) (hpos : ∀ y : M, 0 < u y) (x : M) :
+    let up : C^∞⟮I, M; Real⟯ :=
+      ⟨fun y : M => u y ^ p, contMDiff_rpow_const_of_pos (I := I) hpos⟩
+    weightedLaplacian (I := I) g f up x =
+      (p * u x ^ (p - 1)) * weightedLaplacian (I := I) g f u x +
+        (p * (p - 1) * u x ^ (p - 2)) *
+          g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g u x) := by
+  let up : C^∞⟮I, M; Real⟯ :=
+    ⟨fun y : M => u y ^ p, contMDiff_rpow_const_of_pos (I := I) hpos⟩
+  change weightedLaplacian (I := I) g f up x = _
+  have hu : ∀ y : M,
+      MDifferentiableAt I 𝓘(Real, Real) (u : M → Real) y :=
+    fun y => (u.contMDiff y).mdifferentiableAt (by simp)
+  have hgradu : MDiffAt (T% fun y : M => gradientFun (I := I) g u y) x :=
+    (gradientFun_contMDiffAt (I := I) g (u.contMDiff x)).mdifferentiableAt (by simp)
+  have hlap := laplacian_rpow (I := I) (LeviCivita (I := I) g) g p hu hpos hgradu
+  have hupBridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g
+          (fun y : M => u y ^ p) x =
+        ΔG (I := I) g up x := by
+    calc
+      _ = laplacian (I := I) (LeviCivita (I := I) g) g (up : M → Real) x := rfl
+      _ = ΔG (I := I) g up x :=
+        laplacian_levi_eq (I := I) g up.contMDiff x
+  have huBridge :
+      laplacian (I := I) (LeviCivita (I := I) g) g (u : M → Real) x =
+        ΔG (I := I) g u x :=
+    laplacian_levi_eq (I := I) g u.contMDiff x
+  have hlap' :
+      ΔG (I := I) g up x =
+        (p * u x ^ (p - 1)) * ΔG (I := I) g u x +
+          (p * (p - 1) * u x ^ (p - 2)) *
+            g.inner x (gradFun (I := I) g u x)
+              (gradFun (I := I) g u x) := by
+    calc
+      ΔG (I := I) g up x =
+          laplacian (I := I) (LeviCivita (I := I) g) g
+            (fun y : M => u y ^ p) x := hupBridge.symm
+      _ = (p * u x ^ (p - 1)) *
+            laplacian (I := I) (LeviCivita (I := I) g) g u x +
+          (p * (p - 1) * u x ^ (p - 2)) *
+            g.inner x (gradientFun (I := I) g u x)
+              (gradientFun (I := I) g u x) := hlap
+      _ = _ := by rw [huBridge, Connection.gradient_eq_gradFun]
+  have hgradpow :
+      gradFun (I := I) g up x =
+        (p * u x ^ (p - 1)) • gradFun (I := I) g u x := by
+    change gradFun (I := I) g (fun y : M => u y ^ p) x = _
+    have h := gradientFun_rpow (I := I) g p (hu x) (hpos x)
+    simpa only [Connection.gradient_eq_gradFun] using h
+  rw [weightedLaplacian_apply, weightedLaplacian_apply, hlap', hgradpow]
+  simp only [map_smul, smul_eq_mul]
+  ring
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem weightedLaplacian_mul_rpow
+    (g : SmoothRiemannianMetric I M) (f u v : C^∞⟮I, M; Real⟯)
+    (p : Real) (hpos : ∀ y : M, 0 < v y) (x : M) :
+    let vp : C^∞⟮I, M; Real⟯ :=
+      ⟨fun y : M => v y ^ p, contMDiff_rpow_const_of_pos (I := I) hpos⟩
+    weightedLaplacian (I := I) g f (u * vp) x =
+      v x ^ p * weightedLaplacian (I := I) g f u x +
+        p * u x * v x ^ (p - 1) * weightedLaplacian (I := I) g f v x +
+        p * (p - 1) * u x * v x ^ (p - 2) *
+          g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) +
+        2 * p * v x ^ (p - 1) *
+          g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x) := by
+  let vp : C^∞⟮I, M; Real⟯ :=
+    ⟨fun y : M => v y ^ p, contMDiff_rpow_const_of_pos (I := I) hpos⟩
+  change weightedLaplacian (I := I) g f (u * vp) x = _
+  have hmul := weightedLaplacian_mul (I := I) g f u vp x
+  have hpow := weightedLaplacian_rpow (I := I) g f v p hpos x
+  have hv : MDifferentiableAt I 𝓘(Real, Real) (v : M → Real) x :=
+    (v.contMDiff x).mdifferentiableAt (by simp)
+  have hgrad :
+      gradFun (I := I) g vp x =
+        (p * v x ^ (p - 1)) • gradFun (I := I) g v x := by
+    change gradFun (I := I) g (fun y : M => v y ^ p) x = _
+    have h := gradientFun_rpow (I := I) g p hv (hpos x)
+    simpa only [Connection.gradient_eq_gradFun] using h
+  have hvp : vp x = v x ^ p := rfl
+  rw [hmul, hpow, hgrad, hvp]
+  simp only [map_smul, smul_eq_mul]
+  ring_nf
+
+omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
+theorem weightedLaplacian_mul_inv_sq
+    (g : SmoothRiemannianMetric I M) (f u v : C^∞⟮I, M; Real⟯)
+    (hpos : ∀ y : M, 0 < v y) (x : M) :
+    let vInvSq : C^∞⟮I, M; Real⟯ :=
+      ⟨fun y : M => v y ^ (-2 : Real),
+        contMDiff_rpow_const_of_pos (I := I) hpos⟩
+    weightedLaplacian (I := I) g f (u * vInvSq) x =
+      v x ^ (-2 : Real) * weightedLaplacian (I := I) g f u x -
+        2 * u x * v x ^ (-3 : Real) * weightedLaplacian (I := I) g f v x +
+        6 * u x * v x ^ (-4 : Real) *
+          g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x) -
+        4 * v x ^ (-3 : Real) *
+          g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g v x) := by
+  let vInvSq : C^∞⟮I, M; Real⟯ :=
+    ⟨fun y : M => v y ^ (-2 : Real),
+      contMDiff_rpow_const_of_pos (I := I) hpos⟩
+  change weightedLaplacian (I := I) g f (u * vInvSq) x = _
+  have h := weightedLaplacian_mul_rpow (I := I) g f u v (-2 : Real) hpos x
+  change weightedLaplacian (I := I) g f (u * vInvSq) x = _ at h
+  convert h using 1
+  all_goals ring_nf
+
 def weightedRoughLaplacian0S
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯) {s : Nat}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
