@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
 
 set_option autoImplicit false
 
@@ -16,6 +16,7 @@ universe u uE uH
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set
+open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential

@@ -2863,7 +2863,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackFlat
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.LieDerivativePairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.MaximalTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarPositivity
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Reaction

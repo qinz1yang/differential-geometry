@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
 import Mathlib.Analysis.Calculus.MeanValue

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.IntrinsicEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.EigenvalueEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

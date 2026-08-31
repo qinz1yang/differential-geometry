@@ -131,7 +131,7 @@ theorem flow_end_le
     InitialScalarMinimum.pos_of_forall_pos (M := M) hinit_min hinit_pos
   have hscalar_cont : ∀ U : Real, 0 ≤ U → U < T →
       ContinuousOn (fun p : Real × M => S.scalar p.1 p.2)
-        (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) U) := by
+        (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) U) := by
     intro U _hU hUT
     convert! SolutionOn.scalar_continuousOn (I := I) (M := M) S hSmooth.scalarSTCont U
       (fun t ht => ⟨ht.1, lt_of_le_of_lt ht.2 hUT⟩) using 1
@@ -153,7 +153,7 @@ theorem flow_end_le
       U < scalarBlowupTime 3 c0 →
       ∃ K : NNReal, ∀ t : Real, t ∈ Set.Icc 0 U →
         LipschitzOnWith K (fun a : Real => scalarLowerReaction 3 a)
-          (DifferentialGeometry.Integral.Connection.scalarWMPValueSet (M := M) U
+          (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) U
             S.scalar (scalarLowerBarrier 3 c0)) := by
     intro U hU hUT hPole
     have hden : ∀ t : Real, t ∈ Set.Icc 0 U →
@@ -167,9 +167,9 @@ theorem flow_end_le
         fun_prop
       exact continuousOn_const.div hden_cont (fun t ht => ne_of_gt (hden t ht))
     have hcompact : IsCompact
-        (DifferentialGeometry.Integral.Connection.scalarWMPValueSet (M := M) U
+        (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) U
           S.scalar (scalarLowerBarrier 3 c0)) :=
-      DifferentialGeometry.Integral.Connection.scalarWMPValueSet_isCompact
+      DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet_isCompact
         (M := M) U S.scalar (scalarLowerBarrier 3 c0)
         (hscalar_cont U (le_of_lt hU) hUT) hbar_cont
     exact exists_scalarLowerReaction_lipschitzOn_valueSet
@@ -209,7 +209,7 @@ theorem flow_end_le
       U < scalarBlowupTime 3 c0 →
       ∀ t : Real, t ∈ Set.Icc 0 U →
         LipschitzOnWith (K U) (fun a : Real => scalarLowerReaction 3 a)
-          (DifferentialGeometry.Integral.Connection.scalarWMPValueSet (M := M) U
+          (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) U
             S.scalar (scalarLowerBarrier 3 c0)) := by
     intro U hU hUT hPole t ht
     dsimp [K]
