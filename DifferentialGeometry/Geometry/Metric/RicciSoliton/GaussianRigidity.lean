@@ -9,6 +9,8 @@ import DifferentialGeometry.Geometry.Exponential.NormalFrame
 import DifferentialGeometry.Geometry.Exponential.RadialFlat
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialGrowth
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCurvatureRank
+import DifferentialGeometry.Geometry.Curvature.Metric
 
 set_option autoImplicit false
 
@@ -738,5 +740,87 @@ theorem normalizedGradientRicciSoliton_potential_pos_of_not_isGaussian
     simpa only [normGradSqFun_def] using
       normGradSqFun_nonneg (I := I) g (f : M → Real) x
   linarith
+
+theorem normalizedGradientRicciSoliton_isGaussian_of_curvatureOperatorRankAt_eq_zero
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hdim : Module.finrank Real E = 3)
+    (x : M)
+    (hrank : Curvature.DimensionThree.metricCurvatureOperatorRankAt (I := I) g x (by
+      rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+      exact hdim) = 0) :
+    isGaussianGradientRicciSoliton (E := E) g f 1 := by
+  have hdimAt : Module.finrank Real (TangentSpace I x) = 3 := by
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
+  have hRm : metricRm04At (I := I) (M := M) g x = 0 :=
+    (Curvature.DimensionThree.metricCurvatureOperatorRankAt_eq_zero_iff
+      (I := I) (M := M) g x hdimAt).mp hrank
+  have hRic : metricRicciAt (I := I) (M := M) g x = 0 := by
+    let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis
+      (I := I) x
+    let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+        DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+      fun i j => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
+        (I := I) g x i j (extChartAt I x x)
+    have hinv : DifferentialGeometry.Tensor0SBundle.MetricInverseInBasisGen
+        (I := I) g x basis gInv := by
+      simpa [basis, gInv] using
+        (DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+          (I := I) g x)
+    have hLower :
+        DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x
+          (metricRm13 (I := I) (M := M) g x)
+          (metricRm04 (I := I) (M := M) g x) :=
+      DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
+        (I := I) g (metricCov (I := I) (M := M) g)
+        (metricRm13 (I := I) (M := M) g)
+        (metricRm04 (I := I) (M := M) g)
+        (metricCurvData (I := I) (M := M) g).rm13Realizes
+        (metricCurvData (I := I) (M := M) g).rm04Realizes x
+    have hTrace :
+        DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I)
+          (metricRicciAt (I := I) (M := M) g x)
+          (metricRm04At (I := I) (M := M) g x) gInv basis := by
+      have hTrace' :=
+        DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13_section
+          (I := I) g basis gInv hinv
+          (metricRicci (I := I) (M := M) g)
+          (metricRm13 (I := I) (M := M) g)
+          (metricRm04 (I := I) (M := M) g)
+          (metricCurvData (I := I) (M := M) g).ricciRealizes hLower
+      simpa using hTrace'
+    apply Tensor0SBundle.ext0S_basis basis
+    intro slots
+    simp only [Tensor0SBundle.component0S_apply]
+    change metricRicciAt (I := I) (M := M) g x
+      (fun a : Fin 2 => basis (slots a)) = 0
+    have hslots : (fun a : Fin 2 => basis (slots a)) =
+        vec2 (I := I) (basis (slots 0)) (basis (slots 1)) := by
+      funext a
+      fin_cases a <;> rfl
+    rw [hslots]
+    have hcomp := hTrace (slots 0) (slots 1)
+    calc
+      metricRicciAt (I := I) (M := M) g x
+          (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) =
+          ∑ i, ∑ j, gInv i j *
+            metricRm04 (I := I) (M := M) g x
+              (vec4 (I := I) (basis i) (basis (slots 0))
+                (basis (slots 1)) (basis j)) := hcomp
+      _ = 0 := by
+        apply Finset.sum_eq_zero
+        intro i hi
+        apply Finset.sum_eq_zero
+        intro j hj
+        rw [metricRm04_apply, hRm]
+        simp
+  have hscalar : metricScalarAt (I := I) (M := M) g x = 0 :=
+    metricScalarAt_eq_zero_of_ricciTensor_eq_zero (I := I) (M := M) g x (by
+      intro v w
+      rw [← metricRicciAt_apply_eq_ricciTensor (I := I) g x v w, hRic]
+      rfl)
+  exact normalizedGradientRicciSoliton_isGaussian_of_scalar_eq_zero
+    (I := I) h hscalar
 
 end DifferentialGeometry.Geometry
