@@ -231,7 +231,7 @@ private lemma resolventChartComponent_memWkp_arbitrary_local
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+          β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) β with hΩ_def
@@ -247,7 +247,7 @@ private lemma resolventChartComponent_memWkp_arbitrary_local
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+          β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
           EuclN → ℝ) y)
         =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => i.fst.val *
@@ -333,7 +333,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) := fun i K' β Q _ =>
     resolventChartComponent_memWkp_arbitrary_local
@@ -666,7 +666,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) := fun j _ β Q =>
     resolventChartComponent_memWkp_arbitrary_local

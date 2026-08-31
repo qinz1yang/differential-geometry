@@ -1252,7 +1252,7 @@ private theorem exists_const_sum_eLpNorm_cutoffLowerOrderTerm_le_uniform
       intro p
       rw [hμ_def]
       have hb := hCcomp S.toCcTensor p.1 p.2
-      rw [chartL2Measure] at hb
+      rw [chartLebesgueMeasure] at hb
       refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le))
       rw [show ((‖S‖₊ : ℝ≥0∞)) = ENNReal.ofReal ‖S‖ from by
         rw [show ((‖S‖₊ : ℝ≥0∞)) = ‖S‖ₑ from (enorm_eq_nnnorm S).symm,

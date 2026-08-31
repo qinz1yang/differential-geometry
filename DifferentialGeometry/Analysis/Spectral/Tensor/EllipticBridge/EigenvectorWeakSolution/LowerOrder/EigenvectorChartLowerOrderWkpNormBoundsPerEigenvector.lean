@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Regularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.EigenvectorChartLowerOrderLimits
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
@@ -53,7 +53,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -66,14 +66,14 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((partialLpLimit (I := I) (M := M)
                     g r s i α P k :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   set partAtom : (TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E))
       → EuclN → ℝ := fun pk y =>
     ((partialLpLimit (I := I) (M := M) g r s i α pk.1 pk.2 :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hpartAtom_def
   set F : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → EuclN → ℝ :=
@@ -82,7 +82,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le
           (principalRotationFactor (I := I) (M := M)
             g r s α P₀ x.1 x.2.1 x.2.2.1 x.2.2.2) y *
         ((partialLpLimit (I := I) (M := M) g r s i α x.1 x.2.2.1 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hF_def
   have h_data : ∀ x ∈ (Finset.univ :
       Finset (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
@@ -144,7 +144,7 @@ theorem wkpNorm_covPrincipalRotationCoeffLimit_le
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               Ω := by
     rw [Fintype.sum_prod_type]
   refine ⟨Csum * (Finset.univ :
@@ -174,7 +174,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -187,14 +187,14 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   (fun y => ((partialLpLimit (I := I) (M := M)
                       g r s i α P k :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) α))
             + (∑ p : TensorCompIdx (E := E) r s,
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   (fun y => ((componentLpLimit (I := I) (M := M)
                       g r s i α p :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) α))) := by
   classical
@@ -203,11 +203,11 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
   set partAtom : (TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E))
       → EuclN → ℝ := fun pk y =>
     ((partialLpLimit (I := I) (M := M) g r s i α pk.1 pk.2 :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hpartAtom_def
   set compAtom : TensorCompIdx (E := E) r s → EuclN → ℝ := fun p y =>
     ((componentLpLimit (I := I) (M := M) g r s i α p :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hcompAtom_def
   set Fpart : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → EuclN → ℝ :=
@@ -216,7 +216,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
           (valuePartialFactor (I := I) (M := M)
             g r s α P₀ x.1 x.2.1 x.2.2.1 x.2.2.2) y *
         ((partialLpLimit (I := I) (M := M) g r s i α x.1 x.2.2.1 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFpart_def
   set Fcomp : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)
@@ -226,7 +226,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
           (valueComponentFactor (I := I) (M := M)
             g r s α P₀ x.1 x.2.1 x.2.2.1 x.2.2.2.1 x.2.2.2.2) y *
         ((componentLpLimit (I := I) (M := M) g r s i α x.2.2.2.2 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFcomp_def
   have h_part_data : ∀ x ∈ (Finset.univ :
       Finset (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
@@ -344,7 +344,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               Ω := by
     rw [Fintype.sum_prod_type]
   refine ⟨max
@@ -374,7 +374,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               Ω := by
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
@@ -389,7 +389,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             Ω := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le)
@@ -478,14 +478,14 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((partialLpLimit (I := I) (M := M)
                     g r s i α P k :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) y) Ω)
         + ENNReal.ofReal Cmax *
           (∑ p : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((componentLpLimit (I := I) (M := M)
                   g r s i α p :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y) Ω) :=
         add_le_add hpart hcomp
     _ = ENNReal.ofReal Cmax *
@@ -494,13 +494,13 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   (fun y => ((partialLpLimit (I := I) (M := M)
                       g r s i α P k :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y) Ω)
             + (∑ p : TensorCompIdx (E := E) r s,
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   (fun y => ((componentLpLimit (I := I) (M := M)
                       g r s i α p :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y) Ω)) := by
       rw [mul_add]
 
@@ -514,7 +514,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -526,7 +526,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((componentLpLimit (I := I) (M := M)
                     g r s i α p :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) α))
             + (∑ p : TensorCompIdx (E := E) r s,
@@ -534,7 +534,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
                   iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                     (fun y => ((partialLpLimit (I := I) (M := M)
                         g r s i α p l' :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                       EuclN → ℝ) y)
                     (chartTargetEuclid (I := I) (M := M) α))) := by
   classical
@@ -542,12 +542,12 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
   set compAtom : TensorCompIdx (E := E) r s → EuclN → ℝ := fun p y =>
     ((componentLpLimit (I := I) (M := M) g r s i α p :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hcompAtom_def
   set partAtom : (TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E))
       → EuclN → ℝ := fun pl y =>
     ((partialLpLimit (I := I) (M := M) g r s i α pl.1 pl.2 :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hpartAtom_def
   set Fcomp : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s) → EuclN → ℝ :=
@@ -557,7 +557,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
             (weightedGradFactor (I := I) (M := M)
               g r s α P₀ l x.1 x.2.1 x.2.2.1 x.2.2.2)) y *
         ((componentLpLimit (I := I) (M := M) g r s i α x.2.2.2 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFcomp_def
   set Fpart : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s) → EuclN → ℝ :=
@@ -566,7 +566,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
           (weightedGradFactor (I := I) (M := M)
             g r s α P₀ l x.1 x.2.1 x.2.2.1 x.2.2.2) y *
         ((partialLpLimit (I := I) (M := M) g r s i α x.2.2.2 l :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFpart_def
   have h_comp_data : ∀ x ∈ (Finset.univ :
       Finset (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
@@ -681,7 +681,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α p l' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               Ω := by
     rw [Fintype.sum_prod_type]
   refine ⟨max
@@ -709,7 +709,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             Ω := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le)
@@ -723,7 +723,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α p l' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               Ω := by
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
@@ -810,7 +810,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((componentLpLimit (I := I) (M := M)
                   g r s i α p :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y) Ω)
         + ENNReal.ofReal Cmax *
           (∑ p : TensorCompIdx (E := E) r s,
@@ -818,7 +818,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((partialLpLimit (I := I) (M := M)
                     g r s i α p l' :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) y) Ω) :=
         add_le_add hcomp hpart
     _ = ENNReal.ofReal Cmax *
@@ -826,14 +826,14 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((componentLpLimit (I := I) (M := M)
                     g r s i α p :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) y) Ω)
             + (∑ p : TensorCompIdx (E := E) r s,
                 ∑ l' : Fin (Module.finrank ℝ E),
                   iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                     (fun y => ((partialLpLimit (I := I) (M := M)
                         g r s i α p l' :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                       EuclN → ℝ) y) Ω)) := by
       rw [mul_add]
 

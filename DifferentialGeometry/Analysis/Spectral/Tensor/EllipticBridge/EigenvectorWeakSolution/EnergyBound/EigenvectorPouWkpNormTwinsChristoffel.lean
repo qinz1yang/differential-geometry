@@ -75,7 +75,7 @@ private lemma wkpNorm_coef_mul_factor_le
       (chartTargetEuclid (I := I) (M := M) α))
     (hfactor_memWkp : MemWkp (d := Module.finrank ℝ E) K 2 factor
       (chartTargetEuclid (I := I) (M := M) α))
-    (hfactor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    (hfactor_ae_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ chartPouKernel (I := I) (M := M) α → factor y = 0) :
     MemWkp (d := Module.finrank ℝ E) K 2
         (fun y => coef y * factor y) (chartTargetEuclid (I := I) (M := M) α) ∧
@@ -131,7 +131,7 @@ private lemma wkpNorm_coef_mul_factor_le
   have hfactor_ae_zero' : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
       y ∉ Kα → factor y = 0 := by
     have h := hfactor_ae_zero
-    rw [chartL2Measure] at h
+    rw [chartLebesgueMeasure] at h
     exact h
   have h_ae_eq : (fun y => (χ y * coef y) * factor y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
@@ -213,7 +213,7 @@ private lemma wkpNorm_coef_mul_factor_le_uniform
       ∀ factor : EuclN → ℝ,
         MemWkp (d := Module.finrank ℝ E) K 2 factor
           (chartTargetEuclid (I := I) (M := M) α) →
-        (∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+        (∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
           y ∉ chartPouKernel (I := I) (M := M) α → factor y = 0) →
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => coef y * factor y)
@@ -262,7 +262,7 @@ private lemma wkpNorm_coef_mul_factor_le_uniform
   have hfactor_ae_zero' : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
       y ∉ Kα → factor y = 0 := by
     have h := hfactor_ae_zero
-    rw [chartL2Measure] at h
+    rw [chartLebesgueMeasure] at h
     exact h
   have h_ae_eq : (fun y => (χ y * coef y) * factor y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
@@ -328,7 +328,7 @@ lemma covGradChristoffelLimit_memWkp_and_wkpNorm_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
@@ -366,7 +366,7 @@ lemma covGradChristoffelLimit_memWkp_and_wkpNorm_le
     obtain ⟨hfactor_memWkp, hfactor_norm⟩ :=
       eigenvectorVec_pou_memWkp_and_wkpNorm_le (I := I) (M := M)
         g r s i K β p ((h_pou_phi β p).le_of_le (Nat.le_succ K))
-    have hfactor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+    have hfactor_ae_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) β),
         y ∉ chartPouKernel (I := I) (M := M) β →
           (tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -433,7 +433,7 @@ lemma covGradChristoffelLimit_memWkp_and_wkpNorm_le
                     (tensorResolventEigenbasisVec (I := I) (M := M)
                       (tensorResolventL2_isCompactOperator (I := I)
                         (M := M) g r s) i)
-                    β p : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β p : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y) Ω :=
         hCcoef_bd
       _ ≤ ENNReal.ofReal Ccoef *
@@ -443,7 +443,7 @@ lemma covGradChristoffelLimit_memWkp_and_wkpNorm_le
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β p : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β p : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β)) :=
         mul_le_mul_of_nonneg_left hfactor_norm (zero_le)
@@ -507,7 +507,7 @@ lemma covGradChristoffelLimit_wkpNorm_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
@@ -526,7 +526,7 @@ lemma covGradChristoffelLimit_wkpNorm_le_uniform
       ∃ C : ℝ, 0 ≤ C ∧
         ∀ factor : EuclN → ℝ,
           MemWkp (d := Module.finrank ℝ E) K 2 factor Ω →
-          (∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+          (∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) β),
             y ∉ chartPouKernel (I := I) (M := M) β → factor y = 0) →
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => covDerivLowerOrderCoeff (I := I) (M := M)
@@ -562,7 +562,7 @@ lemma covGradChristoffelLimit_wkpNorm_le_uniform
     obtain ⟨hfactor_memWkp, hfactor_norm⟩ :=
       eigenvectorVec_pou_memWkp_and_wkpNorm_le (I := I) (M := M)
         g r s i K β p ((h_pou_phi i β p).le_of_le (Nat.le_succ K))
-    have hfactor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+    have hfactor_ae_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) β),
         y ∉ chartPouKernel (I := I) (M := M) β →
           (tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -628,7 +628,7 @@ lemma covGradChristoffelLimit_wkpNorm_le_uniform
                     (tensorResolventEigenbasisVec (I := I) (M := M)
                       (tensorResolventL2_isCompactOperator (I := I)
                         (M := M) g r s) i)
-                    β p : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β p : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y) Ω :=
         hCcoef_bd p _ hfactor_memWkp hfactor_ae_zero
       _ ≤ ENNReal.ofReal (Ccoef p) *
@@ -638,7 +638,7 @@ lemma covGradChristoffelLimit_wkpNorm_le_uniform
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β p : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β p : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β)) :=
         mul_le_mul_of_nonneg_left hfactor_norm (zero_le)

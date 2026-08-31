@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorChartCptResolvBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Regularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightDiv
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.CutoffChartComponentWkpNorm
 open DifferentialGeometry.Analysis.Spectral
@@ -102,7 +102,7 @@ private lemma eigenvectorVec_pou_memWkp_local
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (Q : TensorCompIdx (E := E) r s) :
     MemWkp (d := Module.finrank ℝ E) N 2
@@ -110,7 +110,7 @@ private lemma eigenvectorVec_pou_memWkp_local
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) β Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) β with hΩ_def
@@ -122,13 +122,13 @@ private lemma eigenvectorVec_pou_memWkp_local
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             g r s) i) β Q :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => (i.fst.val)⁻¹ *
         ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
+          β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
     have h_smul := Lp.coeFn_smul (i.fst.val)⁻¹
       (tensorL2ChartComponent (I := I) (M := M) g r s
         (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
@@ -137,13 +137,13 @@ private lemma eigenvectorVec_pou_memWkp_local
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) β Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) β]
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
         (fun y => (i.fst.val)⁻¹ •
           ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
       rw [h_chart_eq]
       exact h_smul
     filter_upwards [h_smul'] with y hy
@@ -176,7 +176,7 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) :
     ∀ (K' : ℕ), K' ≤ N →
@@ -185,7 +185,7 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
             (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
             ENNReal.ofReal
@@ -202,19 +202,19 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β
     eigenval_le_one_local (I := I) (M := M) g r s i
   have h_smul : (fun y => ((componentLpLimit (I := I) (M := M)
         g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => i.fst.val •
         ((tensorL2ChartComponent (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
     rw [componentLpLimit]
     exact Lp.coeFn_smul i.fst.val _
   have h_ae : (fun y => ((componentLpLimit (I := I) (M := M)
         g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => i.fst.val *
         eigenvectorChartComponentFun (I := I) (M := M)
@@ -229,7 +229,7 @@ theorem eigenvector_componentLpLimit_perK_from_uniform_β
       (fun β Q => h_pou_resolv i K' β Q hK') α P
   have h_norm_eq : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
       (fun y => ((componentLpLimit (I := I) (M := M) g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       = iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => i.fst.val *
           eigenvectorChartComponentFun (I := I) (M := M)
@@ -351,7 +351,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) :
     ∀ (K' : ℕ), K' + 1 ≤ N →
@@ -361,7 +361,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
             (fun y => ((partialLpLimit (I := I) (M := M)
               g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
             ENNReal.ofReal
@@ -432,8 +432,8 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
       h_weak_loc h_chosen_loc
   have h_smul : (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => i.fst.val •
         eigenvectorChartWeakPartial (I := I) (M := M)
           g r s i α P k y) := by
@@ -441,7 +441,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
     exact Lp.coeFn_smul i.fst.val _
   have h_ae_atom : (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => i.fst.val *
         chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
@@ -452,7 +452,7 @@ theorem eigenvector_partialLpLimit_perK_from_uniform_β
   have h_norm_eq : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
       (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       = iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => i.fst.val *
           chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
@@ -589,7 +589,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ∃ (CN' : ℕ → ℝ), (∀ K', 0 ≤ CN' K') ∧
@@ -599,7 +599,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
               (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P₀ l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
             ≤ ENNReal.ofReal (CN' K' * (i.fst.val)⁻¹ ^ eN) *
               ENNReal.ofReal
@@ -622,12 +622,12 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
       (∀ (β : M) (Q : TensorCompIdx (E := E) r s),
         MemWkp (d := d) k 2
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)) →
       iteratedWeakSobolevNorm (d := d) k 2
           (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M)
             g r s u α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Cu k) *
           (∑ β ∈ S,
@@ -635,7 +635,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
               iteratedWeakSobolevNorm (d := d) k 2
                 (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                     u β Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β)) := fun k u h_pou_u =>
     (wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
@@ -662,7 +662,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β Q :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) :=
     fun β Q => eigenvectorVec_pou_memWkp_local
       (I := I) (M := M) g r s i (K' + 1)
@@ -672,7 +672,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
     tensorL2ChartComponentCutoff_memWkp_of_pou (I := I) (M := M) g r s
       (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -683,17 +683,17 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
     h_cutoff_succ.memW1p
   have h_weak : DeGiorgi.HasWeakPartialDeriv (d := d) l
       ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
           g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
     eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv (I := I) (M := M)
       g r s i α P₀ l
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv (d := d) l
@@ -702,17 +702,17 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω)
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
     chosenWeakPartial'_isWeakPartial_of_mem h_cutoff_w1p l
   have h_weak_memLp : MemLp
       ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
           g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
       ((volume : Measure EuclN).restrict Ω) := Lp.memLp _
   have h_chosen_memWkp : MemWkp (d := d) K' 2
       (chosenWeakPartial' (d := d) 2 l
@@ -720,12 +720,12 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω) Ω :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω) Ω :=
     h_cutoff_succ.chosenWeakPartial_mem l
   have h_weak_loc : LocallyIntegrable
       ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
           g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
       ((volume : Measure EuclN).restrict Ω) :=
     h_weak_memLp.locallyIntegrable (by norm_num)
   have h_chosen_loc : LocallyIntegrable
@@ -734,35 +734,35 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω)
       ((volume : Measure EuclN).restrict Ω) :=
     h_chosen_memWkp.memLp.locallyIntegrable (by norm_num)
   have h_ae_weak_eq_chosen :
       ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
           g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
         =ᵐ[(volume : Measure EuclN).restrict Ω]
       chosenWeakPartial' (d := d) 2 l
         (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ_open h_weak h_chosen_weak
       h_weak_loc h_chosen_loc
   have h_smul : (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
         g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => i.fst.val •
         ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
           g r s i α P₀ l :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
     rw [cutoffPartialLpLimit]
     exact Lp.coeFn_smul i.fst.val _
   have h_ae_atom : (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
         g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => i.fst.val *
         chosenWeakPartial' (d := d) 2 l
@@ -770,13 +770,13 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) α P₀ :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω y) := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω y) := by
     filter_upwards [h_smul, h_ae_weak_eq_chosen] with y hy hy_eq
     rw [hy, smul_eq_mul, hy_eq]
   have h_norm_eq : iteratedWeakSobolevNorm (d := d) K' 2
       (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
         g r s i α P₀ l :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       = iteratedWeakSobolevNorm (d := d) K' 2
         (fun y => i.fst.val *
           chosenWeakPartial' (d := d) 2 l
@@ -784,7 +784,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) α P₀ :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω y) Ω :=
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω y) Ω :=
     wkpNorm_congr_ae (d := d)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae_atom
   have h_smul_eq : iteratedWeakSobolevNorm (d := d) K' 2
@@ -794,7 +794,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) α P₀ :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω y) Ω
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω y) Ω
       = ‖i.fst.val‖ₑ *
         iteratedWeakSobolevNorm (d := d) K' 2
           (chosenWeakPartial' (d := d) 2 l
@@ -802,7 +802,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) α P₀ :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω :=
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω :=
     wkpNorm_const_smul (d := d)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_chosen_memWkp i.fst.val
   have h_chosen_le : iteratedWeakSobolevNorm (d := d) K' 2
@@ -811,25 +811,25 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
       ≤ iteratedWeakSobolevNorm (d := d) (K' + 1) 2
         (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω :=
     wkpNorm_chosenWeakPartial_le (d := d) K'
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) l
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) l
   have h_cutoff_le : iteratedWeakSobolevNorm (d := d) (K' + 1) 2
       (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal (Cu (K' + 1)) *
         (∑ β ∈ S, ∑ Q : TensorCompIdx (E := E) r s,
           iteratedWeakSobolevNorm (d := d) (K' + 1) 2
@@ -837,7 +837,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) β Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)) :=
     hCu_bd (K' + 1) (tensorResolventEigenbasisVec (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -849,7 +849,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β Q :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)
       ≤ ENNReal.ofReal (CN * (i.fst.val)⁻¹ ^ eN) *
         ENNReal.ofReal
@@ -871,7 +871,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β))
       ≤ (CT : ℝ≥0∞) * RHS_each := by
     calc (∑ β ∈ S, ∑ Q : TensorCompIdx (E := E) r s,
@@ -880,7 +880,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                   (tensorResolventEigenbasisVec (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I) (M := M)
                       g r s) i) β Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
         ≤ ∑ _β ∈ S, ∑ _Q : TensorCompIdx (E := E) r s, RHS_each :=
           Finset.sum_le_sum (fun β _hβ =>
@@ -893,7 +893,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal (Cu (K' + 1)) * ((CT : ℝ≥0∞) * RHS_each) := by
     refine h_cutoff_le.trans ?_
     exact mul_le_mul_of_nonneg_left h_double_sum_le (zero_le)
@@ -909,7 +909,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) α P₀ :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
       ≤ ENNReal.ofReal i.fst.val *
           (ENNReal.ofReal (Cu (K' + 1)) * ((CT : ℝ≥0∞) * RHS_each)) :=
     mul_le_mul_of_nonneg_left (h_chosen_le.trans h_cutoff_le_final) (zero_le)
@@ -1050,7 +1050,7 @@ theorem eigenvector_cutoffPartialLpLimit_perK_from_uniform_β
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) α P₀ :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y') Ω) Ω
         ≤ ENNReal.ofReal i.fst.val *
             (ENNReal.ofReal (Cu (K' + 1)) * ((CT : ℝ≥0∞) * RHS_each)) := h_step_chain
     _ = ENNReal.ofReal (i.fst.val * Cu (K' + 1) * (CT : ℝ) *

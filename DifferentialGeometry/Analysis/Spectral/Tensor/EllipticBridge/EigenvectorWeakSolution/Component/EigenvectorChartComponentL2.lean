@@ -21,6 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Sobolev.Chart
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -148,9 +149,9 @@ theorem eigenvectorChartComponentL2_approx_coeFn
         ((i.fst.val)⁻¹ •
           (((eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) : TensorL2 r s g)) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
         EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        chartLebesgueMeasure (I := I) (M := M) α]
       fun y => (i.fst.val)⁻¹ •
         tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)

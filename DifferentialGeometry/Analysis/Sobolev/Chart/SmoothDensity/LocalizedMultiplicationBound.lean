@@ -1,9 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRotationWkpNormBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.EigenvectorChartLowerOrderWkpNormBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightDivWkpNormBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Differentiated.Defs
-open DifferentialGeometry.Geometry.Curvature
+import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 
 
 noncomputable section
@@ -15,8 +11,8 @@ open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
 namespace Analysis
-namespace Parabolic
-namespace TensorSpectral
+namespace Sobolev
+namespace Chart
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
@@ -25,16 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
-
-open DifferentialGeometry.Tensor.TensorRSRiemannian
-open DifferentialGeometry.TensorRSNabla
-open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
-open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open DifferentialGeometry.Analysis.Laplacian.MetricExtension
-  hiding chartTargetEuclid chartTargetEuclid_isOpen
-open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -47,7 +34,7 @@ section SmoothCoefBound
 
 
 omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le
+lemma wkpNorm_smooth_coef_mul_ae_zero_factor_le
     (α : M) (K : ℕ)
     {coef factor : EuclN → ℝ}
     {Kkern : Set EuclN}
@@ -57,7 +44,7 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le
       (chartTargetEuclid (I := I) (M := M) α))
     (hfactor_memWkp : MemWkp (d := Module.finrank ℝ E) K 2 factor
       (chartTargetEuclid (I := I) (M := M) α))
-    (hfactor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    (hfactor_ae_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ Kkern → factor y = 0) :
     MemWkp (d := Module.finrank ℝ E) K 2
         (fun y => coef y * factor y)
@@ -105,7 +92,7 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le
   have hfactor_ae_zero' : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
       y ∉ Kkern → factor y = 0 := by
     have h := hfactor_ae_zero
-    rw [chartL2Measure] at h
+    rw [chartLebesgueMeasure] at h
     exact h
   have h_eq_on_inter : (fun y => (χ y * coef y) * factor y)
       =ᵐ[(volume : Measure EuclN).restrict (Ω ∩ Cδ)]
@@ -174,139 +161,11 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le
 
 end SmoothCoefBound
 
-section Aggregation
-
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-lemma wkpNorm_sum_le_const_mul_aggregate
-    {ι : Type*} [Fintype ι] {K : ℕ} {Ω : Set EuclN} (hΩ : IsOpen Ω)
-    (F : ι → EuclN → ℝ) (A : ℝ≥0∞)
-    (hF : ∀ j : ι, MemWkp (d := Module.finrank ℝ E) K 2 (F j) Ω)
-    (hbd : ∀ j : ι, ∃ C : ℝ, 0 ≤ C ∧
-      iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j) Ω ≤ ENNReal.ofReal C * A) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (fun y => ∑ j : ι, F j y) Ω
-        ≤ ENNReal.ofReal C * A := by
-  classical
-  choose Cf hCf_nn hCf using hbd
-  refine ⟨(∑ j : ι, Cf j) * (Fintype.card ι : ℝ),
-    mul_nonneg (Finset.sum_nonneg (fun j _ => hCf_nn j)) (by positivity), ?_⟩
-  have h_tri : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-      (fun y => ∑ j : ι, F j y) Ω ≤ ∑ j : ι,
-        iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j) Ω :=
-    wkpNorm_sum_le (d := Module.finrank ℝ E) (by norm_num) hΩ
-      (Finset.univ : Finset ι) F (fun j _ => hF j)
-  have h_step : ∑ j : ι, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j) Ω
-      ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A := by
-    refine Finset.sum_le_sum (fun j _ => ?_)
-    refine (hCf j).trans ?_
-    gcongr
-    exact Finset.single_le_sum (fun k _ => hCf_nn k) (Finset.mem_univ j)
-  have h_const : ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A
-      = (Fintype.card ι : ℝ≥0∞) *
-          (ENNReal.ofReal (∑ k : ι, Cf k) * A) := by
-    rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  have h_cast : (Fintype.card ι : ℝ≥0∞) * ENNReal.ofReal (∑ k : ι, Cf k)
-      = ENNReal.ofReal ((∑ j : ι, Cf j) * (Fintype.card ι : ℝ)) := by
-    rw [mul_comm (∑ j : ι, Cf j), ENNReal.ofReal_mul (by positivity),
-      ENNReal.ofReal_natCast]
-  calc
-    iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (fun y => ∑ j : ι, F j y) Ω
-        ≤ ∑ j : ι, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j) Ω := h_tri
-    _ ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A := h_step
-    _ = (Fintype.card ι : ℝ≥0∞) *
-          (ENNReal.ofReal (∑ k : ι, Cf k) * A) := h_const
-    _ = ((Fintype.card ι : ℝ≥0∞) * ENNReal.ofReal (∑ k : ι, Cf k)) * A := by
-        rw [mul_assoc]
-    _ = ENNReal.ofReal ((∑ j : ι, Cf j) * (Fintype.card ι : ℝ)) * A := by
-        rw [h_cast]
-
-end Aggregation
-
-section Domination
-
-lemma le_sevenSum (a₁ a₂ a₃ a₄ a₅ a₆ a₇ : ℝ≥0∞) :
-    a₁ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
-      a₂ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
-      a₃ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
-      a₄ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
-      a₅ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
-      a₆ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ ∧
-      a₇ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · calc a₁ ≤ a₁ + a₂ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
-  · calc a₂ ≤ a₁ + a₂ := le_add_self
-      _ ≤ a₁ + a₂ + a₃ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
-  · calc a₃ ≤ a₁ + a₂ + a₃ := le_add_self
-      _ ≤ a₁ + a₂ + a₃ + a₄ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
-  · calc a₄ ≤ a₁ + a₂ + a₃ + a₄ := le_add_self
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
-  · calc a₅ ≤ a₁ + a₂ + a₃ + a₄ + a₅ := le_add_self
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ := le_self_add
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
-  · calc a₆ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ := le_add_self
-      _ ≤ a₁ + a₂ + a₃ + a₄ + a₅ + a₆ + a₇ := le_self_add
-  · exact le_add_self
-
-end Domination
-
-lemma ofReal_two : ENNReal.ofReal 2 = (2 : ℝ≥0∞) := by
-  rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.ofReal_natCast]
-  norm_num
-
-section BracketBound
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-  (i : TensorEigenIdx (I := I) (M := M) g r s)
-  (α : M) (P₀ : TensorCompIdx (E := E) r s) (K : ℕ)
-
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-lemma wkpNorm_sub_le
-    {Ω : Set EuclN} (hΩ : IsOpen Ω) {u v : EuclN → ℝ}
-    (hu : MemWkp (d := Module.finrank ℝ E) K 2 u Ω)
-    (hv : MemWkp (d := Module.finrank ℝ E) K 2 v Ω) :
-    iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (fun y => u y - v y) Ω ≤
-      iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 u Ω +
-        iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 v Ω := by
-  classical
-  have h_fun : (fun y => u y - v y) = (fun y => u y + (fun y => - v y) y) := by
-    funext y; ring
-  rw [h_fun]
-  have hv_neg : MemWkp (d := Module.finrank ℝ E) K 2 (fun y => - v y) Ω :=
-    MemWkp.neg (d := Module.finrank ℝ E) (by norm_num) hΩ hv
-  refine le_trans (wkpNorm_add_le (d := Module.finrank ℝ E)
-    (by norm_num) hΩ hu hv_neg) ?_
-  have h_neg_eq : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (fun y => - v y) Ω =
-      iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 v Ω := by
-    have h_smul : (fun y => - v y) = (fun y => (-1 : ℝ) * v y) := by
-      funext y; ring
-    rw [h_smul, wkpNorm_const_smul (d := Module.finrank ℝ E)
-      (by norm_num) hΩ hv (-1)]
-    simp
-  rw [h_neg_eq]
-
-end BracketBound
-
 section UniformBounds
 
 
 omit [CompleteSpace E] [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
+lemma wkpNorm_smooth_coef_mul_ae_zero_factor_le_uniform
     (α : M) (K : ℕ)
     {coef : EuclN → ℝ}
     {Kkern : Set EuclN}
@@ -318,7 +177,7 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
       ∀ factor : EuclN → ℝ,
         MemWkp (d := Module.finrank ℝ E) K 2 factor
             (chartTargetEuclid (I := I) (M := M) α) →
-        (∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+        (∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
           y ∉ Kkern → factor y = 0) →
         MemWkp (d := Module.finrank ℝ E) K 2
             (fun y => coef y * factor y)
@@ -366,7 +225,7 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
   have hfactor_ae_zero' : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
       y ∉ Kkern → factor y = 0 := by
     have h := hfactor_ae_zero
-    rw [chartL2Measure] at h
+    rw [chartLebesgueMeasure] at h
     exact h
   have h_eq_on_inter : (fun y => (χ y * coef y) * factor y)
       =ᵐ[(volume : Measure EuclN).restrict (Ω ∩ Cδ)]
@@ -433,58 +292,10 @@ lemma wkpNorm_smoothCoef_mul_aeZeroFactor_le_uniform
   exact hKc_bd hfactor_memWkp
 
 
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-lemma wkpNorm_sum_le_const_mul_aggregate_uniform
-    {ι : Type*} [Fintype ι] {δ : Type*} {K : ℕ} {Ω : Set EuclN} (hΩ : IsOpen Ω)
-    (F : ι → δ → EuclN → ℝ) (A : δ → ℝ≥0∞)
-    (hF : ∀ (j : ι) (d : δ),
-      MemWkp (d := Module.finrank ℝ E) K 2 (F j d) Ω)
-    (hbd : ∀ j : ι, ∃ C : ℝ, 0 ≤ C ∧
-      ∀ d : δ, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j d) Ω
-        ≤ ENNReal.ofReal C * A d) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      ∀ d : δ, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-          (fun y => ∑ j : ι, F j d y) Ω
-        ≤ ENNReal.ofReal C * A d := by
-  classical
-  choose Cf hCf_nn hCf using hbd
-  refine ⟨(∑ j : ι, Cf j) * (Fintype.card ι : ℝ),
-    mul_nonneg (Finset.sum_nonneg (fun j _ => hCf_nn j)) (by positivity),
-    fun d => ?_⟩
-  have h_tri : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-      (fun y => ∑ j : ι, F j d y) Ω ≤ ∑ j : ι,
-        iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j d) Ω :=
-    wkpNorm_sum_le (d := Module.finrank ℝ E) (by norm_num) hΩ
-      (Finset.univ : Finset ι) (fun j => F j d) (fun j _ => hF j d)
-  have h_step : ∑ j : ι, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j d) Ω
-      ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A d := by
-    refine Finset.sum_le_sum (fun j _ => ?_)
-    refine (hCf j d).trans ?_
-    gcongr
-    exact Finset.single_le_sum (fun k _ => hCf_nn k) (Finset.mem_univ j)
-  have h_const : ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A d
-      = (Fintype.card ι : ℝ≥0∞) *
-          (ENNReal.ofReal (∑ k : ι, Cf k) * A d) := by
-    rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  have h_cast : (Fintype.card ι : ℝ≥0∞) * ENNReal.ofReal (∑ k : ι, Cf k)
-      = ENNReal.ofReal ((∑ j : ι, Cf j) * (Fintype.card ι : ℝ)) := by
-    rw [mul_comm (∑ j : ι, Cf j), ENNReal.ofReal_mul (by positivity),
-      ENNReal.ofReal_natCast]
-  calc
-    iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (fun y => ∑ j : ι, F j d y) Ω
-        ≤ ∑ j : ι, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (F j d) Ω := h_tri
-    _ ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A d := h_step
-    _ = (Fintype.card ι : ℝ≥0∞) *
-          (ENNReal.ofReal (∑ k : ι, Cf k) * A d) := h_const
-    _ = ((Fintype.card ι : ℝ≥0∞) * ENNReal.ofReal (∑ k : ι, Cf k)) * A d := by
-        rw [mul_assoc]
-    _ = ENNReal.ofReal ((∑ j : ι, Cf j) * (Fintype.card ι : ℝ)) * A d := by
-        rw [h_cast]
-
 end UniformBounds
 
-end TensorSpectral
-end Parabolic
+end Chart
+end Sobolev
 end Analysis
 end DifferentialGeometry
 

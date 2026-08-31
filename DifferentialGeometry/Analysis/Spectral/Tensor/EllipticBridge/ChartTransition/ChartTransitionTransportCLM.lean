@@ -320,7 +320,7 @@ private lemma exists_transportDiffeoData
 private def transportFun
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ :=
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ :=
   fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
     (f : EuclN → ℝ) (chartTransitionEuclid (I := I) (M := M) α β y)
 
@@ -329,7 +329,7 @@ private lemma transportFun_eq_comp_Φ
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     transportFun (I := I) (M := M) r s β α P₀ Q f =
       fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
         (f : EuclN → ℝ) (D.Φ.toFun y) := by
@@ -344,7 +344,7 @@ private lemma transportFun_eq_zero_off_Ωαβ
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) {y : EuclN}
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) {y : EuclN}
     (hy : y ∉ D.Ωαβ) :
     transportFun (I := I) (M := M) r s β α P₀ Q f y = 0 := by
   unfold transportFun
@@ -358,7 +358,7 @@ private lemma transportFun_eq_indicator
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     transportFun (I := I) (M := M) r s β α P₀ Q f =
       D.Ωαβ.indicator (fun y => transportCoeffPushed
         (I := I) (M := M) r s β α P₀ Q y * (f : EuclN → ℝ) (D.Φ.toFun y)) := by
@@ -370,13 +370,13 @@ private lemma transportFun_eq_indicator
       transportFun_eq_zero_off_Ωαβ (I := I) (M := M) r s β α P₀ Q D f hy]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma chartL2Measure_restrict_Ωαβ
+private lemma chartLebesgueMeasure_restrict_Ωαβ
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q) :
-    (chartL2Measure (I := I) (M := M) α).restrict D.Ωαβ =
+    (chartLebesgueMeasure (I := I) (M := M) α).restrict D.Ωαβ =
       (volume : Measure EuclN).restrict D.Ωαβ := by
-  rw [chartL2Measure, Measure.restrict_restrict_of_subset D.hΩαβ_subset_target]
+  rw [chartLebesgueMeasure, Measure.restrict_restrict_of_subset D.hΩαβ_subset_target]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma Ωαβ_measurableSet
@@ -392,9 +392,9 @@ private lemma aestronglyMeasurable_transportCoeffPushed
     (P₀ Q : TensorCompIdx (E := E) r s) :
     AEStronglyMeasurable
       (transportCoeffPushed (I := I) (M := M) r s β α P₀ Q)
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
-  unfold transportCoeffPushed chartL2Measure
+  unfold transportCoeffPushed chartLebesgueMeasure
   refine ContinuousOn.aestronglyMeasurable ?_
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α).measurableSet
@@ -419,25 +419,25 @@ private lemma aestronglyMeasurable_transportFun
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     AEStronglyMeasurable (transportFun (I := I) (M := M) r s β α P₀ Q f)
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   rw [transportFun_eq_indicator (I := I) (M := M) r s β α P₀ Q D f]
   rw [aestronglyMeasurable_indicator_iff
     (Ωαβ_measurableSet (I := I) (M := M) r s β α P₀ Q D),
-    chartL2Measure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
+    chartLebesgueMeasure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
   have h_coeff : AEStronglyMeasurable
       (transportCoeffPushed (I := I) (M := M) r s β α P₀ Q)
       ((volume : Measure EuclN).restrict D.Ωαβ) := by
     have h := aestronglyMeasurable_transportCoeffPushed
       (I := I) (M := M) r s β α P₀ Q
-    rw [← chartL2Measure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
+    rw [← chartLebesgueMeasure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
     exact h.restrict
   have h_f_meas : AEStronglyMeasurable (f : EuclN → ℝ)
       ((volume : Measure EuclN).restrict D.Ωβα) :=
     (Lp.aestronglyMeasurable f).mono_measure
-      (by rw [chartL2Measure]
+      (by rw [chartLebesgueMeasure]
           exact Measure.restrict_mono D.hΩβα_subset_target le_rfl)
   have h_comp : AEStronglyMeasurable (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))
       ((volume : Measure EuclN).restrict D.Ωαβ) :=
@@ -450,11 +450,11 @@ private lemma exists_eLpNorm_transportFun_bound
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q) :
     ∃ K : ℝ, 0 ≤ K ∧
-      ∀ f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β),
+      ∀ f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β),
         eLpNorm (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
-            (chartL2Measure (I := I) (M := M) α) ≤
+            (chartLebesgueMeasure (I := I) (M := M) α) ≤
           ENNReal.ofReal K * eLpNorm (f : EuclN → ℝ) 2
-            (chartL2Measure (I := I) (M := M) β) := by
+            (chartLebesgueMeasure (I := I) (M := M) β) := by
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
     exists_bound_transportCoeffPushed (I := I) (M := M) r s β α P₀ Q
@@ -478,10 +478,10 @@ private lemma exists_eLpNorm_transportFun_bound
     · rw [Set.indicator_of_notMem hy, norm_zero]
       positivity
   have h_step1 : eLpNorm (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
-      (chartL2Measure (I := I) (M := M) α) ≤
+      (chartLebesgueMeasure (I := I) (M := M) α) ≤
         ENNReal.ofReal C *
           eLpNorm (D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))) 2
-            (chartL2Measure (I := I) (M := M) α) := by
+            (chartLebesgueMeasure (I := I) (M := M) α) := by
     refine (eLpNorm_mono_ae (Filter.Eventually.of_forall h_pointwise)).trans ?_
     rw [show (C • D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))) =
         (C : ℝ) • D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y)) from rfl]
@@ -489,12 +489,12 @@ private lemma exists_eLpNorm_transportFun_bound
     rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg hC_nn]
   have h_indic : eLpNorm
       (D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))) 2
-        (chartL2Measure (I := I) (M := M) α) =
+        (chartLebesgueMeasure (I := I) (M := M) α) =
       eLpNorm (fun y => (f : EuclN → ℝ) (D.Φ.toFun y)) 2
         ((volume : Measure EuclN).restrict D.Ωαβ) := by
     rw [eLpNorm_indicator_eq_eLpNorm_restrict
       (Ωαβ_measurableSet (I := I) (M := M) r s β α P₀ Q D),
-      chartL2Measure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
+      chartLebesgueMeasure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
   have h_chg : eLpNorm (fun y => (f : EuclN → ℝ) (D.Φ.toFun y)) 2
       ((volume : Measure EuclN).restrict D.Ωαβ) ≤
         ENNReal.ofReal Kchg *
@@ -504,16 +504,16 @@ private lemma exists_eLpNorm_transportFun_bound
       D.hΩαβ_open (f : EuclN → ℝ)
   have h_mono : eLpNorm (f : EuclN → ℝ) 2
       ((volume : Measure EuclN).restrict D.Ωβα) ≤
-        eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β) := by
+        eLpNorm (f : EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) β) := by
     have h_le : (volume : Measure EuclN).restrict D.Ωβα ≤
-        chartL2Measure (I := I) (M := M) β :=
+        chartLebesgueMeasure (I := I) (M := M) β :=
       Measure.restrict_mono D.hΩβα_subset_target le_rfl
     exact eLpNorm_mono_measure _ h_le
   calc eLpNorm (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
-        (chartL2Measure (I := I) (M := M) α)
+        (chartLebesgueMeasure (I := I) (M := M) α)
       ≤ ENNReal.ofReal C *
           eLpNorm (D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))) 2
-            (chartL2Measure (I := I) (M := M) α) := h_step1
+            (chartLebesgueMeasure (I := I) (M := M) α) := h_step1
     _ = ENNReal.ofReal C * eLpNorm (fun y => (f : EuclN → ℝ) (D.Φ.toFun y)) 2
             ((volume : Measure EuclN).restrict D.Ωαβ) := by rw [h_indic]
     _ ≤ ENNReal.ofReal C * (ENNReal.ofReal Kchg *
@@ -521,11 +521,11 @@ private lemma exists_eLpNorm_transportFun_bound
               ((volume : Measure EuclN).restrict D.Ωβα)) :=
           mul_le_mul_of_nonneg_left h_chg (zero_le)
     _ ≤ ENNReal.ofReal C * (ENNReal.ofReal Kchg *
-            eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β)) :=
+            eLpNorm (f : EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) β)) :=
           mul_le_mul_of_nonneg_left
             (mul_le_mul_of_nonneg_left h_mono (zero_le)) (zero_le)
     _ = ENNReal.ofReal (C * Kchg) *
-            eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β) := by
+            eLpNorm (f : EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) β) := by
           rw [ENNReal.ofReal_mul hC_nn, mul_assoc]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -533,9 +533,9 @@ private lemma memLp_transportFun
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     MemLp (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   refine ⟨aestronglyMeasurable_transportFun (I := I) (M := M) r s β α P₀ Q D f,
     ?_⟩
   obtain ⟨K, hK_nn, hK⟩ :=
@@ -550,10 +550,10 @@ private lemma transportFun_aux_ae_eq
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
     {u₁ u₂ : EuclN → ℝ}
-    (huv : u₁ =ᵐ[chartL2Measure (I := I) (M := M) β] u₂) :
+    (huv : u₁ =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] u₂) :
     (fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
         u₁ (chartTransitionEuclid (I := I) (M := M) α β y)) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        chartLebesgueMeasure (I := I) (M := M) α]
       fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
         u₂ (chartTransitionEuclid (I := I) (M := M) α β y) := by
   classical
@@ -567,13 +567,13 @@ private lemma transportFun_aux_ae_eq
       (volume : Measure EuclN).restrict Ωαβ]
         fun y => u₂ (D.Φ.toFun y) :=
     D.Φ.toFun_quasiMeasurePreserving.ae_eq huv_Ωβα
-  have h_meas_eq : (chartL2Measure (I := I) (M := M) α).restrict Ωαβ =
+  have h_meas_eq : (chartLebesgueMeasure (I := I) (M := M) α).restrict Ωαβ =
       (volume : Measure EuclN).restrict Ωαβ :=
-    chartL2Measure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D
+    chartLebesgueMeasure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D
   have h_restrict : (fun y => transportCoeffPushed
       (I := I) (M := M) r s β α P₀ Q y *
         u₁ (chartTransitionEuclid (I := I) (M := M) α β y)) =ᵐ[
-      (chartL2Measure (I := I) (M := M) α).restrict Ωαβ]
+      (chartLebesgueMeasure (I := I) (M := M) α).restrict Ωαβ]
         fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
           u₂ (chartTransitionEuclid (I := I) (M := M) α β y) := by
     rw [h_meas_eq]
@@ -595,11 +595,11 @@ private lemma transportFun_ae_eq_of_coeFn_ae_eq
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    {f₁ f₂ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)}
-    (h : (f₁ : EuclN → ℝ) =ᵐ[chartL2Measure (I := I) (M := M) β]
+    {f₁ f₂ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)}
+    (h : (f₁ : EuclN → ℝ) =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (f₂ : EuclN → ℝ)) :
     transportFun (I := I) (M := M) r s β α P₀ Q f₁ =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        chartLebesgueMeasure (I := I) (M := M) α]
       transportFun (I := I) (M := M) r s β α P₀ Q f₂ :=
   transportFun_aux_ae_eq (I := I) (M := M) r s β α P₀ Q D h
 
@@ -607,8 +607,8 @@ private def transportLp
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (memLp_transportFun (I := I) (M := M) r s β α P₀ Q D f).toLp _
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -616,10 +616,10 @@ private lemma transportLp_coeFn
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     ((transportLp (I := I) (M := M) r s β α P₀ Q D f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       transportFun (I := I) (M := M) r s β α P₀ Q f := by
   unfold transportLp
   exact MemLp.coeFn_toLp _
@@ -629,7 +629,7 @@ private lemma transportLp_add
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f₁ f₂ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f₁ f₂ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     transportLp (I := I) (M := M) r s β α P₀ Q D (f₁ + f₂) =
       transportLp (I := I) (M := M) r s β α P₀ Q D f₁ +
         transportLp (I := I) (M := M) r s β α P₀ Q D f₂ := by
@@ -637,7 +637,7 @@ private lemma transportLp_add
   apply Lp.ext
   refine (transportLp_coeFn (I := I) (M := M) r s β α P₀ Q D (f₁ + f₂)).trans ?_
   have h_sum : transportFun (I := I) (M := M) r s β α P₀ Q (f₁ + f₂) =ᵐ[
-      chartL2Measure (I := I) (M := M) α]
+      chartLebesgueMeasure (I := I) (M := M) α]
         fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
           (((f₁ : EuclN → ℝ) + (f₂ : EuclN → ℝ))
             (chartTransitionEuclid (I := I) (M := M) α β y)) :=
@@ -665,14 +665,14 @@ private lemma transportLp_smul
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (c : ℝ) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (c : ℝ) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     transportLp (I := I) (M := M) r s β α P₀ Q D (c • f) =
       c • transportLp (I := I) (M := M) r s β α P₀ Q D f := by
   classical
   apply Lp.ext
   refine (transportLp_coeFn (I := I) (M := M) r s β α P₀ Q D (c • f)).trans ?_
   have h_smul : transportFun (I := I) (M := M) r s β α P₀ Q (c • f) =ᵐ[
-      chartL2Measure (I := I) (M := M) α]
+      chartLebesgueMeasure (I := I) (M := M) α]
         fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
           ((c • (f : EuclN → ℝ))
             (chartTransitionEuclid (I := I) (M := M) α β y)) :=
@@ -696,8 +696,8 @@ private def transportLpLin
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) β) →ₗ[ℝ]
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) where
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β) →ₗ[ℝ]
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) where
   toFun f := transportLp (I := I) (M := M) r s β α P₀ Q D f
   map_add' f₁ f₂ := transportLp_add (I := I) (M := M) r s β α P₀ Q D f₁ f₂
   map_smul' c f := transportLp_smul (I := I) (M := M) r s β α P₀ Q D c f
@@ -707,7 +707,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     transportLpLin (I := I) (M := M) r s β α P₀ Q D f =
       transportLp (I := I) (M := M) r s β α P₀ Q D f := rfl
 
@@ -717,7 +717,7 @@ private lemma transportLpLin_norm_le
     (P₀ Q : TensorCompIdx (E := E) r s)
     (D : TransportDiffeoData (I := I) (M := M) r s β α P₀ Q) :
     ∃ K : ℝ, 0 ≤ K ∧
-      ∀ f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β),
+      ∀ f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β),
         ‖transportLpLin (I := I) (M := M) r s β α P₀ Q D f‖ ≤ K * ‖f‖ := by
   classical
   obtain ⟨K, hK_nn, hK⟩ :=
@@ -725,25 +725,25 @@ private lemma transportLpLin_norm_le
   refine ⟨K, hK_nn, fun f => ?_⟩
   have h_norm_eq : ‖transportLpLin (I := I) (M := M) r s β α P₀ Q D f‖ =
       (eLpNorm (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
-        (chartL2Measure (I := I) (M := M) α)).toReal := by
+        (chartLebesgueMeasure (I := I) (M := M) α)).toReal := by
     rw [transportLpLin_apply]
     unfold transportLp
     exact MeasureTheory.Lp.norm_toLp _ _
   rw [h_norm_eq]
   have h_f_norm : ‖f‖ = (eLpNorm (f : EuclN → ℝ) 2
-      (chartL2Measure (I := I) (M := M) β)).toReal := by
+      (chartLebesgueMeasure (I := I) (M := M) β)).toReal := by
     rw [Lp.norm_def]
   have h_rhs_ne_top :
       ENNReal.ofReal K *
-        eLpNorm (f : EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) β) ≠
+        eLpNorm (f : EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) β) ≠
           (⊤ : ℝ≥0∞) :=
     (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (Lp.memLp f).2).ne
   have h_toReal_le :
       (eLpNorm (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
-        (chartL2Measure (I := I) (M := M) α)).toReal ≤
+        (chartLebesgueMeasure (I := I) (M := M) α)).toReal ≤
         (ENNReal.ofReal K *
           eLpNorm (f : EuclN → ℝ) 2
-            (chartL2Measure (I := I) (M := M) β)).toReal :=
+            (chartLebesgueMeasure (I := I) (M := M) β)).toReal :=
     ENNReal.toReal_mono h_rhs_ne_top (hK f)
   refine h_toReal_le.trans ?_
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hK_nn, h_f_norm]
@@ -757,8 +757,8 @@ private def transportDiffeoData
 def chartTransitionTransportCLM
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) β) →L[ℝ]
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β) →L[ℝ]
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (transportLpLin (I := I) (M := M) r s β α P₀ Q
     (transportDiffeoData (I := I) (M := M) r s β α P₀ Q)).mkContinuous
     (transportLpLin_norm_le (I := I) (M := M) r s β α P₀ Q
@@ -771,10 +771,10 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma chartTransitionTransportCLM_coeFn
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       transportFun (I := I) (M := M) r s β α P₀ Q f := by
   have h_eq : chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f =
       transportLp (I := I) (M := M) r s β α P₀ Q
@@ -790,10 +790,10 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartTransitionTransportCLM_coeFn_aeEq
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
-    (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+    (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => chartPushedRaw (I := I) (M := M) α
           (transportCoeffManifold (I := I) (M := M) r s β α P₀ Q) y *
         (f : EuclN → ℝ) (chartTransitionEuclid (I := I) (M := M) α β y)) := by
@@ -875,8 +875,8 @@ theorem chartTransitionTransportCLM_coeFn_smooth
     ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s
           (S : TensorL2 r s g) β Q) :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       chartPushedRaw (I := I) (M := M) α
         (fun x => transportCoeffManifold (I := I) (M := M) r s β α P₀ Q x *
           tensorChartComponentPou (I := I) (M := M) g r s S β Q.1 Q.2 x) := by
@@ -886,7 +886,7 @@ theorem chartTransitionTransportCLM_coeFn_smooth
       (S : TensorL2 r s g) β Q)).trans ?_
   have h_comp : transportFun (I := I) (M := M) r s β α P₀ Q
       (tensorL2ChartComponent (I := I) (M := M) g r s
-        (S : TensorL2 r s g) β Q) =ᵐ[chartL2Measure (I := I) (M := M) α]
+        (S : TensorL2 r s g) β Q) =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y *
           tensorChartComponent (I := I) (M := M) g r s S β Q.1 Q.2
             (chartTransitionEuclid (I := I) (M := M) α β y) :=

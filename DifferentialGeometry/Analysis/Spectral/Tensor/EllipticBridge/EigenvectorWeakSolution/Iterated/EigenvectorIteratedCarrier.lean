@@ -43,7 +43,7 @@ private lemma eigenvectorChartComponentFun_memWkp_of_pou
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     MemWkp (d := Module.finrank ℝ E) N 2
@@ -56,7 +56,7 @@ private lemma eigenvectorChartComponentFun_memWkp_of_pou
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          α P₀ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          α P₀ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       Ω :=
     h_pou α P₀
   have h_chart_eq := eigenvector_chartComponent_eq (I := I) (M := M)
@@ -68,7 +68,7 @@ private lemma eigenvectorChartComponentFun_memWkp_of_pou
         ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          α P₀ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+          α P₀ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
     have h_smul := Lp.coeFn_smul (i.fst.val)⁻¹
       (tensorL2ChartComponent (I := I) (M := M) g r s
         (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
@@ -79,7 +79,7 @@ private lemma eigenvectorChartComponentFun_memWkp_of_pou
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             g r s) i) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = _
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = _
     rw [hy, Pi.smul_apply, smul_eq_mul]
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae).mpr
@@ -123,7 +123,7 @@ theorem exists_eigenvectorIteratedCarrier
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ D : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
         g r s i α P₀ m,
@@ -146,7 +146,7 @@ theorem exists_eigenvectorIteratedCarrier
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) :=
         fun j hj => h_pou j (hj.trans (Nat.lt_succ_self m))
@@ -163,7 +163,7 @@ theorem exists_eigenvectorIteratedCarrier
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β) :=
           h_pou m (Nat.lt_succ_self m)

@@ -162,8 +162,8 @@ private lemma eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
   rw [← ENNReal.ofReal_rpow_of_pos hdensitySup_pos]
 
 private def chartL2RestrictLin (α : M) (s : Set EuclN) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) →ₗ[ℝ]
-      Lp ℝ 2 ((chartL2Measure (I := I) (M := M) α).restrict s) where
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →ₗ[ℝ]
+      Lp ℝ 2 ((chartLebesgueMeasure (I := I) (M := M) α).restrict s) where
   toFun lp :=
     ((Lp.memLp lp).restrict s).toLp (lp : EuclN → ℝ)
   map_add' lp₁ lp₂ := by
@@ -187,7 +187,7 @@ private def chartL2RestrictLin (α : M) (s : Set EuclN) :
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartL2RestrictLin_norm_le (α : M) (s : Set EuclN)
-    (lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (lp : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     ‖chartL2RestrictLin (I := I) (M := M) α s lp‖ ≤ 1 * ‖lp‖ := by
   classical
   rw [one_mul]
@@ -197,25 +197,25 @@ private lemma chartL2RestrictLin_norm_le (α : M) (s : Set EuclN)
   exact eLpNorm_mono_measure _ Measure.restrict_le_self
 
 private def chartL2RestrictCLM (α : M) (s : Set EuclN) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) →L[ℝ]
-      Lp ℝ 2 ((chartL2Measure (I := I) (M := M) α).restrict s) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →L[ℝ]
+      Lp ℝ 2 ((chartLebesgueMeasure (I := I) (M := M) α).restrict s) :=
   (chartL2RestrictLin (I := I) (M := M) α s).mkContinuous 1
     (chartL2RestrictLin_norm_le (I := I) (M := M) α s)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 @[simp] private lemma chartL2RestrictCLM_apply (α : M) (s : Set EuclN)
-    (lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (lp : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     chartL2RestrictCLM (I := I) (M := M) α s lp =
       ((Lp.memLp lp).restrict s).toLp (lp : EuclN → ℝ) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartL2RestrictCLM_eq_zero_iff (α : M) (s : Set EuclN)
-    (lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (lp : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     chartL2RestrictCLM (I := I) (M := M) α s lp = 0 ↔
       (lp : EuclN → ℝ)
-        =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict s] 0 := by
+        =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict s] 0 := by
   rw [chartL2RestrictCLM_apply, Lp.eq_zero_iff_ae_eq_zero]
   constructor
   · intro h
@@ -240,8 +240,8 @@ private lemma chartL2RestrictCLM_tensorL2ChartComponentCutoff_smooth_eq_zero
   have h_ae :
       ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (S : TensorL2 r s g) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-        =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+        =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict
           (cutoffKernelEuclid (I := I) (M := M) α)ᶜ] 0 := by
     refine (MeasureTheory.ae_restrict_iff' hKcompl_meas).mpr ?_
     have h_coeFn :=
@@ -251,7 +251,7 @@ private lemma chartL2RestrictCLM_tensorL2ChartComponentCutoff_smooth_eq_zero
     have hy_zero :
         ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
             (S : TensorL2 r s g) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
       rw [hy]
       by_contra hne
       exact hy_off
@@ -271,8 +271,8 @@ private lemma tensorL2ChartComponentCutoff_aeEq_zero_off_cutoffKernel
     (u : TensorL2 r s g) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+      =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict
         (cutoffKernelEuclid (I := I) (M := M) α)ᶜ] 0 := by
   classical
   have h_zero :
@@ -307,12 +307,12 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (u : TensorL2 r s g) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal C * ENNReal.ofReal ‖u‖ := by
   classical
-  set w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ with hw_def
   set f : EuclN → ℝ := (w : EuclN → ℝ) with hf_def
   set K : Set EuclN := cutoffKernelEuclid (I := I) (M := M) α with hK_def
@@ -332,13 +332,13 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
   refine ⟨c_max ^ (1 / (2 : ℝ)) * Cop,
     mul_nonneg (Real.rpow_nonneg hc_max_pos.le _) hCop_nn, ?_⟩
   set fK : EuclN → ℝ := K.indicator f with hfK_def
-  have h_off : f =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict Kᶜ] 0 :=
+  have h_off : f =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict Kᶜ] 0 :=
     tensorL2ChartComponentCutoff_aeEq_zero_off_cutoffKernel
       (I := I) (M := M) g r s u α P₀
-  have hf_aeEq_fK : f =ᵐ[chartL2Measure (I := I) (M := M) α] fK := by
+  have hf_aeEq_fK : f =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] fK := by
     rw [hfK_def]
     have hKcompl_meas : MeasurableSet Kᶜ := hK_meas.compl
-    have h_off' : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    have h_off' : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
         y ∈ Kᶜ → f y = 0 := by
       rw [← MeasureTheory.ae_restrict_iff' hKcompl_meas]
       filter_upwards [h_off] with y hy using hy
@@ -350,8 +350,8 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
     rw [hfK_def]; exact Set.support_indicator_subset
   have h_wabs : (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) ≪
-        chartL2Measure (I := I) (M := M) α := by
-    have h_cl2 : chartL2Measure (I := I) (M := M) α =
+        chartLebesgueMeasure (I := I) (M := M) α := by
+    have h_cl2 : chartLebesgueMeasure (I := I) (M := M) α =
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α) := rfl
     rw [h_cl2]
@@ -365,7 +365,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
     h_wabs.ae_eq hf_aeEq_fK
   have hf_aeEq_fK_v : f =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α)] fK := hf_aeEq_fK
-  have hf_eLpNorm_eq : eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) =
+  have hf_eLpNorm_eq : eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) =
       ‖w‖ₑ := by
     rw [hf_def, Lp.enorm_def]
   have hw_op : ‖w‖ ≤ Cop * ‖u‖ := by
@@ -388,8 +388,8 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
           (I := I) (M := M) g α c_max hc_max_pos
           (fun y hy => (h_dens_bd y hy).2) hfK_supp
     _ = ENNReal.ofReal (c_max ^ (1 / (2 : ℝ))) *
-          eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) := by
-        rw [show chartL2Measure (I := I) (M := M) α =
+          eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
+        rw [show chartLebesgueMeasure (I := I) (M := M) α =
             (volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α) from rfl,
           eLpNorm_congr_ae hf_aeEq_fK_v.symm]
@@ -412,7 +412,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ u : TensorL2 r s g,
         eLpNorm ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal C * ENNReal.ofReal ‖u‖ := by
@@ -433,17 +433,17 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
     norm_nonneg (tensorL2ChartComponentCutoffCLM (I := I) (M := M) g r s α P₀)
   refine ⟨c_max ^ (1 / (2 : ℝ)) * Cop,
     mul_nonneg (Real.rpow_nonneg hc_max_pos.le _) hCop_nn, fun u => ?_⟩
-  set w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ with hw_def
   set f : EuclN → ℝ := (w : EuclN → ℝ) with hf_def
   set fK : EuclN → ℝ := K.indicator f with hfK_def
-  have h_off : f =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict Kᶜ] 0 :=
+  have h_off : f =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict Kᶜ] 0 :=
     tensorL2ChartComponentCutoff_aeEq_zero_off_cutoffKernel
       (I := I) (M := M) g r s u α P₀
-  have hf_aeEq_fK : f =ᵐ[chartL2Measure (I := I) (M := M) α] fK := by
+  have hf_aeEq_fK : f =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] fK := by
     rw [hfK_def]
     have hKcompl_meas : MeasurableSet Kᶜ := hK_meas.compl
-    have h_off' : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    have h_off' : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
         y ∈ Kᶜ → f y = 0 := by
       rw [← MeasureTheory.ae_restrict_iff' hKcompl_meas]
       filter_upwards [h_off] with y hy using hy
@@ -455,8 +455,8 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
     rw [hfK_def]; exact Set.support_indicator_subset
   have h_wabs : (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) ≪
-        chartL2Measure (I := I) (M := M) α := by
-    have h_cl2 : chartL2Measure (I := I) (M := M) α =
+        chartLebesgueMeasure (I := I) (M := M) α := by
+    have h_cl2 : chartLebesgueMeasure (I := I) (M := M) α =
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α) := rfl
     rw [h_cl2]
@@ -470,7 +470,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
     h_wabs.ae_eq hf_aeEq_fK
   have hf_aeEq_fK_v : f =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α)] fK := hf_aeEq_fK
-  have hf_eLpNorm_eq : eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) =
+  have hf_eLpNorm_eq : eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) =
       ‖w‖ₑ := by
     rw [hf_def, Lp.enorm_def]
   have hw_op : ‖w‖ ≤ Cop * ‖u‖ := by
@@ -493,8 +493,8 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
           (I := I) (M := M) g α c_max hc_max_pos
           (fun y hy => (h_dens_bd y hy).2) hfK_supp
     _ = ENNReal.ofReal (c_max ^ (1 / (2 : ℝ))) *
-          eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) := by
-        rw [show chartL2Measure (I := I) (M := M) α =
+          eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
+        rw [show chartLebesgueMeasure (I := I) (M := M) α =
             (volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α) from rfl,
           eLpNorm_congr_ae hf_aeEq_fK_v.symm]

@@ -178,7 +178,7 @@ theorem eigenvector_chartComponent_memWkp
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) i) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' := by
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' := by
   classical
   set D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ :=
     eigenvectorTensorChartBilinearData (I := I) (M := M) g r s i α P₀
@@ -279,7 +279,7 @@ example (α : M) (P₀ : TensorCompIdx (E := E) r s)
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) i) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' :=
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' :=
   eigenvector_chartComponent_memWkp g r s i α P₀
     hΩ''_open hΩ''_compact_closure hR₀_pos h_room
 

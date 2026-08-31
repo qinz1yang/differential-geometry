@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Component.EigenvectorChartComponentH2Quant
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorChartGradientEnergyBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSEnergyBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.LpEnergyBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorArbitraryKRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 open DifferentialGeometry.Analysis.Spectral
@@ -461,7 +461,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     fun _ => rfl
   have hD_u_chart : D.uChart =
       ((tensorL2ChartComponent (I := I) (M := M) g r s vec α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) := rfl
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) := rfl
   set φnorm : ℝ := ‖vec‖ with hφnorm_def
   have hφnorm_nn : 0 ≤ φnorm := norm_nonneg _
   have hφnorm_eq_one : φnorm = 1 := by

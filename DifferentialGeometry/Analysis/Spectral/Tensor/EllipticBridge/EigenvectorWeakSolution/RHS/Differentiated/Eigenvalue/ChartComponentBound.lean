@@ -114,7 +114,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
@@ -135,7 +135,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
         ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
@@ -150,7 +150,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
         ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
@@ -164,7 +164,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((partialLpLimit (I := I) (M := M)
               g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
@@ -178,7 +178,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
@@ -192,7 +192,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
@@ -206,7 +206,7 @@ theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
               g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
@@ -312,7 +312,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (Ceig : ℕ → ℝ) (eEig : ℕ → ℕ) (hCeig_nn : ∀ K', 0 ≤ Ceig K')
@@ -333,7 +333,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
         ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
@@ -348,7 +348,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
         ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
@@ -362,7 +362,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((partialLpLimit (I := I) (M := M)
               g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
@@ -376,7 +376,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
@@ -390,7 +390,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
@@ -404,7 +404,7 @@ theorem eigenvectorChartRHSDiff_wkpNormOne_le_chartcpt
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
           (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
               g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *

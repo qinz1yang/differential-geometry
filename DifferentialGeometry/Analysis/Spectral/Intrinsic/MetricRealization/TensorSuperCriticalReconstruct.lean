@@ -76,16 +76,16 @@ private lemma superCriticalChartComponent_ae_zero_off_kernel
     (P₀ : DifferentialGeometry.Analysis.Parabolic.TensorSpectral.TensorCompIdx
       (E := E) r s) :
     (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α)] (fun _ : EuclN => (0 : ℝ)) := by
   classical
   have h_ae :
-      ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
         y ∉ chartPouKernel (I := I) (M := M) α →
           ((tensorL2ChartComponent (I := I) (M := M) g r s w α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 :=
     tensorL2ChartComponent_ae_zero_off_chartPouKernel
       (I := I) (M := M) g r s w α P₀
   have hV_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α \
@@ -97,13 +97,13 @@ private lemma superCriticalChartComponent_ae_zero_off_kernel
           chartPouKernel (I := I) (M := M) α)),
         y ∉ chartPouKernel (I := I) (M := M) α →
           ((tensorL2ChartComponent (I := I) (M := M) g r s w α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
     refine ae_mono ?_ h_ae
     show (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α) ≤
-      chartL2Measure (I := I) (M := M) α
-    rw [show chartL2Measure (I := I) (M := M) α =
+      chartLebesgueMeasure (I := I) (M := M) α
+    rw [show chartLebesgueMeasure (I := I) (M := M) α =
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α) from rfl]
     exact Measure.restrict_mono_set _
@@ -121,7 +121,7 @@ theorem superCriticalChartComponent_exists_smooth_representative
     (h_all : ∀ k : ℕ,
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)) :
     ∃ u_smooth : EuclN → ℝ,
       ContDiffOn ℝ (∞ : WithTop ℕ∞) u_smooth
@@ -131,12 +131,12 @@ theorem superCriticalChartComponent_exists_smooth_representative
       u_smooth =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   set u : EuclN → ℝ :=
     (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) with hu_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) with hu_def
   set K : Set EuclN := chartPouKernel (I := I) (M := M) α with hK_def
   have hΩ_open : IsOpen Ω :=
     DifferentialGeometry.Analysis.Laplacian.MetricExtension.chartTargetEuclid_isOpen
@@ -212,7 +212,7 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 private def wChartComp (w : TensorL2 r s g) (α : M)
     (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
 
 private def chosenComp_w (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -501,8 +501,8 @@ private lemma wSmoothChart_tensorL2ChartComponent_coeFn_aeEq (w : TensorL2 r s g
     (α β : M) (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponent (I := I) (M := M) g r s
         (wSmoothChart (I := I) (M := M) g r s w h_all α : TensorL2 r s g) β P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun y => chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         chartPushedRaw I β
@@ -517,9 +517,9 @@ private lemma wSmoothChart_tensorL2ChartComponent_coeFn_aeEq (w : TensorL2 r s g
   have h_coeFn :=
     tensorL2ChartComponent_smoothToTensorL2_coeFn (I := I) (M := M) g r s
       (wSmoothChart (I := I) (M := M) g r s w h_all α) β P₀
-  have h_mem : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+  have h_mem : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) β),
       y ∈ chartTargetEuclid (I := I) (M := M) β := by
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     exact ae_restrict_mem
       (DifferentialGeometry.Analysis.Laplacian.MetricExtension.chartTargetEuclid_isOpen
         (I := I) (M := M) β).measurableSet
@@ -713,12 +713,12 @@ private lemma wSmoothChart_transport_term_aeEq (w : TensorL2 r s g)
               (wSmoothChart (I := I) (M := M) g r s w h_all γ)
               γ Q.1 Q.2 x
           else 0) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
     (fun y => chartPushedRaw I β
         (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
       ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s w γ Q) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
   classical
   set W : EuclN → ℝ := fun y => chartPushedRaw I β
     (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y with hW_def
@@ -732,32 +732,32 @@ private lemma wSmoothChart_transport_term_aeEq (w : TensorL2 r s g)
   set B : EuclN → ℝ := fun y =>
     ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s w γ Q) :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y with hB_def
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y with hB_def
   set RHS : EuclN → ℝ := fun y =>
     chartPushedRaw (I := I) (M := M) β
         (transportCoeffManifold (I := I) (M := M) r s γ β P₀ Q) y *
       wChartComp (I := I) (M := M) g r s w γ Q
         (chartTransitionEuclid (I := I) (M := M) β γ y) with hRHS_def
-  have hB_eq : B =ᵐ[chartL2Measure (I := I) (M := M) β] RHS := by
+  have hB_eq : B =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] RHS := by
     have h := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M) r s γ β
       P₀ Q (tensorL2ChartComponent (I := I) (M := M) g r s w γ Q)
     exact h.trans (Filter.EventuallyEq.of_eq rfl)
   have h_goal : (fun y => W y * A y)
-      =ᵐ[chartL2Measure (I := I) (M := M) β] (fun y => W y * RHS y) := by
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] (fun y => W y * RHS y) := by
     have hΩ_open : IsOpen (chartOverlapEuclid (I := I) (M := M) β γ) :=
       chartOverlapEuclid_isOpen (I := I) (M := M) β γ
     have hΩ_meas : MeasurableSet (chartOverlapEuclid (I := I) (M := M) β γ) :=
       hΩ_open.measurableSet
     have h_restrict_eq :
-        (chartL2Measure (I := I) (M := M) β).restrict
+        (chartLebesgueMeasure (I := I) (M := M) β).restrict
           (chartOverlapEuclid (I := I) (M := M) β γ) =
         (volume : Measure EuclN).restrict
           (chartOverlapEuclid (I := I) (M := M) β γ) := by
-      rw [chartL2Measure, Measure.restrict_restrict hΩ_meas,
+      rw [chartLebesgueMeasure, Measure.restrict_restrict hΩ_meas,
         Set.inter_eq_left.mpr
           (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) β γ)]
     have h_on_overlap : (fun y => W y * A y)
-        =ᵐ[(chartL2Measure (I := I) (M := M) β).restrict
+        =ᵐ[(chartLebesgueMeasure (I := I) (M := M) β).restrict
             (chartOverlapEuclid (I := I) (M := M) β γ)]
         (fun y => W y * RHS y) := by
       rw [h_restrict_eq]
@@ -900,14 +900,14 @@ private lemma wSmoothChart_tensorL2ChartComponent_eq_transport_sum
     (α β : M) (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponent (I := I) (M := M) g r s
         (wSmoothChart (I := I) (M := M) g r s w h_all α : TensorL2 r s g) β P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun y => chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ∑ Q : TensorCompIdx (E := E) r s,
           ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y) := by
   classical
   refine (wSmoothChart_tensorL2ChartComponent_coeFn_aeEq
@@ -946,12 +946,12 @@ private lemma wSmoothChart_tensorL2ChartComponent_eq_transport_sum
                 (wSmoothChart (I := I) (M := M) g r s w h_all α)
                 α Q.1 Q.2 x
           else 0) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) β]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun y => chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) :=
     fun Q => wSmoothChart_transport_term_aeEq
       (I := I) (M := M) g r s w h_all β α P₀ Q
   have h_sum := finsetSum_ae_eq (I := I) (M := M) β
@@ -968,17 +968,17 @@ private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s
     (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
         wChartComp (I := I) (M := M) g r s w α Q y
       else 0)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun _ : EuclN => (0 : ℝ)) := by
   classical
-  have h_gate : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+  have h_gate : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       chartPushedPouWeight (I := I) (M := M) α y = 0 →
         wChartComp (I := I) (M := M) g r s w α Q y = 0 := by
     filter_upwards [tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
       (I := I) (M := M) g r s w α Q] with y hy hy_zero
     rw [show wChartComp (I := I) (M := M) g r s w α Q y =
         ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y from rfl,
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y from rfl,
       hy]
     rw [show chartPushedRaw I α
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y =
@@ -994,8 +994,8 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
     (hα : α ∉ transportChartCenters (I := I) (M := M) β) :
     ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
         (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun _ : EuclN => (0 : ℝ)) := by
   classical
   have h_coeFn := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M) r s α β P₀ Q (tensorL2ChartComponent (I := I) (M := M) g r s w α Q)
@@ -1005,11 +1005,11 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
   have hΩ_meas : MeasurableSet (chartOverlapEuclid (I := I) (M := M) β α) :=
     hΩ_open.measurableSet
   have h_restrict_eq :
-      (chartL2Measure (I := I) (M := M) β).restrict
+      (chartLebesgueMeasure (I := I) (M := M) β).restrict
         (chartOverlapEuclid (I := I) (M := M) β α) =
       (volume : Measure EuclN).restrict
         (chartOverlapEuclid (I := I) (M := M) β α) := by
-    rw [chartL2Measure, Measure.restrict_restrict hΩ_meas,
+    rw [chartLebesgueMeasure, Measure.restrict_restrict hΩ_meas,
       Set.inter_eq_left.mpr
         (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) β α)]
   have h_on_overlap :
@@ -1017,7 +1017,7 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
           (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y *
         (wChartComp (I := I) (M := M) g r s w α Q)
           (chartTransitionEuclid (I := I) (M := M) β α y))
-        =ᵐ[(chartL2Measure (I := I) (M := M) β).restrict
+        =ᵐ[(chartLebesgueMeasure (I := I) (M := M) β).restrict
             (chartOverlapEuclid (I := I) (M := M) β α)]
       (fun _ : EuclN => (0 : ℝ)) := by
     rw [h_restrict_eq]
@@ -1031,7 +1031,7 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
           =ᵐ[(volume : Measure EuclN).restrict
               (chartOverlapEuclid (I := I) (M := M) α β)]
         (fun _ : EuclN => (0 : ℝ)) := by
-      rw [chartL2Measure] at h_gate_target
+      rw [chartLebesgueMeasure] at h_gate_target
       exact ae_mono (Measure.restrict_mono_set _
         (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) α β))
         h_gate_target
@@ -1124,15 +1124,15 @@ private lemma transportSum_w_ae_zero_of_notMem (w : TensorL2 r s g)
     (fun y => ∑ Q : TensorCompIdx (E := E) r s,
         ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun _ : EuclN => (0 : ℝ)) := by
   classical
   have h_each : ∀ Q : TensorCompIdx (E := E) r s,
       ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-        =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) :=
     fun Q => chartTransitionTransportCLM_w_ae_zero_of_notMem
       (I := I) (M := M) g r s w α β P₀ Q hα
   have h_sum := finsetSum_ae_eq (I := I) (M := M) β
@@ -1184,15 +1184,15 @@ private lemma wSmooth_tensorL2ChartComponent_eq (w : TensorL2 r s g)
         ((tensorL2ChartComponent (I := I) (M := M) g r s
             (wSmoothChart (I := I) (M := M) g r s w h_all α : TensorL2 r s g)
             β P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) β]
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartPushedRaw I β
             (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
           ∑ Q : TensorCompIdx (E := E) r s,
             ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
                 (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)) :=
     finsetSum_ae_eq (I := I) (M := M) β
       (chartAtlasPOUFinset (I := I) (M := M))
@@ -1211,7 +1211,7 @@ private lemma wSmooth_tensorL2ChartComponent_eq (w : TensorL2 r s g)
       ∑ Q : TensorCompIdx (E := E) r s,
         ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y
     with hF_def
   have h_rhs_eq :
       (fun y => chartPushedRaw I β
@@ -1220,7 +1220,7 @@ private lemma wSmooth_tensorL2ChartComponent_eq (w : TensorL2 r s g)
           ∑ Q : TensorCompIdx (E := E) r s,
             ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
                 (tensorL2ChartComponent (I := I) (M := M) g r s w γ Q) :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y) =
         fun y => ∑ γ ∈ transportChartCenters (I := I) (M := M) β, F γ y := by
     funext y
@@ -1246,10 +1246,10 @@ private lemma wSmooth_tensorL2ChartComponent_eq (w : TensorL2 r s g)
   rw [h_split]
   have h_extra : (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
           transportChartCenters (I := I) (M := M) β, F α y)
-        =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
     have h_each : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β,
-        F α =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
+        F α =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
       intro α hα
       have hα_notin : α ∉ transportChartCenters (I := I) (M := M) β :=
         (Finset.mem_sdiff.mp hα).2
@@ -1262,7 +1262,7 @@ private lemma wSmooth_tensorL2ChartComponent_eq (w : TensorL2 r s g)
         ∑ Q : TensorCompIdx (E := E) r s,
           ((chartTransitionTransportCLM (I := I) (M := M) r s α β P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s w α Q) :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y =
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y =
         (0 : ℝ)
       rw [hy, mul_zero]
     have h_sum := finsetSum_ae_eq (I := I) (M := M) β

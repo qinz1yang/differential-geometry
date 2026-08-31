@@ -220,19 +220,19 @@ theorem eigenvectorChartWeakPartial_eLpNorm_le
             (chartTargetEuclid (I := I) (M := M) α)) =
         eLpNorm ((eigenvectorChartPartialLp (I := I) (M := M)
             g r s i α P₀ k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
-            EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) α) := rfl
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
+            EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) α) := rfl
   have h_eLp_ne_top :
       eLpNorm ((eigenvectorChartPartialLp (I := I) (M := M)
             g r s i α P₀ k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
-            EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) α) ≠ ⊤ :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
+            EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) α) ≠ ⊤ :=
     Lp.eLpNorm_ne_top _
   have h_eLp_ofReal :
       eLpNorm ((eigenvectorChartPartialLp (I := I) (M := M)
             g r s i α P₀ k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
-            EuclN → ℝ) 2 (chartL2Measure (I := I) (M := M) α) =
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
+            EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) α) =
         ENNReal.ofReal
           ‖eigenvectorChartPartialLp (I := I) (M := M)
             g r s i α P₀ k‖ := by

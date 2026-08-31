@@ -67,15 +67,15 @@ lemma chartPushedPouWeight_measurable (α : M) :
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma chartPushedPouWeight_aestronglyMeasurable (α : M) :
     AEStronglyMeasurable (chartPushedPouWeight (I := I) (M := M) α)
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
   (chartPushedPouWeight_measurable (I := I) (M := M) α).aestronglyMeasurable
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma chartPushedPouWeight_mul_memLp
     (α : M) {f : EuclN → ℝ}
-    (hf : MemLp f 2 (chartL2Measure (I := I) (M := M) α)) :
+    (hf : MemLp f 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     MemLp (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   refine ⟨(chartPushedPouWeight_aestronglyMeasurable
     (I := I) (M := M) α).mul hf.1, ?_⟩
@@ -88,8 +88,8 @@ private lemma chartPushedPouWeight_mul_memLp
       (norm_nonneg _)).trans ?_
     rw [one_mul]
   calc eLpNorm (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y) 2
-        (chartL2Measure (I := I) (M := M) α)
-      ≤ eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) :=
+        (chartLebesgueMeasure (I := I) (M := M) α)
+      ≤ eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
         eLpNorm_mono hpt
     _ < ⊤ := hf.2
 
@@ -97,8 +97,8 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 private lemma eLpNorm_chartPushedPouWeight_mul_le
     (α : M) (f : EuclN → ℝ) :
     eLpNorm (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y) 2
-        (chartL2Measure (I := I) (M := M) α) ≤
-      eLpNorm f 2 (chartL2Measure (I := I) (M := M) α) := by
+        (chartLebesgueMeasure (I := I) (M := M) α) ≤
+      eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hpt : ∀ y : EuclN,
       ‖chartPushedPouWeight (I := I) (M := M) α y * f y‖ ≤ ‖f y‖ := by
@@ -111,18 +111,18 @@ private lemma eLpNorm_chartPushedPouWeight_mul_le
   exact eLpNorm_mono hpt
 
 private def boundedPouMulLp
-    (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (chartPushedPouWeight_mul_memLp (I := I) (M := M) α (Lp.memLp f)).toLp
     (fun y => chartPushedPouWeight (I := I) (M := M) α y *
       (f : EuclN → ℝ) y)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma boundedPouMulLp_coeFn
-    (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     ((boundedPouMulLp (I := I) (M := M) α f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       fun y => chartPushedPouWeight (I := I) (M := M) α y *
         (f : EuclN → ℝ) y := by
   unfold boundedPouMulLp
@@ -130,7 +130,7 @@ private lemma boundedPouMulLp_coeFn
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma boundedPouMulLp_add
-    (α : M) (f₁ f₂ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (f₁ f₂ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     boundedPouMulLp (I := I) (M := M) α (f₁ + f₂) =
       boundedPouMulLp (I := I) (M := M) α f₁ +
         boundedPouMulLp (I := I) (M := M) α f₂ := by
@@ -145,7 +145,7 @@ private lemma boundedPouMulLp_add
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma boundedPouMulLp_smul
-    (α : M) (c : ℝ) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (c : ℝ) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     boundedPouMulLp (I := I) (M := M) α (c • f) =
       c • boundedPouMulLp (I := I) (M := M) α f := by
   classical
@@ -158,21 +158,21 @@ private lemma boundedPouMulLp_smul
     mul_left_comm]
 
 private def boundedPouMulLpLin (α : M) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) →ₗ[ℝ]
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) where
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →ₗ[ℝ]
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) where
   toFun f := boundedPouMulLp (I := I) (M := M) α f
   map_add' f₁ f₂ := boundedPouMulLp_add (I := I) (M := M) α f₁ f₂
   map_smul' c f := boundedPouMulLp_smul (I := I) (M := M) α c f
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 @[simp] private lemma boundedPouMulLpLin_apply
-    (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     boundedPouMulLpLin (I := I) (M := M) α f =
       boundedPouMulLp (I := I) (M := M) α f := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma boundedPouMulLpLin_norm_le
-    (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     ‖boundedPouMulLpLin (I := I) (M := M) α f‖ ≤ 1 * ‖f‖ := by
   classical
   rw [one_mul, boundedPouMulLpLin_apply]
@@ -182,23 +182,23 @@ private lemma boundedPouMulLpLin_norm_le
   exact eLpNorm_chartPushedPouWeight_mul_le (I := I) (M := M) α _
 
 def boundedPouMulLpCLM (α : M) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) →L[ℝ]
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →L[ℝ]
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (boundedPouMulLpLin (I := I) (M := M) α).mkContinuous 1
     (boundedPouMulLpLin_norm_le (I := I) (M := M) α)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 @[simp] private lemma boundedPouMulLpCLM_apply
-    (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     boundedPouMulLpCLM (I := I) (M := M) α f =
       boundedPouMulLp (I := I) (M := M) α f := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma boundedPouMulLpCLM_coeFn
-    (α : M) (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     ((boundedPouMulLpCLM (I := I) (M := M) α f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       fun y => chartPushedPouWeight (I := I) (M := M) α y *
         (f : EuclN → ℝ) y := by
   rw [boundedPouMulLpCLM_apply]
@@ -332,10 +332,10 @@ private lemma tensorL2ChartComponent_eq_boundedPouMul_cutoff
       boundedPouMulLpCLM (I := I) (M := M) α
         (tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀) := by
   classical
-  set lhs : TensorL2 r s g → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set lhs : TensorL2 r s g → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     fun v => tensorL2ChartComponent (I := I) (M := M) g r s v α P₀
     with hlhs_def
-  set rhs : TensorL2 r s g → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set rhs : TensorL2 r s g → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     fun v => boundedPouMulLpCLM (I := I) (M := M) α
       (tensorL2ChartComponentCutoff (I := I) (M := M) g r s v α P₀)
     with hrhs_def
@@ -362,12 +362,12 @@ theorem tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => chartPushedRaw I α
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
   classical
   rw [tensorL2ChartComponent_eq_boundedPouMul_cutoff (I := I) (M := M)
     g r s u α P₀]
@@ -380,15 +380,15 @@ theorem tensorL2ChartComponent_ae_eq_pou_transport_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => chartPushedRaw I α
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ∑ β ∈ transportChartCenters (I := I) (M := M) α,
           ∑ Q : TensorCompIdx (E := E) r s,
             ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
                 (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y) := by
   classical
   refine (tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
@@ -402,18 +402,18 @@ section ElaborationTests
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 example (α : M) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) →L[ℝ]
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →L[ℝ]
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   boundedPouMulLpCLM (I := I) (M := M) α
 
 example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => chartPushedRaw I α
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
   tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
     (I := I) (M := M) g r s u α P₀
 

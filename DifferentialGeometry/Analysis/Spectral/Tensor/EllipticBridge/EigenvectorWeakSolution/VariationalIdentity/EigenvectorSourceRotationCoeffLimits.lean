@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHS
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossLimits
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightDiv
@@ -72,7 +72,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
           covPrincipalRotationCoeffLimit (I := I) (M := M)
             g r s i α P₀ y * ψ y ∂(volume : Measure EuclN))) := by
   classical
-  set μch : Measure EuclN := chartL2Measure (I := I) (M := M) α with hμch_def
+  set μch : Measure EuclN := chartLebesgueMeasure (I := I) (M := M) α with hμch_def
   set m : Lp ℝ 2 μch :=
     (densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp _
     with hm_def
@@ -105,7 +105,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
             α P₀ y * ψ y := by
       filter_upwards [h_m_ae, h_g_ae] with y hy_m hy_g
       rw [hy_m, hy_g]; ring
-    rw [integral_congr_ae h_ae_prod, hμch_def, chartL2Measure]
+    rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
     rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
@@ -128,7 +128,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
             g r s i α P₀ y * ψ y := by
       filter_upwards [h_m_ae, h_g_ae] with y hy_m hy_g
       rw [hy_m, hy_g]; ring
-    rw [integral_congr_ae h_ae_prod, hμch_def, chartL2Measure]
+    rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
     rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
@@ -157,7 +157,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
           covLowerOrderRotationValueCoeffLimit (I := I) (M := M)
             g r s i α P₀ y * ψ y ∂(volume : Measure EuclN))) := by
   classical
-  set μch : Measure EuclN := chartL2Measure (I := I) (M := M) α with hμch_def
+  set μch : Measure EuclN := chartLebesgueMeasure (I := I) (M := M) α with hμch_def
   set m : Lp ℝ 2 μch :=
     (densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp _
     with hm_def
@@ -190,7 +190,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
             α P₀ y * ψ y := by
       filter_upwards [h_m_ae, h_g_ae] with y hy_m hy_g
       rw [hy_m, hy_g]; ring
-    rw [integral_congr_ae h_ae_prod, hμch_def, chartL2Measure]
+    rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
     rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
@@ -213,7 +213,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
             g r s i α P₀ y * ψ y := by
       filter_upwards [h_m_ae, h_g_ae] with y hy_m hy_g
       rw [hy_m, hy_g]; ring
-    rw [integral_congr_ae h_ae_prod, hμch_def, chartL2Measure]
+    rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
     rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
@@ -243,20 +243,20 @@ theorem weightedGradCoeffDivSum_source_tendsto
           weightedGradCoeffDivLimit (I := I) (M := M)
             g r s i α P₀ l y) * ψ y ∂(volume : Measure EuclN))) := by
   classical
-  set m : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set m : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     (test_memLp (I := I) (M := M) α hψ hψ_cs).toLp _ with hm_def
-  set gseq : ℕ → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) := fun n =>
+  set gseq : ℕ → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) := fun n =>
     ∑ l : Fin (Module.finrank ℝ E),
       (euclidPartial_weightedGradCoeff_pouSmul_memLp (I := I) (M := M)
         g r s i α P₀ l n).toLp _ with hgseq_def
-  set glim : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set glim : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     ∑ l : Fin (Module.finrank ℝ E),
       (weightedGradCoeffDivLimit_memLp (I := I) (M := M)
         g r s i α P₀ l).toLp _ with hglim_def
-  have h_m_ae : (m : EuclN → ℝ) =ᵐ[chartL2Measure (I := I) (M := M) α] ψ := by
+  have h_m_ae : (m : EuclN → ℝ) =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] ψ := by
     rw [hm_def]; exact MemLp.coeFn_toLp _
   have h_gseq_ae : ∀ n : ℕ, (gseq n : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       fun y => ∑ l : Fin (Module.finrank ℝ E),
         euclidPartial (E := E) l
           (weightedGradCoeff (I := I) (M := M) g r s
@@ -268,7 +268,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
       (fun l => euclidPartial_weightedGradCoeff_pouSmul_memLp
         (I := I) (M := M) g r s i α P₀ l n)
   have h_glim_ae : (glim : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       fun y => ∑ l : Fin (Module.finrank ℝ E),
         weightedGradCoeffDivLimit (I := I) (M := M)
           g r s i α P₀ l y := by
@@ -279,7 +279,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
         g r s i α P₀ l)
   have h_int_n : ∀ n : ℕ,
       ∫ y, (m : EuclN → ℝ) y * (gseq n : EuclN → ℝ) y
-          ∂(chartL2Measure (I := I) (M := M) α) =
+          ∂(chartLebesgueMeasure (I := I) (M := M) α) =
         ∫ y, (∑ l : Fin (Module.finrank ℝ E),
             euclidPartial (E := E) l
               (weightedGradCoeff (I := I) (M := M) g r s
@@ -288,7 +288,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
                 α P₀ l) y) * ψ y ∂(volume : Measure EuclN) := by
     intro n
     have h_ae_prod : (fun y => (m : EuclN → ℝ) y * (gseq n : EuclN → ℝ) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => (∑ l : Fin (Module.finrank ℝ E),
           euclidPartial (E := E) l
             (weightedGradCoeff (I := I) (M := M) g r s
@@ -296,24 +296,24 @@ theorem weightedGradCoeffDivSum_source_tendsto
               α P₀ l) y) * ψ y := by
       filter_upwards [h_m_ae, h_gseq_ae n] with y hy_m hy_g
       rw [hy_m, hy_g]; ring
-    rw [integral_congr_ae h_ae_prod, chartL2Measure]
+    rw [integral_congr_ae h_ae_prod, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
     rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
   have h_int_lim :
       ∫ y, (m : EuclN → ℝ) y * (glim : EuclN → ℝ) y
-          ∂(chartL2Measure (I := I) (M := M) α) =
+          ∂(chartLebesgueMeasure (I := I) (M := M) α) =
         ∫ y, (∑ l : Fin (Module.finrank ℝ E),
             weightedGradCoeffDivLimit (I := I) (M := M)
               g r s i α P₀ l y) * ψ y ∂(volume : Measure EuclN) := by
     have h_ae_prod : (fun y => (m : EuclN → ℝ) y * (glim : EuclN → ℝ) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => (∑ l : Fin (Module.finrank ℝ E),
           weightedGradCoeffDivLimit (I := I) (M := M)
             g r s i α P₀ l y) * ψ y := by
       filter_upwards [h_m_ae, h_glim_ae] with y hy_m hy_g
       rw [hy_m, hy_g]; ring
-    rw [integral_congr_ae h_ae_prod, chartL2Measure]
+    rw [integral_congr_ae h_ae_prod, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
     rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
@@ -321,7 +321,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
     weightedGradCoeffDivSum_tendsto (I := I) (M := M)
       g r s i α P₀
   have h_main := tendsto_lp_inner_integral
-    (μ := chartL2Measure (I := I) (M := M) α) m h_tendsto_lp
+    (μ := chartLebesgueMeasure (I := I) (M := M) α) m h_tendsto_lp
   rw [h_int_lim] at h_main
   exact h_main.congr (fun n => h_int_n n)
 

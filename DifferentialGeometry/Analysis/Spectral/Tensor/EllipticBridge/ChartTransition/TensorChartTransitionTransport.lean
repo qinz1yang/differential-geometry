@@ -34,10 +34,10 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [Com
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 lemma coeFn_finsetSum_chartL2
     (α : M) {ι : Type*} (s : Finset ι)
-    (G : ι → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
-    (((∑ a ∈ s, G a) : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (G : ι → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
+    (((∑ a ∈ s, G a) : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
         EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       fun y => ∑ a ∈ s, ((G a : EuclN → ℝ) y) := by
   classical
   induction s using Finset.induction with
@@ -270,17 +270,17 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [Com
 lemma finsetSum_ae_eq
     (α : M) {ι : Type*} (s : Finset ι) {f h : ι → EuclN → ℝ}
     (hfh : ∀ a ∈ s,
-      f a =ᵐ[chartL2Measure (I := I) (M := M) α] h a) :
-    (fun y => ∑ a ∈ s, f a y) =ᵐ[chartL2Measure (I := I) (M := M) α]
+      f a =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] h a) :
+    (fun y => ∑ a ∈ s, f a y) =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       fun y => ∑ a ∈ s, h a y := by
   classical
   induction s using Finset.induction with
   | empty => simp
   | insert a t ha ih =>
-      have hfh_a : f a =ᵐ[chartL2Measure (I := I) (M := M) α] h a :=
+      have hfh_a : f a =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] h a :=
         hfh a (Finset.mem_insert_self a t)
       have hfh_t : ∀ b ∈ t,
-          f b =ᵐ[chartL2Measure (I := I) (M := M) α] h b :=
+          f b =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] h b :=
         fun b hb => hfh b (Finset.mem_insert_of_mem hb)
       filter_upwards [hfh_a, ih hfh_t] with y hya hyt
       rw [Finset.sum_insert ha, Finset.sum_insert ha, hya, hyt]
@@ -308,8 +308,8 @@ private lemma tensorL2ChartComponentCutoff_smooth_eq_transport_sum
             chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s
                 (S : TensorL2 r s g) β Q)) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) =ᵐ[
-          chartL2Measure (I := I) (M := M) α]
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) =ᵐ[
+          chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ β ∈ transportChartCenters (I := I) (M := M) α,
           ∑ Q : TensorCompIdx (E := E) r s,
             chartPushedRaw I α
@@ -376,10 +376,10 @@ theorem tensorL2ChartComponentCutoff_eq_pou_transport_sum
           chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
             (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) := by
   classical
-  set lhs : TensorL2 r s g → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set lhs : TensorL2 r s g → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     fun v => tensorL2ChartComponentCutoff (I := I) (M := M) g r s v α P₀
     with hlhs_def
-  set rhs : TensorL2 r s g → Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set rhs : TensorL2 r s g → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     fun v => ∑ β ∈ transportChartCenters (I := I) (M := M) α,
       ∑ Q : TensorCompIdx (E := E) r s,
         chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
@@ -414,13 +414,13 @@ theorem tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
     (u : TensorL2 r s g) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => ∑ β ∈ transportChartCenters (I := I) (M := M) α,
         ∑ Q : TensorCompIdx (E := E) r s,
           ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
               (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
   classical
   rw [tensorL2ChartComponentCutoff_eq_pou_transport_sum
     (I := I) (M := M) g r s u α P₀]

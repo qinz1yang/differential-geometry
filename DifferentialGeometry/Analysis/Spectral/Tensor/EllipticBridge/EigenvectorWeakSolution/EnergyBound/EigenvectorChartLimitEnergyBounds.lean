@@ -58,7 +58,7 @@ private lemma eigenvalue_pos
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma eLpNorm_lpClass_eq_ofReal_norm
-    (α : M) (w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (α : M) (w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     eLpNorm ((w : EuclN → ℝ)) 2
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α))
@@ -66,7 +66,7 @@ private lemma eLpNorm_lpClass_eq_ofReal_norm
   have h_eq : eLpNorm ((w : EuclN → ℝ)) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) =
-      eLpNorm ((w : EuclN → ℝ)) 2 (chartL2Measure (I := I) (M := M) α) := rfl
+      eLpNorm ((w : EuclN → ℝ)) 2 (chartLebesgueMeasure (I := I) (M := M) α) := rfl
   rw [h_eq, Lp.norm_def, ENNReal.ofReal_toReal (Lp.eLpNorm_ne_top w)]
 
 open DifferentialGeometry.Analysis.Spectral in
@@ -103,7 +103,7 @@ theorem partialLpLimit_eLpNorm_le
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       eLpNorm ((partialLpLimit (I := I) (M := M)
             g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal
@@ -189,7 +189,7 @@ theorem cutoffPartialLpLimit_eLpNorm_le
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
             g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal
@@ -257,7 +257,7 @@ example :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       eLpNorm ((partialLpLimit (I := I) (M := M)
             g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal (C * Real.sqrt (i.fst.val)) *
@@ -271,7 +271,7 @@ example :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
             g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal (C * Real.sqrt (i.fst.val)) *

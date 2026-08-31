@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Regularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 open DifferentialGeometry.Geometry.Curvature
@@ -221,7 +221,7 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -233,14 +233,14 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 ((crossRightLimitComponent (I := I) (M := M)
                     g r s i α P :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
                 (chartTargetEuclid (I := I) (M := M) α))
             + (∑ P : TensorCompIdx (E := E) r s,
                 ∑ l : Fin (Module.finrank ℝ E),
                   iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                     ((cutoffPartialLpLimit (I := I) (M := M)
                         g r s i α P l :
-                        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                         EuclN → ℝ)
                     (chartTargetEuclid (I := I) (M := M) α))) := by
   classical
@@ -253,11 +253,11 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le
   set Acomp : TensorCompIdx (E := E) r s → EuclN → ℝ :=
     fun P => ((crossRightLimitComponent (I := I) (M := M)
       g r s i α P :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) with hAcomp_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) with hAcomp_def
   set Apart : TensorCompIdx (E := E) r s → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun P l => ((cutoffPartialLpLimit (I := I) (M := M)
       g r s i α P l :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) with hApart_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) with hApart_def
   set Sumcomp : ℝ≥0∞ :=
     ∑ P : TensorCompIdx (E := E) r s,
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Acomp P) Ω with hSumcomp_def
@@ -532,7 +532,7 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -545,14 +545,14 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   ((crossRightLimitComponent (I := I) (M := M)
                       g r s i α P :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
                   (chartTargetEuclid (I := I) (M := M) α))
               + (∑ P : TensorCompIdx (E := E) r s,
                   ∑ l : Fin (Module.finrank ℝ E),
                     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                       ((cutoffPartialLpLimit (I := I) (M := M)
                           g r s i α P l :
-                          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                           EuclN → ℝ)
                       (chartTargetEuclid (I := I) (M := M) α))) := by
   classical
@@ -613,11 +613,11 @@ theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
   set Acomp : TensorCompIdx (E := E) r s → EuclN → ℝ :=
     fun P => ((crossRightLimitComponent (I := I) (M := M)
       g r s i α P :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) with hAcomp_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) with hAcomp_def
   set Apart : TensorCompIdx (E := E) r s → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun P l => ((cutoffPartialLpLimit (I := I) (M := M)
       g r s i α P l :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) with hApart_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) with hApart_def
   set Sumcomp : ℝ≥0∞ :=
     ∑ P : TensorCompIdx (E := E) r s,
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (Acomp P) Ω with hSumcomp_def

@@ -116,17 +116,17 @@ lemma chosenWeakPartial'_cutoffComponentEuclid_memLp
       (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   have h := chosenWeakPartial'_memLp_of_mem
     (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S α Idx Jdx) k
-  rwa [chartL2Measure]
+  rwa [chartLebesgueMeasure]
 
 private def smoothCutoffChartPartialLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (chosenWeakPartial'_cutoffComponentEuclid_memLp
     (I := I) (M := M) g r s S α P₀.1 P₀.2 k).toLp _
 
@@ -137,8 +137,8 @@ private lemma smoothCutoffChartPartialLp_coeFn
     (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
     ((smoothCutoffChartPartialLp (I := I) (M := M) g r s S α P₀ k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α) := by
@@ -174,7 +174,7 @@ private lemma smoothCutoffChartPartialLp_add
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (S₁ + S₂).toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y =>
         chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
             (cutoffComponentEuclid (I := I) (M := M)
@@ -184,7 +184,7 @@ private lemma smoothCutoffChartPartialLp_add
             (cutoffComponentEuclid (I := I) (M := M)
               g r s S₂.toCcTensor α P₀.1 P₀.2)
             (chartTargetEuclid (I := I) (M := M) α) y) := by
-    rw [chartL2Measure, h_fun]
+    rw [chartLebesgueMeasure, h_fun]
     exact chosenWeakPartial'_add_ae (d := Module.finrank ℝ E) hp_one hΩ_open
       (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S₁ α P₀.1 P₀.2)
       (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S₂ α P₀.1 P₀.2) k
@@ -224,12 +224,12 @@ private lemma smoothCutoffChartPartialLp_smul
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (c • S).toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => c * chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M)
           g r s S.toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α) y) := by
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     have h_fun' :
         cutoffComponentEuclid (I := I) (M := M) g r s
             (c • S).toCcTensor α P₀.1 P₀.2 =
@@ -252,7 +252,7 @@ private def smoothCutoffChartPartialLpLin
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    SmoothCcTensorH1 g r s →ₗ[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) where
+    SmoothCcTensorH1 g r s →ₗ[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) where
   toFun S := smoothCutoffChartPartialLp (I := I) (M := M) g r s S α P₀ k
   map_add' S₁ S₂ :=
     smoothCutoffChartPartialLp_add (I := I) (M := M) g r s S₁ S₂ α P₀ k
@@ -311,9 +311,9 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
           (cutoffComponentEuclid (I := I) (M := M)
             g r s S.toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)) 2
-        (chartL2Measure (I := I) (M := M) α) ≤
+        (chartLebesgueMeasure (I := I) (M := M) α) ≤
       ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     exact h_single.trans h_sum
   have h_norm_eq :
       ‖smoothCutoffChartPartialLpLin (I := I) (M := M) g r s α P₀ k S‖ =
@@ -321,7 +321,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
           (cutoffComponentEuclid (I := I) (M := M)
             g r s S.toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)) 2
-          (chartL2Measure (I := I) (M := M) α)).toReal := by
+          (chartLebesgueMeasure (I := I) (M := M) α)).toReal := by
     rw [smoothCutoffChartPartialLpLin_apply]
     unfold smoothCutoffChartPartialLp
     exact MeasureTheory.Lp.norm_toLp _ _
@@ -334,7 +334,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
         (cutoffComponentEuclid (I := I) (M := M)
           g r s S.toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α)) 2
-        (chartL2Measure (I := I) (M := M) α)).toReal ≤
+        (chartLebesgueMeasure (I := I) (M := M) α)).toReal ≤
         (ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞)).toReal :=
     ENNReal.toReal_mono h_rhs_lt_top h_eLp
   refine h_toReal_le.trans ?_
@@ -345,7 +345,7 @@ private def smoothCutoffChartPartialLpCLM
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    SmoothCcTensorH1 g r s →L[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    SmoothCcTensorH1 g r s →L[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (smoothCutoffChartPartialLpLin (I := I) (M := M) g r s α P₀ k).mkContinuous
     (smoothCutoffChartPartialLpLin_norm_le (I := I) (M := M) g r s α P₀ k).choose
     (smoothCutoffChartPartialLpLin_norm_le
@@ -375,7 +375,7 @@ def eigenvectorCutoffChartPartialCLM
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    TensorH1Compl g r s →L[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    TensorH1Compl g r s →L[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   ContinuousLinearMap.extend
     (smoothCutoffChartPartialLpCLM (I := I) (M := M) g r s α P₀ k)
     (smoothToTensorH1Compl (I := I) (M := M) g r s)
@@ -400,7 +400,7 @@ def eigenvectorCutoffChartPartialLp
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (i.fst.val)⁻¹ •
     eigenvectorCutoffChartPartialCLM (I := I) (M := M) g r s α P₀ k
       (eigenvectorResolvent (I := I) (M := M) g r s i)

@@ -169,14 +169,14 @@ theorem wkpNorm_crossRightLimitComponent_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) (P : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal C *
           ∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -186,17 +186,17 @@ theorem wkpNorm_crossRightLimitComponent_le
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β) := by
   classical
   have h_unfold : (fun y => ((crossRightLimitComponent (I := I)
         (M := M) g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       = (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          α P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+          α P : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
           EuclN → ℝ) y) := by
     rw [crossRightLimitComponent]
   rw [h_unfold]
@@ -220,7 +220,7 @@ theorem wkpNorm_crossRightLimitComponent_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) (P : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -228,7 +228,7 @@ theorem wkpNorm_crossRightLimitComponent_le_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal C *
             ∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -238,7 +238,7 @@ theorem wkpNorm_crossRightLimitComponent_le_uniform
                       (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
-                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β) := by
   classical
@@ -248,11 +248,11 @@ theorem wkpNorm_crossRightLimitComponent_le_uniform
   refine ⟨C, hC_nn, fun i => ?_⟩
   have h_unfold : (fun y => ((crossRightLimitComponent (I := I)
         (M := M) g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       = (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          α P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+          α P : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
           EuclN → ℝ) y) := by
     rw [crossRightLimitComponent]
   rw [h_unfold]
@@ -275,14 +275,14 @@ theorem wkpNorm_crossLeftLimitComponent_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) (P : TensorCompIdx (E := E) r (s + 1)) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossLeftLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal C *
           ∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -292,7 +292,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
                       (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
-                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β))
               + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -302,7 +302,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
                           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                             (eigenvectorResolvent (I := I) (M := M)
                               g r s i))
-                          β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                          β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                           EuclN → ℝ) y)
                       (chartTargetEuclid (I := I) (M := M) β')) := by
   classical
@@ -312,7 +312,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β))
       + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -322,7 +322,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β')
     with haggr_def
@@ -340,7 +340,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
                 (tensorCovGradL2Compl (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)
           ≤ ENNReal.ofReal C * aggr β :=
@@ -353,7 +353,7 @@ theorem wkpNorm_crossLeftLimitComponent_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
       (fun β => aggr β)
@@ -364,19 +364,19 @@ theorem wkpNorm_crossLeftLimitComponent_le
   have h_chain : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
         (fun y => ((crossLeftLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal C₀ *
         (ENNReal.ofReal C₁ *
           ∑ β ∈ transportChartCenters (I := I) (M := M) α, aggr β) := by
     have h_unfold : (fun y => ((crossLeftLimitComponent (I := I)
           (M := M) g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         = (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M)
             g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            α P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            α P : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y) := by
       rw [crossLeftLimitComponent]
     rw [h_unfold]
@@ -399,7 +399,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (α : M) (P : TensorCompIdx (E := E) r (s + 1)) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -407,7 +407,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossLeftLimitComponent (I := I) (M := M)
                 g r s i α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal C *
             ∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -417,7 +417,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
                         (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                           (eigenvectorResolvent (I := I) (M := M)
                             g r s i))
-                        β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                        β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                         EuclN → ℝ) y)
                     (chartTargetEuclid (I := I) (M := M) β))
                 + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -429,7 +429,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
                               (eigenvectorResolvent (I := I)
                                 (M := M) g r s i))
                             β' Q :
-                            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                             EuclN → ℝ) y)
                         (chartTargetEuclid (I := I) (M := M) β')) := by
   classical
@@ -439,7 +439,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+              β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β))
       + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -449,7 +449,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β')
     with haggr_def
@@ -469,7 +469,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
                   (tensorCovGradL2Compl (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
             ≤ ENNReal.ofReal (Cf β Q') * aggr i β :=
@@ -484,7 +484,7 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
       (fun i β => aggr i β)
@@ -495,19 +495,19 @@ theorem wkpNorm_crossLeftLimitComponent_le_uniform
   have h_chain : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
         (fun y => ((crossLeftLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal C₀ *
         (ENNReal.ofReal C₁ *
           ∑ β ∈ transportChartCenters (I := I) (M := M) α, aggr i β) := by
     have h_unfold : (fun y => ((crossLeftLimitComponent (I := I)
           (M := M) g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         = (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M)
             g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            α P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            α P : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y) := by
       rw [crossLeftLimitComponent]
     rw [h_unfold]

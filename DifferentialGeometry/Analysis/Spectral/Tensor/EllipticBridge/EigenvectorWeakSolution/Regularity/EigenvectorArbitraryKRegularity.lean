@@ -50,7 +50,7 @@ private lemma resolventChartComponent_memWkp_of_componentFun
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          α P₀ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          α P₀ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
@@ -61,7 +61,7 @@ private lemma resolventChartComponent_memWkp_of_componentFun
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          α P₀ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          α P₀ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => i.fst.val *
         eigenvectorChartComponentFun (I := I) (M := M)
@@ -188,7 +188,7 @@ private theorem eigenvector_chartComponent_memWkp_pm
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) := by
         intro j hj β Q

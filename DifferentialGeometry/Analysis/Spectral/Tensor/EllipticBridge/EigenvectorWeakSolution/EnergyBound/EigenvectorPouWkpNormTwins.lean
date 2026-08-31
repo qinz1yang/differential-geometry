@@ -86,7 +86,7 @@ theorem eigenvectorVec_pou_wkpNorm_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (Q : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -95,14 +95,14 @@ theorem eigenvectorVec_pou_wkpNorm_le
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
         ≤ ENNReal.ofReal C *
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) := by
   classical
@@ -119,7 +119,7 @@ theorem eigenvectorVec_pou_wkpNorm_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (Q : TensorCompIdx (E := E) r s) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -129,14 +129,14 @@ theorem eigenvectorVec_pou_wkpNorm_le_uniform
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) β Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)
           ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) N 2
               (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M) g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β) := by
   classical
@@ -158,7 +158,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (Q' : TensorCompIdx (E := E) r (s + 1)) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -166,7 +166,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
               (tensorCovGradL2Compl (I := I) (M := M) g r s
                 (eigenvectorResolvent (I := I) (M := M) g r s i))
-              β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β)
         ≤ ENNReal.ofReal C *
           ((∑ Q : TensorCompIdx (E := E) r s,
@@ -175,7 +175,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β))
             + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -185,7 +185,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
                         (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                           (eigenvectorResolvent (I := I) (M := M)
                             g r s i))
-                        β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                        β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                         EuclN → ℝ) y)
                     (chartTargetEuclid (I := I) (M := M) β')) := by
   classical
@@ -281,7 +281,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y =>
         eigenvectorChartWeakPartial (I := I) (M := M)
@@ -294,9 +294,9 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
           ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) β]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
         (fun y =>
           eigenvectorChartWeakPartial (I := I) (M := M)
               g r s i β P (Q'.2 0) y
@@ -312,7 +312,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     (MemWkp_congr_ae (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_ae).mpr h_sum_mem
   have h_scaled_norm : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -320,7 +320,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal (C1 + C2 + C3) * Saggr := by
     rw [wkpNorm_congr_ae (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_ae]
@@ -330,12 +330,12 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
         g r (s + 1)
         (tensorCovGradL2Compl (I := I) (M := M) g r s
           (eigenvectorResolvent (I := I) (M := M) g r s i)) β Q' :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) =
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) =
       (fun y => i.fst.val * ((i.fst.val)⁻¹ *
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)) := by
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)) := by
     funext y
     rw [mul_inv_cancel_left₀ hμ_ne]
   refine ⟨‖i.fst.val‖ * (C1 + C2 + C3),
@@ -346,7 +346,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -356,7 +356,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β')) = Saggr from rfl]
   rw [h_chart_eq_scaled]
@@ -366,7 +366,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
           ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)) Ω
+            β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)) Ω
         = ‖i.fst.val‖ₑ *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => (i.fst.val)⁻¹ *
@@ -374,7 +374,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le
                   (tensorCovGradL2Compl (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y) Ω :=
       wkpNorm_const_smul (d := Module.finrank ℝ E)
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_mem i.fst.val
@@ -393,7 +393,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (Q' : TensorCompIdx (E := E) r (s + 1)) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -402,7 +402,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
                 (tensorCovGradL2Compl (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)
           ≤ ENNReal.ofReal C *
@@ -412,7 +412,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
                       (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
-                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β))
               + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -422,7 +422,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
                           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                             (eigenvectorResolvent (I := I) (M := M)
                               g r s i))
-                          β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                          β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                           EuclN → ℝ) y)
                       (chartTargetEuclid (I := I) (M := M) β')) := by
   classical
@@ -546,7 +546,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y =>
         eigenvectorChartWeakPartial (I := I) (M := M)
@@ -559,9 +559,9 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
           ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
-        =ᵐ[chartL2Measure (I := I) (M := M) β]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
         (fun y =>
           eigenvectorChartWeakPartial (I := I) (M := M)
               g r s i β P (Q'.2 0) y
@@ -577,7 +577,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     (MemWkp_congr_ae (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_ae).mpr h_sum_mem
   have h_scaled_norm : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
@@ -585,7 +585,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * (D1 + D2 + D3)) * Saggr := by
     rw [wkpNorm_congr_ae (d := Module.finrank ℝ E)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_ae]
@@ -594,12 +594,12 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
         g r (s + 1)
         (tensorCovGradL2Compl (I := I) (M := M) g r s
           (eigenvectorResolvent (I := I) (M := M) g r s i)) β Q' :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) =
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) =
       (fun y => i.fst.val * ((i.fst.val)⁻¹ *
         ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)) := by
+          β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)) := by
     funext y
     rw [mul_inv_cancel_left₀ hμ_ne]
   rw [show ((∑ Q : TensorCompIdx (E := E) r s,
@@ -608,7 +608,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -618,7 +618,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β')) = Saggr from rfl]
   rw [h_chart_eq_scaled]
@@ -628,7 +628,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
           ((tensorL2ChartComponent (I := I) (M := M) g r (s + 1)
             (tensorCovGradL2Compl (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)) Ω
+            β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)) Ω
         = ‖i.fst.val‖ₑ *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => (i.fst.val)⁻¹ *
@@ -636,7 +636,7 @@ theorem eigenvectorCovGrad_pou_wkpNorm_le_uniform
                   (tensorCovGradL2Compl (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q' : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q' : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y) Ω :=
       wkpNorm_const_smul (d := Module.finrank ℝ E)
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_scaled_mem i.fst.val

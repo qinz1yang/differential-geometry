@@ -256,9 +256,9 @@ theorem spectralChartComponent_tendsto
   set S : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
     chartTargetEuclid (I := I) (M := M) β with hS_def
   set μ : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
-    chartL2Measure (I := I) (M := M) β with hμ_def
+    chartLebesgueMeasure (I := I) (M := M) β with hμ_def
   have hμ_eq : μ = (volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict S := by
-    rw [hμ_def, chartL2Measure, hS_def]
+    rw [hμ_def, chartLebesgueMeasure, hS_def]
   have hS_open : IsOpen S := chartTargetEuclid_isOpen (I := I) (M := M) β
   obtain ⟨uP, huP_contDiff, _huP_supp, huP_tendsto⟩ :=
     exists_chartComponent_limit_smooth_compactSupport (I := I) (M := M) g 0 2 F hcauchy β

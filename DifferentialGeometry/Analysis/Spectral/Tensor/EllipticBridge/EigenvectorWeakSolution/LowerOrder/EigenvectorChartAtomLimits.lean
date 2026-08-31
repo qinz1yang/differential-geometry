@@ -40,7 +40,7 @@ def approxComponentLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s) (n : ℕ) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (tensorChartComponent_memLp (I := I) (M := M) g r s
     (eigenvectorSmoothApprox (I := I) (M := M) g r s i n).toCcTensor
     α P.1 P.2).toLp
@@ -53,7 +53,7 @@ def componentLpLimit
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   letI : CompleteSpace E := FiniteDimensional.complete ℝ E
   i.fst.val •
     tensorL2ChartComponent (I := I) (M := M) g r s
@@ -102,7 +102,7 @@ def approxPartialLp
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) (n : ℕ) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (chosenWeakPartial'_tensorChartComponent_memLp (I := I) (M := M) g r s
     (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
     α P.1 P.2 k).toLp
@@ -117,7 +117,7 @@ def partialLpLimit
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   i.fst.val •
     eigenvectorChartPartialLp (I := I) (M := M) g r s i α P k
 
@@ -170,11 +170,11 @@ lemma tendsto_componentSummand
         tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2 y) 2
-        (chartL2Measure (I := I) (M := M) α))
+        (chartLebesgueMeasure (I := I) (M := M) α))
     (hlim_memLp : MemLp
       (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y *
         (componentLpLimit (I := I) (M := M) g r s i α P :
-          EuclN → ℝ) y) 2 (chartL2Measure (I := I) (M := M) α)) :
+          EuclN → ℝ) y) 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     Filter.Tendsto
       (fun n => (hP_memLp n).toLp _)
       atTop
@@ -190,7 +190,7 @@ lemma tendsto_componentSummand
     · rw [hci_def, Set.indicator_of_mem hy]; exact hC y hy
     · rw [hci_def, Set.indicator_of_notMem hy, norm_zero]; exact hC_nn
   have hci_meas : AEStronglyMeasurable ci
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
     aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc
   have h_engine := tendsto_bdd_mul (I := I) (M := M) α hC_nn hci_bd hci_meas
     (approxComponentLp_tendsto (I := I) (M := M) g r s i α P)
@@ -205,7 +205,7 @@ lemma tendsto_componentSummand
       (MemLp.coeFn_toLp _).symm)
     have hcomp : (approxComponentLp (I := I) (M := M)
         g r s i α P n : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        chartLebesgueMeasure (I := I) (M := M) α]
         tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2 := by
@@ -243,11 +243,11 @@ lemma tendsto_partialSummand
           (tensorChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P.1 P.2) y) 2
-        (chartL2Measure (I := I) (M := M) α))
+        (chartLebesgueMeasure (I := I) (M := M) α))
     (hlim_memLp : MemLp
       (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y *
         (partialLpLimit (I := I) (M := M) g r s i α P k :
-          EuclN → ℝ) y) 2 (chartL2Measure (I := I) (M := M) α)) :
+          EuclN → ℝ) y) 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     Filter.Tendsto
       (fun n => (hP_memLp n).toLp _)
       atTop
@@ -263,7 +263,7 @@ lemma tendsto_partialSummand
     · rw [hci_def, Set.indicator_of_mem hy]; exact hC y hy
     · rw [hci_def, Set.indicator_of_notMem hy, norm_zero]; exact hC_nn
   have hci_meas : AEStronglyMeasurable ci
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
     aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc
   have h_engine := tendsto_bdd_mul (I := I) (M := M) α hC_nn hci_bd hci_meas
     (approxPartialLp_tendsto (I := I) (M := M) g r s i α P k)
@@ -278,7 +278,7 @@ lemma tendsto_partialSummand
       (MemLp.coeFn_toLp _).symm)
     have hpart : (approxPartialLp (I := I) (M := M)
         g r s i α P k n : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        chartLebesgueMeasure (I := I) (M := M) α]
         euclidPartial (E := E) k
           (tensorChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
@@ -317,7 +317,7 @@ lemma euclidPartial_tensorChartComponent_approx_memLp
         (tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2)) 2
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
   MemLp.ae_eq
     (chosenWeakPartial'_tensorChartComponent_ae_eq (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M)
@@ -338,7 +338,7 @@ lemma memLp_factor_mul_componentAtom
         tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2 y) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := exists_bound_on_chartPouKernel (I := I) (M := M) α hc
   have hci_bd : ∀ y : EuclN,
@@ -383,7 +383,7 @@ lemma memLp_factor_mul_partialAtom
           (tensorChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P.1 P.2) y) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := exists_bound_on_chartPouKernel (I := I) (M := M) α hc
   have hci_bd : ∀ y : EuclN,

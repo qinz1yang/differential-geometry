@@ -559,7 +559,7 @@ def ofBase
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i)
-              α P₀ : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              α P₀ : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y * ψ y
           ∂(volume : Measure EuclN) := rfl
     rw [h_principal_eq, h_mass_eq]

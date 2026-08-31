@@ -74,8 +74,8 @@ theorem eigenvectorSmoothChart_tensorL2ChartComponent_coeFn_aeEq
     ((tensorL2ChartComponent (I := I) (M := M) g r s
         (eigenvectorSmoothChart (I := I) (M := M) g r s i α :
           TensorL2 r s g) β P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun y => chartPushedRaw I β
           (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
         chartPushedRaw I β
@@ -90,9 +90,9 @@ theorem eigenvectorSmoothChart_tensorL2ChartComponent_coeFn_aeEq
   have h_coeFn :=
     tensorL2ChartComponent_smoothToTensorL2_coeFn (I := I) (M := M) g r s
       (eigenvectorSmoothChart (I := I) (M := M) g r s i α) β P₀
-  have h_mem : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+  have h_mem : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) β),
       y ∈ chartTargetEuclid (I := I) (M := M) β := by
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     exact ae_restrict_mem (chartTargetEuclid_measurableSet (I := I) (M := M) β)
   filter_upwards [h_coeFn, h_mem] with y hy_coe hy
   rw [hy_coe]

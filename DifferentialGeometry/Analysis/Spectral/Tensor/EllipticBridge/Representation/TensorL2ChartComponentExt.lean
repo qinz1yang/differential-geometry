@@ -208,16 +208,16 @@ private lemma inner_pouSmul_eq_zero_of_chartComponent_eq_zero
     (I := I) (M := M) g r s α w Sg hSg]
   have h_each : ∀ Q : CompIdx E r s,
       ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)] 0 := by
     intro Q
     have h0 : ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α] 0 := by
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α] 0 := by
       rw [hw Q]
       exact Lp.coeFn_zero (E := ℝ) (p := 2)
-        (μ := chartL2Measure (I := I) (M := M) α)
+        (μ := chartLebesgueMeasure (I := I) (M := M) α)
     exact h0
   have h_integrand_ae :
       (fun y : EuclN => densityOnEuclid (I := I) g α y *
@@ -225,7 +225,7 @@ private lemma inner_pouSmul_eq_zero_of_chartComponent_eq_zero
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
                 y)) =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)] 0 := by
@@ -233,7 +233,7 @@ private lemma inner_pouSmul_eq_zero_of_chartComponent_eq_zero
           (chartTargetEuclid (I := I) (M := M) α)),
         ∀ Q : CompIdx E r s,
           ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
       rw [MeasureTheory.ae_all_iff]
       intro Q
       filter_upwards [h_each Q] with y hy using hy
@@ -243,14 +243,14 @@ private lemma inner_pouSmul_eq_zero_of_chartComponent_eq_zero
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
             ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
               y) = 0
     have h_sum_zero :
         (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
             ((tensorL2ChartComponent (I := I) (M := M) g r s w α Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
               y) = 0 := by
       refine Finset.sum_eq_zero (fun P _ => Finset.sum_eq_zero (fun Q _ => ?_))
       rw [hy Q, mul_zero]

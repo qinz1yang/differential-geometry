@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSEpNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.WeightedLpBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorChartLimitEnergyBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Regularity
 
 
 open DifferentialGeometry.Analysis.Spectral
@@ -190,7 +190,7 @@ theorem eLpNorm_tensorL2ChartComponent_le_uniform
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ u : TensorL2 r s g,
         eLpNorm ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal C * ENNReal.ofReal ‖u‖ := by
@@ -208,13 +208,13 @@ theorem eLpNorm_tensorL2ChartComponent_le_uniform
     (I := I) (M := M) g r s u α P₀
   have h_eLp_eq :
       eLpNorm ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) =
         ENNReal.ofReal ‖tensorL2ChartComponent (I := I) (M := M) g r s u α P₀‖ := by
     rw [show (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α) =
-        chartL2Measure (I := I) (M := M) α from rfl,
+        chartLebesgueMeasure (I := I) (M := M) α from rfl,
       Lp.norm_def, ENNReal.ofReal_toReal (Lp.eLpNorm_ne_top _)]
   have h_op : ‖tensorL2ChartComponent (I := I) (M := M) g r s u α P₀‖ ≤
       Cop * ‖u‖ := by
@@ -222,12 +222,12 @@ theorem eLpNorm_tensorL2ChartComponent_le_uniform
       ← tensorL2ChartComponentCLM_apply (I := I) (M := M) g r s α P₀ u]
     exact (tensorL2ChartComponentCLM (I := I) (M := M) g r s α P₀).le_opNorm u
   calc eLpNorm ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Ccmp *
           eLpNorm ((tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α)) :=
         hCcmp_bd _ h_off
@@ -272,7 +272,7 @@ private lemma crossLeftLimitComponent_eLpNorm_le_energy
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm ((crossLeftLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal (C * Real.sqrt i.fst.val) *
@@ -298,7 +298,7 @@ private lemma crossRightLimitComponent_eLpNorm_le_energy
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm ((crossRightLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal (C * i.fst.val) *
@@ -344,7 +344,7 @@ private lemma partialLpLimit_eLpNorm_le_energy
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm ((partialLpLimit (I := I) (M := M)
             g r s i α P k :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal (C * Real.sqrt i.fst.val) *
@@ -362,13 +362,13 @@ private lemma partialLpLimit_eLpNorm_le_energy
   refine ⟨Ccmp * Cvol, mul_nonneg hCcmp_nn hCvol_nn, fun i => ?_⟩
   have h_off : (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α)] (fun _ : EuclN => (0 : ℝ)) := by
     have h_smul : (fun y => ((partialLpLimit (I := I) (M := M)
           g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartPouKernel (I := I) (M := M) α)]
@@ -378,8 +378,8 @@ private lemma partialLpLimit_eLpNorm_le_energy
       have h_ac : (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartPouKernel (I := I) (M := M) α) ≪
-          chartL2Measure (I := I) (M := M) α := by
-        rw [show chartL2Measure (I := I) (M := M) α =
+          chartLebesgueMeasure (I := I) (M := M) α := by
+        rw [show chartLebesgueMeasure (I := I) (M := M) α =
             (volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α) from rfl]
         exact Measure.absolutelyContinuous_of_le
@@ -404,7 +404,7 @@ private lemma componentLpLimit_eLpNorm_le_energy
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm ((componentLpLimit (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal (C * i.fst.val) *
@@ -423,15 +423,15 @@ private lemma componentLpLimit_eLpNorm_le_energy
     le_of_lt (eigenvalue_mem_Ioc (I := I) (M := M) g r s i).1
   have h_smul : (fun y => ((componentLpLimit (I := I) (M := M)
         g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[μw]
       i.fst.val •
         (((tensorL2ChartComponent (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)) := by
-    have h_ac : μw ≪ chartL2Measure (I := I) (M := M) α := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)) := by
+    have h_ac : μw ≪ chartLebesgueMeasure (I := I) (M := M) α := by
       rw [hμw_def]
       exact chartPulledWeightedMeasure_restrict_absolutelyContinuous
         (I := I) (M := M) g α
@@ -444,7 +444,7 @@ private lemma componentLpLimit_eLpNorm_le_energy
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             g r s) i) α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)),
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)),
     Real.enorm_of_nonneg hμ_nn]
   refine le_trans (mul_le_mul' (le_refl _) (hC_bd
     (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -460,7 +460,7 @@ private lemma cutoffPartialLpLimit_eLpNorm_le_energy
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
             g r s i α P k :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal (C * Real.sqrt i.fst.val) *
@@ -478,7 +478,7 @@ private lemma cutoffPartialLpLimit_eLpNorm_le_energy
   refine ⟨Ccmp * Cvol, mul_nonneg hCcmp_nn hCvol_nn, fun i => ?_⟩
   have h_off : (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
           cutoffChartKernelEuclid (I := I) (M := M) α)]
@@ -497,7 +497,7 @@ private lemma cutoffPartialLpLimit_eLpNorm_le_energy
         y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
           ((cutoffPartialLpLimit (I := I) (M := M)
               g r s i α P k :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 :=
       (ae_restrict_iff' hΩ_meas).mp h_ae
     rw [Filter.EventuallyEq, ae_restrict_iff' hV_meas]
     filter_upwards [h_ae_v] with y hy hy_mem
@@ -609,14 +609,14 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
   have hA2 : ∀ P : TensorCompIdx (E := E) r (s + 1),
       eLpNorm ((crossLeftLimitComponent (I := I) (M := M)
           g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
         ≤ ENNReal.ofReal (C2 P) * Rhs := fun P =>
     le_trans (hC2_bd P i)
       (mul_le_mul' (hfold (hC2_nn P)).1 (le_refl _))
   have hA3 : ∀ P : TensorCompIdx (E := E) r s,
       eLpNorm ((crossRightLimitComponent (I := I) (M := M)
           g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
         ≤ ENNReal.ofReal (C3 P) * Rhs := fun P =>
     le_trans (hC3_bd P i)
       (mul_le_mul' (hfold (hC3_nn P)).2 (le_refl _))
@@ -624,14 +624,14 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
       (k : Fin (Module.finrank ℝ E)),
       eLpNorm ((partialLpLimit (I := I) (M := M)
           g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
         ≤ ENNReal.ofReal (C4 P k) * Rhs := fun P k =>
     le_trans (hC4_bd P k i)
       (mul_le_mul' (hfold (hC4_nn P k)).1 (le_refl _))
   have hA5 : ∀ P : TensorCompIdx (E := E) r s,
       eLpNorm ((componentLpLimit (I := I) (M := M)
           g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
         ≤ ENNReal.ofReal (C5 P) * Rhs := fun P =>
     le_trans (hC5_bd P i)
       (mul_le_mul' (hfold (hC5_nn P)).2 (le_refl _))
@@ -639,21 +639,21 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
       (l : Fin (Module.finrank ℝ E)),
       eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
           g r s i α P l :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw
         ≤ ENNReal.ofReal (C6 P l) * Rhs := fun P l =>
     le_trans (hC6_bd P l i)
       (mul_le_mul' (hfold (hC6_nn P l)).1 (le_refl _))
   have h_sum2 : (∑ P : TensorCompIdx (E := E) r (s + 1),
         eLpNorm ((crossLeftLimitComponent (I := I) (M := M)
           g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
       ≤ ENNReal.ofReal (∑ P : TensorCompIdx (E := E) r (s + 1), C2 P) * Rhs := by
     rw [ENNReal.ofReal_sum_of_nonneg (fun P _ => hC2_nn P), Finset.sum_mul]
     exact Finset.sum_le_sum (fun P _ => hA2 P)
   have h_sum3 : (∑ P : TensorCompIdx (E := E) r s,
         eLpNorm ((crossRightLimitComponent (I := I) (M := M)
           g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
       ≤ ENNReal.ofReal (∑ P : TensorCompIdx (E := E) r s, C3 P) * Rhs := by
     rw [ENNReal.ofReal_sum_of_nonneg (fun P _ => hC3_nn P), Finset.sum_mul]
     exact Finset.sum_le_sum (fun P _ => hA3 P)
@@ -661,7 +661,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
         ∑ k : Fin (Module.finrank ℝ E),
           eLpNorm ((partialLpLimit (I := I) (M := M)
             g r s i α P k :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
       ≤ ENNReal.ofReal (∑ P : TensorCompIdx (E := E) r s,
           ∑ k : Fin (Module.finrank ℝ E), C4 P k) * Rhs := by
     rw [ENNReal.ofReal_sum_of_nonneg
@@ -672,7 +672,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
   have h_sum5 : (∑ P : TensorCompIdx (E := E) r s,
         eLpNorm ((componentLpLimit (I := I) (M := M)
           g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
       ≤ ENNReal.ofReal (∑ P : TensorCompIdx (E := E) r s, C5 P) * Rhs := by
     rw [ENNReal.ofReal_sum_of_nonneg (fun P _ => hC5_nn P), Finset.sum_mul]
     exact Finset.sum_le_sum (fun P _ => hA5 P)
@@ -680,7 +680,7 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
         ∑ l : Fin (Module.finrank ℝ E),
           eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
             g r s i α P l :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
       ≤ ENNReal.ofReal (∑ P : TensorCompIdx (E := E) r s,
           ∑ l : Fin (Module.finrank ℝ E), C6 P l) * Rhs := by
     rw [ENNReal.ofReal_sum_of_nonneg
@@ -694,26 +694,26 @@ theorem eigenvectorChartRHS_eLpNorm_le_energy
           + (∑ P : TensorCompIdx (E := E) r (s + 1),
               eLpNorm ((crossLeftLimitComponent (I := I) (M := M)
                 g r s i α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
           + (∑ P : TensorCompIdx (E := E) r s,
               eLpNorm ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
           + (∑ P : TensorCompIdx (E := E) r s,
               ∑ k : Fin (Module.finrank ℝ E),
                 eLpNorm ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) 2 μw)
           + (∑ P : TensorCompIdx (E := E) r s,
               eLpNorm ((componentLpLimit (I := I) (M := M)
                 g r s i α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2 μw)
           + (∑ P : TensorCompIdx (E := E) r s,
               ∑ l : Fin (Module.finrank ℝ E),
                 eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
                   g r s i α P l :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) 2 μw)
         ≤ ENNReal.ofReal Cagg * Rhs := by
     have hS2 : 0 ≤ ∑ P : TensorCompIdx (E := E) r (s + 1), C2 P :=

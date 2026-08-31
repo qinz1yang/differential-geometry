@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHS
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossLimits
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightDiv
@@ -80,7 +80,7 @@ theorem eigenvectorChartVariationalIdentity
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y
       ∂(volume : Measure EuclN)) =
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
@@ -104,7 +104,7 @@ theorem eigenvectorChartVariationalIdentity
   set U : ℝ := ∫ y in chartTargetEuclid (I := I) (M := M) α,
     densityOnEuclid (I := I) g α y *
       ((tensorL2ChartComponent (I := I) (M := M) g r s φ α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y
     ∂(volume : Measure EuclN) with hU_def
   set CL : ℝ := ∫ y in chartTargetEuclid (I := I) (M := M) α,
     densityOnEuclid (I := I) g α y *
@@ -114,7 +114,7 @@ theorem eigenvectorChartVariationalIdentity
               crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
             ((crossLeftLimitComponent (I := I) (M := M)
               g r s i α P' :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
       ψ y ∂(volume : Measure EuclN) with hCL_def
   set CRV : ℝ := ∫ y in chartTargetEuclid (I := I) (M := M) α,
     densityOnEuclid (I := I) g α y *
@@ -124,7 +124,7 @@ theorem eigenvectorChartVariationalIdentity
               crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
             ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P' :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
       ψ y ∂(volume : Measure EuclN) with hCRV_def
   set CRGdiv : ℝ := ∫ y in chartTargetEuclid (I := I) (M := M) α,
     crossRightGradCoeffDivLimit (I := I) (M := M)
@@ -173,7 +173,7 @@ theorem eigenvectorChartVariationalIdentity
                   (((eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor) : TensorL2 r s g)
                   α P' :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
           ψ y ∂(volume : Measure EuclN)) +
       ∑ l : Fin (Module.finrank ℝ E),
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -250,7 +250,7 @@ theorem eigenvectorChartVariationalIdentity
                     (((eigenvectorSmoothApprox (I := I) (M := M)
                         g r s i n).toCcTensor) : TensorL2 r s g)
                     α P' :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y) *
             ψ y ∂(volume : Measure EuclN)) +
         ∑ l : Fin (Module.finrank ℝ E),
@@ -324,7 +324,7 @@ theorem eigenvectorChartVariationalIdentity
       μ⁻¹ * (U - CL + CRV - PRC - LOV + GD - CRGdiv) := by
     have hint_U : Integrable (fun y => densityOnEuclid (I := I) g α y *
         ((tensorL2ChartComponent (I := I) (M := M) g r s φ α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y)
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) :=
       density_memLp2_test_integrable (I := I) (M := M) g α
@@ -337,7 +337,7 @@ theorem eigenvectorChartVariationalIdentity
                 crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
               ((crossLeftLimitComponent (I := I) (M := M)
                 g r s i α P' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
         ψ y)
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
@@ -348,7 +348,7 @@ theorem eigenvectorChartVariationalIdentity
                 crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
               ((crossLeftLimitComponent (I := I) (M := M)
                 g r s i α P' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
             ψ y)
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) :=
@@ -365,7 +365,7 @@ theorem eigenvectorChartVariationalIdentity
                 crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
               ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
         ψ y)
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
@@ -376,7 +376,7 @@ theorem eigenvectorChartVariationalIdentity
                 crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
               ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) *
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) *
             ψ y)
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) :=
@@ -436,7 +436,7 @@ theorem eigenvectorChartVariationalIdentity
         (fun y => μ⁻¹ *
           ((densityOnEuclid (I := I) g α y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s φ α P₀ :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y * ψ y) -
             densityOnEuclid (I := I) g α y *
               (∑ P' : TensorCompIdx (E := E) r (s + 1),
@@ -445,7 +445,7 @@ theorem eigenvectorChartVariationalIdentity
                       crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
                     ((crossLeftLimitComponent (I := I) (M := M)
                       g r s i α P' :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                       EuclN → ℝ) y) * ψ y +
             densityOnEuclid (I := I) g α y *
               (∑ P' : TensorCompIdx (E := E) r s,
@@ -454,7 +454,7 @@ theorem eigenvectorChartVariationalIdentity
                       crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
                     ((crossRightLimitComponent (I := I) (M := M)
                       g r s i α P' :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                       EuclN → ℝ) y) * ψ y -
             densityOnEuclid (I := I) g α y *
               covPrincipalRotationCoeffLimit (I := I) (M := M)
@@ -473,7 +473,10 @@ theorem eigenvectorChartVariationalIdentity
                   g r s i α P₀ y) * ψ y))
         (chartTargetEuclid (I := I) (M := M) α) := by
       intro y _hy
-      simp only [eigenvectorChartRHS, hφ_def]
+      simp only [eigenvectorChartRHS, eigenvectorChartRHSNumerator,
+        eigenvectorChartComponentFun, eigenvectorChartCrossLeftContraction,
+        eigenvectorChartCrossRightContraction, eigenvectorChartWeightedDivergence,
+        eigenvectorChartCrossRightDivergence, Pi.add_apply, Pi.sub_apply, hφ_def]
       ring
     rw [MeasureTheory.setIntegral_congr_fun hcTE_meas h_integrand]
     rw [MeasureTheory.integral_const_mul]
@@ -544,7 +547,7 @@ theorem eigenvectorChartVariationalIdentity
         one_mul]
     set fU : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
       ((tensorL2ChartComponent (I := I) (M := M) g r s φ α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y * ψ y
       with hfU_def
     set fCL : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
       (∑ P' : TensorCompIdx (E := E) r (s + 1),
@@ -553,7 +556,7 @@ theorem eigenvectorChartVariationalIdentity
               crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
             ((crossLeftLimitComponent (I := I) (M := M)
               g r s i α P' :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) * ψ y
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) * ψ y
       with hfCL_def
     set fCRV : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
       (∑ P' : TensorCompIdx (E := E) r s,
@@ -562,7 +565,7 @@ theorem eigenvectorChartVariationalIdentity
               crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
             ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P' :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) * ψ y
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) * ψ y
       with hfCRV_def
     set fPRC : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
       covPrincipalRotationCoeffLimit (I := I) (M := M)
@@ -659,7 +662,7 @@ def eigenvectorTensorChartBilinearData
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
      fChart := eigenvectorChartRHS (I := I) (M := M) g r s i α P₀
      weakPartial := eigenvectorChartWeakPartial (I := I) (M := M)
        g r s i α P₀

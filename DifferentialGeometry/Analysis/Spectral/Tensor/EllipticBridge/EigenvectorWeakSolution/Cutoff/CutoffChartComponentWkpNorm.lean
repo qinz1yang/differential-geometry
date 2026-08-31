@@ -537,17 +537,17 @@ omit [CompleteSpace E] in
 private lemma wkpNorm_chartTransitionTransportCLM_le
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s) (k : ℕ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)),
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)),
       MemWkp (d := Module.finrank ℝ E) k 2
         (fun y => (f : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) →
       MemWkp (d := Module.finrank ℝ E) k 2
         (fun y => ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α) ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
         (fun y => ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α) ≤
       ENNReal.ofReal C *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
@@ -666,7 +666,7 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
     hcE_cpt.of_isClosed_subset (isClosed_tsupport w) hw_supp_cE
   have h_coeFn : (fun y => ((chartTransitionTransportCLM
         (I := I) (M := M) r s β α P₀ Q f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Tα]
       (fun y => cE y *
         (f : EuclN → ℝ) (chartTransitionEuclid (I := I) (M := M) α β y)) :=
@@ -692,7 +692,7 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
       simp only [hw_def, hT_eq, hv_Φy]
   have h_ae : (fun y => ((chartTransitionTransportCLM
         (I := I) (M := M) r s β α P₀ Q f :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Tα] w := by
     refine h_coeFn.trans ?_
     rw [h_pointwise]
@@ -813,19 +813,19 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
     (h_pou : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) k 2
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
           (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal C *
           (∑ β ∈ transportChartCenters (I := I) (M := M) α,
             ∑ Q : TensorCompIdx (E := E) r s,
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
                 (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β)) := by
   classical
   set d : ℕ := Module.finrank ℝ E with hd_def
@@ -835,7 +835,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
     fun β Q y =>
       ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hF_def
   have h_per : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
       ∃ C : ℝ, 0 ≤ C ∧
@@ -844,7 +844,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
           ENNReal.ofReal C *
             iteratedWeakSobolevNorm (d := d) k 2
               (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β) := by
     intro β Q
     obtain ⟨C, hC_nn, hC_bound⟩ :=
@@ -864,7 +864,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
         ENNReal.ofReal (Cfun β Q) *
           iteratedWeakSobolevNorm (d := d) k 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) :=
     fun β Q => (h_per β Q).choose_spec.2.2
   set C : ℝ := 1 + ∑ β ∈ S, ∑ Q : TensorCompIdx (E := E) r s, Cfun β Q
@@ -897,7 +897,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
   refine ⟨C, hC_nn, ?_⟩
   have h_decomp : (fun y => ((tensorL2ChartComponentCutoff
         (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Tα]
       (fun y => ∑ β ∈ S, ∑ Q : TensorCompIdx (E := E) r s, F β Q y) :=
     tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
@@ -916,7 +916,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
         ENNReal.ofReal C *
           iteratedWeakSobolevNorm (d := d) k 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) := by
     intro β hβ Q
     refine (hCfun_bound β Q).trans ?_
@@ -930,13 +930,13 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou
         ENNReal.ofReal C *
           iteratedWeakSobolevNorm (d := d) k 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)) =
         ENNReal.ofReal C *
           ∑ Q : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := d) k 2
               (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β) := by
     intro β _
     rw [Finset.mul_sum]
@@ -951,12 +951,12 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
         (∀ (β : M) (Q : TensorCompIdx (E := E) r s),
           MemWkp (d := Module.finrank ℝ E) k 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)) →
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
             (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M)
                 g r s u α P₀ :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal C *
             (∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -964,7 +964,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k 2
                   (fun y => ((tensorL2ChartComponent (I := I) (M := M)
                       g r s u β Q :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β)) := by
   classical
@@ -976,7 +976,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
     fun u β Q y =>
       ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q
           (tensorL2ChartComponent (I := I) (M := M) g r s u β Q) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hF_def
   set Cfun : M → TensorCompIdx (E := E) r s → ℝ :=
     fun β Q =>
@@ -985,16 +985,16 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
     with hCfun_def
   have hCfun_spec : ∀ β Q,
       0 ≤ Cfun β Q ∧
-        ∀ f : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β),
+        ∀ f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β),
           MemWkp (d := d) k 2 (fun y => (f : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) →
           MemWkp (d := d) k 2
               (fun y => ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
               Tα ∧
             iteratedWeakSobolevNorm (d := d) k 2
                 (fun y => ((chartTransitionTransportCLM (I := I) (M := M) r s β α P₀ Q f :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
                 Tα ≤
               ENNReal.ofReal (Cfun β Q) *
                 iteratedWeakSobolevNorm (d := d) k 2 (fun y => (f : EuclN → ℝ) y)
@@ -1031,7 +1031,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
             iteratedWeakSobolevNorm (d := d) k 2
               (fun y => ((tensorL2ChartComponent (I := I) (M := M)
                   g r s u β Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β) := fun β Q =>
     (hCfun_spec β Q).2 (tensorL2ChartComponent (I := I) (M := M) g r s u β Q)
       (h_pou β Q)
@@ -1039,7 +1039,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
     fun β Q => (hF_spec β Q).1
   have h_decomp : (fun y => ((tensorL2ChartComponentCutoff
         (I := I) (M := M) g r s u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(volume : Measure EuclN).restrict Tα]
       (fun y => ∑ β ∈ S, ∑ Q : TensorCompIdx (E := E) r s, F u β Q y) :=
     tensorL2ChartComponentCutoff_ae_eq_pou_transport_sum
@@ -1058,7 +1058,7 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
         ENNReal.ofReal C *
           iteratedWeakSobolevNorm (d := d) k 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) := by
     intro β hβ Q
     refine (hF_spec β Q).2.trans ?_
@@ -1072,13 +1072,13 @@ theorem wkpNorm_tensorL2ChartComponentCutoff_le_of_pou_uniform
         ENNReal.ofReal C *
           iteratedWeakSobolevNorm (d := d) k 2
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)) =
         ENNReal.ofReal C *
           ∑ Q : TensorCompIdx (E := E) r s,
             iteratedWeakSobolevNorm (d := d) k 2
               (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s u β Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β) := by
     intro β _
     rw [Finset.mul_sum]

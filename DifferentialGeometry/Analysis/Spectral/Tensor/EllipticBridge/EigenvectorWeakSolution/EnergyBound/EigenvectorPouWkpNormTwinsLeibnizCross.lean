@@ -61,7 +61,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
@@ -85,7 +85,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β' Q :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β') := by
     intro β' Q
     exact (eigenvectorVec_pou_memWkp_and_wkpNorm_le (I := I) (M := M)
@@ -138,7 +138,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     tensorL2ChartComponentCutoff_memWkp_of_pou (I := I) (M := M) g r s
       (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
@@ -164,7 +164,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
       MemWkp.smul_smooth_bounded (d := Module.finrank ℝ E) K
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hmult_smooth'
         (fun j _hj y _hy => hC₀_bd y j _hj) hcutoff_memWkp
@@ -177,7 +177,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
     exact h_prod
   have h_transport_le : ∀ β' ∈ transportChartCenters (I := I) (M := M) β,
       ∀ Q : TensorCompIdx (E := E) r s,
@@ -186,7 +186,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β' Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β')
         ≤ ENNReal.ofReal ‖(i.fst.val)⁻¹‖ *
           covGradAggregate (I := I) (M := M) g r s i K β := by
@@ -209,7 +209,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) β' Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β'))
         ≤ (∑ _β' ∈ transportChartCenters (I := I) (M := M) β,
             ∑ _Q : TensorCompIdx (E := E) r s,
@@ -248,7 +248,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal Ccut *
         (ENNReal.ofReal
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
@@ -276,7 +276,7 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     rfl
   rw [h_unfold]
   calc
@@ -289,14 +289,14 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
         ≤ ENNReal.ofReal Kmul *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
                   (tensorResolventEigenbasisVec (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I)
                       (M := M) g r s) i)
-                  β P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β P : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y) Ω :=
       hKmul_bd hcutoff_memWkp
     _ ≤ ENNReal.ofReal Kmul *
@@ -324,7 +324,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (β : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
@@ -403,7 +403,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β' Q :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β') := by
     intro β' Q
     exact (eigenvectorVec_pou_memWkp_and_wkpNorm_le (I := I) (M := M)
@@ -414,7 +414,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     tensorL2ChartComponentCutoff_memWkp_of_pou (I := I) (M := M) g r s
       (tensorResolventEigenbasisVec (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
@@ -431,7 +431,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
       MemWkp.smul_smooth_bounded (d := Module.finrank ℝ E) K
         (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hmult_smooth'
         (fun j _hj y _hy => hC₀_bd y j _hj) hcutoff_memWkp
@@ -444,7 +444,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
     exact h_prod
   have h_transport_le : ∀ β' ∈ transportChartCenters (I := I) (M := M) β,
       ∀ Q : TensorCompIdx (E := E) r s,
@@ -453,7 +453,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β' Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) β')
         ≤ ENNReal.ofReal ‖(i.fst.val)⁻¹‖ * Saggr := by
     intro β' hβ' Q
@@ -473,7 +473,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M)
                     g r s) i) β' Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) : EuclN → ℝ) y)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β'))
         ≤ (∑ _β' ∈ transportChartCenters (I := I) (M := M) β,
             ∑ _Q : TensorCompIdx (E := E) r s,
@@ -512,7 +512,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
       ≤ ENNReal.ofReal Ccut *
         (ENNReal.ofReal
             (((transportChartCenters (I := I) (M := M) β).card : ℝ) *
@@ -537,7 +537,7 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     rfl
   rw [h_unfold]
   calc
@@ -550,14 +550,14 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
                   g r s) i) β P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω
         ≤ ENNReal.ofReal Kmul *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
                   (tensorResolventEigenbasisVec (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I)
                       (M := M) g r s) i)
-                  β P : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β P : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y) Ω :=
       hKmul_bd hcutoff_memWkp
     _ ≤ ENNReal.ofReal Kmul *

@@ -587,7 +587,7 @@ theorem tensorCovDerivCrossRight_integral_eq_chartPull
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
                   (w : TensorL2 r s g) α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s
                 (covDerivAlongGrad (I := I) (M := M) g r s S
                   (chartAtlasPOU I M α)) α Q y)
@@ -622,7 +622,7 @@ def crossRightLimitComponent
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : CompIdx E r s) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   tensorL2ChartComponentCutoff (I := I) (M := M) g r s
     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
       (eigenvectorResolvent (I := I) (M := M) g r s i))

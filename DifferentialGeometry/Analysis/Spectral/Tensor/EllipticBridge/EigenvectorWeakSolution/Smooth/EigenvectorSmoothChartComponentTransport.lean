@@ -254,7 +254,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
               (eigenvectorSmoothChart (I := I) (M := M) g r s i γ)
               γ Q.1 Q.2 x
           else 0) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
     (fun y => chartPushedRaw I β
         (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
       ((chartTransitionTransportCLM (I := I) (M := M) r s γ β P₀ Q
@@ -262,7 +262,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) γ Q) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) := by
   classical
   set W : EuclN → ℝ := fun y => chartPushedRaw I β
     (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y with hW_def
@@ -279,13 +279,13 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) γ Q) :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y with hB_def
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y with hB_def
   set RHS : EuclN → ℝ := fun y =>
     chartPushedRaw (I := I) (M := M) β
         (transportCoeffManifold (I := I) (M := M) r s γ β P₀ Q) y *
       eigenvectorChartComponentFun (I := I) (M := M) g r s i γ Q
         (chartTransitionEuclid (I := I) (M := M) β γ y) with hRHS_def
-  have hB_eq : B =ᵐ[chartL2Measure (I := I) (M := M) β] RHS := by
+  have hB_eq : B =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] RHS := by
     have h := chartTransitionTransportCLM_coeFn_aeEq (I := I) (M := M) r s γ β
       P₀ Q (tensorL2ChartComponent (I := I) (M := M) g r s
         (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -293,21 +293,21 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
             g r s) i) γ Q)
     exact h.trans (Filter.EventuallyEq.of_eq rfl)
   have h_goal : (fun y => W y * A y)
-      =ᵐ[chartL2Measure (I := I) (M := M) β] (fun y => W y * RHS y) := by
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β] (fun y => W y * RHS y) := by
     have hΩ_open : IsOpen (chartOverlapEuclid (I := I) (M := M) β γ) :=
       chartOverlapEuclid_isOpen (I := I) (M := M) β γ
     have hΩ_meas : MeasurableSet (chartOverlapEuclid (I := I) (M := M) β γ) :=
       hΩ_open.measurableSet
     have h_restrict_eq :
-        (chartL2Measure (I := I) (M := M) β).restrict
+        (chartLebesgueMeasure (I := I) (M := M) β).restrict
           (chartOverlapEuclid (I := I) (M := M) β γ) =
         (volume : Measure EuclN).restrict
           (chartOverlapEuclid (I := I) (M := M) β γ) := by
-      rw [chartL2Measure, Measure.restrict_restrict hΩ_meas,
+      rw [chartLebesgueMeasure, Measure.restrict_restrict hΩ_meas,
         Set.inter_eq_left.mpr
           (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) β γ)]
     have h_on_overlap : (fun y => W y * A y)
-        =ᵐ[(chartL2Measure (I := I) (M := M) β).restrict
+        =ᵐ[(chartLebesgueMeasure (I := I) (M := M) β).restrict
             (chartOverlapEuclid (I := I) (M := M) β γ)]
         (fun y => W y * RHS y) := by
       rw [h_restrict_eq]

@@ -52,7 +52,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
           (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M) g r s i))
-          β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+          β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
           EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β)
   Ceig : ℕ → ℝ
@@ -79,7 +79,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)
       ≤ ENNReal.ofReal (CresH K' * (i.fst.val)⁻¹ ^ (eResH K')) *
@@ -97,7 +97,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β)
       ≤ ENNReal.ofReal (CresL K' * (i.fst.val)⁻¹ ^ (eResL K')) *
@@ -114,7 +114,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((partialLpLimit (I := I) (M := M)
             g r s i α P k :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal (Cpar K' * (i.fst.val)⁻¹ ^ (ePar K')) *
@@ -131,7 +131,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((componentLpLimit (I := I) (M := M)
             g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal (Ccom K' * (i.fst.val)⁻¹ ^ (eCom K')) *
@@ -148,7 +148,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((crossRightLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal (CcR K' * (i.fst.val)⁻¹ ^ (eCcR K')) *
@@ -165,7 +165,7 @@ structure EigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
             g r s i α P l :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal (Ccut K' * (i.fst.val)⁻¹ ^ (eCcut K')) *
@@ -352,7 +352,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
         + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -362,7 +362,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β'))
         ≤ ENNReal.ofReal
@@ -376,7 +376,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
           ≤ ENNReal.ofReal Cqtot * Rhs_eff := by
@@ -386,7 +386,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
             ≤ ENNReal.ofReal (H.CresH K) * Rhs_eff := fun Q _hQ =>
@@ -399,7 +399,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         (fun _Q => H.CresH K) Rhs_eff (fun _ _ => H.hCresH_nn K) h_each
@@ -413,7 +413,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
         ≤ ENNReal.ofReal
@@ -426,7 +426,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β'))
             ≤ ENNReal.ofReal Cqtot * Rhs_eff := by
@@ -437,7 +437,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β')
               ≤ ENNReal.ofReal (H.CresH K) * Rhs_eff := fun Q _hQ =>
@@ -450,7 +450,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
           (fun _Q => H.CresH K) Rhs_eff (fun _ _ => H.hCresH_nn K) h_each
@@ -464,7 +464,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
         (fun _β' => Cqtot) Rhs_eff (fun _ _ => hCqtot_nn) h_perβ'
@@ -484,7 +484,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β))
           + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -495,7 +495,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
                       β' Q :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β')))
       ≤ ENNReal.ofReal Cmid_α * Rhs_eff := by
@@ -516,7 +516,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
         + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -527,7 +527,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
                     β' Q :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β'))
       (fun β => Cqtot +
@@ -542,7 +542,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
       ≤ ENNReal.ofReal Clow_α * Rhs_eff := by
@@ -553,7 +553,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
           ≤ ENNReal.ofReal
@@ -566,7 +566,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
             ≤ ENNReal.ofReal (H.CresL K) * Rhs_eff := fun Q _hQ =>
@@ -579,7 +579,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         (fun _Q => H.CresL K) Rhs_eff (fun _ _ => H.hCresL_nn K) h_each
@@ -598,7 +598,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
       (fun _β => (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * H.CresL K)
@@ -611,7 +611,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Cpar' * Rhs_eff := by
@@ -620,7 +620,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
@@ -631,7 +631,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
             ≤ ENNReal.ofReal (H.Cpar K) * Rhs_eff := fun k _hk =>
@@ -642,7 +642,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
         (fun k => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
         (fun _k => H.Cpar K) Rhs_eff (fun _ _ => H.hCpar_nn K) h_each
@@ -659,7 +659,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Cpar K)
@@ -671,7 +671,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Ccom' * Rhs_eff := by
@@ -679,7 +679,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (H.Ccom K) * Rhs_eff := fun p _hp =>
@@ -690,7 +690,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
       (fun p => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       (fun _p => H.Ccom K) Rhs_eff (fun _ _ => H.hCcom_nn K) h_each
@@ -701,7 +701,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal CcR' * Rhs_eff := by
@@ -709,7 +709,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (H.CcR K) * Rhs_eff := fun P _hP =>
@@ -720,7 +720,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
       (fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       (fun _P => H.CcR K) Rhs_eff (fun _ _ => H.hCcR_nn K) h_each
@@ -732,7 +732,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Ccut' * Rhs_eff := by
@@ -741,7 +741,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                   g r s i α P l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
@@ -752,7 +752,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                   g r s i α P l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
             ≤ ENNReal.ofReal (H.Ccut K) * Rhs_eff := fun l _hl =>
@@ -763,7 +763,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
         (fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
         (fun _l => H.Ccut K) Rhs_eff (fun _ _ => H.hCcut_nn K) h_each
@@ -780,7 +780,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * H.Ccut K)
@@ -819,7 +819,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
                       β Q :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β))
             + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -830,7 +830,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                           (eigenvectorResolvent (I := I) (M := M)
                             g r s i))
                         β' Q :
-                        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                         EuclN → ℝ) y)
                     (chartTargetEuclid (I := I) (M := M) β')))
         + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -840,7 +840,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
         + (∑ P : TensorCompIdx (E := E) r s,
@@ -848,21 +848,21 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
         + (∑ p : TensorCompIdx (E := E) r s,
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
         + (∑ P : TensorCompIdx (E := E) r s,
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
         + (∑ P : TensorCompIdx (E := E) r s,
@@ -870,7 +870,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                   g r s i α P l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal Cagg * Rhs_eff := by
@@ -908,7 +908,7 @@ private lemma sharpDiffBdd_level_zero_wkpNorm
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β) := fun i β Q =>
     H.h_pou_resolv i (K + 1) β Q hKN
   obtain ⟨Cmu, hCmu_nn, hCmu_bd⟩ :=

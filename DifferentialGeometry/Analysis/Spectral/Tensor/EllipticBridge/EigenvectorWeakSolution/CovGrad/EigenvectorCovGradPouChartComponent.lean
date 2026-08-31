@@ -176,7 +176,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma aestronglyMeasurable_crossMultiplier
     (β : M) (k : Fin (Module.finrank ℝ E)) :
     AEStronglyMeasurable (crossMultiplier (I := I) (M := M) β k)
-      (chartL2Measure (I := I) (M := M) β) :=
+      (chartLebesgueMeasure (I := I) (M := M) β) :=
   aestronglyMeasurable_indicator_mul (I := I) (M := M) β
     (contDiffOn_euclidPartial_chartPushedRaw_chartAtlasPOU (I := I) (M := M) β k)
 
@@ -268,7 +268,7 @@ theorem covGradPouLeibnizCrossLimit_memLp
     (k : Fin (Module.finrank ℝ E)) :
     MemLp (covGradPouLeibnizCrossLimit (I := I) (M := M)
         g r s i β P₀ k) 2
-      (chartL2Measure (I := I) (M := M) β) := by
+      (chartLebesgueMeasure (I := I) (M := M) β) := by
   classical
   obtain ⟨C, hC0, hC⟩ := exists_bound_crossMultiplier (I := I) (M := M) β k
   refine (memLp_bdd_mul (I := I) (M := M) β hC0 hC
@@ -380,7 +380,7 @@ private lemma crossTermCutoff_memLp
     (β : M) (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) (n : ℕ) :
     MemLp (crossTermCutoff (I := I) (M := M) g r s i β P₀ k n) 2
-      (chartL2Measure (I := I) (M := M) β) := by
+      (chartLebesgueMeasure (I := I) (M := M) β) := by
   classical
   obtain ⟨C, hC0, hC⟩ := exists_bound_crossMultiplier (I := I) (M := M) β k
   exact memLp_bdd_mul (I := I) (M := M) β hC0 hC
@@ -396,16 +396,16 @@ private lemma crossTermApprox_ae_eq_crossTermCutoff
     (β : M) (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) (n : ℕ) :
     crossTermApprox (I := I) (M := M) g r s i β P₀ k n
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       crossTermCutoff (I := I) (M := M) g r s i β P₀ k n := by
   classical
   have h_coeFn :=
     tensorL2ChartComponentCutoff_smoothToTensorL2_coeFn (I := I) (M := M)
       g r s (eigenvectorSmoothApprox (I := I) (M := M)
         g r s i n).toCcTensor β P₀
-  have h_mem : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) β),
+  have h_mem : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) β),
       y ∈ chartTargetEuclid (I := I) (M := M) β := by
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     exact ae_restrict_mem (chartTargetEuclid_measurableSet (I := I) (M := M) β)
   filter_upwards [h_coeFn, h_mem] with y hy_coe hy
   unfold crossTermApprox crossTermCutoff
@@ -421,7 +421,7 @@ private lemma crossTermApprox_memLp
     (β : M) (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) (n : ℕ) :
     MemLp (crossTermApprox (I := I) (M := M) g r s i β P₀ k n) 2
-      (chartL2Measure (I := I) (M := M) β) :=
+      (chartLebesgueMeasure (I := I) (M := M) β) :=
   (crossTermCutoff_memLp (I := I) (M := M) g r s i β P₀ k n).ae_eq
     (crossTermApprox_ae_eq_crossTermCutoff (I := I) (M := M)
       g r s i β P₀ k n).symm
@@ -439,7 +439,7 @@ theorem covGradPouLeibnizCrossLimit_tendsto
           g r s i β P₀ k n).toLp
           (crossTermApprox (I := I) (M := M)
             g r s i β P₀ k n) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)))
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)))
       atTop
       (𝓝 ((covGradPouLeibnizCrossLimit_memLp (I := I) (M := M)
         g r s i β P₀ k).toLp
@@ -467,7 +467,7 @@ theorem covGradPouLeibnizCrossLimit_tendsto
                   (tensorResolventEigenbasisVec (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator (I := I) (M := M)
                       g r s) i) β P₀ :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y) =
         (covGradPouLeibnizCrossLimit_memLp (I := I) (M := M)
           g r s i β P₀ k).toLp
@@ -511,7 +511,7 @@ private lemma covGrad_chartComponent_ae_decompose
         (covGrad (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) β Q'.1 Q'.2
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       fun y =>
         euclidPartial (E := E) (Q'.2 0)
             (tensorChartComponent (I := I) (M := M) g r s
@@ -526,7 +526,7 @@ private lemma covGrad_chartComponent_ae_decompose
                   g r s i n).toCcTensor) β (Q'.2 0) Q'.1
               (Matrix.vecTail Q'.2) y := by
   classical
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine (ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) β)).mpr ?_
   refine Filter.Eventually.of_forall (fun y hy => ?_)
@@ -559,7 +559,7 @@ private lemma principalTerm_tendsto
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor β Q'.1
           (Matrix.vecTail Q'.2))) 2
-      (chartL2Measure (I := I) (M := M) β)) :
+      (chartLebesgueMeasure (I := I) (M := M) β)) :
     Filter.Tendsto
       (fun n => (i.fst.val)⁻¹ • (hf n).toLp _)
       atTop
@@ -589,7 +589,7 @@ private lemma christoffelTerm_tendsto
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) β (Q'.2 0) Q'.1
         (Matrix.vecTail Q'.2)) 2
-      (chartL2Measure (I := I) (M := M) β)) :
+      (chartLebesgueMeasure (I := I) (M := M) β)) :
     Filter.Tendsto
       (fun n => (i.fst.val)⁻¹ • (hf n).toLp _)
       atTop
@@ -647,8 +647,8 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
           (tensorCovGradL2Compl (I := I) (M := M) g r s
             (eigenvectorResolvent (I := I) (M := M)
               g r s i)) β Q' :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) β]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
       (fun y =>
         eigenvectorChartWeakPartial (I := I) (M := M) g r s i β
             (Q'.1, Matrix.vecTail Q'.2) (Q'.2 0) y
@@ -663,7 +663,7 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor β Q'.1
           (Matrix.vecTail Q'.2))) 2
-      (chartL2Measure (I := I) (M := M) β) := fun n =>
+      (chartLebesgueMeasure (I := I) (M := M) β) := fun n =>
     (chosenWeakPartial'_tensorChartComponent_memLp (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
       β Q'.1 (Matrix.vecTail Q'.2) (Q'.2 0)).ae_eq
@@ -674,7 +674,7 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
   have hf2 : ∀ n : ℕ, MemLp
       (crossTermApprox (I := I) (M := M) g r s i β
         (Q'.1, Matrix.vecTail Q'.2) (Q'.2 0) n) 2
-      (chartL2Measure (I := I) (M := M) β) := fun n =>
+      (chartLebesgueMeasure (I := I) (M := M) β) := fun n =>
     crossTermApprox_memLp (I := I) (M := M) g r s i β
       (Q'.1, Matrix.vecTail Q'.2) (Q'.2 0) n
   have hf3 : ∀ n : ℕ, MemLp
@@ -683,7 +683,7 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) β (Q'.2 0) Q'.1
         (Matrix.vecTail Q'.2)) 2
-      (chartL2Measure (I := I) (M := M) β) := fun n =>
+      (chartLebesgueMeasure (I := I) (M := M) β) := fun n =>
     covDerivLowerOrderTerm_pouSmul_memLp (I := I) (M := M) g r s i β
       (Q'.1, Matrix.vecTail Q'.2) (Q'.2 0) n
   have hfA : ∀ n : ℕ, MemLp
@@ -691,7 +691,7 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
         (covGrad (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) β Q'.1 Q'.2) 2
-      (chartL2Measure (I := I) (M := M) β) := fun n =>
+      (chartLebesgueMeasure (I := I) (M := M) β) := fun n =>
     tensorChartComponent_memLp (I := I) (M := M) g r (s + 1)
       (covGrad (I := I) (M := M) g r s
         (eigenvectorSmoothApprox (I := I) (M := M)
@@ -719,8 +719,8 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
                 (eigenvectorSmoothApprox (I := I) (M := M)
                   g r s i n).toCcTensor :
                 SmoothCcTensor g r (s + 1)) : TensorL2 r (s + 1) g) β Q' :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-          =ᵐ[chartL2Measure (I := I) (M := M) β]
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+          =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
           fun y => (i.fst.val)⁻¹ •
             tensorChartComponent (I := I) (M := M) g r (s + 1)
               (covGrad (I := I) (M := M) g r s
@@ -741,8 +741,8 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
         ((((i.fst.val)⁻¹ • (hf1 n).toLp _ -
               (i.fst.val)⁻¹ • (hf2 n).toLp _) +
             (i.fst.val)⁻¹ • (hf3 n).toLp _ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ)
-          =ᵐ[chartL2Measure (I := I) (M := M) β]
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ)
+          =ᵐ[chartLebesgueMeasure (I := I) (M := M) β]
           fun y => (i.fst.val)⁻¹ •
             ((euclidPartial (E := E) (Q'.2 0)
                   (tensorChartComponent (I := I) (M := M) g r s

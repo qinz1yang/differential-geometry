@@ -95,7 +95,7 @@ private lemma cutoffComponentEuclid_memLp_section
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     MemLp (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have h_vol : MemLp (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx) 2
       (volume : Measure EuclN) :=
@@ -104,7 +104,7 @@ private lemma cutoffComponentEuclid_memLp_section
       (μ := (volume : Measure EuclN))
       (cutoffComponentEuclid_hasCompactSupport_section (I := I) (M := M)
         g r s S α Idx Jdx)
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   exact h_vol.restrict _
 
 omit [CompleteSpace E] in
@@ -118,7 +118,7 @@ private lemma chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq
     chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       euclidPartial (E := E) k
         (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx) := by
   classical
@@ -145,7 +145,7 @@ private lemma chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq
     MemWkp.one_iff_memW1p.mp hu_W1
   have h_ae := chosenWeakPartial_smooth_ae_eq (d := Module.finrank ℝ E)
     hp_one hΩ_open hu_smooth hu_W1p k
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine h_ae.trans (Filter.EventuallyEq.of_eq ?_)
   funext y; rw [euclidPartial_def]
 
@@ -474,20 +474,20 @@ private lemma tendsto_sum3
     {f : κ₁ → κ₂ → κ₃ → ℕ → EuclN → ℝ}
     {flim : κ₁ → κ₂ → κ₃ → EuclN → ℝ}
     (hf : ∀ (a : κ₁) (b : κ₂) (c : κ₃) (n : ℕ),
-      MemLp (f a b c n) 2 (chartL2Measure (I := I) (M := M) α))
+      MemLp (f a b c n) 2 (chartLebesgueMeasure (I := I) (M := M) α))
     (hflim : ∀ (a : κ₁) (b : κ₂) (c : κ₃),
-      MemLp (flim a b c) 2 (chartL2Measure (I := I) (M := M) α))
+      MemLp (flim a b c) 2 (chartLebesgueMeasure (I := I) (M := M) α))
     (h_tendsto : ∀ (a : κ₁) (b : κ₂) (c : κ₃),
       Filter.Tendsto (fun n => (hf a b c n).toLp (f a b c n)) atTop
         (𝓝 ((hflim a b c).toLp (flim a b c)))) :
     Filter.Tendsto
-      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (fun n => (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun a _ => memLp_finsetSum Finset.univ
             (fun b _ => memLp_finsetSum Finset.univ
               (fun c _ => hf a b c n)))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, f a b c n y))
       atTop
-      (𝓝 ((memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (𝓝 ((memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun a _ => memLp_finsetSum Finset.univ
             (fun b _ => memLp_finsetSum Finset.univ
               (fun c _ => hflim a b c)))).toLp
@@ -513,7 +513,7 @@ def cutoffPartialLpLimit
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   i.fst.val •
     eigenvectorCutoffChartPartialLp (I := I) (M := M)
       g r s i α P k
@@ -522,10 +522,10 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma memLp_indicatorFactor_mul_cutoffLp
     (α : M) {c : EuclN → ℝ}
     (hc : ContDiffOn ℝ ∞ c (chartTargetEuclid (I := I) (M := M) α))
-    (w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     MemLp
       (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y *
-        (w : EuclN → ℝ) y) 2 (chartL2Measure (I := I) (M := M) α) := by
+        (w : EuclN → ℝ) y) 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := exists_bound_on_chartPouKernel (I := I) (M := M) α hc
   have hci_bd : ∀ y : EuclN,
@@ -567,7 +567,7 @@ theorem crossRightGradCoeffDivLimit_memLp
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     MemLp (crossRightGradCoeffDivLimit (I := I) (M := M)
         g r s i α P₀) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold crossRightGradCoeffDivLimit
   refine MemLp.add ?_ ?_
@@ -604,7 +604,7 @@ private lemma memLp_factor_mul_cutoffComponentAtom
         cutoffComponentEuclid (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2 y) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := exists_bound_on_chartPouKernel (I := I) (M := M) α hc
   have hci_bd : ∀ y : EuclN,
@@ -644,7 +644,7 @@ private lemma euclidPartial_cutoffComponentEuclid_approx_memLp
         (cutoffComponentEuclid (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2)) 2
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
   MemLp.ae_eq
     (chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq (I := I) (M := M)
       g r s (eigenvectorSmoothApprox (I := I) (M := M)
@@ -668,7 +668,7 @@ private lemma memLp_factor_mul_cutoffPartialAtom
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P.1 P.2) y) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   obtain ⟨C, hC_nn, hC⟩ := exists_bound_on_chartPouKernel (I := I) (M := M) α hc
   have hci_bd : ∀ y : EuclN,
@@ -780,11 +780,11 @@ private lemma tendsto_cutoffComponentSummand
         cutoffComponentEuclid (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2 y) 2
-        (chartL2Measure (I := I) (M := M) α))
+        (chartLebesgueMeasure (I := I) (M := M) α))
     (hlim_memLp : MemLp
       (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y *
         (crossRightLimitComponent (I := I) (M := M) g r s i α P :
-          EuclN → ℝ) y) 2 (chartL2Measure (I := I) (M := M) α)) :
+          EuclN → ℝ) y) 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     Filter.Tendsto
       (fun n => (hP_memLp n).toLp _)
       atTop
@@ -800,7 +800,7 @@ private lemma tendsto_cutoffComponentSummand
     · rw [hci_def, Set.indicator_of_mem hy]; exact hC y hy
     · rw [hci_def, Set.indicator_of_notMem hy, norm_zero]; exact hC_nn
   have hci_meas : AEStronglyMeasurable ci
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
     aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc
   have hc_eq_ci : ∀ y : EuclN, c y = ci y := by
     intro y
@@ -824,7 +824,7 @@ private lemma tendsto_cutoffComponentSummand
     have hcomp : (tensorL2ChartComponentCutoff (I := I) (M := M) g r s
         (((eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) : TensorL2 r s g) α P : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        chartLebesgueMeasure (I := I) (M := M) α]
         cutoffComponentEuclid (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P.1 P.2 :=
@@ -861,11 +861,11 @@ private lemma tendsto_cutoffPartialSummand
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P.1 P.2) y) 2
-        (chartL2Measure (I := I) (M := M) α))
+        (chartLebesgueMeasure (I := I) (M := M) α))
     (hlim_memLp : MemLp
       (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y *
         (cutoffPartialLpLimit (I := I) (M := M) g r s i α P k :
-          EuclN → ℝ) y) 2 (chartL2Measure (I := I) (M := M) α)) :
+          EuclN → ℝ) y) 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     Filter.Tendsto
       (fun n => (hP_memLp n).toLp _)
       atTop
@@ -881,7 +881,7 @@ private lemma tendsto_cutoffPartialSummand
     · rw [hci_def, Set.indicator_of_mem hy]; exact hC y hy
     · rw [hci_def, Set.indicator_of_notMem hy, norm_zero]; exact hC_nn
   have hci_meas : AEStronglyMeasurable ci
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
     aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc
   have hc_eq_ci : ∀ y : EuclN, c y = ci y := by
     intro y
@@ -943,8 +943,8 @@ private lemma tendsto_cutoffPartialSummand
         g r s
         (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
         α P.1 P.2 k).toLp _ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
         euclidPartial (E := E) k
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
@@ -981,7 +981,7 @@ theorem crossRightGradCoeffDivSum_memLp
             crossRightTestGradTerm (I := I) (M := M) g r s
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor α P₀ l z) y) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hcomp : MemLp
       (fun y => ∑ l : Fin (Module.finrank ℝ E),
@@ -992,8 +992,8 @@ theorem crossRightGradCoeffDivSum_memLp
               cutoffComponentEuclid (I := I) (M := M) g r s
                 (eigenvectorSmoothApprox (I := I) (M := M)
                   g r s i n).toCcTensor α P.1 P.2 y) 2
-      (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -1014,8 +1014,8 @@ theorem crossRightGradCoeffDivSum_memLp
                 (cutoffComponentEuclid (I := I) (M := M) g r s
                   (eigenvectorSmoothApprox (I := I) (M := M)
                     g r s i n).toCcTensor α P.1 P.2) y) 2
-      (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -1029,7 +1029,7 @@ theorem crossRightGradCoeffDivSum_memLp
               (I := I) (M := M) g r s α P₀ l P Q hy))))
   refine (hcomp.add hpart).ae_eq ?_
   refine Filter.EventuallyEq.symm ?_
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine (ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
   refine Filter.Eventually.of_forall (fun y hy => ?_)
@@ -1127,7 +1127,7 @@ theorem crossRightGradCoeffDivSum_tendsto
   have h_termN : ∀ n : ℕ,
       (crossRightGradCoeffDivSum_memLp (I := I) (M := M)
         g r s i α P₀ n).toLp _ =
-      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun l _ => memLp_finsetSum Finset.univ
             (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffComponentAtom
@@ -1137,7 +1137,7 @@ theorem crossRightGradCoeffDivSum_tendsto
                 (fun y hy =>
                   euclidPartial_crossRightDivFactor_eq_zero_off_chartPouKernel
                     (I := I) (M := M) g r s α P₀ l P Q hy))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun l _ => memLp_finsetSum Finset.univ
             (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffPartialAtom
@@ -1148,7 +1148,7 @@ theorem crossRightGradCoeffDivSum_tendsto
                   (I := I) (M := M) g r s α P₀ l P Q hy))))).toLp _ := by
     intro n
     refine toLp_add_eq (I := I) (M := M) α _ _ _ ?_
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     refine (ae_restrict_iff'
       (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
     refine Filter.Eventually.of_forall (fun y hy => ?_)
@@ -1160,7 +1160,7 @@ theorem crossRightGradCoeffDivSum_tendsto
   have h_termLim :
       (crossRightGradCoeffDivLimit_memLp (I := I) (M := M)
         g r s i α P₀).toLp _ =
-      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun l _ => memLp_finsetSum Finset.univ
             (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_indicatorFactor_mul_cutoffLp (I := I) (M := M) α
@@ -1168,7 +1168,7 @@ theorem crossRightGradCoeffDivSum_tendsto
                   g r s α P₀ l P Q)
                 (crossRightLimitComponent (I := I) (M := M)
                   g r s i α P))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun l _ => memLp_finsetSum Finset.univ
             (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_indicatorFactor_mul_cutoffLp (I := I) (M := M) α
@@ -1181,7 +1181,7 @@ theorem crossRightGradCoeffDivSum_tendsto
     rw [crossRightGradCoeffDivLimit]
   rw [show (fun n => (crossRightGradCoeffDivSum_memLp
         (I := I) (M := M) g r s i α P₀ n).toLp _) =
-      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (fun n => (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun l _ => memLp_finsetSum Finset.univ
             (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffComponentAtom
@@ -1191,7 +1191,7 @@ theorem crossRightGradCoeffDivSum_tendsto
                 (fun y hy =>
                   euclidPartial_crossRightDivFactor_eq_zero_off_chartPouKernel
                     (I := I) (M := M) g r s α P₀ l P Q hy))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun l _ => memLp_finsetSum Finset.univ
             (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffPartialAtom

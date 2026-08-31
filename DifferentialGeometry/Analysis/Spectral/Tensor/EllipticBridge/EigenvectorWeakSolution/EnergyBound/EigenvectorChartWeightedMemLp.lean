@@ -132,7 +132,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorL2ChartComponent_ae_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ chartPouKernel (I := I) (M := M) α →
         (tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ :
           EuclN → ℝ) y = 0 := by
@@ -157,7 +157,7 @@ lemma tensorL2ChartComponent_ae_zero_off_chartPouKernel
     refine Filter.Tendsto.congr (fun n => ?_) h_clm
     simp only [Function.comp_apply, hS n]
   have h_term : ∀ n : ℕ,
-      ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
         y ∉ chartPouKernel (I := I) (M := M) α →
           (tensorL2ChartComponent (I := I) (M := M) g r s
             ((S n : TensorL2 r s g)) α P₀ : EuclN → ℝ) y = 0 := by
@@ -249,7 +249,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
         (tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀ :
           EuclN → ℝ) y = 0 := by
@@ -271,7 +271,7 @@ lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
     refine Filter.Tendsto.congr (fun n => ?_) h_clm
     simp only [Function.comp_apply, hS n, tensorL2ChartComponentCutoffCLM_apply]
   have h_term : ∀ n : ℕ,
-      ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+      ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
         y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
           (tensorL2ChartComponentCutoff (I := I) (M := M) g r s
             ((S n : TensorL2 r s g)) α P₀ : EuclN → ℝ) y = 0 := by
@@ -582,7 +582,7 @@ lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted
         (chartTargetEuclid (I := I) (M := M) α)),
       y ∉ chartPouKernel (I := I) (M := M) α →
         ((componentLpLimit (I := I) (M := M) g r s i α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
   classical
   set uVec :=
     tensorResolventEigenbasisVec (I := I) (M := M)
@@ -590,12 +590,12 @@ lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted
     with huVec_def
   have h_smul_w : (fun y => ((componentLpLimit (I := I) (M := M)
         g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       (fun y => i.fst.val •
         ((tensorL2ChartComponent (I := I) (M := M) g r s uVec α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
     (chartPulledWeightedMeasure_restrict_absolutelyContinuous (I := I) (M := M)
       g α).ae_le
       (by rw [componentLpLimit]; exact Lp.coeFn_smul i.fst.val _)
@@ -612,7 +612,7 @@ lemma componentLpLimit_memLp_weighted
     (α : M) (P : TensorCompIdx (E := E) r s) :
     MemLp (fun y => ((componentLpLimit (I := I) (M := M)
         g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
@@ -627,12 +627,12 @@ lemma componentLpLimit_memLp_weighted
     tensorL2ChartComponent_memLp_weighted (I := I) (M := M) g r s uVec α P
   have h_smul : (fun y => ((componentLpLimit (I := I) (M := M)
         g r s i α P :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       (fun y => i.fst.val •
         ((tensorL2ChartComponent (I := I) (M := M) g r s uVec α P :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) :=
     (chartPulledWeightedMeasure_restrict_absolutelyContinuous (I := I) (M := M)
       g α).ae_le
       (by rw [componentLpLimit]; exact Lp.coeFn_smul i.fst.val _)

@@ -92,9 +92,9 @@ theorem covPrincipalRotationCoeff_pouSmul_memLp
         (pouSmul (I := I) (M := M) g r s α
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) α P₀) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
-  refine (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+  refine (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun P _ => memLp_finsetSum
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -118,7 +118,7 @@ theorem covPrincipalRotationCoeffLimit_memLp
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     MemLp (covPrincipalRotationCoeffLimit (I := I) (M := M)
         g r s i α P₀) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold covPrincipalRotationCoeffLimit
   exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -153,7 +153,7 @@ theorem covPrincipalRotationCoeff_tendsto
             (tensorChartComponent (I := I) (M := M) g r s
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor α a.1.1 a.1.2) y) 2
-        (chartL2Measure (I := I) (M := M) α) := fun a n =>
+        (chartLebesgueMeasure (I := I) (M := M) α) := fun a n =>
     memLp_factor_mul_partialAtom (I := I) (M := M) g r s i α a.1
       a.2.2.1 n (principalRotationFactor_contDiffOn (I := I) (M := M)
         g r s α P₀ a.1 a.2.1 a.2.2.1 a.2.2.2)
@@ -164,7 +164,7 @@ theorem covPrincipalRotationCoeff_tendsto
               g r s α P₀ a.1 a.2.1 a.2.2.1 a.2.2.2) y *
           (partialLpLimit (I := I) (M := M) g r s i α a.1 a.2.2.1 :
             EuclN → ℝ) y) 2
-        (chartL2Measure (I := I) (M := M) α) := fun a =>
+        (chartLebesgueMeasure (I := I) (M := M) α) := fun a =>
     memLp_indicatorFactor_mul_lp (I := I) (M := M) α
       (principalRotationFactor_contDiffOn (I := I) (M := M)
         g r s α P₀ a.1 a.2.1 a.2.2.1 a.2.2.2)
@@ -183,7 +183,7 @@ theorem covPrincipalRotationCoeff_tendsto
           (pouSmul (I := I) (M := M) g r s α
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) α P₀
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ a : TensorCompIdx (E := E) r s ×
             TensorCompIdx (E := E) r s ×
             Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -200,7 +200,7 @@ theorem covPrincipalRotationCoeff_tendsto
     simp only [Fintype.sum_prod_type]
   have hFlim_eq :
       covPrincipalRotationCoeffLimit (I := I) (M := M) g r s i α P₀
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ a : TensorCompIdx (E := E) r s ×
             TensorCompIdx (E := E) r s ×
             Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -281,9 +281,9 @@ theorem weightedGradCoeff_pouSmul_memLp
         (pouSmul (I := I) (M := M) g r s α
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) α P₀ l) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
-  refine (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+  refine (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun P _ => memLp_finsetSum
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -297,7 +297,7 @@ theorem weightedGradCoeff_pouSmul_memLp
               (weightedGradFactor_contDiffOn (I := I) (M := M)
                 g r s α P₀ l P Q k p)))))).ae_eq ?_
   refine Filter.EventuallyEq.symm ?_
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine (ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
   exact Filter.Eventually.of_forall (fun y hy =>
@@ -312,7 +312,7 @@ theorem weightedGradCoeffLimit_memLp
     (l : Fin (Module.finrank ℝ E)) :
     MemLp (weightedGradCoeffLimit (I := I) (M := M)
         g r s i α P₀ l) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold weightedGradCoeffLimit
   exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -347,7 +347,7 @@ theorem weightedGradCoeff_tendsto
           tensorChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α a.2.2.2.1 a.2.2.2.2 y) 2
-        (chartL2Measure (I := I) (M := M) α) := fun a n =>
+        (chartLebesgueMeasure (I := I) (M := M) α) := fun a n =>
     memLp_factor_mul_componentAtom (I := I) (M := M) g r s i α
       a.2.2.2 n (weightedGradFactor_contDiffOn (I := I) (M := M)
         g r s α P₀ l a.1 a.2.1 a.2.2.1 a.2.2.2)
@@ -358,7 +358,7 @@ theorem weightedGradCoeff_tendsto
               g r s α P₀ l a.1 a.2.1 a.2.2.1 a.2.2.2) y *
           (componentLpLimit (I := I) (M := M) g r s i α a.2.2.2 :
             EuclN → ℝ) y) 2
-        (chartL2Measure (I := I) (M := M) α) := fun a =>
+        (chartLebesgueMeasure (I := I) (M := M) α) := fun a =>
     memLp_indicatorFactor_mul_lp (I := I) (M := M) α
       (weightedGradFactor_contDiffOn (I := I) (M := M)
         g r s α P₀ l a.1 a.2.1 a.2.2.1 a.2.2.2)
@@ -377,7 +377,7 @@ theorem weightedGradCoeff_tendsto
           (pouSmul (I := I) (M := M) g r s α
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) α P₀ l
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ a : TensorCompIdx (E := E) r s ×
             TensorCompIdx (E := E) r s ×
             Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,
@@ -387,7 +387,7 @@ theorem weightedGradCoeff_tendsto
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor α a.2.2.2.1 a.2.2.2.2 y := by
     intro n
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     refine (ae_restrict_iff'
       (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
     refine Filter.Eventually.of_forall (fun y hy => ?_)
@@ -396,7 +396,7 @@ theorem weightedGradCoeff_tendsto
     simp only [Fintype.sum_prod_type]
   have hFlim_eq :
       weightedGradCoeffLimit (I := I) (M := M) g r s i α P₀ l
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ a : TensorCompIdx (E := E) r s ×
             TensorCompIdx (E := E) r s ×
             Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,
@@ -453,7 +453,7 @@ theorem euclidPartial_weightedGradCoeff_pouSmul_memLp
           (pouSmul (I := I) (M := M) g r s α
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) α P₀ l)) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hcomp : MemLp
       (fun y => ∑ P : TensorCompIdx (E := E) r s,
@@ -465,8 +465,8 @@ theorem euclidPartial_weightedGradCoeff_pouSmul_memLp
                 tensorChartComponent (I := I) (M := M) g r s
                   (eigenvectorSmoothApprox (I := I) (M := M)
                     g r s i n).toCcTensor α p.1 p.2 y) 2
-      (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -488,8 +488,8 @@ theorem euclidPartial_weightedGradCoeff_pouSmul_memLp
                   (tensorChartComponent (I := I) (M := M) g r s
                     (eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor α p.1 p.2) y) 2
-      (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -503,7 +503,7 @@ theorem euclidPartial_weightedGradCoeff_pouSmul_memLp
                 g r s α P₀ l P Q k p)))))
   refine (hcomp.add hpart).ae_eq ?_
   refine Filter.EventuallyEq.symm ?_
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine (ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
   exact Filter.Eventually.of_forall (fun y hy =>
@@ -520,7 +520,7 @@ theorem weightedGradCoeffDivLimit_memLp
     (l : Fin (Module.finrank ℝ E)) :
     MemLp (weightedGradCoeffDivLimit (I := I) (M := M)
         g r s i α P₀ l) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold weightedGradCoeffDivLimit
   refine MemLp.add ?_ ?_
@@ -624,7 +624,7 @@ theorem weightedGradCoeffDiv_tendsto
   have h_termN : ∀ n : ℕ,
       (euclidPartial_weightedGradCoeff_pouSmul_memLp (I := I) (M := M)
         g r s i α P₀ l n).toLp _ =
-      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -632,7 +632,7 @@ theorem weightedGradCoeffDiv_tendsto
                   (I := I) (M := M) g r s i α p n
                   (euclidPartial_weightedGradFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ l P Q k p)))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -642,7 +642,7 @@ theorem weightedGradCoeffDiv_tendsto
                     g r s α P₀ l P Q k p)))))).toLp _ := by
     intro n
     refine toLp_add_eq (I := I) (M := M) α _ _ _ ?_
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     refine (ae_restrict_iff'
       (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
     exact Filter.Eventually.of_forall (fun y hy =>
@@ -653,7 +653,7 @@ theorem weightedGradCoeffDiv_tendsto
   have h_termLim :
       (weightedGradCoeffDivLimit_memLp (I := I) (M := M)
         g r s i α P₀ l).toLp _ =
-      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -662,7 +662,7 @@ theorem weightedGradCoeffDiv_tendsto
                     g r s α P₀ l P Q k p)
                   (componentLpLimit (I := I) (M := M)
                     g r s i α p)))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -676,7 +676,7 @@ theorem weightedGradCoeffDiv_tendsto
     rw [weightedGradCoeffDivLimit]
   rw [show (fun n => (euclidPartial_weightedGradCoeff_pouSmul_memLp
         (I := I) (M := M) g r s i α P₀ l n).toLp _) =
-      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (fun n => (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -684,7 +684,7 @@ theorem weightedGradCoeffDiv_tendsto
                   (I := I) (M := M) g r s i α p n
                   (euclidPartial_weightedGradFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ l P Q k p)))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -746,7 +746,7 @@ theorem covLowerOrderRotationValueCoeff_pouSmul_memLp
         (pouSmul (I := I) (M := M) g r s α
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) α P₀) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hpart : MemLp
       (fun y => ∑ P : TensorCompIdx (E := E) r s,
@@ -758,8 +758,8 @@ theorem covLowerOrderRotationValueCoeff_pouSmul_memLp
                   (tensorChartComponent (I := I) (M := M) g r s
                     (eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor α P.1 P.2) y) 2
-      (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -781,8 +781,8 @@ theorem covLowerOrderRotationValueCoeff_pouSmul_memLp
                   tensorChartComponent (I := I) (M := M) g r s
                     (eigenvectorSmoothApprox (I := I) (M := M)
                       g r s i n).toCcTensor α p.1 p.2 y) 2
-      (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
       (fun P _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -798,7 +798,7 @@ theorem covLowerOrderRotationValueCoeff_pouSmul_memLp
                   g r s α P₀ P Q k l p))))))
   refine (hpart.add hcomp).ae_eq ?_
   refine Filter.EventuallyEq.symm ?_
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine (ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
   exact Filter.Eventually.of_forall (fun y hy =>
@@ -814,7 +814,7 @@ theorem covLowerOrderRotationValueCoeffLimit_memLp
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     MemLp (covLowerOrderRotationValueCoeffLimit (I := I) (M := M)
         g r s i α P₀) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold covLowerOrderRotationValueCoeffLimit
   refine MemLp.add ?_ ?_
@@ -914,7 +914,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
   have h_termN : ∀ n : ℕ,
       (covLowerOrderRotationValueCoeff_pouSmul_memLp (I := I) (M := M)
         g r s i α P₀ n).toLp _ =
-      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -922,7 +922,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
                   (I := I) (M := M) g r s i α P k n
                   (valuePartialFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ P Q k l)))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -933,7 +933,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
                       g r s α P₀ P Q k l p))))))).toLp _ := by
     intro n
     refine toLp_add_eq (I := I) (M := M) α _ _ _ ?_
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     refine (ae_restrict_iff'
       (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
     exact Filter.Eventually.of_forall (fun y hy =>
@@ -944,7 +944,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
   have h_termLim :
       (covLowerOrderRotationValueCoeffLimit_memLp (I := I) (M := M)
         g r s i α P₀).toLp _ =
-      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -953,7 +953,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
                     g r s α P₀ P Q k l)
                   (partialLpLimit (I := I) (M := M)
                     g r s i α P k)))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -968,7 +968,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
     rw [covLowerOrderRotationValueCoeffLimit]
   rw [show (fun n => (covLowerOrderRotationValueCoeff_pouSmul_memLp
         (I := I) (M := M) g r s i α P₀ n).toLp _) =
-      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+      (fun n => (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ
@@ -976,7 +976,7 @@ theorem covLowerOrderRotationValueCoeff_tendsto
                   (I := I) (M := M) g r s i α P k n
                   (valuePartialFactor_contDiffOn (I := I) (M := M)
                     g r s α P₀ P Q k l)))))).toLp _ +
-        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+        (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
           Finset.univ (fun P _ => memLp_finsetSum Finset.univ
             (fun Q _ => memLp_finsetSum Finset.univ
               (fun k _ => memLp_finsetSum Finset.univ

@@ -73,7 +73,7 @@ private def eigenvectorComp (g : SmoothRiemannianMetric I M) (r s : ℕ)
   fun y =>
     ((tensorL2ChartComponent (I := I) (M := M) g r s
         (eigenbasisVec (I := I) (M := M) g r s i) α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
 
 private lemma eigenvectorComp_eq_ofCompact (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s)
@@ -321,7 +321,7 @@ private lemma partialSumFun_wkpNorm_sub_le (g : SmoothRiemannianMetric I M)
 private def partialSumLp (g : SmoothRiemannianMetric I M) (r s' : ℕ)
     (u : TensorL2 r s' g) (α : M) (P₀ : TensorCompIdx (E := E) r s')
     (s : Finset (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s')) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   ∑ i ∈ s, spectralCoeff (I := I) (M := M) g r s' u i •
     tensorL2ChartComponent (I := I) (M := M) g r s'
       (eigenbasisVec (I := I) (M := M) g r s' i) α P₀
@@ -330,8 +330,8 @@ private lemma partialSumLp_coeFn (g : SmoothRiemannianMetric I M) (r s' : ℕ)
     (u : TensorL2 r s' g) (α : M) (P₀ : TensorCompIdx (E := E) r s')
     (s : Finset (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s')) :
     ((partialSumLp (I := I) (M := M) g r s' u α P₀ s :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       partialSumFun (I := I) (M := M) g r s' u α P₀ s := by
   classical
   have h_sum := coeFn_finsetSum_chartL2 (I := I) (M := M) α s
@@ -343,8 +343,8 @@ private lemma partialSumLp_coeFn (g : SmoothRiemannianMetric I M) (r s' : ℕ)
       ((spectralCoeff (I := I) (M := M) g r s' u i •
           tensorL2ChartComponent (I := I) (M := M) g r s'
             (eigenbasisVec (I := I) (M := M) g r s' i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => spectralCoeff (I := I) (M := M) g r s' u i *
           eigenvectorComp (I := I) (M := M) g r s' i α P₀ y := by
     intro i _
@@ -433,7 +433,7 @@ private lemma gateElement_chartComponent_memWkp_of_tail
     (k : ℕ) (α : M) (P₀ : TensorCompIdx (E := E) r s') :
     MemWkp (d := Module.finrank ℝ E) (2 * k) 2
       (fun y => (tensorL2ChartComponent (I := I) (M := M) g r s' u α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) y)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set Ω := chartTargetEuclid (I := I) (M := M) α with hΩ_def
@@ -511,9 +511,9 @@ private lemma gateElement_chartComponent_memWkp_of_tail
       h_useq_mem h_cauchy
   have hF_lim_memLp : MemLp F_lim 2 ((volume : Measure EuclN).restrict Ω) :=
     hF_lim_mem.memLp
-  set T : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set T : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     tensorL2ChartComponent (I := I) (M := M) g r s' u α P₀ with hT_def
-  set Flim_Lp : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+  set Flim_Lp : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
     hF_lim_memLp.toLp F_lim with hFlim_Lp_def
   have h_lp_T : Filter.Tendsto
       (fun n => partialSumLp (I := I) (M := M) g r s' u α P₀
@@ -527,7 +527,7 @@ private lemma gateElement_chartComponent_memWkp_of_tail
         ‖partialSumLp (I := I) (M := M) g r s' u α P₀
             (eigenFinsetSeq (I := I) (M := M) g r s' n) - Flim_Lp‖ =
           (eLpNorm (fun y => useq n y - F_lim y) 2
-            (chartL2Measure (I := I) (M := M) α)).toReal := by
+            (chartLebesgueMeasure (I := I) (M := M) α)).toReal := by
       intro n
       rw [Lp.norm_def]
       congr 1
@@ -537,13 +537,13 @@ private lemma gateElement_chartComponent_memWkp_of_tail
       have h2 := partialSumLp_coeFn (I := I) (M := M) g r s' u α P₀
         (eigenFinsetSeq (I := I) (M := M) g r s' n)
       have h3 : (Flim_Lp : EuclN → ℝ)
-          =ᵐ[chartL2Measure (I := I) (M := M) α] F_lim :=
+          =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] F_lim :=
         MemLp.coeFn_toLp hF_lim_memLp
       filter_upwards [h1, h2, h3] with y hy1 hy2 hy3
       rw [hy1, Pi.sub_apply, hy2, hy3]
     have h_eLp_Flim : Filter.Tendsto
         (fun n => eLpNorm (fun y => useq n y - F_lim y) 2
-          (chartL2Measure (I := I) (M := M) α)) Filter.atTop (𝓝 0) := by
+          (chartLebesgueMeasure (I := I) (M := M) α)) Filter.atTop (𝓝 0) := by
       refine tendsto_of_tendsto_of_tendsto_of_le_of_le
         (g := fun _ => (0 : ℝ≥0∞))
         (h := fun n => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -552,12 +552,12 @@ private lemma gateElement_chartComponent_memWkp_of_tail
         (fun n => eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) (2 * k) 2 Ω _)
     have h_toReal : Filter.Tendsto
         (fun n => (eLpNorm (fun y => useq n y - F_lim y) 2
-          (chartL2Measure (I := I) (M := M) α)).toReal) Filter.atTop (𝓝 0) := by
+          (chartLebesgueMeasure (I := I) (M := M) α)).toReal) Filter.atTop (𝓝 0) := by
       have := (ENNReal.continuousAt_toReal (by simp : (0 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))).tendsto.comp
         h_eLp_Flim
       change Filter.Tendsto
           (fun n => (eLpNorm (fun y => useq n y - F_lim y) 2
-            (chartL2Measure (I := I) (M := M) α)).toReal)
+            (chartLebesgueMeasure (I := I) (M := M) α)).toReal)
           Filter.atTop _ at this
       exact this
     refine h_toReal.congr ?_
@@ -566,7 +566,7 @@ private lemma gateElement_chartComponent_memWkp_of_tail
   have hae : F_lim =ᵐ[(volume : Measure EuclN).restrict Ω]
       (fun y => (T : EuclN → ℝ) y) := by
     have h3 : (Flim_Lp : EuclN → ℝ)
-        =ᵐ[chartL2Measure (I := I) (M := M) α] F_lim :=
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] F_lim :=
       MemLp.coeFn_toLp hF_lim_memLp
     rw [hT_eq]
     exact h3.symm

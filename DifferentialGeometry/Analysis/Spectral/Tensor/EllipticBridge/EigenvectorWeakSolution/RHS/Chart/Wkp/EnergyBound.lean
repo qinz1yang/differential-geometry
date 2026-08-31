@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSEnergyBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSWkpNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.LpEnergyBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Wkp.Bound
 import DifferentialGeometry.Analysis.Estimates.WeightedSums
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Estimates (sum_le_of_le_ofReal_mul)
@@ -79,7 +79,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
               (eigenvectorResolvent (I := I) (M := M) g r s i))
-            β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
+            β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y)
         (chartTargetEuclid (I := I) (M := M) β))
     (h_eig : ∃ Ceig : ℝ, 0 ≤ Ceig ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -88,7 +88,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I)
                     (M := M) g r s) i) α P₀ :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal Ceig *
             ENNReal.ofReal
@@ -102,7 +102,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)
           ≤ ENNReal.ofReal CresH *
@@ -117,7 +117,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β)
           ≤ ENNReal.ofReal CresL *
@@ -131,7 +131,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal Cpar *
@@ -145,7 +145,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal Ccom *
@@ -159,7 +159,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal CcR *
@@ -173,7 +173,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal Ccut *
@@ -271,7 +271,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I)
                   (M := M) g r s) i) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal Ceig * Rhs := hCeig_bd i
   have hS2_inner : ∀ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -281,7 +281,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
         + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -291,7 +291,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β'))
         ≤ ENNReal.ofReal
@@ -303,7 +303,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
             (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M) g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         ≤ ENNReal.ofReal Cqtot * Rhs := by
@@ -313,7 +313,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
             ≤ ENNReal.ofReal CresH * Rhs := fun Q _hQ => hCresH_bd i β Q
@@ -324,7 +324,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         (fun _Q => CresH) Rhs (fun _ _ => hCresH_nn) h_each
@@ -337,7 +337,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
         ≤ ENNReal.ofReal
@@ -350,7 +350,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β'))
             ≤ ENNReal.ofReal Cqtot * Rhs := by
@@ -361,7 +361,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β')
               ≤ ENNReal.ofReal CresH * Rhs := fun Q _hQ => hCresH_bd i β' Q
@@ -372,7 +372,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
           (fun _Q => CresH) Rhs (fun _ _ => hCresH_nn) h_each
@@ -386,7 +386,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β' Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                  β' Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β'))
         (fun _β' => Cqtot) Rhs (fun _ _ => hCqtot_nn) h_perβ'
@@ -399,7 +399,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
           + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -410,7 +410,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
                       β' Q :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β')
         ≤ ENNReal.ofReal Cqtot * Rhs +
@@ -429,7 +429,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                     (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
-                    β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                    β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β))
           + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -440,7 +440,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
                       β' Q :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β')))
       ≤ ENNReal.ofReal Cmid * Rhs := by
@@ -461,7 +461,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
         + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -472,7 +472,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                       (eigenvectorResolvent (I := I) (M := M)
                         g r s i))
                     β' Q :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                     EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) β'))
       (fun β => Cqtot +
@@ -486,7 +486,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
       ≤ ENNReal.ofReal Clow * Rhs := by
@@ -497,7 +497,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β))
           ≤ ENNReal.ofReal
@@ -509,7 +509,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                   (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                     (eigenvectorResolvent (I := I) (M := M)
                       g r s i))
-                  β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                  β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                   EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) β)
             ≤ ENNReal.ofReal CresL * Rhs := fun Q _hQ => hCresL_bd i β Q
@@ -520,7 +520,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
         (fun _Q => CresL) Rhs (fun _ _ => hCresL_nn) h_each
@@ -539,7 +539,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                   (eigenvectorResolvent (I := I) (M := M)
                     g r s i))
-                β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                 EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β))
       (fun _β => (Fintype.card (TensorCompIdx (E := E) r s) : ℝ) * CresL)
@@ -551,7 +551,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Cpar' * Rhs := by
@@ -560,7 +560,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
@@ -570,7 +570,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
             ≤ ENNReal.ofReal Cpar * Rhs := fun k _hk => hCpar_bd i P k
@@ -579,7 +579,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         (fun k => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
         (fun _k => Cpar) Rhs (fun _ _ => hCpar_nn) h_each
@@ -596,7 +596,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Cpar)
@@ -607,7 +607,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Ccom' * Rhs := by
@@ -615,7 +615,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal Ccom * Rhs := fun p _hp => hCcom_bd i p
@@ -624,7 +624,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
       (fun p => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       (fun _p => Ccom) Rhs (fun _ _ => hCcom_nn) h_each
@@ -634,7 +634,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal CcR' * Rhs := by
@@ -642,7 +642,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((crossRightLimitComponent (I := I) (M := M)
                 g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal CcR * Rhs := fun P _hP => hCcR_bd i P
@@ -651,7 +651,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
       (fun P => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
           (fun y => ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
             EuclN → ℝ) y)
           (chartTargetEuclid (I := I) (M := M) α))
       (fun _P => CcR) Rhs (fun _ _ => hCcR_nn) h_each
@@ -662,7 +662,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       ≤ ENNReal.ofReal Ccut' * Rhs := by
@@ -671,7 +671,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                   g r s i α P l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal
@@ -681,7 +681,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
               (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                   g r s i α P l :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                 EuclN → ℝ) y)
               (chartTargetEuclid (I := I) (M := M) α)
             ≤ ENNReal.ofReal Ccut * Rhs := fun l _hl => hCcut_bd i P l
@@ -690,7 +690,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
         (fun l => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
         (fun _l => Ccut) Rhs (fun _ _ => hCcut_nn) h_each
@@ -707,7 +707,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
             (fun y => ((cutoffPartialLpLimit (I := I) (M := M)
                 g r s i α P l :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α))
       (fun _P => (Fintype.card (Fin (Module.finrank ℝ E)) : ℝ) * Ccut)
@@ -720,7 +720,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 (tensorResolventEigenbasisVec (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator (I := I)
                     (M := M) g r s) i) α P₀ :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) α)
           + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
               ((∑ Q : TensorCompIdx (E := E) r s,
@@ -731,7 +731,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                           (eigenvectorResolvent (I := I) (M := M)
                             g r s i))
                         β Q :
-                        Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                         EuclN → ℝ) y)
                     (chartTargetEuclid (I := I) (M := M) β))
                 + ∑ β' ∈ transportChartCenters (I := I) (M := M) β,
@@ -743,7 +743,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                               (eigenvectorResolvent (I := I)
                                 (M := M) g r s i))
                             β' Q :
-                            Lp ℝ 2 (chartL2Measure (I := I) (M := M) β')) :
+                            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β')) :
                             EuclN → ℝ) y)
                         (chartTargetEuclid (I := I) (M := M) β')))
           + (∑ β ∈ transportChartCenters (I := I) (M := M) α,
@@ -753,7 +753,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                       (TensorH1ComplToTensorL2 (I := I) (M := M) g r s
                         (eigenvectorResolvent (I := I) (M := M)
                           g r s i))
-                      β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
+                      β Q : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
                       EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) β))
           + (∑ P : TensorCompIdx (E := E) r s,
@@ -761,21 +761,21 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   (fun y => ((partialLpLimit (I := I) (M := M)
                       g r s i α P k :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) α))
           + (∑ p : TensorCompIdx (E := E) r s,
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((componentLpLimit (I := I) (M := M)
                     g r s i α p :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) α))
           + (∑ P : TensorCompIdx (E := E) r s,
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                 (fun y => ((crossRightLimitComponent (I := I)
                     (M := M) g r s i α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                   EuclN → ℝ) y)
                 (chartTargetEuclid (I := I) (M := M) α))
           + (∑ P : TensorCompIdx (E := E) r s,
@@ -783,7 +783,7 @@ theorem eigenvectorChartRHS_wkpNorm_le_energy_uniform
                 iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
                   (fun y => ((cutoffPartialLpLimit (I := I)
                       (M := M) g r s i α P l :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) y)
                   (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal Cagg * Rhs := by

@@ -166,13 +166,13 @@ lemma aestronglyMeasurable_indicator_mul
     (hc : ContDiffOn ℝ ∞ c (chartTargetEuclid (I := I) (M := M) α)) :
     AEStronglyMeasurable
       (Set.indicator (chartPouKernel (I := I) (M := M) α) c)
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hcont : ContinuousOn c (chartPouKernel (I := I) (M := M) α) :=
     hc.continuousOn.mono
       (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)
   have hmeas : AEStronglyMeasurable c
-      ((chartL2Measure (I := I) (M := M) α).restrict
+      ((chartLebesgueMeasure (I := I) (M := M) α).restrict
         (chartPouKernel (I := I) (M := M) α)) :=
     hcont.aestronglyMeasurable
       (chartPouKernel_measurableSet (I := I) (M := M) α)

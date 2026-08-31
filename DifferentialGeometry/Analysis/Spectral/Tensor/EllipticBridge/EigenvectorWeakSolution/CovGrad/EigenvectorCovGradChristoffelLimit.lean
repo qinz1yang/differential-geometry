@@ -69,16 +69,16 @@ theorem covDerivLowerOrderTerm_pouSmul_memLp
         (pouSmul (I := I) (M := M) g r s α
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor) α k P₀.1 P₀.2) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
-  refine (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+  refine (memLp_finsetSum (μ := chartLebesgueMeasure (I := I) (M := M) α)
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun p _ =>
       memLp_factor_mul_componentAtom (I := I) (M := M) g r s i α p n
         (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
           g r s α k P₀.1 p.1 P₀.2 p.2))).ae_eq ?_
   refine Filter.EventuallyEq.symm ?_
-  rw [chartL2Measure]
+  rw [chartLebesgueMeasure]
   refine (ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
   exact Filter.Eventually.of_forall (fun y hy =>
@@ -112,7 +112,7 @@ theorem covGradChristoffelLimit_memLp
     (k : Fin (Module.finrank ℝ E)) :
     MemLp (covGradChristoffelLimit (I := I) (M := M)
         g r s i α P₀ k) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold covGradChristoffelLimit
   exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -145,7 +145,7 @@ private theorem covGradChristoffelUnscaledLimit_memLp
     (k : Fin (Module.finrank ℝ E)) :
     MemLp (covGradChristoffelUnscaledLimit (I := I) (M := M)
         g r s i α P₀ k) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   unfold covGradChristoffelUnscaledLimit
   exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -173,7 +173,7 @@ private theorem covDerivLowerOrderTerm_pouSmul_tendsto
           tensorChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α p.1 p.2 y) 2
-        (chartL2Measure (I := I) (M := M) α) := fun p n =>
+        (chartLebesgueMeasure (I := I) (M := M) α) := fun p n =>
     memLp_factor_mul_componentAtom (I := I) (M := M) g r s i α p n
       (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
         g r s α k P₀.1 p.1 P₀.2 p.2)
@@ -183,7 +183,7 @@ private theorem covDerivLowerOrderTerm_pouSmul_tendsto
               g r s α k P₀.1 p.1 P₀.2 p.2) y *
           (componentLpLimit (I := I) (M := M) g r s i α p :
             EuclN → ℝ) y) 2
-        (chartL2Measure (I := I) (M := M) α) := fun p =>
+        (chartLebesgueMeasure (I := I) (M := M) α) := fun p =>
     memLp_indicatorFactor_mul_lp (I := I) (M := M) α
       (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
         g r s α k P₀.1 p.1 P₀.2 p.2)
@@ -200,7 +200,7 @@ private theorem covDerivLowerOrderTerm_pouSmul_tendsto
           (pouSmul (I := I) (M := M) g r s α
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) α k P₀.1 P₀.2
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ p : TensorCompIdx (E := E) r s,
           covDerivLowerOrderCoeff (I := I) (M := M)
               g r s α k P₀.1 p.1 P₀.2 p.2 y *
@@ -208,7 +208,7 @@ private theorem covDerivLowerOrderTerm_pouSmul_tendsto
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor α p.1 p.2 y := by
     intro n
-    rw [chartL2Measure]
+    rw [chartLebesgueMeasure]
     refine (ae_restrict_iff'
       (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr ?_
     exact Filter.Eventually.of_forall (fun y hy =>
@@ -218,7 +218,7 @@ private theorem covDerivLowerOrderTerm_pouSmul_tendsto
   have hFlim_eq :
       covGradChristoffelUnscaledLimit (I := I) (M := M)
           g r s i α P₀ k
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
         fun y => ∑ p : TensorCompIdx (E := E) r s,
           Set.indicator (chartPouKernel (I := I) (M := M) α)
               (covDerivLowerOrderCoeff (I := I) (M := M)
@@ -243,7 +243,7 @@ private lemma smul_componentLpLimit_coeFn_ae
     (fun y : EuclN => (i.fst.val)⁻¹ *
         (componentLpLimit (I := I) (M := M) g r s i α p :
           EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y : EuclN =>
         (tensorL2ChartComponent (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -263,7 +263,7 @@ private lemma smul_componentLpLimit_coeFn_ae
   refine (Lp.coeFn_smul (i.fst.val)⁻¹
     (componentLpLimit (I := I) (M := M) g r s i α p)).symm.trans ?_
   exact Filter.EventuallyEq.of_eq
-    (congrArg (fun z : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) =>
+    (congrArg (fun z : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) =>
       (z : EuclN → ℝ)) h_lp_eq)
 
 open DifferentialGeometry.Analysis.Spectral in
@@ -286,7 +286,7 @@ private lemma smul_unscaledLimit_toLp_eq
   refine Filter.EventuallyEq.trans ?_
     (MemLp.coeFn_toLp (covGradChristoffelLimit_memLp (I := I) (M := M)
       g r s i α P₀ k)).symm
-  have h_all : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+  have h_all : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       ∀ p : TensorCompIdx (E := E) r s,
         (i.fst.val)⁻¹ *
             (componentLpLimit (I := I) (M := M) g r s i α p :
@@ -321,7 +321,7 @@ theorem covGradChristoffel_tendsto
             (pouSmul (I := I) (M := M) g r s α
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor) α k P₀.1 P₀.2) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)))
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)))
       atTop
       (𝓝 ((covGradChristoffelLimit_memLp (I := I) (M := M)
         g r s i α P₀ k).toLp

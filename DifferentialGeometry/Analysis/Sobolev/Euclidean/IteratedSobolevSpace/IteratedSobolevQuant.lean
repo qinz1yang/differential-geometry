@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevSupportPromotion
+import DifferentialGeometry.Analysis.Estimates.WeightedSums
 
 
 noncomputable section
@@ -108,6 +109,70 @@ theorem wkpNorm_sum_le
       have h_triangle :=
         wkpNorm_add_le (d := d) hp hΩ ha_mem h_sum_mem
       exact h_triangle.trans (add_le_add (le_refl _) (ih hs_mem))
+
+omit [NeZero d] in
+theorem wkpNorm_sub_le
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
+    {u v : E → ℝ} (hu : MemWkp (d := d) k p u Ω)
+    (hv : MemWkp (d := d) k p v Ω) :
+    iteratedWeakSobolevNorm (d := d) k p (fun x => u x - v x) Ω ≤
+      iteratedWeakSobolevNorm (d := d) k p u Ω +
+        iteratedWeakSobolevNorm (d := d) k p v Ω := by
+  classical
+  have hv_neg : MemWkp (d := d) k p (fun x => -v x) Ω :=
+    MemWkp.neg (d := d) hp hΩ hv
+  calc
+    iteratedWeakSobolevNorm (d := d) k p (fun x => u x - v x) Ω =
+        iteratedWeakSobolevNorm (d := d) k p (fun x => u x + -v x) Ω := by rfl
+    _ ≤ iteratedWeakSobolevNorm (d := d) k p u Ω +
+        iteratedWeakSobolevNorm (d := d) k p (fun x => -v x) Ω :=
+      wkpNorm_add_le (d := d) hp hΩ hu hv_neg
+    _ = iteratedWeakSobolevNorm (d := d) k p u Ω +
+        iteratedWeakSobolevNorm (d := d) k p v Ω := by
+      rw [show (fun x => -v x) = fun x => (-1 : ℝ) * v x by
+        funext x
+        ring]
+      rw [wkpNorm_const_smul (d := d) hp hΩ hv (-1)]
+      simp
+
+omit [NeZero d] in
+theorem wkpNorm_sum_le_of_le_ofReal_mul
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
+    {ι : Type*} [Fintype ι] (f : ι → E → ℝ) (A : ℝ≥0∞)
+    (hf : ∀ i, MemWkp (d := d) k p (f i) Ω)
+    (hbound : ∀ i, ∃ C : ℝ, 0 ≤ C ∧
+      iteratedWeakSobolevNorm (d := d) k p (f i) Ω ≤ ENNReal.ofReal C * A) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      iteratedWeakSobolevNorm (d := d) k p (fun x => ∑ i, f i x) Ω ≤
+        ENNReal.ofReal C * A := by
+  classical
+  choose C hC hbound using hbound
+  refine ⟨∑ i, C i, Finset.sum_nonneg (fun i _ => hC i), ?_⟩
+  exact (wkpNorm_sum_le (d := d) hp hΩ Finset.univ f
+    (fun i _ => hf i)).trans
+      (Estimates.sum_le_of_le_ofReal_mul Finset.univ
+        (fun i => iteratedWeakSobolevNorm (d := d) k p (f i) Ω) C A
+        (fun i _ => hC i) (fun i _ => hbound i))
+
+omit [NeZero d] in
+theorem wkpNorm_sum_le_of_le_ofReal_mul_uniform
+    {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
+    {ι δ : Type*} [Fintype ι] (f : ι → δ → E → ℝ) (A : δ → ℝ≥0∞)
+    (hf : ∀ i a, MemWkp (d := d) k p (f i a) Ω)
+    (hbound : ∀ i, ∃ C : ℝ, 0 ≤ C ∧ ∀ a,
+      iteratedWeakSobolevNorm (d := d) k p (f i a) Ω ≤
+        ENNReal.ofReal C * A a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a,
+      iteratedWeakSobolevNorm (d := d) k p (fun x => ∑ i, f i a x) Ω ≤
+        ENNReal.ofReal C * A a := by
+  classical
+  choose C hC hbound using hbound
+  refine ⟨∑ i, C i, Finset.sum_nonneg (fun i _ => hC i), fun a => ?_⟩
+  exact (wkpNorm_sum_le (d := d) hp hΩ Finset.univ (fun i => f i a)
+    (fun i _ => hf i a)).trans
+      (Estimates.sum_le_of_le_ofReal_mul Finset.univ
+        (fun i => iteratedWeakSobolevNorm (d := d) k p (f i a) Ω) C (A a)
+        (fun i _ => hC i) (fun i _ => hbound i a))
 
 omit [NeZero d] in
 private theorem chosenWeakPartial'_extend_zero_ae

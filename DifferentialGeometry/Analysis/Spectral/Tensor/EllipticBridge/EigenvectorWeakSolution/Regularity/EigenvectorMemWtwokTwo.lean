@@ -54,8 +54,8 @@ theorem eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun
       ((tensorL2ChartComponent (I := I) (M := M) g r s
           ((eigenvectorSmooth (I := I) (M := M) g r s i :
             TensorL2 r s g)) α (Idx, Jdx) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
-        =ᵐ[chartL2Measure (I := I) (M := M) α]
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
+        =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       tensorChartComponent (I := I) (M := M) g r s
         (eigenvectorSmooth (I := I) (M := M) g r s i) α
         (Idx, Jdx).1 (Idx, Jdx).2 :=
@@ -76,7 +76,7 @@ theorem eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α
             (Idx, Jdx) :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) := rfl
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) := rfl
   have h_oriented :
       tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmooth (I := I) (M := M) g r s i) α

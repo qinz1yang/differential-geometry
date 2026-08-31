@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.Regularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.EigenvectorChartLowerOrderLimits
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
@@ -51,7 +51,7 @@ private lemma wkpNorm_coef_mul_factor_le
       (chartTargetEuclid (I := I) (M := M) α))
     (hfactor_memWkp : MemWkp (d := Module.finrank ℝ E) K 2 factor
       (chartTargetEuclid (I := I) (M := M) α))
-    (hfactor_ae_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    (hfactor_ae_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ chartPouKernel (I := I) (M := M) α → factor y = 0) :
     MemWkp (d := Module.finrank ℝ E) K 2
         (fun y => coef y * factor y) (chartTargetEuclid (I := I) (M := M) α) ∧
@@ -107,7 +107,7 @@ private lemma wkpNorm_coef_mul_factor_le
   have hfactor_ae_zero' : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
       y ∉ Kα → factor y = 0 := by
     have h := hfactor_ae_zero
-    rw [chartL2Measure] at h
+    rw [chartLebesgueMeasure] at h
     exact h
   have h_ae_eq : (fun y => (χ y * coef y) * factor y)
       =ᵐ[(volume : Measure EuclN).restrict Ω]
@@ -175,7 +175,7 @@ lemma wkpNorm_indicatorFactor_mul_atom_le
       (chartTargetEuclid (I := I) (M := M) α))
     (hG_memWkp : MemWkp (d := Module.finrank ℝ E) K 2 G
       (chartTargetEuclid (I := I) (M := M) α))
-    (hG_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    (hG_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ chartPouKernel (I := I) (M := M) α → G y = 0) :
     MemWkp (d := Module.finrank ℝ E) K 2
         (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) coef y * G y)
@@ -196,7 +196,7 @@ lemma wkpNorm_indicatorFactor_mul_atom_le
   have hG_zero' : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
       y ∉ chartPouKernel (I := I) (M := M) α → G y = 0 := by
     have h := hG_zero
-    rw [chartL2Measure] at h
+    rw [chartLebesgueMeasure] at h
     exact h
   have h_prod_eq : (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α)
         coef y * G y)

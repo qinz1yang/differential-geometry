@@ -321,7 +321,10 @@ lemma eigenvectorChartRHS_ae_zero_off_chartPouKernel
   have hy : y ∉ chartPouKernel (I := I) (M := M) α := hy_V.2
   have h_comp_zero : eigenvectorChartComponentFun (I := I) (M := M)
       g r s i α P₀ y = 0 := h_comp_y hy_V
-  rw [eigenvectorChartRHS]
+  simp only [eigenvectorChartRHS, eigenvectorChartRHSNumerator,
+    eigenvectorChartComponentFun, eigenvectorChartCrossLeftContraction,
+    eigenvectorChartCrossRightContraction, eigenvectorChartWeightedDivergence,
+    eigenvectorChartCrossRightDivergence, Pi.add_apply, Pi.sub_apply]
   have h_crossLeft :
       (∑ P : TensorCompIdx (E := E) r (s + 1),
         ∑ Q : TensorCompIdx (E := E) r (s + 1),
@@ -329,7 +332,7 @@ lemma eigenvectorChartRHS_ae_zero_off_chartPouKernel
               crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y) *
             ((crossLeftLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) = 0 := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) = 0 := by
     refine Finset.sum_eq_zero (fun P _ => Finset.sum_eq_zero (fun Q _ => ?_))
     rw [crossLeftTestCoeff_eq_zero_off_chartPouKernel
       (I := I) (M := M) g r s α P₀ Q hy, mul_zero, zero_mul]
@@ -340,7 +343,7 @@ lemma eigenvectorChartRHS_ae_zero_off_chartPouKernel
               crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y) *
             ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) = 0 := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) = 0 := by
     refine Finset.sum_eq_zero (fun P _ => Finset.sum_eq_zero (fun Q _ => ?_))
     rw [crossRightTestValueCoeff_eq_zero_off_chartPouKernel
       (I := I) (M := M) g r s α P₀ Q hy, mul_zero, zero_mul]
@@ -348,7 +351,7 @@ lemma eigenvectorChartRHS_ae_zero_off_chartPouKernel
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             g r s) i) α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0
     from h_comp_zero,
     h_crossLeft, h_crossRight,
     covPrincipalRotationCoeffLimit_eq_zero_off_chartPouKernel

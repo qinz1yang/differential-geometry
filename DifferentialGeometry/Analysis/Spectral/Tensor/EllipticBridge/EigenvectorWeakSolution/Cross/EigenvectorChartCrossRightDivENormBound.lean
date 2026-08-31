@@ -174,7 +174,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 private lemma aestronglyMeasurable_weighted_of_chartL2
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : EuclN → ℝ}
-    (hf : AEStronglyMeasurable f (chartL2Measure (I := I) (M := M) α)) :
+    (hf : AEStronglyMeasurable f (chartLebesgueMeasure (I := I) (M := M) α)) :
     AEStronglyMeasurable f
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
@@ -220,14 +220,14 @@ theorem eLpNorm_crossRightGradCoeffDivLimit_le_uniform
             ((∑ P : TensorCompIdx (E := E) r s,
                 eLpNorm ((crossRightLimitComponent (I := I) (M := M)
                     g r s i α P :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                   ((chartPulledWeightedMeasure (I := I) g α).restrict
                     (chartTargetEuclid (I := I) (M := M) α)))
               + (∑ P : TensorCompIdx (E := E) r s,
                   ∑ l : Fin (Module.finrank ℝ E),
                     eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)
                         g r s i α P l :
-                        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                         EuclN → ℝ) 2
                       ((chartPulledWeightedMeasure (I := I) g α).restrict
                         (chartTargetEuclid (I := I) (M := M) α)))) := by
@@ -253,11 +253,11 @@ theorem eLpNorm_crossRightGradCoeffDivLimit_le_uniform
   set Acomp : TensorCompIdx (E := E) r s → EuclN → ℝ :=
     fun P => ((crossRightLimitComponent (I := I) (M := M)
       g r s i α P :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) with hAcomp_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) with hAcomp_def
   set Apart : TensorCompIdx (E := E) r s → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun P l => ((cutoffPartialLpLimit (I := I) (M := M)
       g r s i α P l :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) with hApart_def
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) with hApart_def
   set Sumcomp : ℝ≥0∞ :=
     ∑ P : TensorCompIdx (E := E) r s, eLpNorm (Acomp P) 2 μw with hSumcomp_def
   set Sumpart : ℝ≥0∞ :=

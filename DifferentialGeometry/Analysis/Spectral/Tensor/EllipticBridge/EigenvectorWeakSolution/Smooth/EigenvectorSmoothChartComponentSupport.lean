@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Differentiated.Defs
-import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSEpNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.Chart.WeightedLpBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponentBound.PouCutoffComponentBridge
 
 open DifferentialGeometry.Analysis.Spectral
@@ -21,6 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Sobolev.Chart
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -36,13 +37,13 @@ private lemma eigenvectorChartComponentFun_ae_eq_chartPushedPouWeight_mul_cutoff
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => chartPushedPouWeight (I := I) (M := M) α y *
         ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) := by
   exact tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
     (I := I) (M := M) g r s
     (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -54,7 +55,7 @@ theorem eigenvectorChartComponentFun_ae_zero_where_chartPushedPouWeight_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
-    ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       chartPushedPouWeight (I := I) (M := M) α y = 0 →
         eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α Q y = 0 := by
@@ -69,7 +70,7 @@ theorem eigenvectorChartComponentFun_ae_eq_zero_on_chartPushedPouWeight_zero
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
-      =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict
+      =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict
         {y : EuclN | chartPushedPouWeight (I := I) (M := M) α y = 0}]
       (fun _ : EuclN => (0 : ℝ)) := by
   classical
@@ -89,7 +90,7 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
 
 example (α : M) (Q : TensorCompIdx (E := E) r s) :
-    ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+    ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       chartPushedPouWeight (I := I) (M := M) α y = 0 →
         eigenvectorChartComponentFun (I := I) (M := M)
           g r s i α Q y = 0 :=
@@ -98,7 +99,7 @@ example (α : M) (Q : TensorCompIdx (E := E) r s) :
 
 example (α : M) (Q : TensorCompIdx (E := E) r s) :
     eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
-      =ᵐ[(chartL2Measure (I := I) (M := M) α).restrict
+      =ᵐ[(chartLebesgueMeasure (I := I) (M := M) α).restrict
         {y : EuclN | chartPushedPouWeight (I := I) (M := M) α y = 0}]
       (fun _ : EuclN => (0 : ℝ)) :=
   eigenvectorChartComponentFun_ae_eq_zero_on_chartPushedPouWeight_zero

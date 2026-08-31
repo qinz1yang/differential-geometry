@@ -28,6 +28,11 @@ def chartTargetEuclid (α : M) :
     Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
   toEuclidean '' (extChartAt I α).target
 
+def chartLebesgueMeasure (α : M) :
+    Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
+  (volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
+    (chartTargetEuclid (I := I) (M := M) α)
+
 def MemWkpChart [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) : Prop :=
   ∀ α : M,

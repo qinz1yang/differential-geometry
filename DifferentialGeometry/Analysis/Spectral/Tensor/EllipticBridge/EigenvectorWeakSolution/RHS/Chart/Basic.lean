@@ -51,46 +51,81 @@ def eigenvectorChartComponentFun
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             g r s) i) α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+open DifferentialGeometry.Analysis.Spectral in
+def eigenvectorChartCrossLeftContraction
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  fun y => ∑ P : TensorCompIdx (E := E) r (s + 1),
+    ∑ Q : TensorCompIdx (E := E) r (s + 1),
+      (covChartMetricGram (I := I) (M := M) g r (s + 1) α P Q y *
+          crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y) *
+        ((crossLeftLimitComponent (I := I) (M := M) g r s i α P :
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+open DifferentialGeometry.Analysis.Spectral in
+def eigenvectorChartCrossRightContraction
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  fun y => ∑ P : TensorCompIdx (E := E) r s,
+    ∑ Q : TensorCompIdx (E := E) r s,
+      (covChartMetricGram (I := I) (M := M) g r s α P Q y *
+          crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y) *
+        ((crossRightLimitComponent (I := I) (M := M) g r s i α P :
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
+
+open DifferentialGeometry.Analysis.Spectral in
+def eigenvectorChartWeightedDivergence
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  fun y => (1 / densityOnEuclid (I := I) g α y) *
+    ∑ l : Fin (Module.finrank ℝ E),
+      weightedGradCoeffDivLimit (I := I) (M := M) g r s i α P₀ l y
+
+open DifferentialGeometry.Analysis.Spectral in
+def eigenvectorChartCrossRightDivergence
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  fun y => (1 / densityOnEuclid (I := I) g α y) *
+    crossRightGradCoeffDivLimit (I := I) (M := M) g r s i α P₀ y
+
+open DifferentialGeometry.Analysis.Spectral in
+def eigenvectorChartRHSNumerator
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
+  eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀ -
+    eigenvectorChartCrossLeftContraction (I := I) (M := M) g r s i α P₀ +
+    eigenvectorChartCrossRightContraction (I := I) (M := M) g r s i α P₀ -
+    covPrincipalRotationCoeffLimit (I := I) (M := M) g r s i α P₀ -
+    covLowerOrderRotationValueCoeffLimit (I := I) (M := M) g r s i α P₀ +
+    eigenvectorChartWeightedDivergence (I := I) (M := M) g r s i α P₀ -
+    eigenvectorChartCrossRightDivergence (I := I) (M := M) g r s i α P₀
 
 open DifferentialGeometry.Analysis.Spectral in
 noncomputable def eigenvectorChartRHS
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
-  fun y =>
-    (i.fst.val)⁻¹ *
-      (
-        ((tensorL2ChartComponent (I := I) (M := M) g r s
-            (tensorResolventEigenbasisVec (I := I) (M := M)
-              (tensorResolventL2_isCompactOperator (I := I) (M := M)
-                g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
-        - (∑ P : TensorCompIdx (E := E) r (s + 1),
-            ∑ Q : TensorCompIdx (E := E) r (s + 1),
-              (covChartMetricGram (I := I) (M := M) g r (s + 1) α P Q y *
-                  crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y) *
-                ((crossLeftLimitComponent (I := I) (M := M)
-                  g r s i α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-        + (∑ P : TensorCompIdx (E := E) r s,
-            ∑ Q : TensorCompIdx (E := E) r s,
-              (covChartMetricGram (I := I) (M := M) g r s α P Q y *
-                  crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y) *
-                ((crossRightLimitComponent (I := I) (M := M)
-                  g r s i α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-        - covPrincipalRotationCoeffLimit (I := I) (M := M)
-            g r s i α P₀ y
-        - covLowerOrderRotationValueCoeffLimit (I := I) (M := M)
-            g r s i α P₀ y
-        + (1 / densityOnEuclid (I := I) g α y) *
-            (∑ l : Fin (Module.finrank ℝ E),
-              weightedGradCoeffDivLimit (I := I) (M := M)
-                g r s i α P₀ l y)
-        - (1 / densityOnEuclid (I := I) g α y) *
-            crossRightGradCoeffDivLimit (I := I) (M := M)
-              g r s i α P₀ y)
+  fun y => (i.fst.val)⁻¹ *
+    eigenvectorChartRHSNumerator (I := I) (M := M) g r s i α P₀ y
+
+open DifferentialGeometry.Analysis.Spectral in
+omit [CompleteSpace E] in
+lemma eigenvectorChartRHS_eq_eigenvalue_inv_smul_numerator
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (i : TensorEigenIdx (I := I) (M := M) g r s)
+    (α : M) (P₀ : TensorCompIdx (E := E) r s) :
+    eigenvectorChartRHS (I := I) (M := M) g r s i α P₀ =
+      (i.fst.val)⁻¹ •
+        eigenvectorChartRHSNumerator (I := I) (M := M) g r s i α P₀ := by
+  funext y
+  simp only [eigenvectorChartRHS, Pi.smul_apply, smul_eq_mul]
 
 omit [CompleteSpace E] in
 lemma crossRightGradCoeffDivLimit_eq_zero_off_chartPouKernel
@@ -155,7 +190,7 @@ theorem eigenvectorChartRHS_memLp_weighted
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) 2 μw := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2 μw := by
     rw [hμw_def]
     exact tensorL2ChartComponent_memLp_weighted (I := I) (M := M) g r s
       (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -167,7 +202,7 @@ theorem eigenvectorChartRHS_memLp_weighted
             crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y) *
           ((crossLeftLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) 2 μw := by
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2 μw := by
     intro P Q
     rw [hμw_def]
     have h_aezero :
@@ -176,7 +211,7 @@ theorem eigenvectorChartRHS_memLp_weighted
           y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
             ((crossLeftLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
       rw [crossLeftLimitComponent]
       exact tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid_weighted
         (I := I) (M := M) g r (s + 1)
@@ -197,7 +232,7 @@ theorem eigenvectorChartRHS_memLp_weighted
             crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y) *
           ((crossRightLimitComponent (I := I) (M := M)
             g r s i α P :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) 2 μw := by
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2 μw := by
     intro P Q
     rw [hμw_def]
     have h_aezero :
@@ -206,7 +241,7 @@ theorem eigenvectorChartRHS_memLp_weighted
           y ∉ cutoffChartKernelEuclid (I := I) (M := M) α →
             ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
       rw [crossRightLimitComponent]
       exact tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid_weighted
         (I := I) (M := M) g r s
@@ -294,7 +329,7 @@ theorem eigenvectorChartRHS_memLp_weighted
               crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y) *
             ((crossLeftLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       2 μw :=
     memLp_finsetSum (μ := μw)
       (Finset.univ : Finset (TensorCompIdx (E := E) r (s + 1)))
@@ -308,7 +343,7 @@ theorem eigenvectorChartRHS_memLp_weighted
               crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y) *
             ((crossRightLimitComponent (I := I) (M := M)
               g r s i α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       2 μw :=
     memLp_finsetSum (μ := μw)
       (Finset.univ : Finset (TensorCompIdx (E := E) r s))
@@ -324,7 +359,10 @@ theorem eigenvectorChartRHS_memLp_weighted
     have h_assembled := h_bracket.const_mul (i.fst.val)⁻¹
     refine h_assembled.ae_eq ?_
     refine Filter.Eventually.of_forall (fun y => ?_)
-    simp only [eigenvectorChartRHS, Pi.add_apply, Pi.sub_apply]
+    simp only [eigenvectorChartRHS, eigenvectorChartRHSNumerator,
+      eigenvectorChartComponentFun, eigenvectorChartCrossLeftContraction,
+      eigenvectorChartCrossRightContraction, eigenvectorChartWeightedDivergence,
+      eigenvectorChartCrossRightDivergence, Pi.add_apply, Pi.sub_apply]
   rw [hμw_def] at h_total
   exact h_total
 

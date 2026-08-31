@@ -246,12 +246,12 @@ lemma partialLpLimit_ae_zero_off_chartPouKernel_weighted
         (chartTargetEuclid (I := I) (M := M) α)),
       y ∉ chartPouKernel (I := I) (M := M) α →
         ((partialLpLimit (I := I) (M := M) g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
   classical
   have h_smul : (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => i.fst.val •
         eigenvectorChartWeakPartial (I := I) (M := M)
           g r s i α P k y) := by
@@ -285,7 +285,7 @@ lemma partialLpLimit_ae_zero_off_chartPouKernel_weighted
       g α).ae_le h_weak_impl
   have h_smul_w : (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
       =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       (fun y => i.fst.val •
@@ -303,18 +303,18 @@ lemma partialLpLimit_memLp_weighted
     (k : Fin (Module.finrank ℝ E)) :
     MemLp (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   have h_plain : MemLp (fun y => ((partialLpLimit (I := I) (M := M)
       g r s i α P k :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
-      (chartL2Measure (I := I) (M := M) α) := Lp.memLp _
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
+      (chartLebesgueMeasure (I := I) (M := M) α) := Lp.memLp _
   have h_smul : (fun y => ((partialLpLimit (I := I) (M := M)
         g r s i α P k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      =ᵐ[chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y => i.fst.val •
         eigenvectorChartWeakPartial (I := I) (M := M)
           g r s i α P k y) := by
@@ -339,10 +339,10 @@ lemma partialLpLimit_memLp_weighted
       rw [Set.sdiff_eq, Set.inter_comm]
     rw [h_inter]
     filter_upwards [h_weak_sdiff] with y hy using hy
-  have h_atom_zero : ∀ᵐ y ∂(chartL2Measure (I := I) (M := M) α),
+  have h_atom_zero : ∀ᵐ y ∂(chartLebesgueMeasure (I := I) (M := M) α),
       y ∉ chartPouKernel (I := I) (M := M) α →
         ((partialLpLimit (I := I) (M := M) g r s i α P k :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y = 0 := by
     filter_upwards [h_smul, h_weak_impl] with y hy hy_zero hyK
     rw [hy, smul_eq_mul, hy_zero hyK, mul_zero]
   exact memLp_chartPulledWeightedMeasure_of_memLp_volume_of_ae_zero_off_compact
@@ -366,13 +366,13 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
                 ∑ k : Fin (Module.finrank ℝ E),
                   eLpNorm ((partialLpLimit (I := I) (M := M)
                       g r s i α P k :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                     ((chartPulledWeightedMeasure (I := I) g α).restrict
                       (chartTargetEuclid (I := I) (M := M) α)))
               + (∑ p : TensorCompIdx (E := E) r s,
                   eLpNorm ((componentLpLimit (I := I) (M := M)
                       g r s i α p :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                     ((chartPulledWeightedMeasure (I := I) g α).restrict
                       (chartTargetEuclid (I := I) (M := M) α)))) := by
   classical
@@ -409,11 +409,11 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
   set partAtom : (TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E))
       → EuclN → ℝ := fun pk y =>
     ((partialLpLimit (I := I) (M := M) g r s i α pk.1 pk.2 :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hpartAtom_def
   set compAtom : TensorCompIdx (E := E) r s → EuclN → ℝ := fun p y =>
     ((componentLpLimit (I := I) (M := M) g r s i α p :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hcompAtom_def
   set Fpart : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) → EuclN → ℝ :=
@@ -422,7 +422,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
           (valuePartialFactor (I := I) (M := M)
             g r s α P₀ x.1 x.2.1 x.2.2.1 x.2.2.2) y *
         ((partialLpLimit (I := I) (M := M) g r s i α x.1 x.2.2.1 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFpart_def
   set Fcomp : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)
@@ -433,7 +433,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
             g r s α P₀ x.1 x.2.1 x.2.2.1 x.2.2.2.1 x.2.2.2.2) y *
         ((componentLpLimit (I := I) (M := M)
             g r s i α x.2.2.2.2 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFcomp_def
   have h_part_data : ∀ x : TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -560,7 +560,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
           ∑ k : Fin (Module.finrank ℝ E),
             eLpNorm ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
               μw := by
     rw [Fintype.sum_prod_type]
   set Cmax : ℝ := max
@@ -584,7 +584,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
           ∑ k : Fin (Module.finrank ℝ E),
             eLpNorm ((partialLpLimit (I := I) (M := M)
                 g r s i α P k :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
               μw := by
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
@@ -597,7 +597,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
         ∑ p : TensorCompIdx (E := E) r s,
           eLpNorm ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             μw := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal (le_max_right _ _)) _
@@ -659,13 +659,13 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
             ∑ k : Fin (Module.finrank ℝ E),
               eLpNorm ((partialLpLimit (I := I) (M := M)
                   g r s i α P k :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                 μw)
         + ENNReal.ofReal Cmax *
           (∑ p : TensorCompIdx (E := E) r s,
             eLpNorm ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
               μw) :=
         add_le_add hpart hcomp
     _ = ENNReal.ofReal Cmax *
@@ -673,12 +673,12 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
               ∑ k : Fin (Module.finrank ℝ E),
                 eLpNorm ((partialLpLimit (I := I) (M := M)
                     g r s i α P k :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                   μw)
             + (∑ p : TensorCompIdx (E := E) r s,
                 eLpNorm ((componentLpLimit (I := I) (M := M)
                     g r s i α p :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                   μw)) := by
       rw [mul_add]
 
@@ -696,14 +696,14 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
             ((∑ p : TensorCompIdx (E := E) r s,
                 eLpNorm ((componentLpLimit (I := I) (M := M)
                     g r s i α p :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                   ((chartPulledWeightedMeasure (I := I) g α).restrict
                     (chartTargetEuclid (I := I) (M := M) α)))
               + (∑ p : TensorCompIdx (E := E) r s,
                   ∑ l' : Fin (Module.finrank ℝ E),
                     eLpNorm ((partialLpLimit (I := I) (M := M)
                         g r s i α p l' :
-                      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                       EuclN → ℝ) 2
                       ((chartPulledWeightedMeasure (I := I) g α).restrict
                         (chartTargetEuclid (I := I) (M := M) α)))) := by
@@ -738,12 +738,12 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
       (by positivity)) (le_max_left _ _), fun i => ?_⟩
   set compAtom : TensorCompIdx (E := E) r s → EuclN → ℝ := fun p y =>
     ((componentLpLimit (I := I) (M := M) g r s i α p :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hcompAtom_def
   set partAtom : (TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E))
       → EuclN → ℝ := fun pl y =>
     ((partialLpLimit (I := I) (M := M) g r s i α pl.1 pl.2 :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hpartAtom_def
   set Fcomp : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s) → EuclN → ℝ :=
@@ -754,7 +754,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
               g r s α P₀ l x.1 x.2.1 x.2.2.1 x.2.2.2)) y *
         ((componentLpLimit (I := I) (M := M)
             g r s i α x.2.2.2 :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFcomp_def
   set Fpart : (TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s) → EuclN → ℝ :=
@@ -764,7 +764,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
             g r s α P₀ l x.1 x.2.1 x.2.2.1 x.2.2.2) y *
         ((partialLpLimit (I := I) (M := M)
             g r s i α x.2.2.2 l :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hFpart_def
   have h_comp_data : ∀ x : TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
       × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,
@@ -885,7 +885,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
           ∑ l' : Fin (Module.finrank ℝ E),
             eLpNorm ((partialLpLimit (I := I) (M := M)
                 g r s i α p l' :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
               μw := by
     rw [Fintype.sum_prod_type]
   set Cmax : ℝ := max
@@ -907,7 +907,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
         ∑ p : TensorCompIdx (E := E) r s,
           eLpNorm ((componentLpLimit (I := I) (M := M)
               g r s i α p :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
             μw := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal (le_max_left _ _)) _
@@ -919,7 +919,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
           ∑ l' : Fin (Module.finrank ℝ E),
             eLpNorm ((partialLpLimit (I := I) (M := M)
                 g r s i α p l' :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
               μw := by
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
@@ -979,27 +979,27 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
           (∑ p : TensorCompIdx (E := E) r s,
             eLpNorm ((componentLpLimit (I := I) (M := M)
                 g r s i α p :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
               μw)
         + ENNReal.ofReal Cmax *
           (∑ p : TensorCompIdx (E := E) r s,
             ∑ l' : Fin (Module.finrank ℝ E),
               eLpNorm ((partialLpLimit (I := I) (M := M)
                   g r s i α p l' :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                 μw) :=
         add_le_add hcomp hpart
     _ = ENNReal.ofReal Cmax *
           ((∑ p : TensorCompIdx (E := E) r s,
               eLpNorm ((componentLpLimit (I := I) (M := M)
                   g r s i α p :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) 2
                 μw)
             + (∑ p : TensorCompIdx (E := E) r s,
                 ∑ l' : Fin (Module.finrank ℝ E),
                   eLpNorm ((partialLpLimit (I := I) (M := M)
                       g r s i α p l' :
-                    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+                    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
                     EuclN → ℝ) 2 μw)) := by
       rw [mul_add]
 

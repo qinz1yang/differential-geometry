@@ -82,7 +82,7 @@ def eigenvectorCutoffChartWeakPartial
     (k : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   (eigenvectorCutoffChartPartialLp (I := I) (M := M)
       g r s i α P₀ k :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α))
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α))
 
 open DifferentialGeometry.Analysis.Spectral in
 private lemma cutoff_smoothApprox_smul_coe_tendsto
@@ -143,8 +143,8 @@ lemma eigenvectorCutoffChartComponentL2_approx_coeFn
         ((i.fst.val)⁻¹ •
           (((eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) : TensorL2 r s g)) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       fun y => (i.fst.val)⁻¹ •
         cutoffComponentEuclid (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
@@ -179,8 +179,8 @@ lemma eigenvectorCutoffChartPartialLp_approx_coeFn
           (smoothToTensorH1Compl (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n)) :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       fun y => (i.fst.val)⁻¹ •
         chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M) g r s
@@ -212,12 +212,12 @@ private lemma eigenvectorCutoffChartWeakPartial_approx_hasWeakPartialDeriv
             (smoothToTensorH1Compl (I := I) (M := M) g r s
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n)) :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
       ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           ((i.fst.val)⁻¹ •
             (((eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor) : TensorL2 r s g)) α P₀ :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   have h_w1p :
@@ -297,14 +297,14 @@ private lemma eigenvectorCutoffChartComponent_eLpNorm_tendsto
             ((i.fst.val)⁻¹ •
               (((eigenvectorSmoothApprox (I := I) (M := M)
                   g r s i n).toCcTensor) : TensorL2 r s g)) α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) -
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) -
           ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i)
             α P₀ :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)) 2
-        (chartL2Measure (I := I) (M := M) α))
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)) 2
+        (chartLebesgueMeasure (I := I) (M := M) α))
       atTop (𝓝 0) := by
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
   exact (MeasureTheory.Lp.tendsto_Lp_iff_tendsto_eLpNorm'
@@ -331,11 +331,11 @@ private lemma eigenvectorCutoffChartPartial_eLpNorm_tendsto
               (smoothToTensorH1Compl (I := I) (M := M) g r s
                 (eigenvectorSmoothApprox (I := I) (M := M)
                   g r s i n)) :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) -
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) -
           ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
             g r s i α P₀ k :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)) 2
-        (chartL2Measure (I := I) (M := M) α))
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)) 2
+        (chartLebesgueMeasure (I := I) (M := M) α))
       atTop (𝓝 0) :=
   (MeasureTheory.Lp.tendsto_Lp_iff_tendsto_eLpNorm'
     (fun n => (i.fst.val)⁻¹ •
@@ -357,12 +357,12 @@ theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
       ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
           g r s i α P₀ k :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
       ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -371,7 +371,7 @@ theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
         ((i.fst.val)⁻¹ •
           (((eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor) : TensorL2 r s g)) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
     with huApprox_def
   set gApprox : ℕ → EuclN → ℝ := fun n =>
     (((i.fst.val)⁻¹ •
@@ -379,19 +379,19 @@ theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
           (smoothToTensorH1Compl (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n)) :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
     with hgApprox_def
   set uLim : EuclN → ℝ :=
     ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
         (tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           i) α P₀ :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
     with huLim_def
   set gLim : EuclN → ℝ :=
     ((eigenvectorCutoffChartPartialLp (I := I) (M := M)
         g r s i α P₀ k :
-      Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+      Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
     with hgLim_def
   have hu_n_memLp : ∀ n, MemLp (uApprox n) 2
       ((volume : Measure EuclN).restrict
@@ -466,12 +466,12 @@ theorem eigenvectorCutoffChartWeakPartial_locally_memLp
   let _ := hK
   have h_memLp : MemLp (eigenvectorCutoffChartWeakPartial
       (I := I) (M := M) g r s i α P₀ k) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
     rw [eigenvectorCutoffChartWeakPartial]
     exact Lp.memLp _
   have h_le : (volume : Measure EuclN).restrict K ≤
-      chartL2Measure (I := I) (M := M) α := by
-    rw [chartL2Measure]
+      chartLebesgueMeasure (I := I) (M := M) α := by
+    rw [chartLebesgueMeasure]
     exact Measure.restrict_mono hK_in (le_refl _)
   exact h_memLp.mono_measure h_le
 

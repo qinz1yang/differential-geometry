@@ -216,14 +216,14 @@ private lemma tensorChartComponent_aeEq_tensorL2ChartComponent
         (volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)]
       ((tensorL2ChartComponent (I := I) (M := M) g r s
           (T : TensorL2 r s g) α Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) :=
   (tensorL2ChartComponent_smoothToTensorL2_coeFn
     (I := I) (M := M) g r s T α Q).symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private lemma chartL2Measure_eq_volume_restrict (α : M) :
-    chartL2Measure (I := I) (M := M) α =
+private lemma chartLebesgueMeasure_eq_volume_restrict (α : M) :
+    chartLebesgueMeasure (I := I) (M := M) α =
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α) := rfl
 
@@ -244,7 +244,7 @@ private lemma chartPull_integrand_aeEq_abstract
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
             ((tensorL2ChartComponent (I := I) (M := M) g r s
                 (T : TensorL2 r s g) α Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
               y)) := by
   classical
   have hae : ∀ Q : CompIdx E r s,
@@ -253,7 +253,7 @@ private lemma chartPull_integrand_aeEq_abstract
             (chartTargetEuclid (I := I) (M := M) α)]
         ((tensorL2ChartComponent (I := I) (M := M) g r s
             (T : TensorL2 r s g) α Q :
-            Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) :=
+            Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) :=
     fun Q => tensorChartComponent_aeEq_tensorL2ChartComponent
       (I := I) (M := M) g r s T α Q
   have hall : ∀ᵐ y ∂((volume : Measure EuclN).restrict
@@ -262,7 +262,7 @@ private lemma chartPull_integrand_aeEq_abstract
         tensorChartComponent (I := I) (M := M) g r s T α Q.1 Q.2 y =
           ((tensorL2ChartComponent (I := I) (M := M) g r s
               (T : TensorL2 r s g) α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y := by
     rw [MeasureTheory.ae_all_iff]
     exact hae
   filter_upwards [hall] with y hy
@@ -284,7 +284,7 @@ private lemma tensorL2Inner_pouSmul_smooth_chart_pull
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s
                   (T : TensorL2 r s g) α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
                 y)
         ∂(volume : Measure EuclN) := by
   classical
@@ -425,9 +425,9 @@ private lemma chartPullCoeff_memLp
     (Sg : SmoothCcTensor g r s) (Q : CompIdx E r s)
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
     MemLp (chartPullCoeff (I := I) (M := M) g r s α Sg Q) 2
-      (chartL2Measure (I := I) (M := M) α) := by
-  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
-    rw [chartL2Measure_eq_volume_restrict (I := I) (M := M) α]
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartLebesgueMeasure (I := I) (M := M) α) := by
+    rw [chartLebesgueMeasure_eq_volume_restrict (I := I) (M := M) α]
     infer_instance
   exact (chartPullCoeff_continuous (I := I) (M := M) g r s α Sg Q
       hSg).memLp_of_hasCompactSupport
@@ -437,7 +437,7 @@ private noncomputable def chartPullCoeffLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg : SmoothCcTensor g r s) (Q : CompIdx E r s)
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (chartPullCoeff_memLp (I := I) (M := M) g r s α Sg Q hSg).toLp _
 
 omit [CompleteSpace E] in
@@ -446,16 +446,16 @@ private lemma inner_chartPullCoeffLp_eq_integral
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg : SmoothCcTensor g r s) (Q : CompIdx E r s)
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source)
-    (w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     (⟪chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg, w⟫_ℝ : ℝ) =
       ∫ y, chartPullCoeff (I := I) (M := M) g r s α Sg Q y * (w : EuclN → ℝ) y
-        ∂(chartL2Measure (I := I) (M := M) α) := by
+        ∂(chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   rw [MeasureTheory.L2.inner_def]
   refine MeasureTheory.integral_congr_ae ?_
   have hcoe : ((chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       chartPullCoeff (I := I) (M := M) g r s α Sg Q := by
     unfold chartPullCoeffLp
     exact MemLp.coeFn_toLp _
@@ -475,7 +475,7 @@ private lemma continuous_chartPullCoeff_pairing
   have hfun : (fun u : TensorL2 r s g =>
       (⟪chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg,
           tensorL2ChartComponent (I := I) (M := M) g r s u α Q⟫_ℝ : ℝ)) =
-      (fun w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) =>
+      (fun w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) =>
         (⟪chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg, w⟫_ℝ : ℝ)) ∘
         (fun u : TensorL2 r s g =>
           tensorL2ChartComponentCLM (I := I) (M := M) g r s α Q u) := by
@@ -497,24 +497,24 @@ private lemma chartPull_integrand_eq_coeff_mul
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
             ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) =
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) =
       ∑ Q : CompIdx E r s,
         chartPullCoeff (I := I) (M := M) g r s α Sg Q y *
           ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y := by
   classical
   have hlhs : densityOnEuclid (I := I) g α y *
         (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
             ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) =
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) =
       ∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
         (densityOnEuclid (I := I) g α y *
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y) *
           ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl (fun P _ => ?_)
     rw [Finset.mul_sum]
@@ -523,13 +523,13 @@ private lemma chartPull_integrand_eq_coeff_mul
   have hrhs : (∑ Q : CompIdx E r s,
         chartPullCoeff (I := I) (M := M) g r s α Sg Q y *
           ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) =
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) =
       ∑ Q : CompIdx E r s, ∑ P : CompIdx E r s,
         (densityOnEuclid (I := I) g α y *
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α P y) *
           ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y := by
     refine Finset.sum_congr rfl (fun Q _ => ?_)
     unfold chartPullCoeff
     rw [Finset.sum_mul]
@@ -544,16 +544,16 @@ private lemma chartPull_summand_integrable
     Integrable (fun y : EuclN =>
         chartPullCoeff (I := I) (M := M) g r s α Sg Q y *
           ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      (chartL2Measure (I := I) (M := M) α) := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hcoeff : MemLp (chartPullCoeff (I := I) (M := M) g r s α Sg Q) 2
-      (chartL2Measure (I := I) (M := M) α) :=
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
     chartPullCoeff_memLp (I := I) (M := M) g r s α Sg Q hSg
   have hcomp : MemLp
       (((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-          Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)) 2
-      (chartL2Measure (I := I) (M := M) α) :=
+          Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)) 2
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
     Lp.memLp _
   have hint := MemLp.integrable_mul hcoeff hcomp
   exact hint
@@ -570,7 +570,7 @@ private lemma chartPull_integral_eq_sum_inner
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         ∂(volume : Measure EuclN) =
       ∑ Q : CompIdx E r s,
         (⟪chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg,
@@ -582,7 +582,7 @@ private lemma chartPull_integral_eq_sum_inner
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         ∂(volume : Measure EuclN)) =
       ∫ y,
         densityOnEuclid (I := I) g α y *
@@ -590,20 +590,20 @@ private lemma chartPull_integral_eq_sum_inner
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-        ∂(chartL2Measure (I := I) (M := M) α) from rfl]
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+        ∂(chartLebesgueMeasure (I := I) (M := M) α) from rfl]
   rw [show (fun y : EuclN =>
         densityOnEuclid (I := I) g α y *
           (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)) =
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)) =
       (fun y : EuclN =>
         ∑ Q : CompIdx E r s,
           chartPullCoeff (I := I) (M := M) g r s α Sg Q y *
             ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
     funext y
     exact chartPull_integrand_eq_coeff_mul (I := I) (M := M) g r s α Sg u y]
   rw [MeasureTheory.integral_finsetSum (Finset.univ : Finset (CompIdx E r s))
@@ -693,7 +693,7 @@ theorem tensorL2Inner_pouSmul_tensorL2ChartComponent_pull
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         ∂(volume : Measure EuclN) := by
   classical
   have hfun := headline_fun_eq (I := I) (M := M) g r s α Sg hSg
@@ -726,7 +726,7 @@ example (u : TensorL2 r s g) (Sg : SmoothCcTensor g r s) (α : M)
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α P y *
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
         ∂(volume : Measure EuclN) :=
   tensorL2Inner_pouSmul_tensorL2ChartComponent_pull
     (I := I) (M := M) g r s α u Sg hSg
