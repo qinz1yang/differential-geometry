@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
+import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
 import Mathlib.Geometry.Manifold.Instances.Quotient
 import Mathlib.GroupTheory.OrderOfElement
 
@@ -177,6 +178,28 @@ theorem roundThreeCylinderShrinkerPotential_affine_line_preserving_iff
   · rintro ⟨hepsilon, rfl⟩ s
     rcases hepsilon with rfl | rfl <;>
       simp [roundThreeCylinderShrinkerPotential_apply]
+
+variable {Γ : Type*}
+
+theorem finite_of_properlyDiscontinuousSMul_of_roundThreeCylinderShrinkerPotential_invariant
+    [SMul Γ (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)]
+    [ProperlyDiscontinuousSMul Γ
+      (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)]
+    (hpotential : ∀ (γ : Γ) x,
+      roundThreeCylinderShrinkerPotential (γ • x) =
+        roundThreeCylinderShrinkerPotential x) :
+    Finite Γ := by
+  apply ProperlyDiscontinuousSMul.finite_of_isCompact_mapsTo
+    (Γ := Γ)
+    (T := Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real)
+    (K := roundThreeCylinderCentralSlice)
+    isCompact_roundThreeCylinderCentralSlice
+  · refine ⟨(⟨EuclideanSpace.single 0 1, ?_⟩, (0 : Real)), rfl⟩
+    simp [PiLp.norm_single]
+  · intro γ x hx
+    rw [← roundThreeCylinderShrinkerPotential_eq_one_iff] at hx ⊢
+    rw [hpotential γ x]
+    exact hx
 
 private theorem roundTwoSphereAntipodalDiffeomorph_pullbackMetric :
     Diffeomorph.pullbackMetric roundTwoSphereShrinkerMetric
