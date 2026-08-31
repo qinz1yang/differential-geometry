@@ -185,6 +185,122 @@ variable [VectorBundle 𝕜 F₁ V₁] [ContMDiffVectorBundle n F₁ V₁ I]
 variable [VectorBundle 𝕜 F₂ V₂] [ContMDiffVectorBundle n F₂ V₂ I]
 variable [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul 𝕜 (V₂ x)]
 
+theorem exists_kernel_frameOn
+    (A : ∀ x, V₁ x →L[𝕜] V₂ x)
+    (W : Set M) (hW : IsOpen W)
+    (hA : ContMDiffOn I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
+      (fun x => TotalSpace.mk' (F₁ →L[𝕜] F₂) x (A x)) W)
+    (k : ℕ) (hker : ∀ x ∈ W, finrank 𝕜 (A x).ker = k)
+    (x₀ : M) (hx₀ : x₀ ∈ W) :
+    ∃ (U : Set M) (s : Fin k → (x : M) → V₁ x),
+      IsOpen U ∧ x₀ ∈ U ∧ U ⊆ W ∧
+        IsSubbundleFrameOn (I := I) (F := F₁) (n := n)
+          (fun x => (A x).ker) s U := by
+  let e₁ := trivializationAt F₁ V₁ x₀
+  let e₂ := trivializationAt F₂ V₂ x₀
+  let eA := e₁.continuousLinearMap (RingHom.id 𝕜) e₂
+  let W' : Set M := W ∩ (e₁.baseSet ∩ e₂.baseSet)
+  let a : M → F₁ →L[𝕜] F₂ := fun x =>
+    (eA (TotalSpace.mk' (F₁ →L[𝕜] F₂) x (A x))).2
+  have hW' : IsOpen W' := hW.inter (e₁.open_baseSet.inter e₂.open_baseSet)
+  have hx₀W' : x₀ ∈ W' := ⟨hx₀, mem_baseSet_trivializationAt F₁ V₁ x₀,
+    mem_baseSet_trivializationAt F₂ V₂ x₀⟩
+  have hmaps : MapsTo
+      (fun x => TotalSpace.mk' (F₁ →L[𝕜] F₂) x (A x)) W' eA.source := by
+    intro x hx
+    rw [eA.source_eq]
+    change x ∈ eA.baseSet
+    simpa [eA, W'] using hx.2
+  have ha : ContMDiffOn I 𝓘(𝕜, F₁ →L[𝕜] F₂) n a W' := by
+    exact ((eA.contMDiffOn_iff hmaps).mp (hA.mono inter_subset_left)).2
+  have hker_a : ∀ x ∈ W', finrank 𝕜 (a x).ker = k := by
+    intro x hx
+    let ex₁ : V₁ x ≃ₗ[𝕜] F₁ := e₁.linearEquivAt (R := 𝕜) x hx.2.1
+    let ex₂ : V₂ x ≃ₗ[𝕜] F₂ := e₂.linearEquivAt (R := 𝕜) x hx.2.2
+    have ha_apply (v : F₁) : a x v = ex₂ (A x (ex₁.symm v)) := by
+      change (e₂.linearMapAt 𝕜 x) (A x (e₁.symmL 𝕜 x v)) =
+        ex₂ (A x (ex₁.symm v))
+      dsimp only [ex₁, ex₂]
+      rw [e₂.linearMapAt_def_of_mem hx.2.2, e₁.symmL_apply hx.2.1]
+      change (e₂.linearEquivAt 𝕜 x hx.2.2)
+        (A x ((e₁.linearEquivAt 𝕜 x hx.2.1).symm v)) = _
+      rfl
+    have hker_eq : (a x).ker = Submodule.map ex₁.toLinearMap (A x).ker := by
+      ext v
+      constructor
+      · intro hv
+        rw [Submodule.mem_map]
+        refine ⟨ex₁.symm v, ?_, ex₁.apply_symm_apply v⟩
+        change A x (ex₁.symm v) = 0
+        apply ex₂.injective
+        simpa [ha_apply] using hv
+      · rintro ⟨v, hv, rfl⟩
+        change a x (ex₁ v) = 0
+        rw [ha_apply]
+        simpa using congr_arg ex₂ hv
+    rw [hker_eq, LinearEquiv.finrank_map_eq, hker x hx.1]
+  obtain ⟨U, t, hU, hx₀U, hUW', htli, htspan, ht⟩ :=
+    exists_kernel_frame a W' hW' ha k hker_a x₀ hx₀W'
+  let s : Fin k → (x : M) → V₁ x := fun i x => e₁.symmL 𝕜 x (t i x)
+  refine ⟨U, s, hU, hx₀U, fun _ hx => (hUW' hx).1, ?_⟩
+  have hUe₁ : U ⊆ e₁.baseSet := fun _ hx => (hUW' hx).2.1
+  have hcoord_ker (x : M) (hx : x ∈ W') (v : F₁) :
+      a x v = 0 ↔ A x (e₁.symmL 𝕜 x v) = 0 := by
+    let ex₂ : V₂ x ≃ₗ[𝕜] F₂ := e₂.linearEquivAt (R := 𝕜) x hx.2.2
+    have ha_apply : a x v = ex₂ (A x (e₁.symmL 𝕜 x v)) := by
+      change (e₂.linearMapAt 𝕜 x) (A x (e₁.symmL 𝕜 x v)) =
+        ex₂ (A x (e₁.symmL 𝕜 x v))
+      dsimp only [ex₂]
+      rw [e₂.linearMapAt_def_of_mem hx.2.2]
+      change (e₂.linearEquivAt 𝕜 x hx.2.2) (A x (e₁.symmL 𝕜 x v)) = _
+      rfl
+    constructor
+    · intro hv
+      apply ex₂.injective
+      simpa [ha_apply] using hv
+    · intro hv
+      rw [ha_apply]
+      simpa using congr_arg ex₂ hv
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    let ex₁ : V₁ x ≃ₗ[𝕜] F₁ := e₁.linearEquivAt (R := 𝕜) x (hUe₁ hx)
+    apply LinearIndependent.of_comp ex₁.toLinearMap
+    have hs : (⇑ex₁.toLinearMap ∘ (s · x)) = (t · x) := by
+      funext i
+      change ex₁ (e₁.symmL 𝕜 x (t i x)) = t i x
+      rw [e₁.symmL_apply (hUe₁ hx)]
+      exact ex₁.apply_symm_apply (t i x)
+    rw [hs]
+    exact htli x hx
+  · intro x hx
+    let ex₁ : V₁ x ≃ₗ[𝕜] F₁ := e₁.linearEquivAt (R := 𝕜) x (hUe₁ hx)
+    let _ : FiniteDimensional 𝕜 (V₁ x) :=
+      FiniteDimensional.of_injective ex₁.toLinearMap ex₁.injective
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rw [Submodule.span_le]
+      rintro v ⟨i, rfl⟩
+      change A x (s i x) = 0
+      apply (hcoord_ker x (hUW' hx) (t i x)).mp
+      have htmem : t i x ∈ (a x).ker := by
+        rw [← htspan x hx]
+        exact Submodule.subset_span (Set.mem_range_self i)
+      exact htmem
+    · rw [hker x (hUW' hx).1]
+      have hsli : LinearIndependent 𝕜 (s · x) := by
+        apply LinearIndependent.of_comp ex₁.toLinearMap
+        have hs : (⇑ex₁.toLinearMap ∘ (s · x)) = (t · x) := by
+          funext i
+          change ex₁ (e₁.symmL 𝕜 x (t i x)) = t i x
+          rw [e₁.symmL_apply (hUe₁ hx)]
+          exact ex₁.apply_symm_apply (t i x)
+        rw [hs]
+        exact htli x hx
+      simpa using finrank_span_eq_card hsli
+  · intro i
+    apply (e₁.contMDiffOn_section_iff hU hUe₁).mpr
+    exact (ht i).congr fun x hx => by
+      simp [s, e₁.symmL_apply, hUe₁ hx]
+
 def kernel
     (A : ∀ x, V₁ x →L[𝕜] V₂ x)
     (hA : ContMDiff I (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₂)) n
@@ -194,109 +310,10 @@ def kernel
   fiber x := (A x).ker
   rank := k
   exists_isSubbundleFrameOn x₀ := by
-    let e₁ := trivializationAt F₁ V₁ x₀
-    let e₂ := trivializationAt F₂ V₂ x₀
-    let eA := e₁.continuousLinearMap (RingHom.id 𝕜) e₂
-    let W : Set M := e₁.baseSet ∩ e₂.baseSet
-    let a : M → F₁ →L[𝕜] F₂ := fun x =>
-      (eA (TotalSpace.mk' (F₁ →L[𝕜] F₂) x (A x))).2
-    have hW : IsOpen W := e₁.open_baseSet.inter e₂.open_baseSet
-    have hx₀W : x₀ ∈ W := ⟨mem_baseSet_trivializationAt F₁ V₁ x₀,
-      mem_baseSet_trivializationAt F₂ V₂ x₀⟩
-    have hmaps : MapsTo (fun x => TotalSpace.mk' (F₁ →L[𝕜] F₂) x (A x)) W eA.source := by
-      intro x hx
-      rw [eA.source_eq]
-      change x ∈ eA.baseSet
-      simpa [eA, W] using hx
-    have ha : ContMDiffOn I 𝓘(𝕜, F₁ →L[𝕜] F₂) n a W := by
-      exact ((eA.contMDiffOn_iff hmaps).mp hA.contMDiffOn).2
-    have hker_a : ∀ x ∈ W, finrank 𝕜 (a x).ker = k := by
-      intro x hx
-      let ex₁ : V₁ x ≃ₗ[𝕜] F₁ := e₁.linearEquivAt (R := 𝕜) x hx.1
-      let ex₂ : V₂ x ≃ₗ[𝕜] F₂ := e₂.linearEquivAt (R := 𝕜) x hx.2
-      have ha_apply (v : F₁) : a x v = ex₂ (A x (ex₁.symm v)) := by
-        change (e₂.linearMapAt 𝕜 x) (A x (e₁.symmL 𝕜 x v)) =
-          ex₂ (A x (ex₁.symm v))
-        dsimp only [ex₁, ex₂]
-        rw [e₂.linearMapAt_def_of_mem hx.2, e₁.symmL_apply hx.1]
-        change (e₂.linearEquivAt 𝕜 x hx.2)
-          (A x ((e₁.linearEquivAt 𝕜 x hx.1).symm v)) = _
-        rfl
-      have hker_eq : (a x).ker = Submodule.map ex₁.toLinearMap (A x).ker := by
-        ext v
-        constructor
-        · intro hv
-          rw [Submodule.mem_map]
-          refine ⟨ex₁.symm v, ?_, ex₁.apply_symm_apply v⟩
-          change A x (ex₁.symm v) = 0
-          apply ex₂.injective
-          simpa [ha_apply] using hv
-        · rintro ⟨v, hv, rfl⟩
-          change a x (ex₁ v) = 0
-          rw [ha_apply]
-          simpa using congr_arg ex₂ hv
-      rw [hker_eq, LinearEquiv.finrank_map_eq, hker x]
-    obtain ⟨U, t, hU, hx₀U, hUW, htli, htspan, ht⟩ :=
-      exists_kernel_frame a W hW ha k hker_a x₀ hx₀W
-    let s : Fin k → (x : M) → V₁ x := fun i x => e₁.symmL 𝕜 x (t i x)
-    refine ⟨U, s, hU, hx₀U, ?_⟩
-    have hUe₁ : U ⊆ e₁.baseSet := fun _ hx => (hUW hx).1
-    have hcoord_ker (x : M) (hx : x ∈ W) (v : F₁) :
-        a x v = 0 ↔ A x (e₁.symmL 𝕜 x v) = 0 := by
-      let ex₂ : V₂ x ≃ₗ[𝕜] F₂ := e₂.linearEquivAt (R := 𝕜) x hx.2
-      have ha_apply : a x v = ex₂ (A x (e₁.symmL 𝕜 x v)) := by
-        change (e₂.linearMapAt 𝕜 x) (A x (e₁.symmL 𝕜 x v)) =
-          ex₂ (A x (e₁.symmL 𝕜 x v))
-        dsimp only [ex₂]
-        rw [e₂.linearMapAt_def_of_mem hx.2]
-        change (e₂.linearEquivAt 𝕜 x hx.2) (A x (e₁.symmL 𝕜 x v)) = _
-        rfl
-      constructor
-      · intro hv
-        apply ex₂.injective
-        simpa [ha_apply] using hv
-      · intro hv
-        rw [ha_apply]
-        simpa using congr_arg ex₂ hv
-    refine ⟨?_, ?_, ?_⟩
-    · intro x hx
-      let ex₁ : V₁ x ≃ₗ[𝕜] F₁ := e₁.linearEquivAt (R := 𝕜) x (hUe₁ hx)
-      apply LinearIndependent.of_comp ex₁.toLinearMap
-      have hs : (⇑ex₁.toLinearMap ∘ (s · x)) = (t · x) := by
-        funext i
-        change ex₁ (e₁.symmL 𝕜 x (t i x)) = t i x
-        rw [e₁.symmL_apply (hUe₁ hx)]
-        exact ex₁.apply_symm_apply (t i x)
-      rw [hs]
-      exact htli x hx
-    · intro x hx
-      let ex₁ : V₁ x ≃ₗ[𝕜] F₁ := e₁.linearEquivAt (R := 𝕜) x (hUe₁ hx)
-      let _ : FiniteDimensional 𝕜 (V₁ x) :=
-        FiniteDimensional.of_injective ex₁.toLinearMap ex₁.injective
-      apply Submodule.eq_of_le_of_finrank_eq
-      · rw [Submodule.span_le]
-        rintro v ⟨i, rfl⟩
-        change A x (s i x) = 0
-        apply (hcoord_ker x (hUW hx) (t i x)).mp
-        have htmem : t i x ∈ (a x).ker := by
-          rw [← htspan x hx]
-          exact Submodule.subset_span (Set.mem_range_self i)
-        exact htmem
-      · rw [hker x]
-        have hsli : LinearIndependent 𝕜 (s · x) := by
-          apply LinearIndependent.of_comp ex₁.toLinearMap
-          have hs : (⇑ex₁.toLinearMap ∘ (s · x)) = (t · x) := by
-            funext i
-            change ex₁ (e₁.symmL 𝕜 x (t i x)) = t i x
-            rw [e₁.symmL_apply (hUe₁ hx)]
-            exact ex₁.apply_symm_apply (t i x)
-          rw [hs]
-          exact htli x hx
-        simpa using finrank_span_eq_card hsli
-    · intro i
-      apply (e₁.contMDiffOn_section_iff hU hUe₁).mpr
-      exact (ht i).congr fun x hx => by
-        simp [s, e₁.symmL_apply, hUe₁ hx]
+    obtain ⟨U, s, hU, hx₀U, _, hs⟩ :=
+      exists_kernel_frameOn A Set.univ isOpen_univ hA.contMDiffOn
+        k (fun x _ => hker x) x₀ (Set.mem_univ x₀)
+    exact ⟨U, s, hU, hx₀U, hs⟩
 
 @[simp]
 theorem kernel_fiber
