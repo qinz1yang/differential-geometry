@@ -25,6 +25,7 @@ private abbrev I_half (n : ℕ) [NeZero n] :
   modelWithCornersEuclideanHalfSpace n
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+open DifferentialGeometry.Integral.Measure
 
 def dirichletHsOneEquivH1Compl
     (g : SmoothRiemannianMetric (I_half n) M) :
@@ -149,6 +150,65 @@ theorem dirichletBilinearFormToHs_norm_le
       B.le_opNorm _
     _ = ‖B‖ * ‖u‖ := by
       rw [(dirichletHsOneEquivH1Compl g).norm_map]
+
+def dirichletL2BilinearFormToHs
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (B : Lp ℝ 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
+      H1ComplDirichlet g →L[ℝ] ℝ) :
+    dirichletHs g 0 →L[ℝ] dirichletHs g (-1) :=
+  (dirichletHsNegOneEquivH1Dual g).symm.toContinuousLinearMap.comp
+    (B.comp
+      (dirichletHsZeroEquivL2 g).toContinuousLinearEquiv.toContinuousLinearMap)
+
+@[simp] theorem dirichletL2BilinearFormToHs_apply
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (B : Lp ℝ 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
+      H1ComplDirichlet g →L[ℝ] ℝ)
+    (u : dirichletHs g 0) :
+    dirichletL2BilinearFormToHs g B u =
+      (dirichletHsNegOneEquivH1Dual g).symm
+        (B (dirichletHsZeroEquivL2 g u)) :=
+  rfl
+
+theorem dirichletHsNegOneEquivH1Dual_l2BilinearFormToHs
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (B : Lp ℝ 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
+      H1ComplDirichlet g →L[ℝ] ℝ)
+    (u : dirichletHs g 0) :
+    dirichletHsNegOneEquivH1Dual g
+        (dirichletL2BilinearFormToHs g B u) =
+      B (dirichletHsZeroEquivL2 g u) := by
+  rw [dirichletL2BilinearFormToHs_apply,
+    ContinuousLinearEquiv.apply_symm_apply]
+
+theorem dirichletL2BilinearFormToHs_norm_le
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (B : Lp ℝ 2
+        (riemannianVolumeMeasure (I := I_half n) (M := M) g) →L[ℝ]
+      H1ComplDirichlet g →L[ℝ] ℝ) :
+    ‖dirichletL2BilinearFormToHs g B‖ ≤ ‖B‖ := by
+  apply ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg B)
+  intro u
+  rw [dirichletL2BilinearFormToHs_apply]
+  have hdual :
+      ‖(dirichletHsNegOneEquivH1Dual g).symm
+          (B (dirichletHsZeroEquivL2 g u))‖ =
+        ‖B (dirichletHsZeroEquivL2 g u)‖ := by
+    have h := dirichletHsNegOneEquivH1Dual_norm g
+      ((dirichletHsNegOneEquivH1Dual g).symm
+        (B (dirichletHsZeroEquivL2 g u)))
+    rw [ContinuousLinearEquiv.apply_symm_apply] at h
+    exact h.symm
+  rw [hdual]
+  calc
+    ‖B (dirichletHsZeroEquivL2 g u)‖ ≤
+        ‖B‖ * ‖dirichletHsZeroEquivL2 g u‖ :=
+      B.le_opNorm _
+    _ = ‖B‖ * ‖u‖ := by
+      rw [(dirichletHsZeroEquivL2 g).norm_map]
 
 private theorem dirichletEnergyForm_apply_basis
     (g : SmoothRiemannianMetric (I_half n) M)
