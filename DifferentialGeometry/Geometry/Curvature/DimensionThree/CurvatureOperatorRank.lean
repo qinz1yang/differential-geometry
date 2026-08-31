@@ -141,6 +141,27 @@ noncomputable def metricCurvatureOperatorRankAt
   curvatureOperatorRankAt (I := I) g x
     (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) hdim
 
+private theorem matrix_fin3_rank_eq_zero_iff
+    (A : Matrix (Fin 3) (Fin 3) Real) :
+    A.rank = 0 ↔ A = 0 := by
+  constructor
+  · intro h
+    have hfin : Module.finrank Real (LinearMap.range A.mulVecLin) = 0 := by
+      simpa only [Matrix.rank] using h
+    have hrange : LinearMap.range A.mulVecLin = ⊥ :=
+      (Submodule.finrank_eq_zero (R := Real)).mp hfin
+    have hlin : A.mulVecLin = 0 := LinearMap.range_eq_bot.mp hrange
+    ext i j
+    have hcol : A.col j = 0 := by
+      have hmul : A.mulVec (Pi.single j (1 : Real)) = 0 := by
+        rw [← Matrix.mulVecLin_apply]
+        exact congrArg (fun L => L (Pi.single j (1 : Real))) hlin
+      simpa only [Matrix.mulVec_single_one] using hmul
+    exact congrFun hcol i
+  · intro h
+    rw [h]
+    exact Matrix.rank_zero
+
 omit [SigmaCompactSpace M] in
 theorem metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -153,5 +174,51 @@ theorem metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
   curvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
     (I := I) (M := M) g x
       (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) hdim basis horth
+
+omit [SigmaCompactSpace M] in
+theorem metricCurvatureOperatorRankAt_eq_zero_iff
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3) :
+    metricCurvatureOperatorRankAt (I := I) g x hdim = 0 ↔
+      metricRm04At (I := I) (M := M) g x = 0 := by
+  obtain ⟨basis, horth⟩ :=
+    DifferentialGeometry.Geometry.Curvature.exists_orthonormalBasisAt
+      (I := I) g x hdim
+  constructor
+  · intro hrank
+    have hmatrank :
+        (curvatureOperatorMatrixAt (I := I) x basis
+          (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x)).rank = 0 := by
+      rw [← metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
+        (I := I) (M := M) g x hdim basis horth]
+      exact hrank
+    have hmat : curvatureOperatorMatrixAt (I := I) x basis
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) = 0 :=
+      (matrix_fin3_rank_eq_zero_iff _).mp hmatrank
+    have hA : metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x = 0 :=
+      curvatureOperatorMatrixAt_eq_zero_of_orthonormal
+        (I := I) (M := M) g x basis horth
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) hmat
+    have hA' := congrArg
+      (fun A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x =>
+        (A : Tensor04At (I := I) (M := M) x)) hA
+    have hzero' : ((0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+        Tensor04At (I := I) (M := M) x) = 0 := by rfl
+    exact (by simpa only [metricAlgebraicCurvatureTensorAt_coe] using hA'.trans hzero')
+  · intro hzero
+    rw [metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
+      (I := I) (M := M) g x hdim basis horth]
+    have hmat : curvatureOperatorMatrixAt (I := I) x basis
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x) = 0 := by
+      ext i j
+      change tensor04StdAt (I := I) (M := M)
+        (metricAlgebraicCurvatureTensorAt (I := I) (M := M) g x :
+          Tensor04At (I := I) (M := M) x)
+        (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1) = _
+      rw [metricAlgebraicCurvatureTensorAt_coe, hzero]
+      simp
+    rw [hmat]
+    exact Matrix.rank_zero
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
