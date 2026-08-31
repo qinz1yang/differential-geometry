@@ -555,6 +555,22 @@ def roundThreeCylinderCentralSlice :
     x ∈ roundThreeCylinderCentralSlice ↔ x.2 = 0 :=
   Iff.rfl
 
+theorem roundThreeCylinderCentralSlice_eq_range :
+    roundThreeCylinderCentralSlice =
+      Set.range (fun y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 =>
+        (y, (0 : Real))) := by
+  ext x
+  constructor
+  · intro hx
+    exact ⟨x.1, Prod.ext rfl hx.symm⟩
+  · rintro ⟨y, rfl⟩
+    rfl
+
+theorem isCompact_roundThreeCylinderCentralSlice :
+    IsCompact roundThreeCylinderCentralSlice := by
+  rw [roundThreeCylinderCentralSlice_eq_range]
+  exact isCompact_range (continuous_id.prodMk continuous_const)
+
 theorem roundThreeCylinderShrinkerPotential_eq_one_iff
     (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
     roundThreeCylinderShrinkerPotential x = 1 ↔
