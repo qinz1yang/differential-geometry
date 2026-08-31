@@ -356,7 +356,7 @@ theorem lRampAct_eq
     lRegAction S T
         (fun s ↦ (extChartAt I p).symm
           ((lChartRamp y z (sub_nonneg.mpr hab.le)).toFun (s - a))) a b =
-      lChartAct S T a p (lChartRamp y z (sub_nonneg.mpr hab.le)) := by
+      lChartAction S T a p (lChartRamp y z (sub_nonneg.mpr hab.le)) := by
   let t : Fin 2 → Real := Fin.cases a (fun _ ↦ b)
   let gamma : Real → M := fun s ↦ (extChartAt I p).symm
     ((lChartRamp y z (sub_nonneg.mpr hab.le)).toFun (s - a))
@@ -398,7 +398,7 @@ theorem lRampAct_eq
         ((lChartRamp y z (sub_nonneg.mpr hab.le)).toFun ((a + r) - a)))
     rw [add_sub_cancel_left]
     exact ((extChartAt I p).right_inv (htar hrL)).symm
-  have hsum := lRegAction_chart_sum (I := I) S hS.smoothMetric
+  have hsum := lRegAction_eq_sum_lChartAction (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T a b t htmono (by rfl) (by rfl)
     ps gamma us hsrc hrep hreg
   rw [Fin.sum_univ_one] at hsum
@@ -426,7 +426,7 @@ theorem lCost_ramp_le
       (extChartAt I p).target) :
     lCost S T x ((extChartAt I p).symm z) (b ^ 2) ≤
       lRegAction S T (lRegCurve S T x W) 0 c +
-        lChartAct S T c p
+        lChartAction S T c p
           (lChartRamp ((extChartAt I p) (lRegCurve S T x W c)) z
             (sub_nonneg.mpr hcb.le)) := by
   let y : E := (extChartAt I p) (lRegCurve S T x W c)
@@ -764,11 +764,11 @@ theorem lCost_chart_lip
         intro r hr
         exact ⟨by linarith [hcI.1, hr.1], by linarith [hr.2]⟩
       have hrampLe := hramp (sub_pos.mpr hcb) htimeRamp hmap
-      have hrampLin : lChartAct S T c p
+      have hrampLin : lChartAction S T c p
           (lChartRamp y v (sub_nonneg.mpr hcb.le)) ≤
             (Cg / 2 * (V + 1) ^ 2 + Cs) * d := by
         calc
-          lChartAct S T c p (lChartRamp y v (sub_nonneg.mpr hcb.le)) ≤
+          lChartAction S T c p (lChartRamp y v (sub_nonneg.mpr hcb.le)) ≤
               Cg / 2 * (‖v - y‖ ^ 2 / (b - c)) + Cs * (b - c) :=
             by simpa only [y] using hrampLe
           _ ≤ (Cg / 2 * (V + 1) ^ 2 + Cs) * d := by

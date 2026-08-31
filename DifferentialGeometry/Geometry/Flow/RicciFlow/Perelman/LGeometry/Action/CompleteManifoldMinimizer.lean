@@ -218,7 +218,7 @@ theorem lRmChartH1_fin
         (T - (t i.castSucc + r) ^ 2, (u i n).toFun r) ((u i n).deriv r))
       ((u i n).deriv r)) ≤ B
     have heq :=
-      (lKinetic_local S T (alpha n) (p i) (t i.castSucc) (t i.succ)
+      (lKinetic_eq_chart_integral S T (alpha n) (p i) (t i.castSucc) (t i.succ)
         (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n)).symm
     rw [show (∫ r in (0 : Real)..t i.succ - t i.castSucc,
         (1 / 2 : Real) * inner Real

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
 
 set_option autoImplicit false
 
@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 omit [CompactSpace M] in
-theorem lChartAct_pair_le_of_lRegAction_minimizer
+theorem lChartAction_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -53,8 +53,8 @@ theorem lChartAct_pair_le_of_lRegAction_minimizer
     (hvnode : (extChartAt I (p 0)).symm
         ((v 0).toFun (partitionIntervalLength t 0)) =
       (extChartAt I (p 1)).symm ((v 1).toFun 0)) :
-    (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
-      ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i) := by
+    (∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (u i)) ≤
+      ∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (v i) := by
   obtain ⟨gammaV, hgammaV, hsrcV, hrepV, hV0, hV2, alpha, _w,
       halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _hunif, hact⟩ :=
     exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T t htmono p v hvtar hvnode hreg
@@ -69,9 +69,9 @@ theorem lChartAct_pair_le_of_lRegAction_minimizer
         ((halpha0 n).trans (hV0.trans hv0))
         ((halpha2 n).trans (hV2.trans hv2)))
     linarith
-  rw [lRegAction_chart_sum S hMet hSc T (t 0) (t (Fin.last 2))
+  rw [lRegAction_eq_sum_lChartAction S hMet hSc T (t 0) (t (Fin.last 2))
     t htmono rfl rfl p gamma u hsrc hrep hreg] at hglobal
-  rw [lRegAction_chart_sum S hMet hSc T (t 0) (t (Fin.last 2))
+  rw [lRegAction_eq_sum_lChartAction S hMet hSc T (t 0) (t (Fin.last 2))
     t htmono rfl rfl p gammaV v hsrcV hrepV hreg] at hglobal
   exact hglobal
 

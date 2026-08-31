@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ForceC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocityC1
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
-theorem lChartVel_c1
+theorem lChartAction_minimizer_velocity_contDiffOn_one
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (hL : 0 < L) (u : timeH1 E L)
@@ -60,16 +60,16 @@ theorem lChartVel_c1
     fun r hr ↦ ⟨r, hr, rfl⟩
   obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p tau
     htau1.continuousOn htaureg hKc hKchart u huK
-  let F0 : Real → E := lChartForceRep (I := I) S T a p u q0
+  let F0 : Real → E := lChartForceRepresentative (I := I) S T a p u q0
   let F : Real → E := fun r ↦ (2 : Real) • F0 r
   have hF0 : ContinuousOn F0 (Icc (0 : Real) L) := by
     simpa only [F0] using
-      lChartForceRep_cont (I := I) S hS T a p u q0 hreg hchart hq0
+      continuousOn_lChartForceRepresentative (I := I) S hS T a p u q0 hreg hchart hq0
   have hF : ContinuousOn F (Icc (0 : Real) L) :=
     hF0.const_smul (2 : Real)
   have hraw : lChartForce (I := I) S T a p u =ᵐ[timeMeasure L] F0 := by
     simpa only [F0] using
-      lChartForceRep_ae (I := I) S hS T a p u q0 hreg hchart hq0ae
+      lChartForce_ae_eq_lChartForceRepresentative (I := I) S hS T a p u q0 hreg hchart hq0ae
   have hEuler' : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun r ↦ chartGramOp (I := I) S.family p

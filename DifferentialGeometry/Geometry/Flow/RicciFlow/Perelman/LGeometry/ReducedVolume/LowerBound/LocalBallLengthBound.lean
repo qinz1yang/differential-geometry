@@ -38,7 +38,7 @@ theorem lRampAct_fwd
       ∀ {T a L : Real} {y z : E} (_hT : T ≤ omega) (hL : 0 < L),
         (∀ r ∈ Icc (0 : Real) L, T - (a + r) ^ 2 ∈ Icc t₀ t₁) →
         MapsTo (lChartRamp y z hL.le).toFun (Icc (0 : Real) L) K →
-        lChartAct S T a p (lChartRamp y z hL.le) ≤
+        lChartAction S T a p (lChartRamp y z hL.le) ≤
           (Cg / 2) * (‖z - y‖ ^ 2 / L) + Cs * L := by
   obtain ⟨Cg, hCg⟩ := chartGramOp_bound (I := I) hS.smoothMetric hreg
     isCompact_Icc p hKchart hKc

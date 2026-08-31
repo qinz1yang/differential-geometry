@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Bootstrap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PiecewiseC1
 
 set_option autoImplicit false
@@ -77,18 +77,18 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_two
     exact (extChartAt I (p i)).map_source (by
       simpa only [extChartAt_source] using hsrc i (hshift hr))
   have hlocal : IsLocalMinOn
-      (lChartAct S T (t i.castSucc) (p i))
+      (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) :=
-    lChartAct_local S hS.smoothMetric hSc T a b t ht.monotone
+    lChartAction_isLocalMinOn_of_lRegAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin i hpos
   obtain ⟨q₀, hq₀c, hq₀ae, hu1, _⟩ :=
-    lChart_min_c1 (I := I) S hS T (t i.castSucc) (p i) hL
+    lChartAction_minimizer_contDiffOn_one (I := I) S hS T (t i.castSucc) (p i) hL
       (u i) hregi hchart hlocal
   have hEuler :=
-    (lChart_weak_euler (I := I) S hS T (t i.castSucc) (p i) hL
+    (lChartAction_weak_euler_lagrange_of_isLocalMinOn (I := I) S hS T (t i.castSucc) (p i) hL
       (u i) hregi hchart hlocal).2
   obtain ⟨q, hq1, _hqae, hder⟩ :=
-    lChartVel_c1 (I := I) S hS T (t i.castSucc) (p i) hL
+    lChartAction_minimizer_velocity_contDiffOn_one (I := I) S hS T (t i.castSucc) (p i) hL
       (u i) hregi hchart q₀ hq₀c hq₀ae hEuler
   rw [show (2 : WithTop ℕ∞) = 1 + 1 by norm_num,
     contDiffOn_succ_iff_derivWithin (uniqueDiffOn_Icc hL)]

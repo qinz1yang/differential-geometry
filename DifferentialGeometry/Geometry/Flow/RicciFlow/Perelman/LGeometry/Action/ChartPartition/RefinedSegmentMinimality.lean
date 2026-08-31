@@ -35,7 +35,7 @@ omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
 private theorem act_cast {a b : Real} (h : a = b)
     (S : SolutionOn (I := I) (M := M) D) (T s : Real) (p : M)
     (v : timeH1 E b) :
-    lChartAct S T s p (h.symm ▸ v : timeH1 E a) = lChartAct S T s p v := by
+    lChartAction S T s p (h.symm ▸ v : timeH1 E a) = lChartAction S T s p v := by
   subst b
   rfl
 
@@ -56,7 +56,7 @@ private theorem ins_succ {m : Nat} (j k : Fin (m + 2)) :
   omega
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
+theorem lChartAction_refined_adjacent_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -99,10 +99,10 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
     (hvnode : (extChartAt I (p q.castSucc)).symm
         (v0.toFun (partitionIntervalLength t q.castSucc)) =
       (extChartAt I (p q.castSucc)).symm (v1.toFun 0)) :
-    lChartAct S T (t q.castSucc.castSucc) (p q.castSucc) (u q.castSucc) +
-        lChartAct S T (t q.succ.castSucc) (p q.castSucc) uHead ≤
-      lChartAct S T (t q.castSucc.castSucc) (p q.castSucc) v0 +
-        lChartAct S T (t q.succ.castSucc) (p q.castSucc) v1 := by
+    lChartAction S T (t q.castSucc.castSucc) (p q.castSucc) (u q.castSucc) +
+        lChartAction S T (t q.succ.castSucc) (p q.castSucc) uHead ≤
+      lChartAction S T (t q.castSucc.castSucc) (p q.castSucc) v0 +
+        lChartAction S T (t q.succ.castSucc) (p q.castSucc) v1 := by
   classical
   let i : Fin (m + 2) := q.castSucc
   let j : Fin (m + 2) := q.succ
@@ -344,28 +344,28 @@ theorem lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer
   have hposHead : tr i.succ.castSucc < tr i.succ.succ := by
     rw [hheadIdx, htrHead0, htrHead1]
     simpa only [j] using hc0
-  have hcmpR := lChartAct_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hMet hSc T a b
+  have hcmpR := lChartAction_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hMet hSc T a b
     (m := m + 1) tr htrMono (htr0.trans ht0) (htrLast.trans htlast)
     pr gamma hgamma ur hsrcR hrepR hreg hmin i hposLeft hposHead
     v0r v1r htar0r htar1r hv0r hv2r hvnoder
   have hActLeft :
-      lChartAct S T (tr i.castSucc.castSucc) (pr i.castSucc) (ur i.castSucc) =
-        lChartAct S T (t i.castSucc) (p i) (u i) := by
+      lChartAction S T (tr i.castSucc.castSucc) (pr i.castSucc) (ur i.castSucc) =
+        lChartAction S T (t i.castSucc) (p i) (u i) := by
     rw [htrLeft0, hprLeft, hurLeft]
     exact act_cast hLeftLen S T (t i.castSucc) (p i) (u i)
   have hActHead :
-      lChartAct S T (tr i.succ.castSucc) (pr i.succ) (ur i.succ) =
-        lChartAct S T (t j.castSucc) (p i) uHead := by
+      lChartAction S T (tr i.succ.castSucc) (pr i.succ) (ur i.succ) =
+        lChartAction S T (t j.castSucc) (p i) uHead := by
     rw [hheadIdx, htrHead0, hprHead, hurHead]
     exact act_cast hHeadLen S T (t j.castSucc) (p i) uHead
   have hActV0 :
-      lChartAct S T (tr i.castSucc.castSucc) (pr i.castSucc) v0r =
-        lChartAct S T (t i.castSucc) (p i) v0 := by
+      lChartAction S T (tr i.castSucc.castSucc) (pr i.castSucc) v0r =
+        lChartAction S T (t i.castSucc) (p i) v0 := by
     rw [htrLeft0, hprLeft]
     exact act_cast hLeftLen S T (t i.castSucc) (p i) v0
   have hActV1 :
-      lChartAct S T (tr i.succ.castSucc) (pr i.succ) v1r =
-        lChartAct S T (t j.castSucc) (p i) v1 := by
+      lChartAction S T (tr i.succ.castSucc) (pr i.succ) v1r =
+        lChartAction S T (t j.castSucc) (p i) v1 := by
     rw [htrHead0', hprHead']
     exact act_cast hHeadLen' S T (t j.castSucc) (p i) v1
   rw [hActLeft, hActHead, hActV0, hActV1] at hcmpR

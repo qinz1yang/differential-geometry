@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Bootstrap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Classical
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Momentum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.EulerLagrangeEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.MomentumRegularity
 
 set_option autoImplicit false
 
@@ -28,7 +28,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 variable {D : RealTimeInterval}
 
-theorem lChart_min_accel
+theorem lChartAction_minimizer_acceleration_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (hL : 0 < L) (u : timeH1 E L)
@@ -36,7 +36,7 @@ theorem lChart_min_accel
       T - (a + r) ^ 2 ∈ D.regular)
     (hchart : MapsTo u.toFun (Icc (0 : Real) L)
       (interior (extChartAt I p).target))
-    (hmin : IsLocalMinOn (lChartAct S T a p) (sameTimeEnds u) u) :
+    (hmin : IsLocalMinOn (lChartAction S T a p) (sameTimeEnds u) u) :
     ∀ r ∈ Ioo (0 : Real) L,
       let alpha : Real → M := fun s =>
         (extChartAt I p).symm (u.toFun (s - a))
@@ -45,11 +45,11 @@ theorem lChart_min_accel
         lRegAccel S T (a + r) (alpha (a + r))
           (lVelocity (I := I) alpha (a + r)) := by
   obtain ⟨q, P, hqcont, hqae, hu1, huder, hP1, hPeq, hPder⟩ :=
-    lChart_mom_c1 (I := I) S hS T a p hL u hreg hchart hmin
+    lChartAction_minimizer_momentum_contDiffOn_one (I := I) S hS T a p hL u hreg hchart hmin
   have hEuler :=
-    (lChart_weak_euler (I := I) S hS T a p hL u hreg hchart hmin).2
+    (lChartAction_weak_euler_lagrange_of_isLocalMinOn (I := I) S hS T a p hL u hreg hchart hmin).2
   obtain ⟨q1, hq1, _hq1ae, huder1⟩ :=
-    lChartVel_c1 (I := I) S hS T a p hL u hreg hchart
+    lChartAction_minimizer_velocity_contDiffOn_one (I := I) S hS T a p hL u hreg hchart
       q hqcont hqae hEuler
   have hqq1 : EqOn q q1 (Icc (0 : Real) L) := by
     intro s hs
@@ -72,11 +72,11 @@ theorem lChart_min_accel
   have hPAt : DifferentiableAt Real P r :=
     (hP1.differentiableOn (by norm_num) r hrcc).differentiableAt hIcc
   have hPDeriv : deriv P r =
-      (2 : Real) • lChartForceRep (I := I) S T a p u q r := by
+      (2 : Real) • lChartForceRepresentative (I := I) S T a p u q r := by
     rw [← derivWithin_of_mem_nhds hIcc]
     exact hPder hrcc
   have hPHas : HasDerivAt P
-      ((2 : Real) • lChartForceRep (I := I) S T a p u q r) r :=
+      ((2 : Real) • lChartForceRepresentative (I := I) S T a p u q r) r :=
     hPAt.hasDerivAt.congr_deriv hPDeriv
   let mom : Real → E := fun s =>
     chartGramOp (I := I) S.family p
@@ -84,10 +84,10 @@ theorem lChart_min_accel
   have hPmom : P =ᶠ[nhds r] fun s => (2 : Real) • mom s := by
     exact hPeq.eventuallyEq_of_mem hIcc
   have htwo : HasDerivAt (fun s => (2 : Real) • mom s)
-      ((2 : Real) • lChartForceRep (I := I) S T a p u q r) r :=
+      ((2 : Real) • lChartForceRepresentative (I := I) S T a p u q r) r :=
     hPHas.congr_of_eventuallyEq hPmom.symm
   have hmom : HasDerivAt mom
-      (lChartForceRep (I := I) S T a p u q r) r := by
+      (lChartForceRepresentative (I := I) S T a p u q r) r := by
     convert htwo.const_smul (1 / 2 : Real) using 1
     · funext s
       simp only [Pi.smul_apply, smul_smul]
@@ -96,7 +96,7 @@ theorem lChart_min_accel
       norm_num
   have hqDeriv : deriv q r =
       (lPhaseField S T p (a + r) (u.toFun r, q r)).2 :=
-    (lChartEuler_iff (I := I) S hS T a p u q r
+    (lChart_momentum_deriv_eq_force_iff_velocity_deriv_eq_lPhaseField (I := I) S hS T a p u q r
       (hreg r hrcc) (hchart hrcc) hu hqAt).mp (by
         simpa only [mom] using hmom.deriv)
   have hq : HasDerivAt q

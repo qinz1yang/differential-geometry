@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Partition
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 
@@ -117,7 +117,7 @@ theorem lKinetic_liminf
           (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) := by
     funext n
     simpa only [smul_apply, real_inner_smul_left] using
-      (lKinetic_local S T (alpha n) p a b hab (u n)
+      (lKinetic_eq_chart_integral S T (alpha n) p a b hab (u n)
         (hsrc n) (hrep n) (hdiff n)).symm
   rw [hseq] at hlim
   exact hlim
@@ -191,7 +191,7 @@ theorem lRegAction_lim_cpt
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
           (lVelocity (I := I) (alpha n) s)
           (lVelocity (I := I) (alpha n) s)) volume a b :=
-    lKinetic_int_local S hMet T (alpha n) p a b hab (u n)
+    intervalIntegrable_lKinetic_of_chartH1 S hMet T (alpha n) p a b hab (u n)
       (hsrc n) (hrep n) (hdiff n) hreg
   have hpotInt (n : ℕ) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)) volume a b :=
@@ -206,7 +206,7 @@ theorem lRegAction_lim_cpt
     change 0 ≤ ∫ s in a..b, (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)
-    rw [lKinetic_local S T (alpha n) p a b hab (u n)
+    rw [lKinetic_eq_chart_integral S T (alpha n) p a b hab (u n)
       (hsrc n) (hrep n) (hdiff n)]
     apply intervalIntegral.integral_nonneg (sub_nonneg.mpr hab)
     intro r _hr
@@ -332,7 +332,7 @@ theorem lRegAction_chart
         (S.base.metric (T - s ^ 2)).inner (gamma s)
           (lVelocity (I := I) gamma s) (lVelocity (I := I) gamma s))
       volume (t i.castSucc) (t i.succ) :=
-    lKinetic_int_local S hMet T gamma (p i) (t i.castSucc) (t i.succ)
+    intervalIntegrable_lKinetic_of_chartH1 S hMet T gamma (p i) (t i.castSucc) (t i.succ)
       (hseg i) (u i) (hsrc i) (hrep i) (hdiff i) (hreg_i i)
   have hpotInt (i : Fin m) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s))
@@ -357,7 +357,7 @@ theorem lRegAction_chart
           (T - (t i.castSucc + r) ^ 2, (u i).toFun r) ((u i).deriv r))
         ((u i).deriv r) := by
     simpa only [kin, partitionIntervalLength, smul_apply, real_inner_smul_left] using
-      lKinetic_local S T gamma (p i) (t i.castSucc) (t i.succ)
+      lKinetic_eq_chart_integral S T gamma (p i) (t i.castSucc) (t i.succ)
         (hseg i) (u i) (hsrc i) (hrep i) (hdiff i)
   have hLag (i : Fin m) : IntervalIntegrable (lRegLag S T gamma) volume
       (t i.castSucc) (t i.succ) := by
@@ -478,7 +478,7 @@ theorem lRegAction_fin_cpt
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
           (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s))
       volume (t i.castSucc) (t i.succ) :=
-    lKinetic_int_local S hMet T (alpha n) (p i) (t i.castSucc) (t i.succ)
+    intervalIntegrable_lKinetic_of_chartH1 S hMet T (alpha n) (p i) (t i.castSucc) (t i.succ)
       (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n) (hreg_i i)
   have hpotInt (i : Fin m) (n : Nat) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s))
@@ -505,7 +505,7 @@ theorem lRegAction_fin_cpt
     change 0 ≤ ∫ s in t i.castSucc..t i.succ, (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)
-    rw [lKinetic_local S T (alpha n) (p i) (t i.castSucc) (t i.succ)
+    rw [lKinetic_eq_chart_integral S T (alpha n) (p i) (t i.castSucc) (t i.succ)
       (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n)]
     apply intervalIntegral.integral_nonneg (sub_nonneg.mpr (hseg i))
     intro r _hr

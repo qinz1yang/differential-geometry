@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.EulerLagrange
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadratic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramSmooth
 
 set_option autoImplicit false
@@ -38,7 +40,7 @@ private noncomputable def lScalarDir
   mvfderiv (I := I) (S.scalar q.1) x
     (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) p i x)
 
-noncomputable def lChartPosDeriv
+noncomputable def lChartPositionDerivative
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (r : Real) : E →L[Real] Real :=
   ∑ i : Fin (Module.finrank Real E),
@@ -54,22 +56,22 @@ noncomputable def lChartPosDeriv
 noncomputable def lChartForce
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (r : Real) : E :=
-  (lChartPosDeriv (I := I) S T a p u r).adjoint 1
+  (lChartPositionDerivative (I := I) S T a p u r).adjoint 1
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-theorem lChartForce_inner
+theorem inner_lChartForce
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (r : Real) (v : E) :
     inner Real (lChartForce (I := I) S T a p u r) v =
-      lChartPosDeriv (I := I) S T a p u r v := by
+      lChartPositionDerivative (I := I) S T a p u r v := by
   rw [lChartForce, ContinuousLinearMap.adjoint_inner_left]
   rw [real_inner_eq_re_inner, RCLike.inner_apply]
   simp
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
-theorem lChartForce_int
+theorem integrableOn_lChartForce
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (hL : 0 < L) (u : timeH1 E L)
@@ -180,17 +182,17 @@ theorem lChartForce_int
     (ContinuousLinearMap.adjoint (E := E) (F := Real)).continuous.clm_apply
       continuous_const
   have hcov' : IntegrableOn
-      (lChartPosDeriv (I := I) S T a p u) (Icc (0 : Real) L) volume := by
+      (lChartPositionDerivative (I := I) S T a p u) (Icc (0 : Real) L) volume := by
     with_unfolding_all exact hcov
   change Integrable (lChartForce (I := I) S T a p u)
     (volume.restrict (Icc (0 : Real) L))
   refine Integrable.mono' hcov'.norm
     (hadj.comp_aestronglyMeasurable hcov'.aestronglyMeasurable) ?_
   filter_upwards [] with r
-  change ‖(lChartPosDeriv (I := I) S T a p u r).adjoint (1 : Real)‖ ≤
-    ‖lChartPosDeriv (I := I) S T a p u r‖
+  change ‖(lChartPositionDerivative (I := I) S T a p u r).adjoint (1 : Real)‖ ≤
+    ‖lChartPositionDerivative (I := I) S T a p u r‖
   simpa using
-    (lChartPosDeriv (I := I) S T a p u r).adjoint.le_opNorm (1 : Real)
+    (lChartPositionDerivative (I := I) S T a p u r).adjoint.le_opNorm (1 : Real)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

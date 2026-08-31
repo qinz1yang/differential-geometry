@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceActionMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PieceLocalMinimality
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Momentum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.MomentumRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Ramp
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Buffer
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticBoundary
@@ -44,7 +44,7 @@ private theorem ramp_up_deriv
       (Icc (0 : Real) L))
     (hPF : EqOn (derivWithin P (Icc (0 : Real) L))
       (fun r ↦ (2 : Real) •
-        lChartForceRep (I := I) S T a p u q r)
+        lChartForceRepresentative (I := I) S T a p u q r)
       (Icc (0 : Real) L)) (z : E)
     (hbuf : MapsTo
       (fun x : Real × Real ↦
@@ -52,14 +52,14 @@ private theorem ramp_up_deriv
       (Icc (-1 : Real) 1 ×ˢ Icc (0 : Real) L)
       (interior (extChartAt I p).target)) :
     HasDerivAt
-      (fun c : Real ↦ lChartAct S T a p
+      (fun c : Real ↦ lChartAction S T a p
         (u + c • timeH1.rampUp L z))
       (inner Real
         (chartGramOp (I := I) S.family p
           (T - (a + L) ^ 2, u.toFun L) (q L)) z) 0 := by
-  have hline := lChartAct_line (I := I) S hS T a p hL.le u
+  have hline := hasDerivAt_lChartAction_line (I := I) S hS T a p hL.le u
     (timeH1.rampUp L z) hreg hbuf
-  have hForce := lChartForceRep_ae (I := I) S hS T a p u q
+  have hForce := lChartForce_ae_eq_lChartForceRepresentative (I := I) S hS T a p u q
     hreg hchart hq
   have hsub : uIoc (0 : Real) L ⊆ Icc (0 : Real) L := by
     simpa only [uIcc_of_le hL.le] using
@@ -70,7 +70,7 @@ private theorem ramp_up_deriv
     simpa only [timeMeasure] using hm
   have hForce' : lChartForce (I := I) S T a p u
       =ᵐ[volume.restrict (uIoc (0 : Real) L)]
-        lChartForceRep (I := I) S T a p u q := by
+        lChartForceRepresentative (I := I) S T a p u q := by
     have hm := hForce.filter_mono
       (ae_mono (Measure.restrict_mono hsub le_rfl))
     simpa only [timeMeasure] using hm
@@ -81,7 +81,7 @@ private theorem ramp_up_deriv
       (ae_mono (Measure.restrict_mono hsub le_rfl))
     simpa only [timeMeasure] using hm
   have hbound := mom_ramp_up hL P
-    (fun r ↦ (2 : Real) • lChartForceRep (I := I) S T a p u q r)
+    (fun r ↦ (2 : Real) • lChartForceRepresentative (I := I) S T a p u q r)
     hP hPF z
   have hint :
       (∫ r in (0 : Real)..L,
@@ -98,7 +98,7 @@ private theorem ramp_up_deriv
       _ = (1 / 2 : Real) *
           ∫ r in (0 : Real)..L,
             (inner Real
-                ((2 : Real) • lChartForceRep (I := I) S T a p u q r)
+                ((2 : Real) • lChartForceRepresentative (I := I) S T a p u q r)
                 ((r / L) • z) +
               inner Real (P r) ((1 / L) • z)) := by
         rw [← intervalIntegral.integral_const_mul]
@@ -135,7 +135,7 @@ private theorem ramp_down_deriv
       (Icc (0 : Real) L))
     (hPF : EqOn (derivWithin P (Icc (0 : Real) L))
       (fun r ↦ (2 : Real) •
-        lChartForceRep (I := I) S T a p u q r)
+        lChartForceRepresentative (I := I) S T a p u q r)
       (Icc (0 : Real) L)) (z : E)
     (hbuf : MapsTo
       (fun x : Real × Real ↦
@@ -143,14 +143,14 @@ private theorem ramp_down_deriv
       (Icc (-1 : Real) 1 ×ˢ Icc (0 : Real) L)
       (interior (extChartAt I p).target)) :
     HasDerivAt
-      (fun c : Real ↦ lChartAct S T a p
+      (fun c : Real ↦ lChartAction S T a p
         (u + c • timeH1.rampDown L z))
       (-inner Real
         (chartGramOp (I := I) S.family p
           (T - a ^ 2, u.toFun 0) (q 0)) z) 0 := by
-  have hline := lChartAct_line (I := I) S hS T a p hL.le u
+  have hline := hasDerivAt_lChartAction_line (I := I) S hS T a p hL.le u
     (timeH1.rampDown L z) hreg hbuf
-  have hForce := lChartForceRep_ae (I := I) S hS T a p u q
+  have hForce := lChartForce_ae_eq_lChartForceRepresentative (I := I) S hS T a p u q
     hreg hchart hq
   have hsub : uIoc (0 : Real) L ⊆ Icc (0 : Real) L := by
     simpa only [uIcc_of_le hL.le] using
@@ -161,7 +161,7 @@ private theorem ramp_down_deriv
     simpa only [timeMeasure] using hm
   have hForce' : lChartForce (I := I) S T a p u
       =ᵐ[volume.restrict (uIoc (0 : Real) L)]
-        lChartForceRep (I := I) S T a p u q := by
+        lChartForceRepresentative (I := I) S T a p u q := by
     have hm := hForce.filter_mono
       (ae_mono (Measure.restrict_mono hsub le_rfl))
     simpa only [timeMeasure] using hm
@@ -172,7 +172,7 @@ private theorem ramp_down_deriv
       (ae_mono (Measure.restrict_mono hsub le_rfl))
     simpa only [timeMeasure] using hm
   have hbound := mom_ramp_down hL P
-    (fun r ↦ (2 : Real) • lChartForceRep (I := I) S T a p u q r)
+    (fun r ↦ (2 : Real) • lChartForceRepresentative (I := I) S T a p u q r)
     hP hPF z
   have hint :
       (∫ r in (0 : Real)..L,
@@ -189,7 +189,7 @@ private theorem ramp_down_deriv
       _ = (1 / 2 : Real) *
           ∫ r in (0 : Real)..L,
             (inner Real
-                ((2 : Real) • lChartForceRep (I := I) S T a p u q r)
+                ((2 : Real) • lChartForceRepresentative (I := I) S T a p u q r)
                 (((L - r) / L) • z) +
               inner Real (P r) ((-(1 / L)) • z)) := by
         rw [← intervalIntegral.integral_const_mul]
@@ -211,7 +211,7 @@ private theorem ramp_down_deriv
   exact hint
 
 omit [CompactSpace M] in
-theorem lChartAct_momentum_eq_of_pair_minimality
+theorem lChartAction_momentum_eq_of_pair_minimality
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (t : Fin 3 → Real) (p : M)
@@ -234,8 +234,8 @@ theorem lChartAct_momentum_eq_of_pair_minimality
         (extChartAt I p).symm ((u 1).toFun (partitionIntervalLength t 1)) →
       (extChartAt I p).symm ((v 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I p).symm ((v 1).toFun 0) →
-      (∑ i : Fin 2, lChartAct S T (t i.castSucc) p (u i)) ≤
-        ∑ i : Fin 2, lChartAct S T (t i.castSucc) p (v i)) :
+      (∑ i : Fin 2, lChartAction S T (t i.castSucc) p (u i)) ≤
+        ∑ i : Fin 2, lChartAction S T (t i.castSucc) p (v i)) :
     chartGramOp (I := I) S.family p
         (T - (t 1) ^ 2, (u 0).toFun (partitionIntervalLength t 0))
         (derivWithin (u 0).toFun
@@ -248,16 +248,16 @@ theorem lChartAct_momentum_eq_of_pair_minimality
   have hL (i : Fin 2) : 0 < partitionIntervalLength t i := by
     simpa only [partitionIntervalLength] using sub_pos.mpr (hpos i)
   have hlocal0 : IsLocalMinOn
-      (lChartAct S T (t 0) p) (sameTimeEnds (u 0)) (u 0) :=
-    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 0
+      (lChartAction S T (t 0) p) (sameTimeEnds (u 0)) (u 0) :=
+    lChartAction_isLocalMinOn_of_pair_minimality (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 0
   have hlocal1 : IsLocalMinOn
-      (lChartAct S T (t 1) p) (sameTimeEnds (u 1)) (u 1) :=
-    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 1
+      (lChartAction S T (t 1) p) (sameTimeEnds (u 1)) (u 1) :=
+    lChartAction_isLocalMinOn_of_pair_minimality (I := I) S T t (fun _ ↦ p) u hchart hnode hcmp 1
   obtain ⟨q0, P0, hq0c, hq0ae, hu0c1, hu0d, hP0c1, hP0eq, hP0d⟩ :=
-    lChart_mom_c1 (I := I) S hS T (t 0) p (hL 0) (u 0)
+    lChartAction_minimizer_momentum_contDiffOn_one (I := I) S hS T (t 0) p (hL 0) (u 0)
       (hreg 0) (hchart 0) hlocal0
   obtain ⟨q1, P1, hq1c, hq1ae, hu1c1, hu1d, hP1c1, hP1eq, hP1d⟩ :=
-    lChart_mom_c1 (I := I) S hS T (t 1) p (hL 1) (u 1)
+    lChartAction_minimizer_momentum_contDiffOn_one (I := I) S hS T (t 1) p (hL 1) (u 1)
       (hreg 1) (hchart 1) hlocal1
   apply ext_inner_right Real
   intro z
@@ -320,9 +320,9 @@ theorem lChartAct_momentum_eq_of_pair_minimality
   have hline1 := ramp_down_deriv (I := I) S hS T (t 1) p (hL 1)
     (u 1) (hreg 1) (hchart 1) q1 P1 hq1ae hP1c1 hP1eq hP1d ze hbufDown
   let phi : Real → Real := fun c ↦
-    lChartAct S T (t 0) p
+    lChartAction S T (t 0) p
         (u 0 + c • timeH1.rampUp (partitionIntervalLength t 0) ze) +
-      lChartAct S T (t 1) p
+      lChartAction S T (t 1) p
         (u 1 + c • timeH1.rampDown (partitionIntervalLength t 1) ze)
   have hphi : HasDerivAt phi
       (inner Real

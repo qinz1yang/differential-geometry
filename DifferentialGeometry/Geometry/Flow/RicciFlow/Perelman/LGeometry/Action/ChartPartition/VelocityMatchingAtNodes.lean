@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.RefinedSegmentMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.SameChartMomentumMatching
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
 import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
@@ -95,9 +95,9 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       linarith⟩
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   have hlocal1 : IsLocalMinOn
-      (lChartAct S T (t j.castSucc) (p j))
+      (lChartAction S T (t j.castSucc) (p j))
       (sameTimeEnds (u j)) (u j) :=
-    lChartAct_local (I := I) S hS.smoothMetric hSc T a b t htmono ht0 htlast
+    lChartAction_isLocalMinOn_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono ht0 htlast
       p gamma hgamma u hsrc hrep hreg hmin j hpos1
   have hreg1 : ∀ r, r ∈ Icc (0 : Real) (partitionIntervalLength t j) →
       T - (t j.castSucc + r) ^ 2 ∈ D.regular := by
@@ -109,7 +109,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
         simpa only [partitionIntervalLength] using hr.2
       linarith [hright j]
   obtain ⟨q1, _hq1c, _hq1ae, hu1c1, _hu1d⟩ :=
-    lChart_min_c1 (I := I) S hS T (t j.castSucc) (p j)
+    lChartAction_minimizer_contDiffOn_one (I := I) S hS T (t j.castSucc) (p j)
       (by simpa only [partitionIntervalLength] using sub_pos.mpr hpos1)
       (u j) hreg1 (hchart j) hlocal1
   have hgamma1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
@@ -257,8 +257,8 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
         (extChartAt I (p i)).symm ((uh 1).toFun (partitionIntervalLength th 1)) →
       (extChartAt I (p i)).symm ((v 0).toFun (partitionIntervalLength th 0)) =
         (extChartAt I (p i)).symm ((v 1).toFun 0) →
-      (∑ k : Fin 2, lChartAct S T (th k.castSucc) (p i) (uh k)) ≤
-        ∑ k : Fin 2, lChartAct S T (th k.castSucc) (p i) (v k) := by
+      (∑ k : Fin 2, lChartAction S T (th k.castSucc) (p i) (uh k)) ≤
+        ∑ k : Fin 2, lChartAction S T (th k.castSucc) (p i) (v k) := by
     intro v hvtar hv0 hv2 hvnode
     have hv0' : (extChartAt I (p i)).symm ((v 0).toFun 0) =
         gamma (t i.castSucc) := by
@@ -320,11 +320,11 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       exact hvnode
     have hcast_act {x y : Real} (hxy : x = y) (s : Real) (p0 : M)
         (w : timeH1 E x) :
-        lChartAct S T s p0 (hxy ▸ w : timeH1 E y) =
-          lChartAct S T s p0 w := by
+        lChartAction S T s p0 (hxy ▸ w : timeH1 E y) =
+          lChartAction S T s p0 w := by
       subst y
       rfl
-    have hcmp := lChartAct_refined_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono
+    have hcmp := lChartAction_refined_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin q c hpos0 hc0 hc1
       uHead hsrcHead
       (by
@@ -337,20 +337,20 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       (by simpa only [i] using hv0t)
       (by simpa only [i, j] using hv2t)
       (by simpa only [i, j] using hvnodet)
-    have hv0act : lChartAct S T (t i.castSucc) (p i) v0t =
-        lChartAct S T (t i.castSucc) (p i) (v 0) :=
+    have hv0act : lChartAction S T (t i.castSucc) (p i) v0t =
+        lChartAction S T (t i.castSucc) (p i) (v 0) :=
       hcast_act hthLen0 (t i.castSucc) (p i) (v 0)
-    have hv1act : lChartAct S T (t j.castSucc) (p i) v1t =
-        lChartAct S T (t j.castSucc) (p i) (v 1) :=
+    have hv1act : lChartAction S T (t j.castSucc) (p i) v1t =
+        lChartAction S T (t j.castSucc) (p i) (v 1) :=
       hcast_act hthLen1 (t j.castSucc) (p i) (v 1)
     rw [Fin.sum_univ_two, Fin.sum_univ_two]
-    change lChartAct S T (t i.castSucc) (p i) (u i) +
-        lChartAct S T (t j.castSucc) (p i) uHead ≤
-      lChartAct S T (t i.castSucc) (p i) (v 0) +
-        lChartAct S T (t j.castSucc) (p i) (v 1)
+    change lChartAction S T (t i.castSucc) (p i) (u i) +
+        lChartAction S T (t j.castSucc) (p i) uHead ≤
+      lChartAction S T (t i.castSucc) (p i) (v 0) +
+        lChartAction S T (t j.castSucc) (p i) (v 1)
     rw [← hv0act, ← hv1act]
     simpa only [i, j] using hcmp
-  have hmom := lChartAct_momentum_eq_of_pair_minimality (I := I) S hS T th (p i) uh hthpos hthreg
+  have hmom := lChartAction_momentum_eq_of_pair_minimality (I := I) S hS T th (p i) uh hthpos hthreg
     huhchart huhnode huhcmp
   have hmom' : chartGramOp (I := I) S.family (p i)
         (T - (t j.castSucc) ^ 2, (u i).toFun (partitionIntervalLength t i))

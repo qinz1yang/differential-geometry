@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityRegularity
 
 set_option autoImplicit false
 
@@ -77,11 +77,11 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_one
     exact (extChartAt I (p i)).map_source (by
       simpa only [extChartAt_source] using hsrc i (hshift hr))
   have hlocal : IsLocalMinOn
-      (lChartAct S T (t i.castSucc) (p i))
+      (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) :=
-    lChartAct_local S hS.smoothMetric hSc T a b t ht.monotone
+    lChartAction_isLocalMinOn_of_lRegAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin i hpos
-  exact (lChart_min_c1 S hS T (t i.castSucc) (p i) hL
+  exact (lChartAction_minimizer_contDiffOn_one S hS T (t i.castSucc) (p i) hL
     (u i) hregi hchart hlocal).choose_spec.2.2.1
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

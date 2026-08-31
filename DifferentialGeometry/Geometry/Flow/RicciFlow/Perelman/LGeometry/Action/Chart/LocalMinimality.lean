@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Attainment
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.EulerLagrange
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.SegmentReplacement
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeNonlinearAction
 
@@ -26,14 +26,14 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAct_split
+theorem lChartAction_eq_kinetic_add_potential
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
     (T a : Real) (p : M) {L : Real} (hL : 0 ≤ L) (u : timeH1 E L)
     (htar : ∀ r ∈ Icc (0 : Real) L, u.toFun r ∈ (extChartAt I p).target)
     (hreg : ∀ r ∈ Icc (0 : Real) L, T - (a + r) ^ 2 ∈ D.regular) :
-    lChartAct S T a p u =
+    lChartAction S T a p u =
       (∫ r in (0 : Real)..L, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family p
           (T - (a + r) ^ 2, u.toFun r) (u.deriv r)) (u.deriv r)) +
@@ -101,7 +101,7 @@ theorem lChartAct_split
     have hw : Continuous (fun r : Real ↦ 2 * (a + r) ^ 2) :=
       continuous_const.mul ((continuous_const.add continuous_id).pow 2)
     exact hw.continuousOn.mul hscal
-  unfold lChartAct lChartLag
+  unfold lChartAction lChartLagrangian
   rw [intervalIntegral.integral_add]
   · congr 1
     simp only [smul_apply, real_inner_smul_left]
@@ -110,7 +110,7 @@ theorem lChartAct_split
   · simpa only [τ] using hpot
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lRegAction_chart_sum
+theorem lRegAction_eq_sum_lChartAction
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -126,7 +126,7 @@ theorem lRegAction_chart_sum
       (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     lRegAction S T gamma a b =
-      ∑ i : Fin m, lChartAct S T (t i.castSucc) (p i) (u i) := by
+      ∑ i : Fin m, lChartAction S T (t i.castSucc) (p i) (u i) := by
   classical
   rw [lRegAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma u
     hsrc hrep hreg]
@@ -198,11 +198,11 @@ theorem lRegAction_chart_sum
           (a := (0 : Real)) (b := partitionIntervalLength t i) (t i.castSucc))
   rw [← hpot]
   symm
-  exact lChartAct_split S hMet hSc T (t i.castSucc) (p i)
+  exact lChartAction_eq_kinetic_add_potential S hMet hSc T (t i.castSucc) (p i)
     (sub_nonneg.mpr hseg) (u i) htar hregi
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAct_local
+theorem lChartAction_isLocalMinOn_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -222,7 +222,7 @@ theorem lChartAct_local
       delta a = gamma a → delta b = gamma b →
       lRegAction S T gamma a b ≤ lRegAction S T delta a b)
     (i : Fin m) (hpos : t i.castSucc < t i.succ) :
-    IsLocalMinOn (lChartAct S T (t i.castSucc) (p i))
+    IsLocalMinOn (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) := by
   classical
   let L : Real := partitionIntervalLength t i
@@ -306,15 +306,15 @@ theorem lChartAct_local
         ((halphab n).trans hVb))
     linarith
   let F : Fin m → Real := fun j ↦
-    lChartAct S T (t j.castSucc) (p j) (u j)
+    lChartAction S T (t j.castSucc) (p j) (u j)
   let G : Fin m → Real := fun j ↦
-    lChartAct S T (t j.castSucc) (p j) ((Function.update u i v) j)
+    lChartAction S T (t j.castSucc) (p j) ((Function.update u i v) j)
   have hsum : ∑ j, F j ≤ ∑ j, G j := by
     rw [show (∑ j, F j) = lRegAction S T gamma a b from
-      (lRegAction_chart_sum S hMet hSc T a b t htmono ht0 htlast p gamma
+      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gamma
         u hsrc hrep hreg).symm]
     rw [show (∑ j, G j) = lRegAction S T gammaV a b from
-      (lRegAction_chart_sum S hMet hSc T a b t htmono ht0 htlast p gammaV
+      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gammaV
         (Function.update u i v) hsrcV hrepV hreg).symm]
     exact hglobal
   have hrest : ∑ j ∈ Finset.univ.erase i, G j =

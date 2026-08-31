@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
 
 set_option autoImplicit false
 
@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 omit [CompactSpace M] in
-theorem lChartAct_initial_pair_le_of_lRegAction_minimizer
+theorem lChartAction_initial_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -56,8 +56,8 @@ theorem lChartAct_initial_pair_le_of_lRegAction_minimizer
     (hv2 : (extChartAt I p).symm (v1.toFun (c - b)) = gamma c)
     (hvnode : (extChartAt I p).symm (v0.toFun (b - a)) =
       (extChartAt I p).symm (v1.toFun 0)) :
-    lChartAct S T a p u0 + lChartAct S T b p u1 ≤
-      lChartAct S T a p v0 + lChartAct S T b p v1 := by
+    lChartAction S T a p u0 + lChartAction S T b p u1 ≤
+      lChartAction S T a p v0 + lChartAction S T b p v1 := by
   classical
   let th : Fin 3 → Real := ![a, b, c]
   let ph : Fin 2 → M := ![p, p]
@@ -222,14 +222,14 @@ theorem lChartAct_initial_pair_le_of_lRegAction_minimizer
       (hmin (beta n) (hbeta n) ((hbeta0 n).trans hdelta0)
         ((hbeta3 n).trans hdelta3))
     linarith
-  rw [lRegAction_chart_sum S hMet hSc T a d tf htf rfl rfl pf gamma uf
+  rw [lRegAction_eq_sum_lChartAction S hMet hSc T a d tf htf rfl rfl pf gamma uf
     hsrcBase hrepBase hreg] at hglobal
-  rw [lRegAction_chart_sum S hMet hSc T a d tf htf rfl rfl pf delta vf
+  rw [lRegAction_eq_sum_lChartAction S hMet hSc T a d tf htf rfl rfl pf delta vf
     hsrcDelta hrepDelta hreg] at hglobal
   rw [Fin.sum_univ_three, Fin.sum_univ_three] at hglobal
   rw [huf0, huf1, huf2, hvf0, hvf1, hvf2] at hglobal
   have hhead := (add_le_add_iff_right
-    (lChartAct S T (tf (Fin.castSucc (2 : Fin 3))) (pf 2) u2)).mp hglobal
+    (lChartAction S T (tf (Fin.castSucc (2 : Fin 3))) (pf 2) u2)).mp hglobal
   have htf0 : tf (Fin.castSucc (0 : Fin 3)) = a := by rfl
   have htf1 : tf (Fin.castSucc (1 : Fin 3)) = b := by rfl
   have hpf0 : pf (0 : Fin 3) = p := by rfl

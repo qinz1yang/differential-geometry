@@ -38,7 +38,7 @@ omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
 private theorem nodeMatch_act_cast {a b : Real} (h : a = b)
     (S : SolutionOn (I := I) (M := M) D) (T s : Real) (p : M)
     (v : timeH1 E b) :
-    lChartAct S T s p (h.symm ▸ v : timeH1 E a) = lChartAct S T s p v := by
+    lChartAction S T s p (h.symm ▸ v : timeH1 E a) = lChartAction S T s p v := by
   subst b
   rfl
 
@@ -126,8 +126,8 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) →
       (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((v 1).toFun 0) →
-      (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
-        ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i) := by
+      (∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (u i)) ≤
+        ∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (v i) := by
     intro v hvtar hv0 hv2 hvnode
     have hu0 : (extChartAt I (p 0)).symm ((u 0).toFun 0) = gamma (t 0) := by
       simpa only [hfin0c, add_zero] using hrecover 0 0 ⟨le_rfl, by
@@ -138,11 +138,11 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         ⟨by simpa only [partitionIntervalLength, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
       simpa only [partitionIntervalLength, hfin1c, hfin1s, add_sub_cancel] using h
-    exact lChartAct_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
+    exact lChartAction_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal1 : IsLocalMinOn
-      (lChartAct S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
-    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
+      (lChartAction S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
+    lChartAction_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
   have hreg1 : ∀ r, r ∈ Icc (0 : Real) (partitionIntervalLength t 1) →
       T - (t 1 + r) ^ 2 ∈ D.regular := by
     intro r hr
@@ -153,7 +153,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         simpa only [partitionIntervalLength, hfin1c, hfin1s] using hr.2
       linarith
   obtain ⟨q1, _P1, hq1c, hq1ae, hu1c1, hu1d, _hP1c1, _hP1eq, _hP1d⟩ :=
-    lChart_mom_c1 (I := I) S hS T (t 1) (p 1)
+    lChartAction_minimizer_momentum_contDiffOn_one (I := I) S hS T (t 1) (p 1)
       (by simpa only [partitionIntervalLength, hfin1c, hfin1s] using sub_pos.mpr (hpos 1))
       (u 1) hreg1 (hchart 1) hlocal1
   have hgamma1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
@@ -224,12 +224,12 @@ theorem lRegAction_minimizer_momentum_pairing_eq
       (extChartAt I (p 0)).symm (v1.toFun (c - t 1)) = gamma c →
       (extChartAt I (p 0)).symm (v0.toFun (t 1 - t 0)) =
         (extChartAt I (p 0)).symm (v1.toFun 0) →
-      lChartAct S T (t 0) (p 0) (u 0) +
-          lChartAct S T (t 1) (p 0) uHead ≤
-        lChartAct S T (t 0) (p 0) v0 +
-          lChartAct S T (t 1) (p 0) v1 := by
+      lChartAction S T (t 0) (p 0) (u 0) +
+          lChartAction S T (t 1) (p 0) uHead ≤
+        lChartAction S T (t 0) (p 0) v0 +
+          lChartAction S T (t 1) (p 0) v1 := by
     intro v0 v1 hv0tar hv1tar hv0 hv2 hvnode
-    exact lChartAct_initial_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T
+    exact lChartAction_initial_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T
       (t 0) (t 1) c (t (Fin.last 2)) (hpos 0).le h1c.le hc2
       (p 0) (p 1) gamma (u 0) uHead uTail
       (hsrc 0) hsrcHead hsrcTail (hrep 0)
@@ -328,8 +328,8 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         (extChartAt I (p 0)).symm ((uh 1).toFun (partitionIntervalLength th 1)) →
       (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength th 0)) =
         (extChartAt I (p 0)).symm ((v 1).toFun 0) →
-      (∑ i : Fin 2, lChartAct S T (th i.castSucc) (p 0) (uh i)) ≤
-        ∑ i : Fin 2, lChartAct S T (th i.castSucc) (p 0) (v i) := by
+      (∑ i : Fin 2, lChartAction S T (th i.castSucc) (p 0) (uh i)) ≤
+        ∑ i : Fin 2, lChartAction S T (th i.castSucc) (p 0) (v i) := by
     intro v hvtar hv0 hv2 hvnode
     have hv0' : (extChartAt I (p 0)).symm ((v 0).toFun 0) = gamma (t 0) := by
       rw [hv0, huh0Fun]
@@ -393,23 +393,23 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     have hhead := hcmpHead v0 v1 hv0tar hv1tar
       (by rw [hv0Fun]; exact hv0')
       (by rw [hv1Fun]; exact hv2') hvnode'
-    have huh0Act : lChartAct S T (t 0) (p 0) (uh 0) =
-        lChartAct S T (t 0) (p 0) (u 0) := by
+    have huh0Act : lChartAction S T (t 0) (p 0) (uh 0) =
+        lChartAction S T (t 0) (p 0) (u 0) := by
       rw [huh0]
       exact nodeMatch_act_cast hthLen0 S T (t 0) (p 0) (u 0)
-    have huh1Act : lChartAct S T (t 1) (p 0) (uh 1) =
-        lChartAct S T (t 1) (p 0) uHead := by
+    have huh1Act : lChartAction S T (t 1) (p 0) (uh 1) =
+        lChartAction S T (t 1) (p 0) uHead := by
       rw [huh1]
       exact nodeMatch_act_cast hthLen1 S T (t 1) (p 0) uHead
-    have hv0Act : lChartAct S T (t 0) (p 0) v0 =
-        lChartAct S T (t 0) (p 0) (v 0) := by
+    have hv0Act : lChartAction S T (t 0) (p 0) v0 =
+        lChartAction S T (t 0) (p 0) (v 0) := by
       exact nodeMatch_act_cast hthLen0'.symm S T (t 0) (p 0) (v 0)
-    have hv1Act : lChartAct S T (t 1) (p 0) v1 =
-        lChartAct S T (t 1) (p 0) (v 1) := by
+    have hv1Act : lChartAction S T (t 1) (p 0) v1 =
+        lChartAction S T (t 1) (p 0) (v 1) := by
       exact nodeMatch_act_cast hthLen1.symm S T (t 1) (p 0) (v 1)
     simpa only [Fin.sum_univ_two, hfin0c, hfin1c, hth0, hth1, huh0Act,
       huh1Act, hv0Act, hv1Act] using hhead
-  have hmom := lChartAct_momentum_eq_of_pair_minimality (I := I) S hS T th (p 0) uh hthpos hthreg
+  have hmom := lChartAction_momentum_eq_of_pair_minimality (I := I) S hS T th (p 0) uh hthpos hthreg
     huhchart huhnode huhcmp
   have hmom' : chartGramOp (I := I) S.family (p 0)
         (T - (t 1) ^ 2, (u 0).toFun (partitionIntervalLength t 0))

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ForceC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Basic
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramInv
@@ -242,7 +242,7 @@ omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
 private theorem lPosRep_apply
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (q : Real → E) (r : Real) (w : E) :
-    lChartPosRep (I := I) S T a p u q r w =
+    lChartPositionDerivativeRepresentative (I := I) S T a p u q r w =
       (1 / 2 : Real) *
           inner Real
             (((fderiv Real (chartGramOp (I := I) S.family p)
@@ -306,7 +306,7 @@ private theorem lPosRep_apply
     apply Finset.sum_congr rfl
     intro i _
     ring
-  rw [lChartPosRep]
+  rw [lChartPositionDerivativeRepresentative]
   simp only [sum_apply, smul_apply,
     smul_eq_mul]
   simp_rw [add_mul]
@@ -321,7 +321,7 @@ private theorem lForcePair
     (q : Real → E) (r : Real)
     (ht : T - (a + r) ^ 2 ∈ D.regular)
     (hy : u.toFun r ∈ interior (extChartAt I p).target) (w : E) :
-    inner Real (lChartForceRep (I := I) S T a p u q r) w =
+    inner Real (lChartForceRepresentative (I := I) S T a p u q r) w =
       inner Real
           (chartGramOp (I := I) S.family p
             (T - (a + r) ^ 2, u.toFun r) (q r))
@@ -331,7 +331,7 @@ private theorem lForcePair
         2 * (a + r) ^ 2 *
           chartScalCov (I := I) S p
             (T - (a + r) ^ 2, u.toFun r) w := by
-  rw [lChartForceRep, ContinuousLinearMap.adjoint_inner_left]
+  rw [lChartForceRepresentative, ContinuousLinearMap.adjoint_inner_left]
   have hone (x : Real) : inner Real 1 x = x := by
     rw [real_inner_eq_re_inner, RCLike.inner_apply]
     simp
@@ -417,7 +417,7 @@ private theorem lAccelPair
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lChartEuler_iff
+theorem lChart_momentum_deriv_eq_force_iff_velocity_deriv_eq_lPhaseField
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a : Real) (p : M) {L : Real} (u : timeH1 E L)
     (q : Real → E) (r : Real)
@@ -427,7 +427,7 @@ theorem lChartEuler_iff
     (hq : DifferentiableAt Real q r) :
     deriv (fun z => chartGramOp (I := I) S.family p
       (T - (a + z) ^ 2, u.toFun z) (q z)) r =
-        lChartForceRep (I := I) S T a p u q r ↔
+        lChartForceRepresentative (I := I) S T a p u q r ↔
       deriv q r =
         (lPhaseField S T p (a + r) (u.toFun r, q r)).2 := by
   let mom : Real → E := fun z => chartGramOp (I := I) S.family p
@@ -480,7 +480,7 @@ theorem lChartEuler_iff
       (T - (a + r) ^ 2, u.toFun r) (by simp)
   have hinj : Function.Injective G :=
     (ContinuousLinearMap.isUnit_iff_bijective.mp hunit).1
-  change deriv mom r = lChartForceRep (I := I) S T a p u q r ↔ _
+  change deriv mom r = lChartForceRepresentative (I := I) S T a p u q r ↔ _
   constructor
   · intro heuler
     have hGramEq : G (deriv q r + christ) = G accel := by

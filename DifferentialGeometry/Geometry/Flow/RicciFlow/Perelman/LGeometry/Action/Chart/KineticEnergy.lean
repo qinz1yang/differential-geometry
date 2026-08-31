@@ -89,7 +89,7 @@ private theorem lKinetic_ae
   rw [hraw]
   rfl
 
-theorem lKinetic_local
+theorem lKinetic_eq_chart_integral
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (p : M) (a b : Real) (hab : a ≤ b)
     (us : timeH1 E (b - a))
@@ -128,7 +128,7 @@ theorem lKinetic_local
   simpa only [timeMeasure, uIoc_of_le hba,
     restrict_Ioc_eq_restrict_Icc] using hpoint
 
-theorem lKinetic_chart
+theorem lKinetic_eq_chart_slice_integral
     (S : SolutionOn (I := I) (M := M) D) (T R : Real)
     (alpha : Real → M) (p : M) (u : timeH1 E R)
     (a b : Real) (ha : 0 ≤ a) (hab : a ≤ b) (hbR : b ≤ R)
@@ -153,9 +153,9 @@ theorem lKinetic_chart
       timeH1.slice_toFun u a b ha hbR hr]
     exact hrep ⟨le_add_of_nonneg_right hr.1, by linarith [hr.2]⟩
   simpa only [us] using
-    lKinetic_local S T alpha p a b hab us hsrc hslice hdiff
+    lKinetic_eq_chart_integral S T alpha p a b hab us hsrc hslice hdiff
 
-theorem lKinetic_int_local
+theorem intervalIntegrable_lKinetic_of_chartH1
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
@@ -236,7 +236,7 @@ theorem lKinetic_int_local
     (a := 0) (b := L) (c := a)).mp hshift
   simpa only [zero_add, L, sub_add_cancel] using horig
 
-theorem lKinetic_int
+theorem intervalIntegrable_lKinetic_of_timeH1
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
@@ -258,6 +258,6 @@ theorem lKinetic_int
     rw [show us.toFun r = u.toFun (a + r) from
       timeH1.slice_toFun u a b ha hbR hr]
     exact hrep ⟨le_add_of_nonneg_right hr.1, by linarith [hr.2]⟩
-  exact lKinetic_int_local S hS T alpha p a b hab us hsrc hslice hdiff hreg
+  exact intervalIntegrable_lKinetic_of_chartH1 S hS T alpha p a b hab us hsrc hslice hdiff hreg
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

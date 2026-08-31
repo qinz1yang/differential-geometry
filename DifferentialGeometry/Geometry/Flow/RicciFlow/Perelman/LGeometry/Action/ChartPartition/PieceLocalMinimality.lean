@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
 
 set_option autoImplicit false
 
@@ -22,7 +22,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 variable {D : RealTimeInterval}
 
-theorem lChartAct_isLocalMinOn_of_pair_minimality
+theorem lChartAction_isLocalMinOn_of_pair_minimality
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (t : Fin 3 → Real) (p : Fin 2 → M)
     (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
@@ -41,14 +41,14 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
         (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) →
       (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((v 1).toFun 0) →
-      (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
-        ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i))
+      (∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (u i)) ≤
+        ∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (v i))
     (i : Fin 2) :
-    IsLocalMinOn (lChartAct S T (t i.castSucc) (p i))
+    IsLocalMinOn (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) := by
   classical
   fin_cases i
-  · change IsLocalMinOn (lChartAct S T (t 0) (p 0))
+  · change IsLocalMinOn (lChartAction S T (t 0) (p 0))
       (sameTimeEnds (u 0)) (u 0)
     let K : Set E := (u 0).toFun '' Icc (0 : Real) (partitionIntervalLength t 0)
     have hKc : IsCompact K :=
@@ -125,13 +125,13 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
     have hc' := hcmp w hwtar hw0 hw2 hwnode
     simp only [Fin.sum_univ_two] at hc'
     change
-      lChartAct S T (t 0) (p 0) (u 0) +
-          lChartAct S T (t 1) (p 1) (u 1) ≤
-        lChartAct S T (t 0) (p 0) (w 0) +
-          lChartAct S T (t 1) (p 1) (w 1) at hc'
+      lChartAction S T (t 0) (p 0) (u 0) +
+          lChartAction S T (t 1) (p 1) (u 1) ≤
+        lChartAction S T (t 0) (p 0) (w 0) +
+          lChartAction S T (t 1) (p 1) (w 1) at hc'
     rw [hw0eq, hw1eq] at hc'
     linarith
-  · change IsLocalMinOn (lChartAct S T (t 1) (p 1))
+  · change IsLocalMinOn (lChartAction S T (t 1) (p 1))
       (sameTimeEnds (u 1)) (u 1)
     let K : Set E := (u 1).toFun '' Icc (0 : Real) (partitionIntervalLength t 1)
     have hKc : IsCompact K :=
@@ -209,10 +209,10 @@ theorem lChartAct_isLocalMinOn_of_pair_minimality
     have hc' := hcmp w hwtar hw0 hw2 hwnode
     simp only [Fin.sum_univ_two] at hc'
     change
-      lChartAct S T (t 0) (p 0) (u 0) +
-          lChartAct S T (t 1) (p 1) (u 1) ≤
-        lChartAct S T (t 0) (p 0) (w 0) +
-          lChartAct S T (t 1) (p 1) (w 1) at hc'
+      lChartAction S T (t 0) (p 0) (u 0) +
+          lChartAction S T (t 1) (p 1) (u 1) ≤
+        lChartAction S T (t 0) (p 0) (w 0) +
+          lChartAction S T (t 1) (p 1) (w 1) at hc'
     rw [hw0eq, hw1eq] at hc'
     linarith
 

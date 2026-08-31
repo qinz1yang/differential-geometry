@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
@@ -286,7 +286,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
               (lVelocity (I := I) (alpha n) s)
               (lVelocity (I := I) (alpha n) s) := by
       simpa only [partitionIntervalLength, smul_apply, real_inner_smul_left] using
-        (lKinetic_local S T (alpha n) (p i) (t i.castSucc) (t i.succ)
+        (lKinetic_eq_chart_integral S T (alpha n) (p i) (t i.castSucc) (t i.succ)
           (hseg i) (u i n) (hsrc i n) (hrep i n) (hdiff i n)).symm
     rw [heq]
     exact hpiece i n

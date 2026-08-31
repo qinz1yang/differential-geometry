@@ -1,6 +1,7 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1C1
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.WeakEulerLagrange
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeQuadraticRegularC1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.ForceRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityRegularity
+import Mathlib.MeasureTheory.Measure.OpenPos
 
 set_option autoImplicit false
 
@@ -24,26 +25,36 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (∞ : WithTop ℕ∞) M] [T2Space M]
 variable {D : RealTimeInterval}
 
-theorem lChart_min_c1
+theorem lChartAction_minimizer_momentum_contDiffOn_one
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (hL : 0 < L) (u : timeH1 E L)
     (hreg : ∀ r ∈ Icc (0 : Real) L, T - (a + r) ^ 2 ∈ D.regular)
     (hchart : MapsTo u.toFun (Icc (0 : Real) L)
       (interior (extChartAt I p).target))
-    (hmin : IsLocalMinOn (lChartAct S T a p) (sameTimeEnds u) u) :
-    ∃ q : Real → E,
+    (hmin : IsLocalMinOn (lChartAction S T a p) (sameTimeEnds u) u) :
+    ∃ q P : Real → E,
       ContinuousOn q (Icc (0 : Real) L) ∧
       u.deriv =ᵐ[timeMeasure L] q ∧
       ContDiffOn Real 1 u.toFun (Icc (0 : Real) L) ∧
       EqOn (derivWithin u.toFun (Icc (0 : Real) L)) q
+        (Icc (0 : Real) L) ∧
+      ContDiffOn Real 1 P (Icc (0 : Real) L) ∧
+      EqOn P
+        (fun r ↦ (2 : Real) •
+          chartGramOp (I := I) S.family p
+            (T - (a + r) ^ 2, u.toFun r) (q r))
+        (Icc (0 : Real) L) ∧
+      EqOn (derivWithin P (Icc (0 : Real) L))
+        (fun r ↦ (2 : Real) •
+          lChartForceRepresentative (I := I) S T a p u q r)
         (Icc (0 : Real) L) := by
   let τ : Real → Real := fun r ↦ T - (a + r) ^ 2
   let K : Set E := u.toFun '' Icc (0 : Real) L
   have hτc : ContinuousOn τ (Icc (0 : Real) L) := by
-    exact (continuous_const.sub ((continuous_const.add continuous_id).pow 2)).continuousOn
-  have hτreg : MapsTo τ (Icc (0 : Real) L) D.regular := by
-    exact hreg
+    exact (continuous_const.sub
+      ((continuous_const.add continuous_id).pow 2)).continuousOn
+  have hτreg : MapsTo τ (Icc (0 : Real) L) D.regular := hreg
   have hKc : IsCompact K :=
     isCompact_Icc.image_of_continuousOn u.continuousOn_toFun
   have hKchart : K ⊆ interior (extChartAt I p).target := by
@@ -54,13 +65,20 @@ theorem lChart_min_c1
     exact ⟨r, hr, rfl⟩
   obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτreg
     hKc hKchart u huK
+  obtain ⟨q, hq, hqae, huc1, huderiv⟩ :=
+    lChartAction_minimizer_contDiffOn_one (I := I) S hS T a p hL u hreg hchart hmin
   obtain ⟨hForce, hWeak⟩ :=
-    lChart_weak_euler (I := I) S hS T a p hL u hreg hchart hmin
-  let F : Real → E := fun r ↦ (2 : Real) • lChartForce (I := I) S T a p u r
-  have hF : IntegrableOn F (Icc (0 : Real) L) volume := by
-    change Integrable F (volume.restrict (Icc (0 : Real) L))
-    exact (Integrable.smul (2 : Real) hForce).congr
-      (Eventually.of_forall fun _ ↦ rfl)
+    lChartAction_weak_euler_lagrange_of_isLocalMinOn (I := I) S hS T a p hL u hreg hchart hmin
+  have hForceRep : ContinuousOn
+      (lChartForceRepresentative (I := I) S T a p u q) (Icc (0 : Real) L) :=
+    continuousOn_lChartForceRepresentative (I := I) S hS T a p u q hreg hchart hq
+  have hForceAE : lChartForce (I := I) S T a p u =ᵐ[timeMeasure L]
+      lChartForceRepresentative (I := I) S T a p u q :=
+    lChartForce_ae_eq_lChartForceRepresentative (I := I) S hS T a p u q hreg hchart hqae
+  let F : Real → E := fun r ↦
+    (2 : Real) • lChartForceRepresentative (I := I) S T a p u q r
+  have hF : ContinuousOn F (Icc (0 : Real) L) := by
+    exact (hForceRep.const_smul (2 : Real)).congr fun _ _ ↦ rfl
   have hEuler : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun r ↦ chartGramOp (I := I) S.family p
@@ -96,8 +114,9 @@ theorem lChart_min_c1
           (v.deriv r)) volume 0 L := by
       have hMom : Integrable
           (fun r ↦ inner Real
-            (chartGramOp (I := I) S.family p (τ r, u.toFun r) (u.deriv r))
-            (v.deriv r)) (timeMeasure L) := by
+            (chartGramOp (I := I) S.family p
+              (τ r, u.toFun r) (u.deriv r)) (v.deriv r))
+          (timeMeasure L) := by
         refine (L2.integrable_inner
           (timeOp (fun r ↦ chartGramOp (I := I) S.family p
             (τ r, u.toFun r)) hA C hC u.deriv) v.deriv).congr ?_
@@ -132,26 +151,68 @@ theorem lChart_min_c1
         (∫ r in Icc (0 : Real) L, inner Real (F r) (v.toFun r)) =
           2 * ∫ r in (0 : Real)..L,
             inner Real (lChartForce (I := I) S T a p u r) (v.toFun r) := by
-      rw [integral_Icc_eq_integral_Ioc,
-        ← intervalIntegral.integral_of_le hL.le,
-        ← intervalIntegral.integral_const_mul]
-      apply intervalIntegral.integral_congr
-      intro r _
-      simp only [F, real_inner_smul_left]
+      calc
+        (∫ r in Icc (0 : Real) L, inner Real (F r) (v.toFun r)) =
+            ∫ r in Icc (0 : Real) L,
+              2 * inner Real
+                (lChartForce (I := I) S T a p u r) (v.toFun r) := by
+          apply integral_congr_ae
+          have hForceAE' : lChartForce (I := I) S T a p u
+              =ᵐ[volume.restrict (Icc (0 : Real) L)]
+                lChartForceRepresentative (I := I) S T a p u q := by
+            simpa only [timeMeasure] using hForceAE
+          filter_upwards [hForceAE'] with r hr
+          change inner Real
+            ((2 : Real) • lChartForceRepresentative (I := I) S T a p u q r)
+              (v.toFun r) = _
+          rw [← hr, real_inner_smul_left]
+        _ = 2 * ∫ r in Icc (0 : Real) L,
+              inner Real (lChartForce (I := I) S T a p u r) (v.toFun r) := by
+          rw [integral_const_mul]
+        _ = 2 * ∫ r in (0 : Real)..L,
+              inner Real (lChartForce (I := I) S T a p u r) (v.toFun r) := by
+          rw [intervalIntegral.integral_of_le hL.le,
+            integral_Icc_eq_integral_Ioc]
     rw [hMomEq, hForceEq]
     linarith
-  obtain ⟨q, hq, hqae⟩ := exists_continuous_velocity_representative_of_weak_euler hS.smoothMetric p hL τ
-    hτc hτreg hKchart u huK hA C hC F hF hEuler
-  have hqtime : u.deriv =ᵐ[timeMeasure L] q := by
-    have hae : ae (volume.restrict (Ioo (0 : Real) L)) =
-        ae (timeMeasure L) := by
-      congr 1
-      unfold timeMeasure
-      exact restrict_Ioo_eq_restrict_Icc
-    rw [← hae]
-    exact hqae
-  obtain ⟨hc1, hderiv⟩ := toFun_c1_of_rep hL u q hq hqtime
-  exact ⟨q, hq, hqtime, hc1, hderiv⟩
+  obtain ⟨c, hMomAE, hPc1, hPderiv⟩ := mom_rep_c1 hL
+    (fun r ↦ chartGramOp (I := I) S.family p (τ r, u.toFun r))
+    hA C hC u F hF hEuler
+  let P : Real → E := fun r ↦ c + ∫ s in (0 : Real)..r, F s
+  let momQ : Real → E := fun r ↦ (2 : Real) •
+    chartGramOp (I := I) S.family p (τ r, u.toFun r) (q r)
+  let J : Set Real := τ '' Icc (0 : Real) L
+  have hJreg : J ⊆ D.regular := by
+    rintro t ⟨r, hr, rfl⟩
+    exact hτreg hr
+  have hpair : ContinuousOn (fun r ↦ (τ r, u.toFun r))
+      (Icc (0 : Real) L) := hτc.prodMk u.continuousOn_toFun
+  have hAcont : ContinuousOn
+      (fun r ↦ chartGramOp (I := I) S.family p (τ r, u.toFun r))
+      (Icc (0 : Real) L) :=
+    (chartGramOp_cont (I := I) hS.smoothMetric hJreg p hKchart).comp
+      hpair fun r hr ↦ ⟨⟨r, hr, rfl⟩, huK hr⟩
+  have hMomQcont : ContinuousOn momQ (Icc (0 : Real) L) := by
+    exact ((hAcont.clm_apply hq).const_smul (2 : Real)).congr fun _ _ ↦ rfl
+  have hqIoo : u.deriv =ᵐ[volume.restrict (Ioo (0 : Real) L)] q := by
+    simpa only [timeMeasure, Measure.restrict_congr_set Ioo_ae_eq_Icc]
+      using hqae
+  have hPMomIoo : P =ᵐ[volume.restrict (Ioo (0 : Real) L)] momQ := by
+    filter_upwards [hMomAE, hqIoo] with r hrP hrq
+    change c + ∫ s in (0 : Real)..r, F s =
+      (2 : Real) •
+        chartGramOp (I := I) S.family p (τ r, u.toFun r) (q r)
+    rw [← hrq]
+    exact hrP.symm
+  have hPMomIcc : P =ᵐ[volume.restrict (Icc (0 : Real) L)] momQ := by
+    simpa only [Measure.restrict_congr_set Ioo_ae_eq_Icc] using hPMomIoo
+  have hPeq : EqOn P momQ (Icc (0 : Real) L) :=
+    MeasureTheory.Measure.eqOn_Icc_of_ae_eq
+      (volume : Measure Real) hL.ne hPMomIcc hPc1.continuousOn hMomQcont
+  refine ⟨q, P, hq, hqae, huc1, huderiv, ?_, ?_, ?_⟩
+  · simpa only [P] using hPc1
+  · simpa only [momQ, τ] using hPeq
+  · simpa only [P, F] using hPderiv
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeNonlinearEuler
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Force
+import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Force
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamilyVelocity
 import DifferentialGeometry.Geometry.Operator.Gradient
 
@@ -910,8 +911,8 @@ private theorem lWeak_pos_pair
     intro i _
     simp only [f, y]
     ring
-  rw [lChartForce_inner, coeffForce_apply]
-  rw [lChartPosDeriv]
+  rw [inner_lChartForce, coeffForce_apply]
+  rw [lChartPositionDerivative]
   simp only [sum_apply, smul_apply,
     smul_eq_mul, lWeakCoeffD, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.inr_apply]
@@ -998,7 +999,7 @@ private theorem lWeak_pos_pair
     ring
 
 omit [SigmaCompactSpace M] in
-theorem lChartAct_line
+theorem hasDerivAt_lChartAction_line
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (hL : 0 ≤ L) (u v : timeH1 E L)
@@ -1007,7 +1008,7 @@ theorem lChartAct_line
       (fun q : Real × Real ↦ u.toFun q.2 + q.1 • v.toFun q.2)
       (Icc (-1 : Real) 1 ×ˢ Icc (0 : Real) L)
       (interior (extChartAt I p).target)) :
-    HasDerivAt (fun c : Real ↦ lChartAct S T a p (u + c • v))
+    HasDerivAt (fun c : Real ↦ lChartAction S T a p (u + c • v))
       (∫ r in (0 : Real)..L,
         inner Real (lChartForce (I := I) S T a p u r) (v.toFun r) +
           inner Real
@@ -1018,11 +1019,11 @@ theorem lChartAct_line
   have hpot := lWeakScal_line (I := I) S hS T a p hL u v hreg hbuf
   have hsum := hkin.2.2.add hpot.2.2
   have hsplit (c : Real) (hc : c ∈ Icc (-1 : Real) 1) :
-      lChartAct S T a p (u + c • v) =
+      lChartAction S T a p (u + c • v) =
         timeCoeffAction (lWeakCoeff (I := I) S T a p) (u + c • v) +
           ∫ r in (0 : Real)..L,
             lWeakScal (I := I) S T a p r ((u + c • v).toFun r) := by
-    unfold lChartAct lChartLag timeCoeffAction
+    unfold lChartAction lChartLagrangian timeCoeffAction
     change (∫ r in (0 : Real)..L,
       inner Real
           (lWeakCoeff (I := I) S T a p r ((u + c • v).toFun r)
@@ -1030,7 +1031,7 @@ theorem lChartAct_line
         lWeakScal (I := I) S T a p r ((u + c • v).toFun r)) = _
     rw [intervalIntegral.integral_add (hkin.1 c hc) (hpot.1 c hc)]
   have heq : ∀ᶠ c in nhds (0 : Real),
-      lChartAct S T a p (u + c • v) =
+      lChartAction S T a p (u + c • v) =
         timeCoeffAction (lWeakCoeff (I := I) S T a p) (u + c • v) +
           ∫ r in (0 : Real)..L,
             lWeakScal (I := I) S T a p r ((u + c • v).toFun r) := by
@@ -1055,14 +1056,14 @@ theorem lChartAct_line
   ring
 
 omit [SigmaCompactSpace M] in
-theorem lChart_weak_euler
+theorem lChartAction_weak_euler_lagrange_of_isLocalMinOn
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (hL : 0 < L) (u : timeH1 E L)
     (hreg : ∀ r ∈ Icc (0 : Real) L, T - (a + r) ^ 2 ∈ D.regular)
     (hchart : MapsTo u.toFun (Icc (0 : Real) L)
       (interior (extChartAt I p).target))
-    (hmin : IsLocalMinOn (lChartAct S T a p) (sameTimeEnds u) u) :
+    (hmin : IsLocalMinOn (lChartAction S T a p) (sameTimeEnds u) u) :
     IntegrableOn (lChartForce (I := I) S T a p u)
         (Icc (0 : Real) L) volume ∧
       ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
@@ -1072,7 +1073,7 @@ theorem lChart_weak_euler
               (chartGramOp (I := I) S.family p
                 (T - (a + r) ^ 2, u.toFun r) (u.deriv r))
               (v.deriv r)) = 0 := by
-  refine ⟨lChartForce_int (I := I) S hS T a p hL u hreg hchart, ?_⟩
+  refine ⟨integrableOn_lChartForce (I := I) S hS T a p hL u hreg hchart, ?_⟩
   intro v hv0 hvL
   let Ku : Set E := u.toFun '' Icc (0 : Real) L
   have hKuc : IsCompact Ku :=
@@ -1140,16 +1141,16 @@ theorem lChart_weak_euler
     · change (u + c • w).toFun L = u.toFun L
       rw [timeH1.toFun_add u (c • w) ⟨hL.le, le_rfl⟩,
         timeH1.toFun_smul c w ⟨hL.le, le_rfl⟩, hwL, smul_zero, add_zero]
-  have hscalar : IsLocalMin (lChartAct S T a p ∘ line) 0 := by
+  have hscalar : IsLocalMin (lChartAction S T a p ∘ line) 0 := by
     rw [← isLocalMinOn_univ_iff]
-    have hmin' : IsLocalMinOn (lChartAct S T a p) (sameTimeEnds u) (line 0) := by
+    have hmin' : IsLocalMinOn (lChartAction S T a p) (sameTimeEnds u) (line 0) := by
       simpa only [hline0] using hmin
     exact hmin'.comp_continuousOn hmaps
       (continuous_const.add (continuous_id.smul continuous_const)).continuousOn
       (mem_univ (0 : Real))
-  have hline := lChartAct_line (I := I) S hS T a p hL.le u w hreg hbuf
+  have hline := hasDerivAt_lChartAction_line (I := I) S hS T a p hL.le u w hreg hbuf
   have hzero := hscalar.deriv_eq_zero
-  have hline' : HasDerivAt (lChartAct S T a p ∘ line)
+  have hline' : HasDerivAt (lChartAction S T a p ∘ line)
       (∫ r in (0 : Real)..L,
         inner Real (lChartForce (I := I) S T a p u r) (w.toFun r) +
           inner Real

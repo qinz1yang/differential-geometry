@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.TwoPieceSplicing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
 
 set_option autoImplicit false
 
@@ -28,7 +28,7 @@ private theorem seg_before {m : Nat} {i j : Fin m} (hij : i < j) :
   exact Fin.succ_le_castSucc_iff.mpr hij
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAct_adjacent_pair_le_of_lRegAction_minimizer
+theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -63,17 +63,17 @@ theorem lChartAct_adjacent_pair_le_of_lRegAction_minimizer
     (hvnode : (extChartAt I (p q.castSucc)).symm
         (v0.toFun (partitionIntervalLength t q.castSucc)) =
       (extChartAt I (p q.succ)).symm (v1.toFun 0)) :
-    lChartAct S T (t q.castSucc.castSucc) (p q.castSucc) (u q.castSucc) +
-        lChartAct S T (t q.succ.castSucc) (p q.succ) (u q.succ) ≤
-      lChartAct S T (t q.castSucc.castSucc) (p q.castSucc) v0 +
-        lChartAct S T (t q.succ.castSucc) (p q.succ) v1 := by
+    lChartAction S T (t q.castSucc.castSucc) (p q.castSucc) (u q.castSucc) +
+        lChartAction S T (t q.succ.castSucc) (p q.succ) (u q.succ) ≤
+      lChartAction S T (t q.castSucc.castSucc) (p q.castSucc) v0 +
+        lChartAction S T (t q.succ.castSucc) (p q.succ) v1 := by
   classical
   let i : Fin (m + 2) := q.castSucc
   let j : Fin (m + 2) := q.succ
-  change lChartAct S T (t i.castSucc) (p i) (u i) +
-      lChartAct S T (t j.castSucc) (p j) (u j) ≤
-    lChartAct S T (t i.castSucc) (p i) v0 +
-      lChartAct S T (t j.castSucc) (p j) v1
+  change lChartAction S T (t i.castSucc) (p i) (u i) +
+      lChartAction S T (t j.castSucc) (p j) (u j) ≤
+    lChartAction S T (t i.castSucc) (p i) v0 +
+      lChartAction S T (t j.castSucc) (p j) v1
   have hij : i.val + 1 = j.val := rfl
   change timeH1 E (partitionIntervalLength t i) at v0
   change timeH1 E (partitionIntervalLength t j) at v1
@@ -313,15 +313,15 @@ theorem lChartAct_adjacent_pair_le_of_lRegAction_minimizer
         ((halphab n).trans hend))
     linarith
   let F : Fin (m + 2) → Real := fun k ↦
-    lChartAct S T (t k.castSucc) (p k) (u k)
+    lChartAction S T (t k.castSucc) (p k) (u k)
   let G : Fin (m + 2) → Real := fun k ↦
-    lChartAct S T (t k.castSucc) (p k) (uv k)
+    lChartAction S T (t k.castSucc) (p k) (uv k)
   have hsum : ∑ k, F k ≤ ∑ k, G k := by
     rw [show (∑ k, F k) = lRegAction S T gamma a b from
-      (lRegAction_chart_sum S hMet hSc T a b t htmono ht0 htlast p gamma
+      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gamma
         u hsrc hrep hreg).symm]
     rw [show (∑ k, G k) = lRegAction S T gammaV a b from
-      (lRegAction_chart_sum S hMet hSc T a b t htmono ht0 htlast p gammaV
+      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gammaV
         uv hsrcV hrepV hreg).symm]
     exact hglobal
   let R : Finset (Fin (m + 2)) := (Finset.univ.erase i).erase j
@@ -347,9 +347,9 @@ theorem lChartAct_adjacent_pair_le_of_lRegAction_minimizer
     have hkj : k ≠ j := (Finset.mem_erase.mp hk).1
     simp only [G, F, huv_other k hki hkj]
   rw [hFsum, hGsum, hrest] at hsum
-  have hGi : G i = lChartAct S T (t i.castSucc) (p i) v0 := by
+  have hGi : G i = lChartAction S T (t i.castSucc) (p i) v0 := by
     simp only [G, huv_i]
-  have hGj : G j = lChartAct S T (t j.castSucc) (p j) v1 := by
+  have hGj : G j = lChartAction S T (t j.castSucc) (p j) v1 := by
     simp only [G, huv_j]
   rw [hGi, hGj] at hsum
   dsimp only [F] at hsum

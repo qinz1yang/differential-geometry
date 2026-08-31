@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.RampBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.LocalMinimality
 
 set_option autoImplicit false
 
@@ -99,7 +99,7 @@ theorem lRampAct_bound
     (hscalar : ∀ r ∈ Icc (0 : Real) L,
       |2 * (a + r) ^ 2 * S.scalar (T - (a + r) ^ 2)
         ((extChartAt I p).symm ((lChartRamp y z hL.le).toFun r))| ≤ Cs) :
-    lChartAct S T a p (lChartRamp y z hL.le) ≤
+    lChartAction S T a p (lChartRamp y z hL.le) ≤
       (Cg / 2) * (‖z - y‖ ^ 2 / L) + Cs * L := by
   let u : timeH1 E L := lChartRamp y z hL.le
   let v : E := (1 / L) • (z - y)
@@ -168,9 +168,9 @@ theorem lRampAct_bound
       (ae_mono (Measure.restrict_mono Ioc_subset_Icc_self le_rfl))
     simpa only [timeMeasure, uIoc_of_le hL.le,
       restrict_Ioc_eq_restrict_Icc] using hm
-  have hact : lChartAct S T a p u =
+  have hact : lChartAction S T a p u =
       (∫ r in (0 : Real)..L, kin r) + ∫ r in (0 : Real)..L, pot r := by
-    unfold lChartAct lChartLag
+    unfold lChartAction lChartLagrangian
     rw [intervalIntegral.integral_add]
     · congr 1
       · apply intervalIntegral.integral_congr_ae_restrict
@@ -224,7 +224,7 @@ theorem lRampAct_bound
     have hm := intervalIntegral.integral_mono_on hL.le hpotInt hconst hpotLe
     simpa only [intervalIntegral.integral_const, sub_zero, smul_eq_mul,
       mul_comm L] using hm
-  rw [show lChartAct S T a p (lChartRamp y z hL.le) = lChartAct S T a p u by rfl,
+  rw [show lChartAction S T a p (lChartRamp y z hL.le) = lChartAction S T a p u by rfl,
     hact]
   calc
     (∫ r in (0 : Real)..L, kin r) + ∫ r in (0 : Real)..L, pot r ≤
@@ -249,7 +249,7 @@ theorem lRampAct_linear
     (hscalar : ∀ r ∈ Icc (0 : Real) L,
       |2 * (a + r) ^ 2 * S.scalar (T - (a + r) ^ 2)
         ((extChartAt I p).symm ((lChartRamp y z hL.le).toFun r))| ≤ Cs) :
-    lChartAct S T a p (lChartRamp y z hL.le) ≤
+    lChartAction S T a p (lChartRamp y z hL.le) ≤
       (Cg / 2 * V ^ 2 + Cs) * L := by
   have hbase := lRampAct_bound (I := I) S hS T a p hL hreg htar Cg Cs
     hgram hscalar
@@ -260,7 +260,7 @@ theorem lRampAct_linear
   have hsq : (‖z - y‖ / L) ^ 2 ≤ V ^ 2 :=
     (sq_le_sq₀ hratio0 hV).2 hratio
   calc
-    lChartAct S T a p (lChartRamp y z hL.le) ≤
+    lChartAction S T a p (lChartRamp y z hL.le) ≤
         Cg / 2 * (‖z - y‖ ^ 2 / L) + Cs * L := hbase
     _ = (Cg / 2 * (‖z - y‖ / L) ^ 2 + Cs) * L := by
       field_simp
@@ -278,7 +278,7 @@ theorem lRampAct_slab
       ∀ {a L : Real} {y z : E} (hL : 0 < L),
         (∀ r ∈ Icc (0 : Real) L, a + r ∈ Icc A B) →
         MapsTo (lChartRamp y z hL.le).toFun (Icc (0 : Real) L) K →
-        lChartAct S T a p (lChartRamp y z hL.le) ≤
+        lChartAction S T a p (lChartRamp y z hL.le) ≤
           (Cg / 2) * (‖z - y‖ ^ 2 / L) + Cs * L := by
   let τ : Real → Real := fun s ↦ T - s ^ 2
   let J : Set Real := τ '' Icc A B

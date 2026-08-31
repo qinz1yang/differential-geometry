@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Force
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Force
 
 set_option autoImplicit false
 
@@ -27,7 +27,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-noncomputable def lChartPosRep
+noncomputable def lChartPositionDerivativeRepresentative
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (q : Real → E) (r : Real) :
     E →L[Real] Real :=
@@ -43,10 +43,10 @@ noncomputable def lChartPosRep
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) •
       chartCoordCLM E i
 
-noncomputable def lChartForceRep
+noncomputable def lChartForceRepresentative
     (S : SolutionOn (I := I) (M := M) D) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (q : Real → E) (r : Real) : E :=
-  (lChartPosRep (I := I) S T a p u q r).adjoint 1
+  (lChartPositionDerivativeRepresentative (I := I) S T a p u q r).adjoint 1
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
@@ -81,7 +81,7 @@ private theorem chartScalCov_basis
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
-theorem lChartForceRep_cont
+theorem continuousOn_lChartForceRepresentative
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (q : Real → E)
@@ -89,7 +89,7 @@ theorem lChartForceRep_cont
     (hchart : MapsTo u.toFun (Icc (0 : Real) L)
       (interior (extChartAt I p).target))
     (hq : ContinuousOn q (Icc (0 : Real) L)) :
-    ContinuousOn (lChartForceRep (I := I) S T a p u q)
+    ContinuousOn (lChartForceRepresentative (I := I) S T a p u q)
       (Icc (0 : Real) L) := by
   classical
   let tau : Real → Real := fun r ↦ T - (a + r) ^ 2
@@ -154,7 +154,7 @@ theorem lChartForceRep_cont
       ((continuousOn_const.mul
         ((continuousOn_const.add continuousOn_id).pow 2)).mul hscal)
   have hpos : ContinuousOn
-      (lChartPosRep (I := I) S T a p u q) (Icc (0 : Real) L) := by
+      (lChartPositionDerivativeRepresentative (I := I) S T a p u q) (Icc (0 : Real) L) := by
     with_unfolding_all exact
       continuousOn_finsetSum Finset.univ fun i _ ↦
         (hcoord i).smul continuousOn_const
@@ -166,7 +166,7 @@ theorem lChartForceRep_cont
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
-theorem lChartForceRep_ae
+theorem lChartForce_ae_eq_lChartForceRepresentative
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a : Real) (p : M)
     {L : Real} (u : timeH1 E L) (q : Real → E)
@@ -175,7 +175,7 @@ theorem lChartForceRep_ae
       (interior (extChartAt I p).target))
     (hq : u.deriv =ᵐ[timeMeasure L] q) :
     lChartForce (I := I) S T a p u =ᵐ[timeMeasure L]
-      lChartForceRep (I := I) S T a p u q := by
+      lChartForceRepresentative (I := I) S T a p u q := by
   classical
   filter_upwards [hq, ae_restrict_mem measurableSet_Icc] with r hrq hr
   have hz : (T - (a + r) ^ 2, u.toFun r) ∈
@@ -183,14 +183,14 @@ theorem lChartForceRep_ae
     ⟨hreg r hr, hchart hr⟩
   have hscal := chartScalCov_basis (I := I) S hS p
     (T - (a + r) ^ 2, u.toFun r) hz
-  have hpos : lChartPosDeriv (I := I) S T a p u r =
-      lChartPosRep (I := I) S T a p u q r := by
-    rw [lChartPosDeriv, lChartPosRep]
+  have hpos : lChartPositionDerivative (I := I) S T a p u r =
+      lChartPositionDerivativeRepresentative (I := I) S T a p u q r := by
+    rw [lChartPositionDerivative, lChartPositionDerivativeRepresentative]
     apply Finset.sum_congr rfl
     intro i _
     rw [hrq, hscal i]
     rfl
-  rw [lChartForce, lChartForceRep, hpos]
+  rw [lChartForce, lChartForceRepresentative, hpos]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

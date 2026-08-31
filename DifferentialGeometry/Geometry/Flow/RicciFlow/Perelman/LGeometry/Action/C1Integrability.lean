@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
 
@@ -74,7 +74,7 @@ theorem lRegLag_int_c1
     have hdiff : ∀ᵐ r ∂timeMeasure ((t (n + 1) : Real) - t n),
         MDifferentiableAt (modelWithCornersSelf Real Real) I alpha ((t n : Real) + r) :=
       curve_mdiff_local I p alpha us (hseg n) hsrc hrep
-    exact lKinetic_int_local S hMet T alpha p (t n) (t (n + 1))
+    exact intervalIntegrable_lKinetic_of_chartH1 S hMet T alpha p (t n) (t (n + 1))
       (hseg n) us hsrc hrep hdiff fun s hs ↦
         hreg s ⟨(t n).property.1.trans hs.1,
           hs.2.trans (t (n + 1)).property.2⟩

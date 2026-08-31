@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.ArzelaAscoli
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.KineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ScalarCompactness
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
@@ -201,7 +201,7 @@ private theorem lChartKin_bound
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
           (lVelocity (I := J) (alpha n) s)
           (lVelocity (I := J) (alpha n) s)) volume a b :=
-    lKinetic_int_local S hMet T (alpha n) p a b hab (u n)
+    intervalIntegrable_lKinetic_of_chartH1 S hMet T (alpha n) p a b hab (u n)
       (hsrc n) (hrep n) (hdiff n) hreg
   have hpotInt (n : Nat) : IntervalIntegrable
       (fun s ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)) volume a b :=
@@ -231,7 +231,7 @@ private theorem lChartKin_bound
           (T - (a + r) ^ 2, (u n).toFun r) ((u n).deriv r))
         ((u n).deriv r)) = kin n := by
     simpa only [kin, smul_apply, real_inner_smul_left] using
-      (lKinetic_local S T (alpha n) p a b hab (u n)
+      (lKinetic_eq_chart_integral S T (alpha n) p a b hab (u n)
         (hsrc n) (hrep n) (hdiff n)).symm
   rw [heq]
   exact hkinBound

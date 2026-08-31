@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.VelocityMatching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.PieceLocalMinimality
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.VelocityRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CurveC1Glue
 
@@ -101,8 +101,8 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
         (extChartAt I (p 1)).symm ((u 1).toFun (partitionIntervalLength t 1)) →
       (extChartAt I (p 0)).symm ((v 0).toFun (partitionIntervalLength t 0)) =
         (extChartAt I (p 1)).symm ((v 1).toFun 0) →
-      (∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (u i)) ≤
-        ∑ i : Fin 2, lChartAct S T (t i.castSucc) (p i) (v i) := by
+      (∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (u i)) ≤
+        ∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (v i) := by
     intro v hvtar hv0 hv2 hvnode
     have hu0 : (extChartAt I (p 0)).symm ((u 0).toFun 0) = gamma (t 0) := by
       simpa only [hfin0c, add_zero] using hrecover 0 0 ⟨le_rfl, by
@@ -113,14 +113,14 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
         ⟨by simpa only [partitionIntervalLength, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
       simpa only [partitionIntervalLength, hfin1c, hfin1s, add_sub_cancel] using h
-    exact lChartAct_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
+    exact lChartAction_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal0 : IsLocalMinOn
-      (lChartAct S T (t 0) (p 0)) (sameTimeEnds (u 0)) (u 0) :=
-    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 0
+      (lChartAction S T (t 0) (p 0)) (sameTimeEnds (u 0)) (u 0) :=
+    lChartAction_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 0
   have hlocal1 : IsLocalMinOn
-      (lChartAct S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
-    lChartAct_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
+      (lChartAction S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
+    lChartAction_isLocalMinOn_of_pair_minimality (I := I) S T t p u hchart hnode hcmp 1
   have hreg0 : ∀ r, r ∈ Icc (0 : Real) (partitionIntervalLength t 0) →
       T - (t 0 + r) ^ 2 ∈ D.regular := by
     intro r hr
@@ -136,11 +136,11 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
       simpa only [partitionIntervalLength, hfin1c, hfin1s] using hr.2
     exact ⟨ht01.le.trans (le_add_of_nonneg_right hr.1), by linarith⟩
   obtain ⟨q0, _hq0, _hq0ae, hu0c1, _hu0d⟩ :=
-    lChart_min_c1 (I := I) S hS T (t 0) (p 0)
+    lChartAction_minimizer_contDiffOn_one (I := I) S hS T (t 0) (p 0)
       (by simpa only [partitionIntervalLength, hfin0c, hfin0s] using sub_pos.mpr ht01)
       (u 0) hreg0 (hchart 0) hlocal0
   obtain ⟨q1, _hq1, _hq1ae, hu1c1, _hu1d⟩ :=
-    lChart_min_c1 (I := I) S hS T (t 1) (p 1)
+    lChartAction_minimizer_contDiffOn_one (I := I) S hS T (t 1) (p 1)
       (by simpa only [partitionIntervalLength, hfin1c, hfin1s] using sub_pos.mpr ht12)
       (u 1) hreg1 (hchart 1) hlocal1
   have hgamma0 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
