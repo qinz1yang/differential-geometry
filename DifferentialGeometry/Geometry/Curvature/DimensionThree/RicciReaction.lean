@@ -245,4 +245,86 @@ theorem ricciReactionDefectAt_eq_zero_iff_of_curvature_eigenframe
     (I := I) (M := M) g x basis horth lambda mu nu hdiag]
   exact curvatureReactionPolynomial3_eq_zero_iff lambda mu nu hlambda hnu
 
+omit [I.Boundaryless] in
+theorem exists_orthonormal_curvature_eigenframe
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3) :
+    ∃ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+      ∃ lambda mu nu : Real,
+        OrthonormalBasisAt (I := I) g x basis ∧
+          RicciDiagAt (I := I)
+            (metricRicciAt (I := I) (M := M) g x)
+            (metricScalarAt (I := I) (M := M) g x)
+            ((mu + nu) / 2) ((lambda + nu) / 2) ((lambda + mu) / 2) basis := by
+  classical
+  have hsymm :
+      RicciSymAt (I := I) (metricRicciAt (I := I) (M := M) g x) := by
+    intro U V
+    let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis
+      (I := I) x
+    let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
+        DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
+      fun i j =>
+        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
+          (I := I) g x i j (extChartAt I x x)
+    have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
+      simpa [basis, gInv] using
+        (DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
+          (I := I) g x)
+    have hcomp :
+        ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
+          metricRicciAt (I := I) (M := M) g x
+              (fun q : Fin 2 => if q = 0 then basis i else basis j) =
+            metricRicciAt (I := I) (M := M) g x
+              (fun q : Fin 2 => if q = 0 then basis j else basis i) := by
+      intro i j
+      change metricRicciAt (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)) =
+        metricRicciAt (I := I) (M := M) g x
+          (vec2 (I := I) (basis j) (basis i))
+      exact metricRicciSymm (I := I) (M := M) g basis gInv hinv i j
+    exact
+      DifferentialGeometry.Tensor.Coordinates.tensor0S_two_symm_of_coordFrame
+        (I := I) basis (metricRicciAt (I := I) (M := M) g x) hcomp U V
+  obtain ⟨basis, l1, l2, l3, horth, hdiag⟩ :=
+    ricciEigen3 (I := I) g
+      (metricRicciAt (I := I) (M := M) g x) hdim hsymm
+  have hinv : MetricInverseInBasisGen (I := I) g x basis delta3 :=
+    orthonormal_invBasis3 (I := I) g basis horth
+  have hcomp (i j : Fin 3) :
+      metricRicciAt (I := I) (M := M) g x
+          (vec2 (I := I) (basis i) (basis j)) =
+        ricciDiag3 l1 l2 l3 i j := by
+    simpa [ricciCompAt_apply] using hdiag.2 i j
+  have hscalar :
+      metricScalarAt (I := I) (M := M) g x =
+        ricciEigenScalar3 l1 l2 l3 := by
+    rw [metricScalarAt_def,
+      metricTracePair0SAt_eq_sum_basis (I := I) g basis delta3 hinv]
+    simp_rw [hcomp]
+    unfold ricciEigenScalar3 ricciDiag3 delta3
+    simp [Fin.sum_univ_three]
+  let lambda := l2 + l3 - l1
+  let mu := l1 + l3 - l2
+  let nu := l1 + l2 - l3
+  refine ⟨basis, lambda, mu, nu, horth, ?_⟩
+  constructor
+  · rw [hscalar]
+    unfold ricciEigenScalar3
+    dsimp [lambda, mu, nu]
+    ring
+  · intro i j
+    rw [hdiag.2 i j]
+    fin_cases i <;> fin_cases j <;>
+      simp [ricciDiag3, lambda, mu, nu] <;> ring
+
+theorem ricciReactionDefectAt_nonneg_of_finrank_eq_three
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3) :
+    0 ≤ ricciReactionDefectAt (I := I) g x := by
+  obtain ⟨basis, lambda, mu, nu, horth, hdiag⟩ :=
+    exists_orthonormal_curvature_eigenframe (I := I) (M := M) g x hdim
+  exact ricciReactionDefectAt_nonneg_of_curvature_eigenframe
+    (I := I) (M := M) g x basis horth lambda mu nu hdiag
+
 end DifferentialGeometry.Geometry.Curvature
