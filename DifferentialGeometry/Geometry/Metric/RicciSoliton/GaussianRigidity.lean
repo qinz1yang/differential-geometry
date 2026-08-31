@@ -3,19 +3,21 @@ import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.GeodesicSpeedBound
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
+import DifferentialGeometry.Geometry.Exponential.RadialFlat
 
 set_option autoImplicit false
 
 noncomputable section
 
 open Bundle Manifold Set
-open scoped Manifold ContDiff
+open scoped Bundle Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry
 
 open Connection Curvature Operator
 open Riemannian
 open Riemannian.CovariantDerivativeAlong
+open Riemannian.Exponential
 open Riemannian.Geodesic
 open Riemannian.Variation
 
@@ -389,5 +391,41 @@ theorem normalizedGradientRicciSoliton_riemannOp_velocity_eq_zero_along_geodesic
     have hcoef : (t - t₀) / 2 ≠ 0 :=
       div_ne_zero (sub_ne_zero.mpr ht) (by norm_num)
     exact (smul_eq_zero.mp hnull).resolve_left hcoef
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem normalizedGradientRicciSoliton_expMapIntrinsic_mfderiv_inner_of_scalar_eq_zero
+    [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (h : normalizedGradientRicciSoliton (I := I) g f)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    {x : M} (hx : metricScalarAt (I := I) g x = 0)
+    {p : M} (hcrit : gradFun (I := I) g f p = 0)
+    (u v w : TangentSpace I p) :
+    g.inner (expMapIntrinsic (I := I) g hEnorm p u)
+        (mfderiv 𝓘(Real, E) I
+          (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+            (show TangentSpace I p from z)) (u : E) (v : E))
+        (mfderiv 𝓘(Real, E) I
+          (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+            (show TangentSpace I p from z)) (u : E) (w : E)) =
+      g.inner p v w := by
+  let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
+  have hγ : ContMDiff 𝓘(Real, Real) I ∞ γ := by
+    simpa only [γ] using intrinsicGeodesic_contMDiff (I := I) g hEnorm p u
+  have hgeo : IsGeodesic (I := I) g γ := by
+    intro t
+    simpa only [γ] using intrinsicGeodesic_isGeodesic (I := I) g hEnorm p u t
+  have hcrit0 : gradFun (I := I) g f (γ 0) = 0 := by
+    rw [show γ 0 = p from intrinsicGeodesic_zero (I := I) g hEnorm p u]
+    exact hcrit
+  apply expMapIntrinsic_mfderiv_inner_of_radial_curvature_zero
+    (I := I) g hEnorm p u v w
+  intro t ht X
+  exact
+    normalizedGradientRicciSoliton_riemannOp_velocity_eq_zero_along_geodesic_of_scalar_eq_zero
+      (I := I) h hx hγ hgeo hcrit0 t X (curveVelocity (I := I) γ t)
 
 end DifferentialGeometry.Geometry
