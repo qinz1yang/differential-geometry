@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringOrdered
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.IsometryDeriv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
 
 

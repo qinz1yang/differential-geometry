@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapH
 
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.LiveScale
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ScaleSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.MetricSequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Diagonal
 
@@ -1194,7 +1194,7 @@ private noncomputable def baseScale
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) : Real :=
-  Classical.choose (d.exists_live_scale hre hcomplete hconn)
+  Classical.choose (d.exists_center_of_mass_scale hre hcomplete hconn)
 
 noncomputable def stageScale
     {hd : InjRadiusDecayInput (I := I) X}
@@ -1218,7 +1218,7 @@ theorem stageScale_pos
     0 < d.stageScale hre hcomplete hconn := by
   apply lt_min
   · exact (Classical.choose_spec
-      (d.exists_live_scale hre hcomplete hconn)).1
+      (d.exists_center_of_mass_scale hre hcomplete hconn)).1
   · exact div_pos d.ratio_pos (by norm_num)
 
 omit [CompleteSpace E] in
@@ -1270,7 +1270,7 @@ theorem stage_data
   classical
   let aBase := baseScale d inp.realizes hcomplete hconn
   have hscaleRaw := Classical.choose_spec
-    (d.exists_live_scale inp.realizes hcomplete hconn)
+    (d.exists_center_of_mass_scale inp.realizes hcomplete hconn)
   have haBase : 0 < aBase := by
     simpa only [aBase, baseScale] using hscaleRaw.1
   let aMin := d.stageScale inp.realizes hcomplete hconn

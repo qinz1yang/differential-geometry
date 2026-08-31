@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.BranchMin
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BoundedGeometry
 
 
 
@@ -31,7 +31,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 namespace BoundedGeometryNormalData
 
 omit [CompleteSpace E] in
-theorem exists_live_scale
+theorem exists_center_of_mass_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)

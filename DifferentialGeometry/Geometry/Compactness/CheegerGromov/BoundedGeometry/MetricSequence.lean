@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.LocalMetrics
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.BranchConv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinateConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Comparison
 
 set_option autoImplicit false

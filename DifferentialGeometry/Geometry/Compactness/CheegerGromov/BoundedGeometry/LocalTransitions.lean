@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalData
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.IsometryDeriv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Transition
 
 set_option autoImplicit false

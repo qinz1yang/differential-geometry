@@ -1453,7 +1453,7 @@ theorem hess_pos
   nlinarith
 
 omit [CompleteSpace E] in
-theorem center_data
+theorem center_of_mass_normal_coordinate_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
@@ -1761,7 +1761,8 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
     (I := I) (X.obj k) hcomplete hconn x hq he
   let z := c.inv y
   let xi : ι → E := fun i => c.inv (pts i)
-  have hdata := d.center_data k hcomplete hconn x hq he hf
+  have hdata := d.center_of_mass_normal_coordinate_data
+    k hcomplete hconn x hq he hf
     mu pts join p r h hρ hρq hρChart hpairs
   rcases hdata with ⟨hy, hz, hxi, htgt, hdom, hzero⟩
   have hsol := IsNormalDiag.cmC_sol_strict (I := I) (X.obj k)

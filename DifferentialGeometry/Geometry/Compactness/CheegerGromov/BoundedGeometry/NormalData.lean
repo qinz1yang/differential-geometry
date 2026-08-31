@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoord
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherMetricJet

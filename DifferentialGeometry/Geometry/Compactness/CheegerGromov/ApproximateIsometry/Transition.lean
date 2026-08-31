@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Inputs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.IsometryDeriv
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

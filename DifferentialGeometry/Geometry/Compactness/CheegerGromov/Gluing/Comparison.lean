@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.HatReadout
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Support
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalMetricExtend
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.CenterReadout
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ChartSolution
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -2036,7 +2036,8 @@ theorem actual_cm_tail
   have hstrict : StrictDistInput (I := I) Yl.metric pts join p rad := by
     simpa only [Yl, x0, rhoBase, pts, join, Lphi, NetLimitData.subseq,
       Function.comp_apply, seqCenterD_subseq] using
-      d.strict_dist (L.φ (phi l)) (hcomplete.complete (L.φ (phi l)))
+      d.strict_dist_input (L.φ (phi l))
+        (hcomplete.complete (L.φ (phi l)))
         (hconn (L.φ (phi l)))
         (seqCenterD inp.decay P L (phi l) (alpha.1 : Nat))
         hq he hf happrox hinvErr hqAcc pts p rad
@@ -2054,7 +2055,8 @@ theorem actual_cm_tail
       ENNReal.ofReal (rhoBase / 2) := by
     apply (ENNReal.ofReal_le_ofReal ?_).trans_lt hcage
     nlinarith [hrad]
-  have hout := d.hat_sol_of_cage P inp.realizes L inp.pack r (phi l)
+  have hout := d.has_live_chart_center_solution_of_cage
+    P inp.realizes L inp.pack r (phi l)
     hcomplete hconn q δ hqdata (hbranchPhi l hlB) alpha
     (mu z) pts join p rad hcm (hmu.sum_one z hzU) hpHat hcage2
   let c := centerOfMass (I := I) Yl.metric (mu z) pts join p rad hcm

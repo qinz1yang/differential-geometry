@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityR
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicBallVolume
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallEuclideanUpper
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentCount
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoord
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap
 
 set_option autoImplicit false

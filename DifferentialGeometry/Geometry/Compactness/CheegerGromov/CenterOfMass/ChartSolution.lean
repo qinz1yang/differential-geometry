@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.LiveScale
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ScaleSelection
 
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.BranchConvexity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictConvexity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartReadout
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.UniformData
 
@@ -86,7 +86,7 @@ def HasLiveChartCenterSolution
 
 namespace BoundedGeometryNormalData
 
-theorem hat_sol_of_cage
+theorem has_live_chart_center_solution_of_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) {D aMin : Real}
@@ -298,7 +298,7 @@ theorem hat_sol_of_cage
       hρChart hpairs
   exact ⟨hq, e, he, hf, by simpa only [x0, y, rho0] using hsol⟩
 
-theorem exists_hat_min
+theorem exists_live_chart_center_solutions
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd)
@@ -421,7 +421,8 @@ theorem exists_hat_min
     ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
       (E × E) →L[Real] (E × E))‖₊
   let T : NNReal := N⁻¹
-  obtain ⟨aMin, haMin, hmin⟩ := d.exists_live_scale hre hcomplete hconn
+  obtain ⟨aMin, haMin, hmin⟩ :=
+    d.exists_center_of_mass_scale hre hcomplete hconn
   refine ⟨aMin, haMin, ?_⟩
   intro D hD hphys P L pb r
   obtain ⟨q, δ, hqdata, hbranch⟩ := hmin P L pb r
@@ -528,7 +529,7 @@ theorem exists_hat_min
     have hstrict : StrictDistInput (I := I) (X.obj (L.φ n)).metric
         pts join x (radSeq a b x) := by
       simpa only [pts, join, x0, rho0] using
-        d.strict_dist (L.φ n) (hcomplete.complete (L.φ n))
+        d.strict_dist_input (L.φ n) (hcomplete.complete (L.φ n))
           (hconn (L.φ n)) x0 hq he hf happrox hinvErr hqAcc
           pts x (radSeq a b x) (4 * L.lamInf (alpha.1 : Nat))
           hρInner hρ hρq (hpos a b x) hpq hptsFilled hcage6
@@ -548,7 +549,8 @@ theorem exists_hat_min
       apply (ENNReal.ofReal_le_ofReal ?_).trans_lt hcage6
       nlinarith [hpos a b x]
     refine ⟨hcm, ?_⟩
-    have hout := d.hat_sol_of_cage P hre L pb r n hcomplete hconn
+    have hout := d.has_live_chart_center_solution_of_cage
+      P hre L pb r n hcomplete hconn
       q δ hqdata hn alpha (mu x) pts join x (radSeq a b x) hcm
       (hmu.sum_one x hx) (hs hx) hradCage
     simpa only [pts, join] using hout

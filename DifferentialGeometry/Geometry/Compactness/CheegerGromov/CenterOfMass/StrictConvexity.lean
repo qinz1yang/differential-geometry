@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.BranchMin
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance
 
 set_option autoImplicit false
@@ -33,7 +33,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace BoundedGeometryNormalData
 
-theorem strict_dist
+theorem strict_dist_input
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
