@@ -441,7 +441,7 @@ private theorem routeProdSq (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin
   obtain ⟨basis, hON⟩ := quad_onFrame (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   rw [Tensor0SBundle.normSq0S_domDomCongr (I := I) g x basis hinv σ]
   exact normSq0S_product (I := I) g x basis hinv A B
 

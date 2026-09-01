@@ -194,7 +194,7 @@ private theorem innerPtDiag (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
   rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) g x (0 + s)
     basis hON _ _]
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) g x s basis
-    (metricInverseInBasis_of_orthonormal (I := I) g basis hON) _]
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON) _]
   symm
   refine Fintype.sum_equiv
     (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm) (Equiv.refl _)) _ _ ?_

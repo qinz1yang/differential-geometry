@@ -181,7 +181,7 @@ theorem exists_uniform_zero_order_metric_covariant_derivative_bound
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (gSeq i t) z basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I z)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) (gSeq i t) basis hON
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (gSeq i t) basis hON
     intro a b
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' a b
   have hself :

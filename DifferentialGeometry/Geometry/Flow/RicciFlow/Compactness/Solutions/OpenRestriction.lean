@@ -204,13 +204,13 @@ theorem metricScalarAt_restrictOpen
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     change MetricInverseInBasisGen (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU (fun a k => if a = k then 1 else 0)
-    exact metricInverseInBasis_of_orthonormal (I := I) (M := U)
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (M := U)
       (g.restrictOpen (I := I) U) basisU hONU
   have hinvM : MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     change MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
       (fun a k => if a = k then 1 else 0)
-    exact metricInverseInBasis_of_orthonormal (I := I) (M := M) g basisM hONM
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (M := M) g basisM hONM
   rw [metricScalarAt_def, metricScalarAt_def,
     metricTracePair0SAt_eq_sum_basis (I := I) (M := U)
       (g.restrictOpen (I := I) U) basisU

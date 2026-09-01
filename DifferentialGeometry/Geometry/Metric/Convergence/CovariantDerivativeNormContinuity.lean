@@ -103,7 +103,7 @@ private lemma metricCovDerivNorm_eq_sum_sq_on_nbhd
         (orthoFrameBasis (I := I) gRef z₀ hz)
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real E))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) gRef
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gRef
       (orthoFrameBasis (I := I) gRef z₀ hz) hON
     intro i j
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric]

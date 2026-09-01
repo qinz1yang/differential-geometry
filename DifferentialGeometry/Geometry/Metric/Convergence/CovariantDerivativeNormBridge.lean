@@ -169,7 +169,7 @@ private lemma riemannianFiberNormSq_eq_normSq0S_unit
   rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) gBase x (0 + s)
     basis hON _ _]
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gBase x s basis
-    (metricInverseInBasis_of_orthonormal (I := I) gBase basis hON) _]
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gBase basis hON) _]
   symm
   refine Fintype.sum_equiv
     (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm)
@@ -205,7 +205,7 @@ theorem normBridge (h gBase : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) gBase basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gBase basis hON
   rw [norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) gBase 0 (2 + j) x
     (iteratedCovGrad gBase 0 2 j (metricCcTensor (I := I) (M := M) gBase h))]
   rw [riemannianFiberNormSq_eq_normSq0S_unit (I := I) gBase (2 + j) x

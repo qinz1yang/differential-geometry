@@ -149,7 +149,7 @@ theorem riemannianFiberNormSq0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ
   rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) g x (0 + s)
     basis hON _ _]
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis
-    (metricInverseInBasis_of_orthonormal (I := I) g basis hON) _]
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON) _]
   symm
   refine Fintype.sum_equiv
     (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm)
@@ -265,7 +265,7 @@ private theorem sqrtNormSq0SZero (g : SmoothRiemannianMetric I M) (x : M) (s : �
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis
-    (metricInverseInBasis_of_orthonormal (I := I) g basis hON)]
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON)]
   rw [show (∑ slots : Fin s → Fin (Module.finrank Real (TangentSpace I x)),
       (component0S (I := I) basis (0 : Tensor0SSpace s I x) slots) ^ 2) = 0 from ?_]
   · exact Real.sqrt_zero

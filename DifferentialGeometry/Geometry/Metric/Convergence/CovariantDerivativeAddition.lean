@@ -56,7 +56,7 @@ theorem exists_iterated_covariant_derivative_add_norm_bound
     mul_nonneg (Real.sqrt_nonneg _) (by positivity)
   refine ⟨Real.sqrt ((2 : Real) ^ (2 + p)) * (1 + Cc * (p : Real)), hCp0, fun x hx r hr0 hrp => ?_⟩
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
-  have hinv := metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
+  have hinv := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   have hsplit : iterCov (I := I) g₀ 2 (δ₀ + δ₁) r x =
       iterCov (I := I) g₀ 2 δ₀ r x + iterCov (I := I) g₀ 2 δ₁ r x := by
     rw [iterCov_add]
@@ -156,7 +156,7 @@ theorem exists_uniform_iterated_covariant_derivative_add_norm_bound
     hequiv hgK hδ₀ hδ₁ x hx r hr0 hrp
   have hcorII' := hcorII hu g₀ g₁ δ₁ eps0 heps0_0 heps0_1 hequiv hgK
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
-  have hinv := metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
+  have hinv := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   have hsplit : iterCov (I := I) g₀ 2 (δ₀ + δ₁) r x =
       iterCov (I := I) g₀ 2 δ₀ r x + iterCov (I := I) g₀ 2 δ₁ r x := by
     rw [iterCov_add]

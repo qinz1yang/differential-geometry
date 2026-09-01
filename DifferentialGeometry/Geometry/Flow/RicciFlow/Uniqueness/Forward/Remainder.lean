@@ -256,7 +256,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   obtain ⟨basis, hON⟩ := rem_onFrame (I := I) g₁ x
   have hinv : MetricInverseInBasisGen (I := I) g₁ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g₁ basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₁ basis hON
   let Hdiff : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 :=
     metricTensorField (I := I) g₂ - metricTensorField (I := I) g₁
@@ -428,7 +428,7 @@ theorem lowerTriSq_le (g : SmoothRiemannianMetric I M)
   obtain ⟨basis, hON⟩ := rem_onFrame (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let P : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
     lowerTri (I := I) (metricTensorField (I := I) g x) A
   let V : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 6 x :=
@@ -741,7 +741,7 @@ theorem traceProdSq_le (g : SmoothRiemannianMetric I M) {a b r : ℕ}
   obtain ⟨basis, hON⟩ := rem_onFrame (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let W : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (r + 2) :=
     MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)

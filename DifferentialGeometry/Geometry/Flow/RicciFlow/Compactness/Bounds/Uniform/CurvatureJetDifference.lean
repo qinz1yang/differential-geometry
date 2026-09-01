@@ -78,7 +78,7 @@ theorem uniformRm04Sup
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hcompB : ∀ slots : Fin 4 → Fin (Module.finrank Real (TangentSpace I x)),

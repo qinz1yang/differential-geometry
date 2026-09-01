@@ -57,7 +57,7 @@ private theorem metric_self_norm
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro a b
     simpa [identityInvMetric, diagonalInvMetric] using h' a b
   have hcard := normSq0S_metricTensor0S_eq_card (I := I) g basis
@@ -137,7 +137,7 @@ theorem reverseJetOne
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 1 basis hinv]
   have htel := iterCov_one_eq (I := I) gBase g₀ 2
     (metricTensorField (I := I) gBase)
@@ -191,7 +191,7 @@ theorem reverseJetTwo
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 2 basis hinv]
   have hcomp := sqrt_normSq0S_comp (I := I) hEq (Set.mem_univ x) 4
     (iterCov (I := I) g₀ 2 (metricTensorField (I := I) gBase) 2 x)

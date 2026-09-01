@@ -110,7 +110,7 @@ theorem timeLipschitz_of_hasDerivAt
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
     intro i' j'
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' i' j'
   set c : (Fin (a + 2) → Fin (Module.finrank Real (TangentSpace I x))) → Real → Real :=

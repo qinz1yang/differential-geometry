@@ -20,8 +20,8 @@ open DifferentialGeometry.Geometry.Connection
    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally)
 open DifferentialGeometry.Geometry.Curvature
   (connectionRiemannCurvatureField covDerivConnectionDifference curvCovDerivOpAt
-   metricInverseInBasis_of_orthonormal metricRm04
-   smoothExtensionTangent smoothExtensionTangent_contMDiff smoothExtensionTangent_eq vec5)
+   metricRm04 smoothExtensionTangent smoothExtensionTangent_contMDiff
+   smoothExtensionTangent_eq vec5)
 
 namespace DifferentialGeometry
 namespace PDE
@@ -61,7 +61,7 @@ theorem curvJet1_normSq_le_of_op
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hunit : ∀ i, g.inner x (basis i) (basis i) = 1 := by

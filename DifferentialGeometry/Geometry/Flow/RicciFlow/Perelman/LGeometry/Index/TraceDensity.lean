@@ -78,7 +78,7 @@ private theorem sum_diag_eq_trace
     intro i j
     rw [hbasis i, hbasis j]
     exact hON i j
-  have hinv := metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis
+  have hinv := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis
   rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
     (identityInvMetric (Idx := Fin (Module.finrank Real E))) hinv]
   simp [identityInvMetric, diagonalInvMetric, hbasis]
@@ -98,7 +98,7 @@ private theorem sum_ricciSharp_sq
     intro i j
     rw [hbasis i, hbasis j]
     exact hON i j
-  have hinv := metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis
+  have hinv := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis
   rw [normSq0S_identity_eq_sum_sq (I := I) g x 2 basis hinv]
   rw [sum_fin_two_fun]
   apply Finset.sum_congr rfl

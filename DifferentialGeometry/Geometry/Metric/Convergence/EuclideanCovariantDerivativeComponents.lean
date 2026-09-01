@@ -142,7 +142,7 @@ theorem metricDerivNorm_le_of_iterCovComp_le
       (I := 𝓘(Real, E)) g0 z e
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real E))) := by
-    have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g0 e hON0
     with_unfolding_all
       change Tensor0SBundle.MetricInverseInBasisGen
@@ -167,7 +167,7 @@ theorem metricDerivNorm_le_of_iterCovComp_le
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
-    have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     with_unfolding_all
       change Tensor0SBundle.MetricInverseInBasisGen

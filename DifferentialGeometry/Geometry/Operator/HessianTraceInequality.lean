@@ -73,7 +73,7 @@ private theorem hessianTrace_parseval_of_orthonormal
   classical
   rw [normSq0S_eq_coord (I := I) g x 2 basis
     (fun i j => if i = j then (1 : ℝ) else 0)
-    (metricInverseInBasis_of_orthonormal (I := I) g basis hON)
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON)
     (hessTensorAt (I := I) g f x)]
   unfold coordInner0S
   simp only [tensor0SComponent_apply]
@@ -276,7 +276,7 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
           hessFun (I := I) g f x (basis i) (basis i) := by
       rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
         (fun i j => if i = j then (1 : ℝ) else 0)
-        (metricInverseInBasis_of_orthonormal (I := I) g basis hON)
+        (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON)
         (hessTensorAt (I := I) g f x)]
       simp only [hessTensorAt_apply]
       refine Finset.sum_congr rfl ?_

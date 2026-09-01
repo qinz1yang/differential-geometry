@@ -178,7 +178,7 @@ private theorem norm_sq_shift
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h' i j
   have hmetric :

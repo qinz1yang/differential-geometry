@@ -18,6 +18,27 @@ variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
+theorem exists_orthonormal_basis_norm_le_of_coercive
+    (g : SmoothMetricGen I M) (x : M)
+    {c : ℝ} (hc : 0 < c)
+    (hlow : ∀ v : TangentSpace I x, c * ‖v‖ ^ 2 ≤ g.inner x v v) :
+    ∃ basis : Module.Basis
+        (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x),
+      (∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0) ∧
+        ∀ i, ‖(basis i : TangentSpace I x)‖ ≤ (Real.sqrt c)⁻¹ := by
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
+  refine ⟨basis, hON, fun i => ?_⟩
+  have h1 : c * ‖(basis i : TangentSpace I x)‖ ^ 2 ≤ 1 := by
+    have h := hlow (basis i)
+    rw [hON i i, if_pos rfl] at h
+    exact h
+  have hs : Real.sqrt c > 0 := Real.sqrt_pos.mpr hc
+  have hsq : Real.sqrt c * Real.sqrt c = c :=
+    Real.mul_self_sqrt (le_of_lt hc)
+  rw [inv_eq_one_div, le_div_iff₀ hs]
+  nlinarith [h1, hsq, norm_nonneg (basis i : TangentSpace I x),
+    sq_nonneg (‖(basis i : TangentSpace I x)‖ * Real.sqrt c - 1)]
+
 theorem sqrt_normSq0S_le_of_metric_equiv_of_component_bound
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g₀ g : SmoothMetricGen I M) (x : M) (s : ℕ)

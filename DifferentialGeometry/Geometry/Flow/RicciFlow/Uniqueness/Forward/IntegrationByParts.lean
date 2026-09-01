@@ -193,7 +193,7 @@ private theorem traceFirstTwo_eq_frame_sum (g : SmoothRiemannianMetric I M) {x :
   classical
   rw [metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g frame
     (fun a k => if a = k then (1 : Real) else 0)
-    (metricInverseInBasis_of_orthonormal (I := I) g frame hON) A slots]
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g frame hON) A slots]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_eq_single_of_mem i (Finset.mem_univ i)]
   · change (if i = i then (1 : Real) else 0) *

@@ -501,7 +501,7 @@ theorem uniformRHSFib_of
       rw [hON (slots 1) (slots 1)]; simp
     rwa [h0, h1, Real.sqrt_one, mul_one, mul_one] at h
   have hnormsq := Tensor0SBundle.normSq0S_le_card_of_component_bound (I := I) g₀ x 2 basis
-    (metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON)
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON)
     (ccUnitField (I := I) g₀ 2 (deTurckRHSSection (I := I) gBase g₀) x) K₀ hK₀0 hcompbound
   have hcard : (Fintype.card (Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x))) : ℝ) =
       (Module.finrank ℝ E : ℝ) ^ 2 := by

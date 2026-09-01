@@ -703,7 +703,7 @@ theorem normSq0S_pullback_eval_of_orthonormal
         (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         (identityInvMetric (Idx := Idx)) := by
     have h :=
-      metricInverseInBasis_of_orthonormal
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
         (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
     change MetricInverseInBasisGen (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
@@ -712,7 +712,7 @@ theorem normSq0S_pullback_eval_of_orthonormal
   have hinv' :
       MetricInverseInBasisGen (I := I) g (Phi x) basis'
         (identityInvMetric (Idx := Idx)) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
     change MetricInverseInBasisGen (I := I) g (Phi x) basis'
       (fun a k => if a = k then (1 : Real) else 0)
     exact h
@@ -868,13 +868,13 @@ theorem metricScalarAt_pullback
     change MetricInverseInBasisGen (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         (fun a k => if a = k then (1 : Real) else 0)
-    exact metricInverseInBasis_of_orthonormal
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
   have hinv' :
       MetricInverseInBasisGen (I := I) g (Phi x) basis' identityInvMetric := by
     change MetricInverseInBasisGen (I := I) g (Phi x) basis'
       (fun a k => if a = k then (1 : Real) else 0)
-    exact metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
+    exact DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
   rw [metricScalarAt_def, metricScalarAt_def,
     metricTracePair0SAt_eq_sum_basis (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) basis identityInvMetric hinv

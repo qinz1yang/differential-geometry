@@ -56,7 +56,7 @@ private theorem covOrder_zero_point
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro a b
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' a b
   have hself :

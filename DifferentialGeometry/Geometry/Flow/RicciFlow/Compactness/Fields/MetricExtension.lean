@@ -861,7 +861,7 @@ theorem hgLip_gSeqExt
           (⟨x, hxU⟩ : SourceDomain (I := I) Φ k) basis
           (identityInvMetric (Idx := Fin (Module.finrank Real
             (TangentSpace I (⟨x, hxU⟩ : SourceDomain (I := I) Φ k))))) := by
-        have h' := metricInverseInBasis_of_orthonormal (I := I)
+        have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I)
           (refRes (I := I) Φ R k) basis hON
         intro i j
         simpa [identityInvMetric, diagonalInvMetric] using h' i j

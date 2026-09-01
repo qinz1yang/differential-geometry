@@ -291,6 +291,122 @@ theorem normalChartAt_metric_at_origin
       g.inner p v w :=
   normalChartAt_metric_pullback_at_origin (I := I) g p v w
 
+section MapCoordinateRepresentation
+
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
+  [IsManifold I ∞ N] [T2Space (TangentBundle I N)]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem mfderiv_eq_fderiv_normalChartAt
+    [Module.Finite ℝ E]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
+    (F : M → N) (p : M)
+    (hF : DifferentiableAt ℝ
+      (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z))) (0 : E))
+    (heq : F =ᶠ[nhds p] fun q =>
+      (normalChartAt (I := I) h (F p)).symm
+        (normalChartAt (I := I) h (F p)
+          (F ((normalChartAt (I := I) g p).symm
+            (normalChartAt (I := I) g p q))))) :
+    mfderiv I I F p = fderiv ℝ
+      (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z))) (0 : E) := by
+  classical
+  have hcp : normalChartAt (I := I) g p p = 0 :=
+    normalChartAt_centre (I := I) g p
+  have hcFp : normalChartAt (I := I) h (F p) (F p) = 0 :=
+    normalChartAt_centre (I := I) h (F p)
+  have hcsymm0 : (normalChartAt (I := I) g p).symm (0 : E) = p :=
+    normalChartAt_symm_zero (I := I) g p
+  have hpsrc : p ∈ (normalChartAt (I := I) g p).source :=
+    normalChartAt_source (I := I) g p
+  have hcm : MDifferentiableAt I 𝓘(ℝ, E)
+      (normalChartAt (I := I) g p) p :=
+    (normalChartAt (I := I) g p).mdifferentiableAt one_ne_zero hpsrc
+  have hFm : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ, E)
+      (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z)))
+      (normalChartAt (I := I) g p p) := by
+    rw [hcp]
+    exact hF.mdifferentiableAt
+  have hFc_m : MDifferentiableAt I 𝓘(ℝ, E)
+      (fun q => (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z)))
+          (normalChartAt (I := I) g p q)) p :=
+    hFm.comp p hcm
+  have h0tgt : (0 : E) ∈ (normalChartAt (I := I) h (F p)).symm.source := by
+    change (0 : E) ∈ (expMapDiffeo (I := I) h (F p)).source
+    exact zero_mem_expMapDiffeo_source (I := I) h (F p)
+  have hdsymm_m : MDifferentiableAt 𝓘(ℝ, E) I
+      ((normalChartAt (I := I) h (F p)).symm)
+      ((fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z)))
+          (normalChartAt (I := I) g p p)) := by
+    have hval : (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z)))
+          (normalChartAt (I := I) g p p) = 0 := by
+      simp only [hcp, hcsymm0, hcFp]
+    rw [hval]
+    exact (normalChartAt (I := I) h (F p)).symm.mdifferentiableAt
+      one_ne_zero h0tgt
+  rw [Filter.EventuallyEq.mfderiv_eq heq]
+  have hsplit := mfderiv_comp (I := I) (I' := 𝓘(ℝ, E)) (I'' := I) p hdsymm_m hFc_m
+  rw [show (fun q => (normalChartAt (I := I) h (F p)).symm
+        (normalChartAt (I := I) h (F p)
+          (F ((normalChartAt (I := I) g p).symm
+            (normalChartAt (I := I) g p q))))) =
+      ((normalChartAt (I := I) h (F p)).symm : E → N) ∘
+        (fun q => (fun z => normalChartAt (I := I) h (F p)
+            (F ((normalChartAt (I := I) g p).symm z)))
+              (normalChartAt (I := I) g p q)) from rfl, hsplit]
+  have hinner := mfderiv_comp (I := I) (I' := 𝓘(ℝ, E)) (I'' := 𝓘(ℝ, E)) p hFm hcm
+  rw [show (fun q => (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z)))
+          (normalChartAt (I := I) g p q)) =
+      ((fun z => normalChartAt (I := I) h (F p)
+          (F ((normalChartAt (I := I) g p).symm z))) ∘
+        (normalChartAt (I := I) g p : M → E)) from rfl] at hsplit ⊢
+  rw [hinner] at hsplit ⊢
+  have hd0 : (fun z => normalChartAt (I := I) h (F p)
+      (F ((normalChartAt (I := I) g p).symm z)))
+        (normalChartAt (I := I) g p p) = 0 := by
+    simp only [hcp, hcsymm0, hcFp]
+  rw [hd0, mfderiv_normalChartAt_symm_zero (I := I) h (F p),
+    mfderiv_normalChartAt_self (I := I) g p]
+  have hmodel : mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E)
+      (fun z => normalChartAt (I := I) h (F p)
+        (F ((normalChartAt (I := I) g p).symm z)))
+      (normalChartAt (I := I) g p p) =
+        fderiv ℝ (fun z => normalChartAt (I := I) h (F p)
+          (F ((normalChartAt (I := I) g p).symm z))) (0 : E) := by
+    rw [hcp]
+    exact mfderiv_eq_fderiv
+  rw [hmodel]
+  ext v
+  rfl
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem eventuallyEq_normalChartAt_roundtrip
+    [Module.Finite ℝ E]
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
+    {F : M → N} {p : M}
+    (hsrc : ∀ᶠ q in nhds p, q ∈ (normalChartAt (I := I) g p).source)
+    (hFsrc : ∀ᶠ q in nhds p,
+      F q ∈ (normalChartAt (I := I) h (F p)).source) :
+    F =ᶠ[nhds p] fun q =>
+      (normalChartAt (I := I) h (F p)).symm
+        (normalChartAt (I := I) h (F p)
+          (F ((normalChartAt (I := I) g p).symm
+            (normalChartAt (I := I) g p q)))) := by
+  filter_upwards [hsrc, hFsrc] with q hq hFq
+  rw [normalChartAt_left_inv (I := I) g p hq,
+    normalChartAt_left_inv (I := I) h (F p) hFq]
+
+end MapCoordinateRepresentation
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalChartAt_expMap_smul
     (g : SmoothRiemannianMetric I M) (p : M) (v : E) (s : ℝ)

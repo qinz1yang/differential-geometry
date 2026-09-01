@@ -539,7 +539,7 @@ theorem ricDot_of_solution
         (identityInvMetric (Idx := Fin 3)) :=
     by
       have hinv' :=
-        DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+        DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
           (I := I) (S.base.metric (t : Real)) basis horthf
       unfold identityInvMetric diagonalInvMetric
       exact hinv'
@@ -1603,7 +1603,7 @@ theorem roughRm04_comp
   let v : Fin 4 → TangentSpace I x := fun p => basis (I0 p)
   have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin 3)) := by
-    have hinv' := metricInverseInBasis_of_orthonormal
+    have hinv' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) (S.base.metric t) basis horth
     unfold identityInvMetric diagonalInvMetric
     exact hinv'

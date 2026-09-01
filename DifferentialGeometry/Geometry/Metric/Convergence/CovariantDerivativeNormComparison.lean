@@ -130,7 +130,7 @@ theorem iterated_covariant_derivative_norm_comparison_bound
         if i = j then 1 else 0 := by
     intro i j
     simpa only [IsLocalFrameOn.toBasisAt_coe] using hON i j
-  have hinvON := metricInverseInBasis_of_orthonormal (I := I) g
+  have hinvON := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g
     (hframe.toBasisAt hxw) hON'
   have hF3 : ∀ s : ℕ, 0 < s → s ≤ p →
       Real.sqrt (normSq0S (I := I) g x (q₂ + s) (iterCov (I := I) g q₂ T s x)) ≤
@@ -172,7 +172,7 @@ theorem metric_deriv_norm_change_le
   have hBaseInv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x bBase
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) gBase bBase hBaseON
     intro i j
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h i j
@@ -181,7 +181,7 @@ theorem metric_deriv_norm_change_le
   have hInfInv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gInf x bInf
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) gInf bInf hInfON
     intro i j
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h i j
@@ -195,7 +195,7 @@ theorem metric_deriv_norm_change_le
     have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase y b
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I y)))) := by
-      have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+      have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
         (I := I) gBase b hON
       intro i k
       simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h i k

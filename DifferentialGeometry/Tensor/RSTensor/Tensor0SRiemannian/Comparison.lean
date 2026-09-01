@@ -292,6 +292,27 @@ theorem normSq0S_le_card_of_component_bound
     _ = (Fintype.card (Fin s -> Idx) : Real) * B ^ 2 := by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
+theorem sqrt_normSq0S_le_card_of_component_bound
+    (g : SmoothMetricGen I M) (x : M) (s : Nat)
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hinv :
+      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (A : Tensor0SSpace s I x) (B : Real) (hBnn : 0 ≤ B)
+    (hB : ∀ slots : Fin s -> Idx,
+      |component0S (I := I) basis A slots| ≤ B) :
+    Real.sqrt (normSq0S (I := I) g x s A) ≤
+      Real.sqrt (Fintype.card (Fin s -> Idx) : Real) * B := by
+  have hnorm := normSq0S_le_card_of_component_bound
+    (I := I) g x s basis hinv A B hBnn hB
+  calc
+    Real.sqrt (normSq0S (I := I) g x s A) ≤
+        Real.sqrt ((Fintype.card (Fin s -> Idx) : Real) * B ^ 2) :=
+      Real.sqrt_le_sqrt hnorm
+    _ = Real.sqrt (Fintype.card (Fin s -> Idx) : Real) *
+        Real.sqrt (B ^ 2) := Real.sqrt_mul (Nat.cast_nonneg _) _
+    _ = Real.sqrt (Fintype.card (Fin s -> Idx) : Real) * B := by
+      rw [Real.sqrt_sq_eq_abs, abs_of_nonneg hBnn]
+
 theorem normSq0S_three_identity_eq_sum
     (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -731,6 +752,17 @@ theorem exists_orthonormal_basis
   exact ob.inner_eq_ite i j
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+
+omit [FiniteDimensional ℝ E] in
+theorem metricInverseInBasis_of_orthonormal
+    (g : SmoothMetricGen I M) {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0) :
+    MetricInverseInBasisGen (I := I) g x basis
+      (identityInvMetric (Idx := Idx)) := by
+  classical
+  intro i j
+  constructor <;> simp [hON, identityInvMetric, diagonalInvMetric]
 
 private theorem sqrt_prod {α : Type*} (s : Finset α) (f : α -> Real)
     (hf : ∀ a ∈ s, 0 <= f a) :

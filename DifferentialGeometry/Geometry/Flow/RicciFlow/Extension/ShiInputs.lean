@@ -271,13 +271,10 @@ theorem ric_quad_le_of_realizes
       ≤ ((Module.finrank ℝ (TangentSpace I x) : ℝ) ^ 2 * Real.sqrt C) * g.inner x v v := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
-  have hdelta := metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have hinv : MetricInverseInBasisGen (I := I) g x basis
-      (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    have he : (fun a k : Fin (Module.finrank ℝ (TangentSpace I x)) => if a = k then (1 : ℝ) else 0)
-        = identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x))) := by
-      funext a k; simp [identityInvMetric, diagonalInvMetric]
-    rwa [he] at hdelta
+      (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
+      (I := I) g basis hON
   set Rm13 := CovariantDerivative.rm13Section (I := I) (M := M)
     (metricCov (I := I) (M := M) g) (metricCov_smooth (I := I) (M := M) g) with hRm13def
   have hLower := rm04LowersRm13At_of_realizes (I := I) g
@@ -291,13 +288,14 @@ theorem ric_quad_le_of_realizes
       = ∑ a, Rm04sec x (vec4 (I := I) (basis a) (basis i) (basis j) (basis a)) := by
     intro i j
     have hcomp := ricciFromRm13_comp_eq_rm04_trace (I := I) g basis
-      (fun a k => if a = k then (1 : ℝ) else 0) hdelta (Rm13 x) (Rm04sec x) hLower i j
+      (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) hinv
+      (Rm13 x) (Rm04sec x) hLower i j
     have hlhs : metricRicciAt g x (vec2 (I := I) (basis i) (basis j))
         = ricciCompAt (I := I) basis (ricciFromRm13At (I := I) (Rm13 x)) i j := by
       rw [ricciCompAt_apply, hmr]
     rw [hlhs, hcomp]
-    simp only [rm04CompAt_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+    simp only [identityInvMetric, diagonalInvMetric, rm04CompAt_apply, ite_mul, one_mul,
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   exact ric_quad_le_of_rm04 (I := I) g x basis hON hinv (Rm04sec x) htrace hnorm v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]

@@ -36,7 +36,7 @@ theorem ricci_quadratic_form_on_unit_vector_le_of_solution
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) (S.base.metric t) x
   have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) (S.base.metric t) basis hON
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) (S.base.metric t) basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hbridge : ∀ i j : Fin (Module.finrank Real (TangentSpace I x)),

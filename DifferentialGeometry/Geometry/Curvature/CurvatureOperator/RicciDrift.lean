@@ -128,7 +128,7 @@ private theorem div_ricGrad [I.Boundaryless]
       Fin (Module.finrank Real (TangentSpace I x)) -> Real :=
     fun i j => if i = j then 1 else 0
   have hinv : MetricInverseInBasisGen (I := I) g x basis delta :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let X : Fin (Module.finrank Real (TangentSpace I x)) ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     fun i => (ContMDiffSection.exists_eq_at

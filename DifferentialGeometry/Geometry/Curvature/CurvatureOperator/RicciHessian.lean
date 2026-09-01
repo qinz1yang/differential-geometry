@@ -55,7 +55,7 @@ theorem ricHess_eq_inner
       Fin (Module.finrank Real (TangentSpace I x)) -> Real :=
     fun i j => if i = j then 1 else 0
   have hinv : MetricInverseInBasisGen (I := I) g x basis delta :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have hrepr (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       basis.repr (D (basis i)) j = g.inner x (D (basis i)) (basis j) := by
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis delta hinv]

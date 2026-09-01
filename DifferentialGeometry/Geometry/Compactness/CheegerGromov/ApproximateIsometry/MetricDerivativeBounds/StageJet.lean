@@ -98,7 +98,7 @@ private theorem metricNorm_le_basis_comp
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
-    have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     with_unfolding_all
       change Tensor0SBundle.MetricInverseInBasisGen

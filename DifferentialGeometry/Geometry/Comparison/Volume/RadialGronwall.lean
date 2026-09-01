@@ -869,7 +869,7 @@ theorem radialCurvTermFlat_normSq_le_card
       Tensor0SBundle.MetricInverseInBasisGen (I := I) g
         (radialCurve (I := I) g p x t) basis
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) :=
-    DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
   refine Tensor0SBundle.normSq0S_le_card_of_component_bound
     (I := I) g (radialCurve (I := I) g p x t) 1 basis hinv

@@ -395,7 +395,7 @@ private lemma riemannianFiberNormSq_eq_normSq0S_unit'
   rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) gBase x (0 + s)
     basis hON _ _]
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gBase x s basis
-    (metricInverseInBasis_of_orthonormal (I := I) gBase basis hON) _]
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gBase basis hON) _]
   symm
   refine Fintype.sum_equiv
     (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm) (Equiv.refl _)) _ _ ?_
@@ -483,7 +483,7 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
     rw [h00, h11, Real.sqrt_one, mul_one, mul_one] at hbound
     exact hbound
   have hnormsq := Tensor0SBundle.normSq0S_le_card_of_component_bound (I := I) gBase x 2 basis
-    (metricInverseInBasis_of_orthonormal (I := I) gBase basis hON)
+    (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gBase basis hON)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀).toSection x)
       (unitZeroSec (I := I) (M := M) x)) (Λ - 1) hΛ1 hcompbound

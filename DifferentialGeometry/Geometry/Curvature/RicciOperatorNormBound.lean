@@ -33,7 +33,7 @@ theorem ricci_unitSphere_le_of_componentBound
   classical
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (fun a k => if a = k then (1 : Real) else 0) :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have hrepr : ∀ i, basis.repr u i = g.inner x u (basis i) := by
     intro i
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis _ hinv u i]
@@ -147,7 +147,7 @@ theorem metricRicciComp_le
   classical
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := ι)) :=
-    metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let D := metricCurvData (I := I) (M := M) g
   have hLower : Rm04LowersRm13At (I := I) g x
       (metricRm13 (I := I) (M := M) g x)
@@ -218,7 +218,7 @@ theorem tensor02_quadForm_abs_le_normSq0S
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hunit : ∀ u : TangentSpace I x, g.inner x u u = 1 →
@@ -270,7 +270,7 @@ theorem exists_ricci_bound
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   let D := metricCurvData (I := I) (M := M) g

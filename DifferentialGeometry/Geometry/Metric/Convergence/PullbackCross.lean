@@ -483,14 +483,14 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
       MetricInverseInBasisGen (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x basis
         (identityInvMetric (Idx := Idx)) := by
-    have h := metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
       (I := I) (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hinv' :
       MetricInverseInBasisGen (I := J) g (Phi x) basis'
         (identityInvMetric (Idx := Idx)) := by
-    have h := metricInverseInBasis_of_orthonormal (I := J) g basis' hON'
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := J) g basis' hON'
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   rw [normSq0S_identity_eq_sum_sq (I := I)
@@ -544,7 +544,7 @@ theorem metricScalar_cross
         x basis identityInvMetric := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
         (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
         basis hON i j
@@ -553,7 +553,7 @@ theorem metricScalar_cross
         identityInvMetric := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := J) g basis' hON' i j
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := J) g basis' hON' i j
   rw [metricScalarAt_def, metricScalarAt_def,
     metricTracePair0SAt_eq_sum_basis
       (I := I) (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)

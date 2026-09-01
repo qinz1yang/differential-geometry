@@ -183,7 +183,7 @@ theorem redLength_lap_le
               (P i b) (P i b) := by
       rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
         (fun i j ↦ if i = j then (1 : Real) else 0)
-        (metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis)
+        (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis)
         (hessTensorAt (I := I) g
           (fun q : M ↦ redLength S T x q tau) y)]
       simp only [hessTensorAt_apply]

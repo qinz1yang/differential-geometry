@@ -163,7 +163,7 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
             hessFun (I := I) g branch y (P i b) (P i b) := by
       rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
         (fun i j ↦ if i = j then (1 : Real) else 0)
-        (metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis)
+        (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hONbasis)
         (hessTensorAt (I := I) g branch y)]
       simp only [hessTensorAt_apply]
       refine Finset.sum_congr rfl ?_

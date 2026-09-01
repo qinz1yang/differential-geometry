@@ -117,7 +117,7 @@ private theorem cometricTrace_eq
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g basis horth i j
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis horth i j
   apply tensor0SSpace_ext (𝕜 := ℝ) p x
   intro tail
   rw [cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g p x
@@ -194,7 +194,7 @@ private theorem trace31_norm_le
   have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h' i j
   have hperm :
@@ -241,7 +241,7 @@ private theorem reverseJetThree
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g₀ x
   have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
-    metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
+    DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 3 basis hinv]
   have hcomp := sqrt_normSq0S_comp (I := I) hEq (Set.mem_univ x) 5
     (iterCov (I := I) g₀ 2 (metricTensorField (I := I) gBase) 3 x)
@@ -597,7 +597,7 @@ theorem uniformConnectionDifferenceZero
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
   have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
     intro i
     rw [horth i i]
@@ -706,7 +706,7 @@ theorem uniformConnectionDifferenceOne
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
   have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
     intro i
     rw [horth i i]
@@ -863,7 +863,7 @@ theorem uniformConnectionDifferenceTwo
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
+      DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g₀ basis horth i j
   have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
     intro i
     rw [horth i i]

@@ -101,7 +101,7 @@ theorem tensor02CovDerivNormWith_metricTensorField_eq_metricDerivNorm
   have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
-    have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    have h := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) g basis hON
     change Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0)
     exact h

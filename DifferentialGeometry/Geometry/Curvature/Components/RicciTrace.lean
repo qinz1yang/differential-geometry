@@ -19,16 +19,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
 
-omit [FiniteDimensional ℝ E] in
-theorem metricInverseInBasis_of_orthonormal
-    (g : SmoothRiemannianMetric I M) {x : M}
-    (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hON : forall i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0) :
-    MetricInverseInBasisGen (I := I) g x basis (fun a k => if a = k then 1 else 0) := by
-  classical
-  intro i j
-  constructor <;> simp [hON]
-
 theorem ricciFromRm13_comp_eq_rm04_trace
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
