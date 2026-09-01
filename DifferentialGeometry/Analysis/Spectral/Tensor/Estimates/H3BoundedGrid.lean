@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H3GridIntegral
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
 
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

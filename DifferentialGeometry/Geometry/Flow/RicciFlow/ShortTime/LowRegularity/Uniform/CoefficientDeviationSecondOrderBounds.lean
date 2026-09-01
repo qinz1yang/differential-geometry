@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPathDecomposition
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.PrincipalCoefficientDimensionBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Coefficient.DimensionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.InverseCoefficientSecondOrderBounds
 
 set_option autoImplicit false
