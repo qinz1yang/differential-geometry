@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroMixedConnectionExpansion
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldJetRadiusFree
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.RadiusFree
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CometricTraceSelfBound
 
 noncomputable section
