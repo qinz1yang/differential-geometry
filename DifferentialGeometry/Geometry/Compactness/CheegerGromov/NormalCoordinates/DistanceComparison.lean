@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringOrdered
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalTransitionBounds
 import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
 

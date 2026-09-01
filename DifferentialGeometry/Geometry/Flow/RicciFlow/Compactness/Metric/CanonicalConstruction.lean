@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence.Existence
 import DifferentialGeometry.Topology.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction

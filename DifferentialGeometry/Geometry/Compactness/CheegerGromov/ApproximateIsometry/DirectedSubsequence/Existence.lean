@@ -5,7 +5,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.ForwardBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.ReverseBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequenceRadii
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence.RadiusBounds
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAddition
 import DifferentialGeometry.Analysis.Calculus.DiagonalSubsequence
 import DifferentialGeometry.Analysis.Estimates.IteratedApproximationError
@@ -268,19 +269,18 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         exact le_trans hc0NextBudget (le_trans htwoTail_le_betaTail htailNextHalf)
       have hcovNextHalf : covNext ≤ 1 / 2 := by
         exact le_trans hcovNextBudget htailNextHalf
-      let Rcur : ℝ := (2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 1))
-      let Rnext : ℝ := (2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 2))
-      let Rmid : ℝ := midRad s l
+      let Rcur : ℝ := openRadius s l
+      let Rnext : ℝ := openRadius s (l + 1)
+      let Rmid : ℝ := midRadius s l
       have hRnext_pos : 0 < Rnext := by
-        dsimp [Rnext]
-        positivity
+        exact openRadius_pos s (l + 1)
       have hRmid_pos : 0 < Rmid := by
-        dsimp [Rmid, midRad]
+        dsimp [Rmid, midRadius]
         positivity
       have hRnext_lt_Rmid : Rnext < Rmid := by
-        simpa [Rnext, Rmid] using openRad_next_lt_mid s l
+        simpa [Rnext, Rmid] using openRadius_succ_lt_midRadius s l
       have hRmid_lt_Rcur : Rmid < Rcur := by
-        simpa [Rmid, Rcur] using midRad_lt_openRad s l
+        simpa [Rmid, Rcur] using midRadius_lt_openRadius s l
       let U₁ : TopologicalSpace.Opens (X.obj (σ s)).M :=
         ⟨Metric.ball ((X.obj (σ s)).basepoint) Rmid, by
           have hb :
@@ -375,7 +375,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             hRmid_pos le_rfl (by norm_num : (0 : ℝ) ≤ 1 / 2)
             (by
               simpa [Rmid] using
-                (imageMid_lt_step (a := (1 / 2 : ℝ)) s l
+                (sqrt_one_add_mul_midRadius_lt_two_pow (a := (1 / 2 : ℝ)) s l
                   (by norm_num) (by norm_num)))
             hdata_mid hsrc_mid
         intro y hy
@@ -434,8 +434,8 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         dsimp [δR]
         exact half_pow_succ_le_half s
       have hRmid_le_step : Rmid ≤ (2 : ℝ) ^ (s + 1) := by
-        change midRad s l ≤ (2 : ℝ) ^ (s + 1)
-        exact midRad_le_step s l
+        change midRadius s l ≤ (2 : ℝ) ^ (s + 1)
+        exact midRadius_le_two_pow_succ s l
       have hU₁_sub_step :
           (U₁ : Set (X.obj (σ s)).M) ⊆
             Metric.closedBall ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ (s + 1)) := by
@@ -448,14 +448,14 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         exact (DstepR_p.mono hU₁_sub_step le_rfl DstepR.forward.eps_lt_one).toSeparateBounds
       let Ktail : TopologicalSpace.Opens (X.obj (σ (s + 1))).M :=
         ⟨Metric.ball ((X.obj (σ (s + 1))).basepoint)
-            ((2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1))),
-          properMetric_isOpen_ball (I := I) (X.obj (σ (s + 1))) (P (σ (s + 1)))
+            (openRadius (s + 1) l),
+          (P (σ (s + 1))).isOpen_ball (X.obj (σ (s + 1)))
             ((X.obj (σ (s + 1))).basepoint)
-            ((2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1)))⟩
+            (openRadius (s + 1) l)⟩
       have hKtail_nonempty : Nonempty Ktail := by
         dsimp [Ktail]
-        exact properMetric_ball_nonempty (I := I) (X.obj (σ (s + 1))) (P (σ (s + 1)))
-          ((X.obj (σ (s + 1))).basepoint) (openRad_pos (s + 1) l)
+        exact (P (σ (s + 1))).ball_nonempty (X.obj (σ (s + 1)))
+          ((X.obj (σ (s + 1))).basepoint) (openRadius_pos (s + 1) l)
       have DtailR_Ktail : PartialDiffeomorphMetricApproximationBounds (I := I) (Ktail : Set (X.obj (σ (s + 1))).M)
           c0R covR p
           (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
@@ -475,15 +475,14 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         exact Metric.closedBall_subset_closedBall hRmid_le_step
       have hsrc_step_mid : KmidE ⊆ (Ψ s).source :=
         fun x hx => hΨsrc s (hclosed_mid_step hx)
-      have hRmid_le_mid0 : Rmid ≤ midRad s 0 := by
-        change midRad s l ≤ midRad s 0
-        exact midRad_le_mid0 s l
+      have hRmid_le_mid0 : Rmid ≤ midRadius s 0 := by
+        change midRadius s l ≤ midRadius s 0
+        exact midRadius_le_zero s l
       have hstep_image_radius :
-          Real.sqrt (1 + δR) * Rmid
-            < (2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1)) := by
-        change Real.sqrt (1 + δR) * midRad s l
-          < (2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1))
-        exact imageMid_lt_openRad s l hδRpos hstepR_half
+          Real.sqrt (1 + δR) * Rmid < openRadius (s + 1) l := by
+        change Real.sqrt (1 + δR) * midRadius s l
+          < openRadius (s + 1) l
+        exact sqrt_one_add_mul_midRadius_lt_next_openRadius s l hδRpos hstepR_half
       have himg_step_mid :
           (Ψ s : (X.obj (σ s)).M → (X.obj (σ (s + 1))).M) '' (U₁ : Set (X.obj (σ s)).M) ⊆
             (Ktail : Set (X.obj (σ (s + 1))).M) := by
@@ -505,7 +504,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             hRmid_pos le_rfl hδR0 hstep_image_radius hclosed_mid_step DstepR_p.forward
             hsrc_step_mid
         intro y hy
-        simpa [Ktail, hΨbase s] using htmp hy
+        simpa [Ktail, openRadius, hΨbase s] using htmp hy
       have hqR1 : sepFeed c0R covR ≤ 1 :=
         sepFeed_le_one hc0R2 (le_trans hcovR2 (by norm_num : (1 / 2 : ℝ) ≤ 1))
       have hcovR_out : sepFeed c0R covR + δR * C ≤ covNext := by
@@ -690,9 +689,9 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
               (s + (l + 1)) rfl)
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hRightClosed.mono Metric.ball_subset_closedBall le_rfl le_rfl
-      exact ⟨⟨by simpa [Rnext] using hLeftOpen⟩, fun m hm => by
+      exact ⟨⟨by simpa [Rnext, openRadius] using hLeftOpen⟩, fun m hm => by
         cases hm
-        exact ⟨by simpa [Rnext] using hRightOpen⟩⟩
+        exact ⟨by simpa [Rnext, openRadius] using hRightOpen⟩⟩
 
 end Endpoint
 
