@@ -3028,6 +3028,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationDerivative
 import DifferentialGeometry.Geometry.Metric.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Quotient
 import DifferentialGeometry.Geometry.Metric.RiemannianMetric
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities
@@ -3042,6 +3043,8 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Anisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactAnisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveRoundness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelQuotient
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialGrowth
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialIntegralCurve
