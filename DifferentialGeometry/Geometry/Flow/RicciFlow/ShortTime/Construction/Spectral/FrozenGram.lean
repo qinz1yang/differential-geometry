@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelSPD
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernel.PositiveDefinite.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

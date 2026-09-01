@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamel
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamelSPD
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.FrozenPositiveDefinite
 import DifferentialGeometry.Analysis.Schauder.HolderOperator
 
 noncomputable section

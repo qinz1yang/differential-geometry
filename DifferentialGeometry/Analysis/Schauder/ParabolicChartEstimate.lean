@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.NondivergenceSchauder
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.BoundedJetInterpolation
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.Schauder
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Interpolation.BoundedJet
 import DifferentialGeometry.Analysis.Schauder.ParabolicChartExtension
 
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.InverseGram
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.RetractionParametrix
+import DifferentialGeometry.Analysis.FunctionalAnalysis.Parametrix.Basic
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -265,7 +265,7 @@ end PrincipalArray
 
 section PrincipalOperator
 
-open DifferentialGeometry.Analysis.Parabolic.Euclidean
+open DifferentialGeometry.Analysis.Parametrix
 
 variable
     {Y U V J₂ : Type*}

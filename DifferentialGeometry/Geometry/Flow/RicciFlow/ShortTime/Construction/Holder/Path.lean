@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderPath
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Holder.Path
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Holder.Defs
 
 

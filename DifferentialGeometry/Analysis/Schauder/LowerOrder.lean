@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.LowerOrder
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
 import DifferentialGeometry.Analysis.Schauder.VariableCoefficient
 
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.BallCutoff
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamel
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
 import DifferentialGeometry.Analysis.Schauder.CutoffExistence
 import DifferentialGeometry.Analysis.Schauder.Localization
 

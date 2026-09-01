@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.LowerOrder
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.LowerOrder
 import DifferentialGeometry.Analysis.Schauder.ParabolicChart
 import DifferentialGeometry.Analysis.Schauder.Scaling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian

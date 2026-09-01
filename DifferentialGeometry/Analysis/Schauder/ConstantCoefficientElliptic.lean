@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamel
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamelSPD
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotentialEstimate
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatSemigroupSchauder
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.FrozenPositiveDefinite
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatPotential.Estimate
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatSemigroup.Schauder
 import DifferentialGeometry.Analysis.Schauder.ConstantCoefficientOperator
 import DifferentialGeometry.Analysis.Schauder.Scaling
 

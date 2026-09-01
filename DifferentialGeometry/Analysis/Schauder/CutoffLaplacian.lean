@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamel
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
 import DifferentialGeometry.Analysis.Schauder.CutoffProduct
 
 noncomputable section
