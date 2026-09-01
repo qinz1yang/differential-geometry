@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.InverseVelocityConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.InverseVelocityConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
 open DifferentialGeometry.Geometry.Curvature

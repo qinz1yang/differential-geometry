@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
 
 
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness

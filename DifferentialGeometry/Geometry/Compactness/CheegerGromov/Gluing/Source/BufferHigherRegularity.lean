@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuffer
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Buffer
 
 
 

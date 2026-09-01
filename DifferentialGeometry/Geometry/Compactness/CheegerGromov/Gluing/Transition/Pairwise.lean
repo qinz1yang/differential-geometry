@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricComp
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.TransitionOverlap
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.TransitionRefine
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.PairGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Refinement
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

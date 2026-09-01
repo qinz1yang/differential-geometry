@@ -1,6 +1,5 @@
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
 open DifferentialGeometry.Geometry.Curvature
 

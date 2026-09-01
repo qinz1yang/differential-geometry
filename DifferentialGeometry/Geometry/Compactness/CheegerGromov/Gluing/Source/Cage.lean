@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.ChartConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.ChartConvergence
 
 
 open DifferentialGeometry.Geometry.Curvature

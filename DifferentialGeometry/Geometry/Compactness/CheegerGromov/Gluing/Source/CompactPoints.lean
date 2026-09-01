@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceCage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Cage
 
 
 open DifferentialGeometry.Geometry.Curvature

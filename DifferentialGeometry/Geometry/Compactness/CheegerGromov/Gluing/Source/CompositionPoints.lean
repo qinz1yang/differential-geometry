@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CompactPoints
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CompactPoints
 
 
 open DifferentialGeometry.Geometry.Curvature

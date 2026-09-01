@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Bump
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.NormalBump
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.NormalBump
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Basic
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Uniform.Data
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairwiseTransition
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Transition.Pairwise
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

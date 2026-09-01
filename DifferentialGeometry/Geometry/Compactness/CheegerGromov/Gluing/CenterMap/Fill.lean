@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.BumpClamp
 
 
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceTwoParameter
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

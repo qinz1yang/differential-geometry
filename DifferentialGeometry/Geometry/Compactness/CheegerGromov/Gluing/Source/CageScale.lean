@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterIndexing
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Indexing
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
 
 set_option autoImplicit false
 

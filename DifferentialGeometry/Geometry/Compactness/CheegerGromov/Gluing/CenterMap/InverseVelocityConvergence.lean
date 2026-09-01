@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.InverseVelocityConvergence
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Convergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Fill
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Fill
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Norm
 
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CageScale
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CageScale
 
 set_option autoImplicit false
 

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.ExponentialBallCovering
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperBallExhaustion
 open DifferentialGeometry.Geometry.Curvature
 

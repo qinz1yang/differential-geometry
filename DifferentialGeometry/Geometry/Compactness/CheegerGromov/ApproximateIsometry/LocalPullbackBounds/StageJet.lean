@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricConvergence.StageJet
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuffer
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.Buffer
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

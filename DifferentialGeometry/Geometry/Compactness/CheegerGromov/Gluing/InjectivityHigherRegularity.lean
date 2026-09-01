@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBufferHigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.BufferHigherRegularity
 import DifferentialGeometry.Analysis.Calculus.DerivativePerturbation
 
 

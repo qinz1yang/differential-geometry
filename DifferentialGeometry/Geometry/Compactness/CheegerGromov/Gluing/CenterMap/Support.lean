@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.StableNet
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterEquationSelection
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.EquationSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Construction
 open DifferentialGeometry.Geometry.Curvature
 
