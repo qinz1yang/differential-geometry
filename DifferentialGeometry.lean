@@ -2773,7 +2773,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Completeness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Basic
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Images
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Construction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Completeness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Convergence

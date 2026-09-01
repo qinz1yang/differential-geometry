@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Images
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
 
 open DifferentialGeometry.Geometry.Curvature
