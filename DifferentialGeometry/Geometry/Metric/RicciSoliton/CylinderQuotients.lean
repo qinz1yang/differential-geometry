@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
 import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
 import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
+import DifferentialGeometry.Topology.ProjectiveSpace.Real
 import Mathlib.Geometry.Manifold.Instances.Quotient
 import Mathlib.GroupTheory.OrderOfElement
 
@@ -839,6 +840,112 @@ theorem cylinderDiagonalQuotientPotential_continuous :
     Continuous cylinderDiagonalQuotientPotential := by
   exact roundThreeCylinderShrinkerPotential.contMDiff.continuous.quotient_lift
     (fun _ _ hxy => cylinderDiagonalPotential_respects hxy)
+
+private theorem cylinderAntipodalToRealProjectivePlaneProduct_respects
+    {x y : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real}
+    (hxy : MulAction.orbitRel cylinderAntipodalGroup _ x y) :
+    (realProjectivePlaneQuotientMap x.1, x.2) =
+      (realProjectivePlaneQuotientMap y.1, y.2) := by
+  rcases hxy with ⟨psi, rfl⟩
+  rcases cylinderAntipodalGroup_eq_one_or_generator psi with hpsi | hpsi
+  · change (realProjectivePlaneQuotientMap (psi.1 y).1, (psi.1 y).2) = _
+    rw [hpsi]
+    rfl
+  · change (realProjectivePlaneQuotientMap (psi.1 y).1, (psi.1 y).2) = _
+    rw [hpsi]
+    rw [Diffeomorph.coe_toEquiv, cylinderAntipodalDiffeomorph_apply]
+    apply Prod.ext
+    · rw [realProjectivePlaneQuotientMap_eq_iff]
+      right
+      exact realProjectivePlaneAntipodalHomeomorph_coe y.1
+    · rfl
+
+private def cylinderAntipodalToRealProjectivePlaneProduct :
+    CylinderAntipodalQuotient → RealProjectivePlane × Real :=
+  Quotient.lift
+    (fun x => (realProjectivePlaneQuotientMap x.1, x.2))
+    (fun _ _ hxy =>
+      cylinderAntipodalToRealProjectivePlaneProduct_respects hxy)
+
+private theorem realProjectivePlaneProductToCylinderAntipodal_respects
+    (s : Real) {x y : Metric.sphere
+      (0 : EuclideanSpace Real (Fin 3)) 1}
+    (hxy : MulAction.orbitRel realProjectivePlaneAntipodalGroup _ x y) :
+    cylinderAntipodalQuotientMap (x, s) =
+      cylinderAntipodalQuotientMap (y, s) := by
+  have hquotient : realProjectivePlaneQuotientMap x =
+      realProjectivePlaneQuotientMap y :=
+    Quotient.sound hxy
+  rw [realProjectivePlaneQuotientMap_eq_iff] at hquotient
+  rcases hquotient with rfl | hxy
+  · rfl
+  · rw [cylinderAntipodalQuotientMap_eq_iff]
+    right
+    rw [cylinderAntipodalDiffeomorph_apply]
+    apply Prod.ext
+    · exact Subtype.ext hxy
+    · rfl
+
+private def realProjectivePlaneProductToCylinderAntipodal :
+    RealProjectivePlane × Real → CylinderAntipodalQuotient :=
+  fun q => Quotient.lift
+    (fun x => cylinderAntipodalQuotientMap (x, q.2))
+    (fun _ _ hxy =>
+      realProjectivePlaneProductToCylinderAntipodal_respects q.2 hxy) q.1
+
+private noncomputable def cylinderAntipodalQuotientEquivRealProjectivePlaneProd :
+    CylinderAntipodalQuotient ≃ RealProjectivePlane × Real where
+  toFun := cylinderAntipodalToRealProjectivePlaneProduct
+  invFun := realProjectivePlaneProductToCylinderAntipodal
+  left_inv q := by
+    induction q using Quotient.inductionOn with
+    | _ x => rfl
+  right_inv q := by
+    rcases q with ⟨q, s⟩
+    induction q using Quotient.inductionOn with
+    | _ x => rfl
+
+private theorem cylinderAntipodalToRealProjectivePlaneProduct_continuous :
+    Continuous cylinderAntipodalToRealProjectivePlaneProduct := by
+  exact ((continuous_quotient_mk'.comp continuous_fst).prodMk
+    continuous_snd).quotient_lift
+      (fun x y hxy =>
+        cylinderAntipodalToRealProjectivePlaneProduct_respects hxy)
+
+private theorem realProjectivePlaneProductToCylinderAntipodal_continuous :
+    Continuous realProjectivePlaneProductToCylinderAntipodal := by
+  let qmap : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real →
+      RealProjectivePlane × Real :=
+    Prod.map realProjectivePlaneQuotientMap id
+  have hqmap : IsOpenQuotientMap qmap :=
+    realProjectivePlaneQuotientMap_isOpenQuotientMap.prodMap
+      IsOpenQuotientMap.id
+  rw [hqmap.isQuotientMap.continuous_iff]
+  convert continuous_quotient_mk' using 1
+  ext x
+  rfl
+
+noncomputable def cylinderAntipodalQuotientHomeomorph :
+    CylinderAntipodalQuotient ≃ₜ RealProjectivePlane × Real where
+  toEquiv := cylinderAntipodalQuotientEquivRealProjectivePlaneProd
+  continuous_toFun :=
+    cylinderAntipodalToRealProjectivePlaneProduct_continuous
+  continuous_invFun :=
+    realProjectivePlaneProductToCylinderAntipodal_continuous
+
+theorem cylinderAntipodalQuotientHomeomorph_apply
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) :
+    cylinderAntipodalQuotientHomeomorph
+        (cylinderAntipodalQuotientMap x) =
+      (realProjectivePlaneQuotientMap x.1, x.2) :=
+  rfl
+
+theorem cylinderAntipodalQuotientHomeomorph_symm_apply
+    (x : Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1) (s : Real) :
+    cylinderAntipodalQuotientHomeomorph.symm
+        (realProjectivePlaneQuotientMap x, s) =
+      cylinderAntipodalQuotientMap (x, s) :=
+  rfl
 
 theorem noncompactSpace_orbitRelQuotient_of_roundThreeCylinderShrinkerPotential_invariant
     {Gamma : Type*} [Group Gamma]
