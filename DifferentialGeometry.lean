@@ -2184,6 +2184,7 @@ import DifferentialGeometry.Geometry.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
+import DifferentialGeometry.Topology.Manifold.DerivativeNearIdentity
 import DifferentialGeometry.Topology.Manifold.ParametricInverseFunctionTheorem
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
@@ -2673,6 +2674,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Norm
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.InverseDistance
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.BranchScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.RadialDistanceLowerBound
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseAt
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverseBranch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.InverseVelocityConvergence
@@ -2736,6 +2738,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.PairwiseTr
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.ChartSmoothness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceBuffer
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.SourceCover
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterRootConvergence
@@ -2753,6 +2756,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.WeightComp
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Weights
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.WeightConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.BumpWeights
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Diagonal
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
