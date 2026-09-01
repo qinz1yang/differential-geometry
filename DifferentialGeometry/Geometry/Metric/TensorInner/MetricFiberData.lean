@@ -170,6 +170,36 @@ theorem IsSymmetric.range_eq_orthogonal_ker
   rw [hOrthogonal, ← hSymmetric.orthogonal_range]
   exact A.range.orthogonal_orthogonal.symm
 
+variable {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
+
+theorem map_orthogonal_of_inner_eq
+    (DV : MetricFiberData V) (DW : MetricFiberData W)
+    (e : V ≃ₗ[Real] W)
+    (hinner : ∀ v w, DW.inner (e v) (e w) = DV.inner v w)
+    (K : Submodule Real V) :
+    Submodule.map e.toLinearMap (DV.orthogonal K) =
+      DW.orthogonal (Submodule.map e.toLinearMap K) := by
+  ext w
+  constructor
+  · rintro ⟨v, hv, rfl⟩
+    rw [mem_orthogonal]
+    rintro _ ⟨u, hu, rfl⟩
+    change DW.inner (e u) (e v) = 0
+    rw [hinner]
+    exact (mem_orthogonal DV K v).mp hv u hu
+  · intro hw
+    refine ⟨e.symm w, ?_, e.apply_symm_apply w⟩
+    change e.symm w ∈ DV.orthogonal K
+    rw [mem_orthogonal]
+    intro u hu
+    have hw' := (mem_orthogonal DW (Submodule.map e.toLinearMap K) w).mp hw
+      (e u) ⟨u, hu, rfl⟩
+    calc
+      DV.inner u (e.symm w) = DW.inner (e u) (e (e.symm w)) :=
+        (hinner u (e.symm w)).symm
+      _ = DW.inner (e u) w := by rw [e.apply_symm_apply]
+      _ = 0 := hw'
+
 noncomputable def submoduleProjection
     (D : MetricFiberData V) (W : Submodule Real V) : V →ₗ[Real] W := by
   let addV : AddCommGroup V := inferInstance
@@ -281,8 +311,6 @@ theorem exists_metric_cle
   exact eData.2 v w
 
 end MetricEquiv
-
-variable {W : Type*} [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
 
 def adjoint (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A : V →ₗ[Real] W) : W →ₗ[Real] V :=
