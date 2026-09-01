@@ -116,6 +116,24 @@ theorem proj_eq_iff_smul
   · rintro ⟨g, rfl⟩
     exact proj_deckAct g p
 
+theorem deckAct_eq_self_iff
+    {g : FundamentalGroup X (default : X)}
+    (p : UniversalCover X) :
+    g • p = p ↔ g = 1 := by
+  constructor
+  · intro h
+    rcases p with ⟨x, p⟩
+    have hp : (FundamentalGroup.toPath g⁻¹).trans p = p := by
+      exact eq_of_heq (Sigma.mk.inj_iff.mp h).2
+    have hcancel := congrArg
+      (fun q : Path.Homotopic.Quotient (default : X) x => q.trans p.symm) hp
+    rw [Path.Homotopic.Quotient.trans_assoc,
+      Path.Homotopic.Quotient.trans_symm,
+      Path.Homotopic.Quotient.trans_refl] at hcancel
+    exact inv_eq_one.mp hcancel
+  · rintro rfl
+    exact one_smul _ _
+
 section Smooth
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

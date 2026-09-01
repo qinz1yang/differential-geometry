@@ -164,12 +164,23 @@ noncomputable def roundQuotientUC
     { Q := Q
       Γ := FundamentalGroup Q (default : Q)
       ρ := ρ
+      action_free := ?_
       proj := proj
       proj_smooth :=
         (UniversalCover.proj_contMDiff (I := 𝓡 n) (M := Q)).comp d.contMDiff
       proj_smul := ?_
       proj_eq_imp := ?_
       sectionAt := fun x => SectionWitness.ofLocal hsurj hloc x }
+  · intro a x hx
+    apply (UniversalCover.deckAct_eq_self_iff (g := a) (d x)).mp
+    have hφ : φ a x = x := by
+      rw [← hρ a]
+      exact hx
+    have hconj : d (φ a x) = a • d x := by
+      simp only [φ, Diffeomorph.coe_trans, Function.comp_apply,
+        d.apply_symm_apply]
+      rfl
+    exact hconj.symm.trans (congrArg d hφ)
   · intro a x
     rw [hρ a]
     simp only [proj, Function.comp_apply]

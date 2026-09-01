@@ -59,6 +59,8 @@ structure RoundQuotientData (E : Type uE) [NormedAddCommGroup E] [InnerProductSp
   [grp : Group Γ]
   [fin : Fintype Γ]
   ρ : Γ →* (E ≃ₗᵢ[ℝ] E)
+  action_free : ∀ γ : Γ, ∀ q : sphere (0 : E) 1,
+    sphereDiffeo (n := n) (ρ γ) q = q → γ = 1
   proj : sphere (0 : E) 1 → Q
   proj_smooth : ContMDiff (𝓡 n) (𝓡 n) ∞ proj
   proj_smul : ∀ (γ : Γ) (q : sphere (0 : E) 1),
