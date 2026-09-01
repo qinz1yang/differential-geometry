@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CovariantDerivativeNorm
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
 
 open DifferentialGeometry.Geometry.Curvature

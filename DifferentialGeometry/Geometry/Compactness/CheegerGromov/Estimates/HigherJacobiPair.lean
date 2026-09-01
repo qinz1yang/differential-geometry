@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherCurvatureJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Estimates.HigherJacobiForce
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 
 set_option autoImplicit false
 
