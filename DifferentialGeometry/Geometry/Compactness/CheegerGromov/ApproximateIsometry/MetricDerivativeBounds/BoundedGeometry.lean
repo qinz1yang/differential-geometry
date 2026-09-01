@@ -1,8 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricLocalHigherRegularity
-
-
-
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricIntrinsic
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricDerivativeBounds.StageJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricReverseHigherRegularity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.LocalOn
 import DifferentialGeometry.Geometry.Metric.Convergence.MetricTowerConvergence
@@ -766,12 +763,12 @@ private theorem chart_local_norm_le
     intro v
     rw [hB z v v]
     exact hequiv v
-  apply metric_norm_le_comp V Gv gv a z hbnd hequivV
+  apply metricDerivNorm_le_of_iterCovComp_le V Gv gv a z hbnd hequivV
   intro slots
   let frame : Fin (Module.finrank Real E) →
       (w : V) → TangentSpace 𝓘(Real, E) w := fun i _ ↦ e i
   let hframe : IsLocalFrameOn 𝓘(Real, E) E (1 : WithTop ℕ∞)
-      frame Set.univ := constBasis_frame V e
+      frame Set.univ := constantBasis_isLocalFrameOn V e
   have hcut_smooth : ContMDiff 𝓘(Real, E) 𝓘(Real, Real) ∞
       (cut : E → Real) := cut.contDiff.contMDiff
   have hcut_range : ∀ w : E, cut w ∈ Set.Icc (0 : Real) 1 :=
@@ -801,7 +798,7 @@ private theorem chart_local_norm_le
     funext w i j m
     have hfield : DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField
         (I := 𝓘(Real, E)) V
-        (fun y : E ↦ (constTangentField (E := E) (e j)) y) =
+        (fun y : E ↦ (constantModelVectorFieldSection (E := E) (e j)) y) =
           fun y : V ↦ (show TangentSpace 𝓘(Real, E) y from e j) := by
       funext y
       rw [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField_apply]
@@ -809,7 +806,7 @@ private theorem chart_local_norm_le
         rfl
     have hres := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
       (I := 𝓘(Real, E)) gTot V
-      (constTangentField (E := E) (e j)) w (e i)
+      (constantModelVectorFieldSection (E := E) (e j)) w (e i)
     rw [hfield] at hres
     have hres' :
         ((Geometry.Connection.leviCivitaConnectionOfMetric
@@ -817,7 +814,7 @@ private theorem chart_local_norm_le
           ((Geometry.Connection.leviCivitaConnectionOfMetric
             (I := 𝓘(Real, E)) gTot (fun _ : E ↦ e j) (w : E)) (e i)) := by
       rw [hgv]
-      have hconst : (fun y : E => (constTangentField (E := E) (e j)) y) =
+      have hconst : (fun y : E => (constantModelVectorFieldSection (E := E) (e j)) y) =
           fun _ : E => e j := by
         funext y
         with_unfolding_all
@@ -882,7 +879,7 @@ private theorem chart_local_norm_le
           (Geometry.Connection.leviCivitaConnectionOfMetric
             (I := 𝓘(Real, E)) gv)
           (fun i (_ : V) ↦ (stdOrthonormalBasis Real E).toBasis i)
-          (constBasis_frame V
+          (constantBasis_isLocalFrameOn V
             (stdOrthonormalBasis Real E).toBasis) w)
         (frameComp0S (I := 𝓘(Real, E))
           (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) Gv -
@@ -1177,7 +1174,7 @@ theorem BoundedGeometryNormalChartData.fwd_norm_tail
           (fun y : E ↦ iterCovComp (I := 𝓘(Real, E))
             (fun i _ ↦ e i) Gamma base q y slots) (w : E) := by
     simpa only [Gamma, base] using
-      metric_tower_mdiff V e B Q hBcd hQcd hBco
+      metric_iterCovComp_mdifferentiableAt V e B Q hBcd hQcd hBco
   have hcompLe : ∀ slots : Fin (2 + a) → Fin (Module.finrank Real E),
       |iterCovComp (I := 𝓘(Real, E)) (fun i _ ↦ e i)
           Gamma base a z slots| ≤ epsComp := by
@@ -1679,7 +1676,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
           (fun x : E ↦ iterCovComp (I := 𝓘(Real, E))
             (fun i _ ↦ e i) Gamma base q' x slots) (w : E) := by
     simpa only [Gamma, base] using
-      metric_tower_mdiff V e BL Q hBLcd hQcd hBLco
+      metric_iterCovComp_mdifferentiableAt V e BL Q hBLcd hQcd hBLco
   have hcompLe : ∀ slots : Fin (2 + a) → Fin (Module.finrank Real E),
       |iterCovComp (I := 𝓘(Real, E)) (fun i _ ↦ e i)
           Gamma base a (A z) slots| ≤ epsComp := by
