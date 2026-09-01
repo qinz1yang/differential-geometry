@@ -457,9 +457,9 @@ theorem NormalBallChart.MetricEquivOn.core_dist
   exact ⟨hxcore, hcoord⟩
 
 omit [CompleteSpace E] in
-theorem BoundedGeometryNormalData.metric_buffer
+theorem BoundedGeometryNormalChartData.metric_buffer
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
     (r : Real) (hr : 0 ≤ r)

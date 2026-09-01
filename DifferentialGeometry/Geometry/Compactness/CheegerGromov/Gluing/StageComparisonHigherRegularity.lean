@@ -28,11 +28,11 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem stage_root_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -414,7 +414,7 @@ theorem stage_root_tail
     exact chiL.hom.map_source (chiL.ball_subset hrootBall)
   exact ⟨hchartReadout, hrootBall, hmapDecode, htarget⟩
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 theorem HasSuppConvDataOn.stage_jet_of_root
     (inp : MetricCompactCore (I := I) X)
@@ -634,11 +634,11 @@ theorem HasSuppConvDataOn.stage_jet_tail
     Finset.le_sup (f := N) (Finset.mem_univ alpha)
   exact hN alpha k (hAlpha.trans hk) l (hAlpha.trans hl) z hz
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem stage_jet_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -757,7 +757,7 @@ theorem stage_jet_tail
 
 theorem stage_base_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
     {r : Real} (hr : 0 ≤ r)
@@ -770,7 +770,7 @@ theorem stage_base_tail
 
 theorem exists_supp_base
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -806,7 +806,7 @@ theorem exists_supp_base
 
 theorem exists_supp_metric
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -906,7 +906,7 @@ theorem exists_supp_metric
       nlinarith [hprod, height, hlam]
     have hsmall :
         8 * L.lamInf (alpha.1 : Nat) < d.phaseRadius Ralpha := by
-      dsimp only [BoundedGeometryNormalData.phaseRadius]
+      dsimp only [BoundedGeometryNormalChartData.phaseRadius]
       nlinarith [height, hfour]
     have hC1V : C1 alpha ⊆ V alpha :=
       hC1U.trans <| (hU8 alpha).trans <|
@@ -923,7 +923,7 @@ theorem exists_supp_metric
 
 theorem stage_data_of
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (hratio : 48 * aMin < d.ratio)
@@ -999,13 +999,13 @@ theorem stage_data_of
     let index : Nat → Nat := fun n => Lphi.φ n
     let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
       X.subseq index
-    let dphi : BoundedGeometryNormalData (I := I) Xphi
+    let dphi : BoundedGeometryNormalChartData (I := I) Xphi
         (inp.decay.subseq index) := d.subseq index
     let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
       fun beta n =>
         seqCenterD inp.decay P Lphi n (beta.1 : Nat)
     simpa only [Lphi, index, Xphi, dphi, c,
-      PointedRiemannianSeq.subseq, BoundedGeometryNormalData.subseq] using
+      PointedRiemannianSeq.subseq, BoundedGeometryNormalChartData.subseq] using
       (hpair alpha).2.2.2.2.2.1
   have hfence : ∀ alpha,
       let Lphi := L.subseq hphi
@@ -1019,7 +1019,7 @@ theorem stage_data_of
     let index : Nat → Nat := fun n => Lphi.φ n
     let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
       X.subseq index
-    let dphi : BoundedGeometryNormalData (I := I) Xphi
+    let dphi : BoundedGeometryNormalChartData (I := I) Xphi
         (inp.decay.subseq index) := d.subseq index
     let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
       fun beta n =>
@@ -1027,7 +1027,7 @@ theorem stage_data_of
     dsimp only
     intro stage
     simpa only [Lphi, index, Xphi, dphi, c,
-      PointedRiemannianSeq.subseq, BoundedGeometryNormalData.subseq] using
+      PointedRiemannianSeq.subseq, BoundedGeometryNormalChartData.subseq] using
       (hstage alpha stage).1
   have hinv : ∀ alpha,
       let Lphi := L.subseq hphi
@@ -1047,7 +1047,7 @@ theorem stage_data_of
     let index : Nat → Nat := fun n => Lphi.φ n
     let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
       X.subseq index
-    let dphi : BoundedGeometryNormalData (I := I) Xphi
+    let dphi : BoundedGeometryNormalChartData (I := I) Xphi
         (inp.decay.subseq index) := d.subseq index
     let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
       fun beta n =>
@@ -1055,7 +1055,7 @@ theorem stage_data_of
     dsimp only
     intro stage
     simpa only [Lphi, index, Xphi, dphi, c,
-      PointedRiemannianSeq.subseq, BoundedGeometryNormalData.subseq] using
+      PointedRiemannianSeq.subseq, BoundedGeometryNormalChartData.subseq] using
       (hstage alpha stage).2
   have hqdata' : ∀ gamma : LiveSlot L inp.pack r,
       let Rgamma := L.rInf (gamma.1 : Nat) + 1
@@ -1133,12 +1133,12 @@ theorem stage_data_of
     have hmu : 0 < inp.decay.mu Rgamma := inp.decay.mu_pos Rgamma
     have hrhoPhase : rho < d.phaseRadius Rgamma := by
       have hmul := mul_lt_mul_of_pos_right hfour hmu
-      dsimp only [rho, BoundedGeometryNormalData.phaseRadius]
+      dsimp only [rho, BoundedGeometryNormalChartData.phaseRadius]
       nlinarith
     have hphaseChart :
         d.phaseRadius Rgamma ≤
           (d.chart (Lphi.φ n) x0).radius / 4 := by
-      rw [BoundedGeometryNormalData.phaseRadius, d.radius_eq]
+      rw [BoundedGeometryNormalChartData.phaseRadius, d.radius_eq]
       exact div_le_div_of_nonneg_right
         (mul_le_mul_of_nonneg_left
           (inp.decay.mu_antitone (hcenter n gamma)) d.ratio_pos.le)
@@ -1186,7 +1186,7 @@ theorem stage_data_of
 
 private noncomputable def baseScale
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1196,7 +1196,7 @@ private noncomputable def baseScale
 
 noncomputable def stageScale
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1207,7 +1207,7 @@ noncomputable def stageScale
 omit [CompleteSpace E] in
 theorem stageScale_pos
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1222,7 +1222,7 @@ theorem stageScale_pos
 omit [CompleteSpace E] in
 theorem stageScale_ratio
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -1240,7 +1240,7 @@ theorem stageScale_ratio
 
 theorem stage_data
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1324,7 +1324,7 @@ theorem stage_data
 
 theorem exists_stage_data
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1357,7 +1357,7 @@ theorem exists_stage_data
 
 theorem stage_diag
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1381,7 +1381,7 @@ theorem stage_diag
 
 theorem exists_stage_diag
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1401,7 +1401,7 @@ theorem exists_stage_diag
   intro hphys P L0 hstable
   exact d.stage_diag inp hcomplete hconn hphys P L0 hstable
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

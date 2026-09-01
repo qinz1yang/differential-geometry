@@ -33,13 +33,13 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 omit [CompleteSpace E] in
 theorem halfCage_ctrl
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -112,7 +112,7 @@ theorem halfCage_ctrl
       ENNReal.ofReal (d.chart k x).radius := by
     exact hy.trans_le (ENNReal.ofReal_le_ofReal (by nlinarith))
   have hread :=
-    d.toNormalChartData.readout_mem k hcomplete hconn x y hyChart
+    d.toNormalChartData.mem_image_and_norm_inv_eq_riemannian_distance k hcomplete hconn x y hyChart
   have hyFin : riemannianEDist I x y ≠ (⊤ : ENNReal) :=
     ne_of_lt (hy.trans ENNReal.ofReal_lt_top)
   have hyReal : (riemannianEDist I x y).toReal < ρ / 2 :=
@@ -145,7 +145,7 @@ omit [CompleteSpace E] in
 theorem halfSq_inf
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -232,7 +232,7 @@ omit [CompleteSpace E] in
 theorem grad_half
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -336,7 +336,7 @@ omit [CompleteSpace E] in
 theorem hess_half
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -444,7 +444,7 @@ theorem hess_half
 theorem inv_cov
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -652,7 +652,7 @@ theorem inv_cov
 theorem hess_coord
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -838,7 +838,7 @@ theorem hess_coord
 theorem cov_expand
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -952,7 +952,7 @@ theorem cov_expand
 theorem hess_lower
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1166,7 +1166,7 @@ theorem hess_lower
 theorem hess_sixth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1278,7 +1278,7 @@ theorem hess_sixth
 theorem hess_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1456,7 +1456,7 @@ omit [CompleteSpace E] in
 theorem center_of_mass_normal_coordinate_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1659,7 +1659,7 @@ theorem center_of_mass_normal_coordinate_data
 theorem center_of_mass_satisfies_normal_coordinate_equation
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -1770,7 +1770,7 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
     htgt h.μ_nonneg hsum ⟨hz, hxi, hdom, hzero⟩
   exact ⟨hy, hz, hxi, hdom, hzero, hsol⟩
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

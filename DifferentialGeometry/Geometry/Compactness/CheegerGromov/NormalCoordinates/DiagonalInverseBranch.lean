@@ -2048,9 +2048,9 @@ theorem exists_pair_readout
     have hnonneg : 0 ≤ (riemannianEDist I x (a i)).toReal := ENNReal.toReal_nonneg
     linarith
   have haControl :=
-    d.readout_mem k hcomplete hconn x (a i) (haLt.trans hhalfChart)
+    d.mem_image_and_norm_inv_eq_riemannian_distance k hcomplete hconn x (a i) (haLt.trans hhalfChart)
   have hbControl :=
-    d.readout_mem k hcomplete hconn x (b i) (hbLt.trans hhalfChart)
+    d.mem_image_and_norm_inv_eq_riemannian_distance k hcomplete hconn x (b i) (hbLt.trans hhalfChart)
   let wa := (d.chart k x).inv (a i)
   let wb := (d.chart k x).inv (b i)
   have hwa : ‖wa‖ < ρ := by
@@ -2173,12 +2173,12 @@ theorem exists_common_dom
 
 end NormalRadiusProfile
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem exists_common_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2283,7 +2283,7 @@ theorem exists_common_inv
 theorem exists_common_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2364,7 +2364,7 @@ theorem exists_common_dom
               (hconn k) x hq' he).dom
   exact ⟨hq', e, he, hclosed⟩
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

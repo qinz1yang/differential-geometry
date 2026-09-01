@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeOverlap
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalData
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.HigherRegularityEndpoint
 
 set_option autoImplicit false
@@ -51,7 +51,7 @@ def metricCompactnessOfBoundedGeometry
       ConnectedSpace (X.obj k).M) :
     MetricCompactnessConclusion (I := I) X := by
   let b := metricSeedOfBG (I := I) X hcomplete hgeom hinj hconn
-  have hd : Nonempty (BoundedGeometryNormalData (I := I) X b.decay) :=
+  have hd : Nonempty (BoundedGeometryNormalChartData (I := I) X b.decay) :=
     exists_bounded_geometry_normal_data (I := I) X hcomplete hconn hgeom b.decay b.realizes
   exact b.higherRegularityMetricCompactness (Classical.choice hd) hcomplete hconn
 

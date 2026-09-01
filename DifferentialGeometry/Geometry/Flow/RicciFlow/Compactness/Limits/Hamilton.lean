@@ -74,7 +74,7 @@ theorem compactnessSol
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
     metricSeedOfBG (I := I) (X.atZero (I := I))
       hcomplete0 hgeom0 hinj hconn0
-  have hd : Nonempty (BoundedGeometryNormalData (I := I) (X.atZero (I := I)) seed.decay) :=
+  have hd : Nonempty (BoundedGeometryNormalChartData (I := I) (X.atZero (I := I)) seed.decay) :=
     exists_bounded_geometry_normal_data (I := I) (X.atZero (I := I))
       hcomplete0 hconn0 hgeom0 seed.decay seed.realizes
   let canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)) :=

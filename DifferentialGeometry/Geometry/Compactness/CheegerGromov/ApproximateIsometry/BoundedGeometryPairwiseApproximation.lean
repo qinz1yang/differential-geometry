@@ -187,10 +187,10 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence
   · exact hpair.1
   · exact hpair.2
 
-theorem BoundedGeometryNormalData.pairwise_approximate_isometry_input_of_diagonal_data
+theorem BoundedGeometryNormalChartData.pairwise_approximate_isometry_input_of_diagonal_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L0 : NetLimitData inp.decay inp.D P)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -284,7 +284,7 @@ theorem BoundedGeometryNormalData.pairwise_approximate_isometry_input_of_diagona
 theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bounded_geometry
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -328,7 +328,7 @@ theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bo
 theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence_of_bounded_geometry
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology

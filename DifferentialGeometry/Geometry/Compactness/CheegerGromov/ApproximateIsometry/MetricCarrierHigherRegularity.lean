@@ -24,9 +24,9 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable [NeZero (Module.finrank Real E)]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem BoundedGeometryNormalData.preapprox_tail
+theorem BoundedGeometryNormalChartData.preapprox_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)

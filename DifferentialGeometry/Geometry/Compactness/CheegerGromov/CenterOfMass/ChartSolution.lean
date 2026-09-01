@@ -33,7 +33,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 def HasLiveChartCenterSolution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) {D : Real}
+    (d : BoundedGeometryNormalChartData (I := I) X hd) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -84,12 +84,12 @@ def HasLiveChartCenterSolution
     (d.chart (L.φ n) (seqCenterD hd P L n (alpha.1 : Nat)))
     (q := q alpha) (delta := δ alpha) mu pts join x rad hcm
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem has_live_chart_center_solution_of_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) {D aMin : Real}
+    (d : BoundedGeometryNormalChartData (I := I) X hd) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (hre : hd.RealizesDistance) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
@@ -301,7 +301,7 @@ theorem has_live_chart_center_solution_of_cage
 theorem exists_live_chart_center_solutions
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
@@ -555,7 +555,7 @@ theorem exists_live_chart_center_solutions
       (hmu.sum_one x hx) (hs hx) hradCage
     simpa only [pts, join] using hout
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

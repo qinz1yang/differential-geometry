@@ -23,11 +23,11 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem exists_stage_metric
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
     ∃ (psi : Nat → Nat)
@@ -76,7 +76,7 @@ theorem exists_stage_metric
     intro alpha τ hτ
     let index : Nat → Nat := fun n => L.φ (shift (τ n))
     let X' : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
-    let d' : BoundedGeometryNormalData (I := I) X' (inp.decay.subseq index) :=
+    let d' : BoundedGeometryNormalChartData (I := I) X' (inp.decay.subseq index) :=
       d.subseq index
     let c : ∀ n : Nat, (X'.obj n).M := fun n =>
       seqCenterD inp.decay P L (shift (τ n)) (alpha.1 : Nat)
@@ -128,7 +128,7 @@ theorem exists_stage_metric
 
 theorem exists_stage_pair
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -167,7 +167,7 @@ theorem exists_stage_pair
     let index : Nat → Nat := fun n => Lphi.φ n
     let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
       X.subseq index
-    let dphi : BoundedGeometryNormalData (I := I) Xphi
+    let dphi : BoundedGeometryNormalChartData (I := I) Xphi
         (inp.decay.subseq index) := d.subseq index
     let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
       fun alpha n =>
@@ -201,7 +201,7 @@ theorem exists_stage_pair
   let index : Nat → Nat := fun n => Lphi.φ n
   let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
     X.subseq index
-  let dphi : BoundedGeometryNormalData (I := I) Xphi
+  let dphi : BoundedGeometryNormalChartData (I := I) Xphi
       (inp.decay.subseq index) := d.subseq index
   let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
     fun alpha n =>
@@ -269,7 +269,7 @@ theorem exists_stage_pair
   choose deltaStage deltaInf e eInf hpair hfence using hslot
   exact ⟨deltaStage, deltaInf, e, eInf, hpair, hfence⟩
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

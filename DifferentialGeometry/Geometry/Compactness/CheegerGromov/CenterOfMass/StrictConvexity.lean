@@ -31,12 +31,12 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem strict_dist_input
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -320,7 +320,7 @@ theorem strict_dist_input
   · intro i a ha b hbmem hab
     exact hstrict_pt (pts i) (hptsCage i) a ha b hbmem hab
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

@@ -45,9 +45,9 @@ local instance higherBilinearNormedSpace :
     NormedSpace Real (E →L[Real] E →L[Real] Real) :=
   ContinuousLinearMap.toNormedSpace
 
-theorem BoundedGeometryNormalData.cov_comp_tail
+theorem BoundedGeometryNormalChartData.cov_comp_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -324,7 +324,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
           (kn n) alpha
       have hsmooth := chiK.metric_cont_diff_on Yk.metric hVopen
         (chiK.smooth_to.mono (hVU.trans hRad))
-      simpa only [B, BoundedGeometryNormalData.chartMetric, Yk, ck, chiK, Lphi] using hsmooth
+      simpa only [B, BoundedGeometryNormalChartData.chartMetric, Yk, ck, chiK, Lphi] using hsmooth
     have hBco : ∀ n z, z ∈ V → IsCoercive (B alpha (kn n) z) := by
       intro n z hz
       let Yk := X.obj (Lphi.φ (kn n))
@@ -341,7 +341,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
       have hEquiv : chiK.MetricEquivOn Yk.metric (U alpha) := by
         intro w hw v
         exact d.metric_equiv (Lphi.φ (kn n)) ck w (hRad hw) v
-      simpa only [B, BoundedGeometryNormalData.chartMetric, Yk, ck, chiK, Lphi] using
+      simpa only [B, BoundedGeometryNormalChartData.chartMetric, Yk, ck, chiK, Lphi] using
         hEquiv.coercive Yk.metric (hVU hz)
     have hgInfV : ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) V :=
       hgInf.mono (hVD.trans hDVmetric)
@@ -406,7 +406,7 @@ theorem BoundedGeometryNormalData.cov_comp_tail
             (ln n) alpha
         have hsmooth := chiL.metric_cont_diff_on Yl.metric hDopen
           (chiL.smooth_to.mono (hIntU.trans hRad))
-        simpa only [B, BoundedGeometryNormalData.chartMetric, Yl, cl, chiL, Lphi] using hsmooth
+        simpa only [B, BoundedGeometryNormalChartData.chartMetric, Yl, cl, chiL, Lphi] using hsmooth
       exact ⟨hAcd, hAmap, hBtarget⟩
     obtain ⟨Nsm, hNsm⟩ := eventually_atTop.mp hgood
     have hQsmooth : ∀ n, Nsm ≤ n →
@@ -897,9 +897,9 @@ private theorem chart_local_norm_le
         Gamma base a (z : E) slots| := congrArg abs hres
     _ ≤ bnd := by simpa only [e, Gamma, base] using hcomp slots
 
-theorem BoundedGeometryNormalData.fwd_norm_tail
+theorem BoundedGeometryNormalChartData.fwd_norm_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -1111,7 +1111,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     rw [normalBallLocalMetric_inner_model]
     have hout := chart_pull_coeff (I := I) Yl.metric chiK chiL F G
       (w : E) (hVc w.2) (hjetAt w).1 hFdiff hmetricEq u v
-    simpa only [Q, BL, A, BoundedGeometryNormalData.chartMetric] using hout
+    simpa only [Q, BL, A, BoundedGeometryNormalChartData.chartMetric] using hout
   have hBcoeff : ∀ (w : V) (u v : E),
       ((chiK.localMetric Yk.metric).restrictOpenOfSubset
         (I := 𝓘(Real, E)) hVc).inner w u v =
@@ -1126,13 +1126,13 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     have hEquiv : chiK.MetricEquivOn Yk.metric (U alpha) := by
       intro q hq v
       exact d.metric_equiv (Lphi.φ k) ck q (hRadK hq) v
-    simpa only [B, BoundedGeometryNormalData.chartMetric, chiK, ck, Yk, Lphi] using
+    simpa only [B, BoundedGeometryNormalChartData.chartMetric, chiK, ck, Yk, Lphi] using
       hEquiv.coercive Yk.metric (hVU ⟨w, hw⟩)
   have hequiv : ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ B z v v ∧
         B z v v ≤ 2 * ‖v‖ ^ 2 := by
     intro v
-    simpa only [B, BoundedGeometryNormalData.chartMetric, chiK, ck, Yk, Lphi] using
+    simpa only [B, BoundedGeometryNormalChartData.chartMetric, chiK, ck, Yk, Lphi] using
       d.metric_equiv (Lphi.φ k) ck z hzBall v
   have hBcd : ContDiffOn Real (∞ : WithTop ℕ∞) B V := by
     have hsmooth := chiK.metric_cont_diff_on Yk.metric hVopen
@@ -1184,7 +1184,7 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
     intro slots
     have hraw := (hcompZ a ha slots).le
     simpa only [Gamma, base, B, BL, Q, A, chiK, chiL, F, ck, cl,
-      BoundedGeometryNormalData.chartMetric, Yk, Yl, Lphi] using hraw
+      BoundedGeometryNormalChartData.chartMetric, Yk, Yl, Lphi] using hraw
   let cut : ContDiffBump z :=
     { rIn := eta alpha / 2
       rOut := eta alpha
@@ -1239,9 +1239,9 @@ theorem BoundedGeometryNormalData.fwd_norm_tail
       let afin : Fin (p + 1) := ⟨a, Nat.lt_succ_iff.mpr ha⟩
       simpa only [fac, afin, mul_assoc] using hbudget afin
 
-theorem BoundedGeometryNormalData.inv_norm_tail
+theorem BoundedGeometryNormalChartData.inv_norm_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -1617,7 +1617,7 @@ theorem BoundedGeometryNormalData.inv_norm_tail
     rw [normalBallLocalMetric_inner_model]
     have hout := chart_pull_coeff (I := I) Yk.metric chiL chiK Hinv G
       (w : E) (hVc w.2) hInvTarget hHdiff hmetricEq u v
-    simpa only [Q, BK, Grev, BoundedGeometryNormalData.chartMetric] using hout
+    simpa only [Q, BK, Grev, BoundedGeometryNormalChartData.chartMetric] using hout
   have hBcoeff : ∀ (w : V) (u v : E),
       ((chiL.localMetric Yl.metric).restrictOpenOfSubset
         (I := 𝓘(Real, E)) hVc).inner w u v =
@@ -1636,13 +1636,13 @@ theorem BoundedGeometryNormalData.inv_norm_tail
     have hEquiv : chiL.MetricEquivOn Yl.metric (U alpha) := by
       intro q hq v
       exact d.metric_equiv (Lphi.φ l) cl q (hRadL hq) v
-    simpa only [BL, BoundedGeometryNormalData.chartMetric, chiL, cl, Yl, Lphi] using
+    simpa only [BL, BoundedGeometryNormalChartData.chartMetric, chiL, cl, Yl, Lphi] using
       hEquiv.coercive Yl.metric (hVU ⟨w, hw⟩)
   have hequiv : ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ BL (A z) v v ∧
         BL (A z) v v ≤ 2 * ‖v‖ ^ 2 := by
     intro v
-    simpa only [BL, BoundedGeometryNormalData.chartMetric, chiL, cl, Yl, Lphi] using
+    simpa only [BL, BoundedGeometryNormalChartData.chartMetric, chiL, cl, Yl, Lphi] using
       d.metric_equiv (Lphi.φ l) cl (A z) (hRadL (hVU ⟨A z, hAzV⟩)) v
   have hBLcd : ContDiffOn Real (∞ : WithTop ℕ∞) BL V := by
     have hsmooth := chiL.metric_cont_diff_on Yl.metric hVopen

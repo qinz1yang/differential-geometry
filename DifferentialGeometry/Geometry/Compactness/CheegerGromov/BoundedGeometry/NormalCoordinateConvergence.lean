@@ -26,12 +26,12 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 theorem limit_accel_bounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (R : Real)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
     {gInf : E → E →L[Real] E →L[Real] Real}
@@ -73,7 +73,7 @@ theorem limit_accel_bounds
       exact (d.phaseRadius_chart (hc n)).trans <|
         Metric.ball_subset_ball (by
           nlinarith [(d.chart n (c n)).radius_pos])
-    simpa only [U, g, BoundedGeometryNormalData.chartMetric] using
+    simpa only [U, g, BoundedGeometryNormalChartData.chartMetric] using
       (d.chart n (c n)).metric_cont_diff_on (X.obj n).metric
         Metric.isOpen_ball ((d.chart n (c n)).smooth_to.mono hrad)
   have hg_co : ∀ n z, z ∈ U → IsCoercive (g n z) := by
@@ -119,7 +119,7 @@ theorem limit_accel_bounds
         (d.metricBounds n (c n)).equiv.coercive
           (X.obj n).metric hmetric
       rw [MetricKoszul.metricSpray_eq (g n) z hco]
-      simpa only [g, a, BoundedGeometryNormalData.chartMetric] using
+      simpa only [g, a, BoundedGeometryNormalChartData.chartMetric] using
         ((d.chart n (c n)).accel_eq (X.obj n).metric z hquarter
           ((d.metricBounds n (c n)).equiv.coercive
             (X.obj n).metric hmetric)).symm
@@ -156,7 +156,7 @@ theorem limit_accel_bounds
       let : T2Space (X.obj n).M := (X.obj n).t2
       let : T2Space (TangentBundle I (X.obj n).M) :=
         (X.obj n).t2TangentBundle
-      simpa only [a, BoundedGeometryNormalData.metricBounds] using
+      simpa only [a, BoundedGeometryNormalChartData.metricBounds] using
         chartAccel_norm (I := I) (X.obj n).metric
           (d.chart n (c n)) (d.metricBounds n (c n))
           (d.phaseRadius_metric (hc n)) (d.phaseRadius_chart (hc n))
@@ -165,7 +165,7 @@ theorem limit_accel_bounds
 theorem exists_limit_phase
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (R : Real)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
     {gInf : E → E →L[Real] E →L[Real] Real}
@@ -336,7 +336,7 @@ theorem exists_limit_phase
 theorem exists_limit_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) (R : Real)
+    (d : BoundedGeometryNormalChartData (I := I) X hd) (R : Real)
     (c : ∀ n : Nat, (X.obj n).M)
     (hc : ∀ n, hd.dist n (c n) (X.obj n).basepoint ≤ R)
     {gInf : E → E →L[Real] E →L[Real] Real}
@@ -487,7 +487,7 @@ theorem exists_limit_diag
 private theorem exists_stage_flow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -568,7 +568,7 @@ private theorem exists_stage_flow
   have hqAcc' :
       3 * b.C 1 * (2 * (q : Real)) ^ 2 ≤
         (2 / 3 : Real) * (q : Real) := by
-    simpa only [b, BoundedGeometryNormalData.metricBounds] using hqAcc
+    simpa only [b, BoundedGeometryNormalChartData.metricBounds] using hqAcc
   have herr' : PhaseFlow.phaseErr
       (chartPhaseK (X.obj n).metric b (2 * q)) <
       ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
@@ -666,7 +666,7 @@ private theorem exists_stage_flow
       rw [MetricKoszul.metricSpray_eq _ _ hco]
       apply Prod.ext
       · rfl
-      · simpa only [c, b, BoundedGeometryNormalData.chartMetric,
+      · simpa only [c, b, BoundedGeometryNormalChartData.chartMetric,
           PhaseFlow.phaseField] using
           (c.accel_eq (X.obj n).metric (Φ z t) hquarter
             (b.equiv.coercive (X.obj n).metric hmetric))
@@ -685,7 +685,7 @@ private theorem exists_stage_flow
 theorem exists_diagInv_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -762,7 +762,7 @@ theorem exists_diagInv_conv
       exact (d.phaseRadius_chart (hc n)).trans <|
         Metric.ball_subset_ball (by
           nlinarith [(d.chart n (c n)).radius_pos])
-    simpa only [U, BoundedGeometryNormalData.chartMetric] using
+    simpa only [U, BoundedGeometryNormalChartData.chartMetric] using
       (d.chart n (c n)).metric_cont_diff_on (X.obj n).metric
         Metric.isOpen_ball ((d.chart n (c n)).smooth_to.mono hrad)
   have hg_co : ∀ n z, z ∈ U →
@@ -859,7 +859,7 @@ theorem exists_diagInv_conv
 theorem exists_diagPair_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1042,7 +1042,7 @@ theorem exists_diagPair_at
   · intro n
     exact ⟨hfence n, hinvStage n⟩
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

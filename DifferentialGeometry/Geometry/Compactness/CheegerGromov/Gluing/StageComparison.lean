@@ -941,12 +941,12 @@ theorem HasSuppConvData.actual_cm_tail
   · exact hout
   · simpa only [mu, stagePts, qstar, pts, p, join, c] using hcoord
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 
 theorem ratio_gt_48
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd) {aMin R : Real} {q : NNReal}
+    (d : BoundedGeometryNormalChartData (I := I) X hd) {aMin R : Real} {q : NNReal}
     (hρq : 2 * (aMin * hd.mu R) < (q : Real))
     (hqRadius : 6 * (q : Real) < d.phaseRadius R) :
     48 * aMin < d.ratio := by
@@ -957,7 +957,7 @@ theorem ratio_gt_48
 
 theorem pair_lam_lt_three
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1064,7 +1064,7 @@ theorem pair_lam_lt_three
 
 theorem stage_radius_gt
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1125,7 +1125,7 @@ theorem stage_radius_gt
 
 theorem stage_rho_le
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -1185,7 +1185,7 @@ theorem stage_rho_le
 
 theorem target_mem
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1340,7 +1340,7 @@ theorem target_mem
       ENNReal.ofReal chiAlpha.radius := by
     rw [hed]
     exact (ENNReal.ofReal_lt_ofReal_iff chiAlpha.radius_pos).2 hdist
-  have hread := d.toNormalChartData.readout_mem
+  have hread := d.toNormalChartData.mem_image_and_norm_inv_eq_riemannian_distance
     (L.φ k) (hcomplete.complete (L.φ k)) (hconn (L.φ k))
       cAlpha y hedRad
   rcases hread.1 with ⟨v, hv, hvy⟩
@@ -1350,7 +1350,7 @@ theorem target_mem
 
 theorem weight_trans_mem
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1473,7 +1473,7 @@ theorem weight_trans_mem
     rw [hed]
     exact (ENNReal.ofReal_lt_ofReal_iff
       (d.chart (L.φ (phi k)) c).radius_pos).2 hdistRad
-  have hread := d.toNormalChartData.readout_mem
+  have hread := d.toNormalChartData.mem_image_and_norm_inv_eq_riemannian_distance
     (L.φ (phi k)) (hcomplete.complete (L.φ (phi k)))
     (hconn (L.φ (phi k)))
     c x hedRad
@@ -1496,7 +1496,7 @@ theorem weight_trans_mem
 
 theorem pts_target_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1769,7 +1769,7 @@ theorem pts_target_tail
 
 theorem actual_cm_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -2105,7 +2105,7 @@ theorem actual_cm_tail
       rw [hriem]
       exact (ENNReal.ofReal_lt_ofReal_iff hradPos).2
         (hxtRho.trans hhalfChart)
-    have hyControl := d.toNormalChartData.readout_mem
+    have hyControl := d.toNormalChartData.mem_image_and_norm_inv_eq_riemannian_distance
       (Lphi.φ l) (hcomplete.complete (Lphi.φ l))
         (hconn (Lphi.φ l)) x0 (join p c t) hyRad
     obtain ⟨w, hw, hwy⟩ := hyControl.1
@@ -2147,7 +2147,7 @@ theorem actual_cm_tail
   with_unfolding_all
     exact ⟨hcm, hout, hcoord⟩
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 def HasStageRootReadout
     (inp : MetricCompactCore (I := I) X)

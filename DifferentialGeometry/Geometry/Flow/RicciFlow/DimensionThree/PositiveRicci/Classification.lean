@@ -71,7 +71,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
     metricSeedOfBG (I := I) (X.atZero (I := I))
       hcpl hderiv.atZeroGeom hinj hconn
-  have hd : Nonempty (BoundedGeometryNormalData (I := I) (X.atZero (I := I)) seed.decay) :=
+  have hd : Nonempty (BoundedGeometryNormalChartData (I := I) (X.atZero (I := I)) seed.decay) :=
     exists_bounded_geometry_normal_data (I := I) (X.atZero (I := I))
       hcpl hconn hderiv.atZeroGeom seed.decay seed.realizes
   let canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)) :=

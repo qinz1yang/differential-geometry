@@ -28,7 +28,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 def transitionPatch
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
@@ -159,7 +159,7 @@ theorem closed_ball_subset_inner_transition_core
 omit [CompleteSpace E] in
 theorem pair_overlap_at
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -335,7 +335,7 @@ theorem pair_overlap_at
         ENNReal.ofReal chiGamma.radius := by
       rw [hed]
       exact (ENNReal.ofReal_lt_ofReal_iff chiGamma.radius_pos).2 hdist
-    have hread := d.toNormalChartData.readout_mem
+    have hread := d.toNormalChartData.mem_image_and_norm_inv_eq_riemannian_distance
       j (hcomplete.complete j) (hconn j) cGamma y hedRad
     have hcoord :
         chiAlpha.transition chiGamma z =
@@ -365,15 +365,15 @@ theorem pair_overlap_at
   · intro z hz
     exact ⟨(hpoint z hz).1, (hpoint z hz).2.1⟩
   · intro z hz
-    simpa only [BoundedGeometryNormalData.chartTransition] using (hpoint z hz).2.2.1
+    simpa only [BoundedGeometryNormalChartData.chartTransition] using (hpoint z hz).2.2.1
   · intro z hz
-    simpa only [BoundedGeometryNormalData.chartTransition, BoundedGeometryNormalData.chartMap] using
+    simpa only [BoundedGeometryNormalChartData.chartTransition, BoundedGeometryNormalChartData.chartMap] using
       (hpoint z hz).2.2.2
 
 omit [CompleteSpace E] in
 theorem chart_transition_pair_eventually
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -410,7 +410,7 @@ theorem chart_transition_pair_eventually
 omit [CompleteSpace E] in
 theorem transition_patch_eventually
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -627,7 +627,7 @@ theorem transition_patch_eventually
         ENNReal.ofReal chi.radius := by
       rw [hed]
       exact (ENNReal.ofReal_lt_ofReal_iff chi.radius_pos).2 hdist
-    have hread := d.toNormalChartData.readout_mem
+    have hread := d.toNormalChartData.mem_image_and_norm_inv_eq_riemannian_distance
       j (hcomplete.complete j) (hconn j) c y hedRad
     have htarget : y ∈ chi.hom.target := by
       obtain ⟨w, hw, hwy⟩ := hread.1
@@ -663,7 +663,7 @@ theorem transition_patch_eventually
 omit [CompleteSpace E] in
 theorem transition_target_ball_eventually
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -705,7 +705,7 @@ theorem transition_target_ball_eventually
 private theorem trans_fin
     {ι : Type*} (s : Finset ι)
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (x y : ι → ∀ k : Nat, (X.obj k).M)
     (U V Ua Va : ι → Set E)
     (hU : ∀ i, i ∈ s → IsOpen (U i))
@@ -809,7 +809,7 @@ private theorem trans_fin
 omit [CompleteSpace E] in
 theorem atomOn_readout
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (k : Nat)
     (alpha gamma : Fin (inp.pack.A r))
@@ -903,7 +903,7 @@ private theorem normBump_smooth
 omit [CompleteSpace E] in
 theorem atomOn_live_conv
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     (alpha gamma : LiveSlot L inp.pack r)
@@ -1000,7 +1000,7 @@ theorem atomOn_disjoint_conv
 
 theorem exists_supp_data
     (inp : MetricCompactCore (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1460,8 +1460,8 @@ theorem exists_supp_data
       have hs := (d.chart (Lphi.φ k) (beta k)).transition_smooth
         (d.chart (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
-        (by simpa only [BoundedGeometryNormalData.chartOverlapOn] using hov)
-      simpa only [BoundedGeometryNormalData.chartTransition] using hs.mono hU8alpha
+        (by simpa only [BoundedGeometryNormalChartData.chartOverlapOn] using hov)
+      simpa only [BoundedGeometryNormalChartData.chartTransition] using hs.mono hU8alpha
     have hread (target : InterSlot L inp.pack r alpha) :
         ∀ᶠ k : Nat in Filter.atTop,
           ∀ z ∈ U alpha,
@@ -1738,15 +1738,15 @@ theorem exists_supp_data
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).transition_smooth
         (d.chart (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
-        (by simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovF)
+        (by simpa only [BoundedGeometryNormalChartData.chartOverlapOn] using hovF)
     have hsR :=
       (d.chart (Lphi.φ k)
         (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))).transition_smooth
         (d.chart (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)))
-        (by simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovR)
-    exact ⟨by simpa only [BoundedGeometryNormalData.chartTransition] using hsF,
-      by simpa only [BoundedGeometryNormalData.chartTransition] using hsR⟩
+        (by simpa only [BoundedGeometryNormalChartData.chartOverlapOn] using hovR)
+    exact ⟨by simpa only [BoundedGeometryNormalChartData.chartTransition] using hsF,
+      by simpa only [BoundedGeometryNormalChartData.chartTransition] using hsR⟩
   have hchartAll (k : Nat) :
       let Y := X.obj (Lphi.φ k)
       letI : TopologicalSpace Y.M := Y.topology
@@ -1827,7 +1827,7 @@ theorem exists_supp_data
     with_unfolding_all
       exact hsmoothAll alpha target k
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry

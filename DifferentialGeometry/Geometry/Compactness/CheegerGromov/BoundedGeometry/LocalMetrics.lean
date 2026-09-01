@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalData
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Defs
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
@@ -28,7 +28,7 @@ omit [CompleteSpace E] in
 theorem exists_chart_metric_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (c : ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
     (hsub : ∀ k,
@@ -53,7 +53,7 @@ theorem exists_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
-    simpa only [BoundedGeometryNormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalChartData.chartMetric] using
       (d.chart k (c k)).metric_cont_diff_on (X.obj k).metric hU
         ((d.chart k (c k)).smooth_to.mono hrad)
   · intro p K hK hKU
@@ -67,7 +67,7 @@ theorem exists_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
-    simpa only [BoundedGeometryNormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalChartData.chartMetric] using
       d.metric_deriv k p (c k) z (hrad (hKU hz))
   · intro k z hz v
     let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -78,7 +78,7 @@ theorem exists_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
-    simpa only [BoundedGeometryNormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalChartData.chartMetric] using
       d.metric_equiv k (c k) z (hrad hz) v
 
 
@@ -87,7 +87,7 @@ theorem exists_finite_chart_metric_limit_subsequence
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (c : ι → ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
     (hsub : ∀ k i,
@@ -116,7 +116,7 @@ theorem exists_finite_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
-    simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
+    simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
       (d.chart k (c i k)).metric_cont_diff_on (X.obj k).metric hU
         ((d.chart k (c i k)).smooth_to.mono hrad)
   have hsmooth : ∀ k, ContDiffOn Real (⊤ : ℕ∞) (gLoc k) U :=
@@ -134,7 +134,7 @@ theorem exists_finite_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
-    simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
+    simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
       d.metric_deriv k p (c i k) z (hrad (hKU hz))
   have hbdd : IsometryDerivBoundsOn U gLoc :=
     IsometryDerivBoundsOn.pi hU hsmoothComp hbddComp
@@ -170,7 +170,7 @@ theorem exists_finite_chart_metric_limit_subsequence
         U ⊆ Metric.ball (0 : E)
           (d.chart (phi n) (c i (phi n))).radius := by
       simpa only [d.radius_eq (phi n) (c i (phi n))] using hsub (phi n) i
-    simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
+    simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
       d.metric_equiv (phi n) (c i (phi n)) z (hrad hz) v
   exact ⟨
     ge_of_tendsto htendv

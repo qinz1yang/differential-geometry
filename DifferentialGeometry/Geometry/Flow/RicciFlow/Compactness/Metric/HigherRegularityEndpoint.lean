@@ -24,7 +24,7 @@ namespace MetricCompactSeed
 def higherRegularityCanonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -47,7 +47,7 @@ def higherRegularityCanonicalMetricCompactness
 def higherRegularityMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -58,7 +58,7 @@ def higherRegularityMetricCompactness
 theorem higher_regularity_canonical_metric_compactness_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -78,7 +78,7 @@ namespace MetricCompactBase
 def higherRegularityCanonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -89,7 +89,7 @@ def higherRegularityCanonicalMetricCompactness
 def higherRegularityMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -100,7 +100,7 @@ def higherRegularityMetricCompactness
 theorem higher_regularity_canonical_metric_compactness_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : BoundedGeometryNormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalChartData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology

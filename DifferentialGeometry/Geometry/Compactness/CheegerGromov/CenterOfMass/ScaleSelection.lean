@@ -28,13 +28,13 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace BoundedGeometryNormalData
+namespace BoundedGeometryNormalChartData
 
 omit [CompleteSpace E] in
 theorem exists_center_of_mass_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
-    (d : BoundedGeometryNormalData (I := I) X hd)
+    (d : BoundedGeometryNormalChartData (I := I) X hd)
     (hre : hd.RealizesDistance)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -177,7 +177,7 @@ theorem exists_center_of_mass_scale
   exact hbranch (L.φ n) (seqCenterD hd P L n (gamma.1 : Nat))
     (hn gamma).le
 
-end BoundedGeometryNormalData
+end BoundedGeometryNormalChartData
 
 end HCGCompactness
 end DifferentialGeometry
