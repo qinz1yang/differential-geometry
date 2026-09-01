@@ -240,6 +240,11 @@ namespace RoundQuotientData
 
 variable (D : RoundQuotientData E n)
 
+theorem proj_surjective : Function.Surjective D.proj := by
+  intro x
+  exact ⟨(D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩,
+    (D.sectionAt x).toSphere_proj ⟨x, (D.sectionAt x).mem⟩⟩
+
 def gm (x : D.Q) : TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x →L[ℝ] ℝ :=
   let xW : (D.sectionAt x).W := ⟨x, (D.sectionAt x).mem⟩
   let e := (tangentOpenEquiv (D.sectionAt x).W xW).toContinuousLinearMap
