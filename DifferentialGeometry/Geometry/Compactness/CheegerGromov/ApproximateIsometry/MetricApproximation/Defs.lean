@@ -30,14 +30,14 @@ section MapLevel
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
 variable [T2Space N] [IsManifold I ∞ N] [SigmaCompactSpace N]
 
-structure PullbackMetricTensorData
+structure SmoothPullbackMetricTensor
     (Phi : M -> N) (h : SmoothRiemannianMetric I N) where
-  pullback :
+  tensor :
     Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2
-  pullback_apply :
+  tensor_apply :
     forall x : M, forall v : Fin 2 -> TangentSpace I x,
-      pullback x v =
+      tensor x v =
         h.inner (Phi x)
           (mfderiv I I Phi x (v 0))
           (mfderiv I I Phi x (v 1))
@@ -59,14 +59,14 @@ structure MapMetricApproximation
   eps_pos : 0 < eps
   eps_lt_one : eps < 1
   smooth : ContMDiff I I (∞ : WithTop ℕ∞) Phi
-  pullbackData : PullbackMetricTensorData (I := I) Phi h
+  pullbackTensor : SmoothPullbackMetricTensor (I := I) Phi h
   c0_small :
     forall x : M, x ∈ K ->
-      metricTensorErrorNorm (I := I) pullbackData.pullback g x <= eps
+      metricTensorErrorNorm (I := I) pullbackTensor.tensor g x <= eps
   cov_deriv_small :
     forall a : Nat, 1 <= a -> a <= p ->
       forall x : M, x ∈ K ->
-        tensor02CovDerivNormWith (I := I) a pullbackData.pullback g g x <= eps
+        tensor02CovDerivNormWith (I := I) a pullbackTensor.tensor g g x <= eps
 
 structure DiffeomorphMetricApproximation
     (K : Set M) (L : Set N) (eps : Real) (p : Nat)
@@ -194,32 +194,6 @@ def PartialDiffeomorphMetricApproximation.toSeparateBounds
   source_sub := D.source_sub
   forward := D.forward.toSeparateBounds
   reverse := D.reverse.toSeparateBounds
-
-def MapMetricApproximationBoundsOn.mono
-    {K K' : Set M} {c0 c0' cov cov' : Real} {p : Nat} {Phi : M -> N}
-    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p Phi g h)
-    (hK : K' ⊆ K) (hc0 : c0 <= c0') (hcov : cov <= cov') :
-    MapMetricApproximationBoundsOn (I := I) K' c0' cov' p Phi g h where
-  c0_nonneg := le_trans D.c0_nonneg hc0
-  cov_nonneg := le_trans D.cov_nonneg hcov
-  smoothOn := D.smoothOn.mono hK
-  pullback := D.pullback
-  pullback_apply := fun x hx v => D.pullback_apply x (hK hx) v
-  c0_small := fun x hx => le_trans (D.c0_small x (hK hx)) hc0
-  cov_small := fun a h1 h2 x hx =>
-    le_trans (D.cov_small a h1 h2 x (hK hx)) hcov
-
-def PartialDiffeomorphMetricApproximationBounds.mono
-    {K K' : Set M} {c0 c0' cov cov' : Real} {p : Nat}
-    {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
-    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : PartialDiffeomorphMetricApproximationBounds (I := I) K c0 cov p Phi g h)
-    (hK : K' ⊆ K) (hc0 : c0 <= c0') (hcov : cov <= cov') :
-    PartialDiffeomorphMetricApproximationBounds (I := I) K' c0' cov' p Phi g h where
-  source_sub := fun _ hx => D.source_sub (hK hx)
-  forward := D.forward.mono hK hc0 hcov
-  reverse := D.reverse.mono (Set.image_mono hK) hc0 hcov
 
 end MapLevel
 

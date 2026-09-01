@@ -212,7 +212,7 @@ theorem pullbackErrComp
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (gk : SmoothRiemannianMetric I M') (gn : SmoothRiemannianMetric I N')
     {F : M' → N'} {y : M'}
-    (hpb : PullbackMetricTensorData (I := I) F gn)
+    (hpb : SmoothPullbackMetricTensor (I := I) F gn)
     (hG : DifferentiableAt ℝ
       (fun z => NormalCoordinates.normalChartAt (I := I) gn (F y)
         (F ((NormalCoordinates.normalChartAt (I := I) gk y).symm z))) (0 : E))
@@ -227,15 +227,15 @@ theorem pullbackErrComp
       - ContinuousLinearMap.id ℝ E‖ ≤ ε)
     (hB : ∀ v' w' : E, |gn.inner (F y) v' w' - gk.inner y v' w'| ≤ η * (‖v'‖ * ‖w'‖))
     (v w : TangentSpace I y) :
-    |(hpb.pullback y - Tensor0SBundle.metricTensorField (I := I) gk y)
+    |(hpb.tensor y - Tensor0SBundle.metricTensorField (I := I) gk y)
         (fun a : Fin 2 => if a = 0 then v else w)|
       ≤ ((‖gn.inner (F y)‖ * ε * (2 + ε)) + η) * (‖v‖ * ‖w‖) := by
-  have hsub : (hpb.pullback y - Tensor0SBundle.metricTensorField (I := I) gk y)
+  have hsub : (hpb.tensor y - Tensor0SBundle.metricTensorField (I := I) gk y)
       (fun a : Fin 2 => if a = 0 then v else w)
-      = hpb.pullback y (fun a : Fin 2 => if a = 0 then v else w)
+      = hpb.tensor y (fun a : Fin 2 => if a = 0 then v else w)
         - Tensor0SBundle.metricTensorField (I := I) gk y
             (fun a : Fin 2 => if a = 0 then v else w) := rfl
-  have hpba := hpb.pullback_apply y (fun a : Fin 2 => if a = 0 then v else w)
+  have hpba := hpb.tensor_apply y (fun a : Fin 2 => if a = 0 then v else w)
   norm_num at hpba
   set A := fderiv ℝ (fun z => NormalCoordinates.normalChartAt (I := I) gn (F y)
     (F ((NormalCoordinates.normalChartAt (I := I) gk y).symm z))) (0 : E) with hAdef
@@ -321,7 +321,7 @@ theorem pullbackErrNorm
     [T2Space (TangentBundle I N')] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (gk : SmoothRiemannianMetric I M') (gn : SmoothRiemannianMetric I N')
     {F : M' → N'} {y : M'}
-    (hpb : PullbackMetricTensorData (I := I) F gn)
+    (hpb : SmoothPullbackMetricTensor (I := I) F gn)
     (hG : DifferentiableAt ℝ
       (fun z => NormalCoordinates.normalChartAt (I := I) gn (F y)
         (F ((NormalCoordinates.normalChartAt (I := I) gk y).symm z))) (0 : E))
@@ -336,7 +336,7 @@ theorem pullbackErrNorm
         (F ((NormalCoordinates.normalChartAt (I := I) gk y).symm z))) (0 : E)
       - ContinuousLinearMap.id ℝ E‖ ≤ ε)
     (hB : ∀ v' w' : E, |gn.inner (F y) v' w' - gk.inner y v' w'| ≤ η * (‖v'‖ * ‖w'‖)) :
-    metricTensorErrorNorm (I := I) hpb.pullback gk y
+    metricTensorErrorNorm (I := I) hpb.tensor gk y
       ≤ (Module.finrank ℝ (TangentSpace I y) : ℝ)
         * (((‖gn.inner (F y)‖ * ε * (2 + ε)) + η)
             * ((Real.sqrt cLow)⁻¹ * (Real.sqrt cLow)⁻¹)) := by
@@ -346,7 +346,7 @@ theorem pullbackErrNorm
   have hc0 : 0 ≤ (((‖gn.inner (F y)‖ * ε * (2 + ε)) + η)
       * ((Real.sqrt cLow)⁻¹ * (Real.sqrt cLow)⁻¹)) := by positivity
   have hmain : Real.sqrt (Tensor0SBundle.normSq0S (I := I) gk y 2
-      (hpb.pullback y - Tensor0SBundle.metricTensorField (I := I) gk y))
+      (hpb.tensor y - Tensor0SBundle.metricTensorField (I := I) gk y))
       ≤ (Fintype.card (Fin (Module.finrank ℝ (TangentSpace I y))) : ℝ)
         * (((‖gn.inner (F y)‖ * ε * (2 + ε)) + η)
             * ((Real.sqrt cLow)⁻¹ * (Real.sqrt cLow)⁻¹)) := by
@@ -360,25 +360,25 @@ theorem pullbackErrNorm
     have hcoefnn : 0 ≤ (‖gn.inner (F y)‖ * ε * (2 + ε)) + η := by positivity
     exact mul_le_mul_of_nonneg_left hbb hcoefnn
   change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gk y 2
-      (hpb.pullback y - Tensor0SBundle.metricTensorField (I := I) gk y)) ≤ _
+      (hpb.tensor y - Tensor0SBundle.metricTensorField (I := I) gk y)) ≤ _
   simpa only [Fintype.card_fin] using hmain
 
 def mapMetricApproximationOnOfBounds
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
     (K : Set M') (eps : ℝ) (p : ℕ) (F : M' → N')
     (g : SmoothRiemannianMetric I M') (h : SmoothRiemannianMetric I N')
-    (hpb : PullbackMetricTensorData (I := I) F h)
+    (hpb : SmoothPullbackMetricTensor (I := I) F h)
     (heps : 0 < eps) (heps1 : eps < 1)
     (hsmooth : ContMDiffOn I I (∞ : WithTop ℕ∞) F K)
-    (hc0 : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpb.pullback g x ≤ eps)
+    (hc0 : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpb.tensor g x ≤ eps)
     (hcov : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ K,
-      tensor02CovDerivNormWith (I := I) a hpb.pullback g g x ≤ eps) :
+      tensor02CovDerivNormWith (I := I) a hpb.tensor g g x ≤ eps) :
     MapMetricApproximationOn (I := I) K eps p F g h where
   eps_pos := heps
   eps_lt_one := heps1
   smoothOn := hsmooth
-  pullback := hpb.pullback
-  pullback_apply := fun x _ v => hpb.pullback_apply x v
+  pullback := hpb.tensor
+  pullback_apply := fun x _ v => hpb.tensor_apply x v
   c0_small := hc0
   cov_deriv_small := hcov
 
@@ -386,10 +386,10 @@ def mapMetricApproximationOnOfZeroOrderBounds
     {N' : Type u} [TopologicalSpace N'] [ChartedSpace H N'] [IsManifold I ∞ N']
     (K : Set M') (eps : ℝ) (F : M' → N')
     (g : SmoothRiemannianMetric I M') (h : SmoothRiemannianMetric I N')
-    (hpb : PullbackMetricTensorData (I := I) F h)
+    (hpb : SmoothPullbackMetricTensor (I := I) F h)
     (heps : 0 < eps) (heps1 : eps < 1)
     (hsmooth : ContMDiffOn I I (∞ : WithTop ℕ∞) F K)
-    (hc0 : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpb.pullback g x ≤ eps) :
+    (hc0 : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpb.tensor g x ≤ eps) :
     MapMetricApproximationOn (I := I) K eps 0 F g h :=
   mapMetricApproximationOnOfBounds K eps 0 F g h hpb heps heps1 hsmooth hc0
     (by intro a ha ha0 x hx; omega)
@@ -401,17 +401,17 @@ def partialDiffeomorphMetricApproximationOfBounds
     (g : SmoothRiemannianMetric I M') (h : SmoothRiemannianMetric I N')
     (hsub : K ⊆ Φ.source)
     (heps : 0 < eps) (heps1 : eps < 1)
-    (hpbF : PullbackMetricTensorData (I := I) (Φ : M' → N') h)
+    (hpbF : SmoothPullbackMetricTensor (I := I) (Φ : M' → N') h)
     (hsmoothF : ContMDiffOn I I (∞ : WithTop ℕ∞) (Φ : M' → N') K)
-    (hc0F : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpbF.pullback g x ≤ eps)
+    (hc0F : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpbF.tensor g x ≤ eps)
     (hcovF : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ K,
-      tensor02CovDerivNormWith (I := I) a hpbF.pullback g g x ≤ eps)
-    (hpbR : PullbackMetricTensorData (I := I) (Φ.symm : N' → M') g)
+      tensor02CovDerivNormWith (I := I) a hpbF.tensor g g x ≤ eps)
+    (hpbR : SmoothPullbackMetricTensor (I := I) (Φ.symm : N' → M') g)
     (hsmoothR : ContMDiffOn I I (∞ : WithTop ℕ∞) (Φ.symm : N' → M') ((Φ : M' → N') '' K))
     (hc0R : ∀ y ∈ (Φ : M' → N') '' K,
-      metricTensorErrorNorm (I := I) hpbR.pullback h y ≤ eps)
+      metricTensorErrorNorm (I := I) hpbR.tensor h y ≤ eps)
     (hcovR : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ y ∈ (Φ : M' → N') '' K,
-      tensor02CovDerivNormWith (I := I) a hpbR.pullback h h y ≤ eps) :
+      tensor02CovDerivNormWith (I := I) a hpbR.tensor h h y ≤ eps) :
     PartialDiffeomorphMetricApproximation (I := I) K eps p Φ g h where
   source_sub := hsub
   forward := mapMetricApproximationOnOfBounds K eps p (Φ : M' → N') g h hpbF heps heps1 hsmoothF hc0F
@@ -426,13 +426,13 @@ def partialDiffeomorphMetricApproximationOfZeroOrderBounds
     (g : SmoothRiemannianMetric I M') (h : SmoothRiemannianMetric I N')
     (hsub : K ⊆ Φ.source)
     (heps : 0 < eps) (heps1 : eps < 1)
-    (hpbF : PullbackMetricTensorData (I := I) (Φ : M' → N') h)
+    (hpbF : SmoothPullbackMetricTensor (I := I) (Φ : M' → N') h)
     (hsmoothF : ContMDiffOn I I (∞ : WithTop ℕ∞) (Φ : M' → N') K)
-    (hc0F : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpbF.pullback g x ≤ eps)
-    (hpbR : PullbackMetricTensorData (I := I) (Φ.symm : N' → M') g)
+    (hc0F : ∀ x ∈ K, metricTensorErrorNorm (I := I) hpbF.tensor g x ≤ eps)
+    (hpbR : SmoothPullbackMetricTensor (I := I) (Φ.symm : N' → M') g)
     (hsmoothR : ContMDiffOn I I (∞ : WithTop ℕ∞) (Φ.symm : N' → M') ((Φ : M' → N') '' K))
     (hc0R : ∀ y ∈ (Φ : M' → N') '' K,
-      metricTensorErrorNorm (I := I) hpbR.pullback h y ≤ eps) :
+      metricTensorErrorNorm (I := I) hpbR.tensor h y ≤ eps) :
     PartialDiffeomorphMetricApproximation (I := I) K eps 0 Φ g h where
   source_sub := hsub
   forward := mapMetricApproximationOnOfZeroOrderBounds K eps (Φ : M' → N') g h
@@ -466,19 +466,19 @@ theorem exists_partial_diffeomorph_metric_approximation_of_bounds
     (hloc : IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞) F U)
     (hinj : Set.InjOn F U) (hbase : F Ok = Oℓ)
     (heps : 0 < ε) (heps1 : ε < 1)
-    (hpbF : PullbackMetricTensorData (I := I) F h)
+    (hpbF : SmoothPullbackMetricTensor (I := I) F h)
     (hsmoothF : ContMDiffOn I I (∞ : WithTop ℕ∞) F (Metric.closedBall Ok r))
     (hc0F : ∀ x ∈ Metric.closedBall Ok r,
-      metricTensorErrorNorm (I := I) hpbF.pullback g x ≤ ε)
+      metricTensorErrorNorm (I := I) hpbF.tensor g x ≤ ε)
     (hcovF : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ Metric.closedBall Ok r,
-      tensor02CovDerivNormWith (I := I) a hpbF.pullback g g x ≤ ε)
-    (hpbR : PullbackMetricTensorData (I := I) (Function.invFunOn F U) g)
+      tensor02CovDerivNormWith (I := I) a hpbF.tensor g g x ≤ ε)
+    (hpbR : SmoothPullbackMetricTensor (I := I) (Function.invFunOn F U) g)
     (hsmoothR : ContMDiffOn I I (∞ : WithTop ℕ∞) (Function.invFunOn F U)
       (F '' Metric.closedBall Ok r))
     (hc0R : ∀ y ∈ F '' Metric.closedBall Ok r,
-      metricTensorErrorNorm (I := I) hpbR.pullback h y ≤ ε)
+      metricTensorErrorNorm (I := I) hpbR.tensor h y ≤ ε)
     (hcovR : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ y ∈ F '' Metric.closedBall Ok r,
-      tensor02CovDerivNormWith (I := I) a hpbR.pullback h h y ≤ ε) :
+      tensor02CovDerivNormWith (I := I) a hpbR.tensor h h y ≤ ε) :
     ∃ Phi : PartialDiffeomorph I I M'' N'' (∞ : WithTop ℕ∞),
       Metric.closedBall Ok r ⊆ Phi.source ∧
       Phi Ok = Oℓ ∧
@@ -508,15 +508,15 @@ theorem exists_partial_diffeomorph_metric_approximation_of_zero_order_bounds
     (hloc : IsLocalDiffeomorphOn I I (∞ : WithTop ℕ∞) F U)
     (hinj : Set.InjOn F U) (hbase : F Ok = Oℓ)
     (heps : 0 < ε) (heps1 : ε < 1)
-    (hpbF : PullbackMetricTensorData (I := I) F h)
+    (hpbF : SmoothPullbackMetricTensor (I := I) F h)
     (hsmoothF : ContMDiffOn I I (∞ : WithTop ℕ∞) F (Metric.closedBall Ok r))
     (hc0F : ∀ x ∈ Metric.closedBall Ok r,
-      metricTensorErrorNorm (I := I) hpbF.pullback g x ≤ ε)
-    (hpbR : PullbackMetricTensorData (I := I) (Function.invFunOn F U) g)
+      metricTensorErrorNorm (I := I) hpbF.tensor g x ≤ ε)
+    (hpbR : SmoothPullbackMetricTensor (I := I) (Function.invFunOn F U) g)
     (hsmoothR : ContMDiffOn I I (∞ : WithTop ℕ∞) (Function.invFunOn F U)
       (F '' Metric.closedBall Ok r))
     (hc0R : ∀ y ∈ F '' Metric.closedBall Ok r,
-      metricTensorErrorNorm (I := I) hpbR.pullback h y ≤ ε) :
+      metricTensorErrorNorm (I := I) hpbR.tensor h y ≤ ε) :
     ∃ Phi : PartialDiffeomorph I I M'' N'' (∞ : WithTop ℕ∞),
       Metric.closedBall Ok r ⊆ Phi.source ∧
       Phi Ok = Oℓ ∧

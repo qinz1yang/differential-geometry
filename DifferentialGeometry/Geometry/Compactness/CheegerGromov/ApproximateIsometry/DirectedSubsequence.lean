@@ -151,12 +151,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       · simp [sepTail]
       · simp [sepTail]
       · exact ⟨
-          reflSepData (I := I)
+          partial_diffeomorph_metric_approximation_bounds_refl (I := I)
             (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (0 + 1))))
             (X.obj (σ s)).metric p,
           fun m hm => by
             cases hm
-            exact reflSepData (I := I)
+            exact partial_diffeomorph_metric_approximation_bounds_refl (I := I)
               (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (0 + 1))))
               (X.obj (σ s)).metric p⟩
   | succ l ih =>

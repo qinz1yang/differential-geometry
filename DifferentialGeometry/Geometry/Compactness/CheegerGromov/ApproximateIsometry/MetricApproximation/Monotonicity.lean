@@ -25,6 +25,33 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ 
 
 section DataMono
 
+def MapMetricApproximationBoundsOn.mono
+    {K K' : Set M} {c0 c0' cov cov' : Real} {p : Nat} {Phi : M -> N}
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
+    (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p Phi g h)
+    (hK : K' ⊆ K) (hc0 : c0 <= c0') (hcov : cov <= cov') :
+    MapMetricApproximationBoundsOn (I := I) K' c0' cov' p Phi g h where
+  c0_nonneg := le_trans D.c0_nonneg hc0
+  cov_nonneg := le_trans D.cov_nonneg hcov
+  smoothOn := D.smoothOn.mono hK
+  pullback := D.pullback
+  pullback_apply := fun x hx v => D.pullback_apply x (hK hx) v
+  c0_small := fun x hx => le_trans (D.c0_small x (hK hx)) hc0
+  cov_small := fun a h1 h2 x hx =>
+    le_trans (D.cov_small a h1 h2 x (hK hx)) hcov
+
+def PartialDiffeomorphMetricApproximationBounds.mono [T2Space N]
+    [hSigma : SigmaCompactSpace N]
+    {K K' : Set M} {c0 c0' cov cov' : Real} {p : Nat}
+    {Phi : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
+    {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
+    (D : PartialDiffeomorphMetricApproximationBounds (I := I) K c0 cov p Phi g h)
+    (hK : K' ⊆ K) (hc0 : c0 <= c0') (hcov : cov <= cov') :
+    PartialDiffeomorphMetricApproximationBounds (I := I) K' c0' cov' p Phi g h where
+  source_sub := fun _ hx => D.source_sub (hK hx)
+  forward := D.forward.mono hK hc0 hcov
+  reverse := let _ := hSigma; D.reverse.mono (Set.image_mono hK) hc0 hcov
+
 def MapMetricApproximationOn.mono
     {K K' : Set M} {ε ε' : ℝ} {p : ℕ}
     {Phi : M → N} {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
