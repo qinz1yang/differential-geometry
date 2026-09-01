@@ -105,14 +105,23 @@ theorem coveringDeckGroup_apply_eq_iff
   · rintro ⟨gamma, rfl⟩
     exact coveringDeckGroup_map gamma e2
 
-theorem isQuotientCoveringMap_coveringDeckGroup
+theorem isQuotientCoveringMap_coveringDeckGroup_of_fiber_transitive
     {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
-    [SimplyConnectedSpace E] [LocallyPathConnectedSpace E]
-    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) :
+    [PreconnectedSpace E]
+    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p)
+    (htrans : ∀ {e₁ e₂ : E}, p e₁ = p e₂ →
+      ∃ gamma : coveringDeckGroup p, gamma • e₂ = e₁) :
     IsQuotientCoveringMap p (coveringDeckGroup p) where
   toIsQuotientMap := hp.isQuotientMap hsurj
   continuous_const_smul := continuous_const_smul
-  apply_eq_iff_mem_orbit := coveringDeckGroup_apply_eq_iff hp
+  apply_eq_iff_mem_orbit := by
+    intro e₁ e₂
+    constructor
+    · intro heq
+      obtain ⟨gamma, hgamma⟩ := htrans heq
+      exact ⟨gamma, hgamma⟩
+    · rintro ⟨gamma, rfl⟩
+      exact coveringDeckGroup_map gamma e₂
   disjoint e := by
     obtain ⟨U, hU, hUEmbedding⟩ :=
       isLocalHomeomorph_iff_isOpenEmbedding_restrict.mp hp.isLocalHomeomorph e
@@ -124,6 +133,14 @@ theorem isQuotientCoveringMap_coveringDeckGroup
     have hfix : gamma • y = y :=
       hUInj hgammaU hyU (coveringDeckGroup_map gamma y)
     exact coveringDeckGroup_eq_one_of_apply_eq hp gamma y hfix
+
+theorem isQuotientCoveringMap_coveringDeckGroup
+    {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
+    [SimplyConnectedSpace E] [LocallyPathConnectedSpace E]
+    {p : E → X} (hp : IsCoveringMap p) (hsurj : Function.Surjective p) :
+    IsQuotientCoveringMap p (coveringDeckGroup p) :=
+  isQuotientCoveringMap_coveringDeckGroup_of_fiber_transitive hp hsurj
+    (fun he => exists_coveringDeckGroup_apply_eq hp he)
 
 private theorem coveringDeckGroup_exists_prod_nhds_finite_inter
     {E X : Type*} [TopologicalSpace E] [TopologicalSpace X]
