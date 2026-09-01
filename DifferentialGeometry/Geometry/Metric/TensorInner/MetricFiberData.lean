@@ -1,6 +1,7 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
@@ -126,6 +127,48 @@ theorem toCore_inner (D : MetricFiberData V) (v w : V) :
     Inner.inner Real v w = D.inner v w := by
   change D.toCore.inner v w = D.inner v w
   rfl
+
+def orthogonal (D : MetricFiberData V) (W : Submodule Real V) : Submodule Real V :=
+  LinearMap.BilinForm.orthogonal D.flat.toLinearMap W
+
+@[simp] theorem mem_orthogonal
+    (D : MetricFiberData V) (W : Submodule Real V) (v : V) :
+    v ∈ D.orthogonal W ↔ ∀ w ∈ W, D.inner w v = 0 :=
+  Iff.rfl
+
+def IsSymmetric (D : MetricFiberData V) (A : V →ₗ[Real] V) : Prop :=
+  ∀ v w, D.inner (A v) w = D.inner v (A w)
+
+theorem IsSymmetric.range_eq_orthogonal_ker
+    {D : MetricFiberData V} {A : V →ₗ[Real] V} (hA : D.IsSymmetric A) :
+    A.range = D.orthogonal A.ker := by
+  let addV : AddCommGroup V := inferInstance
+  let modV : Module Real V := inferInstance
+  let : InnerProductSpace.Core Real V := D.toCore
+  let : NormedAddCommGroup V :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real V _ addV modV D.toCore
+  let : AddCommGroup V := addV
+  let : Module Real V := modV
+  let : InnerProductSpace Real V :=
+    @InnerProductSpace.ofCore Real V _ _ _ D.toCore.toCore
+  have hInner (v w : V) : (Inner.inner Real v w : Real) = D.inner v w := by
+    exact D.toCore_inner v w
+  have hSymmetric : A.IsSymmetric := by
+    intro v w
+    change D.inner (A v) w = D.inner v (A w)
+    exact hA v w
+  have hOrthogonal : D.orthogonal A.ker = Submodule.orthogonal A.ker := by
+    ext v
+    simp only [mem_orthogonal, Submodule.mem_orthogonal]
+    constructor
+    · intro hv w hw
+      rw [hInner]
+      exact hv w hw
+    · intro hv w hw
+      rw [← hInner]
+      exact hv w hw
+  rw [hOrthogonal, ← hSymmetric.orthogonal_range]
+  exact A.range.orthogonal_orthogonal.symm
 
 noncomputable def submoduleProjection
     (D : MetricFiberData V) (W : Submodule Real V) : V →ₗ[Real] W := by

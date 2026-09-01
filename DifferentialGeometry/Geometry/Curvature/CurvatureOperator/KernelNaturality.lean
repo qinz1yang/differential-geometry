@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [T2Space M]
 
 omit [CompleteSpace E] [T2Space M] in
-private theorem tensor0SPullbackCLE_twoFormTensorAt_congrLeft
+theorem tensor0SPullbackCLE_twoFormTensorAt_congrLeft
     {x y : M} (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
     (a : TangentSpace I x [⋀^Fin 2]→L[Real] Real) :
     tensor0SPullbackCLE (I := I) (M := M) 2 e
