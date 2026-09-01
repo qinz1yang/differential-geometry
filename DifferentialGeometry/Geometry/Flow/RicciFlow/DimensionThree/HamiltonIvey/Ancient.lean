@@ -1,1 +1,0 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RescaledLimit

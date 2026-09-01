@@ -2429,7 +2429,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Pinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RegionTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Transport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Ancient
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RescaledLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Canonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.ConjugateHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Defs
