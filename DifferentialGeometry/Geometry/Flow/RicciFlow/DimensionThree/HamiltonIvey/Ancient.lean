@@ -54,7 +54,7 @@ theorem nonnegative_of_hamiltonIvey_lower_bound_for_all_ages
   intro age hage
   simpa [q] using hbound age hage x hnegative
 
-theorem nonnegative_of_hamiltonIvey_rescaled_limit
+theorem nonnegative_of_hamilton_ivey_rescaled_limit
     (scalarLimit leastLimit T : Real)
     (scalarSeq leastSeq scaleSeq timeSeq : Nat → Real)
     (hscalar : Tendsto scalarSeq atTop (𝓝 scalarLimit))
