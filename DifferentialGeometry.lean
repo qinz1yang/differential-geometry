@@ -1356,7 +1356,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Diffe
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.JetNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.Jets
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MovingMetricDifferenceEnergy
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.NonlinearitySpectral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefectSymmetry
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricCoefficientBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSAbstractJet2Bound

@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorTensorHsToWtwokTwo
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.NonlinearitySpectral
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Tensor02FrameBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SingleSlotOperatorFiberNormBound
 open DifferentialGeometry.PDE.RicciFlow
