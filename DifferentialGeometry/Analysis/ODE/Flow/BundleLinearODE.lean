@@ -69,9 +69,10 @@ private theorem continuousLinearMap_comp_hasDerivWithinAt
 theorem fiberwise_linear_ode_solution_contMDiff
     {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
-    (hA : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
       (fun p : ℝ × M =>
-        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))))
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)))
     (hΦ₀ : ∀ x : M, Φ t₀ x = ContinuousLinearMap.id ℝ (V x))
     (hΦ : ∀ x : M, ∀ v : V x, ∀ t ∈ Ioo a b,
       HasDerivAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) t) :
@@ -106,7 +107,7 @@ theorem fiberwise_linear_ode_solution_contMDiff
     have hparam : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
         (fun p : E × ℝ => (p.2, c.symm p.1)) (U ×ˢ Ioo a b) :=
       contMDiffOn_snd.prodMk (hsymm.comp contMDiffOn_fst fun p hp => hp.1)
-    have hsection := hA.comp_contMDiffOn hparam
+    have hsection := hA.comp hparam fun p hp => ⟨hp.2, mem_univ _⟩
     have hbase : Set.MapsTo
         (fun p : E × ℝ =>
           (⟨c.symm p.1, A p.2 (c.symm p.1)⟩ :
@@ -201,9 +202,10 @@ theorem fiberwise_linear_ode_solution_contMDiff
 theorem fiberwise_linear_ode_solution_contMDiff_right
     {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
-    (hA : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
       (fun p : ℝ × M =>
-        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))))
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)))
     (hΦ₀ : ∀ x : M, Φ t₀ x = ContinuousLinearMap.id ℝ (V x))
     (hΦ_cont : ∀ x : M, ∀ v : V x,
       ContinuousOn (fun t : ℝ => Φ t x v) (Icc t₀ b))
@@ -240,7 +242,7 @@ theorem fiberwise_linear_ode_solution_contMDiff_right
     have hparam : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
         (fun p : E × ℝ => (p.2, c.symm p.1)) (U ×ˢ Ioo a b) :=
       contMDiffOn_snd.prodMk (hsymm.comp contMDiffOn_fst fun p hp => hp.1)
-    have hsection := hA.comp_contMDiffOn hparam
+    have hsection := hA.comp hparam fun p hp => ⟨hp.2, mem_univ _⟩
     have hbase : Set.MapsTo
         (fun p : E × ℝ =>
           (⟨c.symm p.1, A p.2 (c.symm p.1)⟩ :
@@ -375,9 +377,10 @@ theorem fiberwise_linear_ode_solution_contMDiff_right
 theorem fiberwise_linear_ode_total_map_contMDiff
     {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
-    (hA : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
       (fun p : ℝ × M =>
-        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))))
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)))
     (hΦ₀ : ∀ x : M, Φ t₀ x = ContinuousLinearMap.id ℝ (V x))
     (hΦ : ∀ x : M, ∀ v : V x, ∀ t ∈ Ioo a b,
       HasDerivAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) t)
@@ -394,9 +397,10 @@ theorem fiberwise_linear_ode_total_map_contMDiff
 theorem fiberwise_linear_ode_total_map_contMDiff_right
     {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (A Φ : ℝ → ∀ x : M, V x →L[ℝ] V x)
-    (hA : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
       (fun p : ℝ × M =>
-        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x))))
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M)))
     (hΦ₀ : ∀ x : M, Φ t₀ x = ContinuousLinearMap.id ℝ (V x))
     (hΦ_cont : ∀ x : M, ∀ v : V x,
       ContinuousOn (fun t : ℝ => Φ t x v) (Icc t₀ b))
